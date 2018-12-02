@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=8,11"/>
+    <title>i2b2 Web Client</title>
+    <!--
+     *  *************************
+     *       i2b2 Web Client
+     *           v1.7.09
+     *  *************************
+     *  @modified: 05/03/17
+     *  Contributors:
+     *     Nick Benik
+     *     Griffin Weber, MD, PhD
+     *     Mike Mendis
+     *     Shawn Murphy MD, PhD
+     *     David Wang
+     *     Hannah Murphy
+     *     Nich Wattanasin
+     *     Bhaswati Ghosh
+     *
+     */-->
+
+    <script type="text/javascript">
+        var i2b2build = "1.7.09   [05/03/17 2:00 PM] ";
+    </script>
+
+
+    <!-- LOAD Golden-Layout FROM local server -->
+    <script type="text/javascript" src="js-ext/goldenlayout/goldenlayout.js" ></script>
+    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/goldenlayout-base.css">
+    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/goldenlayout-light-theme.css">
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- LOAD JQuery FROM local server -->
+    <script type="text/javascript" src="js-ext/jquery/jquery-3.3.1.js" ></script>
+    <!-- LOAD Popper FROM CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <!-- LOAD Bootstrap FROM local server -->
+    <script type="text/javascript" src="js-ext/bootstrap/4.0.0/js/bootstrap.js" ></script>
+    <link rel="stylesheet" href="js-ext/bootstrap/4.0.0/css/bootstrap.css">
+    <!-- LOAD Bootstrap-treeview FROM local server -->
+    <script type="text/javascript" src="js-ext/bootstrap-treeview/bootstrap-treeview.js" ></script>
+    <link rel="stylesheet" href="js-ext/bootstrap-treeview/bootstrap-treeview.css">
+    <link rel="stylesheet" href="js-ext/bootstrap/shim/glyphicon.css"> <!-- requires a shim to use bootstrap 4 -->
+    <!-- LOAD Bootstrap-context-menu FROM local server -->
+    <script type="text/javascript" src="js-ext/bootstrap-menu/BootstrapMenu.js" ></script>
+    <link rel="stylesheet" href="js-ext/bootstrap-menu/BootstrapMenu.css"> <!-- requires a shim to use bootstrap 4 -->
+
+
+    <!-- LOAD GUI FROM local server -->
+    <link rel="stylesheet" type="text/css" href="js-i2b2/ui.styles/ui.styles.css">
+
+    <!-- Load Moment.js for parsing and formatting date/time -->
+    <script type="text/javascript" src="js-ext/moment.min.js"></script>
+    <link type="text/css" href="js-i2b2/cells/CRC/assets/query_report.css" rel="stylesheet" />
+
+
+    <!-- Graphics Libraries (only work in IE9 and above) -->
+    <!-- Load d3.js -->
+    <script type="text/javascript" src="js-ext/d3code/d3.v3.js"></script>
+    <!-- Load c3.js and stylesheet -->
+    <link href="js-ext/c3code/c3.css" rel="stylesheet" type="text/css">
+    <script src="js-ext/c3code/c3.js"></script>
+    <!-- Load jquery code and turn off $ -->
+    <link rel="stylesheet" type="text/css" href="assets/jquery.qtip.min.css" />
+
+
+    <!-- load i2b2 framework -->
+    <script type="text/javascript" src="js-i2b2/i2b2_loader.js"></script>
+    <script type="text/javascript" src="js-i2b2/i2b2_ui_config.js"></script>
+    <link type="text/css" href="assets/i2b2.css" rel="stylesheet" />
+    <link type="text/css" href="assets/i2b2-NEW.css" rel="stylesheet" />
+
+    <!-- other auxiliary javascript source files -->
+<!--     <script type="text/javascript" src="js-i2b2/hive/hive.ui.js"></script> -->
+    <script type="text/javascript">
+/****************************************************/
+/******************** INITIALIZE ********************/
+/****************************************************/
+
+/*
+// declare and obtain the dimension of the initial browser viewport and initialize screen width division
+var rightSideProportion = 0.65;                         
+var initBrowserViewPortDim = document.viewport.getDimensions();
+var rightSideWidth = initBrowserViewPortDim.width * rightSideProportion; 	// this component will take up 75% of the screen
+*/
+
+function initI2B2() 
+{
+/*
+	//debugOnScreen("index.html.initI2B2: browserViewPort = " + initBrowserViewPortDim.width + " " + initBrowserViewPortDim.height );
+	i2b2.events.afterCellInit.subscribe(
+		(function(en,co,a) {
+			var cellObj = co[0];
+			var cellCode = cellObj.cellCode;
+			switch (cellCode) {
+				case "PM":
+					// This i2b2 design implementation uses a prebuild login DIV we connect the Project Management cell to
+					// handle this method of login, the other method used for login is the PM Cell's built in floating
+					// modal dialog box to prompt for login credentials.  You can edit the look and feel of this dialog box
+					// by editing the CSS file.  You can remark out the lines below with no ill effect.  Use the following
+					// javascript function to display the modal login form: i2b2.hive.PM.doLoginDialog();
+					//cellObj.doConnectForm($('loginusr'),$('loginpass'),$('logindomain'), $('loginsubmit'));
+					i2b2.PM.doLoginDialog();
+					break;
+			}
+		})
+	);
+
+
+	i2b2.events.afterHiveInit.subscribe(
+		(function(ename) {
+			// Misc GUI actions that need to be done after loading
+			$('QPD1').style.background = '#FFFFFF';
+			$('queryBalloon1').style.display = 'block';
+		})
+	);
+
+	i2b2.events.afterLogin.subscribe(
+		(function() 
+		{
+			// after successful login hide the login box and display the application GUI
+			$('topBar').style.display = 'block';
+			$('screenQueryData').style.display = 'block';
+			var splitterName = 'main.splitter';			
+			
+			// update dimension values
+			initBrowserViewPortDim = document.viewport.getDimensions();
+			rightSideWidth = initBrowserViewPortDim.width * rightSideProportion; 	// this component will take up 60% of the screen
+
+			if (i2b2.PM.model.admin_only)
+			{
+				i2b2.hive.MasterView.setViewMode('Admin');
+				$('viewMode-Patients').style.display = 'none';
+				$('viewMode-Analysis').style.display = 'none';
+				if(typeof i2b2.PM.model.installer_path !== "undefined"){
+					$('adminPlugins').show();
+				}
+				// hide the splitter from view since we don't need it in admin-only mode
+				var splitter = $( splitterName );
+				splitter.style.visibility="hidden";
+			} 
+			else 
+			{
+				// create the splitter object only after login and not in admin-only mode
+				i2b2.hive.mySplitter = new Splitter(splitterName, {cont: 'screenQueryData'});
+				i2b2.hive.MasterView.initViewMode(); //tdw9
+				
+				jQuery('#pluginsMenu').qtip({
+					content: {
+						text: jQuery('#PluginListBox')
+					},
+					style: {
+						width:500
+					},
+					show: 'click',
+					position: {
+						my: 'top right',  // Position my top left...
+						at: 'bottom left', // at the bottom right of...
+					},
+					hide: 'unfocus click'
+
+				});
+				i2b2.PLUGINMGR.view.list.BuildCategories();
+				i2b2.PLUGINMGR.view.list.Render();
+				
+			}
+			$('viewMode-Project').innerHTML = "Project: " + i2b2.PM.model.login_projectname;
+			$('viewMode-User').innerHTML = "User: " + i2b2.PM.model.login_fullname;
+			$('viewMode-User').title = i2b2.PM.model.userRoles;
+			if (i2b2.PM.model.otherAuthMethod) { $('changePasswordLink').hide(); }
+			if (i2b2.PM.model.login_debugging) { $('debugMsgSniffer').show(); }
+			if(typeof i2b2.PM.model.installer_path !== "undefined"){
+				$('PluginGalleryFooter').show();
+			}
+			if (i2b2.PM.model.isAdmin){
+				$('PluginsGalleryLink').innerHTML = "Click here to install plugins from i2b2 Gallery...";
+			}
+		}), i2b2
+	);
+*/
+	// start the i2b2 framework
+	i2b2.Init();
+}
+
+
+$(document).ready(function() {
+    // ------------------------------------------------------
+    // put any pre-i2b2 initialization code here
+    // ------------------------------------------------------
+
+    // initialize the i2b2 framework
+    initI2B2();
+//    initI2B2_UI();
+})
+
+/********************************************************/
+/******************** JAVASCRIPT END ********************/
+/********************************************************/
+    </script>
+  </head>
+  <body class="">
+    <div class="pageMask" id="topMask" style="display:none;">&nbsp;</div>
+    <table border="0" cellspacing="0" cellpadding="0" width="100%" id="topBarTable">
+      <tr>
+      <td align="left" valign="middle"><img id="topBarTitle" border="0" alt="" /></td>
+      <td align="left" valign="middle"><div id="viewMode-Project"></div></td>
+      <td align="right" valign="middle"><div id="viewMode-User"></div></td>
+      <td align="right" valign="middle"><div id="topBar" style="display:none;">
+        <span id="viewMode-Patients"> <a href="Javascript:void(0)" onClick="i2b2.hive.MasterView.setViewMode('Patients');">Find Patients</a> &nbsp;|&nbsp; </span>
+        <span id="viewMode-Analysis"> <a href="Javascript:void(0)" onClick="i2b2.hive.MasterView.setViewMode('Analysis');">Analysis Tools</a> <a href="#" onclick="return false;" id="pluginsMenu"><img src="assets/images/p_dropdown.png" align="absbottom" border="0"/></a>&nbsp;|&nbsp; </span> <span id="adminPlugins" style="display:none"> <a href="#" onClick="invokeWCPinstaller();return false;" target="_blank">Install Plugins from i2b2 Gallery</a> &nbsp;|&nbsp; </span> <span id="debugMsgSniffer" style="display:none"> <a href="Javascript:void(0)" onClick="i2b2.hive.MsgSniffer.show();">Message Log</a> &nbsp;|&nbsp; </span> <a id="helpLink" href="Javascript:void(0)" onClick="i2b2.hive.HelpViewer.show();">Help</a> &nbsp;|&nbsp; <span id="changePasswordLink"><a id="helpLink" href="Javascript:void(0)" onClick="i2b2.PM.changePassword.show();">Change Password</a> &nbsp;|&nbsp;</span> <a href="Javascript:void(0);" onClick="i2b2.PM.doLogout();">Logout</a> </div></td>
+      </tr>
+    </table>
+
+</body>
+</html>

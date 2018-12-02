@@ -1,0 +1,70 @@
+{
+  "files": [
+    "CRC_sdx_QM.js",
+    "CRC_sdx_QI.js",
+    "CRC_sdx_PRC.js",
+    "CRC_sdx_PRS.js",
+    "CRC_sdx_ENS.js",
+    "CRC_sdx_PR.js",
+    "CRC_sdx_QDEF.js",
+    "CRC_sdx_QGDEF.js",
+    "CRC_view_History.js",
+    "CRC_ctrlr_History.js",
+    "CRC_view_QryTool.js",
+    "CRC_ctrlr_Options.js",
+    "i2b2_msgs.js"
+  ],
+  "preload": [
+    "assets/sdx_CRC_PDO.gif",
+    "assets/sdx_CRC_PR.jpg",
+    "assets/sdx_CRC_PRC.jpg",
+    "assets/sdx_CRC_PRS.gif",
+    "assets/sdx_CRC_PRS.jpg",
+    "assets/sdx_CRC_QDEF.jpg",
+    "assets/sdx_CRC_QGDEF.jpg",
+    "assets/sdx_CRC_QI.gif",
+    "assets/sdx_CRC_QM.gif",
+    "assets/sdx_CRC_QMT.gif"
+  ],
+  "files_updated": [{
+    "origName": "i2b2_msgs.js",
+    "newName": "i2b2_msgs-Ver1_3.js",
+    "versionLevel": 1.3
+  },
+    {
+      "origName": "CRC_sdx_QI.js",
+      "newName": "CRC_sdx_QI-Ver1_3.js",
+      "versionLevel": 1.3
+    }
+  ],
+  "css": ["main_list.css"],
+  "config": {
+    "name": "Data Repository",
+    "description": "The Data Repository cell stores all information that a user saves within the i2b2 Hive.",
+    "icons": {
+      "size32x32": "CRC_icon_32x32.gif"
+    },
+    "category": ["core", "cell"],
+    "paramTranslation": [{
+      "thinClientName": "sortBy",
+      "defaultValue": "DATE"
+    },
+      {
+        "thinClientName": "sortOrder",
+        "defaultValue": "DESC"
+      },
+      {
+        "thinClientName": "maxQueriesDisp",
+        "defaultValue": 20
+      },
+      {
+        "thinClientName": "maxChildren",
+        "defaultValue": 200
+      },
+      {
+        "thinClientName": "queryTimeout",
+        "defaultValue": 180
+      }
+    ]
+  }
+}

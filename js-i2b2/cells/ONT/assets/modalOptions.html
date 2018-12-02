@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div class="modal fade" id="ontOptionsModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Options for Navigating Terms</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form>
+                    <div class="input-group input-group-sm mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="ONTNAVMaxQryDisp-text">Maximum number of child terms to display </span>
+                        </div>
+                        <input type="text" id="ONTNAVMaxQryDisp" class="form-control" placeholder="200" aria-label="Max child terms" aria-describedby="ONTNAVMaxQryDisp-text">
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="ONTNAVshowHiddens">
+                        <label class="form-check-label" for="ONTNAVshowHiddens">Show Hidden Terms</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="ONTNAVshowSynonyms">
+                        <label class="form-check-label" for="ONTNAVshowSynonyms">Show Synonymous Terms</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="ONTNAVshowPatientCounts">
+                        <label class="form-check-label" for="ONTNAVshowPatientCounts">Enable Patient Counts</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="ONTNAVshowShortTooltips">
+                        <label class="form-check-label" for="ONTNAVshowShortTooltips">Use Short Tooltips</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="ONTNAVshowCodeTooltips">
+                        <label class="form-check-label" for="ONTNAVshowCodeTooltips">Show Concept Codes in Tooltips</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="ONTNAVdisableModifiers">
+                        <label class="form-check-label" for="ONTNAVdisableModifiers">Disable Modifiers</label>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary i2b2-save">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

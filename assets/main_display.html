@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!--
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://golden-layout.com/assets/js/goldenlayout.min.js"></script>
+    -->
+    <link type="text/css" rel="stylesheet" href="js-ext/goldenlayout/goldenlayout-base.css" />
+    <link type="text/css" rel="stylesheet" href="js-ext/goldenlayout/goldenlayout-light-theme.css" />
+    <style>
+        body {
+            margin:0;
+            padding:0;
+            background:url('assets/images/background.gif');
+            background-color:#D9ECF0;
+            overflow:hidden;
+        }
+        body, td, p {
+            font-family:arial,helvetica;
+            font-size:13px;
+            line-height:16px;
+        }
+        textarea {
+            margin:5px;
+            width:100px;
+            height:50px;
+        }
+        #top-bar {
+            height:33px;
+            padding:0px 20px 0px 10px;
+        }
+        #top-bar td {
+            color:#FFF;
+        }
+        #top-bar a {
+            color:#FFF;
+            text-decoration:none;
+        }
+        #top-bar a:hover {
+            text-decoration:underline;
+        }
+
+        .goldenLayout {
+            margin-right:10px;
+            margin-left:10px;
+            margin-bottom:0px;
+            position:absolute;
+            top:33px;
+            left:0px;
+            right:0px;
+            bottom:0px;
+        }
+
+        .lm_goldenlayout {
+            background: none;
+        }
+        .lm_splitter {
+            opacity:1;
+            background:#BCE;
+        }
+        .lm_splitter:hover,
+        .lm_splitter.lm_dragging {
+            opacity: 1;
+            background:#369;
+        }
+        .goldenLayoutCol .lm_splitter {
+            background:#369;
+            opacity: 0.001;
+            transition: opacity 200ms ease;
+        }
+        .goldenLayoutCol .lm_splitter:hover,
+        .goldenLayoutCol .lm_splitter.lm_dragging {
+            background:#369;
+            opacity: 1;
+        }
+
+        .lm_content {
+            background:none;
+            border:none;
+        }
+        .lm_header {
+            height:26px;
+        }
+        .lm_maximised .lm_header {
+            background-color:#98b4d9;
+            xbackground:transparent;
+        }
+        .goldenLayoutCol .lm_content {
+            background:#BCE;
+            border:1px solid #678;
+        }
+        .goldenLayoutCol {
+            position:absolute;
+            top:10px;
+            bottom:12px;
+            left:0px;
+            right:5px;
+        }
+        .goldenLayoutCol .lm_controls {
+            top:5px;
+            padding-right:5px;
+        }
+        .goldenLayoutCol .lm_maximise {
+            margin-left:5px;
+            opacity:1;
+            background-image:url('https://www.i2b2.org/webclient/js-i2b2/cells/ONT/assets/zoom_icon.gif');
+        }
+        .goldenLayoutCol .lm_maximised .lm_controls .lm_maximise {
+            background-image:url('https://www.i2b2.org/webclient/js-i2b2/cells/ONT/assets/zoom_icon.gif');
+        }
+        .goldenLayoutCol .lm_tab {
+            background:#BCE;
+            border: 1px solid #678;
+            padding:5px 10px 4px 10px;
+            margin-right:6px;
+            height:15px;
+        }
+        .goldenLayoutCol .lm_tab.lm_active {
+            box-shadow:none;
+            padding-left:5px;
+            padding-right:5px;
+        }
+        .goldenLayoutCol .lm_tab .lm_title {
+            xcolor:#039;
+            color:#458;
+            font-weight:bold;
+        }
+        .goldenLayoutCol .lm_tab.lm_active .lm_title {
+            color:#FFF;
+            background:#67A;
+            border:1px solid #678;
+            padding:1px 4px;
+        }
+        .cellWhite {
+            position:absolute;
+            background:#FFF;
+            top:5px;
+            bottom:5px;
+            left:5px;
+            right:5px;
+            border:1px solid #678;
+            overflow:auto;
+        }
+        .cellBlue {
+            position:absolute;
+            xbackground:#FFF;
+            top:0px;
+            bottom:0px;
+            left:0px;
+            right:0px;
+            xborder:1px solid #678;
+            overflow:hidden;
+        }
+        #goldenLayoutId2 {
+            position:absolute;
+            top:43px;
+            left:0px;
+            right:5px;
+            bottom:12px;
+            z-index:100;
+            display:none;
+        }
+
+    </style>
+    <script>
+
+
+
+
+/*
+
+        //////////////////////////////////////////
+        // Handle Analysis Tools (Plugin Viewer)
+        //////////////////////////////////////////
+
+        var glFindPatientsColumn;
+        var glAnalysisToolsColumn;
+        var glColumn='FindPatients';
+        var glMaximisedItem;
+
+        function toggleFullZoomDisplay() {
+            if (document.getElementById('goldenLayoutId1').style.display == 'none') {
+                document.getElementById('goldenLayoutId2').style.display='none';
+                document.getElementById('goldenLayoutId1').style.display='block';
+            } else {
+                document.getElementById('goldenLayoutId1').style.display='none';
+                document.getElementById('goldenLayoutId2').style.display='block';
+            }
+        }
+
+        function showAnalysisTools() {
+            if (glColumn!='AnalysisTools') {
+                if (myLayout3._maximisedItem) {
+                    glMaximisedItem = myLayout3._maximisedItem;
+                    glMaximisedItem.toggleMaximise();
+                    //glMaximisedItem.header.controlsContainer.find('.lm_maximise').click();
+                } else {
+                    glMaximisedItem = null;
+                }
+                myLayout3.root.removeChild(glFindPatientsColumn,true);
+                glFindPatientsColumn.element.hide();
+                if (glAnalysisToolsColumn) {
+                    glAnalysisToolsColumn.element.show();
+                    myLayout3.root.addChild(glAnalysisToolsColumn);
+                } else {
+                    myLayout3.root.addChild(glAnalysisToolsConfig);
+                    glAnalysisToolsColumn = myLayout3.root.contentItems[0];
+                    glAnalysisToolsColumn.contentItems[0].header.controlsContainer
+                        .find('.lm_maximise')
+                        .off('click')
+                        .click(function(){
+                            if (myLayout4.root.contentItems.length>0) {
+                                myLayout4.root.removeChild(glAnalysisToolsColumn,true);
+                                myLayout3.root.addChild(glAnalysisToolsColumn);
+                            } else {
+                                myLayout3.root.removeChild(glAnalysisToolsColumn,true);
+                                myLayout4.root.addChild(glAnalysisToolsColumn);
+                            }
+                            toggleFullZoomDisplay();
+                            newSize();
+                        });
+                }
+                myLayout3.updateSize();
+                glColumn='AnalysisTools';
+                newSize();
+            }
+        }
+
+        function showFindPatients() {
+            if (glColumn!='FindPatients') {
+                if (myLayout4.root.contentItems.length>0) {
+                    myLayout4.root.removeChild(glAnalysisToolsColumn,true);
+                    toggleFullZoomDisplay();
+                } else {
+                    myLayout3.root.removeChild(glAnalysisToolsColumn,true);
+                }
+                glAnalysisToolsColumn.element.hide();
+                glFindPatientsColumn.element.show();
+                myLayout3.root.addChild(glFindPatientsColumn);
+                myLayout3.updateSize();
+                glColumn='FindPatients';
+                newSize();
+                if (glMaximisedItem) {
+                    glMaximisedItem.toggleMaximise();
+                }
+            }
+        }
+
+        // Handle window resize
+
+        function newSize() {
+            myLayout.updateSize();
+            var y = myLayout.root.getItemsById("col1c")[0].container.height;
+            var w1 = myLayout.root.getItemsById("col1c")[0].container.width;
+            var w2 = myLayout.root.getItemsById("col2c")[0].container.width;
+            myLayout2.updateSize(w1-5,y-22);
+            myLayout3.updateSize(w2-8,y-22);
+            if (myLayout4.root) {myLayout4.updateSize();}
+        }
+
+        $(window).resize(function() {
+            newSize();
+        });
+
+
+        // testing
+
+        function myClick() {
+        }
+
+        function myClick2() {
+        }
+
+        var qq;
+*/
+    </script>
+</head>
+<body>
+<div id="top-bar">
+    <table border="0" cellspacing="0" cellpadding="0" width="100%" id="topBarTable">
+        <tr>
+            <td align="left" valign="middle"><img src="https://www.i2b2.org/webclient/assets/images/title.gif" border="0" alt="" /></td>
+            <td align="right" valign="middle">
+                <a href="Javascript:void(0)" onClick="showFindPatients();">Find Patients</a>
+                &nbsp;|&nbsp;
+                <a href="Javascript:void(0);" onClick="showAnalysisTools();">Analysis Tools</a>
+                &nbsp;|&nbsp;
+                <a href="Javascript:void(0);" onClick="myClick();">Message Log</a>
+                &nbsp;|&nbsp;
+                <a href="Javascript:void(0);" onClick="myClick2();">Help</a>
+                &nbsp;|&nbsp;
+                <a href="Javascript:void(0);" onClick="">Logout</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="goldenLayout" id="goldenLayoutId1"></div>
+<div class="goldenLayout goldenLayoutCol" id="goldenLayoutId2"></div>
+</body>
+</html>
