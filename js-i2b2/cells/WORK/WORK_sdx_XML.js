@@ -111,57 +111,6 @@ i2b2.sdx.TypeControllers.XML.RenderHTML= function(sdxData, options, targetDiv) {
 }
 
 
-// *********************************************************************************
-//	HANDLE HOVER OVER TARGET ENTRY (DEFAULT HANDLER)
-// *********************************************************************************
-i2b2.sdx.TypeControllers.XML.onHoverOver = function(e, id, ddProxy) {    
-	var el = $(id);	
-	if (el) { Element.addClassName(el,'ddXMLTarget'); }
-}
-
-
-// *********************************************************************************
-//	HANDLE HOVER OVER TARGET EXIT (DEFAULT HANDLER)
-// *********************************************************************************
-i2b2.sdx.TypeControllers.XML.onHoverOut = function(e, id, ddProxy) { 
-	var el = $(id);	
-	if (el) { Element.removeClassName(el,'ddXMLTarget'); }
-}
-
-
-// *********************************************************************************
-//	ADD DATA TO TREENODE (DEFAULT HANDLER)
-// *********************************************************************************
-i2b2.sdx.TypeControllers.XML.AppendTreeNode = function(yuiTree, yuiRootNode, sdxDataPack, callbackLoader) {
-	var myobj = { html: sdxDataPack.renderData.html, nodeid: sdxDataPack.renderData.htmlID}
-	var tmpNode = new YAHOO.widget.HTMLNode(myobj, yuiRootNode, false, true);
-	if (sdxDataPack.renderData.canExpand && !Object.isUndefined(callbackLoader)) {
-		// add the callback to load child nodes
-		sdxDataPack.sdxInfo.sdxLoadChildren = callbackLoader;
-	}
-	tmpNode.data.i2b2_SDX= sdxDataPack;
-	tmpNode.toggle = function() {
-		if (!this.tree.locked && ( this.hasChildren(true) ) ) {
-			var data = this.data.i2b2_SDX.renderData;
-			var img = this.getContentEl();
-			img = Element.select(img,'img')[0];
-			if (this.expanded) { 
-				img.src = data.icon;
-				this.collapse(); 
-			} else { 
-				img.src = data.iconExp;
-				this.expand(); 
-			}
-		}
-	};
-	if (!sdxDataPack.renderData.canExpand) { tmpNode.dynamicLoadComplete = true; }
-	return tmpNode;
-}
-
-
-i2b2.sdx.TypeControllers.XML.SaveToDataModel = function(sdxData) { return undefined; }
-i2b2.sdx.TypeControllers.XML.LoadFromDataModel = function(key_value) { return undefined; }
-i2b2.sdx.TypeControllers.XML.ClearAllFromDataModel= function(sdxOptionalParent) { return true; }
 i2b2.sdx.TypeControllers.XML.getChildRecords = function(sdxParentNode, onCompleteCallback) {
 	var retMsg = {
 		error: true,
@@ -176,48 +125,6 @@ i2b2.sdx.TypeControllers.XML.getChildRecords = function(sdxParentNode, onComplet
 		onCompleteCallback(retMsg);
 	}
 }
-
-
-// *********************************************************************************
-//	ATTACH DRAG TO DATA (DEFAULT HANDLER)
-// *********************************************************************************
-i2b2.sdx.TypeControllers.XML.AttachDrag2Data = function(divParentID, divDataID){
-	if (Object.isUndefined($(divDataID))) {	return false; }
-	
-	// get the i2b2 data from the yuiTree node
-	var tvTree = YAHOO.widget.TreeView.getTree(divParentID);
-	var tvNode = tvTree.getNodeByProperty('nodeid', divDataID);
-	if (!Object.isUndefined(tvNode.DDProxy)) { return true; }
-	
-	// attach DD
-	var t = new i2b2.sdx.TypeControllers.XML.DragDrop(divDataID)
-	t.yuiTree = tvTree;
-	t.yuiTreeNode = tvNode;
-	tvNode.DDProxy = t;
-	
-	// clear the mouseover attachment function
-	var tdn = $(divDataID);
-	if (!Object.isUndefined(tdn.onmouseover)) { 
-		try {
-			delete tdn.onmouseover; 
-		} catch(e) {
-			tdn.onmouseover; 
-		}
-	}
-	if (!Object.isUndefined(tdn.attributes)) {
-		for (var i=0;i<tdn.attributes.length; i++) {
-			if (tdn.attributes[i].name=="onmouseover") { 
-				try {
-					delete tdn.onmouseover; 
-				} catch(e) {
-					tdn.onmouseover; 
-				}
-			}
-		}
-	}
-}
-
-
 
 
 // *********************************************************************************
@@ -237,71 +144,7 @@ i2b2.sdx.TypeControllers.XML.DragDrop = function(id, config) {
 	s.textOverflow = "ellipsis";
 };
 
-/* TODO: Reimplement drag and drop
-YAHOO.extend(i2b2.sdx.TypeControllers.XML.DragDrop, YAHOO.util.DDProxy);
-i2b2.sdx.TypeControllers.XML.DragDrop.prototype.startDrag = function(x, y) {
-	var dragEl = this.getDragEl();
-	var clickEl = this.getEl();
-	dragEl.innerHTML = clickEl.innerHTML;
-	dragEl.className = clickEl.className;
-	dragEl.style.backgroundColor = '#FFFFEE';
-	dragEl.style.color = clickEl.style.color;
-	dragEl.style.border = "1px solid blue";
-	dragEl.style.width = "160px";
-	dragEl.style.height = "20px";
-	this.setDelta(15,10);
-};
-i2b2.sdx.TypeControllers.XML.DragDrop.prototype.endDrag = function(e, sdxType) {
-	// remove DragDrop targeting CCS
-	var targets = YAHOO.util.DDM.getRelated(this, true); 
-	for (var i=0; i<targets.length; i++) {      
-		var targetEl = targets[i]._domRef;
-		i2b2.sdx.Master.onHoverOut('XML', e, targetEl, this);
-	} 
-};
-i2b2.sdx.TypeControllers.XML.DragDrop.prototype.alignElWithMouse = function(el, iPageX, iPageY) {
-	var oCoord = this.getTargetCoord(iPageX, iPageY);
-	if (!this.deltaSetXY) {
-		var aCoord = [oCoord.x, oCoord.y];
-		YAHOO.util.Dom.setXY(el, aCoord);
-		var newLeft = parseInt( YAHOO.util.Dom.getStyle(el, "left"), 10 );
-		var newTop  = parseInt( YAHOO.util.Dom.getStyle(el, "top" ), 10 );
-		this.deltaSetXY = [ newLeft - oCoord.x, newTop - oCoord.y ];
-	} else {
-		var posX = (oCoord.x + this.deltaSetXY[0]);
-		var posY = (oCoord.y + this.deltaSetXY[1]);
-		//var scrSize = document.viewport.getDimensions();
-		
-	    var w =  window.innerWidth || (window.document.documentElement.clientWidth || window.document.body.clientWidth);
-	    var h =  window.innerHeight || (window.document.documentElement.clientHeight || window.document.body.clientHeight);
-
-		var maxX = parseInt(w-25-160);
-		var maxY = parseInt(h-25);
-		if (posX > maxX) {posX = maxX;}
-		if (posX < 6) {posX = 6;}
-		if (posY > maxY) {posY = maxY;}
-		if (posY < 6) {posY = 6;}
-		YAHOO.util.Dom.setStyle(el, "left", posX + "px");
-		YAHOO.util.Dom.setStyle(el, "top",  posY + "px");
-	}
-	this.cachePosition(oCoord.x, oCoord.y);
-	this.autoScroll(oCoord.x, oCoord.y, el.offsetHeight, el.offsetWidth);
-};
-i2b2.sdx.TypeControllers.XML.DragDrop.prototype.onDragOver = function(e, id) {
-	// fire the onHoverOver (use SDX so targets can override default event handler)
-	i2b2.sdx.Master.onHoverOver('XML', e, id, this);
-};
-i2b2.sdx.TypeControllers.XML.DragDrop.prototype.onDragOut = function(e, id) {
-	// fire the onHoverOut handler (use SDX so targets can override default event handlers)
-	i2b2.sdx.Master.onHoverOut('XML', e, id, this);
-};
-i2b2.sdx.TypeControllers.XML.DragDrop.prototype.onDragDrop = function(e, id) {
-	i2b2.sdx.Master.onHoverOut('XML', e, id, this);
-	// retreive the concept data from the dragged element
-	draggedData = this.yuiTreeNode.data.i2b2_SDX;
-	i2b2.sdx.Master.ProcessDrop(draggedData, id);
-};
-*/
+/* TODO: Reimplement drag and drop */
 
 
 // *********************************************************************************
@@ -323,6 +166,17 @@ i2b2.sdx.TypeControllers.XML.dragStartHandler = function(i2b2Data) {
     }
     return i2b2Data;
 };
+
+// *********************************************************************************
+//	DEPRECATED FUNCTIONS
+// *********************************************************************************
+i2b2.sdx.TypeControllers.XML.AppendTreeNode = function() { console.error("[i2b2.sdx.TypeControllers.XML.AppendTreeNode] is deprecated!"); }
+i2b2.sdx.TypeControllers.XML.SaveToDataModel = function() { console.error("[i2b2.sdx.TypeControllers.XML.SaveToDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.XML.LoadFromDataModel = function() { console.error("[i2b2.sdx.TypeControllers.XML.LoadFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.XML.ClearAllFromDataModel= function() { console.error("[i2b2.sdx.TypeControllers.XML.ClearAllFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.XML.onHoverOver = function() { console.error("[i2b2.sdx.TypeControllers.XML.onHoverOver] is deprecated!"); }
+i2b2.sdx.TypeControllers.XML.onHoverOut = function() { console.error("[i2b2.sdx.TypeControllers.XML.onHoverOut] is deprecated!"); }
+i2b2.sdx.TypeControllers.XML.AttachDrag2Data = function() { console.error("[i2b2.sdx.TypeControllers.XML.AttachDrag2Data] is deprecated!"); }
 
 
 console.timeEnd('execute time');

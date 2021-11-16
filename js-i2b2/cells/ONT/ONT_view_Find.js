@@ -72,20 +72,19 @@ i2b2.ONT.view.find.showOptions = function(subScreen) {
 
 
 // ================================================================================================== //
-i2b2.ONT.view.find.showView = function() {
-	$('tabFind').addClassName('active');
-	$('ontFindDisp').style.display = 'block';
+i2b2.ONT.view.find.showView = function() { console.error("[i2b2.ONT.view.find.showView] is deprecated!"); }
+i2b2.ONT.view.find.hideView = function() { console.error("[i2b2.ONT.view.find.hideView] is deprecated!"); }
+i2b2.ONT.view.find.ResizeHeight = function() { console.error("[i2b2.ONT.view.find.ResizeHeight] is deprecated!"); }
+i2b2.ONT.view.find.Resize = function(e) {
+    console.error("[i2b2.ONT.view.find.Resize] is deprecated!");
+    // this function provides the resize functionality needed for this screen
+    /*
+     i2b2.ONT.view['find'].params.synonyms = $('ONTFINDshowSynonyms').checked;
+     i2b2.ONT.view['find'].params.hiddens = $('ONTFINDshowHiddens').checked;
+     */
 }
-
-// ================================================================================================== //
-i2b2.ONT.view.find.hideView = function() {
-	$('tabFind').removeClassName('active');
-	$('ontFindDisp').style.display = 'none';
-}
-
-// ================================================================================================== //
-i2b2.ONT.view.find.selectSubTab = function(tabCode) {
-	// toggle between the Navigate and Find Terms tabs
+i2b2.ONT.view.find.selectSubTab = function(tabCode) { console.error("[i2b2.ONT.view.find.selectSubTab] is deprecated!"); }
+/*	// toggle between the Navigate and Find Terms tabs
 	switch (tabCode) {
 		case "names":
 			this.currentTab = 'names';
@@ -111,6 +110,7 @@ i2b2.ONT.view.find.selectSubTab = function(tabCode) {
 		break;
 	}
 }
+*/
 
 // ================================================================================================== //
 i2b2.ONT.view.find.PopulateCategories = function() {		
@@ -169,138 +169,9 @@ i2b2.ONT.view.find.PopulateSchemes = function() {
 	}
 }
 
-// ================================================================================================== //
-i2b2.ONT.view.find.Resize = function(e) {
-	// this function provides the resize functionality needed for this screen
-	i2b2.ONT.view['find'].params.synonyms = $('ONTFINDshowSynonyms').checked;
-    i2b2.ONT.view['find'].params.hiddens = $('ONTFINDshowHiddens').checked;	
-
-    var viewObj = i2b2.ONT.view.main;
-	//var ds = document.viewport.getDimensions();
-    var w =  window.innerWidth || (window.document.documentElement.clientWidth || window.document.body.clientWidth);
-    var h =  window.innerHeight || (window.document.documentElement.clientHeight || window.document.body.clientHeight);
-	if (w < 840) {w = 840;}
-	if (h < 517) {h = 517;}
-	switch(i2b2.hive.MasterView.getViewMode()) {
-		case "Patients":
-			if (i2b2.WORK && i2b2.WORK.isLoaded) {
-				var z = parseInt((h - 321)/2)-57;
-			} else {
-				var z = h-362;
-			}
-			break;
-		case "Analysis":
-			if (i2b2.WORK && i2b2.WORK.isLoaded) {
-				var z = parseInt((h - 321)/2)-57;
-			} else {
-				var z = h-362;
-			}
-			break;
-		default:
-			break;
-	}
-	if (z) {
-		if (i2b2.ONT.view.main.isZoomed) { z = h-166; }
-		$('ontSearchNamesResults').style.height = z;
-		$('ontSearchCodesResults').style.height = z;
-		$('ontSearchModifiersResults').style.height = z + 45;
-		if (i2b2.ONT.view.find.modifier) 
-		{ 
-			if (this.currentTab == 'names') 
-			{
-				if (i2b2.ONT.view.main.isZoomed)
-					$('ontSearchNamesResults').style.height = h-446;
-				else 
-					$('ontSearchNamesResults').style.height = 10;				
-			} 
-			else 
-			{			
-				if (i2b2.ONT.view.main.isZoomed)
-					$('ontSearchCodesResults').style.height = h-446;
-				else 
-					$('ontSearchCodesResults').style.height = 10;				
-			}
-			//$('wrkWorkplace').hide();
-			$('ontFindFrameModifier').show();
-			$('ontSearchModifiersResults').show();		
-		} 
-		else 
-		{
-			//$('wrkWorkplace').show();
-			$('ontFindFrameModifier').hide();
-			$('ontSearchModifiersResults').hide();					
-		}		
-	}
-	$('ontFindFrameName').style.height = 44; //h-355
-	$('ontFindFrameCode').style.height = 44; //h-355
-}
-
-// ================================================================================================== //
-//console.info("SUBSCRIBED TO [window.resize]"); // tdw9
-//YAHOO.util.Event.addListener(window, "resize", i2b2.ONT.view.find.Resize, i2b2); // tdw9
 
 
-//================================================================================================== //
-i2b2.ONT.view.find.ResizeHeight = function() {
-	// this function provides the resize functionality needed for this screen
-	var viewObj = i2b2.ONT.view.main;
-	//var ds = document.viewport.getDimensions();
-    var h =  window.innerHeight || (window.document.documentElement.clientHeight || window.document.body.clientHeight);
-	if (h < 517) {h = 517;}
-	switch(i2b2.hive.MasterView.getViewMode()) {
-		case "Patients":
-			if (i2b2.WORK && i2b2.WORK.isLoaded) {
-				var z = parseInt((h - 321)/2)-57;
-			} else {
-				var z = h-362;
-			}
-			break;
-		case "Analysis":
-			if (i2b2.WORK && i2b2.WORK.isLoaded) {
-				var z = parseInt((h - 321)/2)-57;
-			} else {
-				var z = h-362;
-			}
-			break;
-		default:
-			break;
-	}
-	if (z) 
-	{
-		if (i2b2.ONT.view.main.isZoomed) { z = h-166; }
-		$('ontSearchNamesResults').style.height = z;
-		$('ontSearchCodesResults').style.height = z;
-		$('ontSearchModifiersResults').style.height = z + 45;
-		if (i2b2.ONT.view.find.modifier) 
-		{ 
-			if (this.currentTab == 'names') 
-			{
-				if (i2b2.ONT.view.main.isZoomed)
-					$('ontSearchNamesResults').style.height = h-446;
-				else 
-					$('ontSearchNamesResults').style.height = 10;				
-			} 
-			else 
-			{			
-				if (i2b2.ONT.view.main.isZoomed)
-					$('ontSearchCodesResults').style.height = h-446;
-				else 
-					$('ontSearchCodesResults').style.height = 10;				
-			}
-			//$('wrkWorkplace').hide();
-			$('ontFindFrameModifier').show();
-			$('ontSearchModifiersResults').show();		
-		} 
-		else 
-		{
-			//$('wrkWorkplace').show();
-			$('ontFindFrameModifier').hide();
-			$('ontSearchModifiersResults').hide();					
-		}		
-	}
-	$('ontFindFrameName').style.height = 44; //h-355
-	$('ontFindFrameCode').style.height = 44; //h-355
-}
+
 
 
 

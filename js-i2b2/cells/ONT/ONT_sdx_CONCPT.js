@@ -208,9 +208,10 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 };
 
 // *********************************************************************************
-//	GENERATE HTML (DEFAULT HANDLER)
+//	GENERATE HTML (For Backwards compatibility)
 // *********************************************************************************
 i2b2.sdx.TypeControllers.CONCPT.RenderHTML= function(sdxData, options, targetDiv) {
+    console.warn("[i2b2.sdx.TypeControllers.CONCPT.RenderHTML] is deprecated!");
 	// OPTIONS:
 	//	title: string
 	//	showchildren: true | false
@@ -391,19 +392,12 @@ i2b2.sdx.TypeControllers.CONCPT.RenderHTML= function(sdxData, options, targetDiv
 	return { renderData: render, origData: sdxData.origData, sdxInfo: sdxData.sdxInfo };
 }
 
-
-// *********************************************************************************
-//	HANDLE HOVER OVER TARGET ENTRY (DEFAULT HANDLER)
-// *********************************************************************************
-i2b2.sdx.TypeControllers.CONCPT.onHoverOver = function(e, id, ddProxy) {}
-i2b2.sdx.TypeControllers.CONCPT.onHoverOut = function(e, id, ddProxy) {}
-i2b2.sdx.TypeControllers.CONCPT.AppendTreeNode = function(yuiTree, yuiRootNode, sdxDataPack, callbackLoader) {}
-
-
 // *********************************************************************************
 //	GET CHILD RECORDS (DEFAULT HANDELER)
 // *********************************************************************************
 i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview = function(node, onCompleteCallback) {
+    console.error("[i2b2.sdx.TypeControlers.CONCPT.LoadChildrenFromTreeview] is depricated!");
+//    return false;
     var cb_concepts = (function() {
         var cl_node = node;
         var cb_final = onCompleteCallback;
@@ -818,14 +812,6 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
 };
 
 
-// *********************************************************************************
-//	ATTACH DRAG TO DATA (DEFAULT HANDLER)
-// *********************************************************************************
-i2b2.sdx.TypeControllers.CONCPT.AttachDrag2Data = function(divParentID, divDataID){};
-// *********************************************************************************
-//	DRAG DROP PROXY CONTROLLER
-// *********************************************************************************
-i2b2.sdx.TypeControllers.CONCPT.DragDrop = function(id, config) {};
 
 // *********************************************************************************
 //	<BLANK> DROP HANDLER 
@@ -843,7 +829,16 @@ i2b2.sdx.TypeControllers.CONCPT.dragStartHandler = function(i2b2Data) {
     return i2b2Data;
 };
 
-
+// *********************************************************************************
+//	DEPRECATED FUNCTIONS
+// *********************************************************************************
+i2b2.sdx.TypeControllers.CONCPT.AppendTreeNode = function() { console.error("[i2b2.sdx.TypeControllers.CONCPT.AppendTreeNode] is deprecated!"); }
+i2b2.sdx.TypeControllers.CONCPT.SaveToDataModel = function() { console.error("[i2b2.sdx.TypeControllers.CONCPT.SaveToDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.CONCPT.LoadFromDataModel = function() { console.error("[i2b2.sdx.TypeControllers.CONCPT.LoadFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.CONCPT.ClearAllFromDataModel= function() { console.error("[i2b2.sdx.TypeControllers.CONCPT.ClearAllFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.CONCPT.onHoverOver = function() { console.error("[i2b2.sdx.TypeControllers.CONCPT.onHoverOver] is deprecated!"); }
+i2b2.sdx.TypeControllers.CONCPT.onHoverOut = function() { console.error("[i2b2.sdx.TypeControllers.CONCPT.onHoverOut] is deprecated!"); }
+i2b2.sdx.TypeControllers.CONCPT.AttachDrag2Data = function() { console.error("[i2b2.sdx.TypeControllers.CONCPT.AttachDrag2Data] is deprecated!"); }
 
 console.timeEnd('execute time');
 console.groupEnd();

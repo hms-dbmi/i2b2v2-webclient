@@ -22,22 +22,11 @@ i2b2.sdx.TypeControllers.QDEF.getEncapsulateInfo = function() {
 	return {sdxType: 'QDEF', sdxKeyName: 'key', sdxControlCell:'CRC', sdxDisplayNameKey: 'QDEF_name'};
 }
 
-
-// *********************************************************************************
-//	DEPRECATED FUNCTIONS
-// *********************************************************************************
-i2b2.sdx.TypeControllers.QDEF.AppendTreeNode = function(yuiTree, yuiRootNode, sdxDataPack, callbackLoader) {}
-i2b2.sdx.TypeControllers.QDEF.SaveToDataModel = function(sdxData, sdxParentNode) { return undefined;}
-i2b2.sdx.TypeControllers.QDEF.LoadFromDataModel = function(key_value) {}
-i2b2.sdx.TypeControllers.QDEF.ClearAllFromDataModel= function(sdxOptionalParent) { return true; }
-i2b2.sdx.TypeControllers.QDEF.onHoverOver = function(e, id, ddProxy) {}
-i2b2.sdx.TypeControllers.QDEF.onHoverOut = function(e, id, ddProxy) {}
-
-
 // *********************************************************************************
 //	GENERATE HTML (DEFAULT HANDLER)
 // *********************************************************************************
 i2b2.sdx.TypeControllers.QDEF.RenderHTML= function(sdxData, options, targetDiv) {
+    console.warn("[i2b2.sdx.TypeControllers.QDEF.RenderHTML] is deprecated!");
 	// OPTIONS:
 	//	title: string
 	//	showchildren: true | false
@@ -151,87 +140,8 @@ i2b2.sdx.TypeControllers.QDEF.AttachDrag2Data = function(divParentID, divDataID)
 
 
 
-// *********************************************************************************
-//	DRAG DROP PROXY CONTROLLER
-// *********************************************************************************
-i2b2.sdx.TypeControllers.QDEF.DragDrop = function(id, config) {
-	if (id) {
-		this.init(id, 'QDEF',{isTarget:false});
-		this.initFrame();
-	}
-	var s = this.getDragEl().style;
-	s.borderColor = "transparent";
-	s.opacity = 0.75;
-	s.filter = "alpha(opacity=75)";
-	s.whiteSpace = "nowrap";
-	s.overflow = "hidden";
-	s.textOverflow = "ellipsis";
-};
 
-/* TODO: Reimplement drag and drop
-YAHOO.extend(i2b2.sdx.TypeControllers.QDEF.DragDrop, YAHOO.util.DDProxy);
-i2b2.sdx.TypeControllers.QDEF.DragDrop.prototype.startDrag = function(x, y) {
-	var dragEl = this.getDragEl();
-	var clickEl = this.getEl();
-	dragEl.innerHTML = clickEl.innerHTML;
-	dragEl.className = clickEl.className;
-	dragEl.style.backgroundColor = '#FFFFEE';
-	dragEl.style.color = clickEl.style.color;
-	dragEl.style.border = "1px solid blue";
-	dragEl.style.width = "160px";
-	dragEl.style.height = "20px";
-	this.setDelta(15,10);
-};
-i2b2.sdx.TypeControllers.QDEF.DragDrop.prototype.endDrag = function(e) {
-	// remove DragDrop targeting CCS
-	var targets = YAHOO.util.DDM.getRelated(this, true); 
-	for (var i=0; i<targets.length; i++) {      
-		var targetEl = targets[i]._domRef; 
-		i2b2.sdx.Master.onHoverOut('QDEF', e, targetEl, this);
-	} 
-};
-i2b2.sdx.TypeControllers.QDEF.DragDrop.prototype.alignElWithMouse = function(el, iPageX, iPageY) {
-	var oCoord = this.getTargetCoord(iPageX, iPageY);
-	if (!this.deltaSetXY) {
-		var aCoord = [oCoord.x, oCoord.y];
-		YAHOO.util.Dom.setXY(el, aCoord);
-		var newLeft = parseInt( YAHOO.util.Dom.getStyle(el, "left"), 10 );
-		var newTop  = parseInt( YAHOO.util.Dom.getStyle(el, "top" ), 10 );
-		this.deltaSetXY = [ newLeft - oCoord.x, newTop - oCoord.y ];
-	} else {
-		var posX = (oCoord.x + this.deltaSetXY[0]);
-		var posY = (oCoord.y + this.deltaSetXY[1]);
-//		var scrSize = document.viewport.getDimensions();
-	    var w =  window.innerWidth || (window.document.documentElement.clientWidth || window.document.body.clientWidth);
-	    var h =  window.innerHeight || (window.document.documentElement.clientHeight || window.document.body.clientHeight);
-
-		var maxX = parseInt(w-25-160);
-		var maxY = parseInt(h-25);
-		if (posX > maxX) {posX = maxX;}
-		if (posX < 6) {posX = 6;}
-		if (posY > maxY) {posY = maxY;}
-		if (posY < 6) {posY = 6;}
-		YAHOO.util.Dom.setStyle(el, "left", posX + "px");
-		YAHOO.util.Dom.setStyle(el, "top",  posY + "px");
-	}
-	this.cachePosition(oCoord.x, oCoord.y);
-	this.autoScroll(oCoord.x, oCoord.y, el.offsetHeight, el.offsetWidth);
-};
-i2b2.sdx.TypeControllers.QDEF.DragDrop.prototype.onDragOver = function(e, id) {
-	// fire the onHoverOver (use SDX so targets can override default event handler)
-	i2b2.sdx.Master.onHoverOver('QDEF', e, id, this);
-};
-i2b2.sdx.TypeControllers.QDEF.DragDrop.prototype.onDragOut = function(e, id) {
-	// fire the onHoverOut handler (use SDX so targets can override default event handlers)
-	i2b2.sdx.Master.onHoverOut('QDEF', e, id, this);
-};
-i2b2.sdx.TypeControllers.QDEF.DragDrop.prototype.onDragDrop = function(e, id) {
-	i2b2.sdx.Master.onHoverOut('QDEF', e, id, this);
-	// retreive the concept data from the dragged element
-	draggedData = this.yuiTreeNode.data.i2b2_SDX;
-	i2b2.sdx.Master.ProcessDrop(draggedData, id);
-};
-*/
+/* TODO: Reimplement drag and drop */
 
 
 // *********************************************************************************
@@ -250,6 +160,16 @@ i2b2.sdx.TypeControllers.QDEF.dragStartHandler = function(i2b2Data) {
     return i2b2Data;
 };
 
+// *********************************************************************************
+//	DEPRECATED FUNCTIONS
+// *********************************************************************************
+i2b2.sdx.TypeControllers.QDEF.AppendTreeNode = function() { console.error("[i2b2.sdx.TypeControllers.QDEF.AppendTreeNode] is deprecated!"); }
+i2b2.sdx.TypeControllers.QDEF.SaveToDataModel = function() { console.error("[i2b2.sdx.TypeControllers.QDEF.SaveToDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.QDEF.LoadFromDataModel = function() { console.error("[i2b2.sdx.TypeControllers.QDEF.LoadFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.QDEF.ClearAllFromDataModel= function() { console.error("[i2b2.sdx.TypeControllers.QDEF.ClearAllFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.QDEF.onHoverOver = function() { console.error("[i2b2.sdx.TypeControllers.QDEF.onHoverOver] is deprecated!"); }
+i2b2.sdx.TypeControllers.QDEF.onHoverOut = function() { console.error("[i2b2.sdx.TypeControllers.QDEF.onHoverOut] is deprecated!"); }
+i2b2.sdx.TypeControllers.QDEF.AttachDrag2Data = function() { console.error("[i2b2.sdx.TypeControllers.QDEF.AttachDrag2Data] is deprecated!"); }
 
 console.timeEnd('execute time');
 console.groupEnd();

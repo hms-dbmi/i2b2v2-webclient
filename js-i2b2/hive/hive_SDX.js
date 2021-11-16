@@ -65,20 +65,19 @@ i2b2.sdx.Master._KeyHash = function(key) {
 
 
 // ================================================================================================== //
-i2b2.sdx.Master.ClearAll = function(type, sdxParentOptional) {}
-i2b2.sdx.Master.Save = function(sdxData, sdxParentNode) {}
-i2b2.sdx.Master.Load = function(type, key) {}
+i2b2.sdx.Master.ClearAll = function(type, sdxParentOptional) { console.error("[i2b2.sdx.Master.ClearAll] is deprecated"); }
+i2b2.sdx.Master.Save = function(sdxData, sdxParentNode) { console.error("[i2b2.sdx.Master.Save] is deprecated"); }
+i2b2.sdx.Master.Load = function(type, key) { console.error("[i2b2.sdx.Master.Load] is deprecated"); }
 // ================================================================================================== //
-i2b2.sdx.Master.AppendChild = function(tvNode, type, key, data) {}
-i2b2.sdx.Master.Attach2Data = function(domNode, type, key) {}
-i2b2.sdx.Master.RenderHTML = function(targetDivID, sdxDataPackage, options) {}
-i2b2.sdx.Master.AppendTreeNode = function(yuiTree, yuiRootNode, sdxDataPackage, sdxLoaderCallback) {}
-i2b2.sdx.Master.LoadChildrenFromTreeview = function(node, onCompleteCallback) {}
-i2b2.sdx.Master.getChildRecords = function(sdxParent, onCompleteCallback) {}
+i2b2.sdx.Master.AppendChild = function(tvNode, type, key, data) { console.error("[i2b2.sdx.Master.AppendChild] is deprecated"); }
+i2b2.sdx.Master.Attach2Data = function(domNode, type, key) { console.error("[i2b2.sdx.Master.Attach2Data] is deprecated"); }
+i2b2.sdx.Master.RenderHTML = function(targetDivID, sdxDataPackage, options) { console.error("[i2b2.sdx.Master.RenderHTML] is deprecated"); }
+i2b2.sdx.Master.AppendTreeNode = function(yuiTree, yuiRootNode, sdxDataPackage, sdxLoaderCallback) { console.error("[i2b2.sdx.Master.AppendTreeNode] is deprecated"); }
+i2b2.sdx.Master.LoadChildrenFromTreeview = function(node, onCompleteCallback) { console.error("[i2b2.sdx.Master.LoadChildrenFromTreeview] is deprecated"); }
 // ================================================================================================== //
 i2b2.sdx.Master.Click = function(type,id, domNode) {}
-i2b2.sdx.Master.onHoverOver = function(sdxType, eventObj, targetID, ddProxyObj) {}
-i2b2.sdx.Master.onHoverOut = function(sdxType, eventObj, targetID, ddProxyObj) {}
+i2b2.sdx.Master.onHoverOver = function(sdxType, eventObj, targetID, ddProxyObj) { console.error("[i2b2.sdx.Master.onHoverOver] is deprecated"); }
+i2b2.sdx.Master.onHoverOut = function(sdxType, eventObj, targetID, ddProxyObj) { console.error("[i2b2.sdx.Master.onHoverOut] is deprecated"); }
 // ================================================================================================== //
 
 
@@ -184,7 +183,6 @@ i2b2.sdx.Master.ProcessDrop = function(sdxData, DroppedOnID){
 }
 
 // ================================================================================================== //
-// !!!! REFACTORED !!!!
 i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
     // change the container into a DOM element reference
     if (typeof container === "string") {
@@ -237,50 +235,12 @@ i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
     }
 };
 
-/*
- i2b2.sdx.Master.AttachType = function(containerID, typeCode, options) {
- console.group("ATTACHING SDX "+typeCode+" Type handlers to container ID:"+containerID);
- if (undefined == i2b2.sdx.TypeControllers[typeCode]) {
- console.error("SDX TypeController does not exist for data type: " + typeCode);
- console.groupEnd();
- return false;
- }
- // do we have the container registered?
- if (undefined == this._sysData[containerID]) {
- console.debug("New container ID registered");
- this._sysData[containerID] = {};
- }
- // is the type code already registered to this container?
- if (undefined == this._sysData[containerID][typeCode]) {
- this._sysData[containerID][typeCode] = {};
- } else {
- console.warn("The container identified by ID:"+containerID+" is already registered as accepting '"+typeCode+"' data.");
- console.warn("Existing SDX handlers being replaced with default '"+typeCode+"' SDX handlers.");
- }
- // ADD ALL MANDITORY HANDLERS
- i2b2.sdx.Master.setHandlerDefault(containerID, typeCode, "RenderHTML");
- i2b2.sdx.Master.setHandlerDefault(containerID, typeCode, "AppendTreeNode");
- i2b2.sdx.Master.setHandlerDefault(containerID, typeCode, "LoadChildrenFromTreeview");
- i2b2.sdx.Master.setHandlerDefault(containerID, typeCode, "onHoverOver");
- i2b2.sdx.Master.setHandlerDefault(containerID, typeCode, "onHoverOut");
-
- // add additional handlers like DragDrop
- if (!Object.isUndefined(options)) {
- if (options.dropTarget) {
- i2b2.sdx.Master.setHandlerDefault(containerID, typeCode, "DropHandler");
- if (Object.isUndefined(this._sysData[containerID]._yuiDragDrop)) {
- this._sysData[containerID]._yuiDragDrop = new YAHOO.util.DDTarget(containerID, typeCode);
- } else {
- this._sysData[containerID]._yuiDragDrop.addToGroup(typeCode);
- }
- }
- }
- console.groupEnd();
- }
- */
-
 // ================================================================================================== //
 i2b2.sdx.Master.setHandlerCustom = function(container, typeCode, handlerName, newHandlerFunction) {
+    // containerID: string
+    // typeCode: string
+    // handlerName: string (example: Render, AddChild, ddStart, ddMove)
+    // newHandlerFunction: function to be used
 // change the container into a DOM element reference
     if (typeof container === "string") {
         container = $("#" + container);
@@ -322,27 +282,6 @@ i2b2.sdx.Master.setHandlerCustom = function(container, typeCode, handlerName, ne
         return true;
     }
 };
-/*
- i2b2.sdx.Master.setHandlerCustom = function(containerID, typeCode, handlerName, newHandlerFunction) {
- // containerID: string
- // typeCode: string
- // handlerName: string (example: Render, AddChild, ddStart, ddMove)
- // newHandlerFunction: function to be used
- if (!i2b2.sdx.TypeControllers[typeCode]) {
- console.error("SDX TypeController does not exist for data type: " + typeCode);
- return false;
- }
- // do we have the container registered?
- if (Object.isUndefined(this._sysData[containerID])) {
- console.error("SDX does not have any references to a containerID: " + containerID);
- return false;
- }
- this._sysData[containerID][typeCode][handlerName] = newHandlerFunction;
- console.info("ATTACHED custom SDX handler '"+handlerName+"' handler for "+typeCode);
- return true;
-
- }
- */
 
 // ================================================================================================== //
 i2b2.sdx.Master.setHandlerDefault = function(containerID, typeCode, handlerName) {
@@ -385,7 +324,7 @@ i2b2.sdx.Master.getHandlerDefault = function(typeCode, handlerName) {
 
 
 // *****************************************************************************
-//  THE BELOW FUNCTIONS ARE IMPLEMENTION OF A ROUTER PATTERN
+//  THE BELOW FUNCTIONS ARE IMPLIMENTATION ION OF A ROUTER PATTERN
 //  WHICH ROUTES REQUESTS DEPENDANT ON: DATA TYPE,
 //  TARGET CONTAINER AND REGISTRATION ENTRIES OF SDX CONTROLLERS
 // *****************************************************************************
@@ -434,8 +373,6 @@ i2b2.sdx.Master.RenderData = function(sdxDataPackage, options) {
 
     return ret;
 };
-
-
 // ================================================================================================== //
 
 
@@ -474,6 +411,15 @@ i2b2.sdx.Master.onDragStart = function(event, node) {
             node.event.originalEvent.dataTransfer.setData("application/i2b2-sdxType+" + sdxTypeString, JSON.stringify(sdxTypeData));
         }
     } catch (e) {}
+};
+
+
+// ================================================================================================== //
+i2b2.sdx.Master.getChildRecords = function(sdxParent, onCompleteCallback) {
+    var sdxType = sdxParent.sdxInfo.sdxType;
+    if (!i2b2.h.isUndefined(i2b2.sdx.TypeControllers[sdxType])) {
+        i2b2.sdx.TypeControllers[sdxParent.sdxInfo.sdxType].getChildRecords(sdxParent, onCompleteCallback);
+    }
 };
 
 

@@ -13,7 +13,6 @@ console.time('execute time');
 
 // create and save the screen objects
 i2b2.CRC.view.find = new i2b2Base_cellViewController(i2b2.CRC, 'find');
-i2b2.CRC.view.find.visible = false;
 // define the option functions
 // ================================================================================================== //
 i2b2.CRC.view.find.showOptions = function(subScreen){
@@ -92,19 +91,14 @@ i2b2.CRC.view.find.showOptions = function(subScreen){
 }
 
 // ================================================================================================== //
-i2b2.CRC.view.find.ToggleNode = function(divTarg, divTreeID) {
-	// get the i2b2 data from the yuiTree node
-	var tvTree = YAHOO.widget.TreeView.getTree(divTreeID);
-	var tvNode = tvTree.getNodeByProperty('nodeid', divTarg.id);
-	tvNode.toggle();
-}
-
-
+i2b2.CRC.view.find.ZoomView = function() {}
+i2b2.CRC.view.find.ToggleNode = function(divTarg, divTreeID) {}
 
 
 
 // ================================================================================================== //
 i2b2.CRC.view.find.PopulateQueryMasters = function(dm_ptr, dm_name, options) {
+    /*
 	var thisview = i2b2.CRC.view.find;
 	// clear the data first
 	var tvTree = i2b2.CRC.view.find.yuiTree;
@@ -177,13 +171,9 @@ i2b2.CRC.view.find.PopulateQueryMasters = function(dm_ptr, dm_name, options) {
 		i2b2.sdx.Master.AppendTreeNode(tvTree, tvRoot, sdxRenderData);
 	}
 	tvTree.draw();
+	*/
 };
 
-
-// ================================================================================================== //
-i2b2.CRC.view.find.ZoomView = function() {
-	i2b2.hive.MasterView.toggleZoomWindow("FIND");
-}
 
 
 // =========== Context Menu Suff =========== 
@@ -305,21 +295,7 @@ i2b2.events.afterCellInit.add(
 //================================================================================================== //
 i2b2.events.initView.subscribe((function(eventTypeName, newMode) {
 // -------------------------------------------------------
-	this.visible = true;
-	if (i2b2.WORK && i2b2.WORK.isLoaded) {
-		$('crcSearchNamesResults').style.height = '72px';
-	} else {
-		$('crcSearchNamesResults').style.height = '116px';
-	}
-	$('crcHistoryBox').show();
-	//this.Resize();
-// -------------------------------------------------------
 }),'',i2b2.CRC.view.find);
-
-
-
-
-
 
 console.timeEnd('execute time');
 console.groupEnd();

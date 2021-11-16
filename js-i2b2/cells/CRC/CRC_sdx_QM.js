@@ -31,22 +31,11 @@ i2b2.sdx.TypeControllers.QM.getEncapsulateInfo = function() {
 	return {sdxType: 'QM', sdxKeyName: 'id', sdxControlCell:'CRC', sdxDisplayNameKey:'name'};
 }
 
-
-// *********************************************************************************
-//	DEPRECATED FUNCTIONS
-// *********************************************************************************
-i2b2.sdx.TypeControllers.QM.AppendTreeNode = function(yuiTree, yuiRootNode, sdxDataPack, callbackLoader) {}
-i2b2.sdx.TypeControllers.QM.SaveToDataModel = function(sdxData) {}
-i2b2.sdx.TypeControllers.QM.LoadFromDataModel = function(key_value) {}
-i2b2.sdx.TypeControllers.QM.ClearAllFromDataModel= function(sdxOptionalParent) {}
-i2b2.sdx.TypeControllers.QM.onHoverOver = function(e, id, ddProxy) {}
-i2b2.sdx.TypeControllers.QM.onHoverOut = function(e, id, ddProxy) {}
-
-
 // *********************************************************************************
 //	GENERATE HTML (DEFAULT HANDLER)
 // *********************************************************************************
-i2b2.sdx.TypeControllers.QM.RenderHTML= function(sdxData, options, targetDiv) {    
+i2b2.sdx.TypeControllers.QM.RenderHTML= function(sdxData, options, targetDiv) {
+    console.warn("[i2b2.sdx.TypeControllers.QM.RenderHTML] is deprecated!");
 	// OPTIONS:
 	//	title: string
 	//	showchildren: true | false
@@ -275,11 +264,13 @@ i2b2.sdx.TypeControllers.QM.getChildRecords = function(sdxParentNode, onComplete
 				o.title += " - " + o.batch_mode;
 			}
 			var sdxDataNode = i2b2.sdx.Master.EncapsulateData('QI',o);
+            sdxDataNode.origData.QM_title = sdxParentNode.origData.name;6
 			// append the data node to our returned results
 			retChildren.push(sdxDataNode);
 		}
 		retMsg.results = retChildren;
-		if (cl_onCompleteCB instanceof  i2b2_scopedCallback) {
+		retMsg.parentNode = cl_node;
+		if (cl_onCompleteCB instanceof i2b2_scopedCallback) {
 			cl_onCompleteCB.callback.call(cl_onCompleteCB.scope, retMsg);
 		} else {
 			cl_onCompleteCB(retMsg);
@@ -381,233 +372,9 @@ i2b2.sdx.TypeControllers.QM.DragDrop = function(id, config) {
 	s.whiteSpace = "nowrap";
 	s.overflow = "hidden";
 	s.textOverflow = "ellipsis";
-	// add this QM to other DragDrop groups (for translation functionality)
-	this.addToGroup("QI");
-	this.addToGroup("PRS");
 };
 
 /* TODO: Reimplement drag and drop
-YAHOO.extend(i2b2.sdx.TypeControllers.QM.DragDrop, YAHOO.util.DDProxy);
-i2b2.sdx.TypeControllers.QM.DragDrop.prototype.startDrag = function(x, y) {
-	var dragEl = this.getDragEl();
-	var clickEl = this.getEl();
-	dragEl.innerHTML = clickEl.innerHTML;
-	dragEl.className = clickEl.className;
-	dragEl.style.backgroundColor = '#FFFFEE';
-	dragEl.style.color = clickEl.style.color;
-	dragEl.style.border = "1px solid blue";
-	dragEl.style.width = "160px";
-	dragEl.style.height = "20px";
-	this.setDelta(15,10);
-};
-i2b2.sdx.TypeControllers.QM.DragDrop.prototype.endDrag = function(e, sdxType) {
-	// remove DragDrop targeting CCS
-	var targets = YAHOO.util.DDM.getRelated(this, true); 
-	for (var i=0; i<targets.length; i++) {      
-		var targetEl = targets[i]._domRef;
-		try {
-			var ddCtrlr = YAHOO.util.DragDropMgr.getDDById(targetEl.id);
-			if(ddCtrlr.groups['QM']) { i2b2.sdx.Master.onHoverOut('QM', e, targetEl, this); }
-		} catch(e) {}
-	} 
-};
-i2b2.sdx.TypeControllers.QM.DragDrop.prototype.alignElWithMouse = function(el, iPageX, iPageY) {
-	var oCoord = this.getTargetCoord(iPageX, iPageY);
-	if (!this.deltaSetXY) {
-		var aCoord = [oCoord.x, oCoord.y];
-		YAHOO.util.Dom.setXY(el, aCoord);
-		var newLeft = parseInt( YAHOO.util.Dom.getStyle(el, "left"), 10 );
-		var newTop  = parseInt( YAHOO.util.Dom.getStyle(el, "top" ), 10 );
-		this.deltaSetXY = [ newLeft - oCoord.x, newTop - oCoord.y ];
-	} else {
-		var posX = (oCoord.x + this.deltaSetXY[0]);
-		var posY = (oCoord.y + this.deltaSetXY[1]);
-		//var scrSize = document.viewport.getDimensions();
-	    var w =  window.innerWidth || (window.document.documentElement.clientWidth || window.document.body.clientWidth);
-	    var h =  window.innerHeight || (window.document.documentElement.clientHeight || window.document.body.clientHeight);
-		
-		var maxX = parseInt(w-25-160);
-		var maxY = parseInt(h-25);
-		if (posX > maxX) {posX = maxX;}
-		if (posX < 6) {posX = 6;}
-		if (posY > maxY) {posY = maxY;}
-		if (posY < 6) {posY = 6;}
-		YAHOO.util.Dom.setStyle(el, "left", posX + "px");
-		YAHOO.util.Dom.setStyle(el, "top",  posY + "px");
-	}
-	this.cachePosition(oCoord.x, oCoord.y);
-	this.autoScroll(oCoord.x, oCoord.y, el.offsetHeight, el.offsetWidth);
-};
-i2b2.sdx.TypeControllers.QM.DragDrop.prototype.onDragOver = function(e, id, sdxType) {
-	// check to see if on-the-fly object type translation is needed
-	var translateTo = false;
-	if (Object.isUndefined(this.DDM.dragOvers[id])) { return false; }
-	// we must save which target we are over for the DragOut event later
-	this.lastDragOver = this.DDM.dragOvers[id]; 
-	var t = this.DDM.dragOvers[id].groups;
-	if (!t['QM']) {
-		// TRANSLATION NEEDED!
-		if (t['QI']) {
-			translateTo = "QI";
-		} else if (t['PRS']) {
-			translateTo = "PRS";
-		}
-	} else {
-		var translateTo = "QM";
-	}	
-	// fire the onHoverOver (use SDX so targets can override default event handler)
-	if (translateTo) { i2b2.sdx.Master.onHoverOver(translateTo, e, id, this); }
-};
-i2b2.sdx.TypeControllers.QM.DragDrop.prototype.onDragOut = function(e, id, sdxType) {
-	// fire the onHoverOut handler (use SDX so targets can override default event handlers)
-	// check to see if on-the-fly object type translation is needed
-	var translateTo = false;
-	if (Object.isUndefined(this.lastDragOver)) { return false; }
-	var t = this.lastDragOver.groups;
-	if (!t['QM']) {
-		// TRANSLATION NEEDED!
-		if (t['QI']) {
-			translateTo = "QI";
-		} else if (t['PRS']) {
-			translateTo = "PRS";
-		}
-	} else {
-		var translateTo = "QM";
-	}	
-	// fire the onHoverOver (use SDX so targets can override default event handler)
-	if (translateTo) { i2b2.sdx.Master.onHoverOut(translateTo, e, id, this); }
-};
-i2b2.sdx.TypeControllers.QM.DragDrop.prototype.onDragDrop = function(e, id, sdxType) {
-	// handle a bug in YUI (dragdrop.js @ lines 872-881)
-	if (this._handledDragDropAlready) {
-		return true;
-	} else {
-		this._handledDragDropAlready = true;
-		var scopeHackThis = this;
-		var resetClosure = function() {
-			delete scopeHackThis._handledDragDropAlready;
-		};
-		setTimeout(resetClosure, 100);
-	}
-	// check to see if on-the-fly object type translation is needed
-	var translateTo = false;
-	if (Object.isUndefined(this.lastDragOver)) { return false; }
-	var t = this.lastDragOver.groups;
-	if (!t['QM']) {
-		// TRANSLATION NEEDED!
-		if (t['QI']) {
-			translateTo = "QI";
-		} else if (t['PRS']) {
-			translateTo = "PRS";
-		}
-	} else {
-		translateTo = "QM";
-	}	
-	// fire the onHoverOver (use SDX so targets can override default event handler)
-	if (translateTo) { 
-		i2b2.sdx.Master.onHoverOut(translateTo, e, id, this);
-		// retreive the concept data from the dragged element
-		// PERFROM on-the-fly OBJECT TRANSLATION HERE!!
-		var draggedData;
-		switch (translateTo) {
-			case "QM":
-				// no translation needed
-				var draggedData = [];
-				draggedData.push(this.yuiTreeNode.data.i2b2_SDX);
-				i2b2.sdx.Master.ProcessDrop(draggedData, id);
-				break;
-			case "QI":
-				var draggedData = this.yuiTreeNode.data.i2b2_SDX;
-				if (draggedData.children.size() == 0) {
-					alert("Translate QM to QI");
-				} else {
-					alert("QI already loaded, drop existing children");
-//					i2b2.sdx.Master.ProcessDrop(draggedData, id);	
-				}
-				break;
-			case "PRS":
-				var draggedData = this.yuiTreeNode.data.i2b2_SDX;
-				if (!draggedData.children.loaded) {
-					// a little explaination about the below code: loading/expanding the
-					// treeview recursively via asynchronous calls
-					var tn1 = this.yuiTreeNode;
-					var id1 = id;
-					i2b2.sdx.Master.LoadChildrenFromTreeview(this.yuiTreeNode, (function(){
-						// hated closures are the most loved
-						var cl_tn1 = tn1;
-						var cl_id1 = id1;
-						cl_tn1.dynamicLoadComplete = true;
-						cl_tn1.expand();
-						for (var i1=0; i1<cl_tn1.children.length; i1++) {
-							var tn2 = cl_tn1.children[i1];
-							var id2 = cl_id1;
-							i2b2.sdx.Master.LoadChildrenFromTreeview(tn2, (function(){
-								// hated closures are the most loved
-								var cl_tn2 = tn2;
-								var cl_id2 = id2;
-								cl_tn2.dynamicLoadComplete = true;
-								cl_tn2.expand();
-								var draggedData = [];
-								for (var i2=0; i2<cl_tn2.children.length; i2++) {
-									if (cl_tn2.children[i2].data.i2b2_SDX.sdxInfo.sdxType == 'PRS') {
-									draggedData.push(cl_tn2.children[i2].data.i2b2_SDX);
-								}
-								}
-								// send translated info to the drop target handler
-								i2b2.sdx.Master.ProcessDrop(draggedData, cl_id2);
-							}));
-								}
-							}));
-				} else {
-					// our children are already loaded, loop thru and process
-					var tn1 = this.yuiTreeNode;
-					var id1 = id;
-					draggedData.children.each(function(item_rec) {
-						var cl_tn1 = tn1;
-						var cl_id1 = id1;
-						try {
-							var cn = item_rec.value;
-							if (!cn.children.loaded) {
-								i2b2.sdx.Master.LoadChildrenFromTreeview(cl_tn1, (function(){
-									// hated closures are the most loved
-									var cl_tn2 = cl_tn1;
-									var cl_id2 = cl_id1;
-									cl_tn2.dynamicLoadComplete = true;
-									cl_tn2.expand();
-									var draggedData = [];
-									for (var i2=0; i2<cl_tn2.children.length; i2++) {
-										if (cl_tn2.children[i2].data.i2b2_SDX.sdxInfo.sdxType == 'PRS') {
-										draggedData.push(cl_tn2.children[i2].data.i2b2_SDX);
-						}
-						}
-									// send translated info to the drop target handler
-									i2b2.sdx.Master.ProcessDrop(draggedData, cl_id2);	
-					}));
-				} else {
-								// children already loaded
-								var draggedData = [];
-								cl_tn1.expand();
-								for (var i1=0; i1<cl_tn1.children.length; i1++) {
-									// looping QI
-									var tn2 = cl_tn1.children[i1];
-									tn2.expand();
-									for (var i2=0; i2<tn2.children.length; i2++) {
-										// looping PRS
-										if (tn2.children[i2].data.i2b2_SDX.sdxInfo.sdxType == 'PRS') {
-										draggedData.push(tn2.children[i2].data.i2b2_SDX);
-										}
-									}
-								}
-								// send translated info to the drop target handler
-								i2b2.sdx.Master.ProcessDrop(draggedData, cl_id1);	
-							}
-						} catch(e) { console.error("An error has occurred while trying to translate a QM into PRS data"); }
-					});
-				}
-				break;
-		}
-	}
-};
 */
 
 
@@ -629,6 +396,16 @@ i2b2.sdx.TypeControllers.QM.dragStartHandler = function(i2b2Data) {
     return i2b2Data;
 };
 
+// *********************************************************************************
+//	DEPRECATED FUNCTIONS
+// *********************************************************************************
+i2b2.sdx.TypeControllers.QM.AppendTreeNode = function() { console.error("[i2b2.sdx.TypeControllers.QM.AppendTreeNode] is deprecated!"); }
+i2b2.sdx.TypeControllers.QM.SaveToDataModel = function() { console.error("[i2b2.sdx.TypeControllers.QM.SaveToDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.QM.LoadFromDataModel = function() { console.error("[i2b2.sdx.TypeControllers.QM.LoadFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.QM.ClearAllFromDataModel= function() { console.error("[i2b2.sdx.TypeControllers.QM.ClearAllFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.QM.onHoverOver = function() { console.error("[i2b2.sdx.TypeControllers.QM.onHoverOver] is deprecated!"); }
+i2b2.sdx.TypeControllers.QM.onHoverOut = function() { console.error("[i2b2.sdx.TypeControllers.QM.onHoverOut] is deprecated!"); }
+i2b2.sdx.TypeControllers.QM.AttachDrag2Data = function() { console.error("[i2b2.sdx.TypeControllers.QM.AttachDrag2Data] is deprecated!"); }
 
 console.timeEnd('execute time');
 console.groupEnd();

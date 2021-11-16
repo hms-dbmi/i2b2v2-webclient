@@ -26,12 +26,6 @@ i2b2.sdx.TypeControllers.WRK.getEncapsulateInfo = function() {
 	return {sdxType: 'WRK', sdxKeyName: 'index', sdxControlCell:'WORK', sdxDisplayNameKey: 'name'};
 }
 
-i2b2.sdx.TypeControllers.WRK.SaveToDataModel = function(sdxData, sdxParentNode) {};
-i2b2.sdx.TypeControllers.WRK.LoadFromDataModel = function(key_value) {};
-i2b2.sdx.TypeControllers.WRK.ClearAllFromDataModel= function(sdxOptionalParent) {};
-
-
-
 // *********************************************************************************
 //	GENERATE RENDER DATA (DEFAULT HANDLER)
 // *********************************************************************************
@@ -277,8 +271,9 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
 // *********************************************************************************
 //	GENERATE HTML (DEFAULT HANDLER)
 // *********************************************************************************
-i2b2.sdx.TypeControllers.WRK.RenderHTML= function(sdxData, options, targetDiv) {    
-	// this function extracts the datatype from the SDX's original XML object and relies upon it's 
+i2b2.sdx.TypeControllers.WRK.RenderHTML= function(sdxData, options, targetDiv) {
+    console.warn("[i2b2.sdx.TypeControllers.WRK.RenderHTML] is deprecated!");
+	// this function extracts the datatype from the SDX's original XML object and relies upon it's
 	// original SDX type controller to render the HTML
 
 	var sdxCode = false;
@@ -519,36 +514,6 @@ i2b2.sdx.TypeControllers.WRK.RenderHTML= function(sdxData, options, targetDiv) {
 	return subclassHTML;
 }
 
-
-// *********************************************************************************
-//	HANDLE HOVER OVER TARGET ENTRY (DEFAULT HANDLER)
-// *********************************************************************************
-i2b2.sdx.TypeControllers.WRK.onHoverOver = function(e, id, ddProxy) {};
-i2b2.sdx.TypeControllers.WRK.onHoverOut = function(e, id, ddProxy) {};
-i2b2.sdx.TypeControllers.WRK.AppendTreeNode = function(yuiTree, yuiRootNode, sdxDataPack, callbackLoader) {}
-
-
-// *********************************************************************************
-//	ATTACH DRAG TO DATA (DEFAULT HANDLER)
-// *********************************************************************************
-i2b2.sdx.TypeControllers.WRK.AttachDrag2Data = function(divParentID, divDataID){
-	if (Object.isUndefined($(divDataID))) {	return false; }
-	
-	// get the i2b2 data from the yuiTree node
-	var tvTree = YAHOO.widget.TreeView.getTree(divParentID);
-	var tvNode = tvTree.getNodeByProperty('nodeid', divDataID);
-	if (!Object.isUndefined(tvNode.DDProxy)) { return true; }
-	
-	// attach DD
-	var t = new i2b2.sdx.TypeControllers.WRK.DragDrop(divDataID)
-	t.yuiTree = tvTree;
-	t.yuiTreeNode = tvNode;
-	tvNode.DDProxy = t;
-}
-
-
-
-
 // *********************************************************************************
 //	DRAG DROP PROXY CONTROLLER
 // *********************************************************************************
@@ -565,181 +530,7 @@ i2b2.sdx.TypeControllers.WRK.DragDrop = function(id, config) {
 	s.overflow = "hidden";
 	s.textOverflow = "ellipsis";
 };
-/* TODO: Reimplement drag and drop
-YAHOO.extend(i2b2.sdx.TypeControllers.WRK.DragDrop, YAHOO.util.DDProxy);
-i2b2.sdx.TypeControllers.WRK.DragDrop.prototype.startDrag = function(x, y) {
-	var dragEl = this.getDragEl();
-	var clickEl = this.getEl();
-	dragEl.innerHTML = clickEl.innerHTML;
-	dragEl.className = clickEl.className;
-	dragEl.style.backgroundColor = '#FFFFEE';
-	dragEl.style.color = clickEl.style.color;
-	dragEl.style.border = "1px solid blue";
-	dragEl.style.width = "160px";
-	dragEl.style.height = "20px";
-	this.setDelta(15,10);
-};
-i2b2.sdx.TypeControllers.WRK.DragDrop.prototype.endDrag = function(e) {};
-i2b2.sdx.TypeControllers.WRK.DragDrop.prototype.alignElWithMouse = function(el, iPageX, iPageY) {
-	var oCoord = this.getTargetCoord(iPageX, iPageY);
-	if (!this.deltaSetXY) {
-		var aCoord = [oCoord.x, oCoord.y];
-		YAHOO.util.Dom.setXY(el, aCoord);
-		var newLeft = parseInt( YAHOO.util.Dom.getStyle(el, "left"), 10 );
-		var newTop  = parseInt( YAHOO.util.Dom.getStyle(el, "top" ), 10 );
-		this.deltaSetXY = [ newLeft - oCoord.x, newTop - oCoord.y ];
-	} else {
-		var posX = (oCoord.x + this.deltaSetXY[0]);
-		var posY = (oCoord.y + this.deltaSetXY[1]);
-		//var scrSize = document.viewport.getDimensions();
-
-	    var w =  window.innerWidth || (window.document.documentElement.clientWidth || window.document.body.clientWidth);
-	    var h =  window.innerHeight || (window.document.documentElement.clientHeight || window.document.body.clientHeight);
-
-		var maxX = parseInt(w-25-160);
-		var maxY = parseInt(h-25);
-		if (posX > maxX) {posX = maxX;}
-		if (posX < 6) {posX = 6;}
-		if (posY > maxY) {posY = maxY;}
-		if (posY < 6) {posY = 6;}
-		YAHOO.util.Dom.setStyle(el, "left", posX + "px");
-		YAHOO.util.Dom.setStyle(el, "top",  posY + "px");
-	}
-	this.cachePosition(oCoord.x, oCoord.y);
-	this.autoScroll(oCoord.x, oCoord.y, el.offsetHeight, el.offsetWidth);
-};
-i2b2.sdx.TypeControllers.WRK.DragDrop.prototype.onDragOver = function(e, id) {
-	// fire the onHoverOver (use SDX so targets can override default event handler)
-	var t = this.yuiTreeNode.data.i2b2_SDX.sdxUnderlyingPackage;
-	if (t) {
-		try {
-			if (this.DDM.ids[t.sdxInfo.sdxType][id]) {
-				i2b2.sdx.Master.onHoverOver(t.sdxInfo.sdxType, e, id, this); 
-			} else {
-				// fall back to WRK type processing
-				i2b2.sdx.Master.onHoverOver('WRK', e, id, this);
-			}
-		} catch(e) {}
-	} else {
-		i2b2.sdx.Master.onHoverOver('WRK', e, id, this);
-	}
-};
-i2b2.sdx.TypeControllers.WRK.DragDrop.prototype.onDragOut = function(e, id) {
-	// fire the onHoverOut handler (use SDX so targets can override default event handlers)
-	// fire the onHoverOver (use SDX so targets can override default event handler)
-	var t = this.yuiTreeNode.data.i2b2_SDX.sdxUnderlyingPackage;
-	if (t) {
-		try {
-			if (this.DDM.ids[t.sdxInfo.sdxType][id]) { 
-				i2b2.sdx.Master.onHoverOut(t.sdxInfo.sdxType, e, id, this);
-			} else {
-				// fall back to WRK type processing
-				i2b2.sdx.Master.onHoverOut('WRK', e, id, this);
-			}
-		} catch(e) {}
-	} else {
-		i2b2.sdx.Master.onHoverOut('WRK', e, id, this);
-	}
-};
-i2b2.sdx.TypeControllers.WRK.DragDrop.prototype.onDragDrop = function(e, id) {
-	// retreive the concept data from the dragged element
-	var draggedTvNode = this.yuiTreeNode;
-	var draggedData = draggedTvNode.data.i2b2_SDX;
-	var t = this.yuiTreeNode.data.i2b2_SDX.sdxUnderlyingPackage;
-	if (t) {
-		try {
-			if (this.DDM.ids[t.sdxInfo.sdxType][id]) { 
-				i2b2.sdx.Master.onHoverOut(t.sdxInfo.sdxType, e, id, this); 
-			} else {
-				i2b2.sdx.Master.onHoverOut('WRK', e, id, this);
-			}
-		} catch(e) { i2b2.sdx.Master.onHoverOut('WRK', e, id, this); }
-	} else {
-		i2b2.sdx.Master.onHoverOut('WRK', e, id, this);
-	}
-	try {
-		// restraints on Workplace moves
-		var parentTree = YAHOO.widget.TreeView.findTreeByChildDiv(id);
-		var targetTvNode = parentTree.getNodeByProperty('nodeid', id);
-		if (targetTvNode.isDescendant(draggedTvNode)) { return false; } // can't drag parents into their children
-		if (draggedTvNode.parent.data.nodeid == targetTvNode.data.nodeid) { return false; } // ignore moving a child onto it's current parent
-		
-		if (targetTvNode.data.i2b2_SDX.sdxInfo.sdxType=="WRK") {
-			// drop onto a WRK node
-			if (Object.isUndefined(draggedData.sdxUnderlyingPackage)) {
-				// dragging a folder object
-				i2b2.WORK.ctrlr.main.moveFolder(draggedTvNode, targetTvNode);
-			} else {
-				// dragging encapsulated data node
-				// START bug fix: handle a bug in YUI (dragdrop.js @ lines 872-881)
-				if (this._handledDragDropAlready) {
-					return true;
-				} else {
-					this._handledDragDropAlready = true;
-					var scopeHackThis = this;
-					var resetClosure = function() {
-						delete scopeHackThis._handledDragDropAlready;
-					};
-					setTimeout(resetClosure, 100);
-				}
-				// END bug fix
-
-				// Server handles moving of non-folder items by deleting them from their old location and creating a new record as a child of the new location
-
-				// Filter list of TV nodes to refresh so attempts are not made to refresh non-existent children (and kill DD reattachment)
-				var tvRefreshList = [];
-				tvRefreshList.push(targetTvNode);
-				tvRefreshList.push(draggedTvNode.parent);
-				tvRefreshList = i2b2.WORK.ctrlr.main._generateRefreshList(tvRefreshList);
-				var funcRefresh = function() {
-					// this function is fired after all the threads in the mutex have finished execution
-					var cl_tvRefreshList = tvRefreshList;  // closure var
-					// whack the "already loaded" status out of the node that need refreshing and 
-					// initiate a dynamic loading of the childs nodes (including our newest addition)
-					for (var i=0; i<cl_tvRefreshList.length; i++) {
-						cl_tvRefreshList[i].collapse();
-						cl_tvRefreshList[i].dynamicLoadComplete = false;
-						cl_tvRefreshList[i].childrenRendered = false;
-						cl_tvRefreshList[i].tree.removeChildren(cl_tvRefreshList[i]);
-						cl_tvRefreshList[i].expand();
-					}
-				}
-				var funcThreadDone = function(results) {
-					// "this" needs to be scoped as the mutex token
-					var r = this.ThreadFinished();
-					if (r.error) { console.warn(r.errorMsg); }
-				}
-
-				// A mutex is needed to correctly time the TV refresh, create the initial context and get the first mutex token
-				var mux1 = i2b2.h.JoiningMutex.contextCreate(null, funcRefresh, true);
-				var muxName = mux1.name();
-				// create a scoped callback object to for the AJAX to call after the server responds
-				var scopedCB1 = new i2b2_scopedCallback();
-				scopedCB1.scope = mux1;
-				scopedCB1.callback = funcThreadDone;
-				// get a second mutex token for the 2nd AJAX call
-				var mux2 = i2b2.h.JoiningMutex.contextJoin(muxName);
-				// scoped callback object to for AJAX call
-				var scopedCB2 = new i2b2_scopedCallback();
-				scopedCB2.scope = mux2;
-				scopedCB2.callback = funcThreadDone;
-				// fire AJAX
-				i2b2.WORK.ctrlr.main.moveFolder(draggedTvNode, targetTvNode); 
-			}
-		} else {
-			// translate - we are not dropping onto another WRK node
-			console.error("A unique execution event has occurred.  The event may or may not have been processed correctly.");
-			i2b2.sdx.Master.ProcessDrop(draggedData.sdxUnderlyingPackage, id);
-		}
-	} catch(e) {
-		if (draggedData.sdxUnderlyingPackage) {
-			i2b2.sdx.Master.ProcessDrop(draggedData.sdxUnderlyingPackage, id);
-		} else {
-			i2b2.sdx.Master.ProcessDrop(draggedData, id);
-		}
-	}
-};
-*/
+/* TODO: Reimplement drag and drop */
 
 
 // *********************************************************************************
@@ -762,7 +553,16 @@ i2b2.sdx.TypeControllers.WRK.dragStartHandler = function(i2b2Data) {
     return i2b2Data;
 };
 
-
+// *********************************************************************************
+//	DEPRECATED FUNCTIONS
+// *********************************************************************************
+i2b2.sdx.TypeControllers.WRK.AppendTreeNode = function() { console.error("[i2b2.sdx.TypeControllers.WRK.AppendTreeNode] is deprecated!"); }
+i2b2.sdx.TypeControllers.WRK.SaveToDataModel = function() { console.error("[i2b2.sdx.TypeControllers.WRK.SaveToDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.WRK.LoadFromDataModel = function() { console.error("[i2b2.sdx.TypeControllers.WRK.LoadFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.WRK.ClearAllFromDataModel= function() { console.error("[i2b2.sdx.TypeControllers.WRK.ClearAllFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.WRK.onHoverOver = function() { console.error("[i2b2.sdx.TypeControllers.WRK.onHoverOver] is deprecated!"); }
+i2b2.sdx.TypeControllers.WRK.onHoverOut = function() { console.error("[i2b2.sdx.TypeControllers.WRK.onHoverOut] is deprecated!"); }
+i2b2.sdx.TypeControllers.WRK.AttachDrag2Data = function() { console.error("[i2b2.sdx.TypeControllers.WRK.AttachDrag2Data] is deprecated!"); }
 
 console.timeEnd('execute time');
 console.groupEnd();

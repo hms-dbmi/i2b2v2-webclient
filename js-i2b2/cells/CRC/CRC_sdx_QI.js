@@ -31,24 +31,11 @@ i2b2.sdx.TypeControllers.QI.getEncapsulateInfo = function() {
 	return {sdxType: 'QI', sdxKeyName: 'query_instance_id', sdxControlCell:'CRC', sdxDisplayNameKey:'title'};
 }
 
-
-
-// *********************************************************************************
-//	DEPRECATED FUNCTIONS
-// *********************************************************************************
-i2b2.sdx.TypeControllers.QI.AppendTreeNode = function(yuiTree, yuiRootNode, sdxDataPack, callbackLoader) {}
-i2b2.sdx.TypeControllers.QI.SaveToDataModel = function(sdxData, sdxParentNode) {}
-i2b2.sdx.TypeControllers.QI.LoadFromDataModel = function(key_value) {}
-i2b2.sdx.TypeControllers.QI.ClearAllFromDataModel= function(sdxOptionalParent) {}
-i2b2.sdx.TypeControllers.QI.onHoverOver = function(e, id, ddProxy) {}
-i2b2.sdx.TypeControllers.QI.onHoverOut = function(e, id, ddProxy) {}
-i2b2.sdx.TypeControllers.QI.DragDrop = function(id, config) {};
-
-
 // *********************************************************************************
 //	GENERATE HTML (DEFAULT HANDLER)
 // *********************************************************************************
-i2b2.sdx.TypeControllers.QI.RenderHTML= function(sdxData, options, targetDiv) {    
+i2b2.sdx.TypeControllers.QI.RenderHTML= function(sdxData, options, targetDiv) {
+    console.warn("[i2b2.sdx.TypeControllers.QI.RenderHTML] is deprecated!");
 	// OPTIONS:
 	//	title: string
 	//	showchildren: true | false
@@ -126,7 +113,7 @@ i2b2.sdx.TypeControllers.QI.RenderHTML= function(sdxData, options, targetDiv) {
 // *********************************************************************************
 //	GENERATE RENDER DATA (DEFAULT HANDLER)
 // *********************************************************************************
-i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
+i2b2.sdx.TypeControllers.QI.RenderData = function(sdxData, options) {
     // function returns following data that is used for rendering (at a minimum)
     // === title
     // === iconImg (url)
@@ -156,7 +143,7 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
         title: undefined,
         iconImg: undefined,
         iconImgExp: undefined,
-        cssClassMain: "sdxStyleCRC-QM",
+        cssClassMain: "sdxStyleCRC-QI",
         cssClassMinor: undefined,
         moreDescriptMain: undefined,
         moreDescriptMinor: undefined,
@@ -189,6 +176,8 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
             break;
         case "leaf":
             nodeInfo.cssClassMinor = "tvLeaf";
+            nodeInfo.tvNodeState.loaded = true;
+            nodeInfo.tvNodeState.expanded = true;
             break;
     }
     if (!i2b2.h.isUndefined(options.icon[icon])) {
@@ -244,137 +233,100 @@ i2b2.sdx.TypeControllers.QI.getChildRecords = function(sdxParentNode, onComplete
 		};
 		var retChildren = [];
 
-		// find parent node	QI node in data model
-		var dm = i2b2.CRC.model.QueryMasters;
-		var dm_loc = 'i2b2.CRC.model.QueryMasters';
-		
-		// Here comes REAL fun, a self-recursive anonymous function instantiated by iteration 
-		// via recursive "collection" calls on Hash objects (Prototype toolkit)
-		var findFunc = function(item_rec) {
-			var hash_key = item_rec.key;
-			var gen_rec = item_rec.value;
-			var cl_keyValue = keyValue;  // <-- closure variable: keyValue must be set before running function
-			if (gen_rec.sdxInfo.sdxType=="QI") {
-				// see if this record matches our search
-				if (gen_rec.sdxInfo.sdxKeyValue == cl_keyValue) { return gen_rec; }
-			} else {
-				// recurse into the object's children
-				var match_children = gen_rec.children.collect(findFunc);
-				return match_children;
-			}
-		}
-		var keyValue = cl_node.sdxInfo.sdxKeyValue.toString();
-		var parent_QM = dm.collect(findFunc);
-		parent_QM = parent_QM.flatten();
-		parent_QM = parent_QM.compact();
-		if (parent_QM[0]) {
-			var pn = parent_QM[0];
-		} else {
-			console.error('Parent QM node was not found in the CRC data model!');
-			return false;
-		}
+		var keyValue = this.sdxInfo.sdxKeyValue.toString();
+		var parent_QM = this.origData.query_master_id.toString();
 
-		// extract records from XML msg
-		var ps = results.refXML.getElementsByTagName('query_result_instance');
-		var dm = i2b2.CRC.model.QueryMasters;
-		for(var i1=0; i1<ps.length; i1++) {
-			var o = new Object;
-			o.xmlOrig = ps[i1];
-			o.QI_id = pn.sdxInfo.sdxKeyValue;
-			o.QM_id = pn.parent.sdxInfo.sdxKeyValue;
-			o.size = i2b2.h.getXNodeVal(ps[i1],'set_size');
-			o.start_date = i2b2.h.getXNodeVal(ps[i1],'start_date');
-			o.end_date = i2b2.h.getXNodeVal(ps[i1],'end_date');
-			try {
-				//o.title = i2b2.h.getXNodeVal(ps[i1],'description'); //[0].nodeValue;
-				o.title = i2b2.h.getXNodeVal(ps[i1],'query_result_instance/description');
-			} catch (e) {
-				o.title = i2b2.h.getXNodeVal(ps[i1],'name');
-			}
-			if (i2b2.h.getXNodeVal(ps[i1],'query_result_type/name') == "PATIENT_COUNT_XML"){ //nw096
-				if(i2b2.PM.model.isObfuscated){
-					if(parseInt(i2b2.h.getXNodeVal(ps[i1],'query_result_instance/set_size')) < 4){
-						o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>&lt;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+"</span>";
-					} else {
-						o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>" + i2b2.h.getXNodeVal(ps[i1],'query_result_instance/set_size') + "&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+"</span>";
-					}
-					
-				} else {
-					o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>" + i2b2.h.getXNodeVal(ps[i1],'query_result_instance/set_size') + "</span>";
-				}
-			}
-			
-			if (i2b2.h.XPath(ps[i1],'query_status_type/name/text()')[0].nodeValue != "COMPLETED")
-			{
-				o.title += " - " +  i2b2.h.XPath(ps[i1],'query_status_type/name/text()')[0].nodeValue;	
-			}
+        // extract records from XML msg
+        var ps = results.refXML.getElementsByTagName('query_result_instance');
+        for (var i1 = 0; i1 < ps.length; i1++) {
+            var o = new Object;
+            o.xmlOrig = ps[i1];
+            o.QI_id = keyValue;
+            o.QM_id = parent_QM;
+            o.size = i2b2.h.getXNodeVal(ps[i1], 'set_size');
+            o.start_date = i2b2.h.getXNodeVal(ps[i1], 'start_date');
+            o.end_date = i2b2.h.getXNodeVal(ps[i1], 'end_date');
+            try {
+                //o.title = i2b2.h.getXNodeVal(ps[i1],'description'); //[0].nodeValue;
+                o.title = i2b2.h.getXNodeVal(ps[i1], 'query_result_instance/description');
+            } catch (e) {
+                o.title = i2b2.h.getXNodeVal(ps[i1], 'name');
+            }
+            if (i2b2.h.getXNodeVal(ps[i1], 'query_result_type/name') == "PATIENT_COUNT_XML") { //nw096
+                if (i2b2.PM.model.isObfuscated) {
+                    if (parseInt(i2b2.h.getXNodeVal(ps[i1], 'query_result_instance/set_size')) < 4) {
+                        o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>&lt;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString() + "</span>";
+                    } else {
+                        o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>" + i2b2.h.getXNodeVal(ps[i1], 'query_result_instance/set_size') + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString() + "</span>";
+                    }
+                } else {
+                    o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>" + i2b2.h.getXNodeVal(ps[i1], 'query_result_instance/set_size') + "</span>";
+                }
+            }
 
-			o.result_type = i2b2.h.XPath(ps[i1],'query_result_type/name/text()')[0].nodeValue;
-			var addme = false;
-			switch (o.result_type) {
-				case "PATIENT_ENCOUNTER_SET":
-					o.PRS_id = i2b2.h.getXNodeVal(ps[i1],'result_instance_id');
-					// use given title if it exist otherwise generate a title
-					/*
-					try {
-						var t = i2b2.h.XPath(temp,'self::description')[0].firstChild.nodeValue;
-					} catch(e) { var t = null; }
-					if (!t) { t="Encounter Set"; }
-					// create the title using shrine setting
-					if (o.size >= 10) {
-						if (i2b2.PM.model.userRoles.length == 1 && i2b2.PM.model.userRoles[0] == "DATA_OBFSC") {
-							o.title = t+" - "+o.size+"&plusmn;3 encounters";
-						} else {
-							o.title = t+" - "+o.size+" encounters";
-						}
-					} else {
-						if (i2b2.PM.model.userRoles.length == 1 && i2b2.PM.model.userRoles[0] == "DATA_OBFSC") {
-							o.title = t+" - 10 encounters or less";
-						} else {
-							o.title = t+" - "+o.size+" encounters";
-						}
-					} */
-					o.titleCRC = o.title;
-					o.title = pn.parent.sdxInfo.sdxDisplayName + ' [PATIENT_ENCOUNTER_SET_'+o.PRS_id+']';
-					o.result_instance_id = o.PRS_id;
-					var sdxDataNode = i2b2.sdx.Master.EncapsulateData('ENS',o);
-					addme = true;
-					break;				
-				case "PATIENTSET":
-					o.PRS_id = i2b2.h.getXNodeVal(ps[i1],'result_instance_id');
-					o.titleCRC = o.title;
-					o.title = pn.parent.sdxInfo.sdxDisplayName + ' [PATIENTSET_'+o.PRS_id+']';
-					o.result_instance_id = o.PRS_id;
-					var sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS',o);
-					addme = true;
-					break;
-				default:
-				
-					o.PRC_id = i2b2.h.getXNodeVal(ps[i1],'result_instance_id');
-					o.titleCRC = o.title;
-					//o.title = pn.parent.sdxInfo.sdxDisplayName + ' [PATIENT_COUNT_XML_'+o.PRC_id+']';
-					//o.title = 'PATIENT_COUNT_XML_'+o.PRC_id;
-					o.result_instance_id = o.PRC_id;
-					var sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRC',o);
-					addme = true;
-					break;					
-			}
-			if (addme) {
-			// save record in the SDX system
-			sdxDataNode = i2b2.sdx.Master.Save(sdxDataNode, pn);
-			// append the data node to our returned results
-			retChildren.push(sdxDataNode);
-			}
-		}
-		pn.children.loaded = true;
-		// TODO: broadcast a data update event of the CRC data model
-		retMsg.results = retChildren;
-		if (getObjectClass(cl_onCompleteCB)=='i2b2_scopedCallback') {
-			cl_onCompleteCB.callback.call(cl_onCompleteCB.scope, retMsg);
-		} else {
-			cl_onCompleteCB(retMsg);
-		}
-	}
+            if (i2b2.h.XPath(ps[i1], 'query_status_type/name/text()')[0].nodeValue != "COMPLETED") {
+                o.title += " - " + i2b2.h.XPath(ps[i1], 'query_status_type/name/text()')[0].nodeValue;
+            }
+
+            o.result_type = i2b2.h.XPath(ps[i1], 'query_result_type/name/text()')[0].nodeValue;
+            switch (o.result_type) {
+                case "PATIENT_ENCOUNTER_SET":
+                    o.PRS_id = i2b2.h.getXNodeVal(ps[i1], 'result_instance_id');
+                    // use given title if it exist otherwise generate a title
+                    /*
+                     try {
+                     var t = i2b2.h.XPath(temp,'self::description')[0].firstChild.nodeValue;
+                     } catch(e) { var t = null; }
+                     if (!t) { t="Encounter Set"; }
+                     // create the title using shrine setting
+                     if (o.size >= 10) {
+                     if (i2b2.PM.model.userRoles.length == 1 && i2b2.PM.model.userRoles[0] == "DATA_OBFSC") {
+                     o.title = t+" - "+o.size+"&plusmn;3 encounters";
+                     } else {
+                     o.title = t+" - "+o.size+" encounters";
+                     }
+                     } else {
+                     if (i2b2.PM.model.userRoles.length == 1 && i2b2.PM.model.userRoles[0] == "DATA_OBFSC") {
+                     o.title = t+" - 10 encounters or less";
+                     } else {
+                     o.title = t+" - "+o.size+" encounters";
+                     }
+                     } */
+                    o.titleCRC = o.title;
+                    o.title = sdxParentNode.origData.QM_title + ' [PATIENT_ENCOUNTER_SET_' + o.PRS_id + ']';
+                    o.result_instance_id = o.PRS_id;
+                    var sdxDataNode = i2b2.sdx.Master.EncapsulateData('ENS', o);
+                    break;
+                case "PATIENTSET":
+                    o.PRS_id = i2b2.h.getXNodeVal(ps[i1], 'result_instance_id');
+                    o.titleCRC = o.title;
+                    o.title = sdxParentNode.origData.QM_title + ' [PATIENTSET_' + o.PRS_id + ']';
+                    o.result_instance_id = o.PRS_id;
+                    var sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS', o);
+                    break;
+                default:
+
+                    o.PRC_id = i2b2.h.getXNodeVal(ps[i1], 'result_instance_id');
+                    o.titleCRC = o.title;
+                    //o.title = pn.parent.sdxInfo.sdxDisplayName + ' [PATIENT_COUNT_XML_'+o.PRC_id+']';
+                    //o.title = 'PATIENT_COUNT_XML_'+o.PRC_id;
+                    o.result_instance_id = o.PRC_id;
+                    var sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRC', o);
+                    break;
+            }
+
+            // append the data node to our returned results
+            retChildren.push(sdxDataNode);
+        }
+
+        retMsg.results = retChildren;
+
+        if (cl_onCompleteCB instanceof i2b2_scopedCallback) {
+            cl_onCompleteCB.callback.call(cl_onCompleteCB.scope, retMsg);
+        } else {
+            cl_onCompleteCB(retMsg);
+        }
+    }
 	i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:SDX:QueryInstance", {qi_key_value: sdxParentNode.sdxInfo.sdxKeyValue}, scopedCallback);
 }
 
@@ -400,11 +352,10 @@ i2b2.sdx.TypeControllers.QI.LoadChildrenFromTreeview = function(node, onComplete
 						var renderOptions = {
 							dragdrop: "i2b2.sdx.TypeControllers.PRS.AttachDrag2Data",
 							icon: "sdx_CRC_PRS.jpg",
-							title: o.origData.titleCRC, 
+                            title: o.origData.titleCRC,
 							showchildren: false
 						};
-					} else
-					{
+					} else {
 						var renderOptions = {
 							dragdrop: "i2b2.sdx.TypeControllers.PRS.AttachDrag2Data",
 							icon: "sdx_CRC_PRS.jpg",
@@ -523,6 +474,15 @@ i2b2.sdx.TypeControllers.QI.dragStartHandler = function(i2b2Data) {
     return i2b2Data;
 };
 
+// *********************************************************************************
+//	DEPRECATED FUNCTIONS
+// *********************************************************************************
+i2b2.sdx.TypeControllers.QI.AppendTreeNode = function() { console.error("[i2b2.sdx.TypeControllers.QI.AppendTreeNode] is deprecated!"); }
+i2b2.sdx.TypeControllers.QI.SaveToDataModel = function() { console.error("[i2b2.sdx.TypeControllers.QI.SaveToDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.QI.LoadFromDataModel = function() { console.error("[i2b2.sdx.TypeControllers.QI.LoadFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.QI.ClearAllFromDataModel= function() { console.error("[i2b2.sdx.TypeControllers.QI.ClearAllFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.QI.onHoverOver = function() { console.error("[i2b2.sdx.TypeControllers.QI.onHoverOver] is deprecated!"); }
+i2b2.sdx.TypeControllers.QI.onHoverOut = function() { console.error("[i2b2.sdx.TypeControllers.QI.onHoverOut] is deprecated!"); }
 
 console.timeEnd('execute time');
 console.groupEnd();

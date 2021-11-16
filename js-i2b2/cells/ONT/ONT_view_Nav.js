@@ -18,10 +18,10 @@ i2b2.ONT.view.nav.modifier = false;
 
 // ================================================================================================== //
 // deprecated functions
-i2b2.ONT.view.nav.showView = function() {}
-i2b2.ONT.view.nav.hideView = function() {}
-i2b2.ONT.view.nav.Resize = function(e) {}
-i2b2.ONT.view.nav.ResizeHeight = function() {}
+i2b2.ONT.view.nav.showView = function() { console.error("[i2b2.ONT.view.nav.showView] is deprecated!"); }
+i2b2.ONT.view.nav.hideView = function() { console.error("[i2b2.ONT.view.nav.hideView] is deprecated!"); }
+i2b2.ONT.view.nav.Resize = function(e) { console.error("[i2b2.ONT.view.nav.Resize] is deprecated!"); }
+i2b2.ONT.view.nav.ResizeHeight = function() { console.error("[i2b2.ONT.nav.find.ResizeHeight] is deprecated!"); }
 
 
 // ================================================================================================== //
@@ -30,7 +30,7 @@ i2b2.ONT.view.nav.ResizeHeight = function() {}
 // define the option functions
 // ================================================================================================== //
 i2b2.ONT.view.nav.showOptions = function(subScreen) {
-    /*
+    /* TODO: Refactor this
 	if (!this.modalOptions) {
 		var handleSubmit = function() {
 			// submit value(s)
@@ -165,53 +165,6 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
         i2b2.ONT.view.nav.treeview.treeview('redraw', []);
         $('#stackRefreshIcon_i2b2-ONT-view-nav').removeClass("refreshing");
     });
-/*
-    // create callback display routine
-    var scopedCallback = new i2b2_scopedCallback();
-    scopedCallback.scope = i2b2.WORK;
-    scopedCallback.callback = function(results){
-        var newNodes = [];
-        var parentNode = results.msgParams.parent_key_value;
-        var nlst = i2b2.h.XPath(results.refXML, "//folder[name and share_id and index and visual_attributes]");
-        for (var i = 0; i < nlst.length; i++) {
-            var s = nlst[i];
-            var nodeData = {};
-            nodeData.xmlOrig = s;
-            nodeData.index = i2b2.h.getXNodeVal(s, "index");
-            nodeData.key = nodeData.index;
-            nodeData.name = i2b2.h.getXNodeVal(s, "folder/name");
-            nodeData.annotation = i2b2.h.getXNodeVal(s, "tooltip");
-            nodeData.share_id = i2b2.h.getXNodeVal(s, "share_id");
-            nodeData.visual = String(i2b2.h.getXNodeVal(s, "visual_attributes")).trim();
-            nodeData.encapType = i2b2.h.getXNodeVal(s, "work_xml_i2b2_type");
-            nodeData.isRoot = false;
-            // create new root node
-            newNodes.push(i2b2.WORK.view.main._generateTvNode(nodeData.name, nodeData, parentNode));
-        }
-        // filter bad nodes
-        newNodes = newNodes.filter(function(v) { return v; });
-        // push new nodes into the treeview
-        i2b2.WORK.view.main.treeview.treeview('addNodes', [
-            newNodes,
-            function(parent, child){ return parent.key == child.parentKey },
-            false
-        ]);
-
-        // change the treeview icon to show it is no longer loading
-        i2b2.WORK.view.main.treeview.treeview('setNodeLoaded', [
-            function(parent, parentKey){ return parent.key == parentKey },
-            parentNode
-        ]);
-        // render tree
-        i2b2.WORK.view.main.treeview.treeview('redraw', []);
-    };
-    // ajax communicator call
-    var varInput = {
-        parent_key_value: nodeData.i2b2.sdxInfo.sdxKeyValue,
-        result_wait_time: 180
-    };
-    i2b2.ONT.ajax.getChildren("WORK:Workplace", varInput, scopedCallback);
-*/
 };
 
 // This is done once the entire cell has been loaded
@@ -223,41 +176,6 @@ i2b2.events.afterCellInit.add(
 // ===================================================================
 			console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
 			// TODO: Refactor this for the new GUI
-			/*
-			var thisview = i2b2.ONT.view.nav;
-			thisview.Resize();
-			// initialize treeview
-			if (!thisview.yuiTree) {
-				thisview.yuiTree = new YAHOO.widget.TreeView("ontNavResults");
-				thisview.yuiTree.setDynamicLoad(i2b2.sdx.Master.LoadChildrenFromTreeview,1);
-				// register the treeview with the SDX subsystem to be a container for CONCPT objects
-				i2b2.sdx.Master.AttachType("ontNavResults","CONCPT");
-			}
-			
-			i2b2.ONT.ctrlr.gen.events.onDataUpdate.subscribe(
-				(function(en,co) {
-					console.group("[EVENT CAPTURED i2b2.ONT.ctrlr.gen.events.onDataUpdate]");
-					console.dir(co[0]);
-					var dm_loc = co[0].DataLocation;
-					var dm_ptr = co[0].DataRef;
-					if (dm_loc=='i2b2.ONT.model.Categories') {
-						console.debug("Processing Category update");
-						i2b2.ONT.view.nav.PopulateCategories();
-					}
-					console.groupEnd();
-				})
-			);
-
-			i2b2.ONT.view.nav.ContextMenu = new YAHOO.widget.ContextMenu( 
-					"divContextMenu-Nav",  
-						{ lazyload: true,
-						trigger: $('ontNavDisp'), 
-						itemdata: [
-							{ text: "Refresh All",	onclick: { fn: i2b2.ONT.view.nav.doRefreshAll } }
-					] }  
-			); 
-			i2b2.ONT.view.nav.ContextMenu.subscribe("triggerContextMenu",i2b2.ONT.view.nav.ContextMenuValidate);
-			*/
 // ===================================================================
 		}
 	})

@@ -24,17 +24,6 @@ i2b2.sdx.TypeControllers.PRC.getEncapsulateInfo = function() {
 
 
 // *********************************************************************************
-//	DEPRECATED FUNCTIONS
-// *********************************************************************************
-i2b2.sdx.TypeControllers.PRC.AppendTreeNode = function(yuiTree, yuiRootNode, sdxDataPack, callbackLoader) {}
-i2b2.sdx.TypeControllers.PRC.onHoverOver = function(e, id, ddProxy) {}
-i2b2.sdx.TypeControllers.PRC.onHoverOut = function(e, id, ddProxy) {}
-i2b2.sdx.TypeControllers.PRC.SaveToDataModel = function(sdxData, sdxParentNode) {}
-i2b2.sdx.TypeControllers.PRC.LoadFromDataModel = function(key_value) {}
-i2b2.sdx.TypeControllers.PRC.ClearAllFromDataModel= function(sdxOptionalParent) {}
-
-
-// *********************************************************************************
 //	GENERATE RENDER DATA (DEFAULT HANDLER)
 // *********************************************************************************
 i2b2.sdx.TypeControllers.PRC.RenderData = function(sdxData, options) {
@@ -91,7 +80,7 @@ i2b2.sdx.TypeControllers.PRC.RenderData = function(sdxData, options) {
         nodeInfo.tvNodeState.expanded = true;
     }
 
-    var icon = 'branch';
+    var icon = 'leaf';
     switch(icon) {
         case "root":
             nodeInfo.cssClassMinor = "tvRoot";
@@ -101,6 +90,8 @@ i2b2.sdx.TypeControllers.PRC.RenderData = function(sdxData, options) {
             break;
         case "leaf":
             nodeInfo.cssClassMinor = "tvLeaf";
+            nodeInfo.tvNodeState.loaded = true;
+            nodeInfo.tvNodeState.expanded = true;
             break;
     }
     if (!i2b2.h.isUndefined(options.icon[icon])) {
@@ -122,7 +113,8 @@ i2b2.sdx.TypeControllers.PRC.RenderData = function(sdxData, options) {
 // *********************************************************************************
 //	GENERATE HTML (DEFAULT HANDLER)
 // *********************************************************************************
-i2b2.sdx.TypeControllers.PRC.RenderHTML= function(sdxData, options, targetDiv) {    
+i2b2.sdx.TypeControllers.PRC.RenderHTML= function(sdxData, options, targetDiv) {
+    console.warn("[i2b2.sdx.TypeControllers.PRC.RenderHTML] is deprecated!");
 	// OPTIONS:
 	//	title: string
 	//	showchildren: true | false
@@ -255,70 +247,7 @@ i2b2.sdx.TypeControllers.PRC.DragDrop = function(id, config) {
 	s.textOverflow = "ellipsis";
 };
 
-/* TODO: Reimplement drag and drop
-YAHOO.extend(i2b2.sdx.TypeControllers.PRC.DragDrop, YAHOO.util.DDProxy);
-i2b2.sdx.TypeControllers.PRC.DragDrop.prototype.startDrag = function(x, y) {
-	var dragEl = this.getDragEl();
-	var clickEl = this.getEl();
-	dragEl.innerHTML = clickEl.innerHTML;
-	dragEl.className = clickEl.className;
-	dragEl.style.backgroundColor = '#FFFFEE';
-	dragEl.style.color = clickEl.style.color;
-	dragEl.style.border = "1px solid blue";
-	dragEl.style.width = "160px";
-	dragEl.style.height = "20px";
-	this.setDelta(15,10);
-};
-i2b2.sdx.TypeControllers.PRC.DragDrop.prototype.endDrag = function(e) {
-	// remove DragDrop targeting CCS
-	var targets = YAHOO.util.DDM.getRelated(this, true); 
-	for (var i=0; i<targets.length; i++) {      
-		var targetEl = targets[i]._domRef; 
-		i2b2.sdx.Master.onHoverOut('PRC', e, targetEl, this);
-	} 
-};
-i2b2.sdx.TypeControllers.PRC.DragDrop.prototype.alignElWithMouse = function(el, iPageX, iPageY) {
-	var oCoord = this.getTargetCoord(iPageX, iPageY);
-	if (!this.deltaSetXY) {
-		var aCoord = [oCoord.x, oCoord.y];
-		YAHOO.util.Dom.setXY(el, aCoord);
-		var newLeft = parseInt( YAHOO.util.Dom.getStyle(el, "left"), 10 );
-		var newTop  = parseInt( YAHOO.util.Dom.getStyle(el, "top" ), 10 );
-		this.deltaSetXY = [ newLeft - oCoord.x, newTop - oCoord.y ];
-	} else {
-		var posX = (oCoord.x + this.deltaSetXY[0]);
-		var posY = (oCoord.y + this.deltaSetXY[1]);
-//		var scrSize = document.viewport.getDimensions();
-	    var w =  window.innerWidth || (window.document.documentElement.clientWidth || window.document.body.clientWidth);
-	    var h =  window.innerHeight || (window.document.documentElement.clientHeight || window.document.body.clientHeight);
-
-		var maxX = parseInt(w-25-160);
-		var maxY = parseInt(h-25);
-		if (posX > maxX) {posX = maxX;}
-		if (posX < 6) {posX = 6;}
-		if (posY > maxY) {posY = maxY;}
-		if (posY < 6) {posY = 6;}
-		YAHOO.util.Dom.setStyle(el, "left", posX + "px");
-		YAHOO.util.Dom.setStyle(el, "top",  posY + "px");
-	}
-	this.cachePosition(oCoord.x, oCoord.y);
-	this.autoScroll(oCoord.x, oCoord.y, el.offsetHeight, el.offsetWidth);
-};
-i2b2.sdx.TypeControllers.PRC.DragDrop.prototype.onDragOver = function(e, id) {
-	// fire the onHoverOver (use SDX so targets can override default event handler)
-	i2b2.sdx.Master.onHoverOver('PRC', e, id, this);
-};
-i2b2.sdx.TypeControllers.PRC.DragDrop.prototype.onDragOut = function(e, id) {
-	// fire the onHoverOut handler (use SDX so targets can override default event handlers)
-	i2b2.sdx.Master.onHoverOut('PRC', e, id, this);
-};
-i2b2.sdx.TypeControllers.PRC.DragDrop.prototype.onDragDrop = function(e, id) {
-	i2b2.sdx.Master.onHoverOut('PRC', e, id, this);
-	// retreive the concept data from the dragged element
-	draggedData = this.yuiTreeNode.data.i2b2_SDX;
-	i2b2.sdx.Master.ProcessDrop(draggedData, id);
-};
-*/
+/* TODO: Reimplement drag and drop */
 
 
 // *********************************************************************************
@@ -337,6 +266,16 @@ i2b2.sdx.TypeControllers.PRC.dragStartHandler = function(i2b2Data) {
     return i2b2Data;
 };
 
+// *********************************************************************************
+//	DEPRECATED FUNCTIONS
+// *********************************************************************************
+i2b2.sdx.TypeControllers.PRC.AppendTreeNode = function() { console.error("[i2b2.sdx.TypeControllers.PRC.AppendTreeNode] is deprecated!"); }
+i2b2.sdx.TypeControllers.PRC.SaveToDataModel = function() { console.error("[i2b2.sdx.TypeControllers.PRC.SaveToDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.PRC.LoadFromDataModel = function() { console.error("[i2b2.sdx.TypeControllers.PRC.LoadFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.PRC.ClearAllFromDataModel= function() { console.error("[i2b2.sdx.TypeControllers.PRC.ClearAllFromDataModel] is deprecated!"); }
+i2b2.sdx.TypeControllers.PRC.onHoverOver = function() { console.error("[i2b2.sdx.TypeControllers.PRC.onHoverOver] is deprecated!"); }
+i2b2.sdx.TypeControllers.PRC.onHoverOut = function() { console.error("[i2b2.sdx.TypeControllers.PRC.onHoverOut] is deprecated!"); }
+i2b2.sdx.TypeControllers.PRC.AttachDrag2Data = function() { console.error("[i2b2.sdx.TypeControllers.PRC.AttachDrag2Data] is deprecated!"); }
 
 console.timeEnd('execute time');
 console.groupEnd();
