@@ -1,0 +1,53 @@
+<div class="QueryGroup">
+    <div class="topbar" style="color:#777;">
+        <div class="JoinText">and</div>
+        <div class="with"><i class="bi bi-circle nosel"></i><i class="bi bi-circle-fill sel"></i>with</div>
+        <div class="without"><i class="bi bi-circle nosel"></i><i class="bi bi-circle-fill sel"></i>without</div>
+        <div class="when"><i class="bi bi-circle nosel"></i><i class="bi bi-circle-fill sel"></i>when</div>
+        <div class="qgclose"></div>
+    </div>
+    <div class="body">
+        <div class="leftbar"></div>
+        <div class="main">
+            <div class="content">
+                <div class="Event1Container" style="text-align:center;">
+                    <div class="orDragAdditional" style="padding:1em;">drag a concept here to define the first inclusion or exclusion criteria</div>
+                    <div class="orDragAdditional">or run the query below</div>
+                </div>
+                <div class="RunDialogContainer" style="margin-top: 1.5em;">
+                    <div>
+                        <div style="float:left; width:40%;">
+                            <div >Query for result(s)</div>
+                        </div>
+                        <div style="float:right; width:60%; padding:0 0.5em;">
+                            <div height>Name for query</div>
+                        </div>
+                    </div>
+                    <div style="height: 10em;">
+                        <div style="float:left; width:40%; height:100%;">
+                            <div class="ResultTypes" style="">
+                                <div id="crcDlgResultOutputPATIENTSET"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENTSET"> Patient set</div>
+                                <div id="crcDlgResultOutputPATIENT_ENCOUNTER_SET"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_ENCOUNTER_SET"> Encounter set</div>
+                                <div id="crcDlgResultOutputPATIENT_COUNT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_COUNT_XML" checked="checked"> Number of patients</div>
+                                <div id="crcDlgResultOutputPATIENT_GENDER_COUNT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_GENDER_COUNT_XML" checked="checked"> Gender patient breakdown</div>
+                                <div id="crcDlgResultOutputPATIENT_VITALSTATUS_COUNT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_VITALSTATUS_COUNT_XML" checked="checked"> Vital Status patient breakdown</div>
+                                <div id="crcDlgResultOutputPATIENT_RACE_COUNT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_RACE_COUNT_XML" checked="checked"> Race patient breakdown</div>
+                                <div id="crcDlgResultOutputPATIENT_AGE_COUNT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_AGE_COUNT_XML" checked="checked"> Age patient breakdown</div>
+                                <div id="crcDlgResultOutputPATIENTSET"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENTSET"> Timeline</div>
+                                <div id="crcDlgResultOutputPATIENT_LOS_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_LOS_XML"> Length of stay breakdown</div>
+                                <div id="crcDlgResultOutputPATIENT_TOP50MEDS_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_TOP50MEDS_XML"> Top 50 medications breakdown</div>
+                                <div id="crcDlgResultOutputPATIENT_TOP50DIAG_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_TOP50DIAG_XML"> Top 50 diangosis breakdown</div>
+                                <div id="crcDlgResultOutputPATIENT_INOUT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_INOUT_XML"> Inpatient and outpatient breakdown</div>
+                            </div>
+                        </div>
+                        <div style="float:right; width:60%; height: 100%; padding:0 0 0 0.5em; position:relative;">
+                            <div><input type="text" style="width:100%"></input></div>
+                            <div style="position:absolute; right:0; bottom:0;"><input type="button" value="Run Query"></input></div>
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

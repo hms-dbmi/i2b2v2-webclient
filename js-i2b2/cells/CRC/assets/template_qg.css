@@ -1,0 +1,338 @@
+.CRC_QT_view {
+    position: absolute;
+    background: #FFF;
+    top: 5px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    border: 1px solid #678;
+    overflow-y: scroll;
+}
+
+.hoverover {
+    display: none;
+}
+.expander {
+    max-height: 1000px;
+    transition: max-height 0.75s cubic-bezier(0.075, 0.82, 0.165, 1);
+    overflow: hidden;
+}
+.expander.hidden {
+    max-height: 0 !important;
+}
+.DateOccursBody {
+        text-align: center;
+}
+.DateOccursBody > div{
+    padding: 1em 0em;
+}
+.DateOccursBody.expander {
+    max-height: 10em;
+}
+.QueryGroup .DateRange1Body,
+.QueryGroup .DateRange2Body {
+    max-height: 10em;
+}
+
+.DateOccursBody > div {
+    padding: 1em 0em;
+}
+.OccursCount {
+    display: inline !important;
+    width: 5em;
+    text-align: center;
+}
+
+.QueryGroup {
+    min-width: 20em;
+    margin: 1em;
+}
+
+.QueryGroup .topbar {
+    width: 100%;
+}
+
+.QueryGroup .topbar .JoinText {
+    width: 10em;
+    border-radius: 5px 0px 0px 0px;
+    -webkit-border-radius: 5px 0px 0px 0px;
+    -moz-border-radius: 5px 0px 0px 0px;
+    padding-left: 2.5em !important;
+}
+.QueryGroup .topbar .qgclose {
+    border-radius: 0px 5px 0px 0px;
+    -webkit-border-radius: 0px 5px 0px 0px;
+    -moz-border-radius: 0px 5px 0px 0px;
+    padding-left: 4em !important;
+}
+
+.QueryGroup .topbar .JoinText,
+.QueryGroup .topbar .with,
+.QueryGroup .topbar .without,
+.QueryGroup .topbar .when,
+.QueryGroup .topbar .qgclose {
+    display: inline-flex;
+    float:left;
+    padding: 0.5em;
+    height: 2.3em;
+}
+
+.QueryGroup .topbar .with,
+.QueryGroup .topbar .without,
+.QueryGroup .topbar .when,
+.QueryGroup .topbar .qgclose i {
+    cursor: default;
+}
+.QueryGroup.with .topbar .with,
+.QueryGroup.with .topbar .without,
+.QueryGroup.with .topbar .when,
+.QueryGroup.with .topbar .qgclose i,
+.QueryGroup.without .topbar .with,
+.QueryGroup.without .topbar .without,
+.QueryGroup.without .topbar .when,
+.QueryGroup.without .topbar .qgclose i,
+.QueryGroup.when .topbar .with,
+.QueryGroup.when .topbar .without,
+.QueryGroup.when .topbar .when,
+.QueryGroup.when .topbar .qgclose i {
+    cursor: pointer;
+}
+
+.QueryGroup .topbar .JoinText,
+.QueryGroup .topbar .with,
+.QueryGroup .topbar .without,
+.QueryGroup .topbar .when,
+.QueryGroup .topbar .qgclose,
+.QueryGroup .body .leftbar {
+    transition: background-color 0.3s ease;
+}
+.QueryGroup.when .SequenceBar,
+.QueryGroup.when .topbar .JoinText,
+.QueryGroup.when .topbar .with,
+.QueryGroup.when .topbar .without,
+.QueryGroup.when .topbar .when,
+.QueryGroup.when .topbar .qgclose,
+.QueryGroup.when .body .leftbar {
+    background: #d8a407;
+}
+.QueryGroup.without .SequenceBar,
+.QueryGroup.without .topbar .JoinText,
+.QueryGroup.without .topbar .with,
+.QueryGroup.without .topbar .without,
+.QueryGroup.without .topbar .when,
+.QueryGroup.without .topbar .qgclose,
+.QueryGroup.without .body .leftbar {
+    background: #ad7070;
+}
+.QueryGroup.with .SequenceBar,
+.QueryGroup.with .topbar .JoinText,
+.QueryGroup.with .topbar .with,
+.QueryGroup.with .topbar .without,
+.QueryGroup.with .topbar .when,
+.QueryGroup.with .topbar .qgclose,
+.QueryGroup.with .body .leftbar {
+    background: #7ab893;
+}
+.QueryGroup .SequenceBar,
+.QueryGroup .topbar .JoinText,
+.QueryGroup .topbar .with,
+.QueryGroup .topbar .without,
+.QueryGroup .topbar .when,
+.QueryGroup .topbar .qgclose,
+.QueryGroup .body .leftbar {
+    background: #cccccc;
+}
+
+
+.QueryGroup.when .DateOccursLbl,
+.QueryGroup.when .DateOccursBody {
+    display:none;
+}
+.QueryGroup.when .DateRange1Body,
+.QueryGroup.when .DateRange2Body,
+.QueryGroup.when .SequenceBar {
+    display: block;
+}
+
+.QueryGroup.when .DateRange1Lbl,
+.QueryGroup.when .DateRange2Lbl,
+.QueryGroup .DateOccursLbl {
+    border-radius: 0.3em;
+    background: #cccccc;
+    border: solid 1px black;
+    display: inline-flex;
+    padding: 0.5em;
+    margin: 0.5em;
+    cursor: pointer;
+}
+.QueryGroup .DateRange1Lbl i.bi,
+.QueryGroup .DateRange2Lbl i.bi,
+.QueryGroup .DateOccursLbl i.bi {
+    margin-left: 0.5em;
+}
+
+
+.QueryGroup.when .EventLbl {
+    max-height: 2em;
+}
+.QueryGroup.when .Event1Container,
+.QueryGroup.when .Event2Container {
+    max-height: 30em;
+    padding-bottom: 1em;
+}
+.QueryGroup .SequenceBar {
+    transition: max-height 0.75s cubic-bezier(0.075, 0.82, 0.165, 1), background-color 0.3s ease;
+    max-height: 0;
+    overflow: hidden;
+}
+
+.QueryGroup .EventLbl,
+.QueryGroup .Event2Container {
+    max-height: 0;
+    transition: max-height 0.75s cubic-bezier(0.075, 0.82, 0.165, 1);
+    overflow: hidden;
+}
+
+.QueryGroup .Event1Container {
+    border-top: 1px solid #ddd;
+}
+.QueryGroup .Event1Container .EventLbl {
+    position: relative;
+    top: -1px;
+}
+
+
+.QueryGroup.when .SequenceBar {
+    max-height: 2.3em;
+    padding: 0.4em;
+}
+
+.QueryGroup.when .SequenceBar select.occurs {
+    width: 8.5em;
+}
+.QueryGroup.when .SequenceBar select,
+.QueryGroup.when .SequenceBar input {
+    border-top: 0px;
+    border-right: 0px;
+    border-left: 0px;
+    border-bottom: solid 1px black;
+    background: none;
+}
+.QueryGroup.when .SequenceBar select {
+    cursor: pointer;
+}
+
+
+.occursBefore,
+.occursAtLeast {
+    display: none;
+}
+.QueryGroup.when .SequenceBar.occursBefore span.occursBefore {
+    display: inline;
+}
+.QueryGroup.when .SequenceBar.occursAtLeast span.occursAtLeast {
+    display: inline;
+}
+.QueryGroup.when .SequenceBar .occursNumber {
+    width: 2em;
+    position: relative;
+    top: -0.15em;
+    text-align: center;
+}
+
+
+
+
+.DateRange1Lbl,
+.DateRange1Body {
+    display: none;
+}
+
+.EventLbl {
+    background: #e6e6e6;
+    height: 2em;
+    width: 100%;
+    text-align: right;
+}
+
+.QueryGroup .body {
+    display: flex;
+    clear: both;
+    box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+}
+.QueryGroup .body .leftbar {
+    float: left;
+    width: 1.5em;
+}
+
+.QueryGroup .body .main {
+    width:100%
+}
+.QueryGroup .body .main .content {
+    xxxborder: 1px solid #ececec;
+    background: #f9f9f9;
+    width:100%;
+    border-radius: 0px 5px 5px 0px;
+    -webkit-border-radius: 0px 5px 5px 0px;
+    -moz-border-radius: 0px 5px 5px 0px;
+}
+
+.QueryGroup .body .main .content .orDragAdditional {
+    color: #878787;
+    font-style: italic;
+    margin: 0.6em;
+}
+
+.QueryGroup .with i,
+.QueryGroup .without i,
+.QueryGroup .when i {
+    font-size: 0.9em;
+    margin-right: 0.2em;
+}
+.QueryGroup .with i.sel,
+.QueryGroup .without i.sel,
+.QueryGroup .when i.sel,
+.QueryGroup.with .with i.nosel,
+.QueryGroup.without .without i.nosel,
+.QueryGroup.when .when i.nosel {
+    display: none;
+}
+.QueryGroup.with .with i.sel,
+.QueryGroup.without .without i.sel,
+.QueryGroup.when .when i.sel {
+    display: inline;
+}
+
+.QueryGroup .RunDialogContainer > div {
+    padding:0.5em;
+}
+
+.QueryGroup .RunDialogContainer .ResultTypes {
+    border: 1px solid #ccc;
+    height: 100%;
+    overflow: auto;
+    padding: 0.3em;
+}
+
+.QueryGroup .RunDialogContainer .ResultTypes div {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+
+
+.TermList span {
+    line-height: 1.6em;
+    position: relative;
+    top: 0.2em;
+}
+.TermList span img {
+    vertical-align: text-bottom;
+}
+
+.TermList .termOr {
+    width: 2em;
+    display: inline-block;
+    text-align: right;
+}

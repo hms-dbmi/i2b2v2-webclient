@@ -88,7 +88,7 @@ i2b2.Init = function() {
         });
     }
 
-    // give the browser some time to breath and load the external JS files before starting the PM cell
+    // give the browser some time to breathe and load the external JS files before starting the PM cell
     i2b2.events.afterFrameworkInit.add(function(){
         // Loading the hive cells
         for (var cellKey in i2b2.hive.cfg.lstCells) {
