@@ -72,7 +72,7 @@ i2b2.layout.init = function () {
     i2b2.layout.gl_configs.leftCol = {
         settings: {
             showPopoutIcon:false,
-            reorderEnabled:false,
+//            reorderEnabled:false,
             constrainDragToContainer: true
         },
         dimensions: {
