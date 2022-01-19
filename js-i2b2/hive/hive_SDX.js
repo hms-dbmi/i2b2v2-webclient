@@ -110,7 +110,7 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                 if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].DropHandler === "function") {
                     // TODO: Finish this to pass the data
                     let sdxJSON = JSON.parse(e.originalEvent.dataTransfer.getData("application/i2b2+json"));
-                    eventHandlers[sdxType].DropHandler(sdxJSON);
+                    eventHandlers[sdxType].DropHandler(sdxJSON, e);
                 }
             }
             e.stopImmediatePropagation();
@@ -195,6 +195,9 @@ i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
     if (container.length && container.length > 0) {
         container = container[0];
     }
+
+    // add class for target bubbling
+    $(container).addClass("i2b2DropTarget");
 
     // confirm that it is a proper DOM node
     let attrlist = [
@@ -422,6 +425,14 @@ i2b2.sdx.Master.getChildRecords = function(sdxParent, onCompleteCallback) {
     }
 };
 
+
+// hack to allow drag targets to alter their target DOM
+document.addEventListener("dragstart", function(event) {
+    $(".i2b2DropTarget").addClass("i2b2DropPrep");
+}, false);
+document.addEventListener("dragend", function(event) {
+    $(".i2b2DropTarget").removeClass("i2b2DropPrep");
+}, false);
 
 
 console.timeEnd('execute time');
