@@ -1,48 +1,48 @@
-		<item>
-			<hlevel>{{hlevel}}</hlevel>
-			<item_name>{{{name}}}</item_name>
-			<item_key>{{{key}}}</item_key>
-			<tooltip>{{{tooltip}}}</tooltip>
-			<class>{{class}}</class>
-			<item_icon>{{icon}}</item_icon>
-			<item_is_synonym>{{isSynonym}}</item_is_synonym>
-			{{!--
-			<dim_tablename>dim_tablename0</dim_tablename>
-			<dim_columnname>dim_columnname0</dim_columnname>
-			<dim_dimcode>dim_dimcode0</dim_dimcode>
-			<dim_columndatatype>dim_columndatatype0</dim_columndatatype>
-			<dim_operator>dim_operator0</dim_operator> LIKE
-			<facttablecolumn>facttablecolumn0</facttablecolumn>
-			<item_color/>
-			<item_shape/>
-			<item_row_number/>
-			<item_is_synonym/>
+        <item>
+            <hlevel>{{hlevel}}</hlevel>
+            <item_name>{{{name}}}</item_name>
+            <item_key>{{{key}}}</item_key>
+            <tooltip>{{{tooltip}}}</tooltip>
+            <class>{{class}}</class>
+            <item_icon>{{icon}}</item_icon>
+            <item_is_synonym>{{isSynonym}}</item_is_synonym>
+            {{!--
+            <dim_tablename>dim_tablename0</dim_tablename>
+            <dim_columnname>dim_columnname0</dim_columnname>
+            <dim_dimcode>dim_dimcode0</dim_dimcode>
+            <dim_columndatatype>dim_columndatatype0</dim_columndatatype>
+            <dim_operator>dim_operator0</dim_operator> LIKE
+            <facttablecolumn>facttablecolumn0</facttablecolumn>
+            <item_color/>
+            <item_shape/>
+            <item_row_number/>
+            <item_is_synonym/>
 
-			<constrain_by_value>
-				<value_operator>
-					EQ/NE/GT/GE/LT/LE/IN/BETWEEN/LIKE[exact]/LIKE[begin]/ LIKE[end]/LIKE[contains]/Contains[database]
-				</value_operator>
-				<value_constraint>value_constraint0</value_constraint>
-				<value_unit_of_measure>unit</value_unit_of_measure>
-				<value_type>TEXT/LARGETEX/NUMBER/FLAG/MODIFIER</value_type>
-			</constrain_by_value>
+            <constrain_by_value>
+                <value_operator>
+                    EQ/NE/GT/GE/LT/LE/IN/BETWEEN/LIKE[exact]/LIKE[begin]/ LIKE[end]/LIKE[contains]/Contains[database]
+                </value_operator>
+                <value_constraint>value_constraint0</value_constraint>
+                <value_unit_of_measure>unit</value_unit_of_measure>
+                <value_type>TEXT/LARGETEX/NUMBER/FLAG/MODIFIER</value_type>
+            </constrain_by_value>
 
-			<constrain_by_date>
-				<date_from time="start_date" inclusive="yes">2006-05-04</date_from>
-				<date_to time="start_date" inclusive="yes">2006-05-04</date_to>
-			</constrain_by_date>
+            <constrain_by_date>
+                <date_from time="start_date" inclusive="yes">2006-05-04</date_from>
+                <date_to time="start_date" inclusive="yes">2006-05-04</date_to>
+            </constrain_by_date>
 
-			<constrain_by_modifier>
-				<applied_path>\i2b2\Medications%</applied_path>
-				<modifier_key>\\i2b2_DEMO\Dose\</modifier_key>
-				<constrain_by_value>
-					<value_operator>
-						EQ/NE/GT/GE/LT/LE/IN/BETWEEN/LIKE[exact]/LIKE[begin]/ LIKE[end]/LIKE[contains]/Contains[database]
-					</value_operator>
-					<value_constraint> value_constraint0</value_constraint>
-					<value_unit_of_measure>unit_of_measure</value_unit_of_measure>
-					<value_type>TEXT/NUMBER/FLAG/MODIFIER</value_type>
-				</constrain_by_value>
-			</constrain_by_modifier>
-			--}}
-		</item>
+            <constrain_by_modifier>
+                <applied_path>\i2b2\Medications%</applied_path>
+                <modifier_key>\\i2b2_DEMO\Dose\</modifier_key>
+                <constrain_by_value>
+                    <value_operator>
+                        EQ/NE/GT/GE/LT/LE/IN/BETWEEN/LIKE[exact]/LIKE[begin]/ LIKE[end]/LIKE[contains]/Contains[database]
+                    </value_operator>
+                    <value_constraint> value_constraint0</value_constraint>
+                    <value_unit_of_measure>unit_of_measure</value_unit_of_measure>
+                    <value_type>TEXT/NUMBER/FLAG/MODIFIER</value_type>
+                </constrain_by_value>
+            </constrain_by_modifier>
+            --}}
+        </item>
