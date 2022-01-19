@@ -1,0 +1,19 @@
+{{#each concepts}}
+<div class="concept" data-concept-index="{{@index}}">
+    <span class="termOr">or</span>
+    <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}"><img src="{{this.renderData.iconImg}}"/> {{this.renderData.title}}</span>
+    <span class="actions">
+        {{#if this.isLab}}
+            <i class="bi bi-moisture" title="Edit lab values"></i>
+        <!--
+            <i class="bi bi-eyedropper" title="Edit Lab Values"></i>
+            <i class="bi bi-droplet" title="Edit Lab Values"></i>
+            <i class="bi bi-speedometer" title="Edit Lab Values"></i>
+            <i class="bi bi-thermometer-half" title="Edit Lab Values"></i>
+        -->
+        {{/if}}
+        <i class="bi bi-info-circle info" title="More info about term"></i>
+        <i class="bi bi-x-circle delete" title="Remove"></i>
+    </span>
+</div>
+{{/each}}

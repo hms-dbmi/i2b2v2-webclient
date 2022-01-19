@@ -10,7 +10,7 @@
         <div class="leftbar"></div>
         <div class="main">
             <div class="content">
-                <div class="Event1Container">
+                <div class="Event1Container event" data-eventIdx="0">
                     <div class="EventLbl">
                         <div style="float:left; margin:4px 10px">Event 1</div>
                         <i style="float:right; margin:0px 10px; font-size: 1.2em; position: relative; top:0.4em;" class="bi bi-stopwatch"></i>
@@ -23,11 +23,11 @@
                             <div style="width:11em; margin:auto; position:relative; text-align:center; ">
                                 <div style="font-size: 0.8em;">Concepts must occur between</div>
                                 <div style="width:11em;">
-                                    <input class="DateStart form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" />
+                                    <input class="DateStart form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.start}}" />
                                 </div>
                                 <div style="font-size: 0.8em;">and</div>
                                 <div style="width:11em;">
-                                    <input class="DateEnd form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" />
+                                    <input class="DateEnd form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.end}}"/>
                                 </div>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                             <div>
                                 <div style="font-size: 0.8em;">Concepts must occur</div>
                                 <div>
-                                    <input class="OccursCount form-control" placeholder="1" value="1" />
+                                    <input class="OccursCount form-control" placeholder="1" value="{{this.events.0.instances}}" />
                                 </div>
                                 <div style="font-size: 0.8em;">or more time(s)</div>
 
@@ -49,48 +49,57 @@
                             <div style="width:11em; margin:auto; position:relative; text-align:center; ">
                                 <div style="font-size: 0.8em;">Concepts must occur between</div>
                                 <div style="width:11em;">
-                                    <input class="DateRange1Start" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" />
+                                    <input class="DateRange1Start" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.start}}" />
                                 </div>
                                 <div style="font-size: 0.8em;">and</div>
                                 <div style="width:11em;">
-                                    <input class="DateRange1End" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" />
+                                    <input class="DateRange1End" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.end}}" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- when selection bar -->
-                <div class="SequenceBar occursBefore">
+                <div class="SequenceBar {{this.when.occurs}}">
                         <span>the first occurrence of Event 1
                             <select class="occurs">
+                                {{#select this.when.occurs}}
                                 <option value="occursBefore">occurs before</option>
                                 <option value="occursAtLeast">occurs at least</option>
+                                {{/select}}
                             </select>
                         </span>
                     <span class="occursBefore">
                             <select class="thefirstany" onchange="javascript:this.blur()">
+                                {{#select this.when.firstany}}
                                 <option value="first">the first</option>
                                 <option value="any">any</option>
+                                {{/select}}
                             </select>
                             occurence of Event 2
                         </span>
                     <span class="occursAtLeast">
-                            <input class="occursNumber" placeholder="#" value="1" type="text">
+                            <input class="occursNumber" placeholder="#" value="{{this.when.occursNum}}" type="text">
+
                             <select class="occursUnit">
+                                {{#select this.when.occursUnit}}
                                 <option value="day">day(s)</option>
                                 <option value="month">month(s)</option>
                                 <option value="year">year(s)</option>
+                                {{/select}}
                             </select>
                             before
                             <select class="thefirstany">
+                                {{#select this.when.firstany}}
                                 <option value="first">the first</option>
                                 <option value="any">any</option>
+                                {{/select}}
                             </select>
                             occurrence of Event 2
                         </span>
                 </div>
                 <!-- event 2 entry -->
-                <div class="Event2Container">
+                <div class="Event2Container event" data-eventIdx="1">
                     <div class="EventLbl">
                         <div style="float:left; margin:4px 10px">Event 2</div>
                         <i style="float:right; margin:0px 10px; font-size: 1.2em; position: relative; top:0.4em;" class="bi bi-stopwatch"></i>
@@ -103,11 +112,11 @@
                             <div style="width:11em; margin:auto; position:relative; text-align:center; ">
                                 <div style="font-size: 0.8em;">Concepts must occur between</div>
                                 <div style="width:11em;">
-                                    <input class="DateRange2Start" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" />
+                                    <input class="DateRange2Start" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.1.dateRange.start}}"/>
                                 </div>
                                 <div style="font-size: 0.8em;">and</div>
                                 <div style="width:11em;">
-                                    <input class="DateRange2End" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" />
+                                    <input class="DateRange2End" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.1.dateRange.end}}" />
                                 </div>
                             </div>
                         </div>

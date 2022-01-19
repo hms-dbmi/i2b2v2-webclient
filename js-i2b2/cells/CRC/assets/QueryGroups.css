@@ -1,3 +1,28 @@
+.Event1Container.i2b2DropTarget,
+.Event2Container.i2b2DropTarget {
+    transition: background 0.75s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.Event1Container.i2b2DropTarget.DropHover,
+.Event2Container.i2b2DropTarget.DropHover,
+.Event1Container .i2b2DropTarget.DropHover {
+    background: #ffff60a0;
+}
+
+.i2b2DropTarget {
+    position: relative;
+}
+
+
+.i2b2DropTarget.i2b2DropPrep:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 .CRC_QT_view {
     position: absolute;
     background: #FFF;
@@ -5,9 +30,46 @@
     bottom: 5px;
     left: 5px;
     right: 5px;
-    border: 1px solid #678;
-    overflow-y: scroll;
 }
+
+.CRC_QT_query {
+    overflow-y: scroll;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 3.3em;
+    border: 1px solid #678;
+}
+
+.CRC_QT_runbar {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 3.3em;
+    background: #BCE;
+    padding: 0.4em 0 0 0;
+}
+
+.CRC_QT_runbar .name {
+    right: 10em;
+    position: relative;
+    left: 0;
+}
+
+.CRC_QT_runbar .name input {
+    width: 100%
+}
+
+.CRC_QT_runbar .button {
+    padding: 1.1em 0;
+    position: absolute;
+    top: 0.5em;
+    right: 0;
+}
+
+
 
 .hoverover {
     display: none;
@@ -175,6 +237,7 @@
 .QueryGroup.when .EventLbl {
     max-height: 2em;
 }
+
 .QueryGroup.when .Event1Container,
 .QueryGroup.when .Event2Container {
     max-height: 30em;
@@ -330,9 +393,20 @@
 .TermList span img {
     vertical-align: text-bottom;
 }
-
 .TermList .termOr {
     width: 2em;
     display: inline-block;
     text-align: right;
+}
+.TermList .actions {
+    margin-left: 0.75em;
+}
+.TermList .actions i {
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.35s, margin-left 0.5s;
+}
+.TermList .concept:hover .actions i {
+    opacity: 1;
+    margin-left: .3em;
 }

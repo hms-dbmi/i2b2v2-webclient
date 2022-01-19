@@ -1,0 +1,11 @@
+<query_definition>
+	<query_name>{{this.name}}</query_name>
+	<query_timing>{{queryTiming}}</query_timing>
+	<specificity_scale>{{specificity}}</specificity_scale>
+	{{#if useShrine}}
+	<use_shrine>1</use_shrine>
+	{{/if}}
+	{{#each panels}}
+{{#> QueryPanel }}QueryPanel partial/template not registered!{{/QueryPanel}}
+	{{/each}}
+</query_definition>
