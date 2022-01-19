@@ -7,12 +7,6 @@
       "urlCellPM": "http://services.i2b2.org/i2b2/services/PMService/",
       "allowAnalysis": true,
       "debug": false
-    },
-    { "domain": "i2b2demo",
-      "name": "Refresh-Kubernetes",
-      "urlCellPM": "https://localhost/i2b2/services/PMService/",
-      "allowAnalysis": true,
-      "debug": true
     }
   ],
   "loginTimeout": 5
