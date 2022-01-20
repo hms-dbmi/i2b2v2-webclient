@@ -830,15 +830,15 @@ i2b2.events.initView.subscribe((function(eventTypeName, newMode) {
     console.error("not implemented");
 
 
-	// -------------------------------------------------------
+    // -------------------------------------------------------
 }),'',i2b2.CRC.view.QT);
 
 
 // ================================================================================================== //
 i2b2.events.changedViewMode.subscribe((function(eventTypeName, newMode) {
 // -------------------------------------------------------
-	debugger;
-	console.error("not implemented");
+    debugger;
+    console.error("not implemented");
 // -------------------------------------------------------
 }),'', i2b2.CRC.view.QT);
 

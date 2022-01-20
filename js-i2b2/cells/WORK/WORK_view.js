@@ -467,7 +467,7 @@ i2b2.events.afterCellInit.add((function(cell){
             }).bind(this)
         );
         return;
-	}
+    }
 
 
 }));

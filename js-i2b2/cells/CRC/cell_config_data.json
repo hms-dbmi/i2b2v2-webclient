@@ -10,6 +10,7 @@
     "CRC_sdx_QGDEF.js",
     "CRC_view_History.js",
     "CRC_ctrlr_History.js",
+    "CRC_ctrlr_QryTool.js",
     "CRC_view_QryTool.js",
     "CRC_ctrlr_Options.js",
     "i2b2_msgs.js"

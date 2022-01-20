@@ -85,48 +85,48 @@ i2b2.PM.model.IdleTimer = (function() {
             window.addEventListener('keydown', resetTimer);
             window.addEventListener('mousedown', resetTimer);
             window.addEventListener('mousemove', resetTimer);
-		}
+        }
     }
 
-	// expose the private functions on returned object
+    // expose the private functions on returned object
     ret.start = startTimer;
     ret.resetTimeout = resetTimer;
 
-	return ret;
+    return ret;
 })();
 
 
 
 // attach actions to the logout timer
 i2b2.PM.model.IdleTimer.add(function(eventName){
-	switch(eventName) {
-		case "idle":
+    switch(eventName) {
+        case "idle":
             //if (!i2b2.PM.model.IdleTimer.dialogTimeout) {
             i2b2.PM.model.reLogin = true;
             //	i2b2.h.LoadingMask.show();
             //	i2b2.PM.doLoginDialog();
-			/*
-			 var r=confirm("Your session will automatically time out in 5 minutes due to inactivity.  Please click \"OK\" to continue your session, or click cancel to log out.");
-			 if (r==true)
-			 {
-			 i2b2.PM.model.IdleTimer.stop();
-			 i2b2.PM.udlogin.inputPass.value = i2b2.PM.model.login_password.substring(i2b2.PM.model.login_password.indexOf(">")+1,i2b2.PM.model.login_password.lastIndexOf("<") );
-			 i2b2.h.LoadingMask.show();
-			 i2b2.PM.doLogin();
-			 }
-			 else
-			 {
-			 i2b2.PM.doLogout();
-			 }
-			 */
+            /*
+             var r=confirm("Your session will automatically time out in 5 minutes due to inactivity.  Please click \"OK\" to continue your session, or click cancel to log out.");
+             if (r==true)
+             {
+             i2b2.PM.model.IdleTimer.stop();
+             i2b2.PM.udlogin.inputPass.value = i2b2.PM.model.login_password.substring(i2b2.PM.model.login_password.indexOf(">")+1,i2b2.PM.model.login_password.lastIndexOf("<") );
+             i2b2.h.LoadingMask.show();
+             i2b2.PM.doLogin();
+             }
+             else
+             {
+             i2b2.PM.doLogout();
+             }
+             */
             var handleCancel = function() {
                 i2b2.PM.doLogout();
             };
             var loopBackSubmit = function() {
                 i2b2.PM.model.IdleTimer.stop();
                 i2b2.PM.udlogin.inputPass.value = i2b2.PM.model.login_password.substring(i2b2.PM.model.login_password.indexOf(">")+1,i2b2.PM.model.login_password.lastIndexOf("<") );
-				i2b2.h.LoadingMask.show();
-				i2b2.PM.doLogin();
+                i2b2.h.LoadingMask.show();
+                i2b2.PM.doLogin();
                 i2b2.PM.model.dialogTimeout.hide();
                 i2b2.h.LoadingMask.hide();
             };
@@ -150,10 +150,10 @@ i2b2.PM.model.IdleTimer.add(function(eventName){
             i2b2.PM.model.dialogTimeout.show();
             //var idleTimer = YAHOO.util.IdleTimer;
             //	i2b2.PM.model.WarnTimer.start(10000);
-			break;
-		case "logout":
-			break;
-	}
+            break;
+        case "logout":
+            break;
+    }
 });
 
                
@@ -164,65 +164,65 @@ i2b2.PM.model.html = {};
 
 // project selection screen
 i2b2.PM.model.html.projDialog = '<div id="i2b2_projects_modal_dialog" style="display:block;">\n'+
-	'	<div class="hd" style="background:#6677AA;">Choose a Project</div>\n'+
-	'	<div class="bd">\n'+
-	'	<form onsubmit="i2b2.PM.selectProject(); return false;" style="margin: 0pt; padding: 0pt;" name="projectsForm">\n'+
-	'		<div style="text-align:right">\n'+
-	'			<div style="float:left; padding-top:3px"><B>Project:</B></div>\n'+
-	'			<div style="float:left; margin-left:5px"><select id="loginProjs" name="projects" onchange="i2b2.PM.view.modal.projectDialog.renderDetails()"><option value="">Loading...</option></select></div>\n'+
-	'			<input type="button" value="     Go     " onclick="i2b2.PM.view.modal.projectDialog.loadProject()"/>\n'+
-	'		</div>\n'+
-	'		<div id="projectAttribs">\n'+
-	'			<div>\n'+
-	'				<div style="float:left; width:120px; background:#DDF; padding-left:4px; border-bottom:1px solid #bbb">test</div>\n'+
-	'				<div style="float:right; padding-left:6px; width:248px; border-bottom:1px solid #ddd">this tis the test description</div>\n'+
-	'			</div>\n'+
-	'			<div>\n'+
-	'				<div style="float:left; width:120px; background:#DDF; padding-left:4px; border-bottom:1px solid #bbb">test</div>\n'+
-	'				<div style="float:right; padding-left:6px; width:248px; border-bottom:1px solid #ddd">this tis the test description</div>\n'+
-	'			</div>\n'+
-	'			<div style="clear:both; display:none"></div>\n'+
-	'		</div>\n'+
-	'		<div id="projDetailRec-CLONE" style="display:none">\n'+
-	'			<div class="name" >test</div>\n'+
-	'			<div class="value">this tis the test description</div>\n'+
-	'		</div>\n'+
-	'	</form>\n'+
-	'	</div>\n'+
-	'</div>\n';
-	
-	
-	
-	
-	i2b2.PM.model.html.announceDialog = '<div id="i2b2_announcement_modal_dialog" style="display:block;">\n'+
-	'	<div class="hd" style="background:#6677AA;">Project Announcements</div>\n'+
-	'	<div class="bd">\n'+
-	'	<form onsubmit="i2b2.PM.selectProject(); return false;" style="margin: 0pt; padding: 0pt;" name="projectsForm">\n'+
-	'		<div style="text-align:right">\n'+
-	'			<div style="float:left; padding-top:3px"><B>Project:</B></div>\n'+
-	'			<div style="float:left; margin-left:5px"><select id="loginProjs" name="projects" onchange="i2b2.PM.view.modal.projectDialog.renderDetails()"><option value="">Loading...</option></select></div>\n'+
-	'			<input type="button" value="     Go     " onclick="i2b2.PM.view.modal.projectDialog.loadProject()"/>\n'+
-	'		</div>\n'+
-	'		<div id="projectAttribs">\n'+
-	'			<div>\n'+
-	'				<div style="float:left; width:120px; background:#DDF; padding-left:4px; border-bottom:1px solid #bbb">test</div>\n'+
-	'				<div style="float:right; padding-left:6px; width:248px; border-bottom:1px solid #ddd">this tis the test description</div>\n'+
-	'			</div>\n'+
-	'			<div>\n'+
-	'				<div style="float:left; width:120px; background:#DDF; padding-left:4px; border-bottom:1px solid #bbb">test</div>\n'+
-	'				<div style="float:right; padding-left:6px; width:248px; border-bottom:1px solid #ddd">this tis the test description</div>\n'+
-	'			</div>\n'+
-	'			<div style="clear:both; display:none"></div>\n'+
-	'		</div>\n'+
-	'		<div id="projDetailRec-CLONE" style="display:none">\n'+
-	'			<div class="name" >test</div>\n'+
-	'			<div class="value">this tis the test description</div>\n'+
-	'		</div>\n'+
-	'	</form>\n'+
-	'	</div>\n'+
-	'</div>\n';
+    '	<div class="hd" style="background:#6677AA;">Choose a Project</div>\n'+
+    '	<div class="bd">\n'+
+    '	<form onsubmit="i2b2.PM.selectProject(); return false;" style="margin: 0pt; padding: 0pt;" name="projectsForm">\n'+
+    '		<div style="text-align:right">\n'+
+    '			<div style="float:left; padding-top:3px"><B>Project:</B></div>\n'+
+    '			<div style="float:left; margin-left:5px"><select id="loginProjs" name="projects" onchange="i2b2.PM.view.modal.projectDialog.renderDetails()"><option value="">Loading...</option></select></div>\n'+
+    '			<input type="button" value="     Go     " onclick="i2b2.PM.view.modal.projectDialog.loadProject()"/>\n'+
+    '		</div>\n'+
+    '		<div id="projectAttribs">\n'+
+    '			<div>\n'+
+    '				<div style="float:left; width:120px; background:#DDF; padding-left:4px; border-bottom:1px solid #bbb">test</div>\n'+
+    '				<div style="float:right; padding-left:6px; width:248px; border-bottom:1px solid #ddd">this tis the test description</div>\n'+
+    '			</div>\n'+
+    '			<div>\n'+
+    '				<div style="float:left; width:120px; background:#DDF; padding-left:4px; border-bottom:1px solid #bbb">test</div>\n'+
+    '				<div style="float:right; padding-left:6px; width:248px; border-bottom:1px solid #ddd">this tis the test description</div>\n'+
+    '			</div>\n'+
+    '			<div style="clear:both; display:none"></div>\n'+
+    '		</div>\n'+
+    '		<div id="projDetailRec-CLONE" style="display:none">\n'+
+    '			<div class="name" >test</div>\n'+
+    '			<div class="value">this tis the test description</div>\n'+
+    '		</div>\n'+
+    '	</form>\n'+
+    '	</div>\n'+
+    '</div>\n';
 
-	
+
+
+
+    i2b2.PM.model.html.announceDialog = '<div id="i2b2_announcement_modal_dialog" style="display:block;">\n'+
+    '	<div class="hd" style="background:#6677AA;">Project Announcements</div>\n'+
+    '	<div class="bd">\n'+
+    '	<form onsubmit="i2b2.PM.selectProject(); return false;" style="margin: 0pt; padding: 0pt;" name="projectsForm">\n'+
+    '		<div style="text-align:right">\n'+
+    '			<div style="float:left; padding-top:3px"><B>Project:</B></div>\n'+
+    '			<div style="float:left; margin-left:5px"><select id="loginProjs" name="projects" onchange="i2b2.PM.view.modal.projectDialog.renderDetails()"><option value="">Loading...</option></select></div>\n'+
+    '			<input type="button" value="     Go     " onclick="i2b2.PM.view.modal.projectDialog.loadProject()"/>\n'+
+    '		</div>\n'+
+    '		<div id="projectAttribs">\n'+
+    '			<div>\n'+
+    '				<div style="float:left; width:120px; background:#DDF; padding-left:4px; border-bottom:1px solid #bbb">test</div>\n'+
+    '				<div style="float:right; padding-left:6px; width:248px; border-bottom:1px solid #ddd">this tis the test description</div>\n'+
+    '			</div>\n'+
+    '			<div>\n'+
+    '				<div style="float:left; width:120px; background:#DDF; padding-left:4px; border-bottom:1px solid #bbb">test</div>\n'+
+    '				<div style="float:right; padding-left:6px; width:248px; border-bottom:1px solid #ddd">this tis the test description</div>\n'+
+    '			</div>\n'+
+    '			<div style="clear:both; display:none"></div>\n'+
+    '		</div>\n'+
+    '		<div id="projDetailRec-CLONE" style="display:none">\n'+
+    '			<div class="name" >test</div>\n'+
+    '			<div class="value">this tis the test description</div>\n'+
+    '		</div>\n'+
+    '	</form>\n'+
+    '	</div>\n'+
+    '</div>\n';
+
+
 
 console.timeEnd('execute time');
 console.groupEnd();

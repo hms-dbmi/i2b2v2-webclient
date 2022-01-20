@@ -168,26 +168,26 @@ i2b2.PM.cfg.msgs.setProjectRequest = '<?xml version="1.0" encoding="UTF-8" stand
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.setProjectRequest = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('project');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
-			tmpRec.key = i2b2.h.getXNodeVal(c[i], "key");
-			tmpRec.wiki = i2b2.h.getXNodeVal(c[i], "wiki");
-			tmpRec.description = i2b2.h.getXNodeVal(c[i], "description");
-			tmpRec.path = i2b2.h.getXNodeVal(c[i],"path");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[setProjectRequest] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('project');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
+            tmpRec.key = i2b2.h.getXNodeVal(c[i], "key");
+            tmpRec.wiki = i2b2.h.getXNodeVal(c[i], "wiki");
+            tmpRec.description = i2b2.h.getXNodeVal(c[i], "description");
+            tmpRec.path = i2b2.h.getXNodeVal(c[i],"path");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[setProjectRequest] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("setProjectRequest", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.setProjectRequest, null, i2b2.PM.cfg.parsers.setProjectRequest);
 
@@ -243,30 +243,30 @@ i2b2.PM.cfg.msgs.getAllProjectRequest = '<?xml version="1.0" encoding="UTF-8" st
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getAllProjectRequest = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('project_request');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.project_id = i2b2.h.getXNodeVal(c[i], "project_id");
-			tmpRec.request_xml = i2b2.h.getXNodeVal(c[i], "request_xml");
-			tmpRec.submit_char = i2b2.h.getXNodeVal(c[i], "submit_char");
-			tmpRec.entry_date = i2b2.h.getXNodeVal(c[i], "entry_date");
-			if (!Object.isUndefined(tmpRec.entry_date))
-			{
-				tmpRec.entry_date = (tmpRec.entry_date).substring(0,10);
-			}
-			tmpRec.title = i2b2.h.getXNodeVal(c[i], "title");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllProjectRequest] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('project_request');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.project_id = i2b2.h.getXNodeVal(c[i], "project_id");
+            tmpRec.request_xml = i2b2.h.getXNodeVal(c[i], "request_xml");
+            tmpRec.submit_char = i2b2.h.getXNodeVal(c[i], "submit_char");
+            tmpRec.entry_date = i2b2.h.getXNodeVal(c[i], "entry_date");
+            if (!Object.isUndefined(tmpRec.entry_date))
+            {
+                tmpRec.entry_date = (tmpRec.entry_date).substring(0,10);
+            }
+            tmpRec.title = i2b2.h.getXNodeVal(c[i], "title");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllProjectRequest] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllProjectRequest","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllProjectRequest, null, i2b2.PM.cfg.parsers.getAllProjectRequest);
 
@@ -320,30 +320,30 @@ i2b2.PM.cfg.msgs.getProjectRequest = '<?xml version="1.0" encoding="UTF-8" stand
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getProjectRequest = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('project_request');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.project_id = i2b2.h.getXNodeVal(c[i], "project_id");
-			tmpRec.request_xml = i2b2.h.getXNodeVal(c[i], "request_xml");
-			tmpRec.submit_char = i2b2.h.getXNodeVal(c[i], "submit_char");
-			tmpRec.entry_date = i2b2.h.getXNodeVal(c[i], "entry_date");
-			if (!Object.isUndefined(tmpRec.entry_date))
-			{
-				tmpRec.entry_date = (tmpRec.entry_date).substring(0,10);
-			}
-			tmpRec.title = i2b2.h.getXNodeVal(c[i], "title");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllProjectRequest] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('project_request');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.project_id = i2b2.h.getXNodeVal(c[i], "project_id");
+            tmpRec.request_xml = i2b2.h.getXNodeVal(c[i], "request_xml");
+            tmpRec.submit_char = i2b2.h.getXNodeVal(c[i], "submit_char");
+            tmpRec.entry_date = i2b2.h.getXNodeVal(c[i], "entry_date");
+            if (!Object.isUndefined(tmpRec.entry_date))
+            {
+                tmpRec.entry_date = (tmpRec.entry_date).substring(0,10);
+            }
+            tmpRec.title = i2b2.h.getXNodeVal(c[i], "title");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllProjectRequest] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getProjectRequest","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getProjectRequest, null, i2b2.PM.cfg.parsers.getProjectRequest);
 
@@ -401,34 +401,34 @@ i2b2.PM.cfg.msgs.getApproval = '<?xml version="1.0" encoding="UTF-8" standalone=
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getApproval = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('approval');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
-			tmpRec.description = i2b2.h.getXNodeVal(c[i], "description");
-			tmpRec.activation_date = i2b2.h.getXNodeVal(c[i], "activation_date");
-			if (!Object.isUndefined(tmpRec.activation_date))
-			{
-				tmpRec.activation_date = (tmpRec.activation_date).substring(0,10);
-			}
-			tmpRec.expiration_date = i2b2.h.getXNodeVal(c[i], "expiration_date");
-			if (!Object.isUndefined(tmpRec.expiration_date))
-			{
-				tmpRec.expiration_date = (tmpRec.expiration_date).substring(0,10);
-			}
-			
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getApproval] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('approval');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
+            tmpRec.description = i2b2.h.getXNodeVal(c[i], "description");
+            tmpRec.activation_date = i2b2.h.getXNodeVal(c[i], "activation_date");
+            if (!Object.isUndefined(tmpRec.activation_date))
+            {
+                tmpRec.activation_date = (tmpRec.activation_date).substring(0,10);
+            }
+            tmpRec.expiration_date = i2b2.h.getXNodeVal(c[i], "expiration_date");
+            if (!Object.isUndefined(tmpRec.expiration_date))
+            {
+                tmpRec.expiration_date = (tmpRec.expiration_date).substring(0,10);
+            }
+
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getApproval] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getApproval","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getApproval, null, i2b2.PM.cfg.parsers.getApproval);
 
@@ -485,25 +485,25 @@ i2b2.PM.cfg.msgs.getAllHive = '<?xml version="1.0" encoding="UTF-8" standalone="
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getHives = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('hive');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.environment = i2b2.h.getXNodeVal(c[i], "environment");
-			tmpRec.helpURL = i2b2.h.getXNodeVal(c[i], "helpURL");
-			tmpRec.domain_name = i2b2.h.getXNodeVal(c[i], "domain_name");
-			tmpRec.domain_id = i2b2.h.getXNodeVal(c[i], "domain_id");
-			tmpRec.active = i2b2.h.getXNodeVal(c[i], "active");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[GetHives] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('hive');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.environment = i2b2.h.getXNodeVal(c[i], "environment");
+            tmpRec.helpURL = i2b2.h.getXNodeVal(c[i], "helpURL");
+            tmpRec.domain_name = i2b2.h.getXNodeVal(c[i], "domain_name");
+            tmpRec.domain_id = i2b2.h.getXNodeVal(c[i], "domain_id");
+            tmpRec.active = i2b2.h.getXNodeVal(c[i], "active");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[GetHives] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllHive", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllHive, null, i2b2.PM.cfg.parsers.getHives);
 
@@ -557,30 +557,30 @@ i2b2.PM.cfg.msgs.getAllParam = '<?xml version="1.0" encoding="UTF-8" standalone=
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getAllParam = function(username) {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg (filter by username if given)
-		if (Object.isUndefined(username)) {
-			var c = i2b2.h.XPath(this.refXML,  "//message_body/descendant::param[@name]");
-		} else {
-			var c = i2b2.h.XPath(this.refXML, "//user[user_name/text()='"+username+"']/param");
-		}
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			try {
-				var tmpRec = {};
-				tmpRec.name = i2b2.h.XPath(c[i], "attribute::name")[0].nodeValue;
-				tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-				tmpRec.datatype = i2b2.h.XPath(c[i], "attribute::datatype")[0].nodeValue;
-				tmpRec.value = i2b2.h.XPath(c[i], "text()")[0].nodeValue;
-				this.model.push(tmpRec);
-			} catch(e) {}
-		}
-	} else {
-		this.model = false;
-		console.error("[GetHives] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg (filter by username if given)
+        if (Object.isUndefined(username)) {
+            var c = i2b2.h.XPath(this.refXML,  "//message_body/descendant::param[@name]");
+        } else {
+            var c = i2b2.h.XPath(this.refXML, "//user[user_name/text()='"+username+"']/param");
+        }
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            try {
+                var tmpRec = {};
+                tmpRec.name = i2b2.h.XPath(c[i], "attribute::name")[0].nodeValue;
+                tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+                tmpRec.datatype = i2b2.h.XPath(c[i], "attribute::datatype")[0].nodeValue;
+                tmpRec.value = i2b2.h.XPath(c[i], "text()")[0].nodeValue;
+                this.model.push(tmpRec);
+            } catch(e) {}
+        }
+    } else {
+        this.model = false;
+        console.error("[GetHives] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllParam", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllParam, ["id_xml"], i2b2.PM.cfg.parsers.getAllParam);
 
@@ -636,26 +636,26 @@ i2b2.PM.cfg.msgs.getAllCell = '<?xml version="1.0" encoding="UTF-8" standalone="
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getAllCell = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('cell_data');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
-			tmpRec.url = i2b2.h.getXNodeVal(c[i], "url");
-			tmpRec.project_path = i2b2.h.getXNodeVal(c[i], "project_path");
-			tmpRec.method = i2b2.h.getXNodeVal(c[i], "method");
-			tmpRec.can_override = i2b2.h.getXNodeVal(c[i], "can_override");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllCell] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('cell_data');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
+            tmpRec.url = i2b2.h.getXNodeVal(c[i], "url");
+            tmpRec.project_path = i2b2.h.getXNodeVal(c[i], "project_path");
+            tmpRec.method = i2b2.h.getXNodeVal(c[i], "method");
+            tmpRec.can_override = i2b2.h.getXNodeVal(c[i], "can_override");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllCell] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllCell","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllCell, null, i2b2.PM.cfg.parsers.getAllCell);
 
@@ -765,29 +765,29 @@ i2b2.PM.cfg.msgs.getDBLookup = '<?xml version="1.0" encoding="UTF-8" standalone=
 
 i2b2.PM.cfg.parsers.getDBLookup = function() {
 if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		
-		var c = this.refXML.getElementsByTagName('dblookup');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.project_path = i2b2.h.XPath(c[i], "attribute::project_path")[0].nodeValue;
-			tmpRec.owner_id = i2b2.h.getXNodeVal(c[i], "owner_id");
-			tmpRec.db_fullschema = i2b2.h.getXNodeVal(c[i], "db_fullschema");
-			tmpRec.db_datasource = i2b2.h.getXNodeVal(c[i], "db_datasource");
-			tmpRec.db_servertype = i2b2.h.getXNodeVal(c[i], "db_servertype");
-			tmpRec.db_nicename = i2b2.h.getXNodeVal(c[i], "db_nicename");
-			tmpRec.db_tooltip = i2b2.h.getXNodeVal(c[i], "db_tooltip");
-			tmpRec.comment = i2b2.h.getXNodeVal(c[i], "comment");
-			this.model.push(tmpRec);
-		}		
-		
-	} else {
-		this.model = false;
-		console.error("[GetHives] Could not parse() data!");
-	}
-	return this;
+        this.model = [];
+        // extract records from XML msg
+
+        var c = this.refXML.getElementsByTagName('dblookup');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.project_path = i2b2.h.XPath(c[i], "attribute::project_path")[0].nodeValue;
+            tmpRec.owner_id = i2b2.h.getXNodeVal(c[i], "owner_id");
+            tmpRec.db_fullschema = i2b2.h.getXNodeVal(c[i], "db_fullschema");
+            tmpRec.db_datasource = i2b2.h.getXNodeVal(c[i], "db_datasource");
+            tmpRec.db_servertype = i2b2.h.getXNodeVal(c[i], "db_servertype");
+            tmpRec.db_nicename = i2b2.h.getXNodeVal(c[i], "db_nicename");
+            tmpRec.db_tooltip = i2b2.h.getXNodeVal(c[i], "db_tooltip");
+            tmpRec.comment = i2b2.h.getXNodeVal(c[i], "comment");
+            this.model.push(tmpRec);
+        }
+
+    } else {
+        this.model = false;
+        console.error("[GetHives] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getDBLookup", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.getDBLookup, ["id_xml"], i2b2.PM.cfg.parsers.getDBLookup);
 
@@ -843,26 +843,26 @@ i2b2.PM.cfg.msgs.getAllDBLookup = '<?xml version="1.0" encoding="UTF-8" standalo
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getAllDBLookup = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('dblookup');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.project_path = i2b2.h.XPath(c[i], "attribute::project_path")[0].nodeValue;
-			tmpRec.owner_id = i2b2.h.getXNodeVal(c[i], "owner_id");
-			tmpRec.db_fullschema = i2b2.h.getXNodeVal(c[i], "db_fullschema");
-			tmpRec.db_datasource = i2b2.h.getXNodeVal(c[i], "db_datasource");
-			tmpRec.db_servertype = i2b2.h.getXNodeVal(c[i], "db_servertype");
-			tmpRec.db_nicename = i2b2.h.getXNodeVal(c[i], "db_nicename");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllDBLookup] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('dblookup');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.project_path = i2b2.h.XPath(c[i], "attribute::project_path")[0].nodeValue;
+            tmpRec.owner_id = i2b2.h.getXNodeVal(c[i], "owner_id");
+            tmpRec.db_fullschema = i2b2.h.getXNodeVal(c[i], "db_fullschema");
+            tmpRec.db_datasource = i2b2.h.getXNodeVal(c[i], "db_datasource");
+            tmpRec.db_servertype = i2b2.h.getXNodeVal(c[i], "db_servertype");
+            tmpRec.db_nicename = i2b2.h.getXNodeVal(c[i], "db_nicename");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllDBLookup] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllDBLookup","{{{URL}}}getDBLookups", i2b2.PM.cfg.msgs.getAllDBLookup, null, i2b2.PM.cfg.parsers.getAllDBLookup);
 
@@ -978,26 +978,26 @@ i2b2.PM.cfg.msgs.getAllProject = '<?xml version="1.0" encoding="UTF-8" standalon
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getAllProject = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('project');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
-			tmpRec.key = i2b2.h.getXNodeVal(c[i], "key");
-			tmpRec.wiki = i2b2.h.getXNodeVal(c[i], "wiki");
-			tmpRec.description = i2b2.h.getXNodeVal(c[i], "description");
-			tmpRec.path = i2b2.h.getXNodeVal(c[i],"path");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllProject] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('project');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
+            tmpRec.key = i2b2.h.getXNodeVal(c[i], "key");
+            tmpRec.wiki = i2b2.h.getXNodeVal(c[i], "wiki");
+            tmpRec.description = i2b2.h.getXNodeVal(c[i], "description");
+            tmpRec.path = i2b2.h.getXNodeVal(c[i],"path");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllProject] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllProject", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllProject, null, i2b2.PM.cfg.parsers.getAllProject);
 
@@ -1054,24 +1054,24 @@ i2b2.PM.cfg.msgs.getAllRole = '<?xml version="1.0" encoding="UTF-8" standalone="
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getAllRole = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('role');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			//tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.projectid = i2b2.h.getXNodeVal(c[i], "project_id");
-			tmpRec.username = i2b2.h.getXNodeVal(c[i], "user_name");
-			tmpRec.role = i2b2.h.getXNodeVal(c[i], "role");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllRole] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('role');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            //tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.projectid = i2b2.h.getXNodeVal(c[i], "project_id");
+            tmpRec.username = i2b2.h.getXNodeVal(c[i], "user_name");
+            tmpRec.role = i2b2.h.getXNodeVal(c[i], "role");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllRole] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllRole","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllRole,null,i2b2.PM.cfg.parsers.getAllRole)	;
 
@@ -1127,24 +1127,24 @@ i2b2.PM.cfg.msgs.getAllRoleUser = '<?xml version="1.0" encoding="UTF-8" standalo
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getAllRoleUser = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('role');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			//tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.projectid = i2b2.h.getXNodeVal(c[i], "project_id");
-			tmpRec.username = i2b2.h.getXNodeVal(c[i], "user_name");
-			tmpRec.role = i2b2.h.getXNodeVal(c[i], "role");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllRole] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('role');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            //tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.projectid = i2b2.h.getXNodeVal(c[i], "project_id");
+            tmpRec.username = i2b2.h.getXNodeVal(c[i], "user_name");
+            tmpRec.role = i2b2.h.getXNodeVal(c[i], "role");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllRole] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllRoleUser","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllRoleUser,null,i2b2.PM.cfg.parsers.getAllRoleUser)	;
 
@@ -1199,25 +1199,25 @@ i2b2.PM.cfg.msgs.getAllUser = '<?xml version="1.0" encoding="UTF-8" standalone="
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getAllUser = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('user');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.full_name = i2b2.h.getXNodeVal(c[i], "full_name");
-			tmpRec.user_name = i2b2.h.getXNodeVal(c[i], "user_name");
-			tmpRec.email = i2b2.h.getXNodeVal(c[i], "email");
-			tmpRec.password = i2b2.h.getXNodeVal(c[i], "password");
-			tmpRec.is_admin = i2b2.h.getXNodeVal(c[i], "is_admin");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllUser] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('user');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.full_name = i2b2.h.getXNodeVal(c[i], "full_name");
+            tmpRec.user_name = i2b2.h.getXNodeVal(c[i], "user_name");
+            tmpRec.email = i2b2.h.getXNodeVal(c[i], "email");
+            tmpRec.password = i2b2.h.getXNodeVal(c[i], "password");
+            tmpRec.is_admin = i2b2.h.getXNodeVal(c[i], "is_admin");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllUser] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllUser","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllUser, null, i2b2.PM.cfg.parsers.getAllUser);
 
@@ -1272,33 +1272,33 @@ i2b2.PM.cfg.msgs.getAllApproval = '<?xml version="1.0" encoding="UTF-8" standalo
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getAllApproval = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('approval');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
-			tmpRec.description = i2b2.h.getXNodeVal(c[i], "description");
-			tmpRec.activation_date = i2b2.h.getXNodeVal(c[i], "activation_date");
-			if (!Object.isUndefined(tmpRec.activation_date))
-			{
-				tmpRec.activation_date = (tmpRec.activation_date).substring(0,10);
-			}
-			tmpRec.expiration_date = i2b2.h.getXNodeVal(c[i], "expiration_date");
-			if (!Object.isUndefined(tmpRec.expiration_date))
-			{
-				tmpRec.expiration_date = (tmpRec.expiration_date).substring(0,10);
-			}
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllApproval] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('approval');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
+            tmpRec.description = i2b2.h.getXNodeVal(c[i], "description");
+            tmpRec.activation_date = i2b2.h.getXNodeVal(c[i], "activation_date");
+            if (!Object.isUndefined(tmpRec.activation_date))
+            {
+                tmpRec.activation_date = (tmpRec.activation_date).substring(0,10);
+            }
+            tmpRec.expiration_date = i2b2.h.getXNodeVal(c[i], "expiration_date");
+            if (!Object.isUndefined(tmpRec.expiration_date))
+            {
+                tmpRec.expiration_date = (tmpRec.expiration_date).substring(0,10);
+            }
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllApproval] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllApproval","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllApproval, null, i2b2.PM.cfg.parsers.getAllApproval);
 
@@ -1354,23 +1354,23 @@ i2b2.PM.cfg.msgs.getAllGlobal = '<?xml version="1.0" encoding="UTF-8" standalone
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getAllGlobal = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = i2b2.h.XPath(this.refXML, "//message_body/descendant::param[@name]");
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.name = i2b2.h.XPath(c[i], "attribute::name")[0].nodeValue;
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.value = i2b2.h.XPath(c[i], "text()")[0].nodeValue;
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllGlobals] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = i2b2.h.XPath(this.refXML, "//message_body/descendant::param[@name]");
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.name = i2b2.h.XPath(c[i], "attribute::name")[0].nodeValue;
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.value = i2b2.h.XPath(c[i], "text()")[0].nodeValue;
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllGlobals] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllGlobal","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllGlobal, null, i2b2.PM.cfg.parsers.getAllGlobal);
 
@@ -1424,30 +1424,30 @@ i2b2.PM.cfg.msgs.getUser = '<?xml version="1.0" encoding="UTF-8" standalone="yes
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getUser = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('user');
-		var l = c.length;
-		if (l == 0){
-			var c = this.refXML.getElementsByTagName('ns4:user');
-			var l = c.length;
-		}
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('user');
+        var l = c.length;
+        if (l == 0){
+            var c = this.refXML.getElementsByTagName('ns4:user');
+            var l = c.length;
+        }
 
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.full_name = i2b2.h.getXNodeVal(c[i], "full_name");
-			tmpRec.user_name = i2b2.h.getXNodeVal(c[i], "user_name");
-			tmpRec.email = i2b2.h.getXNodeVal(c[i], "email");
-			tmpRec.password = i2b2.h.getXNodeVal(c[i], "password");
-			tmpRec.is_admin = i2b2.h.getXNodeVal(c[i], "is_admin");			
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllUser] Could not parse() data!");
-	}
-	return this;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.full_name = i2b2.h.getXNodeVal(c[i], "full_name");
+            tmpRec.user_name = i2b2.h.getXNodeVal(c[i], "user_name");
+            tmpRec.email = i2b2.h.getXNodeVal(c[i], "email");
+            tmpRec.password = i2b2.h.getXNodeVal(c[i], "password");
+            tmpRec.is_admin = i2b2.h.getXNodeVal(c[i], "is_admin");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllUser] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getUser","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getUser, null, i2b2.PM.cfg.parsers.getUser);
 
@@ -1499,30 +1499,30 @@ i2b2.PM.cfg.msgs.getCell = '<?xml version="1.0" encoding="UTF-8" standalone="yes
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getCell = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('cell');
-		var l = c.length;
-		if (l == 0){
-			var c = this.refXML.getElementsByTagName('ns4:cell');
-			var l = c.length;
-		}
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};	
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
-			tmpRec.url = i2b2.h.getXNodeVal(c[i], "url");
-			tmpRec.project_path = i2b2.h.getXNodeVal(c[i], "project_path");
-			tmpRec.method = i2b2.h.getXNodeVal(c[i], "method");
-			tmpRec.can_override = i2b2.h.getXNodeVal(c[i], "can_override");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllUser] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('cell');
+        var l = c.length;
+        if (l == 0){
+            var c = this.refXML.getElementsByTagName('ns4:cell');
+            var l = c.length;
+        }
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
+            tmpRec.url = i2b2.h.getXNodeVal(c[i], "url");
+            tmpRec.project_path = i2b2.h.getXNodeVal(c[i], "project_path");
+            tmpRec.method = i2b2.h.getXNodeVal(c[i], "method");
+            tmpRec.can_override = i2b2.h.getXNodeVal(c[i], "can_override");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllUser] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getCell","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getCell, null, i2b2.PM.cfg.parsers.getCell);
 
@@ -1577,29 +1577,29 @@ i2b2.PM.cfg.msgs.getParam = '<?xml version="1.0" encoding="UTF-8" standalone="ye
 
 i2b2.PM.cfg.parsers.getParam = function() {
 if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('param');
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('param');
 //		var c = i2b2.h.XPath(this.refXML, "//message_body/descendant::param[@name]");
-		var l = c.length;
-		if (l == 0){
-			var c = this.refXML.getElementsByTagName('ns4:param');
-			var l = c.length;
-		}
+        var l = c.length;
+        if (l == 0){
+            var c = this.refXML.getElementsByTagName('ns4:param');
+            var l = c.length;
+        }
 
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.name = i2b2.h.XPath(c[i], "attribute::name")[0].nodeValue;
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.dataType = i2b2.h.XPath(c[i], "attribute::datatype")[0].nodeValue;
-			tmpRec.value = i2b2.h.XPath(c[i], "text()")[0].nodeValue;
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[GetHives] Could not parse() data!");
-	}
-	return this;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.name = i2b2.h.XPath(c[i], "attribute::name")[0].nodeValue;
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.dataType = i2b2.h.XPath(c[i], "attribute::datatype")[0].nodeValue;
+            tmpRec.value = i2b2.h.XPath(c[i], "text()")[0].nodeValue;
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[GetHives] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getParam", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.getParam, ["id_xml"], i2b2.PM.cfg.parsers.getParam);
 
@@ -1655,24 +1655,24 @@ i2b2.PM.cfg.msgs.getGlobal = '<?xml version="1.0" encoding="UTF-8" standalone="y
 
 i2b2.PM.cfg.parsers.getGlobal = function() {
 if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('param');
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('param');
 //		var c = i2b2.h.XPath(this.refXML, "//message_body/descendant::param[@name]");
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.name = i2b2.h.XPath(c[i], "attribute::name")[0].nodeValue;
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.dataType = i2b2.h.XPath(c[i], "attribute::datatype")[0].nodeValue;
-			tmpRec.value = i2b2.h.XPath(c[i], "text()")[0].nodeValue;
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[GetHives] Could not parse() data!");
-	}
-	return this;
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.name = i2b2.h.XPath(c[i], "attribute::name")[0].nodeValue;
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.dataType = i2b2.h.XPath(c[i], "attribute::datatype")[0].nodeValue;
+            tmpRec.value = i2b2.h.XPath(c[i], "text()")[0].nodeValue;
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[GetHives] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getGlobal", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.getGlobal, ["id_xml"], i2b2.PM.cfg.parsers.getGlobal);
 
@@ -1727,26 +1727,26 @@ i2b2.PM.cfg.msgs.getProject = '<?xml version="1.0" encoding="UTF-8" standalone="
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getProject = function() {
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = i2b2.h.XPath(this.refXML, '//name/..');
-		var l = c.length;
-		for (var i=0; i<l; i++) {
-			var tmpRec = {};
-			tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
-			tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
-			tmpRec.key = i2b2.h.getXNodeVal(c[i], "key");
-			tmpRec.wiki = i2b2.h.getXNodeVal(c[i], "wiki");
-			tmpRec.description = i2b2.h.getXNodeVal(c[i], "description");
-			tmpRec.path = i2b2.h.getXNodeVal(c[i], "path");
-			this.model.push(tmpRec);
-		}
-	} else {
-		this.model = false;
-		console.error("[getAllProject] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = i2b2.h.XPath(this.refXML, '//name/..');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.id = i2b2.h.XPath(c[i], "attribute::id")[0].nodeValue;
+            tmpRec.name = i2b2.h.getXNodeVal(c[i], "name");
+            tmpRec.key = i2b2.h.getXNodeVal(c[i], "key");
+            tmpRec.wiki = i2b2.h.getXNodeVal(c[i], "wiki");
+            tmpRec.description = i2b2.h.getXNodeVal(c[i], "description");
+            tmpRec.path = i2b2.h.getXNodeVal(c[i], "path");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllProject] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.PM.ajax._addFunctionCall("getProject", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.getProject, null, i2b2.PM.cfg.parsers.getProject);
 

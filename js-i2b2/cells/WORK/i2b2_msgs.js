@@ -12,7 +12,7 @@ i2b2.WORK.ajax = i2b2.hive.communicatorFactory("WORK");
 // create namespaces to hold all the communicator messages and parsing routines
 i2b2.WORK.cfg.msgs = {};
 i2b2.WORK.cfg.parsers = {};
-		
+
 // ================================================================================================== //
 //i2b2.WORK.cfg.msgs.getFoldersByProject = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+ "NO EXAMPLE OF THIS FUNCTION BEING CALLED WAS FOUND."
 
@@ -121,35 +121,35 @@ i2b2.WORK.cfg.msgs.getFoldersByUserId = '<?xml version="1.0" encoding="UTF-8" st
 '	</message_body>\n'+
 '</ns3:request>';
 i2b2.WORK.cfg.parsers.getFoldersByUser = function(){
-	if (!this.error) {
-		this.model = [];		
-		var nlst = i2b2.h.XPath(this.refXML, "//folder[name and share_id and index and visual_attributes]");
-		for (var i = 0; i < nlst.length; i++) {
-			var s = nlst[i];
-			var nodeData = {};
-			nodeData.xmlOrig = s;
-			nodeData.index = i2b2.h.getXNodeVal(s, "index");
-			nodeData.key = nodeData.index;
-			nodeData.name = i2b2.h.getXNodeVal(s, "name");
-			nodeData.annotation = i2b2.h.getXNodeVal(s, "tooltip");
-			nodeData.share_id = i2b2.h.getXNodeVal(s, "share_id");
-			nodeData.visual = String(i2b2.h.getXNodeVal(s, "visual_attributes")).trim();
-			nodeData.isRoot = true;
-			// encapsulate into SDX object
-			var sdxDataPack = i2b2.sdx.Master.EncapsulateData('WRK', nodeData);
-			this.model.push(sdxDataPack);
-		}
-	} else {
-		this.model = false;
-		console.error("[getFoldersByUserId] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        var nlst = i2b2.h.XPath(this.refXML, "//folder[name and share_id and index and visual_attributes]");
+        for (var i = 0; i < nlst.length; i++) {
+            var s = nlst[i];
+            var nodeData = {};
+            nodeData.xmlOrig = s;
+            nodeData.index = i2b2.h.getXNodeVal(s, "index");
+            nodeData.key = nodeData.index;
+            nodeData.name = i2b2.h.getXNodeVal(s, "name");
+            nodeData.annotation = i2b2.h.getXNodeVal(s, "tooltip");
+            nodeData.share_id = i2b2.h.getXNodeVal(s, "share_id");
+            nodeData.visual = String(i2b2.h.getXNodeVal(s, "visual_attributes")).trim();
+            nodeData.isRoot = true;
+            // encapsulate into SDX object
+            var sdxDataPack = i2b2.sdx.Master.EncapsulateData('WRK', nodeData);
+            this.model.push(sdxDataPack);
+        }
+    } else {
+        this.model = false;
+        console.error("[getFoldersByUserId] Could not parse() data!");
+    }
+    return this;
 }
 i2b2.WORK.ajax._addFunctionCall(	"getFoldersByUserId",
-									"{{{URL}}}getFoldersByUserId",
-									i2b2.WORK.cfg.msgs.getFoldersByUserId,
-									null,
-									i2b2.WORK.cfg.parsers.getFoldersByUserId);
+                                    "{{{URL}}}getFoldersByUserId",
+                                    i2b2.WORK.cfg.msgs.getFoldersByUserId,
+                                    null,
+                                    i2b2.WORK.cfg.parsers.getFoldersByUserId);
 
 
 
@@ -204,35 +204,35 @@ i2b2.WORK.cfg.msgs.getFoldersByProject = '<?xml version="1.0" encoding="UTF-8" s
 '	</message_body>\n'+
 '</ns3:request>';
 i2b2.WORK.cfg.parsers.getFoldersByProject = function(){
-	if (!this.error) {
-		this.model = [];		
-		var nlst = i2b2.h.XPath(this.refXML, "//folder[name and share_id and index and visual_attributes]");
-		for (var i = 0; i < nlst.length; i++) {
-			var s = nlst[i];
-			var nodeData = {};
-			nodeData.xmlOrig = s;
-			nodeData.index = i2b2.h.getXNodeVal(s, "index");
-			nodeData.key = nodeData.index;
-			nodeData.name = i2b2.h.getXNodeVal(s, "name");
-			nodeData.annotation = i2b2.h.getXNodeVal(s, "tooltip");
-			nodeData.share_id = i2b2.h.getXNodeVal(s, "share_id");
-			nodeData.visual = String(i2b2.h.getXNodeVal(s, "visual_attributes")).trim();
-			nodeData.isRoot = true;
-			// encapsulate into SDX object
-			var sdxDataPack = i2b2.sdx.Master.EncapsulateData('WRK', nodeData);
-			this.model.push(sdxDataPack);
-		}
-	} else {
-		this.model = false;
-		console.error("[getQueryMasterList_fromUserId] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        var nlst = i2b2.h.XPath(this.refXML, "//folder[name and share_id and index and visual_attributes]");
+        for (var i = 0; i < nlst.length; i++) {
+            var s = nlst[i];
+            var nodeData = {};
+            nodeData.xmlOrig = s;
+            nodeData.index = i2b2.h.getXNodeVal(s, "index");
+            nodeData.key = nodeData.index;
+            nodeData.name = i2b2.h.getXNodeVal(s, "name");
+            nodeData.annotation = i2b2.h.getXNodeVal(s, "tooltip");
+            nodeData.share_id = i2b2.h.getXNodeVal(s, "share_id");
+            nodeData.visual = String(i2b2.h.getXNodeVal(s, "visual_attributes")).trim();
+            nodeData.isRoot = true;
+            // encapsulate into SDX object
+            var sdxDataPack = i2b2.sdx.Master.EncapsulateData('WRK', nodeData);
+            this.model.push(sdxDataPack);
+        }
+    } else {
+        this.model = false;
+        console.error("[getQueryMasterList_fromUserId] Could not parse() data!");
+    }
+    return this;
 }
 i2b2.WORK.ajax._addFunctionCall(	"getFoldersByProject",
-									"{{{URL}}}getFoldersByProject",
-									i2b2.WORK.cfg.msgs.getFoldersByProject,
-									null,
-									i2b2.WORK.cfg.parsers.getFoldersByProject);
+                                    "{{{URL}}}getFoldersByProject",
+                                    i2b2.WORK.cfg.msgs.getFoldersByProject,
+                                    null,
+                                    i2b2.WORK.cfg.parsers.getFoldersByProject);
 
 
 
@@ -289,36 +289,36 @@ i2b2.WORK.cfg.msgs.getChildren = '<?xml version="1.0" encoding="UTF-8" standalon
 '	</message_body>\n'+
 '</ns3:request>';
 i2b2.WORK.cfg.parsers.getChildren = function(){
-	if (!this.error) {
-		this.model = [];
-		var nlst = i2b2.h.XPath(this.refXML, "//folder[name and share_id and index and visual_attributes]");
-		for (var i = 0; i < nlst.length; i++) {
-			var s = nlst[i];
-			var nodeData = {};
-			nodeData.xmlOrig = s;
-			nodeData.index = i2b2.h.getXNodeVal(s, "index");
-			nodeData.key = nodeData.index;
-			nodeData.name = i2b2.h.getXNodeVal(s, "name");
-			nodeData.annotation = i2b2.h.getXNodeVal(s, "tooltip");
-			nodeData.share_id = i2b2.h.getXNodeVal(s, "share_id");
-			nodeData.visual = String(i2b2.h.getXNodeVal(s, "visual_attributes")).trim();
-			nodeData.encapType = i2b2.h.getXNodeVal(s, "work_xml_i2b2_type");
-			nodeData.isRoot = false;
-			// encapsulate into SDX object
-			var sdxDataPack = i2b2.sdx.Master.EncapsulateData('WRK', nodeData);
-			this.model.push(sdxDataPack);
-		}
-	} else {
-		this.model = false;
-		console.error("[getQueryMasterList_fromUserId] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        var nlst = i2b2.h.XPath(this.refXML, "//folder[name and share_id and index and visual_attributes]");
+        for (var i = 0; i < nlst.length; i++) {
+            var s = nlst[i];
+            var nodeData = {};
+            nodeData.xmlOrig = s;
+            nodeData.index = i2b2.h.getXNodeVal(s, "index");
+            nodeData.key = nodeData.index;
+            nodeData.name = i2b2.h.getXNodeVal(s, "name");
+            nodeData.annotation = i2b2.h.getXNodeVal(s, "tooltip");
+            nodeData.share_id = i2b2.h.getXNodeVal(s, "share_id");
+            nodeData.visual = String(i2b2.h.getXNodeVal(s, "visual_attributes")).trim();
+            nodeData.encapType = i2b2.h.getXNodeVal(s, "work_xml_i2b2_type");
+            nodeData.isRoot = false;
+            // encapsulate into SDX object
+            var sdxDataPack = i2b2.sdx.Master.EncapsulateData('WRK', nodeData);
+            this.model.push(sdxDataPack);
+        }
+    } else {
+        this.model = false;
+        console.error("[getQueryMasterList_fromUserId] Could not parse() data!");
+    }
+    return this;
 }
 i2b2.WORK.ajax._addFunctionCall("getChildren",
-								"{{{URL}}}getChildren",
-								i2b2.WORK.cfg.msgs.getChildren, 
-								null,
-								i2b2.WORK.cfg.parsers.getChildren);
+                                "{{{URL}}}getChildren",
+                                i2b2.WORK.cfg.msgs.getChildren,
+                                null,
+                                i2b2.WORK.cfg.parsers.getChildren);
 
 
 

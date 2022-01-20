@@ -14,40 +14,40 @@ i2b2.ONT.ajax = i2b2.hive.communicatorFactory("ONT");
 i2b2.ONT.cfg.msgs = {};
 i2b2.ONT.cfg.parsers = {};
 i2b2.ONT.cfg.parsers.ExtractConcepts = function(){
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('concept');
-		for(var i=0; i<1*c.length; i++) {
-			var o = new Object;
-			o.xmlOrig = c[i];
-			o.name = i2b2.h.getXNodeVal(c[i],'name');
-			o.hasChildren = i2b2.h.getXNodeVal(c[i],'visualattributes');
-			if(typeof o.hasChildren !== "undefined")
-				o.hasChildren = i2b2.h.getXNodeVal(c[i],'visualattributes').substring(0,2);
-			o.level = i2b2.h.getXNodeVal(c[i],'level');
-			o.key = i2b2.h.getXNodeVal(c[i],'key');
-			o.tooltip = i2b2.h.getXNodeVal(c[i],'tooltip');
-			o.synonym = i2b2.h.getXNodeVal(c[i],'synonym_cd');
-			o.visual_attributes = i2b2.h.getXNodeVal(c[i],'visualattributes');
-			o.totalnum = i2b2.h.getXNodeVal(c[i],'totalnum');
-			o.basecode = i2b2.h.getXNodeVal(c[i],'basecode');;
-			o.fact_table_column = i2b2.h.getXNodeVal(c[i],'facttablecolumn');
-			o.table_name = i2b2.h.getXNodeVal(c[i],'tablename');
-			o.column_name = i2b2.h.getXNodeVal(c[i],'columnname');
-			o.column_datatype = i2b2.h.getXNodeVal(c[i],'columndatatype');
-			o.operator = i2b2.h.getXNodeVal(c[i],'operator');
-			o.dim_code = i2b2.h.getXNodeVal(c[i],'dimcode');
-			// encapsulate the data node into SDX package
-			var sdxDataPack = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
-			// save extracted info
-			this.model.push(sdxDataPack);
-		}
-	} else {
-		this.model = false;
-		console.error("[ExtractConcepts] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('concept');
+        for(var i=0; i<1*c.length; i++) {
+            var o = new Object;
+            o.xmlOrig = c[i];
+            o.name = i2b2.h.getXNodeVal(c[i],'name');
+            o.hasChildren = i2b2.h.getXNodeVal(c[i],'visualattributes');
+            if(typeof o.hasChildren !== "undefined")
+                o.hasChildren = i2b2.h.getXNodeVal(c[i],'visualattributes').substring(0,2);
+            o.level = i2b2.h.getXNodeVal(c[i],'level');
+            o.key = i2b2.h.getXNodeVal(c[i],'key');
+            o.tooltip = i2b2.h.getXNodeVal(c[i],'tooltip');
+            o.synonym = i2b2.h.getXNodeVal(c[i],'synonym_cd');
+            o.visual_attributes = i2b2.h.getXNodeVal(c[i],'visualattributes');
+            o.totalnum = i2b2.h.getXNodeVal(c[i],'totalnum');
+            o.basecode = i2b2.h.getXNodeVal(c[i],'basecode');;
+            o.fact_table_column = i2b2.h.getXNodeVal(c[i],'facttablecolumn');
+            o.table_name = i2b2.h.getXNodeVal(c[i],'tablename');
+            o.column_name = i2b2.h.getXNodeVal(c[i],'columnname');
+            o.column_datatype = i2b2.h.getXNodeVal(c[i],'columndatatype');
+            o.operator = i2b2.h.getXNodeVal(c[i],'operator');
+            o.dim_code = i2b2.h.getXNodeVal(c[i],'dimcode');
+            // encapsulate the data node into SDX package
+            var sdxDataPack = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
+            // save extracted info
+            this.model.push(sdxDataPack);
+        }
+    } else {
+        this.model = false;
+        console.error("[ExtractConcepts] Could not parse() data!");
+    }
+    return this;
 };
 
 
@@ -101,10 +101,10 @@ i2b2.ONT.cfg.msgs.GetChildConcepts = '<?xml version="1.0" encoding="UTF-8" stand
 '    </message_body>\n'+
 '</ns3:request>';
 i2b2.ONT.ajax._addFunctionCall(	"GetChildConcepts",
-								"{{{URL}}}getChildren",
-								i2b2.ONT.cfg.msgs.GetChildConcepts,
-								null,
-								i2b2.ONT.cfg.parsers.ExtractConcepts);
+                                "{{{URL}}}getChildren",
+                                i2b2.ONT.cfg.msgs.GetChildConcepts,
+                                null,
+                                i2b2.ONT.cfg.parsers.ExtractConcepts);
 
 
 
@@ -161,10 +161,10 @@ i2b2.ONT.cfg.msgs.GetChildModifiers = '<?xml version="1.0" encoding="UTF-8" stan
 '    </message_body>\n'+
 '</ns3:request>';
 i2b2.ONT.ajax._addFunctionCall(	"GetChildModifiers",
-								"{{{URL}}}getModifierChildren",
-								i2b2.ONT.cfg.msgs.GetChildModifiers,
-								null,
-								i2b2.ONT.cfg.parsers.GetModifiers);
+                                "{{{URL}}}getModifierChildren",
+                                i2b2.ONT.cfg.msgs.GetChildModifiers,
+                                null,
+                                i2b2.ONT.cfg.parsers.GetModifiers);
 
 
 
@@ -219,32 +219,32 @@ i2b2.ONT.cfg.msgs.GetCategories = '<?xml version="1.0" encoding="UTF-8" standalo
 '</ns3:request>';
 /*
 i2b2.ONT.cfg.parsers.GetCategories = function(){
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('concept');
-		for(var i=0; i<1*c.length; i++) {
-			var o = new Object;
-			o.xmlOrig = c[i];
-			o.level = i2b2.h.getXNodeVal(c[i],'level');
-			o.key = i2b2.h.getXNodeVal(c[i],'key');
-			o.name = i2b2.h.getXNodeVal(c[i],'name');
-			o.total_num = i2b2.h.getXNodeVal(c[i],'totalnum');
-			// save extracted info
-			this.model.push(0);
-		}
-	} else {
-		this.model = false;
-		console.error("[GetCategories] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('concept');
+        for(var i=0; i<1*c.length; i++) {
+            var o = new Object;
+            o.xmlOrig = c[i];
+            o.level = i2b2.h.getXNodeVal(c[i],'level');
+            o.key = i2b2.h.getXNodeVal(c[i],'key');
+            o.name = i2b2.h.getXNodeVal(c[i],'name');
+            o.total_num = i2b2.h.getXNodeVal(c[i],'totalnum');
+            // save extracted info
+            this.model.push(0);
+        }
+    } else {
+        this.model = false;
+        console.error("[GetCategories] Could not parse() data!");
+    }
+    return this;
 };
 */
 i2b2.ONT.ajax._addFunctionCall(	"GetCategories",
-								"{{{URL}}}getCategories",
-								i2b2.ONT.cfg.msgs.GetCategories,
-								null,
-								i2b2.ONT.cfg.parsers.ExtractConcepts);
+                                "{{{URL}}}getCategories",
+                                i2b2.ONT.cfg.msgs.GetCategories,
+                                null,
+                                i2b2.ONT.cfg.parsers.ExtractConcepts);
 
 
 // ================================================================================================== //
@@ -298,32 +298,32 @@ i2b2.ONT.cfg.msgs.GetModifiers = '<?xml version="1.0" encoding="UTF-8" standalon
 '   </message_body>\n'+
 '</ns3:request>';
 i2b2.ONT.cfg.parsers.GetModifiers = function(){
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('modifier');
-		for(var i=0; i<1*c.length; i++) {
-			var o = new Object;
-			o.xmlOrig = c[i];
-			o.level = i2b2.h.getXNodeVal(c[i],'level');
-			o.basecode = i2b2.h.getXNodeVal(c[i],'basecode');
-			o.name = i2b2.h.getXNodeVal(c[i],'name');
-			o.total_num = i2b2.h.getXNodeVal(c[i],'totalnum');
-			// save extracted info
-			this.model.push(o);
-		}
-	} else {
-		this.model = false;
-		console.error("[GetModifiers] Could not parse() data!");
-		return null;
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('modifier');
+        for(var i=0; i<1*c.length; i++) {
+            var o = new Object;
+            o.xmlOrig = c[i];
+            o.level = i2b2.h.getXNodeVal(c[i],'level');
+            o.basecode = i2b2.h.getXNodeVal(c[i],'basecode');
+            o.name = i2b2.h.getXNodeVal(c[i],'name');
+            o.total_num = i2b2.h.getXNodeVal(c[i],'totalnum');
+            // save extracted info
+            this.model.push(o);
+        }
+    } else {
+        this.model = false;
+        console.error("[GetModifiers] Could not parse() data!");
+        return null;
+    }
+    return this;
 };
 i2b2.ONT.ajax._addFunctionCall(	"GetModifiers",
-								"{{{URL}}}getModifiers",
-								i2b2.ONT.cfg.msgs.GetModifiers,
-								null,
-								i2b2.ONT.cfg.parsers.GetModifiers);
+                                "{{{URL}}}getModifiers",
+                                i2b2.ONT.cfg.msgs.GetModifiers,
+                                null,
+                                i2b2.ONT.cfg.parsers.GetModifiers);
 
 
 // ================================================================================================== //
@@ -375,31 +375,31 @@ i2b2.ONT.cfg.msgs.GetSchemes = '<?xml version="1.0" encoding="UTF-8" standalone=
 '   </message_body>\n'+
 '</ns3:request>';
 i2b2.ONT.cfg.parsers.GetSchemes = function(){
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var c = this.refXML.getElementsByTagName('concept');
-		for(var i=0; i<1*c.length; i++) {
-			var o = new Object;
-			o.xmlOrig = c[i];
-			o.level = i2b2.h.getXNodeVal(c[i],'level');
-			o.key = i2b2.h.getXNodeVal(c[i],'key');
-			o.name = i2b2.h.getXNodeVal(c[i],'name');
-			o.total_num = i2b2.h.getXNodeVal(c[i],'totalnum');
-			// save extracted info
-			this.model.push(o);
-		}
-	} else {
-		this.model = false;
-		console.error("[GetSchemes] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('concept');
+        for(var i=0; i<1*c.length; i++) {
+            var o = new Object;
+            o.xmlOrig = c[i];
+            o.level = i2b2.h.getXNodeVal(c[i],'level');
+            o.key = i2b2.h.getXNodeVal(c[i],'key');
+            o.name = i2b2.h.getXNodeVal(c[i],'name');
+            o.total_num = i2b2.h.getXNodeVal(c[i],'totalnum');
+            // save extracted info
+            this.model.push(o);
+        }
+    } else {
+        this.model = false;
+        console.error("[GetSchemes] Could not parse() data!");
+    }
+    return this;
 };
 i2b2.ONT.ajax._addFunctionCall(	"GetSchemes",
-								"{{{URL}}}getSchemes",
-								i2b2.ONT.cfg.msgs.GetSchemes,
-								null,
-								i2b2.ONT.cfg.parsers.GetSchemes);
+                                "{{{URL}}}getSchemes",
+                                i2b2.ONT.cfg.msgs.GetSchemes,
+                                null,
+                                i2b2.ONT.cfg.parsers.GetSchemes);
 
 
 // ================================================================================================== //
@@ -452,10 +452,10 @@ i2b2.ONT.cfg.msgs.GetNameInfo = '<?xml version="1.0" encoding="UTF-8" standalone
 '    </message_body>\n'+
 '</ns3:request>';
 i2b2.ONT.ajax._addFunctionCall(	"GetNameInfo",
-								"{{{URL}}}getNameInfo", 
-								i2b2.ONT.cfg.msgs.GetNameInfo,
-								null,
-								i2b2.ONT.cfg.parsers.ExtractConcepts);
+                                "{{{URL}}}getNameInfo",
+                                i2b2.ONT.cfg.msgs.GetNameInfo,
+                                null,
+                                i2b2.ONT.cfg.parsers.ExtractConcepts);
 
 
 // ================================================================================================== //
@@ -509,10 +509,10 @@ i2b2.ONT.cfg.msgs.GetModifierCodeInfo = '<?xml version="1.0" encoding="UTF-8" st
 '    </message_body>\n'+
 '</ns3:request>';
 i2b2.ONT.ajax._addFunctionCall(	"GetModifierCodeInfo",
-								"{{{URL}}}getModifierCodeInfo", 
-								i2b2.ONT.cfg.msgs.GetModifierCodeInfo,
-								null,
-								i2b2.ONT.cfg.parsers.GetModifiers);
+                                "{{{URL}}}getModifierCodeInfo",
+                                i2b2.ONT.cfg.msgs.GetModifierCodeInfo,
+                                null,
+                                i2b2.ONT.cfg.parsers.GetModifiers);
 
 // ================================================================================================== //
 i2b2.ONT.cfg.msgs.GetModifierNameInfo = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
@@ -565,10 +565,10 @@ i2b2.ONT.cfg.msgs.GetModifierNameInfo = '<?xml version="1.0" encoding="UTF-8" st
 '    </message_body>\n'+
 '</ns3:request>';
 i2b2.ONT.ajax._addFunctionCall(	"GetModifierNameInfo",
-								"{{{URL}}}getModifierNameInfo", 
-								i2b2.ONT.cfg.msgs.GetModifierNameInfo,
-								null,
-								i2b2.ONT.cfg.parsers.GetModifiers);
+                                "{{{URL}}}getModifierNameInfo",
+                                i2b2.ONT.cfg.msgs.GetModifierNameInfo,
+                                null,
+                                i2b2.ONT.cfg.parsers.GetModifiers);
 
 
 // ================================================================================================== //
@@ -621,10 +621,10 @@ i2b2.ONT.cfg.msgs.GetCodeInfo = '<?xml version="1.0" encoding="UTF-8" standalone
 '    </message_body>\n'+
 '</ns3:request>';
 i2b2.ONT.ajax._addFunctionCall(	"GetCodeInfo",
-								"{{{URL}}}getCodeInfo", 
-								i2b2.ONT.cfg.msgs.GetCodeInfo, 
-								null, 
-								i2b2.ONT.cfg.parsers.ExtractConcepts);
+                                "{{{URL}}}getCodeInfo",
+                                i2b2.ONT.cfg.msgs.GetCodeInfo,
+                                null,
+                                i2b2.ONT.cfg.parsers.ExtractConcepts);
 
 
 // ================================================================================================== //=
@@ -677,10 +677,10 @@ i2b2.ONT.cfg.msgs.GetTermInfo = '<?xml version="1.0" encoding="UTF-8" standalone
 '	</message_body>\n'+
 '</ns3:request>';
 i2b2.ONT.ajax._addFunctionCall(	"GetTermInfo",
-								"{{{URL}}}getTermInfo",
-								i2b2.ONT.cfg.msgs.GetTermInfo,
-								null,
-								i2b2.ONT.cfg.parsers.ExtractConcepts);
+                                "{{{URL}}}getTermInfo",
+                                i2b2.ONT.cfg.msgs.GetTermInfo,
+                                null,
+                                i2b2.ONT.cfg.parsers.ExtractConcepts);
 
 // ================================================================================================== //=
 i2b2.ONT.cfg.msgs.GetModifierInfo = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
@@ -733,7 +733,7 @@ i2b2.ONT.cfg.msgs.GetModifierInfo = '<?xml version="1.0" encoding="UTF-8" standa
 '	</message_body>\n'+
 '</ns3:request>';
 i2b2.ONT.ajax._addFunctionCall(	"GetModifierInfo",
-								"{{{URL}}}getModifierInfo",
-								i2b2.ONT.cfg.msgs.GetModifierInfo,
-								null,
-								i2b2.ONT.cfg.parsers.GetModifiers);
+                                "{{{URL}}}getModifierInfo",
+                                i2b2.ONT.cfg.msgs.GetModifierInfo,
+                                null,
+                                i2b2.ONT.cfg.parsers.GetModifiers);

@@ -42,5 +42,11 @@ i2b2.CRC.ctrlr.showOptions = function(component_name) {
 
 
 i2b2.CRC.ctrlr.refreshAll = function(view_component) {
-    alert('refresh treeview for '+view_component);
+    switch (view_component) {
+        case "i2b2.CRC.view.history":
+            i2b2.CRC.view.history.doRefreshAll();
+            break;
+        default:
+            alert('CRC_ctrlr_Options.js |> Refresh treeview for ' + view_component);
+    }
 };

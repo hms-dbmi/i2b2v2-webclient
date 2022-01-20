@@ -27,8 +27,8 @@ i2b2.sdx.TypeControllers.QI.model = {};
  * @alias i2b2.sdx.Master.EncapsulateData
  */
 i2b2.sdx.TypeControllers.QI.getEncapsulateInfo = function() {
-	// this function returns the encapsulation head information
-	return {sdxType: 'QI', sdxKeyName: 'query_instance_id', sdxControlCell:'CRC', sdxDisplayNameKey:'title'};
+    // this function returns the encapsulation head information
+    return {sdxType: 'QI', sdxKeyName: 'query_instance_id', sdxControlCell:'CRC', sdxDisplayNameKey:'title'};
 }
 
 // *********************************************************************************
@@ -36,76 +36,76 @@ i2b2.sdx.TypeControllers.QI.getEncapsulateInfo = function() {
 // *********************************************************************************
 i2b2.sdx.TypeControllers.QI.RenderHTML= function(sdxData, options, targetDiv) {
     console.warn("[i2b2.sdx.TypeControllers.QI.RenderHTML] is deprecated!");
-	// OPTIONS:
-	//	title: string
-	//	showchildren: true | false
-	//	cssClass: string
-	//	icon: [data object]
-	//		icon: 		(filename of img, appended to i2b2_root+cellDir + '/assets')
-	//		iconExp: 	(filename of img, appended to i2b2_root+cellDir + '/assets')
-	//	dragdrop: string (function name)
-	//	context: string
-	//	click: string 
-	//	dblclick: string
-	
-	if (Object.isUndefined(options)) { options = {}; }
-	var render = {html: retHtml, htmlID: id};
-	var conceptId = sdxData.name;
-	var id = "CRC_ID-" + i2b2.GUID();
-	
-	// process drag drop controllers
-	if (!Object.isUndefined(options.dragdrop)) {
+    // OPTIONS:
+    //	title: string
+    //	showchildren: true | false
+    //	cssClass: string
+    //	icon: [data object]
+    //		icon: 		(filename of img, appended to i2b2_root+cellDir + '/assets')
+    //		iconExp: 	(filename of img, appended to i2b2_root+cellDir + '/assets')
+    //	dragdrop: string (function name)
+    //	context: string
+    //	click: string
+    //	dblclick: string
+
+    if (Object.isUndefined(options)) { options = {}; }
+    var render = {html: retHtml, htmlID: id};
+    var conceptId = sdxData.name;
+    var id = "CRC_ID-" + i2b2.GUID();
+
+    // process drag drop controllers
+    if (!Object.isUndefined(options.dragdrop)) {
 // NOTE TO SELF: should attachment of node dragdrop controller be handled by the SDX system as well? 
 // This would ensure removal of the onmouseover call in a cross-browser way
-		var sDD = '  onmouseover="' + options.dragdrop + '(\''+ targetDiv.id +'\',\'' + id + '\')" ';
-	} else {
-		var sDD = '';
-	}
+        var sDD = '  onmouseover="' + options.dragdrop + '(\''+ targetDiv.id +'\',\'' + id + '\')" ';
+    } else {
+        var sDD = '';
+    }
 
-	if (Object.isUndefined(options.cssClass)) { options.cssClass = 'sdxDefaultQI';}
+    if (Object.isUndefined(options.cssClass)) { options.cssClass = 'sdxDefaultQI';}
 
-	// user can override
-	bCanExp = true;
-	if (Object.isBoolean(options.showchildren)) { 
-		bCanExp = options.showchildren;
-	}
-	render.canExpand = bCanExp;
-	render.iconType = "QI";
-	
-	if (!Object.isUndefined(options.icon)) { render.icon = i2b2.hive.cfg.urlFramework + 'cells/CRC/assets/'+ options.icon }
-	if (!Object.isUndefined(options.iconExp)) { render.iconExp = i2b2.hive.cfg.urlFramework + 'cells/CRC/assets/'+ options.iconExp }
-	// in cases of one set icon, copy valid icon to the missing icon
-	if (Object.isUndefined(render.icon) && !Object.isUndefined(render.iconExp)) {	render.icon = sdxData.iconExp; }
-	if (!Object.isUndefined(render.icon) && Object.isUndefined(render.iconExp)) {	render.iconExp = sdxData.icon; }
+    // user can override
+    bCanExp = true;
+    if (Object.isBoolean(options.showchildren)) {
+        bCanExp = options.showchildren;
+    }
+    render.canExpand = bCanExp;
+    render.iconType = "QI";
 
-	// handle the event controllers
-	var sMainEvents = sDD;
-	var sImgEvents = sDD;
+    if (!Object.isUndefined(options.icon)) { render.icon = i2b2.hive.cfg.urlFramework + 'cells/CRC/assets/'+ options.icon }
+    if (!Object.isUndefined(options.iconExp)) { render.iconExp = i2b2.hive.cfg.urlFramework + 'cells/CRC/assets/'+ options.iconExp }
+    // in cases of one set icon, copy valid icon to the missing icon
+    if (Object.isUndefined(render.icon) && !Object.isUndefined(render.iconExp)) {	render.icon = sdxData.iconExp; }
+    if (!Object.isUndefined(render.icon) && Object.isUndefined(render.iconExp)) {	render.iconExp = sdxData.icon; }
 
-	// **** Render the HTML ***
-	var retHtml = '<DIV id="' + id + '" ' + sMainEvents + ' style="white-space:nowrap;cursor:pointer;">';
-	retHtml += '<DIV ';
-	if (Object.isString(options.cssClass)) {
-		retHtml += ' class="'+options.cssClass+'" ';
-	} else {
-		retHtml += ' class= "sdxDefaultQI" ';
-	}
-	retHtml += sImgEvents;
-	retHtml += '>';
-	retHtml += '<IMG src="'+render.icon+'"/> '; 
-	if (!Object.isUndefined(options.title)) {
-		retHtml += options.title;
-	} else {
-		console.warn('[SDX RenderHTML] no title was given in the creation options for an CRC>QI node!');
-		retHtml += ' QI '+id;
-	}
-	retHtml += '</DIV></DIV>';
-	render.html = retHtml;
-	render.htmlID =  id;
-	var retObj = {};
-	$.extend(retObj, sdxData);
-	retObj.renderData = render;
-	return retObj;
+    // handle the event controllers
+    var sMainEvents = sDD;
+    var sImgEvents = sDD;
+
+    // **** Render the HTML ***
+    var retHtml = '<DIV id="' + id + '" ' + sMainEvents + ' style="white-space:nowrap;cursor:pointer;">';
+    retHtml += '<DIV ';
+    if (Object.isString(options.cssClass)) {
+        retHtml += ' class="'+options.cssClass+'" ';
+    } else {
+        retHtml += ' class= "sdxDefaultQI" ';
+    }
+    retHtml += sImgEvents;
+    retHtml += '>';
+    retHtml += '<IMG src="'+render.icon+'"/> ';
+    if (!Object.isUndefined(options.title)) {
+        retHtml += options.title;
+    } else {
+        console.warn('[SDX RenderHTML] no title was given in the creation options for an CRC>QI node!');
+        retHtml += ' QI '+id;
+    }
+    retHtml += '</DIV></DIV>';
+    render.html = retHtml;
+    render.htmlID =  id;
+    var retObj = {};
+    $.extend(retObj, sdxData);
+    retObj.renderData = render;
+    return retObj;
 }
 
 
@@ -210,31 +210,31 @@ i2b2.sdx.TypeControllers.QI.RenderData = function(sdxData, options) {
  * @alias i2b2.sdx.Master.getChildRecords
  */
 i2b2.sdx.TypeControllers.QI.getChildRecords = function(sdxParentNode, onCompleteCallback, options) {
-	var scopedCallback = new i2b2_scopedCallback();
-	scopedCallback.scope = sdxParentNode;
-	scopedCallback.callback = function(results) {
-		var cl_node = sdxParentNode;
-		var cl_onCompleteCB = onCompleteCallback;
-		// THIS function is used to process the AJAX results of the getChild call
-		//		results data object contains the following attributes:
-		//			refXML: xmlDomObject <--- for data processing
-		//			msgRequest: xml (string)
-		//			msgResponse: xml (string)
-		//			error: boolean
-		//			errorStatus: string [only with error=true]
-		//			errorMsg: string [only with error=true]
-	
-		var retMsg = {
-			error: results.error,
-			msgRequest: results.msgRequest,
-			msgResponse: results.msgResponse,
-			msgUrl: results.msgUrl,
-			results: null
-		};
-		var retChildren = [];
+    var scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.scope = sdxParentNode;
+    scopedCallback.callback = function(results) {
+        var cl_node = sdxParentNode;
+        var cl_onCompleteCB = onCompleteCallback;
+        // THIS function is used to process the AJAX results of the getChild call
+        //		results data object contains the following attributes:
+        //			refXML: xmlDomObject <--- for data processing
+        //			msgRequest: xml (string)
+        //			msgResponse: xml (string)
+        //			error: boolean
+        //			errorStatus: string [only with error=true]
+        //			errorMsg: string [only with error=true]
 
-		var keyValue = this.sdxInfo.sdxKeyValue.toString();
-		var parent_QM = this.origData.query_master_id.toString();
+        var retMsg = {
+            error: results.error,
+            msgRequest: results.msgRequest,
+            msgResponse: results.msgResponse,
+            msgUrl: results.msgUrl,
+            results: null
+        };
+        var retChildren = [];
+
+        var keyValue = this.sdxInfo.sdxKeyValue.toString();
+        var parent_QM = this.origData.query_master_id.toString();
 
         // extract records from XML msg
         var ps = results.refXML.getElementsByTagName('query_result_instance');
@@ -327,84 +327,84 @@ i2b2.sdx.TypeControllers.QI.getChildRecords = function(sdxParentNode, onComplete
             cl_onCompleteCB(retMsg);
         }
     }
-	i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:SDX:QueryInstance", {qi_key_value: sdxParentNode.sdxInfo.sdxKeyValue}, scopedCallback);
+    i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:SDX:QueryInstance", {qi_key_value: sdxParentNode.sdxInfo.sdxKeyValue}, scopedCallback);
 }
 
 
 
 i2b2.sdx.TypeControllers.QI.LoadChildrenFromTreeview = function(node, onCompleteCallback) {
-	var scopedCallback = new i2b2_scopedCallback();
-	scopedCallback.scope = node.data.i2b2_SDX;
-	scopedCallback.callback = function(retCellPack) {
-		var cl_node = node;
-		var cl_onCompleteCB = onCompleteCallback;
+    var scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.scope = node.data.i2b2_SDX;
+    scopedCallback.callback = function(retCellPack) {
+        var cl_node = node;
+        var cl_onCompleteCB = onCompleteCallback;
 
-		var results = retCellPack.results;			
-		for(var i1=0; i1<1*results.length; i1++) {
-			var o = results[i1];
-			
-			
-			// add visual element
-			switch (o.sdxInfo.sdxType) {
-				case "PRS":	// patient record set
-					// add visual element
-					 if (i2b2.PM.model.userRoles.indexOf("DATA_LDS") == -1) {
-						var renderOptions = {
-							dragdrop: "i2b2.sdx.TypeControllers.PRS.AttachDrag2Data",
-							icon: "sdx_CRC_PRS.jpg",
+        var results = retCellPack.results;
+        for(var i1=0; i1<1*results.length; i1++) {
+            var o = results[i1];
+
+
+            // add visual element
+            switch (o.sdxInfo.sdxType) {
+                case "PRS":	// patient record set
+                    // add visual element
+                     if (i2b2.PM.model.userRoles.indexOf("DATA_LDS") == -1) {
+                        var renderOptions = {
+                            dragdrop: "i2b2.sdx.TypeControllers.PRS.AttachDrag2Data",
+                            icon: "sdx_CRC_PRS.jpg",
                             title: o.origData.titleCRC,
-							showchildren: false
-						};
-					} else {
-						var renderOptions = {
-							dragdrop: "i2b2.sdx.TypeControllers.PRS.AttachDrag2Data",
-							icon: "sdx_CRC_PRS.jpg",
-							title: o.origData.titleCRC, 
-							showchildren: true
-						};					
-					}
-					break;
-				case "ENS":	// encounter record set
-					// add visual element
-					 if (i2b2.PM.model.userRoles.indexOf("DATA_LDS") == -1) {
-						var renderOptions = {
-							dragdrop: "i2b2.sdx.TypeControllers.ENS.AttachDrag2Data",
-							icon: "sdx_CRC_PRS.jpg",
-							title: o.origData.titleCRC, 
-							showchildren: false
-						};
-					} else {
-						var renderOptions = {
-							dragdrop: "i2b2.sdx.TypeControllers.ENS.AttachDrag2Data",
-							icon: "sdx_CRC_PRS.jpg",
-							title: o.origData.titleCRC, 
-							showchildren: true						
-						};
-						}
-					break;					
-				case "PRC":	// patient record count
-					var renderOptions = {
-						dragdrop: "i2b2.sdx.TypeControllers.PRC.AttachDrag2Data",
-						icon: "sdx_CRC_PRC.jpg",
-						title: o.origData.titleCRC, 
-						showchildren: false
-					};
-					break;
-			}
+                            showchildren: false
+                        };
+                    } else {
+                        var renderOptions = {
+                            dragdrop: "i2b2.sdx.TypeControllers.PRS.AttachDrag2Data",
+                            icon: "sdx_CRC_PRS.jpg",
+                            title: o.origData.titleCRC,
+                            showchildren: true
+                        };
+                    }
+                    break;
+                case "ENS":	// encounter record set
+                    // add visual element
+                     if (i2b2.PM.model.userRoles.indexOf("DATA_LDS") == -1) {
+                        var renderOptions = {
+                            dragdrop: "i2b2.sdx.TypeControllers.ENS.AttachDrag2Data",
+                            icon: "sdx_CRC_PRS.jpg",
+                            title: o.origData.titleCRC,
+                            showchildren: false
+                        };
+                    } else {
+                        var renderOptions = {
+                            dragdrop: "i2b2.sdx.TypeControllers.ENS.AttachDrag2Data",
+                            icon: "sdx_CRC_PRS.jpg",
+                            title: o.origData.titleCRC,
+                            showchildren: true
+                        };
+                        }
+                    break;
+                case "PRC":	// patient record count
+                    var renderOptions = {
+                        dragdrop: "i2b2.sdx.TypeControllers.PRC.AttachDrag2Data",
+                        icon: "sdx_CRC_PRC.jpg",
+                        title: o.origData.titleCRC,
+                        showchildren: false
+                    };
+                    break;
+            }
 
-			var sdxRenderData = i2b2.sdx.Master.RenderHTML(cl_node.tree.id, o, renderOptions);
-			i2b2.sdx.Master.AppendTreeNode(cl_node.tree, cl_node, sdxRenderData);
-		}
-		// handle the callback
-		if (getObjectClass(cl_onCompleteCB)=='i2b2_scopedCallback') {
-			cl_onCompleteCB.callback.call(cl_onCompleteCB.scope, retCellPack);
-		} else {
-			cl_onCompleteCB(retCellPack);
-		}
-	}
-	var sdxParentNode = node.data.i2b2_SDX;
-	var options = i2b2.CRC.params;
-	i2b2.sdx.Master.getChildRecords(sdxParentNode, scopedCallback, options);
+            var sdxRenderData = i2b2.sdx.Master.RenderHTML(cl_node.tree.id, o, renderOptions);
+            i2b2.sdx.Master.AppendTreeNode(cl_node.tree, cl_node, sdxRenderData);
+        }
+        // handle the callback
+        if (getObjectClass(cl_onCompleteCB)=='i2b2_scopedCallback') {
+            cl_onCompleteCB.callback.call(cl_onCompleteCB.scope, retCellPack);
+        } else {
+            cl_onCompleteCB(retCellPack);
+        }
+    }
+    var sdxParentNode = node.data.i2b2_SDX;
+    var options = i2b2.CRC.params;
+    i2b2.sdx.Master.getChildRecords(sdxParentNode, scopedCallback, options);
 }
 
 
@@ -413,39 +413,39 @@ i2b2.sdx.TypeControllers.QI.LoadChildrenFromTreeview = function(node, onComplete
 //	ATTACH DRAG TO DATA (DEFAULT HANDLER)
 // *********************************************************************************
 i2b2.sdx.TypeControllers.QI.AttachDrag2Data = function(divParentID, divDataID){
-	if (Object.isUndefined($(divDataID))) {	return false; }
-	
-	// get the i2b2 data from the yuiTree node
-	var tvTree = YAHOO.widget.TreeView.getTree(divParentID);
-	var tvNode = tvTree.getNodeByProperty('nodeid', divDataID);
-	if (!Object.isUndefined(tvNode.DDProxy)) { return true; }
-	
-	// attach DD
-	var t = new i2b2.sdx.TypeControllers.QI.DragDrop(divDataID);
-	t.yuiTree = tvTree;
-	t.yuiTreeNode = tvNode;
-	tvNode.DDProxy = t;
-	
-	// clear the mouseover attachment function
-	var tdn = $(divDataID);
-	if (!Object.isUndefined(tdn.onmouseover)) { 
-		try {
-			delete tdn.onmouseover; 
-		} catch(e) {
-			tdn.onmouseover; 
-		}
-	}
-	if (!Object.isUndefined(tdn.attributes)) {
-		for (var i=0;i<tdn.attributes.length; i++) {
-			if (tdn.attributes[i].name=="onmouseover") { 
-				try {
-					delete tdn.onmouseover; 
-				} catch(e) {
-					tdn.onmouseover; 
-				}
-			}
-		}
-	}
+    if (Object.isUndefined($(divDataID))) {	return false; }
+
+    // get the i2b2 data from the yuiTree node
+    var tvTree = YAHOO.widget.TreeView.getTree(divParentID);
+    var tvNode = tvTree.getNodeByProperty('nodeid', divDataID);
+    if (!Object.isUndefined(tvNode.DDProxy)) { return true; }
+
+    // attach DD
+    var t = new i2b2.sdx.TypeControllers.QI.DragDrop(divDataID);
+    t.yuiTree = tvTree;
+    t.yuiTreeNode = tvNode;
+    tvNode.DDProxy = t;
+
+    // clear the mouseover attachment function
+    var tdn = $(divDataID);
+    if (!Object.isUndefined(tdn.onmouseover)) {
+        try {
+            delete tdn.onmouseover;
+        } catch(e) {
+            tdn.onmouseover;
+        }
+    }
+    if (!Object.isUndefined(tdn.attributes)) {
+        for (var i=0;i<tdn.attributes.length; i++) {
+            if (tdn.attributes[i].name=="onmouseover") {
+                try {
+                    delete tdn.onmouseover;
+                } catch(e) {
+                    tdn.onmouseover;
+                }
+            }
+        }
+    }
 }
 
 
@@ -464,7 +464,7 @@ i2b2.sdx.TypeControllers.QI.AttachDrag2Data = function(divParentID, divDataID){
 //	!!!! THE i2b2.sdx.Master.setHandlerCustom FUNCTION
 // *********************************************************************************
 i2b2.sdx.TypeControllers.QI.DropHandler = function(sdxData) {
-	alert('[QueryInstance DROPPED] You need to create your own custom drop event handler.');
+    alert('[QueryInstance DROPPED] You need to create your own custom drop event handler.');
 }
 // ==========================================================================
 i2b2.sdx.TypeControllers.QI.dragStartHandler = function(i2b2Data) {

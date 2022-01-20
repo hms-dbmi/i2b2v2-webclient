@@ -74,42 +74,42 @@ i2b2.CRC.cfg.msgs.getQueryMasterList_fromUserId = '<?xml version="1.0" encoding=
 '	</message_body>\n'+
 '</ns6:request>\n';
 i2b2.CRC.cfg.parsers.getQueryMasterList_fromUserId = function() {
-	if (!this.error) {
-		this.model = [];		
-		var qm = this.refXML.getElementsByTagName('query_master');
-		for(var i=0; i<1*qm.length; i++) {
-			var o = new Object;
-			o.xmlOrig = qm[i];
-			o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
-			o.name = i2b2.h.getXNodeVal(qm[i],'name');
-			o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
-			o.group = i2b2.h.getXNodeVal(qm[i],'group_id');
-			o.created = i2b2.h.getXNodeVal(qm[i],'create_date');
-			var dStr = '';
-			var d = o.created.match(/^[0-9\-]*/).toString();
-			if (d) {
-				d = d.replace(/-/g,'/');
-				d = new Date(Date.parse(d));
-				if (d) {
-					dStr = ' [' + (d.getMonth()+1) + '-' + d.getDate() + '-' + d.getFullYear().toString() + ']';
-				}
-			}
-			o.name += dStr + ' ['+o.userid+']';
-			// encapsulate into an SDX package
-			var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QM',o);
-			this.model.push(sdxDataPack);
-		}
-	} else {
-		this.model = false;
-		console.error("[getQueryMasterList_fromUserId] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        var qm = this.refXML.getElementsByTagName('query_master');
+        for(var i=0; i<1*qm.length; i++) {
+            var o = new Object;
+            o.xmlOrig = qm[i];
+            o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
+            o.name = i2b2.h.getXNodeVal(qm[i],'name');
+            o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
+            o.group = i2b2.h.getXNodeVal(qm[i],'group_id');
+            o.created = i2b2.h.getXNodeVal(qm[i],'create_date');
+            var dStr = '';
+            var d = o.created.match(/^[0-9\-]*/).toString();
+            if (d) {
+                d = d.replace(/-/g,'/');
+                d = new Date(Date.parse(d));
+                if (d) {
+                    dStr = ' [' + (d.getMonth()+1) + '-' + d.getDate() + '-' + d.getFullYear().toString() + ']';
+                }
+            }
+            o.name += dStr + ' ['+o.userid+']';
+            // encapsulate into an SDX package
+            var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QM',o);
+            this.model.push(sdxDataPack);
+        }
+    } else {
+        this.model = false;
+        console.error("[getQueryMasterList_fromUserId] Could not parse() data!");
+    }
+    return this;
 }
 i2b2.CRC.ajax._addFunctionCall(	"getQueryMasterList_fromUserId",
-								"{{{URL}}}request",
-								i2b2.CRC.cfg.msgs.getQueryMasterList_fromUserId,
-								null,
-								i2b2.CRC.cfg.parsers.getQueryMasterList_fromUserId);
+                                "{{{URL}}}request",
+                                i2b2.CRC.cfg.msgs.getQueryMasterList_fromUserId,
+                                null,
+                                i2b2.CRC.cfg.parsers.getQueryMasterList_fromUserId);
 
 
 // ================================================================================================== //
@@ -169,42 +169,42 @@ i2b2.CRC.cfg.msgs.getNameInfo = '<?xml version="1.0" encoding="UTF-8" standalone
 '	</message_body>\n'+
 '</ns6:request>\n';
 i2b2.CRC.cfg.parsers.getNameInfo = function() {
-	if (!this.error) {
-		this.model = [];		
-		var qm = this.refXML.getElementsByTagName('query_master');
-		for(var i=0; i<1*qm.length; i++) {
-			var o = new Object;
-			o.xmlOrig = qm[i];
-			o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
-			o.name = i2b2.h.getXNodeVal(qm[i],'name');
-			o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
-			o.group = i2b2.h.getXNodeVal(qm[i],'group_id');
-			o.created = i2b2.h.getXNodeVal(qm[i],'create_date');
-			var dStr = '';
-			var d = o.created.match(/^[0-9\-]*/).toString();
-			if (d) {
-				d = d.replace(/-/g,'/');
-				d = new Date(Date.parse(d));
-				if (d) {
-					dStr = ' [' + (d.getMonth()+1) + '-' + d.getDate() + '-' + d.getFullYear().toString() + ']';
-				}
-			}
-			o.name += dStr + ' ['+o.userid+']';
-			// encapsulate into an SDX package
-			var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QM',o);
-			this.model.push(sdxDataPack);
-		}
-	} else {
-		this.model = false;
-		console.error("[getNameInfo] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        var qm = this.refXML.getElementsByTagName('query_master');
+        for(var i=0; i<1*qm.length; i++) {
+            var o = new Object;
+            o.xmlOrig = qm[i];
+            o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
+            o.name = i2b2.h.getXNodeVal(qm[i],'name');
+            o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
+            o.group = i2b2.h.getXNodeVal(qm[i],'group_id');
+            o.created = i2b2.h.getXNodeVal(qm[i],'create_date');
+            var dStr = '';
+            var d = o.created.match(/^[0-9\-]*/).toString();
+            if (d) {
+                d = d.replace(/-/g,'/');
+                d = new Date(Date.parse(d));
+                if (d) {
+                    dStr = ' [' + (d.getMonth()+1) + '-' + d.getDate() + '-' + d.getFullYear().toString() + ']';
+                }
+            }
+            o.name += dStr + ' ['+o.userid+']';
+            // encapsulate into an SDX package
+            var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QM',o);
+            this.model.push(sdxDataPack);
+        }
+    } else {
+        this.model = false;
+        console.error("[getNameInfo] Could not parse() data!");
+    }
+    return this;
 }
 i2b2.CRC.ajax._addFunctionCall(	"getNameInfo",
-								"{{{URL}}}getNameInfo",
-								i2b2.CRC.cfg.msgs.getNameInfo,
-								null,
-								i2b2.CRC.cfg.parsers.getNameInfo);
+                                "{{{URL}}}getNameInfo",
+                                i2b2.CRC.cfg.msgs.getNameInfo,
+                                null,
+                                i2b2.CRC.cfg.parsers.getNameInfo);
 
 
 
@@ -263,34 +263,34 @@ i2b2.CRC.cfg.msgs.getQueryInstanceList_fromQueryMasterId = '<?xml version="1.0" 
 '	</message_body>\n'+
 '</ns6:request>';
 i2b2.CRC.cfg.parsers.getQueryInstanceList_fromQueryMasterId = function(){
-	if (!this.error) {
-		this.model = [];
-		var qi = this.refXML.getElementsByTagName('query_instance');
-		for(var i1=0; i1<1*qi.length; i1++) {
-			var o = new Object;
-			o.xmlOrig = qi[i1];
-			o.query_master_id = i2b2.h.getXNodeVal(qi[i1],'query_master_id');
-			o.query_instance_id = i2b2.h.getXNodeVal(qi[i1],'query_instance_id');
-			o.id = o.query_instance_id;
-			o.batch_mode = i2b2.h.getXNodeVal(qi[i1],'batch_mode');
-			o.start_date = i2b2.h.getXNodeVal(qi[i1],'start_date');
-			o.end_date = i2b2.h.getXNodeVal(qi[i1],'end_date');
-			o.query_status_type = i2b2.h.getXNodeVal(qi[i1],'query_status_type');
-			var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QI',o);
-			this.model.push(sdxDataPack);
-		}
-	} else {
-		this.model = false;
-		console.error("[getQueryInstanceList_fromQueryMasterId] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        var qi = this.refXML.getElementsByTagName('query_instance');
+        for(var i1=0; i1<1*qi.length; i1++) {
+            var o = new Object;
+            o.xmlOrig = qi[i1];
+            o.query_master_id = i2b2.h.getXNodeVal(qi[i1],'query_master_id');
+            o.query_instance_id = i2b2.h.getXNodeVal(qi[i1],'query_instance_id');
+            o.id = o.query_instance_id;
+            o.batch_mode = i2b2.h.getXNodeVal(qi[i1],'batch_mode');
+            o.start_date = i2b2.h.getXNodeVal(qi[i1],'start_date');
+            o.end_date = i2b2.h.getXNodeVal(qi[i1],'end_date');
+            o.query_status_type = i2b2.h.getXNodeVal(qi[i1],'query_status_type');
+            var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QI',o);
+            this.model.push(sdxDataPack);
+        }
+    } else {
+        this.model = false;
+        console.error("[getQueryInstanceList_fromQueryMasterId] Could not parse() data!");
+    }
+    return this;
 }
 i2b2.CRC.ajax._addFunctionCall(	"getQueryInstanceList_fromQueryMasterId",
-								"{{{URL}}}request",
-								i2b2.CRC.cfg.msgs.getQueryInstanceList_fromQueryMasterId,
-								null,
-								i2b2.CRC.cfg.parsers.getQueryInstanceList_fromQueryMasterId);
-			
+                                "{{{URL}}}request",
+                                i2b2.CRC.cfg.msgs.getQueryInstanceList_fromQueryMasterId,
+                                null,
+                                i2b2.CRC.cfg.parsers.getQueryInstanceList_fromQueryMasterId);
+
 
 
 // ================================================================================================== //
@@ -348,35 +348,35 @@ i2b2.CRC.cfg.msgs.getQueryResultInstanceList_fromQueryResultInstanceId = '<?xml 
 '	</message_body>\n'+
 '</ns6:request>';
 i2b2.CRC.cfg.parsers.getQueryResultInstanceList_fromQueryResultInstanceId = function(){
-	if (!this.error) {
-		this.model = [];
-		var qi = this.refXML.getElementsByTagName('query_result_instance');
-		for(var i1=0; i1<1*qi.length; i1++) {
-			var o = new Object;
-			o.xmlOrig = qi[i1];
-			o.result_instance_id = i2b2.h.getXNodeVal(qi[i1],'result_instance_id');
-			o.query_instance_id = i2b2.h.getXNodeVal(qi[i1],'query_instance_id');
-			o.id = o.query_instance_id;
-			o.batch_mode = i2b2.h.getXNodeVal(qi[i1],'batch_mode');
-			o.start_date = i2b2.h.getXNodeVal(qi[i1],'start_date');
-			o.end_date = i2b2.h.getXNodeVal(qi[i1],'end_date');
-			o.query_status_type = i2b2.h.getXNodeVal(qi[i1],'query_status_type');
-			var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QI',o);
-			this.model.push(sdxDataPack);
-		}
-	} else {
-		this.model = false;
-		console.error("[getQueryResultInstanceList_fromQueryResultInstanceId] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = [];
+        var qi = this.refXML.getElementsByTagName('query_result_instance');
+        for(var i1=0; i1<1*qi.length; i1++) {
+            var o = new Object;
+            o.xmlOrig = qi[i1];
+            o.result_instance_id = i2b2.h.getXNodeVal(qi[i1],'result_instance_id');
+            o.query_instance_id = i2b2.h.getXNodeVal(qi[i1],'query_instance_id');
+            o.id = o.query_instance_id;
+            o.batch_mode = i2b2.h.getXNodeVal(qi[i1],'batch_mode');
+            o.start_date = i2b2.h.getXNodeVal(qi[i1],'start_date');
+            o.end_date = i2b2.h.getXNodeVal(qi[i1],'end_date');
+            o.query_status_type = i2b2.h.getXNodeVal(qi[i1],'query_status_type');
+            var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QI',o);
+            this.model.push(sdxDataPack);
+        }
+    } else {
+        this.model = false;
+        console.error("[getQueryResultInstanceList_fromQueryResultInstanceId] Could not parse() data!");
+    }
+    return this;
 }
 i2b2.CRC.ajax._addFunctionCall(	"getQueryResultInstanceList_fromQueryResultInstanceId",
-								"{{{URL}}}request",
-								i2b2.CRC.cfg.msgs.getQueryResultInstanceList_fromQueryResultInstanceId,
-								null,
-								i2b2.CRC.cfg.parsers.getQueryResultInstanceList_fromQueryResultInstanceId);
-			
-			
+                                "{{{URL}}}request",
+                                i2b2.CRC.cfg.msgs.getQueryResultInstanceList_fromQueryResultInstanceId,
+                                null,
+                                i2b2.CRC.cfg.parsers.getQueryResultInstanceList_fromQueryResultInstanceId);
+
+
 
 // ================================================================================================== //			
 i2b2.CRC.cfg.msgs.getQueryResultInstanceList_fromQueryInstanceId = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
@@ -433,106 +433,106 @@ i2b2.CRC.cfg.msgs.getQueryResultInstanceList_fromQueryInstanceId = '<?xml versio
 '	</message_body>\n'+
 '</ns6:request>';
 i2b2.CRC.cfg.parsers.getQueryResultInstanceList_fromQueryInstanceId = function(){
-	if (!this.error) {
-		this.model = [];		
-		// extract records from XML msg
-		var ps = this.refXML.getElementsByTagName('query_result_instance');
-		for(var i1=0; i1<ps.length; i1++) {
-			var o = new Object;
-			o.xmlOrig = ps[i1];
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var ps = this.refXML.getElementsByTagName('query_result_instance');
+        for(var i1=0; i1<ps.length; i1++) {
+            var o = new Object;
+            o.xmlOrig = ps[i1];
 //			o.QI_id = pn.sdxInfo.sdxKeyValue;
 //			o.QM_id = pn.parent.sdxInfo.sdxKeyValue;
-			o.size = i2b2.h.getXNodeVal(ps[i1],'set_size');
-			o.start_date = i2b2.h.getXNodeVal(ps[i1],'start_date');
-			o.end_date = i2b2.h.getXNodeVal(ps[i1],'end_date');
-			o.result_type = i2b2.h.XPath(ps[i1],'query_result_type/name/text()')[0].nodeValue;
-			switch (o.result_type) {
-				case "PATIENT_ENCOUNTER_SET":
-					// create the title using shrine setting
-					try {
-						var t = i2b2.h.XPath(temp,'self::description')[0].firstChild.nodeValue;
-					} catch(e) { var t = null; }
-					if (t) {
-						o.title = t;
-					} else {
-						if (o.size > 10) {
-							o.title = "Encounter Set - "+o.size+" encounters";
-						} else {
-							if (i2b2.h.isSHRINE()) {
-								o.title = "Encounter Set - 10 encounters or less";
-							} else {
-								o.title = "Encounter Set - "+o.size+" encounters";
-							}
-						}
-					}
-					o.PRS_id = i2b2.h.getXNodeVal(ps[i1],'result_instance_id');
-					o.titleCRC = o.title;
+            o.size = i2b2.h.getXNodeVal(ps[i1],'set_size');
+            o.start_date = i2b2.h.getXNodeVal(ps[i1],'start_date');
+            o.end_date = i2b2.h.getXNodeVal(ps[i1],'end_date');
+            o.result_type = i2b2.h.XPath(ps[i1],'query_result_type/name/text()')[0].nodeValue;
+            switch (o.result_type) {
+                case "PATIENT_ENCOUNTER_SET":
+                    // create the title using shrine setting
+                    try {
+                        var t = i2b2.h.XPath(temp,'self::description')[0].firstChild.nodeValue;
+                    } catch(e) { var t = null; }
+                    if (t) {
+                        o.title = t;
+                    } else {
+                        if (o.size > 10) {
+                            o.title = "Encounter Set - "+o.size+" encounters";
+                        } else {
+                            if (i2b2.h.isSHRINE()) {
+                                o.title = "Encounter Set - 10 encounters or less";
+                            } else {
+                                o.title = "Encounter Set - "+o.size+" encounters";
+                            }
+                        }
+                    }
+                    o.PRS_id = i2b2.h.getXNodeVal(ps[i1],'result_instance_id');
+                    o.titleCRC = o.title;
 //					o.title = pn.parent.sdxInfo.sdxDisplayName + ' [PATIENTSET_'+o.PRS_id+']';
-					o.result_instance_id = o.PRS_id;
-					var sdxDataNode = i2b2.sdx.Master.EncapsulateData('ENS',o);
-					break;				
-				case "PATIENTSET":
-					// create the title using shrine setting
-					try {
-						var t = i2b2.h.XPath(temp,'self::description')[0].firstChild.nodeValue;
-					} catch(e) { var t = null; }
-					if (t) {
-						o.title = t;
-					} else {
-						if (o.size > 10) {
-							o.title = "Patient Set - "+o.size+" patients";
-						} else {
-							if (i2b2.h.isSHRINE()) {
-								o.title = "Patient Set - 10 patients or less";
-							} else {
-								o.title = "Patient Set - "+o.size+" patients";
-							}
-						}
-					}
-					o.PRS_id = i2b2.h.getXNodeVal(ps[i1],'result_instance_id');
-					o.titleCRC = o.title;
+                    o.result_instance_id = o.PRS_id;
+                    var sdxDataNode = i2b2.sdx.Master.EncapsulateData('ENS',o);
+                    break;
+                case "PATIENTSET":
+                    // create the title using shrine setting
+                    try {
+                        var t = i2b2.h.XPath(temp,'self::description')[0].firstChild.nodeValue;
+                    } catch(e) { var t = null; }
+                    if (t) {
+                        o.title = t;
+                    } else {
+                        if (o.size > 10) {
+                            o.title = "Patient Set - "+o.size+" patients";
+                        } else {
+                            if (i2b2.h.isSHRINE()) {
+                                o.title = "Patient Set - 10 patients or less";
+                            } else {
+                                o.title = "Patient Set - "+o.size+" patients";
+                            }
+                        }
+                    }
+                    o.PRS_id = i2b2.h.getXNodeVal(ps[i1],'result_instance_id');
+                    o.titleCRC = o.title;
 //					o.title = pn.parent.sdxInfo.sdxDisplayName + ' [PATIENTSET_'+o.PRS_id+']';
-					o.result_instance_id = o.PRS_id;
-					var sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS',o);
-					break;
-				case "PATIENT_COUNT_XML":
-					// create the title using shrine setting
-					try {
-						var t = i2b2.h.XPath(temp,'self::description')[0].firstChild.nodeValue;
-					} catch(e) { var t = null; }
-					if (t) {
-						o.title = t;
-					} else {
-						if (o.size > 10) {
-							o.title = "Patient Count - "+o.size+" patients";
-						} else {
-							if (i2b2.h.isSHRINE()) {
-								o.title = "Patient Count - 10 patients or less";
-							} else {
-								o.title = "Patient Count - "+o.size+" patients";
-							}
-						}
-					}
-					o.PRC_id = i2b2.h.getXNodeVal(ps[i1],'result_instance_id');
-					o.titleCRC = o.title;
+                    o.result_instance_id = o.PRS_id;
+                    var sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS',o);
+                    break;
+                case "PATIENT_COUNT_XML":
+                    // create the title using shrine setting
+                    try {
+                        var t = i2b2.h.XPath(temp,'self::description')[0].firstChild.nodeValue;
+                    } catch(e) { var t = null; }
+                    if (t) {
+                        o.title = t;
+                    } else {
+                        if (o.size > 10) {
+                            o.title = "Patient Count - "+o.size+" patients";
+                        } else {
+                            if (i2b2.h.isSHRINE()) {
+                                o.title = "Patient Count - 10 patients or less";
+                            } else {
+                                o.title = "Patient Count - "+o.size+" patients";
+                            }
+                        }
+                    }
+                    o.PRC_id = i2b2.h.getXNodeVal(ps[i1],'result_instance_id');
+                    o.titleCRC = o.title;
 //					o.title = pn.parent.sdxInfo.sdxDisplayName + ' [PATIENT_COUNT_XML_'+o.PRC_id+']';
-					o.result_instance_id = o.PRC_id;
-					var sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRC',o);
-					break;
-			}
-			this.model.push(sdxDataNode);
-		}
-	} else {
-		this.model = false;
-		console.error("[getQueryResultInstanceList_fromQueryInstanceId] Could not parse() data!");
-	}
-	return this;
+                    o.result_instance_id = o.PRC_id;
+                    var sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRC',o);
+                    break;
+            }
+            this.model.push(sdxDataNode);
+        }
+    } else {
+        this.model = false;
+        console.error("[getQueryResultInstanceList_fromQueryInstanceId] Could not parse() data!");
+    }
+    return this;
 }
 i2b2.CRC.ajax._addFunctionCall( "getQueryResultInstanceList_fromQueryInstanceId",
-								"{{{URL}}}request", 
-								i2b2.CRC.cfg.msgs.getQueryResultInstanceList_fromQueryInstanceId, 
-								null, 
-								i2b2.CRC.cfg.parsers.getQueryResultInstanceList_fromQueryInstanceId);
+                                "{{{URL}}}request",
+                                i2b2.CRC.cfg.msgs.getQueryResultInstanceList_fromQueryInstanceId,
+                                null,
+                                i2b2.CRC.cfg.parsers.getQueryResultInstanceList_fromQueryInstanceId);
 
 
 // ================================================================================================== //			
@@ -590,7 +590,7 @@ i2b2.CRC.cfg.msgs.getRequestXml_fromQueryMasterId = '<?xml version="1.0" encodin
 '	</message_body>\n'+
 '</ns6:request>';
 i2b2.CRC.ajax._addFunctionCall("getRequestXml_fromQueryMasterId","{{{URL}}}request", i2b2.CRC.cfg.msgs.getRequestXml_fromQueryMasterId);
-			
+
 
 // ================================================================================================== //
 i2b2.CRC.cfg.msgs.runQueryInstance_fromQueryDefinition = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
@@ -650,9 +650,9 @@ i2b2.CRC.cfg.msgs.runQueryInstance_fromQueryDefinition = '<?xml version="1.0" en
 '	</message_body>\n'+
 '</ns6:request>\n';
 i2b2.CRC.ajax._addFunctionCall(	"runQueryInstance_fromQueryDefinition", 
-								"{{{URL}}}request", 
-								i2b2.CRC.cfg.msgs.runQueryInstance_fromQueryDefinition, 
-								["psm_result_output","psm_query_definition","shrine_topic"]);
+                                "{{{URL}}}request",
+                                i2b2.CRC.cfg.msgs.runQueryInstance_fromQueryDefinition,
+                                ["psm_result_output","psm_query_definition","shrine_topic"]);
 
 
 // ================================================================================================== //1
@@ -832,67 +832,67 @@ i2b2.CRC.cfg.msgs.getPDO_fromInputList = '<?xml version="1.0" encoding="UTF-8" s
 '	</message_body>\n'+
 '</ns6:request>';
 i2b2.CRC.cfg.parsers.getPDO_fromInputList = function(){
-	if (!this.error) {
-		this.model = {
-			patients: [],
-			events: [],
-			observations: []
-		};		
-		// extract event records
-		var ps = this.refXML.getElementsByTagName('event');
-		for(var i1=0; i1<ps.length; i1++) {
-			var o = new Object;
-			o.xmlOrig = ps[i1];
-			o.event_id = i2b2.h.getXNodeVal(ps[i1],'event_id');
-			o.patient_id = i2b2.h.getXNodeVal(ps[i1],'patient_id');
-			o.start_date = i2b2.h.getXNodeVal(ps[i1],'start_date');
-			o.end_date = i2b2.h.getXNodeVal(ps[i1],'end_date');
-			// need to process param columns 
-			//o. = i2b2.h.getXNodeVal(ps[i1],'');
-			this.model.events.push(o);
-		}
-		// extract observation records
-		var ps = this.refXML.getElementsByTagName('observation');
-		for(var i1=0; i1<ps.length; i1++) {
-			var o = new Object;
-			o.xmlOrig = ps[i1];
-			o.event_id = i2b2.h.getXNodeVal(ps[i1],'event_id');
-			o.patient_id = i2b2.h.getXNodeVal(ps[i1],'patient_id');
-			o.concept_cd = i2b2.h.getXNodeVal(ps[i1],'concept_cd');
-			o.observer_cd = i2b2.h.getXNodeVal(ps[i1],'observer_cd');
-			o.start_date = i2b2.h.getXNodeVal(ps[i1],'start_date');
-			o.modifier_cd = i2b2.h.getXNodeVal(ps[i1],'modifier_cd');
-			o.tval_char = i2b2.h.getXNodeVal(ps[i1],'tval_char');
-			o.nval_num = i2b2.h.getXNodeVal(ps[i1],'nval_num');
-			o.valueflag_cd = i2b2.h.getXNodeVal(ps[i1],'valueflag_cd');
-			o.units_cd = i2b2.h.getXNodeVal(ps[i1],'units_cd');
-			o.end_date = i2b2.h.getXNodeVal(ps[i1],'end_date');
-			o.location_cd = i2b2.h.getXNodeVal(ps[i1],'location_cd');
-			this.model.observations.push(o);
-		}
-		var ps = this.refXML.getElementsByTagName('patient');
-		for(var i1=0; i1<ps.length; i1++) {
-			var o = new Object;
-			o.xmlOrig = ps[i1];
-			o.patient_id = i2b2.h.getXNodeVal(ps[i1],'patient_id');
-			var params = i2b2.h.XPath(ps[i1], 'descendant::param[@name]/text()/..');
-			for (var i2 = 0; i2 < params.length; i2++) {
-				var name = params[i2].getAttribute("name");
-				o[name] = params[i2].firstChild.nodeValue;
-			}		
-			this.model.patients.push(o);
-		}
-	} else {
-		this.model = false;
-		console.error("[getPDO_fromInputList] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = {
+            patients: [],
+            events: [],
+            observations: []
+        };
+        // extract event records
+        var ps = this.refXML.getElementsByTagName('event');
+        for(var i1=0; i1<ps.length; i1++) {
+            var o = new Object;
+            o.xmlOrig = ps[i1];
+            o.event_id = i2b2.h.getXNodeVal(ps[i1],'event_id');
+            o.patient_id = i2b2.h.getXNodeVal(ps[i1],'patient_id');
+            o.start_date = i2b2.h.getXNodeVal(ps[i1],'start_date');
+            o.end_date = i2b2.h.getXNodeVal(ps[i1],'end_date');
+            // need to process param columns
+            //o. = i2b2.h.getXNodeVal(ps[i1],'');
+            this.model.events.push(o);
+        }
+        // extract observation records
+        var ps = this.refXML.getElementsByTagName('observation');
+        for(var i1=0; i1<ps.length; i1++) {
+            var o = new Object;
+            o.xmlOrig = ps[i1];
+            o.event_id = i2b2.h.getXNodeVal(ps[i1],'event_id');
+            o.patient_id = i2b2.h.getXNodeVal(ps[i1],'patient_id');
+            o.concept_cd = i2b2.h.getXNodeVal(ps[i1],'concept_cd');
+            o.observer_cd = i2b2.h.getXNodeVal(ps[i1],'observer_cd');
+            o.start_date = i2b2.h.getXNodeVal(ps[i1],'start_date');
+            o.modifier_cd = i2b2.h.getXNodeVal(ps[i1],'modifier_cd');
+            o.tval_char = i2b2.h.getXNodeVal(ps[i1],'tval_char');
+            o.nval_num = i2b2.h.getXNodeVal(ps[i1],'nval_num');
+            o.valueflag_cd = i2b2.h.getXNodeVal(ps[i1],'valueflag_cd');
+            o.units_cd = i2b2.h.getXNodeVal(ps[i1],'units_cd');
+            o.end_date = i2b2.h.getXNodeVal(ps[i1],'end_date');
+            o.location_cd = i2b2.h.getXNodeVal(ps[i1],'location_cd');
+            this.model.observations.push(o);
+        }
+        var ps = this.refXML.getElementsByTagName('patient');
+        for(var i1=0; i1<ps.length; i1++) {
+            var o = new Object;
+            o.xmlOrig = ps[i1];
+            o.patient_id = i2b2.h.getXNodeVal(ps[i1],'patient_id');
+            var params = i2b2.h.XPath(ps[i1], 'descendant::param[@name]/text()/..');
+            for (var i2 = 0; i2 < params.length; i2++) {
+                var name = params[i2].getAttribute("name");
+                o[name] = params[i2].firstChild.nodeValue;
+            }
+            this.model.patients.push(o);
+        }
+    } else {
+        this.model = false;
+        console.error("[getPDO_fromInputList] Could not parse() data!");
+    }
+    return this;
 }
 i2b2.CRC.ajax._addFunctionCall(	"getPDO_fromInputList",
-								"{{{URL}}}pdorequest",
-								i2b2.CRC.cfg.msgs.getPDO_fromInputList,
-								["PDO_Request"],
-								i2b2.CRC.cfg.parsers.getPDO_fromInputList);
+                                "{{{URL}}}pdorequest",
+                                i2b2.CRC.cfg.msgs.getPDO_fromInputList,
+                                ["PDO_Request"],
+                                i2b2.CRC.cfg.parsers.getPDO_fromInputList);
 
 
 // ================================================================================================== //
@@ -953,40 +953,40 @@ i2b2.CRC.cfg.msgs.getIbservationfact_byPrimaryKey = '<?xml version="1.0" encodin
 '	</message_body>\n'+
 '</ns6:request>';
 i2b2.CRC.cfg.parsers.getIbservationfact_byPrimaryKey = function(){
-	if (!this.error) {
-		this.model = {
-			observations: []
-		};		
-		// extract observation records
-		var ps = this.refXML.getElementsByTagName('observation');
-		for(var i1=0; i1<ps.length; i1++) {
-			var o = new Object;
-			o.xmlOrig = ps[i1];
-			o.event_id = i2b2.h.getXNodeVal(ps[i1],'event_id');
-			o.patient_id = i2b2.h.getXNodeVal(ps[i1],'patient_id');
-			o.concept_cd = i2b2.h.getXNodeVal(ps[i1],'concept_cd');
-			o.observer_cd = i2b2.h.getXNodeVal(ps[i1],'observer_cd');
-			o.start_date = i2b2.h.getXNodeVal(ps[i1],'start_date');
-			o.modifier_cd = i2b2.h.getXNodeVal(ps[i1],'modifier_cd');
-			o.tval_char = i2b2.h.getXNodeVal(ps[i1],'tval_char');
-			o.nval_num = i2b2.h.getXNodeVal(ps[i1],'nval_num');
-			o.valueflag_cd = i2b2.h.getXNodeVal(ps[i1],'valueflag_cd');
-			o.units_cd = i2b2.h.getXNodeVal(ps[i1],'units_cd');
-			o.end_date = i2b2.h.getXNodeVal(ps[i1],'end_date');
-			o.location_cd = i2b2.h.getXNodeVal(ps[i1],'location_cd');
-			this.model.observations.push(o);
-		}
-	} else {
-		this.model = false;
-		console.error("[getIbservationfact_byPrimaryKey] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = {
+            observations: []
+        };
+        // extract observation records
+        var ps = this.refXML.getElementsByTagName('observation');
+        for(var i1=0; i1<ps.length; i1++) {
+            var o = new Object;
+            o.xmlOrig = ps[i1];
+            o.event_id = i2b2.h.getXNodeVal(ps[i1],'event_id');
+            o.patient_id = i2b2.h.getXNodeVal(ps[i1],'patient_id');
+            o.concept_cd = i2b2.h.getXNodeVal(ps[i1],'concept_cd');
+            o.observer_cd = i2b2.h.getXNodeVal(ps[i1],'observer_cd');
+            o.start_date = i2b2.h.getXNodeVal(ps[i1],'start_date');
+            o.modifier_cd = i2b2.h.getXNodeVal(ps[i1],'modifier_cd');
+            o.tval_char = i2b2.h.getXNodeVal(ps[i1],'tval_char');
+            o.nval_num = i2b2.h.getXNodeVal(ps[i1],'nval_num');
+            o.valueflag_cd = i2b2.h.getXNodeVal(ps[i1],'valueflag_cd');
+            o.units_cd = i2b2.h.getXNodeVal(ps[i1],'units_cd');
+            o.end_date = i2b2.h.getXNodeVal(ps[i1],'end_date');
+            o.location_cd = i2b2.h.getXNodeVal(ps[i1],'location_cd');
+            this.model.observations.push(o);
+        }
+    } else {
+        this.model = false;
+        console.error("[getIbservationfact_byPrimaryKey] Could not parse() data!");
+    }
+    return this;
 }
 i2b2.CRC.ajax._addFunctionCall(	"getIbservationfact_byPrimaryKey",
-								"{{{URL}}}pdorequest",
-								i2b2.CRC.cfg.msgs.getIbservationfact_byPrimaryKey,
-								["PDO_Request"],
-								i2b2.CRC.cfg.parsers.getIbservationfact_byPrimaryKey);
+                                "{{{URL}}}pdorequest",
+                                i2b2.CRC.cfg.msgs.getIbservationfact_byPrimaryKey,
+                                ["PDO_Request"],
+                                i2b2.CRC.cfg.parsers.getIbservationfact_byPrimaryKey);
 
 
 
@@ -1047,31 +1047,31 @@ i2b2.CRC.cfg.msgs.getQRY_getResultType = '<?xml version="1.0" encoding="UTF-8" s
 '	</message_body>\n'+
 '</ns6:request>';
 i2b2.CRC.cfg.parsers.getQRY_getResultType = function(){
-	if (!this.error) {
-		this.model = {
-			result: []
-		};		
-		// extract event records
-		var ps = this.refXML.getElementsByTagName('query_result_type');
-		for(var i1=0; i1<ps.length; i1++) {
-			var o = new Object;
-			o.result_type_id = i2b2.h.getXNodeVal(ps[i1],'result_type_id');
-			o.name = i2b2.h.getXNodeVal(ps[i1],'name');
-			o.display_type = i2b2.h.getXNodeVal(ps[i1],'display_type');
-			o.visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
-			o.description = i2b2.h.getXNodeVal(ps[i1],'description');
-			// need to process param columns 
-			//o. = i2b2.h.getXNodeVal(ps[i1],'');
-			this.model.events.push(o);
-		}
-	} else {
-		this.model = false;
-		console.error("[getQRY_getResultType] Could not parse() data!");
-	}
-	return this;
+    if (!this.error) {
+        this.model = {
+            result: []
+        };
+        // extract event records
+        var ps = this.refXML.getElementsByTagName('query_result_type');
+        for(var i1=0; i1<ps.length; i1++) {
+            var o = new Object;
+            o.result_type_id = i2b2.h.getXNodeVal(ps[i1],'result_type_id');
+            o.name = i2b2.h.getXNodeVal(ps[i1],'name');
+            o.display_type = i2b2.h.getXNodeVal(ps[i1],'display_type');
+            o.visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
+            o.description = i2b2.h.getXNodeVal(ps[i1],'description');
+            // need to process param columns
+            //o. = i2b2.h.getXNodeVal(ps[i1],'');
+            this.model.events.push(o);
+        }
+    } else {
+        this.model = false;
+        console.error("[getQRY_getResultType] Could not parse() data!");
+    }
+    return this;
 }
 i2b2.CRC.ajax._addFunctionCall(	"getQRY_getResultType",
-								"{{{URL}}}request",
-								i2b2.CRC.cfg.msgs.getQRY_getResultType,
-								["Request"],
-								i2b2.CRC.cfg.parsers.getQRY_getResultType);
+                                "{{{URL}}}request",
+                                i2b2.CRC.cfg.msgs.getQRY_getResultType,
+                                ["Request"],
+                                i2b2.CRC.cfg.parsers.getQRY_getResultType);

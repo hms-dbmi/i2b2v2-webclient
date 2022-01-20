@@ -27,8 +27,8 @@ i2b2.sdx.TypeControllers.XML.model = {};
  * @alias i2b2.sdx.Master.EncapsulateData
  */
 i2b2.sdx.TypeControllers.XML.getEncapsulateInfo = function() {
-	// this function returns the encapsulation head information
-	return {sdxType: 'XML', sdxKeyName: 'key', sdxControlCell:'WORK', sdxDisplayNameKey:'name'};
+    // this function returns the encapsulation head information
+    return {sdxType: 'XML', sdxKeyName: 'key', sdxControlCell:'WORK', sdxDisplayNameKey:'name'};
 }
 
 
@@ -36,94 +36,94 @@ i2b2.sdx.TypeControllers.XML.getEncapsulateInfo = function() {
 //	GENERATE HTML (DEFAULT HANDLER)
 // *********************************************************************************
 i2b2.sdx.TypeControllers.XML.RenderHTML= function(sdxData, options, targetDiv) {    
-	// OPTIONS:
-	//	title: string
-	//	showchildren: true | false
-	//	cssClass: string
-	//	icon: [data object]
-	//		icon: 		(filename of img, appended to i2b2_root+cellDir + '/assets')
-	//		iconExp: 	(filename of img, appended to i2b2_root+cellDir + '/assets')
-	//	dragdrop: string (function name)
-	//	context: string
-	//	click: string 
-	//	dblclick: string
-	
-	if (Object.isUndefined(options)) { options = {}; }
-	var render = {html: retHtml, htmlID: id};
-	var conceptId = sdxData.name;
-	var id = "WORK_ID-" + i2b2.GUID();
-	
-	// process drag drop controllers
-	if (!Object.isUndefined(options.dragdrop)) {
+    // OPTIONS:
+    //	title: string
+    //	showchildren: true | false
+    //	cssClass: string
+    //	icon: [data object]
+    //		icon: 		(filename of img, appended to i2b2_root+cellDir + '/assets')
+    //		iconExp: 	(filename of img, appended to i2b2_root+cellDir + '/assets')
+    //	dragdrop: string (function name)
+    //	context: string
+    //	click: string
+    //	dblclick: string
+
+    if (Object.isUndefined(options)) { options = {}; }
+    var render = {html: retHtml, htmlID: id};
+    var conceptId = sdxData.name;
+    var id = "WORK_ID-" + i2b2.GUID();
+
+    // process drag drop controllers
+    if (!Object.isUndefined(options.dragdrop)) {
 // NOTE TO SELF: should attachment of node dragdrop controller be handled by the SDX system as well? 
 // This would ensure removal of the onmouseover call in a cross-browser way
-		var sDD = '  onmouseover="' + options.dragdrop + '(\''+ targetDiv.id +'\',\'' + id + '\')" ';
-	} else {
-		var sDD = '';
-	}
+        var sDD = '  onmouseover="' + options.dragdrop + '(\''+ targetDiv.id +'\',\'' + id + '\')" ';
+    } else {
+        var sDD = '';
+    }
 
-	if (Object.isUndefined(options.cssClass)) { options.cssClass = 'sdxDefaultXML';}
+    if (Object.isUndefined(options.cssClass)) { options.cssClass = 'sdxDefaultXML';}
 
-	// user can override
-	bCanExp = true;
-	if (Object.isBoolean(options.showchildren)) { 
-		bCanExp = options.showchildren;
-	}
-	render.canExpand = bCanExp;
-	render.iconType = "XML";
-	
-	if (!Object.isUndefined(options.icon)) { render.icon = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/'+ options.icon }
-	if (!Object.isUndefined(options.iconExp)) { render.iconExp = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/'+ options.iconExp }
-	// in cases of one set icon, copy valid icon to the missing icon
-	if (Object.isUndefined(render.icon) && !Object.isUndefined(render.iconExp)) {	render.icon = render.iconExp; }
-	if (!Object.isUndefined(render.icon) && Object.isUndefined(render.iconExp)) {	render.iconExp = render.icon; }
+    // user can override
+    bCanExp = true;
+    if (Object.isBoolean(options.showchildren)) {
+        bCanExp = options.showchildren;
+    }
+    render.canExpand = bCanExp;
+    render.iconType = "XML";
 
-	// handle the event controllers
-	var sMainEvents = sDD;
-	var sImgEvents = sDD;
-	if (options.click) {sMainEvents += ' onclick="'+ options.click +'" '; }
-	if (options.dblclick) {sMainEvents += ' ondblclick="'+ options.dblclick +'" '; }
-	if (options.context) {sMainEvents += ' oncontext="'+ options.context +'" '; } else {retHtml += ' oncontextmenu="return false" '; }
-	// **** Render the HTML ***
-	var retHtml = '<DIV id="' + id + '" ' + sMainEvents + ' style="white-space:nowrap;cursor:pointer;">';
-	retHtml += '<DIV ';
-	if (Object.isString(options.cssClass)) {
-		retHtml += ' class="'+options.cssClass+'" ';
-	} else {
-		retHtml += ' class= "sdxDefaultXML" ';
-	}
-	retHtml += sImgEvents;
-	retHtml += '>';
-	retHtml += '<IMG src="'+render.icon+'"/> '; 
-	if (!Object.isUndefined(options.title)) {
-		retHtml += options.title;
-	} else {
-		console.warn('[SDX RenderHTML] no title was given in the creation options for an WORK>XML node!');
-		retHtml += ' XML '+id;
-	}
-	retHtml += '</DIV></DIV>';
-	render.html = retHtml;
-	render.htmlID =  id;
-	var retObj = {};
-	$.extend(retObj, sdxData);
-	retObj.renderData = render;
-	return retObj;
+    if (!Object.isUndefined(options.icon)) { render.icon = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/'+ options.icon }
+    if (!Object.isUndefined(options.iconExp)) { render.iconExp = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/'+ options.iconExp }
+    // in cases of one set icon, copy valid icon to the missing icon
+    if (Object.isUndefined(render.icon) && !Object.isUndefined(render.iconExp)) {	render.icon = render.iconExp; }
+    if (!Object.isUndefined(render.icon) && Object.isUndefined(render.iconExp)) {	render.iconExp = render.icon; }
+
+    // handle the event controllers
+    var sMainEvents = sDD;
+    var sImgEvents = sDD;
+    if (options.click) {sMainEvents += ' onclick="'+ options.click +'" '; }
+    if (options.dblclick) {sMainEvents += ' ondblclick="'+ options.dblclick +'" '; }
+    if (options.context) {sMainEvents += ' oncontext="'+ options.context +'" '; } else {retHtml += ' oncontextmenu="return false" '; }
+    // **** Render the HTML ***
+    var retHtml = '<DIV id="' + id + '" ' + sMainEvents + ' style="white-space:nowrap;cursor:pointer;">';
+    retHtml += '<DIV ';
+    if (Object.isString(options.cssClass)) {
+        retHtml += ' class="'+options.cssClass+'" ';
+    } else {
+        retHtml += ' class= "sdxDefaultXML" ';
+    }
+    retHtml += sImgEvents;
+    retHtml += '>';
+    retHtml += '<IMG src="'+render.icon+'"/> ';
+    if (!Object.isUndefined(options.title)) {
+        retHtml += options.title;
+    } else {
+        console.warn('[SDX RenderHTML] no title was given in the creation options for an WORK>XML node!');
+        retHtml += ' XML '+id;
+    }
+    retHtml += '</DIV></DIV>';
+    render.html = retHtml;
+    render.htmlID =  id;
+    var retObj = {};
+    $.extend(retObj, sdxData);
+    retObj.renderData = render;
+    return retObj;
 }
 
 
 i2b2.sdx.TypeControllers.XML.getChildRecords = function(sdxParentNode, onCompleteCallback) {
-	var retMsg = {
-		error: true,
-		msgRequest: '',
-		msgResponse: '',
-		msgUrl: '',
-		results: null
-	};
-	if (getObjectClass(onCompleteCallback)=='i2b2_scopedCallback') {
-		onCompleteCallback.callback.call(onCompleteCallback.scope, retMsg);
-	} else {
-		onCompleteCallback(retMsg);
-	}
+    var retMsg = {
+        error: true,
+        msgRequest: '',
+        msgResponse: '',
+        msgUrl: '',
+        results: null
+    };
+    if (getObjectClass(onCompleteCallback)=='i2b2_scopedCallback') {
+        onCompleteCallback.callback.call(onCompleteCallback.scope, retMsg);
+    } else {
+        onCompleteCallback(retMsg);
+    }
 }
 
 
@@ -131,17 +131,17 @@ i2b2.sdx.TypeControllers.XML.getChildRecords = function(sdxParentNode, onComplet
 //	DRAG DROP PROXY CONTROLLER
 // *********************************************************************************
 i2b2.sdx.TypeControllers.XML.DragDrop = function(id, config) {
-	if (id) {
-		this.init(id, 'XML', {isTarget:false});
-		this.initFrame();
-	}
-	var s = this.getDragEl().style;
-	s.borderColor = "transparent";
-	s.opacity = 0.75;
-	s.filter = "alpha(opacity=75)";
-	s.whiteSpace = "nowrap";
-	s.overflow = "hidden";
-	s.textOverflow = "ellipsis";
+    if (id) {
+        this.init(id, 'XML', {isTarget:false});
+        this.initFrame();
+    }
+    var s = this.getDragEl().style;
+    s.borderColor = "transparent";
+    s.opacity = 0.75;
+    s.filter = "alpha(opacity=75)";
+    s.whiteSpace = "nowrap";
+    s.overflow = "hidden";
+    s.textOverflow = "ellipsis";
 };
 
 /* TODO: Reimplement drag and drop */
@@ -153,7 +153,7 @@ i2b2.sdx.TypeControllers.XML.DragDrop = function(id, config) {
 //	!!!! THE i2b2.sdx.Master.setHandlerCustom FUNCTION
 // *********************************************************************************
 i2b2.sdx.TypeControllers.XML.DropHandler = function(sdxData) {
-	alert('[XML DROPPED] You need to create your own custom drop event handler.');
+    alert('[XML DROPPED] You need to create your own custom drop event handler.');
 }
 // ==========================================================================
 i2b2.sdx.TypeControllers.XML.dragStartHandler = function(i2b2Data) {

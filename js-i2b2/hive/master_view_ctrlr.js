@@ -11,66 +11,66 @@ console.time('execute time');
 // Master View Mode controller
 // ================================================================================================== //
 i2b2.hive.MasterView = {
-	_validViews: ['Patients', 'Analysis'],
-	_currentView: false,
-	_ZoomWindows: [],
-	eventChangeMode: {},
-	eventZoomWindows: {},
-	// ================================================================================================== //
-	initViewMode: function()
-	{
-		var newMode = 'Patients';
-		var tn = $("viewMode-"+newMode);
-		if (tn) 
-		{
-			// remove highlighting from old screen mode links
-			var old = $$('.selectedView');
-			old.each(function(el)
-			{
-				el.removeClassName('selectedView');
-			});			
-			// highlight the new screen mode's label
-			tn.addClassName('selectedView');
-		}
+    _validViews: ['Patients', 'Analysis'],
+    _currentView: false,
+    _ZoomWindows: [],
+    eventChangeMode: {},
+    eventZoomWindows: {},
+    // ================================================================================================== //
+    initViewMode: function()
+    {
+        var newMode = 'Patients';
+        var tn = $("viewMode-"+newMode);
+        if (tn)
+        {
+            // remove highlighting from old screen mode links
+            var old = $$('.selectedView');
+            old.each(function(el)
+            {
+                el.removeClassName('selectedView');
+            });
+            // highlight the new screen mode's label
+            tn.addClassName('selectedView');
+        }
 
-		// update data
-		this._currentView = newMode;
-		this.eventInitView.fire( newMode );
-		return true;
-	},
+        // update data
+        this._currentView = newMode;
+        this.eventInitView.fire( newMode );
+        return true;
+    },
 
 // ================================================================================================== //
-	setViewMode: function(requestedMode) {
-		if (this._currentView == requestedMode) { return true; }
-		var newMode = false;
-		for (var i=0; i<this._validViews.length; i++) {
-			if (this._validViews[i] == requestedMode) {
-				newMode = this._validViews[i];
-				break;
-			}
-		}
-		if (newMode) {
-			if (newMode == "Analysis" && !i2b2.h.allowAnalysis() ) {
-				alert('Analysis tools are disabled - This access attempt has been logged to the server.');
-				return false;
-			}
+    setViewMode: function(requestedMode) {
+        if (this._currentView == requestedMode) { return true; }
+        var newMode = false;
+        for (var i=0; i<this._validViews.length; i++) {
+            if (this._validViews[i] == requestedMode) {
+                newMode = this._validViews[i];
+                break;
+            }
+        }
+        if (newMode) {
+            if (newMode == "Analysis" && !i2b2.h.allowAnalysis() ) {
+                alert('Analysis tools are disabled - This access attempt has been logged to the server.');
+                return false;
+            }
 // TODO: move this into a view controller?
-			// change new link to selected state
-			var tn = $("viewMode-"+newMode);
-			if (tn) {
-				// remove highlighting from old screen mode links
-				var old = $$('.selectedView');
-				old.each(function(el){
-					el.removeClassName('selectedView');
-				});
-			
-				// highlight the new screen mode's label
-				tn.addClassName('selectedView');
-				
-			}
-			// update data
-			this._currentView = newMode;
-			this.eventChangeMode.fire(newMode);
+            // change new link to selected state
+            var tn = $("viewMode-"+newMode);
+            if (tn) {
+                // remove highlighting from old screen mode links
+                var old = $$('.selectedView');
+                old.each(function(el){
+                    el.removeClassName('selectedView');
+                });
+
+                // highlight the new screen mode's label
+                tn.addClassName('selectedView');
+
+            }
+            // update data
+            this._currentView = newMode;
+            this.eventChangeMode.fire(newMode);
 
             switch (newMode) {
                 case "Patients":
@@ -95,53 +95,53 @@ i2b2.hive.MasterView = {
                     return false;
             }
 
-			if(newMode=='Patients'){
+            if(newMode=='Patients'){
                 this._ZoomWindows.each(function(zoomWindow){
-					if(zoomWindow == 'status'){
-						i2b2.hive.MasterView.toggleZoomWindow("status");
-						i2b2.hive.MasterView.toggleZoomWindow("status");
-					}
-				});
-			}
+                    if(zoomWindow == 'status'){
+                        i2b2.hive.MasterView.toggleZoomWindow("status");
+                        i2b2.hive.MasterView.toggleZoomWindow("status");
+                    }
+                });
+            }
 
-			return true;
-		} else {
-			return false;
-		}
-	},
+            return true;
+        } else {
+            return false;
+        }
+    },
 // ================================================================================================== //
-	getViewMode: function() {
-		var readMode = false;
-		for (var i=0; i<this._validViews.length; i++) {
-			if (this._validViews[i] == this._currentView) {
-				readMode = this._currentView;
-				break;
-			}
-		}
-		return readMode;
-	},
+    getViewMode: function() {
+        var readMode = false;
+        for (var i=0; i<this._validViews.length; i++) {
+            if (this._validViews[i] == this._currentView) {
+                readMode = this._currentView;
+                break;
+            }
+        }
+        return readMode;
+    },
 // ================================================================================================== //
-	getZoomWindows: function() {
-		return this._ZoomWindows.clone();
-	},
+    getZoomWindows: function() {
+        return this._ZoomWindows.clone();
+    },
 // ================================================================================================== //
-	addZoomWindow: function(s) {
-		this._ZoomWindows.push(s);
-		this.eventZoomWindows.fire({action: "ADD", window:s});
-	},
+    addZoomWindow: function(s) {
+        this._ZoomWindows.push(s);
+        this.eventZoomWindows.fire({action: "ADD", window:s});
+    },
 // ================================================================================================== //
-	removeZoomWindow: function(s) {
-		this._ZoomWindows = this._ZoomWindows.without(s);
-		this.eventZoomWindows.fire({action: "REMOVE", window:s});
-	},
+    removeZoomWindow: function(s) {
+        this._ZoomWindows = this._ZoomWindows.without(s);
+        this.eventZoomWindows.fire({action: "REMOVE", window:s});
+    },
 // ================================================================================================== //
-	toggleZoomWindow: function(s) {
-		if (this._ZoomWindows.indexOf(s) == -1) {
-			this.addZoomWindow.call(this, s);
-		} else {
-			this.removeZoomWindow.call(this, s);
-		}
-	}
+    toggleZoomWindow: function(s) {
+        if (this._ZoomWindows.indexOf(s) == -1) {
+            this.addZoomWindow.call(this, s);
+        } else {
+            this.removeZoomWindow.call(this, s);
+        }
+    }
 }
 
 

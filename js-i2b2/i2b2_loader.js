@@ -28,10 +28,10 @@ i2b2.Init = function() {
 
     function promise_i2b2_configs() {
         var no_cache = '?____=' + Math.floor(Math.random() * 50000) + 10000;
-    	return $.when(
-        	$.getJSON("i2b2_config_domains.json" + no_cache),
-        	$.getJSON("i2b2_config_cells.json" + no_cache)
-    	).done(function (hive_json, cells_json) {
+        return $.when(
+            $.getJSON("i2b2_config_domains.json" + no_cache),
+            $.getJSON("i2b2_config_cells.json" + no_cache)
+        ).done(function (hive_json, cells_json) {
             // success in loading and parsing JSON config file containing all configured cells
             console.warn("SUCCESS: Loaded the i2b2_domains and i2b2_cells configuration files")
             cells_json = cells_json[0]
@@ -66,8 +66,8 @@ i2b2.Init = function() {
             // use the i2b2 hive configuration file to load all the script files that i2b2 framework requires
             var t = i2b2.hive.cfg.urlFramework;
             i2b2.hive.frameworkFiles = hive_cfg_json.files.map(function(file) {
-            	return t + "hive/" + file;
-			});
+                return t + "hive/" + file;
+            });
 
             var frameworkFiles = hive_cfg_json.files.map(function(file) {
                 $.Deferred(function( defer ) {
@@ -76,11 +76,11 @@ i2b2.Init = function() {
             });
 
             return $.when(
-            	frameworkFiles
-			).fail(function() {
+                frameworkFiles
+            ).fail(function() {
                 console.error("FAILED loading an i2b2 framework file");
                 console.dir(this);
-			}).promise();
+            }).promise();
 
         }).fail(function() {
             console.error("FAILED loading i2b2_hive configuration file");
@@ -100,10 +100,10 @@ i2b2.Init = function() {
             i2b2['PM'].Init();
         }
         // trigger user events after everything is loaded
-		window.setTimeout(function() {
+        window.setTimeout(function() {
             console.info("EVENT FIRED i2b2.events.afterHiveInit");
             i2b2.events.afterHiveInit.fire();
-		}, 100);
+        }, 100);
     });
 
 
@@ -172,7 +172,7 @@ i2b2.h.getScript = function(url) {
                 script.onerror = script.ontimeout = script.onabort = null; // Handle memory leak in IE
                 defer.reject();
             }
-		}
+        }
         head.appendChild(script);
     }).promise();
 }

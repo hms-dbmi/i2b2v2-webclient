@@ -16,30 +16,30 @@ i2b2.CRC.view.queryReport = new i2b2Base_cellViewController(i2b2.CRC, 'queryRepo
 i2b2.CRC.view.queryReport.visible = false;
 
 i2b2.CRC.view.queryReport.show = function() {
-	i2b2.CRC.view.queryReport.visible = true;
-	$('crcQueryReportBox').show();
+    i2b2.CRC.view.queryReport.visible = true;
+    $('crcQueryReportBox').show();
 }
 i2b2.CRC.view.queryReport.hide = function() {
-	i2b2.CRC.view.queryReport.visible = false;
-	$('crcQueryReportBox').hide();
+    i2b2.CRC.view.queryReport.visible = false;
+    $('crcQueryReportBox').hide();
 }
 
 i2b2.CRC.view.queryReport.hideDisplay = function() {
-	$('infoQueryStatusReport').hide();
+    $('infoQueryStatusReport').hide();
 }
 i2b2.CRC.view.queryReport.showDisplay = function() {
-	var targs = $('infoQueryStatusReport').parentNode.parentNode.select('DIV.tabBox.active');
-	// remove all active tabs
-	targs.each(function(el) { el.removeClassName('active'); });
-	// set us as active
-	$('infoQueryStatusReport').parentNode.parentNode.select('DIV.tabBox.tabQueryReport')[0].addClassName('active');
-	
-	$('infoQueryStatusText').hide();
-	$('infoQueryStatusChart').hide();
-	$('infoQueryStatusReport').show();
-	// if($('infoQueryStatusReport').innerHTML=="")
-	$('infoQueryStatusReport').innerHTML=="";
-	i2b2.CRC.ctrlr.QT.queryReport(false,"",false);
+    var targs = $('infoQueryStatusReport').parentNode.parentNode.select('DIV.tabBox.active');
+    // remove all active tabs
+    targs.each(function(el) { el.removeClassName('active'); });
+    // set us as active
+    $('infoQueryStatusReport').parentNode.parentNode.select('DIV.tabBox.tabQueryReport')[0].addClassName('active');
+
+    $('infoQueryStatusText').hide();
+    $('infoQueryStatusChart').hide();
+    $('infoQueryStatusReport').show();
+    // if($('infoQueryStatusReport').innerHTML=="")
+    $('infoQueryStatusReport').innerHTML=="";
+    i2b2.CRC.ctrlr.QT.queryReport(false,"",false);
 }
 // ================================================================================================== //
 

@@ -113,11 +113,11 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
         //                      errorStatus: string [only with error=true]
         //                      errorMsg: string [only with error=true]
 
-		// auto-extract SDX objects from returned XML
+        // auto-extract SDX objects from returned XML
         cellResult.parse();
 
-		// display the tree results
-		var newNodes = [];
+        // display the tree results
+        var newNodes = [];
         for ( var i1=0; i1 < cellResult.model.length; i1++) {
             var sdxDataNode = cellResult.model[i1];
             var renderOptions = {
@@ -164,20 +164,20 @@ i2b2.CRC.view.history.PopulateQueryMasters = function(dm_ptr, dm_name, options) 
 // =========== Context Menu Suff =========== 
 // ================================================================================================== //
 i2b2.CRC.view.history.doDisplay = function(node) {
-	var op = node.i2b2;
-	i2b2.CRC.ctrlr.QT.doQueryLoad(op, node);
+    var op = node.i2b2;
+    i2b2.CRC.ctrlr.QT.doQueryLoad(op, node);
 }
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doRename = function(node) {
     var op = node.i2b2;
-	i2b2.CRC.ctrlr.history.queryRename(op, false, node);
+    i2b2.CRC.ctrlr.history.queryRename(op, false, node);
 }
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doDelete = function(node) {
     var op = node.i2b2;
-	i2b2.CRC.ctrlr.history.queryDelete(op, node);
+    i2b2.CRC.ctrlr.history.queryDelete(op, node);
 }
 
 // ================================================================================================== //

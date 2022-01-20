@@ -13,52 +13,52 @@ console.time('execute time');
 // View Controllers
 // ================================================================================================== //
 function i2b2Base_cellViewController(parentObj, viewName) { 
-	// attributes
-	this.cellRoot = parentObj; 
-	this.viewName = viewName; 
-	this.params = {};
-	// functions
-	this.showOptions = _showOptions;
-	this.Render = _doRender;
-	this.Resize = _doResize;
-	function _doRender() {			alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT doRender() function for '"+this.viewName+"' View");	}
-	function _doResize(width,height) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT Resize("+width+","+height+") function for '"+this.viewName+"' View");	}
-	function _showOptions(subScreen) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT showOptions() function for '"+this.viewName+"' View (request subscreen:'"+subScreen+"')");	}
-	function _saveOptions(subScreen) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT saveOptions() function for '"+this.viewName+"' View (request subscreen:'"+subScreen+"')");	}
-	function _cancelOptions(subScreen) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT cancelOptions() function for '"+this.viewName+"' View (request subscreen:'"+subScreen+"')");	}
+    // attributes
+    this.cellRoot = parentObj;
+    this.viewName = viewName;
+    this.params = {};
+    // functions
+    this.showOptions = _showOptions;
+    this.Render = _doRender;
+    this.Resize = _doResize;
+    function _doRender() {			alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT doRender() function for '"+this.viewName+"' View");	}
+    function _doResize(width,height) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT Resize("+width+","+height+") function for '"+this.viewName+"' View");	}
+    function _showOptions(subScreen) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT showOptions() function for '"+this.viewName+"' View (request subscreen:'"+subScreen+"')");	}
+    function _saveOptions(subScreen) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT saveOptions() function for '"+this.viewName+"' View (request subscreen:'"+subScreen+"')");	}
+    function _cancelOptions(subScreen) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT cancelOptions() function for '"+this.viewName+"' View (request subscreen:'"+subScreen+"')");	}
 };
 
 
 // base class for sending re-scoped callbacks
 // ================================================================================================== //
 function i2b2_scopedCallback(refFunction, refScope) {
-	console.warn("i2b2_scopedCallback() is depreciated!");
-	this.callback = refFunction;
-	this.scope = refScope;
+    console.warn("i2b2_scopedCallback() is depreciated!");
+    this.callback = refFunction;
+    this.scope = refScope;
 }
 
 
 // base class for all cells
 // ================================================================================================== //
 function i2b2_BaseCell(configObj) {
-	// this function expects the configuration object to have at least a "code" attribute
-	
-	if (!configObj || !configObj.code) { return false; }
-	this.cellCode = configObj.code;
-	
-	// build out the default structure for the cell
-	this.cfg = {};
-	this.cfg.params = {};
-	this.model = {};
-	this.view = {};
-	this.view.modal = {};
-	this.ctrlr = {};
-	this.ajax = {};
-	this.sdx = {};
-	this.isLoaded = null;
+    // this function expects the configuration object to have at least a "code" attribute
+
+    if (!configObj || !configObj.code) { return false; }
+    this.cellCode = configObj.code;
+
+    // build out the default structure for the cell
+    this.cfg = {};
+    this.cfg.params = {};
+    this.model = {};
+    this.view = {};
+    this.view.modal = {};
+    this.ctrlr = {};
+    this.ajax = {};
+    this.sdx = {};
+    this.isLoaded = null;
     this.initTimer = false;
 
-	// To manage clean loading the following are valid values of the FSM design (loadState var)
+    // To manage clean loading the following are valid values of the FSM design (loadState var)
     // ---------------------------------------------------------------------------------------
     // -1 = FATAL FAILURE
     // 0 = In memory - blank cell
@@ -75,8 +75,8 @@ function i2b2_BaseCell(configObj) {
         timer: false,
     };
 
-	// =========================================================================
-	if (!configObj.name) { 	this.name = configObj.name; }
+    // =========================================================================
+    if (!configObj.name) { 	this.name = configObj.name; }
     // special processing for data in the cell registry (from.js)
     var baseDir = i2b2.hive.cfg.urlFramework;
     if (configObj.forceDir) {

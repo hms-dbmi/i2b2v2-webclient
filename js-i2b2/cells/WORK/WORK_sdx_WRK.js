@@ -22,8 +22,8 @@ i2b2.sdx.TypeControllers.WRK.model = {};
 //	ENCAPSULATE DATA
 // *********************************************************************************
 i2b2.sdx.TypeControllers.WRK.getEncapsulateInfo = function() {
-	// this function returns the encapsulation head information
-	return {sdxType: 'WRK', sdxKeyName: 'index', sdxControlCell:'WORK', sdxDisplayNameKey: 'name'};
+    // this function returns the encapsulation head information
+    return {sdxType: 'WRK', sdxKeyName: 'index', sdxControlCell:'WORK', sdxDisplayNameKey: 'name'};
 }
 
 // *********************************************************************************
@@ -273,262 +273,262 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
 // *********************************************************************************
 i2b2.sdx.TypeControllers.WRK.RenderHTML= function(sdxData, options, targetDiv) {
     console.warn("[i2b2.sdx.TypeControllers.WRK.RenderHTML] is deprecated!");
-	// this function extracts the datatype from the SDX's original XML object and relies upon it's
-	// original SDX type controller to render the HTML
+    // this function extracts the datatype from the SDX's original XML object and relies upon it's
+    // original SDX type controller to render the HTML
 
-	var sdxCode = false;
-	var sdxPackage = {};
-	var subclassHTML = "";
-	var newOptions = options;
-	newOptions.title = "";
-	newOptions.showchildren = false;
-	newOptions.click = "";
-	newOptions.dblclick = "";
-	switch (sdxData.origData.encapType) {
-		case "PREV_QUERY":  // #### this is a QueryMaster object ####
+    var sdxCode = false;
+    var sdxPackage = {};
+    var subclassHTML = "";
+    var newOptions = options;
+    newOptions.title = "";
+    newOptions.showchildren = false;
+    newOptions.click = "";
+    newOptions.dblclick = "";
+    switch (sdxData.origData.encapType) {
+        case "PREV_QUERY":  // #### this is a QueryMaster object ####
             // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			sdxCode = "QM";
-			// XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
-			var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::query_master_id/..")[0];
-			// extract and create an SDX object for this node
-			var o = {};
-			o.xmlOrig = x;
-			o.query_master_id = i2b2.h.getXNodeVal(x, "query_master_id");
-			o.id = o.query_master_id;
-			o.name = i2b2.h.getXNodeVal(x, "name");
-			o.group = i2b2.h.getXNodeVal(x, "group_id");
-			o.userid = i2b2.h.getXNodeVal(x, "user_id");
-			o.created = null;
-			if(o.name.indexOf("(t)") == 0) // BUG FIX - WEBCLIENT-125
-				newOptions.icon = "sdx_CRC_QMT.gif";
-			else
-				newOptions.icon = "sdx_CRC_QM_workplace.jpg";
-			newOptions.showchildren = false;
-			newOptions.title = o.name;
-			break;
-		case "PATIENT_COLL":    //  #### this is a PatientRecordSet object ####
+            sdxCode = "QM";
+            // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
+            var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::query_master_id/..")[0];
+            // extract and create an SDX object for this node
+            var o = {};
+            o.xmlOrig = x;
+            o.query_master_id = i2b2.h.getXNodeVal(x, "query_master_id");
+            o.id = o.query_master_id;
+            o.name = i2b2.h.getXNodeVal(x, "name");
+            o.group = i2b2.h.getXNodeVal(x, "group_id");
+            o.userid = i2b2.h.getXNodeVal(x, "user_id");
+            o.created = null;
+            if(o.name.indexOf("(t)") == 0) // BUG FIX - WEBCLIENT-125
+                newOptions.icon = "sdx_CRC_QMT.gif";
+            else
+                newOptions.icon = "sdx_CRC_QM_workplace.jpg";
+            newOptions.showchildren = false;
+            newOptions.title = o.name;
+            break;
+        case "PATIENT_COLL":    //  #### this is a PatientRecordSet object ####
             // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			sdxCode = "PRS";
-			// XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
-			var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::result_instance_id/..")[0];
-			var o = {};
-			o.xmlOrig = x;
-			o.result_type = "PATIENTSET";
-			o.size = i2b2.h.getXNodeVal(x, "set_size");
-			o.result_instance_id = i2b2.h.getXNodeVal(x, "result_instance_id");
-			o.PRS_id = o.result_instance_id;
-			o.QI_id = i2b2.h.getXNodeVal(x, "query_instance_id");
-			o.QM_id = o.QI_id; // TODO: This needs to be properly resolved
-			o.start_date = i2b2.h.getXNodeVal(x, "start_date");
-			o.end_date = i2b2.h.getXNodeVal(x, "end_date");
-			o.description = i2b2.h.getXNodeVal(x, "description");
-			o.title = sdxData.sdxInfo.sdxDisplayName
-			newOptions.icon = "sdx_CRC_PRS.jpg";
-			newOptions.showchildren = false;
-			newOptions.title = o.title;
-			break;
-		case "ENCOUNTER_COLL": // #### this is a EncounterRecordSet object ####
+            sdxCode = "PRS";
+            // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
+            var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::result_instance_id/..")[0];
+            var o = {};
+            o.xmlOrig = x;
+            o.result_type = "PATIENTSET";
+            o.size = i2b2.h.getXNodeVal(x, "set_size");
+            o.result_instance_id = i2b2.h.getXNodeVal(x, "result_instance_id");
+            o.PRS_id = o.result_instance_id;
+            o.QI_id = i2b2.h.getXNodeVal(x, "query_instance_id");
+            o.QM_id = o.QI_id; // TODO: This needs to be properly resolved
+            o.start_date = i2b2.h.getXNodeVal(x, "start_date");
+            o.end_date = i2b2.h.getXNodeVal(x, "end_date");
+            o.description = i2b2.h.getXNodeVal(x, "description");
+            o.title = sdxData.sdxInfo.sdxDisplayName
+            newOptions.icon = "sdx_CRC_PRS.jpg";
+            newOptions.showchildren = false;
+            newOptions.title = o.title;
+            break;
+        case "ENCOUNTER_COLL": // #### this is a EncounterRecordSet object ####
             // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			sdxCode = "ENS";
-			// XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
-			var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::result_instance_id/..")[0];
-			var o = {};
-			o.xmlOrig = x;
-			o.result_type = "ENCOUNTERSET";
-			o.size = i2b2.h.getXNodeVal(x, "set_size");
-			o.result_instance_id = i2b2.h.getXNodeVal(x, "result_instance_id");
-			o.PRS_id = o.result_instance_id;
-			o.QI_id = i2b2.h.getXNodeVal(x, "query_instance_id");
-			o.QM_id = o.QI_id; // TODO: This needs to be properly resolved
-			o.description = i2b2.h.getXNodeVal(x, "description");
-			o.start_date = i2b2.h.getXNodeVal(x, "start_date");
-			o.end_date = i2b2.h.getXNodeVal(x, "end_date");
-			o.title = sdxData.sdxInfo.sdxDisplayName
-			newOptions.icon = "sdx_CRC_PRS.jpg";
-			newOptions.showchildren = false;
-			newOptions.title = o.title;
-			break;			
-		case "PATIENT": // #### this is an PatientRecord object ####
+            sdxCode = "ENS";
+            // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
+            var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::result_instance_id/..")[0];
+            var o = {};
+            o.xmlOrig = x;
+            o.result_type = "ENCOUNTERSET";
+            o.size = i2b2.h.getXNodeVal(x, "set_size");
+            o.result_instance_id = i2b2.h.getXNodeVal(x, "result_instance_id");
+            o.PRS_id = o.result_instance_id;
+            o.QI_id = i2b2.h.getXNodeVal(x, "query_instance_id");
+            o.QM_id = o.QI_id; // TODO: This needs to be properly resolved
+            o.description = i2b2.h.getXNodeVal(x, "description");
+            o.start_date = i2b2.h.getXNodeVal(x, "start_date");
+            o.end_date = i2b2.h.getXNodeVal(x, "end_date");
+            o.title = sdxData.sdxInfo.sdxDisplayName
+            newOptions.icon = "sdx_CRC_PRS.jpg";
+            newOptions.showchildren = false;
+            newOptions.title = o.title;
+            break;
+        case "PATIENT": // #### this is an PatientRecord object ####
             // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			sdxCode = "PR";
-			// XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
-			var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::patient/..")[0];
-			var o = {};
-			o.xmlOrig = x;
-			o.result_type = "PATIENTSET";
-			o.patient_id = i2b2.h.XPath(x, "descendant::patient/patient_id/text()")[0].nodeValue;
-			o.PRS_id = i2b2.h.XPath(x, "@patient_set_id")[0].nodeValue;
-			o.PRS_name = i2b2.h.XPath(x, "@patient_set_name")[0].nodeValue;
-			o.title = sdxData.origData.name;
-			newOptions.icon = "sdx_CRC_PR.jpg";
-			newOptions.showchildren = false;
-			newOptions.title = o.title;
-			break;
+            sdxCode = "PR";
+            // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
+            var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::patient/..")[0];
+            var o = {};
+            o.xmlOrig = x;
+            o.result_type = "PATIENTSET";
+            o.patient_id = i2b2.h.XPath(x, "descendant::patient/patient_id/text()")[0].nodeValue;
+            o.PRS_id = i2b2.h.XPath(x, "@patient_set_id")[0].nodeValue;
+            o.PRS_name = i2b2.h.XPath(x, "@patient_set_name")[0].nodeValue;
+            o.title = sdxData.origData.name;
+            newOptions.icon = "sdx_CRC_PR.jpg";
+            newOptions.showchildren = false;
+            newOptions.title = o.title;
+            break;
         case "CONCEPT":
-			sdxCode = "CONCPT";
-			// TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant-or-self::concept")[0];
-			var o = {};
-			o.xmlOrig = x;
-			o.key = i2b2.h.getXNodeVal(x, "key");
-			o.level = i2b2.h.getXNodeVal(x, "level");
-			o.name = i2b2.h.getXNodeVal(x, "name");
-			o.column_name = i2b2.h.getXNodeVal(x, "columnname");
-			o.dim_code = i2b2.h.getXNodeVal(x, "dimcode");
-			o.operator = i2b2.h.getXNodeVal(x, "operator");
-			o.table_name = i2b2.h.getXNodeVal(x, "tablename");
-			o.tooltip = i2b2.h.getXNodeVal(x, "tooltip");
-			o.hasChildren = i2b2.h.getXNodeVal(x, "visualattributes");
-			
-			
-			var bCanExp = false;
-			if (o.hasChildren.substring(1,0) === "C"){
-				// render as category
-				icon = 'root';
-				sDD = '';
-				sIG = ' isGroup="Y"';
-				bCanExp = true;
-			} else if (o.hasChildren.substring(1,0) === "F")  {
-				// render as possibly having children
-				icon = 'branch';
-				bCanExp = true;
-				//var sCanExpand = ' canExpand="Y"';
-			} else if (o.hasChildren.substring(1,0) === "O")  {
-				// render as possibly having children
-				icon = 'root';
-				bCanExp = true;
-				//var sCanExpand = ' canExpand="Y"';		
-			} else if (o.hasChildren.substring(1,0) === "D") {
-				// render as possibly having children
-				icon = 'branch';
-				bCanExp = true;
-				//var sCanExpand = ' canExpand="Y"';
-		
-			} else {
-				// render as not having children
-				var icon = 'leaf';
-				bCanExp = false;
-			}
-						
-			newOptions.icon = {
-				root: "sdx_ONT_CONCPT_"+icon+".gif",
-				branch: "sdx_ONT_CONCPT_"+icon+".gif",
-				leaf: "sdx_ONT_CONCPT_"+icon+".gif"
-			};
-			newOptions.showchildren = false;
-			newOptions.title = o.name;
-			break;
-		case "PATIENT_COUNT_XML":   // #### Patient Record Count ####
+            sdxCode = "CONCPT";
             // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			sdxCode = "PRC";
-			// XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
-			var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::result_instance_id/..")[0];
-			var o = {};
-			o.xmlOrig = x;
-			o.result_instance_id = i2b2.h.getXNodeVal(x, "result_instance_id");
-			o.PRC_id = o.result_instance_id;
-			o.QI_id = i2b2.h.getXNodeVal(x, "query_instance_id");
-			o.QM_id = "";
-			o.start_date = i2b2.h.getXNodeVal(x, "start_date");
-			o.end_date = i2b2.h.getXNodeVal(x, "end_date");
-			o.result_type = "PATIENT_COUNT_XML";
-			o.size = i2b2.h.getXNodeVal(x, "set_size");
-			if (o.size > 10) {
-				o.title = "Patient Count - "+o.size+" patients";
-			} else {
-				if (i2b2.h.isSHRINE()) {
-					o.title = "Patient Count - 10 patients or less";
-				} else {
-					o.title = "Patient Count - "+o.size+" patients";
-				}
-			}				
-			newOptions.showchildren = false;
-			newOptions.icon = "sdx_CRC_PRC.jpg"
-			newOptions.title = o.title;
-			break;
-		case "GROUP_TEMPLATE":  // #### Query Group Definition (Query Panel) ####
-            // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			sdxCode = "QGDEF";
-			// XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges
-			var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::panel_number/..")[0];
-			var o = {};
-			o.xmlOrig = x;
-			o.result_type = "GROUP_TEMPLATE";
-			o.QGDEF_name = i2b2.h.XPath(x, "@name")[0].nodeValue;
-			o.key = false;
-			newOptions.showchildren = false;
-			newOptions.icon = "sdx_CRC_QGDEF.jpg"
-			break;
-		case "QUERY_DEFINITION":
-            // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			sdxCode = "QDEF";
-			x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::query_name/..")[0];
-			var o = {};
-			o.xmlOrig = x;
-			o.result_type = "QUERY_DEFINITION";
-			o.QDEF_name = i2b2.h.XPath(x,"//descendant::query_name/text()")[0].nodeValue;
-			o.key = false;
-			newOptions.showchildren = false;
-			newOptions.icon = "sdx_CRC_QDEF.jpg";
-			break;
-		default:
-            // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			var t = "No SDX Object exists to represent data-type "+sdxData.origData.encapType;
-			console.warn(t);
-			// encapsulate as a Generic XML object
-			sdxCode = "XML";
-			var o = {};
-			var t = i2b2.h.XPath(sdxData.origData.xmlOrig, "descendant::work_xml")[0].childNodes;
-			for (i=0; i<t.length; i++) {
-				if (t[i].nodeType==1) {
-					o.xmlOrig = t[i];
-					break;
-				}
-			}
-			o.result_type = "UNKNOWN";
-			o.name = sdxData.origData.name; // inherit name from Workplace Node
-			o.key = false;
-			newOptions.showchildren = false;
-			newOptions.icon = "sdx_WORK_XML.gif";
-			break;
-	}
+            var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant-or-self::concept")[0];
+            var o = {};
+            o.xmlOrig = x;
+            o.key = i2b2.h.getXNodeVal(x, "key");
+            o.level = i2b2.h.getXNodeVal(x, "level");
+            o.name = i2b2.h.getXNodeVal(x, "name");
+            o.column_name = i2b2.h.getXNodeVal(x, "columnname");
+            o.dim_code = i2b2.h.getXNodeVal(x, "dimcode");
+            o.operator = i2b2.h.getXNodeVal(x, "operator");
+            o.table_name = i2b2.h.getXNodeVal(x, "tablename");
+            o.tooltip = i2b2.h.getXNodeVal(x, "tooltip");
+            o.hasChildren = i2b2.h.getXNodeVal(x, "visualattributes");
 
-	
-	newOptions.title = sdxData.origData.name;
-	if (sdxCode) {
-		var sdxDataNode = i2b2.sdx.Master.EncapsulateData(sdxCode, o);
-		sdxDataNode.origData.name = options.title;
-		sdxDataNode.sdxInfo.sdxDisplayName = options.title;
-		sdxData.sdxUnderlyingPackage = sdxDataNode;
-		subclassHTML = i2b2.sdx.Master.RenderHTML(targetDiv, sdxDataNode, newOptions);
-	}
-	return subclassHTML;
+
+            var bCanExp = false;
+            if (o.hasChildren.substring(1,0) === "C"){
+                // render as category
+                icon = 'root';
+                sDD = '';
+                sIG = ' isGroup="Y"';
+                bCanExp = true;
+            } else if (o.hasChildren.substring(1,0) === "F")  {
+                // render as possibly having children
+                icon = 'branch';
+                bCanExp = true;
+                //var sCanExpand = ' canExpand="Y"';
+            } else if (o.hasChildren.substring(1,0) === "O")  {
+                // render as possibly having children
+                icon = 'root';
+                bCanExp = true;
+                //var sCanExpand = ' canExpand="Y"';
+            } else if (o.hasChildren.substring(1,0) === "D") {
+                // render as possibly having children
+                icon = 'branch';
+                bCanExp = true;
+                //var sCanExpand = ' canExpand="Y"';
+
+            } else {
+                // render as not having children
+                var icon = 'leaf';
+                bCanExp = false;
+            }
+
+            newOptions.icon = {
+                root: "sdx_ONT_CONCPT_"+icon+".gif",
+                branch: "sdx_ONT_CONCPT_"+icon+".gif",
+                leaf: "sdx_ONT_CONCPT_"+icon+".gif"
+            };
+            newOptions.showchildren = false;
+            newOptions.title = o.name;
+            break;
+        case "PATIENT_COUNT_XML":   // #### Patient Record Count ####
+            // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            sdxCode = "PRC";
+            // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
+            var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::result_instance_id/..")[0];
+            var o = {};
+            o.xmlOrig = x;
+            o.result_instance_id = i2b2.h.getXNodeVal(x, "result_instance_id");
+            o.PRC_id = o.result_instance_id;
+            o.QI_id = i2b2.h.getXNodeVal(x, "query_instance_id");
+            o.QM_id = "";
+            o.start_date = i2b2.h.getXNodeVal(x, "start_date");
+            o.end_date = i2b2.h.getXNodeVal(x, "end_date");
+            o.result_type = "PATIENT_COUNT_XML";
+            o.size = i2b2.h.getXNodeVal(x, "set_size");
+            if (o.size > 10) {
+                o.title = "Patient Count - "+o.size+" patients";
+            } else {
+                if (i2b2.h.isSHRINE()) {
+                    o.title = "Patient Count - 10 patients or less";
+                } else {
+                    o.title = "Patient Count - "+o.size+" patients";
+                }
+            }
+            newOptions.showchildren = false;
+            newOptions.icon = "sdx_CRC_PRC.jpg"
+            newOptions.title = o.title;
+            break;
+        case "GROUP_TEMPLATE":  // #### Query Group Definition (Query Panel) ####
+            // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            sdxCode = "QGDEF";
+            // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges
+            var x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::panel_number/..")[0];
+            var o = {};
+            o.xmlOrig = x;
+            o.result_type = "GROUP_TEMPLATE";
+            o.QGDEF_name = i2b2.h.XPath(x, "@name")[0].nodeValue;
+            o.key = false;
+            newOptions.showchildren = false;
+            newOptions.icon = "sdx_CRC_QGDEF.jpg"
+            break;
+        case "QUERY_DEFINITION":
+            // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            sdxCode = "QDEF";
+            x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::query_name/..")[0];
+            var o = {};
+            o.xmlOrig = x;
+            o.result_type = "QUERY_DEFINITION";
+            o.QDEF_name = i2b2.h.XPath(x,"//descendant::query_name/text()")[0].nodeValue;
+            o.key = false;
+            newOptions.showchildren = false;
+            newOptions.icon = "sdx_CRC_QDEF.jpg";
+            break;
+        default:
+            // TODO: THIS NEEDS REFACTORING TO USE THE DEFAULT RENDER FOR THAT TYPE THEN MODIFY THE RETURNED VALUES!!!!
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            var t = "No SDX Object exists to represent data-type "+sdxData.origData.encapType;
+            console.warn(t);
+            // encapsulate as a Generic XML object
+            sdxCode = "XML";
+            var o = {};
+            var t = i2b2.h.XPath(sdxData.origData.xmlOrig, "descendant::work_xml")[0].childNodes;
+            for (i=0; i<t.length; i++) {
+                if (t[i].nodeType==1) {
+                    o.xmlOrig = t[i];
+                    break;
+                }
+            }
+            o.result_type = "UNKNOWN";
+            o.name = sdxData.origData.name; // inherit name from Workplace Node
+            o.key = false;
+            newOptions.showchildren = false;
+            newOptions.icon = "sdx_WORK_XML.gif";
+            break;
+    }
+
+
+    newOptions.title = sdxData.origData.name;
+    if (sdxCode) {
+        var sdxDataNode = i2b2.sdx.Master.EncapsulateData(sdxCode, o);
+        sdxDataNode.origData.name = options.title;
+        sdxDataNode.sdxInfo.sdxDisplayName = options.title;
+        sdxData.sdxUnderlyingPackage = sdxDataNode;
+        subclassHTML = i2b2.sdx.Master.RenderHTML(targetDiv, sdxDataNode, newOptions);
+    }
+    return subclassHTML;
 }
 
 // *********************************************************************************
 //	DRAG DROP PROXY CONTROLLER
 // *********************************************************************************
 i2b2.sdx.TypeControllers.WRK.DragDrop = function(id, config) {
-	if (id) {
-		this.init(id, 'WRK',{isTarget:true});
-		this.initFrame();
-	}
-	var s = this.getDragEl().style;
-	s.borderColor = "transparent";
-	s.opacity = 0.75;
-	s.filter = "alpha(opacity=75)";
-	s.whiteSpace = "nowrap";
-	s.overflow = "hidden";
-	s.textOverflow = "ellipsis";
+    if (id) {
+        this.init(id, 'WRK',{isTarget:true});
+        this.initFrame();
+    }
+    var s = this.getDragEl().style;
+    s.borderColor = "transparent";
+    s.opacity = 0.75;
+    s.filter = "alpha(opacity=75)";
+    s.whiteSpace = "nowrap";
+    s.overflow = "hidden";
+    s.textOverflow = "ellipsis";
 };
 /* TODO: Reimplement drag and drop */
 
@@ -539,7 +539,7 @@ i2b2.sdx.TypeControllers.WRK.DragDrop = function(id, config) {
 //	!!!! THE i2b2.sdx.Master.setHandlerCustom FUNCTION
 // *********************************************************************************
 i2b2.sdx.TypeControllers.WRK.DropHandler = function(sdxData) {
-	alert('[Workplace Object DROPPED] You need to create your own custom drop event handler.');
+    alert('[Workplace Object DROPPED] You need to create your own custom drop event handler.');
 }
 // ==========================================================================
 i2b2.sdx.TypeControllers.WRK.dragStartHandler = function(i2b2Data) {
