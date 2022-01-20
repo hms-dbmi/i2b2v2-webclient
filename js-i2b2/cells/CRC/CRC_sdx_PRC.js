@@ -35,7 +35,7 @@ i2b2.sdx.TypeControllers.PRC.RenderData = function(sdxData, options) {
     // === moreDescriptMain
     // === moreDescriptMinor
     // === tvNodeState
-    if (i2b2.h.isUndefined(options)) { options = {}; }
+    if (options === undefined) { options = {}; }
     // default ENS icons
     if (!$.isArray(options.icon)) {
         if (typeof options.icon == 'string') {
@@ -101,8 +101,8 @@ i2b2.sdx.TypeControllers.PRC.RenderData = function(sdxData, options) {
         nodeInfo.iconImgExp = i2b2.hive.cfg.urlFramework + 'cells/CRC/assets/'+ options.icon[icon+'Exp'];
     }
     // in cases of one set icon, copy valid icon to the missing icon
-    if (i2b2.h.isUndefined(nodeInfo.iconImg) && (nodeInfo.iconImgExp !== undefined)) {	nodeInfo.iconImg = nodeInfo.iconImgExp; }
-    if ((nodeInfo.iconImg !== undefined) && i2b2.h.isUndefined(nodeInfo.iconImgExp)) {	nodeInfo.iconImgExp = nodeInfo.iconImg; }
+    if ((nodeInfo.iconImg === undefined) && (nodeInfo.iconImgExp !== undefined)) {	nodeInfo.iconImg = nodeInfo.iconImgExp; }
+    if ((nodeInfo.iconImg !== undefined) && (nodeInfo.iconImgExp === undefined)) {	nodeInfo.iconImgExp = nodeInfo.iconImg; }
 
     // provide tooltip information if given
     if (typeof options.tooltip == 'string') nodeInfo.moreDescriptMinor = options.tooltip;

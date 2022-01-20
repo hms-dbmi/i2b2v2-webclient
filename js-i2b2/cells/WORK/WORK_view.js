@@ -195,7 +195,7 @@ i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
                     temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
                 }
 
-                if (i2b2.h.isUndefined(parentNode)) {
+                if (parentNode  === undefined) {
                     temp.parentKey = undefined;
                 } else {
                     temp.parentKey = parentNode;
@@ -211,7 +211,7 @@ i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
 
 
 i2b2.WORK.view.main.loadChildren = function(e, nodeData){
-    if (i2b2.h.isUndefined(nodeData.i2b2.sdxInfo.sdxKeyValue)) {
+    if (nodeData.i2b2.sdxInfo.sdxKeyValue === undefined) {
         console.error('i2b2.WORK.view.main.loadChildren could not find tv_node.data.i2b2_SDX');
         return;
     }

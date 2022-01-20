@@ -344,7 +344,7 @@ i2b2.sdx.Master.RenderData = function(sdxDataPackage, options) {
     // === tvNodeState
 
     var funcName = "[i2b2.sdx.Master.RenderData] ";
-    if (i2b2.h.isUndefined(sdxDataPackage)) {
+    if (sdxDataPackage === undefined) {
         console.error(funcName +'the SDX Data Package is empty!');
         return false;
     }
@@ -355,7 +355,7 @@ i2b2.sdx.Master.RenderData = function(sdxDataPackage, options) {
         return false;
     }
 
-    if (i2b2.h.isUndefined(i2b2.sdx.TypeControllers[sdxType].RenderData)) {
+    if (i2b2.sdx.TypeControllers[sdxType].RenderData === undefined) {
         console.error(funcName+'the SDX Controller for '+sdxType+' does not handle RenderData!');
         return false;
     }
@@ -364,14 +364,14 @@ i2b2.sdx.Master.RenderData = function(sdxDataPackage, options) {
 
     if (ret) {
         // default values
-        if (i2b2.h.isUndefined(ret.title)) ret.title = '';
-        if (i2b2.h.isUndefined(ret.iconImg)) ret.iconImg = '';
-        if (i2b2.h.isUndefined(ret.iconImgExp)) ret.iconImgExp = '';
-        if (i2b2.h.isUndefined(ret.cssClassMain)) ret.cssClassMain = '';
-        if (i2b2.h.isUndefined(ret.cssClassMinor)) ret.cssClassMinor = '';
-        if (i2b2.h.isUndefined(ret.moreDescriptMain)) ret.moreDescriptMain = '';
-        if (i2b2.h.isUndefined(ret.moreDescriptMinor)) ret.moreDescriptMinor = '';
-        if (i2b2.h.isUndefined(ret.tvNodeState)) ret.tvNodeState = {};
+        if (ret.title === undefined) ret.title = '';
+        if (ret.iconImg === undefined) ret.iconImg = '';
+        if (ret.iconImgExp === undefined) ret.iconImgExp = '';
+        if (ret.cssClassMain === undefined) ret.cssClassMain = '';
+        if (ret.cssClassMinor === undefined) ret.cssClassMinor = '';
+        if (ret.moreDescriptMain === undefined) ret.moreDescriptMain = '';
+        if (ret.moreDescriptMinor === undefined) ret.moreDescriptMinor = '';
+        if (ret.tvNodeState === undefined) ret.tvNodeState = {};
     }
 
     return ret;

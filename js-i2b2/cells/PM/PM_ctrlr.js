@@ -600,7 +600,7 @@ i2b2.PM._processLaunchFramework = function() {
                 }
 
                 //If no cell is found that get the '/'
-                if (i2b2.h.isUndefined(cellRef.name)) {
+                if (cellRef.name === undefined) {
                     for (var i=0; i<y.length; i++)
                     {
                         var  x = i2b2.h.XPath(oXML, "//cell_data[@id='"+cellKey+"']")[i];

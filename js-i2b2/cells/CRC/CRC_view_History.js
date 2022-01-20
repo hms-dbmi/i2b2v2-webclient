@@ -36,7 +36,7 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
     // called via i2b2.CRC.view.history.treeview.on('nodeLoading', i2b2.CRC.view.history.loadChildren)
     // and is used to load all the children for a single passed node
 
-    if (i2b2.h.isUndefined(nodeData.i2b2.sdxInfo.sdxKeyValue)) {
+    if (nodeData.i2b2.sdxInfo.sdxKeyValue === undefined) {
         console.error('i2b2.CRC.view.history.loadChildren could not find tv_node.i2b2.sdxInfo');
         return;
     }

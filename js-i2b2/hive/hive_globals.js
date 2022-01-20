@@ -116,10 +116,10 @@ function i2b2_BaseCell(configObj) {
         delete this.initTimer;
 
         // save the passed arguments (giving by PM cell during login)
-        if (i2b2.h.isUndefined(inParams)) {
+        if (inParams === undefined) {
             inParams = [];
         }
-        if (i2b2.h.isUndefined(this.cfg.config.assetDir)) {
+        if (this.cfg.config.assetDir === undefined) {
             this.cfg.config.assetDir = this.cfg.assetDir;
         }
         delete this.cfg.assetDir;

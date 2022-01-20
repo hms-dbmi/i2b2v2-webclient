@@ -29,7 +29,7 @@ i2b2.sdx.TypeControllers.CONCPT.getEncapsulateInfo = function() {
 i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     // this function extracts the datatype from the SDX's original XML object and relies upon it's
     // original SDX type controller to retreve the render data
-    if (i2b2.h.isUndefined(options)) { options = {}; }
+    if (options === undefined) { options = {}; }
     // default CONCPT icons
     if (!$.isArray(options.icon)) {
         if (typeof options.icon == 'string') {
@@ -159,8 +159,8 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
             nodeInfo.iconImgExp = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ options.icon[icon+'Exp'];
         }
         // in cases of one set icon, copy valid icon to the missing icon
-        if (i2b2.h.isUndefined(nodeInfo.iconImg) && (nodeInfo.iconImgExp !== undefined)) {	nodeInfo.iconImg = nodeInfo.iconImgExp; }
-        if ((nodeInfo.iconImg !== undefined) && i2b2.h.isUndefined(nodeInfo.iconImgExp)) {	nodeInfo.iconImgExp = nodeInfo.iconImg; }
+        if ((nodeInfo.iconImg === undefined) && (nodeInfo.iconImgExp !== undefined)) {	nodeInfo.iconImg = nodeInfo.iconImgExp; }
+        if ((nodeInfo.iconImg !== undefined) && (nodeInfo.iconImgExp === undefined)) {	nodeInfo.iconImgExp = nodeInfo.iconImg; }
 
         switch(icon) {
             case "root":
@@ -176,7 +176,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     }
 
     // cleanup
-    if (i2b2.h.isUndefined(nodeInfo.iconImg)) {
+    if (nodeInfo.iconImg === undefined) {
         console.warn("[SDX RenderData] no '"+icon+"' icon has been set in the options passed");
         console.dir(options);
         nodeInfo.iconImg = '';
@@ -228,7 +228,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderHTML= function(sdxData, options, targetDiv
     //	click: string
     //	dblclick: string
 
-    if (i2b2.h.isUndefined(options)) { options = {}; }
+    if (options === undefined) { options = {}; }
     var render = {html: retHtml, htmlID: id};
     var conceptId = sdxData.name;
     var id = "ONT_TID-" + i2b2.GUID();
@@ -301,11 +301,11 @@ i2b2.sdx.TypeControllers.CONCPT.RenderHTML= function(sdxData, options, targetDiv
         var icn = (eval('options.icon.'+icon+'Exp'));
         if (icn !== undefined) { render.iconExp = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ icn }
         // in cases of one set icon, copy valid icon to the missing icon
-        if (i2b2.h.isUndefined(render.icon) && (render.iconExp !== undefined)) {	sdxData.icon = render.iconExp; }
-        if ((render.icon !== undefined) && i2b2.h.isUndefined(render.iconExp)) {	sdxData.iconExp = render.icon; }
+        if ((render.icon === undefined) && (render.iconExp !== undefined)) {	sdxData.icon = render.iconExp; }
+        if ((render.icon !== undefined) && (render.iconExp === undefined)) {	sdxData.iconExp = render.icon; }
     }
     // cleanup
-    if (i2b2.h.isUndefined(render.icon)) {
+    if (render.icon === undefined) {
         console.warn("[SDX RenderHTML] no '"+icon+"' icon has been set in the options passed");
         console.dir(options);
         render.icon = '';
@@ -598,7 +598,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
     }
     */
     var t = i2b2.ONT.params;
-    if (i2b2.h.isUndefined(t)) t = {};
+    if (t === undefined) t = {};
     if (t.hiddens !== undefined) {
         options.ont_hidden_records = t.hiddens;
     } else {
@@ -623,7 +623,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
     if (t.showConceptCode !== undefined) {
         options.ont_show_concept_code = t.showConceptCode;
     }
-    if (i2b2.h.isUndefined(t.modifiers) || t.modifiers == false) {
+    if (t.modifiers === undefined || t.modifiers == false) {
         options.version = i2b2.ClientVersion;
     } else {
         options.version = "1.5";
@@ -640,7 +640,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
             options.concept_key_value = '';
             break;
     }
-    if (i2b2.h.isUndefined(options.version)) options.version = "1.5";
+    if (options.version === undefined) options.version = "1.5";
     i2b2.ONT.ajax.GetChildConcepts("ONT:SDX:Concept", options, scopedCallback );
 }
 

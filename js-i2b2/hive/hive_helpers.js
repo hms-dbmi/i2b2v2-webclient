@@ -90,7 +90,7 @@ i2b2.h.XPath = function(xmlDoc, xPath) {
 };
 
 i2b2.h.getXNodeVal = function(xmlElement, nodeName, includeChildren) {
-    if (i2b2.h.isUndefined(xmlElement)) return undefined;
+    if (xmlElement === undefined) return undefined;
     var gotten = i2b2.h.XPath(xmlElement, "descendant-or-self::"+nodeName+"/text()");
 
     if (gotten.length == 0) return undefined;
@@ -468,7 +468,7 @@ i2b2.h.isUndefined = function() {
 i2b2.h.isBadObjPath = function(sObjectHierarchy) {
     try {
         var t = eval("("+sObjectHierarchy+")");
-        return i2b2.h.isUndefined(t);
+        return (t === undefined);
     } catch (e) {
         return true;
     }

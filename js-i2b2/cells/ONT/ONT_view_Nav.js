@@ -142,7 +142,7 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
 }
 // ================================================================================================== //
 i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
-    if (i2b2.h.isUndefined(nodeData.i2b2.sdxInfo.sdxKeyValue)) {
+    if (nodeData.i2b2.sdxInfo.sdxKeyValue === undefined) {
         console.error('i2b2.ONT.view.nav.loadChildren could not find tv_node.i2b2.sdxInfo');
         return;
     }

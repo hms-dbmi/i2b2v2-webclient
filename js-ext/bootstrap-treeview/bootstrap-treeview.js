@@ -677,7 +677,7 @@
                         node.icon || _this.options.nodeIcon);
                 }
 
-                if (i2b2.h.isUndefined(node.depth)) node.depth = level;
+                if (node.depth === undefined) node.depth = level;
                 classList.push('tv-depth-'+node.depth);
 
                 treeItem

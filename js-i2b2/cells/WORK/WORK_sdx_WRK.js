@@ -37,8 +37,8 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
     var subclassData = {};
     var newOptions = options;
 
-    if (i2b2.h.isUndefined(newOptions.title)) newOptions.title = "";
-    if (i2b2.h.isUndefined(newOptions.showchildren)) newOptions.showchildren = false;
+    if (newOptions.title === undefined) newOptions.title = "";
+    if (newOptions.showchildren === undefined) newOptions.showchildren = false;
 
     // TODO: Move this info processing out into the cells themselves (Encapsulate/Decapsulate duality functions)
     switch (sdxData.origData.encapType) {
