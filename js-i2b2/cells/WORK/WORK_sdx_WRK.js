@@ -546,7 +546,7 @@ i2b2.sdx.TypeControllers.WRK.dragStartHandler = function(i2b2Data) {
     delete i2b2Data.origData.xmlOrig;
     delete i2b2Data.origData.parent;
     delete i2b2Data.renderData.idDOM;
-    if (!i2b2.h.isUndefined(i2b2Data.sdxUnderlyingPackage)) {
+    if (i2b2Data.sdxUnderlyingPackage !== undefined) {
         delete i2b2Data.sdxUnderlyingPackage.origData.xmlOrig;
         delete i2b2Data.sdxUnderlyingPackage.origData.parent;
     }

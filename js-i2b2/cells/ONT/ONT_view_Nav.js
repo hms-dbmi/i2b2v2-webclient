@@ -127,7 +127,7 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
             i2b2: sdxDataNode
         };
         temp.state = sdxDataNode.renderData.tvNodeState;
-        if(!i2b2.h.isUndefined(sdxDataNode.renderData.cssClassMinor)) {
+        if(sdxDataNode.renderData.cssClassMinor !== undefined) {
             temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
         }
         newNodes.push(temp);

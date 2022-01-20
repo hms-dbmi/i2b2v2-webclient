@@ -44,22 +44,22 @@ i2b2.PM.doLogin = function() {
         i2b2.PM.model.url = login_url;
         var shrine_domain = Boolean.parseTo(domain.isSHRINE);
         var login_project = domain.project;
-        if (!i2b2.h.isUndefined(domain.debug)) {
+        if (domain.debug !== undefined) {
             i2b2.PM.model.login_debugging = Boolean.parseTo(domain.debug);
         } else {
             i2b2.PM.model.login_debugging = false;
         }
-        if (!i2b2.h.isUndefined(domain.allowAnalysis)) {
+        if (domain.allowAnalysis !== undefined) {
             i2b2.PM.model.allow_analysis = Boolean.parseTo(domain.allowAnalysis);
         } else {
             i2b2.PM.model.allow_analysis = true;
         }
-        if (!i2b2.h.isUndefined(domain.adminOnly)) {
+        if (domain.adminOnly !== undefined) {
             i2b2.PM.model.admin_only = Boolean.parseTo(domain.adminOnly);
         } else {
             i2b2.PM.model.admin_only = false;
         }
-        if (!i2b2.h.isUndefined(domain.installer)) {
+        if (domain.installer !== undefined) {
             i2b2.PM.model.installer_path = domain.installer;
         }
     } else {
@@ -518,7 +518,7 @@ i2b2.PM._processLaunchFramework = function() {
                 return true;
             }
             // save to list of cells that are loaded
-            if (!i2b2.h.isUndefined(i2b2[cellKey]) && i2b2.hive.cfg.LoadedCells[cellKey] === true) {
+            if (i2b2[cellKey] !== undefined && i2b2.hive.cfg.LoadedCells[cellKey] === true) {
                 loadedCells.push(cellKey);
             }
         }

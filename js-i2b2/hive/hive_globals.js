@@ -176,7 +176,7 @@ function i2b2_BaseCell(configObj) {
 
 
         // [preload the images]
-        if (!i2b2.h.isUndefined(this.cfg.preload)) {
+        if (this.cfg.preload !== undefined) {
             for (var i = 0; i < this.cfg.preload.length; i++) {
                 var t = this.cfg.preload[i];
                 t = t.substring(t.lastIndexOf(".")).toLowerCase();

@@ -404,9 +404,9 @@ i2b2.PM.doLoginDialog = function() {
         $('loginusr').focus();
         // load info from the i2b2.UI.cfg data that may exist
         var t = i2b2.UI.cfg.loginDefaultUsername;
-        if (!i2b2.h.isUndefined(t)) { $("#PM-login-modal input[name='loginusr']").val(t); }
+        if (t !== undefined) { $("#PM-login-modal input[name='loginusr']").val(t); }
         var t = i2b2.UI.cfg.loginDefaultPassword;
-        if (!i2b2.h.isUndefined(t)) { $("#PM-login-modal input[name='loginpass']").val(t); }
+        if (t !== undefined) { $("#PM-login-modal input[name='loginpass']").val(t); }
         // clear any domains
         $('#logindomain option').remove();
         // load the domains into dropdown

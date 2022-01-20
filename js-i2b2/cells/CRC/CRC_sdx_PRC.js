@@ -64,8 +64,8 @@ i2b2.sdx.TypeControllers.PRC.RenderData = function(sdxData, options) {
         tvNodeState: {}
     };
 
-    if (!i2b2.h.isUndefined(options.cssClass)) nodeInfo.cssClassMain = options.cssClass;
-    if (!i2b2.h.isUndefined(options.title)) {
+    if (options.cssClass !== undefined) nodeInfo.cssClassMain = options.cssClass;
+    if (options.title !== undefined) {
         nodeInfo.title = options.title;
     } else  {
         nodeInfo.title = sdxData.sdxInfo.sdxDisplayName;
@@ -94,15 +94,15 @@ i2b2.sdx.TypeControllers.PRC.RenderData = function(sdxData, options) {
             nodeInfo.tvNodeState.expanded = true;
             break;
     }
-    if (!i2b2.h.isUndefined(options.icon[icon])) {
+    if (options.icon[icon] !== undefined) {
         nodeInfo.iconImg = i2b2.hive.cfg.urlFramework + 'cells/CRC/assets/'+ options.icon[icon];
     }
-    if (!i2b2.h.isUndefined(options.icon[icon+'Exp'])) {
+    if (options.icon[icon+'Exp'] !== undefined) {
         nodeInfo.iconImgExp = i2b2.hive.cfg.urlFramework + 'cells/CRC/assets/'+ options.icon[icon+'Exp'];
     }
     // in cases of one set icon, copy valid icon to the missing icon
-    if (i2b2.h.isUndefined(nodeInfo.iconImg) && !i2b2.h.isUndefined(nodeInfo.iconImgExp)) {	nodeInfo.iconImg = nodeInfo.iconImgExp; }
-    if (!i2b2.h.isUndefined(nodeInfo.iconImg) && i2b2.h.isUndefined(nodeInfo.iconImgExp)) {	nodeInfo.iconImgExp = nodeInfo.iconImg; }
+    if (i2b2.h.isUndefined(nodeInfo.iconImg) && (nodeInfo.iconImgExp !== undefined)) {	nodeInfo.iconImg = nodeInfo.iconImgExp; }
+    if ((nodeInfo.iconImg !== undefined) && i2b2.h.isUndefined(nodeInfo.iconImgExp)) {	nodeInfo.iconImgExp = nodeInfo.iconImg; }
 
     // provide tooltip information if given
     if (typeof options.tooltip == 'string') nodeInfo.moreDescriptMinor = options.tooltip;

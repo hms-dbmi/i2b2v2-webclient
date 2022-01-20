@@ -30,7 +30,7 @@ i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
             key: nodeData.key,
             i2b2: i2b2.sdx.Master.EncapsulateData('WRK', nodeData)
         };
-        if (!i2b2.h.isUndefined(parentNode)) {
+        if (parentNode !== undefined) {
             nodeInfo.parentKey = parentNode;
         }
         return nodeInfo;
@@ -191,7 +191,7 @@ i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
                     i2b2: sdxDataNode
                 };
                 temp.state = sdxDataNode.renderData.tvNodeState;
-                if(!i2b2.h.isUndefined(sdxDataNode.renderData.cssClassMinor)) {
+                if(sdxDataNode.renderData.cssClassMinor !== undefined) {
                     temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
                 }
 

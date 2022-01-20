@@ -65,7 +65,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     };
 
 
-    if (!i2b2.h.isUndefined(options.title)) {
+    if (options.title !== undefined) {
         // BUG FIX: Partners uses "zz " to move items to the bottom of lists, java client removes the "zz " prefix.
         if (options.title.substr(0,3) == "zz ") {
             nodeInfo.title = options.title.substr(3);
@@ -126,7 +126,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     if (typeof options.showchildren == "boolean" && !options.showchildren) {
         bCanExp = false;
     }
-    if(sdxData.origData.hasOwnProperty('parent') && !i2b2.h.isUndefined(sdxData.origData.parent)){ // WEBCLIENT-190
+    if(sdxData.origData.hasOwnProperty('parent') && sdxData.origData.parent !== undefined){ // WEBCLIENT-190
         if (sdxData.origData.parent.origData.hasChildren.substring(2,1) === "I" && sdxData.origData.isModifier){
             sdxData.origData.hasChildren = sdxData.origData.hasChildren.replace("A","I");
         }
@@ -140,7 +140,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     {
         sDD += " style='color: #c00000;' ";
     }
-    else if ((!i2b2.h.isUndefined(sdxData.origData.synonym_cd)) && (sdxData.origData.synonym_cd != 'N'))
+    else if ((sdxData.origData.synonym_cd !== undefined) && (sdxData.origData.synonym_cd != 'N'))
     {
         sDD += " style='color: #0000ff;' ";
     }
@@ -151,16 +151,16 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
         nodeInfo.tvNodeState.expanded = true;
     }
 
-    if (!i2b2.h.isUndefined(icon)) {
-        if (!i2b2.h.isUndefined(options.icon[icon])) {
+    if (icon !== undefined) {
+        if (options.icon[icon] !== undefined) {
             nodeInfo.iconImg = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ options.icon[icon];
         }
-        if (!i2b2.h.isUndefined(options.icon[icon+'Exp'])) {
+        if (options.icon[icon+'Exp'] !== undefined) {
             nodeInfo.iconImgExp = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ options.icon[icon+'Exp'];
         }
         // in cases of one set icon, copy valid icon to the missing icon
-        if (i2b2.h.isUndefined(nodeInfo.iconImg) && !i2b2.h.isUndefined(nodeInfo.iconImgExp)) {	nodeInfo.iconImg = nodeInfo.iconImgExp; }
-        if (!i2b2.h.isUndefined(nodeInfo.iconImg) && i2b2.h.isUndefined(nodeInfo.iconImgExp)) {	nodeInfo.iconImgExp = nodeInfo.iconImg; }
+        if (i2b2.h.isUndefined(nodeInfo.iconImg) && (nodeInfo.iconImgExp !== undefined)) {	nodeInfo.iconImg = nodeInfo.iconImgExp; }
+        if ((nodeInfo.iconImg !== undefined) && i2b2.h.isUndefined(nodeInfo.iconImgExp)) {	nodeInfo.iconImgExp = nodeInfo.iconImg; }
 
         switch(icon) {
             case "root":
@@ -190,11 +190,11 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
         {
             nodeInfo.moreDescriptMinor += sdxData.origData.name;
         } else {
-            if (!i2b2.h.isUndefined(sdxData.origData.tooltip)) {
+            if (sdxData.origData.tooltip !== undefined) {
                 nodeInfo.moreDescriptMinor += sdxData.origData.tooltip;
             }
         }
-        if ((($('ONTNAVshowCodeTooltips').checked) || ($('ONTFINDshowCodeTooltips').checked) ) && !i2b2.h.isUndefined(sdxData.origData.basecode))
+        if ((($('ONTNAVshowCodeTooltips').checked) || ($('ONTFINDshowCodeTooltips').checked) ) && (sdxData.origData.basecode !== undefined))
         {
             nodeInfo.moreDescriptMinor += " - " + sdxData.origData.basecode;
         }
@@ -234,7 +234,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderHTML= function(sdxData, options, targetDiv
     var id = "ONT_TID-" + i2b2.GUID();
 
     // process drag drop controllers
-    if (!i2b2.h.isUndefined(options.dragdrop)) {
+    if (options.dragdrop !== undefined) {
 // NOTE TO SELF: should attachment of node dragdrop controller be handled by the SDX system as well? 
 // This would ensure removal of the onmouseover call in a cross-browser way
         var sDD = '  onmouseover="' + options.dragdrop + '(\''+ targetDiv.id +'\',\'' + id + '\')" ';
@@ -289,20 +289,20 @@ i2b2.sdx.TypeControllers.CONCPT.RenderHTML= function(sdxData, options, targetDiv
     {
         sDD += " style='color: #c00000;' ";
     }
-    else if ((!i2b2.h.isUndefined(sdxData.origData.synonym_cd)) && (sdxData.origData.synonym_cd != 'N'))
+    else if ((sdxData.origData.synonym_cd !== undefined) && (sdxData.origData.synonym_cd != 'N'))
     {
         sDD += " style='color: #0000ff;' ";
     }
     render.canExpand = bCanExp;
     render.iconType = 'CONCPT_'+icon;
-    if (!i2b2.h.isUndefined(icon)) {
+    if (icon !== undefined) {
         var icn = (eval('options.icon.'+icon));
-        if (!i2b2.h.isUndefined(icn)) { render.icon = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ icn }
+        if (icn !== undefined) { render.icon = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ icn }
         var icn = (eval('options.icon.'+icon+'Exp'));
-        if (!i2b2.h.isUndefined(icn)) { render.iconExp = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ icn }
+        if (icn !== undefined) { render.iconExp = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ icn }
         // in cases of one set icon, copy valid icon to the missing icon
-        if (i2b2.h.isUndefined(render.icon) && !i2b2.h.isUndefined(render.iconExp)) {	sdxData.icon = render.iconExp; }
-        if (!i2b2.h.isUndefined(render.icon) && i2b2.h.isUndefined(render.iconExp)) {	sdxData.iconExp = render.icon; }
+        if (i2b2.h.isUndefined(render.icon) && (render.iconExp !== undefined)) {	sdxData.icon = render.iconExp; }
+        if ((render.icon !== undefined) && i2b2.h.isUndefined(render.iconExp)) {	sdxData.iconExp = render.icon; }
     }
     // cleanup
     if (i2b2.h.isUndefined(render.icon)) {
@@ -342,7 +342,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderHTML= function(sdxData, options, targetDiv
             v_tooltip += 'title="'+ sdxData.origData.tooltip;
         }
 
-        if ((($('ONTNAVshowCodeTooltips').checked) || ($('ONTFINDshowCodeTooltips').checked) ) && !i2b2.h.isUndefined(sdxData.origData.basecode))
+        if ((($('ONTNAVshowCodeTooltips').checked) || ($('ONTFINDshowCodeTooltips').checked) ) && (sdxData.origData.basecode !== undefined))
         {
             v_tooltip += " - " + sdxData.origData.basecode;
         }
@@ -368,7 +368,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderHTML= function(sdxData, options, targetDiv
     {
         retHtml += "[";
     }
-    if (!i2b2.h.isUndefined(options.title)) {
+    if (options.title !== undefined) {
         // BUG FIX: Partners uses "zz " to move items to the bottom of lists, java client removes the "zz " prefix.
         if (options.title.substr(0,3) == "zz ") { options.title = options.title.substr(3); }
         retHtml += options.title;
@@ -378,7 +378,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderHTML= function(sdxData, options, targetDiv
     }
     if ($('ONTNAVshowPatientCounts').checked)
     {
-        if (!i2b2.h.isUndefined(sdxData.origData.total_num)) {
+        if (sdxData.origData.total_num !== undefined) {
             retHtml += " - " + sdxData.origData.total_num;
         }
         if (sdxData.origData.total_num == 0)
@@ -547,7 +547,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                 i2b2: sdxDataNode
             };
             temp.state = sdxDataNode.renderData.tvNodeState;
-            if(!i2b2.h.isUndefined(sdxDataNode.renderData.cssClassMinor)) {
+            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
                 temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             }
             if (typeof cl_node == 'undefined' || (typeof cl_node == 'string' && String(cl_node).trim() == '')) {
@@ -599,28 +599,28 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
     */
     var t = i2b2.ONT.params;
     if (i2b2.h.isUndefined(t)) t = {};
-    if (!i2b2.h.isUndefined(t.hiddens)) {
+    if (t.hiddens !== undefined) {
         options.ont_hidden_records = t.hiddens;
     } else {
         options.ont_hidden_records = "N";
     }
-    if (!i2b2.h.isUndefined(t.max)) {
+    if (t.max !== undefined) {
         options.ont_max_records = "max='"+t.max+"' ";
     } else {
         options.ont_max_records = "";
     }
-    if (!i2b2.h.isUndefined(t.synonyms)) {
+    if (t.synonyms !== undefined) {
         options.ont_synonym_records = t.synonyms;
     } else {
         options.ont_synonym_records = "N";
     }
-    if (!i2b2.h.isUndefined(t.patientCount)) {
+    if (t.patientCount !== undefined) {
         options.ont_patient_count = t.patientCount;
     }
-    if (!i2b2.h.isUndefined(t.shortTooltip)) {
+    if (t.shortTooltip !== undefined) {
         options.ont_short_tooltip = t.shortTooltip;
     }
-    if (!i2b2.h.isUndefined(t.showConceptCode)) {
+    if (t.showConceptCode !== undefined) {
         options.ont_show_concept_code = t.showConceptCode;
     }
     if (i2b2.h.isUndefined(t.modifiers) || t.modifiers == false) {
@@ -777,13 +777,13 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
      }
      */
     var t = i2b2.ONT.params;
-    if (!i2b2.h.isUndefined(t)) {
-        if (!i2b2.h.isUndefined(t.hiddens)) options.ont_hidden_records = t.hiddens;
-        if (!i2b2.h.isUndefined(t.max)) options.ont_max_records = "max='"+t.max+"' ";
-        if (!i2b2.h.isUndefined(t.synonyms)) options.ont_synonym_records = t.synonyms;
-        if (!i2b2.h.isUndefined(t.patientCount)) options.ont_patient_count = t.patientCount;
-        if (!i2b2.h.isUndefined(t.shortTooltip)) options.ont_short_tooltip = t.shortTooltip;
-        if (!i2b2.h.isUndefined(t.showConceptCode)) options.ont_show_concept_code = t.showConceptCode;
+    if (t !== undefined) {
+        if (t.hiddens !== undefined) options.ont_hidden_records = t.hiddens;
+        if (t.max !== undefined) options.ont_max_records = "max='"+t.max+"' ";
+        if (t.synonyms !== undefined) options.ont_synonym_records = t.synonyms;
+        if (t.patientCount !== undefined) options.ont_patient_count = t.patientCount;
+        if (t.shortTooltip !== undefined) options.ont_short_tooltip = t.shortTooltip;
+        if (t.showConceptCode !== undefined) options.ont_show_concept_code = t.showConceptCode;
     }
     options.concept_key_value = node.i2b2.sdxInfo.sdxKeyValue;;
 

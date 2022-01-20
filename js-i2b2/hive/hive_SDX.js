@@ -386,17 +386,17 @@ i2b2.sdx.Master.onDragStart = function(event, node) {
     // route to the proper SDX type controller for management
     try {
         var sdxType = node.data.i2b2.sdxInfo.sdxType;
-        if (!i2b2.h.isUndefined(i2b2.sdx.TypeControllers[sdxType])) {
+        if (i2b2.sdx.TypeControllers[sdxType] !== undefined) {
             // valid SDX type... do processing in type controller
             var i2b2Data = $.extend(true, {}, node.data.i2b2);
-            if (!i2b2.h.isUndefined(i2b2.sdx.TypeControllers[sdxType].dragStartHandler)) {
+            if (i2b2.sdx.TypeControllers[sdxType].dragStartHandler !== undefined) {
                 i2b2Data = i2b2.sdx.TypeControllers[sdxType].dragStartHandler(i2b2Data);
             } else {
                 // i2b2 data
                 delete i2b2Data.origData.xmlOrig;
                 delete i2b2Data.origData.parent;
                 delete i2b2Data.renderData.idDOM;
-                if (!i2b2.h.isUndefined(i2b2.sdxUnderlyingPackage)) {
+                if (i2b2.sdxUnderlyingPackage !== undefined) {
                     delete i2b2Data.sdxUnderlyingPackage.origData.xmlOrig;
                     delete i2b2Data.sdxUnderlyingPackage.origData.parent;
                 }
@@ -407,7 +407,7 @@ i2b2.sdx.Master.onDragStart = function(event, node) {
             // next is sdxType data we are sending in the MIME type content label that can be read during hover over
             var sdxTypeString = i2b2Data.sdxInfo.sdxType;
             var sdxTypeData = [i2b2Data.sdxInfo.sdxControlCell + ":" + i2b2Data.sdxInfo.sdxType];
-            if (!i2b2.h.isUndefined(i2b2Data.sdxUnderlyingPackage)) {
+            if (i2b2Data.sdxUnderlyingPackage !== undefined) {
                 sdxTypeString += "+" + i2b2Data.sdxUnderlyingPackage.sdxInfo.sdxType;
                 sdxTypeData.push(i2b2Data.sdxUnderlyingPackage.sdxInfo.sdxControlCell + ":" + i2b2Data.sdxUnderlyingPackage.sdxInfo.sdxType);
             }
@@ -420,7 +420,7 @@ i2b2.sdx.Master.onDragStart = function(event, node) {
 // ================================================================================================== //
 i2b2.sdx.Master.getChildRecords = function(sdxParent, onCompleteCallback) {
     var sdxType = sdxParent.sdxInfo.sdxType;
-    if (!i2b2.h.isUndefined(i2b2.sdx.TypeControllers[sdxType])) {
+    if (i2b2.sdx.TypeControllers[sdxType] !== undefined) {
         i2b2.sdx.TypeControllers[sdxParent.sdxInfo.sdxType].getChildRecords(sdxParent, onCompleteCallback);
     }
 };

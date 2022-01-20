@@ -63,7 +63,7 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
                 i2b2: sdxDataNode
             };
             temp.state = sdxDataNode.renderData.tvNodeState;
-            if(!i2b2.h.isUndefined(sdxDataNode.renderData.cssClassMinor)) {
+            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
                 temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             }
             temp.parentKey = this.key;
@@ -137,7 +137,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
                 i2b2: sdxDataNode
             };
             temp.state = sdxDataNode.renderData.tvNodeState;
-            if(!i2b2.h.isUndefined(sdxDataNode.renderData.cssClassMinor)) {
+            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
                 temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             }
             newNodes.push(temp);

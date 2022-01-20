@@ -77,7 +77,7 @@ i2b2.PM.model.IdleTimer = (function() {
         idle_secs = (i2b2.h.isNumber(sec_idle) ? parseInt(sec_idle) * 1000 : Infinity);
         logout_secs = (i2b2.h.isNumber(sec_idle) ? parseInt(sec_idle) * 1000 : Infinity);
 
-        if (!i2b2.h.isUndefined(tmr_idle)) {
+        if (tmr_idle !== undefined) {
             resetTimer();
         } else {
             // UX events that will reset the timeout
