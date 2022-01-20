@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div class="modal fade" id="ontOptionsModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Run Query Options</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form style="margin: 0px 40px">
+                    <!--
+                    <div class="mb-3">
+                        <label for="crcQtQueryName" class="form-label">Name for Query</label>
+                        <input type="text" class="form-control" id="crcQtQueryName" aria-describedby="crcQtQueryName-help">
+                        <div id="crcQtQueryName-help" class="form-text">Enter a name that will identify the query.</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="" id="crcDlgResultOutputPATIENTSET">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENTSET">Patient set</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="PATIENT_ENCOUNTER_SET" id="crcDlgResultOutputPATIENT_ENCOUNTER_SET">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENT_ENCOUNTER_SET"> Encounter set</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="PATIENT_COUNT_XML" checked="checked" id="crcDlgResultOutputPATIENT_COUNT_XML">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENT_COUNT_XML">Number of patients</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="PATIENT_GENDER_COUNT_XML" checked="checked" id="crcDlgResultOutputPATIENT_GENDER_COUNT_XML">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENT_GENDER_COUNT_XML">Gender patient breakdown</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="PATIENT_VITALSTATUS_COUNT_XML" checked="checked" id="crcDlgResultOutputPATIENT_VITALSTATUS_COUNT_XML">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENT_VITALSTATUS_COUNT_XML">Vital Status patient breakdown</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="PATIENT_RACE_COUNT_XML" checked="checked" id="crcDlgResultOutputPATIENT_RACE_COUNT_XML">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENT_RACE_COUNT_XML">Race patient breakdown</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="PATIENT_AGE_COUNT_XML" checked="checked" id="crcDlgResultOutputPATIENT_AGE_COUNT_XML">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENT_AGE_COUNT_XML">Age patient breakdown</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="PATIENTSET" id="crcDlgResultOutputPATIENTSET">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENTSET">Timeline</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="PATIENT_LOS_XML" id="crcDlgResultOutputPATIENT_LOS_XML">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENT_LOS_XML">Length of stay breakdown</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="PATIENT_TOP50MEDS_XML" id="crcDlgResultOutputPATIENT_TOP50MEDS_XML">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENT_TOP50MEDS_XML">Top 50 medications breakdown</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="PATIENT_TOP50DIAG_XML" id="crcDlgResultOutputPATIENT_TOP50DIAG_XML">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENT_TOP50DIAG_XML">Top 50 diangosis breakdown</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="chkQueryType form-check-input" name="queryType" value="PATIENT_INOUT_XML" id="crcDlgResultOutputPATIENT_INOUT_XML">
+                            <label class="form-check-label" for="crcDlgResultOutputPATIENT_INOUT_XML">Inpatient and outpatient breakdown</label>
+                        </div>
+                    </div>
+                    -->
+                    <div class="form-group row">
+                        <div class="input-group input-group-sm mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="crcQtQueryName-text">Name for Query</span>
+                            </div>
+                            <input type="text" id="crcQtQueryName" class="form-control" aria-label="Name for Query" aria-describedby="crcQtQueryName-text">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="input-group input-group-sm mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Query Result(s)</span>
+                            </div>
+                            <div style="float:left; width:40%; height:100%;" class="form-control">
+                                <div class="ResultTypes" style="">
+                                    <div id="crcDlgResultOutputPATIENTSET"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENTSET"> Patient set</div>
+                                    <div id="crcDlgResultOutputPATIENT_ENCOUNTER_SET"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_ENCOUNTER_SET"> Encounter set</div>
+                                    <div id="crcDlgResultOutputPATIENT_COUNT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_COUNT_XML" checked="checked"> Number of patients</div>
+                                    <div id="crcDlgResultOutputPATIENT_GENDER_COUNT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_GENDER_COUNT_XML" checked="checked"> Gender patient breakdown</div>
+                                    <div id="crcDlgResultOutputPATIENT_VITALSTATUS_COUNT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_VITALSTATUS_COUNT_XML" checked="checked"> Vital Status patient breakdown</div>
+                                    <div id="crcDlgResultOutputPATIENT_RACE_COUNT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_RACE_COUNT_XML" checked="checked"> Race patient breakdown</div>
+                                    <div id="crcDlgResultOutputPATIENT_AGE_COUNT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_AGE_COUNT_XML" checked="checked"> Age patient breakdown</div>
+                                    <div id="crcDlgResultOutputPATIENTSET"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENTSET"> Timeline</div>
+                                    <div id="crcDlgResultOutputPATIENT_LOS_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_LOS_XML"> Length of stay breakdown</div>
+                                    <div id="crcDlgResultOutputPATIENT_TOP50MEDS_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_TOP50MEDS_XML"> Top 50 medications breakdown</div>
+                                    <div id="crcDlgResultOutputPATIENT_TOP50DIAG_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_TOP50DIAG_XML"> Top 50 diangosis breakdown</div>
+                                    <div id="crcDlgResultOutputPATIENT_INOUT_XML"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENT_INOUT_XML"> Inpatient and outpatient breakdown</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary i2b2-save">Run Query</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

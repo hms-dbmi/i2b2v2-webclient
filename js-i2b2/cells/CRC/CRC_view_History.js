@@ -14,95 +14,10 @@ console.time('execute time');
 // create and save the screen objects
 i2b2.CRC.view.history = new i2b2Base_cellViewController(i2b2.CRC, 'history');
 i2b2.CRC.view.history.visible = false;
+i2b2.CRC.view.history.params.maxQueriesDisp = 20; // TODO: This does not work
 // define the option functions
 // ================================================================================================== //
-i2b2.CRC.view.history.showOptions = function(subScreen){
-/*
-	if (!this.modalOptions) {
-		var handleSubmit = function(){
-			// submit value(s)
-			var value = $('HISTMaxQryDisp').value;
-			if(!isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10))){
-				if(parseInt(value, 10) > 0){
-					if (this.submit()) {
-						if ($('HISTsortOrderASC').checked) {
-							tmpValue = 'ASC';
-						}
-						else {
-							tmpValue = 'DESC';
-						}
-						i2b2.CRC.view['history'].params.sortOrder = tmpValue;
-						if ($('HISTsortByNAME').checked) {
-							tmpValue = 'NAME';
-						}
-						else {
-							tmpValue = 'DATE';
-						}
-						i2b2.CRC.view['history'].params.sortBy = tmpValue;
-						tmpValue = parseInt($('HISTMaxQryDisp').value, 10);
-						i2b2.CRC.view['history'].params.maxQueriesDisp = tmpValue;
-						// requery the history list
-						i2b2.CRC.ctrlr.history.Refresh();
-					}
-				} else {
-					alert('Please enter number greater than 0 for Maximum Children to Display.');
-					$('HISTMaxQryDisp').style.border = "2px inset red";
-				}
-			} else {
-				alert('Please enter a valid number for Maximum Queries to Display.');
-				$('HISTMaxQryDisp').style.border = "2px inset red";
-			}
-			
-		}
-		var handleCancel = function(){
-			this.cancel();
-		}
-		this.modalOptions = new YAHOO.widget.SimpleDialog("optionsHistory", {
-			width: "400px",
-			fixedcenter: true,
-			constraintoviewport: true,
-			modal: true,
-			zindex: 700,
-			buttons: [{
-				text: "OK",
-				handler: handleSubmit,
-				isDefault: true
-			}, {
-				text: "Cancel",
-				handler: handleCancel
-			}]
-		});
-		$('optionsHistory').show();
-		this.modalOptions.validate = function(){
-			// now process the form data
-			var tmpValue = parseInt($('HISTMaxQryDisp').value, 10);
-			var value = $('HISTMaxQryDisp').value;
-			if(!isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10))){
-				$('HISTMaxQryDisp').style.border = "2px inset";
-				return true;
-			} else {
-				alert("The max number of Queries must be a whole number larger then zero.");
-				$('HISTMaxQryDisp').style.border = "2px inset red";
-				return false;
-			}
-		};
-		this.modalOptions.render(document.body);
-	} 
-	this.modalOptions.show();
-	// load settings
-	if (this.params.sortOrder=="ASC") {
-		$('HISTsortOrderASC').checked = true;
-	} else {
-		$('HISTsortOrderDESC').checked = true;
-	}
-	if (this.params.sortBy=="NAME") {
-		$('HISTsortByNAME').checked = true;
-	} else {
-		$('HISTsortByDATE').checked = true;
-	}
-	$('HISTMaxQryDisp').value = this.params.maxQueriesDisp;
-*/
-}
+i2b2.CRC.view.history.showOptions = function(subScreen){};
 
 // ================================================================================================== //
 // deprecated functions
@@ -111,7 +26,7 @@ i2b2.CRC.view.history.selectTab = function(tabCode) {};
 i2b2.CRC.view.history.Resize = function(e) {};
 i2b2.CRC.view.history.splitterDragged = function()  {};
 i2b2.CRC.view.history.ResizeHeight = function() {};
-i2b2.CRC.view.history.ZoomView = function() {}
+i2b2.CRC.view.history.ZoomView = function() {};
 
 
 
@@ -120,8 +35,6 @@ i2b2.CRC.view.history.ZoomView = function() {}
 i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
     // called via i2b2.CRC.view.history.treeview.on('nodeLoading', i2b2.CRC.view.history.loadChildren)
     // and is used to load all the children for a single passed node
-//	debugger;
-
 
     if (i2b2.h.isUndefined(nodeData.i2b2.sdxInfo.sdxKeyValue)) {
         console.error('i2b2.CRC.view.history.loadChildren could not find tv_node.i2b2.sdxInfo');
@@ -144,7 +57,7 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
                 title: sdxDataNode.renderData.moreDescriptMinor,
                 text: sdxDataNode.renderData.title,
                 icon: sdxDataNode.renderData.cssClassMain,
-                key: sdxDataNode.sdxInfo.sdxKeyValue,
+                key: sdxDataNode.sdxInfo.sdxType + "-" + sdxDataNode.sdxInfo.sdxKeyValue,
                 iconImg: sdxDataNode.renderData.iconImg,
                 iconImgExp: sdxDataNode.renderData.iconImgExp,
                 i2b2: sdxDataNode
@@ -190,6 +103,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
     scopedCallback.scope = this;
     scopedCallback.callback = function(cellResult) {
         $('#stackRefreshIcon_i2b2-CRC-view-history').removeClass("refreshing");
+        i2b2.CRC.view.history.treeview.treeview('clear');
         // THIS function is used to process the AJAX results of the getChild call
         //              results data object contains the following attributes:
         //                      refXML: xmlDomObject <--- for data processing
@@ -217,7 +131,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
                 title: sdxDataNode.renderData.moreDescriptMinor,
                 text: sdxDataNode.renderData.title,
                 icon: sdxDataNode.renderData.cssClassMain,
-                key: sdxDataNode.sdxInfo.sdxKeyValue,
+                key: sdxDataNode.sdxInfo.sdxType + "-" + sdxDataNode.sdxInfo.sdxKeyValue,
                 iconImg: sdxDataNode.renderData.iconImg,
                 iconImgExp: sdxDataNode.renderData.iconImgExp,
                 i2b2: sdxDataNode
@@ -243,81 +157,6 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
 // ================================================================================================== //
 i2b2.CRC.view.history.PopulateQueryMasters = function(dm_ptr, dm_name, options) {
     // DEPRECATED ???
-    /*
-	var thisview = i2b2.CRC.view.history;
-	// clear the data first
-	var tvTree = i2b2.CRC.view.history.yuiTree;
-	var tvRoot = tvTree.getRoot();
-	tvTree.removeChildren(tvRoot);
-	tvTree.locked = false;
-	
-	// sort by the options
-	if (Object.isUndefined(options)) { var options = {}; }
-	if (!options.sortBy) { options.sortBy = 'DATE'; }
-	if (!options.sortOrder) { options.sortBy = 'DESC'; }
-	if (options.sortBy=='NAME') {
-		var compareAttrib = 'name';
-	} else {
-		var compareAttrib = 'created';
-	}
-	if (options.sortOrder=='ASC') {
-		var reverseSort = false;
-	} else {
-		var reverseSort = true;
-	}
-
-	// NEW SORT METHOD USING prototype Enumerators
-	var QM_sortVal = function(rec) {
-		var hash_key = rec[0]; 
-		var sdxExtObj = rec[1];
-		var cl_compareAttrib = compareAttrib;  // <---- closure var
-		var t = sdxExtObj.origData[cl_compareAttrib];
-		if (cl_compareAttrib=="created") {
-			// proper date handling (w/improper handling for latest changes to output format)
-			var sd = t.toUpperCase();
-			if (sd.indexOf('Z') != -1 || sd.indexOf('T') != -1) {
-				t = t.toLowerCase();
-			} else {
-				t = Date.parse(t);
-			}
-		} else {
-			t = String(t.toLowerCase() );
-		}
-		return t;
-	};
-	var sortFinal = i2b2.CRC.model.QueryMasters.sortBy(QM_sortVal);
-	// reverse if needed
-	if (reverseSort) { sortFinal.reverse(true); }
-	
-	// populate the Query Masters into the treeview
-	for (var i=0; i<sortFinal.length; i++) {
-		// add categories to ONT navigate tree
-		var sdxDataNode = sortFinal[i][1];
-		
-		if (sdxDataNode.origData.master_type_cd == "TEMPORAL")
-		{
-			icon = "sdx_CRC_QMT.gif";
-			iconExp = "sdx_CRC_QMT_exp.gif";
-		}
-		else
-		{
-			
-			icon = "sdx_CRC_QM.gif";
-			iconExp = "sdx_CRC_QM_exp.gif";		
-		}
-		var renderOptions = {
-			title: sdxDataNode.origData.name,
-			dragdrop: "i2b2.sdx.TypeControllers.QM.AttachDrag2Data",
-			dblclick: "i2b2.CRC.view.history.ToggleNode(this,'"+tvTree.id+"')",
-			icon: icon,
-			iconExp: iconExp
-		};
-		var sdxRenderData = i2b2.sdx.Master.RenderHTML(tvTree.id, sdxDataNode, renderOptions);
-		i2b2.sdx.Master.AppendTreeNode(tvTree, tvRoot, sdxRenderData);
-	}
-	tvTree.draw();
-    $('#stackRefreshIcon_i2b2-CRC-view-history').removeClass("refreshing");
-    */
 };
 
 
@@ -344,7 +183,8 @@ i2b2.CRC.view.history.doDelete = function(node) {
 // ================================================================================================== //
 i2b2.CRC.view.history.doRefreshAll = function() {
     $('#stackRefreshIcon_i2b2-CRC-view-history').addClass("refreshing");
-    i2b2.CRC.ctrlr.history.Refresh();
+    i2b2.CRC.view.history.treeview.treeview('clear');
+    i2b2.CRC.view.history.LoadQueryMasters();
 }
 
 
@@ -454,136 +294,7 @@ i2b2.events.afterCellInit.add((function(cell){
 }));
 console.info("SUBSCRIBED TO i2b2.events.afterCellInit");
 
-/*
-    var thisview = i2b2.CRC.view.history;
-			thisview.Resize();
-			// initialize treeview
-			if (!thisview.yuiTree) {
-				thisview.yuiTree = new YAHOO.widget.TreeView("crcHistoryData");
-				thisview.yuiTree.setDynamicLoad(i2b2.sdx.Master.LoadChildrenFromTreeview,1);
-				// register the treeview with the SDX subsystem to be a container for QM, QI, PRS, PRC objects
-				i2b2.sdx.Master.AttachType("crcHistoryData","QM");
-				i2b2.sdx.Master.AttachType("crcHistoryData","QI");
-				i2b2.sdx.Master.AttachType("crcHistoryData","ENS");
-				i2b2.sdx.Master.AttachType("crcHistoryData","PRC");
-				i2b2.sdx.Master.AttachType("crcHistoryData","PRS");
-				i2b2.sdx.Master.AttachType("crcHistoryData","PR");
-
-			}
-                        // initialize treeview
-                        if (!thisview.yuiFindTree) {
-                                thisview.yuiFindTree = new YAHOO.widget.TreeView("crcSearchNamesResults");
-                                thisview.yuiFindTree.setDynamicLoad(i2b2.sdx.Master.LoadChildrenFromTreeview,1);
-                                // register the treeview with the SDX subsystem to be a container for QM, QI, PRS, PRC objects
-                                i2b2.sdx.Master.AttachType("crcSearchNamesResults","QM");
-                                i2b2.sdx.Master.AttachType("crcSearchNamesResults","QI");
-                                i2b2.sdx.Master.AttachType("crcSearchNamesResults","ENS");
-                                i2b2.sdx.Master.AttachType("crcSearchNamesResults","PRC");
-                                i2b2.sdx.Master.AttachType("crcSearchNamesResults","PRS");
-                                i2b2.sdx.Master.AttachType("crcSearchNamesResults","PR");
-
-			}			
-			// we need to make sure everything is loaded
-			setTimeout("i2b2.CRC.ctrlr.history.Refresh();",300);			
-			
-// -------------------------------------------------------
-			i2b2.CRC.ctrlr.history.events.onDataUpdate.subscribe(
-				(function(en,co) {
-					console.group("[EVENT CAPTURED i2b2.CRC.ctrlr.history.events.onDataUpdate]");
-					console.dir(co[0]);
-					var dm_loc = co[0].DataLocation;
-					var dm_ptr = co[0].DataRef;
-					if (dm_loc=='i2b2.CRC.model.QueryMasters') {
-						console.debug("Processing QueryMasters update");
-						var options = {};
-						options.sortBy = i2b2.CRC.view['history'].params.sortBy;
-						options.sortOrder = i2b2.CRC.view['history'].params.sortOrder;
-						options.max = i2b2.CRC.view['history'].params.maxQueriesDisp;
-						i2b2.CRC.view.history.PopulateQueryMasters(dm_ptr, dm_loc, options);
-					}
-					console.groupEnd();
-				})
-			);
-			
-			
-			
-// -------------------------------------------------------
-		// override default handler (we need this so that we can properly capture the XML request/response messagees
-		 i2b2.sdx.Master.setHandlerCustom('crcHistoryData', 'QM', 'LoadChildrenFromTreeview', (function(node, onCompleteCallback) {
-			var scopedCallback = new i2b2_scopedCallback();
-			scopedCallback.scope = node.data.i2b2_SDX;
-			scopedCallback.callback = function(cellResult) {
-				var cl_node = node;
-				var cl_onCompleteCB = onCompleteCallback;
-				// THIS function is used to process the AJAX results of the getChild call
-				//		results data object contains the following attributes:
-				//			refXML: xmlDomObject <--- for data processing
-				//			msgRequest: xml (string)
-				//			msgResponse: xml (string)
-				//			error: boolean
-				//			errorStatus: string [only with error=true]
-				//			errorMsg: string [only with error=true]
-				for(var i1=0; i1<1*cellResult.results.length; i1++) {
-					var o = cellResult.results[i1];
-					var renderOptions = {
-						title: o.origData.title,
-						dragdrop: "i2b2.sdx.TypeControllers.QI.AttachDrag2Data",
-						dblclick: "i2b2.CRC.view.history.ToggleNode(this,'"+cl_node.tree.id+"')",
-						icon: "sdx_CRC_QI.gif",
-						iconExp: "sdx_CRC_QI_exp.gif"
-					};
-					var sdxRenderData = i2b2.sdx.Master.RenderHTML(cl_node.tree.id, o, renderOptions);
-					i2b2.sdx.Master.AppendTreeNode(cl_node.tree, cl_node, sdxRenderData);
-				}
-				// handle the YUI treeview	
-				if (getObjectClass(cl_onCompleteCB)=='i2b2_scopedCallback') {
-					cl_onCompleteCB.callback.call(cl_onCompleteCB.scope, cellResult);
-				} else {
-					cl_onCompleteCB(cellResult);
-				}
-			}
-			var sdxParentNode = node.data.i2b2_SDX;
-			i2b2.sdx.Master.getChildRecords(sdxParentNode, scopedCallback);
-		}));
-
-                 i2b2.sdx.Master.setHandlerCustom('crcSearchNamesResults', 'QM', 'LoadChildrenFromTreeview', (function(node, onCompleteCallback) {
-                        var scopedCallback = new i2b2_scopedCallback();
-                        scopedCallback.scope = node.data.i2b2_SDX;
-                        scopedCallback.callback = function(cellResult) {
-                                var cl_node = node;
-                                var cl_onCompleteCB = onCompleteCallback;
-                                // THIS function is used to process the AJAX results of the getChild call
-                                //              results data object contains the following attributes:
-                                //                      refXML: xmlDomObject <--- for data processing
-                                //                      msgRequest: xml (string)
-                                //                      msgResponse: xml (string)
-                                //                      error: boolean
-                                //                      errorStatus: string [only with error=true]
-                                //                      errorMsg: string [only with error=true]
-                                for(var i1=0; i1<1*cellResult.results.length; i1++) {
-                                        var o = cellResult.results[i1];
-                                        var renderOptions = {
-                                                title: o.origData.title,
-                                                dragdrop: "i2b2.sdx.TypeControllers.QI.AttachDrag2Data",
-                                                dblclick: "i2b2.CRC.view.history.ToggleNode(this,'"+cl_node.tree.id+"')",
-                                                icon: "sdx_CRC_QI.gif",
-                                                iconExp: "sdx_CRC_QI_exp.gif"
-                                        };
-                                        var sdxRenderData = i2b2.sdx.Master.RenderHTML(cl_node.tree.id, o, renderOptions);
-                                        i2b2.sdx.Master.AppendTreeNode(cl_node.tree, cl_node, sdxRenderData);
-                                }
-                                // handle the YUI treeview      
-                                if (getObjectClass(cl_onCompleteCB)=='i2b2_scopedCallback') {
-                                        cl_onCompleteCB.callback.call(cl_onCompleteCB.scope, cellResult);
-                                } else {
-                                        cl_onCompleteCB(cellResult);
-                                }
-                        }
-                        var sdxParentNode = node.data.i2b2_SDX;
-                        i2b2.sdx.Master.getChildRecords(sdxParentNode, scopedCallback);
-                }));
-*/
-// =========================================================			
+// =========================================================
 
 
 console.timeEnd('execute time');
