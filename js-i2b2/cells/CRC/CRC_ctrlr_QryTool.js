@@ -26,7 +26,6 @@ function QueryToolController() {
     };
 
 
-
 // ================================================================================================== //
     this.doQueryLoad = function(qm_id) {  // function to load query from history
     };
@@ -228,7 +227,7 @@ function QueryToolController() {
         // generate the initial name for query
         let queryDate = new Date();
         queryDate = String(queryDate.getHours()) + ":" + String(queryDate.getMinutes()) + ":" + String(queryDate.getSeconds());
-        let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name});
+        let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.trim()});
         let adjuster = 1 / ((names.map((rec) => rec.length ).reduce((acc, val) => acc + val) + names.length - 1) / 120);
         if (adjuster > 1) adjuster = 1;
         names = names.map((rec) => rec.substr(0, Math.floor(rec.length * adjuster)));
