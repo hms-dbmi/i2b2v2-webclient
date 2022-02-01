@@ -14,12 +14,12 @@ console.time('execute time');
 // create and save the view objects
 i2b2.CRC.view['QT'] = new i2b2Base_cellViewController(i2b2.CRC, 'QT');
 
+// ================================================================================================== //
 i2b2.CRC.view.QT.updateQueryName = function() {
     // update the transformed model and set the title
     i2b2.CRC.ctrlr.QT._processModel();
     $('.CRC_QT_runbar input.name').val(i2b2.CRC.model.transformedQuery.name);
 };
-
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.showRun = function() {
@@ -58,8 +58,17 @@ i2b2.CRC.view.QT.termActionInfo = function(evt) {
     let eventIdx = $(evt.target).closest('.event').data('eventidx');
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
     alert("get term info for group-"+queryGroupIdx+"/event-"+eventIdx+"/concept-"+conceptIdx);
+    i2b2.layout.gl_instances.leftCol.root.contentItems[0].contentItems[0].addChild({
+            componentName: "i2b2.ONT.view.info",
+            type: "component",
+            isClosable: true,
+            reorderEnabled: true,
+            title: "Term Info",
+            sdx: i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx]
+    });
 };
 
+// ================================================================================================== //
 i2b2.CRC.view.QT.termActionDelete = function(evt) {
     console.dir(evt);
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
@@ -72,6 +81,7 @@ i2b2.CRC.view.QT.termActionDelete = function(evt) {
     i2b2.CRC.view.QT.renderTermList(i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx], $(evt.target).closest('.TermList'));
 };
 
+// ================================================================================================== //
 i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
     // rerender the query event and add to the DOM
     $(targetEl).empty();
@@ -101,8 +111,8 @@ i2b2.CRC.view.QT.deleteQueryGroup = function(event) {
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.CRC.view.QT.handleLabs = function(sdx) {
     // see if the concept is a lab, prompt for value if it is
     sdx.isLab = false;
@@ -112,8 +122,12 @@ i2b2.CRC.view.QT.handleLabs = function(sdx) {
     return sdx.isLab;
 };
 
-i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
+// ================================================================================================== //
+i2b2.CRC.view.QT.HoverOver = function(el) { $(el).closest(".i2b2DropTarget").addClass("DropHover"); };
+i2b2.CRC.view.QT.HoverOut = function(el) { $(el).closest(".i2b2DropTarget").removeClass("DropHover"); };
 
+// ================================================================================================== //
+i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
     // append the new query group to the data model
     i2b2.CRC.model.query.groups.push({
         display: "with",
@@ -154,19 +168,18 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
 };
+
+// ================================================================================================== //
 i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     // remove the hover and drop target fix classes
     $(evt.target).closest(".i2b2DropTarget").removeClass("DropHover");
     $(evt.target).closest(".i2b2DropTarget").removeClass("i2b2DropPrep");
 
-
     let qgIndex = $(evt.target).closest(".QueryGroup").data("queryGroup");
     let temp = $(evt.target).closest(".event");
     let eventIdx = temp.data('eventidx');
     let cncptListEl = $('.TermList', temp[0]);
-
     i2b2.CRC.view.QT.handleLabs(sdx);
-
     // add the data to the correct terms list (also prevent duplicates)
     let eventData = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx];
     temp = eventData.concepts.filter((term)=>{ return term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue; });
@@ -177,22 +190,12 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
         i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
 
     }
-
     if (sdx.isLab) {
         // show modal box to get the lab's value
         alert("TODO: Prompt the user for a lab value!!");
     }
-
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
-
-};
-
-i2b2.CRC.view.QT.HoverOver = function(el) {
-    $(el).closest(".i2b2DropTarget").addClass("DropHover");
-};
-i2b2.CRC.view.QT.HoverOut = function(el) {
-    $(el).closest(".i2b2DropTarget").removeClass("DropHover");
 };
 
 // ================================================================================================== //
@@ -226,7 +229,6 @@ i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget)
         i2b2.CRC.view.QT.renderTermList(qgData.events[1], temp);
     }
 };
-
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.render = function() {
@@ -295,7 +297,6 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
     }
-
 
     // attach the event listeners
     // -----------------------------------------
@@ -558,8 +559,6 @@ i2b2.events.afterCellInit.add(
             });
 
 
-
-
             cell.model.resultTypes = {
                 "PATIENTSET": "Patient set",
                 "PATIENT_ENCOUNTER_SET":"Encounter set",
@@ -584,238 +583,238 @@ i2b2.events.afterCellInit.add(
 
 
 
-            // THIS IS TEMP CODE FOR SETTING UP A QUERY FOR RENDERING
-            cell.model.query = {
-                name: 'default query name',
-                groups: [
-                    {
-                        display: "with",
-                        with: true,
-                        without: false,
-                        when: {},
-                        events: [
-                            {
-                                dateRange: {
-                                    start: "",
-                                    end: ""
-                                },
-                                instances: 10,
-                                concepts: [
-                                    {
-                                        "sdxInfo": {
-                                            "sdxType": "CONCPT",
-                                            "sdxKeyName": "key",
-                                            "sdxControlCell": "ONT",
-                                            "sdxKeyValue": "\\\\i2b2_DEMO\\i2b2\\Demographics\\Gender\\Female\\",
-                                            "sdxDisplayName": "Female"
-                                        },
-                                        "origData": {
-                                            "isModifier": false,
-                                            "name": "Female",
-                                            "hasChildren": "LA",
-                                            "level": "3",
-                                            "key": "\\\\i2b2_DEMO\\i2b2\\Demographics\\Gender\\Female\\",
-                                            "tooltip": "Demographic \\ Gender \\ Female",
-                                            "icd9": "",
-                                            "table_name": "concept_dimension",
-                                            "column_name": "concept_path",
-                                            "operator": "LIKE",
-                                            "total_num": "51",
-                                            "synonym_cd": "N",
-                                            "dim_code": "\\i2b2\\Demographics\\Gender\\Female\\",
-                                            "basecode": "DEM|SEX:f"
-                                        },
-                                        "renderData": {
-                                            "title": "Female",
-                                            "iconImg": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_leaf.gif",
-                                            "iconImgExp": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_leaf.gif",
-                                            "cssClassMain": "sdxStyleONT-CONCPT",
-                                            "cssClassMinor": "tvLeaf",
-                                            "moreDescriptMain": "",
-                                            "moreDescriptMinor": "Demographic \\ Gender \\ Female",
-                                            "tvNodeState": {
-                                                "loaded": true,
-                                                "expanded": true,
-                                                "checked": false,
-                                                "disabled": false,
-                                                "selected": false,
-                                                "requested": false
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "sdxInfo": {
-                                            "sdxType": "CONCPT",
-                                            "sdxKeyName": "key",
-                                            "sdxControlCell": "ONT",
-                                            "sdxKeyValue": "\\\\i2b2_DEMO\\i2b2\\Demographics\\Gender\\Male\\",
-                                            "sdxDisplayName": "Male"
-                                        },
-                                        "origData": {
-                                            "isModifier": false,
-                                            "name": "Male",
-                                            "hasChildren": "LA",
-                                            "level": "3",
-                                            "key": "\\\\i2b2_DEMO\\i2b2\\Demographics\\Gender\\Male\\",
-                                            "tooltip": "Demographic \\ Gender \\ Male",
-                                            "icd9": "",
-                                            "table_name": "concept_dimension",
-                                            "column_name": "concept_path",
-                                            "operator": "LIKE",
-                                            "total_num": "82",
-                                            "synonym_cd": "N",
-                                            "dim_code": "\\i2b2\\Demographics\\Gender\\Male\\",
-                                            "basecode": "DEM|SEX:m"
-                                        },
-                                        "renderData": {
-                                            "title": "Male",
-                                            "iconImg": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_leaf.gif",
-                                            "iconImgExp": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_leaf.gif",
-                                            "cssClassMain": "sdxStyleONT-CONCPT",
-                                            "cssClassMinor": "tvLeaf",
-                                            "moreDescriptMain": "",
-                                            "moreDescriptMinor": "Demographic \\ Gender \\ Male",
-                                            "tvNodeState": {
-                                                "loaded": true,
-                                                "expanded": true,
-                                                "checked": false,
-                                                "disabled": false,
-                                                "selected": false,
-                                                "requested": false
-                                            }
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                dateRange: {
-                                    start: "",
-                                    end: ""
-                                },
-                                instances: 1,
-                                concepts: []
-                            }
-                        ]
-                    },
-                    {
-                        display: "without",
-                        with: false,
-                        without: true,
-                        when: {},
-                        events: [
-                            {
-                                instances: 1,
-                                dateRange: {
-                                    start: "",
-                                    end: ""
-                                },
-                                concepts: [
-                                    {
-                                        "sdxInfo": {
-                                            "sdxType": "CONCPT",
-                                            "sdxKeyName": "key",
-                                            "sdxControlCell": "ONT",
-                                            "sdxKeyValue": "\\\\i2b2_DIAG\\i2b2\\Diagnoses\\Respiratory system (460-519)\\Chronic obstructive diseases (490-496)\\(493) Asthma\\",
-                                            "sdxDisplayName": "Asthma"
-                                        },
-                                        "origData": {
-                                            "isModifier": false,
-                                            "name": "Asthma",
-                                            "hasChildren": "FA",
-                                            "level": "4",
-                                            "key": "\\\\i2b2_DIAG\\i2b2\\Diagnoses\\Respiratory system (460-519)\\Chronic obstructive diseases (490-496)\\(493) Asthma\\",
-                                            "tooltip": "Diagnoses \\ Respiratory system \\ Chronic obstructive diseases \\ Asthma",
-                                            "icd9": "",
-                                            "table_name": "concept_dimension",
-                                            "column_name": "concept_path",
-                                            "operator": "LIKE",
-                                            "total_num": "133",
-                                            "synonym_cd": "N",
-                                            "dim_code": "\\i2b2\\Diagnoses\\Respiratory system (460-519)\\Chronic obstructive diseases (490-496)\\(493) Asthma\\",
-                                            "basecode": "ICD9:493"
-                                        },
-                                        "renderData": {
-                                            "title": "Asthma",
-                                            "iconImg": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_branch.gif",
-                                            "iconImgExp": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_branch-exp.gif",
-                                            "cssClassMain": "sdxStyleONT-CONCPT",
-                                            "cssClassMinor": "tvBranch",
-                                            "moreDescriptMain": "",
-                                            "moreDescriptMinor": "Diagnoses \\ Respiratory system \\ Chronic obstructive diseases \\ Asthma",
-                                            "tvNodeState": {
-                                                "loaded": true,
-                                                "checked": false,
-                                                "disabled": false,
-                                                "expanded": true,
-                                                "selected": false,
-                                                "requested": false
-                                            }
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                dateRange: {
-                                    start: "",
-                                    end: ""
-                                },
-                                instances: 1,
-                                concepts: []
-                            }
-                        ]
-                    // },{
-                    //     display: "when",
-                    //     with: false,
-                    //     without: false,
-                    //     when: {
-                    //         occurs: "occursAtLeast",
-                    //         occursNum: "1",
-                    //         occursUnit: "year",
-                    //         firstany: "any"
-                    //     },
-                    //     events: [
-                    //         {
-                    //             concepts: [],
-                    //             dateRange: {
-                    //                 start: "",
-                    //                 end: ""
-                    //             }
-                    //         },{
-                    //             concepts: [],
-                    //             dateRange: {
-                    //                 start: "",
-                    //                 end: ""
-                    //             }
-                    //         }
-                    //     ]
-                    // },{
-                    //     display: "when",
-                    //     with: false,
-                    //     without: false,
-                    //     when: {
-                    //         occurs: "occursBefore",
-                    //         occursNum: "2",
-                    //         occursUnit: "month",
-                    //         firstany: "first"
-                    //     },
-                    //     events: [
-                    //         {
-                    //             concepts: [],
-                    //             dateRange: {
-                    //                 start: "",
-                    //                 end: ""
-                    //             }
-                    //         },{
-                    //             concepts: [],
-                    //             dateRange: {
-                    //                 start: "",
-                    //                 end: ""
-                    //             }
-                    //         }
-                    //     ]
-                    }
-                ]
-            };
+            // // THIS IS TEMP CODE FOR SETTING UP A QUERY FOR RENDERING
+            // cell.model.query = {
+            //     name: 'default query name',
+            //     groups: [
+            //         {
+            //             display: "with",
+            //             with: true,
+            //             without: false,
+            //             when: {},
+            //             events: [
+            //                 {
+            //                     dateRange: {
+            //                         start: "",
+            //                         end: ""
+            //                     },
+            //                     instances: 10,
+            //                     concepts: [
+            //                         {
+            //                             "sdxInfo": {
+            //                                 "sdxType": "CONCPT",
+            //                                 "sdxKeyName": "key",
+            //                                 "sdxControlCell": "ONT",
+            //                                 "sdxKeyValue": "\\\\i2b2_DEMO\\i2b2\\Demographics\\Gender\\Female\\",
+            //                                 "sdxDisplayName": "Female"
+            //                             },
+            //                             "origData": {
+            //                                 "isModifier": false,
+            //                                 "name": "Female",
+            //                                 "hasChildren": "LA",
+            //                                 "level": "3",
+            //                                 "key": "\\\\i2b2_DEMO\\i2b2\\Demographics\\Gender\\Female\\",
+            //                                 "tooltip": "Demographic \\ Gender \\ Female",
+            //                                 "icd9": "",
+            //                                 "table_name": "concept_dimension",
+            //                                 "column_name": "concept_path",
+            //                                 "operator": "LIKE",
+            //                                 "total_num": "51",
+            //                                 "synonym_cd": "N",
+            //                                 "dim_code": "\\i2b2\\Demographics\\Gender\\Female\\",
+            //                                 "basecode": "DEM|SEX:f"
+            //                             },
+            //                             "renderData": {
+            //                                 "title": "Female",
+            //                                 "iconImg": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_leaf.gif",
+            //                                 "iconImgExp": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_leaf.gif",
+            //                                 "cssClassMain": "sdxStyleONT-CONCPT",
+            //                                 "cssClassMinor": "tvLeaf",
+            //                                 "moreDescriptMain": "",
+            //                                 "moreDescriptMinor": "Demographic \\ Gender \\ Female",
+            //                                 "tvNodeState": {
+            //                                     "loaded": true,
+            //                                     "expanded": true,
+            //                                     "checked": false,
+            //                                     "disabled": false,
+            //                                     "selected": false,
+            //                                     "requested": false
+            //                                 }
+            //                             }
+            //                         },
+            //                         {
+            //                             "sdxInfo": {
+            //                                 "sdxType": "CONCPT",
+            //                                 "sdxKeyName": "key",
+            //                                 "sdxControlCell": "ONT",
+            //                                 "sdxKeyValue": "\\\\i2b2_DEMO\\i2b2\\Demographics\\Gender\\Male\\",
+            //                                 "sdxDisplayName": "Male"
+            //                             },
+            //                             "origData": {
+            //                                 "isModifier": false,
+            //                                 "name": "Male",
+            //                                 "hasChildren": "LA",
+            //                                 "level": "3",
+            //                                 "key": "\\\\i2b2_DEMO\\i2b2\\Demographics\\Gender\\Male\\",
+            //                                 "tooltip": "Demographic \\ Gender \\ Male",
+            //                                 "icd9": "",
+            //                                 "table_name": "concept_dimension",
+            //                                 "column_name": "concept_path",
+            //                                 "operator": "LIKE",
+            //                                 "total_num": "82",
+            //                                 "synonym_cd": "N",
+            //                                 "dim_code": "\\i2b2\\Demographics\\Gender\\Male\\",
+            //                                 "basecode": "DEM|SEX:m"
+            //                             },
+            //                             "renderData": {
+            //                                 "title": "Male",
+            //                                 "iconImg": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_leaf.gif",
+            //                                 "iconImgExp": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_leaf.gif",
+            //                                 "cssClassMain": "sdxStyleONT-CONCPT",
+            //                                 "cssClassMinor": "tvLeaf",
+            //                                 "moreDescriptMain": "",
+            //                                 "moreDescriptMinor": "Demographic \\ Gender \\ Male",
+            //                                 "tvNodeState": {
+            //                                     "loaded": true,
+            //                                     "expanded": true,
+            //                                     "checked": false,
+            //                                     "disabled": false,
+            //                                     "selected": false,
+            //                                     "requested": false
+            //                                 }
+            //                             }
+            //                         }
+            //                     ]
+            //                 },
+            //                 {
+            //                     dateRange: {
+            //                         start: "",
+            //                         end: ""
+            //                     },
+            //                     instances: 1,
+            //                     concepts: []
+            //                 }
+            //             ]
+            //         },
+            //         {
+            //             display: "without",
+            //             with: false,
+            //             without: true,
+            //             when: {},
+            //             events: [
+            //                 {
+            //                     instances: 1,
+            //                     dateRange: {
+            //                         start: "",
+            //                         end: ""
+            //                     },
+            //                     concepts: [
+            //                         {
+            //                             "sdxInfo": {
+            //                                 "sdxType": "CONCPT",
+            //                                 "sdxKeyName": "key",
+            //                                 "sdxControlCell": "ONT",
+            //                                 "sdxKeyValue": "\\\\i2b2_DIAG\\i2b2\\Diagnoses\\Respiratory system (460-519)\\Chronic obstructive diseases (490-496)\\(493) Asthma\\",
+            //                                 "sdxDisplayName": "Asthma"
+            //                             },
+            //                             "origData": {
+            //                                 "isModifier": false,
+            //                                 "name": "Asthma",
+            //                                 "hasChildren": "FA",
+            //                                 "level": "4",
+            //                                 "key": "\\\\i2b2_DIAG\\i2b2\\Diagnoses\\Respiratory system (460-519)\\Chronic obstructive diseases (490-496)\\(493) Asthma\\",
+            //                                 "tooltip": "Diagnoses \\ Respiratory system \\ Chronic obstructive diseases \\ Asthma",
+            //                                 "icd9": "",
+            //                                 "table_name": "concept_dimension",
+            //                                 "column_name": "concept_path",
+            //                                 "operator": "LIKE",
+            //                                 "total_num": "133",
+            //                                 "synonym_cd": "N",
+            //                                 "dim_code": "\\i2b2\\Diagnoses\\Respiratory system (460-519)\\Chronic obstructive diseases (490-496)\\(493) Asthma\\",
+            //                                 "basecode": "ICD9:493"
+            //                             },
+            //                             "renderData": {
+            //                                 "title": "Asthma",
+            //                                 "iconImg": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_branch.gif",
+            //                                 "iconImgExp": "js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_branch-exp.gif",
+            //                                 "cssClassMain": "sdxStyleONT-CONCPT",
+            //                                 "cssClassMinor": "tvBranch",
+            //                                 "moreDescriptMain": "",
+            //                                 "moreDescriptMinor": "Diagnoses \\ Respiratory system \\ Chronic obstructive diseases \\ Asthma",
+            //                                 "tvNodeState": {
+            //                                     "loaded": true,
+            //                                     "checked": false,
+            //                                     "disabled": false,
+            //                                     "expanded": true,
+            //                                     "selected": false,
+            //                                     "requested": false
+            //                                 }
+            //                             }
+            //                         }
+            //                     ]
+            //                 },
+            //                 {
+            //                     dateRange: {
+            //                         start: "",
+            //                         end: ""
+            //                     },
+            //                     instances: 1,
+            //                     concepts: []
+            //                 }
+            //             ]
+            //         // },{
+            //         //     display: "when",
+            //         //     with: false,
+            //         //     without: false,
+            //         //     when: {
+            //         //         occurs: "occursAtLeast",
+            //         //         occursNum: "1",
+            //         //         occursUnit: "year",
+            //         //         firstany: "any"
+            //         //     },
+            //         //     events: [
+            //         //         {
+            //         //             concepts: [],
+            //         //             dateRange: {
+            //         //                 start: "",
+            //         //                 end: ""
+            //         //             }
+            //         //         },{
+            //         //             concepts: [],
+            //         //             dateRange: {
+            //         //                 start: "",
+            //         //                 end: ""
+            //         //             }
+            //         //         }
+            //         //     ]
+            //         // },{
+            //         //     display: "when",
+            //         //     with: false,
+            //         //     without: false,
+            //         //     when: {
+            //         //         occurs: "occursBefore",
+            //         //         occursNum: "2",
+            //         //         occursUnit: "month",
+            //         //         firstany: "first"
+            //         //     },
+            //         //     events: [
+            //         //         {
+            //         //             concepts: [],
+            //         //             dateRange: {
+            //         //                 start: "",
+            //         //                 end: ""
+            //         //             }
+            //         //         },{
+            //         //             concepts: [],
+            //         //             dateRange: {
+            //         //                 start: "",
+            //         //                 end: ""
+            //         //             }
+            //         //         }
+            //         //     ]
+            //         }
+            //     ]
+            // };
         }
     }
 );
@@ -825,23 +824,15 @@ i2b2.events.afterCellInit.add(
 
 //================================================================================================== //
 i2b2.events.initView.subscribe((function(eventTypeName, newMode) {
-// -------------------------------------------------------
     debugger;
     console.error("not implemented");
-
-
-    // -------------------------------------------------------
 }),'',i2b2.CRC.view.QT);
-
 
 // ================================================================================================== //
 i2b2.events.changedViewMode.subscribe((function(eventTypeName, newMode) {
-// -------------------------------------------------------
     debugger;
     console.error("not implemented");
-// -------------------------------------------------------
 }),'', i2b2.CRC.view.QT);
-
 
 // ================================================================================================== //
 i2b2.events.changedZoomWindows.subscribe((function(eventTypeName, zoomMsg) {
