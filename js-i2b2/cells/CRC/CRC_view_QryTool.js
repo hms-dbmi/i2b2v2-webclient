@@ -46,10 +46,13 @@ i2b2.CRC.view.QT.showRun = function() {
             // close the modal
             $('body #crcModal div:eq(0)').modal('hide');
         });
-
-
     });
+};
 
+// ================================================================================================== //
+i2b2.CRC.view.QT._correctQgTitles = function() {
+    // this function makes sure that the first query group always says "Find Patients"
+    $(" .JoinText:first", i2b2.CRC.view.QT.containerDiv).text("Find Patients");
 };
 
 // ============ Actions on term list items ============
@@ -70,7 +73,6 @@ i2b2.CRC.view.QT.termActionInfo = function(evt) {
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionDelete = function(evt) {
-    console.dir(evt);
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
     let eventIdx = $(evt.target).closest('.event').data('eventidx');
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
@@ -110,6 +112,8 @@ i2b2.CRC.view.QT.deleteQueryGroup = function(event) {
     i2b2.CRC.model.query.groups.splice(qgIndex, 1);
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
+    // correct the query group titles so first one says "Find Patients"
+    i2b2.CRC.view.QT._correctQgTitles();
 };
 
 // ================================================================================================== //
@@ -216,8 +220,6 @@ i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget)
             newQG.addClass("when");
             break;
     }
-    // Change first query group title to display "Find Patients"
-    if (qgnum === 0) $(".JoinText", newQG).text("Find Patients");
 
     // populate the event1 concept list
     let temp = $('.Event1Container .TermList', newQG[0]);
@@ -460,6 +462,8 @@ i2b2.CRC.view.QT.render = function() {
 
     // append the final query group drop target
     let newQG = $(i2b2.CRC.view.QT.template.qgadd({})).appendTo(i2b2.CRC.view.QT.containerDiv);
+    // fix query groups titles so that the first one always says "Find Patients"
+    i2b2.CRC.view.QT._correctQgTitles();
     // wire drop handler to the final query group
     let dropTarget = $(".Event1Container .i2b2DropTarget", newQG);
     i2b2.sdx.Master.AttachType(dropTarget, "CONCPT");
@@ -582,7 +586,10 @@ i2b2.events.afterCellInit.add(
             ];
 
 
-
+            cell.model.query = {
+                name: 'default query name',
+                groups: []
+            };
             // // THIS IS TEMP CODE FOR SETTING UP A QUERY FOR RENDERING
             // cell.model.query = {
             //     name: 'default query name',
