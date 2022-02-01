@@ -47,6 +47,7 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
 
         if (cellResult.error !== false) {return false;}
 
+        let parentNode = this.key;
         // add the renderData to the nodes
         var newNodes = [];
         for ( var i1=0; i1 < cellResult.results.length; i1++) {
@@ -66,7 +67,7 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
             if(sdxDataNode.renderData.cssClassMinor !== undefined) {
                 temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             }
-            temp.parentKey = this.key;
+            temp.parentKey = parentNode;
             newNodes.push(temp);
         }
 
@@ -75,6 +76,12 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
             newNodes,
             function(parent, child){ return parent.key == child.parentKey },
             false
+        ]);
+
+        // change the treeview icon to show it is no longer loading
+        i2b2.CRC.view.history.treeview.treeview('setNodeLoaded', [
+            function(parent, parentKey){ return parent.key == parentKey },
+            parentNode
         ]);
 
         // render tree
