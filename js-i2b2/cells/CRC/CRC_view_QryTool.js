@@ -18,7 +18,7 @@ i2b2.CRC.view['QT'] = new i2b2Base_cellViewController(i2b2.CRC, 'QT');
 i2b2.CRC.view.QT.updateQueryName = function() {
     // update the transformed model and set the title
     i2b2.CRC.ctrlr.QT._processModel();
-    $('.CRC_QT_runbar input.name').val(i2b2.CRC.model.transformedQuery.name);
+    $('.CRC_QT_runbar input.name').attr("placeholder", i2b2.CRC.model.transformedQuery.name);
 };
 
 // ================================================================================================== //
