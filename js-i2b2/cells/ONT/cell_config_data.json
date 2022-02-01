@@ -3,6 +3,7 @@
     "ONT_ctrlr_general.js",
     "ONT_view_Nav.js",
     "ONT_view_Find.js",
+    "ONT_view_Info.js",
     "ONT_ctrlr_FindBy.js",
     "ONT_sdx_CONCPT.js",
     "i2b2_msgs.js"
