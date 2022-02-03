@@ -12,7 +12,7 @@
     "CRC_ctrlr_History.js",
     "CRC_ctrlr_QryTool.js",
     "CRC_view_QryTool.js",
-    "CRC_ctrlr_Options.js",
+    "CRC_ctrlr_QryRun.js",
     "i2b2_msgs.js"
   ],
   "preload": [
