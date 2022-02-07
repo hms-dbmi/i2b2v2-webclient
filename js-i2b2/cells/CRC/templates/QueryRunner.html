@@ -1,0 +1,17 @@
+{{#if this}}
+    {{#if this.abortable}}
+        <div class="action-bar">
+            <button type="button">Abort</button>
+        </div>
+    {{/if}}
+    <div class="query-name">{{this.status}}: "{{this.name}}"</div>
+    <div class="timer">Execution: <span class="exec-secs">{{this.elapsedTime}}</span> seconds</div>
+    {{#if this.finished}}
+        <div class="patient-count">
+            <div>Number of Patients</div>
+            <div class="patient-num">{{this.patientCount}}</div>
+        </div>
+    {{/if}}
+{{else}}
+    <div>Run a query to see its progress here.</div>
+{{/if}}

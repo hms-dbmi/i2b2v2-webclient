@@ -114,11 +114,6 @@ i2b2.layout.init = function () {
                                 isClosable:false,
                                 componentName: 'i2b2.CRC.view.history',
                                 title:'Previous Queries'
-                            },{
-                                type:'component',
-                                isClosable:false,
-                                componentName: 'blueComponent',
-                                title:'Find'
                             }
                         ]
                     }
@@ -163,14 +158,24 @@ i2b2.layout.init = function () {
                 componentName: 'i2b2.CRC.view.QT',
                 title:'Query Tool'
             },{
-                type:'component',
-                id:'QS',
-                isClosable:false,
-                componentName: 'whiteComponent',
-                title:'Show Query Status'
+                type:'stack',
+                height:40,
+                content:[
+                    {
+                        type:'component',
+                        id:'QR',
+                        isClosable:false,
+                        componentName: 'i2b2.CRC.view.QR',
+                        title:'Query Status'
+                    },{
+                        type:'component',
+                        isClosable:false,
+                        componentName: 'whiteComponent',
+                        title:'Query Results'
+                }]
             }
         ]
-    }
+    };
 
     //////////////////////////////////////////
     // The analysis tool layout config

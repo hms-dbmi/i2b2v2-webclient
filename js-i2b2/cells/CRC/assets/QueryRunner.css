@@ -1,0 +1,31 @@
+.CRC_QR_view {
+    position: absolute;
+    background: #FFF;
+    top: 5px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    border: 1px solid #678;
+    overflow: auto;
+    padding: 0.4em;
+}
+
+.CRC_QR_view .action-bar {
+    position: absolute;
+    bottom: 0.4em;
+}
+
+.CRC_QR_view .patient-count {
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    border: 1px solid #000000;
+    background: #CCCCCC;
+    margin-top: 2em;
+    padding: 1em;
+}
+
+.CRC_QR_view .patient-num {
+    font-size: 3em;
+    line-height: 1.3em;
+}

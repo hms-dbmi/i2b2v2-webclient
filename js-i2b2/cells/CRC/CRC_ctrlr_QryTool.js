@@ -114,25 +114,14 @@ function QueryToolController() {
 
         // query definition
         params.psm_query_definition = (Handlebars.compile("{{> Query}}"))(i2b2.CRC.model.transformedQuery)
-        console.log(params.psm_query_definition);
 
-        callbackQueryDef = new i2b2_scopedCallback();
-        callbackQueryDef.scope = this;
-        callbackQueryDef.callback = function(results) {
-            //		"results" object contains the following attributes:
-            //			refXML: xmlDomObject <--- for data processing
-            //			msgRequest: xml (string)
-            //			msgResponse: xml (string)
-            //			error: boolean
-            //			errorStatus: string [only with error=true]
-            //			errorMsg: string [only with error=true]
-            i2b2.CRC.model.QueryResults = results;
-            // refresh the query history window
-            i2b2.CRC.view.history.doRefreshAll();
-        };
+        // get the query name
+        let queryName = $('.CRC_QT_runbar input.name',i2b2.CRC.view.QT.containerDiv).text().trim();
+        if (queryName.length == 0 ) queryName = i2b2.CRC.model.transformedQuery.name;
+        queryName = i2b2.h.Escape(queryName);
 
-        // run query
-        i2b2.CRC.ajax.runQueryInstance_fromQueryDefinition("CRC:QueryTool", params, callbackQueryDef);
+        // hand over execution of query to the QueryRunner component
+        i2b2.CRC.ctrlr.QR.doRunQuery(queryName, params);
     };
 
 

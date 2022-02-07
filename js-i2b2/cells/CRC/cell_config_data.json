@@ -13,6 +13,7 @@
     "CRC_ctrlr_QryTool.js",
     "CRC_view_QryTool.js",
     "CRC_ctrlr_QryRun.js",
+    "CRC_view_QryRun.js",
     "i2b2_msgs.js"
   ],
   "preload": [
@@ -38,7 +39,7 @@
       "versionLevel": 1.3
     }
   ],
-  "css": ["main_list.css"],
+  "css": ["sdx_CRC_types.css"],
   "config": {
     "name": "Data Repository",
     "description": "The Data Repository cell stores all information that a user saves within the i2b2 Hive.",
