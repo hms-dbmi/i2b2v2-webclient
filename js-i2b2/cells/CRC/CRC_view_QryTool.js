@@ -390,9 +390,11 @@ i2b2.CRC.view.QT.render = function() {
     $('.QueryGroup .DateOccursLbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // parse (and if needed correct) the number value for days/months/years
         let body = $('.DateOccursBody', $(event.target).closest(".Event1Container"));
-        let icon = $(".DateOccursLbl i", event.target);
+        let icon = $(".DateOccursLbl i", $(event.target).closest(".Event1Container"));
         if (body.hasClass('hidden')) {
             body.removeClass('hidden');
+            //icon.prevObject.removeClass('bi-chevron-down');
+            //icon.prevObject.addClass('bi-chevron-up');
             icon.removeClass('bi-chevron-down');
             icon.addClass('bi-chevron-up');
         } else {
@@ -404,7 +406,7 @@ i2b2.CRC.view.QT.render = function() {
     $('.QueryGroup .DateRange1Lbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // parse (and if needed correct) the number value for days/months/years
         let body = $('.DateRange1Body', $(event.target).closest(".Event1Container"));
-        let icon = $(".DateRange1Lbl i", event.target);
+        let icon = $(".DateRange1Lbl i", $(event.target).closest(".Event1Container"));
         if (body.hasClass('hidden')) {
             body.removeClass('hidden');
             icon.removeClass('bi-chevron-down');
@@ -418,7 +420,7 @@ i2b2.CRC.view.QT.render = function() {
     $('.QueryGroup .DateRange2Lbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // parse (and if needed correct) the number value for days/months/years
         let body = $('.DateRange2Body', $(event.target).closest(".Event2Container"));
-        let icon = $(".DateRange2Lbl i", event.target);
+        let icon = $(".DateRange2Lbl i", $(event.target).closest(".Event2Container"));
         if (body.hasClass('hidden')) {
             body.removeClass('hidden');
             icon.removeClass('bi-chevron-down');
