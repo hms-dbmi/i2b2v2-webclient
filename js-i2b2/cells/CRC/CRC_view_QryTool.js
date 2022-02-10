@@ -389,8 +389,9 @@ i2b2.CRC.view.QT.render = function() {
     // date dropdowns and calendars
     $('.QueryGroup .DateOccursLbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // parse (and if needed correct) the number value for days/months/years
-        let body = $('.DateOccursBody', $(event.target).closest(".Event1Container"));
-        let icon = $(".DateOccursLbl i", $(event.target).closest(".Event1Container"));
+        let event1Container = $(event.target).closest(".Event1Container");
+        let body = $('.DateOccursBody', event1Container);
+        let icon = $(".DateOccursLbl i", event1Container);
         if (body.hasClass('hidden')) {
             body.removeClass('hidden');
             //icon.prevObject.removeClass('bi-chevron-down');
@@ -405,8 +406,9 @@ i2b2.CRC.view.QT.render = function() {
     });
     $('.QueryGroup .DateRange1Lbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // parse (and if needed correct) the number value for days/months/years
-        let body = $('.DateRange1Body', $(event.target).closest(".Event1Container"));
-        let icon = $(".DateRange1Lbl i", $(event.target).closest(".Event1Container"));
+        let event1Container = $(event.target).closest(".Event1Container");
+        let body = $('.DateRange1Body', event1Container);
+        let icon = $(".DateRange1Lbl i", event1Container);
         if (body.hasClass('hidden')) {
             body.removeClass('hidden');
             icon.removeClass('bi-chevron-down');
@@ -419,8 +421,9 @@ i2b2.CRC.view.QT.render = function() {
     });
     $('.QueryGroup .DateRange2Lbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // parse (and if needed correct) the number value for days/months/years
-        let body = $('.DateRange2Body', $(event.target).closest(".Event2Container"));
-        let icon = $(".DateRange2Lbl i", $(event.target).closest(".Event2Container"));
+        let event2Container = $(event.target).closest(".Event2Container");
+        let body = $('.DateRange2Body', event2Container);
+        let icon = $(".DateRange2Lbl i", event2Container);
         if (body.hasClass('hidden')) {
             body.removeClass('hidden');
             icon.removeClass('bi-chevron-down');
