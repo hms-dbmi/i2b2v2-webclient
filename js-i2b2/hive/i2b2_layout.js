@@ -26,9 +26,7 @@ i2b2.layout.resize = function() {
 
 
 
-i2b2.layout.setMode = function(mode) {
-
-};
+i2b2.layout.setMode = function(mode) {};
 
 
 i2b2.layout.init = function () {

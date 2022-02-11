@@ -56,8 +56,9 @@ i2b2.events.afterCellInit.add(
                 }).bind(this)
             );
 
-            // Attach the stylesheets
-            $('<link type="text/css" rel="stylesheet" href="js-i2b2/cells/CRC/assets/QueryRunner.css">').appendTo($("head")[0]);
+// !!! Do this properly via the "cell_config_data.json" file
+//            // Attach the stylesheets
+//            $('<link type="text/css" rel="stylesheet" href="js-i2b2/cells/CRC/assets/QueryRunner.css">').appendTo($("head")[0]);
 
 
             // load the templates (TODO: Refactor this to loop using a varname/filename list)
