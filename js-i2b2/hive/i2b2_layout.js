@@ -243,7 +243,9 @@ i2b2.layout.init = function () {
         container.getElement().html('<div id="goldenLayoutColId2" class="goldenLayoutCol" style="left:3px"></div>');
     });
     i2b2.layout.gl_instances.main.init();
-
+    i2b2.layout.gl_instances.main.on("stateChanged", function(state){
+        i2b2.layout.gl_instances.main.updateSize();
+    });
 
     // selectively add config options and refresh buttons to the tab bars
     var func_extendStackButtons = function(stack) {
