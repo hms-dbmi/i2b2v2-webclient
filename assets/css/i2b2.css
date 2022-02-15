@@ -4,7 +4,7 @@ body {
 	font-family:arial,helvetica;
 	font-size:12px;
 	line-height:16px;
-	background:url('images/background.gif');
+	background:url('../images/background.gif');
 	background-color:#D9ECF0;
 	overflow:hidden;
 }
@@ -419,21 +419,21 @@ div.cellWhite {
 }
 
 .goldenLayoutCol .stack-cfg-button {
-	background-image: url(images/stack_options_icon.gif);
+	background-image: url(../images/stack_options_icon.gif);
 }
 
 .goldenLayoutCol .stack-refresh-button {
-	background-image: url(images/stack_refresh_icon.png);
+	background-image: url(../images/stack_refresh_icon.png);
 }
 
 .goldenLayoutCol .stack-refresh-button.refreshing {
-	background-image: url(images/spin.gif);
+	background-image: url(../images/spin.gif);
 	background-size: 18px 18px;
 	cursor: progress !important;
 }
 
 .goldenLayoutCol .lm_maximise {
-	background-image: url(images/stack_zoom_icon.gif);
+	background-image: url(../images/stack_zoom_icon.gif);
 }
 
 .goldenLayoutCol .lm_header .lm_controls>li {
