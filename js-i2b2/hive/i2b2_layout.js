@@ -244,6 +244,11 @@ i2b2.layout.init = function () {
     });
     i2b2.layout.gl_instances.main.init();
 
+    i2b2.layout.gl_instances.main.on("stateChanged", function(obj){
+        //HACK so that layout renders in Safari on initial load
+        i2b2.layout.gl_instances.main.updateSize();
+        i2b2.layout.gl_instances.main.off("stateChanged")
+    });
 
     // selectively add config options and refresh buttons to the tab bars
     var func_extendStackButtons = function(stack) {
