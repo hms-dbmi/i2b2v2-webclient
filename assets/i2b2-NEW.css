@@ -1,11 +1,34 @@
 body {
 	margin:0;
-	padding:15px;
+	padding:0;
 	font-family:arial,helvetica;
 	font-size:12px;
 	line-height:16px;
 	background:url('images/background.gif');
 	background-color:#D9ECF0;
+	overflow:hidden;
+}
+
+body, td, p {
+	font-family:arial,helvetica;
+	font-size:13px;
+	line-height:16px;
+}
+
+/* === Page Header === */
+#top-bar {
+	height:33px;
+	padding:0px 20px 0px 10px;
+}
+#top-bar td {
+	color:#FFF;
+}
+#top-bar a {
+	color:#FFF;
+	text-decoration:none;
+}
+#top-bar a:hover {
+	text-decoration:underline;
 }
 
 #topBarTitle {
@@ -13,35 +36,8 @@ body {
 	left:-5px;
 }
 
-BODY #title-back {
-	position: absolute;
-	left: 0px;
-	top: 0px;
-	background-image: url(images/title_back.gif);
-	background-position: center;
-	background-repeat: none;
-	height: 26px;
-	width: 100%;
-	display: none;
-}
-
-.xmlMsg {
-	background:#FFFFFF none repeat scroll 0%;
-	border:1px solid #000000;
-	height: 100%;
-	width: 100%;
-	overflow: scroll;
-}
-
-A.selectedView { font-weight:bold; }
-
 #topBarTable {
-	position:relative; 
-	/*
-	background-image: url('images/top_hive.gif'); 
-	background-position: center center;
-	background-repeat: no-repeat;
-	*/
+	position:relative;
 }
 
 #topBarTable td {
@@ -58,11 +54,20 @@ A.selectedView { font-weight:bold; }
 	text-decoration:underline;
 }
 
-
 #topTitleImg {
-	position:relative; 
+	position:relative;
 	top:-15px;
 }
+
+.xmlMsg {
+	background:#FFFFFF none repeat scroll 0%;
+	border:1px solid #000000;
+	height: 100%;
+	width: 100%;
+	overflow: scroll;
+}
+
+A.selectedView { font-weight:bold; }
 
 #screenQueryData {
 	padding: 4px 0px 0px; 
