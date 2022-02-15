@@ -354,11 +354,11 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 .goldenLayoutCol .lm_controls .lm_maximise {
 	margin-left:5px;
 	opacity:1;
-	background-image:url('https://www.i2b2.org/webclient/js-i2b2/cells/ONT/assets/zoom_icon.gif');
+	background-image:url('../images/stack_zoom_icon.gif');
 }
 
 .goldenLayoutCol .lm_maximised .lm_controls .lm_maximise {
-	background-image:url('https://www.i2b2.org/webclient/js-i2b2/cells/ONT/assets/zoom_icon.gif');
+	background-image:url('../images/stack_zoom_icon.gif');
 }
 
 .goldenLayoutCol .lm_header .lm_tab {
