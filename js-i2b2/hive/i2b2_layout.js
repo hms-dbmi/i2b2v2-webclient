@@ -238,7 +238,6 @@ i2b2.layout.init = function () {
         container.on('resize',function() {
             $(window).trigger('resize');
         });
-        i2b2.layout.gl_instances.main.updateSize();
     });
     i2b2.layout.gl_instances.main.registerComponent('goldenLayoutRightColFrame', function(container,state){
         container.getElement().html('<div id="goldenLayoutColId2" class="goldenLayoutCol" style="left:3px"></div>');
@@ -326,7 +325,6 @@ i2b2.layout.init = function () {
     // delayed calling of all the registration callbacks registered by cells during their initialization
     for (var k in i2b2.layout.__regCallbacks) {
         i2b2.layout.gl_instances.rightCol.registerComponent(k,i2b2.layout.__regCallbacks[k]);
-        i2b2.layout.gl_instances.main.updateSize();
     }
     i2b2.layout.gl_instances.rightCol.init();
 
@@ -334,7 +332,6 @@ i2b2.layout.init = function () {
     i2b2.layout.gl_instances.Zoom.registerComponent('whiteComponent', function(){});
     i2b2.layout.gl_instances.Zoom.on('initialised',function(){
         i2b2.layout.gl_instances.Zoom.root.contentItems[0].remove();
-        i2b2.layout.gl_instances.main.updateSize();
     });
     // ========== MAGIC TRICK ==========
     // delayed calling of all the registration callbacks registered by cells during their initialization
@@ -342,16 +339,14 @@ i2b2.layout.init = function () {
         i2b2.layout.gl_instances.Zoom.registerComponent(k,i2b2.layout.__regCallbacks[k]);
     }
     i2b2.layout.gl_instances.Zoom.init();
-    i2b2.layout.gl_instances.main.updateSize();
+
 
     // setup resize handler
     $(window).resize(i2b2.layout.resize);
 
+
     // this is the master load signal for all cells to begin operations
     i2b2.events.afterHiveInit.fire();
-
-    $(window).resize();
-    i2b2.layout.gl_instances.main.updateSize();
 };
 
 // ================================================================================================== //
