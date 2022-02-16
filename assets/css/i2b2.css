@@ -1,51 +1,59 @@
 body {
 	margin:0;
-	padding:15px;
+	padding:0;
 	font-family:arial,helvetica;
 	font-size:12px;
 	line-height:16px;
-	background:url('images/background.gif');
+	background:url('../images/background.gif');
 	background-color:#D9ECF0;
+	overflow:hidden;
+}
+
+body, td, p {
+	font-family:arial,helvetica;
+	font-size:13px;
+	line-height:16px;
+}
+
+/* === Start Page Header === */
+#top-bar {
+	height:33px;
+	padding:0px 20px 0px 10px;
+}
+
+#top-bar td {
+	color:#FFF;
+}
+
+#top-bar a {
+	color:#FFF;
+	text-decoration:none;
+}
+
+#top-bar a:hover {
+	text-decoration:underline;
 }
 
 #topBarTitle {
-	position:relative; 
+	position:relative;
 	left:-5px;
 }
 
-BODY #title-back {
-	position: absolute;
-	left: 0px;
-	top: 0px;
-	background-image: url(images/title_back.gif);
-	background-position: center;
-	background-repeat: none;
-	height: 26px;
-	width: 100%;
-	display: none;
-}
-
-.xmlMsg {
-	background:#FFFFFF none repeat scroll 0%;
-	border:1px solid #000000;
-	height: 100%;
-	width: 100%;
-	overflow: scroll;
-}
-
-A.selectedView { font-weight:bold; }
-
 #topBarTable {
-	position:relative; 
-	/*
-	background-image: url('images/top_hive.gif'); 
-	background-position: center center;
-	background-repeat: no-repeat;
-	*/
+	position:relative;
+	width: 100%;
+	border-spacing: 0px;
+}
+
+#topBarTable .logo{
+	text-align: left;
 }
 
 #topBarTable td {
 	color: #FFF;
+	padding: 0px;
+	vertical-align: middle;
+	text-align: right;
 }
 
 #topBarTable a {
@@ -58,14 +66,25 @@ A.selectedView { font-weight:bold; }
 	text-decoration:underline;
 }
 
-
 #topTitleImg {
-	position:relative; 
+	position:relative;
 	top:-15px;
 }
 
+/* === End Page Header === */
+
+.xmlMsg {
+	background:#FFFFFF none repeat scroll 0%;
+	border:1px solid #000000;
+	height: 100%;
+	width: 100%;
+	overflow: scroll;
+}
+
+A.selectedView { font-weight:bold; }
+
 #screenQueryData {
-	padding: 4px 0px 0px; 
+	padding: 4px 0px 0px;
 }
 
 
@@ -125,6 +144,7 @@ DIV.tabBox.active {
 	margin-right:5px;
 	height:20px;
 }
+
 DIV.tabBox.active DIV {
 	background:#6677AA;
 	border:1px solid #667788;
@@ -148,6 +168,7 @@ DIV.tabTextBox {
 	width:136px;
 	z-index:10;
 }
+
 DIV.tabTextBox DIV {
 	background: #6677AA none repeat scroll 0%;
 	border: 1px solid #667788;
@@ -160,20 +181,20 @@ DIV.tabTextBox DIV {
 	text-align: center;
 	padding: 0px 8px;
 }
+
 DIV.tabText {}
 /* </standarized main tab style> */
 
 
 .pageMask {
 	background:#000;
-	opacity: 0.25; 
+	opacity: 0.25;
 	filter:alpha(opacity=25);
-	-moz-opacity:0.25;	
+	-moz-opacity:0.25;
 	position:absolute;
 	top:0px;
 	left:0px;
 	width:100%;
-//	height:390px;
 	z-index:500;
 }
 
@@ -208,7 +229,7 @@ DIV#PluginListBox A.pluginRecordBox {
 
 DIV#PluginListBox A.pluginRecordBox:hover {
 	background-color:#FFFFCC;
-	
+
 }
 
 DIV#PluginListBox A.pluginRecordBox DIV.Icon {
@@ -223,8 +244,6 @@ DIV#PluginListBox A.pluginRecordBox DIV.Name {
 	font-weight: bold;
 	line-height: 12px;
 }
-
-
 
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.txtBoundBox {
@@ -246,8 +265,6 @@ DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon {
 	height: 32px;
 	width: 32px;
 }
-
-
 
 
 DIV#PluginListBox A.pluginRecordBox.SUMMARY {
@@ -278,5 +295,184 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 	margin-top: 1px;
 }
 
+/* === Start Golden Layout === */
+
+.goldenLayout {
+	margin-right:10px;
+	margin-left:10px;
+	margin-bottom:0px;
+	position:absolute;
+	top:33px;
+	left:0px;
+	right:0px;
+	bottom:0px;
+}
+
+.goldenLayout .lm_goldenlayout {
+	background: none;
+}
+
+.goldenLayout .lm_splitter {
+	opacity:1;
+	background:#BCE;
+}
+
+.goldenLayoutCol .lm_splitter {
+	background:#369;
+	opacity: 0.001;
+	transition: opacity 200ms ease;
+}
+
+.goldenLayout .lm_splitter:hover,
+.goldenLayout .lm_splitter.lm_dragging {
+	background:#369;
+	opacity: 1;
+}
+
+.goldenLayout .lm_content {
+	background:none;
+	border:none;
+}
+
+.goldenLayout  .lm_header {
+	height:26px;
+}
+
+.goldenLayout .lm_maximised .lm_header {
+	background-color:#98b4d9;
+}
+
+.goldenLayoutCol .lm_content {
+	background:#BCE;
+	border:1px solid #678;
+}
+
+.goldenLayoutCol {
+	position:absolute;
+	top:10px;
+	bottom:12px;
+	left:0px;
+	right:5px;
+}
+
+.goldenLayoutCol .lm_controls {
+	top:5px;
+	padding-right:5px;
+}
+
+.goldenLayoutCol .lm_controls .lm_maximise {
+	margin-left:5px;
+	opacity:1;
+	background-image:url('../images/stack_zoom_icon.gif');
+}
+
+.goldenLayoutCol .lm_maximised .lm_controls .lm_maximise {
+	background-image:url('../images/stack_zoom_icon.gif');
+}
+
+.goldenLayoutCol .lm_header .lm_tab {
+	background:#BCE;
+	border: 1px solid #678;
+	padding:5px 10px 4px 10px;
+	margin-right:6px;
+	height:15px;
+}
+.goldenLayoutCol .lm_tab.lm_active {
+	box-shadow:none;
+	padding-left:5px;
+	padding-right:5px;
+}
+
+.goldenLayoutCol .lm_tab .lm_title {
+	color:#458;
+	font-weight:bold;
+}
+
+.goldenLayoutCol .lm_tab.lm_active .lm_title {
+	color:#FFF;
+	background:#67A;
+	border:1px solid #678;
+	padding:1px 4px;
+}
+
+div.cellWhite {
+	position:absolute;
+	background:#FFF;
+	top:5px;
+	bottom:5px;
+	left:5px;
+	right:5px;
+	border:1px solid #678;
+	overflow:auto;
+}
+
+.cellBlue {
+	position:absolute;
+	background:#FFF;
+	top:0px;
+	bottom:0px;
+	left:0px;
+	right:0px;
+	border:1px solid #678;
+	overflow:hidden;
+}
+
+#goldenLayoutId2 {
+	position:absolute;
+	top:43px;
+	left:0px;
+	right:5px;
+	bottom:12px;
+	z-index:100;
+	display:none;
+}
+
+.goldenLayoutCol .stack-cfg-button {
+	background-image: url(../images/stack_options_icon.gif);
+}
+
+.goldenLayoutCol .stack-refresh-button {
+	background-image: url(../images/stack_refresh_icon.png);
+}
+
+.goldenLayoutCol .stack-refresh-button.refreshing {
+	background-image: url(../images/spin.gif);
+	background-size: 18px 18px;
+	cursor: progress !important;
+}
+
+.goldenLayoutCol .lm_maximise {
+	background-image: url(../images/stack_zoom_icon.gif);
+}
+
+.goldenLayoutCol .lm_header .lm_controls>li {
+	opacity: 1;
+	margin-left: 1px;
+	cursor: pointer;
+}
+/* === End Golden Layout === */
+
+/* === Start BOOTSTRAP TREEVIEW === */
+.treeview {
+	overflow: scroll;
+	white-space: nowrap;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.treeview .list-group-item {
+	padding: 0.05rem 0.5rem;
+}
+/* === End BOOTSTRAP TREEVIEW === */
+
+textarea {
+	margin:5px;
+	width:100px;
+	height:50px;
+}
 
 
