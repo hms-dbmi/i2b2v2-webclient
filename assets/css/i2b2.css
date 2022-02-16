@@ -45,9 +45,15 @@ body, td, p {
 	border-spacing: 0px;
 }
 
+#topBarTable .logo{
+	text-align: left;
+}
+
 #topBarTable td {
 	color: #FFF;
 	padding: 0px;
+	vertical-align: middle;
+	text-align: right;
 }
 
 #topBarTable a {
