@@ -336,7 +336,8 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 
 .goldenLayout  .lm_header {
 	height:26px;
-	background-color: #FFFFFF;
+	background-color: #ed9b40;
+	border-radius: 3px 3px 0 0;
 }
 
 .goldenLayout .lm_maximised .lm_header {
@@ -345,6 +346,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 
 .goldenLayoutCol .lm_content {
 	background: #FFFFFF;
+	padding-left: 0;
 }
 
 .goldenLayoutCol {
@@ -370,39 +372,49 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 	background-image:url('../images/stack_zoom_icon.gif');
 }
 
-.goldenLayoutCol .lm_header .lm_tab {
-	padding:5px 10px 4px 10px;
-	margin-right:6px;
-	height:15px;
+.goldenLayout .lm_header .lm_tab.lm_active{
+	box-shadow:none;
+	padding-bottom: 0;
 }
 
-.goldenLayoutCol .lm_tab.lm_active {
+.goldenLayoutCol .lm_header .lm_tab {
+	padding:5px 0px 0px 0px;
+	margin-right:6px;
+	margin-left: 6px;
+	height:15px;
 	box-shadow:none;
-	padding-left:5px;
-	padding-right:5px;
+	border: none !important;
+	background: none;
+}
+
+/*.lm_tab:hover, .lm_tab.lm_active*/
+.goldenLayoutCol .lm_tab.lm_active {
+	background: none;
+	border-bottom: 3px solid white !important;
+	transition: left 0.2s ease-out;
 }
 
 .goldenLayoutCol .lm_tab .lm_title {
-	color:#458;
 	font-weight:bold;
 }
 
 .goldenLayoutCol .lm_tab.lm_active .lm_title {
 	color:#FFF;
-	background:#67A;
-	border:1px solid #678;
 	padding:1px 4px;
 }
 
-div.cellWhite {
+.goldenLayout div.cellWhite {
 	position:absolute;
 	background:#FFF;
-	top:5px;
+	top:0px;
 	bottom:5px;
-	left:5px;
-	right:5px;
+	left:1px;
+	right:0px;
 	border:1px solid #678;
 	overflow:auto;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+	border-radius: 0 0 3px 3px;
 }
 
 .cellBlue {
@@ -450,9 +462,6 @@ div.cellWhite {
 	cursor: pointer;
 }
 
-.goldenLayout div {
-	border-radius: 3px 3px 3px 3px;
-}
 /* === End Golden Layout === */
 
 /* === Start BOOTSTRAP TREEVIEW === */

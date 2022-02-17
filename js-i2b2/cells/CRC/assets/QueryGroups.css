@@ -26,10 +26,10 @@
 .CRC_QT_view {
     position: absolute;
     background: #FFF;
-    top: 5px;
+    top: 0px;
     bottom: 5px;
-    left: 5px;
-    right: 5px;
+    left: 1px;
+    right: 0px;
 }
 
 .goldenLayout .CRC_QT_query {
@@ -40,7 +40,6 @@
     right: 0;
     bottom: 3.3em;
     border: 1px solid #678;
-    border-radius: 0 0 0 0;
 }
 
 .goldenLayout .CRC_QT_runbar {

@@ -1,13 +1,14 @@
 .CRC_QR_view {
     position: absolute;
     background: #FFF;
-    top: 5px;
+    top: 0px;
     bottom: 5px;
-    left: 5px;
-    right: 5px;
+    left: 1px;
+    right: 0px;
     border: 1px solid #678;
     overflow: auto;
     padding: 0.4em;
+    border-radius: 0 0 3px 3px;
 }
 
 .CRC_QR_view .action-bar {
