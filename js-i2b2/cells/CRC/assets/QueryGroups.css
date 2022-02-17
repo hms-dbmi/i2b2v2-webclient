@@ -32,7 +32,7 @@
     right: 5px;
 }
 
-.CRC_QT_query {
+.goldenLayout .CRC_QT_query {
     overflow-y: scroll;
     position: absolute;
     top: 0;
@@ -40,26 +40,31 @@
     right: 0;
     bottom: 3.3em;
     border: 1px solid #678;
+    border-radius: 0 0 0 0;
 }
 
-.CRC_QT_runbar {
+.goldenLayout .CRC_QT_runbar {
     position: absolute;
     bottom: 0;
     right: 0;
     left: 0;
     height: 3.3em;
-    background: #BCE;
+    background: #737373;
     padding: 0.4em 0 0 0;
+    border-radius: 0 0 0 0;
 }
 
-.CRC_QT_runbar .name {
+.goldenLayout .CRC_QT_runbar .name {
+    border-radius: 0 0 0 0;
     right: 10em;
     position: relative;
     left: 0;
+    color: white;
+    font-weight: 600;
 }
 
 .CRC_QT_runbar .name input {
-    width: 100%
+    width: 100%;
 }
 
 .CRC_QT_runbar .button {
@@ -67,6 +72,10 @@
     position: absolute;
     top: 0.5em;
     right: 0;
+}
+
+.CRC_QT_runbar .button  input{
+    background-color: #e8eefe;
 }
 
 

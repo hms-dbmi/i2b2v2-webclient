@@ -309,9 +309,12 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 	bottom:0px;
 }
 
+.goldenLayout .lm_goldenlayout {
+	background: none;
+}
 .goldenLayout .lm_splitter {
 	opacity:1;
-	background:#BCE;
+	background: #999999;
 }
 
 .goldenLayoutCol .lm_splitter {
@@ -333,15 +336,15 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 
 .goldenLayout  .lm_header {
 	height:26px;
+	background-color: #FFFFFF;
 }
 
 .goldenLayout .lm_maximised .lm_header {
-	background-color:#98b4d9;
+	background-color: #FFFFFF;
 }
 
 .goldenLayoutCol .lm_content {
-	background:#BCE;
-	border:1px solid #678;
+	background: #FFFFFF;
 }
 
 .goldenLayoutCol {
@@ -368,12 +371,11 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 .goldenLayoutCol .lm_header .lm_tab {
-	background:#BCE;
-	border: 1px solid #678;
 	padding:5px 10px 4px 10px;
 	margin-right:6px;
 	height:15px;
 }
+
 .goldenLayoutCol .lm_tab.lm_active {
 	box-shadow:none;
 	padding-left:5px;
@@ -446,6 +448,10 @@ div.cellWhite {
 	opacity: 1;
 	margin-left: 1px;
 	cursor: pointer;
+}
+
+.goldenLayout div {
+	border-radius: 3px 3px 3px 3px;
 }
 /* === End Golden Layout === */
 
