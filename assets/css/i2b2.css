@@ -1,14 +1,13 @@
 body {
 	margin:0;
 	padding:0;
-	font-family:arial,helvetica;
-	font-size:12px;
+	font-family:"Roboto", "Helvetica", "Arial", sans-serif;
+	font-weight: 500;
 	line-height:16px;
 	overflow:hidden;
 }
 
 body, td, p {
-	font-family:arial,helvetica;
 	font-size:13px;
 	line-height:16px;
 }
@@ -344,6 +343,10 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 	background-color: #FFFFFF;
 }
 
+#goldenLayoutColId2 .lm_header {
+	background-color: #f1b774;
+}
+
 .goldenLayoutCol .lm_content {
 	background: #FFFFFF;
 	padding-left: 0;
@@ -391,11 +394,11 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 .goldenLayoutCol .lm_tab.lm_active {
 	background: none;
 	border-bottom: 3px solid white !important;
-	transition: left 0.2s ease-out;
 }
 
 .goldenLayoutCol .lm_tab .lm_title {
-	font-weight:bold;
+	font-weight: 300;
+	font-size: 16px;
 }
 
 .goldenLayoutCol .lm_tab.lm_active .lm_title {
