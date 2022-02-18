@@ -344,7 +344,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 #goldenLayoutColId2 .lm_header {
-	background-color: #f1b774;
+	background-color: #b6b4b4;
 }
 
 .goldenLayoutCol .lm_content {
@@ -428,6 +428,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 	right:0px;
 	border:1px solid #678;
 	overflow:hidden;
+	border-radius: 0 0 3px 3px;
 }
 
 #goldenLayoutId2 {
