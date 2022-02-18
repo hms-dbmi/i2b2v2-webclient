@@ -390,7 +390,6 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 	background: none;
 }
 
-/*.lm_tab:hover, .lm_tab.lm_active*/
 .goldenLayoutCol .lm_tab.lm_active {
 	background: none;
 	border-bottom: 3px solid white !important;
