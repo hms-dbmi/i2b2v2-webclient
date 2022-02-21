@@ -1,8 +1,15 @@
+/**
+ * @projectDescription	Main logic to implement Golden-Layout framework
+ * @inherits 	i2b2
+ * @namespace	i2b2.layout
+ * @version 	2.0
+ **/
+
+
 console.group('Load & Execute component file: hive > layout');
 console.time('execute time');
 
 // ================================================================================================== //
-
 i2b2.layout = {
     __regCallbacks: {},
     registerWindowHandler: function (windowKey, callback) {
@@ -10,6 +17,8 @@ i2b2.layout = {
     }
 };
 
+
+// ================================================================================================== //
 i2b2.layout.resize = function() {
     // resize handler
     i2b2.layout.gl_instances.main.updateSize();
@@ -24,11 +33,7 @@ i2b2.layout.resize = function() {
 };
 
 
-
-
-i2b2.layout.setMode = function(mode) {};
-
-
+// ================================================================================================== //
 i2b2.layout.init = function () {
     i2b2.layout.gl_configs = {};
     i2b2.layout.gl_instances = {};
@@ -70,7 +75,7 @@ i2b2.layout.init = function () {
     i2b2.layout.gl_configs.leftCol = {
         settings: {
             showPopoutIcon:false,
-//            reorderEnabled:false,
+            reorderEnabled:false,
             constrainDragToContainer: true
         },
         dimensions: {
@@ -95,7 +100,7 @@ i2b2.layout.init = function () {
                                 type:'component',
                                 isClosable:false,
 //                                componentName: 'i2b2.ONT.view.find',
-                                componentName: 'blueComponent',
+                                componentName: 'whiteComponent',
                                 title:'Find'
                             }
                         ]
@@ -190,12 +195,11 @@ i2b2.layout.init = function () {
                 title:'Plugin Viewer'
             }
         ]
-    }
+    };
 
     //////////////////////////////////////////
     // The full zoom layout config shell
     //////////////////////////////////////////
-//    i2b2.layout.gl_configs.cfg4 = {
     i2b2.layout.gl_configs.fullZoom = {
         settings: {
             showPopoutIcon:false,
@@ -215,15 +219,9 @@ i2b2.layout.init = function () {
     //////////////////////////////////////////
     // Define components
     //////////////////////////////////////////
-
     var whiteComponent = function(container,state){
         container.getElement().html('<div class="cellWhite"><textarea>test content</textarea></div>');
-    }
-
-    var blueComponent = function(container,state){
-        container.getElement().html('<div class="cellBlue">This cell has a blue background and no padding.</div>');
-    }
-
+    };
 
     //////////////////////////////////////////
     // Construct the layouts
@@ -241,7 +239,6 @@ i2b2.layout.init = function () {
         container.getElement().html('<div id="goldenLayoutColId2" class="goldenLayoutCol" style="left:3px"></div>');
     });
     i2b2.layout.gl_instances.main.init();
-
     i2b2.layout.gl_instances.main.on("stateChanged", function(obj){
         //HACK so that layout renders in Safari on initial load
         i2b2.layout.gl_instances.main.updateSize();
@@ -268,6 +265,7 @@ i2b2.layout.init = function () {
                 break;
         }
 
+        // TODO: REMOVE THIS FUNCTIONALITY AND IMPLEMENT WITHIN EACH VIEW COMPONENT
         // add configure options button
         if (btnConfig === true) {
             var tmpEl = stack.header.controlsContainer.prepend('<li class="stack-cfg-button" title="Configure Options"></li>');
@@ -280,6 +278,8 @@ i2b2.layout.init = function () {
                 }
             }).bind(stack));
         }
+
+        // TODO: REMOVE THIS FUNCTIONALITY AND IMPLEMENT WITHIN EACH VIEW COMPONENT
         // add refresh all button
         if (btnRefresh === true) {
             var id = "stackRefreshIcon_" + stack.config.content[0].componentName.replace(/\./g,"-");
@@ -301,7 +301,6 @@ i2b2.layout.init = function () {
     i2b2.layout.gl_instances.leftCol = new GoldenLayout( i2b2.layout.gl_configs.leftCol, '#goldenLayoutColId1' );
     i2b2.layout.gl_instances.leftCol.on('stackCreated', func_extendStackButtons);
     i2b2.layout.gl_instances.leftCol.registerComponent('whiteComponent', whiteComponent);
-    i2b2.layout.gl_instances.leftCol.registerComponent('blueComponent', blueComponent);
     // ========== MAGIC TRICK ==========
     // delayed calling of all the registration callbacks registered by cells during their initialization
     for (var k in i2b2.layout.__regCallbacks) {
@@ -342,19 +341,24 @@ i2b2.layout.init = function () {
     // setup resize handler
     $(window).resize(i2b2.layout.resize);
 
-
     // this is the master load signal for all cells to begin operations
     i2b2.events.afterHiveInit.fire();
 };
 
-// ================================================================================================== //
-i2b2.events.afterLogin.add(function() {
-    // load the basic gui and attach the layout manager
-    $("body").load("assets/main_display.html", i2b2.layout.init);
-});
 
 // ================================================================================================== //
+i2b2.events.afterLogin.add(
+    (function() {
+        // load the basic gui and attach the layout manager
+        $("body").load("assets/main_display.html", i2b2.layout.init);
+        // remove debugging functionality from GUI
+        i2b2.h.debugElements(document.documentElement);
+        // remove the analysis link if configuration tells us to
+        // TODO: Manage this setting
+    })
+);
 
 
+// ================================================================================================== //
 console.timeEnd('execute time');
 console.groupEnd();

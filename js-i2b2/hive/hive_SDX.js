@@ -1,18 +1,17 @@
 /**
- * @projectDescription	Standard Data Exchange (SDX) subsystem's core message router.
+ * @projectDescription	Standard Data Exchange (SDX) subsystem's core message router. [V2 rewrite]
  * @inherits 	i2b2
  * @namespace	i2b2
- * @author		Nick Benik, Griffin Weber MD PhD
- * @version 	1.3
- * ----------------------------------------------------------------------------------------
- * updated 9-15-08: RC4 launch [Nick Benik]
- */
+ * @version 	2.0
+ **/
 console.group('Load & Execute component file: hive > SDX');
 console.time('execute time');
 
 i2b2.sdx.Master = {};
 i2b2.sdx.TypeControllers = {};
 i2b2.sdx.Master._nativeTargetRefs = {};
+
+
 // ================================================================================================== //
 i2b2.sdx.Master.EncapsulateData = function(inType, inData) {
     if (!i2b2.h.isObject(inData)) {
@@ -52,7 +51,7 @@ i2b2.sdx.Master.EncapsulateData = function(inType, inData) {
     }
     sdxEncap.origData = inData;
     return sdxEncap;
-}
+};
 
 
 // ================================================================================================== //
@@ -61,26 +60,7 @@ i2b2.sdx.Master._KeyHash = function(key) {
     var kh = escape(key);
     kh = kh.replace('%','_');
     return "H$__"+kh;
-}
-
-
-// ================================================================================================== //
-i2b2.sdx.Master.ClearAll = function(type, sdxParentOptional) { console.error("[i2b2.sdx.Master.ClearAll] is deprecated"); }
-i2b2.sdx.Master.Save = function(sdxData, sdxParentNode) { console.error("[i2b2.sdx.Master.Save] is deprecated"); }
-i2b2.sdx.Master.Load = function(type, key) { console.error("[i2b2.sdx.Master.Load] is deprecated"); }
-// ================================================================================================== //
-i2b2.sdx.Master.AppendChild = function(tvNode, type, key, data) { console.error("[i2b2.sdx.Master.AppendChild] is deprecated"); }
-i2b2.sdx.Master.Attach2Data = function(domNode, type, key) { console.error("[i2b2.sdx.Master.Attach2Data] is deprecated"); }
-i2b2.sdx.Master.RenderHTML = function(targetDivID, sdxDataPackage, options) { console.error("[i2b2.sdx.Master.RenderHTML] is deprecated"); }
-i2b2.sdx.Master.AppendTreeNode = function(yuiTree, yuiRootNode, sdxDataPackage, sdxLoaderCallback) { console.error("[i2b2.sdx.Master.AppendTreeNode] is deprecated"); }
-i2b2.sdx.Master.LoadChildrenFromTreeview = function(node, onCompleteCallback) { console.error("[i2b2.sdx.Master.LoadChildrenFromTreeview] is deprecated"); }
-// ================================================================================================== //
-i2b2.sdx.Master.Click = function(type,id, domNode) {}
-i2b2.sdx.Master.onHoverOver = function(sdxType, eventObj, targetID, ddProxyObj) { console.error("[i2b2.sdx.Master.onHoverOver] is deprecated"); }
-i2b2.sdx.Master.onHoverOut = function(sdxType, eventObj, targetID, ddProxyObj) { console.error("[i2b2.sdx.Master.onHoverOut] is deprecated"); }
-// ================================================================================================== //
-
-
+};
 
 
 // ================================================================================================== //
@@ -150,19 +130,23 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
             break;
     }
 };
+
+
 // ================================================================================================== //
 i2b2.sdx.Master.ProcessDrop = function(sdxData, DroppedOnID){
     console.group("SDX Process DropEvent on container ID:"+DroppedOnID);
     console.dir(sdxData);
-//TODO: clean up these array processing hacks
+    // TODO: clean up these array processing hacks
+    let typeCode;
     if (sdxData[0]) {
-        var typeCode = sdxData[0].sdxInfo.sdxType;
+        typeCode = sdxData[0].sdxInfo.sdxType;
     } else {
-        var typeCode = sdxData.sdxInfo.sdxType;
+        typeCode = sdxData.sdxInfo.sdxType;
     }
     // do we have the container registered?
+    let t = "";
     try {
-        var t = this._sysData[DroppedOnID][typeCode].DropHandler;
+        t = this._sysData[DroppedOnID][typeCode].DropHandler;
     } catch(e) {
         console.error("SDX DropHandler does not exist for drop target!");
         console.groupEnd();
@@ -170,24 +154,25 @@ i2b2.sdx.Master.ProcessDrop = function(sdxData, DroppedOnID){
     }
     console.groupEnd();
     // TODO: perform any needed type translation
-    var sdxObjs = [];
-//TODO: clean up these array processing hacks
+    let sdxObjs = [];
+    // TODO: clean up these array processing hacks
     if (sdxData[0]) {
         sdxData.each(function(sdxRec){
-            if (sdxRec.sdxInfo.sdxType == typeCode) { sdxObjs.push(sdxRec); }
+            if (sdxRec.sdxInfo.sdxType === typeCode) { sdxObjs.push(sdxRec); }
         });
     } else {
         sdxObjs.push(sdxData);
     }
     this._sysData[DroppedOnID][typeCode].DropHandler(sdxObjs, DroppedOnID);
-}
+};
+
 
 // ================================================================================================== //
 i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
     // change the container into a DOM element reference
     if (typeof container === "string") {
         container = $("#"+container);
-        if (container.length == 0) {
+        if (container.length === 0) {
             container = null;
         }
     }
@@ -238,6 +223,7 @@ i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
     }
 };
 
+
 // ================================================================================================== //
 i2b2.sdx.Master.setHandlerCustom = function(container, typeCode, handlerName, newHandlerFunction) {
     // containerID: string
@@ -247,7 +233,7 @@ i2b2.sdx.Master.setHandlerCustom = function(container, typeCode, handlerName, ne
 // change the container into a DOM element reference
     if (typeof container === "string") {
         container = $("#" + container);
-        if (container.length == 0) {
+        if (container.length === 0) {
             container = null;
         }
     }
@@ -286,13 +272,14 @@ i2b2.sdx.Master.setHandlerCustom = function(container, typeCode, handlerName, ne
     }
 };
 
+
 // ================================================================================================== //
 i2b2.sdx.Master.setHandlerDefault = function(containerID, typeCode, handlerName) {
     // containerID: string
     // typeCode: string
     // handlerName: string (example: Render, AddChild, ddStart, ddMove)
     // newHandlerFunction: function to be used
-    if (undefined == i2b2.sdx.TypeControllers[typeCode]) {
+    if (undefined === i2b2.sdx.TypeControllers[typeCode]) {
         console.error("SDX TypeController does not exist for data type: " + typeCode);
         return false;
     }
@@ -308,8 +295,10 @@ i2b2.sdx.Master.setHandlerDefault = function(containerID, typeCode, handlerName)
         console.info("ATTACHED default SDX '"+handlerName+"' handler for "+typeCode);
     }
     return true;
-}
+};
 
+
+// ================================================================================================== //
 i2b2.sdx.Master.getHandlerDefault = function(typeCode, handlerName) {
     // typeCode: string
     // handlerName: string (example: Render, AddChild, ddStart, ddMove)
@@ -323,7 +312,7 @@ i2b2.sdx.Master.getHandlerDefault = function(typeCode, handlerName) {
         return i2b2.sdx.TypeControllers[typeCode][handlerName];
     }
     return undefined;
-}
+};
 
 
 // *****************************************************************************
@@ -343,13 +332,14 @@ i2b2.sdx.Master.RenderData = function(sdxDataPackage, options) {
     // === moreDescriptMinor
     // === tvNodeState
 
-    var funcName = "[i2b2.sdx.Master.RenderData] ";
+    let funcName = "[i2b2.sdx.Master.RenderData] ";
     if (sdxDataPackage === undefined) {
         console.error(funcName +'the SDX Data Package is empty!');
         return false;
     }
+    let sdxType;
     try {
-        var sdxType = sdxDataPackage.sdxInfo.sdxType;
+        sdxType = sdxDataPackage.sdxInfo.sdxType;
     } catch (e) {
         console.error(funcName+'the data object type is not valid!');
         return false;
@@ -360,7 +350,7 @@ i2b2.sdx.Master.RenderData = function(sdxDataPackage, options) {
         return false;
     }
 
-    var ret = i2b2.sdx.TypeControllers[sdxType].RenderData(sdxDataPackage, options);
+    let ret = i2b2.sdx.TypeControllers[sdxType].RenderData(sdxDataPackage, options);
 
     if (ret) {
         // default values
@@ -376,19 +366,17 @@ i2b2.sdx.Master.RenderData = function(sdxDataPackage, options) {
 
     return ret;
 };
-// ================================================================================================== //
-
-
-
 // <END Router Pattern using dynamic registration and per-target overrides END>
+
+
 // ================================================================================================== //
 i2b2.sdx.Master.onDragStart = function(event, node) {
     // route to the proper SDX type controller for management
     try {
-        var sdxType = node.data.i2b2.sdxInfo.sdxType;
+        let sdxType = node.data.i2b2.sdxInfo.sdxType;
         if (i2b2.sdx.TypeControllers[sdxType] !== undefined) {
             // valid SDX type... do processing in type controller
-            var i2b2Data = $.extend(true, {}, node.data.i2b2);
+            let i2b2Data = $.extend(true, {}, node.data.i2b2);
             if (i2b2.sdx.TypeControllers[sdxType].dragStartHandler !== undefined) {
                 i2b2Data = i2b2.sdx.TypeControllers[sdxType].dragStartHandler(i2b2Data);
             } else {
@@ -405,8 +393,8 @@ i2b2.sdx.Master.onDragStart = function(event, node) {
             // first is main data available only after drop
             node.event.originalEvent.dataTransfer.setData("application/i2b2+json", JSON.stringify(i2b2Data));
             // next is sdxType data we are sending in the MIME type content label that can be read during hover over
-            var sdxTypeString = i2b2Data.sdxInfo.sdxType;
-            var sdxTypeData = [i2b2Data.sdxInfo.sdxControlCell + ":" + i2b2Data.sdxInfo.sdxType];
+            let sdxTypeString = i2b2Data.sdxInfo.sdxType;
+            let sdxTypeData = [i2b2Data.sdxInfo.sdxControlCell + ":" + i2b2Data.sdxInfo.sdxType];
             if (i2b2Data.sdxUnderlyingPackage !== undefined) {
                 sdxTypeString += "+" + i2b2Data.sdxUnderlyingPackage.sdxInfo.sdxType;
                 sdxTypeData.push(i2b2Data.sdxUnderlyingPackage.sdxInfo.sdxControlCell + ":" + i2b2Data.sdxUnderlyingPackage.sdxInfo.sdxType);
@@ -419,21 +407,26 @@ i2b2.sdx.Master.onDragStart = function(event, node) {
 
 // ================================================================================================== //
 i2b2.sdx.Master.getChildRecords = function(sdxParent, onCompleteCallback) {
-    var sdxType = sdxParent.sdxInfo.sdxType;
+    let sdxType = sdxParent.sdxInfo.sdxType;
     if (i2b2.sdx.TypeControllers[sdxType] !== undefined) {
         i2b2.sdx.TypeControllers[sdxParent.sdxInfo.sdxType].getChildRecords(sdxParent, onCompleteCallback);
     }
 };
 
 
+// ================================================================================================== //
 // hack to allow drag targets to alter their target DOM
 document.addEventListener("dragstart", function(event) {
     $(".i2b2DropTarget").addClass("i2b2DropPrep");
 }, false);
+
+
+// ================================================================================================== //
 document.addEventListener("dragend", function(event) {
     $(".i2b2DropTarget").removeClass("i2b2DropPrep");
 }, false);
 
 
+// ================================================================================================== //
 console.timeEnd('execute time');
 console.groupEnd();
