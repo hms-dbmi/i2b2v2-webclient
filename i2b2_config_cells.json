@@ -2,21 +2,5 @@
     { "code": "PM", "forceLoading": true },
     { "code": "ONT"	},
     { "code": "CRC"	},
-    { "code": "WORK"},
-    { "code":	"PLUGINMGR",
-        "forceLoading": true,
-        "forceConfigMsg": { "params": [] }
-    },
-    { "code":	"Dem1Set",
-        "forceLoading": true,
-        "forceConfigMsg": { "params": [] },
-        "roles": [ "DATA_LDS", "DATA_DEID", "DATA_PROT" ],
-        "forceDir": "cells/plugins/standard"
-    },
-    { "code":	"ExportXLS",
-        "forceLoading": true,
-        "forceConfigMsg": { "params": [] },
-        "roles": [ "DATA_LDS", "DATA_DEID", "DATA_PROT" ],
-        "forceDir": "cells/plugins/community"
-    }
+    { "code": "WORK"}
 ]
