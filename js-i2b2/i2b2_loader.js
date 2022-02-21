@@ -1,12 +1,9 @@
 /**
  * @projectDescription	Initialize the i2b2 framework & load the hive configuration information for the core I2B2 Framework.
  * @inherits 	i2b2
- * @namespace		i2b2
- * @author		Nick Benik, Griffin Weber MD PhD
- * @version 	1.3
- * ----------------------------------------------------------------------------------------
- * updated 9-15-08: RC4 launch [Nick Benik] 
- */
+ * @namespace	i2b2
+ * @version 	2.0
+ **/
 
 
 // build the global i2b2.hive namespace
@@ -19,7 +16,7 @@ if (undefined==i2b2.hive.cfg) { i2b2.hive.cfg = {}; }
 if (undefined==i2b2.h) { i2b2.h = {}; }
 if (undefined==i2b2.hive.base_classes) { i2b2.hive.base_classes = {}; }
 
-i2b2.ClientVersion = "1.7";
+i2b2.ClientVersion = "2.0";
 
 
 // ================================================================================================== //
@@ -124,34 +121,18 @@ i2b2.Init = function() {
 }
 
 
-
-
 // create our custom events
 // ================================================================================================== //
 i2b2.events.afterFrameworkInit = $.Callbacks();
-i2b2.events._privLoadCells = $.Callbacks();
-i2b2.events._privRemoveInitFuncs = $.Callbacks();
 i2b2.events.afterHiveInit = $.Callbacks("once memory unique");
 i2b2.events.afterCellInit = $.Callbacks();
 i2b2.events.afterLogin = $.Callbacks("once memory unique");
 i2b2.events.afterAllCellsLoaded = $.Callbacks("once memory unique");
 
-/*
-i2b2.events.afterFrameworkInit = new YAHOO.util.CustomEvent("afterInit", i2b2);
-i2b2.events._privLoadCells = new YAHOO.util.CustomEvent("priv_doLoadCells", i2b2);
-i2b2.events._privRemoveInitFuncs = new YAHOO.util.CustomEvent("priv_doRemoveInit", i2b2);
-i2b2.events.afterHiveInit = new YAHOO.util.CustomEvent("afterInit", i2b2);
-i2b2.events.afterCellInit = new YAHOO.util.CustomEvent("afterInit", i2b2);
-i2b2.events.afterLogin = new YAHOO.util.CustomEvent("afterLogin", i2b2);
-i2b2.events.afterAllCellsLoaded = new YAHOO.util.CustomEvent("afterAllCellsLoaded", i2b2);
-*/
-
-
 
 // A Promise-returning script loader that allows scripts to show up in browser debug tools
 // ================================================================================================== //
 i2b2.h.getScript = function(url) {
-
     return $.Deferred(function( defer ) {
         var head	= document.getElementsByTagName("head")[0];
         var script	= document.createElement("script");
@@ -175,4 +156,4 @@ i2b2.h.getScript = function(url) {
         }
         head.appendChild(script);
     }).promise();
-}
+};
