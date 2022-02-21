@@ -441,9 +441,6 @@ lm.utils.copy( lm.utils.DragListener.prototype, {
  */
 lm.LayoutManager = function( config, container ) {
 
-	// BUGFIX: problem with undefined closure variable "$" existing and overriding global definition
-	if (typeof jQuery == "function" && typeof $ !== 'function') { $ = jQuery; }
-
 	if( !$ || typeof $.noConflict !== 'function' ) {
 		var errorMsg = 'jQuery is missing as dependency for GoldenLayout. ';
 		errorMsg += 'Please either expose $ on GoldenLayout\'s scope (e.g. window) or add "jquery" to ';

@@ -173,7 +173,7 @@
 	            if (actionsHaveIcon === true) {
 	                $ul.append(
 	                    '<li role="presentation" data-action="'+actionId+'">' +
-	                    '<a href="#" role="menuitem" dragable="false">' +
+	                    '<a href="#" role="menuitem">' +
 	                    '<i class="fa fa-fw fa-lg ' + (action.iconClass || '') + '"></i> ' +
 	                    '<span class="actionName"></span>' +
 	                    '</a>' +
@@ -184,7 +184,7 @@
 	            else {
 	                $ul.append(
 	                    '<li role="presentation" data-action="'+actionId+'">' +
-	                    '<a href="#" role="menuitem" dragable="false"><span class="actionName"></span></a>' +
+	                    '<a href="#" role="menuitem"><span class="actionName"></span></a>' +
 	                    '</li>'
 	                );
 	            }
@@ -192,7 +192,7 @@
 
 	        $ul.append(
 	            '<li role="presentation" class="noActionsMessage disabled">' +
-	            '<a href="#" role="menuitem" dragable="false">' +
+	            '<a href="#" role="menuitem">' +
 	            '<span>' + _this.options.noActionsMessage + '</span>' +
 	            '</a>' +
 	            '</li>'
