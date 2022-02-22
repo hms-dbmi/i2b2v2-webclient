@@ -86,6 +86,10 @@
     margin-right: 5px;
 }
 
+.CRC_QT_runbar .button  button:hover{
+    opacity: 0.7;
+}
+
 
 
 .hoverover {

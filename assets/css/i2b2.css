@@ -381,7 +381,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 .goldenLayoutCol .lm_header .lm_tab {
-	padding:5px 0px 0px 0px;
+	padding:5px 5px 5px 5px;
 	margin-right:6px;
 	margin-left: 6px;
 	height:15px;
@@ -390,9 +390,18 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 	background: none;
 }
 
+.goldenLayoutCol .lm_tab .lm_title:hover {
+	opacity: 0.4 !important;
+	background: #ed9b40;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#goldenLayoutColId2 .lm_tab .lm_title:hover {
+	background-color: #b6b4b4;
+}
+
 .goldenLayoutCol .lm_tab.lm_active {
 	background: none;
-	border-bottom: 3px solid white !important;
 }
 
 .goldenLayoutCol .lm_tab .lm_title {
@@ -414,8 +423,6 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 	right:0px;
 	border:1px solid #678;
 	overflow:auto;
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
 	border-radius: 0 0 3px 3px;
 }
 
