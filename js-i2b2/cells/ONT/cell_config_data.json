@@ -2,9 +2,7 @@
   "files": [
     "ONT_ctrlr_general.js",
     "ONT_view_Nav.js",
-    "ONT_view_Find.js",
     "ONT_view_Info.js",
-    "ONT_ctrlr_FindBy.js",
     "ONT_sdx_CONCPT.js",
     "i2b2_msgs.js"
   ],
@@ -16,7 +14,10 @@
     "assets/sdx_ONT_MODIFIER_branch.gif",
     "assets/sdx_ONT_MODIFIER_leaf.gif"
   ],
-  "css": ["main_list.css"],
+  "css": [
+    "sdx_ONT_types.css",
+    "ontMain.css"
+  ],
   "config": {
     "name": "Ontology",
     "description": "The Ontology cell manages all concepts used to describe the data processed by all the Cells within i2b2 Hive.",

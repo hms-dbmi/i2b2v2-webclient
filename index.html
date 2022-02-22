@@ -25,56 +25,47 @@
         var i2b2build = "1.7.09   [05/03/17 2:00 PM] ";
     </script>
 
+    <!-- LOAD JQuery FROM local server (jQuery first, then Bootstrap JS) -->
+    <script type="text/javascript" src="js-ext/jquery/3.6.0/jquery.min.js" ></script>
 
     <!-- LOAD Golden-Layout FROM local server -->
-    <script type="text/javascript" src="js-ext/goldenlayout/goldenlayout.js" ></script>
-    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/goldenlayout-base.css">
-    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/goldenlayout-light-theme.css">
+    <script type="text/javascript" src="js-ext/goldenlayout/1.5.9/goldenlayout.min.js" ></script>
+    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/1.5.9/goldenlayout-base.css">
+    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/1.5.9/goldenlayout-light-theme.css">
 
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <!-- LOAD JQuery FROM local server -->
-    <script type="text/javascript" src="js-ext/jquery/jquery-3.3.1.js" ></script>
-    <!-- LOAD Popper FROM CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <!-- LOAD Bootstrap FROM local server -->
-    <script type="text/javascript" src="js-ext/bootstrap/4.0.0/js/bootstrap.js" ></script>
-    <link rel="stylesheet" href="js-ext/bootstrap/4.0.0/css/bootstrap.css">
+    <script type="text/javascript" src="js-ext/bootstrap/4.6.1/js/bootstrap.bundle.min.js" ></script>
+    <link rel="stylesheet" href="js-ext/bootstrap/4.6.1/css/bootstrap.min.css">
+
     <!-- LOAD Bootstrap-treeview FROM local server -->
+    <!-- uses a highly modified version that has dynamic loading functionality added -->
     <script type="text/javascript" src="js-ext/bootstrap-treeview/bootstrap-treeview.js" ></script>
     <link rel="stylesheet" href="js-ext/bootstrap-treeview/bootstrap-treeview.css">
     <link rel="stylesheet" href="js-ext/bootstrap/shim/glyphicon.css"> <!-- requires a shim to use bootstrap 4 -->
+
     <!-- LOAD Bootstrap-context-menu FROM local server -->
-    <script type="text/javascript" src="js-ext/bootstrap-menu/BootstrapMenu.js" ></script>
-    <link rel="stylesheet" href="js-ext/bootstrap-menu/BootstrapMenu.css"> <!-- requires a shim to use bootstrap 4 -->
+    <script type="text/javascript" src="js-ext/bootstrap-menu/1.0.14/BootstrapMenu.min.js" ></script>
+    <link rel="stylesheet" href="js-ext/bootstrap-menu/shim/BootstrapMenu.css"> <!-- requires a shim to use bootstrap 4 -->
+
     <!-- LOAD Bootstrap Icons FROM CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
 
     <!-- LOAD Handlebars.js FROM CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js" integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="js-ext/handlebars/4.7.7/handlebars.min.js"></script>
 
-    <!-- LOAD date picker FROM CDN -->
-    <script src="js-ext/gijgo/js/gijgo.min.js" type="text/javascript"></script>
-    <link href="js-ext/gijgo/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+    <!-- LOAD date picker FROM local server -->
+    <script src="js-ext/gijgo/1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="js-ext/gijgo/1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 
-
+    <!-- Load Moment.js for parsing and formatting date/time -->
+    <script type="text/javascript" src="js-ext/moment/2.29.1/moment.min.js"></script>
 
     <!-- LOAD GUI FROM local server -->
     <link rel="stylesheet" type="text/css" href="js-i2b2/ui.styles/ui.styles.css">
 
-    <!-- Load Moment.js for parsing and formatting date/time -->
-    <script type="text/javascript" src="js-ext/moment.min.js"></script>
-    <link type="text/css" href="js-i2b2/cells/CRC/assets/query_report.css" rel="stylesheet" />
-
 
     <!-- Graphics Libraries (only work in IE9 and above) -->
-    <!-- Load d3.js -->
-    <script type="text/javascript" src="js-ext/d3code/d3.v3.js"></script>
-    <!-- Load c3.js and stylesheet -->
-    <link href="js-ext/c3code/c3.css" rel="stylesheet" type="text/css">
-    <script src="js-ext/c3code/c3.js"></script>
-    <!-- Load jquery code and turn off $ -->
-    <link rel="stylesheet" type="text/css" href="assets/jquery.qtip.min.css" />
-
+    <!-- TODO: Load d3.js -->
 
     <!-- load i2b2 framework -->
     <script type="text/javascript" src="js-i2b2/i2b2_loader.js"></script>
