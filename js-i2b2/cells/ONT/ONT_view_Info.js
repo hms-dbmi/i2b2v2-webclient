@@ -34,7 +34,7 @@ i2b2.events.afterCellInit.add((function(cell){
 
 
                 // add the cellWhite flare
-                var treeTarget = $('<div class="cellWhite" id="i2b2OntInfo">this is term info</div>').appendTo(container._contentElement);
+                let treeTarget = $('<div class="cellWhite" id="i2b2OntInfo">this is term info</div>').appendTo(container._contentElement);
             }).bind(this)
         );
     }

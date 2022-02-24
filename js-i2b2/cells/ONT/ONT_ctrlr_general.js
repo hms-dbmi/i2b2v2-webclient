@@ -1,12 +1,10 @@
 /**
  * @projectDescription	Event controller for general ONT functionality.
  * @inherits 	i2b2.ONT.ctrlr
- * @namespace	i2b2.ONT.ctrlr.FindBy
- * @author		Nick Benik, Griffin Weber MD PhD
- * @version 	1.3
- * ----------------------------------------------------------------------------------------
- * updated 9-15-08: RC4 launch [Nick Benik] 
- */
+ * @namespace	i2b2.ONT.ctrlr.gen
+ * @version 	2.0
+ **/
+
 console.group('Load & Execute component file: ONT > ctrlr > general');
 console.time('execute time');
 
@@ -19,37 +17,12 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate = $.Callbacks();
 
 
 //================================================================================================== //
+// should this be in the view controller?
 i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
     if (updateInfo.DataLocation == "i2b2.ONT.model.Categories") {
         this.view.nav.PopulateCategories();
     }
 }).bind(i2b2.ONT));
-
-
-
-i2b2.ONT.ctrlr.refreshAll = function(view_component) {
-    i2b2.ONT.view.nav.doRefreshAll();
-};
-
-
-// ================================================================================================== //
-i2b2.ONT.ctrlr.showOptions = function() {
-    // show the options modal screen
-    if ($('body #ontModal').length === 0) {
-        $('body').append("<div id='ontModal'/>");
-    }
-    $('body #ontModal').load('/js-i2b2/cells/ONT/assets/modalOptions.html', function() {
-        // pre populate data
-        // TODO: populate the data
-
-        // TODO: save the data back into the system if needed
-
-        // now show the modal form
-        $('body #ontModal div:eq(0)').modal('show');
-    });
-
-};
-
 
 
 // ================================================================================================== //
@@ -59,7 +32,6 @@ i2b2.ONT.ctrlr.gen.loadCategories = function() {
     //	1) fires a call to ajax.getCategories(),
     //	2) interprets the XML / populates the ONT data model,
     //	3) fires it's onDataUpdate event
-
 
     // make sure the categories section of the data model exists
     if (!i2b2.ONT.model.Categories) { i2b2.ONT.model.Categories = []; }
@@ -149,19 +121,8 @@ i2b2.ONT.ctrlr.gen.loadSchemes = function() {
     var scopeCB = new i2b2_scopedCallback(processXML,i2b2.ONT.model.Schemes);
     // fire the AJAX call
     i2b2.ONT.ajax.GetSchemes("ONT:generalView", {}, scopeCB);
-}
+};
 
-
-
-
-// after the cell is initialized 
-// ================================================================================================== //
-i2b2.events.afterAllCellsLoaded.add(
-    (function(cell) {
-//		i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
-//		i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
-    })
-);
 
 console.timeEnd('execute time');
 console.groupEnd();
