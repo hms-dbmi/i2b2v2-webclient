@@ -431,3 +431,62 @@
     opacity: 1;
     margin-left: .3em;
 }
+
+.dropDownSelect {
+    color: #007bff;
+    background: white;
+}
+
+.dropDownSelect:hover {
+    background: #007bff;
+    color: white;
+}
+
+.btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle
+{
+    background: #007bff;
+    color: #82a6b2;
+}
+
+/* === Lab Values Modal === */
+#labHelpText{
+ margin-bottom: 20px;
+}
+
+#labFlagValue {
+    width: auto;
+    max-height: 100px;
+    overflow: auto;
+}
+
+.hidden {
+    display: none;
+}
+
+.labEnumValue{
+    overflow: scroll;
+    width: 562px;
+}
+
+.labTypeGroup {
+    width: 130px;
+}
+
+.labMain {
+    display: flex;
+    min-height: 130px;
+}
+
+#labNumericValueOperator{
+    width: 190px;
+    margin-bottom: 20px;
+}
+
+#labStringValueOperator{
+    width: 170px;
+    margin-bottom: 20px;
+}
+
+.labMain label {
+    display: block;
+}
