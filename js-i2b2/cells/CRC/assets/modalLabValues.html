@@ -4,7 +4,7 @@
 
             <!-- Modal Header -->
             <div class="modal-header">
-                <h5 class="modal-title">Specify Lab Value</h5>
+                <span id="labHeader" class="modal-title"></span>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
@@ -13,87 +13,123 @@
                 <form>
                     <div class="labMain">
                         <div id="labHelpText"></div>
+                        <div class="labTypeFlagAndValues">
+                            <div id="labTypeGroup" class="labTypeGroup">
+                                <div class="custom-control custom-radio">
+                                    <input class="custom-control-input" name="labType" id="labAnyValueType" value="NO_VALUE" type="radio" checked="checked" />
+                                    <label class="custom-control-label" for="labAnyValueType">
+                                        No value
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input class="custom-control-input" name="labType" id="labFlagType" value="BY_FLAG" type="radio" />
+                                    <label class="custom-control-label" for="labFlagType">
+                                        By flag
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input class="custom-control-input" name="labType" id="labByValueType" value="BY_VALUE" type="radio" />
+                                    <label class="custom-control-label" for="labByValueType">
+                                        By value
+                                    </label>
+                                </div>
+                            </div>
 
-                        <div id="labTypeGroup" class="labTypeGroup">
-                            <div class="custom-control custom-radio">
-                                <input class="custom-control-input" name="labType" id="labAnyValueType" value="NO_VALUE" type="radio" checked="checked" />
-                                <label class="custom-control-label" for="labAnyValueType">
-                                    No value
-                                </label>
+                            <div class="labOptions">
+                                <div id="labFlag" class="hidden">
+                                    <label for="labFlagValue"> Please select a range:<br /> </label>
+                                    <select id="labFlagValue" class="custom-select custom-select-sm">
+                                    </select>
+                                </div>
+
+                                <div id="labValue" class="hidden">
+                                    <div id="labNumericValueOperatorMain" class="hidden">
+                                        <label for="labNumericValueOperator"> Please select operator:<br /> </label>
+                                        <select id="labNumericValueOperator" class="custom-select custom-select-sm">
+                                            <option value="LT">LESS THAN (&lt;)</option>
+                                            <option value="LE">LESS THAN OR EQUAL TO (&lt;=)</option>
+                                            <option value="EQ">EQUAL (=)</option>
+                                            <option value="BETWEEN">BETWEEN</option>
+                                            <option value="GT">GREATER THAN (&gt;)</option>
+                                            <option value="GE">GREATER THAN OR EQUAL (&gt;=)</option>
+                                        </select>
+                                    </div>
+
+                                    <div id="labStringValueOperatorMain" class="hidden">
+                                        <label for="labStringValueOperator"> Please select operator:<br /> </label>
+                                        <select id="labStringValueOperator" class="custom-select custom-select-sm">
+                                            <option value="LIKE[contains]">Contains</option>
+                                            <option value="LIKE[exact]">Exact</option>
+                                            <option value="LIKE[begin]">Starts With</option>
+                                            <option value="LIKE[end]">Ends With</option>
+                                        </select>
+                                    </div>
+
+                                    <p id="labNumericValueMain" class="hidden">
+                                        <label for="labNumericValue"> Please enter a value:<br /> </label>
+                                        <input id="labNumericValue" class="custom-control" />
+                                    </p>
+
+                                    <p id="labNumericValueRangeMain" class="hidden">
+                                        <label for="labNumericValueRangeLow"> Please enter values:<br /> </label>
+                                        <input id="labNumericValueRangeLow" class="custom-control" />
+                                        &nbsp;-&nbsp;
+                                        <input id="labNumericValueRangeHigh" class="custom-control" />
+                                    </p>
+
+                                    <p id="labStringValueMain" class="hidden">
+                                        <label for="labStringValue"> Enter Search Text:<br /> </label>
+                                        <input id="labStringValue" class="custom-control" />
+                                    </p>
+
+                                    <p id="labLargeStringValueOperatorMain" class="hidden">
+                                        <input id="labLargeStringValueOperator" type="checkbox"/>
+                                        Use Database Operators <i>(Advanced Searching)</i><br/>
+                                    </p>
+
+                                    <p id="labEnumValueOperatorMain" class="hidden">
+                                        <label for="labEnumValueOperator"> Please select a value:<br /> </label>
+                                        <select id="labEnumValueOperator" class="labEnumValue" multiple="multiple" size="5">
+                                            <option value="">Loading...</option>
+                                        </select>
+                                    </p>
+                                </div>
                             </div>
-                            <div class="custom-control custom-radio">
-                                <input class="custom-control-input" name="labType" id="labFlagType" value="BY_FLAG" type="radio" />
-                                <label class="custom-control-label" for="labFlagType">
-                                    By flag
-                                </label>
-                            </div>
-                            <div class="custom-control custom-radio">
-                                <input class="custom-control-input" name="labType" id="labByValueType" value="BY_VALUE" type="radio" />
-                                <label class="custom-control-label" for="labByValueType">
-                                    By value
-                                </label>
+
+                            <div id="mlvfrmBarContainer" style="margin: 10px; padding: 10px; text-align: center; border: 1px solid #000080; height: auto; display:none">
+                                <div style="height: 55px">
+                                    <!-- top text -->
+                                    <div>Click on a bar segment to help specify a value or range:</div>
+                                    <div>Range in <span id="mlvfrmLblUnits" style="font-decoration:italic bold">(not specified)</span></div>
+                                    <!-- bars are drawn -->
+                                    <div id="barToxL" style="float:left; background: none repeat scroll 0% 0% rgb(0, 0, 0); height: 15px; width: 72px;"> <a href="#lblToxL" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Toxic low value" class="barlink">&nbsp;</a></div>
+                                    <div id="barLofL" style="float:left; background: none repeat scroll 0% 0% rgb(255, 0, 0); height: 15px; width: 72px;"> <a href="#lblLofL" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Abnormal low value" class="barlink">&nbsp;</a></div>
+                                    <div id="barHofL" style="float:left; background: none repeat scroll 0% 0% rgb(255, 255, 0); height: 15px; width: 72px;"> <a href="#lblHofL" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Indeterminant low value" class="barlink">&nbsp;</a></div>
+                                    <div id="barNorm" style="float:left; background: none repeat scroll 0% 0% rgb(0, 255, 0); height: 15px; width: 72px;"> <a href="#" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)"  title="Normal" class="barlink">&nbsp;</a></div>
+                                    <div id="barLofH" style="float:left; background: none repeat scroll 0% 0% rgb(255, 255, 0); height: 15px; width: 72px;"> <a href="#lblLofH" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Indeterminant high value" class="barlink">&nbsp;</a></div>
+                                    <div id="barHofH" style="float:left; background: none repeat scroll 0% 0% rgb(255, 0, 0); height: 15px; width: 72px;"> <a href="#lblHofH" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Abnormal high value" class="barlink">&nbsp;</a></div>
+                                    <div id="barToxH" style="float:left; background: none repeat scroll 0% 0% rgb(0, 0, 0); height: 15px; width: 72px;"> <a href="#lblToxH" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Toxic high value" class="barlink">&nbsp;</a></div>
+                                    <!-- labels are drawn -->
+                                    <div id="lblToxL" style="float: left; text-align: right; width: 72px;">&nbsp;</div>
+                                    <div id="lblLofL" style="float: left; text-align: right; width: 72px;">&nbsp;</div>
+                                    <div id="lblHofL" style="float: left; text-align: right; width: 72px;">&nbsp;</div>
+                                    <div id="lblNorm" style="float: left; text-align: left; width: 72px;">&nbsp;</div>
+                                    <div id="lblLofH" style="float: left; text-align: left; width: 72px;">&nbsp;</div>
+                                    <div id="lblHofH" style="float: left; text-align: left; width: 72px;">&nbsp;</div>
+                                    <div id="lblToxH" style="float: left; text-align: left; width: 72px;">&nbsp;</div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="labOptions">
-                            <div id="labFlag" class="hidden">
-                                <label for="labFlagValue"> Please select a range:<br /> </label>
-                                <select id="labFlagValue" class="custom-select">
-                                </select>
-                            </div>
-
-                            <div id="labValue" class="hidden">
-                                <div id="labNumericValueOperatorMain" class="hidden">
-                                    <label for="labNumericValueOperator"> Please select operator:<br /> </label>
-                                    <select id="labNumericValueOperator" class="custom-select custom-select-sm">
-                                        <option value="LT">LESS THAN (&lt;)</option>
-                                        <option value="LE">LESS THAN OR EQUAL TO (&lt;=)</option>
-                                        <option value="EQ">EQUAL (=)</option>
-                                        <option value="BETWEEN">BETWEEN</option>
-                                        <option value="GT">GREATER THAN (&gt;)</option>
-                                        <option value="GE">GREATER THAN OR EQUAL (&gt;=)</option>
-                                    </select>
+                        <!-- Units display section -->
+                        <div id="labUnitsMain" class="hidden">
+                            <div class="input-group mb-3 input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon3">Units =</span>
                                 </div>
-
-                                <div id="labStringValueOperatorMain" class="hidden">
-                                    <label for="labStringValueOperator"> Please select operator:<br /> </label>
-                                    <select id="labStringValueOperator" class="custom-select custom-select-sm">
-                                        <option value="LIKE[contains]">Contains</option>
-                                        <option value="LIKE[exact]">Exact</option>
-                                        <option value="LIKE[begin]">Starts With</option>
-                                        <option value="LIKE[end]">Ends With</option>
-                                    </select>
-                                </div>
-
-                                <p id="labNumericValueMain" class="hidden">
-                                    <label for="labNumericValue"> Please enter a value:<br /> </label>
-                                    <input id="labNumericValue" class="custom-control" />
-                                </p>
-
-                                <p id="labNumericValueRangeMain" class="hidden">
-                                    <label for="labNumericValueRangeLow"> Please enter values:<br /> </label>
-                                    <input id="labNumericValueRangeLow" class="custom-control" />
-                                    &nbsp;-&nbsp;
-                                    <input id="labNumericValueRangeHigh" class="custom-control" />
-                                </p>
-
-                                <p id="labStringValueMain" class="hidden">
-                                    <label for="labStringValue"> Enter Search Text:<br /> </label>
-                                    <input id="labStringValue" class="custom-control" />
-                                </p>
-
-                                <p id="labLargeStringValueOperatorMain" class="hidden">
-                                    <input id="labLargeStringValueOperator" type="checkbox"/>
-                                    Use Database Operators <i>(Advanced Searching)</i><br/>
-                                </p>
-
-                                <p id="labEnumValueOperatorMain" class="hidden">
-                                    <label for="labEnumValueOperator"> Please select a value:<br /> </label>
-                                    <select id="labEnumValueOperator" class="labEnumValue" multiple="multiple" size="5">
-                                        <option value="">Loading...</option>
-                                    </select>
-                                </p>
+                                <select id="labUnits" class="custom-select custom-select-sm"></select>
                             </div>
+                            <span id="labUnitExcluded" class="hidden">A value cannot be specified for these units.</span>
                         </div>
                     </div>
                 </form>

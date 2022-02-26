@@ -472,7 +472,7 @@
     width: 130px;
 }
 
-.labMain {
+.labTypeFlagAndValues {
     display: flex;
     min-height: 130px;
 }
@@ -489,4 +489,17 @@
 
 .labMain label {
     display: block;
+}
+
+#labUnitExcluded{
+    color:#900;
+    margin-left: 20px
+}
+
+#labHeader {
+    font-size: 1.0rem;
+}
+
+#labValuesModal .modal-dialog {
+    min-width: 580px;
 }

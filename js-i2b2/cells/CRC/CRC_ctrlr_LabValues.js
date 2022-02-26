@@ -12,9 +12,8 @@ console.time('execute time');
 
 
 i2b2.CRC.ctrlr.labValues = {
-    clickedID: false,
     extractedModel: {
-        name: "RND-TEST",
+        name: "",
         flagType: "NA",
         flags: [{name: "Abnormal", value: "A"}, {name: "Normal", value: "@"}],
         valueValidate: {
@@ -53,7 +52,6 @@ i2b2.CRC.ctrlr.labValues = {
             }
 
             const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
-            console.log("DEBUG: valueMetaData: ", valueMetaDataArr);
             if (valueMetaDataArr.length > 0) {
                 i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
             }
@@ -82,7 +80,6 @@ i2b2.CRC.ctrlr.labValues = {
             }
         }
 
-        // work with the data type
         this.extractedModel.enumInfo = [];
         this.extractedModel.valueUnits = [];
         try {
@@ -199,6 +196,70 @@ i2b2.CRC.ctrlr.labValues = {
             this.extractedModel.valueValidate.onlyInt = false;
             this.extractedModel.valueValidate.maxString = false;
         }
+
+        // set the title bar (TestName and TestID are assumed to be mandatory)
+        if (this.extractedModel.valueType === "LRGSTR") {
+            this.extractedModel.name("Search within the " + i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName'));
+        }else{
+            this.extractedModel.name = "Choose value of "+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName')+" (Test:"+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestID')+")";
+        }
+            //lab units
+        let tProcessing = {};
+        try {
+            // save list of all possible units (from)
+            let allUnits = i2b2.h.XPath(valueMetaDataXml,"descendant::UnitValues/descendant::text()[parent::NormalUnits or parent::EqualUnits or parent::Units]");
+            let allUnitsArr = [];
+            for (let i=0; i<allUnits.length; i++) {
+                if(allUnitsArr.indexOf(allUnits[i].nodeValue) === -1)
+                {
+                    allUnitsArr.push(allUnits[i].nodeValue);
+                }
+            }
+            allUnits = allUnitsArr;
+            for (let i=0;i<allUnits.length;i++) {
+                let d = {name: allUnits[i]};
+                // does unit require conversion?
+                try {
+                    d.multFactor = i2b2.h.XPath(valueMetaDataXml,"descendant::UnitValues/descendant::ConvertingUnits[Units/text()='"+t[i]+"']/MultiplyingFactor/text()")[0].nodeValue;
+                } catch(e) {
+                    d.multFactor = 1;
+                }
+                tProcessing[allUnits[i]]=  d;
+            }
+            // get our master unit (the first NormalUnits encountered that is not disabled)
+            let normalUnits = i2b2.h.XPath(valueMetaDataXml,"descendant::UnitValues/descendant::NormalUnits/text()");
+            let normalUnitsArr = [];
+            for (let i=0; i<normalUnits.length; i++) {
+                if(normalUnitsArr.indexOf(normalUnits[i].nodeValue) === -1)
+                {
+                    normalUnitsArr.push(normalUnits[i].nodeValue);
+                }
+            }
+            normalUnits = normalUnitsArr;
+            let masterUnit = false;
+            for (let i=0;i<normalUnits.length;i++) {
+                let d = tProcessing[normalUnits[i]];
+                if (!d.excluded && d.multFactor === 1) {
+                    masterUnit = normalUnits[i];
+                    d.masterUnit = true;
+                    tProcessing[normalUnits[i]] = d;
+                    break;
+                }
+            }
+            if (!masterUnit) {
+                masterUnit = normalUnits[0];
+                if (masterUnit) {
+                    let d = tProcessing[masterUnit];
+                    d.masterUnit = true;
+                    d.masterUnitViolation = true;
+                    tProcessing[masterUnit] =  d;
+                }
+            }
+        } catch(e) {
+            console.error("Problem was encountered when processing given Units", e);
+        }
+
+        this.extractedModel.valueUnits = Object.values(tProcessing);
     },
 }
 

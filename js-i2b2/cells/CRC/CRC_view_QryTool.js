@@ -517,6 +517,8 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                     $("#labFlag").addClass("hidden");
                 });
 
+                $("#labHeader").text(labValues.name);
+
                 for (let i = 0; i < labValues.flags.length; i++) {
                     let flagOption = $("<option></option>");
                     flagOption.text(labValues.flags[i].name);
@@ -556,6 +558,51 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                         $("#labEnumValueMain").removeClass("hidden");
                         $("#labStringValueMain").removeClass("hidden");
                         break;
+                }
+
+                if (labValues.valueType === "LRGSTR") {
+                    $('valueContraintText').innerHTML = "You are allowed to search within the narrative text associated with the term " + i2b2.h.getXNodeVal(refXML, 'TestName');
+                    /*$('mlvfrmTypeNONE').nextSibling.nodeValue = "No Search Requested";
+                    $('mlvfrmTypeVALUE').nextSibling.nodeValue = "Search within Text";
+                    */
+                } else if (sdxConcept.isModifier) {
+                    $("#labHelpText").text("Searches by Modifier values can be constrained by either a flag set by the sourcesystem or by the values themselves.");
+                } else {
+                    $("#labHelpText").text("Searches by Lab values can be constrained by the high/low flag set by the performing laboratory, or by the values themselves.");
+                }
+
+                // hide or show DIV
+                console.log("labValues.valueUnits.length ", labValues.valueUnits.length );
+                if (labValues.valueUnits.length !==0) {
+                    let labUnits = $("#labUnits");
+
+                    for (let i=0; i<labValues.valueUnits.length; i++) {
+                        let unitOption = $("<option></option>");
+                        unitOption.val(i);
+                        if (labValues.valueUnits[i].masterUnit) {
+                            labUnits.val(i);
+                        }
+                        unitOption.text(labValues.valueUnits[i].name);
+                        labUnits.append(unitOption);
+                    }
+
+                    $("#labUnitsMain").removeClass("hidden");
+
+                    labUnits.change(function(){
+                        // message if selected Unit is excluded from use
+                        let value= $(this).val();
+                        if (labValues.valueUnits[value].excluded) {
+                            $("#labUnitExcluded").removeClass(hidden);
+                            $("#labNumericValue").prop("disabled", true);
+                            $("#labNumericValueRangeLow").prop("disabled", true);
+                            $("#labNumericValueRangeHigh").prop("disabled", true);
+                        } else {
+                            $("#labUnitExcluded").addClass(hidden);
+                            $("#labNumericValue").prop("disabled", false);
+                            $("#labNumericValueRangeLow").prop("disabled", false);
+                            $("#labNumericValueRangeHigh").prop("disabled", false);
+                        }
+                    })
                 }
             }
         }
