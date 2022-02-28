@@ -569,7 +569,8 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                 }
 
                 if (labValues.valueType === "LRGSTR") {
-                    $('valueContraintText').innerHTML = "You are allowed to search within the narrative text associated with the term " + i2b2.h.getXNodeVal(refXML, 'TestName');
+                    $("#labHeader").text("You are allowed to search within the narrative text associated with the term "
+                        + labValues.name);
                     /*$('mlvfrmTypeNONE').nextSibling.nodeValue = "No Search Requested";
                     $('mlvfrmTypeVALUE').nextSibling.nodeValue = "Search within Text";
                     */
@@ -581,6 +582,9 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
 
                 if (labValues.valueUnits.length !==0) {
                     let labUnits = $("#labUnits");
+
+                    //set the label to the first value in the units list
+                    $("#labUnitsLabel").text(labValues.valueUnits[0].name);
 
                     for (let i=0; i<labValues.valueUnits.length; i++) {
                         let unitOption = $("<option></option>");
@@ -595,6 +599,7 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                     labUnits.change(function(){
                         // message if selected Unit is excluded from use
                         let value= $(this).val();
+                        $("#labUnitsLabel").text(labValues.valueUnits[value].name);
                         if (labValues.valueUnits[value].excluded) {
                             $("#labUnitExcluded").removeClass(hidden);
                             $("#labNumericValue").prop("disabled", true);
@@ -618,6 +623,11 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                         $("#barNormMain").removeClass("hidden");
                         if (isFinite(labValues.rangeInfo.LowOfToxic)) {
                             $("#lblToxL").text(labValues.rangeInfo.LowOfToxic);
+                            $("#barToxL").click(function(){
+                                let value = $("#lblToxL").text();
+                                $("#labNumericValueOperator").val("LE");
+                                $("#labNumericValue").val(value);
+                            });
                             $("#barToxLMain").removeClass("hidden");
                         }
                         else {
@@ -625,6 +635,12 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                         }
                         if (isFinite(labValues.rangeInfo.LowOfLow) && (labValues.rangeInfo.LowOfLowRepeat === false)) {
                             $("#lblLofL").text(labValues.rangeInfo.LowOfLow);
+                            $("#barLofL").click(function(){
+                                let value = $("#lblLofL").text();
+                                console.log("testing ", value);
+                                $("#labNumericValueOperator").val("LE");
+                                $("#labNumericValue").val(value);
+                            });
                             $("#barLofLMain").removeClass("hidden");
                         }
                         else {
