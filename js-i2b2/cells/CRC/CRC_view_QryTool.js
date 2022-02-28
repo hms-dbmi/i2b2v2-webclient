@@ -167,7 +167,7 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
     let isLab = i2b2.CRC.view.QT.handleLabs(sdx);
 
     if(isLab){
-        i2b2.CRC.view.QT.showLabValues(sdx);
+        i2b2.CRC.view.QT.labValue.showLabValues(sdx);
     }
     // render the new query group (by re-rendering all the query groups)
     i2b2.CRC.view.QT.render();
@@ -198,7 +198,7 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
 
     }
     if (sdx.isLab) {
-        i2b2.CRC.view.QT.showLabValues(sdx);
+        i2b2.CRC.view.QT.labValue.showLabValues(sdx);
     }
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
@@ -479,7 +479,9 @@ i2b2.CRC.view.QT.render = function() {
     i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
 };
 // ==================================================================================================
-i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
+i2b2.CRC.view.QT.labValue = {};
+
+i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
     let labValuesModal = $("#labValuesModal");
 
     if (labValuesModal.length === 0) {
@@ -526,7 +528,6 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                     $("#labFlagValue").append(flagOption);
                 }
 
-                console.log("labValues.flags.length", labValues.flags.length);
                 if(!labValues.flagType){
                     $("#labFlagTypeMain").hide();
                 }
@@ -635,9 +636,8 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                         }
                         if (isFinite(labValues.rangeInfo.LowOfLow) && (labValues.rangeInfo.LowOfLowRepeat === false)) {
                             $("#lblLofL").text(labValues.rangeInfo.LowOfLow);
-                            $("#barLofL").click(function(){
+                            $("#barLofL").click(function(event){
                                 let value = $("#lblLofL").text();
-                                console.log("testing ", value);
                                 $("#labNumericValueOperator").val("LE");
                                 $("#labNumericValue").val(value);
                             });
@@ -648,6 +648,11 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                         }
                         if (isFinite(labValues.rangeInfo.HighOfLow) && (labValues.rangeInfo.HighOfLowRepeat === false)) {
                             $("#lblHofL").text(labValues.rangeInfo.HighOfLow);
+                            $("#barHofL").click(function(event){
+                                let value = $("#lblHofL").text();
+                                $("#labNumericValueOperator").val("LE");
+                                $("#labNumericValue").val(value);
+                            });
                             $("#barHofLMain").removeClass("hidden");
                         }
                         else {
@@ -655,6 +660,11 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                         }
                         if (isFinite(labValues.rangeInfo.LowOfHigh) && (labValues.rangeInfo.LowOfHighRepeat === false)) {
                             $("#lblLofH").text(labValues.rangeInfo.LowOfHigh);
+                            $("#barLofH").click(function(event){
+                                let value = $("#lblLofH").text();
+                                $("#labNumericValueOperator").val("GE");
+                                $("#labNumericValue").val(value);
+                            });
                             $("#barLofHMain").removeClass("hidden");
                         }
                         else {
@@ -662,6 +672,11 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                         }
                         if (isFinite(labValues.rangeInfo.HighOfHigh) && (labValues.rangeInfo.HighOfHighRepeat === false)) {
                             $("#lblHofH").text(labValues.rangeInfo.HighOfHigh);
+                            $("#barHofH").click(function(event){
+                                let value = $("#lblHofH").text();
+                                $("#labNumericValueOperator").val("GE");
+                                $("#labNumericValue").val(value);
+                            });
                             $("#barHofHMain").removeClass("hidden");
                         }
                         else {
@@ -669,6 +684,11 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                         }
                         if (isFinite(labValues.rangeInfo.HighOfToxic)) {
                             $("#lblToxH").text(labValues.rangeInfo.HighOfToxic);
+                            $("#barToxH").click(function(event){
+                                let value = $("#lblToxH").text();
+                                $("#labNumericValueOperator").val("GE");
+                                $("#labNumericValue").val(value);
+                            });
                             $("#barToxHMain").removeClass("hidden");
                         }
                         else {

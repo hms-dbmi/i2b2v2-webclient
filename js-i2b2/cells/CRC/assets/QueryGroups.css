@@ -522,7 +522,6 @@
 
 .labBarItem {
     flex-grow: 1;
-    cursor: pointer;
 }
 
 #labUnitsLabel {
@@ -540,4 +539,13 @@
 
 .barLink:active {
     border: 1px solid #000080;
+    cursor: pointer;
+}
+
+.textRight {
+    text-align: right;
+}
+
+.textLeft {
+    text-align: left;
 }
