@@ -260,6 +260,63 @@ i2b2.CRC.ctrlr.labValues = {
         }
 
         this.extractedModel.valueUnits = Object.values(tProcessing);
+
+
+        var nBarLength = 520; // fixed width of bar
+        //fd.bHidebar = false;  // set to true if decide bar not worth showing
+        var nSituation = 0; // how many values are there?
+        this.extractedModel.rangeInfo = {};
+        //
+        // get preliminary bar length results and set up array
+        try {
+            this.extractedModel.rangeInfo.LowOfToxic = parseFloat(valueMetaDataXml.getElementsByTagName('LowofToxicValue')[0].firstChild.nodeValue);
+            nSituation = nSituation +1;
+        } catch(e) {}
+        try {
+            this.extractedModel.rangeInfo.LowOfLow = parseFloat(valueMetaDataXml.getElementsByTagName('LowofLowValue')[0].firstChild.nodeValue);
+            if ((isFinite(this.extractedModel.rangeInfo.LowOfToxic)) && (this.extractedModel.rangeInfo.LowOfToxic === this.extractedModel.rangeInfo.LowOfLow)) {
+                this.extractedModel.rangeInfo.LowOfLowRepeat = true;
+            }
+            else {
+                this.extractedModel.rangeInfo.LowOfLowRepeat = false;
+                nSituation = nSituation +1;
+            }
+        } catch(e) {}
+        try {
+            this.extractedModel.rangeInfo.HighOfLow = parseFloat(valueMetaDataXml.getElementsByTagName('HighofLowValue')[0].firstChild.nodeValue);
+            if ((isFinite(this.extractedModel.rangeInfo.LowOfLow)) && (this.extractedModel.rangeInfo.LowOfLow === this.extractedModel.rangeInfo.HighOfLow)) {
+                this.extractedModel.rangeInfo.HighOfLowRepeat = true;
+            }
+            else {
+                this.extractedModel.rangeInfo.HighOfLowRepeat = false;
+                nSituation = nSituation +1;
+            }
+        } catch(e) {}
+        try {
+            this.extractedModel.rangeInfo.HighOfToxic = parseFloat(valueMetaDataXml.getElementsByTagName('HighofToxicValue')[0].firstChild.nodeValue);
+            nSituation = nSituation +1;
+        } catch(e) {}
+        try {
+            this.extractedModel.rangeInfo.HighOfHigh = parseFloat(valueMetaDataXml.getElementsByTagName('HighofHighValue')[0].firstChild.nodeValue);
+            if ((isFinite(this.extractedModel.rangeInfo.HighOfToxic)) && (this.extractedModel.rangeInfo.HighOfToxic === this.extractedModel.rangeInfo.HighOfHigh)) {
+                this.extractedModel.rangeInfo.HighOfHighRepeat = true;
+            }
+            else {
+                this.extractedModel.rangeInfo.HighOfHighRepeat = false;
+                nSituation = nSituation +1;
+            }
+        } catch(e) {}
+        try {
+            this.extractedModel.rangeInfo.LowOfHigh = parseFloat(valueMetaDataXml.getElementsByTagName('LowofHighValue')[0].firstChild.nodeValue);
+            if ((isFinite(this.extractedModel.rangeInfo.HighOfHigh)) && (this.extractedModel.rangeInfo.HighOfHigh === this.extractedModel.rangeInfo.LowOfHigh)) {
+                this.extractedModel.rangeInfo.LowOfHighRepeat = true;
+            }
+            else {
+                this.extractedModel.rangeInfo.LowOfHighRepeat = false;
+                nSituation = nSituation +1;
+            }
+        } catch(e) {}
+        this.extractedModel.rangeInfo.total = nSituation;
     },
 }
 

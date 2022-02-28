@@ -450,7 +450,8 @@
 
 /* === Lab Values Modal === */
 #labHelpText{
- margin-bottom: 20px;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 #labFlagValue {
@@ -502,4 +503,32 @@
 
 #labValuesModal .modal-dialog {
     min-width: 580px;
+}
+
+.labBarMain
+{
+    margin: 10px;
+    text-align: center;
+    border: 1px solid #000080;
+    height: auto;
+}
+
+.labBar {
+    height: 55px;
+    width: 520px;
+    display: flex;
+    margin: 10px 5px 10px 5px;
+}
+
+.labBarItem {
+    flex-grow: 1;
+}
+
+#labUnitsLabel {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.barLink {
+    height: 15px;
 }

@@ -503,17 +503,17 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                 });
 
                 $("#labAnyValueType").click(function(){
-                    $("#labValue").addClass("hidden");
+                    $(".labValueSection").addClass("hidden");
                     $("#labFlag").addClass("hidden");
                 });
 
                 $("#labFlagType").click(function(){
-                    $("#labValue").addClass("hidden");
+                    $(".labValueSection").addClass("hidden");
                     $("#labFlag").removeClass("hidden");
                 });
 
                 $("#labByValueType").click(function(){
-                    $("#labValue").removeClass("hidden");
+                    $(".labValueSection").removeClass("hidden");
                     $("#labFlag").addClass("hidden");
                 });
 
@@ -524,6 +524,11 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                     flagOption.text(labValues.flags[i].name);
                     flagOption.val(labValues.flags[i].value);
                     $("#labFlagValue").append(flagOption);
+                }
+
+                console.log("labValues.flags.length", labValues.flags.length);
+                if(!labValues.flagType){
+                    $("#labFlagTypeMain").hide();
                 }
 
                 $("#labNumericValueOperator").change(function(){
@@ -558,6 +563,9 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                         $("#labEnumValueMain").removeClass("hidden");
                         $("#labStringValueMain").removeClass("hidden");
                         break;
+                    default:
+                        $("#labByValueTypeMain").hide();
+                        break
                 }
 
                 if (labValues.valueType === "LRGSTR") {
@@ -571,8 +579,6 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                     $("#labHelpText").text("Searches by Lab values can be constrained by the high/low flag set by the performing laboratory, or by the values themselves.");
                 }
 
-                // hide or show DIV
-                console.log("labValues.valueUnits.length ", labValues.valueUnits.length );
                 if (labValues.valueUnits.length !==0) {
                     let labUnits = $("#labUnits");
 
@@ -585,8 +591,6 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                         unitOption.text(labValues.valueUnits[i].name);
                         labUnits.append(unitOption);
                     }
-
-                    $("#labUnitsMain").removeClass("hidden");
 
                     labUnits.change(function(){
                         // message if selected Unit is excluded from use
@@ -603,6 +607,65 @@ i2b2.CRC.view.QT.showLabValues = function(sdxConcept) {
                             $("#labNumericValueRangeHigh").prop("disabled", false);
                         }
                     })
+                }
+                else{
+                    $("#labUnitsMain").hide();
+                }
+
+                //Bar segment
+                try {
+                    if (labValues.rangeInfo.total  !== 0) {
+                        $("#barNormMain").removeClass("hidden");
+                        if (isFinite(labValues.rangeInfo.LowOfToxic)) {
+                            $("#lblToxL").text(labValues.rangeInfo.LowOfToxic);
+                            $("#barToxLMain").removeClass("hidden");
+                        }
+                        else {
+                            $("#lblToxL").text("");
+                        }
+                        if (isFinite(labValues.rangeInfo.LowOfLow) && (labValues.rangeInfo.LowOfLowRepeat === false)) {
+                            $("#lblLofL").text(labValues.rangeInfo.LowOfLow);
+                            $("#barLofLMain").removeClass("hidden");
+                        }
+                        else {
+                            $("#lblLofL").text("");
+                        }
+                        if (isFinite(labValues.rangeInfo.HighOfLow) && (labValues.rangeInfo.HighOfLowRepeat === false)) {
+                            $("#lblHofL").text(labValues.rangeInfo.HighOfLow);
+                            $("#barHofLMain").removeClass("hidden");
+                        }
+                        else {
+                            $("#lblHofL").text("");
+                        }
+                        if (isFinite(labValues.rangeInfo.LowOfHigh) && (labValues.rangeInfo.LowOfHighRepeat === false)) {
+                            $("#lblLofH").text(labValues.rangeInfo.LowOfHigh);
+                            $("#barLofHMain").removeClass("hidden");
+                        }
+                        else {
+                            $("#lblLofH").text("");
+                        }
+                        if (isFinite(labValues.rangeInfo.HighOfHigh) && (labValues.rangeInfo.HighOfHighRepeat === false)) {
+                            $("#lblHofH").text(labValues.rangeInfo.HighOfHigh);
+                            $("#barHofHMain").removeClass("hidden");
+                        }
+                        else {
+                            $("#lblHofH").text("");
+                        }
+                        if (isFinite(labValues.rangeInfo.HighOfToxic)) {
+                            $("#lblToxH").text(labValues.rangeInfo.HighOfToxic);
+                            $("#barToxHMain").removeClass("hidden");
+                        }
+                        else {
+                            $("#lblToxH").text("");
+                        }
+                    }
+                    else {
+                        $("#labBarMain").hide();
+                    }
+                }
+                catch(e) {
+                    let errString = "Description: " + e.description;
+                    alert(errString);
                 }
             }
         }
