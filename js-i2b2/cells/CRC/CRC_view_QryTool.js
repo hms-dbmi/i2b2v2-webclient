@@ -715,8 +715,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                             $("#lblLofL").text(labValues.rangeInfo.LowOfLow);
                             $("#barLofL").click(function(event){
                                 let value = $("#lblLofL").text();
-                                $("#labNumericValueOperator").val("LE");
-                                $("#labNumericValue").val(value);
+                                $("#labNumericValueOperator").val("LE").trigger("change");
+                                $("#labNumericValue").val(value).trigger("change");
                             });
                             $("#barLofLMain").removeClass("hidden");
                         }
@@ -727,8 +727,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                             $("#lblHofL").text(labValues.rangeInfo.HighOfLow);
                             $("#barHofL").click(function(event){
                                 let value = $("#lblHofL").text();
-                                $("#labNumericValueOperator").val("LE");
-                                $("#labNumericValue").val(value);
+                                $("#labNumericValueOperator").val("LE").trigger("change");
+                                $("#labNumericValue").val(value).trigger("change");
                             });
                             $("#barHofLMain").removeClass("hidden");
                         }
@@ -739,8 +739,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                             $("#lblLofH").text(labValues.rangeInfo.LowOfHigh);
                             $("#barLofH").click(function(event){
                                 let value = $("#lblLofH").text();
-                                $("#labNumericValueOperator").val("GE");
-                                $("#labNumericValue").val(value);
+                                $("#labNumericValueOperator").val("GE").trigger("change");
+                                $("#labNumericValue").val(value).trigger("change");
                             });
                             $("#barLofHMain").removeClass("hidden");
                         }
@@ -751,8 +751,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                             $("#lblHofH").text(labValues.rangeInfo.HighOfHigh);
                             $("#barHofH").click(function(event){
                                 let value = $("#lblHofH").text();
-                                $("#labNumericValueOperator").val("GE");
-                                $("#labNumericValue").val(value);
+                                $("#labNumericValueOperator").val("GE").trigger("change");
+                                $("#labNumericValue").val(value).trigger("change");
                             });
                             $("#barHofHMain").removeClass("hidden");
                         }
@@ -763,8 +763,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                             $("#lblToxH").text(labValues.rangeInfo.HighOfToxic);
                             $("#barToxH").click(function(event){
                                 let value = $("#lblToxH").text();
-                                $("#labNumericValueOperator").val("GE");
-                                $("#labNumericValue").val(value);
+                                $("#labNumericValueOperator").val("GE").trigger("change");
+                                $("#labNumericValue").val(value).trigger("change");
                             });
                             $("#barToxHMain").removeClass("hidden");
                         }
