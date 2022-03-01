@@ -1,11 +1,9 @@
 /**
- * @projectDescription	The main controller for the history viewport. (CRC's "previous queries" functionality)
+ * @projectDescription	The main controller for the lab values viewport.
  * @inherits 	i2b2.CRC.ctrlr
- * @namespace	i2b2.CRC.ctrlr.history
- * @author		Nick Benik, Griffin Weber MD PhD
- * @version 	1.3
+ * @namespace	i2b2.CRC.ctrlr.labValues
+ * @author		Marc-Danie Nazaire
  * ----------------------------------------------------------------------------------------
- * updated 9-15-08: RC4 launch [Nick Benik]
  */
 console.group('Load & Execute component file: CRC > ctrlr > LabValues');
 console.time('execute time');
