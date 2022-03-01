@@ -207,9 +207,9 @@ i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
         }
         // add new events
         dd_events[typeCode] = {
-            "RenderHTML": i2b2.sdx.Master.getHandlerDefault(typeCode, "RenderHTML"),
-            "AppendTreeNode": i2b2.sdx.Master.getHandlerDefault(typeCode, "AppendTreeNode"),
-            "LoadChildrenFromTreeview":i2b2.sdx.Master.getHandlerDefault(typeCode, "LoadChildrenFromTreeview"),
+//            "RenderHTML": i2b2.sdx.Master.getHandlerDefault(typeCode, "RenderHTML"),
+//            "AppendTreeNode": i2b2.sdx.Master.getHandlerDefault(typeCode, "AppendTreeNode"),
+//            "LoadChildrenFromTreeview":i2b2.sdx.Master.getHandlerDefault(typeCode, "LoadChildrenFromTreeview"),
             "onHoverOver":i2b2.sdx.Master.getHandlerDefault(typeCode, "onHoverOver"),
             "onHoverOut":i2b2.sdx.Master.getHandlerDefault(typeCode, "onHoverOut"),
             "DropHandler":i2b2.sdx.Master.setHandlerDefault(typeCode, "DropHandler")
