@@ -55,6 +55,7 @@ i2b2.CRC.ctrlr.labValues = {
             if (valueMetaDataArr.length > 0) {
                 i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
             }
+
             callBack();
         }
 
