@@ -524,6 +524,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                     flagValue: null,
                     numericOperator: null,
                     numericValues: null,
+                    numericValueRangeLow: null,
+                    numericValueRangeHigh: null,
                     unitValue: null,
                     stringOperator: null,
                     stringValue: null,
@@ -610,16 +612,36 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                             newLabValues.numericOperator = value;
                         });
                         let numericValueSelection = $("#labNumericValue");
-
                         numericValueSelection.change(function(){
                            newLabValues.numericValues = $(this).val();
                         });
+
+                        let numericValueRangeLowSelection = $("#labNumericValueRangeLow");
+                        numericValueRangeLowSelection.change(function(){
+                            newLabValues.numericValueRangeLow = $(this).val();
+                        });
+
+                        let numericValueRangeHighSelection = $("#labNumericValueRangeHigh");
+                        numericValueRangeHighSelection.change(function(){
+                            newLabValues.numericValueRangeHigh = $(this).val();
+                        });
+
                         if(sdxConcept.LabValues && sdxConcept.LabValues.numericOperator)
                         {
-                            numericValueOperatorSelection.val(sdxConcept.LabValues.numericOperator);
-                            numericValueSelection.val(sdxConcept.LabValues.numericValues);
+                            numericValueOperatorSelection.val(sdxConcept.LabValues.numericOperator).trigger("change");
                             newLabValues.numericOperator = sdxConcept.LabValues.numericOperator;
-                            newLabValues.numericValues = sdxConcept.LabValues.numericValues;
+
+                            if(sdxConcept.LabValues.numericOperator === "BETWEEN")
+                            {
+                                newLabValues.numericValueRangeLow = sdxConcept.LabValues.numericValueRangeLow;
+                                newLabValues.numericValueRangeHigh = sdxConcept.LabValues.numericValueRangeHigh;
+                                numericValueRangeLowSelection.val(sdxConcept.LabValues.numericValueRangeLow);
+                                numericValueRangeHighSelection.val(sdxConcept.LabValues.numericValueRangeHigh);
+
+                            }else{
+                                numericValueSelection.val(sdxConcept.LabValues.numericValues);
+                                newLabValues.numericValues = sdxConcept.LabValues.numericValues;
+                            }
                         }
                         break;
                     case "LRGSTR":

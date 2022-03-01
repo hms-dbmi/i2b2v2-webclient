@@ -522,6 +522,7 @@
 
 .labBarItem {
     flex-grow: 1;
+    flex-basis: 0;
 }
 
 #labUnitsLabel {
@@ -531,6 +532,7 @@
 
 .barLink {
     height: 15px;
+    cursor: pointer;
 }
 
 .barLink:hover {
@@ -539,7 +541,6 @@
 
 .barLink:active {
     border: 1px solid #000080;
-    cursor: pointer;
 }
 
 .textRight {
