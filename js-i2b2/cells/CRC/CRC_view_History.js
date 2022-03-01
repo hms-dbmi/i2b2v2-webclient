@@ -15,23 +15,9 @@ console.time('execute time');
 i2b2.CRC.view.history = new i2b2Base_cellViewController(i2b2.CRC, 'history');
 i2b2.CRC.view.history.visible = false;
 i2b2.CRC.view.history.params.maxQueriesDisp = 20; // TODO: This does not work
-// define the option functions
-// ================================================================================================== //
-i2b2.CRC.view.history.showOptions = function(subScreen){};
+
 
 // ================================================================================================== //
-// deprecated functions
-i2b2.CRC.view.history.ToggleNode = function(divTarg, divTreeID) {};
-i2b2.CRC.view.history.selectTab = function(tabCode) {};
-i2b2.CRC.view.history.Resize = function(e) {};
-i2b2.CRC.view.history.splitterDragged = function()  {};
-i2b2.CRC.view.history.ResizeHeight = function() {};
-i2b2.CRC.view.history.ZoomView = function() {};
-
-
-
-
-
 i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
     // called via i2b2.CRC.view.history.treeview.on('nodeLoading', i2b2.CRC.view.history.loadChildren)
     // and is used to load all the children for a single passed node
@@ -49,12 +35,12 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
 
         let parentNode = this.key;
         // add the renderData to the nodes
-        var newNodes = [];
-        for ( var i1=0; i1 < cellResult.results.length; i1++) {
-            var sdxDataNode = cellResult.results[i1];
+        let newNodes = [];
+        for ( let i1=0; i1 < cellResult.results.length; i1++) {
+            let sdxDataNode = cellResult.results[i1];
             sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, {showchildren: true});
             sdxDataNode.renderData.idDOM = "CRC_H_TV-" + i2b2.GUID();
-            var temp = {
+            let temp = {
                 title: sdxDataNode.renderData.moreDescriptMinor,
                 text: sdxDataNode.renderData.title,
                 icon: sdxDataNode.renderData.cssClassMain,
@@ -74,13 +60,13 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
         // add the children to the parent node
         i2b2.CRC.view.history.treeview.treeview('addNodes', [
             newNodes,
-            function(parent, child){ return parent.key == child.parentKey },
+            function(parent, child){ return parent.key === child.parentKey },
             false
         ]);
 
         // change the treeview icon to show it is no longer loading
         i2b2.CRC.view.history.treeview.treeview('setNodeLoaded', [
-            function(parent, parentKey){ return parent.key == parentKey },
+            function(parent, parentKey){ return parent.key === parentKey },
             parentNode
         ]);
 
@@ -89,11 +75,11 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
 
         // change the treeview icon to show it is no longer loading
         $('#stackRefreshIcon_i2b2-CRC-view-history').removeClass("refreshing");
-
     }).bind(nodeData));
-
 };
 
+
+//================================================================================================== //
 i2b2.CRC.view.history.treeRedraw = function(ev, b) {
     // called via i2b2.CRC.view.history.treeview.on('onRedraw', i2b2.CRC.view.history.treeRedraw);
     $('#stackRefreshIcon_i2b2-CRC-view-history').removeClass("refreshing");
@@ -102,14 +88,14 @@ i2b2.CRC.view.history.treeRedraw = function(ev, b) {
 };
 
 
-
 //================================================================================================== //
 i2b2.CRC.view.history.LoadQueryMasters = function() {
     $('#stackRefreshIcon_i2b2-CRC-view-history').addClass("refreshing");
-    var scopedCallback = new i2b2_scopedCallback();
+    let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = this;
     scopedCallback.callback = function(cellResult) {
-        $('#stackRefreshIcon_i2b2-CRC-view-history').removeClass("refreshing");
+        let refreshIcon = $('#stackRefreshIcon_i2b2-CRC-view-history');
+        refreshIcon.removeClass("refreshing");
         i2b2.CRC.view.history.treeview.treeview('clear');
         // THIS function is used to process the AJAX results of the getChild call
         //              results data object contains the following attributes:
@@ -124,17 +110,17 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
         cellResult.parse();
 
         // display the tree results
-        var newNodes = [];
-        for ( var i1=0; i1 < cellResult.model.length; i1++) {
-            var sdxDataNode = cellResult.model[i1];
-            var renderOptions = {
+        let newNodes = [];
+        for ( let i1=0; i1 < cellResult.model.length; i1++) {
+            let sdxDataNode = cellResult.model[i1];
+            let renderOptions = {
                 title: sdxDataNode.sdxDisplayName ,
                 icon: "sdx_CRC_QM.gif",
                 showchildren: true
             };
             sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
             sdxDataNode.renderData.idDOM = "CRC_H_TV-" + i2b2.GUID();
-            var temp = {
+            let temp = {
                 title: sdxDataNode.renderData.moreDescriptMinor,
                 text: sdxDataNode.renderData.title,
                 icon: sdxDataNode.renderData.cssClassMain,
@@ -155,15 +141,9 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
         // render tree
         i2b2.CRC.view.history.treeview.treeview('redraw', []);
         // reset the loading icon in the stack buttons list
-        $('#stackRefreshIcon_i2b2-CRC-view-history').removeClass("refreshing");
-    }
+        refreshIcon.removeClass("refreshing");
+    };
     i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":"20"}, scopedCallback);
-
-};
-
-// ================================================================================================== //
-i2b2.CRC.view.history.PopulateQueryMasters = function(dm_ptr, dm_name, options) {
-    // DEPRECATED ???
 };
 
 
@@ -171,34 +151,34 @@ i2b2.CRC.view.history.PopulateQueryMasters = function(dm_ptr, dm_name, options) 
 // =========== Context Menu Suff =========== 
 // ================================================================================================== //
 i2b2.CRC.view.history.doDisplay = function(node) {
-    var op = node.i2b2;
+    let op = node.i2b2;
     i2b2.CRC.ctrlr.QT.doQueryLoad(op, node);
-}
+};
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doRename = function(node) {
-    var op = node.i2b2;
+    let op = node.i2b2;
     i2b2.CRC.ctrlr.history.queryRename(op, false, node);
-}
+};
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doDelete = function(node) {
-    var op = node.i2b2;
+    let op = node.i2b2;
     i2b2.CRC.ctrlr.history.queryDelete(op, node);
-}
+};
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doRefreshAll = function() {
     $('#stackRefreshIcon_i2b2-CRC-view-history').addClass("refreshing");
     i2b2.CRC.view.history.treeview.treeview('clear');
     i2b2.CRC.view.history.LoadQueryMasters();
-}
+};
 
 
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((function(cell){
-        if (cell.cellCode == "CRC") {
+        if (cell.cellCode === "CRC") {
 // =========================================================
             console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
             // ___ Register this view with the layout manager ____________________
@@ -208,7 +188,7 @@ i2b2.events.afterCellInit.add((function(cell){
                     i2b2.CRC.view.history.lm_view = container;
 
                     // add the cellWhite flare
-                    var treeTarget = $('<div class="cellWhite" id="i2b2TreeviewCrcHistory"></div>').appendTo(container._contentElement);
+                    let treeTarget = $('<div class="cellWhite" id="i2b2TreeviewCrcHistory"></div>').appendTo(container._contentElement);
 
                     // create an empty treeview
                     i2b2.CRC.view.history.treeview = $(treeTarget).treeview({
@@ -237,7 +217,7 @@ i2b2.events.afterCellInit.add((function(cell){
                             nodeDisplay: {
                                 name: 'Display',
                                 onClick: function(node) {
-                                    console.dir(node);
+                                    // console.dir(node);
                                     i2b2.CRC.view.history.doDisplay(node);
                                 },
                                 isShown: function(node) {
@@ -301,8 +281,7 @@ i2b2.events.afterCellInit.add((function(cell){
 }));
 console.info("SUBSCRIBED TO i2b2.events.afterCellInit");
 
+
 // =========================================================
-
-
 console.timeEnd('execute time');
 console.groupEnd();

@@ -25,13 +25,13 @@ function QueryToolController() {
 
 
 // ================================================================================================== //
-    this.doQueryLoad = function(qm_id) {  // function to load query from history
+    this.doQueryLoad = function(qm_id) {  // function to load query from Query History or Workspace
     };
 
 // ================================================================================================== //
     this.doQueryRun = function() {
         // function to build and run query
-        if (i2b2.CRC.ctrlr.currentQueryStatus != false && i2b2.CRC.ctrlr.currentQueryStatus.isQueryRunning()) {
+        if (i2b2.CRC.ctrlr.currentQueryStatus !== false && i2b2.CRC.ctrlr.currentQueryStatus.isQueryRunning()) {
             i2b2.CRC.ctrlr.deleteCurrentQuery.cancelled = true;
             i2b2.CRC.ctrlr.currentQueryStatus.cancelQuery();
             i2b2.CRC.ctrlr.currentQueryStatus = false;
@@ -45,17 +45,17 @@ function QueryToolController() {
         }
 
         // callback for dialog submission
-        var handleSubmit = function() {
+        let handleSubmit = function() {
             // submit value(s)
             if(this.submit()) {
                 // run the query
                 //if(jQuery("input:checkbox[name=queryType]:checked").length > 0){ // WEBCLIENT-170
-                    var t = $('dialogQryRun');
-                    var queryNameInput = t.select('INPUT.inputQueryName')[0];
-                    var options = {};
-                    var t2 = t.select('INPUT.chkQueryType');
-                    for (var i=0;i<t2.length; i++) {
-                        if (t2[i].checked == true) {
+                    let t = $('dialogQryRun');
+                    let queryNameInput = t.select('INPUT.inputQueryName')[0];
+                    let options = {};
+                    let t2 = t.select('INPUT.chkQueryType');
+                    for (let i=0;i<t2.length; i++) {
+                        if (t2[i].checked === true) {
                             options['chk_'+t2[i].value] = t2[i].checked;
                         }
                     }
@@ -70,34 +70,34 @@ function QueryToolController() {
         // display the query name input dialog
         this._queryPromptRun(handleSubmit);
         // autogenerate query name
-        var myDate=new Date();
+        // TODO: Use momentjs to do this
+        let myDate=new Date();
 
-
-        var hours = myDate.getHours();
+        let hours = myDate.getHours();
         if (hours < 10){
             hours = "0" + hours
         }
-        var minutes = myDate.getMinutes();
+        let minutes = myDate.getMinutes();
         if (minutes < 10){
             minutes = "0" + minutes
         }
-        var seconds = myDate.getSeconds();
+        let seconds = myDate.getSeconds();
         if (seconds < 10){
             seconds = "0" + seconds
         }
         //var ds = myDate.toLocaleString();
-        var ts = hours + ":" + minutes + ":" + seconds; //ds.substring(ds.length-5,ds.length-13);
-        var defQuery = this._getQueryXML.call(this);
-        var qn = defQuery.queryAutoName+'@'+ts;
+        let ts = hours + ":" + minutes + ":" + seconds; //ds.substring(ds.length-5,ds.length-13);
+        let defQuery = this._getQueryXML.call(this);
+        let qn = defQuery.queryAutoName+'@'+ts;
         // display name
-        var queryNameInput = $('dialogQryRun').select('INPUT.inputQueryName')[0];
+        let queryNameInput = $('dialogQryRun').select('INPUT.inputQueryName')[0];
         queryNameInput.value = qn;
-    }
+    };
 
 
 // ================================================================================================== //
     this.runQuery = function(queryTypes) {
-        var params = {
+        let params = {
             result_wait_time: i2b2.CRC.view.QT.params.queryTimeout,
             psm_query_definition: "",
             psm_result_output: "",
@@ -117,7 +117,7 @@ function QueryToolController() {
 
         // get the query name
         let queryName = $('.CRC_QT_runbar input.name',i2b2.CRC.view.QT.containerDiv).text().trim();
-        if (queryName.length == 0 ) queryName = i2b2.CRC.model.transformedQuery.name;
+        if (queryName.length === 0 ) queryName = i2b2.CRC.model.transformedQuery.name;
         queryName = i2b2.h.Escape(queryName);
 
         // hand over execution of query to the QueryRunner component
@@ -125,7 +125,7 @@ function QueryToolController() {
     };
 
 
-    // ================================================================================================== //
+// ================================================================================================== //
     this._processModel = function() {
         let funcTranslateDate = function(trgtdate) {
             // this does proper setting of the timezone based on the browser's current timezone
@@ -199,66 +199,8 @@ function QueryToolController() {
 
         i2b2.CRC.model.transformedQuery = transformedModel;
     };
-
-
-    this.getValues = function(lvd) {
-                            var s = '\t\t\t<constrain_by_value>\n';
-                            //var lvd = sdxData.LabValues;
-                            switch(lvd.MatchBy) {
-                                case "FLAG":
-                                    s += '\t\t\t\t<value_type>FLAG</value_type>\n';
-                                    s += '\t\t\t\t<value_operator>EQ</value_operator>\n';
-                                    s += '\t\t\t\t<value_constraint>'+i2b2.h.Escape(lvd.ValueFlag)+'</value_constraint>\n';
-                                    break;
-                                case "VALUE":
-                                    if (lvd.GeneralValueType=="ENUM") {
-                                        var sEnum = [];
-                                        for (var i2=0;i2<lvd.ValueEnum.length;i2++) {
-                                            sEnum.push(i2b2.h.Escape(lvd.ValueEnum[i2]));
-                                        }
-                                        //sEnum = sEnum.join("\", \"");
-                                        sEnum = sEnum.join("\',\'");
-                                        sEnum = '(\''+sEnum+'\')';
-                                        s += '\t\t\t\t<value_type>TEXT</value_type>\n';
-                                        s += '\t\t\t\t<value_constraint>'+sEnum+'</value_constraint>\n';
-                                        s += '\t\t\t\t<value_operator>IN</value_operator>\n';
-                                     } else if ((lvd.GeneralValueType=="STRING") || (lvd.GeneralValueType=="TEXT")){
-                                        s += '\t\t\t\t<value_type>TEXT</value_type>\n';
-                                        s += '\t\t\t\t<value_operator>'+lvd.StringOp+'</value_operator>\n';
-                                        s += '\t\t\t\t<value_constraint><![CDATA['+i2b2.h.Escape(lvd.ValueString)+']]></value_constraint>\n';
-                                    } else if (lvd.GeneralValueType=="LARGESTRING") {
-                                        if (lvd.DbOp) {
-                                            s += '\t\t\t\t<value_operator>CONTAINS[database]</value_operator>\n';
-                                        } else {
-                                            s += '\t\t\t\t<value_operator>CONTAINS</value_operator>\n';
-                                        }
-                                        s += '\t\t\t\t<value_type>LARGETEXT</value_type>\n';
-                                        s += '\t\t\t\t<value_constraint><![CDATA['+lvd.ValueString+']]></value_constraint>\n';
-                                    } else {
-                                        s += '\t\t\t\t<value_type>'+lvd.GeneralValueType+'</value_type>\n';
-                                        s += '\t\t\t\t<value_unit_of_measure>'+lvd.UnitsCtrl+'</value_unit_of_measure>\n';
-                                        s += '\t\t\t\t<value_operator>'+lvd.NumericOp+'</value_operator>\n';
-                                        if (lvd.NumericOp == 'BETWEEN') {
-                                            s += '\t\t\t\t<value_constraint>'+i2b2.h.Escape(lvd.ValueLow)+' and '+i2b2.h.Escape(lvd.ValueHigh)+'</value_constraint>\n';
-                                        } else {
-                                            s += '\t\t\t\t<value_constraint>'+i2b2.h.Escape(lvd.Value)+'</value_constraint>\n';
-                                        }
-                                    }
-                                    break;
-                                case "":
-                                    break;
-                            }
-                            s += '\t\t\t</constrain_by_value>\n';
-        return s;
-    }
-
-// ================================================================================================== //
-    this._loadTreeDataForNode = function(node, onCompleteCallback) {
-        i2b2.sdx.Master.LoadChildrenFromTreeview(node, onCompleteCallback);
-    }
-
-
 }
+
 
 console.timeEnd('execute time');
 console.groupEnd();
