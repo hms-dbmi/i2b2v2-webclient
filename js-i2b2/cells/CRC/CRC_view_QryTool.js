@@ -505,13 +505,6 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
 
 i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
-    Handlebars.registerHelper('json', function(context) {
-        return JSON.stringify(context);
-    });
-    sdxConcept.OtherFake = {"Nestfakeded": sdxConcept.origData.name};
-    console.log("before sdx is this ", sdxConcept);
-    console.log("my sdx is this current", i2b2.CRC.view.QT.current);
-
     let labValuesModal = $("#labValuesModal");
 
     if (labValuesModal.length === 0) {
@@ -521,7 +514,6 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
     labValuesModal.load('/js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
         let labValuesCallback = function() {
-            console.log("callback my sdx is this current", sdxConcept);
 
             let labValues = i2b2.CRC.ctrlr.labValues.extractedModel;
 
