@@ -1,5 +1,5 @@
 /**
- * @projectDescription	View controller for ONT's "Navigate Terms" tab.
+ * @projectDescription	View controller for ONT's "Terms" tab.
  * @inherits 	i2b2.ONT.view
  * @namespace	i2b2.ONT.view.nav
  * @author		Nick Benik, Griffin Weber MD PhD
