@@ -7,8 +7,8 @@
     "i2b2_msgs.js"
   ],
   "preload": [
-    "assets/WORK_root.gif",
-    "assets/WORK_folder.gif",
+    "assets/sdx_WORK_root.gif",
+    "assets/sdx_WORK_folder.gif",
     "assets/sdx_WORK_XML.gif"
   ],
   "css": ["sdx_WORK_types.css"],

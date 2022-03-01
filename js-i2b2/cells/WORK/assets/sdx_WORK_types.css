@@ -8,13 +8,12 @@ span.sdxStyleWORK-XML::before {
     top: 3px;
 }
 
-
 span.sdxStyleWORK-WRK.tv-depth-1::before {
-    background-image: url(WORK_root.gif);
+    background-image: url(sdx_WORK_root.gif);
 }
 
 span.sdxStyleWORK-WRK::before {
-    background-image: url(WORK_folder.gif);
+    background-image: url(sdx_WORK_folder.gif);
 }
 
 span.sdxStyleWORK-XML::before {
