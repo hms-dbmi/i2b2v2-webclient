@@ -200,7 +200,6 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
 
     }
     if (sdx.isLab) {
-        i2b2.CRC.view.QT.current  = {"conceptSdx": sdx};
         i2b2.CRC.view.QT.labValue.showLabValues(sdx);
     }
     // update the query name
