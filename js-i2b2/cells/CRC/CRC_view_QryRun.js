@@ -13,15 +13,18 @@ console.time('execute time');
 // create and save the view objects
 i2b2.CRC.view['QR'] = new i2b2Base_cellViewController(i2b2.CRC, 'QR');
 
+
+// ================================================================================================== //
 i2b2.CRC.view.QR.render = function() {
     $(i2b2.CRC.view.QR.containerDiv).empty();
 
     $((Handlebars.compile("{{> QueryRunner}}"))(i2b2.CRC.model.runner)).appendTo(i2b2.CRC.view.QR.containerDiv);
 
     // TODO: attach event handlers
-
 };
 
+
+// ================================================================================================== //
 i2b2.CRC.view.QR.timerTick = function() {
     i2b2.CRC.model.runner.elapsedTime = Math.round((new Date() - i2b2.CRC.model.runner.startTime) / 100) / 10;
     i2b2.CRC.view.QR.render();
@@ -33,7 +36,7 @@ i2b2.CRC.view.QR.timerTick = function() {
 console.info("SUBSCRIBED TO i2b2.events.afterCellInit");
 i2b2.events.afterCellInit.add(
     function (cell) {
-        if (cell.cellCode == 'CRC') {
+        if (cell.cellCode === 'CRC') {
 // ================================================================================================== //
             console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
 
@@ -56,23 +59,7 @@ i2b2.events.afterCellInit.add(
                 }).bind(this)
             );
 
-// !!! Do this properly via the "cell_config_data.json" file
-//            // Attach the stylesheets
-//            $('<link type="text/css" rel="stylesheet" href="js-i2b2/cells/CRC/assets/QueryRunner.css">').appendTo($("head")[0]);
-
-
             // load the templates (TODO: Refactor this to loop using a varname/filename list)
-            // TODO: Refactor templates to use Handlebars partals system
-            // ---------------------------------------------------------
-            // cell.view.QR.template = {};
-            // $.ajax("js-i2b2/cells/CRC/templates/QueryRunner.html", {
-            //     success: (template) => {
-            //         cell.view.QR.template.main = Handlebars.compile(template);
-            //     },
-            //     error: (error) => {
-            //         console.error("Could not retrieve template: QueryRunner.html");
-            //     }
-            // });
             // ---------------------------------------------------------
             $.ajax("js-i2b2/cells/CRC/templates/QueryRunner.html", {
                 success: (template, status, req) => {

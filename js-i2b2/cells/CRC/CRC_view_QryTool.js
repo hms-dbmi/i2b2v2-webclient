@@ -2,17 +2,15 @@
  * @projectDescription	View controller for CRC Query Tool window.
  * @inherits 	i2b2.CRC.view
  * @namespace	i2b2.CRC.view.QT
- * @author		Nick Benik, Griffin Weber MD PhD
- * @version 	1.3
- * ----------------------------------------------------------------------------------------
- * updated 9-15-08: RC4 launch [Nick Benik]
- */
+ * @version 	2.0
+ **/
 console.group('Load & Execute component file: CRC > view > Main');
 console.time('execute time');
 
 
 // create and save the view objects
-i2b2.CRC.view['QT'] = new i2b2Base_cellViewController(i2b2.CRC, 'QT');
+i2b2.CRC.view.QT = new i2b2Base_cellViewController(i2b2.CRC, 'QT');
+
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateQueryName = function() {
@@ -20,6 +18,7 @@ i2b2.CRC.view.QT.updateQueryName = function() {
     i2b2.CRC.ctrlr.QT._processModel();
     $('.CRC_QT_runbar input.name').attr("placeholder", i2b2.CRC.model.transformedQuery.name);
 };
+
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.showRun = function() {
@@ -49,13 +48,15 @@ i2b2.CRC.view.QT.showRun = function() {
     });
 };
 
+
 // ================================================================================================== //
 i2b2.CRC.view.QT._correctQgTitles = function() {
     // this function makes sure that the first query group always says "Find Patients"
     $(" .JoinText:first", i2b2.CRC.view.QT.containerDiv).text("Find Patients");
 };
 
-// ============ Actions on term list items ============
+
+// ================================================================================================== //
 i2b2.CRC.view.QT.termActionInfo = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
     let eventIdx = $(evt.target).closest('.event').data('eventidx');
@@ -71,6 +72,7 @@ i2b2.CRC.view.QT.termActionInfo = function(evt) {
     });
 };
 
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionDelete = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
@@ -82,6 +84,7 @@ i2b2.CRC.view.QT.termActionDelete = function(evt) {
     // re-render the concept list
     i2b2.CRC.view.QT.renderTermList(i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx], $(evt.target).closest('.TermList'));
 };
+
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
@@ -95,6 +98,7 @@ i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
     $('.concept .actions .info', targetEl).on('click', i2b2.CRC.view.QT.termActionInfo);
     $('.concept .actions .delete', targetEl).on('click', i2b2.CRC.view.QT.termActionDelete);
 };
+
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.deleteQueryGroup = function(event) {
@@ -117,6 +121,7 @@ i2b2.CRC.view.QT.deleteQueryGroup = function(event) {
     i2b2.CRC.view.QT._correctQgTitles();
 };
 
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.handleLabs = function(sdx) {
     // see if the concept is a lab, prompt for value if it is
@@ -127,9 +132,11 @@ i2b2.CRC.view.QT.handleLabs = function(sdx) {
     return sdx.isLab;
 };
 
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.HoverOver = function(el) { $(el).closest(".i2b2DropTarget").addClass("DropHover"); };
 i2b2.CRC.view.QT.HoverOut = function(el) { $(el).closest(".i2b2DropTarget").removeClass("DropHover"); };
+
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
@@ -178,6 +185,7 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
     i2b2.CRC.view.QT.updateQueryName();
 };
 
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     // remove the hover and drop target fix classes
@@ -205,6 +213,7 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
 };
+
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget) {
@@ -235,6 +244,7 @@ i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget)
         i2b2.CRC.view.QT.renderTermList(qgData.events[1], temp);
     }
 };
+
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.render = function() {
@@ -849,7 +859,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 console.info("SUBSCRIBED TO i2b2.events.afterCellInit");
 i2b2.events.afterCellInit.add(
     function (cell) {
-        if (cell.cellCode == 'CRC') {
+        if (cell.cellCode === 'CRC') {
 // ================================================================================================== //
             console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
 
@@ -878,11 +888,6 @@ i2b2.events.afterCellInit.add(
 
                 }).bind(this)
             );
-
-// !!! Do this properly via the "cell_config_data.json" file
-//            // Attach the stylesheets
-//            $('<link type="text/css" rel="stylesheet" href="js-i2b2/cells/CRC/assets/QueryGroups.css">').appendTo($("head")[0]);
-
 
             // load the templates (TODO: Refactor this to loop using a varname/filename list)
             // TODO: Refactor templates to use Handlebars partals system
@@ -931,7 +936,6 @@ i2b2.events.afterCellInit.add(
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItem.xml"); }
             });
 
-
             cell.model.resultTypes = {
                 "PATIENTSET": "Patient set",
                 "PATIENT_ENCOUNTER_SET":"Encounter set",
@@ -947,13 +951,8 @@ i2b2.events.afterCellInit.add(
                 "PATIENT_INOUT_XML": "Inpatient and outpatient breakdown",
             };
             cell.model.selectedResultTypes = [
-                "PATIENT_COUNT_XML",
-                "PATIENT_GENDER_COUNT_XML",
-                "PATIENT_VITALSTATUS_COUNT_XML",
-                "PATIENT_RACE_COUNT_XML",
-                "PATIENT_AGE_COUNT_XML"
+                "PATIENT_COUNT_XML"
             ];
-
             cell.model.query = {
                 name: 'default query name',
                 groups: []
@@ -964,26 +963,6 @@ i2b2.events.afterCellInit.add(
 );
 
 
-
-
-//================================================================================================== //
-i2b2.events.initView.subscribe((function(eventTypeName, newMode) {
-    debugger;
-    console.error("not implemented");
-}),'',i2b2.CRC.view.QT);
-
 // ================================================================================================== //
-i2b2.events.changedViewMode.subscribe((function(eventTypeName, newMode) {
-    debugger;
-    console.error("not implemented");
-}),'', i2b2.CRC.view.QT);
-
-// ================================================================================================== //
-i2b2.events.changedZoomWindows.subscribe((function(eventTypeName, zoomMsg) {
-    debugger;
-    console.error("not implemented");
-}),'',i2b2.CRC.view.QT);
-
-
 console.timeEnd('execute time');
 console.groupEnd();

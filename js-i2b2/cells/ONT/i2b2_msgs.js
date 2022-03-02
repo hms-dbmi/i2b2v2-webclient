@@ -217,29 +217,6 @@ i2b2.ONT.cfg.msgs.GetCategories = '<?xml version="1.0" encoding="UTF-8" standalo
 '        <ns4:get_categories  synonyms="{{{ont_synonym_records}}}" hiddens="{{{ont_hidden_records}}}" type="core"/>\n'+
 '    </message_body>\n'+
 '</ns3:request>';
-/*
-i2b2.ONT.cfg.parsers.GetCategories = function(){
-    if (!this.error) {
-        this.model = [];
-        // extract records from XML msg
-        var c = this.refXML.getElementsByTagName('concept');
-        for(var i=0; i<1*c.length; i++) {
-            var o = new Object;
-            o.xmlOrig = c[i];
-            o.level = i2b2.h.getXNodeVal(c[i],'level');
-            o.key = i2b2.h.getXNodeVal(c[i],'key');
-            o.name = i2b2.h.getXNodeVal(c[i],'name');
-            o.total_num = i2b2.h.getXNodeVal(c[i],'totalnum');
-            // save extracted info
-            this.model.push(0);
-        }
-    } else {
-        this.model = false;
-        console.error("[GetCategories] Could not parse() data!");
-    }
-    return this;
-};
-*/
 i2b2.ONT.ajax._addFunctionCall(	"GetCategories",
                                 "{{{URL}}}getCategories",
                                 i2b2.ONT.cfg.msgs.GetCategories,

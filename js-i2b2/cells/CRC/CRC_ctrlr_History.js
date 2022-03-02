@@ -25,62 +25,57 @@ i2b2.CRC.ctrlr.history = {
 
 
         // create a scoped callback message
-        var scopeCB = new i2b2_scopedCallback();
+        let scopeCB = new i2b2_scopedCallback();
         scopeCB.scope = i2b2.CRC.model.QueryMasters;
         scopeCB.callback = function(i2b2CellMsg) {
             // define the XML processing function
-
-            console.group("CALLBACK Processing AJAX i2b2CellMsg");
-            console.dir(i2b2CellMsg);
-
             // the THIS scope is already set to i2b2.CRC.model.QueryMasters
-            i2b2.sdx.Master.ClearAll('QM');
             if (!i2b2CellMsg.error) {
-                var qm = i2b2CellMsg.refXML.getElementsByTagName('query_master');
-                for(var i=0; i<1*qm.length; i++) {
-                    var o = new Object;
-                    o.xmlOrig = qm[i];
-                    o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
-                    o.realname = i2b2.h.getXNodeVal(qm[i],'name');
-                    o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
-                    o.group = i2b2.h.getXNodeVal(qm[i],'group_id');
-                    o.created = i2b2.h.getXNodeVal(qm[i],'create_date');
-                    o.master_type_cd = i2b2.h.getXNodeVal(qm[i],'master_type_cd');
-
-                    var dStr = '';
-                    var d = o.created.match(/^[0-9\-]*/).toString();
-                    if (d) {
-                        d = d.replace(/-/g,'/');
-                        d = new Date(Date.parse(d));
-                        if (d) {
-                            dStr = ' [' + (d.getMonth()+1) + '-' + d.getDate() + '-' + d.getFullYear().toString() + ']';
-                        }
-                    }
-                    o.name = o.realname +  dStr + ' ['+o.userid+']';
-                    // encapsulate into an SDX package
-                    var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QM',o);
-                    // save the node to the CRC data model
-                    i2b2.sdx.Master.Save(sdxDataPack, null);
-                }
+                let qm = i2b2CellMsg.refXML.getElementsByTagName('query_master');
+                // for(let i=0; i<1*qm.length; i++) {
+                //     let o = {};
+                //     o.xmlOrig = qm[i];
+                //     o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
+                //     o.realname = i2b2.h.getXNodeVal(qm[i],'name');
+                //     o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
+                //     o.group = i2b2.h.getXNodeVal(qm[i],'group_id');
+                //     o.created = i2b2.h.getXNodeVal(qm[i],'create_date');
+                //     o.master_type_cd = i2b2.h.getXNodeVal(qm[i],'master_type_cd');
+                //
+                //     // TODO: Use moment.js here
+                //     let dStr = '';
+                //     let d = o.created.match(/^[0-9\-]*/).toString();
+                //     if (d) {
+                //         d = d.replace(/-/g,'/');
+                //         d = new Date(Date.parse(d));
+                //         if (d) {
+                //             dStr = ' [' + (d.getMonth()+1) + '-' + d.getDate() + '-' + d.getFullYear().toString() + ']';
+                //         }
+                //     }
+                //     o.name = o.realname +  dStr + ' ['+o.userid+']';
+                //     // encapsulate into an SDX package
+                //     var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QM',o);
+                //     // save the node to the CRC data model
+                //     i2b2.sdx.Master.Save(sdxDataPack, null);
+                // }
             } else {
                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }
             // Broadcast an update event letting interested view controllers know that the Categories data model has been updated
-            var DataUpdateSignal = {
+            let DataUpdateSignal = {
                 DataLocation: "i2b2.CRC.model.QueryMasters",
                 DataRef: i2b2.CRC.model.QueryMasters
-            }
+            };
             console.info("EVENT FIRE i2b2.CRC.ctrlr.gen.events.onDataUpdate; Msg:",DataUpdateSignal);
             console.groupEnd();
             i2b2.CRC.ctrlr.history.events.onDataUpdate.fire(DataUpdateSignal);
             $('refreshPQImg').src = "assets/images/refreshButton.gif";
-
         };
 
         $('refreshPQImg').src="assets/images/spin.gif";
 
         // fire the AJAX call
-        var options = {
+        let options = {
             result_wait_time: 180,
 //			crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp,
             crc_max_records: "20",
@@ -89,9 +84,9 @@ i2b2.CRC.ctrlr.history = {
             crc_sort_order: i2b2.CRC.view['history'].params.sortOrder
         };
         i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", options, scopeCB);
-
     },
 
+// ================================================================================================== //
     clickSearchName: function() {
         console.info("CALLED i2b2.CRC.ctrlr.history.clickSearchName()");
         // THIS FUNCTION DOES THE FOLLOWING:
@@ -192,6 +187,7 @@ i2b2.CRC.ctrlr.history = {
         }
     },
 
+// ================================================================================================== //
     queryDeleteNoPrompt: function(qmID) {
         // function requires a Query Master ID
             // create a scoped callback message
@@ -256,31 +252,9 @@ i2b2.CRC.ctrlr.history = {
             qm_name: newQueryName
         };
         i2b2.CRC.ajax.renameQueryMaster("CRC:History", options, scopeCB);
-    },
-
-// ================================================================================================== //
-    _queryPromptName: function(handleSubmit) {
-        if (!i2b2.CRC.view.dialogQmName) {
-            var handleCancel = function() {
-                this.cancel();
-            };
-            var loopBackSubmit = function() {
-                i2b2.CRC.view.dialogQmName.submitterFunction();
-            };
-
-            // REFACTOR TO USE jQuery/Bootstrap4 and templating
-            if ($('body #crcHistoryModal').length === 0) {
-                $('body').append("<div id='crcHistoryModal'/>");
-            }
-            $('body #crcHistoryModal').load('/js-i2b2/cells/CRC/assets/tmplHistRenameModal.html', function() {
-                // pre populate data
-
-                // now show the modal form
-                $('body #crcHistoryModal div:eq(0)').modal('show');
-            });
-        }
     }
-}
+
+};
 
 
 
@@ -290,5 +264,6 @@ i2b2.CRC.ctrlr.history.events = new Object;
 i2b2.CRC.ctrlr.history.events.onDataUpdate = $.Callbacks();
 
 
+// ================================================================================================== //
 console.timeEnd('execute time');
 console.groupEnd();

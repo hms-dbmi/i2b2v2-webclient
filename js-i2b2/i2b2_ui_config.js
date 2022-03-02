@@ -27,9 +27,3 @@ i2b2.UI.cfg = {
     floorThresholdText: "Less Than " // [Default: "Less Than "] Text that is prefixed before floorThresholdNumber (include trailing space)
 };
 /* End Configuration */
-
-function initI2B2_UI() {
-    if(i2b2.UI.cfg.hasOwnProperty('titleLogoSrc')){
-        document.getElementById('topBarTitle').src = i2b2.UI.cfg.titleLogoSrc;
-    }
-}

@@ -1,12 +1,9 @@
 /**
  * @projectDescription	Various objects/classes used by the i2b2 Framework.
- * @namespace	
- * @inherits 	
- * @author		Nick Benik, Griffin Weber MD PhD
- * @version 	1.3
- * ----------------------------------------------------------------------------------------
- * updated 9-15-08: RC4 launch [Nick Benik] 
- */
+ * @namespace
+ * @inherits
+ * @version 	2.0
+ **/
 console.group('Load & Execute component file: hive > globals');
 console.time('execute time');
 
@@ -19,10 +16,6 @@ function i2b2Base_cellViewController(parentObj, viewName) {
     this.params = {};
     // functions
     this.showOptions = _showOptions;
-    this.Render = _doRender;
-    this.Resize = _doResize;
-    function _doRender() {			alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT doRender() function for '"+this.viewName+"' View");	}
-    function _doResize(width,height) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT Resize("+width+","+height+") function for '"+this.viewName+"' View");	}
     function _showOptions(subScreen) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT showOptions() function for '"+this.viewName+"' View (request subscreen:'"+subScreen+"')");	}
     function _saveOptions(subScreen) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT saveOptions() function for '"+this.viewName+"' View (request subscreen:'"+subScreen+"')");	}
     function _cancelOptions(subScreen) {	alert("[Cell:"+this.cellRoot.cellCode+"] DEFAULT cancelOptions() function for '"+this.viewName+"' View (request subscreen:'"+subScreen+"')");	}
