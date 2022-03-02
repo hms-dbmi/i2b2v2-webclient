@@ -153,7 +153,7 @@ i2b2.CRC.ctrlr.labValues = {
                     // extract the enum data
                     let enumValuesXml = i2b2.h.XPath(valueMetaDataXml,"descendant::EnumValues/Val");
 
-                    let enumValuesArr = [];
+                    let enumValuesObj = {};//new Array();
                     for (let i=0; i<enumValuesXml.length; i++) {
                         let name;
                         if (enumValuesXml[i].attributes[0].nodeValue !== "" ) {
@@ -161,17 +161,18 @@ i2b2.CRC.ctrlr.labValues = {
                         } else {
                             name = enumValuesXml[i].childNodes[0].nodeValue;
                         }
-                        enumValuesArr[(enumValuesXml[i].childNodes[0].nodeValue)] = name;
+                        enumValuesObj[(enumValuesXml[i].childNodes[0].nodeValue)] = name;
                     }
-                    this.extractedModel.enumInfo = enumValuesArr;
+                    this.extractedModel.enumInfo = enumValuesObj;
 
                     // remove any Enums found in <CommentsDeterminingExclusion> section
                     let commentsDetExclusion = i2b2.h.XPath(valueMetaDataXml,"descendant::CommentsDeterminingExclusion/Com/text()");
                     let exclusionArr = [];
                     for (let i=0; i<commentsDetExclusion.length; i++) {
+                        if(exclusionArr.indexOf(commentsDetExclusion[i].nodeValue) === -1)
                         exclusionArr.push(commentsDetExclusion[i].nodeValue);
                     }
-                    commentsDetExclusion = exclusionArr.uniq();
+                    commentsDetExclusion = exclusionArr;
                     if (commentsDetExclusion.length > 0) {
                         for (let i=0;i<commentsDetExclusion.length; i++){
                             for (let i2=0;i2<this.extractedModel.enumInfo.length; i2++) {

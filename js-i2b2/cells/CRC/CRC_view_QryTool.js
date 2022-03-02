@@ -545,19 +545,27 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
                 $("#labAnyValueType").click(function(){
                     $(".labValueSection").addClass("hidden");
+                    $("#labEnumValueMain").addClass("hidden");
                     $("#labFlag").addClass("hidden");
                     newLabValues.type = $("#labAnyValueType").val();
                 });
 
                 $("#labFlagType").click(function(){
                     $(".labValueSection").addClass("hidden");
+                    $("#labEnumValueMain").addClass("hidden");
                     $("#labFlag").removeClass("hidden");
                     newLabValues.type = $("#labFlagType").val();
                 });
 
                 $("#labByValueType").click(function(){
-                    $(".labValueSection").removeClass("hidden");
                     $("#labFlag").addClass("hidden");
+                    if(labValues.valueType === 'ENUM')
+                    {
+                        $("#labEnumValueMain").removeClass("hidden");
+                    }
+                    else {
+                        $(".labValueSection").removeClass("hidden");
+                    }
                     newLabValues.type = $("#labByValueType").val();
                 });
 
@@ -653,8 +661,14 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         $("#labStringValueMain").removeClass("hidden");
                         break;
                     case "ENUM":
-                        $("#labEnumValueMain").removeClass("hidden");
-                        $("#labStringValueMain").removeClass("hidden");
+                        if(Object.keys(labValues.enumInfo).length > 0){
+                            Object.entries(labValues.enumInfo).forEach(([key, value]) => {
+                                let enumOption = $("<option></option");
+                                enumOption.text(value);
+                                enumOption.val(key);
+                                $("#labEnumValue").append(enumOption);
+                            });
+                        }
                         break;
                     default:
                         $("#labByValueTypeMain").hide();
