@@ -2,6 +2,7 @@ console.group('Load & Execute component file: WORK > ctrl > general');
 console.time('execute time');
 
 
+// ======================================================================================
 i2b2.WORK.ctrlr.refreshAll = function(view_component) {
 
     // set loading icon in the stack buttons list
@@ -10,14 +11,14 @@ i2b2.WORK.ctrlr.refreshAll = function(view_component) {
     i2b2.WORK.view.main.treeview.treeview('clear', []);
 
     // create initial loader display routine
-    var scopedCallback = new i2b2_scopedCallback();
+    let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = i2b2.WORK;
     scopedCallback.callback = function(results){
-        var newNodes = [];
-        var nlst = i2b2.h.XPath(results.refXML, "//folder[name and share_id and index and visual_attributes]");
-        for (var i = 0; i < nlst.length; i++) {
-            var s = nlst[i];
-            var nodeData = {};
+        let newNodes = [];
+        let nlst = i2b2.h.XPath(results.refXML, "//folder[name and share_id and index and visual_attributes]");
+        for (let i = 0; i < nlst.length; i++) {
+            let s = nlst[i];
+            let nodeData = {};
             nodeData.xmlOrig = s;
             nodeData.index = i2b2.h.getXNodeVal(s, "index");
             nodeData.key = nodeData.index;
@@ -43,78 +44,50 @@ i2b2.WORK.ctrlr.refreshAll = function(view_component) {
         $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
     };
     // ajax communicator call
-    if (i2b2.PM.model.userRoles.indexOf("MANAGER") == -1) {
+    if (i2b2.PM.model.userRoles.indexOf("MANAGER") === -1) {
         i2b2.WORK.ajax.getFoldersByUserId("WORK:Workplace", {}, scopedCallback);
     } else {
         i2b2.WORK.ajax.getFoldersByProject("WORK:Workplace", {}, scopedCallback);
     }
-
 };
+
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main = {};
 i2b2.WORK.ctrlr.main.moveFolder = function(target_nodeTV, new_parent_nodeTV) {
-    // TODO: Need this to work
-    // create callback display routine
-    var scopedCallback = new i2b2_scopedCallback();
-    scopedCallback.scope = new_parent_nodeTV;
-    scopedCallback.callback = function(results) {
-        var cl_target_node = target_nodeTV;
-        var cl_parent_node = new_parent_nodeTV;
-        if (results.error) {
-            alert("An error occurred while trying to move a work item folder!");
-        } else {
-            var rl = [];
-            rl.push(cl_target_node.parent);  // the target node itself is not refreshed but its parent
-            rl.push(cl_parent_node);
-            rl = i2b2.WORK.ctrlr.main._generateRefreshList(rl);
-            // whack the "already loaded" status out of the parent node and initiate a
-            // dynamic loading of the childs nodes (including our newest addition)
-            for (var i=0; i<rl.length; i++) {
-                rl[i].collapse();
-                rl[i].dynamicLoadComplete = false;
-                rl[i].childrenRendered = false;
-                rl[i].tree.removeChildren(rl[i]);
-                rl[i].expand();
-            }
-        }
-    }
-    var trgtID = target_nodeTV.data.i2b2_SDX.sdxInfo.sdxKeyValue;
-    var destID = new_parent_nodeTV.data.i2b2_SDX.sdxInfo.sdxKeyValue;
-    destID = destID.substr(destID.lastIndexOf("\\")+1);  // we must make sure only the parent node's ID is used not it's full path
-    var varData = {
-        result_wait_time: 180,
-        target_node_id: trgtID,
-        new_parent_node_id: destID
-    };
-    i2b2.WORK.ajax.moveChild("WORK:Workplace", varData, scopedCallback);
-}
+    // TODO: Reimplement this
+    alert("not yet implemented");
+};
 
+
+// ======================================================================================
 i2b2.WORK.ctrlr.main.NewFolder = function(parent_node) {
-    var fldrName = prompt("What name should be used for the new folder?", "New Folder");
-    if (!fldrName) { return false; }
+    let fldrName = prompt("What name should be used for the new folder?", "New Folder");
+    if (!fldrName)  return false;
 
     // create callback display routine
-    var scopedCallback = new i2b2_scopedCallback();
+    let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = parent_node;
     scopedCallback.callback = function(results) {
-        var cl_new_key = newChildKey;
-        var cl_parent_node = parent_node;
+        let cl_new_key = newChildKey;
+        let cl_parent_node = parent_node;
         if (results.error) {
             alert("An error occurred while trying to create a new work item!");
         } else {
             // TODO: THIS IS NOT DONE YET!
             // whack the "already loaded" status out of the parent node and initiate a
             // dynamic reloading of the childs nodes (including our newest addition)
-            var parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+            // You may need to delete the child nodes first
+            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
             temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
             i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
             i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
         }
-    }
-    var newChildKey = i2b2.h.GenerateAlphaNumId(20);
-    var pn = parent_node.i2b2;
-    var varInput = {
+    };
+
+    let newChildKey = i2b2.h.GenerateAlphaNumId(20);
+    let pn = parent_node.i2b2;
+    let varInput = {
             child_name: fldrName,
             share_id: pn.origData.share_id,
             child_index: newChildKey,
@@ -128,40 +101,41 @@ i2b2.WORK.ctrlr.main.NewFolder = function(parent_node) {
 };
 
 
-i2b2.WORK.ctrlr.main.Rename = function(target_node) { 
-    var nd = target_node.i2b2;
+// ======================================================================================
+i2b2.WORK.ctrlr.main.Rename = function(target_node) {
+    let nd = target_node.i2b2;
     if (typeof nd === 'undefined') {
         console.error("The target node does not have SDX data attached.");
         return false;
     }
-    var origName = nd.origData.name;
-    var newName = prompt('Rename this work item to:', origName);
-    if (!newName || newName==origName) { return false; }
+    let origName = nd.origData.name;
+    let newName = prompt('Rename this work item to:', origName);
+    if (!newName || newName === origName) return false;
 
     // set loading icon in the stack buttons list
     $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
 
     // create callback display routine
-    var scopedCallback = new i2b2_scopedCallback();
+    let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = target_node;
     scopedCallback.callback = function(results) {
         // reset loading icon in the stack buttons list
         $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
 
-        var cl_parent_node = target_node.parentNode; // TODO: is this valid?
+        let cl_parent_node = target_node.parentNode; // TODO: is this valid?
         if (results.error) {
             alert("An error occurred while trying to rename the selected item!");
         } else {
             // whack the "already loaded" status out of the parent node and initiate a
             // dynamic reloading of the childs nodes (including our newest addition)
-            var parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
             temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
             i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
             i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
         }
-    }
-    var pn = target_node.i2b2;
-    var varInput = {
+    };
+    let pn = target_node.i2b2;
+    let varInput = {
         rename_text: newName,
         rename_target_id: pn.sdxInfo.sdxKeyValue,
         result_wait_time: 180
@@ -170,29 +144,32 @@ i2b2.WORK.ctrlr.main.Rename = function(target_node) {
 };
 
 
+// ======================================================================================
 i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
     // TODO: This needs to be done
-    var nd = target_node.i2b2;
+    let nd = target_node.i2b2;
     if (!options) { options = {}; }
     if (!options.silent) {
-        var nodeTitle = nd.renderData.title;
+        let nodeTitle = target_node.text;
         nodeTitle = String(nodeTitle).trim();
-        if (nd.origData.encapType == "FOLDER") {
-            var go = confirm('Are you sure you want to delete the folder "'+nodeTitle+'" and all of it\'s contents?');
+        let go;
+        if (nd.origData.encapType === "FOLDER") {
+            go = confirm('Are you sure you want to delete the folder "'+nodeTitle+'" and all of it\'s contents?');
         } else {
-            var go = confirm('Are you sure you want to delete "'+nodeTitle+'"?');
+            go = confirm('Are you sure you want to delete "'+nodeTitle+'"?');
         }
-        if (!go) { return false; }
+        if (!go) return false;
     }
 
     // set loading icon in the stack buttons list
     $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
 
+    let scopedCallback;
     if (options.callback) {
-        var scopedCallback = options.callback;
+        scopedCallback = options.callback;
     } else {
         // create callback GUI update routine
-        var scopedCallback = new i2b2_scopedCallback();
+        scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = target_node;
         scopedCallback.callback = function(results) {
             // unsetset loading icon in the stack buttons list
@@ -207,28 +184,30 @@ i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
             }
         }
     }
-    var varInput = {
+    let varInput = {
         delete_target_id: nd.sdxInfo.sdxKeyValue,
         result_wait_time: 180
     };
     i2b2.WORK.ajax.deleteChild("WORK:Workplace", varInput, scopedCallback);
-}
+};
 
 
+// ======================================================================================
 i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
     // TODO: This needs to be done
-    var nd = target_node.i2b2;
+    let nd = target_node.i2b2;
     if (typeof nd === 'undefined') {
         console.error("The target node does not have SDX data attached.");
         return false;
     }
-    var origAnno = nd.origData.annotation;
-    if (!origAnno) { origAnno = ''; }
-    else {
-        var eachLine = origAnno.split('\n');
+    let origAnno = nd.origData.annotation;
+    if (!origAnno) {
+        origAnno = '';
+    } else {
+        let eachLine = origAnno.split('\n');
         if(eachLine.length > 1){ // an annotation was found
-            var tempAnno = '';
-            for(var i = 1, l = eachLine.length; i < l; i++) {
+            let tempAnno = '';
+            for(let i = 1, l = eachLine.length; i < l; i++) {
                 tempAnno += eachLine[i];
             }
             origAnno = tempAnno;
@@ -236,11 +215,11 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
             origAnno = '';
         }
     }
-    var newAnno = prompt('Change this work item\'s annotation to:', origAnno);
-    if (!newAnno || newAnno==origAnno) { return false; }
+    let newAnno = prompt('Change this work item\'s annotation to:', origAnno);
+    if (!newAnno || newAnno === origAnno) { return false; }
 
     // create callback display routine
-    var scopedCallback = new i2b2_scopedCallback();
+    let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = target_node;
     scopedCallback.callback = function(results) {
         if (results.error) {
@@ -250,8 +229,8 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
             //this.data.i2b2_SDX.origData.annotation = newAnno;
             i2b2.WORK.view.main.refreshTree();
         }
-    }
-    var varInput = {
+    };
+    let varInput = {
         annotation_text: newAnno,
         annotation_target_id: dn.sdxInfo.sdxKeyValue,
         result_wait_time: 180
@@ -260,39 +239,18 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
 };
 
 
-
-
+// ======================================================================================
 i2b2.WORK.ctrlr.main.HandleDrop = function(sdxDropped) {
     // TODO: This needs to be done
-    var ddm = YAHOO.util.DDM;
-    var trgtEl = ddm.getBestMatch(ddm.interactionInfo.drop);
-    var trgtElID = trgtEl.id
-    var yuiTV = YAHOO.widget.TreeView.findTreeByChildDiv(trgtElID);
-    var trgtNode = yuiTV.getNodeByProperty("nodeid", trgtElID);
-    var trgtSdx = trgtNode.data.i2b2_SDX;
-    for (var i=0; i<sdxDropped.length; i++) {
-        var cSDX = sdxDropped[i];
-        if (cSDX.sdxInfo.sdxType=="WORK") {
-            console.error("The action has been prevented.  This action should have been managed by the default WRK SDX controller");
-            return false;
-        } else if (cSDX.origData.isModifier) {
-            alert("Work item being dropped is not supported.");
-            return false;
-        } else {
-            // add the new work item
-            i2b2.WORK.ctrlr.main.AddWorkItem(cSDX, trgtNode);
-        }
-    }
 };
 
 
-
-
+// ======================================================================================
 i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
     // TODO: This needs to be done
     if (!options) { options={}; }
     // sanity check can only add children to WRK folders
-    if (targetTvNode.data.i2b2_SDX.sdxInfo.sdxType!="WRK") {
+    if (targetTvNode.data.i2b2_SDX.sdxInfo.sdxType !== "WRK") {
         console.error("This operation was refused. Only a Workplace folder can contain child work items.");
         return false;
     }
@@ -300,11 +258,11 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
     // TODO: filter out WRK objects, if anything process using the sdxUnderlyingData info
 
     // generate the AJAX submessage depending upon SDX type
-    var encapXML = "";
-    var encapWorkType = "";
-    var encapValues = {};
-    var encapTitle = "";
-    var encapNoEscape = [];
+    let encapXML = "";
+    let encapWorkType = "";
+    let encapValues = {};
+    let encapTitle = "";
+    let encapNoEscape = [];
     switch(sdxChild.sdxInfo.sdxType) {
         case "CONCPT":
             encapXML = i2b2.WORK.cfg.msgs.encapsulateCONCPT;
@@ -401,13 +359,13 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
     }
     // package the work_xml snippet
     i2b2.h.EscapeTemplateVars(encapValues, encapNoEscape);
-    var syntax = /(^|.|\r|\n)(\{{{\s*(\w+)\s*}}})/; //matches symbols like '{{{ field }}}'
-    var t = new Template(encapXML, syntax);
-    var encapMsg = t.evaluate(encapValues);
+    let syntax = /(^|.|\r|\n)(\{{{\s*(\w+)\s*}}})/; //matches symbols like '{{{ field }}}'
+    let t = new Template(encapXML, syntax);
+    let encapMsg = t.evaluate(encapValues);
 
     // gather primary message info
-    var newChildKey = i2b2.h.GenerateAlphaNumId(20);
-    var varInput = {
+    let newChildKey = i2b2.h.GenerateAlphaNumId(20);
+    let varInput = {
         child_name: encapTitle,
         child_index: newChildKey,
         parent_key_value: targetTvNode.data.i2b2_SDX.sdxInfo.sdxKeyValue,
@@ -418,15 +376,16 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
         child_work_xml: encapMsg,
         result_wait_time: 180
     };
+    let scopedCallback;
     if (options.callback) {
-        var scopedCallback = options.callback;
+        scopedCallback = options.callback;
     } else {
         // create callback display routine
-        var scopedCallback = new i2b2_scopedCallback();
+        scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = targetTvNode;
         scopedCallback.callback = function(results) {
-            var cl_new_key = newChildKey;
-            var cl_parent_node = targetTvNode;
+            let cl_new_key = newChildKey;
+            let cl_parent_node = targetTvNode;
             if (results.error) {
                 alert("An error occurred while trying to create a new work item!");
             } else {
@@ -441,8 +400,9 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
         }
     }
     i2b2.WORK.ajax.addChild("WORK:Workplace", varInput, scopedCallback);
-}
+};
 
 
+// ======================================================================================
 console.timeEnd('execute time');
 console.groupEnd();

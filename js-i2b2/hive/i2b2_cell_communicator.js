@@ -1,3 +1,10 @@
+/**
+ * @projectDescription	Standard Data Exchange (SDX) subsystem's core message router.
+ * @inherits 	i2b2
+ * @namespace	i2b2
+ * @author		Nick Benik, Griffin Weber MD PhD
+ * @version 	1.3
+ **/
 i2b2.hive.communicatorFactory = function(cellCode){
 
     try {
@@ -17,10 +24,9 @@ i2b2.hive.communicatorFactory = function(cellCode){
     // setup for sniffer message
     retCommObj._SniffMsg =  $.Callbacks(); //TODO: remove this => new YAHOO.util.CustomEvent('CellCommMessage');
 
-
     retCommObj._addFunctionCall = function(name, url_string, xmlmsg, escapeless_params, parseFunc){
         var protectedNames = ["ParentCell", "globalParams", "cellParams", "_commMsgs", "_addFunctionCall", "_doSendMsg", "_defaultCallbackOK", "_defaultCallbackFAIL"];
-        if (protectedNames.indexOf(name) != -1) {
+        if (protectedNames.indexOf(name) !== -1) {
             console.error("Attempt to build communicator call [" + name + "] failed because it is a protected name");
             return false;
         }
@@ -51,7 +57,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
             channelSniffEvent: this._SniffMsg
         };
         i2b2.hive.MsgSniffer.RegisterMessageSource(msg);
-    }
+    };
 
 
     retCommObj._doSendMsg = function(funcName, originName, parameters, callback, transportOptions){
@@ -83,7 +89,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         var sMsgValues = {};
         $.extend(sMsgValues, parameters);
         // proxy server data
-        sMsgValues.proxy_info = ''
+        sMsgValues.proxy_info = '';
         if (commOptions.url !== undefined) {
             var sUrl = commOptions.url;
         } else {
@@ -129,7 +135,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         if (commOptions.msg_datetime !== undefined) {
             sMsgValues.header_msg_datetime = commOptions.msg_datetime;
         } else {
-            sMsgValues.header_msg_datetime = i2b2.h.GenerateISO8601DateTime();
+            sMsgValues.header_msg_datetime = moment().toISOString(true);
         }
 
         if (parameters == undefined) { parameters = {}; }
@@ -187,11 +193,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
             "onUninitialized"
         ];
         var tmp = Object.keys(commOptions);
-        tmp = tmp.filter(function(v) { return (removeKeys.indexOf(v) == -1) });
-//		for (var i = 0; i < tmp.length; i++) {
-//			// only delete if it's not a HTTP response code handler ex:on404
-//			if (!/^on\d\d\d$/.match(tmp[i])) { delete commOptions[tmp[i]]; }
-//		}
+        tmp = tmp.filter(function(v) { return (removeKeys.indexOf(v) === -1) });
         console.groupEnd();
         execBubble.timeSent = new Date();
         commOptions.i2b2_execBubble = execBubble;
@@ -205,15 +207,14 @@ i2b2.hive.communicatorFactory = function(cellCode){
                           return false;
                       }
                       o.request = {};
-                      o.request.options = {}
+                      o.request.options = {};
                       o.request.options.i2b2_execBubble = commOptions.i2b2_execBubble;
-
                       retCommObj._defaultCallbackOK(o);
                   },
                   failure: function(o) {
                       /* failure handler code */
                       o.request = {};
-                      o.request.options = {}
+                      o.request.options = {};
                       o.request.options.i2b2_execBubble = commOptions.i2b2_execBubble;
                       retCommObj._defaultCallbackFAIL(o);
                   }
@@ -221,19 +222,12 @@ i2b2.hive.communicatorFactory = function(cellCode){
 
         if (commOptions.asynchronous) {
             // perform an ASYNC query
-            //	new Ajax.Request(sProxy_Url, commOptions);
-            //BG adding next command as it makes required web service call in right place
-//			var transaction = YAHOO.util.Connect.asyncRequest(
-//				  'POST', sProxy_Url, myCallback, commOptions.postBody);
-
-
             $.ajax({
                 type: "POST",
                 url: sProxy_Url,
                 data: commOptions.postBody})
                 .done(myCallback.success)
                 .fail(myCallback.failure);
-            return true;
         } else {
             // perform a SYNC query
             $.ajax({
@@ -243,63 +237,9 @@ i2b2.hive.communicatorFactory = function(cellCode){
                 data: commOptions.postBody})
                 .done(myCallback.success)
                 .fail(myCallback.failure);
-            return true;
-
-
-
-            debugger;
-            var ajaxresult = new Ajax.Request(sProxy_Url, commOptions);
-            var transport = ajaxresult.transport;
-            // create our data message to return from the function
-            var cbMsg = {
-                msgRequest: sMessage,
-                msgResponse: transport.responseText,
-                msgUrl: sUrl,
-                msgUrlProxy: sProxy_Url,
-                error: false
-            };
-            // check the status from the message
-            var xmlRecv = transport.responseXML;
-            if ((!xmlRecv)&&(transport.responseText.length)) {
-                xmlRecv = i2b2.h.parseXml(transport.responseText);
-            }
-            if (!xmlRecv) {
-                cbMsg.error = true;
-                cbMsg.errorStatus = transport.status;
-                cbMsg.errorMsg = "The cell's message could not be interpreted as valid XML.";
-                console.error(transport.responseText);
-            } else {
-                cbMsg.refXML = xmlRecv;
-                var result_status = xmlRecv.getElementsByTagName('result_status')[0];
-                var s = xmlRecv.getElementsByTagName('status')[0];
-                if (undefined == s || s.getAttribute('type') != 'DONE') {
-                    cbMsg.error = true;
-                    cbMsg.errorStatus = transport.status;
-                    cbMsg.errorMsg = "The cell's message status could not understood.";
-                    console.error(transport.responseText);
-                }
-            }
-
-            //BG commenting out next if block as it adds extra log entry in the xml debug window
-            // send the result message to the callback function
-            // if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)){
-                // // broadcast a debug message to any sniffers/tools
-                // var sniffPackage = i2b2.h.BuildSniffPack(execBubble.cellName, execBubble.funcName, cbMsg, execBubble.reqOrigin);
-                // execBubble.self._SniffMsg.fire(sniffPackage);
-            // }
-
-            // attach the parse() function
-            if (cbMsg.error || !execBubble.self._commData[execBubble.funcName]) {
-                cbMsg.parse = function(){
-                    this.model = false;
-                    return this;
-                }
-            } else {
-                cbMsg.parse = execBubble.self._commData[execBubble.funcName].parser;
-            }
-            console.groupEnd();
-            return cbMsg;
         }
+        console.groupEnd();
+        return true;
     };
 
 
@@ -419,6 +359,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
     };
 
     return retCommObj;
-}
+};
 
 

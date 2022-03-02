@@ -2,22 +2,13 @@ console.group('Load & Execute component file: WORK > view > main');
 console.time('execute time');
 
 
-
-// ********* View: List ********* 
-// create and save the view object
 i2b2.WORK.view.main = new i2b2Base_cellViewController(i2b2.WORK, 'main');
 
 
 // ================================================================================================== //
-
-
-
-
-
-
 i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
-    var funcAddWrkNode = function(renderInfo){
-        var nodeInfo = {
+    let funcAddWrkNode = function(renderInfo){
+        let nodeInfo = {
             i2b2_NodeRenderData: {
                 idDOM: "WRK_TV-" + i2b2.GUID(),
                 class: renderInfo.cssClass,
@@ -35,136 +26,42 @@ i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
         }
         return nodeInfo;
     };
-    var render = {};
-    var renderObj = {};
+    let render = {};
+    let renderObj = {};
     switch (nodeData.visual) {
         case "CA":
             render.cssClass = "sdxStyleWORK-WRK";
             render.canExpand = true;
             render.iconType = "wrkRoot";
-            render.icon = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/WORK_root.gif';
+            render.icon = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/sdx_WORK_root.gif';
             render.iconExp = render.icon;
             renderObj = funcAddWrkNode(render);
-            var id = renderObj.i2b2_NodeRenderData.idDOM;
+
+            // TODO: Finish coding this so that the rendered node (root folder) is a drop target for all SDX types???
+            // let id = renderObj.i2b2_NodeRenderData.idDOM;
 
             return renderObj;
-            //TODO: Finish coding this
-            /*
-            var ddProxy = i2b2.sdx.Master.Attach2Data(id, "WRK", id);
-            i2b2.sdx.Master.AttachType(id, "QM", optDD);
-            i2b2.sdx.Master.AttachType(id, "PRC", optDD);
-            i2b2.sdx.Master.AttachType(id, "PRS", optDD);
-            i2b2.sdx.Master.AttachType(id, "ENS", optDD);
-            i2b2.sdx.Master.AttachType(id, "PR", optDD);
-            i2b2.sdx.Master.AttachType(id, "CONCPT", optDD);
-            i2b2.sdx.Master.AttachType(id, "QDEF", optDD);
-            i2b2.sdx.Master.AttachType(id, "QGDEF", optDD);
-            i2b2.sdx.Master.AttachType(id, "XML", optDD);
-            i2b2.sdx.Master.AttachType(id, "WRK", optDD);
-
-            i2b2.sdx.Master.setHandlerCustom(id, "QM", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRC", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRS", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "ENS", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "PR", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "CONCPT", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "QDEF", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "QGDEF", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "XML", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "WRK", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-
-            i2b2.sdx.Master.setHandlerCustom(id, "QM", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRC", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRS", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "ENS", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "PR", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "CONCPT", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "QDEF", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "QGDEF", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "XML", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "WRK", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-
-            i2b2.sdx.Master.setHandlerCustom(id, "QM", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRC", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRS", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "ENS", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "PR", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "CONCPT", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "QDEF", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "QGDEF", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "XML", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "WRK", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            */
             break;
         case "FA":
             render.cssClass = "sdxStyleWORK-WRK";
             render.canExpand = true;
             render.iconType = "wrkFolder";
-            render.icon = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/WORK_folder.gif';
+            render.icon = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/sdx_WORK_folder.gif';
             render.iconExp = render.icon;
             renderObj = funcAddWrkNode(render);
-            var id = renderObj.i2b2_NodeRenderData.idDOM;
+
+            //TODO: Finish coding this so that the rendered node (child folder) is a drop target for all SDX types???
+            //let id = renderObj.i2b2_NodeRenderData.idDOM;
+
             return renderObj;
-
-            //TODO: Finish coding this
-            /*
-            var ddProxy = i2b2.sdx.Master.Attach2Data(id, "WRK", id);
-            ddProxy.yuiTreeNode = renderObj;
-            var optDD = {
-                dropTarget: true
-            };
-            i2b2.sdx.Master.AttachType(id, "QM", optDD);
-            i2b2.sdx.Master.AttachType(id, "PRC", optDD);
-            i2b2.sdx.Master.AttachType(id, "PRS", optDD);
-            i2b2.sdx.Master.AttachType(id, "ENS", optDD);
-            i2b2.sdx.Master.AttachType(id, "PR", optDD);
-            i2b2.sdx.Master.AttachType(id, "CONCPT", optDD);
-            i2b2.sdx.Master.AttachType(id, "QDEF", optDD);
-            i2b2.sdx.Master.AttachType(id, "QGDEF", optDD);
-            i2b2.sdx.Master.AttachType(id, "XML", optDD);
-            i2b2.sdx.Master.AttachType(id, "WRK", optDD);
-
-            i2b2.sdx.Master.setHandlerCustom(id, "QM", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRC", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRS", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "ENS", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "PR", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "CONCPT", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "QDEF", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "QGDEF", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "XML", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-            i2b2.sdx.Master.setHandlerCustom(id, "WRK", "DropHandler", i2b2.WORK.ctrlr.main.HandleDrop);
-
-            i2b2.sdx.Master.setHandlerCustom(id, "QM", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRC", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRS", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "ENS", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "PR", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "CONCPT", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "QDEF", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "QGDEF", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "XML", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-            i2b2.sdx.Master.setHandlerCustom(id, "WRK", "onHoverOver", i2b2.WORK.view.main.ddHoverOver);
-
-            i2b2.sdx.Master.setHandlerCustom(id, "QM", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRC", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "PRS", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "ENS", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "PR", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "CONCPT", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "QDEF", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "QGDEF", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "XML", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            i2b2.sdx.Master.setHandlerCustom(id, "WRK", "onHoverOut", i2b2.WORK.view.main.ddHoverOut);
-            */
             break;
         case "ZA":
             // create a new WORK SDX object
-            var o = nodeData;
+            let o = nodeData;
             o.index = nodeData.key;
             try {
-                var sdxDataNode = i2b2.sdx.Master.EncapsulateData('WRK', o);
-                var renderOptions = {
+                let sdxDataNode = i2b2.sdx.Master.EncapsulateData('WRK', o);
+                let renderOptions = {
                     'title': title,
                     'tooltip': nodeData.annotation.replace("\n", "\nAnnotation: "), // PARTIAL BUG-FIX: WEBCLIENT-98
                     icon: {
@@ -181,7 +78,7 @@ i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
                 }
 
                 sdxDataNode.renderData.idDOM = "WRK_TV-" + i2b2.GUID();
-                var temp = {
+                let temp = {
                     title: sdxDataNode.renderData.moreDescriptMinor,
                     text: sdxDataNode.renderData.title,
                     icon: sdxDataNode.renderData.cssClassMain,
@@ -210,21 +107,22 @@ i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
 };
 
 
+// ================================================================================================== //
 i2b2.WORK.view.main.loadChildren = function(e, nodeData){
     if (nodeData.i2b2.sdxInfo.sdxKeyValue === undefined) {
         console.error('i2b2.WORK.view.main.loadChildren could not find tv_node.data.i2b2_SDX');
         return;
     }
     // create callback display routine
-    var scopedCallback = new i2b2_scopedCallback();
+    let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = i2b2.WORK;
     scopedCallback.callback = function(results){
-        var newNodes = [];
-        var parentNode = results.msgParams.parent_key_value;
-        var nlst = i2b2.h.XPath(results.refXML, "//folder[name and share_id and index and visual_attributes]");
-        for (var i = 0; i < nlst.length; i++) {
-            var s = nlst[i];
-            var nodeData = {};
+        let newNodes = [];
+        let parentNode = results.msgParams.parent_key_value;
+        let nlst = i2b2.h.XPath(results.refXML, "//folder[name and share_id and index and visual_attributes]");
+        for (let i = 0; i < nlst.length; i++) {
+            let s = nlst[i];
+            let nodeData = {};
             nodeData.xmlOrig = s;
             nodeData.index = i2b2.h.getXNodeVal(s, "index");
             nodeData.key = nodeData.index;
@@ -238,17 +136,17 @@ i2b2.WORK.view.main.loadChildren = function(e, nodeData){
             newNodes.push(i2b2.WORK.view.main._generateTvNode(nodeData.name, nodeData, parentNode));
         }
         // filter bad nodes
-        newNodes = newNodes.filter(function(v) { return (typeof v == 'object' && JSON.stringify(v) != '{}'); });
+        newNodes = newNodes.filter(function(v) { return (typeof v === 'object' && JSON.stringify(v) !== '{}'); });
         // push new nodes into the treeview
         i2b2.WORK.view.main.treeview.treeview('addNodes', [
             newNodes,
-            function(parent, child){ return parent.key == child.parentKey },
+            function(parent, child){ return parent.key === child.parentKey },
             false
         ]);
 
         // change the treeview icon to show it is no longer loading
         i2b2.WORK.view.main.treeview.treeview('setNodeLoaded', [
-            function(parent, parentKey){ return parent.key == parentKey },
+            function(parent, parentKey){ return parent.key === parentKey },
             parentNode
         ]);
         // render tree
@@ -257,7 +155,7 @@ i2b2.WORK.view.main.loadChildren = function(e, nodeData){
         $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
     };
     // ajax communicator call
-    var varInput = {
+    let varInput = {
         parent_key_value: nodeData.i2b2.sdxInfo.sdxKeyValue,
         result_wait_time: 180
     };
@@ -270,7 +168,7 @@ i2b2.WORK.view.main.loadChildren = function(e, nodeData){
 
 // ================================================================================================== //
 i2b2.WORK.view.main.ContextMenuRouter = function(a1, a2, a3){
-    var ctxData = i2b2.WORK.view.main.contextTvNode;
+    let ctxData = i2b2.WORK.view.main.contextTvNode;
     switch (a3) {
         case 'newFolder':
             i2b2.WORK.ctrlr.main.NewFolder(ctxData);
@@ -285,14 +183,6 @@ i2b2.WORK.view.main.ContextMenuRouter = function(a1, a2, a3){
             i2b2.WORK.ctrlr.main.Delete(ctxData);
             break;
     }
-}
-
-// ==================================================================================================
-i2b2.WORK.view.main.DropHandler = function(a1, a2){
-    alert("i2b2.WORK.view.main.DropHandler() received a drop event");
-    console.dir(this);
-    console.dir(a1);
-    console.dir(a2);
 };
 
 
@@ -300,28 +190,23 @@ i2b2.WORK.view.main.DropHandler = function(a1, a2){
 i2b2.WORK.view.main.DropChecker = function(targetEl, ev, parentEl) {
     // see if it is a treeview node
     let nodeID = $(targetEl).data("nodeid");
-    if (typeof nodeID === "undefined") {
-        return false;
-    }
+    if (typeof nodeID === "undefined") return false;
     // get the treeview node data
     let nodeData = $(parentEl).data("treeview").getNode(nodeID);
-    if (nodeData.i2b2.origData.visual == "CA" || nodeData.i2b2.origData.visual == "FA" ) {
-        return true;
-    }
-    return false;
+    return (nodeData.i2b2.origData.visual === "CA" || nodeData.i2b2.origData.visual === "FA" );
 };
+
 
 // ==================================================================================================
 i2b2.WORK.view.main.treeRedraw = function() {
-    // attach drag drop attribute
+    // attach HTML5 drag drop attribute
     i2b2.WORK.view.main.lm_view._contentElement.find('li:not(:has(span.tv-depth-1))').attr("draggable", true);
 };
 
 
-
 // =========================================================
 i2b2.events.afterCellInit.add((function(cell){
-    if (cell.cellCode == "WORK") {
+    if (cell.cellCode === "WORK") {
         console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.WORK.view.main",
@@ -330,7 +215,7 @@ i2b2.events.afterCellInit.add((function(cell){
                 i2b2.WORK.view.main.lm_view = container;
 
                 // add the cellWhite flare
-                var treeTarget = $('<div class="cellWhite" id="i2b2TreeviewWork"></div>').appendTo(container._contentElement);
+                let treeTarget = $('<div class="cellWhite" id="i2b2TreeviewWork"></div>').appendTo(container._contentElement);
 
                 // create an empty treeview
                 i2b2.WORK.view.main.treeview = $(treeTarget).treeview({
@@ -466,29 +351,10 @@ i2b2.events.afterCellInit.add((function(cell){
 
             }).bind(this)
         );
-        return;
     }
-
-
 }));
-console.info("SUBSCRIBED TO i2b2.events.afterCellInit");
-// =========================================================
 
 
 // =========================================================
-
-i2b2.events.afterLogin.add((function(cell_list) {
-    // create initial loader display routine
-}).bind(i2b2.WORK));
-
-
-i2b2.events.afterHiveInit.add((function(cell_list){
-    console.debug('[EVENT CAPTURED i2b2.events.afterHiveInit]');
-}).bind(i2b2.WORK));
-console.info("SUBSCRIBED TO i2b2.events.afterCellInit");
-// =========================================================
-
-
-
 console.timeEnd('execute time');
 console.groupEnd();
