@@ -464,18 +464,13 @@
     display: none;
 }
 
-.labEnumValue{
-    overflow: scroll;
-    width: 562px;
-}
-
 .labTypeGroup {
     width: 130px;
 }
 
 .labTypeFlagAndValues {
     display: flex;
-    min-height: 130px;
+    min-height: 100px;
 }
 
 #labNumericValueOperator{

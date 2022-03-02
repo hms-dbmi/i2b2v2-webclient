@@ -662,12 +662,32 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         break;
                     case "ENUM":
                         if(Object.keys(labValues.enumInfo).length > 0){
+                            let labEnumValueSelection = $("#labEnumValue");
                             Object.entries(labValues.enumInfo).forEach(([key, value]) => {
                                 let enumOption = $("<option></option");
                                 enumOption.text(value);
                                 enumOption.val(key);
-                                $("#labEnumValue").append(enumOption);
+                                labEnumValueSelection.append(enumOption);
                             });
+
+                            labEnumValueSelection.change(function(){
+                                newLabValues.enumValue = $(this).val();
+                            });
+
+                            //scroll to selected enum value in list
+                            const ro = new ResizeObserver(() => {
+                                if (labEnumValueSelection.is(':visible')) {
+                                    let selectedOption = labEnumValueSelection.find(":selected");
+                                    let optionTop = selectedOption.offset().top;
+                                    let selectTop = labEnumValueSelection.offset().top;
+                                    labEnumValueSelection.scrollTop(labEnumValueSelection.scrollTop() + (optionTop - selectTop));
+                                }
+                            });
+                            ro.observe(labEnumValueSelection[0]);
+
+                            if(sdxConcept.LabValues && sdxConcept.LabValues.enumValue){
+                                labEnumValueSelection.val(sdxConcept.LabValues.enumValue).trigger("change");
+                            }
                         }
                         break;
                     default:
