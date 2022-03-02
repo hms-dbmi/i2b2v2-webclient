@@ -95,13 +95,13 @@ i2b2.layout.init = function () {
                                 type:'component',
                                 isClosable:false,
                                 componentName: "i2b2.ONT.view.nav",
-                                title:'Navigate Terms'
+                                title:'Terms'
                             },{
                                 type:'component',
                                 isClosable:false,
 //                                componentName: 'i2b2.ONT.view.find',
                                 componentName: 'whiteComponent',
-                                title:'Find'
+                                title:'Find Terms'
                             }
                         ]
                     },{
@@ -116,7 +116,13 @@ i2b2.layout.init = function () {
                                 type:'component',
                                 isClosable:false,
                                 componentName: 'i2b2.CRC.view.history',
-                                title:'Previous Queries'
+                                title:'Queries'
+                            },
+                            {
+                                type:'component',
+                                isClosable:false,
+                                componentName: 'whiteComponent',
+                                title:'Find Queries'
                             }
                         ]
                     }

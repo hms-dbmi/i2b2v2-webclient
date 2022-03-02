@@ -203,7 +203,8 @@ i2b2.CRC.ctrlr.labValues = {
         }else{
             this.extractedModel.name = "Choose value of "+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName')+" (Test:"+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestID')+")";
         }
-            //lab units
+
+        //lab units
         let tProcessing = {};
         try {
             // save list of all possible units (from)
