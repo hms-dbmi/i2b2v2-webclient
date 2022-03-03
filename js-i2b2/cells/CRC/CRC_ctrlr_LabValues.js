@@ -199,7 +199,7 @@ i2b2.CRC.ctrlr.labValues = {
 
         // set the title bar (TestName and TestID are assumed to be mandatory)
         if (this.extractedModel.valueType === "LRGSTR") {
-            this.extractedModel.name("Search within the " + i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName'));
+            this.extractedModel.name = "Search within the " + i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName');
         }else{
             this.extractedModel.name = "Choose value of "+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName')+" (Test:"+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestID')+")";
         }
