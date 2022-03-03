@@ -127,7 +127,7 @@ i2b2.CRC.view.QT.handleLabs = function(sdx) {
     // see if the concept is a lab, prompt for value if it is
     sdx.isLab = false;
     if (sdx.origData.basecode !== undefined) {
-        if (sdx.origData.basecode.startsWith("LOINC")) sdx.isLab = true;
+        if (sdx.origData.basecode.startsWith("LOINC") || sdx.origData.basecode.startsWith("LCS-I2B2")) sdx.isLab = true;
     }
     return sdx.isLab;
 };
@@ -532,14 +532,15 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 let newLabValues = {
                     type: null,
                     flagValue: null,
-                    numericOperator: null,
+                    numericValueOperator: null,
                     numericValues: null,
                     numericValueRangeLow: null,
                     numericValueRangeHigh: null,
                     unitValue: null,
-                    stringOperator: null,
-                    stringValue: null,
-                    enumValue: null
+                    enumValue: null,
+                    stringValueOperator: null,
+                    largeStringValueOperator: null,
+                    stringValue: null
                 };
 
                 $("#labValuesModal div").eq(0).modal("show");
@@ -627,7 +628,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                                 $("#labNumericValueRangeMain").addClass("hidden");
                             }
 
-                            newLabValues.numericOperator = value;
+                            newLabValues.numericValueOperator = value;
                         });
                         let numericValueSelection = $("#labNumericValue");
                         numericValueSelection.change(function(){
@@ -644,12 +645,12 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                             newLabValues.numericValueRangeHigh = $(this).val();
                         });
 
-                        if(sdxConcept.LabValues && sdxConcept.LabValues.numericOperator)
+                        if(sdxConcept.LabValues && sdxConcept.LabValues.numericValueOperator)
                         {
-                            numericValueOperatorSelection.val(sdxConcept.LabValues.numericOperator).trigger("change");
-                            newLabValues.numericOperator = sdxConcept.LabValues.numericOperator;
+                            numericValueOperatorSelection.val(sdxConcept.LabValues.numericValueOperator).trigger("change");
+                            newLabValues.numericValueOperator = sdxConcept.LabValues.numericValueOperator;
 
-                            if(sdxConcept.LabValues.numericOperator === "BETWEEN")
+                            if(sdxConcept.LabValues.numericValueOperator === "BETWEEN")
                             {
                                 newLabValues.numericValueRangeLow = sdxConcept.LabValues.numericValueRangeLow;
                                 newLabValues.numericValueRangeHigh = sdxConcept.LabValues.numericValueRangeHigh;
@@ -663,12 +664,59 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         }
                         break;
                     case "LRGSTR":
+                        let largeStringValueOperatorSelection = $("#labLargeStringValueOperator");
+                        let stringValueSelection = $("#labStringValue");
+
                         $("#labLargeStringValueOperatorMain").removeClass("hidden");
                         $("#labStringValueMain").removeClass("hidden");
+                        $("label[for='labAnyValueType']").text("No Search Requested");
+                        $("label[for='labByValueType']").text("Search within Text");
+                        largeStringValueOperatorSelection.change(function(){
+                            let value = false;
+                            if($(this).is(":checked")){
+                                value = true;
+                            }
+                            newLabValues.largeStringValueOperator = value;
+                        });
+
+                        stringValueSelection.change(function(){
+                            newLabValues.stringValue = $(this).val();
+
+                        });
+
+                        if(sdxConcept.LabValues) {
+                            if (sdxConcept.LabValues.largeStringValueOperator) {
+                                largeStringValueOperatorSelection.trigger("click");
+                            }
+
+                            if(sdxConcept.LabValues.stringValue) {
+                                stringValueSelection.val(sdxConcept.LabValues.stringValue).trigger("change");
+                            }
+                        }
                         break;
                     case "STR":
                         $("#labStringValueOperatorMain").removeClass("hidden");
                         $("#labStringValueMain").removeClass("hidden");
+                        let stringSelection = $("#labStringValue");
+                        let stringValueOperatorSelection = $("#labStringValueOperator");
+
+                        stringValueOperatorSelection.change(function(){
+                            newLabValues.stringValueOperator = $(this).val();
+                        });
+
+                        stringSelection.change(function(){
+                            newLabValues.stringValue = $(this).val();
+                        });
+
+                        if(sdxConcept.LabValues) {
+                            if (sdxConcept.LabValues.stringValueOperator) {
+                                stringValueOperatorSelection.val(sdxConcept.LabValues.stringValueOperator).trigger("change");
+                            }
+
+                            if(sdxConcept.LabValues.stringValue) {
+                                stringSelection.val(sdxConcept.LabValues.stringValue).trigger("change");
+                            }
+                        }
                         break;
                     case "ENUM":
                         if(Object.keys(labValues.enumInfo).length > 0){
