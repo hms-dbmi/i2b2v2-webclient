@@ -465,7 +465,8 @@
 }
 
 .labTypeGroup {
-    width: 130px;
+    width: 160px;
+    margin-right: 15px;
 }
 
 .labTypeFlagAndValues {
@@ -497,7 +498,7 @@
 }
 
 #labValuesModal .modal-dialog {
-    min-width: 580px;
+    min-width: 590px;
 }
 
 .labBarMain
