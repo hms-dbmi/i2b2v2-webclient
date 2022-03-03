@@ -756,9 +756,6 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 if (labValues.valueType === "LRGSTR") {
                     $("#labHelpText").text("You are allowed to search within the narrative text associated with the term "
                         + labValues.name);
-                    /*$('mlvfrmTypeNONE').nextSibling.nodeValue = "No Search Requested";
-                    $('mlvfrmTypeVALUE').nextSibling.nodeValue = "Search within Text";
-                    */
                 } else if (sdxConcept.isModifier) {
                     $("#labHelpText").text("Searches by Modifier values can be constrained by either a flag set by the sourcesystem or by the values themselves.");
                 } else {
