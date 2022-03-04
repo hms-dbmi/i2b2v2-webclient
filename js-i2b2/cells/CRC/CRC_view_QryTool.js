@@ -505,15 +505,15 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
     let labValuesCallback = function() {
 
-        let labValues = i2b2.CRC.ctrlr.labValues.extractedModel;
+        let extractedLabValues = i2b2.CRC.ctrlr.labValues.extractedModel;
 
-        if (labValues !== undefined) {
+        if (extractedLabValues !== undefined) {
 
             let newLabValues = {
                 type: null,
                 flagValue: null,
                 numericValueOperator: null,
-                numericValues: null,
+                numericValue: null,
                 numericValueRangeLow: null,
                 numericValueRangeHigh: null,
                 unitValue: null,
@@ -530,6 +530,25 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
             });
 
             $("body #labValuesModal button.lab-save").click(function () {
+                switch (newLabValues.type) {
+                    case "NO_VALUE":
+                        newLabValues = {};
+                        break;
+                    case "BY_FLAG":
+                        newLabValues.largeStringValueOperator = null;
+                        newLabValues.stringValueOperator = null;
+                        newLabValues.numericValueOperator = null;
+                        newLabValues.numericValue = null;
+                        newLabValues.numericValueRangeLow = null;
+                        newLabValues.numericValueRangeHigh = null;
+                        newLabValues.stringValue = null;
+                        newLabValues.enumValue = null;
+                        newLabValues.unitValue = null;
+                        break;
+                    case "BY_VALUE":
+                        newLabValues.flagValue = null;
+                        break;
+                }
                 sdxConcept.LabValues = newLabValues;
                 $("#labValuesModal div").eq(0).modal("hide");
             });
@@ -550,7 +569,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
             $("#labByValueType").click(function () {
                 $("#labFlag").addClass("hidden");
-                if (labValues.valueType === 'ENUM') {
+                if (extractedLabValues.valueType === 'ENUM') {
                     $("#labEnumValueMain").removeClass("hidden");
                 } else {
                     $(".labValueSection").removeClass("hidden");
@@ -564,13 +583,13 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 newLabValues.type = sdxConcept.LabValues.type;
             }
 
-            $("#labHeader").text(labValues.name);
+            $("#labHeader").text(extractedLabValues.name);
 
             let labFlagValueSelection = $("#labFlagValue");
-            for (let i = 0; i < labValues.flags.length; i++) {
+            for (let i = 0; i < extractedLabValues.flags.length; i++) {
                 let flagOption = $("<option></option>");
-                flagOption.text(labValues.flags[i].name);
-                flagOption.val(labValues.flags[i].value);
+                flagOption.text(extractedLabValues.flags[i].name);
+                flagOption.val(extractedLabValues.flags[i].value);
                 labFlagValueSelection.append(flagOption);
             }
 
@@ -582,11 +601,11 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 newLabValues.flagValue = $(this).val();
             });
 
-            if (!labValues.flagType) {
+            if (!extractedLabValues.flagType) {
                 $("#labFlagTypeMain").hide();
             }
 
-            switch (labValues.valueType) {
+            switch (extractedLabValues.valueType) {
                 case "POSFLOAT":
                 case "POSINT":
                 case "FLOAT":
@@ -608,7 +627,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                     });
                     let numericValueSelection = $("#labNumericValue");
                     numericValueSelection.change(function () {
-                        newLabValues.numericValues = $(this).val();
+                        newLabValues.numericValue = $(this).val();
                     });
 
                     let numericValueRangeLowSelection = $("#labNumericValueRangeLow");
@@ -632,8 +651,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                             numericValueRangeHighSelection.val(sdxConcept.LabValues.numericValueRangeHigh);
 
                         } else {
-                            numericValueSelection.val(sdxConcept.LabValues.numericValues);
-                            newLabValues.numericValues = sdxConcept.LabValues.numericValues;
+                            numericValueSelection.val(sdxConcept.LabValues.numericValue);
+                            newLabValues.numericValue = sdxConcept.LabValues.numericValue;
                         }
                     }
                     break;
@@ -693,9 +712,9 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                     }
                     break;
                 case "ENUM":
-                    if (Object.keys(labValues.enumInfo).length > 0) {
+                    if (Object.keys(extractedLabValues.enumInfo).length > 0) {
                         let labEnumValueSelection = $("#labEnumValue");
-                        Object.entries(labValues.enumInfo).forEach(([key, value]) => {
+                        Object.entries(extractedLabValues.enumInfo).forEach(([key, value]) => {
                             let enumOption = $("<option></option");
                             enumOption.text(value);
                             enumOption.val(key);
@@ -727,36 +746,36 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                     break
             }
 
-            if (labValues.valueType === "LRGSTR") {
+            if (extractedLabValues.valueType === "LRGSTR") {
                 $("#labHelpText").text("You are allowed to search within the narrative text associated with the term "
-                    + labValues.name);
+                    + extractedLabValues.name);
             } else if (sdxConcept.isModifier) {
                 $("#labHelpText").text("Searches by Modifier values can be constrained by either a flag set by the sourcesystem or by the values themselves.");
             } else {
                 $("#labHelpText").text("Searches by Lab values can be constrained by the high/low flag set by the performing laboratory, or by the values themselves.");
             }
 
-            if (labValues.valueUnits.length !== 0) {
+            if (extractedLabValues.valueUnits.length !== 0) {
                 let labUnits = $("#labUnits");
 
                 //set the label to the first value in the units list
-                $("#labUnitsLabel").text(labValues.valueUnits[0].name);
+                $("#labUnitsLabel").text(extractedLabValues.valueUnits[0].name);
 
-                for (let i = 0; i < labValues.valueUnits.length; i++) {
+                for (let i = 0; i < extractedLabValues.valueUnits.length; i++) {
                     let unitOption = $("<option></option>");
                     unitOption.val(i);
-                    if (labValues.valueUnits[i].masterUnit) {
+                    if (extractedLabValues.valueUnits[i].masterUnit) {
                         labUnits.val(i);
                     }
-                    unitOption.text(labValues.valueUnits[i].name);
+                    unitOption.text(extractedLabValues.valueUnits[i].name);
                     labUnits.append(unitOption);
                 }
 
                 labUnits.change(function () {
                     // message if selected Unit is excluded from use
                     let value = $(this).val();
-                    $("#labUnitsLabel").text(labValues.valueUnits[value].name);
-                    if (labValues.valueUnits[value].excluded) {
+                    $("#labUnitsLabel").text(extractedLabValues.valueUnits[value].name);
+                    if (extractedLabValues.valueUnits[value].excluded) {
                         $("#labUnitExcluded").removeClass("hidden");
                         $("#labNumericValue").prop("disabled", true);
                         $("#labNumericValueRangeLow").prop("disabled", true);
@@ -780,10 +799,10 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
             //Bar segment
             try {
-                if (labValues.rangeInfo.total !== 0) {
+                if (extractedLabValues.rangeInfo.total !== 0) {
                     $("#barNormMain").removeClass("hidden");
-                    if (isFinite(labValues.rangeInfo.LowOfToxic)) {
-                        $("#lblToxL").text(labValues.rangeInfo.LowOfToxic);
+                    if (isFinite(extractedLabValues.rangeInfo.LowOfToxic)) {
+                        $("#lblToxL").text(extractedLabValues.rangeInfo.LowOfToxic);
                         $("#barToxL").click(function () {
                             let value = $("#lblToxL").text();
                             $("#labNumericValueOperator").val("LE");
@@ -793,8 +812,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                     } else {
                         $("#lblToxL").text("");
                     }
-                    if (isFinite(labValues.rangeInfo.LowOfLow) && (labValues.rangeInfo.LowOfLowRepeat === false)) {
-                        $("#lblLofL").text(labValues.rangeInfo.LowOfLow);
+                    if (isFinite(extractedLabValues.rangeInfo.LowOfLow) && (extractedLabValues.rangeInfo.LowOfLowRepeat === false)) {
+                        $("#lblLofL").text(extractedLabValues.rangeInfo.LowOfLow);
                         $("#barLofL").click(function (event) {
                             let value = $("#lblLofL").text();
                             $("#labNumericValueOperator").val("LE").trigger("change");
@@ -804,8 +823,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                     } else {
                         $("#lblLofL").text("");
                     }
-                    if (isFinite(labValues.rangeInfo.HighOfLow) && (labValues.rangeInfo.HighOfLowRepeat === false)) {
-                        $("#lblHofL").text(labValues.rangeInfo.HighOfLow);
+                    if (isFinite(extractedLabValues.rangeInfo.HighOfLow) && (extractedLabValues.rangeInfo.HighOfLowRepeat === false)) {
+                        $("#lblHofL").text(extractedLabValues.rangeInfo.HighOfLow);
                         $("#barHofL").click(function (event) {
                             let value = $("#lblHofL").text();
                             $("#labNumericValueOperator").val("LE").trigger("change");
@@ -815,8 +834,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                     } else {
                         $("#lblHofL").text("");
                     }
-                    if (isFinite(labValues.rangeInfo.LowOfHigh) && (labValues.rangeInfo.LowOfHighRepeat === false)) {
-                        $("#lblLofH").text(labValues.rangeInfo.LowOfHigh);
+                    if (isFinite(extractedLabValues.rangeInfo.LowOfHigh) && (extractedLabValues.rangeInfo.LowOfHighRepeat === false)) {
+                        $("#lblLofH").text(extractedLabValues.rangeInfo.LowOfHigh);
                         $("#barLofH").click(function (event) {
                             let value = $("#lblLofH").text();
                             $("#labNumericValueOperator").val("GE").trigger("change");
@@ -826,8 +845,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                     } else {
                         $("#lblLofH").text("");
                     }
-                    if (isFinite(labValues.rangeInfo.HighOfHigh) && (labValues.rangeInfo.HighOfHighRepeat === false)) {
-                        $("#lblHofH").text(labValues.rangeInfo.HighOfHigh);
+                    if (isFinite(extractedLabValues.rangeInfo.HighOfHigh) && (extractedLabValues.rangeInfo.HighOfHighRepeat === false)) {
+                        $("#lblHofH").text(extractedLabValues.rangeInfo.HighOfHigh);
                         $("#barHofH").click(function (event) {
                             let value = $("#lblHofH").text();
                             $("#labNumericValueOperator").val("GE").trigger("change");
@@ -837,8 +856,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                     } else {
                         $("#lblHofH").text("");
                     }
-                    if (isFinite(labValues.rangeInfo.HighOfToxic)) {
-                        $("#lblToxH").text(labValues.rangeInfo.HighOfToxic);
+                    if (isFinite(extractedLabValues.rangeInfo.HighOfToxic)) {
+                        $("#lblToxH").text(extractedLabValues.rangeInfo.HighOfToxic);
                         $("#barToxH").click(function (event) {
                             let value = $("#lblToxH").text();
                             $("#labNumericValueOperator").val("GE").trigger("change");
