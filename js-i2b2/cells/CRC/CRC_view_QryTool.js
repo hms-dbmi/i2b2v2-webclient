@@ -882,15 +882,11 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
     if (labValuesModal.length === 0) {
         $("body").append("<div id='labValuesModal'/>");
         labValuesModal = $("#labValuesModal");
-        labValuesModal.load('/js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
-            i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
-        });
-    }else{
-        //i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
-        labValuesModal.load('/js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
-            i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
-        });
     }
+
+    labValuesModal.load('/js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
+        i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
+    });
 }
 // ================================================================================================== //
 
