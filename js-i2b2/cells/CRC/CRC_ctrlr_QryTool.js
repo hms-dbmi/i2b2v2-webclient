@@ -193,10 +193,8 @@ function QueryToolController() {
                         tempItem.value = item.LabValues.value;
                     }
 
-                    if(item.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT
-                        || item.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT){
-                        tempItem.isString = true;
-                    }
+                    tempItem.isString = item.LabValues.isString;
+                    tempItem.isEnum = item.LabValues.isEnum;
                 }
                 tempPanel.items.push(tempItem);
             });

@@ -12,6 +12,8 @@
                     <value_operator>{{valueOperator}}</value_operator>
                     {{#if isString}}
                         <value_constraint><![CDATA[{{value}}]]></value_constraint>
+                    {{else if isEnum}}
+                        <value_constraint>('{{value}}')</value_constraint>
                     {{else}}
                         <value_constraint>{{value}}</value_constraint>
                     {{/if}}

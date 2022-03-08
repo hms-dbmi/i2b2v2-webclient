@@ -556,7 +556,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
             $("#labByValueType").click(function () {
                 $("#labFlag").addClass("hidden");
-                if (extractedLabValues.valueType === 'ENUM') {
+                if (extractedLabValues.dataType === 'ENUM') {
                     $("#labEnumValueMain").removeClass("hidden");
                 } else {
                     $(".labValueSection").removeClass("hidden");
@@ -566,7 +566,6 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
             if (sdxConcept.LabValues && sdxConcept.LabValues.valueType) {
                 newLabValues.valueType = sdxConcept.LabValues.valueType;
-                console.log("value types are ", )
                 switch (newLabValues.valueType) {
                     case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
                         $("input[name='labType'][value='BY_FLAG']").trigger("click");
@@ -689,6 +688,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         }
                     }
                     largeStringValueOperatorSelection.trigger("change");
+                    newLabValues.isString = true;
                     break;
                 case "STR":
                     $("#labStringValueOperatorMain").removeClass("hidden");
@@ -713,6 +713,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         }
                     }
                     stringValueOperatorSelection.trigger("change");
+                    newLabValues.isString = true;
                     break;
                 case "ENUM":
                     if (Object.keys(extractedLabValues.enumInfo).length > 0) {
@@ -726,6 +727,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
                         labEnumValueSelection.change(function () {
                             newLabValues.value = $(this).val();
+                            newLabValues.valueOperator = "IN";
                         });
 
                         //scroll to selected enum value in list
@@ -740,8 +742,10 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         ro.observe(labEnumValueSelection[0]);
 
                         if (sdxConcept.LabValues && sdxConcept.LabValues.value) {
-                            labEnumValueSelection.val(sdxConcept.LabValues.value).trigger("change");
+                            labEnumValueSelection.val(sdxConcept.LabValues.value);
                         }
+                        labEnumValueSelection.trigger("change");
+                        newLabValues.isEnum = true;
                     }
                     break;
                 default:
