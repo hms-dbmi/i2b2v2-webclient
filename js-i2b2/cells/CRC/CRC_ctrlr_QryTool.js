@@ -104,13 +104,14 @@ function QueryToolController() {
             shrine_topic: ""
         };
 
+        i2b2.CRC.ctrlr.QT._processModel();
+
         // query outputs
         params.psm_result_output = "<result_output_list>";
         queryTypes.forEach((rec, idx) => {
             params.psm_result_output += '<result_output priority_index="' + (idx + 1) + '" name="' + rec.toLowerCase() + '"/>';
         });
         params.psm_result_output += "</result_output_list>";
-        console.log(params.psm_result_output);
 
         // query definition
         params.psm_query_definition = (Handlebars.compile("{{> Query}}"))(i2b2.CRC.model.transformedQuery)
@@ -179,6 +180,24 @@ function QueryToolController() {
                     tempItem.isSynonym = "false";
                 }
                 // TODO: Handle processing of lab values
+                if(item.LabValues)
+                {
+                    tempItem.valueType = item.LabValues.valueType;
+                    tempItem.valueOperator = item.LabValues.valueOperator;
+                    tempItem.unitValue= item.LabValues.unitValue;
+
+                    if(item.LabValues.numericValueRangeLow){
+                        tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
+                    }
+                    else{
+                        tempItem.value = item.LabValues.value;
+                    }
+
+                    if(item.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT
+                        || item.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT){
+                        tempItem.isString = true;
+                    }
+                }
                 tempPanel.items.push(tempItem);
             });
             if (tempPanel.items.length > 0) transformedModel.panels.push(tempPanel);

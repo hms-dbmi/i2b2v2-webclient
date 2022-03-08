@@ -25,6 +25,13 @@ i2b2.CRC.ctrlr.labValues = {
         rangeInfo: {},
         enumInfo: {}
     },
+    VALUE_TYPES: {
+        TEXT: "TEXT",
+        LARGETEXT: "LARGETEXT",
+        NUMBER: "NUMBER",
+        FLAG: "FLAG",
+        MODIFIER: "MODIFIER"
+    },
 // ================================================================================================== //
     loadData: function(sdxConcept, callBack) {
         let labResponseCallback = function(response) {
@@ -60,7 +67,6 @@ i2b2.CRC.ctrlr.labValues = {
         i2b2.ONT.ajax.GetTermInfo("ONT", {concept_key_value:sdxConcept.origData.key,
             ont_max_records: 'max="1"', ont_synonym_records: true, ont_hidden_records: true}, labResponseCallback );
     },
-
 // ================================================================================================== //
     extractLabValues: function(valueMetaDataXml) {
         const flagsToUse = i2b2.h.getXNodeVal(valueMetaDataXml, "Flagstouse");
@@ -72,7 +78,7 @@ i2b2.CRC.ctrlr.labValues = {
                 this.extractedModel.flags = [{name: "Normal", value: "@"}, {name: "Abnormal", value: "A"}];
             } else if (flagsToUse === "HL") {
                 this.extractedModel.flagType = "HL";
-                this.extractedModel.flags = [{name: "Normal", value: "@"}, {name: "High", value: "H'"}, {
+                this.extractedModel.flags = [{name: "Normal", value: "@"}, {name: "High", value: "H"}, {
                     name: "Low",
                     value: "L"
                 }];
@@ -85,31 +91,36 @@ i2b2.CRC.ctrlr.labValues = {
             let dataType = i2b2.h.getXNodeVal(valueMetaDataXml, "DataType");
             switch (dataType) {
                 case "PosFloat":
-                    this.extractedModel.valueType = "POSFLOAT";
+                    this.extractedModel.dataType = "POSFLOAT";
+                    this.extractedModel.valueType = this.VALUE_TYPES.NUMBER;
                     this.extractedModel.valueValidate.onlyPos = true;
                     this.extractedModel.valueValidate.onlyInt = false;
                     this.extractedModel.valueValidate.maxString = false;
                     break;
                 case "PosInteger":
-                    this.extractedModel.valueType = "POSINT";
+                    this.extractedModel.dataType = "POSINT";
+                    this.extractedModel.valueType = this.VALUE_TYPES.NUMBER;
                     this.extractedModel.valueValidate.onlyPos = true;
                     this.extractedModel.valueValidate.onlyInt = true;
                     this.extractedModel.valueValidate.maxString = false;
                     break;
                 case "Float":
-                    this.extractedModel.valueType = "FLOAT";
+                    this.extractedModel.dataType = "FLOAT";
+                    this.extractedModel.valueType = this.VALUE_TYPES.NUMBER;
                     this.extractedModel.valueValidate.onlyPos = false;
                     this.extractedModel.valueValidate.onlyInt = false;
                     this.extractedModel.valueValidate.maxString = false;
                     break;
                 case "Integer":
-                    this.extractedModel.valueType = "INT";
+                    this.extractedModel.dataType = "INT";
+                    this.extractedModel.valueType = this.VALUE_TYPES.NUMBER;
                     this.extractedModel.valueValidate.onlyPos = true;
                     this.extractedModel.valueValidate.onlyInt = true;
                     this.extractedModel.valueValidate.maxString = false;
                     break;
                 case "String":
-                    this.extractedModel.valueType = "STR";
+                    this.extractedModel.dataType = "STR";
+                    this.extractedModel.valueType = this.VALUE_TYPES.TEXT;
                     this.extractedModel.valueValidate.onlyPos = false;
                     this.extractedModel.valueValidate.onlyInt = false;
 
@@ -128,7 +139,8 @@ i2b2.CRC.ctrlr.labValues = {
                     }
                     break;
                 case "largestring":
-                    this.extractedModel.valueType = "LRGSTR";
+                    this.extractedModel.dataType = "LRGSTR";
+                    this.extractedModel.valueType = this.VALUE_TYPES.LARGETEXT;
                     this.extractedModel.valueValidate.onlyPos = false;
                     this.extractedModel.valueValidate.onlyInt = false;
                     // extract max string setting
@@ -146,7 +158,8 @@ i2b2.CRC.ctrlr.labValues = {
                     }
                     break;
                 case "Enum":
-                    this.extractedModel.valueType = "ENUM";
+                    this.extractedModel.dataType = "ENUM";
+                    this.extractedModel.valueType = this.VALUE_TYPES.TEXT;
                     this.extractedModel.valueValidate.onlyPos = false;
                     this.extractedModel.valueValidate.onlyInt = false;
                     this.extractedModel.valueValidate.maxString = false;
@@ -186,12 +199,12 @@ i2b2.CRC.ctrlr.labValues = {
                     }
                     break;
                 default:
-                    this.extractedModel.valueType = false;
+                    this.extractedModel.dataType = false;
 
             }
         }
         catch(e) {
-            this.extractedModel.valueType = false;
+            this.extractedModel.dataType = false;
             this.extractedModel.valueValidate.onlyPos = false;
             this.extractedModel.valueValidate.onlyInt = false;
             this.extractedModel.valueValidate.maxString = false;
@@ -260,6 +273,7 @@ i2b2.CRC.ctrlr.labValues = {
             console.error("Problem was encountered when processing given Units", e);
         }
 
+        //valueUnits: {name: "ng/l", multFactor: 1, masterUnit: true}
         this.extractedModel.valueUnits = Object.values(tProcessing);
 
 

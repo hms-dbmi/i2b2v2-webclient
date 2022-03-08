@@ -6,6 +6,20 @@
             <class>{{class}}</class>
             <item_icon>{{icon}}</item_icon>
             <item_is_synonym>{{isSynonym}}</item_is_synonym>
+            {{#if valueType}}
+                <constrain_by_value>
+                    <value_type>{{valueType}}</value_type>
+                    <value_operator>{{valueOperator}}</value_operator>
+                    {{#if isString}}
+                        <value_constraint><![CDATA[{{value}}]]></value_constraint>
+                    {{else}}
+                        <value_constraint>{{value}}</value_constraint>
+                    {{/if}}
+                    {{#if unitValue}}
+                        <value_unit_of_measure>{{unitValue}}</value_unit_of_measure>
+                    {{/if}}
+                </constrain_by_value>
+            {{/if}}
             {{!--
             <dim_tablename>dim_tablename0</dim_tablename>
             <dim_columnname>dim_columnname0</dim_columnname>
