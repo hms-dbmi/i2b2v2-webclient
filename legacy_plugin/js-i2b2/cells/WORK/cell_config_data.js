@@ -2,7 +2,6 @@
 // every file in this list will be loaded after the cell's Init function is called
 {
 	files: [
-		"WORK_ctrlr_general.js",
 		"WORK_sdx_WRK.js",
 		"WORK_sdx_XML.js",
 		"i2b2_msgs.js"
