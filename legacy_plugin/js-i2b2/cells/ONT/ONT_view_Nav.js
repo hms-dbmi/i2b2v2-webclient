@@ -388,7 +388,6 @@ i2b2.events.changedZoomWindows.subscribe((function(eventTypeName, zoomMsg) {
 	switch (newMode.window) {
 		case "ONT":
 		case "HISTORY":
-		case "WORK":
 			this.ResizeHeight();
 			//this.Resize();	// tdw9
 	}

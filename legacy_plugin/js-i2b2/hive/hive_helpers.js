@@ -798,10 +798,6 @@ function showXML(c,r,t) {
 			i2b2.hive.MsgSniffer.showSingleMsgResponse(s);
 			break;
 		case "Stack":
-			if (c=="WORK" && r=="main") { 
-				i2b2.hive.MsgSniffer.showStack("Workplace", ["WORK:Workplace"], ["WORK"]);
-				return;
-			}
 			if (c=="ONT" && r=="nav") { 
 				i2b2.hive.MsgSniffer.showStack("Ontology Navigation", ["ONT:SDX:Concept","ONT:generalView"], ["ONT"]);
 				return;

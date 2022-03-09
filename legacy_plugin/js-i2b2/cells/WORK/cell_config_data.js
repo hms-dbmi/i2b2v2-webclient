@@ -3,7 +3,6 @@
 {
 	files: [
 		"WORK_ctrlr_general.js",
-		"WORK_view.js",
 		"WORK_sdx_WRK.js",
 		"WORK_sdx_XML.js",
 		"i2b2_msgs.js"
@@ -12,9 +11,6 @@
 	config: {
 		// additional configuration variables that are set by the system
 		name: "Workplace Cell",
-		icons: {
-			size32x32: "WORK_icon_32x32.gif"
-		},
 		category: ["core","cell"]
 	}
 }

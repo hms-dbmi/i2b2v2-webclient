@@ -470,9 +470,6 @@ YAHOO.util.Event.addListener(window, "load", init);
         <div id="tabInfo" class="tabBox" onClick="i2b2.ONT.view.main.selectTab('info')">
           <div>Info</div>
         </div>
-        <div id="guestTabWorkplace" class="tabBox" style="display:None" onClick="i2b2.ONT.view.main.ZoomView(); i2b2.WORK.view.main.ZoomView()">
-          <div>Workplace</div>
-        </div>
         <div id="guestTabQueries" class="tabBox" style="display:None" onClick="i2b2.ONT.view.main.ZoomView(); i2b2.CRC.view.history.ZoomView(); i2b2.CRC.view.history.selectTab('nav')"; >
           <div>Queries</div>
         </div>   
@@ -668,44 +665,8 @@ YAHOO.util.Event.addListener(window, "load", init);
       <div id="pmParamTableview" class="StatusBoxText"></div>
     </div>
   </div>
-  <!-- ############### </PM Parmeter View> ############### --> 
-  
-  <!-- ############### <WRK View> ############### -->
-  <div id="wrkWorkplace" style="display:none;">
-    <div class="TopTabs">
-        <div id="WRKguestTabNavigate" class="tabBox" style="display:None" onClick="i2b2.WORK.view.main.ZoomView(); i2b2.ONT.view.main.ZoomView(); i2b2.ONT.view.main.selectTab('nav')">
-          <div>Terms</div>
-        </div>
-        <div id="WRKguestTabFind" class="tabBox" style="display:None" onClick="i2b2.WORK.view.main.ZoomView(); i2b2.ONT.view.main.ZoomView(); i2b2.ONT.view.main.selectTab('find');">
-          <div>Find Trm</div>
-        </div>
-        <div id="WRKguestTabInfo" class="tabBox" style="display:None" onClick="i2b2.WORK.view.main.ZoomView(); i2b2.ONT.view.main.ZoomView(); i2b2.ONT.view.main.selectTab('info');">
-          <div>Info</div>
-        </div>
-      <div class="tabBox active">
-        <div>Workplace</div>
-      </div>
-        <div id="WRKguestTabQueries" class="tabBox" style="display:None" onClick="i2b2.WORK.view.main.ZoomView(); i2b2.CRC.view.history.ZoomView(); i2b2.CRC.view.history.selectTab('nav')">
-          <div>Queries</div>
-        </div>
-        <div id="WRKguestTabFindQueries" class="tabBox" style="display:None" onClick="i2b2.WORK.view.main.ZoomView(); i2b2.CRC.view.history.ZoomView(); i2b2.CRC.view.history.selectTab('find')">
-          <div>Find Qry</div>
-        </div>
-      <div class="opXML"> 
-        <!--				<a href="JavaScript:showXML('WORK','main','Request');" class="debug"><img src="assets/images/msg_request.gif" border="0" width="16" height="16" alt="Show XML Request" title="Show XML Request" /></a> --> 
-        <!--				<a href="JavaScript:showXML('WORK','main','Response');" class="debug"><img src="assets/images/msg_response.gif" border="0" width="16" height="16" alt="Show XML Response" title="Show XML Response" /></a> --> 
-        <a href="JavaScript:showXML('WORK','main','Stack');" class="debug"><img src="assets/images/msg_stack.gif" border="0" width="16" height="16"  alt="Show XML Message Stack" title="Show XML Message Stack" /></a> 
-		<a href="JavaScript:i2b2.WORK.view.main.refreshTree();"><div style="display: inline;" id="refWorkQS"><img width="16" id="refreshWorkImg" border="0" height="16" src="assets/images/refreshButton.gif" alt="Refresh Workplace" title="Refresh Workplace"></div><div style="display: none;" id="refWork2QS"><img width="16" border="0" height="16" src="assets/images/loadera16.gif" alt="Refresh Workplace" title="Refresh Workplace"></div></a> 
-        
-        <!--				<a href="JavaScript:i2b2.WORK.view.main.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16" alt="Show Options" title="Show Options" /></a> --> 
-        <a href="JavaScript:i2b2.WORK.view.main.ZoomView();"><img id="wrkZoomImg" width="16" height="16" border="0" src="js-i2b2/cells/WORK/assets/zoom_icon.gif" alt="Resize Workspace" title="Resize Workspace" /></a> </div>
-    </div>
-    <div class="bodyBox">
-      <div id="wrkTreeview" class="StatusBoxText"></div>
-    </div>
-  </div>
-  <!-- ############### </WRK View> ############### --> 
-  
+  <!-- ############### </PM Parmeter View> ############### -->
+
   <!-- ############### <CRC History View> ############### -->
   <div id="crcHistoryBox" style="display:none;">
     <div class="TopTabs">
@@ -718,9 +679,6 @@ YAHOO.util.Event.addListener(window, "load", init);
         </div>
         <div id="CRCguestTabInfo" class="tabBox" style="display:None" onClick="i2b2.CRC.view.history.ZoomView(); i2b2.ONT.view.main.ZoomView(); i2b2.ONT.view.main.selectTab('info');">
           <div>Info</div>
-        </div>
-        <div id="CRCguestTabWorkplace" class="tabBox" style="display:None" onClick="i2b2.CRC.view.history.ZoomView(); i2b2.WORK.view.main.ZoomView()">
-          <div>Workplace</div>
         </div>
         <div id="crctabNavigate" class="tabBox active" onClick="i2b2.CRC.view.history.selectTab('nav')">
           <div>Queries</div>
@@ -1117,9 +1075,7 @@ YAHOO.util.Event.addListener(window, "load", init);
 	  <div id="infoQueryStatusReport" class="StatusBoxReport" oncontextmenu="return false" style="display:none"></div>
     </div>
   </div>
-  <!-- ############### <Workplace> ############### -->
   <div class="PluginListBox" style="display:none;overflow-y:scroll;"></div>
-  <!-- ############### </Workplace> ############### --> 
   <!-- ############### <PluginMgr List View> ############### -->
   <div id="anaPluginListBox" style="display:none">
     <div class="TopTabs">

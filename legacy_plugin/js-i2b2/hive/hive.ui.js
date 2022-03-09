@@ -61,7 +61,6 @@ Splitter = function( name, config )
 		
 
 		i2b2.ONT.view.main.splitterDragged();		// resize ONT
-		i2b2.WORK.view.main.splitterDragged();		// resize WORK
 		i2b2.CRC.view.history.splitterDragged();	// resize Query History
 		i2b2.CRC.view.QT.splitterDragged();			// resize Query Tool
 		i2b2.CRC.view.status.splitterDragged();		// resize Query Status
@@ -75,7 +74,6 @@ Splitter = function( name, config )
 		i2b2.ONT.view.main.ResizeHeight();			// resize ONT
 		i2b2.ONT.view.find.ResizeHeight();			// resize ONT.find
 		i2b2.ONT.view.nav.ResizeHeight();			// resize ONT.nav
-		i2b2.WORK.view.main.ResizeHeight();			// resize WORK
 		i2b2.CRC.view.history.ResizeHeight();		// resize Query History
 		i2b2.CRC.view.QT.ResizeHeight();			// resize Query Panels
 		i2b2.CRC.view.status.ResizeHeight();		// resize Query Status

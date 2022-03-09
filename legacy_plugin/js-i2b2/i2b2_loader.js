@@ -35,7 +35,6 @@ i2b2.hive.tempCellsList = [
 		},
 		{ code: "ONT"	},
 		{ code: "CRC"	},
-		{ code: "WORK"},
 //		{ code: "SHRINE"},
 		{ code:	"PLUGINMGR",
 		   forceLoading: true,
