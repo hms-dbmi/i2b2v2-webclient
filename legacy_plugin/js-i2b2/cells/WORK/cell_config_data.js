@@ -6,7 +6,6 @@
 		"WORK_sdx_XML.js",
 		"i2b2_msgs.js"
 	],
-	css: ["main_list.css"],  // ONLY USE 1 STYLE SHEET: http://support.microsoft.com/kb/262161
 	config: {
 		// additional configuration variables that are set by the system
 		name: "Workplace Cell",
