@@ -19,7 +19,7 @@ i2b2.hive.MasterView = {
 	// ================================================================================================== //
 	initViewMode: function()
 	{
-		var newMode = 'Patients';
+		var newMode = 'Analysis';
 		var tn = $("viewMode-"+newMode);
 		if (tn) 
 		{

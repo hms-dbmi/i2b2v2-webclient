@@ -1,6 +1,7 @@
 
 DIV#anaPluginViewBox {
-	position: absolute;
+	flex-grow: 1;
+	/*position: absolute;*/
 }
 
 	

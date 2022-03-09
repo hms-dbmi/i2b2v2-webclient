@@ -35,12 +35,6 @@ Splitter = function( name, config )
 		splitter.style.height 	= (YAHOO.util.Dom.getViewportHeight()-this.topOffset) + "px";
 	}
 	
-	this.onCRCinit = function( type, args, me )
-	{
-		this.onResize( type, args, me);
-		this.initConstraints();
-	}
-	
 	// fires when splitter is dragged
 	this.resizeOtherComponents = function()
 	{
@@ -59,9 +53,6 @@ Splitter = function( name, config )
 			}
 		}
 		
-		i2b2.CRC.view.history.splitterDragged();	// resize Query History
-		i2b2.CRC.view.QT.splitterDragged();			// resize Query Tool
-		i2b2.CRC.view.status.splitterDragged();		// resize Query Status
 		i2b2.PLUGINMGR.view.PlugView.splitterDragged(); // resize Plugin View
 		i2b2.PLUGINMGR.view.list.splitterDragged(); // resize Plugin View
 	}
@@ -69,9 +60,6 @@ Splitter = function( name, config )
 	// fires when window is resized
 	this.resizeComopnentHeight = function()
 	{
-		i2b2.CRC.view.history.ResizeHeight();		// resize Query History
-		i2b2.CRC.view.QT.ResizeHeight();			// resize Query Panels
-		i2b2.CRC.view.status.ResizeHeight();		// resize Query Status
 		i2b2.PLUGINMGR.view.PlugView.ResizeHeight(); // resize Plugin View
 		i2b2.PLUGINMGR.view.list.ResizeHeight();	// resize Plugin List
 	}
@@ -92,9 +80,6 @@ Splitter = function( name, config )
 	this.cont 		= config.cont;
 	this.leftProportion = null;
 	Splitter.superclass.constructor.apply(this, arguments);
-
-	this.events.ONTInitialized = new YAHOO.util.CustomEvent("ONTInitialized", this);	// create event for ONTInitialization
-	this.events.ONTInitialized.subscribe( this.onCRCinit, this);	// listen to the event and attach handlers
 }
 // extension must immediately follow constructor (this makes the Splitter Drag-and-Drop-able.)
 YAHOO.extend(Splitter, YAHOO.util.DD, 

@@ -66,7 +66,8 @@ A.selectedView { font-weight:bold; }
 }
 
 #screenQueryData {
-	padding: 4px 0px 0px; 
+	padding: 4px 0px 0px;
+	display: flex;
 }
 
 

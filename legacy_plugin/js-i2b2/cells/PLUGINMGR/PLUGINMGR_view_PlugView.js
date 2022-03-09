@@ -237,37 +237,34 @@ i2b2.PLUGINMGR.view.PlugView.UsesTabs = function(bIn) {
 
 // process view mode changes (via EVENT CAPTURE)
 // ================================================================================================== //
-i2b2.events.changedViewMode.subscribe((function(eventTypeName, newMode) {
+i2b2.events.renderView = function(eventTypeName, newMode) {
 	newMode = newMode[0];
 	this.viewMode = newMode;
-	switch(newMode) {
+	switch (newMode) {
 		case "AnalysisZoomed":
 		case "Analysis":
 			// check if other windows are zoomed and blocking us
 			var zw = i2b2.hive.MasterView.getZoomWindows();
 			if (zw.member("PLUGINLST"))
 				this.view.PlugView.hide();
-			else 
-			{
+			else {
 				this.view.PlugView.show();
-				var splitter = $( i2b2.hive.mySplitter.name );
-				if ( newMode === "AnalysisZoomed")
-					splitter.style.visibility="hidden";
-				else
-					splitter.style.visibility="visible";
-				i2b2.PLUGINMGR.view.PlugView.splitterDragged();
+				let splitter = $(i2b2.hive.mySplitter.name);
+				splitter.style.visibility = "hidden";
 				// bug fix for IE
 				//setTimeout("i2b2.PLUGINMGR.view.PlugView.Resize()", 100); // tdw9
 			}
 			break;
 		default:
 			this.view.PlugView.hide();
-			var splitter = $( i2b2.hive.mySplitter.name ); // make splitter visible
-			splitter.style.visibility="visible";
+			let splitter = $(i2b2.hive.mySplitter.name); // make splitter visible
+			splitter.style.visibility = "visible";
 			break;
 	}
-}),'',i2b2.PLUGINMGR);
+}
 
+i2b2.events.initView.subscribe((i2b2.events.renderView),'',i2b2.PLUGINMGR);
+i2b2.events.changedViewMode.subscribe((i2b2.events.renderView),'',i2b2.PLUGINMGR);
 
 // ================================================================================================== //
 i2b2.PLUGINMGR.view.PlugView.ZoomView = function() {
@@ -318,9 +315,6 @@ i2b2.PLUGINMGR.view.PlugView.showOptions = function() {
 		t.ShowOptions();
 	}
 };
-
-// set image icon
-$('plugviewZoomImg').src = i2b2.PLUGINMGR.cfg.config.assetDir+"zoom_icon.gif"
 
 console.timeEnd('execute time');
 console.groupEnd();
