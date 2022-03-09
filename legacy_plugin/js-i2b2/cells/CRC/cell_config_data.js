@@ -18,16 +18,11 @@
 		{origName: "i2b2_msgs.js", newName: "i2b2_msgs-Ver1_3.js", versionLevel: 1.3},
 		{origName: "CRC_sdx_QI.js", newName: "CRC_sdx_QI-Ver1_3.js", versionLevel: 1.3}
 	],
-	css: [ "main_list.css" ],  // ONLY USE 1 STYLE SHEET: http://support.microsoft.com/kb/262161
 	config: {
 		// additional configuration variables that are set by the system
 		name: "Data Repository",
 		description: "The Data Repository cell stores all information that a user saves within the i2b2 Hive.",
-		icons: {
-			size32x32: "CRC_icon_32x32.gif"
-		},
 		category: ["core","cell"],
-		ui: { 'statusBox':162,'largeStatusBox':300,'defaultStatusBox':162 /* original was 162 */ },
 		paramTranslation: [
 			{thinClientName:'sortBy', defaultValue:'DATE'},
 			{thinClientName:'sortOrder', defaultValue:'DESC'},
