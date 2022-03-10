@@ -160,13 +160,24 @@ i2b2.layout.init = function () {
         id:'c2',
         content:[
             {
-                type:'component',
-                height:80,
-                id:'crcQueryTool',
-                isClosable:false,
-                componentName: 'i2b2.CRC.view.QT',
-                title:'Query Tool'
-            },{
+                type:'stack',
+                height:40,
+                content:[
+                    {
+                        type:'component',
+                        height:80,
+                        id:'crcQueryTool',
+                        isClosable:false,
+                        componentName: 'i2b2.CRC.view.QT',
+                        title:'Query Tool'
+                    },{
+                        type:'component',
+                        isClosable:false,
+                        componentName: 'pluginComponent',
+                        title:'Plugins'
+                    }]
+            },
+            {
                 type:'stack',
                 height:40,
                 content:[
@@ -227,6 +238,15 @@ i2b2.layout.init = function () {
     //////////////////////////////////////////
     var whiteComponent = function(container,state){
         container.getElement().html('<div class="cellWhite"><textarea>test content</textarea></div>');
+    };
+
+    let pluginComponent = function(container,state){
+        let iframe = $("<iframe id='frame' src='' width='100%' height='100%' style='border:none;'></iframe>");
+        iframe.attr("src", "legacy_plugin/index.html");
+
+        let frameDiv = $("<div class='cellWhite'></div>");
+        frameDiv.append(iframe);
+        container.getElement().append(frameDiv);
     };
 
     //////////////////////////////////////////
@@ -318,6 +338,7 @@ i2b2.layout.init = function () {
     // Right column layout
     i2b2.layout.gl_instances.rightCol = new GoldenLayout( i2b2.layout.gl_configs.rightCol, '#goldenLayoutColId2' );
     i2b2.layout.gl_instances.rightCol.registerComponent('whiteComponent', whiteComponent);
+    i2b2.layout.gl_instances.rightCol.registerComponent('pluginComponent', pluginComponent);
     i2b2.layout.gl_instances.rightCol.on('initialised',function(){
         i2b2.layout.gl_instances.rightCol.root.contentItems[0].remove();
         i2b2.layout.gl_instances.rightCol.root.addChild(i2b2.layout.gl_configs.FindPatients);
