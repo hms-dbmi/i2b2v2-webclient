@@ -798,22 +798,6 @@ function showXML(c,r,t) {
 			i2b2.hive.MsgSniffer.showSingleMsgResponse(s);
 			break;
 		case "Stack":
-			if (c=="ONT" && r=="nav") { 
-				i2b2.hive.MsgSniffer.showStack("Ontology Navigation", ["ONT:SDX:Concept","ONT:generalView"], ["ONT"]);
-				return;
-			}
-			if (c=="ONT" && r=="find") { 
-				i2b2.hive.MsgSniffer.showStack("Ontology Search", ["ONT:SDX:Concept","ONT:FindBy","ONT:generalView"], ["ONT"]);
-				return;
-			}
-			if (c=="CRC" && r=="history") { 
-				i2b2.hive.MsgSniffer.showStack("History", ["CRC:History", "CRC:SDX:QueryMaster", "CRC:SDX:QueryInstance", "CRC:SDX:PatientRecordSet"], ["CRC"]);
-				return;
-			}
-			if (c=="CRC" && r=="QT") { 
-				i2b2.hive.MsgSniffer.showStack("Query Tool", ["CRC:QueryTool"]);
-				return;
-			}
 			if (c=="PLUGINMGR" && r=="PlugView") { 
 				i2b2.hive.MsgSniffer.show();
 				return;
