@@ -154,6 +154,8 @@ i2b2.PM._processUserConfig = function (data) {
     i2b2.PM.model.shrine_domain = Boolean.parseTo(data.msgParams.is_shrine);
     i2b2.PM.model.login_project = data.msgParams.sec_project;
     i2b2.PM.model.loginXML = data.refXML;
+
+    i2b2.PM.model.data = data;
     console.info("AJAX Login Successful! Updated: i2b2.PM.model");
 
     // delete the modal login form's HTML/CSS
