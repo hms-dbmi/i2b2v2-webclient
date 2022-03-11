@@ -233,23 +233,22 @@ if (!Object.entries)
 
 function initI2B2() 
 {
-    window.addEventListener('message', ({ data }) => {
-      let model = JSON.parse(data);
+    window.addEventListener("message", (event) => {
+      if (event.origin === window.location.origin) {
+        let model = JSON.parse(event.data);
 
-      //afterHiveInit
-      i2b2.events.afterCellInit.subscribe(
-        (function(cell, args) {
-          if (args[0].cellCode !== 'PM') {
-            return;
-          }
-          i2b2.PM.model.data = model;
-          i2b2.PM.model.data.refXML = i2b2.h.parseXml(i2b2.PM.model.data.loginXMLStr);
+        i2b2.events.afterCellInit.subscribe((function (cell, args) {
+            if (args[0].cellCode === 'PM') {
+              i2b2.PM.model.data = model;
+              i2b2.PM.model.data.refXML = i2b2.h.parseXml(i2b2.PM.model.data.loginXMLStr);
 
-          delete i2b2.PM.model.data.loginXMLStr;
-          i2b2.PM._processUserConfig(i2b2.PM.model.data);
-        })
-      );
-    });
+              delete i2b2.PM.model.data.loginXMLStr;
+              i2b2.PM._processUserConfig(i2b2.PM.model.data);
+            }
+          })
+        );
+      }
+    })
 
 	//debugOnScreen("default.htm.initI2B2: browserViewPort = " + initBrowserViewPortDim.width + " " + initBrowserViewPortDim.height );
 	i2b2.events.afterCellInit.subscribe(
