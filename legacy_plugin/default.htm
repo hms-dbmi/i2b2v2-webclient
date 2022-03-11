@@ -237,7 +237,7 @@ function initI2B2()
       if (event.origin === window.location.origin) {
         let model = JSON.parse(event.data);
 
-        i2b2.events.afterCellInit.subscribe((function (cell, args) {
+        i2b2.events.afterCellInit.subscribe((function (event, args) {
             if (args[0].cellCode === 'PM') {
               i2b2.PM.model.data = model;
               i2b2.PM.model.data.refXML = i2b2.h.parseXml(i2b2.PM.model.data.loginXMLStr);
