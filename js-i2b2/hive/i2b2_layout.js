@@ -247,7 +247,7 @@ i2b2.layout.init = function () {
         let loginData = JSON.stringify(i2b2.PM.model.data);
         delete i2b2.PM.model.data;
 
-        document.getElementById("pluginframe").contentWindow.postMessage(loginData, window.location.href);
+        document.getElementById("pluginframe").contentWindow.postMessage(loginData, window.location.origin);
     }
 
     let pluginComponent = function(container,state){
