@@ -241,8 +241,8 @@ function initI2B2()
             if (args[0].cellCode === 'PM') {
               i2b2.PM.model.data = model;
               i2b2.PM.model.data.refXML = i2b2.h.parseXml(i2b2.PM.model.data.loginXMLStr);
-
               delete i2b2.PM.model.data.loginXMLStr;
+
               i2b2.PM._processUserConfig(i2b2.PM.model.data);
             }
           })
