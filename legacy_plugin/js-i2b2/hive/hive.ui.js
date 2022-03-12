@@ -54,7 +54,6 @@ YAHOO.extend(Splitter, YAHOO.util.DD,
 		{ 
 			this.initConstraints();
 			this.onResize();
-			this.resizeOtherComponents();
 			this.resizeComopnentHeight();
 		},
 		this,
