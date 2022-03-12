@@ -14,7 +14,6 @@ DIV#anaPluginViewBox DIV.PluginViewBox {
 	padding: 5px;
 	position: relative;
 	top: -7px;
-	height: 100vh;
 	width: auto;
 	z-index: 0;
 }
@@ -25,7 +24,6 @@ DIV#anaPluginViewBox DIV#anaPluginViewFrame {
 	border: 1px solid #667788;
 	padding: 0px;
 	margin: 0px;
-	height: 100vh !important;
 	overflow:auto;
 }
 
