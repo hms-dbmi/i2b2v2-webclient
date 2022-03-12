@@ -16,7 +16,6 @@ Splitter = function( name, config )
 	// fires when window is resized
 	this.resizeComopnentHeight = function()
 	{
-		i2b2.PLUGINMGR.view.PlugView.ResizeHeight(); // resize Plugin View
 		i2b2.PLUGINMGR.view.list.ResizeHeight();	// resize Plugin List
 	}
 	
@@ -54,7 +53,6 @@ YAHOO.extend(Splitter, YAHOO.util.DD,
 		{ 
 			this.initConstraints();
 			this.onResize();
-			this.resizeOtherComponents();
 			this.resizeComopnentHeight();
 		},
 		this,

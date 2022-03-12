@@ -4,6 +4,8 @@ body {
 	font-family:arial,helvetica;
 	font-size:12px;
 	line-height:16px;
+	display: flex;
+	flex-direction: column;
 }
 
 .xmlMsg {
@@ -17,8 +19,10 @@ body {
 A.selectedView { font-weight:bold; }
 
 #screenQueryData {
-	padding: 4px 0px 0px;
+	padding: 0px;
 	display: flex;
+	flex-grow: 5;
+	flex-basis: 0;
 }
 
 /* function buttons on right of tabs */

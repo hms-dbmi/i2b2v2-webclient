@@ -44,69 +44,7 @@ i2b2.PLUGINMGR.view.PlugView.splitterDragged = function()
 }
 
 // ================================================================================================== //
-i2b2.PLUGINMGR.view.PlugView.ResizeHeight = function(e) {
-	// this function provides the resize functionality needed for this screen
-	var viewObj = i2b2.PLUGINMGR.view.PlugView;
-	var ve = $('anaPluginViewBox');
-	if (viewObj.visible) {
-		
-	    var h =  window.innerHeight || (window.document.documentElement.clientHeight || window.document.body.clientHeight);
-
-		//var ds = document.viewport.getDimensions();
-		//var h = ds.height;
-		if (h < 517) {h = 517;}
-		ve.show();
-		// resize our visual components
-		switch(i2b2.hive.MasterView.getViewMode()) {
-			case "Admin":
-				break;
-			case "Analysis":
-				ve.show();
-				if (i2b2.WORK && i2b2.WORK.isLoaded) {
-					//var z = h - 390 + 142;
-					var z = h - 390 + 142 + 153;
-				} else {
-					var z = h - 390 + 100;
-				}
-				$('anaPluginViewFrame').style.height = z;
-				break;
-
-			case "AnalysisZoomed":
-				ve.show();
-				h = h - 98;
-				ve.style.left = '';
-				$('anaPluginViewFrame').style.height = h;				
-				break;
-		}
-		var t = i2b2.PLUGINMGR.ctrlr.main.currentPluginCtrlr;
-		if (t) {
-			if (t.cfg.config.plugin.standardTabs) {
-				// special resizing for tabs
-				var tn = $('anaPluginViewBox').select('DIV.yui-content')[0];
-				if (i2b2.hive.MasterView.getViewMode() == "AnalysisZoomed") {
-					tn.style.height = (h - 34);
-				} else {
-					//tn.style.height = (h - 283);
-					tn.style.height = (h - 283 + 155);
-				}
-			}
-			if (t.Resize) {
-				// a plugin is currently loaded and has a Resize() routine, pass it redraw data
-				var rdp = Element.cumulativeOffset(ve);
-				var rdd = Element.getDimensions(ve);
-				var rd = {
-					height: rdd.height,
-					width: rdd.width,
-					left: rdp.left,
-					top: rdp.top
-				};
-				t.Resize(rd);
-			}
-		}
-	} else {
-		ve.hide();
-	}
-}
+i2b2.PLUGINMGR.view.PlugView.ResizeHeight = function(e) {}
 
 
 // ================================================================================================== //
@@ -201,7 +139,6 @@ i2b2.PLUGINMGR.view.PlugView.Resize = function(e) {
 i2b2.PLUGINMGR.view.PlugView.show = function() {
 	i2b2.PLUGINMGR.view.PlugView.visible = true;
 	$('anaPluginViewBox').show();
-	i2b2.PLUGINMGR.view.PlugView.ResizeHeight();
 	var t = i2b2.PLUGINMGR.ctrlr.main.currentPluginCtrlr;
 	if (t && t.wasShown) {
 		t.wasShown();
