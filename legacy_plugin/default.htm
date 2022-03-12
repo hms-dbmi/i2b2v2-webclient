@@ -265,10 +265,7 @@ function initI2B2()
 		(function() 
 		{
 			// after successful login hide the login box and display the application GUI
-			$('menuLogin').style.display = 'none';
-			$('menuMain').style.display = 'block';
-			$('topBar').style.display = 'block';
-			$('screenQueryData').style.display = 'block';
+			$('screenQueryData').style.display = 'flex';
 			var splitterName = 'main.splitter';			
 			
 			// update dimension values
@@ -343,8 +340,6 @@ function init() {
 
 	// initialize the i2b2 framework
 	initI2B2();
-	initI2B2_UI();
-	
 }
 YAHOO.util.Event.addListener(window, "load", init);
 
@@ -393,25 +388,6 @@ YAHOO.util.Event.addListener(window, "load", init);
   </div>
   <div class="ft"></div>
 </div>
-<table border="0" cellspacing="0" cellpadding="0" width="100%" id="topBarTable">
-  <tr>
-    <td align="left" valign="middle"><img id="topBarTitle" border="0" alt="" /></td>
-    <td align="left" valign="middle"><div id="viewMode-Project"></div></td>
-    <td align="right" valign="middle"><div id="viewMode-User"></div></td>
-    <td align="right" valign="middle"><div id="topBar"> 
-            <span id="menuLogin">
-           WebClient v1.7.12a &nbsp;|&nbsp; <a id="helpLink" href="Javascript:void(0)" onClick="i2b2.hive.HelpViewer.show();">Help</a>
-      		</span>
-        <!--        <form name="projectsForm" style="margin: 0pt; padding: 0pt;" onSubmit="i2b2.PM.selectProject(); return false;">
-		<select style="font-size:11px;float:left;" onChange="i2b2.PM.view.modal.projectDialog.loadProject()" name="projects" id="loginProjs2"></select>
-	<input type="hidden" value="" name="i2b2_projects_modal_dialog"/>
-    </form>
-    --> 
-		<span id="menuMain" style="display:none;">
-			<span id="viewMode-Analysis"> <a href="Javascript:void(0)" onClick="i2b2.hive.MasterView.setViewMode('Analysis');">Analysis Tools</a> <a href="#" onclick="return false;" id="pluginsMenu"><img src="assets/images/p_dropdown.png" align="absbottom" border="0"/></a>&nbsp;|&nbsp; </span> <span id="adminPlugins" style="display:none"> <a href="#" onClick="invokeWCPinstaller();return false;" target="_blank">Install Plugins from i2b2 Gallery</a> &nbsp;|&nbsp; </span> <span id="debugMsgSniffer" style="display:none"> <a href="Javascript:void(0)" onClick="i2b2.hive.MsgSniffer.show();">Message Log</a></span> </div></td>
-		</span>
-  </tr>
-</table>
 <div id="screenQueryData" style="display:none">
   <!-- ############### <PM Navigation View> ############### -->
   <div id="pmNav" style="display:none;">
@@ -424,8 +400,8 @@ YAHOO.util.Event.addListener(window, "load", init);
       <div id="pmNavTreeview" class="StatusBoxText"></div>
     </div>
   </div>
-  <!-- ############### </PM Navigation View> ############### --> 
-  
+  <!-- ############### </PM Navigation View> ############### -->
+
   <!-- ############### <PM Main Table View> ############### -->
   <div id="pmMain" style="display:none;">
     <div class="TopTabs">
@@ -444,8 +420,8 @@ YAHOO.util.Event.addListener(window, "load", init);
       </div>
     </div>
   </div>
-  <!-- ############### </PM Main Table View> ############### --> 
-  
+  <!-- ############### </PM Main Table View> ############### -->
+
   <!-- ############### <PM Parmeter View> ############### -->
   <div id="pmParam" style="display:none;">
     <div class="TopTabs">
@@ -511,7 +487,9 @@ YAHOO.util.Event.addListener(window, "load", init);
   <div id="anaPluginViewBox" style="display:none">
     <div class="TopTabs">
       <div class="tabBox active">
-        <div>Plugin Viewer</div>
+        <div><span class="tabTitle">Plugin Viewer</span>
+          <a href="#" onclick="return false;" id="pluginsMenu"><img src="assets/images/p_dropdown.png" align="absbottom" border="0"/></a>
+        </div>
       </div>
       <div class="opXML"> 
         <!--				<a href="JavaScript:showXML('PLUGINMGR','PlugView','Request');" class="debug"><img src="assets/images/msg_request.gif" border="0" width="16" height="16" alt="Show XML Request" title="Show XML Request" /></a> --> 

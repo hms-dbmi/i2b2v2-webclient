@@ -75,7 +75,7 @@ i2b2.PLUGINMGR.ctrlr.main =
 			if (!t || t()) {
 				// remove plugin name from tab
 				try {
-					$('anaPluginViewBox').select('DIV.tabBox DIV')[0].innerHTML = "Plugin Viewer";
+					$('anaPluginViewBox').select('DIV.tabBox .tabTitle')[0].innerHTML = "Plugin Viewer";
 				} catch(e) {
 					console.warn("Could not change PluginViewBox tab label!");
 				}
@@ -106,7 +106,7 @@ i2b2.PLUGINMGR.ctrlr.main =
 			} else {
 				sName = i2b2[pluginCode].cfg.config.name;
 			}
-			$('anaPluginViewBox').select('DIV.tabBox DIV')[0].innerHTML = sName;
+			$('anaPluginViewBox').select('DIV.tabBox .tabTitle')[0].innerHTML = sName;
 		} catch(e) {
 			console.warn("Could not change PluginViewBox tab label!");
 		}

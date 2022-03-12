@@ -4,8 +4,6 @@ body {
 	font-family:arial,helvetica;
 	font-size:12px;
 	line-height:16px;
-	background:url('images/background.gif');
-	background-color:#D9ECF0;
 }
 
 .yui-skin-sam .yui-dialog .ft span.default button {
@@ -36,7 +34,7 @@ DIV.yuimenu DIV.bd {
 	background:url('images/horizBg.gif') no-repeat;
 	height:18px;
 	width:125px;
-	zindex:5
+	zindex:5;
 	overflow:hidden;
 	float:left;
 }

@@ -28,9 +28,3 @@ i2b2.UI.cfg = {
 	useExpandedLabFlags: false
 };
 /* End Configuration */
-
-function initI2B2_UI() {
-	if(i2b2.UI.cfg.hasOwnProperty('titleLogoSrc')){
-		document.getElementById('topBarTitle').src = i2b2.UI.cfg.titleLogoSrc;
-	}
-}
