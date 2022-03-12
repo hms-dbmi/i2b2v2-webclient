@@ -25,99 +25,14 @@ i2b2.PM.view.admin.yuiTreeNodeUSERS = false;
 i2b2.PM.view.admin.yuiTreeNodeREQUEST = false;
 i2b2.PM.view.admin.yuiTreeNodeAPPROVALS = false;
 i2b2.PM.view.admin.yuiTreeNodeCELLS = false;
-i2b2.PM.view.admin.Resize = function(e){
-//	var t = $('pmNavTreeview');
-	//var ds = document.viewport.getDimensions();
-	
-	var w =  window.innerWidth || (window.document.documentElement.clientWidth || window.document.body.clientWidth);
-	var h =  window.innerHeight || (window.document.documentElement.clientHeight || window.document.body.clientHeight);
-	h = h - 50;
-	//var w = ds.width;
-	//var h = ds.height-50;
-	//if (w < 840) { w = 840; }
-	if (h < 170) { h = 170; }	
-	$('pmNavTreeview').style.height = h - 47;
-	$('pmAdminMainView').style.height = h - 44;
-	$('pmNav').style.height = h;
-	$('pmMain').style.left = 200;
-	$('pmMain').style.height = h;
-	$('pmMain').style.width = Math.max(w - 225, 0);
-	$('pmAdminMainView').style.width = Math.max(w - 240, 0);
-}
 
-// attach resize events
-YAHOO.util.Event.addListener(window, "resize", i2b2.PM.view.admin.Resize, i2b2.PM.view.admin);
 
 // capture view mode changes (via EVENT CAPTURE)
 // ================================================================================================== //
 i2b2.events.changedViewMode.subscribe((function(eventTypeName, newMode){
 	newMode = newMode[0];
 	this.viewMode = newMode;
-	if (newMode=="Admin") {
-		i2b2.PM.view.admin.parentID = false;
-		i2b2.PM.view.admin.configScreen = false;
-		var pu = $('pmNav');
-		pu.show();
-		pu = pu.style;
-		pu.width = 170;
-		pu.height = 144;
-		if (!i2b2.PM.view.admin.yuiControls.pmNavTreeview) {
-			var tree = new YAHOO.widget.TreeView("pmNavTreeview");
-			i2b2.PM.view.admin.yuiControls.pmNavTreeview = tree;
-			var root = tree.getRoot(); 
-			var tmpNode = new YAHOO.widget.TextNode({label: "Manage Hive", expanded: false}, root);
-			tmpNode.data.i2b2NodeType = "HIVE";
-			var tmpNode2 = new YAHOO.widget.TextNode({label: "Domains", expanded: false}, tmpNode);
-			tmpNode2.data.i2b2NodeType = "HIVEDOMAINS";
-			
-			
-			i2b2.PM.view.admin.yuiTreeNodeCELLS = new YAHOO.widget.TextNode({label: "Manage Cells", expanded: false}, root);
-			i2b2.PM.view.admin.yuiTreeNodeCELLS.data.i2b2NodeType = "HIVECELLS";
-			i2b2.PM.view.admin.yuiTreeNodeCELLS.setDynamicLoad(i2b2.PM.admin.refreshTree);
-
-			i2b2.PM.view.admin.yuiTreeNodePARAMS= new YAHOO.widget.TextNode({label: "Global Params", expanded: false}, tmpNode);
-			//tmpNode2.data.i2b2NodeType = "HIVEGLOBALS";
-			//tmpNode2.id = d.id;
-			i2b2.PM.view.admin.yuiTreeNodePARAMS.data.xmlId = "";
-			i2b2.PM.view.admin.yuiTreeNodePARAMS.data.i2b2NodeType = "PARAMS";
-			i2b2.PM.view.admin.yuiTreeNodePARAMS.data.i2b2Table = "global";
-			i2b2.PM.view.admin.yuiTreeNodePARAMS.data.xmlData = "/";
-			
-			
-			i2b2.PM.view.admin.yuiTreeNodePARAMS.setDynamicLoad(i2b2.PM.admin.refreshParameters);	
-			
-			
-			// save this for later use (refresh project list)
-			i2b2.PM.view.admin.yuiTreeNodePROJECTS = new YAHOO.widget.TextNode({label: "Manage Projects", expanded: false}, root);
-			i2b2.PM.view.admin.yuiTreeNodePROJECTS.data.i2b2NodeType = "PROJECTS";
-			i2b2.PM.view.admin.yuiTreeNodePROJECTS.setDynamicLoad(i2b2.PM.admin.refreshProjects);
-			//var tmpNode = new YAHOO.widget.TextNode({label: "Manage Users", expanded: false}, root);
-			//tmpNode.data.i2b2NodeType = "USERS";
-			i2b2.PM.view.admin.yuiTreeNodeUSERS = new YAHOO.widget.TextNode({label: "Manage Users", expanded: false}, root);
-			i2b2.PM.view.admin.yuiTreeNodeUSERS.data.i2b2NodeType = "USERS";
-			i2b2.PM.view.admin.yuiTreeNodeUSERS.setDynamicLoad(i2b2.PM.admin.refreshUsers);			
-
-
-			i2b2.PM.view.admin.yuiTreeNodeAPPROVALS = new YAHOO.widget.TextNode({label: "Manage Approvals", expanded: false}, root);
-			i2b2.PM.view.admin.yuiTreeNodeAPPROVALS.data.i2b2NodeType = "APPROVALS";
-			i2b2.PM.view.admin.yuiTreeNodeAPPROVALS.setDynamicLoad(i2b2.PM.admin.refreshTree);
-
-			i2b2.PM.view.admin.yuiTreeNodeREQUEST = new YAHOO.widget.TextNode({label: "Project Requests", expanded: false}, root);
-			i2b2.PM.view.admin.yuiTreeNodeREQUEST.data.i2b2NodeType = "PROJECTREQUESTS";
-			i2b2.PM.view.admin.yuiTreeNodeREQUEST.setDynamicLoad(i2b2.PM.admin.refreshTree);
-			
-			tree.render(); 
-			tree.subscribe('clickEvent', i2b2.PM.view.admin.treeClick);
-		}
-		i2b2.PM.view.admin.configScreenDispay(0);
-		i2b2.PM.view.admin.showInfoPanel("LOADED");
-		$('pmMain').show();
-		$('pmNav').show();
-	} else {
-		$('pmMain').hide();
-		$('pmNav').hide();		
-		this.visible = false;
-	}
+	this.visible = false;
 	this.Resize();	
 }),'',i2b2.PM.view.admin);
 

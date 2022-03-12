@@ -11,51 +11,7 @@ Splitter = function( name, config )
 	/* 
 	 * This method is called when CRC is initialized and when browser window is resized
 	 */
-	this.onResize = function( type, args, me )
-	{
-		var ve = $('ontMainBox');
-		if (ve.style.width === "")
-		{
-			return;
-		}
-		
-		var splitter = $( name );
-		
-		if ( this.leftProportion == null )
-		{
-			splitter.style.left = addToProperty( ve.style.width, 18, "px", "px" );
-			this.leftProportion = (parseInt(splitter.style.left))/(YAHOO.util.Dom.getViewportWidth()-15);
-		}
-		else
-		{
-			splitter.style.left = this.leftProportion * (YAHOO.util.Dom.getViewportWidth()-15) + "px";
-		}
-				
-		splitter.style.top 		= this.topOffset + "px";
-		splitter.style.height 	= (YAHOO.util.Dom.getViewportHeight()-this.topOffset) + "px";
-	}
-	
-	// fires when splitter is dragged
-	this.resizeOtherComponents = function()
-	{
-		var splitter = $( name );
-		
-		// Prevent the left pane from becoming small enough that tabs start to wrap
-		if (stripUnit(splitter.style.left,"px")<520) 
-		{
-			if (i2b2.hive.MasterView.getZoomWindows().size()>0)
-			{
-				if (stripUnit(splitter.style.left,"px")<520 && YAHOO.util.Dom.getViewportWidth()>520) splitter.style.left=appendUnit(520,"px");	
-			}
-			else
-			{
-				if (stripUnit(splitter.style.left,"px")<300 && YAHOO.util.Dom.getViewportWidth()>300) splitter.style.left=appendUnit(300,"px");
-			}
-		}
-		
-		i2b2.PLUGINMGR.view.PlugView.splitterDragged(); // resize Plugin View
-		i2b2.PLUGINMGR.view.list.splitterDragged(); // resize Plugin View
-	}
+	this.onResize = function( type, args, me ) {}
 	
 	// fires when window is resized
 	this.resizeComopnentHeight = function()
@@ -69,7 +25,6 @@ Splitter = function( name, config )
 	{	
 		var splitter = $( name );
 		this.leftProportion = parseInt(splitter.style.left)/(YAHOO.util.Dom.getViewportWidth()-15); // remember the new leftProportion	
-		this.resizeOtherComponents();
 	}
 
 	/*

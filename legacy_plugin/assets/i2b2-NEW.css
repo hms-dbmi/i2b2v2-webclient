@@ -4,25 +4,6 @@ body {
 	font-family:arial,helvetica;
 	font-size:12px;
 	line-height:16px;
-	background:url('images/background.gif');
-	background-color:#D9ECF0;
-}
-
-#topBarTitle {
-	position:relative; 
-	left:-5px;
-}
-
-BODY #title-back {
-	position: absolute;
-	left: 0px;
-	top: 0px;
-	background-image: url(images/title_back.gif);
-	background-position: center;
-	background-repeat: none;
-	height: 26px;
-	width: 100%;
-	display: none;
 }
 
 .xmlMsg {
@@ -35,42 +16,10 @@ BODY #title-back {
 
 A.selectedView { font-weight:bold; }
 
-#topBarTable {
-	position:relative; 
-	top:-15px;
-	/*
-	background-image: url('images/top_hive.gif'); 
-	background-position: center center;
-	background-repeat: no-repeat;
-	*/
-}
-
-#topBarTable td {
-	color: #FFF;
-}
-
-#topBarTable a {
-	color: #FFF;
-	text-decoration:none;
-}
-
-#topBarTable a:hover {
-	color: #FFF;
-	text-decoration:underline;
-}
-
-
-#topTitleImg {
-	position:relative; 
-	top:-15px;
-}
-
 #screenQueryData {
 	padding: 4px 0px 0px;
 	display: flex;
 }
-
-
 
 /* function buttons on right of tabs */
 DIV.opXML {
@@ -97,13 +46,16 @@ DIV.tabBox {
 	cursor:pointer;
 	float:left;
 	height:19px;
+	width: 100%;
 	margin-right:5px;
-	padding:5px 5px 0px;
+	padding: 0px;
+	margin: 0;
 }
 
 DIV.tabBox DIV {
-	padding: 0px 5px;
+	padding: 0px;
 	display:inline;
+	margin: 0;
 }
 
 DIV.tabBox > DIV {
@@ -114,7 +66,9 @@ DIV.tabBox > DIV {
 	height:18px;
 	line-height:17px;
 	text-align:center;
-	padding: 0px 5px;
+	padding: 0px;
+	margin: 0;
+	margin: 0;
 	display:block;
 }
 
@@ -126,6 +80,8 @@ DIV.tabBox.active {
 	border-width:1px;
 	margin-right:5px;
 	height:20px;
+	padding: 0;
+	margin: 0;
 }
 DIV.tabBox.active DIV {
 	background:#6677AA;
@@ -134,6 +90,8 @@ DIV.tabBox.active DIV {
 	font-weight:bold;
 	font-family:arial,helvetica;
 	font-size:12px;
+	padding: 0;
+	margin: 0;
 }
 
 DIV.tabTextBox {
@@ -145,7 +103,7 @@ DIV.tabTextBox {
 	float:left;
 	height:20px;
 	margin-right:5px;
-	padding:5px 5px 0px;
+	padding:0;
 	position:relative;
 	width:136px;
 	z-index:10;
@@ -160,7 +118,8 @@ DIV.tabTextBox DIV {
 	height: 18px;
 	line-height: 17px;
 	text-align: center;
-	padding: 0px 8px;
+	padding: 0px;
+	margin: 0;
 }
 DIV.tabText {}
 /* </standarized main tab style> */
