@@ -241,12 +241,13 @@ i2b2.layout.init = function () {
     };
 
     i2b2.layout.onPluginFrameLoad = function(){
-        i2b2.PM.model.data.loginXMLStr = i2b2.h.Xml2String(i2b2.PM.model.data.refXML);
-        delete i2b2.PM.model.data.refXML;
+        if(!i2b2.PM.model.data.loginXMLStr)
+        {
+            i2b2.PM.model.data.loginXMLStr = i2b2.h.Xml2String(i2b2.PM.model.data.refXML);
+            delete i2b2.PM.model.data.refXML;
+        }
 
         let loginData = JSON.stringify(i2b2.PM.model.data);
-        delete i2b2.PM.model.data;
-
         document.getElementById("pluginframe").contentWindow.postMessage(loginData, window.location.origin);
     }
 
