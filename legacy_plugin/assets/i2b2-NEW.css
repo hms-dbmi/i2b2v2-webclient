@@ -5,10 +5,6 @@ body {
 	font-size:12px;
 	line-height:16px;
 	display: flex;
-	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
-	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
-	display: -ms-flexbox;      /* TWEENER - IE 10 */
-	display: -webkit-flex;
 	flex-direction: column;
 	height: 100%;
 }
@@ -57,7 +53,7 @@ DIV.tabBox {
 	height:19px;
 	width: 100%;
 	margin-right:5px;
-	padding: 0px;
+	padding: 8px;
 	margin: 0;
 }
 
@@ -73,10 +69,9 @@ DIV.tabBox > DIV {
 	font-family:arial,helvetica;
 	font-size:12px;
 	height:18px;
-	line-height:17px;
+	line-height:15px;
 	text-align:center;
 	padding: 0px;
-	margin: 0;
 	margin: 0;
 	display:block;
 }
@@ -87,10 +82,9 @@ DIV.tabBox.active {
 	border-color:#667788;
 	border-style:solid solid none;
 	border-width:1px;
-	margin-right:5px;
-	height:20px;
+	height:29px;
 	padding: 0;
-	margin: 0;
+	margin: 0 5px 0 0;
 }
 DIV.tabBox.active DIV {
 	background:#6677AA;
@@ -99,7 +93,7 @@ DIV.tabBox.active DIV {
 	font-weight:bold;
 	font-family:arial,helvetica;
 	font-size:12px;
-	padding: 0;
+	padding: 5px 0 0 0;
 	margin: 0;
 }
 
