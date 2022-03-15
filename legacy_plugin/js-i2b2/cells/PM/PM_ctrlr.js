@@ -122,16 +122,6 @@ i2b2.PM._processUserConfig = function (data) {
 	try {
 		var t = i2b2.h.XPath(data.refXML, '//user/password')[0]; //[@token_ms_timeout]
 		i2b2.PM.model.login_password = i2b2.h.Xml2String(t);
-		
-		var timeout = t.getAttribute('token_ms_timeout');
-		if (timeout == undefined ||  timeout < 300001)
-		{
-		 i2b2.PM.model.IdleTimer.start(1800000-300000); //timeout); //timeout-60000);		
-			
-		} else {
-		
-		 i2b2.PM.model.IdleTimer.start(timeout-300000); //timeout); //timeout-60000);		
-		}
 	} catch (e) {
 		//console.error("Could not find returned password node in login XML");
 		i2b2.PM.model.login_password = "<password>"+data.msgParams.sec_pass+"</password>\n";

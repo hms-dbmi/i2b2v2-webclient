@@ -289,9 +289,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
 		execBubble.timeRecv = new Date();
 		var origCallback = execBubble.callback;
 
-       //update timeout
-	   i2b2.PM.model.IdleTimer.updateTimer();   
-
 		// debug messages
 		if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)) {
 			console.group("[AJAX RESULT i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName + "]");
