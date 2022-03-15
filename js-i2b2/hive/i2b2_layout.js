@@ -252,7 +252,7 @@ i2b2.layout.init = function () {
     }
 
     let pluginComponent = function(container,state){
-        let iframe = $("<iframe id='pluginframe' onload='i2b2.layout.onPluginFrameLoad()' src='' width='100%' height='100%' style='border:none;margin-top:-4px'></iframe>");
+        let iframe = $("<iframe id='pluginframe' onload='i2b2.layout.onPluginFrameLoad()' src='' width='100%' style='border:none;margin-top:-4px;flex-grow: 1;flex-basis: 0'></iframe>");
         iframe.attr("src", "legacy_plugin/index.html");
 
         let frameDiv = $("<div class='cellWhite'></div>");
