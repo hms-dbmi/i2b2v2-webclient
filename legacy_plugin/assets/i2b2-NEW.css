@@ -22,7 +22,7 @@ A.selectedView { font-weight:bold; }
 #screenQueryData {
 	padding: 0px;
 	display: flex;
-	flex-grow: 5;
+	flex-grow: 1;
 	flex-basis: 0;
 }
 
