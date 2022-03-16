@@ -14,12 +14,10 @@ console.time('execute time');
 i2b2.CRC.ctrlr.QT = new QueryToolController();
 function QueryToolController() {
     i2b2.CRC.model.queryCurrent = {};
-    this.queryIsDirty = true;
     this.queryNameDefault = 'New Query';
 
 // ================================================================================================== //
     this.doSetQueryName = function(inName) {
-        this.queryIsDirty = true;
         i2b2.CRC.model.queryCurrent.name = inName;
     };
 
@@ -114,7 +112,7 @@ function QueryToolController() {
         params.psm_result_output += "</result_output_list>";
 
         // query definition
-        params.psm_query_definition = (Handlebars.compile("{{> Query}}"))(i2b2.CRC.model.transformedQuery)
+        params.psm_query_definition = (Handlebars.compile("{{> Query}}"))(i2b2.CRC.model.transformedQuery);
 
         // get the query name
         let queryName = $('.CRC_QT_runbar input.name',i2b2.CRC.view.QT.containerDiv).text().trim();
@@ -180,19 +178,16 @@ function QueryToolController() {
                     tempItem.isSynonym = "false";
                 }
                 // TODO: Handle processing of lab values
-                if(item.LabValues)
-                {
+                if (item.LabValues) {
                     tempItem.valueType = item.LabValues.valueType;
                     tempItem.valueOperator = item.LabValues.valueOperator;
                     tempItem.unitValue= item.LabValues.unitValue;
 
-                    if(item.LabValues.numericValueRangeLow){
+                    if (item.LabValues.numericValueRangeLow){
                         tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
-                    }
-                    else{
+                    } else {
                         tempItem.value = item.LabValues.value;
                     }
-
                     tempItem.isString = item.LabValues.isString;
                     tempItem.isEnum = item.LabValues.isEnum;
                 }

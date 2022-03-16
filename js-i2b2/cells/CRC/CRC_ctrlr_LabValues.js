@@ -7,6 +7,7 @@
  */
 console.group('Load & Execute component file: CRC > ctrlr > LabValues');
 console.time('execute time');
+// ================================================================================================== //
 
 
 i2b2.CRC.ctrlr.labValues = {
@@ -52,17 +53,13 @@ i2b2.CRC.ctrlr.labValues = {
             } else {
                 c = i2b2.h.XPath(response.refXML, 'descendant::concept');
             }
-            if (c.length > 0) {
-                sdxConcept.origData.xmlOrig = c[0];
-            }
+            if (c.length > 0) sdxConcept.origData.xmlOrig = c[0];
 
             const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
-            if (valueMetaDataArr.length > 0) {
-                i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
-            }
+            if (valueMetaDataArr.length > 0) i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
 
             callBack();
-        }
+        };
 
         i2b2.ONT.ajax.GetTermInfo("ONT", {concept_key_value:sdxConcept.origData.key,
             ont_max_records: 'max="1"', ont_synonym_records: true, ont_hidden_records: true}, labResponseCallback );
@@ -182,8 +179,7 @@ i2b2.CRC.ctrlr.labValues = {
                     let commentsDetExclusion = i2b2.h.XPath(valueMetaDataXml,"descendant::CommentsDeterminingExclusion/Com/text()");
                     let exclusionArr = [];
                     for (let i=0; i<commentsDetExclusion.length; i++) {
-                        if(exclusionArr.indexOf(commentsDetExclusion[i].nodeValue) === -1)
-                        exclusionArr.push(commentsDetExclusion[i].nodeValue);
+                        if(exclusionArr.indexOf(commentsDetExclusion[i].nodeValue) === -1) exclusionArr.push(commentsDetExclusion[i].nodeValue);
                     }
                     commentsDetExclusion = exclusionArr;
                     if (commentsDetExclusion.length > 0) {
@@ -200,7 +196,6 @@ i2b2.CRC.ctrlr.labValues = {
                     break;
                 default:
                     this.extractedModel.dataType = false;
-
             }
         }
         catch(e) {
@@ -213,7 +208,7 @@ i2b2.CRC.ctrlr.labValues = {
         // set the title bar (TestName and TestID are assumed to be mandatory)
         if (this.extractedModel.valueType === "LRGSTR") {
             this.extractedModel.name = "Search within the " + i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName');
-        }else{
+        } else {
             this.extractedModel.name = "Choose value of "+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName')+" (Test:"+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestID')+")";
         }
 
@@ -224,10 +219,7 @@ i2b2.CRC.ctrlr.labValues = {
             let allUnits = i2b2.h.XPath(valueMetaDataXml,"descendant::UnitValues/descendant::text()[parent::NormalUnits or parent::EqualUnits or parent::Units]");
             let allUnitsArr = [];
             for (let i=0; i<allUnits.length; i++) {
-                if(allUnitsArr.indexOf(allUnits[i].nodeValue) === -1)
-                {
-                    allUnitsArr.push(allUnits[i].nodeValue);
-                }
+                if(allUnitsArr.indexOf(allUnits[i].nodeValue) === -1) allUnitsArr.push(allUnits[i].nodeValue);
             }
             allUnits = allUnitsArr;
             for (let i=0;i<allUnits.length;i++) {
@@ -244,8 +236,7 @@ i2b2.CRC.ctrlr.labValues = {
             let normalUnits = i2b2.h.XPath(valueMetaDataXml,"descendant::UnitValues/descendant::NormalUnits/text()");
             let normalUnitsArr = [];
             for (let i=0; i<normalUnits.length; i++) {
-                if(normalUnitsArr.indexOf(normalUnits[i].nodeValue) === -1)
-                {
+                if(normalUnitsArr.indexOf(normalUnits[i].nodeValue) === -1) {
                     normalUnitsArr.push(normalUnits[i].nodeValue);
                 }
             }
@@ -291,8 +282,7 @@ i2b2.CRC.ctrlr.labValues = {
             this.extractedModel.rangeInfo.LowOfLow = parseFloat(valueMetaDataXml.getElementsByTagName('LowofLowValue')[0].firstChild.nodeValue);
             if ((isFinite(this.extractedModel.rangeInfo.LowOfToxic)) && (this.extractedModel.rangeInfo.LowOfToxic === this.extractedModel.rangeInfo.LowOfLow)) {
                 this.extractedModel.rangeInfo.LowOfLowRepeat = true;
-            }
-            else {
+            } else {
                 this.extractedModel.rangeInfo.LowOfLowRepeat = false;
                 nSituation = nSituation +1;
             }
@@ -301,8 +291,7 @@ i2b2.CRC.ctrlr.labValues = {
             this.extractedModel.rangeInfo.HighOfLow = parseFloat(valueMetaDataXml.getElementsByTagName('HighofLowValue')[0].firstChild.nodeValue);
             if ((isFinite(this.extractedModel.rangeInfo.LowOfLow)) && (this.extractedModel.rangeInfo.LowOfLow === this.extractedModel.rangeInfo.HighOfLow)) {
                 this.extractedModel.rangeInfo.HighOfLowRepeat = true;
-            }
-            else {
+            } else {
                 this.extractedModel.rangeInfo.HighOfLowRepeat = false;
                 nSituation = nSituation +1;
             }
@@ -315,8 +304,7 @@ i2b2.CRC.ctrlr.labValues = {
             this.extractedModel.rangeInfo.HighOfHigh = parseFloat(valueMetaDataXml.getElementsByTagName('HighofHighValue')[0].firstChild.nodeValue);
             if ((isFinite(this.extractedModel.rangeInfo.HighOfToxic)) && (this.extractedModel.rangeInfo.HighOfToxic === this.extractedModel.rangeInfo.HighOfHigh)) {
                 this.extractedModel.rangeInfo.HighOfHighRepeat = true;
-            }
-            else {
+            } else {
                 this.extractedModel.rangeInfo.HighOfHighRepeat = false;
                 nSituation = nSituation +1;
             }
@@ -325,16 +313,16 @@ i2b2.CRC.ctrlr.labValues = {
             this.extractedModel.rangeInfo.LowOfHigh = parseFloat(valueMetaDataXml.getElementsByTagName('LowofHighValue')[0].firstChild.nodeValue);
             if ((isFinite(this.extractedModel.rangeInfo.HighOfHigh)) && (this.extractedModel.rangeInfo.HighOfHigh === this.extractedModel.rangeInfo.LowOfHigh)) {
                 this.extractedModel.rangeInfo.LowOfHighRepeat = true;
-            }
-            else {
+            } else {
                 this.extractedModel.rangeInfo.LowOfHighRepeat = false;
                 nSituation = nSituation +1;
             }
         } catch(e) {}
         this.extractedModel.rangeInfo.total = nSituation;
-    },
-}
+    }
+};
 
 
+// ================================================================================================== //
 console.timeEnd('execute time');
 console.groupEnd();
