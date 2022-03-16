@@ -1,24 +1,23 @@
 body {
 	margin:0;
 	padding:0;
-	font-family:arial,helvetica;
-	font-size:12px;
+	font-family:"Roboto", "Helvetica", "Arial", sans-serif;
+	font-weight: 500;
 	line-height:16px;
-	background:url('../images/background.gif');
-	background-color:#D9ECF0;
 	overflow:hidden;
 }
 
 body, td, p {
-	font-family:arial,helvetica;
 	font-size:13px;
 	line-height:16px;
 }
 
 /* === Start Page Header === */
 #top-bar {
-	height:33px;
+	height:45px;
 	padding:0px 20px 0px 10px;
+	/*background:url('../images/background.gif');*/
+	background-color: #2782a3;
 }
 
 #top-bar td {
@@ -42,6 +41,7 @@ body, td, p {
 #topBarTable {
 	position:relative;
 	width: 100%;
+	height: 100%;
 	border-spacing: 0px;
 }
 
@@ -302,7 +302,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 	margin-left:10px;
 	margin-bottom:0px;
 	position:absolute;
-	top:33px;
+	top:45px;
 	left:0px;
 	right:0px;
 	bottom:0px;
@@ -311,10 +311,9 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 .goldenLayout .lm_goldenlayout {
 	background: none;
 }
-
 .goldenLayout .lm_splitter {
 	opacity:1;
-	background:#BCE;
+	background: #999999;
 }
 
 .goldenLayoutCol .lm_splitter {
@@ -336,15 +335,21 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 
 .goldenLayout  .lm_header {
 	height:26px;
+	background-color: #ed9b40;
+	border-radius: 3px 3px 0 0;
 }
 
 .goldenLayout .lm_maximised .lm_header {
-	background-color:#98b4d9;
+	background-color: #ed9b40;
+}
+
+#goldenLayoutColId2 .lm_header {
+	background-color: #b6b4b4;
 }
 
 .goldenLayoutCol .lm_content {
-	background:#BCE;
-	border:1px solid #678;
+	background: #FFFFFF;
+	padding-left: 0;
 }
 
 .goldenLayoutCol {
@@ -370,40 +375,55 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 	background-image:url('../images/stack_zoom_icon.gif');
 }
 
-.goldenLayoutCol .lm_header .lm_tab {
-	background:#BCE;
-	border: 1px solid #678;
-	padding:5px 10px 4px 10px;
-	margin-right:6px;
-	height:15px;
-}
-.goldenLayoutCol .lm_tab.lm_active {
+.goldenLayout .lm_header .lm_tab.lm_active{
 	box-shadow:none;
-	padding-left:5px;
-	padding-right:5px;
+	padding-bottom: 0;
+}
+
+.goldenLayoutCol .lm_header .lm_tab {
+	padding:5px 5px 5px 5px;
+	margin-right:6px;
+	margin-left: 6px;
+	height:15px;
+	box-shadow:none;
+	border: none !important;
+	background: none;
+}
+
+.goldenLayoutCol .lm_tab .lm_title:hover {
+	opacity: 0.4 !important;
+	background: #ed9b40;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#goldenLayoutColId2 .lm_tab .lm_title:hover {
+	background-color: #b6b4b4;
+}
+
+.goldenLayoutCol .lm_tab.lm_active {
+	background: none;
 }
 
 .goldenLayoutCol .lm_tab .lm_title {
-	color:#458;
-	font-weight:bold;
+	font-weight: 300;
+	font-size: 16px;
 }
 
 .goldenLayoutCol .lm_tab.lm_active .lm_title {
 	color:#FFF;
-	background:#67A;
-	border:1px solid #678;
 	padding:1px 4px;
 }
 
-div.cellWhite {
+.goldenLayout div.cellWhite {
 	position:absolute;
 	background:#FFF;
-	top:5px;
+	top:0px;
 	bottom:5px;
-	left:5px;
-	right:5px;
+	left:1px;
+	right:0px;
 	border:1px solid #678;
 	overflow:auto;
+	border-radius: 0 0 3px 3px;
 }
 
 .cellBlue {
@@ -415,6 +435,7 @@ div.cellWhite {
 	right:0px;
 	border:1px solid #678;
 	overflow:hidden;
+	border-radius: 0 0 3px 3px;
 }
 
 #goldenLayoutId2 {
@@ -450,6 +471,7 @@ div.cellWhite {
 	margin-left: 1px;
 	cursor: pointer;
 }
+
 /* === End Golden Layout === */
 
 /* === Start BOOTSTRAP TREEVIEW === */

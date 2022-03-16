@@ -6,7 +6,7 @@
 .Event1Container.i2b2DropTarget.DropHover,
 .Event2Container.i2b2DropTarget.DropHover,
 .Event1Container .i2b2DropTarget.DropHover {
-    background: #ffff60a0;
+    background: #d1f0ff;
 }
 
 .i2b2DropTarget {
@@ -26,13 +26,13 @@
 .CRC_QT_view {
     position: absolute;
     background: #FFF;
-    top: 5px;
+    top: 0px;
     bottom: 5px;
-    left: 5px;
-    right: 5px;
+    left: 1px;
+    right: 0px;
 }
 
-.CRC_QT_query {
+.goldenLayout .CRC_QT_query {
     overflow-y: scroll;
     position: absolute;
     top: 0;
@@ -42,31 +42,52 @@
     border: 1px solid #678;
 }
 
-.CRC_QT_runbar {
+.goldenLayout .CRC_QT_runbar {
     position: absolute;
     bottom: 0;
     right: 0;
     left: 0;
     height: 3.3em;
-    background: #BCE;
-    padding: 0.4em 0 0 0;
+    background: #82a6b2;
+    padding: 0.7em 0 0 0;
+    border-radius: 0 0 3px 3px;
 }
 
-.CRC_QT_runbar .name {
+.goldenLayout .CRC_QT_runbar .name {
     right: 10em;
     position: relative;
-    left: 0;
+    left: 5px;
+    color: white;
+    font-weight: 400;
+    font-size: 15px;
+    margin-right: 10px;
 }
 
 .CRC_QT_runbar .name input {
-    width: 100%
+    height: 26px;
+    width: 85%;
+    border: 1px solid #678;
+    padding-left: 10px;
 }
 
 .CRC_QT_runbar .button {
-    padding: 1.1em 0;
+    padding: .1em 1em 0 0;
     position: absolute;
     top: 0.5em;
     right: 0;
+}
+
+.CRC_QT_runbar .button  button{
+    background: #e8eefe;
+    padding: 0.1rem 0.4rem;
+    line-height: 1.3em;
+    color: #2782a3;
+    margin-top: 2px;
+    margin-right: 5px;
+}
+
+.CRC_QT_runbar .button  button:hover{
+    opacity: 0.7;
 }
 
 
@@ -409,4 +430,119 @@
 .TermList .concept:hover .actions i {
     opacity: 1;
     margin-left: .3em;
+}
+
+.dropDownSelect {
+    color: #007bff;
+    background: white;
+}
+
+.dropDownSelect:hover {
+    background: #007bff;
+    color: white;
+}
+
+.btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle
+{
+    background: #007bff;
+    color: #82a6b2;
+}
+
+/* === Lab Values Modal === */
+#labHelpText{
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#labFlagValue {
+    width: auto;
+    max-height: 100px;
+    overflow: auto;
+}
+
+.hidden {
+    display: none;
+}
+
+.labTypeGroup {
+    width: 160px;
+    margin-right: 15px;
+}
+
+.labTypeFlagAndValues {
+    display: flex;
+    min-height: 100px;
+}
+
+#labNumericValueOperator{
+    width: 190px;
+    margin-bottom: 20px;
+}
+
+#labStringValueOperator{
+    width: 170px;
+    margin-bottom: 20px;
+}
+
+.labMain label {
+    display: block;
+}
+
+#labUnitExcluded{
+    color:#900;
+    margin-left: 20px
+}
+
+#labHeader {
+    font-size: 1.0rem;
+}
+
+#labValuesModal .modal-dialog {
+    min-width: 590px;
+}
+
+.labBarMain
+{
+    margin: 10px;
+    text-align: center;
+    border: 1px solid #000080;
+    height: auto;
+}
+
+.labBar {
+    height: 55px;
+    width: 520px;
+    display: flex;
+    margin: 10px 5px 10px 5px;
+}
+
+.labBarItem {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+#labUnitsLabel {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.barLink {
+    height: 15px;
+    cursor: pointer;
+}
+
+.barLink:hover {
+    opacity: 0.7;
+}
+
+.barLink:active {
+    border: 1px solid #000080;
+}
+
+.textRight {
+    text-align: right;
+}
+
+.textLeft {
+    text-align: left;
 }
