@@ -240,8 +240,19 @@ i2b2.layout.init = function () {
         container.getElement().html('<div class="cellWhite"><textarea>test content</textarea></div>');
     };
 
+    i2b2.layout.onPluginFrameLoad = function(){
+        if(!i2b2.PM.model.data.loginXMLStr)
+        {
+            i2b2.PM.model.data.loginXMLStr = i2b2.h.Xml2String(i2b2.PM.model.data.refXML);
+            delete i2b2.PM.model.data.refXML;
+        }
+
+        let loginData = JSON.stringify(i2b2.PM.model.data);
+        document.getElementById("pluginframe").contentWindow.postMessage(loginData, window.location.origin);
+    }
+
     let pluginComponent = function(container,state){
-        let iframe = $("<iframe id='frame' src='' width='100%' style='border:none;margin-top:-4px;flex-grow: 1;flex-basis: 0'></iframe>");
+        let iframe = $("<iframe id='pluginframe' onload='i2b2.layout.onPluginFrameLoad()' src='' width='100%' style='border:none;margin-top:-4px;flex-grow: 1;flex-basis: 0'></iframe>");
         iframe.attr("src", "legacy_plugin/index.html");
 
         let frameDiv = $("<div class='cellWhite'></div>");
