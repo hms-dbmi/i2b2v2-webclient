@@ -30,9 +30,10 @@ i2b2.ClientVersion = "1.6";
 // ================================================================================================== //
 // THESE ARE ALL THE CELLS THAT ARE INSTALLED ONTO THE SERVER
 i2b2.hive.tempCellsList = [
-		{ code: "PM",
-		  forceLoading: true 			// <----- this must be set to true for the PM cell!
-		},
+		{ code: "PM", forceLoading: true},
+		{ code: "ONT", forceLoading: true},
+		{ code: "CRC", forceLoading: true},
+		{ code: "WORK", forceLoading: true},
 		{ code:	"PLUGINMGR",
 		   forceLoading: true,
 		   forceConfigMsg: { params: [] }
