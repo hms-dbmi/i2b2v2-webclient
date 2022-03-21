@@ -258,6 +258,55 @@ i2b2.layout.init = function () {
         let frameDiv = $("<div class='cellWhite'></div>");
         frameDiv.append(iframe);
         container.getElement().append(frameDiv);
+
+        container.on('tab', (tab) => {
+
+            $(tab.header.parent.element[0]).data("minimize", true);
+
+            let maximizePluginComponent = function(){
+                $($($(tab.header.parent.element[0])[0]).find(".lm_maximise")[0]).hide();
+                if(!tab.header.parent.isMaximised)
+                {
+                    tab.header.parent.toggleMaximise();
+                }
+            }
+
+            let minimizeComponent = function(){
+                $($(tab.header.activeContentItem.element[0])[0].parentNode.parentNode).data("minimize", true);
+            }
+
+            let maximizeComponent = function(){
+                if(tab.header.activeContentItem.componentName !== "pluginComponent")
+                {
+                    $($(tab.header.activeContentItem.element[0])[0].parentNode.parentNode).data("minimize", false);
+                }
+            }
+
+            let resetCompState = function(){
+                $($($(tab.header.parent.element[0])[0]).find(".lm_maximise")[0]).show();
+                let minimized = $($(tab.header.parent.element)[0]).data("minimize");
+                if(minimized && tab.header.parent.isMaximised){
+                    tab.header.parent.toggleMaximise();
+                }
+            }
+
+            container.on('show', (tab) => {
+                maximizePluginComponent();
+            });
+
+            container.on('hide', (tab) => {
+                resetCompState();
+            });
+
+            tab.header.parent.on("minimised", () => {
+                minimizeComponent();
+            });
+
+            tab.header.parent.on("maximised", () => {
+                maximizeComponent();
+            });
+
+        });
     };
 
     //////////////////////////////////////////
