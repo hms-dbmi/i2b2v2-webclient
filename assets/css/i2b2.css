@@ -495,4 +495,11 @@ textarea {
 	height:50px;
 }
 
+iframe.pluginCell {
+	border:none;
+	margin-top:-4px;
+	flex-grow: 1;
+	flex-basis: 0
+}
+
 
