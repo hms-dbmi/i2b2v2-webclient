@@ -261,10 +261,10 @@ i2b2.layout.init = function () {
 
         container.on('tab', (tab) => {
 
-            $(tab.header.parent.element[0]).data("minimize", true);
+            $(tab.header.parent.element).data("minimize", true);
 
             let maximizePluginComponent = function(){
-                $($($(tab.header.parent.element[0])[0]).find(".lm_maximise")[0]).hide();
+                $(tab.header.parent.element).find(".lm_maximise").hide();
                 if(!tab.header.parent.isMaximised)
                 {
                     tab.header.parent.toggleMaximise();
@@ -272,13 +272,13 @@ i2b2.layout.init = function () {
             }
 
             let minimizeComponent = function(){
-                $($(tab.header.activeContentItem.element[0])[0].parentNode.parentNode).data("minimize", true);
+                $(tab.header.activeContentItem.element).parent().parent().data("minimize", true);
             }
 
             let maximizeComponent = function(){
                 if(tab.header.activeContentItem.componentName !== "pluginComponent")
                 {
-                    $($(tab.header.activeContentItem.element[0])[0].parentNode.parentNode).data("minimize", false);
+                    $(tab.header.activeContentItem.element).parent().parent().data("minimize", false);
                 }
             }
 
