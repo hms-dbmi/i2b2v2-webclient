@@ -282,9 +282,9 @@ i2b2.layout.init = function () {
                 }
             }
 
-            let resetCompState = function(){
-                $($($(tab.header.parent.element[0])[0]).find(".lm_maximise")[0]).show();
-                let minimized = $($(tab.header.parent.element)[0]).data("minimize");
+            let resetComponentState = function(){
+                $(tab.header.parent.element).find(".lm_maximise").show();
+                let minimized = $(tab.header.parent.element).data("minimize");
                 if(minimized && tab.header.parent.isMaximised){
                     tab.header.parent.toggleMaximise();
                 }
@@ -295,7 +295,7 @@ i2b2.layout.init = function () {
             });
 
             container.on('hide', (tab) => {
-                resetCompState();
+                resetComponentState();
             });
 
             tab.header.parent.on("minimised", () => {
@@ -305,7 +305,6 @@ i2b2.layout.init = function () {
             tab.header.parent.on("maximised", () => {
                 maximizeComponent();
             });
-
         });
     };
 
