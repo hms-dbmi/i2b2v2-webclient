@@ -502,4 +502,16 @@ iframe.pluginCell {
 	flex-basis: 0
 }
 
+#PM-login-modal .form-group label {
+	margin-bottom: 8px;
+}
+
+#PM-login-modal .form-group input {
+	margin-bottom: 14px;
+}
+
+.form-group select {
+	margin-bottom: 14px;
+}
+
 

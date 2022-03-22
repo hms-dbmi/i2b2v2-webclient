@@ -120,6 +120,13 @@
 .DateOccursBody > div {
     padding: 1em 0em;
 }
+
+.gj-datepicker .btn-outline-secondary {
+    height: 100%;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 .OccursCount {
     display: inline !important;
     width: 5em;
@@ -486,7 +493,13 @@
 
 .labMain label {
     display: block;
+    margin-bottom: 8px;
 }
+
+.labMain .input-group-text {
+    margin-bottom: 0;
+}
+
 
 #labUnitExcluded{
     color:#900;
