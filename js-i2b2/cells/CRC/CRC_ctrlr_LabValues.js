@@ -265,7 +265,7 @@ i2b2.CRC.ctrlr.labValues = {
         }
 
         //valueUnits: {name: "ng/l", multFactor: 1, masterUnit: true}
-        this.extractedModel.valueUnits = Object.values(tProcessing);
+        this.extractedModel.valueUnits = tProcessing;
 
 
         var nBarLength = 520; // fixed width of bar

@@ -765,16 +765,15 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
             if (extractedLabValues.valueUnits.length !== 0) {
                 let labUnits = $("#labUnits");
 
-                //set the label to the first value in the units list
-                $("#labUnitsLabel").text(extractedLabValues.valueUnits[0].name);
-
-                for (let i = 0; i < extractedLabValues.valueUnits.length; i++) {
+                let labUnitKeys = Object.keys(extractedLabValues.valueUnits);
+                for (let i = 0; i < labUnitKeys.length; i++) {
                     let unitOption = $("<option></option>");
-                    unitOption.val(extractedLabValues.valueUnits[i].name);
-                    if (extractedLabValues.valueUnits[i].masterUnit) {
-                        labUnits.val(extractedLabValues.valueUnits[i].name);
+                    unitOption.val(extractedLabValues.valueUnits[labUnitKeys[i]].name);
+                    if (extractedLabValues.valueUnits[labUnitKeys[i]].masterUnit) {
+                        labUnits.val(extractedLabValues.valueUnits[labUnitKeys[i]].name);
+                        $("#labUnitsLabel").text(extractedLabValues.valueUnits[labUnitKeys[i]].name);
                     }
-                    unitOption.text(extractedLabValues.valueUnits[i].name);
+                    unitOption.text(extractedLabValues.valueUnits[labUnitKeys[i]].name);
                     labUnits.append(unitOption);
                 }
 
@@ -798,6 +797,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 });
                 if (sdxConcept.LabValues && sdxConcept.LabValues.unitValue) {
                     labUnits.val(sdxConcept.LabValues.unitValue);
+                    labUnits.trigger("change");
                     newLabValues.unitValue = sdxConcept.LabValues.unitValue;
                 }
             } else {
