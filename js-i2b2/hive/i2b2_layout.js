@@ -258,6 +258,54 @@ i2b2.layout.init = function () {
         let frameDiv = $("<div class='cellWhite'></div>");
         frameDiv.append(iframe);
         container.getElement().append(frameDiv);
+
+        container.on('tab', (tab) => {
+
+            $(tab.header.parent.element).data("minimize", true);
+
+            let maximizePluginComponent = function(){
+                $(tab.header.parent.element).find(".lm_maximise").hide();
+                if(!tab.header.parent.isMaximised)
+                {
+                    tab.header.parent.toggleMaximise();
+                }
+            }
+
+            let minimizeComponent = function(){
+                $(tab.header.activeContentItem.element).parent().parent().data("minimize", true);
+            }
+
+            let maximizeComponent = function(){
+                if(tab.header.activeContentItem.componentName !== "pluginComponent")
+                {
+                    $(tab.header.activeContentItem.element).parent().parent().data("minimize", false);
+                }
+            }
+
+            let resetComponentState = function(){
+                $(tab.header.parent.element).find(".lm_maximise").show();
+                let minimized = $(tab.header.parent.element).data("minimize");
+                if(minimized && tab.header.parent.isMaximised){
+                    tab.header.parent.toggleMaximise();
+                }
+            }
+
+            container.on('show', (tab) => {
+                maximizePluginComponent();
+            });
+
+            container.on('hide', (tab) => {
+                resetComponentState();
+            });
+
+            tab.header.parent.on("minimised", () => {
+                minimizeComponent();
+            });
+
+            tab.header.parent.on("maximised", () => {
+                maximizeComponent();
+            });
+        });
     };
 
     //////////////////////////////////////////
