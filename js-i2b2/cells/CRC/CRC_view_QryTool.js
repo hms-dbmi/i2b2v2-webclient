@@ -642,7 +642,9 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         newLabValues.numericValueRangeHigh = $(this).val();
                     });
 
-                    if (sdxConcept.LabValues && sdxConcept.LabValues.valueOperator) {
+                    if (sdxConcept.LabValues  && sdxConcept.LabValues.valueType !== i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG
+                        && sdxConcept.LabValues.valueOperator
+                       ) {
                         numericValueOperatorSelection.val(sdxConcept.LabValues.valueOperator).trigger("change");
                         newLabValues.valueOperator = sdxConcept.LabValues.valueOperator;
 
