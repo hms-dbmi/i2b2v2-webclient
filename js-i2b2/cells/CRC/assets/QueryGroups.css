@@ -53,11 +53,14 @@
     border-radius: 0 0 3px 3px;
 }
 
+.goldenLayout .CRC_QT_runbar label {
+    color: white;
+}
+
 .goldenLayout .CRC_QT_runbar .name {
     right: 10em;
     position: relative;
     left: 5px;
-    color: white;
     font-weight: 400;
     font-size: 15px;
     margin-right: 10px;
