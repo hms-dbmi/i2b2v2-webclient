@@ -183,7 +183,8 @@ i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview = function(node, onComp
         i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, onCompleteCallback, false);
         // TODO: add options for modifiers too?
     });
-    i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, cb_concepts, true);
+    cb_concepts();
+    //i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, cb_concepts, true);
 };
 
 
