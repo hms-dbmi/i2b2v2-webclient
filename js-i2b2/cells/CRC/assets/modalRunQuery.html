@@ -11,7 +11,7 @@
             <!-- Modal Header -->
             <div class="modal-header">
                 <h5 class="modal-title">Run Query Options</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <!-- Modal body -->
@@ -19,17 +19,13 @@
                 <form style="margin: 0px 40px">
                     <div class="form-group row">
                         <div class="input-group input-group-sm mb-2">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="crcQtQueryName-text">Name for Query</span>
-                            </div>
+                            <label class="input-group-text" id="crcQtQueryName-text">Name for Query</label>
                             <input type="text" id="crcQtQueryName" class="form-control" aria-label="Name for Query" aria-describedby="crcQtQueryName-text">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="input-group input-group-sm mb-2">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Query Result(s)</span>
-                            </div>
+                            <label class="input-group-text">Query Result(s)</label>
                             <div style="float:left; width:40%; height:100%;" class="form-control">
                                 <div class="ResultTypes" style="">
                                     <div id="crcDlgResultOutputPATIENTSET"><input type="checkbox" class="chkQueryType" name="queryType" value="PATIENTSET"> Patient set</div>
@@ -48,15 +44,13 @@
                             </div>
                         </div>
                     </div>
-
-
                 </form>
             </div>
 
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary i2b2-save">Run Query</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
 
         </div>

@@ -30,3 +30,12 @@
     font-size: 3em;
     line-height: 1.3em;
 }
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+#ontOptionsModal .modal-body {
+    padding-right: 0;
+    padding-left: 0;
+}
