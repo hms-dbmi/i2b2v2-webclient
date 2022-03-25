@@ -173,7 +173,7 @@ i2b2.layout.init = function () {
                     },{
                         type:'component',
                         isClosable:false,
-                        componentName: 'pluginComponent',
+                        componentName: 'i2b2.LEGACYPLUGIN.view.main',
                         title:'Plugins'
                     }]
             },
@@ -258,54 +258,6 @@ i2b2.layout.init = function () {
         let frameDiv = $("<div class='cellWhite'></div>");
         frameDiv.append(iframe);
         container.getElement().append(frameDiv);
-
-        container.on('tab', (tab) => {
-
-            $(tab.header.parent.element).data("minimize", true);
-
-            let maximizePluginComponent = function(){
-                $(tab.header.parent.element).find(".lm_maximise").hide();
-                if(!tab.header.parent.isMaximised)
-                {
-                    tab.header.parent.toggleMaximise();
-                }
-            }
-
-            let minimizeComponent = function(){
-                $(tab.header.activeContentItem.element).parent().parent().data("minimize", true);
-            }
-
-            let maximizeComponent = function(){
-                if(tab.header.activeContentItem.componentName !== "pluginComponent")
-                {
-                    $(tab.header.activeContentItem.element).parent().parent().data("minimize", false);
-                }
-            }
-
-            let resetComponentState = function(){
-                $(tab.header.parent.element).find(".lm_maximise").show();
-                let minimized = $(tab.header.parent.element).data("minimize");
-                if(minimized && tab.header.parent.isMaximised){
-                    tab.header.parent.toggleMaximise();
-                }
-            }
-
-            container.on('show', (tab) => {
-                maximizePluginComponent();
-            });
-
-            container.on('hide', (tab) => {
-                resetComponentState();
-            });
-
-            tab.header.parent.on("minimised", () => {
-                minimizeComponent();
-            });
-
-            tab.header.parent.on("maximised", () => {
-                maximizeComponent();
-            });
-        });
     };
 
     //////////////////////////////////////////
@@ -397,7 +349,6 @@ i2b2.layout.init = function () {
     // Right column layout
     i2b2.layout.gl_instances.rightCol = new GoldenLayout( i2b2.layout.gl_configs.rightCol, '#goldenLayoutColId2' );
     i2b2.layout.gl_instances.rightCol.registerComponent('whiteComponent', whiteComponent);
-    i2b2.layout.gl_instances.rightCol.registerComponent('pluginComponent', pluginComponent);
     i2b2.layout.gl_instances.rightCol.on('initialised',function(){
         i2b2.layout.gl_instances.rightCol.root.contentItems[0].remove();
         i2b2.layout.gl_instances.rightCol.root.addChild(i2b2.layout.gl_configs.FindPatients);
