@@ -919,8 +919,9 @@ i2b2.events.afterCellInit.add(
 
                     // add the cellWhite flare
                     cell.view.QT.containerRoot = $('<div class="CRC_QT_view"></div>').appendTo(cell.view.QT.lm_view._contentElement);
-                    $('<div class="CRC_QT_runbar"><div class="name"><label>Name:</label><input class="name"></div><div class="button"><button type="button" class="btn btn-primary btn-sm">Run Query</button></div></div>').appendTo(cell.view.QT.containerRoot);
-                    cell.view.QT.containerDiv = $('<div class="CRC_QT_query"></div>').appendTo(cell.view.QT.containerRoot);
+                    $('<div class="CRC_QT_runbar"><span class="name"><label>Name:</label><input class="name"></span><span class="button"><button type="button" class="btn btn-primary">Run Query</button></span></div>')
+                        .appendTo(cell.view.QT.containerRoot)
+                    cell.view.QT.containerDiv = $('<div class="CRC_QT_query"></div>').appendTo(cell.view.QT.containerRoot).before('<div class="CRC_QT_query_header">Define Inclusion and Exclusion Criteria</div>');
 
 
                     // TODO: add rest of initialization code here

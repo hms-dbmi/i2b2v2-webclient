@@ -35,57 +35,62 @@
 .goldenLayout .CRC_QT_query {
     overflow-y: scroll;
     position: absolute;
-    top: 0;
+    top: 44px;
     left: 0;
     right: 0;
     bottom: 3.3em;
-    border: 1px solid #678;
+    border: 1px solid rgba(0, 0, 0, .12);
+    border-bottom: none;
+    border-radius: 3px 3px 3px 3px;
+}
+
+.CRC_QT_query_header{
+    font-size: 20px;
+    font-weight: 500;
+    margin: 14px auto;
+    width: 370px;
 }
 
 .goldenLayout .CRC_QT_runbar {
+    border-left: 1px solid rgba(0, 0, 0, .12);
+    border-bottom: 1px solid rgba(0, 0, 0, .12); /*1px solid #678;*/
+    border-right: 1px solid rgba(0, 0, 0, .12);
     position: absolute;
     bottom: 0;
     right: 0;
     left: 0;
     height: 3.3em;
-    background: #82a6b2;
     padding: 0.7em 0 0 0;
     border-radius: 0 0 3px 3px;
 }
 
-.goldenLayout .CRC_QT_runbar label {
-    color: white;
-}
 
 .goldenLayout .CRC_QT_runbar .name {
-    right: 10em;
-    position: relative;
-    left: 5px;
     font-weight: 400;
     font-size: 15px;
     margin-right: 10px;
 }
 
+.goldenLayout .CRC_QT_runbar label {
+    margin-left: 15px;
+    margin-right: 5px;
+}
+
 .CRC_QT_runbar .name input {
-    height: 26px;
-    width: 85%;
-    border: 1px solid #678;
+    height: 32px;
+    width: 52%;
+    border: 1px solid rgba(0, 0, 0, .12);
     padding-left: 10px;
 }
 
 .CRC_QT_runbar .button {
     padding: .1em 1em 0 0;
-    position: absolute;
-    top: 0.5em;
-    right: 0;
 }
 
 .CRC_QT_runbar .button  button{
-    background: #e8eefe;
     padding: 0.1rem 0.4rem;
-    line-height: 1.3em;
-    color: #2782a3;
-    margin-top: 2px;
+    line-height: 1.5em;
+    margin-top: -4px;
     margin-right: 5px;
 }
 

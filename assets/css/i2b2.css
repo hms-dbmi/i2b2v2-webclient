@@ -8,7 +8,7 @@ body {
 }
 
 body, td, p {
-	font-size:13px;
+	font-size:14px;
 	line-height:16px;
 }
 
@@ -16,7 +16,6 @@ body, td, p {
 #top-bar {
 	height:45px;
 	padding:0px 20px 0px 10px;
-	/*background:url('../images/background.gif');*/
 	background-color: #2782a3;
 }
 
@@ -344,7 +343,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 #goldenLayoutColId2 .lm_header {
-	background-color: #b6b4b4;
+	background-color: #ccc2b6;/*#7a8f97; /*#a7a2a2;*/ /*#b6b4b4;*/
 }
 
 .goldenLayoutCol .lm_content {
@@ -405,18 +404,19 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 .goldenLayoutCol .lm_tab .lm_title {
-	font-weight: 300;
+	font-weight: 400;
+	color:#fff;
 	font-size: 16px;
 }
 
 .goldenLayoutCol .lm_tab.lm_active .lm_title {
-	color:#FFF;
+	color:#000;
 	padding:1px 4px;
 }
 
 .goldenLayout div.cellWhite {
 	background:#FFF;
-	border:1px solid #678;
+	border: 1px solid #678;
 	overflow:auto;
 	border-radius: 0 0 3px 3px;
 	display: flex;
