@@ -919,15 +919,23 @@ i2b2.events.afterCellInit.add(
 
                     // add the cellWhite flare
                     cell.view.QT.containerRoot = $('<div class="CRC_QT_view"></div>').appendTo(cell.view.QT.lm_view._contentElement);
-                    $('<div class="CRC_QT_runbar"><div class="name"><label>Name:</label><input class="name"></div><div class="button"><button type="button" class="btn btn-primary btn-sm">Run Query</button></div></div>').appendTo(cell.view.QT.containerRoot);
+                    $(`<div class="CRC_QT_runbar">
+                        <div class="left"><label>Name:</label></div>
+                        <div class="center"><input class="name"></div>
+                        <div class="right">
+                            <button type="button" class="btn btn-primary btn-sm button-run">Run Query</button>
+                            <button type="button" class="btn btn-primary btn-sm button-clear">Clear</button>
+                        </div>
+                    </div>`).appendTo(cell.view.QT.containerRoot);
                     cell.view.QT.containerDiv = $('<div class="CRC_QT_query"></div>').appendTo(cell.view.QT.containerRoot);
 
 
-                    // TODO: add rest of initialization code here
                     container.on('open', () => {
-                        $(".CRC_QT_runbar .button button", cell.view.QT.containerRoot).on("click", (evt)=> {
+                        // capture "run query" button click ---------------------------------------------------
+                        $(".CRC_QT_runbar .button-run", cell.view.QT.containerRoot).on("click", (evt)=> {
                             evt.target.blur();
-                            i2b2.CRC.view.QT.showRun();
+                            // only run if the query has entries
+                            if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
                         });
                     });
 

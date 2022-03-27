@@ -32,7 +32,7 @@
     right: 0px;
 }
 
-.goldenLayout .CRC_QT_query {
+.CRC_QT_view .CRC_QT_query {
     overflow-y: scroll;
     position: absolute;
     top: 0;
@@ -42,7 +42,8 @@
     border: 1px solid #678;
 }
 
-.goldenLayout .CRC_QT_runbar {
+/* start Query run bar */
+.CRC_QT_view .CRC_QT_runbar {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -53,45 +54,59 @@
     border-radius: 0 0 3px 3px;
 }
 
-.goldenLayout .CRC_QT_runbar label {
-    color: white;
-}
-
-.goldenLayout .CRC_QT_runbar .name {
-    right: 10em;
-    position: relative;
-    left: 5px;
-    font-weight: 400;
-    font-size: 15px;
-    margin-right: 10px;
-}
-
-.CRC_QT_runbar .name input {
-    height: 26px;
-    width: 85%;
-    border: 1px solid #678;
-    padding-left: 10px;
-}
-
-.CRC_QT_runbar .button {
-    padding: .1em 1em 0 0;
+.CRC_QT_view .CRC_QT_runbar .left {
+    width: 4em;
     position: absolute;
-    top: 0.5em;
-    right: 0;
+    margin: 0.5em 0;
+    left: 0.5em;
+    top: 0;
+    bottom: 0;
+    /*border: 1px solid lawngreen;*/
+}
+.CRC_QT_view .CRC_QT_runbar label {
+    color: white;
+    font-weight: 400;
+    font-size: 1.1em;
+    padding: 0.4em;
 }
 
-.CRC_QT_runbar .button  button{
+
+.CRC_QT_view .CRC_QT_runbar .center {
+    position: absolute;
+    left: 4.5em;
+    right: 11.5em;
+    top: 0;
+    bottom: 0;
+    margin: 0.5em 0;
+    /*border: 1px solid red;*/
+}
+.CRC_QT_view .CRC_QT_runbar input.name {
+    width: 100%;
+    margin: 0.2em 0;
+}
+
+
+.CRC_QT_view .CRC_QT_runbar .right {
+    /*border: 1px solid gold;*/
+    position: absolute;
+    width: 11em;
+    right: 0.5em;
+    bottom: 0em;
+    top: 0em;
+    margin: 0.5em 0;
+    padding: 0.1em 0.3em;
+}
+.CRC_QT_view .CRC_QT_runbar button {
     background: #e8eefe;
     padding: 0.1rem 0.4rem;
     line-height: 1.3em;
     color: #2782a3;
-    margin-top: 2px;
-    margin-right: 5px;
+    transition: opacity 0.25s;
 }
-
-.CRC_QT_runbar .button  button:hover{
+.CRC_QT_view .CRC_QT_runbar button:hover{
     opacity: 0.7;
 }
+/* End query Run bar*/
 
 
 
