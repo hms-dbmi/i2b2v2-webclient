@@ -515,4 +515,12 @@ iframe.pluginCell {
 	margin-bottom: 14px;
 }
 
-
+/* === Start BOOTSTRAP MENU === */
+.bootstrapMenu > .dropdown-menu > li > a {
+	-moz-user-drag: -moz-none;
+	-khtml-user-drag: none;
+	-webkit-user-drag: none;
+	-ms-user-drag: none;
+	-webkit-user-drag: none;
+	text-decoration: none;
+}/* === End BOOTSTRAP MENU === */
