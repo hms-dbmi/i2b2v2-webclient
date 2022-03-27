@@ -944,7 +944,6 @@ i2b2.events.afterCellInit.add(
                             if (i2b2.CRC.model.query.groups.length === 0) return;
                             i2b2.CRC.ctrlr.QT.clearQuery();
                             i2b2.CRC.view.QT.render();
-                            i2b2.CRC.view.QT.clearQuery();
                         });
                     });
 
