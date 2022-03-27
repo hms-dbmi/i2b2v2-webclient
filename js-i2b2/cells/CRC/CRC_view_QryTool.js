@@ -937,6 +937,15 @@ i2b2.events.afterCellInit.add(
                             // only run if the query has entries
                             if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
                         });
+                        // capture "clear query" button click -------------------------------------------------
+                        $(".CRC_QT_runbar .button-clear", cell.view.QT.containerRoot).on("click", (evt)=> {
+                            evt.target.blur();
+                            // only run if the query has entries
+                            if (i2b2.CRC.model.query.groups.length === 0) return;
+                            i2b2.CRC.ctrlr.QT.clearQuery();
+                            i2b2.CRC.view.QT.render();
+                            i2b2.CRC.view.QT.clearQuery();
+                        });
                     });
 
                     i2b2.CRC.view.QT.render();
