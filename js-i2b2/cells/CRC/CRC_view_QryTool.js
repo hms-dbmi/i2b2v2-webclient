@@ -499,7 +499,7 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
     let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
     i2b2.CRC.view.QT.labValue.showLabValues(sdx);
-}
+};
 
 i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
@@ -886,7 +886,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 $("#labHelpText").text("Searches by Lab values can be constrained by the high/low flag set by the performing laboratory, or by the values themselves.");
             }
         }
-    }
+    };
 
     let labValuesModal = $("#labValuesModal");
 
@@ -898,7 +898,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
     labValuesModal.load('/js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
         i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
     });
-}
+};
 // ================================================================================================== //
 
 
