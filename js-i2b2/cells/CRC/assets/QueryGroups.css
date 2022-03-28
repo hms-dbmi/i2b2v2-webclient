@@ -62,6 +62,8 @@
     top: 9px;
     background-color: #fff;
     color: #0d6efd;
+    padding: 0.1rem 0.4rem;
+    line-height: 1.5em;
 }
 
 .goldenLayout .CRC_QT_runbar {

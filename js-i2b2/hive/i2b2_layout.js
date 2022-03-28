@@ -179,7 +179,7 @@ i2b2.layout.init = function () {
             },
             {
                 type:'stack',
-                height:40,
+                height:25,
                 content:[
                     {
                         type:'component',

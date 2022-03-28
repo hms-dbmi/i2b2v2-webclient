@@ -925,7 +925,7 @@ i2b2.events.afterCellInit.add(
                         .appendTo(cell.view.QT.containerRoot)
                     cell.view.QT.containerDiv = $('<div class="CRC_QT_query"></div>').appendTo(cell.view.QT.containerRoot).before('<div class="CRC_QT_query_header">' +
                         '<span class="CRC_QT_query_title">Define Inclusion and Exclusion Criteria</span>' +
-                        '<button type="button" class="btn btn-primary btn-sm button-clear">Clear All</button></div>');
+                        '<button type="button" class="btn btn-primary button-clear">Clear All</button></div>');
 
 
                     // TODO: add rest of initialization code here
