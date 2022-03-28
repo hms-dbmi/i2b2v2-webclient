@@ -32,6 +32,7 @@
     right: 0px;
 }
 
+
 .goldenLayout .CRC_QT_query {
     overflow-y: scroll;
     position: absolute;
@@ -45,16 +46,27 @@
 }
 
 .CRC_QT_query_header{
+    text-align: center;
     font-size: 20px;
     font-weight: 500;
-    margin: 14px auto;
-    width: 370px;
+    /*margin: 14px auto;*/
+    margin-top: 25px;
+    margin-bottom: 14px;
+    /*width: 370px;*/
     color: rgba(0,0,0,0.6);
+}
+
+.CRC_QT_query_header .button-clear{
+    position: absolute;
+    right: 16px;
+    top: 9px;
+    background-color: #fff;
+    color: #0d6efd;
 }
 
 .goldenLayout .CRC_QT_runbar {
     border-left: 1px solid rgba(0, 0, 0, .12);
-    border-bottom: 1px solid rgba(0, 0, 0, .12); /*1px solid #678;*/
+    border-bottom: 1px solid rgba(0, 0, 0, .12);
     border-right: 1px solid rgba(0, 0, 0, .12);
     position: absolute;
     bottom: 0;

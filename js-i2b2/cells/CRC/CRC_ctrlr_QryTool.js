@@ -21,6 +21,13 @@ function QueryToolController() {
         i2b2.CRC.model.queryCurrent.name = inName;
     };
 
+// ================================================================================================== //
+    this.clearQuery = function() {
+        i2b2.CRC.model.query = {
+            name: 'default query name',
+            groups: []
+        };
+    };
 
 // ================================================================================================== //
     this.doQueryLoad = function(qm_id) {  // function to load query from Query History or Workspace
