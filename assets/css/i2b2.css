@@ -495,6 +495,11 @@ textarea {
 	height:50px;
 }
 
+.goldenLayout div.pluginCellMain
+{
+ 	border: 1px solid rgba(0, 0, 0, .12);
+}
+
 iframe.pluginCell {
 	border:none;
 	margin-top:-4px;

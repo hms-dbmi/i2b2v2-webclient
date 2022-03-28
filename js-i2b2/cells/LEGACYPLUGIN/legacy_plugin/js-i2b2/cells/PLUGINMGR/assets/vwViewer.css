@@ -9,8 +9,6 @@ DIV#anaPluginViewBox {
 DIV#anaPluginViewBox DIV.PluginViewBox {
 	flex-grow: 1;
 	flex-basis: 0;
-	background: #BBCCEE none repeat scroll 0%;
-	border: 1px solid #667788;
 	clear: both;
 	display: flex;
 	overflow: hidden;
@@ -22,12 +20,9 @@ DIV#anaPluginViewBox DIV.PluginViewBox {
 
 
 DIV#anaPluginViewBox DIV#anaPluginViewFrame {
-	background: #FFFFFF none repeat scroll 0%;
+	background: none;
 	flex-grow: 1;
 	flex-basis: 0;
-
-	border: 1px solid #667788;
-
 	padding: 0px;
 	margin: 0px;
 	overflow:auto;
@@ -43,8 +38,7 @@ DIV#anaPluginViewFrame DIV.initialMsg {
 }
 
 DIV#anaPluginViewBox DIV#anaPluginViewFrame.USETABS {
-	background: #BCE;
-	border: 0px;
+	border: none;
 	padding: 1px;
 	margin: 0px;
 	overflow:hidden;

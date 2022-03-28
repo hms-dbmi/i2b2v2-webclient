@@ -26,7 +26,7 @@ i2b2.events.afterCellInit.add((function(cell){
                 let iframe = $("<iframe id='pluginframe' onload='i2b2.LEGACYPLUGIN.view.main.onPluginFrameLoad()' src='' class='pluginCell'></iframe>");
                 iframe.attr("src", "js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
 
-                let frameDiv = $("<div class='cellWhite'></div>");
+                let frameDiv = $("<div class='cellWhite pluginCellMain'></div>");
                 frameDiv.append(iframe);
                 container.getElement().append(frameDiv);
 
