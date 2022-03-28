@@ -499,7 +499,7 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
     let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
     i2b2.CRC.view.QT.labValue.showLabValues(sdx);
-}
+};
 
 i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
@@ -886,7 +886,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 $("#labHelpText").text("Searches by Lab values can be constrained by the high/low flag set by the performing laboratory, or by the values themselves.");
             }
         }
-    }
+    };
 
     let labValuesModal = $("#labValuesModal");
 
@@ -921,18 +921,19 @@ i2b2.events.afterCellInit.add(
                     cell.view.QT.containerRoot = $('<div class="CRC_QT_view"></div>').appendTo(cell.view.QT.lm_view._contentElement);
                     $('<div class="CRC_QT_runbar">' +
                         '<span class="name"><label>Name:</label><input class="name"></span><span class="button">' +
-                        '<button type="button" class="btn btn-primary">Run Query</button></span></div>')
+                        '<button type="button" class="btn btn-primary button-run">Run Query</button></span></div>')
                         .appendTo(cell.view.QT.containerRoot)
                     cell.view.QT.containerDiv = $('<div class="CRC_QT_query"></div>').appendTo(cell.view.QT.containerRoot).before('<div class="CRC_QT_query_header">' +
                         '<span class="CRC_QT_query_title">Define Inclusion and Exclusion Criteria</span>' +
                         '<button type="button" class="btn btn-primary button-clear">Clear All</button></div>');
 
 
-                    // TODO: add rest of initialization code here
                     container.on('open', () => {
-                        $(".CRC_QT_runbar .button button", cell.view.QT.containerRoot).on("click", (evt)=> {
+                        // capture "run query" button click ---------------------------------------------------
+                        $(".CRC_QT_runbar .button-run", cell.view.QT.containerRoot).on("click", (evt)=> {
                             evt.target.blur();
-                            i2b2.CRC.view.QT.showRun();
+                            // only run if the query has entries
+                            if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
                         });
 
                         // capture "clear query" button click -------------------------------------------------
