@@ -920,8 +920,16 @@ i2b2.events.afterCellInit.add(
                     // add the cellWhite flare
                     cell.view.QT.containerRoot = $('<div class="CRC_QT_view"></div>').appendTo(cell.view.QT.lm_view._contentElement);
                     $('<div class="CRC_QT_runbar">' +
-                        '<span class="name"><label>Name:</label><input class="name"></span><span class="button">' +
-                        '<button type="button" class="btn btn-primary button-run">Run Query</button></span></div>')
+                        '<div class="left">' +
+                            '<label>Name:</label>' +
+                        '</div>' +
+                        '<div class="center">' +
+                            '<input class="name">' +
+                        '</div>' +
+                        '<div class="right">' +
+                            '<button type="button" class="btn btn-primary button-run">Run Query</button><' +
+                        '/div>' +
+                    '</div>')
                         .appendTo(cell.view.QT.containerRoot)
                     cell.view.QT.containerDiv = $('<div class="CRC_QT_query"></div>').appendTo(cell.view.QT.containerRoot).before('<div class="CRC_QT_query_header">' +
                         '<span class="CRC_QT_query_title">Define Inclusion and Exclusion Criteria</span>' +
