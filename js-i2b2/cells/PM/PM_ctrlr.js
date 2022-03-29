@@ -252,6 +252,10 @@ i2b2.PM.doLogout = function() {
     window.location.reload();
 };
 
+i2b2.PM.showUserInfo = function() {
+    // bug fix - must reload page to avoid dirty data from lingering
+    window.location.reload();
+};
 
 // ================================================================================================================================
 // NEW FRAMEWORK LAUNCH CODE (cells can timeout on failure instead of hanging the entire load process)

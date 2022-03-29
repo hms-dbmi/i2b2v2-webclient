@@ -75,7 +75,7 @@ i2b2.PLUGINMGR.ctrlr.main =
 			if (!t || t()) {
 				// remove plugin name from tab
 				try {
-					$('anaPluginViewBox').select('DIV.tabBox .tabTitle')[0].innerHTML = "Plugin Viewer";
+					$('anaPluginViewBox').select('DIV.tabBox .tabTitle')[0].innerHTML = "Analysis Tools Viewer";
 				} catch(e) {
 					console.warn("Could not change PluginViewBox tab label!");
 				}

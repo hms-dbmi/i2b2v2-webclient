@@ -174,7 +174,7 @@ i2b2.layout.init = function () {
                         type:'component',
                         isClosable:false,
                         componentName: 'i2b2.LEGACYPLUGIN.view.main',
-                        title:'Plugins'
+                        title:'Analysis Tools'
                     }]
             },
             {
