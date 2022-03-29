@@ -85,6 +85,7 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
     switch(e.type) {
         case "drop":
             // forward the event to the drop handler passing the object being dropped
+            alert("drop event found " + sdxTypeList);
             while (sdxTypeList.length) {
                 let sdxType = sdxTypeList.pop();
                 if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].DropHandler === "function") {
@@ -104,10 +105,14 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                         if (eventHandlers[sdxType].DropChecker(e.target, e, this)) {
                             // this is REQUIRED for proper drop
                             ev.preventDefault();
+                            //ev.stopPropagation();
+                            return false;
                         }
                     } else {
                         // this is REQUIRED for proper drop
                         ev.preventDefault();
+                        return false;
+                        //ev.stopPropagation();
                     }
                 }
             }
@@ -129,6 +134,8 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
             }
             break;
     }
+
+    return false;
 };
 
 
@@ -217,8 +224,41 @@ i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
         $(container).data("i2b2-dragdrop-events", dd_events);
 
         // start listening for DD events
-        $(container).on("drop dragover dragenter dragleave", i2b2.sdx.Master.onDragDropEvents);
+        $(container).on("drop dragenter dragleave", i2b2.sdx.Master.onDragDropEvents);
+        $(container).on("dragover", function(e,a){
+            // get a list of SDX types that are in this DD operation
+            let ev = e.originalEvent;
+            let sdxTypeList = [];
+            for (let i in ev.dataTransfer.types) {
+                if (String(ev.dataTransfer.types[i]).toLowerCase().indexOf("application/i2b2-sdxtype+") === 0) {
+                    let sdxTypes = String(ev.dataTransfer.types[i]).toUpperCase().split("+");
+                    sdxTypes.shift();
+                    sdxTypeList = sdxTypeList.concat(sdxTypes);
+                }
+            }
+            let eventHandlers = {};
+            eventHandlers = $(this).data("i2b2DragdropEvents");
 
+            while (sdxTypeList.length) {
+                let sdxType = sdxTypeList.pop();
+                if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].DropHandler === "function") {
+                    if (typeof eventHandlers[sdxType].DropChecker === "function") {
+                        if (eventHandlers[sdxType].DropChecker(e.target, e, this)) {
+                            // this is REQUIRED for proper drop
+                            //ev.preventDefault();
+                            //ev.stopPropagation();
+                            //return false;
+                        }
+                    } else {
+                        // this is REQUIRED for proper drop
+                        ev.preventDefault();
+                        //return false;
+                        //ev.stopPropagation();
+                    }
+                }
+            }
+            return false;
+        });
         return true;
     }
 };
