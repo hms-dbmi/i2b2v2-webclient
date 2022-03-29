@@ -919,15 +919,21 @@ i2b2.events.afterCellInit.add(
 
                     // add the cellWhite flare
                     cell.view.QT.containerRoot = $('<div class="CRC_QT_view"></div>').appendTo(cell.view.QT.lm_view._contentElement);
-                    $(`<div class="CRC_QT_runbar">
-                        <div class="left"><label>Name:</label></div>
-                        <div class="center"><input class="name"></div>
-                        <div class="right">
-                            <button type="button" class="btn btn-primary btn-sm button-run">Run Query</button>
-                            <button type="button" class="btn btn-primary btn-sm button-clear">Clear</button>
-                        </div>
-                    </div>`).appendTo(cell.view.QT.containerRoot);
-                    cell.view.QT.containerDiv = $('<div class="CRC_QT_query"></div>').appendTo(cell.view.QT.containerRoot);
+                    $('<div class="CRC_QT_runbar">' +
+                        '<div class="left">' +
+                            '<label>Name:</label>' +
+                        '</div>' +
+                        '<div class="center">' +
+                            '<input class="name">' +
+                        '</div>' +
+                        '<div class="right">' +
+                            '<button type="button" class="btn btn-primary button-run">Run Query</button><' +
+                        '/div>' +
+                    '</div>')
+                        .appendTo(cell.view.QT.containerRoot)
+                    cell.view.QT.containerDiv = $('<div class="CRC_QT_query"></div>').appendTo(cell.view.QT.containerRoot).before('<div class="CRC_QT_query_header">' +
+                        '<span class="CRC_QT_query_title">Define Inclusion and Exclusion Criteria</span>' +
+                        '<button type="button" class="btn btn-primary button-clear">Clear All</button></div>');
 
 
                     container.on('open', () => {
@@ -937,8 +943,9 @@ i2b2.events.afterCellInit.add(
                             // only run if the query has entries
                             if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
                         });
+
                         // capture "clear query" button click -------------------------------------------------
-                        $(".CRC_QT_runbar .button-clear", cell.view.QT.containerRoot).on("click", (evt)=> {
+                        $(".CRC_QT_query_header .button-clear", cell.view.QT.containerRoot).on("click", (evt)=> {
                             evt.target.blur();
                             // only run if the query has entries
                             if (i2b2.CRC.model.query.groups.length === 0) return;

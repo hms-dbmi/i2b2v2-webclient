@@ -174,12 +174,12 @@ i2b2.layout.init = function () {
                         type:'component',
                         isClosable:false,
                         componentName: 'i2b2.LEGACYPLUGIN.view.main',
-                        title:'Plugins'
+                        title:'Analysis Tools'
                     }]
             },
             {
                 type:'stack',
-                height:40,
+                height:25,
                 content:[
                     {
                         type:'component',
@@ -238,26 +238,6 @@ i2b2.layout.init = function () {
     //////////////////////////////////////////
     var whiteComponent = function(container,state){
         container.getElement().html('<div class="cellWhite"><textarea>test content</textarea></div>');
-    };
-
-    i2b2.layout.onPluginFrameLoad = function(){
-        if(!i2b2.PM.model.data.loginXMLStr)
-        {
-            i2b2.PM.model.data.loginXMLStr = i2b2.h.Xml2String(i2b2.PM.model.data.refXML);
-            delete i2b2.PM.model.data.refXML;
-        }
-
-        let loginData = JSON.stringify(i2b2.PM.model.data);
-        document.getElementById("pluginframe").contentWindow.postMessage(loginData, window.location.origin);
-    }
-
-    let pluginComponent = function(container,state){
-        let iframe = $("<iframe id='pluginframe' onload='i2b2.layout.onPluginFrameLoad()' src='' width='100%' class='pluginCell'></iframe>");
-        iframe.attr("src", "legacy_plugin/index.html");
-
-        let frameDiv = $("<div class='cellWhite'></div>");
-        frameDiv.append(iframe);
-        container.getElement().append(frameDiv);
     };
 
     //////////////////////////////////////////

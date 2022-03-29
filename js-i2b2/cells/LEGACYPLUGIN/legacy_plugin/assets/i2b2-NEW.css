@@ -36,7 +36,7 @@ DIV.opXML {
 
 /* <standarized main tab style> */
 DIV.TopTabs {
-	height:26px;
+	height: 35px;
 	position:relative;
 	z-index:100 !important;
 	overflow:hidden;
@@ -44,27 +44,23 @@ DIV.TopTabs {
 
 
 DIV.tabBox {
-	background:#BBCCEE none repeat scroll 0%;
-	border-color:#667788;
-	border-style:solid solid none;
-	border-width:1px;
+	background:none;
 	cursor:pointer;
 	float:left;
-	height:19px;
+	height: 24px;
 	width: 100%;
-	margin-right:5px;
-	padding: 8px;
-	margin: 0;
+	padding: 12px;
+	margin: 0 5px 5px 0;
 }
 
 DIV.tabBox DIV {
 	padding: 0px;
-	display:inline;
+	display: inline;
 	margin: 0;
 }
 
 DIV.tabBox > DIV {
-	color:#445588;
+	color: rgba(0,0,0,0.6);
 	font-weight:bold;
 	font-family:arial,helvetica;
 	font-size:12px;
@@ -76,25 +72,19 @@ DIV.tabBox > DIV {
 	display:block;
 }
 
-
 DIV.tabBox.active {
-	background:#BBCCEE none repeat scroll 0% 50%;
-	border-color:#667788;
-	border-style:solid solid none;
-	border-width:1px;
-	height:29px;
+	background: none;
+	height: 39px;
 	padding: 0;
-	margin: 0 5px 0 0;
+	margin: 0 5px 8px 0;
 }
 DIV.tabBox.active DIV {
-	background:#6677AA;
-	border:1px solid #667788;
-	color:#FFFFFF;
-	font-weight:bold;
+	background: none;
+	font-weight: 500;
 	font-family:arial,helvetica;
-	font-size:12px;
+	font-size: 20px;
 	padding: 5px 0 0 0;
-	margin: 0;
+	margin: 6px 0 0 0;
 }
 
 DIV.tabTextBox {
