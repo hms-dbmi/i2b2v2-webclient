@@ -33,35 +33,16 @@
 }
 
 
-.goldenLayout .CRC_QT_query {
+.CRC_QT_view .CRC_QT_query {
     overflow-y: scroll;
     position: absolute;
-    top: 48px;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 3.3em;
-    border: 1px solid rgba(0, 0, 0, .12);
+    border: 1px solid #678;
     border-bottom: none;
-    border-radius: 3px 3px 3px 3px;
-}
-
-.CRC_QT_query_header{
-    text-align: center;
-    font-size: 20px;
-    font-weight: 500;
-    margin-top: 25px;
-    margin-bottom: 18px;
-    color: rgba(0,0,0,0.6);
-}
-
-.CRC_QT_query_header .button-clear{
-    position: absolute;
-    right: 16px;
-    top: 14px;
-    background-color: #fff;
-    color: #0d6efd;
-    padding: 0.1rem 0.4rem;
-    line-height: 1.5em;
+    border-radius: 0 0 3px 3px;
 }
 
 .CRC_QT_view .CRC_QT_runbar .left {
@@ -76,14 +57,14 @@
 .CRC_QT_view .CRC_QT_runbar .center {
     position: absolute;
     left: 4.5em;
-    right: 11.5em;
+    right: 15em;
     bottom: 0;
     margin: 0.5em 0;
 }
 
 .CRC_QT_view .CRC_QT_runbar .right {
     position: absolute;
-    width: 11em;
+    width: 14em;
     right: 0.5em;
     bottom: 0em;
     top: 0em;
@@ -97,13 +78,11 @@
     font-weight: 400;
     font-size: 15px;
     border: 1px solid rgba(0, 0, 0, .12);
-    height: 32px;
+    height: 26px;
 }
 
-.goldenLayout .CRC_QT_runbar {
-    border-left: 1px solid rgba(0, 0, 0, .12);
-    border-bottom: 1px solid rgba(0, 0, 0, .12);
-    border-right: 1px solid rgba(0, 0, 0, .12);
+.CRC_QT_view .CRC_QT_runbar {
+    background: #82a6b2;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -113,8 +92,9 @@
     border-radius: 0 0 3px 3px;
 }
 
-.goldenLayout .CRC_QT_runbar label {
+.CRC_QT_view .CRC_QT_runbar label {
     margin-right: 5px;
+    margin-top: 8px;
 }
 
 .CRC_QT_runbar .button {
@@ -122,12 +102,21 @@
 }
 
 .CRC_QT_runbar .button-run{
-    padding: 0.1rem 0.4rem;
+    padding: 0.1rem 0.3rem;
     line-height: 1.5em;
-    margin-top: -4px;
-    margin-right: 5px;
+    margin-top: 2px;
+    margin-right: 10px;
     color: #0d6efd;
     background-color: #fff;
+}
+
+
+.CRC_QT_runbar .button-clear{
+    margin-top: 2px;
+    background-color: #fff;
+    color: #0d6efd;
+    padding: 0.1rem 0.3rem;
+    line-height: 1.5em;
 }
 
 .CRC_QT_runbar .button  button:hover{
