@@ -932,7 +932,7 @@ i2b2.events.afterCellInit.add(
                             '<input class="name">' +
                         '</div>' +
                         '<div class="right">' +
-                            '<button type="button" class="btn btn-primary btn-sm  button-run">Run Query</button>' +
+                            '<button type="button" class="btn btn-primary btn-sm  button-run">Find Patients</button>' +
                             '<button type="button" class="btn btn-primary btn-sm button-clear">Clear All</button>' +
                         '</div>' +
                     '</div>')

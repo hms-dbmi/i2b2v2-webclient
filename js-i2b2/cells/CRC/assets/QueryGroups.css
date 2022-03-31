@@ -32,7 +32,6 @@
     right: 0px;
 }
 
-
 .CRC_QT_view .CRC_QT_query {
     overflow-y: scroll;
     position: absolute;
@@ -42,6 +41,17 @@
     bottom: 3.3em;
     border: 1px solid #678;
     border-bottom: none;
+    border-radius: 0 0 0 0;
+}
+
+.CRC_QT_view .CRC_QT_runbar {
+    background: #b0c7ce;/*#cdd8db;*/ /*#82a6b2;*/
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 3.3em;
+    padding: 0.7em 0 0 0;
     border-radius: 0 0 3px 3px;
 }
 
@@ -81,17 +91,6 @@
     height: 26px;
 }
 
-.CRC_QT_view .CRC_QT_runbar {
-    background: #82a6b2;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    height: 3.3em;
-    padding: 0.7em 0 0 0;
-    border-radius: 0 0 3px 3px;
-}
-
 .CRC_QT_view .CRC_QT_runbar label {
     margin-right: 5px;
     margin-top: 8px;
@@ -114,15 +113,27 @@
 .CRC_QT_runbar .button-clear{
     margin-top: 2px;
     background-color: #fff;
-    color: #0d6efd;
+    color: #be9566; /*#0d6efd;*/ /*#2782a3;*/ /*#0d6efd;*/
+    border-color: #be9566;
     padding: 0.1rem 0.3rem;
     line-height: 1.5em;
 }
 
-.CRC_QT_runbar .button  button:hover{
+.CRC_QT_runbar button:hover{
     opacity: 0.7;
     background-color: #0d6efd;
     color: #fff;
+}
+
+.CRC_QT_runbar .button-clear:hover{
+    opacity: 0.7;
+    background-color: #be9566;
+    color: #fff;
+}
+
+.CRC_QT_runbar .button-clear:active{
+    border-color:#be9566;
+    /*box-shadow: none*/
 }
 
 .hoverover {
