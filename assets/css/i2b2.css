@@ -82,6 +82,17 @@ body, td, p {
 	margin-right: 0.3em;
 }
 
+#userInfo .logout {
+	color: #069;
+	text-decoration: underline;
+
+}
+
+#userInfo .logout:active {
+	opacity: 1;
+	color: #fff;
+}
+
 /* === End Page Header === */
 
 .xmlMsg {
