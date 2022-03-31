@@ -70,6 +70,18 @@ body, td, p {
 	top:-15px;
 }
 
+#userInfo .static:hover {
+	background: none;
+}
+
+#userInfo .static:active {
+	color: #212529;
+}
+
+#userInfo i {
+	margin-right: 0.3em;
+}
+
 /* === End Page Header === */
 
 .xmlMsg {
