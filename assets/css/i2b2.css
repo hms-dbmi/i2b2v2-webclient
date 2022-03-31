@@ -451,7 +451,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 .goldenLayoutCol .stack-refresh-button {
-	background-image: url(../images/stack_refresh_icon.png);
+	margin-top: 2px;
 }
 
 .goldenLayoutCol .stack-refresh-button.refreshing {

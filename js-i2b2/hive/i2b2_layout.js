@@ -301,7 +301,8 @@ i2b2.layout.init = function () {
         if (btnRefresh === true) {
             var id = "stackRefreshIcon_" + stack.config.content[0].componentName.replace(/\./g,"-");
             // default the visual item as being loading
-            var tmpEl = stack.header.controlsContainer.prepend('<li class="stack-refresh-button refreshing" title="Refresh All" id="'+id+'"></li>');
+            //bi bi-arrow-repeat
+            var tmpEl = stack.header.controlsContainer.prepend('<li class="stack-refresh-button refreshing" title="Refresh All" id="'+id+'"><i class="bi bi-arrow-clockwise"></li>');
             $('.stack-refresh-button' ,tmpEl).on('click', (function (a) {
                 var cellCode = this.config.content[0].componentName.split('.');
                 if (cellCode[0] === 'i2b2' && cellCode.length > 1) {
