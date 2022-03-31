@@ -85,7 +85,6 @@ body, td, p {
 #userInfo .logout {
 	color: #069;
 	text-decoration: underline;
-
 }
 
 #userInfo .logout:active {
