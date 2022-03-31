@@ -67,14 +67,14 @@
 .CRC_QT_view .CRC_QT_runbar .center {
     position: absolute;
     left: 4.5em;
-    right: 17em;
+    right: 14em;
     bottom: 0;
     margin: 0.5em 0;
 }
 
 .CRC_QT_view .CRC_QT_runbar .right {
     position: absolute;
-    width: 16em;
+    width:13.5em;
     right: 0.5em;
     bottom: 0em;
     top: 0em;
