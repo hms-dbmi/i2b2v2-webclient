@@ -79,6 +79,11 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
 
     $('#stackRefreshIcon_i2b2-ONT-view-nav').addClass("refreshing");
     i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview(nodeData, function(newNodes, parentNodes) {
+        // change the tiles to contain the counts
+        newNodes.forEach((node) => {
+            if (node.i2b2.origData.total_num !== undefined) node.text += ' - (' + node.i2b2.origData.total_num + ')';
+        });
+
         // push new nodes into the treeview
         i2b2.ONT.view.nav.treeview.treeview('addNodes', [
             newNodes,
