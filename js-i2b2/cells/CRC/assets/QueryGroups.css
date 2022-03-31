@@ -53,6 +53,7 @@
     height: 3.1em;
     padding: 0.7em 0 0 0;
     border-radius: 0 0 3px 3px;
+    border: 1px solid #678;
 }
 
 .CRC_QT_view .CRC_QT_runbar .left {
