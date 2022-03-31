@@ -169,12 +169,12 @@ i2b2.layout.init = function () {
                         id:'crcQueryTool',
                         isClosable:false,
                         componentName: 'i2b2.CRC.view.QT',
-                        title:'Query Tool'
+                            title:'Find Patients'
                     },{
                         type:'component',
                         isClosable:false,
                         componentName: 'i2b2.LEGACYPLUGIN.view.main',
-                        title:'Analysis Tools'
+                        title:'Analyze Patients'
                     }]
             },
             {
