@@ -343,7 +343,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 #goldenLayoutColId2 .lm_header {
-	background-color: #ccc2b6;/*#7a8f97; /*#a7a2a2;*/ /*#b6b4b4;*/
+	background-color: #ccc2b6;
 }
 
 .goldenLayoutCol .lm_content {
@@ -451,7 +451,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 .goldenLayoutCol .stack-refresh-button {
-	background-image: url(../images/stack_refresh_icon.png);
+	margin-top: 2px;
 }
 
 .goldenLayoutCol .stack-refresh-button.refreshing {
@@ -497,7 +497,7 @@ textarea {
 
 .goldenLayout div.pluginCellMain
 {
- 	border: 1px solid rgba(0, 0, 0, .12);
+ 	border: 1px solid #678;
 }
 
 iframe.pluginCell {
