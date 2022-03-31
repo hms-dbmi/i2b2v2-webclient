@@ -38,7 +38,7 @@
     top: 0;
     left: 0;
     right: 0;
-    bottom: 3.4em;
+    bottom: 3.1em;
     border: 1px solid #678;
     border-bottom: none;
     border-radius: 0 0 0 0;
@@ -50,7 +50,7 @@
     bottom: 0;
     right: 0;
     left: 0;
-    height: 3.3em;
+    height: 3.1em;
     padding: 0.7em 0 0 0;
     border-radius: 0 0 3px 3px;
 }
@@ -84,17 +84,16 @@
 
 .CRC_QT_view .CRC_QT_runbar input.name {
     width: 100%;
-    margin: 0em 0;
+    margin: 0 0;
     font-weight: 400;
     font-size: 15px;
     border: 1px solid rgba(0, 0, 0, .12);
-    height: 31px;
+    height: 2em;
 }
 
 .CRC_QT_view .CRC_QT_runbar label {
-    margin-right: 5px;
-    margin-top: 8px;
-    font-size: 1.1em;
+    margin-right: 0.5em;
+    margin-top: 0.5em;
 }
 
 .CRC_QT_runbar .button {
@@ -102,22 +101,24 @@
 }
 
 .CRC_QT_runbar .button-run{
-    padding: 0.1rem 0.4rem;
+    padding: 0.2rem 0.4rem;
     line-height: 1.5em;
-    margin-top: 0;
+    margin-top: -0.2em;
     margin-right: 0.8em;
     color: #0d6efd;
     background-color: #fff;
+    font-size: 1.1em;
 }
 
 
 .CRC_QT_runbar .button-clear{
-    margin-top: 0em;
+    margin-top: -0.2em;
     background-color: #fff;
     color: #be9566; /*#0d6efd;*/ /*#2782a3;*/ /*#0d6efd;*/
     border-color: #be9566;
-    padding: 0.1rem 0.4rem;
+    padding: 0.2rem 0.4rem;
     line-height: 1.5em;
+    font-size: 1.1em;
 }
 
 .CRC_QT_runbar button:hover{
