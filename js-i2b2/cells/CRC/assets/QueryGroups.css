@@ -38,7 +38,7 @@
     top: 0;
     left: 0;
     right: 0;
-    bottom: 3.3em;
+    bottom: 3.4em;
     border: 1px solid #678;
     border-bottom: none;
     border-radius: 0 0 0 0;
@@ -67,14 +67,14 @@
 .CRC_QT_view .CRC_QT_runbar .center {
     position: absolute;
     left: 4.5em;
-    right: 15em;
+    right: 17em;
     bottom: 0;
     margin: 0.5em 0;
 }
 
 .CRC_QT_view .CRC_QT_runbar .right {
     position: absolute;
-    width: 14em;
+    width: 16em;
     right: 0.5em;
     bottom: 0em;
     top: 0em;
@@ -84,11 +84,11 @@
 
 .CRC_QT_view .CRC_QT_runbar input.name {
     width: 100%;
-    margin: 0.2em 0;
+    margin: 0em 0;
     font-weight: 400;
     font-size: 15px;
     border: 1px solid rgba(0, 0, 0, .12);
-    height: 26px;
+    height: 31px;
 }
 
 .CRC_QT_view .CRC_QT_runbar label {
@@ -101,21 +101,21 @@
 }
 
 .CRC_QT_runbar .button-run{
-    padding: 0.1rem 0.3rem;
+    padding: 0.1rem 0.4rem;
     line-height: 1.5em;
-    margin-top: 2px;
-    margin-right: 10px;
+    margin-top: 0;
+    margin-right: 0.8em;
     color: #0d6efd;
     background-color: #fff;
 }
 
 
 .CRC_QT_runbar .button-clear{
-    margin-top: 2px;
+    margin-top: 0em;
     background-color: #fff;
     color: #be9566; /*#0d6efd;*/ /*#2782a3;*/ /*#0d6efd;*/
     border-color: #be9566;
-    padding: 0.1rem 0.3rem;
+    padding: 0.1rem 0.4rem;
     line-height: 1.5em;
 }
 
