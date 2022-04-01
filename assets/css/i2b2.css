@@ -83,9 +83,15 @@ body, td, p {
 }
 
 #userInfo .logout {
-	color: #069;
-	text-decoration: underline;
+	width: 75%;
 }
+
+#userInfo .center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 
 #userInfo .logout:active {
 	opacity: 1;
