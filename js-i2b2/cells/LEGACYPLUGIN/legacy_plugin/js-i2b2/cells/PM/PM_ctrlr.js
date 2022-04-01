@@ -98,7 +98,7 @@ i2b2.PM.doLogin = function() {
 // ================================================================================================== //
 i2b2.PM._processUserConfig = function (data) {
 	console.group("PROCESS Login XML");
-	console.debug(" === run the following command in Firebug to view message sniffer: i2b2.hive.MsgSniffer.show() ===");
+	console.debug(" === run the following command in console to view message sniffer: i2b2.hive.MsgSniffer.show() ===");
 
 	// BUG FIX - WEBCLIENT-118
 	var browserIsIE8 = false;
