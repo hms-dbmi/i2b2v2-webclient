@@ -106,6 +106,15 @@ body, td, p {
 	align-items: center;
 }
 
+#userInfo button {
+	color: #0d6efd;
+	background: #fff;
+}
+
+#userInfo button:active {
+	background: #0d6efd;
+	color: #fff;
+}
 
 #userInfo .logout:active {
 	opacity: 1;
