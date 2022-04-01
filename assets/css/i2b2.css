@@ -70,6 +70,20 @@ body, td, p {
 	top:-15px;
 }
 
+#headerOptions {
+	display: inline-block;
+	margin-left: 110px;
+	margin-top: 14px;
+}
+
+#headerOptions i {
+	margin-right: 12px;
+}
+
+#headerOptions .dropdown {
+	display: inline-block;
+}
+
 #userInfo .static:hover {
 	background: none;
 }
