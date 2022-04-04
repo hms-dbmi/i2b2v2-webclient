@@ -116,6 +116,16 @@ body, td, p {
 	color: #fff;
 }
 
+#userInfo a {
+	color: blue;
+	text-decoration: underline;
+}
+
+#userInfo a:hover {
+	color: blue;
+	text-decoration: underline;
+}
+
 #userInfo .logout:active {
 	opacity: 1;
 	color: #fff;
