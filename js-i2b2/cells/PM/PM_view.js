@@ -26,17 +26,13 @@ i2b2.PM.ShowRole = function(index) {
     alert("REIMPLEMENT ME!");
 };
 
-
-
-
-
-
-
-
-
-
-
-
+i2b2.PM.setUserAccountInfo = function(){
+    let userInfo = $("#userInfo");
+    userInfo.find(".user").text(i2b2.PM.model.login_username);
+    userInfo.find(".project").text(i2b2.PM.model.login_projectname);
+    userInfo.find(".versionNum").text(i2b2.ClientVersion);
+    userInfo.find(".versionDate").text(i2b2.ClientVersionDate);
+};
 
 // login screen
 // ================================================================================================== //
