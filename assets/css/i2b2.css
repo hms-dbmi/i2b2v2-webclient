@@ -70,6 +70,73 @@ body, td, p {
 	top:-15px;
 }
 
+#headerOptions {
+	display: inline-block;
+	margin-left: 110px;
+	margin-top: 14px;
+}
+
+#headerOptions i {
+	margin-right: 12px;
+}
+
+#headerOptions .dropdown {
+	display: inline-block;
+}
+
+#userInfo .static:hover {
+	background: none;
+}
+
+#userInfo .static:active {
+	color: #212529;
+}
+
+#userInfo i {
+	margin-right: 0.3em;
+}
+
+#userInfo .logout {
+	width: 75%;
+}
+
+#userInfo .center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#userInfo button {
+	color: #0d6efd;
+	background: #fff;
+}
+
+#userInfo button:active {
+	background: #0d6efd;
+	color: #fff;
+}
+
+#userInfo a {
+	color: blue;
+	text-decoration: underline;
+}
+
+#userInfo a:hover {
+	color: blue;
+	text-decoration: underline;
+	background: none;
+}
+
+#userInfo a:active {
+	color: white;
+	text-decoration: underline;
+}
+
+#userInfo .logout:active {
+	opacity: 1;
+	color: #fff;
+}
+
 /* === End Page Header === */
 
 .xmlMsg {
