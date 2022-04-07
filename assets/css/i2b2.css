@@ -124,6 +124,12 @@ body, td, p {
 #userInfo a:hover {
 	color: blue;
 	text-decoration: underline;
+	background: none;
+}
+
+#userInfo a:active {
+	color: white;
+	text-decoration: underline;
 }
 
 #userInfo .logout:active {

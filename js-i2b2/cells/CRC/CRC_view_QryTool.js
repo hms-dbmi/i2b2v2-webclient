@@ -27,7 +27,7 @@ i2b2.CRC.view.QT.showRun = function() {
         $('body').append("<div id='crcModal'/>");
     }
 
-    $('body #crcModal').load('/js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
+    $('body #crcModal').load('js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
         // pre populate data
         // TODO: populate the data based on...
         // ==> i2b2.CRC.model.resultTypes
@@ -900,7 +900,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
         labValuesModal = $("#labValuesModal");
     }
 
-    labValuesModal.load('/js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
+    labValuesModal.load('js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
         i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
     });
 };
