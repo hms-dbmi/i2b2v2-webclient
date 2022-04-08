@@ -13,7 +13,7 @@
                     {{#if isString}}
                         <value_constraint><![CDATA[{{value}}]]></value_constraint>
                     {{else if isEnum}}
-                        <value_constraint>('{{value}}')</value_constraint>
+                        <value_constraint>({{#each value}}'{{this}}'{{#unless @last}},{{/unless}}{{/each}} )</value_constraint>
                     {{else}}
                         <value_constraint>{{value}}</value_constraint>
                     {{/if}}
