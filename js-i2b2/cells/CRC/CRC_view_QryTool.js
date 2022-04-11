@@ -518,9 +518,10 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 valueType: null,
                 valueOperator: null,
                 value: null,
+                flagValue: null,
                 numericValueRangeLow: null,
                 numericValueRangeHigh: null,
-                unitValue: null,
+                unitValue: null
             };
 
             $("#labValuesModal div").eq(0).modal("show");
@@ -535,9 +536,13 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         newLabValues.numericValueRangeLow = null;
                         newLabValues.numericValueRangeHigh = null;
                         newLabValues.unitValue = null;
+                        newLabValues.value = null;
                         break;
                     case null:
                         newLabValues = {};
+                        break;
+                    default:
+                        newLabValues.flagValue = null;
                         break;
                 }
                 sdxConcept.LabValues = newLabValues;
@@ -600,12 +605,12 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                     labFlagValueSelection.append(flagOption);
                 }
                 labFlagValueSelection.change(function () {
-                    newLabValues.value = $(this).val();
+                    newLabValues.flagValue = $(this).val();
                 });
 
-                if (sdxConcept.LabValues && sdxConcept.LabValues.value) {
-                    labFlagValueSelection.val(sdxConcept.LabValues.value);
-                    newLabValues.value = sdxConcept.LabValues.value;
+                if (sdxConcept.LabValues && sdxConcept.LabValues.flagValue) {
+                    labFlagValueSelection.val(sdxConcept.LabValues.flagValue);
+                    newLabValues.flagValue = sdxConcept.LabValues.flagValue;
                     newLabValues.valueOperator = sdxConcept.LabValues.valueOperator;
                 }
 
@@ -651,9 +656,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         newLabValues.numericValueRangeHigh = $(this).val();
                     });
 
-                    if (sdxConcept.LabValues  && sdxConcept.LabValues.valueType !== i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG
-                        && sdxConcept.LabValues.valueOperator
-                       ) {
+                    if (sdxConcept.LabValues && sdxConcept.LabValues.valueOperator) {
                         numericValueOperatorSelection.val(sdxConcept.LabValues.valueOperator).trigger("change");
                         newLabValues.valueOperator = sdxConcept.LabValues.valueOperator;
 

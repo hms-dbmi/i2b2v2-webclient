@@ -184,7 +184,7 @@ function QueryToolController() {
                 } else {
                     tempItem.isSynonym = "false";
                 }
-                // TODO: Handle processing of lab values
+
                 if (item.LabValues) {
                     tempItem.valueType = item.LabValues.valueType;
                     tempItem.valueOperator = item.LabValues.valueOperator;
@@ -192,7 +192,11 @@ function QueryToolController() {
 
                     if (item.LabValues.numericValueRangeLow){
                         tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
-                    } else {
+                    }
+                    else if(tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
+                        tempItem.value = item.LabValues.flagValue;
+                    }
+                    else {
                         tempItem.value = item.LabValues.value;
                     }
                     tempItem.isString = item.LabValues.isString;
