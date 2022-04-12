@@ -72,7 +72,7 @@ i2b2.PM.doLoginDialog = function() {
                 text: domain.name
             }));
         })
-        // attach the onSubmitt handler
+        // attach the onSubmit handler
         $("#PM-login-modal form").submit(function(event) {
             event.preventDefault();
             i2b2.PM.doLogin();
