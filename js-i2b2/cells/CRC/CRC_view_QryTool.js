@@ -45,6 +45,13 @@ i2b2.CRC.view.QT.showRun = function() {
             // close the modal
             $('body #crcModal div:eq(0)').modal('hide');
         });
+
+        //if the user presses enter in one of the input fields on the crcModal form
+        //then run the query
+        $("#crcModal").submit(function(evt) {
+            $('body #crcModal button.i2b2-save').click();
+            evt.preventDefault();
+        });
     });
 };
 
