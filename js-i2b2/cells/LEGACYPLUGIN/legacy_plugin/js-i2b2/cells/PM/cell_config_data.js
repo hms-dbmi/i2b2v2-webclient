@@ -5,8 +5,6 @@
 		"PM_misc.js",
 		"PM_view.js",
 		"PM_ctrlr.js",
-		"PM_admin_ctrlr.js",
-		"PM_admin_view.js",
 		"i2b2_msgs.js"
 	],
 	css: ["modProjects.css"],  // ONLY USE 1 STYLE SHEET: http://support.microsoft.com/kb/262161
