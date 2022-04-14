@@ -304,13 +304,7 @@ i2b2.events.changedZoomWindows.subscribe((function(eventTypeName, zoomMsg) {
 	}
 }),'',i2b2.PLUGINMGR.view.list);
 
-i2b2.PLUGINMGR.view.list.showOptions = function() {
-	alert('show options for plugin viewer list');
-}
-
-
-// set image icon
-$('pluglstZoomImg').src = i2b2.PLUGINMGR.cfg.config.assetDir+"zoom_icon.gif";
+i2b2.PLUGINMGR.view.list.showOptions = function() {};
 
 
 console.timeEnd('execute time');

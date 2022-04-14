@@ -6,7 +6,6 @@
 		"hive_helpers.js",
 		"hive_SDX.js",
 		"msg_sniffer.js",
-		"help_viewer.js",
 		"master_view_ctrlr.js",
 		"i2b2_cell_communicator.js"
 	],

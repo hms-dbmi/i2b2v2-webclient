@@ -225,7 +225,7 @@ i2b2.PM._processUserConfig = function (data) {
             alert("The PM Cell is down or the address in the properties file is incorrect.");
             //alert("Your account does not have access to any i2b2 projects.");
         }
-        try { i2b2.PM.view.modal.login.show(); } catch(e) {}
+        try { i2b2.PM.doLoginDialog(); } catch(e) {}
         return true;
     } else if (projs.length === 1) {
         // default to the only project the user has access to

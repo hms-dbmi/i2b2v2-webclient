@@ -26,12 +26,8 @@
 	var i2b2build = "1.7.13   [2/12/21 12:00 PM] ";
 </script>
 
-<!-- LOAD YUI FROM Yahoo's CDN
-<script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/yahoo/yahoo.js" ></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/event/event.js" ></script>
-<script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/dom/dom.js"></script>
-... etc ...
--->
+<!-- This turns off debugging messages. Developers - comment this out to turn them back on! -->
+<script type="text/javascript" src="js-ext/firebug/firebugx.js"></script>
 
 <!-- LOAD YUI FROM local server -->
 <script type="text/javascript" src="js-ext/yui/build/yahoo/yahoo.js" ></script>
@@ -64,7 +60,6 @@
 
 <!-- Load Moment.js for parsing and formatting date/time -->
 <script type="text/javascript" src="js-ext/moment.min.js"></script>
-<link type="text/css" href="js-i2b2/cells/CRC/assets/query_report.css" rel="stylesheet" />
 
 <!-- Bug in IE - use MINIMUM number of LINK and STYLE tags in the DOM as possible: http://support.microsoft.com/kb/262161 -->
 <style>
@@ -180,42 +175,6 @@ var initBrowserViewPortDim = document.viewport.getDimensions();
 var rightSideWidth = initBrowserViewPortDim.width * rightSideProportion; 	// this component will take up 65% of the screen
 if (initBrowserViewPortDim.width - rightSideWidth < leftSideMinimum) rightSideWidth = initBrowserViewPortDim.width-leftSideMinimum; // Correction if not enough screen is available
 
-// following added to support webclient plugin manager / installer only
-var i2b2Admin = "";    
-function invokeWCPinstaller() {
-    var mapForm = document.createElement("form");
-    mapForm.target = "_blank";    
-    mapForm.method = "POST";
-    mapForm.action = i2b2.PM.model.installer_path + "admin.php";
-    var mapInput1 = document.createElement("input");
-    mapInput1.type = "hidden";
-    mapInput1.name = "rul";
-    mapInput1.value = i2b2.PM.model.url;
-    mapForm.appendChild(mapInput1); // Add it to the form
-    var mapInput2 = document.createElement("input");
-    mapInput2.type = "hidden";
-    mapInput2.name = "noisreVcw";
-    mapInput2.value = i2b2.ClientVersion;
-    mapForm.appendChild(mapInput2); // Add it to the form
-    var mapInput3 = document.createElement("input");
-    mapInput3.type = "hidden";
-    mapInput3.name = "niamod";
-    mapInput3.value = i2b2.PM.model.login_domain;
-    mapForm.appendChild(mapInput3); // Add it to the form
-    var mapInput4 = document.createElement("input");
-    mapInput4.type = "hidden";
-    mapInput4.name = "esur";
-    mapInput4.value = i2b2.PM.model.login_username;
-    mapForm.appendChild(mapInput4); // Add it to the form
-    var mapInput5 = document.createElement("input");
-    mapInput5.type = "hidden";
-    mapInput5.name = "yek";
-    mapInput5.value = i2b2.PM.model.login_password;
-    mapForm.appendChild(mapInput5); // Add it to the form    
-    document.body.appendChild(mapForm);
-    mapForm.submit();
-}
-
 // polyfill for Object.entries in IE11
 if (!Object.entries)
   Object.entries = function( obj ){
@@ -247,7 +206,6 @@ function initI2B2()
       }
     })
 
-	//debugOnScreen("default.htm.initI2B2: browserViewPort = " + initBrowserViewPortDim.width + " " + initBrowserViewPortDim.height );
 	i2b2.events.afterCellInit.subscribe(
 		(function(en,co,a) {
 			var cellObj = co[0];
@@ -267,80 +225,31 @@ function initI2B2()
 	);
 
 
-	i2b2.events.afterHiveInit.subscribe(
-		(function(ename) {
-			// Misc GUI actions that need to be done after loading
-			$('QPD1').style.background = '#FFFFFF';
-			$('queryBalloon1').style.display = 'block';
-		})
-	);
-
 	i2b2.events.afterLogin.subscribe(
 		(function() 
 		{
-			// after successful login hide the login box and display the application GUI
 			$('screenQueryData').style.display = 'flex';
-			var splitterName = 'main.splitter';			
-			
-			// update dimension values
-			initBrowserViewPortDim = document.viewport.getDimensions();
-			rightSideWidth = initBrowserViewPortDim.width * rightSideProportion; 	// this component will take up 60% of the screen
-			if (initBrowserViewPortDim.width - rightSideWidth < leftSideMinimum) rightSideWidth = initBrowserViewPortDim.width-leftSideMinimum; // Correction if not enough screen is available
 
-			if (i2b2.PM.model.admin_only)
-			{
-				i2b2.hive.MasterView.setViewMode('Admin');
-				$('viewMode-Patients').style.display = 'none';
-				$('viewMode-Analysis').style.display = 'none';
-				if(typeof i2b2.PM.model.installer_path !== "undefined"){
-					$('adminPlugins').show();
-				}
-				// hide the splitter from view since we don't need it in admin-only mode
-				var splitter = $( splitterName );
-				splitter.style.visibility="hidden";
-			} 
-			else 
-			{
-				// create the splitter object only after login and not in admin-only mode
-				i2b2.hive.mySplitter = new Splitter(splitterName, {cont: 'screenQueryData'});
-				i2b2.hive.MasterView.initViewMode(); //tdw9
-				
-				jQuery('#pluginsMenu').qtip({
-					content: {
-						text: jQuery('#PluginListBox')
-					},
-					style: {
-						width:500
-					},
-					show: 'click',
-					position: {
-						my: 'top right',  // Position my top left...
-						at: 'bottom left', // at the bottom right of...
-					},
-					hide: 'unfocus click'
+            i2b2.hive.MasterView.initViewMode(); //tdw9
 
-				});
-				i2b2.PLUGINMGR.view.list.BuildCategories();
-				i2b2.PLUGINMGR.view.list.Render();
-				
-				// Drag the splitter to get the right labels on the left panel (jgk 12/19)
-				i2b2.ONT.view.main.splitterDragged();
-				i2b2.WORK.view.main.splitterDragged();
-				i2b2.CRC.view.history.splitterDragged();
-				
-			}
-			$('viewMode-Project').innerHTML = "Project: " + i2b2.PM.model.login_projectname;
-			$('viewMode-User').innerHTML = "User: " + i2b2.PM.model.login_fullname;
-			$('viewMode-User').title = i2b2.PM.model.userRoles;
-			if (i2b2.PM.model.otherAuthMethod) { $('changePasswordLink').hide(); }
-			if (i2b2.PM.model.login_debugging) { $('debugMsgSniffer').show(); }
-			if(typeof i2b2.PM.model.installer_path !== "undefined"){
-				$('PluginGalleryFooter').show();
-			}
-			if (i2b2.PM.model.isAdmin){
-				$('PluginsGalleryLink').innerHTML = "Click here to install plugins from i2b2 Gallery...";
-			}
-		}), i2b2
+            jQuery('#pluginsMenu').qtip({
+                content: {
+                    text: jQuery('#PluginListBox')
+                },
+                style: {
+                    width:500
+                },
+                show: 'click',
+                position: {
+                    my: 'top middle',  // Position my top left...
+                    at: 'bottom left', // at the bottom right of...
+                },
+                hide: 'unfocus click'
+
+            });
+            i2b2.PLUGINMGR.view.list.BuildCategories();
+            i2b2.PLUGINMGR.view.list.Render();
+        }), i2b2
 	);
 
 	// start the i2b2 framework
@@ -380,21 +289,7 @@ YAHOO.util.Event.addListener(window, "load", init);
   </div>
   <div class="ft"></div>
 </div>
-<div id="help-viewer-panel" style="display:none;">
-  <div class="hd">i2b2 Web Client Help</div>
-  <div class="bd" id="help-viewer-body">
-    <iframe width="23%" frameborder="0"  height="98%" src="help/toc.html" name="left"></iframe>
-	<iframe width="75%" frameborder="0" height="98%" src="help/content.html" style="overflow-x:hidden;" name="right"></iframe>
-  </div>
-  <div class="ft"></div>
-</div>
-<div id="commViewerSingleMsg-panel" style="display:none;">
-  <div class="hd">XML Message</div>
-  <div class="bd" id="commViewerSingleMsg-body">
-    <div class="xmlMsg"></div>
-  </div>
-  <div class="ft"></div>
-</div>
+
 <div id="PM-announcement-panel" style="display:none;">
   <div class="hd" id="PM-announcement-title">Announcements</div>
   <div class="bd" id="PM-announcement-body">
@@ -403,55 +298,7 @@ YAHOO.util.Event.addListener(window, "load", init);
   <div class="ft"></div>
 </div>
 <div id="screenQueryData" style="display:none">
-  <!-- ############### <PM Navigation View> ############### -->
-  <div id="pmNav" style="display:none;">
-    <div class="TopTabs">
-      <div class="tabBox active">
-        <div>PM Navigation</div>
-      </div>
-    </div>
-    <div class="bodyBox">
-      <div id="pmNavTreeview" class="StatusBoxText"></div>
-    </div>
-  </div>
-  <!-- ############### </PM Navigation View> ############### -->
 
-  <!-- ############### <PM Main Table View> ############### -->
-  <div id="pmMain" style="display:none;">
-    <div class="TopTabs">
-      <div class="tabBox active">
-        <div id="pmMainTitle">Primary Table</div>
-      </div>
-      <div class="opXML"> <a href="JavaScript:showXML('PM','Admin','Stack');" class="debug"><img src="assets/images/msg_stack.gif" border="0" width="16" height="16"  alt="Show XML Message Stack" title="Show XML Message Stack" /></a> </div>
-    </div>
-    <div class="bodyBox">
-      <div id="pmAdminMainView" class="StatusBoxText" style="overflow:auto">
-        <div id="pmAdminHelp" style="margin-bottom:20px">Intro to PM Administration interface</div>
-        <div id="pmAdminMainTableview" style="display:none"></div>
-        <div id="pmAdminTableviewButtons" style="display:none; margin-bottom:25px">testing</div>
-        <div id="pmAdminParamTableview" style="display:none;"></div>
-        <div id="pmAdminParamTableviewButtons" style="display:none; margin-bottom:25px">testing</div>
-      </div>
-    </div>
-  </div>
-  <!-- ############### </PM Main Table View> ############### -->
-
-  <!-- ############### <PM Parmeter View> ############### -->
-  <div id="pmParam" style="display:none;">
-    <div class="TopTabs">
-      <div class="tabBox active">
-        <div>Parameter</div>
-      </div>
-      <div class="opXML"> <a href="JavaScript:showXML('PM','main','Stack');" class="debug"><img src="assets/images/msg_stack.gif" border="0" width="16" height="16"  alt="Show XML Message Stack" title="Show XML Message Stack" /></a> <a href="JavaScript:i2b2.WORK.view.main.ZoomView();"><img id="wrkZoomImg" width="16" height="16" border="0" src="js-i2b2/cells/WORK/assets/zoom_icon.gif" alt="Resize Workspace" title="Resize Workspace" /></a> </div>
-    </div>
-    <div class="bodyBox"> <span id="goParam" class="yui-button yui-push-button" style="float:right;"> <span class="first-child">
-      <button type="button">Add</button>
-      </span> </span> <br clear="all"/>
-      <!--	<div id="wrkTreeview" class="StatusBoxText"></div> -->
-      <div id="pmParamTableview" class="StatusBoxText"></div>
-    </div>
-  </div>
-  <!-- ############### </PM Parmeter View> ############### -->
 
   <div class="PluginListBox" style="display:none;overflow-y:scroll;"></div>
   <!-- ############### <PluginMgr List View> ############### -->
@@ -460,9 +307,7 @@ YAHOO.util.Event.addListener(window, "load", init);
       <div class="tabBox tabPluginList active" >
         <div>Plugins</div>
       </div>
-      <div class="opXML"> 
-        <!--			<a href="JavaScript:i2b2.PLUGINMGR.view.list.showOptions();"><img src="assets/images/options.gif" border="0" width="16" height="16"></a> --> 
-        <a href="JavaScript:i2b2.PLUGINMGR.view.list.ZoomView();"><img id="pluglstZoomImg" width="16" height="16" border="0" src="js-i2b2/cells/CRC/assets/zoom_icon.gif" alt="Resize Workspace" /></a></div>
+      <div class="opXML"></div>
     </div>
     <a id="plugListRecDETAIL-CLONE" class="pluginRecordBox DETAIL" style="display:none">
     <div class="Icon"><img src="js-i2b2/cells/PLUGINMGR/assets/DEFAULTLIST_icon_32x32.gif" alt="" /></div>
@@ -532,12 +377,6 @@ YAHOO.util.Event.addListener(window, "load", init);
     </div>
   </div>
   <!-- ############### </Timeout Dialog> ############### --> 
-  <!-- ############### <Draggable Splitter> ############### -->
-  <div id="main.splitter" class="vertical_splitter" style="top:33px"></div>
-  <!-- Overwriting the default top position --> 
-  <!-- Debug output --> 
-  <!-- <div id="main.debug" style="position: absolute; top: 300px; left: 300px; color: red"> <p></p><br> </div> --> 
-  <!-- ############### <Draggable Splitter> ############### --> 
 </div>
 </body>
 </html>
