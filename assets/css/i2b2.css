@@ -14,7 +14,7 @@ body, td, p {
 
 /* === Start Page Header === */
 #top-bar {
-	height:3.4em;
+	height:45px;
 	background-color: #2782a3;
 	text-align: center;
 	vertical-align: middle;
@@ -22,10 +22,10 @@ body, td, p {
 }
 
 #top-bar .logo {
-	height: 2.8em;
+	height: 38px;
 	position:absolute;
 	left: 20px;
-	top: 0.3em;
+	top: 4px;
 }
 
 #top-bar h5 {
