@@ -28,10 +28,15 @@ i2b2.CRC.view.QT.showRun = function() {
     }
 
     $('body #crcModal').load('js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
-        // pre populate data
-        // TODO: populate the data based on...
+        // populate the results list based on...
         // ==> i2b2.CRC.model.resultTypes
         // ==> i2b2.CRC.model.selectedResultTypes
+        let checkContainer = $("#crcModal .ResultTypes");
+        for (let code in i2b2.CRC.model.resultTypes) {
+            let checked = '';
+            if (i2b2.CRC.model.selectedResultTypes.includes(code)) checked = ' checked="checked" ';
+            $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + i2b2.CRC.model.resultTypes[code] + '</div>').appendTo(checkContainer);
+        }
 
         // now show the modal form
         $('body #crcModal div:eq(0)').modal('show');
@@ -52,6 +57,7 @@ i2b2.CRC.view.QT.showRun = function() {
             $('body #crcModal button.i2b2-save').click();
             evt.preventDefault();
         });
+
     });
 };
 
@@ -1028,7 +1034,7 @@ i2b2.events.afterCellInit.add(
                 "PATIENT_VITALSTATUS_COUNT_XML": "Vital Status patient breakdown",
                 "PATIENT_RACE_COUNT_XML": "Race patient breakdown",
                 "PATIENT_AGE_COUNT_XML": "Age patient breakdown",
-                "PATIENTSET": "Timeline",
+                // "PATIENTSET": "Timeline",
                 "PATIENT_LOS_XML": "Length of stay breakdown",
                 "PATIENT_TOP50MEDS_XML": "Top 50 medications breakdown",
                 "PATIENT_TOP50DIAG_XML": "Top 50 diangosis breakdown",
