@@ -75,7 +75,7 @@ i2b2.layout.init = function () {
     i2b2.layout.gl_configs.leftCol = {
         settings: {
             showPopoutIcon:false,
-            reorderEnabled:false,
+            reorderEnabled:true,
             constrainDragToContainer: true
         },
         dimensions: {
@@ -96,12 +96,6 @@ i2b2.layout.init = function () {
                                 isClosable:false,
                                 componentName: "i2b2.ONT.view.nav",
                                 title:'Terms'
-                            },{
-                                type:'component',
-                                isClosable:false,
-//                                componentName: 'i2b2.ONT.view.find',
-                                componentName: 'whiteComponent',
-                                title:'Find Terms'
                             }
                         ]
                     },{
@@ -117,12 +111,6 @@ i2b2.layout.init = function () {
                                 isClosable:false,
                                 componentName: 'i2b2.CRC.view.history',
                                 title:'Queries'
-                            },
-                            {
-                                type:'component',
-                                isClosable:false,
-                                componentName: 'whiteComponent',
-                                title:'Find Queries'
                             }
                         ]
                     }
@@ -262,62 +250,9 @@ i2b2.layout.init = function () {
         i2b2.layout.gl_instances.main.off("stateChanged")
     });
 
-    // selectively add config options and refresh buttons to the tab bars
-    var func_extendStackButtons = function(stack) {
-        var btnConfig = false;
-        var btnRefresh = false;
-
-        if (typeof stack.config.content[0] === 'undefined') return false;
-        switch (stack.config.content[0].componentName) {
-            case "i2b2.ONT.view.nav":
-            case "i2b2.CRC.view.history":
-                btnConfig = true;
-                btnRefresh = true;
-                break;
-            case "i2b2.CRC.view.QT":
-                btnConfig = true;
-                break;
-            case "i2b2.WORK.view.main":
-                btnRefresh = true;
-                break;
-        }
-
-        // TODO: REMOVE THIS FUNCTIONALITY AND IMPLEMENT WITHIN EACH VIEW COMPONENT
-        // add configure options button
-        if (btnConfig === true) {
-            var tmpEl = stack.header.controlsContainer.prepend('<li class="stack-cfg-button" title="Configure Options"></li>');
-            $('.stack-cfg-button' ,tmpEl).on('click', (function(a) {
-                var cellCode = this.config.content[0].componentName.split('.');
-                if (cellCode[0] === 'i2b2' && cellCode.length > 1) {
-                    if (typeof i2b2[cellCode[1]].ctrlr.showOptions !== 'undefined' ) {
-                        i2b2[cellCode[1]].ctrlr.showOptions(this.config.content[0].componentName);
-                    }
-                }
-            }).bind(stack));
-        }
-
-        // TODO: REMOVE THIS FUNCTIONALITY AND IMPLEMENT WITHIN EACH VIEW COMPONENT
-        // add refresh all button
-        if (btnRefresh === true) {
-            var id = "stackRefreshIcon_" + stack.config.content[0].componentName.replace(/\./g,"-");
-            // default the visual item as being loading
-            //bi bi-arrow-repeat
-            var tmpEl = stack.header.controlsContainer.prepend('<li class="stack-refresh-button refreshing" title="Refresh All" id="'+id+'"><i class="bi bi-arrow-clockwise"></li>');
-            $('.stack-refresh-button' ,tmpEl).on('click', (function (a) {
-                var cellCode = this.config.content[0].componentName.split('.');
-                if (cellCode[0] === 'i2b2' && cellCode.length > 1) {
-                    if (typeof i2b2[cellCode[1]].ctrlr.refreshAll !== 'undefined') {
-                        i2b2[cellCode[1]].ctrlr.refreshAll(this.config.content[0].componentName);
-                    }
-                }
-            }).bind(stack));
-        }
-    };
-
 
     // Left column layout
     i2b2.layout.gl_instances.leftCol = new GoldenLayout( i2b2.layout.gl_configs.leftCol, '#goldenLayoutColId1' );
-    i2b2.layout.gl_instances.leftCol.on('stackCreated', func_extendStackButtons);
     i2b2.layout.gl_instances.leftCol.registerComponent('whiteComponent', whiteComponent);
     // ========== MAGIC TRICK ==========
     // delayed calling of all the registration callbacks registered by cells during their initialization
@@ -335,7 +270,6 @@ i2b2.layout.init = function () {
         i2b2.layout.gl_instances.rightCol.root.addChild(i2b2.layout.gl_configs.FindPatients);
         glFindPatientsColumn = i2b2.layout.gl_instances.rightCol.root.contentItems[0];
     });
-    i2b2.layout.gl_instances.rightCol.on('stackCreated', func_extendStackButtons);
     // ========== MAGIC TRICK ==========
     // delayed calling of all the registration callbacks registered by cells during their initialization
     for (var k in i2b2.layout.__regCallbacks) {
