@@ -104,19 +104,19 @@ i2b2.PM.model.IdleTimer.add(function(eventName){
             if(sessionTimeoutModal.length === 0) {
                 sessionTimeoutModal = $(
                     '<div class="modal" id="sessionTimeoutModal">' +
-                    '<div class="modal-dialog modal-dialog-centered">' +
-                    '<div class="modal-content">' +
-                    '<div class="modal-header"><h5 class="modal-title">Session Timing Out</h5></div>' +
-                    '<div class="modal-body">' +
-                    'Your session will automatically time out in 5 minutes due to inactivity.  ' +
-                    'Please click "OK" to continue your session, or click Logout to log out.' +
-                    '</div>' +
-                    '<div class="modal-footer">' +
-                    '<button type="button" class="btn btn-secondary btn-sm session-extend" data-bs-dismiss="modal" aria-label="Close">Ok</button>' +
-                    '<button type="button" class="btn btn-primary btn-sm session-logout">Logout</button>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
+                    '   <div class="modal-dialog modal-dialog-centered">' +
+                    '       <div class="modal-content">' +
+                    '           <div class="modal-header"><h5 class="modal-title">Session Timing Out</h5></div>' +
+                    '           <div class="modal-body">' +
+                    '               Your session will automatically time out in 5 minutes due to inactivity.  ' +
+                    '               Please click "OK" to continue your session, or click Logout to log out.' +
+                    '           </div>' +
+                    '           <div class="modal-footer">' +
+                    '               <button type="button" class="btn btn-secondary btn-sm session-extend" data-bs-dismiss="modal" aria-label="Close">Ok</button>' +
+                    '               <button type="button" class="btn btn-primary btn-sm session-logout">Logout</button>' +
+                    '           </div>' +
+                '           </div>' +
+                    '<  /div>' +
                     '</div>'
                 );
                 $("body").append(sessionTimeoutModal);
