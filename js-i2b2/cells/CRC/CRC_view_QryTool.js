@@ -490,11 +490,20 @@ i2b2.CRC.view.QT.render = function() {
         // parse (and if needed correct) the number value for days/months/years
         let qgIndex = $(event.target).closest(".QueryGroup").data("queryGroup");
         let correctedVal = 1;
-        if (!isNaN(event.target.value)) {
-            correctedVal = parseInt(event.target.value);
-            if (correctedVal < 1) correctedVal = 1;
+        event.target.value = event.target.value.trim();
+        let isEmpty = event.target.value === '';
+        if (!isNaN(parseInt(event.target.value)) || isEmpty) {
+            if (isEmpty) {
+                correctedVal = 1;
+            } else {
+                correctedVal = parseInt(event.target.value);
+                if (correctedVal < 1) correctedVal = 1;
+            }
+            i2b2.CRC.model.query.groups[qgIndex].events[0].instances = correctedVal;
+            $(event.target).css('border','').val(correctedVal);
+        } else {
+            $(event.target).css('border','solid 2px red');
         }
-        i2b2.CRC.model.query.groups[qgIndex].events[0].instances = correctedVal;
     });
 
     // append the final query group drop target
