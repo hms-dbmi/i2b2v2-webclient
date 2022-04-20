@@ -66,16 +66,16 @@ i2b2.PM.model.IdleTimer = (function() {
         }
     }
 
-    function startTimer(sec_idle, sec_logout) {
+    function startTimer(millisec_idle, millisec_logout) {
         // idle seconds - how many seconds until "idle" event is fired
         // logout seconds - how many seconds after "idle" event is fired
-        //      before the "logout" event is fired
+        // before the "logout" event is fired
 
         // idle and logout should not be smaller than 30 seconds
-        if (idle_secs < 30000 || logout_secs < 30000) return false;
+        if (millisec_idle < 30000 || millisec_logout < 30000) return false;
 
-        idle_secs = (i2b2.h.isNumber(sec_idle) ? parseInt(sec_idle) * 1000 : Infinity);
-        logout_secs = (i2b2.h.isNumber(sec_idle) ? parseInt(sec_idle) * 1000 : Infinity);
+        idle_secs = (i2b2.h.isNumber(millisec_idle) ? parseInt(millisec_idle) : Infinity);
+        logout_secs = (i2b2.h.isNumber(millisec_logout) ? parseInt(millisec_logout)  : Infinity);
 
         if (tmr_idle !== undefined) {
             resetTimer();
@@ -96,16 +96,43 @@ i2b2.PM.model.IdleTimer = (function() {
 })();
 
 
-
 // attach actions to the logout timer
 i2b2.PM.model.IdleTimer.add(function(eventName){
     switch(eventName) {
         case "idle":
-            // TODO: Reimplement this!!!
-            alert("i2b2.PM.model.IdleTimer() is not yet correctly implemented!");
+            let sessionTimeoutModal = $('#sessionTimeoutModal');
+            if(sessionTimeoutModal.length === 0) {
+                sessionTimeoutModal = $(
+                    '<div class="modal" id="sessionTimeoutModal">' +
+                    '   <div class="modal-dialog modal-dialog-centered">' +
+                    '       <div class="modal-content">' +
+                    '           <div class="modal-header"><h5 class="modal-title">Session Timing Out</h5></div>' +
+                    '           <div class="modal-body">' +
+                    '               Your session will automatically time out in 5 minutes due to inactivity.  ' +
+                    '               Please click "OK" to continue your session, or click Logout to log out.' +
+                    '           </div>' +
+                    '           <div class="modal-footer">' +
+                    '               <button type="button" class="btn btn-secondary btn-sm session-extend" data-bs-dismiss="modal" aria-label="Close">Ok</button>' +
+                    '               <button type="button" class="btn btn-primary btn-sm session-logout">Logout</button>' +
+                    '           </div>' +
+                '           </div>' +
+                    '<  /div>' +
+                    '</div>'
+                );
+                $("body").append(sessionTimeoutModal);
+                $('#sessionTimeoutModal .session-logout').click(function () {
+                    i2b2.PM.doLogout();
+                });
+                $('#sessionTimeoutModal .session-extend').click(function () {
+                    i2b2.PM.model.IdleTimer.resetTimeout();
+                    i2b2.PM.extendUserSession();
+                    $('#sessionTimeoutModal').modal('hide');
+                });
+            }
+            sessionTimeoutModal.modal('show');
             break;
         case "logout":
-            // TODO: implement this!!!
+            i2b2.PM.doLogout();
             break;
     }
 });
