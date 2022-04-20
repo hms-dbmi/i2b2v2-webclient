@@ -15,7 +15,7 @@ console.time('execute time');
 i2b2.CRC.view.history = new i2b2Base_cellViewController(i2b2.CRC, 'history');
 i2b2.CRC.view.history.visible = false;
 i2b2.CRC.view.history.params.maxQueriesDisp = 20; // TODO: This does not work
-
+i2b2.CRC.view.history.template = {};
 
 // ================================================================================================== //
 i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
@@ -187,8 +187,17 @@ i2b2.events.afterCellInit.add((function(cell){
                     // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
                     i2b2.CRC.view.history.lm_view = container;
 
-                    // add the cellWhite flare
-                    let treeTarget = $('<div class="cellWhite" id="i2b2TreeviewCrcHistory"></div>').appendTo(container._contentElement);
+                    // Load the finder templatee
+                    $.ajax("js-i2b2/cells/CRC/templates/QueryHistoryFinder.html", {
+                        success: (template) => {
+                            cell.view.history.template.finder = Handlebars.compile(template);
+                            // Render the template into place
+                            $(cell.view.history.template.finder({})).prependTo(container._contentElement);
+                        },
+                        error: (error) => { console.error("Could not retrieve template: QueryHistoryFinder.html"); }
+                    });
+
+                    let treeTarget = $('<div id="i2b2TreeviewCrcHistory"></div>').appendTo(container._contentElement);
 
                     // create an empty treeview
                     i2b2.CRC.view.history.treeview = $(treeTarget).treeview({

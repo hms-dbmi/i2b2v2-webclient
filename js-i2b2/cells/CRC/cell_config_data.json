@@ -30,6 +30,7 @@
     "assets/sdx_CRC_QMT.gif"
   ],
   "css": [
+    "QueryHistory.css",
     "QueryGroups.css",
     "QueryRunner.css",
     "sdx_CRC_types.css"

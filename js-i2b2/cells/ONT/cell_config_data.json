@@ -15,6 +15,7 @@
     "assets/sdx_ONT_MODIFIER_leaf.gif"
   ],
   "css": [
+    "Ontology.css",
     "sdx_ONT_types.css"
   ],
   "config": {

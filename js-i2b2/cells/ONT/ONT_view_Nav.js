@@ -13,7 +13,7 @@ console.time('execute time');
 
 // create and save the view object
 i2b2.ONT.view.nav = new i2b2Base_cellViewController(i2b2.ONT, 'nav');
-
+i2b2.ONT.view.nav.template = {};
 
 // ================================================================================================== //
 i2b2.ONT.view.nav.PopulateCategories = function() {		
@@ -134,6 +134,17 @@ i2b2.events.afterCellInit.add((function(cell){
             (function (container, scope) {
                 // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
                 i2b2.ONT.view.nav.lm_view = container;
+
+                // Load the finder templatee
+                $.ajax("js-i2b2/cells/ONT/assets/OntologyFinder.html", {
+                    success: (template) => {
+                        cell.view.nav.template.finder = Handlebars.compile(template);
+                        // Render the template into place
+                        $(cell.view.nav.template.finder({})).prependTo(container._contentElement);
+                    },
+                    error: (error) => { console.error("Could not retrieve template: QueryHistoryFinder.html"); }
+                });
+
 
                 // add the cellWhite flare
                 let treeTarget = $('<div class="cellWhite" id="i2b2TreeviewOntNav"></div>').appendTo(container._contentElement);

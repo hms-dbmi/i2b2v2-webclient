@@ -1,0 +1,22 @@
+#i2b2TreeviewOntNav {
+    background: #FFFFFF;
+    border: solid 1px #63758c;
+    overflow: auto;
+    border-radius: 0 0 3px 3px;
+    flex-direction: column;
+    position: absolute;
+    bottom: 0;
+    top: 2em;
+    left: 0;
+    right: 0;
+    height: auto;
+}
+
+#i2b2FinderOnt {
+    position: absolute;
+    top: 0;
+    height: 2em;
+    border: solid #63758c;
+    border-width: 1px 1px 0 1px;
+    width: 100%;
+}
