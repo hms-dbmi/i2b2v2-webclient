@@ -248,11 +248,6 @@ i2b2.PM._processUserConfig = function (data) {
 
 // ================================================================================================== //
 i2b2.PM.extendUserSession = function() {
-    var input_errors = false;
-    // change the cursor
-    // show on GUI that work is being done
-    // i2b2.h.LoadingMask.show();
-
     let login_password = i2b2.PM.model.login_password.substring(i2b2.PM.model.login_password.indexOf(">")+1,i2b2.PM.model.login_password.lastIndexOf("<") );
 
     // call the PM Cell's communicator Object
@@ -271,11 +266,8 @@ i2b2.PM.extendUserSession = function() {
         domain: i2b2.PM.model.login_domain,
         project: i2b2.PM.model.login_project
     };
-    if(!input_errors){
-        i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
-    } else {
-        alert(e);
-    }
+
+    i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
 };
 
 // ================================================================================================== //
