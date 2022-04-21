@@ -6,17 +6,37 @@
     flex-direction: column;
     position: absolute;
     bottom: 0;
-    top: 2em;
+    top: 7em;
     left: 0;
     right: 0;
     height: auto;
+    border-top: 1px solid rgba(212, 105, 255, 0.2);
 }
 
 #i2b2FinderOnt {
     position: absolute;
     top: 0;
-    height: 2em;
+    height: 7em;
     border: solid #63758c;
     border-width: 1px 1px 0 1px;
     width: 100%;
+    padding-top: 6px;
+    padding-left: 10px;
+}
+
+#i2b2FinderOnt input{
+    margin-top: 12px;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-radius: 0;
+    border-bottom: 1px solid gray;
+}
+
+#i2b2FinderOnt select{
+    margin-left: 2em;
+}
+
+#i2b2FinderOnt button{
+    margin-top: 1em;
 }

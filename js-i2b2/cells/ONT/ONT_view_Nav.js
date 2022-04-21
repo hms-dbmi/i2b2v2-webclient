@@ -135,17 +135,6 @@ i2b2.events.afterCellInit.add((function(cell){
                 // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
                 i2b2.ONT.view.nav.lm_view = container;
 
-                // Load the finder templatee
-                $.ajax("js-i2b2/cells/ONT/assets/OntologyFinder.html", {
-                    success: (template) => {
-                        cell.view.nav.template.finder = Handlebars.compile(template);
-                        // Render the template into place
-                        $(cell.view.nav.template.finder({})).prependTo(container._contentElement);
-                    },
-                    error: (error) => { console.error("Could not retrieve template: QueryHistoryFinder.html"); }
-                });
-
-
                 // add the cellWhite flare
                 let treeTarget = $('<div class="cellWhite" id="i2b2TreeviewOntNav"></div>').appendTo(container._contentElement);
 
@@ -164,12 +153,63 @@ i2b2.events.afterCellInit.add((function(cell){
 
                 i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
                 i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
+
+                // Load the finder templatee
+                $.ajax("js-i2b2/cells/ONT/assets/OntologyFinder.html", {
+                    success: (template) => {
+                        cell.view.nav.template.finder = Handlebars.compile(template);
+                        // Render the template into place
+                        let categories = []
+                        for (let i=0; i<i2b2.ONT.model.Categories.length; i++) {
+                            let cat = i2b2.ONT.model.Categories[i];
+                            let catVal = cat.key.substring(2,cat.key.indexOf('\\',3))
+                            categories.append({
+                                name: cat.name,
+                                value: catVal
+                            });
+                        }
+                        let findTermOptions = {
+                            "categories": categories
+                        };
+                        $(cell.view.nav.template.finder(findTermOptions)).prependTo(container._contentElement);
+                    },
+                    error: (error) => { console.error("Could not retrieve template: OntologyFinder.html"); }
+                });
             }).bind(this)
         );
     }
 }));
 
+// ================================================================================================== //
+
+i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
+    if (updateInfo.DataLocation == "i2b2.ONT.model.Categories") {
+
+        // Load the finder templatee
+        $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderOptions.html", {
+            success: (template) => {
+                let ontFinderOptions = Handlebars.compile(template);
+                // Render the template into place
+                let categories = [];
+                for (let i=0; i<i2b2.ONT.model.Categories.length; i++) {
+                    let cat = i2b2.ONT.model.Categories[i];
+                    let catVal = cat.key.substring(2,cat.key.indexOf('\\',3))
+                    categories.push({
+                        name: cat.name,
+                        value: catVal
+                    });
+                }
+                let findTermOptions = {
+                    "categories": categories
+                };
+                $(ontFinderOptions(findTermOptions)).prependTo("#termFinderOptions");
+            },
+            error: (error) => { console.error("Could not retrieve template: OntologyFinder.html"); }
+        });
+    }
+}).bind(i2b2.ONT));
 
 // ================================================================================================== //
+
 console.timeEnd('execute time');
 console.groupEnd();

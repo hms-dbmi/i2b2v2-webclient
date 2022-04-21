@@ -1,0 +1,13 @@
+<div class="row g-2 align-items-center">
+    <label for="searchOptions" class="col-sm-1">Search:</label>
+    <div class="col-sm-8">
+        <select id="searchOptions" class="form-select form-select-sm" aria-label="Term Search Options">
+            <option value="[[[ALL]]]">Any Category</option>
+            {{#each categories}}
+            <option value="{{this.value}}">{{this.name}}</option>
+            {{/each}}
+        </select>
+    </div>
+</div>
+
+
