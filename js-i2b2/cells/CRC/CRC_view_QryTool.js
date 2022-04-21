@@ -466,6 +466,24 @@ i2b2.CRC.view.QT.render = function() {
             icon.addClass('bi-chevron-down');
         }
     });
+
+
+    let funcValidateDate = (event) => {
+        let jqTarget = $(event.target);
+        let errorFrameEl = $(jqTarget)[0].parentNode;
+        let dateVal = String(jqTarget.val());
+        // display red box on error
+        if (dateVal.match(/^[0|1][0-9]\/[0|1|2|3][0-9]\/[1|2][0-9][0-9][0-9]$/) === null && dateVal !== '') {
+            $(errorFrameEl).css('border', 'solid');
+        } else {
+            $(errorFrameEl).css('border', '');
+        }
+    };
+
+    $('.DateStart, .DateEnd, .DateRange1Start, .DateRange1End, .DateRange2Start, .DateRange2End', i2b2.CRC.view.QT.containerDiv).on('input', (event) => {
+        funcValidateDate(event);
+    });
+
     $('.DateStart, .DateEnd, .DateRange1Start, .DateRange1End, .DateRange2Start, .DateRange2End', i2b2.CRC.view.QT.containerDiv).on('change', (event) => {
         let jqTarget = $(event.target);
         let qgBody = jqTarget.closest(".QueryGroup");
@@ -484,6 +502,7 @@ i2b2.CRC.view.QT.render = function() {
             // keep both Event 1 end date inputs synced
             if (eventIdx === 0) $('.DateEnd, .DateRange1End', qgBody).val(event.target.value);
         }
+        funcValidateDate(event);
     });
 
     $('.QueryGroup .OccursCount', i2b2.CRC.view.QT.containerDiv).on('blur', (event) => {

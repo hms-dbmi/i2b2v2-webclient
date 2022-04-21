@@ -166,6 +166,12 @@
     padding: 1em 0em;
 }
 
+.gj-datepicker {
+    border-radius: 4px;
+    border-width: 2px !important;
+    border-color: red !important;
+}
+
 .gj-datepicker .btn-outline-secondary {
     height: 100%;
     border-top-left-radius: 0;
