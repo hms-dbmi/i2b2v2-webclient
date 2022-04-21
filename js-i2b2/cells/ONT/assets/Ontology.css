@@ -31,6 +31,7 @@
     border-left: none;
     border-radius: 0;
     border-bottom: 1px solid gray;
+    box-shadow: none;
 }
 
 #i2b2FinderOnt select{
@@ -39,4 +40,13 @@
 
 #i2b2FinderOnt button{
     margin-top: 1em;
+}
+
+button.invert{
+    color: #0d6efd;
+    background: #FFFFFF;
+}
+
+.hidden{
+    display: none;
 }

@@ -1,0 +1,10 @@
+<div class="col-sm-5" id="categoryOptions">
+    <select  class="form-select form-select-sm" aria-label="Term Category Options">
+        <option value="[[[ALL]]]">Any Category</option>
+        {{#each categories}}
+        <option value="{{this.value}}">{{this.name}}</option>
+        {{/each}}
+    </select>
+</div>
+
+

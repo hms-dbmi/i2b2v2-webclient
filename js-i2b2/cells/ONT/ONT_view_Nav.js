@@ -122,7 +122,19 @@ i2b2.ONT.view.nav.doRefreshAll = function() {
     i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
     i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
 };
+//================================================================================================== //
 
+i2b2.ONT.view.nav.toggleSearchOptions = function(elem){
+   let currentVal = $(elem).val();
+   if(currentVal === "coding"){
+       $("#categoryOptions").addClass("hidden");
+       $("#codingOptions").removeClass("hidden");
+   }
+   else{
+       $("#categoryOptions").removeClass("hidden");
+       $("#codingOptions").addClass("hidden");
+   }
+};
 
 // Below code is executed once the entire cell has been loaded
 //================================================================================================== //
@@ -183,13 +195,10 @@ i2b2.events.afterCellInit.add((function(cell){
 // ================================================================================================== //
 
 i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
-    if (updateInfo.DataLocation == "i2b2.ONT.model.Categories") {
-
-        // Load the finder templatee
-        $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderOptions.html", {
+    if (updateInfo.DataLocation === "i2b2.ONT.model.Categories") {
+        $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderCategoryOptions.html", {
             success: (template) => {
-                let ontFinderOptions = Handlebars.compile(template);
-                // Render the template into place
+                let categoryOptions = Handlebars.compile(template);
                 let categories = [];
                 for (let i=0; i<i2b2.ONT.model.Categories.length; i++) {
                     let cat = i2b2.ONT.model.Categories[i];
@@ -199,12 +208,33 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
                         value: catVal
                     });
                 }
-                let findTermOptions = {
+                let options = {
                     "categories": categories
                 };
-                $(ontFinderOptions(findTermOptions)).prependTo("#termFinderOptions");
+                $(categoryOptions(options)).appendTo("#searchOptions");
             },
-            error: (error) => { console.error("Could not retrieve template: OntologyFinder.html"); }
+            error: (error) => { console.error("Could not retrieve template: OntologyFinderCategoryOption.html"); }
+        });
+    }
+
+    if (updateInfo.DataLocation === "i2b2.ONT.model.Schemes") {
+        $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderCodingOptions.html", {
+            success: (template) => {
+                let codingSystemOptions = Handlebars.compile(template);
+                let codingSystems = [];
+                for (let i=0; i<i2b2.ONT.model.Schemes.length; i++) {
+                    let cat = i2b2.ONT.model.Schemes[i];
+                    codingSystems.push({
+                        name: cat.name,
+                        value: cat.key
+                    });
+                }
+                let options = {
+                    "codingSystem": codingSystems
+                };
+                $(codingSystemOptions(options)).appendTo("#searchOptions");
+            },
+            error: (error) => { console.error("Could not retrieve template: OntologyFinderCodingOptions.html"); }
         });
     }
 }).bind(i2b2.ONT));
