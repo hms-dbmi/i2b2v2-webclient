@@ -6,22 +6,24 @@
     flex-direction: column;
     position: absolute;
     bottom: 0;
-    top: 7em;
+    top: 6.4em;
     left: 0;
     right: 0;
     height: auto;
-    border-top: 1px solid rgba(212, 105, 255, 0.2);
+    border-top: 1px solid rgba(212, 105, 255, 0.18);
 }
 
 #i2b2FinderOnt {
     position: absolute;
     top: 0;
-    height: 7em;
+    height: 6.6em;
     border: solid #63758c;
     border-width: 1px 1px 0 1px;
     width: 100%;
-    padding-top: 6px;
+    padding-top: 8px;
     padding-left: 10px;
+    background: rgba(235, 238, 238, 0.3);
+    font-size: 0.99em;
 }
 
 #i2b2FinderOnt input{
@@ -32,6 +34,7 @@
     border-radius: 0;
     border-bottom: 1px solid gray;
     box-shadow: none;
+    background: transparent;
 }
 
 #i2b2FinderOnt button{
@@ -43,6 +46,14 @@ button.invert{
     background: #FFFFFF;
 }
 
+button.invert:hover{
+    opacity: 0.7;
+}
+
 .hidden{
     display: none;
+}
+
+#i2b2FinderOnt .form-select-sm, .form-control-sm, .btn-sm, label{
+    font-size: 0.9em;
 }
