@@ -9,11 +9,20 @@
         </div>
     </div>
     <div class="row g-2 align-items-center">
-        <div class="col-sm-9">
+        <div class="col-sm-3 searchType" >
+            <select id="searchMatchTypeSelect"  class="form-select form-select-sm" aria-label="Term Search Options">
+                <option value="contains">Containing</option>
+                <option value="exact">Exact</option>
+                <option value="Starting">Starting with</option>
+                <option value="Starting">Ending with</option>
+            </select>
+        </div>
+        <div class="col-sm-6">
             <input type="text" class="form-control form-control-sm" placeholder="Enter term" aria-label="Term" id="searchTermText">
         </div>
         <div class="col-sm">
-            <button type="submit" class="btn btn-primary btn-sm invert"" >Search</button>
+            <button type="submit" class="btn btn-primary btn-sm invert" >Search</button>
         </div>
     </div>
+
 </div>

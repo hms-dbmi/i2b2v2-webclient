@@ -6,7 +6,7 @@
     flex-direction: column;
     position: absolute;
     bottom: 0;
-    top: 5.9em;
+    top: 6.1em;
     left: 0;
     right: 0;
     height: auto;
@@ -16,7 +16,7 @@
 #i2b2FinderOnt {
     position: absolute;
     top: 0;
-    height: 6.1em;
+    height: 6.3em;
     border: solid #63758c;
     border-width: 1px 1px 0 1px;
     width: 100%;
@@ -26,7 +26,7 @@
     font-size: 0.98em;
 }
 
-#i2b2FinderOnt input{
+#i2b2FinderOnt .form-control{
     margin-top: 0.8em;
     border-top: none;
     border-right: none;
@@ -69,4 +69,20 @@ button.invert:hover{
 #i2b2FinderOnt .form-control-sm{
     font-size: 0.95em;
     padding-left: 0.1em;
+}
+
+.form-check-input {
+    border: 1px solid black;
+    margin-top: 2px;
+}
+
+.form-check-inline {
+    margin-top: 5px;
+}
+.searchType {
+    width: 20%;
+}
+
+.searchType .form-select-sm {
+    margin-top: 1em;
 }
