@@ -39,6 +39,7 @@
 
 #i2b2FinderOnt button{
     margin-top: 0.8em;
+    display: inline-block;
 }
 
 button.invert{
@@ -86,3 +87,18 @@ button.invert:hover{
 .searchType .form-select-sm {
     margin-top: 1em;
 }
+
+.clear-input{
+    padding-top: 1.2em;
+    border-bottom: 1px solid gray;
+}
+
+.clearIcon{
+    font-size: 1.4em;
+}
+
+.clearIcon:hover{
+    background: lightgray;
+    padding-top: 0.2em;
+}
+

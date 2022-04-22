@@ -136,6 +136,25 @@ i2b2.ONT.view.nav.toggleSearchOptions = function(elem){
    }
 };
 
+//================================================================================================== //
+
+i2b2.ONT.view.nav.toggleSearchClearIcon = function(){
+    let currentVal = $("#searchTermText").val();
+    if(currentVal){
+        $("#searchTerm .clearIcon").removeClass("hidden");
+    }
+    else{
+        $("#searchTerm .clearIcon").addClass("hidden");
+    }
+};
+
+//================================================================================================== //
+
+i2b2.ONT.view.nav.clearSearchInput = function(){
+    $("#searchTermText").val("");
+    $("#searchTerm .clearIcon").addClass("hidden");
+};
+
 // Below code is executed once the entire cell has been loaded
 //================================================================================================== //
 i2b2.events.afterCellInit.add((function(cell){
