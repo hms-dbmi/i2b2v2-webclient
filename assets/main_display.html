@@ -4,17 +4,51 @@
 <div id="top-bar">
     <table id="topBarTable">
         <tr>
-            <td class="logo"><img src="https://www.i2b2.org/webclient/assets/images/title.gif" alt="" /></td>
+            <!--<td class="logo"><img src="https://www.i2b2.org/webclient/assets/images/title.gif" alt="" /></td>-->
+            <td class="logo"> <h5><strong>i2b2 </strong>Query & Analysis Tool</h5> </td>
             <td>
-                <a href="Javascript:void(0)" onClick="showFindPatients();">Find Patients</a>
+                <!--<a href="Javascript:void(0)" onClick="showFindPatients();">Find Patients</a>
                 &nbsp;|&nbsp;
                 <a href="Javascript:void(0);" onClick="showAnalysisTools();">Analysis Tools</a>
                 &nbsp;|&nbsp;
                 <a href="Javascript:void(0);" onClick="myClick();">Message Log</a>
-                &nbsp;|&nbsp;
-                <a href="Javascript:void(0);" onClick="myClick2();">Help</a>
-                &nbsp;|&nbsp;
-                <a href="Javascript:void(0);" onClick="">Logout</a>
+
+               -->
+
+                <div id="headerOptions" class="fs-4 mb-3">
+                    <i class="bi bi-question-circle"></i>
+                    <div class="dropdown" onClick="i2b2.PM.setUserAccountInfo()">
+                        <i data-bs-toggle="dropdown" class="bi bi-person-circle"></i>
+                        <ul id="userInfo" class="dropdown-menu">
+                            <li>
+                                <h6 class="dropdown-header">User</h6>
+                            </li>
+                            <li class="dropdown-item static">
+                                <span class="user"></span>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <h6 class="dropdown-header">Project</h6>
+                            </li>
+                            <li class="dropdown-item static">
+                                <span class="project"></span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <h6 class="dropdown-header">Version</h6>
+                            </li>
+                            <li class="dropdown-item static">
+                                <span class="versionNum"></span> - <span class="versionDate"></span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li class="center">
+                                <button class="logout btn btn-primary btn-sm" onClick="i2b2.PM.doLogout()">Logout</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </td>
         </tr>
     </table>

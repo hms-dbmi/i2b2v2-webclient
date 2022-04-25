@@ -8,7 +8,7 @@ body {
 }
 
 body, td, p {
-	font-size:13px;
+	font-size:14px;
 	line-height:16px;
 }
 
@@ -16,7 +16,6 @@ body, td, p {
 #top-bar {
 	height:45px;
 	padding:0px 20px 0px 10px;
-	/*background:url('../images/background.gif');*/
 	background-color: #2782a3;
 }
 
@@ -69,6 +68,73 @@ body, td, p {
 #topTitleImg {
 	position:relative;
 	top:-15px;
+}
+
+#headerOptions {
+	display: inline-block;
+	margin-left: 110px;
+	margin-top: 14px;
+}
+
+#headerOptions i {
+	margin-right: 12px;
+}
+
+#headerOptions .dropdown {
+	display: inline-block;
+}
+
+#userInfo .static:hover {
+	background: none;
+}
+
+#userInfo .static:active {
+	color: #212529;
+}
+
+#userInfo i {
+	margin-right: 0.3em;
+}
+
+#userInfo .logout {
+	width: 75%;
+}
+
+#userInfo .center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#userInfo button {
+	color: #0d6efd;
+	background: #fff;
+}
+
+#userInfo button:active {
+	background: #0d6efd;
+	color: #fff;
+}
+
+#userInfo a {
+	color: blue;
+	text-decoration: underline;
+}
+
+#userInfo a:hover {
+	color: blue;
+	text-decoration: underline;
+	background: none;
+}
+
+#userInfo a:active {
+	color: white;
+	text-decoration: underline;
+}
+
+#userInfo .logout:active {
+	opacity: 1;
+	color: #fff;
 }
 
 /* === End Page Header === */
@@ -344,7 +410,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 #goldenLayoutColId2 .lm_header {
-	background-color: #b6b4b4;
+	background-color: #ccc2b6;
 }
 
 .goldenLayoutCol .lm_content {
@@ -405,18 +471,19 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 .goldenLayoutCol .lm_tab .lm_title {
-	font-weight: 300;
+	font-weight: 400;
+	color:#fff;
 	font-size: 16px;
 }
 
 .goldenLayoutCol .lm_tab.lm_active .lm_title {
-	color:#FFF;
+	color:#000;
 	padding:1px 4px;
 }
 
 .goldenLayout div.cellWhite {
 	background:#FFF;
-	border:1px solid #678;
+	border: 1px solid #678;
 	overflow:auto;
 	border-radius: 0 0 3px 3px;
 	display: flex;
@@ -451,7 +518,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 .goldenLayoutCol .stack-refresh-button {
-	background-image: url(../images/stack_refresh_icon.png);
+	margin-top: 2px;
 }
 
 .goldenLayoutCol .stack-refresh-button.refreshing {
@@ -495,11 +562,17 @@ textarea {
 	height:50px;
 }
 
+.goldenLayout div.pluginCellMain
+{
+ 	border: 1px solid #678;
+}
+
 iframe.pluginCell {
 	border:none;
 	margin-top:-4px;
 	flex-grow: 1;
-	flex-basis: 0
+	flex-basis: 0;
+	width: 100%;
 }
 
 #PM-login-modal .form-group label {
@@ -514,4 +587,12 @@ iframe.pluginCell {
 	margin-bottom: 14px;
 }
 
-
+/* === Start BOOTSTRAP MENU === */
+.bootstrapMenu > .dropdown-menu > li > a {
+	-moz-user-drag: -moz-none;
+	-khtml-user-drag: none;
+	-webkit-user-drag: none;
+	-ms-user-drag: none;
+	-webkit-user-drag: none;
+	text-decoration: none;
+}/* === End BOOTSTRAP MENU === */

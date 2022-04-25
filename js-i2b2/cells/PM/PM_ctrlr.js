@@ -28,11 +28,12 @@ i2b2.PM.doLogin = function() {
     // show on GUI that work is being done
     // i2b2.h.LoadingMask.show();
 
+    let e = 'The following problems were encountered:';
     // copy the selected domain info into our main data model
-    var login_username = $("#PM-login-modal input[name='loginusr']").val();
-    var login_password = $("#PM-login-modal input[name='loginpass']").val();
+    let login_username = $("#PM-login-modal input[name='loginusr']").val();
+    let login_password = $("#PM-login-modal input[name='loginpass']").val();
 
-    var domain = i2b2.PM.model.Domains[$("#PM-login-modal #logindomain").val()];
+    let domain = i2b2.PM.model.Domains[$("#PM-login-modal #logindomain").val()];
     if (domain) {
         // copy information from the domain record
         var login_domain = domain.domain;
@@ -116,9 +117,9 @@ i2b2.PM._processUserConfig = function (data) {
 
         let timeout = t.getAttribute('token_ms_timeout');
         if (timeout === undefined ||  timeout < 300001) {
-            i2b2.PM.model.IdleTimer.start(1800-300, 300);
+            i2b2.PM.model.IdleTimer.start(1800000-300000, 300000);
         } else {
-            i2b2.PM.model.IdleTimer.start(((timeout/1000)-300), 300);
+            i2b2.PM.model.IdleTimer.start(timeout-300000, 300000);
         }
     } catch (e) {
         //console.error("Could not find returned password node in login XML");
@@ -225,7 +226,7 @@ i2b2.PM._processUserConfig = function (data) {
             alert("The PM Cell is down or the address in the properties file is incorrect.");
             //alert("Your account does not have access to any i2b2 projects.");
         }
-        try { i2b2.PM.view.modal.login.show(); } catch(e) {}
+        try { i2b2.PM.doLoginDialog(); } catch(e) {}
         return true;
     } else if (projs.length === 1) {
         // default to the only project the user has access to
@@ -245,6 +246,29 @@ i2b2.PM._processUserConfig = function (data) {
     }
 };
 
+// ================================================================================================== //
+i2b2.PM.extendUserSession = function() {
+    let login_password = i2b2.PM.model.login_password.substring(i2b2.PM.model.login_password.indexOf(">")+1,i2b2.PM.model.login_password.lastIndexOf("<") );
+
+    // call the PM Cell's communicator Object
+    let callback = new i2b2_scopedCallback(i2b2.PM._processUserConfig, i2b2.PM);
+    let parameters = {
+        domain: i2b2.PM.model.login_domain,
+        is_shrine: i2b2.PM.model.shrine_domain,
+        project: i2b2.PM.model.login_project,
+        username: i2b2.PM.model.login_username,
+        password_text: login_password
+    };
+    let transportOptions = {
+        url: i2b2.PM.model.url,
+        user: i2b2.PM.model.login_username,
+        password: login_password,
+        domain: i2b2.PM.model.login_domain,
+        project: i2b2.PM.model.login_project
+    };
+
+    i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
+};
 
 // ================================================================================================== //
 i2b2.PM.doLogout = function() {
@@ -252,6 +276,10 @@ i2b2.PM.doLogout = function() {
     window.location.reload();
 };
 
+i2b2.PM.showUserInfo = function() {
+    // bug fix - must reload page to avoid dirty data from lingering
+    window.location.reload();
+};
 
 // ================================================================================================================================
 // NEW FRAMEWORK LAUNCH CODE (cells can timeout on failure instead of hanging the entire load process)

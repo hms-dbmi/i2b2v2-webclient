@@ -27,11 +27,16 @@ i2b2.CRC.view.QT.showRun = function() {
         $('body').append("<div id='crcModal'/>");
     }
 
-    $('body #crcModal').load('/js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
-        // pre populate data
-        // TODO: populate the data based on...
+    $('body #crcModal').load('js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
+        // populate the results list based on...
         // ==> i2b2.CRC.model.resultTypes
         // ==> i2b2.CRC.model.selectedResultTypes
+        let checkContainer = $("#crcModal .ResultTypes");
+        for (let code in i2b2.CRC.model.resultTypes) {
+            let checked = '';
+            if (i2b2.CRC.model.selectedResultTypes.includes(code)) checked = ' checked="checked" ';
+            $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + i2b2.CRC.model.resultTypes[code] + '</div>').appendTo(checkContainer);
+        }
 
         // now show the modal form
         $('body #crcModal div:eq(0)').modal('show');
@@ -45,6 +50,14 @@ i2b2.CRC.view.QT.showRun = function() {
             // close the modal
             $('body #crcModal div:eq(0)').modal('hide');
         });
+
+        //if the user presses enter in one of the input fields on the crcModal form
+        //then run the query
+        $("#crcModal").submit(function(evt) {
+            $('body #crcModal button.i2b2-save').click();
+            evt.preventDefault();
+        });
+
     });
 };
 
@@ -83,6 +96,8 @@ i2b2.CRC.view.QT.termActionDelete = function(evt) {
     i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts.splice(conceptIdx, 1);
     // re-render the concept list
     i2b2.CRC.view.QT.renderTermList(i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx], $(evt.target).closest('.TermList'));
+    // update the query name
+    i2b2.CRC.view.QT.updateQueryName();
 };
 
 
@@ -244,7 +259,12 @@ i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget)
         i2b2.CRC.view.QT.renderTermList(qgData.events[1], temp);
     }
 };
+// ================================================================================================== //
 
+i2b2.CRC.view.QT.clearQuery = function() {
+    i2b2.CRC.view.QT.updateQueryName();
+    i2b2.CRC.view.QT.render();
+}
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.render = function() {
@@ -448,6 +468,24 @@ i2b2.CRC.view.QT.render = function() {
             icon.addClass('bi-chevron-down');
         }
     });
+
+
+    let funcValidateDate = (event) => {
+        let jqTarget = $(event.target);
+        let errorFrameEl = $(jqTarget)[0].parentNode;
+        let dateVal = String(jqTarget.val());
+        // display red box on error
+        if (dateVal.match(/^[0|1][0-9]\/[0|1|2|3][0-9]\/[1|2][0-9][0-9][0-9]$/) === null && dateVal !== '') {
+            $(errorFrameEl).css('border', 'solid');
+        } else {
+            $(errorFrameEl).css('border', '');
+        }
+    };
+
+    $('.DateStart, .DateEnd, .DateRange1Start, .DateRange1End, .DateRange2Start, .DateRange2End', i2b2.CRC.view.QT.containerDiv).on('input', (event) => {
+        funcValidateDate(event);
+    });
+
     $('.DateStart, .DateEnd, .DateRange1Start, .DateRange1End, .DateRange2Start, .DateRange2End', i2b2.CRC.view.QT.containerDiv).on('change', (event) => {
         let jqTarget = $(event.target);
         let qgBody = jqTarget.closest(".QueryGroup");
@@ -466,17 +504,27 @@ i2b2.CRC.view.QT.render = function() {
             // keep both Event 1 end date inputs synced
             if (eventIdx === 0) $('.DateEnd, .DateRange1End', qgBody).val(event.target.value);
         }
+        funcValidateDate(event);
     });
 
     $('.QueryGroup .OccursCount', i2b2.CRC.view.QT.containerDiv).on('blur', (event) => {
         // parse (and if needed correct) the number value for days/months/years
         let qgIndex = $(event.target).closest(".QueryGroup").data("queryGroup");
         let correctedVal = 1;
-        if (!isNaN(event.target.value)) {
-            correctedVal = parseInt(event.target.value);
-            if (correctedVal < 1) correctedVal = 1;
+        event.target.value = event.target.value.trim();
+        let isEmpty = event.target.value === '';
+        if (!isNaN(parseInt(event.target.value)) || isEmpty) {
+            if (isEmpty) {
+                correctedVal = 1;
+            } else {
+                correctedVal = parseInt(event.target.value);
+                if (correctedVal < 1) correctedVal = 1;
+            }
+            i2b2.CRC.model.query.groups[qgIndex].events[0].instances = correctedVal;
+            $(event.target).css('border','').val(correctedVal);
+        } else {
+            $(event.target).css('border','solid 2px red');
         }
-        i2b2.CRC.model.query.groups[qgIndex].events[0].instances = correctedVal;
     });
 
     // append the final query group drop target
@@ -499,7 +547,7 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
     let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
     i2b2.CRC.view.QT.labValue.showLabValues(sdx);
-}
+};
 
 i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
@@ -513,9 +561,10 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 valueType: null,
                 valueOperator: null,
                 value: null,
+                flagValue: null,
                 numericValueRangeLow: null,
                 numericValueRangeHigh: null,
-                unitValue: null,
+                unitValue: null
             };
 
             $("#labValuesModal div").eq(0).modal("show");
@@ -530,9 +579,13 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         newLabValues.numericValueRangeLow = null;
                         newLabValues.numericValueRangeHigh = null;
                         newLabValues.unitValue = null;
+                        newLabValues.value = null;
                         break;
                     case null:
                         newLabValues = {};
+                        break;
+                    default:
+                        newLabValues.flagValue = null;
                         break;
                 }
                 sdxConcept.LabValues = newLabValues;
@@ -595,12 +648,12 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                     labFlagValueSelection.append(flagOption);
                 }
                 labFlagValueSelection.change(function () {
-                    newLabValues.value = $(this).val();
+                    newLabValues.flagValue = $(this).val();
                 });
 
-                if (sdxConcept.LabValues && sdxConcept.LabValues.value) {
-                    labFlagValueSelection.val(sdxConcept.LabValues.value);
-                    newLabValues.value = sdxConcept.LabValues.value;
+                if (sdxConcept.LabValues && sdxConcept.LabValues.flagValue) {
+                    labFlagValueSelection.val(sdxConcept.LabValues.flagValue);
+                    newLabValues.flagValue = sdxConcept.LabValues.flagValue;
                     newLabValues.valueOperator = sdxConcept.LabValues.valueOperator;
                 }
 
@@ -646,9 +699,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         newLabValues.numericValueRangeHigh = $(this).val();
                     });
 
-                    if (sdxConcept.LabValues  && sdxConcept.LabValues.valueType !== i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG
-                        && sdxConcept.LabValues.valueOperator
-                       ) {
+                    if (sdxConcept.LabValues && sdxConcept.LabValues.valueOperator) {
                         numericValueOperatorSelection.val(sdxConcept.LabValues.valueOperator).trigger("change");
                         newLabValues.valueOperator = sdxConcept.LabValues.valueOperator;
 
@@ -886,7 +937,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 $("#labHelpText").text("Searches by Lab values can be constrained by the high/low flag set by the performing laboratory, or by the values themselves.");
             }
         }
-    }
+    };
 
     let labValuesModal = $("#labValuesModal");
 
@@ -895,10 +946,10 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
         labValuesModal = $("#labValuesModal");
     }
 
-    labValuesModal.load('/js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
+    labValuesModal.load('js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
         i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
     });
-}
+};
 // ================================================================================================== //
 
 
@@ -919,15 +970,36 @@ i2b2.events.afterCellInit.add(
 
                     // add the cellWhite flare
                     cell.view.QT.containerRoot = $('<div class="CRC_QT_view"></div>').appendTo(cell.view.QT.lm_view._contentElement);
-                    $('<div class="CRC_QT_runbar"><div class="name"><label>Name:</label><input class="name"></div><div class="button"><button type="button" class="btn btn-primary btn-sm">Run Query</button></div></div>').appendTo(cell.view.QT.containerRoot);
+                    $('<div class="CRC_QT_runbar">' +
+                        '<div class="left">' +
+                            '<label>Name:</label>' +
+                        '</div>' +
+                        '<div class="center">' +
+                            '<input class="name">' +
+                        '</div>' +
+                        '<div class="right">' +
+                            '<button type="button" class="btn btn-primary btn-sm button-run">Find Patients</button>' +
+                            '<button type="button" class="btn btn-primary btn-sm button-clear">Clear All</button>' +
+                        '</div>' +
+                    '</div>')
+                        .appendTo(cell.view.QT.containerRoot)
                     cell.view.QT.containerDiv = $('<div class="CRC_QT_query"></div>').appendTo(cell.view.QT.containerRoot);
 
-
-                    // TODO: add rest of initialization code here
                     container.on('open', () => {
-                        $(".CRC_QT_runbar .button button", cell.view.QT.containerRoot).on("click", (evt)=> {
+                        // capture "run query" button click ---------------------------------------------------
+                        $(".CRC_QT_runbar .button-run", cell.view.QT.containerRoot).on("click", (evt)=> {
                             evt.target.blur();
-                            i2b2.CRC.view.QT.showRun();
+                            // only run if the query has entries
+                            if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
+                        });
+
+                        // capture "clear query" button click -------------------------------------------------
+                        $(".CRC_QT_runbar .button-clear", cell.view.QT.containerRoot).on("click", (evt)=> {
+                            evt.target.blur();
+                            // only run if the query has entries
+                            if (i2b2.CRC.model.query.groups.length === 0) return;
+                            i2b2.CRC.ctrlr.QT.clearQuery();
+                            i2b2.CRC.view.QT.clearQuery();
                         });
                     });
 
@@ -992,7 +1064,7 @@ i2b2.events.afterCellInit.add(
                 "PATIENT_VITALSTATUS_COUNT_XML": "Vital Status patient breakdown",
                 "PATIENT_RACE_COUNT_XML": "Race patient breakdown",
                 "PATIENT_AGE_COUNT_XML": "Age patient breakdown",
-                "PATIENTSET": "Timeline",
+                // "PATIENTSET": "Timeline",
                 "PATIENT_LOS_XML": "Length of stay breakdown",
                 "PATIENT_TOP50MEDS_XML": "Top 50 medications breakdown",
                 "PATIENT_TOP50DIAG_XML": "Top 50 diangosis breakdown",

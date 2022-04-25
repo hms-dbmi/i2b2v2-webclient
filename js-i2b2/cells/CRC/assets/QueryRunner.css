@@ -35,7 +35,7 @@
     margin-bottom: 20px;
 }
 
-#ontOptionsModal .modal-body {
+.optionsModal .modal-body {
     padding-right: 0;
     padding-left: 0;
 }

@@ -630,6 +630,8 @@
 
             node.el_Node = treeItem;
 
+            // add a title attribute (for tooltip) if node has it specified
+            if (node.title !== undefined) treeItem.attr('title', node.title);
 
             // Add indent/spacer to mimic tree structure
             for (var i = 0; i < (level - 1); i++) {
