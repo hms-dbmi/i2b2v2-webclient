@@ -245,8 +245,8 @@ i2b2.sdx.TypeControllers.WRK.DropHandler = function(sdxData) {
 i2b2.sdx.TypeControllers.WRK.dragStartHandler = function(i2b2Data) {
     delete i2b2Data.origData.xmlOrig;
     delete i2b2Data.origData.parent;
-    delete i2b2Data.renderData.idDOM;
-    if (i2b2Data.sdxUnderlyingPackage !== undefined) {
+    if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
+    if (i2b2.sdxUnderlyingPackage !== undefined && i2b2Data.sdxUnderlyingPackage.origData !== undefined) {
         delete i2b2Data.sdxUnderlyingPackage.origData.xmlOrig;
         delete i2b2Data.sdxUnderlyingPackage.origData.parent;
     }
