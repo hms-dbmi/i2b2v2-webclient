@@ -231,6 +231,23 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
                     "option": categories
                 };
                 $(categoryOptions(options)).appendTo("#categorySubmenu");
+
+                $("#liCat").on("hover", function(){
+                    $("#codingSubmenu").hide().closest("li").removeClass("highlight-menu-item");
+                    $("#categorySubmenu").show();
+                });
+
+                $("#liCoding").on("hover", function(){
+                    $("#categorySubmenu").hide().closest("li").removeClass("highlight-menu-item");
+                    $("#codingSubmenu").show();
+                });
+
+                $(".submenu li").on("click", function(){
+                    $(".active").removeClass("active");
+                    let newValue = $(this).find("a").addClass("active").text();
+                    $("#searchFilterText").text(newValue);
+                    $("#searchFilter").data("selectedFilter", newValue);
+                });
             },
             error: (error) => { console.error("Could not retrieve template: OntologyFinderFilterOption.html"); }
         });
@@ -240,28 +257,6 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
             $("#i2b2FinderOnt .navbarMain .active").closest(".submenu").each(function(){
                 $(this).show();
             }).closest("li").addClass("highlight-menu-item");
-        });
-
-        $("#liCat").hover(function(){
-            $("#codingSubmenu").hide().closest("li").removeClass("highlight-menu-item");
-            $("#categorySubmenu").show();
-        });
-
-        $("#liCoding").hover(function(){
-            $("#categorySubmenu").hide().closest("li").removeClass("highlight-menu-item");
-            $("#codingSubmenu").show();
-        });
-
-        $(".submenu li").click(function(){
-            $(".active").removeClass("active");
-            let newValue = $(this).find("a").addClass("active").text();
-            $("#searchFilterText").text(newValue);
-        });
-
-        $(".submenu a").click(function(){
-            $(".active").removeClass("active");
-            let newValue = $(this).addClass("active").text();
-            $("#searchFilterText").text(newValue);
         });
     }
 

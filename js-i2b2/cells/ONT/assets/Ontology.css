@@ -24,6 +24,8 @@
     padding-left: 10px;
     background: rgba(235, 238, 238, 0.3);
     font-size: 0.98em;
+    padding-bottom: 6px;
+    overflow: auto;
 }
 
 #i2b2FinderOnt .form-control{
@@ -65,7 +67,6 @@ button.invert:hover{
 
 #i2b2FinderOnt .searchLabel{
     font-size: 0.92em;
-    width: 14.9%;
 }
 
 #i2b2FinderOnt .form-control-sm{
@@ -96,22 +97,37 @@ button.invert:hover{
     padding-top: 0.2em;
 }
 
-#i2b2FinderOnt .navbarMain{
+/*#i2b2FinderOnt .navbarMain{
+    border: 1px solid #ced4da;
+    border-radius: 5px 5px 5px 5px;
+    font-size: 0.9em;
+    background-color: #FFFFFF;
+}*/
+
+.navbar-nav{
     border: 1px solid #ced4da;
     border-radius: 5px 5px 5px 5px;
     font-size: 0.9em;
     background-color: #FFFFFF;
 }
 
-#searchFilterFilter{
-    max-width: 70px;
-}
 #i2b2FinderOnt .searchFilter{
-    width: 19%;
+    display: inline-block;
 }
 
 #i2b2FinderOnt .nav-link{
     color: #212529;
+    margin-right: 0.2em;
+}
+
+#i2b2FinderOnt #searchFilterText {
+    text-overflow: ellipsis;
+    max-width: 8em;
+    width: 8em;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+    display: inline-block;
 }
 
 #i2b2FinderOnt .dropdown-menu{
@@ -120,7 +136,7 @@ button.invert:hover{
 }
 
 #i2b2FinderOnt .submenu{
-    max-height: 230px;
+    max-height: 18em;
     overflow-y: auto;
 }
 
@@ -129,9 +145,14 @@ button.invert:hover{
 }
 
 #i2b2FinderOnt .searchTermMain{
-    padding-left: 0.2em;
-    padding-right: 0.2em;
-    width: 40%;
+    margin-left: 1em;
+    margin-right: 1em;
+    width: 225px;
+    display: inline-block;
+}
+
+#searchActions {
+   display: inline-block;
 }
 
 @media all and (min-width: 992px) {
