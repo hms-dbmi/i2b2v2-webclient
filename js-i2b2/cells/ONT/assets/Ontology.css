@@ -40,7 +40,6 @@
 }
 
 #i2b2FinderOnt button{
-    margin-top: 0.8em;
     display: inline-block;
 }
 
@@ -67,6 +66,7 @@ button.invert:hover{
 
 #i2b2FinderOnt .searchLabel{
     font-size: 0.92em;
+    margin-right: 5px;
 }
 
 #i2b2FinderOnt .form-control-sm{
@@ -96,13 +96,6 @@ button.invert:hover{
     background: lightgray;
     padding-top: 0.2em;
 }
-
-/*#i2b2FinderOnt .navbarMain{
-    border: 1px solid #ced4da;
-    border-radius: 5px 5px 5px 5px;
-    font-size: 0.9em;
-    background-color: #FFFFFF;
-}*/
 
 .navbar-nav{
     border: 1px solid #ced4da;
@@ -145,9 +138,9 @@ button.invert:hover{
 }
 
 #i2b2FinderOnt .searchTermMain{
-    margin-left: 1em;
-    margin-right: 1em;
-    width: 225px;
+    margin-left: 0.6em;
+    margin-right: 0.8em;
+    width: 220px;
     display: inline-block;
 }
 
