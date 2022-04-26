@@ -6,7 +6,7 @@
     flex-direction: column;
     position: absolute;
     bottom: 0;
-    top: 6.1em;
+    top: 4.2em;
     left: 0;
     right: 0;
     height: auto;
@@ -16,7 +16,7 @@
 #i2b2FinderOnt {
     position: absolute;
     top: 0;
-    height: 6.3em;
+    height: 4.4em;
     border: solid #63758c;
     border-width: 1px 1px 0 1px;
     width: 100%;
@@ -63,8 +63,9 @@ button.invert:hover{
     font-size: 0.89em;
 }
 
-#i2b2FinderOnt label{
+#i2b2FinderOnt .searchLabel{
     font-size: 0.92em;
+    width: 14.9%;
 }
 
 #i2b2FinderOnt .form-control-sm{
@@ -80,13 +81,6 @@ button.invert:hover{
 .form-check-inline {
     margin-top: 5px;
 }
-.searchType {
-    width: 20%;
-}
-
-.searchType .form-select-sm {
-    margin-top: 1em;
-}
 
 .clear-input{
     padding-top: 1.2em;
@@ -100,5 +94,77 @@ button.invert:hover{
 .clearIcon:hover{
     background: lightgray;
     padding-top: 0.2em;
+}
+
+#i2b2FinderOnt .navbarMain{
+    border: 1px solid #ced4da;
+    border-radius: 5px 5px 5px 5px;
+    font-size: 0.9em;
+    background-color: #FFFFFF;
+}
+
+#searchFilterFilter{
+    max-width: 70px;
+}
+#i2b2FinderOnt .searchFilter{
+    width: 19%;
+}
+
+#i2b2FinderOnt .nav-link{
+    color: #212529;
+}
+
+#i2b2FinderOnt .dropdown-menu{
+    font-size: 1em;
+    position: fixed !important;
+}
+
+#i2b2FinderOnt .submenu{
+    max-height: 230px;
+    overflow-y: auto;
+}
+
+#i2b2FinderOnt .search{
+    margin-right: 0.5em;
+}
+
+#i2b2FinderOnt .searchTermMain{
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    width: 40%;
+}
+
+@media all and (min-width: 992px) {
+    .dropdown-menu li {
+        position: relative;
+    }
+    .nav-item .submenu {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: -7px;
+    }
+    .nav-item .submenu-left {
+        right: 100%;
+        left: auto;
+    }
+    .dropdown-menu > li:hover {
+        background-color: #f1f1f1
+    }
+}
+/* ============ desktop view .end// ============ */
+
+/* ============ small devices ============ */
+@media (max-width: 991px) {
+    .dropdown-menu .dropdown-menu{
+        margin-left:0.7rem;
+        margin-right:0.7rem;
+        margin-bottom: .5rem;
+    }
+}
+/* ============ small devices .end// ============ */
+
+.highlight-menu-item {
+    background-color: #f1f1f1;
 }
 

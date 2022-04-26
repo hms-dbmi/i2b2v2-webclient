@@ -215,7 +215,7 @@ i2b2.events.afterCellInit.add((function(cell){
 
 i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
     if (updateInfo.DataLocation === "i2b2.ONT.model.Categories") {
-        $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderCategoryOptions.html", {
+        $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderFilterOptions.html", {
             success: (template) => {
                 let categoryOptions = Handlebars.compile(template);
                 let categories = [];
@@ -228,16 +228,45 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
                     });
                 }
                 let options = {
-                    "categories": categories
+                    "option": categories
                 };
-                $(categoryOptions(options)).appendTo("#searchOptions");
+                $(categoryOptions(options)).appendTo("#categorySubmenu");
             },
-            error: (error) => { console.error("Could not retrieve template: OntologyFinderCategoryOption.html"); }
+            error: (error) => { console.error("Could not retrieve template: OntologyFinderFilterOption.html"); }
+        });
+
+        $('#i2b2FinderOnt .navbar-nav').on('show.bs.dropdown', function () {
+            $(".submenu").hide();
+            $("#i2b2FinderOnt .navbarMain .active").closest(".submenu").each(function(){
+                $(this).show();
+            }).closest("li").addClass("highlight-menu-item");
+        });
+
+        $("#liCat").hover(function(){
+            $("#codingSubmenu").hide().closest("li").removeClass("highlight-menu-item");
+            $("#categorySubmenu").show();
+        });
+
+        $("#liCoding").hover(function(){
+            $("#categorySubmenu").hide().closest("li").removeClass("highlight-menu-item");
+            $("#codingSubmenu").show();
+        });
+
+        $(".submenu li").click(function(){
+            $(".active").removeClass("active");
+            let newValue = $(this).find("a").addClass("active").text();
+            $("#searchFilterText").text(newValue);
+        });
+
+        $(".submenu a").click(function(){
+            $(".active").removeClass("active");
+            let newValue = $(this).addClass("active").text();
+            $("#searchFilterText").text(newValue);
         });
     }
 
     if (updateInfo.DataLocation === "i2b2.ONT.model.Schemes") {
-        $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderCodingOptions.html", {
+        $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderFilterOptions.html", {
             success: (template) => {
                 let codingSystemOptions = Handlebars.compile(template);
                 let codingSystems = [];
@@ -249,13 +278,14 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
                     });
                 }
                 let options = {
-                    "codingSystem": codingSystems
+                    "option": codingSystems
                 };
-                $(codingSystemOptions(options)).appendTo("#searchOptions");
+                $(codingSystemOptions(options)).appendTo("#codingSubmenu");
             },
             error: (error) => { console.error("Could not retrieve template: OntologyFinderCodingOptions.html"); }
         });
     }
+
 }).bind(i2b2.ONT));
 
 // ================================================================================================== //
