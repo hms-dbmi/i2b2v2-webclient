@@ -8,7 +8,7 @@ console.group('Load & Execute component file: hive > helpers');
 console.time('execute time');
 
 
-if (typeof i2b2.h == "undefined") i2b2.h = {};
+if (typeof i2b2.h === "undefined") i2b2.h = {};
 
 
 // ================================================================================================== //
