@@ -232,12 +232,12 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
                 };
                 $(categoryOptions(options)).appendTo("#categorySubmenu");
 
-                $("#liCat").on("hover", function(){
+                $("#liCat").hover(function(){
                     $("#codingSubmenu").hide().closest("li").removeClass("highlight-menu-item");
                     $("#categorySubmenu").show();
                 });
 
-                $("#liCoding").on("hover", function(){
+                $("#liCoding").hover(function(){
                     $("#categorySubmenu").hide().closest("li").removeClass("highlight-menu-item");
                     $("#codingSubmenu").show();
                 });
