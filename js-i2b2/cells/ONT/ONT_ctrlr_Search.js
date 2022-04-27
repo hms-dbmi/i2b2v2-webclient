@@ -12,7 +12,7 @@
 console.group('Load & Execute component file: ONT > ctrlr > Search');
 console.time('execute time');
 
-//TODO re-work code
+//TODO re-work code -- THIS IS JUST PLACEHOLDER CODE
 i2b2.ONT.ctrlr.Search = {
 
     clickSearchTerm: function() {
