@@ -92,7 +92,7 @@ i2b2.Init = function() {
         let closure_timeout_id = null;
         const func_loader = function() {
             // exit if our required object is not yet loaded an parsed
-            if (typeof i2b2_BaseCell !== 'function') return false;
+            if (typeof i2b2_BaseCell !== 'function' || typeof i2b2.h !== 'object') return false;
 
             // stop polling our loader
             clearInterval(closure_timeout_id);
