@@ -210,52 +210,71 @@ i2b2.WORK.view.main.treeRedraw = function() {
             return;
         }
 
-       // alert("node classes " + treeview.data("nodeid") + " classes" + treeview.attr("class"));
+        i2b2.sdx.Master.AttachType(treeview, "CONCPT");
+        i2b2.sdx.Master.AttachType(treeview, "WRK");
+
+        i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropHandler", i2b2.WORK.view.main.DropHandler);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropHandler", i2b2.WORK.view.main.DropHandler);
+
+        i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropChecker", i2b2.WORK.view.main.DropChecker);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropChecker", i2b2.WORK.view.main.DropChecker);
+
+        // alert("node classes " + treeview.data("nodeid") + " classes" + treeview.attr("class"));
         /*i2b2.sdx.Master.AttachType(treeview, "QM");
         i2b2.sdx.Master.AttachType(treeview, "QI");
         i2b2.sdx.Master.AttachType(treeview, "PRC");
         i2b2.sdx.Master.AttachType(treeview, "PRS");
         i2b2.sdx.Master.AttachType(treeview, "ENS");
         i2b2.sdx.Master.AttachType(treeview, "PR");*/
-        i2b2.sdx.Master.AttachType(treeview, "CONCPT");
        /* i2b2.sdx.Master.AttachType(treeview, "QDEF");
         i2b2.sdx.Master.AttachType(treeview, "QGDEF");
-        i2b2.sdx.Master.AttachType(treeview, "XML");
-        i2b2.sdx.Master.AttachType(treeview, "WRK");*/
+        i2b2.sdx.Master.AttachType(treeview, "XML");*/
 
         /*i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropHandler", i2b2.WORK.view.main.DropHandler);
         i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropHandler", i2b2.WORK.view.main.DropHandler);
         i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropHandler", i2b2.WORK.view.main.DropHandler);
         i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropHandler", i2b2.WORK.view.main.DropHandler);
         i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropHandler", i2b2.WORK.view.main.DropHandler);*/
-        i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropHandler", i2b2.WORK.view.main.DropHandler);
         /*i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
         i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
-        i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropHandler", i2b2.WORK.view.main.DropHandler);
-        i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropHandler", i2b2.WORK.view.main.DropHandler);*/
+        i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropHandler", i2b2.WORK.view.main.DropHandler);*/
 
         /*i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropChecker", i2b2.WORK.view.main.DropChecker);
         i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropChecker", i2b2.WORK.view.main.DropChecker);
         i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropChecker", i2b2.WORK.view.main.DropChecker);
         i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropChecker", i2b2.WORK.view.main.DropChecker);
         i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropChecker", i2b2.WORK.view.main.DropChecker);*/
-        i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropChecker", i2b2.WORK.view.main.DropChecker);
         /*i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
         i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
-        i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropChecker", i2b2.WORK.view.main.DropChecker);
-        i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropChecker", i2b2.WORK.view.main.DropChecker);*/
+        i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropChecker", i2b2.WORK.view.main.DropChecker);*/
 
     });
 };
 
 // ==================================================================================================
 i2b2.WORK.view.main.DropHandler = function(sdx, evt){
+    let treeview = $(evt.currentTarget).closest(".treeview").data("treeview");
     // remove the hover and drop target fix classes
     alert("drop handler");
     $(evt.target).closest(".i2b2DropTarget").removeClass("DropHover");
     $(evt.target).closest(".i2b2DropTarget").removeClass("i2b2DropPrep");
 
-    $(evt.currentTarget).data("treeview").getNode($(evt.originalEvent.target).data("nodeid"));
+    let dropTarget = treeview.getNode($(evt.originalEvent.target).data("nodeid"));
+
+    // see if we are moving a node within the workspace
+    let droppedNodeKey = sdx.sdxInfo.sdxKeyValue;
+    if (dropTarget.i2b2.sdxInfo.sdxType === "WRK" && sdx.sdxInfo.sdxType === "WRK") {
+        // Drag and drop within the Workspace
+        // See if user is trying to drag a parent into the child
+        let parentNode = treeview.getParent(dropTarget.nodeId);
+        while (parentNode !== undefined) {
+            // drill up the ancestor nodes to see if any of them have been dropped on one of their children
+            if (parentNode.i2b2.sdxInfo.sdxKeyValue === droppedNodeKey) return false;
+            parentNode = treeview.getParent(parentNode.nodeId);
+        }
+        alert('Ok to move workspace node within workspace');
+    }
+
 };
 
 // =========================================================

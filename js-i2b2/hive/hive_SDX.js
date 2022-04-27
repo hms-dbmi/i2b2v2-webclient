@@ -85,7 +85,6 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
     switch(e.type) {
         case "drop":
             // forward the event to the drop handler passing the object being dropped
-            alert("drop event found " + sdxTypeList);
             while (sdxTypeList.length) {
                 let sdxType = sdxTypeList.pop();
                 if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].DropHandler === "function") {
@@ -423,8 +422,8 @@ i2b2.sdx.Master.onDragStart = function(event, node) {
                 // i2b2 data
                 delete i2b2Data.origData.xmlOrig;
                 delete i2b2Data.origData.parent;
-                delete i2b2Data.renderData.idDOM;
-                if (i2b2.sdxUnderlyingPackage !== undefined) {
+                if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
+                if (i2b2.sdxUnderlyingPackage !== undefined && i2b2Data.sdxUnderlyingPackage.origData !== undefined) {
                     delete i2b2Data.sdxUnderlyingPackage.origData.xmlOrig;
                     delete i2b2Data.sdxUnderlyingPackage.origData.parent;
                 }
