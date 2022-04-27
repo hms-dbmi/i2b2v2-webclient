@@ -146,6 +146,7 @@ button.invert:hover{
 
 #searchActions {
    display: inline-block;
+    padding-top: 6px;
 }
 
 @media all and (min-width: 992px) {
