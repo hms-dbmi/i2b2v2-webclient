@@ -234,12 +234,13 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
 
                 $("#liCat").hover(function(){
                     $("#codingSubmenu").hide().closest("li").removeClass("highlight-menu-item");
-                    $("#categorySubmenu").show();
+                    $("#categorySubmenu").css("left", "100%").show();
                 });
 
                 $("#liCoding").hover(function(){
+
                     $("#categorySubmenu").hide().closest("li").removeClass("highlight-menu-item");
-                    $("#codingSubmenu").show();
+                    $("#codingSubmenu").css("left", "100%").show();
                 });
 
                 $(".submenu li").on("click", function(){
@@ -252,7 +253,16 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
 
                 $("#searchActions .reset").click(function() {
                     $("#searchTermText").val("");
-                })
+                });
+
+                $('#i2b2FinderOnt .navbar-nav').on('shown.bs.dropdown', function () {
+                    let navBarMain = $("#i2b2FinderOnt .navbarMain .active")
+                    let parentMenu = navBarMain.closest(".submenu").closest("li");
+                    navBarMain.closest(".submenu").each(function(){
+                        $(this).css("left", parentMenu.width());
+                        $(this).show();
+                    }).closest("li").addClass("highlight-menu-item");
+                });
             },
             error: (error) => { console.error("Could not retrieve template: OntologyFinderFilterOption.html"); }
         });

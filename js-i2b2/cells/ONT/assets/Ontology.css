@@ -20,8 +20,8 @@
     border: solid #63758c;
     border-width: 1px 1px 0 1px;
     width: 100%;
-    padding-top: 7px;
-    padding-left: 10px;
+    padding-top: 0.3em;
+    padding-left: 0.8em;
     background: rgba(235, 238, 238, 0.3);
     font-size: 0.98em;
     padding-bottom: 6px;
@@ -140,13 +140,13 @@ button.invert:hover{
 #i2b2FinderOnt .searchTermMain{
     margin-left: 0.6em;
     margin-right: 0.8em;
-    width: 227px;
+    width: 38%;
     display: inline-block;
 }
 
 #searchActions {
-   display: inline-block;
-    padding-top: 6px;
+    display: inline-block;
+    padding-top: 0.2em;
 }
 
 @media all and (min-width: 992px) {
@@ -156,8 +156,8 @@ button.invert:hover{
     .nav-item .submenu {
         display: none;
         position: absolute;
-        left: 100%;
-        top: -7px;
+        top: -0.2em;
+        padding-right: 0.2em;
     }
     .nav-item .submenu-left {
         right: 100%;
@@ -182,4 +182,5 @@ button.invert:hover{
 .highlight-menu-item {
     background-color: #f1f1f1;
 }
+
 
