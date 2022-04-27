@@ -96,6 +96,8 @@ i2b2.CRC.view.QT.termActionDelete = function(evt) {
     i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts.splice(conceptIdx, 1);
     // re-render the concept list
     i2b2.CRC.view.QT.renderTermList(i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx], $(evt.target).closest('.TermList'));
+    // update the query name
+    i2b2.CRC.view.QT.updateQueryName();
 };
 
 
