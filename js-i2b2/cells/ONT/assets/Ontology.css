@@ -104,7 +104,7 @@ button.invert:hover{
     background-color: #FFFFFF;
 }
 
-#i2b2FinderOnt .searchFilter{
+#i2b2FinderOnt #searchFilter{
     display: inline-block;
 }
 

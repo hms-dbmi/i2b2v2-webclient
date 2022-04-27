@@ -244,10 +244,15 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
 
                 $(".submenu li").on("click", function(){
                     $(".active").removeClass("active");
-                    let newValue = $(this).find("a").addClass("active").text();
-                    $("#searchFilterText").text(newValue);
-                    $("#searchFilter").data("selectedFilter", newValue);
+                    let newDisplayText = $(this).find("button").addClass("active").text();
+                    let newValue = $(this).find("button").addClass("active").data("search-filter-value");
+                    $("#searchFilterText").text(newDisplayText);
+                    $("#searchFilter").data("selected-filter", newValue);
                 });
+
+                $("#searchActions .reset").click(function() {
+                    $("#searchTermText").val("");
+                })
             },
             error: (error) => { console.error("Could not retrieve template: OntologyFinderFilterOption.html"); }
         });
