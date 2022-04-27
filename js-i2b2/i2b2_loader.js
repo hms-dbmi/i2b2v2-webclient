@@ -88,20 +88,31 @@ i2b2.Init = function() {
 
     // give the browser some time to breathe and load the external JS files before starting the PM cell
     i2b2.events.afterFrameworkInit.add(function(){
-        // Loading the hive cells
-        for (var cellKey in i2b2.hive.cfg.lstCells) {
-            i2b2[cellKey] = new i2b2_BaseCell(i2b2.hive.cfg.lstCells[cellKey]);
-        }
-        // we must always fully initialize the PM cell
-        if (i2b2['PM']) {
-            // the project manager cell must fire the afterProjMngtInit event signal
-            i2b2['PM'].Init();
-        }
-        // trigger user events after everything is loaded
-        window.setTimeout(function() {
-            console.info("EVENT FIRED i2b2.events.afterHiveInit");
-            i2b2.events.afterHiveInit.fire();
-        }, 100);
+        // implement a polling loader to eliminate a race condition with loading of hive_globals.js file
+        let closure_timeout_id = null;
+        const func_loader = function() {
+            // exit if our required object is not yet loaded an parsed
+            if (typeof i2b2_BaseCell !== 'function') return false;
+
+            // stop polling our loader
+            clearInterval(closure_timeout_id);
+
+            // Load the hive cells
+            for (var cellKey in i2b2.hive.cfg.lstCells) {
+                i2b2[cellKey] = new i2b2_BaseCell(i2b2.hive.cfg.lstCells[cellKey]);
+            }
+            // we must always fully initialize the PM cell
+            if (i2b2['PM']) {
+                // the project manager cell must fire the afterProjMngtInit event signal
+                i2b2['PM'].Init();
+            }
+            // trigger user events after everything is loaded
+            window.setTimeout(function() {
+                console.info("EVENT FIRED i2b2.events.afterHiveInit");
+                i2b2.events.afterHiveInit.fire();
+            }, 100);
+        };
+        closure_timeout_id = setInterval(func_loader, 25);
     });
 
 
