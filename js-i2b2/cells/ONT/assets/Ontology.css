@@ -1,0 +1,186 @@
+#i2b2TreeviewOntNav {
+    background: #FFFFFF;
+    border: solid 1px #63758c;
+    overflow: auto;
+    border-radius: 0 0 3px 3px;
+    flex-direction: column;
+    position: absolute;
+    bottom: 0;
+    top: 4.2em;
+    left: 0;
+    right: 0;
+    height: auto;
+    border-top: 1px solid rgba(212, 105, 255, 0.18);
+}
+
+#i2b2FinderOnt {
+    position: absolute;
+    top: 0;
+    height: 4.4em;
+    border: solid #63758c;
+    border-width: 1px 1px 0 1px;
+    width: 100%;
+    padding-top: 0.3em;
+    padding-left: 0.8em;
+    background: rgba(235, 238, 238, 0.3);
+    font-size: 0.98em;
+    padding-bottom: 6px;
+    overflow: auto;
+}
+
+#i2b2FinderOnt .form-control{
+    margin-top: 0.8em;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-radius: 0;
+    border-bottom: 1px solid gray;
+    box-shadow: none;
+    background: transparent;
+}
+
+#i2b2FinderOnt button{
+    display: inline-block;
+}
+
+button.invert{
+    color: #0d6efd;
+    background: #FFFFFF;
+}
+
+button.invert:hover{
+    opacity: 0.7;
+}
+
+.hidden{
+    display: none;
+}
+
+#i2b2FinderOnt .form-select-sm{
+    font-size: 0.84em;
+}
+
+#i2b2FinderOnt .btn-sm{
+    font-size: 0.89em;
+}
+
+#i2b2FinderOnt .searchLabel{
+    font-size: 0.92em;
+    margin-right: 5px;
+}
+
+#i2b2FinderOnt .form-control-sm{
+    font-size: 0.95em;
+    padding-left: 0.1em;
+}
+
+.form-check-input {
+    border: 1px solid black;
+    margin-top: 2px;
+}
+
+.form-check-inline {
+    margin-top: 5px;
+}
+
+.clear-input{
+    padding-top: 1.2em;
+    border-bottom: 1px solid gray;
+}
+
+.clearIcon{
+    font-size: 1.4em;
+}
+
+.clearIcon:hover{
+    background: lightgray;
+    padding-top: 0.2em;
+}
+
+.navbar-nav{
+    border: 1px solid #ced4da;
+    border-radius: 5px 5px 5px 5px;
+    font-size: 0.9em;
+    background-color: #FFFFFF;
+}
+
+#i2b2FinderOnt #searchFilter{
+    display: inline-block;
+}
+
+#i2b2FinderOnt .nav-link{
+    color: #212529;
+    margin-right: 0.2em;
+}
+
+#i2b2FinderOnt #searchFilterText {
+    text-overflow: ellipsis;
+    max-width: 8em;
+    width: 8em;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+#i2b2FinderOnt .dropdown-menu{
+    font-size: 1em;
+    position: fixed !important;
+}
+
+#i2b2FinderOnt .submenu{
+    max-height: 18em;
+    overflow-y: auto;
+}
+
+#i2b2FinderOnt .search{
+    margin-right: 0.5em;
+}
+
+#i2b2FinderOnt .searchTermMain{
+    margin-left: 0.6em;
+    margin-right: 0.8em;
+    width: 38%;
+    display: inline-block;
+}
+
+#searchActions {
+    display: inline-block;
+    padding-top: 0.2em;
+}
+
+@media all and (min-width: 992px) {
+    .dropdown-menu li {
+        position: relative;
+    }
+    .nav-item .submenu {
+        display: none;
+        position: absolute;
+        top: -0.2em;
+        padding-right: 0.2em;
+    }
+    .nav-item .submenu-left {
+        right: 100%;
+        left: auto;
+    }
+    .dropdown-menu > li:hover {
+        background-color: #f1f1f1
+    }
+}
+/* ============ desktop view .end// ============ */
+
+/* ============ small devices ============ */
+@media (max-width: 991px) {
+    .dropdown-menu .dropdown-menu{
+        margin-left:0.7rem;
+        margin-right:0.7rem;
+        margin-bottom: .5rem;
+    }
+}
+/* ============ small devices .end// ============ */
+
+.highlight-menu-item {
+    background-color: #f1f1f1;
+}
+
+
