@@ -34,6 +34,7 @@
 
 .CRC_QT_view .CRC_QT_query {
     overflow-y: scroll;
+    overflow-x: hidden;
     position: absolute;
     top: 0;
     left: 0;
