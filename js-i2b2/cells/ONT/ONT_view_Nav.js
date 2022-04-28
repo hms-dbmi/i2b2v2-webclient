@@ -194,7 +194,7 @@ i2b2.events.afterCellInit.add((function(cell){
                         for (let i=0; i<i2b2.ONT.model.Categories.length; i++) {
                             let cat = i2b2.ONT.model.Categories[i];
                             let catVal = cat.key.substring(2,cat.key.indexOf('\\',3))
-                            categories.append({
+                            categories.push({
                                 name: cat.name,
                                 value: catVal
                             });
