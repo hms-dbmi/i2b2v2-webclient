@@ -1,9 +1,10 @@
 {
   "files": [
-    "PLUGIN_ctrlr_general.js"
+    "PLUGIN_ctrlr_general.js",
+    "PLUGIN_instance_view.js"
   ],
   "preload": [],
-  "css": [],
+  "css": ["PLUGIN_styles.css"],
   "config": {
     "name": "Plugins Manager",
     "description": "Manager component for modern i2b2v2 plugins.",

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plugin Example</title>
+
+    <script type="text/javascript" src="js/i2b2-loader.js" ></script>
+
+</head>
+<body>
+    <h1>This is plugin: edu.harvard.catalyst.example</h1>
+    <form>
+        <input type="button" onclick="sendInitMsg()" value="Send Init Notice" />
+        <input type="button" onclick="sendTestMsg()" value="Send Message" />
+    </form>
+    <script>
+
+        function sendInitMsg() {
+            console.log("sending Init message...");
+            window.parent.postMessage({"msgType":"INIT"}, "/");
+        }
+
+        function sendTestMsg() {
+            console.log("sending test message...");
+            let ajaxData = {
+                ont_synonym_records: "N",
+                ont_hidden_records: "N"
+            };
+            window.parent.postMessage({
+                "msgType":"AJAX",
+                "msgId": Math.floor(Math.random() * 99999999999999),
+                "ajaxCell": "ONT",
+                "ajaxFunc": "GetCategories",
+                "ajaxData": ajaxData
+            }, "/");
+            console.log("sent!");
+        }
+    </script>
+</body>
+</html>

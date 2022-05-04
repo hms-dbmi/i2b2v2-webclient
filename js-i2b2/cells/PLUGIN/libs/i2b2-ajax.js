@@ -23,3 +23,9 @@ i2b2.plugin.lib.init = function(cellFuncMap) {
       })
   });
 };
+
+//======================================================================================================================
+window.addEventListener("I2B2_INIT_AJAX", function(evt) {
+    console.log("Initialize AJAX");
+    console.dir(evt.detail);
+});
