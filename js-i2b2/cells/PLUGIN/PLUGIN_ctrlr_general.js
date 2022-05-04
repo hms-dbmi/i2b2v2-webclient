@@ -32,10 +32,46 @@ i2b2.events.afterAllCellsLoaded.add((function() {
 
     // add the list of all known SDX data types
     i2b2.PLUGIN.model.config.sdx = Object.keys(i2b2.sdx.TypeControllers);
+
+
+    // create the event listener for all IFrame to parent messages
+    window.addEventListener("message", (event) => {
+        // TODO: find out which window the message came from (ignore if unknown)
+        let found = false;
+        for (let i in i2b2.PLUGIN.view.windows) {
+            if (i2b2.PLUGIN.view.windows[i].window === event.source) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            console.log("NOT FOUND IN WINDOWS ARRAY");
+            return false;
+        }
+        console.warn("Received by Parent");
+        console.dir(event);
+
+        // main processing of incoming messages
+        switch (event.data.msgType) {
+            case "INIT":
+                i2b2.PLUGIN._handleInitMsg(event);
+                break;
+            case "AJAX":
+                i2b2.PLUGIN._handleAjaxMsg(event);
+                break;
+        }
+    });
 }));
 
 
+i2b2.PLUGIN._handleInitMsg = function(msgEvent) {
+    msgEvent.source.postMessage({"msgType":"INIT_REPLY", "libs":i2b2.PLUGIN.model.libs}, '/');
+};
 
+
+i2b2.PLUGIN._handleAjaxMsg = function(msgEvent) {
+
+};
 
 
 
@@ -51,20 +87,28 @@ i2b2.events.afterAllCellsLoaded.add((function() {
 
 // Below code is executed once the entire cell has been loaded
 //================================================================================================== //
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((function(cell) {
     if (cell.cellCode === "PLUGIN") {
         console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
-        // ___ Register this view with the layout manager ____________________
-        i2b2.layout.registerWindowHandler("i2b2.PLUGIN.view",
-            (function (container, scope) {
-                // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
-                i2b2.PLUGIN.view.lm_view = container;
 
-                // add the cellWhite flare
-                let treeTarget = $('<div class="cellWhite" id="i2b2TreeviewOntNav"></div>').appendTo(container._contentElement);
+        // load a list of all plugins
+        i2b2.PLUGIN.model.plugins = {};
+        $.getJSON("plugins/plugins.json", (data) => {
+            data.forEach((id)=>{
+                const loc = id.replaceAll('.', '/');
+                $.getJSON("plugins/" + loc + "/plugin.json", (pluginJson) => {
+                    i2b2.PLUGIN.model.plugins[id] = pluginJson;
+                    i2b2.PLUGIN.model.plugins[id].url = "plugins/" + loc + '/' + pluginJson.base;
+                });
+            });
+        });
 
-            }).bind(this)
-        );
+        // define the dependacy files that are to be load  b
+        const baseUrl = window.location.href + "js-i2b2/cells/PLUGIN/libs/";
+        i2b2.PLUGIN.model.libs = [];
+        i2b2.PLUGIN.model.libs.push(baseUrl + "i2b2-ajax.js");
+        i2b2.PLUGIN.model.libs.push(baseUrl + "i2b2-sdx.js");
+        i2b2.PLUGIN.model.libs.push(baseUrl + "i2b2-state.js");
     }
 }));
 
