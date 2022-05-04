@@ -14,6 +14,7 @@ i2b2.PLUGIN.view = {
             isClosable:false,
             componentName: 'i2b2.PLUGIN.view',
             componentPlugin: pluginData,
+            componentPluginCode: pluginId,
             title:pluginData.title
         };
 
@@ -37,6 +38,7 @@ i2b2.events.afterCellInit.add((function(cell){
                     data: container._config.componentPlugin,
                     title: container._config.title
                 };
+                windowEntry.data.code = container._config.componentPluginCode;
 
                 // i2b2.ONT.view.info.newInstance()
                 i2b2.PLUGIN.view.windows.push(windowEntry);
