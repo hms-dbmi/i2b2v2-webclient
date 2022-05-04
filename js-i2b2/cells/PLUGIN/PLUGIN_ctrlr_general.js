@@ -30,8 +30,14 @@ i2b2.PLUGIN.ctrlr._handleAjaxMsg = function(msgEvent, instanceRef) {
     // verify that the cell+function is valid
     const cell = msgEvent.data.ajaxCell;
     const func = msgEvent.data.ajaxFunc;
-    if (i2b2.PLUGIN.model.config.ajax[cell] === undefined) funcSendError(msgEvent, "Requested cell does not exist or was blocked by security settings");
-    if (i2b2.PLUGIN.model.config.ajax[cell][func] === undefined) funcSendError(msgEvent, "Cell's requested function does not exist or was blocked by security settings");
+    if (i2b2.PLUGIN.model.config.ajax[cell] === undefined) {
+        funcSendError(msgEvent, "Requested cell does not exist or was blocked by security settings");
+        return false;
+    }
+    if (!i2b2.PLUGIN.model.config.ajax[cell].includes(func)) {
+        funcSendError(msgEvent, "Cell's requested function does not exist or was blocked by security settings");
+        return false;
+    }
     // create the scoped callback function
     const scopeCB = function(i2b2CellMsg) {
         if (i2b2CellMsg.error) {
