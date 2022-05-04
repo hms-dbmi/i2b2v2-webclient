@@ -26,14 +26,10 @@
                 ont_synonym_records: "N",
                 ont_hidden_records: "N"
             };
-            window.parent.postMessage({
-                "msgType":"AJAX",
-                "msgId": Math.floor(Math.random() * 99999999999999),
-                "ajaxCell": "ONT",
-                "ajaxFunc": "GetCategories",
-                "ajaxData": ajaxData
-            }, "/");
-            console.log("sent!");
+            i2b2.ajax.ONT.GetCategories(ajaxData).then((data)=> {
+                console.log("Got response base from ONT.GetCategories()");
+                console.log(data);
+            })
         }
     </script>
 </body>
