@@ -4,7 +4,22 @@
  */
 
 i2b2 = {};
+i2b2.model = {};
 i2b2.h = {};
+
+// send init messages to newly loaded i2b2 support libraries
+// =====================================================================================================================
+i2b2.h.initPlugin = function(initData) {
+    const eventAJAX = new CustomEvent('I2B2_INIT_AJAX', {detail: initData.ajax});
+    const eventSDX = new CustomEvent('I2B2_INIT_SDX', {detail: initData.sdx});
+    const eventSTATE = new CustomEvent('I2B2_INIT_STATE', {detail: initData.state});
+    window.dispatchEvent(eventAJAX);
+    window.dispatchEvent(eventSDX);
+    window.dispatchEvent(eventSTATE);
+};
+
+// loads i2b2 support libraries into the DOM (returns Promise)
+// =====================================================================================================================
 i2b2.h.getScript = function(url) {
     return new Promise((resolve, reject) => {
         var head	= document.getElementsByTagName("head")[0];
@@ -32,21 +47,23 @@ i2b2.h.getScript = function(url) {
 };
 
 
+// When entire plugin page is loaded, automatically fire the INIT msg to the parent Plugin Mgr window
+//======================================================================================================================
+window.addEventListener("load", function() {
+    window.parent.postMessage({"msgType":"INIT"}, "/");
+});
 
-
-
-
-//==========================================================================
-// handler for loading and initialization
-//==========================================================================
+// handler for loading of i2b2 dependency scripts
+//======================================================================================================================
 window.addEventListener("message", (event) => {
     switch (event.data.msgType) {
         case "INIT_REPLY":
             let scripts = [];
             event.data.libs.forEach((url) => { scripts.push(i2b2.h.getScript(url)); });
             Promise.all(scripts).then(() => {
-                console.error("IFRAME: Initialize Plugin Start!");
-                console.dir(event);
+//                console.error("IFRAME: Initialize Plugin Start!");
+//                console.dir(event);
+                setTimeout(()=>{ i2b2.h.initPlugin(event.data); }, 5);
             });
             break;
     }
