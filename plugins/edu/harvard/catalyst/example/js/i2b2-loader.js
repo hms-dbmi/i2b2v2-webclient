@@ -14,7 +14,10 @@ i2b2.h.initPlugin = function(initData) {
     // listen for ready replies from the loaded i2b2 support libraries
     const funcReplyHandler = function(signalName, timeout) {
         return new Promise((resolve, reject) => {
-            const timer = setTimeout(reject, timeout);
+            const timer = setTimeout(()=>{
+                console.error("NO " + signalName + ": Initialization failed to get OK signal from a support library during loading.");
+                reject();
+            }, timeout);
             window.addEventListener(signalName, () => {
                 console.log("Received "+signalName);
                 clearTimeout(timer);
@@ -22,25 +25,33 @@ i2b2.h.initPlugin = function(initData) {
             });
         })
     };
-    const timeoutMS = 2000;
+    const timeoutMS = 2000; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< how long to wait for the support library to initialize
     const replies = [];
-    replies.push(funcReplyHandler("I2B2_AJAX_READY"));
-    replies.push(funcReplyHandler("I2B2_SDX_READY"));
-    replies.push(funcReplyHandler("I2B2_STATE_READY"));
+    let eventsToSend = [];
+    let codes = [];
+    for (let code in initData.libs) {
+        codes.push(code);
+        replies.push(funcReplyHandler("I2B2_" + code + "_READY", timeoutMS));
+        let sendData = initData[code.toLowerCase()];
+        if (sendData === undefined) sendData = {};
+        eventsToSend.push(new CustomEvent('I2B2_INIT_' + code, {detail: sendData}));
+    }
 
-    // send the signal to all the support libraries that they should begin loading
-    const eventAJAX = new CustomEvent('I2B2_INIT_AJAX', {detail: initData.ajax});
-    const eventSDX = new CustomEvent('I2B2_INIT_SDX', {detail: initData.sdx});
-    const eventSTATE = new CustomEvent('I2B2_INIT_STATE', {detail: initData.state});
-    window.dispatchEvent(eventAJAX);
-    window.dispatchEvent(eventSDX);
-    window.dispatchEvent(eventSTATE);
+    // send signal to all the support libraries that they should begin loading
+    eventsToSend.forEach((event) => { window.dispatchEvent(event); });
 
-    // wait for all "ready" replies then send the main "i2b2 ready" signal to let the plugin's code know it can start
-    Promise.all(replies).then(()=>{
-        console.log("I2B2_READY");
-        const eventI2b2Ready = new Event('I2B2_READY');
-        window.dispatchEvent(eventI2b2Ready);
+    // wait for all "ready" replies from all then send the main "i2b2 ready" signal to the plugin's for it to start
+    Promise.allSettled(replies).then((results)=>{
+        let passed = true;
+        results.forEach((result, idx) => {
+            if (result.status === "rejected") {
+                passed = false;
+                let code = codes[idx];
+                console.error("Plugin failed to initialize support library: [" + code + "] at " + event.data.libs[code]);
+            }
+        });
+        if (passed) console.warn("A support library was not initialized correctly, attempting to continue anyways...");
+        window.dispatchEvent(new Event('I2B2_READY'));
     });
 };
 
@@ -87,11 +98,21 @@ window.addEventListener("message", (event) => {
     switch (event.data.msgType) {
         case "INIT_REPLY":
             let scripts = [];
-            event.data.libs.forEach((url) => { scripts.push(i2b2.h.getScript(url)); });
-            Promise.all(scripts).then(() => {
-//                console.error("IFRAME: Initialize Plugin Start!");
-//                console.dir(event);
-                setTimeout(()=>{ i2b2.h.initPlugin(event.data); }, 5);
+            let codes = [];
+            for (let code in event.data.libs) {
+                codes.push(code);
+                scripts.push(i2b2.h.getScript(event.data.libs[code]));
+            }
+            Promise.allSettled(scripts).then((results) => {
+                let passed = true;
+                results.forEach((result, idx) => {
+                    if (result.status === "rejected") {
+                        passed = false;
+                        let code = codes[idx];
+                        console.error("Plugin failed to load support library: [" + code + "] at " + event.data.libs[code]);
+                    }
+                });
+                if (passed) i2b2.h.initPlugin(event.data);
             });
             break;
     }
