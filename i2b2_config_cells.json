@@ -3,5 +3,6 @@
     { "code": "ONT"	},
     { "code": "CRC"	},
     { "code": "LEGACYPLUGIN", "forceLoading": true},
-    { "code": "WORK"}
+    { "code": "PLUGIN", "forceLoading": true },
+    { "code": "WORK" }
 ]
