@@ -52,18 +52,8 @@ i2b2.events.afterCellInit.add((function(cell){
                 container.on("titleChanged", funcRetitle);
                 container.on("tab", funcRetitle);
 
-                // add the cellWhite flare
+                // create the iframe and load the plugin into it
                 let iframeTarget = $('<iframe class="i2b2PluginIFrame" src="'+windowEntry.data.url+'" title="'+windowEntry.data.title+'"></iframe>').appendTo(container._contentElement)[0];
-
-                // we must delay attachement of an event listener until after the IFrame is attached to the DOM
-                setTimeout(()=> {
-                    windowEntry.window = iframeTarget.contentWindow;
-                    // windowEntry.window.addEventListener("message", (event) => {
-                    //     console.log("received by parent");
-                    //     console.dir(event);
-                    // });
-                }, 10);
-
             }).bind(this)
         );
     }
