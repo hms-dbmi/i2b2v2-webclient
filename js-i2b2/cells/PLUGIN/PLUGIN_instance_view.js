@@ -36,7 +36,8 @@ i2b2.events.afterCellInit.add((function(cell){
                 let windowEntry = {
                     lm_view: container,
                     data: container._config.componentPlugin,
-                    title: container._config.title
+                    title: container._config.title,
+                    state: {}
                 };
                 windowEntry.data.code = container._config.componentPluginCode;
 

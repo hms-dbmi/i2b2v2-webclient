@@ -7,14 +7,14 @@
 console.group('Load & Execute component file: PLUGIN');
 console.time('execute time');
 
-
 // ====[ msg handling for the plugin's INIT message ]===================================================================
-i2b2.PLUGIN.ctrlr._handleInitMsg = function(msgEvent) {
+i2b2.PLUGIN.ctrlr._handleInitMsg = function(msgEvent, windowInstance) {
     msgEvent.source.postMessage({
         "msgType":"INIT_REPLY",
         "libs": i2b2.PLUGIN.model.libs,
         "sdx": i2b2.PLUGIN.model.config.sdx,
-        "ajax": i2b2.PLUGIN.model.config.ajax
+        "ajax": i2b2.PLUGIN.model.config.ajax,
+        "state": windowInstance.state
     }, '/');
 };
 
@@ -59,7 +59,7 @@ i2b2.PLUGIN.ctrlr._handleAjaxMsg = function(msgEvent, instanceRef) {
 
 // ====[ msg handling for the plugin's AJAX messages ]==================================================================
 i2b2.PLUGIN.ctrlr._handleStateMsg = function(msgEvent, instanceRef) {
-
+    instanceRef.state = msgEvent.data.stateData;
 };
 
 
@@ -140,6 +140,8 @@ i2b2.events.afterAllCellsLoaded.add((function() {
             case "AJAX":
                 i2b2.PLUGIN.ctrlr._handleAjaxMsg(event, foundInstance);
                 break;
+            case "STATE":
+                i2b2.PLUGIN.ctrlr._handleStateMsg(event, foundInstance);
         }
     });
 }));
