@@ -14,10 +14,7 @@ i2b2.h.initPlugin = function(initData) {
     // listen for ready replies from the loaded i2b2 support libraries
     const funcReplyHandler = function(signalName, timeout) {
         return new Promise((resolve, reject) => {
-            const timer = setTimeout(()=>{
-                console.error("NO " + signalName + ": Initialization failed to get OK signal from a support library during loading.");
-                reject();
-            }, timeout);
+            const timer = setTimeout(reject, timeout);
             window.addEventListener(signalName, () => {
                 console.log("Received "+signalName);
                 clearTimeout(timer);
@@ -47,10 +44,10 @@ i2b2.h.initPlugin = function(initData) {
             if (result.status === "rejected") {
                 passed = false;
                 let code = codes[idx];
-                console.error("Plugin failed to initialize support library: [" + code + "] at " + event.data.libs[code]);
+                console.error("Plugin failed to initialize support library: [" + code + "] at " + initData.libs[code]);
             }
         });
-        if (passed) console.warn("A support library was not initialized correctly, attempting to continue anyways...");
+        if (!passed) console.warn("A support library was not initialized correctly, attempting to continue anyways...");
         window.dispatchEvent(new Event('I2B2_READY'));
     });
 };
