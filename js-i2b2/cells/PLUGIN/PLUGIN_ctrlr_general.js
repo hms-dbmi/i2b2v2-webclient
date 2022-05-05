@@ -82,12 +82,12 @@ i2b2.events.afterCellInit.add((function(cell) {
             });
         });
 
-        // define the dependacy files that are to be load  b
+        // define the dependency files that are to be load by the plugins
         const baseUrl = window.location.href + "js-i2b2/cells/PLUGIN/libs/";
-        i2b2.PLUGIN.model.libs = [];
-        i2b2.PLUGIN.model.libs.push(baseUrl + "i2b2-ajax.js");
-        i2b2.PLUGIN.model.libs.push(baseUrl + "i2b2-sdx.js");
-        i2b2.PLUGIN.model.libs.push(baseUrl + "i2b2-state.js");
+        i2b2.PLUGIN.model.libs = {};
+        i2b2.PLUGIN.model.libs["AJAX"] = baseUrl + "i2b2-ajax.js";
+        i2b2.PLUGIN.model.libs["SDX"] = baseUrl + "i2b2-sdx.js";
+        i2b2.PLUGIN.model.libs["STATE"] = baseUrl + "i2b2-state.js";
     }
 }));
 
@@ -101,7 +101,6 @@ i2b2.events.afterAllCellsLoaded.add((function() {
         if (!idx.includes("PLUGIN") && i2b2[idx].ajax !== undefined) {
             // found a cell
             ajaxTree[idx] = [];
-            console.log(idx);
             for (let funcName in i2b2[idx].ajax) {
                 if (funcName.substr(0,1) !== '_' && typeof i2b2[idx].ajax[funcName] === 'function') {
                     ajaxTree[idx].push(funcName);
@@ -114,7 +113,6 @@ i2b2.events.afterAllCellsLoaded.add((function() {
 
     // add the list of all known SDX data types
     i2b2.PLUGIN.model.config.sdx = Object.keys(i2b2.sdx.TypeControllers);
-
 
     // create the event listener for all IFrame to parent messages
     window.addEventListener("message", (event) => {
