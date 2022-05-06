@@ -18,8 +18,12 @@
 
     </form>
 
-    <div id="ExamplePlugin-maindiv" style="border:1px solid blue;margin-top:1.5em;margin-left:0.5em;width:10.5em;padding:0.6em">
+    <div id="ExamplePlugin-psmaindiv" style="border:1px solid blue;margin-top:1.5em;margin-left:0.5em;width:20em;padding:0.6em;overflow: auto">
         drop a patient set here
+    </div>
+
+    <div id="ExamplePlugin-conceptmaindiv" style="border:1px solid blue;margin-top:1.5em;margin-left:0.5em;width:20em;padding:0.6em;overflow: auto">
+        drop a concept here
     </div>
 
     <script>
@@ -53,16 +57,30 @@
 
         i2b2.ExamplePlugin = {};
         i2b2.ExamplePlugin.prsDropped = function(sdxData) {
-            console.dir("example public received drop " + sdxData);
-            alert("example patient set received drop " + sdxData);
+            console.dir("example plugin received patient drop " + sdxData);
+            let newNode = document.createElement('div');
+            newNode.innerHTML = JSON.stringify(sdxData);
+            let mainDiv = document.getElementById("ExamplePlugin-psmaindiv");
+            mainDiv.appendChild(newNode);
+        };
+
+        i2b2.ExamplePlugin.conceptDropped = function(sdxData) {
+            console.dir("example plugin received concept drop " + sdxData);
+            let newNode = document.createElement('div');
+            newNode.innerHTML = JSON.stringify(sdxData);
+            let mainDiv = document.getElementById("ExamplePlugin-conceptmaindiv");
+            mainDiv.appendChild(newNode);
         };
 
         window.addEventListener("I2B2_SDX_READY", (event) => {
             console.dir("sd ready before: " + JSON.stringify(event.data));
             let op_trgt = {dropTarget:true};
-            i2b2.sdx.AttachType("ExamplePlugin-maindiv", "PRS", op_trgt);
+            i2b2.sdx.AttachType("ExamplePlugin-psmaindiv", "PRS", op_trgt);
+            i2b2.sdx.AttachType("ExamplePlugin-conceptmaindiv", "CONCPT", op_trgt);
+
             // drop event handlers used by this plugin
-            i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "PRS", "DropHandler", i2b2.ExamplePlugin.prsDropped);
+            i2b2.sdx.setHandlerCustom("ExamplePlugin-psmaindiv", "PRS", "DropHandler", i2b2.ExamplePlugin.prsDropped);
+            i2b2.sdx.setHandlerCustom("ExamplePlugin-conceptmaindiv", "CONCPT", "DropHandler", i2b2.ExamplePlugin.conceptDropped);
         });
     </script>
 </body>

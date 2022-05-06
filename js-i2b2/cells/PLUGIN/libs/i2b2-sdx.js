@@ -7,7 +7,6 @@ i2b2.sdx = {};
 i2b2.sdx = {};
 i2b2.sdx.dd_events = {};
 i2b2.sdx.AttachType = function(container, typeCode, options) {
-    let isDomEl = true;
 
     // change the container into a DOM element reference
     if (typeof container === "string") {
@@ -22,6 +21,7 @@ i2b2.sdx.AttachType = function(container, typeCode, options) {
         container = container[0];
     }
 
+    //no valid container provided
     if(!container){
         return false;
     }
@@ -37,6 +37,8 @@ i2b2.sdx.AttachType = function(container, typeCode, options) {
         "ondragover"
     ];
 
+    let isDomEl = true;
+
     while (attrlist.length) {
         if (typeof container[attrlist.pop()] !== "object") { isDomEl = false; }
     }
@@ -45,12 +47,6 @@ i2b2.sdx.AttachType = function(container, typeCode, options) {
     if (!isDomEl) {
         return false;
     } else {
-        // attach/augment events using the jQuery .data() operation
-        let dd_events = container.dataset["i2b2-dragdrop-events"];
-        if (typeof dd_events === "undefined") {
-            dd_events = {};
-        }
-
         ['drop', 'dragover', 'dragenter', 'dragleave'].forEach(function(e) {
             container.addEventListener(e, i2b2.sdx.onDragDropEvents);
         });
@@ -144,6 +140,7 @@ i2b2.sdx.setHandlerCustom = function(container, typeCode, handlerName, newHandle
         container = container[0];
     }
 
+    //no valid container provided
     if(!container){
         return false;
     }
