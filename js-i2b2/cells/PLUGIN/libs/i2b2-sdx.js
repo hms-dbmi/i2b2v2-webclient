@@ -7,9 +7,7 @@ i2b2.sdx = {};
 i2b2.sdx = {};
 i2b2.sdx.dd_events = {};
 i2b2.sdx.AttachType = function(container, typeCode, options) {
-    if(!container){
-        return;
-    }
+    let isDomEl = true;
 
     // change the container into a DOM element reference
     if (typeof container === "string") {
@@ -24,6 +22,10 @@ i2b2.sdx.AttachType = function(container, typeCode, options) {
         container = container[0];
     }
 
+    if(!container){
+        return false;
+    }
+
     // add class for target bubbling
     container.className += " i2b2DropTarget";
 
@@ -34,7 +36,7 @@ i2b2.sdx.AttachType = function(container, typeCode, options) {
         "ondragenter",
         "ondragover"
     ];
-    let isDomEl = true;
+
     while (attrlist.length) {
         if (typeof container[attrlist.pop()] !== "object") { isDomEl = false; }
     }
@@ -48,14 +50,6 @@ i2b2.sdx.AttachType = function(container, typeCode, options) {
         if (typeof dd_events === "undefined") {
             dd_events = {};
         }
-        // add new events
-        dd_events[typeCode] = {
-            //"onHoverOver":i2b2.sdx.getHandlerDefault(typeCode, "onHoverOver"),
-            //"onHoverOut":i2b2.sdx.getHandlerDefault(typeCode, "onHoverOut"),
-            //"DropHandler":i2b2.sdx.setHandlerDefault(typeCode, "DropHandler")
-        };
-
-        // container.dataset["i2b2-dragdrop-events"] = dd_events;
 
         ['drop', 'dragover', 'dragenter', 'dragleave'].forEach(function(e) {
             container.addEventListener(e, i2b2.sdx.onDragDropEvents);
@@ -76,10 +70,7 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
             sdxTypeList = sdxTypeList.concat(sdxTypes);
         }
     }
-    let eventHandlers = {};
-    //eventHandlers = $(this).data("i2b2DragdropEvents");
-    //eventHandlers = JSON.parse(this.dataset["i2b2DragdropEvents"]);
-    eventHandlers = i2b2.sdx.dd_events[this.id];
+    let eventHandlers = i2b2.sdx.dd_events[this.id];
 
     switch(e.type) {
         case "drop":
@@ -139,11 +130,8 @@ i2b2.sdx.setHandlerCustom = function(container, typeCode, handlerName, newHandle
     // typeCode: string
     // handlerName: string (example: Render, AddChild, ddStart, ddMove)
     // newHandlerFunction: function to be used
-    if(!container){
-        return;
-    }
-
     // change the container into a DOM element reference
+
     if (typeof container === "string") {
         container = document.getElementById(container);
         if (container.length === 0) {
@@ -156,6 +144,9 @@ i2b2.sdx.setHandlerCustom = function(container, typeCode, handlerName, newHandle
         container = container[0];
     }
 
+    if(!container){
+        return false;
+    }
 
     // confirm that it is a proper DOM node
     let attrlist = [
@@ -175,14 +166,6 @@ i2b2.sdx.setHandlerCustom = function(container, typeCode, handlerName, newHandle
     if (!isDomEl) {
         return false;
     } else {
-        // attach/augment events using the jQuery .data() operation
-        // let dd_events = container.dataset["i2b2DragdropEvents"];
-        /*let dd_events = i2b2.sdx.dd_events[container.id];
-        if (typeof dd_events === "undefined") {
-            dd_events[container.id] = {};
-            dd_events[typeCode] = {};
-        }*/
-
         if (typeof i2b2.sdx.dd_events[container.id] === "undefined") {
             i2b2.sdx.dd_events[container.id] = {};
             i2b2.sdx.dd_events[container.id][typeCode] = {};
@@ -190,20 +173,16 @@ i2b2.sdx.setHandlerCustom = function(container, typeCode, handlerName, newHandle
 
         // add new events
         i2b2.sdx.dd_events[container.id][typeCode][handlerName] = newHandlerFunction;
-        //container.dataset["i2b2DragdropEvents"]= JSON.stringify(dd_events);
         return true;
     }
 };
 
 window.addEventListener("I2B2_INIT_SDX", function(evt) {
     console.log("Initialize SDX routines");
-    console.dir("event detail: " + evt.detail);
     i2b2.sdx.TypeControllers = {};
     evt.detail.forEach(function(e) {
         i2b2.sdx.TypeControllers[e] = {};
     });
-
-    console.dir("type controllers: " + i2b2.sdx.TypeControllers);
 
     // once initialized, sent the ready signal to the plugin's i2b2 loader
     window.dispatchEvent(new Event('I2B2_SDX_READY'));
