@@ -17,6 +17,11 @@
         </p>
 
     </form>
+
+    <div id="ExamplePlugin-maindiv" style="border:1px solid blue;margin-top:1.5em;margin-left:0.5em;width:10.5em;padding:0.6em">
+        drop a patient set here
+    </div>
+
     <script>
         function saveState() {
             i2b2.model.stateString = document.getElementById("stateString").value;
@@ -46,7 +51,19 @@
             document.getElementById("stateString").value = i2b2.model.stateString;
         });
 
+        i2b2.ExamplePlugin = {};
+        i2b2.ExamplePlugin.prsDropped = function(sdxData) {
+            console.dir("example public received drop " + sdxData);
+            alert("example patient set received drop " + sdxData);
+        };
 
+        window.addEventListener("I2B2_SDX_READY", (event) => {
+            console.dir("sd ready before: " + JSON.stringify(event.data));
+            let op_trgt = {dropTarget:true};
+            i2b2.sdx.AttachType("ExamplePlugin-maindiv", "PRS", op_trgt);
+            // drop event handlers used by this plugin
+            i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "PRS", "DropHandler", i2b2.ExamplePlugin.prsDropped);
+        });
     </script>
 </body>
 </html>
