@@ -16,7 +16,6 @@ i2b2.h.initPlugin = function(initData) {
         return new Promise((resolve, reject) => {
             const timer = setTimeout(reject, timeout);
             window.addEventListener(signalName, () => {
-                console.log("Received "+signalName);
                 clearTimeout(timer);
                 resolve();
             });
