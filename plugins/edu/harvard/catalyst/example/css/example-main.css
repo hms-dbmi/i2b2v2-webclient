@@ -1,0 +1,25 @@
+
+#ExamplePlugin-psmaindiv {
+    border: 1px solid blue;
+    margin-top: 1.5em;
+    margin-left: 0.5em;
+    width: 25em;
+    padding: 0.6em;
+    overflow: auto;
+}
+
+#ExamplePlugin-maindiv
+{
+    border:1px solid blue;
+    margin-top:1.5em;
+    margin-left:0.5em;
+    width:25em;
+    padding:0.6em;
+    overflow: auto;
+}
+
+.i2b2DropTarget
+{
+    background-color: pink;
+}
+

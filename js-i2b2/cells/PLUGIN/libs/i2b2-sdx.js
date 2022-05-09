@@ -78,6 +78,7 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                     eventHandlers[sdxType].DropHandler(sdxJSON, e);
                 }
             }
+            e.target.classList.remove('dragging');
             e.stopImmediatePropagation();
             break;
         case "dragover":
@@ -96,6 +97,7 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                     }
                 }
             }
+            e.target.classList.add('dragging');
             break;
         case "dragenter":
             while (sdxTypeList.length) {
@@ -105,6 +107,7 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                 }
             }
             e.preventDefault();
+            e.target.classList.add('dragging');
             break;
         case "dragleave":
             while (sdxTypeList.length) {
@@ -114,6 +117,7 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                 }
             }
             e.preventDefault();
+            e.target.classList.remove('dragging');
             break;
     }
 
@@ -165,9 +169,11 @@ i2b2.sdx.setHandlerCustom = function(container, typeCode, handlerName, newHandle
     } else {
         if (typeof i2b2.sdx.dd_events[container.id] === "undefined") {
             i2b2.sdx.dd_events[container.id] = {};
-            i2b2.sdx.dd_events[container.id][typeCode] = {};
         }
 
+        if (typeof i2b2.sdx.dd_events[container.id][typeCode] === "undefined") {
+            i2b2.sdx.dd_events[container.id][typeCode] = {};
+        }
         // add new events
         i2b2.sdx.dd_events[container.id][typeCode][handlerName] = newHandlerFunction;
         return true;
