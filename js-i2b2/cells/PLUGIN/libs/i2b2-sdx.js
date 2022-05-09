@@ -27,7 +27,7 @@ i2b2.sdx.AttachType = function(container, typeCode, options) {
     }
 
     // add class for target bubbling
-    container.className += " i2b2DropTarget";
+    container.classList.add("i2b2DropTarget");
 
     // confirm that it is a proper DOM node
     let attrlist = [
@@ -128,7 +128,7 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
 i2b2.sdx.setHandlerCustom = function(container, typeCode, handlerName, newHandlerFunction) {
     // containerID: string
     // typeCode: string
-    // handlerName: string (example: Render, AddChild, ddStart, ddMove)
+    // handlerName: string (example: DropHandler)
     // newHandlerFunction: function to be used
     // change the container into a DOM element reference
 

@@ -3,7 +3,7 @@
     border: 1px solid blue;
     margin-top: 1.5em;
     margin-left: 0.5em;
-    width: 25em;
+    width: 30em;
     padding: 0.6em;
     overflow: auto;
 }
@@ -13,12 +13,12 @@
     border:1px solid blue;
     margin-top:1.5em;
     margin-left:0.5em;
-    width:25em;
+    width:30em;
     padding:0.6em;
     overflow: auto;
 }
 
-.i2b2DropTarget
+.i2b2DropTarget.dragging
 {
     background-color: pink;
 }
