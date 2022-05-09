@@ -78,8 +78,8 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                     eventHandlers[sdxType].DropHandler(sdxJSON, e);
                 }
             }
-            e.currentTarget.classList.remove('dragging');
             e.stopImmediatePropagation();
+            e.currentTarget.classList.remove('dragging');
             break;
         case "dragover":
             // enable drop if a drop handler exists for the object being dropped
@@ -117,11 +117,6 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                 }
             }
             e.preventDefault();
-            console.log("drag leave element " + e.target);
-            console.log("drag leave element " + e.target.text);
-            if(!e.target.classList){
-                let p =0;
-            }
             e.currentTarget.classList.remove('dragging');
             break;
     }
