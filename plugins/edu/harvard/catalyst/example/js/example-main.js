@@ -1,8 +1,6 @@
 i2b2.ExamplePlugin = {};
 i2b2.ExamplePlugin.prsDropped = function(sdxData) {
     console.dir("example plugin received patient drop " + JSON.stringify(sdxData));
-    let newNode = document.createElement('div');
-    newNode.innerHTML = JSON.stringify(sdxData);
     let mainDiv = document.getElementsByClassName("psmaindiv-content")[0];
     mainDiv.innerHTML= JSON.stringify(sdxData);
 };
