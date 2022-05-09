@@ -78,7 +78,7 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                     eventHandlers[sdxType].DropHandler(sdxJSON, e);
                 }
             }
-            e.target.classList.remove('dragging');
+            e.currentTarget.classList.remove('dragging');
             e.stopImmediatePropagation();
             break;
         case "dragover":
@@ -97,7 +97,7 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                     }
                 }
             }
-            e.target.classList.add('dragging');
+            e.currentTarget.classList.add('dragging');
             break;
         case "dragenter":
             while (sdxTypeList.length) {
@@ -107,7 +107,7 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                 }
             }
             e.preventDefault();
-            e.target.classList.add('dragging');
+            e.currentTarget.classList.add('dragging');
             break;
         case "dragleave":
             while (sdxTypeList.length) {
@@ -117,7 +117,12 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                 }
             }
             e.preventDefault();
-            e.target.classList.remove('dragging');
+            console.log("drag leave element " + e.target);
+            console.log("drag leave element " + e.target.text);
+            if(!e.target.classList){
+                let p =0;
+            }
+            e.currentTarget.classList.remove('dragging');
             break;
     }
 
