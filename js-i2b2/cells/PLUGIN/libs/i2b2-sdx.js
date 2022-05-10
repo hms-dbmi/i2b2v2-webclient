@@ -57,11 +57,10 @@ i2b2.sdx.AttachType = function(container, typeCode) {
 //======================================================================================================================
 i2b2.sdx.onDragDropEvents = function(e,a) {
     // get a list of SDX types that are in this DD operation
-    let ev = e;
     let sdxTypeList = [];
-    for (let i in ev.dataTransfer.types) {
-        if (String(ev.dataTransfer.types[i]).toLowerCase().indexOf("application/i2b2-sdxtype+") === 0) {
-            let sdxTypes = String(ev.dataTransfer.types[i]).toUpperCase().split("+");
+    for (let i in e.dataTransfer.types) {
+        if (String(e.dataTransfer.types[i]).toLowerCase().indexOf("application/i2b2-sdxtype+") === 0) {
+            let sdxTypes = String(e.dataTransfer.types[i]).toUpperCase().split("+");
             sdxTypes.shift();
             sdxTypeList = sdxTypeList.concat(sdxTypes);
         }
@@ -89,7 +88,7 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                     if (typeof eventHandlers[sdxType].DropChecker === "function") {
                         if (eventHandlers[sdxType].DropChecker(e.target, e, this)) {
                             // this is REQUIRED for proper drop
-                            ev.preventDefault();
+                            e.preventDefault();
                         }
                     } else {
                         // this is REQUIRED for proper drop
