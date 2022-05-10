@@ -12,19 +12,18 @@ i2b2.ExamplePlugin.itemDropped = function(sdxData) {
 };
 
 window.addEventListener("I2B2_SDX_READY", (event) => {
-    let op_trgt = {dropTarget:true};
-    i2b2.sdx.AttachType("ExamplePlugin-psmaindiv", "PRS", op_trgt);
+    i2b2.sdx.AttachType("ExamplePlugin-psmaindiv", "PRS");
 
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "CONCPT", op_trgt);
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "PRS", op_trgt);
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "ENS", op_trgt);
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "PRC", op_trgt);
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QDEF", op_trgt);
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QGDEF", op_trgt);
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QI", op_trgt);
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QM", op_trgt);
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "WRK", op_trgt);
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "XML", op_trgt);
+    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "CONCPT");
+    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "PRS");
+    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "ENS");
+    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "PRC");
+    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QDEF");
+    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QGDEF");
+    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QI");
+    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QM");
+    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "WRK");
+    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "XML");
 
     // drop event handlers used by this plugin
     i2b2.sdx.setHandlerCustom("ExamplePlugin-psmaindiv", "PRS", "DropHandler", i2b2.ExamplePlugin.prsDropped);

@@ -6,7 +6,7 @@
 i2b2.sdx = {};
 i2b2.sdx = {};
 i2b2.sdx.dd_events = {};
-i2b2.sdx.AttachType = function(container, typeCode, options) {
+i2b2.sdx.AttachType = function(container, typeCode) {
 
     // change the container into a DOM element reference
     if (typeof container === "string") {
