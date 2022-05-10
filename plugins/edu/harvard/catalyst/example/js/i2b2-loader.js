@@ -56,9 +56,9 @@ i2b2.h.initPlugin = function(initData) {
 // =====================================================================================================================
 i2b2.h.getScript = function(url) {
     return new Promise((resolve, reject) => {
-        var head	= document.getElementsByTagName("head")[0];
-        var script	= document.createElement("script");
-        var done 	= false;
+        let head	= document.getElementsByTagName("head")[0];
+        let script	= document.createElement("script");
+        let done 	= false;
 
         script.setAttribute("defer", ""); // this seems to prevent run conditions cause by scripts getting interpreted out of order
         script.src	= url;

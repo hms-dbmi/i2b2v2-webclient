@@ -8,8 +8,7 @@
     overflow: auto;
 }
 
-#ExamplePlugin-maindiv
-{
+#ExamplePlugin-maindiv {
     border:1px solid blue;
     margin-top:1.5em;
     margin-left:0.5em;
@@ -18,8 +17,7 @@
     overflow: auto;
 }
 
-.i2b2DropTarget.dragging
-{
+.i2b2DropTarget.dragging {
     background-color: pink;
 }
 
