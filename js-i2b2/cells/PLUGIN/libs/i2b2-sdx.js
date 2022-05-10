@@ -180,7 +180,9 @@ i2b2.sdx.setHandlerCustom = function(container, typeCode, handlerName, newHandle
 };
 
 window.addEventListener("I2B2_INIT_SDX", function(evt) {
-    console.log("Initialize SDX routines");
+    // only respond to same-origin messages
+    if (evt.origin !== window.location.origin) return;
+
     i2b2.sdx.TypeControllers = {};
     evt.detail.forEach(function(e) {
         i2b2.sdx.TypeControllers[e] = {};
