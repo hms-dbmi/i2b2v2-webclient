@@ -116,32 +116,34 @@ i2b2.events.afterAllCellsLoaded.add((function() {
 
     // create the event listener for all IFrame to parent messages
     window.addEventListener("message", (event) => {
-        // TODO: find out which window the message came from (ignore if unknown)
-        let foundInstance = undefined;
-        for (let i in i2b2.PLUGIN.view.windows) {
-            let iframe = $("iframe", i2b2.PLUGIN.view.windows[i].lm_view._contentElement);
-            if (iframe.length > 0) {
-                if (iframe[0].contentWindow === event.source) {
-                    foundInstance = i2b2.PLUGIN.view.windows[i];
-                    break;
+        if (event.origin === window.location.origin) {
+            // TODO: find out which window the message came from (ignore if unknown)
+            let foundInstance = undefined;
+            for (let i in i2b2.PLUGIN.view.windows) {
+                let iframe = $("iframe", i2b2.PLUGIN.view.windows[i].lm_view._contentElement);
+                if (iframe.length > 0) {
+                    if (iframe[0].contentWindow === event.source) {
+                        foundInstance = i2b2.PLUGIN.view.windows[i];
+                        break;
+                    }
                 }
             }
-        }
-        if (foundInstance === undefined) {
-            console.warn("PluginMgr: MESSAGE FROM UNKNOWN WINDOW");
-            return false;
-        }
+            if (foundInstance === undefined) {
+                console.warn("PluginMgr: MESSAGE FROM UNKNOWN WINDOW");
+                return false;
+            }
 
-        // main processing of incoming messages
-        switch (event.data.msgType) {
-            case "INIT":
-                i2b2.PLUGIN.ctrlr._handleInitMsg(event, foundInstance);
-                break;
-            case "AJAX":
-                i2b2.PLUGIN.ctrlr._handleAjaxMsg(event, foundInstance);
-                break;
-            case "STATE":
-                i2b2.PLUGIN.ctrlr._handleStateMsg(event, foundInstance);
+            // main processing of incoming messages
+            switch (event.data.msgType) {
+                case "INIT":
+                    i2b2.PLUGIN.ctrlr._handleInitMsg(event, foundInstance);
+                    break;
+                case "AJAX":
+                    i2b2.PLUGIN.ctrlr._handleAjaxMsg(event, foundInstance);
+                    break;
+                case "STATE":
+                    i2b2.PLUGIN.ctrlr._handleStateMsg(event, foundInstance);
+            }
         }
     });
 }));

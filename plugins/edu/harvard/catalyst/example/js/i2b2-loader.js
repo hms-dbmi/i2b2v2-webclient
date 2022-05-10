@@ -56,9 +56,9 @@ i2b2.h.initPlugin = function(initData) {
 // =====================================================================================================================
 i2b2.h.getScript = function(url) {
     return new Promise((resolve, reject) => {
-        var head	= document.getElementsByTagName("head")[0];
-        var script	= document.createElement("script");
-        var done 	= false;
+        let head	= document.getElementsByTagName("head")[0];
+        let script	= document.createElement("script");
+        let done 	= false;
 
         script.setAttribute("defer", ""); // this seems to prevent run conditions cause by scripts getting interpreted out of order
         script.src	= url;
@@ -91,25 +91,27 @@ window.addEventListener("load", function() {
 // handler for loading of i2b2 dependency scripts
 //======================================================================================================================
 window.addEventListener("message", (event) => {
-    switch (event.data.msgType) {
-        case "INIT_REPLY":
-            let scripts = [];
-            let codes = [];
-            for (let code in event.data.libs) {
-                codes.push(code);
-                scripts.push(i2b2.h.getScript(event.data.libs[code]));
-            }
-            Promise.allSettled(scripts).then((results) => {
-                let passed = true;
-                results.forEach((result, idx) => {
-                    if (result.status === "rejected") {
-                        passed = false;
-                        let code = codes[idx];
-                        console.error("Plugin failed to load support library: [" + code + "] at " + event.data.libs[code]);
-                    }
+    if (event.origin === window.location.origin) {
+        switch (event.data.msgType) {
+            case "INIT_REPLY":
+                let scripts = [];
+                let codes = [];
+                for (let code in event.data.libs) {
+                    codes.push(code);
+                    scripts.push(i2b2.h.getScript(event.data.libs[code]));
+                }
+                Promise.allSettled(scripts).then((results) => {
+                    let passed = true;
+                    results.forEach((result, idx) => {
+                        if (result.status === "rejected") {
+                            passed = false;
+                            let code = codes[idx];
+                            console.error("Plugin failed to load support library: [" + code + "] at " + event.data.libs[code]);
+                        }
+                    });
+                    if (passed) i2b2.h.initPlugin(event.data);
                 });
-                if (passed) i2b2.h.initPlugin(event.data);
-            });
-            break;
+                break;
+        }
     }
 });

@@ -55,8 +55,10 @@ window.addEventListener("I2B2_INIT_AJAX", function(evt) {
     // EVENT LISTENER TO ROUTE RETURNED MESSAGES FOR PROCESSING
     // ----------------------------------------------------------------------
     window.addEventListener("message", (event) => {
-        if (event.data.msgType === "AJAX_REPLY" || event.data.msgType === "AJAX_ERROR") {
-            cl_func_receiveMsg(event.data);
+        if (event.origin === window.location.origin) {
+            if (event.data.msgType === "AJAX_REPLY" || event.data.msgType === "AJAX_ERROR") {
+                cl_func_receiveMsg(event.data);
+            }
         }
     });
 

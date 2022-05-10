@@ -5,48 +5,29 @@
     <title>Plugin Example</title>
 
     <script type="text/javascript" src="js/i2b2-loader.js" ></script>
-
+    <script type="text/javascript" src="js/example-main.js" ></script>
+    <link rel="stylesheet" type="text/css" href="css/example-main.css">
 </head>
 <body>
-    <h1>This is plugin: edu.harvard.catalyst.example</h1>
+    <form>
+        <h1>This is plugin: edu.harvard.catalyst.example</h1>
         <input type="button" onclick="sendInitMsg()" value="Send Init Notice" />
         <input type="button" onclick="sendTestMsg()" value="Send Message" />
         <p>
-            <input name="stateString" id="stateString" onkeyup="saveState()"/>
+            <input type="text" name="stateString" id="stateString" onkeyup="saveState()">
             <input type="button" onclick="window.location.reload()" value="Reload Plugin">
         </p>
 
     </form>
-    <script>
-        function saveState() {
-            i2b2.model.stateString = document.getElementById("stateString").value;
-            i2b2.state.save();
-        }
 
-        function sendInitMsg() {
-            console.log("sending Init message...");
-            window.parent.postMessage({"msgType":"INIT"}, "/");
-        }
+    <div id="ExamplePlugin-psmaindiv">
+        drop a patient set here
+        <div class="psmaindiv-content"></div>
+    </div>
 
-        function sendTestMsg() {
-            console.log("sending test message...");
-            let ajaxData = {
-                ont_synonym_records: "N",
-                ont_hidden_records: "N"
-            };
-            i2b2.ajax.ONT.GetCategories(ajaxData).then((data)=> {
-                console.log("Got response base from ONT.GetCategories()");
-                console.log(data);
-            })
-        }
-
-        window.addEventListener("I2B2_READY", ()=> {
-            // the i2b2 framework is loaded and ready (including population of i2b2.model namespace)
-            if (i2b2.model.stateString === undefined) i2b2.model.stateString = "";
-            document.getElementById("stateString").value = i2b2.model.stateString;
-        });
-
-
-    </script>
+    <div id="ExamplePlugin-maindiv">
+        drop any item here
+        <div class="maindiv-content"></div>
+    </div>
 </body>
 </html>
