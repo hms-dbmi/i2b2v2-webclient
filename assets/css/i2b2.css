@@ -621,4 +621,9 @@ iframe.pluginCell {
 .topmenu1 {
 	margin-bottom: 20px;
 }
+
+ #analysisTool {
+	 text-decoration: none;
+	 outline: none;
+}
 /* === Plugin List Box === */

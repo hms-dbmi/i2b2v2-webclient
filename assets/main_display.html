@@ -8,7 +8,7 @@
             <td class="logo"> <h5><strong>i2b2 </strong>Query & Analysis Tool</h5> </td>
             <td>
                 <div id="headerOptions" class="fs-4 mb-3">
-                    <a href="Javascript:void(0);" onClick="i2b2.PLUGINMGR.list.show();" title="Analysis Tools" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"><i class="bi bi-graph-up-arrow"></i></a>
+                    <a id="analysisTool" href="Javascript:void(0);" onClick="i2b2.PLUGIN.list.show();" title="Analysis Tools" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"><i class="bi bi-graph-up-arrow"></i></a>
                     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
                         <div class="offcanvas-header">
                             <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Available Analysis Tools</h5>
@@ -50,11 +50,14 @@
                                             </div>
                                         </div>
                                         <div style="margin-top: 14px;" class="row row-cols-lg-auto g-20">
+                                            <div class="col-4">
+                                                <label for="pluginSearchText" class="col-form-label col-form-label-sm col-auto">Search:</label>
+                                            </div>
                                             <div class="col-sm-8">
-                                                <input type="txt" class="form-control form-control-sm" id="pluginSearchText" placeholder="Search for a plugin">
+                                                <input type="txt" class="form-control form-control-sm" id="pluginSearchText" placeholder="Enter plugin name">
                                             </div>
                                             <div class="col-4">
-                                                <button class="btn btn-primary btn-sm invert">Search</button>
+                                                <button class="btn btn-primary btn-sm invert"><i class="bi bi-search"></i></button>
                                             </div>
                                         </div>
                                     </form>
