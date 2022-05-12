@@ -20,10 +20,10 @@
                                 <div class="topmenu1" oncontextmenu="return false">
                                     <form style="margin-top:1px;" action="javascript:void(0)" >
                                         <div class="row row-cols-lg-auto g-20">
-                                            <div class="col-4">
+                                            <div class="col-3">
                                                 <label for="anaPluginView" class="col-form-label col-form-label-sm">View Type:</label>
                                             </div>
-                                            <div class="col-7">
+                                            <div class="col-9">
                                                 <select id="anaPluginView" style="display:inline-block;" class="form-select form-select-sm" onchange="i2b2.PLUGINMGR.view.list.Render()">
                                                     <option value="DETAIL">Detailed List View</option>
                                                     <option value="SUMMARY">Summary List View</option>
@@ -31,10 +31,10 @@
                                             </div>
                                         </div>
                                         <div style="margin-top: 10px;" class="row row-cols-lg-auto g-20">
-                                            <div class="col-4">
+                                            <div class="col-3">
                                                 <label for="anaPluginCats" class="col-form-label col-form-label-sm col-auto">Category:</label>
                                             </div>
-                                            <div class="col-7">
+                                            <div class="col-9">
                                                 <select id="anaPluginCats" style="display:inline-block;" class="form-select form-select-sm col-auto" onchange="i2b2.PLUGINMGR.view.list.Render();">
                                                     <option value="ALL">ALL</option>
                                                     <option value="standard">standard</option>
@@ -49,15 +49,15 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div style="margin-top: 14px;" class="row row-cols-lg-auto g-20">
-                                            <div class="col-4">
+                                        <div style="margin-top: 25px;" class="row row-cols-sm-auto g-20">
+                                            <div class="col-3">
                                                 <label for="pluginSearchText" class="col-form-label col-form-label-sm col-auto">Search:</label>
                                             </div>
-                                            <div class="col-sm-8">
-                                                <input type="txt" class="form-control form-control-sm" id="pluginSearchText" placeholder="Enter plugin name">
+                                            <div class="col-7">
+                                                <input type="text" class="form-control form-control-sm" id="pluginSearchText" placeholder="Enter plugin name">
                                             </div>
-                                            <div class="col-4">
-                                                <button class="btn btn-primary btn-sm invert"><i class="bi bi-search"></i></button>
+                                            <div style="margin-top: 0.1em; margin-left: -0.5em; " class="col-2">
+                                                <button class="btn btn-primary btn-sm invert" id="searchPlugin"><i class="bi bi-search"></i></button>
                                             </div>
                                         </div>
                                     </form>

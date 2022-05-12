@@ -619,11 +619,17 @@ iframe.pluginCell {
 	height: 0.1em;
 }
 .topmenu1 {
-	margin-bottom: 20px;
+	margin-bottom: 15px;
 }
 
  #analysisTool {
 	 text-decoration: none;
 	 outline: none;
 }
+
+ #searchPlugin {
+	 padding: 0.2em 0 0.2em 0.6em;
+	 display: inline-block !important;
+	 margin-right: 0;
+ }
 /* === Plugin List Box === */
