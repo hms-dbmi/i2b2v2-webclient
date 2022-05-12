@@ -1,7 +1,8 @@
 {
   "files": [
     "PLUGIN_ctrlr_general.js",
-    "PLUGIN_instance_view.js"
+    "PLUGIN_instance_view.js",
+    "PLUGIN_list_view.js"
   ],
   "preload": [],
   "css": ["PLUGIN_styles.css"],

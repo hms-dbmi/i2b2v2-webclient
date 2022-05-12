@@ -7,15 +7,77 @@
             <!--<td class="logo"><img src="https://www.i2b2.org/webclient/assets/images/title.gif" alt="" /></td>-->
             <td class="logo"> <h5><strong>i2b2 </strong>Query & Analysis Tool</h5> </td>
             <td>
-                <!--<a href="Javascript:void(0)" onClick="showFindPatients();">Find Patients</a>
-                &nbsp;|&nbsp;
-                <a href="Javascript:void(0);" onClick="showAnalysisTools();">Analysis Tools</a>
-                &nbsp;|&nbsp;
-                <a href="Javascript:void(0);" onClick="myClick();">Message Log</a>
-
-               -->
-
                 <div id="headerOptions" class="fs-4 mb-3">
+                    <a href="Javascript:void(0);" onClick="i2b2.PLUGINMGR.list.show();" title="Analysis Tools" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"><i class="bi bi-graph-up-arrow"></i></a>
+                    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Available Plugins</h5>
+                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body" id="pluginListMain">
+                            <div id="PluginListBox" style="overflow:hidden;">
+                                <!--TODO implement logic for displaying available plugins-->
+                                <div class="topmenu1" oncontextmenu="return false">
+                                    <form style="margin-top:1px;" action="javascript:void(0)" >
+                                        <div class="row row-cols-lg-auto g-20">
+                                            <div class="col-4">
+                                                <label for="anaPluginView" class="col-form-label col-form-label-sm">View Type:</label>
+                                            </div>
+                                            <div class="col-7">
+                                                <select id="anaPluginView" style="display:inline-block;" class="form-select form-select-sm" onchange="i2b2.PLUGINMGR.view.list.Render()">
+                                                    <option value="DETAIL">Detailed List View</option>
+                                                    <option value="SUMMARY">Summary List View</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div style="margin-top: 10px;" class="row row-cols-lg-auto g-20">
+                                            <div class="col-4">
+                                                <label for="anaPluginCats" class="col-form-label col-form-label-sm col-auto">Category:</label>
+                                            </div>
+                                            <div class="col-7">
+                                                <select id="anaPluginCats" style="display:inline-block;" class="form-select form-select-sm col-auto" onchange="i2b2.PLUGINMGR.view.list.Render();">
+                                                    <option value="ALL">ALL</option>
+                                                    <option value="standard">standard</option>
+                                                    <option value="demographics">demographics</option>
+                                                    <option value="temporal">temporal</option>
+                                                    <option value="custom">custom</option>
+                                                    <option value="Workplace">Workplace</option>
+                                                    <option value="WISE">WISE</option>
+                                                    <option value="histogram">histogram</option>
+                                                    <option value="CARE">CARE</option>
+                                                    <option value="examples">examples</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div style="margin-top: 14px;" class="row row-cols-lg-auto g-20">
+                                            <div class="col-sm-8">
+                                                <input type="txt" class="form-control form-control-sm" id="pluginSearchText" placeholder="Search for a plugin">
+                                            </div>
+                                            <div class="col-4">
+                                                <button class="btn btn-primary btn-sm invert">Search</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <hr/>
+                                <a id="pluginViewList-Dem1Set" class="pluginRecordBox DETAIL" style="">
+                                <div class="Icon"><img src="../js-i2b2/cells/PLUGIN/assets/DEFAULTLIST_icon_32x32.gif" alt=""></div>
+                                <div class="txtBoundBox">
+                                    <div class="Name">Demographics (1 Patient Set) - Simple Counts</div>
+                                    <div class="Descript">This plugin displays a demographic break-down of a Patient Set.</div>
+                                </div>
+                                <div style="clear:both"></div>
+                                </a><a id="pluginViewList-ExampComm" class="pluginRecordBox DETAIL" style="">
+                                <div class="Icon"><img src="../js-i2b2/cells/PLUGIN/assets/DEFAULTLIST_icon_32x32.gif" alt=""></div>
+                                <div class="txtBoundBox">
+                                    <div class="Name">Development Example #4 - Communicator Tool</div>
+                                    <div class="Descript">This plugin allows you to interact directly with standard Cell Communicator objects within the web client framework.</div>
+                                </div>
+                                <div style="clear:both"></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <i class="bi bi-question-circle"></i>
                     <div class="dropdown" onClick="i2b2.PM.setUserAccountInfo()">
                         <i data-bs-toggle="dropdown" class="bi bi-person-circle"></i>

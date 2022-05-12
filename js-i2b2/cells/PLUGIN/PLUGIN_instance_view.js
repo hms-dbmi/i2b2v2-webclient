@@ -23,11 +23,9 @@ i2b2.PLUGIN.view = {
     }
 };
 
-
-
 //================================================================================================== //
 i2b2.events.afterCellInit.add((function(cell){
-    if (cell.cellCode == "PLUGIN") {
+    if (cell.cellCode === "PLUGIN") {
         console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.PLUGIN.view",

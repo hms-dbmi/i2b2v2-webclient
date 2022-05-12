@@ -287,10 +287,13 @@ DIV#PluginListBox A.pluginRecordBox {
 	border-left: 1px solid #FFFFFF;
 	border-right: 1px solid #FFFFFF;
 	border-bottom: 1px solid #667788;
-	padding: 1px 5px;
+	padding: 14px 3px 14px 4px;
+	margin:0;
 	display: block;
 	cursor: pointer;
-	background: #DBE8EF;
+	background: white; /*#DBE8EF;*/
+	color: #000000 !important;
+	overflow-y: auto;
 }
 
 DIV#PluginListBox A.pluginRecordBox:hover {
@@ -306,7 +309,7 @@ DIV#PluginListBox A.pluginRecordBox DIV.Icon {
 
 DIV#PluginListBox A.pluginRecordBox DIV.Name {
 	font-family: arial,helvetica;
-	font-size: 12px;
+	font-size: 0.3em; /*12px;*/
 	font-weight: bold;
 	line-height: 12px;
 }
@@ -314,17 +317,21 @@ DIV#PluginListBox A.pluginRecordBox DIV.Name {
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.txtBoundBox {
 	padding: 0 2px;
-	margin: 0px 36px 0px;
+	margin: 0px 21px 0px 28px;
+	text-align: left;
+	font-size: 2em;
 }
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Name {
 	line-height: 14px;
+	margin-left: 0.5em;
 }
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Descript {
 	font-family: arial,helvetica;
-	font-size: 10px;
+	font-size: 11px;
 	line-height: 10px;
+	margin-left: 0.5em;
 }
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon {
@@ -595,4 +602,23 @@ iframe.pluginCell {
 	-ms-user-drag: none;
 	-webkit-user-drag: none;
 	text-decoration: none;
-}/* === End BOOTSTRAP MENU === */
+}
+/* === End BOOTSTRAP MENU === */
+
+
+/* === Plugin List Box === */
+.offcanvas {
+	color: #000000 !important;
+	background-color: #cfdbe0; /*#c7d7dd; /*#f1f0f0;*/
+	padding: 0 2px 2px 2px;
+	text-align: left;
+}
+
+.offcanvas .btn-close {
+	width: 0.1em;
+	height: 0.1em;
+}
+.topmenu1 {
+	margin-bottom: 20px;
+}
+/* === Plugin List Box === */
