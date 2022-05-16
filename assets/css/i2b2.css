@@ -632,4 +632,8 @@ iframe.pluginCell {
 	 display: inline-block !important;
 	 margin-right: 0;
  }
+
+.modal-backdrop.show{
+ opacity: 0;
+}
 /* === Plugin List Box === */
