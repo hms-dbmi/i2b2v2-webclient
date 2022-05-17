@@ -1,7 +1,7 @@
 {
   "title": "Example Plugin",
   "description": "This is a simple plugin that gives examples of how to do drag/drop, communications, and state management",
-  "category": "example",
+  "category": ["example", "demographics"],
   "base": "index.html",
   "sandbox": true
 }

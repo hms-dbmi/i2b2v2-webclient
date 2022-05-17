@@ -11,9 +11,11 @@ i2b2.PLUGIN.view.list.buildListCategory = function() {
     let pluginsLoaded = i2b2.PLUGIN.model.plugins;
     for (let pluginName in pluginsLoaded) {
         let pluginRef = pluginsLoaded[pluginName];
-        if(pluginsListCategories.indexOf(pluginRef.category) === -1) {
-            pluginsListCategories.push(pluginRef.category);
-        }
+        pluginRef.category.forEach(category => {
+            if(pluginsListCategories.indexOf(category) === -1) {
+                pluginsListCategories.push(category);
+            }
+        });
     }
 
     pluginsListCategories.sort();
@@ -31,13 +33,12 @@ i2b2.PLUGIN.view.list.buildListData = function(mode, category){
     let pluginsLoaded = i2b2.PLUGIN.model.plugins;
     for (let pluginName in pluginsLoaded) {
         let pluginRef = pluginsLoaded[pluginName];
-        if (!category || category === 'ALL' || pluginRef.category === category) {
+        if (!category || category === 'ALL' || pluginRef.category.indexOf(category) !== -1) {
             let pluginRecord = {};
             // change the entry id
             pluginRecord.id = pluginName;
             pluginRecord.name = "pluginViewList-"+pluginName;
             // change the plugin's icon
-
             if (pluginRef.icons && pluginRef.icons[xIconVarName]) {
                 pluginRecord.iconSrc = pluginRef.assetDir + pluginRef.icons[xIconVarName];
 
