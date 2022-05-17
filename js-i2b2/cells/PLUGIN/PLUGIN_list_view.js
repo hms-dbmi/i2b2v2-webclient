@@ -1,4 +1,7 @@
 i2b2.PLUGIN.view.list = {};
+i2b2.PLUGIN.view.list.category = {
+    ALL: "ALL"
+};
 i2b2.PLUGIN.view.list.mode = {
     DETAIL:  "DETAIL",
     SUMMARY: "SUMMARY"
@@ -6,7 +9,7 @@ i2b2.PLUGIN.view.list.mode = {
 
 i2b2.PLUGIN.view.list.buildListCategory = function() {
 
-    let pluginsListCategories = ['ALL'];
+    let pluginsListCategories = [i2b2.PLUGIN.view.list.category.ALL];
     // loop through all plugins in the framework
     let pluginsLoaded = i2b2.PLUGIN.model.plugins;
     for (let pluginName in pluginsLoaded) {
@@ -33,7 +36,7 @@ i2b2.PLUGIN.view.list.buildListData = function(mode, category){
     let pluginsLoaded = i2b2.PLUGIN.model.plugins;
     for (let pluginName in pluginsLoaded) {
         let pluginRef = pluginsLoaded[pluginName];
-        if (!category || category === 'ALL' || pluginRef.category.indexOf(category) !== -1) {
+        if (!category || category === i2b2.PLUGIN.view.list.category.ALL || pluginRef.category.indexOf(category) !== -1) {
             let pluginRecord = {};
             // change the entry id
             pluginRecord.id = pluginName;
@@ -87,7 +90,8 @@ i2b2.PLUGIN.view.list.filterByCategory = function(category){
 };
 
 i2b2.PLUGIN.view.list.changeListMode = function(listMode){
-    i2b2.PLUGIN.view.list.renderList(listMode);
+    let category =  $("#pluginCategory").val();
+    i2b2.PLUGIN.view.list.renderList(listMode, category);
 };
 
 i2b2.PLUGIN.view.list.renderList = function(listMode, category){
@@ -111,8 +115,13 @@ i2b2.PLUGIN.view.list.renderList = function(listMode, category){
 
 i2b2.PLUGIN.view.list.loadPlugin= function(pluginId){
     $("#pluginListMain").offcanvas("hide");
-    i2b2.PLUGIN.view.list.changeListMode(i2b2.PLUGIN.view.list.mode.DETAIL);
+    i2b2.PLUGIN.view.list.resetPluginListView();
     i2b2.PLUGIN.view.newInstance(pluginId);
+};
+
+i2b2.PLUGIN.view.list.resetPluginListView= function(){
+    $("#pluginCategory").val(i2b2.PLUGIN.view.list.category.ALL);
+    $("#pluginListMode").val(i2b2.PLUGIN.view.list.mode.DETAIL).trigger("change");
 };
 
 
