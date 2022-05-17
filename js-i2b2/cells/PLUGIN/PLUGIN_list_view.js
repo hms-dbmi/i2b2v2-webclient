@@ -25,7 +25,7 @@ i2b2.PLUGIN.view.list.buildListCategory = function() {
     return pluginsListCategories;
 };
 
-i2b2.PLUGIN.view.list.buildListData = function(mode, category){
+i2b2.PLUGIN.view.list.buildListData = function(mode, category, searchString){
     let xIconVarName = 'size32x32';
     if(mode === i2b2.PLUGIN.view.list.mode.SUMMARY){
         xIconVarName = 'size16x16';
@@ -36,7 +36,12 @@ i2b2.PLUGIN.view.list.buildListData = function(mode, category){
     let pluginsLoaded = i2b2.PLUGIN.model.plugins;
     for (let pluginName in pluginsLoaded) {
         let pluginRef = pluginsLoaded[pluginName];
-        if (!category || category === i2b2.PLUGIN.view.list.category.ALL || pluginRef.category.indexOf(category) !== -1) {
+        if ((!searchString || (searchString && (
+                pluginRef.title.toLowerCase().includes(searchString.toLowerCase())
+            || pluginRef.description.toLowerCase().includes(searchString.toLowerCase()))))
+            && (!category
+            || category === i2b2.PLUGIN.view.list.category.ALL
+            || pluginRef.category.indexOf(category) !== -1)) {
             let pluginRecord = {};
             // change the entry id
             pluginRecord.id = pluginName;
@@ -94,9 +99,9 @@ i2b2.PLUGIN.view.list.changeListMode = function(listMode){
     i2b2.PLUGIN.view.list.renderList(listMode, category);
 };
 
-i2b2.PLUGIN.view.list.renderList = function(listMode, category){
+i2b2.PLUGIN.view.list.renderList = function(listMode, category, searchString){
 
-    let pluginsListData = i2b2.PLUGIN.view.list.buildListData(listMode, category);
+    let pluginsListData = i2b2.PLUGIN.view.list.buildListData(listMode, category, searchString);
 
     let pluginTemplateData = {
         "pluginDetail": pluginsListData
@@ -122,6 +127,13 @@ i2b2.PLUGIN.view.list.loadPlugin= function(pluginId){
 i2b2.PLUGIN.view.list.resetPluginListView= function(){
     $("#pluginCategory").val(i2b2.PLUGIN.view.list.category.ALL);
     $("#pluginListMode").val(i2b2.PLUGIN.view.list.mode.DETAIL).trigger("change");
+};
+
+i2b2.PLUGIN.view.list.searchPluginList= function(){
+    let category =  $("#pluginCategory").val();
+    let listMode = $("#pluginListMode").val();
+    let searchString = $("#pluginSearchText").val();
+    i2b2.PLUGIN.view.list.renderList(listMode, category, searchString);
 };
 
 
