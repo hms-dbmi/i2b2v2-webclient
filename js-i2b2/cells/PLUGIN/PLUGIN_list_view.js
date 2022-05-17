@@ -20,7 +20,7 @@ i2b2.PLUGIN.view.list.buildListCategory = function() {
     return pluginsListCategories;
 };
 
-i2b2.PLUGIN.view.list.buildListData = function(mode){
+i2b2.PLUGIN.view.list.buildListData = function(mode, category){
     let xIconVarName = 'size32x32';
     if(mode === i2b2.PLUGIN.view.list.mode.SUMMARY){
         xIconVarName = 'size16x16';
@@ -31,7 +31,7 @@ i2b2.PLUGIN.view.list.buildListData = function(mode){
     let pluginsLoaded = i2b2.PLUGIN.model.plugins;
     for (let pluginName in pluginsLoaded) {
         let pluginRef = pluginsLoaded[pluginName];
-        if (pluginRef) {
+        if (!category || category === 'ALL' || pluginRef.category === category) {
             let pluginRecord = {};
             // change the entry id
             pluginRecord.id = pluginName;
@@ -80,14 +80,18 @@ i2b2.PLUGIN.view.list.load = function(template){
     });
 };
 
-i2b2.PLUGIN.view.list.filterByCategory = function(){
-  //TO implement display by category functionality
+i2b2.PLUGIN.view.list.filterByCategory = function(category){
+    let listMode = $("#pluginListMode").val();
+    i2b2.PLUGIN.view.list.renderList(listMode, category);
 };
 
 i2b2.PLUGIN.view.list.changeListMode = function(listMode){
-    //TO implement display by category functionality
+    i2b2.PLUGIN.view.list.renderList(listMode);
+};
 
-    let pluginsListData = i2b2.PLUGIN.view.list.buildListData(listMode);
+i2b2.PLUGIN.view.list.renderList = function(listMode, category){
+
+    let pluginsListData = i2b2.PLUGIN.view.list.buildListData(listMode, category);
 
     let pluginTemplateData = {
         "pluginDetail": pluginsListData
@@ -98,6 +102,7 @@ i2b2.PLUGIN.view.list.changeListMode = function(listMode){
             "pluginSummary": pluginsListData
         };
     }
+
     let pluginList = $("#pluginList");
     pluginList.empty();
     $(i2b2.PLUGIN.view.list.pluginListTemplate(pluginTemplateData)).appendTo(pluginList);
@@ -105,6 +110,7 @@ i2b2.PLUGIN.view.list.changeListMode = function(listMode){
 
 i2b2.PLUGIN.view.list.loadPlugin= function(pluginId){
     $("#pluginListMain").offcanvas("hide");
+    i2b2.PLUGIN.view.list.changeListMode(i2b2.PLUGIN.view.list.mode.DETAIL);
     i2b2.PLUGIN.view.newInstance(pluginId);
 };
 
