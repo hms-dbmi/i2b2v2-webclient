@@ -2,6 +2,10 @@
   "title": "Example Plugin",
   "description": "This is a simple plugin that gives examples of how to do drag/drop, communications, and state management",
   "category": ["example", "demographics"],
+  "icons": { "size32x32": "example_32x32.gif" },
+  "assetDir": "assets",
+  "plugin_version" : "1.0",
+  "i2b2_version" : "1.7.12a",
   "base": "index.html",
   "sandbox": true
 }

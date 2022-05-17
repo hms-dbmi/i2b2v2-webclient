@@ -48,10 +48,11 @@ i2b2.PLUGIN.view.list.buildListData = function(mode, category, searchString){
             pluginRecord.name = "pluginViewList-"+pluginName;
             // change the plugin's icon
             if (pluginRef.icons && pluginRef.icons[xIconVarName]) {
-                pluginRecord.iconSrc = pluginRef.assetDir + pluginRef.icons[xIconVarName];
+                const loc = pluginName.replaceAll('.', '/');
+                pluginRecord.iconSrc = "plugins/" + loc + "/" + pluginRef.assetDir + "/" + pluginRef.icons[xIconVarName];
 
             } else {
-                pluginRecord.iconSrc = i2b2.PLUGIN.cfg.config.assetDir+i2b2.PLUGIN.cfg.config.defaultListIcons[xIconVarName];
+                pluginRecord.iconSrc = i2b2.PLUGIN.cfg.config.assetDir + i2b2.PLUGIN.cfg.config.defaultListIcons[xIconVarName];
             }
 
             // change name and description
