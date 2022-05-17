@@ -6,6 +6,7 @@
 
 
 window.addEventListener("I2B2_INIT_STATE", function(event) {
+
     if (i2b2.model === undefined) i2b2.model = {};
     // move the previously saved state back into i2b2.model namespace
     i2b2.model = event.detail;

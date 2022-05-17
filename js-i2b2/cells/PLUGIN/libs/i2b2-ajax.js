@@ -5,8 +5,6 @@
 
 //======================================================================================================================
 window.addEventListener("I2B2_INIT_AJAX", function(evt) {
-    // console.log("Initialize AJAX routines");
-    // console.dir(evt.detail);
 
     // USE CLOSEURE VARIABLES TO KEEP TRACK OF SENT/RECEIVED MESSAGES
     let cl_messageDB = {};
