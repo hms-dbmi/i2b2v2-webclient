@@ -120,7 +120,7 @@ i2b2.PLUGIN.view.list.renderList = function(listMode, category, searchString){
 
 i2b2.PLUGIN.view.list.loadPlugin= function(pluginId){
     $("#pluginListMain").offcanvas("hide");
-    i2b2.PLUGIN.view.list.resetPluginListView();
+    i2b2.PLUGIN.view.list.resetSearchPluginList();
     i2b2.PLUGIN.view.newInstance(pluginId);
 };
 
