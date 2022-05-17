@@ -124,9 +124,11 @@ i2b2.PLUGIN.view.list.loadPlugin= function(pluginId){
     i2b2.PLUGIN.view.newInstance(pluginId);
 };
 
-i2b2.PLUGIN.view.list.resetPluginListView= function(){
+i2b2.PLUGIN.view.list.resetSearchPluginList= function(){
+    $("#pluginListMode").val(i2b2.PLUGIN.view.list.mode.DETAIL);
     $("#pluginCategory").val(i2b2.PLUGIN.view.list.category.ALL);
-    $("#pluginListMode").val(i2b2.PLUGIN.view.list.mode.DETAIL).trigger("change");
+    $("#pluginSearchText").val("");
+    i2b2.PLUGIN.view.list.renderList(i2b2.PLUGIN.view.list.mode.DETAIL, i2b2.PLUGIN.view.list.category.ALL);
 };
 
 i2b2.PLUGIN.view.list.searchPluginList= function(){

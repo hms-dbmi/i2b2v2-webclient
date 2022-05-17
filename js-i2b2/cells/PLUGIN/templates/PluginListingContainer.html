@@ -6,14 +6,14 @@
     <div class="offcanvas-body" id="pluginListBody">
         <div id="PluginListBox" style="overflow:hidden;">
             <!--TODO implement logic for displaying available plugins-->
-            <div class="topmenu1" oncontextmenu="return false">
+            <div class="pluginMenu " oncontextmenu="return false">
                 <form style="margin-top:1px;" action="javascript:void(0)" >
                     <div class="row row-cols-lg-auto g-20">
                         <div class="col-3">
                             <label for="pluginListMode" class="col-form-label col-form-label-sm">View Type:</label>
                         </div>
                         <div class="col-9">
-                            <select id="pluginListMode" style="display:inline-block;" class="form-select form-select-sm" onchange="i2b2.PLUGIN.view.list.changeListMode(this.value)">
+                            <select id="pluginListMode" class="form-select form-select-sm" onchange="i2b2.PLUGIN.view.list.changeListMode(this.value)">
                                 <option value="DETAIL">Detailed List View</option>
                                 <option value="SUMMARY">Summary List View</option>
                             </select>
@@ -24,22 +24,30 @@
                             <label for="pluginCategory" class="col-form-label col-form-label-sm col-auto">Category:</label>
                         </div>
                         <div class="col-9">
-                            <select id="pluginCategory" style="display:inline-block;" class="form-select form-select-sm col-auto" onchange="i2b2.PLUGIN.view.list.filterByCategory(this.value);">
+                            <select id="pluginCategory" class="form-select form-select-sm col-auto"
+                                    onchange="i2b2.PLUGIN.view.list.filterByCategory(this.value);">
                                 {{#each pluginCategory}}
                                     <option value="{{this}}">{{this}} </option>
                                 {{/each}}
                             </select>
                         </div>
                     </div>
-                    <div style="margin-top: 25px;" class="row row-cols-sm-auto g-20">
+                    <div id="searchControls" class="row row-cols-sm-auto g-20">
                         <div class="col-3">
                             <label for="pluginSearchText" class="col-form-label col-form-label-sm col-auto">Search:</label>
                         </div>
-                        <div class="col-7">
+                        <div class="col-6">
                             <input type="text" class="form-control form-control-sm" id="pluginSearchText" placeholder="Enter analysis name">
                         </div>
-                        <div style="margin-top: 0.1em; margin-left: -1em; " class="col-2">
-                            <button class="btn btn-primary btn-sm invert" id="searchPlugin" onclick="i2b2.PLUGIN.view.list.searchPluginList(this.value);"><i class="bi bi-search"></i></button>
+                        <div class="col-2 sbtn">
+                            <button class="btn btn-primary btn-sm invert" id="searchPlugin" onclick="i2b2.PLUGIN.view.list.searchPluginList(this.value);">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <div  class="col-2 sbtn sbtn-next">
+                            <button class="btn btn-primary btn-sm invert" id="resetSearchPlugin" onclick="i2b2.PLUGIN.view.list.resetSearchPluginList();">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </button>
                         </div>
                     </div>
                 </form>

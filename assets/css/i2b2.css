@@ -274,11 +274,9 @@ DIV#PluginListBox DIV.topmenu {
 	overflow:hidden;
 }
 
-DIV#PluginListBox DIV#anaPluginList {
-	background: #C3CED4;
-	border: 1px solid #667788;
-	height: 350px;
-	overflow-y: scroll;
+DIV#PluginListBox DIV#pluginList {
+	height: auto;
+	overflow-y: auto;
 	overflow-x: hidden;
 }
 
@@ -294,6 +292,8 @@ DIV#PluginListBox A.pluginRecordBox {
 	background: white; /*#DBE8EF;*/
 	color: #000000 !important;
 	overflow-y: auto;
+	text-decoration: none;
+	border-radius: 5px;
 }
 
 DIV#PluginListBox A.pluginRecordBox:hover {
@@ -339,33 +339,24 @@ DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon {
 	width: 32px;
 }
 
-
 DIV#PluginListBox A.pluginRecordBox.SUMMARY {
-	padding: 0px 5px;
-	height: 16px;
+	padding: 0.2em 6px 0em 6px;
+	height: 1.5em;
 	overflow: hidden;
-}
-
-DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.txtBoundBox {
-	margin: 0px 26px 0px;
 }
 
 DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Name {
 	line-height: 15px;
+	font-size: 11px;
 	font-weight: normal;
 }
 
-DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Descript {
-	font-family: arial,helvetica;
-	font-size: 10px;
-	line-height: 12px;
-}
-
 DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
-	height: 11px;
-	width: 11px;
+	height: 12px;
+	width: 12px;
 	overflow: hidden;
 	margin-top: 1px;
+	margin-right: 0.4em;
 }
 
 /* === Start Golden Layout === */
@@ -618,7 +609,7 @@ iframe.pluginCell {
 	width: 0.1em;
 	height: 0.1em;
 }
-.topmenu1 {
+.pluginMenu {
 	margin-bottom: 15px;
 }
 
@@ -627,11 +618,22 @@ iframe.pluginCell {
 	 outline: none;
 }
 
- #searchPlugin {
-	 padding: 0.2em 0.5em 0.2em 0.5em;
-	 display: inline-block !important;
-	 margin-right: 0;
+ #searchControls {
+	 margin-top: 25px;
  }
+#searchControls button {
+	padding: 0.2em 0.5em 0.2em 0.5em;
+	margin-right: 0;
+}
+
+ #searchControls .sbtn{
+	 margin-top: 0.1em;
+	 margin-left: -1.2em;
+ }
+
+#searchControls .sbtn-next{
+	margin-left: -1.9em;
+}
 
 .modal-backdrop.show{
  opacity: 0;
