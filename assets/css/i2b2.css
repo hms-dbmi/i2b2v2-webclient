@@ -264,24 +264,19 @@ DIV.tabText {}
 	z-index:500;
 }
 
-DIV#PluginListBox
-{
+DIV#pluginListBody {
 	overflow: hidden;
 }
 
-DIV#PluginListBox DIV.topmenu {
-	padding: 2px;
-	background: #DBE8EF;
-	border: 1px solid #888;
-	height: 21px;
-	text-align: right;
-	overflow:hidden;
+DIV#PluginListBox {
+	overflow: hidden;
 }
 
 DIV#PluginListBox DIV#pluginList {
-	height: auto;
+	height: calc(100vh - 18.5em);
 	overflow-y: auto;
 	overflow-x: hidden;
+
 }
 
 DIV#PluginListBox A.pluginRecordBox {
