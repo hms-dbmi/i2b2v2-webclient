@@ -264,22 +264,19 @@ DIV.tabText {}
 	z-index:500;
 }
 
-
-DIV#PluginListBox DIV.topmenu {
-	padding: 2px;
-	background: #DBE8EF;
-	border: 1px solid #888;
-	height: 21px;
-	text-align: right;
-	overflow:hidden;
+DIV#pluginListBody {
+	overflow: hidden;
 }
 
-DIV#PluginListBox DIV#anaPluginList {
-	background: #C3CED4;
-	border: 1px solid #667788;
-	height: 350px;
-	overflow-y: scroll;
+DIV#PluginListBox {
+	overflow: hidden;
+}
+
+DIV#PluginListBox DIV#pluginList {
+	height: calc(100vh - 18.5em);
+	overflow-y: auto;
 	overflow-x: hidden;
+
 }
 
 DIV#PluginListBox A.pluginRecordBox {
@@ -287,10 +284,15 @@ DIV#PluginListBox A.pluginRecordBox {
 	border-left: 1px solid #FFFFFF;
 	border-right: 1px solid #FFFFFF;
 	border-bottom: 1px solid #667788;
-	padding: 1px 5px;
+	padding: 14px 3px 14px 4px;
+	margin:0;
 	display: block;
 	cursor: pointer;
-	background: #DBE8EF;
+	background: white; /*#DBE8EF;*/
+	color: #000000 !important;
+	overflow-y: auto;
+	text-decoration: none;
+	border-radius: 5px;
 }
 
 DIV#PluginListBox A.pluginRecordBox:hover {
@@ -306,7 +308,7 @@ DIV#PluginListBox A.pluginRecordBox DIV.Icon {
 
 DIV#PluginListBox A.pluginRecordBox DIV.Name {
 	font-family: arial,helvetica;
-	font-size: 12px;
+	font-size: 0.5em;
 	font-weight: bold;
 	line-height: 12px;
 }
@@ -314,17 +316,21 @@ DIV#PluginListBox A.pluginRecordBox DIV.Name {
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.txtBoundBox {
 	padding: 0 2px;
-	margin: 0px 36px 0px;
+	margin: 0px 21px 0px 28px;
+	text-align: left;
+	font-size: 2em;
 }
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Name {
 	line-height: 14px;
+	margin-left: 0.5em;
 }
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Descript {
 	font-family: arial,helvetica;
-	font-size: 10px;
+	font-size: 11px;
 	line-height: 10px;
+	margin-left: 0.5em;
 }
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon {
@@ -332,33 +338,24 @@ DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon {
 	width: 32px;
 }
 
-
 DIV#PluginListBox A.pluginRecordBox.SUMMARY {
-	padding: 0px 5px;
-	height: 16px;
+	padding: 0.2em 6px 0em 6px;
+	height: 1.5em;
 	overflow: hidden;
-}
-
-DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.txtBoundBox {
-	margin: 0px 26px 0px;
 }
 
 DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Name {
 	line-height: 15px;
+	font-size: 11px;
 	font-weight: normal;
 }
 
-DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Descript {
-	font-family: arial,helvetica;
-	font-size: 10px;
-	line-height: 12px;
-}
-
 DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
-	height: 11px;
-	width: 11px;
+	height: 12px;
+	width: 12px;
 	overflow: hidden;
 	margin-top: 1px;
+	margin-right: 0.4em;
 }
 
 /* === Start Golden Layout === */
@@ -595,4 +592,57 @@ iframe.pluginCell {
 	-ms-user-drag: none;
 	-webkit-user-drag: none;
 	text-decoration: none;
-}/* === End BOOTSTRAP MENU === */
+}
+/* === End BOOTSTRAP MENU === */
+
+
+/* === Plugin List Box === */
+.offcanvas {
+	color: #000000 !important;
+	background-color: #cfdbe0; /*#c7d7dd; /*#f1f0f0;*/
+	padding: 0 2px 2px 2px;
+	text-align: left;
+}
+
+.offcanvas .btn-close {
+	width: 0.1em;
+	height: 0.1em;
+}
+.pluginMenu {
+	margin-bottom: 15px;
+}
+
+ #analysisTool {
+	 text-decoration: none;
+	 outline: none;
+}
+
+ #searchControls {
+	 margin-top: 25px;
+ }
+#searchControls button {
+	padding: 0.2em 0.5em 0.2em 0.5em;
+	margin-right: 0;
+}
+
+ #searchControls .sbtn {
+	 margin-top: 0.1em;
+	 margin-left: -1.2em;
+ }
+
+#searchControls .sbtn-next {
+	margin-left: -1.9em;
+}
+
+.pluginMenu form {
+	margin-top: 1px;
+}
+
+.modal-backdrop.show {
+ opacity: 0;
+}
+
+.mtop10 {
+ margin-top: 10px;
+}
+/* === Plugin List Box === */

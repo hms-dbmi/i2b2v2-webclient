@@ -1,7 +1,8 @@
 {
   "files": [
     "PLUGIN_ctrlr_general.js",
-    "PLUGIN_instance_view.js"
+    "PLUGIN_instance_view.js",
+    "PLUGIN_list_view.js"
   ],
   "preload": [],
   "css": ["PLUGIN_styles.css"],
@@ -9,6 +10,10 @@
     "name": "Plugins Manager",
     "description": "Manager component for modern i2b2v2 plugins.",
     "icons": {},
+    "defaultListIcons": {
+      "size16x16": "DEFAULTLIST_icon_14x14.gif",
+      "size32x32": "DEFAULTLIST_icon_32x32.gif"
+    },
     "category": ["core","plugins"],
     "paramTranslation": []
   }
