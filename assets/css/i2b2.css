@@ -264,6 +264,10 @@ DIV.tabText {}
 	z-index:500;
 }
 
+DIV#PluginListBox
+{
+	overflow: hidden;
+}
 
 DIV#PluginListBox DIV.topmenu {
 	padding: 2px;
@@ -626,16 +630,24 @@ iframe.pluginCell {
 	margin-right: 0;
 }
 
- #searchControls .sbtn{
+ #searchControls .sbtn {
 	 margin-top: 0.1em;
 	 margin-left: -1.2em;
  }
 
-#searchControls .sbtn-next{
+#searchControls .sbtn-next {
 	margin-left: -1.9em;
 }
 
-.modal-backdrop.show{
+.pluginMenu form {
+	margin-top: 1px;
+}
+
+.modal-backdrop.show {
  opacity: 0;
+}
+
+.mtop10 {
+ margin-top: 10px;
 }
 /* === Plugin List Box === */
