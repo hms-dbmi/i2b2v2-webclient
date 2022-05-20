@@ -14,6 +14,7 @@
     "CRC_view_QryTool.js",
     "CRC_ctrlr_QryRun.js",
     "CRC_view_QryRun.js",
+    "CRC_view_QryStatus.js",
     "i2b2_msgs.js",
     "CRC_ctrlr_LabValues.js"
   ],
