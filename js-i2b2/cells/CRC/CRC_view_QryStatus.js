@@ -1,11 +1,11 @@
 /**
- * @projectDescription	View controller for CRC Query Runner window.
+ * @projectDescription	View controller for CRC Query Status window.
  * @inherits 	i2b2.CRC.view
- * @namespace	i2b2.CRC.view.QR
+ * @namespace	i2b2.CRC.view.QS
  * @author		Nick Benik
  * @version 	2.0
  * ----------------------------------------------------------------------------------------
- * updated 2-3-2022: Relaunch [Nick Benik]
+ * updated 2-3-2022: Relaunch [Marc-Danie]
  */
 console.group('Load & Execute component file: CRC > view > Query Status');
 console.time('execute time');
@@ -18,7 +18,7 @@ i2b2.CRC.view['QS'] = new i2b2Base_cellViewController(i2b2.CRC, 'QS');
 i2b2.CRC.view.QS.render = function() {
     $(i2b2.CRC.view.QS.containerDiv).empty();
 
-    $((Handlebars.compile("{{> QueryResultBreakdown}}"))(i2b2.CRC.model.runner)).appendTo(i2b2.CRC.view.QS.containerDiv);
+    //$((Handlebars.compile("{{> QueryResultBreakdown}}"))(i2b2.CRC.model.runner)).appendTo(i2b2.CRC.view.QS.containerDiv);
 
     // TODO: attach event handlers
 };
@@ -40,9 +40,6 @@ i2b2.events.afterCellInit.add(
 
                     // add the cellWhite flare
                     cell.view.QS.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(cell.view.QS.lm_view._contentElement);
-
-                    // TODO: add rest of initialization code here
-                   // container.on('open', () => {});
 
                     // Show initial screen
                     i2b2.CRC.view.QS.render();
