@@ -15,7 +15,6 @@ i2b2.CRC.ctrlr.QueryStatus = {
 
     refreshStatus: function () {
         $(i2b2.CRC.view.QS.containerDiv).empty();
-        $(i2b2.CRC.ctrlr.QueryStatus.dispDIV).empty();
         i2b2.CRC.ctrlr.QueryStatus.breakdowns  = {
             resultTable: []
         };
@@ -43,7 +42,6 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     breakdown.title = description
                 }
 
-                console.log("processing description " + description);
                 breakdown.result = [];
 
                 let crc_xml = results.refXML.getElementsByTagName('crc_xml_result');
@@ -319,9 +317,6 @@ i2b2.CRC.ctrlr.QueryStatus.startStatus = function(queryName) {
 };
 
 i2b2.CRC.ctrlr.QueryStatus.updateStatus = function(results) {
-    i2b2.CRC.ctrlr.QueryStatus.QRS = {};
-    i2b2.CRC.ctrlr.QueryStatus.QI = {};
-    i2b2.CRC.ctrlr.QueryStatus.QM = {};
     let queryMaster = results.refXML.getElementsByTagName('query_master')[0];
     i2b2.CRC.ctrlr.QueryStatus.QM.id = i2b2.h.getXNodeVal(queryMaster, 'query_master_id');
     i2b2.CRC.ctrlr.QueryStatus.QM.name = i2b2.h.XPath(queryMaster, 'descendant-or-self::name')[0].firstChild.nodeValue;
