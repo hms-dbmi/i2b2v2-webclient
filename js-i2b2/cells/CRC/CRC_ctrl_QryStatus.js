@@ -16,9 +16,10 @@ i2b2.CRC.ctrlr.QueryStatus = {
     refreshStatus: function () {
         $(i2b2.CRC.view.QS.containerDiv).empty();
         $(i2b2.CRC.ctrlr.QueryStatus.dispDIV).empty();
-        $(i2b2.CRC.ctrlr.QueryStatus.dispDIV).appendTo(i2b2.CRC.view.QS.containerDiv);
+        i2b2.CRC.ctrlr.QueryStatus.breakdowns  = {
+            resultTable: []
+        };
 
-        let sCompiledResultsTest = "";  // snm0 - this is the text for the graph display
         // callback processor to check the Query Instance
         let scopedCallbackQRSI = new i2b2_scopedCallback();
         scopedCallbackQRSI.scope = i2b2.CRC.ctrlr.QueryStatus; //self;
@@ -34,20 +35,22 @@ i2b2.CRC.ctrlr.QueryStatus = {
                 let ri_list = results.refXML.getElementsByTagName('query_result_instance');
                 let l = ri_list.length;
                 let description = "";  // Query Report BG
+                let breakdown = {};
                 for (let i = 0; i < l; i++) {
                     let temp = ri_list[i];
                     // get the query name for display in the box
                     description = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
-                    i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += "<div class=\"mainGrp\" style=\"clear: both;  padding-top: 10px; font-weight: bold;\">" + description + "</div>";					// Query Report BG
-                    sCompiledResultsTest += description + '\n';  //snm0
+                    breakdown.title = description
                 }
+
+                console.log("processing description " + description);
+                breakdown.result = [];
 
                 let crc_xml = results.refXML.getElementsByTagName('crc_xml_result');
                 l = crc_xml.length;
                 for (let i = 0; i < l; i++) {
                     let temp = crc_xml[i];
                     let xml_value = i2b2.h.XPath(temp, 'descendant-or-self::xml_value')[0].firstChild.nodeValue;
-
                     let xml_v = i2b2.h.parseXml(xml_value);
 
                     let params = i2b2.h.XPath(xml_v, 'descendant::data[@column]/text()/..');
@@ -72,35 +75,22 @@ i2b2.CRC.ctrlr.QueryStatus = {
                         if (typeof params[i2].attributes.display !== 'undefined') {
                             displayValue = params[i2].attributes.display.textContent;
                         }
-                        let graphValue = displayValue;
                         if (typeof params[i2].attributes.comment !== 'undefined') {
                             displayValue += ' &nbsp; <span style="color:#090;">[' + params[i2].attributes.comment.textContent + ']<span>';
-                            graphValue += '|' + params[i2].attributes.comment.textContent;
                         }
 
-                        // display a line of results in the status box
-                        i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += "<div class=\'" + description + "\' style=\"clear: both; margin-left: 20px; float: left; height: 16px; line-height: 16px;\">" + params[i2].getAttribute("column") + ": <font color=\"#0000dd\">" + displayValue + "</font></div>";  //Query Report BG
-
-                        if (params[i2].getAttribute("column") === 'patient_count') {
-                            sCompiledResultsTest += params[i2].getAttribute("column").substring(0, 20) + " : " + graphValue + "\n"; //snm0
-                        } else {
-                            sCompiledResultsTest += params[i2].getAttribute("column").substring(0, 20) + " : " + value + "\n"; //snm0
-                        }
+                        breakdown.result.push({
+                            name: params[i2].getAttribute("column"),
+                            value: displayValue
+                        });
                     }
+                    i2b2.CRC.ctrlr.QueryStatus.breakdowns.resultTable.push(breakdown);
                 }
-                //alert(sCompiledResultsTest); //snm0
-                /*i2b2.CRC.view.graphs.createGraphs("infoQueryStatusChart", sCompiledResultsTest, i2b2.CRC.view.graphs.bIsSHRINE);
-                if (i2b2.CRC.view.graphs.bisGTIE8) {
-                    // Resize the query status box depending on whether breakdowns are included
-                    if (sCompiledResultsTest.includes("breakdown"))
-                        i2b2.CRC.cfg.config.ui.statusBox = i2b2.CRC.cfg.config.ui.largeStatusBox;
-                    else i2b2.CRC.cfg.config.ui.statusBox = i2b2.CRC.cfg.config.ui.defaultStatusBox;
-                    i2b2.CRC.view.status.selectTab('graphs');
-                    //$(window).trigger('resize');
-                    window.dispatchEvent(new Event('resize'));
-                }*/
                 //self.dispDIV.innerHTML += this.dispMsg;
             }
+
+            i2b2.CRC.ctrlr.QueryStatus.breakdowns.isRunning = i2b2.CRC.ctrlr.QueryStatus.isRunning;
+            i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QueryStatus.breakdowns});
         }
 
         // this private function refreshes the display DIV
@@ -110,15 +100,11 @@ i2b2.CRC.ctrlr.QueryStatus = {
         if (s.indexOf('.') < 0) {
             s += '.0';
         }
-        if (i2b2.CRC.ctrlr.QueryStatus.isRunning) {
-            i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML = '<div style="clear:both;"><div style="float:left; font-weight:bold">Running Query: "' + i2b2.CRC.ctrlr.QueryStatus.QM.name + '"</div>';
-            // display the current run duration
 
-            i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="float:right">[' + s + ' secs]</div>';
-        } else {
-            i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML = '<div style="clear:both;"><div style="float:left; font-weight:bold">Finished Query: "' + i2b2.CRC.ctrlr.QueryStatus.QM.name + '"</div>';
-            i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="float:right">[' + s + ' secs]</div>';
+        i2b2.CRC.ctrlr.QueryStatus.breakdowns.runDuration = s;
+        i2b2.CRC.ctrlr.QueryStatus.breakdowns.name = i2b2.CRC.ctrlr.QueryStatus.QM.name;
 
+        if (!i2b2.CRC.ctrlr.QueryStatus.isRunning) {
             //Query Report BG
             /*if((!Object.isUndefined(self.QI.start_date)) && (!Object.isUndefined(self.QI.end_date)))
             {
@@ -134,9 +120,9 @@ i2b2.CRC.ctrlr.QueryStatus = {
             $('runBoxText').innerHTML = "Run Query";
             */
         }
-        i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '</div>';
+
         if ((!i2b2.CRC.ctrlr.QueryStatus.isRunning) && (undefined !== i2b2.CRC.ctrlr.QueryStatus.QI.end_date)) {
-            i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="margin-left:20px; clear:both; line-height:16px; ">Compute Time: ' + (Math.floor((i2b2.CRC.ctrlr.QueryStatus.QI.end_date - i2b2.CRC.ctrlr.QueryStatus.QI.start_date) / 100)) / 10 + ' secs</div>';
+            i2b2.CRC.ctrlr.QueryStatus.breakdowns.computeTime = (Math.floor((i2b2.CRC.ctrlr.QueryStatus.QI.end_date - i2b2.CRC.ctrlr.QueryStatus.QI.start_date) / 100)) / 10;
         }
 
         let foundError = false;
@@ -162,8 +148,6 @@ i2b2.CRC.ctrlr.QueryStatus = {
                         //				self.dispDIV.innerHTML += '<div style="float:right; height:16px; line-height:16px; "><font color="#00dd00">PROCESSING</font></div>'; //['+rec.QRS_time+' secs]</div>';
                         alert('Your query has timed out and has been rescheduled to run in the background.  The results will appear in "Previous Queries"');
                         foundError = true;
-
-                        //t += '#00dd00">'+rec.QRS_Status;
                         break;
                 }
                 t += '</font> ';
@@ -172,7 +156,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
             if (foundError === false) {
                 if (rec.QRS_DisplayType === "CATNUM") {
                     i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
-                } else if ((rec.QRS_DisplayType === "LIST") && (foundError === false)) {
+                } else if ((rec.QRS_DisplayType === "LIST")) {
                     i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
                 }
             }
@@ -209,9 +193,6 @@ i2b2.CRC.ctrlr.QueryStatus = {
                 }
             }
         }
-
-        i2b2.CRC.ctrlr.QueryStatus.dispDIV.style.display = 'none';
-        i2b2.CRC.ctrlr.QueryStatus.dispDIV.style.display = 'block';
 
         if (!i2b2.CRC.ctrlr.QueryStatus.isRunning && i2b2.CRC.ctrlr.QueryStatus.refreshInterrupt) {
             // make sure our refresh interrupt is turned off
@@ -287,14 +268,10 @@ i2b2.CRC.ctrlr.QueryStatus = {
                         rec.size = i2b2.h.getXNodeVal(temp, 'set_size');
                         rec.start_date = i2b2.h.getXNodeVal(temp, 'start_date');
                          if (rec.start_date !== undefined) {
-                             //alert(sDate.substring(0,4) + ":" + sDate.substring(5,7)  + ":" + sDate.substring(8,10));
-                             //012345678901234567890123
-                             //2010-12-21T16:12:01.427
                              rec.start_date =  new Date(rec.start_date.substring(0,4), rec.start_date.substring(5,7)-1, rec.start_date.substring(8,10), rec.start_date.substring(11,13),rec.start_date.substring(14,16),rec.start_date.substring(17,19),rec.start_date.substring(20,23));
                          }
                         rec.end_date = i2b2.h.getXNodeVal(temp, 'end_date');
                         if (rec.end_date !== undefined) {
-                            //alert(sDate.substring(0,4) + ":" + sDate.substring(5,7)  + ":" + sDate.substring(8,10));
                             rec.end_date =  new Date(rec.end_date.substring(0,4), rec.end_date.substring(5,7)-1, rec.end_date.substring(8,10), rec.end_date.substring(11,13),rec.end_date.substring(14,16),rec.end_date.substring(17,19),rec.end_date.substring(20,23));
                         }
 
@@ -333,32 +310,39 @@ i2b2.CRC.ctrlr.QueryStatus = {
     }
 };
 
-i2b2.CRC.ctrlr.QueryStatus.updateStatus = function(results) {
-    let temp = results.refXML.getElementsByTagName('query_master')[0];
+i2b2.CRC.ctrlr.QueryStatus.startStatus = function(queryName) {
     i2b2.CRC.ctrlr.QueryStatus.QRS = {};
     i2b2.CRC.ctrlr.QueryStatus.QI = {};
     i2b2.CRC.ctrlr.QueryStatus.QM = {};
-    i2b2.CRC.ctrlr.QueryStatus.QM.id = i2b2.h.getXNodeVal(temp, 'query_master_id');
-    i2b2.CRC.ctrlr.QueryStatus.QM.name = i2b2.h.XPath(temp, 'descendant-or-self::name')[0].firstChild.nodeValue;
+
+    i2b2.CRC.view.QS.render({breakdowns: {isProcessing: true, name: queryName}});
+};
+
+i2b2.CRC.ctrlr.QueryStatus.updateStatus = function(results) {
+    i2b2.CRC.ctrlr.QueryStatus.QRS = {};
+    i2b2.CRC.ctrlr.QueryStatus.QI = {};
+    i2b2.CRC.ctrlr.QueryStatus.QM = {};
+    let queryMaster = results.refXML.getElementsByTagName('query_master')[0];
+    i2b2.CRC.ctrlr.QueryStatus.QM.id = i2b2.h.getXNodeVal(queryMaster, 'query_master_id');
+    i2b2.CRC.ctrlr.QueryStatus.QM.name = i2b2.h.XPath(queryMaster, 'descendant-or-self::name')[0].firstChild.nodeValue;
 
     // save the query instance
-    temp = results.refXML.getElementsByTagName('query_instance')[0];
-    i2b2.CRC.ctrlr.QueryStatus.QI.id = i2b2.h.XPath(temp, 'descendant-or-self::query_instance_id')[0].firstChild.nodeValue;
-    i2b2.CRC.ctrlr.QueryStatus.QI.start_date = i2b2.h.XPath(temp, 'descendant-or-self::start_date')[0].firstChild.nodeValue; //Query Report BG
-    temp = i2b2.h.XPath(temp, 'descendant-or-self::end_date')[0];
+    let queryInstance = results.refXML.getElementsByTagName('query_instance')[0];
+    i2b2.CRC.ctrlr.QueryStatus.QI.id = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_instance_id')[0].firstChild.nodeValue;
+    i2b2.CRC.ctrlr.QueryStatus.QI.start_date = i2b2.h.XPath(queryInstance, 'descendant-or-self::start_date')[0].firstChild.nodeValue; //Query Report BG
+    let temp = i2b2.h.XPath(queryInstance, 'descendant-or-self::end_date')[0];
     if (undefined !== temp) {
         i2b2.CRC.ctrlr.QueryStatus.QI.end_date = i2b2.h.XPath(temp, 'descendant-or-self::end_date')[0].firstChild.nodeValue; //Query Report BG
     }
 
-    temp = results.refXML.getElementsByTagName('query_instance')[0];
-    i2b2.CRC.ctrlr.QueryStatus.QI.status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0];
+    i2b2.CRC.ctrlr.QueryStatus.QI.status = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/name')[0];
     if (undefined !== i2b2.CRC.ctrlr.QueryStatus.QI.status ) {
-        i2b2.CRC.ctrlr.QueryStatus.QI.status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
+        i2b2.CRC.ctrlr.QueryStatus.QI.status = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
     }
 
-    i2b2.CRC.ctrlr.QueryStatus.QI.statusID = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/status_type_id')[0];
+    i2b2.CRC.ctrlr.QueryStatus.QI.statusID = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/status_type_id')[0];
     if (undefined !== i2b2.CRC.ctrlr.QueryStatus.QI.statusID) {
-        i2b2.CRC.ctrlr.QueryStatus.QI.statusID = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
+        i2b2.CRC.ctrlr.QueryStatus.QI.statusID = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
     }
 
     setTimeout("i2b2.CRC.ctrlr.QueryStatus.pollStatus()", i2b2.CRC.ctrlr.QueryStatus.polling_interval);
@@ -379,13 +363,13 @@ i2b2.CRC.ctrlr.QueryStatus._GetTitle = function(resultType, oRecord, oXML) {
                 if (i2b2.PM.model.isObfuscated) {
                     title = t+" - "+oRecord.size+"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" encounters";
                 } else {
-                    title = t; //+" - "+oRecord.size+" encounters";
+                    title = t;
                 }
             } else {
                 if (i2b2.PM.model.isObfuscated) {
                     title = t+" - 10 encounters or less";
                 } else {
-                    title = t; //+" - "+oRecord.size+" encounters";
+                    title = t;
                 }
             }
             break;
@@ -401,7 +385,7 @@ i2b2.CRC.ctrlr.QueryStatus._GetTitle = function(resultType, oRecord, oXML) {
                 if (i2b2.PM.model.isObfuscated) {
                     title = p+" - "+oRecord.size+"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
                 } else {
-                    title = p; //+" - "+oRecord.size+" patients";
+                    title = p;
                 }
             } else {
                 if (i2b2.PM.model.isObfuscated) {
@@ -457,3 +441,16 @@ function trim(sString)
     }
     return sString;
 }
+
+Handlebars.registerHelper('eachProperty', function(context, options) {
+    let ret = "";
+    let index =0;
+    for(let prop in context)
+    {
+        if (context.hasOwnProperty(prop)) {
+            ret = ret + options.fn({property:prop,value:context[prop], index: index});
+            index = index + 1;
+        }
+    }
+    return ret;
+});

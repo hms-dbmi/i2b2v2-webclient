@@ -105,6 +105,8 @@ function QueryRunner() {
         //i2b2.CRC.ctrlr.QueryStatus.private_refreshInterrupt = setInterval("i2b2.CRC.ctrlr.QueryStatus.refreshStatus()", 100);
         //i2b2.CRC.ctrlr.QueryStatus.QM.name = queryName;
 
+        i2b2.CRC.ctrlr.QueryStatus.startStatus(queryName);
+
         // run query using the passed query definition
         // ==========================================================
         i2b2.CRC.ajax.runQueryInstance_fromQueryDefinition("CRC:QueryRunner", i2b2.CRC.model.runner.definition, callbackQueryDef);

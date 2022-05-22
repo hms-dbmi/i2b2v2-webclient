@@ -10,3 +10,41 @@
     padding: 0.4em;
     border-radius: 0 0 3px 3px;
 }
+
+.CRC_QS_view .accordion-button{
+    padding: 0.2em;
+    color: #2583ab;;
+    background: none;
+    font-size: 0.46em;
+    font-weight: 500;
+}
+
+.CRC_QS_view td {
+    padding: 0.3em;
+}
+
+.CRC_QS_view .accordion-item {
+    border: none
+}
+
+.CRC_QS_view .accordion-body {
+    padding: 0.5em;
+}
+
+.CRC_QS_view .accordion-header:hover {
+    background-color: #ececec;
+}
+
+.CRC_QS_view .computeTime {
+    margin-left: 0;
+    clear:both;
+    line-height: 16px;
+    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+}
+
+.CRC_QS_view .queryRunningSpinner {
+    height: 1.3em;
+    width: 1.3em;
+    margin-left: 0.3em;
+}

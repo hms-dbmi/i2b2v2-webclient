@@ -15,12 +15,10 @@ i2b2.CRC.view['QS'] = new i2b2Base_cellViewController(i2b2.CRC, 'QS');
 
 
 // ================================================================================================== //
-i2b2.CRC.view.QS.render = function() {
+i2b2.CRC.view.QS.render = function(breakdowns) {
     $(i2b2.CRC.view.QS.containerDiv).empty();
 
-    //$((Handlebars.compile("{{> QueryResultBreakdown}}"))(i2b2.CRC.model.runner)).appendTo(i2b2.CRC.view.QS.containerDiv);
-
-    // TODO: attach event handlers
+    $((Handlebars.compile("{{> QueryResultBreakdown}}"))(breakdowns)).appendTo(i2b2.CRC.view.QS.containerDiv);
 };
 
 // ================================================================================================== //

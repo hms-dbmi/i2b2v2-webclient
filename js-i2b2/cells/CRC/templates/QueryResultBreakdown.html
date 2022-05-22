@@ -1,9 +1,47 @@
 <div id="infoQueryStatusText" class="StatusBoxText" oncontextmenu="return false">
     <div style="clear:both;">
-        <div style="float:left; font-weight:bold">
-            {{#if this.status}}
-                {{this.status}} Query: "{{this.name}}"
+        {{#if breakdowns.name}}
+            {{#if breakdowns.isProcessing}}
+                <div style="clear:both;"><div style="float:left; font-weight:bold">Processing Query: {{breakdowns.name}} </div>
+                <div class="spinner-border text-success queryRunningSpinner" role="status"><span class="visually-hidden">Loading...</span></div>
+            {{else if breakdowns.isRunning}}
+                <div style="clear:both;"><div style="float:left; font-weight:bold">Running Query: {{breakdowns.name}} </div>
+                <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
+            {{else}}
+                <div style="clear:both;"><div style="float:left; font-weight:bold">Finished Query: {{breakdowns.name}} </div>
             {{/if}}
+
+            {{#if breakdowns.runDuration}}
+                <div style="float:right">[{{breakdowns.runDuration}} &nbsp; secs]</div>
+            {{/if}}
+            {{#if breakdowns.computeTime}}
+                <div class="computeTime">Compute Time: {{breakdowns.computeTime}} &nbsp;secs</div>
+            {{/if}}
+        {{/if}}
+
+        <div class="accordion" id="accordionExample">
+            {{#each breakdowns.resultTable}}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="resultStatus{{@index}}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse{{@index}}" aria-expanded="true" aria-controls="collapse{{@index}}">
+                            {{this.title}}
+                        </button>
+                    </h2>
+                    <div id="collapse{{@index}}" class="accordion-collapse collapse show" aria-labelledby="resultStatus{{@index}}">
+                        <div class="accordion-body">
+                            <table>
+                                {{#each this.result}}
+                                    <tr>
+                                        <td>{{this.name}}</td>
+                                        <td>{{this.value}}</td>
+                                    </tr>
+                                {{/each}}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
         </div>
     </div>
 </div>
