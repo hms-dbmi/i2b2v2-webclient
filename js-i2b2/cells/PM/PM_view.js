@@ -77,8 +77,35 @@ i2b2.PM.doLoginDialog = function() {
             event.preventDefault();
             i2b2.PM.doLogin();
         });
+        // attach event handler for the SSO buttons
+        $('.sso-button').on('click', (evt) => {
+            i2b2.PM.doSamlLogin($(evt.currentTarget).data('service'));
+        });
+        // attach event handler for the SSO buttons
+        $('#logindomain').on('change', (evt) => {
+            i2b2.PM.doChangeDomain();
+        });
+        // handle display of SAML buttons if needed by the Domain
+        i2b2.PM.doChangeDomain();
     }));
 };
+
+// ================================================================================================== //
+i2b2.PM.doChangeDomain = function() {
+    let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+    console.dir(selectedDomain);
+    let loginElements = $(".login-user, .login-password, .login-button");
+    if (selectedDomain.saml !== undefined) {
+        loginElements.hide();
+        selectedDomain.saml.forEach((service) => {
+            $(".sso-button[data-service='"+service+"']").show();
+        });
+    } else {
+        loginElements.show();
+        $(".sso-button").hide();
+    }
+};
+
 
 
 console.timeEnd('execute time');

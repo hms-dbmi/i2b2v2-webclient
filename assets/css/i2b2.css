@@ -12,6 +12,28 @@ body, td, p {
 	line-height:16px;
 }
 
+
+.sso-button {
+	border: 1px solid grey;
+	padding: 0;
+	width: 19em;
+	position: relative;
+}
+.sso-button img {
+	height: 4.6em;
+	width: 4.6em;
+	float: left;
+}
+
+.sso-button div {
+	width: 19em;
+	padding-left: 4.6em;
+	position: absolute;
+	margin:0;
+	top: 35%;
+}
+
+
 /* === Start Page Header === */
 #top-bar {
 	height:45px;
