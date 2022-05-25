@@ -13,7 +13,7 @@ console.time('execute time');
 
 // create and save the view object
 i2b2.ONT.view.nav = new i2b2Base_cellViewController(i2b2.ONT, 'nav');
-
+i2b2.ONT.view.nav.template = {};
 
 // ================================================================================================== //
 i2b2.ONT.view.nav.PopulateCategories = function() {		
@@ -122,7 +122,38 @@ i2b2.ONT.view.nav.doRefreshAll = function() {
     i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
     i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
 };
+//================================================================================================== //
 
+i2b2.ONT.view.nav.toggleSearchOptions = function(elem){
+   let currentVal = $(elem).val();
+   if(currentVal === "coding"){
+       $("#categoryOptions").addClass("hidden");
+       $("#codingOptions").removeClass("hidden");
+   }
+   else{
+       $("#categoryOptions").removeClass("hidden");
+       $("#codingOptions").addClass("hidden");
+   }
+};
+
+//================================================================================================== //
+
+i2b2.ONT.view.nav.toggleSearchClearIcon = function(){
+    let currentVal = $("#searchTermText").val();
+    if(currentVal){
+        $("#searchTerm .clearIcon").removeClass("hidden");
+    }
+    else{
+        $("#searchTerm .clearIcon").addClass("hidden");
+    }
+};
+
+//================================================================================================== //
+
+i2b2.ONT.view.nav.clearSearchInput = function(){
+    $("#searchTermText").val("");
+    $("#searchTerm .clearIcon").addClass("hidden");
+};
 
 // Below code is executed once the entire cell has been loaded
 //================================================================================================== //
@@ -153,12 +184,121 @@ i2b2.events.afterCellInit.add((function(cell){
 
                 i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
                 i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
+
+                // Load the finder templatee
+                $.ajax("js-i2b2/cells/ONT/assets/OntologyFinder.html", {
+                    success: (template) => {
+                        cell.view.nav.template.finder = Handlebars.compile(template);
+                        // Render the template into place
+                        let categories = []
+                        for (let i=0; i<i2b2.ONT.model.Categories.length; i++) {
+                            let cat = i2b2.ONT.model.Categories[i];
+                            let catVal = cat.key.substring(2,cat.key.indexOf('\\',3))
+                            categories.push({
+                                name: cat.name,
+                                value: catVal
+                            });
+                        }
+                        let findTermOptions = {
+                            "categories": categories
+                        };
+                        $(cell.view.nav.template.finder(findTermOptions)).prependTo(container._contentElement);
+                    },
+                    error: (error) => { console.error("Could not retrieve template: OntologyFinder.html"); }
+                });
             }).bind(this)
         );
     }
 }));
 
+// ================================================================================================== //
+
+i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
+    if (updateInfo.DataLocation === "i2b2.ONT.model.Categories") {
+        $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderFilterOptions.html", {
+            success: (template) => {
+                let categoryOptions = Handlebars.compile(template);
+                let categories = [];
+                for (let i=0; i<i2b2.ONT.model.Categories.length; i++) {
+                    let cat = i2b2.ONT.model.Categories[i];
+                    let catVal = cat.key.substring(2,cat.key.indexOf('\\',3))
+                    categories.push({
+                        name: cat.name,
+                        value: catVal
+                    });
+                }
+                let options = {
+                    "option": categories
+                };
+                $(categoryOptions(options)).appendTo("#categorySubmenu");
+
+                $("#liCat").hover(function(){
+                    $("#codingSubmenu").hide().closest("li").removeClass("highlight-menu-item");
+                    $("#categorySubmenu").css("left", "100%").show();
+                });
+
+                $("#liCoding").hover(function(){
+
+                    $("#categorySubmenu").hide().closest("li").removeClass("highlight-menu-item");
+                    $("#codingSubmenu").css("left", "100%").show();
+                });
+
+                $(".submenu li").on("click", function(){
+                    $(".active").removeClass("active");
+                    let newDisplayText = $(this).find("button").addClass("active").text();
+                    let newValue = $(this).find("button").addClass("active").data("search-filter-value");
+                    $("#searchFilterText").text(newDisplayText);
+                    $("#searchFilter").data("selected-filter", newValue);
+                });
+
+                $("#searchActions .reset").click(function() {
+                    $("#searchTermText").val("");
+                });
+
+                $('#i2b2FinderOnt .navbar-nav').on('shown.bs.dropdown', function () {
+                    let navBarMain = $("#i2b2FinderOnt .navbarMain .active")
+                    let parentMenu = navBarMain.closest(".submenu").closest("li");
+                    navBarMain.closest(".submenu").each(function(){
+                        $(this).css("left", parentMenu.width());
+                        $(this).show();
+                    }).closest("li").addClass("highlight-menu-item");
+                });
+            },
+            error: (error) => { console.error("Could not retrieve template: OntologyFinderFilterOption.html"); }
+        });
+
+        $('#i2b2FinderOnt .navbar-nav').on('show.bs.dropdown', function () {
+            $(".submenu").hide();
+            $("#i2b2FinderOnt .navbarMain .active").closest(".submenu").each(function(){
+                $(this).show();
+            }).closest("li").addClass("highlight-menu-item");
+        });
+    }
+
+    if (updateInfo.DataLocation === "i2b2.ONT.model.Schemes") {
+        $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderFilterOptions.html", {
+            success: (template) => {
+                let codingSystemOptions = Handlebars.compile(template);
+                let codingSystems = [];
+                for (let i=0; i<i2b2.ONT.model.Schemes.length; i++) {
+                    let cat = i2b2.ONT.model.Schemes[i];
+                    codingSystems.push({
+                        name: cat.name,
+                        value: cat.key
+                    });
+                }
+                let options = {
+                    "option": codingSystems
+                };
+                $(codingSystemOptions(options)).appendTo("#codingSubmenu");
+            },
+            error: (error) => { console.error("Could not retrieve template: OntologyFinderCodingOptions.html"); }
+        });
+    }
+
+}).bind(i2b2.ONT));
 
 // ================================================================================================== //
+
 console.timeEnd('execute time');
 console.groupEnd();

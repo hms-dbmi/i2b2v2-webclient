@@ -1,0 +1,47 @@
+<div class="finder-main" id="i2b2FinderOnt">
+    <div class="" id="searchOptions">
+        <span class="searchLabel">Search By:</span>
+        <nav class="nav navbar-expand-sm" data-selected-filter="Any Category" id="searchFilter">
+            <div class="navbarMain">
+                <div class="collapse navbar-collapse" id="main_nav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <div id="searchFilterText">Any Category</div></a>
+                            <ul class="dropdown-menu main-menu">
+                                <li id="liCat">
+                                    <button class="dropdown-item">Category &raquo; </button>
+                                    <ul class="submenu dropdown-menu" id="categorySubmenu">
+                                        <li>
+                                            <button class="dropdown-item active" type="button" data-search-filter-value="[[[ANY]]]">Any Category</button>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li id="liCoding">
+                                    <button class="dropdown-item" href="#"> Coding System &raquo; </button>
+                                    <ul class="submenu dropdown-menu" id="codingSubmenu">
+                                        <li>
+                                            <button class="dropdown-item" type="button" data-search-filter-value="">Any Coding System </button>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="searchTermMain">
+            <div class="input-group" id="searchTerm">
+                <input class="form-control form-control-sm" placeholder="Enter term" aria-label="Term" id="searchTermText" onkeyup="i2b2.ONT.view.nav.toggleSearchClearIcon();">
+                <span class="input-group-append clear-input">
+                    <i class="bi bi-x  hidden clearIcon" onclick="i2b2.ONT.view.nav.clearSearchInput();"></i>
+                </span>
+            </div>
+        </div>
+        <div id="searchActions">
+            <button type="submit" class="btn btn-primary btn-sm invert search" >Search</button>
+            <button type="submit" class="btn btn-primary btn-sm invert reset" >Reset</button>
+        </div>
+    </div>
+</div>
