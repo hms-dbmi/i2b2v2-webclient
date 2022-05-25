@@ -34,12 +34,12 @@
                                 {{#each this.result}}
                                    {{#if this.statusMessage}}
                                     <tr>
-                                        <td><span>{{this.name}}</span><span class="breakdown-status">{{this.statusMessage}}</span></td>
+                                        <td><span>{{this.name}}</span><span class="breakdownStatus">{{this.statusMessage}}</span></td>
                                     </tr>
                                     {{else}}
                                         <tr>
                                             <td>{{this.name}}</td>
-                                            <td>{{this.value}}</td>
+                                            <td class="breakdownValue">{{this.value}}</td>
                                         </tr>
                                     {{/if}}
                                 {{/each}}

@@ -13,10 +13,10 @@
 
 .CRC_QS_view .accordion-button{
     padding: 0.2em;
-    color: #2583ab;;
+    color: #212529;
     background: none;
-    font-size: 0.46em;
-    font-weight: 500;
+    font-size: 0.45em;
+    font-weight: 600;
 }
 
 .CRC_QS_view td {
@@ -49,7 +49,11 @@
     margin-left: 0.3em;
 }
 
-.CRC_QS_view .breakdown-status {
+.CRC_QS_view .breakdownStatus {
     color: #00dd00;
     margin-left: 0.3em;
+}
+
+.CRC_QS_view .breakdownValue {
+    color: #0000dd;
 }
