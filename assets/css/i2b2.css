@@ -16,17 +16,18 @@ body, td, p {
 .sso-button {
 	border: 1px solid grey;
 	padding: 0;
-	width: 19em;
+	width: 100%;
 	position: relative;
 }
 .sso-button img {
 	height: 4.6em;
 	width: 4.6em;
 	float: left;
+	margin-left: -1px;
 }
 
 .sso-button div {
-	width: 19em;
+	width: 100%;
 	padding-left: 4.6em;
 	position: absolute;
 	margin:0;

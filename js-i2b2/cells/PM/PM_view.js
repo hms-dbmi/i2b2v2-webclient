@@ -77,15 +77,17 @@ i2b2.PM.doLoginDialog = function() {
             event.preventDefault();
             i2b2.PM.doLogin();
         });
-        // attach event handler for the SSO buttons
-        $('.sso-button').on('click', (evt) => {
-            i2b2.PM.doSamlLogin($(evt.currentTarget).data('service'));
+        // attach event handlers for the SSO buttons
+        let func_lauchSaml = (evt) => { i2b2.PM.doSamlLogin($(evt.currentTarget).data('service')); };
+        $('.sso-button').on('click', func_lauchSaml);
+        $('.sso-button').on('keyup', (evt) => {
+            if (evt.which === 13) func_lauchSaml(evt);
         });
-        // attach event handler for the SSO buttons
-        $('#logindomain').on('change', (evt) => {
-            i2b2.PM.doChangeDomain();
-        });
-        // handle display of SAML buttons if needed by the Domain
+
+        // attach event handler for domain changes
+        $('#logindomain').on('change', i2b2.PM.doChangeDomain);
+
+        // initial handling to display/hide SAML buttons based on the Domain
         i2b2.PM.doChangeDomain();
     }));
 };
