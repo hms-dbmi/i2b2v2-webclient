@@ -48,3 +48,8 @@
     width: 1.3em;
     margin-left: 0.3em;
 }
+
+.CRC_QS_view .breakdown-status {
+    color: #00dd00;
+    margin-left: 0.3em;
+}

@@ -19,7 +19,7 @@
             {{/if}}
         {{/if}}
 
-        <div class="accordion" id="accordionExample">
+        <div class="accordion" id="breakdownAccordion">
             {{#each breakdowns.resultTable}}
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="resultStatus{{@index}}">
@@ -32,10 +32,16 @@
                         <div class="accordion-body">
                             <table>
                                 {{#each this.result}}
+                                   {{#if this.statusMessage}}
                                     <tr>
-                                        <td>{{this.name}}</td>
-                                        <td>{{this.value}}</td>
+                                        <td><span>{{this.name}}</span><span class="breakdown-status">{{this.statusMessage}}</span></td>
                                     </tr>
+                                    {{else}}
+                                        <tr>
+                                            <td>{{this.name}}</td>
+                                            <td>{{this.value}}</td>
+                                        </tr>
+                                    {{/if}}
                                 {{/each}}
                             </table>
                         </div>

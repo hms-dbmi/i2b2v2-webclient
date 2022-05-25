@@ -34,15 +34,16 @@ i2b2.CRC.ctrlr.QueryStatus = {
                 let ri_list = results.refXML.getElementsByTagName('query_result_instance');
                 let l = ri_list.length;
                 let description = "";  // Query Report BG
-                let breakdown = {};
+                let breakdown = {
+                    title: null,
+                    result: []
+                };
                 for (let i = 0; i < l; i++) {
                     let temp = ri_list[i];
                     // get the query name for display in the box
                     description = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
                     breakdown.title = description
                 }
-
-                breakdown.result = [];
 
                 let crc_xml = results.refXML.getElementsByTagName('crc_xml_result');
                 l = crc_xml.length;
@@ -125,14 +126,21 @@ i2b2.CRC.ctrlr.QueryStatus = {
 
         let foundError = false;
 
+        i2b2.CRC.ctrlr.QueryStatus.breakdowns.resulTable = [];
         for (let i in i2b2.CRC.ctrlr.QueryStatus.QRS) {
             let rec = i2b2.CRC.ctrlr.QueryStatus.QRS[i];
+            let breakdown = {
+                title: null,
+                statusMessage: null
+            };
             if (rec.QRS_time) {
                 let t = '<font color="';
                 // display status of query in box
                 switch (rec.QRS_Status) {
                     case "ERROR":
-                        i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="clear:both; height:16px; line-height:16px; "><div style="float:left; font-weight:bold; height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#dd0000">ERROR</font></div>';
+                        //i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="clear:both; height:16px; line-height:16px; "><div style="float:left; font-weight:bold; height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#dd0000">ERROR</font></div>';
+                        breakdown.title = rec.title;
+                        breakdown.result = {statusMessage: "ERROR"};
                         foundError = true;
                         break;
                     case "COMPLETED":
@@ -142,8 +150,9 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     case "INCOMPLETE":
                     case "WAITTOPROCESS":
                     case "PROCESSING":
-                        i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="clear:both; height:16px;line-height:16px; "><div style="float:left; font-weight:bold;  height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#00dd00">PROCESSING</font></div>';
-                        //				self.dispDIV.innerHTML += '<div style="float:right; height:16px; line-height:16px; "><font color="#00dd00">PROCESSING</font></div>'; //['+rec.QRS_time+' secs]</div>';
+                        //i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="clear:both; height:16px;line-height:16px; "><div style="float:left; font-weight:bold;  height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#00dd00">PROCESSING</font></div>';
+                        breakdown.title = rec.title;
+                        breakdown.result = {statusMessage: "PROCESSING"};
                         alert('Your query has timed out and has been rescheduled to run in the background.  The results will appear in "Previous Queries"');
                         foundError = true;
                         break;
