@@ -19,6 +19,93 @@ i2b2.events.afterCellInit.add(
     })
 );
 
+// ================================================================================================== //
+i2b2.PM.doSamlLogin = function(service) {
+
+    let domain = i2b2.PM.model.Domains[$("#PM-login-modal #logindomain").val()];
+    if (domain) {
+        // copy information from the domain record
+        var login_url = domain.urlCellPM;
+        i2b2.PM.model.url = login_url;
+        var shrine_domain = Boolean.parseTo(domain.isSHRINE);
+        i2b2.PM.model.login_domain = domain.domain;
+        if (domain.debug !== undefined) {
+            i2b2.PM.model.login_debugging = Boolean.parseTo(domain.debug);
+        } else {
+            i2b2.PM.model.login_debugging = false;
+        }
+        if (domain.allowAnalysis !== undefined) {
+            i2b2.PM.model.allow_analysis = Boolean.parseTo(domain.allowAnalysis);
+        } else {
+            i2b2.PM.model.allow_analysis = true;
+        }
+        if (domain.adminOnly !== undefined) {
+            i2b2.PM.model.admin_only = Boolean.parseTo(domain.adminOnly);
+        } else {
+            i2b2.PM.model.admin_only = false;
+        }
+        if (domain.installer !== undefined) {
+            i2b2.PM.model.installer_path = domain.installer;
+        }
+    } else {
+        e += "\n  No login channel was selected";
+    }
+
+    const popupCenter = ({url, title, w, h}) => {
+        // Fixes dual-screen position                             Most browsers      Firefox
+        const dualScreenLeft = window.screenLeft !==  undefined ? window.screenLeft : window.screenX;
+        const dualScreenTop = window.screenTop !==  undefined   ? window.screenTop  : window.screenY;
+
+        const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+        const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+        const systemZoom = width / window.screen.availWidth;
+        const left = (width - w) / 2 / systemZoom + dualScreenLeft;
+        const top = (height - h) / 2 / systemZoom + dualScreenTop;
+        const newWindow = window.open(url, title,`
+            scrollbars=yes,
+            width=${w / systemZoom}, 
+            height=${h / systemZoom}, 
+            top=${top}, 
+            left=${left},
+            menubar=no,
+            titlebar=yes,
+            status=yes,
+            location=yes
+        `);
+
+        if (window.focus) newWindow.focus();
+        return newWindow;
+    };
+
+    i2b2.PM.model.samlWindow = popupCenter({url: 'saml/redirect/'+service, title: 'SSO Login', w: 500, h: 650});
+};
+
+// ================================================================================================== //
+i2b2.PM.ctrlr.SamlLogin = function(username, session) {
+    console.log(`Logged in ${username} with ${session}`);
+
+    i2b2.PM.model.login_username = username;
+    i2b2.PM.model.samlWindow.close();
+    i2b2.PM.model.login_password = `<password is_token="true" token_ms_timeout="1800000">${session}</password>`;
+    i2b2.PM.model.login_project = '';
+
+    // call the PM Cell's communicator Object
+    let callback = new i2b2_scopedCallback(i2b2.PM._processUserConfig, i2b2.PM);
+    let parameters = {
+        domain: i2b2.PM.model.login_domain,
+        is_shrine: i2b2.PM.model.shrine_domain,
+        project: i2b2.PM.model.login_project,
+        username: i2b2.PM.model.login_username
+    };
+    let transportOptions = {
+        url: i2b2.PM.model.url,
+        user: i2b2.PM.model.login_username,
+        domain: i2b2.PM.model.login_domain,
+        project: i2b2.PM.model.login_project
+    };
+    i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
+};
 
 // ================================================================================================== //
 i2b2.PM.doLogin = function() {
@@ -69,12 +156,12 @@ i2b2.PM.doLogin = function() {
         is_shrine: shrine_domain,
         project: login_project,
         username: login_username,
-        password_text: login_password
+        sec_pass_node: `<password>${login_password}</password>`
     };
     let transportOptions = {
         url: login_url,
         user: login_username,
-        password: login_password,
+        password: `<password>${login_password}</password>`,
         domain: login_domain,
         project: login_project
     };

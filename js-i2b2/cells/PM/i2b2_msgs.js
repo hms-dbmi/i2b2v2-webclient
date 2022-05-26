@@ -39,7 +39,7 @@ i2b2.PM.cfg.msgs.getUserAuth = '<?xml version="1.0" encoding="UTF-8" standalone=
 '		<security>\n'+
 '			<domain>{{{sec_domain}}}</domain>\n'+
 '			<username>{{{sec_user}}}</username>\n'+
-'			<password>{{{password_text}}}</password>\n'+
+'			{{{sec_pass_node}}}\n'+
 '		</security>\n'+
 '        <message_control_id>\n'+
 '            <message_num>{{{header_msg_id}}}</message_num>\n'+

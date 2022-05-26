@@ -10,22 +10,29 @@
 
         <div class="container">
             <div class="form-group">
-                <label for="loginusr"><b>Username</b></label>
-                <input type="text" placeholder="Enter Username" name="loginusr" id="loginusr" required class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="loginpass"><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" name="loginpass" id="loginpass" required class="form-control">
-            </div>
-
-            <div class="form-group">
                 <label for="logindomain"><b>i2b2 Host</b></label>
                 <select class="form-select" id="logindomain">
                     <option value="0">Loading...</option>
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-sm">Login</button>
+
+            <div class="form-group login-user">
+                <label for="loginusr"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="loginusr" id="loginusr" required class="form-control">
+            </div>
+            <div class="form-group login-password">
+                <label for="loginpass"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="loginpass" id="loginpass" required class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-sm login-button">Login</button>
+
+            <a class="btn sso-button btn-sm" data-service="okta" style="display: none" tabindex="0">
+                <img src="assets/images/sso/okta.png" />
+                <div>Sign in with Okta</div>
+            </a>
+
         </div>
 
         <div class="container" style="background-color:#f1f1f1">
