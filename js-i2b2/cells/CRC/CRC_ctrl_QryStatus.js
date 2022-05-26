@@ -113,9 +113,9 @@ i2b2.CRC.ctrlr.QueryStatus = {
         i2b2.CRC.ctrlr.QueryStatus.breakdowns.runDuration = s;
         i2b2.CRC.ctrlr.QueryStatus.breakdowns.name = i2b2.CRC.ctrlr.QueryStatus.QM.name;
 
-        if (!i2b2.CRC.ctrlr.QueryStatus.isRunning) {
+        /*if (!i2b2.CRC.ctrlr.QueryStatus.isRunning) {
             //Query Report BG
-            /*if((!Object.isUndefined(self.QI.start_date)) && (!Object.isUndefined(self.QI.end_date)))
+            if((!Object.isUndefined(self.QI.start_date)) && (!Object.isUndefined(self.QI.end_date)))
             {
                 var startDateElem = "<input type=\"hidden\" id=\"startDateElem\" value=\"" + self.QI.start_date + "\">";
                 var startDateMillsecElem = "<input type=\"hidden\" id=\"startDateMillsecElem\" value=\"" + moment(self.QI.start_date) + "\">";
@@ -127,8 +127,8 @@ i2b2.CRC.ctrlr.QueryStatus = {
             //		self.dispDIV.innerHTML += '<div style="margin-left:20px; clear:both; height:16px; line-height:16px; "><div height:16px; line-height:16px; ">Compute Time: ' + (Math.floor((self.QI.end_date - self.QI.start_date)/100))/10 + ' secs</div></div>';
             //		self.dispDIV.innerHTML += '</div>';
             $('runBoxText').innerHTML = "Run Query";
-            */
-        }
+
+        }*/
 
         if ((!i2b2.CRC.ctrlr.QueryStatus.isRunning) && (undefined !== i2b2.CRC.ctrlr.QueryStatus.QI.end_date)) {
             i2b2.CRC.ctrlr.QueryStatus.breakdowns.computeTime = (Math.floor((i2b2.CRC.ctrlr.QueryStatus.QI.end_date - i2b2.CRC.ctrlr.QueryStatus.QI.start_date) / 100)) / 10;
