@@ -99,8 +99,15 @@ body, td, p {
 	margin-top: 14px;
 }
 
-#headerOptions i {
-	margin-right: 12px;
+#headerOptions a {
+	color: white !important;
+	margin-left: 12px;
+	text-decoration: none;
+	outline: none;
+}
+
+#headerOptions a:focus {
+	color: black !important;
 }
 
 #headerOptions .dropdown {
@@ -633,11 +640,6 @@ iframe.pluginCell {
 }
 .pluginMenu {
 	margin-bottom: 15px;
-}
-
- #analysisTool {
-	 text-decoration: none;
-	 outline: none;
 }
 
  #searchControls {
