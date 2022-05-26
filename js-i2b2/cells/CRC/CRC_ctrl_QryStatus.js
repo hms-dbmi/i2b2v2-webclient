@@ -38,8 +38,11 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     title: null,
                     result: []
                 };
+
+                let resultType = "";
                 for (let i = 0; i < l; i++) {
                     let temp = ri_list[i];
+                    resultType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
                     // get the query name for display in the box
                     description = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
                     breakdown.title = description
@@ -83,7 +86,14 @@ i2b2.CRC.ctrlr.QueryStatus = {
                             value: displayValue
                         });
                     }
-                    i2b2.CRC.ctrlr.QueryStatus.breakdowns.resultTable.push(breakdown);
+
+                    if(resultType === "PATIENT_COUNT_XML")
+                    {
+                        //put patient count result first
+                        i2b2.CRC.ctrlr.QueryStatus.breakdowns.resultTable.unshift(breakdown);
+                    }else{
+                        i2b2.CRC.ctrlr.QueryStatus.breakdowns.resultTable.push(breakdown);
+                    }
                 }
                 //self.dispDIV.innerHTML += this.dispMsg;
             }
@@ -170,7 +180,6 @@ i2b2.CRC.ctrlr.QueryStatus = {
         }
         if ((undefined !== i2b2.CRC.ctrlr.QueryStatus.QI.message) && (foundError === false)) {
             i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="clear:both; float:left;  padding-top: 10px; font-weight:bold">Status</div>';
-
 
             let mySplitResult = i2b2.CRC.ctrlr.QueryStatus.QI.message.split("<?xml");
 
