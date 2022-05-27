@@ -77,7 +77,7 @@ i2b2.PLUGIN.view.list.load = function(template){
     let pluginListCategory = i2b2.PLUGIN.view.list.buildListCategory();
     let pluginTemplateData = {"pluginCategory": pluginListCategory};
     let pluginListing = $("<div id='pluginListWrapper'></div>");
-    $("body").append(pluginListing);
+    $("#pluginListView").append(pluginListing);
     let pluginTemplate = Handlebars.compile(template);
     $(pluginTemplate(pluginTemplateData)).appendTo(pluginListing);
 
@@ -120,7 +120,6 @@ i2b2.PLUGIN.view.list.renderList = function(listMode, category, searchString){
 };
 
 i2b2.PLUGIN.view.list.loadPlugin= function(pluginId){
-    $("#pluginListMain").offcanvas("hide");
     i2b2.PLUGIN.view.list.resetSearchPluginList();
     i2b2.PLUGIN.view.newInstance(pluginId);
 };
@@ -141,13 +140,23 @@ i2b2.PLUGIN.view.list.searchPluginList= function(){
 
 
 // ================================================================================================== //
-i2b2.events.afterLogin.add(
-    (function() {
-        $.ajax("js-i2b2/cells/PLUGIN/templates/PluginListingContainer.html", {
-            success: (template) => {
-              i2b2.PLUGIN.view.list.load(template);
-            },
-            error: (error) => { console.error("Could not retrieve template: PluginListingContainer.html"); }
-        });
-    })
-);
+i2b2.events.afterCellInit.add((function(cell){
+    if (cell.cellCode === "PLUGIN") {
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        // ___ Register this view with the layout manager ____________________
+        i2b2.layout.registerWindowHandler("i2b2.PLUGIN.view.list",
+            (function (container, scope) {
+                // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE Analysis Tools
+                let mainDiv = $("<div class='cellWhite' id='pluginListView'></div>");
+                container.getElement().append(mainDiv);
+
+                $.ajax("js-i2b2/cells/PLUGIN/templates/PluginListingContainer.html", {
+                    success: (template) => {
+                        i2b2.PLUGIN.view.list.load(template);
+                    },
+                    error: (error) => { console.error("Could not retrieve template: PluginListingContainer.html"); }
+                });
+            }).bind(this)
+        );
+    }
+}));

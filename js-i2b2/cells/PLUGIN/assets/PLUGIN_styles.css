@@ -4,3 +4,112 @@ iframe.i2b2PluginIFrame {
     border: 1px solid black;
     overflow: scroll;
 }
+
+
+/* === Plugin List Viewer === */
+
+DIV#pluginListBody {
+    overflow: hidden;
+}
+
+DIV#PluginListBox {
+    overflow: hidden;
+}
+
+#pluginListView{
+    padding: 1.1em 0.8em 0.8em 0.8em;
+    background: rgba(218, 229, 232, 0.8); /*#dae5e8;*/
+}
+
+DIV#PluginListBox A.pluginRecordBox {
+    border-top: 1px solid #667788;
+    border-left: 1px solid #667788;
+    border-right: 1px solid #667788;
+    border-bottom: 1px solid #667788;
+    padding: 14px 3px 14px 4px;
+    margin:0 0 0.7em 0;
+    display: block;
+    cursor: pointer;
+    background: white;
+    color: #000000 !important;
+    overflow-y: auto;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+DIV#PluginListBox A.pluginRecordBox:hover {
+    background-color:#FFFFCC;
+
+}
+
+DIV#PluginListBox A.pluginRecordBox DIV.Icon {
+    float: left;
+    background: #ffffff;
+    border: solid 1px #678;
+}
+
+DIV#PluginListBox A.pluginRecordBox DIV.Name {
+    font-family: arial,helvetica;
+    font-size: 0.5em;
+    font-weight: bold;
+    line-height: 12px;
+}
+
+
+DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.txtBoundBox {
+    padding: 0 2px;
+    margin: 0px 21px 0px 28px;
+    text-align: left;
+    font-size: 2em;
+}
+
+DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Name {
+    line-height: 14px;
+    margin-left: 0.5em;
+}
+
+DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Descript {
+    font-family: arial,helvetica;
+    font-size: 11px;
+    line-height: 10px;
+    margin-left: 0.5em;
+}
+
+DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon {
+    height: 32px;
+    width: 32px;
+}
+
+DIV#PluginListBox A.pluginRecordBox.SUMMARY {
+    padding: 0.2em 6px 0em 6px;
+    height: 1.5em;
+    overflow: hidden;
+}
+
+DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Name {
+    line-height: 15px;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
+    height: 12px;
+    width: 12px;
+    overflow: hidden;
+    margin-top: 1px;
+    margin-right: 0.4em;
+}
+
+/*.pluginMenu {
+    margin-bottom: 15px;
+}
+
+.pluginMenu form {
+    margin-top: 1px;
+}*/
+
+#pluginListMode {
+    margin-bottom: 0.9em
+}
+
+/* === Plugin List Viewer === */
