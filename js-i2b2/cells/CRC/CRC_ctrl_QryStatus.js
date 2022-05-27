@@ -454,16 +454,3 @@ function trim(sString)
     }
     return sString;
 }
-
-Handlebars.registerHelper('eachProperty', function(context, options) {
-    let ret = "";
-    let index =0;
-    for(let prop in context)
-    {
-        if (context.hasOwnProperty(prop)) {
-            ret = ret + options.fn({property:prop,value:context[prop], index: index});
-            index = index + 1;
-        }
-    }
-    return ret;
-});
