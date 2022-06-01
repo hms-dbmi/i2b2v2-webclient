@@ -20,8 +20,9 @@ i2b2.PLUGIN.view.list.buildListCategory = function() {
     for (let pluginName in pluginsLoaded) {
         let pluginRef = pluginsLoaded[pluginName];
         pluginRef.category.forEach(category => {
-            if(pluginsListCategories.indexOf(category) === -1) {
-                pluginsListCategories.push(category);
+            let uppercaseCategory = category.toUpperCase();
+            if(pluginsListCategories.indexOf(uppercaseCategory) === -1) {
+                pluginsListCategories.push(uppercaseCategory);
             }
         });
     }
@@ -175,8 +176,21 @@ i2b2.PLUGIN.view.list.onPluginFrameLoad = function(){
     let loginData = JSON.stringify(i2b2.PM.model.data);
     document.getElementById("pluginframe").contentWindow.postMessage(loginData, window.location.origin);
 };
+// ================================================================================================== //
 
+i2b2.PLUGIN.view.list.handleLegacyPlugins = function() {
+    $.ajax("js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html", {
+        success: () => {
+            let iframe = $("<iframe id='pluginframe' onload='i2b2.PLUGIN.view.list.onPluginFrameLoad();' src='' class='pluginCell'></iframe>");
+            iframe.attr("src", "/js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
 
+            let frameDiv = $("<div class='cellWhite pluginCellMain' style='display: none'></div>");
+            frameDiv.append(iframe);
+            $("body").append(frameDiv);
+        },
+        error: (error) => { console.log("Legacy plugins are not enabled"); }
+    });
+};
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((function(cell){
     if (cell.cellCode === "PLUGIN") {
@@ -197,12 +211,8 @@ i2b2.events.afterCellInit.add((function(cell){
                     error: (error) => { console.error("Could not retrieve template: PluginListingContainer.html"); }
                 });
 
-                let iframe = $("<iframe id='pluginframe' onload='i2b2.PLUGIN.view.list.onPluginFrameLoad();' src='' class='pluginCell'></iframe>");
-                iframe.attr("src", "/js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
+                i2b2.PLUGIN.view.list.handleLegacyPlugins();
 
-                let frameDiv = $("<div class='cellWhite pluginCellMain' style='display: none'></div>");
-                frameDiv.append(iframe);
-                $("body").append(frameDiv);
             }).bind(this)
         );
     }
@@ -210,7 +220,12 @@ i2b2.events.afterCellInit.add((function(cell){
 
 window.addEventListener("message", (event) => {
     if (event.origin === window.location.origin) {
-        i2b2.PLUGIN.view.list.legacyCategories = event.data;
-        i2b2.PLUGIN.view.list.updateCategories();
+        if(event.data.categories){
+            event.data.categories.forEach(category => {
+                i2b2.PLUGIN.view.list.legacyCategories.push(category.toUpperCase());
+            });
+
+            i2b2.PLUGIN.view.list.updateCategories();
+        }
     }
 });
