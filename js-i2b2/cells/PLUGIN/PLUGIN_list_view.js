@@ -179,17 +179,14 @@ i2b2.PLUGIN.view.list.onPluginFrameLoad = function(){
 // ================================================================================================== //
 
 i2b2.PLUGIN.view.list.handleLegacyPlugins = function() {
-    $.ajax("js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html", {
-        success: () => {
-            let iframe = $("<iframe id='pluginframe' onload='i2b2.PLUGIN.view.list.onPluginFrameLoad();' src='' class='pluginCell'></iframe>");
-            iframe.attr("src", "/js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
+    if(i2b2.hive.cfg.LoadedCells["LEGACYPLUGIN"]){
+        let iframe = $("<iframe id='pluginframe' onload='i2b2.PLUGIN.view.list.onPluginFrameLoad();' src='' class='pluginCell'></iframe>");
+        iframe.attr("src", "/js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
 
-            let frameDiv = $("<div class='cellWhite pluginCellMain' style='display: none'></div>");
-            frameDiv.append(iframe);
-            $("body").append(frameDiv);
-        },
-        error: (error) => { console.log("Legacy plugins are not enabled"); }
-    });
+        let frameDiv = $("<div class='cellWhite pluginCellMain' style='display: none'></div>");
+        frameDiv.append(iframe);
+        $("body").append(frameDiv);
+    }
 };
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((function(cell){
