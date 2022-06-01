@@ -199,6 +199,25 @@ function initI2B2()
 
               i2b2.PM._processUserConfig(i2b2.PM.model.data);
             }
+            if (args[0].cellCode === 'PLUGINMGR') {
+              let catList = [];
+              let cellsLoaded = i2b2.hive.cfg.LoadedCells;
+              for (let idx in cellsLoaded) {
+                if (cellsLoaded[idx]) {
+                  if (i2b2[idx].cfg.config.plugin) {
+                    catList.push(i2b2[idx].cfg.config.category);
+                  }
+                }
+              }
+              // flatten and remove duplicates
+              catList = catList.flatten();
+              catList = catList.uniq();
+
+              // remove non-relevent categories
+              catList = catList.without('cell','celless','core','plugin');
+
+              window.parent.postMessage(catList, window.parent.location.origin);
+            }
           })
         );
       }
