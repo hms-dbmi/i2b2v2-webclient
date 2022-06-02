@@ -8,7 +8,7 @@
                         <div class="col-3">
                             <label for="pluginListMode" class="col-form-label col-form-label-sm">View Type:</label>
                         </div>
-                        <div class="col-9">
+                        <div class="col-5">
                             <select id="pluginListMode" class="form-select form-select-sm" onchange="i2b2.PLUGIN.view.list.changeListMode(this.value)">
                                 <option value="DETAIL">Detailed List View</option>
                                 <option value="SUMMARY">Summary List View</option>
@@ -19,7 +19,7 @@
                         <div class="col-3">
                             <label for="pluginCategory" class="col-form-label col-form-label-sm col-auto">Category:</label>
                         </div>
-                        <div class="col-9">
+                        <div class="col-5">
                             <select id="pluginCategory" class="form-select form-select-sm col-auto"
                                     onchange="i2b2.PLUGIN.view.list.filterByCategory(this.value);">
                                 {{#each pluginCategory}}

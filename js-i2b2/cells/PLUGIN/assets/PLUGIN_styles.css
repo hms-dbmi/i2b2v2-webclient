@@ -50,7 +50,7 @@ DIV#PluginListBox A.pluginRecordBox DIV.Icon {
 
 DIV#PluginListBox A.pluginRecordBox DIV.Name {
     font-family: arial,helvetica;
-    font-size: 0.5em;
+    font-size: 0.51em;
     font-weight: bold;
     line-height: 12px;
 }
@@ -70,9 +70,10 @@ DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Name {
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Descript {
     font-family: arial,helvetica;
-    font-size: 11px;
-    line-height: 10px;
+    font-size: 0.43em;
+    line-height: 11px;
     margin-left: 0.5em;
+    margin-top: 0.11em;
 }
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon {
