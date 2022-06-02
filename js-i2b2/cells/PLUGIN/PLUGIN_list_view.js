@@ -54,12 +54,16 @@ i2b2.PLUGIN.view.list.buildListData = function(mode, category, searchString){
 
     for (let pluginName in pluginsLoaded) {
         let pluginRef = pluginsLoaded[pluginName];
+        let pluginCategories = [];
+        pluginRef.category.forEach(cat => {
+            pluginCategories.push(cat.toUpperCase());
+        });
         if ((!searchString || (searchString && (
                 pluginRef.title.toLowerCase().includes(searchString.toLowerCase())
             || pluginRef.description.toLowerCase().includes(searchString.toLowerCase()))))
             && (!category
             || category === i2b2.PLUGIN.view.list.category.ALL
-            || pluginRef.category.indexOf(category) !== -1)) {
+            || pluginCategories.indexOf(category) !== -1)) {
             let pluginRecord = {};
             // change the entry id
             pluginRecord.id = pluginName;
@@ -150,7 +154,6 @@ i2b2.PLUGIN.view.list.renderList = function(listMode, category, searchString){
 // ================================================================================================== //
 
 i2b2.PLUGIN.view.list.loadPlugin= function(pluginId, isLegacy){
-    i2b2.PLUGIN.view.list.resetSearchPluginList();
     i2b2.PLUGIN.view.newInstance(pluginId, isLegacy === 'true');
 };
 // ================================================================================================== //
