@@ -89,7 +89,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY {
 
 DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Name {
     line-height: 15px;
-    font-size: 11px;
+    font-size: 0.9em;
     font-weight: normal;
 }
 
@@ -100,14 +100,6 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
     margin-top: 1px;
     margin-right: 0.4em;
 }
-
-/*.pluginMenu {
-    margin-bottom: 15px;
-}
-
-.pluginMenu form {
-    margin-top: 1px;
-}*/
 
 #pluginListMode {
     margin-bottom: 0.9em
