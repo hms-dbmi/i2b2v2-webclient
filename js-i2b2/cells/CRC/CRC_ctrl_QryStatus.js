@@ -100,7 +100,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
 
             i2b2.CRC.ctrlr.QueryStatus.breakdowns.isRunning = i2b2.CRC.ctrlr.QueryStatus.isRunning;
             i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QueryStatus.breakdowns});
-        }
+        };
 
         // this private function refreshes the display DIV
         let d = new Date();
@@ -178,6 +178,21 @@ i2b2.CRC.ctrlr.QueryStatus = {
                 }
             }
         }
+
+
+        let func_trim = function(sString) {
+            while (sString.substring(0,1) === '\n')
+            {
+                sString = sString.substring(1, sString.length);
+            }
+            while (sString.substring(sString.length-1, sString.length) === '\n')
+            {
+                sString = sString.substring(0,sString.length-1);
+            }
+            return sString;
+        };
+
+
         if ((undefined !== i2b2.CRC.ctrlr.QueryStatus.QI.message) && (foundError === false)) {
             i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="clear:both; float:left;  padding-top: 10px; font-weight:bold">Status</div>';
 
@@ -185,7 +200,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
 
             for (let i3 = 1; i3 < mySplitResult.length; i3++) {
 
-                let xml_v = i2b2.h.parseXml(trim("<?xml " + mySplitResult[i3]));
+                let xml_v = i2b2.h.parseXml(func_trim("<?xml " + mySplitResult[i3]));
 
                 for (let i2 = 0; i2 < xml_v.childNodes.length; i2++) {
                     try {
@@ -260,7 +275,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     }
                 }
             }
-        }
+        };
 
         // callback processor to check the Query Result Set
         let scopedCallbackQRS = new i2b2_scopedCallback();
@@ -320,7 +335,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
             }
             // force a redraw
             i2b2.CRC.ctrlr.QueryStatus.refreshStatus();
-        }
+        };
 
         i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryStatus", {qm_key_value: i2b2.CRC.ctrlr.QueryStatus.QM.id}, scopedCallbackQI);
     }
@@ -442,28 +457,4 @@ i2b2.CRC.ctrlr.QueryStatus._GetTitle = function(resultType, oRecord, oXML) {
     return title;
 };
 
-function trim(sString)
-{
-    while (sString.substring(0,1) === '\n')
-    {
-        sString = sString.substring(1, sString.length);
-    }
-    while (sString.substring(sString.length-1, sString.length) === '\n')
-    {
-        sString = sString.substring(0,sString.length-1);
-    }
-    return sString;
-}
-
-Handlebars.registerHelper('eachProperty', function(context, options) {
-    let ret = "";
-    let index =0;
-    for(let prop in context)
-    {
-        if (context.hasOwnProperty(prop)) {
-            ret = ret + options.fn({property:prop,value:context[prop], index: index});
-            index = index + 1;
-        }
-    }
-    return ret;
-});
+// !!! Handlebars "eachProperty" helper is defined in hive/hive_globals !!!
