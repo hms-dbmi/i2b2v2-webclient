@@ -3,7 +3,10 @@ i2b2.PLUGIN.view.list.category = {
     ALL: "ALL"
 };
 
-i2b2.PLUGIN.view.list.legacyCategories = [];
+i2b2.PLUGIN.view.list.legacy = {
+    categories: [],
+    plugins: []
+};
 
 i2b2.PLUGIN.view.list.mode = {
     DETAIL:  "DETAIL",
@@ -13,7 +16,7 @@ i2b2.PLUGIN.view.list.mode = {
 i2b2.PLUGIN.view.list.buildListCategory = function() {
 
     let pluginsListCategories = [i2b2.PLUGIN.view.list.category.ALL];
-    pluginsListCategories = pluginsListCategories.concat(i2b2.PLUGIN.view.list.legacyCategories);
+    pluginsListCategories = pluginsListCategories.concat(i2b2.PLUGIN.view.list.legacy.categories);
 
     // loop through all plugins in the framework
     let pluginsLoaded = i2b2.PLUGIN.model.plugins;
@@ -41,6 +44,14 @@ i2b2.PLUGIN.view.list.buildListData = function(mode, category, searchString){
     let pluginsListData = [];
     // loop through all plugins in the framework
     let pluginsLoaded = i2b2.PLUGIN.model.plugins;
+
+    //add any legacy plugins
+    i2b2.PLUGIN.view.list.legacy.plugins.forEach(plugin => {
+        let pl = JSON.parse(plugin);
+        pl.isLegacy = true;
+        pluginsLoaded[pl.id] = pl;
+    });
+
     for (let pluginName in pluginsLoaded) {
         let pluginRef = pluginsLoaded[pluginName];
         if ((!searchString || (searchString && (
@@ -53,11 +64,16 @@ i2b2.PLUGIN.view.list.buildListData = function(mode, category, searchString){
             // change the entry id
             pluginRecord.id = pluginName;
             pluginRecord.name = "pluginViewList-"+pluginName;
+            pluginRecord.isLegacy = pluginRef.isLegacy === true;
             // change the plugin's icon
             if (pluginRef.icons && pluginRef.icons[xIconVarName]) {
                 const loc = pluginName.replaceAll('.', '/');
-                pluginRecord.iconSrc = "plugins/" + loc + "/" + pluginRef.assetDir + "/" + pluginRef.icons[xIconVarName];
-
+                if(pluginRef.isLegacy){
+                    pluginRecord.iconSrc = i2b2.LEGACYPLUGIN.cfg.baseDir + "/legacy_plugin/" + pluginRef.assetDir + "/" + pluginRef.icons[xIconVarName];
+                }
+                else {
+                    pluginRecord.iconSrc = "plugins/" + loc + "/" + pluginRef.assetDir + "/" + pluginRef.icons[xIconVarName];
+                }
             } else {
                 pluginRecord.iconSrc = i2b2.PLUGIN.cfg.config.assetDir + i2b2.PLUGIN.cfg.config.defaultListIcons[xIconVarName];
             }
@@ -133,9 +149,9 @@ i2b2.PLUGIN.view.list.renderList = function(listMode, category, searchString){
 };
 // ================================================================================================== //
 
-i2b2.PLUGIN.view.list.loadPlugin= function(pluginId){
+i2b2.PLUGIN.view.list.loadPlugin= function(pluginId, isLegacy){
     i2b2.PLUGIN.view.list.resetSearchPluginList();
-    i2b2.PLUGIN.view.newInstance(pluginId);
+    i2b2.PLUGIN.view.newInstance(pluginId, isLegacy === 'true');
 };
 // ================================================================================================== //
 
@@ -156,6 +172,16 @@ i2b2.PLUGIN.view.list.searchPluginList= function(){
 // ================================================================================================== //
 
 i2b2.PLUGIN.view.list.updateCategories = function(){
+    let pluginListCategory = i2b2.PLUGIN.view.list.buildListCategory();
+    let pluginTemplateData = {"pluginCategory": pluginListCategory};
+    let pluginListing = $("<div id='pluginListWrapper'></div>");
+    $("#pluginListView").empty().append(pluginListing);
+    $(i2b2.PLUGIN.view.list.listContainerTemplate(pluginTemplateData)).appendTo(pluginListing);
+    i2b2.PLUGIN.view.list.changeListMode(i2b2.PLUGIN.view.list.mode.DETAIL);
+};
+// ================================================================================================== //
+
+i2b2.PLUGIN.view.list.updatePluginDescription = function(){
     let pluginListCategory = i2b2.PLUGIN.view.list.buildListCategory();
     let pluginTemplateData = {"pluginCategory": pluginListCategory};
     let pluginListing = $("<div id='pluginListWrapper'></div>");
@@ -218,11 +244,14 @@ i2b2.events.afterCellInit.add((function(cell){
 window.addEventListener("message", (event) => {
     if (event.origin === window.location.origin) {
         if(event.data.categories){
+            i2b2.PLUGIN.view.list.legacy.categories = [];
             event.data.categories.forEach(category => {
-                i2b2.PLUGIN.view.list.legacyCategories.push(category.toUpperCase());
+                i2b2.PLUGIN.view.list.legacy.categories.push(category.toUpperCase());
             });
-
             i2b2.PLUGIN.view.list.updateCategories();
+
+            i2b2.PLUGIN.view.list.legacy.plugins = event.data.plugins;
+            i2b2.PLUGIN.view.list.renderList(i2b2.PLUGIN.view.list.mode.DETAIL, i2b2.PLUGIN.view.list.category.ALL);
         }
     }
 });

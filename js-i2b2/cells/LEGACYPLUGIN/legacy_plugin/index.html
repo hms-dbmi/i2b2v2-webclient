@@ -205,17 +205,18 @@ function initI2B2()
               let pluginList = [];
 
               let cellsLoaded = i2b2.hive.cfg.LoadedCells;
-              for (let idx in cellsLoaded) {
-                if (cellsLoaded[idx]) {
-                  if (i2b2[idx].cfg.config.plugin) {
-                    catList.push(i2b2[idx].cfg.config.category);
+              for (let pluginId in cellsLoaded) {
+                  if (cellsLoaded[pluginId] && i2b2[pluginId].cfg.config.plugin) {
+                    catList.push(i2b2[pluginId].cfg.config.category);
                     let pluginInfo = {};
-                    pluginInfo.name = i2b2[idx].cfg.config.name;
-                    pluginInfo.description = i2b2[idx].cfg.config.description;
-                    pluginInfo.icons = i2b2[idx].cfg.config.icons;
-                    pluginInfo.category = i2b2[idx].cfg.config.category;
+                    pluginInfo.id = pluginId;
+                    pluginInfo.name = i2b2[pluginId].cfg.config.short_name;
+                    pluginInfo.title = i2b2[pluginId].cfg.config.name;
+                    pluginInfo.description = i2b2[pluginId].cfg.config.description;
+                    pluginInfo.icons = i2b2[pluginId].cfg.config.icons;
+                    pluginInfo.category = i2b2[pluginId].cfg.config.category;
+                    pluginInfo.assetDir = i2b2[pluginId].cfg.config.assetDir;
                     pluginList.push(JSON.stringify(pluginInfo));
-                  }
                 }
               }
               // flatten and remove duplicates
@@ -225,7 +226,6 @@ function initI2B2()
               // remove non-relevent categories
               catList = catList.without('cell','celless','core','plugin');
 
-             // window.parent.postMessage(catList, window.parent.location.origin);
               let plugins = {categories: catList, plugins: pluginList };
               window.parent.postMessage(plugins, window.parent.location.origin);
             }
