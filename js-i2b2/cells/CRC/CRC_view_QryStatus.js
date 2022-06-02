@@ -16,9 +16,9 @@ i2b2.CRC.view['QS'] = new i2b2Base_cellViewController(i2b2.CRC, 'QS');
 
 // ================================================================================================== //
 i2b2.CRC.view.QS.render = function(breakdowns) {
-    $(i2b2.CRC.view.QS.containerDiv).empty();
+    let statusTable = $("#infoQueryStatusTable").empty();
 
-    $((Handlebars.compile("{{> QueryResultBreakdown}}"))(breakdowns)).appendTo(i2b2.CRC.view.QS.containerDiv);
+    $((Handlebars.compile("{{> QueryResultBreakdown}}"))(breakdowns)).appendTo(statusTable);
 };
 
 // ================================================================================================== //
@@ -38,7 +38,8 @@ i2b2.events.afterCellInit.add(
 
                     // add the cellWhite flare
                     cell.view.QS.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(cell.view.QS.lm_view._contentElement);
-
+                    cell.view.QS.containerDiv.append('<div id="infoQueryStatusTable"></div>');
+                    cell.view.QS.containerDiv.append('<div id="infoQueryStatusChart"></div>');
                     // Show initial screen
                     i2b2.CRC.view.QS.render();
                 }).bind(this)
