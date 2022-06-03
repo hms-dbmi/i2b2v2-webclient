@@ -15,6 +15,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
 
     refreshStatus: function () {
         $("#infoQueryStatusTable").empty();
+        $("#infoQueryStatusChart").empty();
         i2b2.CRC.ctrlr.QueryStatus.breakdowns  = {
             resultTable: [],
             patientCount: {}
