@@ -105,8 +105,11 @@ i2b2.CRC.ctrlr.QueryStatus = {
                 }
 
                 //alert(sCompiledResultsTest); //snm0
-                $("#infoQueryStatusChart").show();
-                i2b2.CRC.view.graphs.createGraphs("breakdownChartsBody", sCompiledResultsTest, i2b2.CRC.view.graphs.bIsSHRINE);
+                //only create graphs if there is breakdown data
+                if(sCompiledResultsTest.length > 0) {
+                    $("#infoQueryStatusChart").show();
+                    i2b2.CRC.view.graphs.createGraphs("breakdownChartsBody", sCompiledResultsTest, i2b2.CRC.view.graphs.bIsSHRINE);
+                }
                 if (i2b2.CRC.view.graphs.bisGTIE8) {
                     // Resize the query status box depending on whether breakdowns are included
                     if (sCompiledResultsTest.includes("breakdown")) {
