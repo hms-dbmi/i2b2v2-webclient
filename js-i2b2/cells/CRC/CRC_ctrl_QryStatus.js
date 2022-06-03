@@ -40,7 +40,6 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     result: []
                 };
 
-                //let sCompiledResultsTest = "";
                 let resultType = "";
                 for (let i = 0; i < l; i++) {
                     let temp = ri_list[i];
@@ -110,7 +109,8 @@ i2b2.CRC.ctrlr.QueryStatus = {
                 }
 
                 //alert(sCompiledResultsTest); //snm0
-                i2b2.CRC.view.graphs.createGraphs("infoQueryStatusChart", sCompiledResultsTest, i2b2.CRC.view.graphs.bIsSHRINE);
+                $("#infoQueryStatusChart").show();
+                i2b2.CRC.view.graphs.createGraphs("breakdownChartsBody", sCompiledResultsTest, i2b2.CRC.view.graphs.bIsSHRINE);
                 if (i2b2.CRC.view.graphs.bisGTIE8) {
                     // Resize the query status box depending on whether breakdowns are included
                     if (sCompiledResultsTest.includes("breakdown")) {
@@ -118,7 +118,6 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     }else {
                         //i2b2.CRC.cfg.config.ui.statusBox = i2b2.CRC.cfg.config.ui.defaultStatusBox;
                     }
-                    //i2b2.CRC.view.status.selectTab('graphs');
                     //$(window).trigger('resize');
                     //window.dispatchEvent(new Event('resize'));
                 }

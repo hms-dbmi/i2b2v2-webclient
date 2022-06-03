@@ -39,7 +39,19 @@ i2b2.events.afterCellInit.add(
                     // add the cellWhite flare
                     cell.view.QS.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(cell.view.QS.lm_view._contentElement);
                     cell.view.QS.containerDiv.append('<div id="infoQueryStatusTable"></div>');
-                    cell.view.QS.containerDiv.append('<div id="infoQueryStatusChart"></div>');
+                    cell.view.QS.containerDiv.append('<div id="infoQueryStatusChart" class="accordion" style="display: none">' +
+                        '<div class="accordion-item">' +
+                            '<h2 class="accordion-header">' +
+                                '<button class="accordion-button" type="button" data-bs-toggle="collapse"' +
+                                'data-bs-target="#breakdownCharts" aria-expanded="true" aria-controls="breakdownCharts">' +
+                                'Demographic Distribution' +
+                                '</button>' +
+                            '</h2>' +
+                            '<div id="breakdownCharts" class="accordion-collapse collapse show" aria-labelledby="resultStatus{{@index}}">\n' +
+                                '<div class="accordion-body" id="breakdownChartsBody"></div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>');
                     // Show initial screen
                     i2b2.CRC.view.QS.render();
                 }).bind(this)

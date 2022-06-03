@@ -421,13 +421,13 @@ function graph_singlesite_patient_number(sDivName, sBreakdownType, asInputFragme
             '<tr style="background-color: white">' +
             '<td style="color: red; text-align: center; vertical-align: middle;">&nbsp</td>' +
             '</tr>' +
-            '<tr style="background-color: #B0C4DE">' +
+            '<tr style="background-color: #ed9b40">' +
             '<td style="color: black; text-align: center; vertical-align: middle;">'+sBreakdownType+'</td>' +
             '</tr>' +
-            '<tr style="background-color: #B0C4DE">' +
-            '<td style="color: darkblue; text-align: center; vertical-align: middle; font-size: '+sFontSize+'px">'+sDisplayNumber+'</td>' +
+            '<tr style="background-color: #ed9b40">' +
+            '<td style="color: black; text-align: center; vertical-align: middle; font-size: '+sFontSize+'px">'+sDisplayNumber+'</td>' +
             '</tr>' +
-            '<tr style="background-color: #B0C4DE">' +
+            '<tr style="background-color: #ed9b40">' +
             '<td style="color: black; text-align: center; vertical-align: middle;">For Query '+asInputFragments[0][0]+'</td>' +
             '</tr>' +
             '<tr style="background-color: white">' +
@@ -494,7 +494,7 @@ function graph_singlesite_patient_breakdown(sDivName,sBreakdownType,asInputFragm
         }
 
         // Trying out some C3
-        var graph_color = 'darkblue';
+        var graph_color = '#2782a3';
         //var graph_color = 'hsl(' + Math.floor( 360 * Math.random() ) + ', 85%, 55%)'; // random color
         var chart = c3.generate({
             bindto: '#' + sDivName,
@@ -1004,13 +1004,13 @@ i2b2.CRC.view.graphs.aDivForIE8 = function(sDivNameToClear) {
             '<td style="color: red; text-align: center; vertical-align: middle;">&nbsp</td>' +
             '</tr>' +
             '<tr style="background-color: white">' +
-            '<td style="color: darkblue; text-align: center; vertical-align: middle; font-size: 20px">Graph Results is not supported for this version</td>' +
+            '<td style="color: #369; text-align: center; vertical-align: middle; font-size: 20px">Graph Results is not supported for this version</td>' +
             '</tr>' +
             '<tr style="background-color: white">' +
-            '<td style="color: darkblue; text-align: center; vertical-align: middle; font-size: 20px">of Internet Explorer. In order to display the graphs in </td>' +
+            '<td style="color: #369; text-align: center; vertical-align: middle; font-size: 20px">of Internet Explorer. In order to display the graphs in </td>' +
             '</tr>' +
             '<tr style="background-color: white">' +
-            '<td style="color: darkblue; text-align: center; vertical-align: middle; font-size: 20px">Internet Explorer you will need to use version 11 or higher.</td>' +
+            '<td style="color: #369; text-align: center; vertical-align: middle; font-size: 20px">Internet Explorer you will need to use version 11 or higher.</td>' +
             '</tr>' +
             '<tr style="background-color: white">' +
             '<td style="color: red; text-align: center; vertical-align: middle;">&nbsp</td>' +
