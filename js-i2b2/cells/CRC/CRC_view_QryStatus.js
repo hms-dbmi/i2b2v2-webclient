@@ -47,7 +47,7 @@ i2b2.events.afterCellInit.add(
                                 'Demographic Distribution' +
                                 '</button>' +
                             '</h2>' +
-                            '<div id="breakdownCharts" class="accordion-collapse collapse show" aria-labelledby="resultStatus{{@index}}">\n' +
+                            '<div id="breakdownCharts" class="accordion-collapse collapse show" aria-labelledby="breakdownChartsBody">' +
                                 '<div class="accordion-body" id="breakdownChartsBody"></div>' +
                             '</div>' +
                         '</div>' +

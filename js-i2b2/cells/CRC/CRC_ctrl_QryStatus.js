@@ -16,7 +16,8 @@ i2b2.CRC.ctrlr.QueryStatus = {
     refreshStatus: function () {
         $("#infoQueryStatusTable").empty();
         i2b2.CRC.ctrlr.QueryStatus.breakdowns  = {
-            resultTable: []
+            resultTable: [],
+            patientCount: {}
         };
         var sCompiledResultsTest = "";
 
@@ -46,8 +47,6 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     resultType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
                     // get the query name for display in the box
                     description = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
-                    breakdown.title = description;
-                    sCompiledResultsTest += description + '\n';
                 }
 
                 let crc_xml = results.refXML.getElementsByTagName('crc_xml_result');
@@ -86,24 +85,21 @@ i2b2.CRC.ctrlr.QueryStatus = {
                             graphValue += '|' + params[i2].attributes.comment.textContent;
                         }
 
-                        //sCompiledResultsTest += params[i2].getAttribute("column").substring(0,20) + " : " + value + "\n"; //snm0
                         if (params[i2].getAttribute("column") === 'patient_count') {
-                            sCompiledResultsTest += params[i2].getAttribute("column").substring(0,20) + " : " + graphValue + "\n"; //snm0
+                            i2b2.CRC.ctrlr.QueryStatus.breakdowns.patientCount.title = description;
+                            i2b2.CRC.ctrlr.QueryStatus.breakdowns.patientCount.value = graphValue;
                         } else {
+                            sCompiledResultsTest += description + '\n';
                             sCompiledResultsTest += params[i2].getAttribute("column").substring(0,20) + " : " + value + "\n"; //snm0
+                            breakdown.title = description;
+                            breakdown.result.push({
+                                name: params[i2].getAttribute("column"),
+                                value: displayValue
+                            });
                         }
-
-                        breakdown.result.push({
-                            name: params[i2].getAttribute("column"),
-                            value: displayValue
-                        });
                     }
 
-                    if(resultType === "PATIENT_COUNT_XML")
-                    {
-                        //put patient count result first
-                        i2b2.CRC.ctrlr.QueryStatus.breakdowns.resultTable.unshift(breakdown);
-                    }else{
+                    if(breakdown.title) {
                         i2b2.CRC.ctrlr.QueryStatus.breakdowns.resultTable.push(breakdown);
                     }
                 }
