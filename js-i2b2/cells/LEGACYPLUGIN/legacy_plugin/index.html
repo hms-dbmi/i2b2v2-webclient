@@ -23,7 +23,7 @@
  */-->
 
 <script type="text/javascript">
-	var i2b2build = "1.7.13   [2/12/21 12:00 PM] ";
+    var i2b2build = "1.7.13   [2/12/21 12:00 PM] ";
 </script>
 
 <!-- This turns off debugging messages. Developers - comment this out to turn them back on! -->
@@ -53,7 +53,7 @@
 <script type="text/javascript" src="js-ext/yui/build/paginator/paginator-min.js"></script>
 <script type="text/javascript" src="js-ext/yui/build/slider/slider-min.js"></script>
 <!--
-		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.6.0/build/assets/skins/sam/skin.css"> 
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.6.0/build/assets/skins/sam/skin.css">
 -->
 <link rel="stylesheet" type="text/css" href="js-ext/yui/build/assets/skins/sam/skin.css">
 <link rel="stylesheet" type="text/css" href="js-i2b2/ui.styles/ui.styles.css">
@@ -85,52 +85,52 @@
 <script type="text/javascript" src="js-ext/accordion-min.js"></script>
 <style type="text/css">
 .myAccordion {
-	float: left;
-	width: 260px;
-	float: left;
+    float: left;
+    width: 260px;
+    float: left;
 }
 .myAccordion .yui-cms-accordion {
-	width: 230px;
-	position: relative;
-	z-index: 10000;
+    width: 230px;
+    position: relative;
+    z-index: 10000;
 }
 .myAccordion .moreinfo {
-	padding-left: 30px;
+    padding-left: 30px;
 }
 .myAccordion .yui-cms-accordion .yui-cms-item {
-	list-style-type: none;
-	float: left;
-	display: inline;
-	width: auto;
+    list-style-type: none;
+    float: left;
+    display: inline;
+    width: auto;
 }
 .myAccordion .yui-cms-accordion .yui-cms-item .accordionToggleItem {
-	width: 1px;
-	height: 1px;
-	display: block;
-	background: url(assets/images/accordion.gif) no-repeat 0px -200px;
-	text-decoration: none;
-	float: left;
+    width: 1px;
+    height: 1px;
+    display: block;
+    background: url(assets/images/accordion.gif) no-repeat 0px -200px;
+    text-decoration: none;
+    float: left;
 }
 .myAccordion .yui-cms-accordion .yui-cms-item.selected .accordionToggleItem {
-	background: url(assets/images/accordion.gif) no-repeat 0px -300px;
+    background: url(assets/images/accordion.gif) no-repeat 0px -300px;
 }
 .myAccordion .yui-cms-accordion .yui-cms-item .bd {
-	width: 0px;
-	overflow: hidden;
+    width: 0px;
+    overflow: hidden;
 }
 .myAccordion .yui-cms-accordion .yui-cms-item .bd .fixed {
-	background: none repeat scroll 0 50% #BBCCEE;
-	padding: 5px;
-	border: 1px solid #667788;
-	overflow: hidden;
-	width: 200px;
-	height: 250px;
+    background: none repeat scroll 0 50% #BBCCEE;
+    padding: 5px;
+    border: 1px solid #667788;
+    overflow: hidden;
+    width: 200px;
+    height: 250px;
 }
 .myAccordion .yui-cms-accordion .yui-cms-item .bd .fixedbody {
-	background: none repeat scroll 0 0 #FFFFFF;
-	border: 1px solid #667788;
-	padding: 1px 5px;
-	height: 245px;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #667788;
+    padding: 1px 5px;
+    height: 245px;
 }
 </style>
 
@@ -234,23 +234,23 @@ function initI2B2()
       }
     });
 
-	i2b2.events.afterCellInit.subscribe(
-		(function(en,co,a) {
-			var cellObj = co[0];
-			var cellCode = cellObj.cellCode;
-			switch (cellCode) {
-				case "PM":
-					// This i2b2 design implementation uses a prebuild login DIV we connect the Project Management cell to
-					// handle this method of login, the other method used for login is the PM Cell's built in floating
-					// modal dialog box to prompt for login credentials.  You can edit the look and feel of this dialog box
-					// by editing the CSS file.  You can remark out the lines below with no ill effect.  Use the following
-					// javascript function to display the modal login form: i2b2.hive.PM.doLoginDialog();
-					//cellObj.doConnectForm($('loginusr'),$('loginpass'),$('logindomain'), $('loginsubmit'));
-					i2b2.PM.doLoginDialog();
-					break;
-			}
-		})
-	);
+    i2b2.events.afterCellInit.subscribe(
+        (function(en,co,a) {
+            var cellObj = co[0];
+            var cellCode = cellObj.cellCode;
+            switch (cellCode) {
+                case "PM":
+                    // This i2b2 design implementation uses a prebuild login DIV we connect the Project Management cell to
+                    // handle this method of login, the other method used for login is the PM Cell's built in floating
+                    // modal dialog box to prompt for login credentials.  You can edit the look and feel of this dialog box
+                    // by editing the CSS file.  You can remark out the lines below with no ill effect.  Use the following
+                    // javascript function to display the modal login form: i2b2.hive.PM.doLoginDialog();
+                    //cellObj.doConnectForm($('loginusr'),$('loginpass'),$('logindomain'), $('loginsubmit'));
+                    i2b2.PM.doLoginDialog();
+                    break;
+            }
+        })
+    );
 
 
     i2b2.events.afterLogin.subscribe(
@@ -294,17 +294,17 @@ function initI2B2()
         }), i2b2
     );
 
-	// start the i2b2 framework
-	i2b2.Init();
+    // start the i2b2 framework
+    i2b2.Init();
 }
 
 function init() {
-	// ------------------------------------------------------
-	// put any pre-i2b2 initialization code here
-	// ------------------------------------------------------
+    // ------------------------------------------------------
+    // put any pre-i2b2 initialization code here
+    // ------------------------------------------------------
 
-	// initialize the i2b2 framework
-	initI2B2();
+    // initialize the i2b2 framework
+    initI2B2();
 }
 YAHOO.util.Event.addListener(window, "load", init);
 
@@ -379,7 +379,7 @@ YAHOO.util.Event.addListener(window, "load", init);
         </form>
       </div>
       <div id="anaPluginList" oncontextmenu="return false"></div>
-	  <div style="background:#667788;height:22px;padding-left:4px;"><span id="PluginGalleryFooter" style="display:none;float:left"><img src="assets/images/p_gallery.png" align="absbottom" style="margin-top:2px;" /> <a href="#" onClick="invokeWCPinstaller();return false;" target="_blank" id="PluginsGalleryLink" style="text-decoration:none;font-size:13px;color:#FFF;" >Click here to view more plugins in i2b2 Gallery...</a></span><span style="float:right;margin-right:5px"><a href="#" onClick="jQuery('#pluginsMenu').qtip('hide');return false;" style="text-decoration:none;font-size:13px;color:#FFF;" ><img src="assets/images/p_close.png" align="absbottom" border="0" style="margin-top:2px;" /></a> <a href="#" onClick="jQuery('#pluginsMenu').qtip('hide');return false;" style="text-decoration:none;font-size:13px;color:#FFF;">Close</a></span></div>
+      <div style="background:#667788;height:22px;padding-left:4px;"><span id="PluginGalleryFooter" style="display:none;float:left"><img src="assets/images/p_gallery.png" align="absbottom" style="margin-top:2px;" /> <a href="#" onClick="invokeWCPinstaller();return false;" target="_blank" id="PluginsGalleryLink" style="text-decoration:none;font-size:13px;color:#FFF;" >Click here to view more plugins in i2b2 Gallery...</a></span><span style="float:right;margin-right:5px"><a href="#" onClick="jQuery('#pluginsMenu').qtip('hide');return false;" style="text-decoration:none;font-size:13px;color:#FFF;" ><img src="assets/images/p_close.png" align="absbottom" border="0" style="margin-top:2px;" /></a> <a href="#" onClick="jQuery('#pluginsMenu').qtip('hide');return false;" style="text-decoration:none;font-size:13px;color:#FFF;">Close</a></span></div>
     </div>
     <div style="clear:both;"></div>
   </div>
