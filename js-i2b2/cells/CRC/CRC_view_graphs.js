@@ -59,16 +59,16 @@ i2b2.CRC.view.graphs.hide = function() {
 }
 
 i2b2.CRC.view.graphs.showDisplay = function() {
-    var targs = $('infoQueryStatusChart').parentNode.parentNode.select('DIV.tabBox.active');
+    var targs = $('infoQueryStatusGraph').parentNode.parentNode.select('DIV.tabBox.active');
     // remove all active tabs
     targs.each(function(el) { el.removeClassName('active'); });
     // set us as active
-    $('infoQueryStatusChart').parentNode.parentNode.select('DIV.tabBox.tabQueryGraphs')[0].addClassName('active');
-    $('infoQueryStatusChart').show();
+    $('infoQueryStatusGraph').parentNode.parentNode.select('DIV.tabBox.tabQueryGraphs')[0].addClassName('active');
+    $('infoQueryStatusGraph').show();
 }
 
 i2b2.CRC.view.graphs.hideDisplay = function() {
-    $('infoQueryStatusChart').hide();
+    $('infoQueryStatusGraph').hide();
 }
 
 // ================================================================================================== //

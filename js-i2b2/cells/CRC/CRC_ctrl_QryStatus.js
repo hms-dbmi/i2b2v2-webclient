@@ -15,7 +15,6 @@ i2b2.CRC.ctrlr.QueryStatus = {
 
     refreshStatus: function () {
         $("#infoQueryStatusTable").empty();
-        $("#infoQueryStatusChart").empty();
         i2b2.CRC.ctrlr.QueryStatus.breakdowns  = {
             resultTable: [],
             patientCount: {}
@@ -108,8 +107,9 @@ i2b2.CRC.ctrlr.QueryStatus = {
                 //alert(sCompiledResultsTest); //snm0
                 //only create graphs if there is breakdown data
                 if(sCompiledResultsTest.length > 0) {
-                    $("#infoQueryStatusChart").show();
+                    $("#infoQueryStatusGraph").hide();
                     i2b2.CRC.view.graphs.createGraphs("breakdownChartsBody", sCompiledResultsTest, i2b2.CRC.view.graphs.bIsSHRINE);
+                    $("#infoQueryStatusGraph").show();
                 }
                 if (i2b2.CRC.view.graphs.bisGTIE8) {
                     // Resize the query status box depending on whether breakdowns are included
@@ -372,6 +372,7 @@ i2b2.CRC.ctrlr.QueryStatus.startStatus = function(queryName) {
     i2b2.CRC.ctrlr.QueryStatus.QI = {};
     i2b2.CRC.ctrlr.QueryStatus.QM = {};
 
+    i2b2.CRC.view.QS.renderStart();
     i2b2.CRC.view.QS.render({breakdowns: {isProcessing: true, name: queryName}});
 };
 

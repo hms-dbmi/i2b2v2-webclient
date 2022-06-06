@@ -13,12 +13,16 @@ console.time('execute time');
 // create and save the view objects
 i2b2.CRC.view['QS'] = new i2b2Base_cellViewController(i2b2.CRC, 'QS');
 
+// ================================================================================================== //
+i2b2.CRC.view.QS.renderStart = function(breakdowns) {
+    $("#infoQueryStatusGraph").hide();
+};
 
 // ================================================================================================== //
 i2b2.CRC.view.QS.render = function(breakdowns) {
     let statusTable = $("#infoQueryStatusTable").empty();
 
-    $((Handlebars.compile("{{> QueryResultBreakdown}}"))(breakdowns)).appendTo(statusTable);
+    $((Handlebars.compile("{{> QueryResultBreakdownTable}}"))(breakdowns)).appendTo(statusTable);
 };
 
 // ================================================================================================== //
@@ -39,33 +43,29 @@ i2b2.events.afterCellInit.add(
                     // add the cellWhite flare
                     cell.view.QS.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(cell.view.QS.lm_view._contentElement);
                     cell.view.QS.containerDiv.append('<div id="infoQueryStatusTable"></div>');
-                    cell.view.QS.containerDiv.append('<div id="infoQueryStatusChart" class="accordion" style="display: none">' +
-                        '<div class="accordion-item">' +
-                            '<h2 class="accordion-header">' +
-                                '<button class="accordion-button" type="button" data-bs-toggle="collapse"' +
-                                'data-bs-target="#breakdownCharts" aria-expanded="true" aria-controls="breakdownCharts">' +
-                                'Demographic Distribution' +
-                                '</button>' +
-                            '</h2>' +
-                            '<div id="breakdownCharts" class="accordion-collapse collapse show" aria-labelledby="breakdownChartsBody">' +
-                                '<div class="accordion-body" id="breakdownChartsBody"></div>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>');
+                    cell.view.QS.containerDiv.append('<div id="infoQueryStatusGraph"></div>');
+
+                    $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownGraph.html", {
+                        success: (template, status, req) => {
+                            //Handlebars.registerPartial("QueryResultBreakdownGraph", req.responseText);
+                            let breakdownGraph = $("#infoQueryStatusGraph").hide();
+                            $((Handlebars.compile(template))()).appendTo(breakdownGraph);
+                            i2b2.CRC.view.QS.render();
+                        },
+                        error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultBreakdownGraph.html"); }
+                    });
                     // Show initial screen
-                    i2b2.CRC.view.QS.render();
                 }).bind(this)
             );
 
             // load the templates (TODO: Refactor this to loop using a varname/filename list)
             // ---------------------------------------------------------
-            $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdown.html", {
+            $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownTable.html", {
                 success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryResultBreakdown", req.responseText);
+                    Handlebars.registerPartial("QueryResultBreakdownTable", req.responseText);
                 },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultBreakdown.html"); }
+                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultBreakdownTable.html"); }
             });
-
         }
     }
 );
