@@ -14,10 +14,12 @@ i2b2.CRC.ctrlr.QueryStatus = {
     polling_interval: 1000,
 
     refreshStatus: function () {
-        $(i2b2.CRC.view.QS.containerDiv).empty();
+        $("#infoQueryStatusTable").empty();
         i2b2.CRC.ctrlr.QueryStatus.breakdowns  = {
-            resultTable: []
+            resultTable: [],
+            patientCount: {}
         };
+        var sCompiledResultsTest = "";
 
         // callback processor to check the Query Instance
         let scopedCallbackQRSI = new i2b2_scopedCallback();
@@ -45,7 +47,6 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     resultType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
                     // get the query name for display in the box
                     description = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
-                    breakdown.title = description
                 }
 
                 let crc_xml = results.refXML.getElementsByTagName('crc_xml_result');
@@ -77,23 +78,48 @@ i2b2.CRC.ctrlr.QueryStatus = {
                         if (typeof params[i2].attributes.display !== 'undefined') {
                             displayValue = params[i2].attributes.display.textContent;
                         }
+
+                        let graphValue = displayValue;
                         if (typeof params[i2].attributes.comment !== 'undefined') {
                             displayValue += ' &nbsp; <span style="color:#090;">[' + params[i2].attributes.comment.textContent + ']<span>';
+                            graphValue += '|' + params[i2].attributes.comment.textContent;
                         }
 
-                        breakdown.result.push({
-                            name: params[i2].getAttribute("column"),
-                            value: displayValue
-                        });
+                        if (params[i2].getAttribute("column") === 'patient_count') {
+                            i2b2.CRC.ctrlr.QueryStatus.breakdowns.patientCount.title = description;
+                            i2b2.CRC.ctrlr.QueryStatus.breakdowns.patientCount.value = graphValue;
+                        } else {
+                            sCompiledResultsTest += description + '\n';
+                            sCompiledResultsTest += params[i2].getAttribute("column").substring(0,20) + " : " + value + "\n"; //snm0
+                            breakdown.title = description;
+                            breakdown.result.push({
+                                name: params[i2].getAttribute("column"),
+                                value: displayValue
+                            });
+                        }
                     }
 
-                    if(resultType === "PATIENT_COUNT_XML")
-                    {
-                        //put patient count result first
-                        i2b2.CRC.ctrlr.QueryStatus.breakdowns.resultTable.unshift(breakdown);
-                    }else{
+                    if(breakdown.title) {
                         i2b2.CRC.ctrlr.QueryStatus.breakdowns.resultTable.push(breakdown);
                     }
+                }
+
+                //alert(sCompiledResultsTest); //snm0
+                //only create graphs if there is breakdown data
+                if(sCompiledResultsTest.length > 0) {
+                    $("#infoQueryStatusGraph").hide();
+                    i2b2.CRC.view.graphs.createGraphs("breakdownChartsBody", sCompiledResultsTest, i2b2.CRC.view.graphs.bIsSHRINE);
+                    $("#infoQueryStatusGraph").show();
+                }
+                if (i2b2.CRC.view.graphs.bisGTIE8) {
+                    // Resize the query status box depending on whether breakdowns are included
+                    if (sCompiledResultsTest.includes("breakdown")) {
+                       // i2b2.CRC.cfg.config.ui.statusBox = i2b2.CRC.cfg.config.ui.largeStatusBox;
+                    }else {
+                        //i2b2.CRC.cfg.config.ui.statusBox = i2b2.CRC.cfg.config.ui.defaultStatusBox;
+                    }
+                    //$(window).trigger('resize');
+                    //window.dispatchEvent(new Event('resize'));
                 }
                 //self.dispDIV.innerHTML += this.dispMsg;
             }
@@ -346,6 +372,7 @@ i2b2.CRC.ctrlr.QueryStatus.startStatus = function(queryName) {
     i2b2.CRC.ctrlr.QueryStatus.QI = {};
     i2b2.CRC.ctrlr.QueryStatus.QM = {};
 
+    i2b2.CRC.view.QS.renderStart();
     i2b2.CRC.view.QS.render({breakdowns: {isProcessing: true, name: queryName}});
 };
 

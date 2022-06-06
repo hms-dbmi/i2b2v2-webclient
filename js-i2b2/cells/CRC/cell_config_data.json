@@ -17,7 +17,8 @@
     "CRC_ctrl_QryStatus.js",
     "CRC_view_QryStatus.js",
     "i2b2_msgs.js",
-    "CRC_ctrlr_LabValues.js"
+    "CRC_ctrlr_LabValues.js",
+    "CRC_view_graphs.js"
   ],
   "preload": [
     "assets/sdx_CRC_PDO.gif",
