@@ -34,6 +34,7 @@ DIV#PluginListBox A.pluginRecordBox {
     overflow-y: auto;
     text-decoration: none;
     border-radius: 5px;
+    box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
 }
 
 DIV#PluginListBox A.pluginRecordBox:hover {
@@ -42,7 +43,6 @@ DIV#PluginListBox A.pluginRecordBox:hover {
     border-left: 2px solid #667788;
     border-right: 2px solid #667788;
     border-bottom: 2px solid #667788;
-
 }
 
 DIV#PluginListBox A.pluginRecordBox DIV.Icon {
@@ -109,7 +109,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
 }
 
 #pluginList{
-    margin: 33px;
+    margin: 2.3em;
 }
 
 .pluginMenu {
