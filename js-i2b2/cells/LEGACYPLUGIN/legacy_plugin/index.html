@@ -232,7 +232,7 @@ function initI2B2()
           })
         );
       }
-    })
+    });
 
 	i2b2.events.afterCellInit.subscribe(
 		(function(en,co,a) {
@@ -253,32 +253,46 @@ function initI2B2()
 	);
 
 
-	i2b2.events.afterLogin.subscribe(
-		(function() 
-		{
-			$('screenQueryData').style.display = 'flex';
+    i2b2.events.afterLogin.subscribe(
+        (function()
+        {
+            $('screenQueryData').style.display = 'flex';
 
             i2b2.hive.MasterView.initViewMode(); //tdw9
 
-            jQuery('#pluginsMenu').qtip({
-                content: {
-                    text: jQuery('#PluginListBox')
-                },
-                style: {
-                    width:500
-                },
-                show: 'click',
-                position: {
-                    my: 'top middle',  // Position my top left...
-                    at: 'bottom left', // at the bottom right of...
-                },
-                hide: 'unfocus click'
 
-            });
-            i2b2.PLUGINMGR.view.list.BuildCategories();
-            i2b2.PLUGINMGR.view.list.Render();
+            // automatically load the plugin identified as an attribute
+            // in the parent iframe
+            try {
+                let pluginCode = window.frameElement.dataset.pluginCode;
+                if (pluginCode !== undefined) {
+                    i2b2.PLUGINMGR.ctrlr.main.selectPlugin(pluginCode);
+                    // remove plugin listing functionality
+                    jQuery('#pluginsMenu').remove();
+                    jQuery('#anaPluginViewBox .TopTabs').remove();
+                }
+            } catch(e) {
+                // failed to autoload plugin, populate plugin list
+                jQuery('#pluginsMenu').qtip({
+                    content: {
+                        text: jQuery('#PluginListBox')
+                    },
+                    style: {
+                        width:500
+                    },
+                    show: 'click',
+                    position: {
+                        my: 'top middle',  // Position my top left...
+                        at: 'bottom left', // at the bottom right of...
+                    },
+                    hide: 'unfocus click'
+
+                });
+                i2b2.PLUGINMGR.view.list.BuildCategories();
+                i2b2.PLUGINMGR.view.list.Render();
+            }
         }), i2b2
-	);
+    );
 
 	// start the i2b2 framework
 	i2b2.Init();
