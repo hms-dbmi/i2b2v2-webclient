@@ -206,18 +206,6 @@ i2b2.PLUGIN.view.list.onPluginFrameLoad = function(){
     document.getElementById("pluginframe").contentWindow.postMessage(loginData, window.location.origin);
 };
 // ================================================================================================== //
-
-i2b2.PLUGIN.view.list.handleLegacyPlugins = function() {
-    if(i2b2.hive.cfg.LoadedCells["LEGACYPLUGIN"]){
-        let iframe = $("<iframe id='pluginframe' onload='i2b2.PLUGIN.view.list.onPluginFrameLoad();' src='' class='pluginCell'></iframe>");
-        iframe.attr("src", "/js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
-
-        let frameDiv = $("<div class='cellWhite pluginCellMain' style='display: none'></div>");
-        frameDiv.append(iframe);
-        $("body").append(frameDiv);
-    }
-};
-// ================================================================================================== //
 i2b2.events.afterCellInit.add((function(cell){
     if (cell.cellCode === "PLUGIN") {
         console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
@@ -237,7 +225,17 @@ i2b2.events.afterCellInit.add((function(cell){
                     error: (error) => { console.error("Could not retrieve template: PluginListingContainer.html"); }
                 });
 
-                i2b2.PLUGIN.view.list.handleLegacyPlugins();
+                // handle listing of legacy plugins
+                if(i2b2.hive.cfg.LoadedCells["LEGACYPLUGIN"]){
+                    let iframe = $("<iframe id='pluginframe' onload='i2b2.PLUGIN.view.list.onPluginFrameLoad();' src='' class='pluginCell'></iframe>");
+                    iframe.attr("src", "/js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
+
+                    let frameDiv = $("<div class='cellWhite pluginCellMain' style='display: none'></div>");
+                    frameDiv.append(iframe);
+                    $("body").append(frameDiv);
+                    // content window only exists after iframe is appended to the main DOM
+                    i2b2.PLUGIN.view.list.listingEventWindow = iframe[0].contentWindow;
+                }
 
             }).bind(this)
         );
@@ -245,7 +243,8 @@ i2b2.events.afterCellInit.add((function(cell){
 }));
 
 window.addEventListener("message", (event) => {
-    if (event.origin === window.location.origin) {
+    // security check and make sure that we only listen to messages from the legacy listing window
+    if (event.origin === window.location.origin && i2b2.PLUGIN.view.list.listingEventWindow === event.source) {
         if(event.data.categories){
             i2b2.PLUGIN.view.list.legacy.categories = [];
             event.data.categories.forEach(category => {
