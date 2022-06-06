@@ -161,8 +161,8 @@ i2b2.layout.init = function () {
                     },{
                         type:'component',
                         isClosable:false,
-                        componentName: 'i2b2.LEGACYPLUGIN.view.main',
-                        title:'Analyze Patients'
+                        componentName: 'i2b2.PLUGIN.view.list',
+                        title:'Analysis Tools'
                     }]
             },
             {

@@ -1,9 +1,5 @@
-<div class="offcanvas offcanvas-end" data-bs-backdrop="true" tabindex="-1" id="pluginListMain" aria-labelledby="pluginListMainLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="pluginListMainLabel">Available Analysis Tools</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body" id="pluginListBody">
+<div id="pluginListMain">
+    <div id="pluginListBody">
         <div id="PluginListBox">
             <!--TODO implement logic for displaying available plugins-->
             <div class="pluginMenu " oncontextmenu="return false">
@@ -12,7 +8,7 @@
                         <div class="col-3">
                             <label for="pluginListMode" class="col-form-label col-form-label-sm">View Type:</label>
                         </div>
-                        <div class="col-9">
+                        <div class="col-5">
                             <select id="pluginListMode" class="form-select form-select-sm" onchange="i2b2.PLUGIN.view.list.changeListMode(this.value)">
                                 <option value="DETAIL">Detailed List View</option>
                                 <option value="SUMMARY">Summary List View</option>
@@ -23,31 +19,13 @@
                         <div class="col-3">
                             <label for="pluginCategory" class="col-form-label col-form-label-sm col-auto">Category:</label>
                         </div>
-                        <div class="col-9">
+                        <div class="col-5">
                             <select id="pluginCategory" class="form-select form-select-sm col-auto"
                                     onchange="i2b2.PLUGIN.view.list.filterByCategory(this.value);">
                                 {{#each pluginCategory}}
                                     <option value="{{this}}">{{this}} </option>
                                 {{/each}}
                             </select>
-                        </div>
-                    </div>
-                    <div id="searchControls" class="row row-cols-sm-auto g-20">
-                        <div class="col-3">
-                            <label for="pluginSearchText" class="col-form-label col-form-label-sm col-auto">Search:</label>
-                        </div>
-                        <div class="col-6">
-                            <input type="text" class="form-control form-control-sm" id="pluginSearchText" placeholder="Enter analysis name">
-                        </div>
-                        <div class="col-2 sbtn">
-                            <button class="btn btn-primary btn-sm invert" id="searchPlugin" onclick="i2b2.PLUGIN.view.list.searchPluginList(this.value);">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </div>
-                        <div  class="col-2 sbtn sbtn-next">
-                            <button class="btn btn-primary btn-sm invert" id="resetSearchPlugin" onclick="i2b2.PLUGIN.view.list.resetSearchPluginList();">
-                                <i class="bi bi-arrow-counterclockwise"></i>
-                            </button>
                         </div>
                     </div>
                 </form>
