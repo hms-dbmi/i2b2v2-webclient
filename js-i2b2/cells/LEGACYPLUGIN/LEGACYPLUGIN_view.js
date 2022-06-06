@@ -23,7 +23,9 @@ i2b2.events.afterCellInit.add((function(cell){
         i2b2.layout.registerWindowHandler("i2b2.LEGACYPLUGIN.view.main",
             (function (container, scope) {
                 // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE LEGACY PLUGIN CELL'S MAIN VIEW
-                let iframe = $("<iframe id='pluginframe' onload='i2b2.LEGACYPLUGIN.view.main.onPluginFrameLoad()' src='' class='pluginCell'></iframe>");
+                let pluginCode = container._config.componentPluginCode;
+
+                let iframe = $("<iframe id='pluginframe' onload='i2b2.LEGACYPLUGIN.view.main.onPluginFrameLoad()' src='' class='pluginCell' data-plugin-code='" + pluginCode + "'></iframe>");
                 iframe.attr("src", "js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
 
                 let frameDiv = $("<div class='cellWhite pluginCellMain'></div>");
