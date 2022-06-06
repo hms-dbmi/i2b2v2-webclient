@@ -46,9 +46,7 @@ i2b2.events.afterCellInit.add(
                     // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
                     cell.view.QR.lm_view = container;
 
-                    // add the cellWhite flare
                     cell.view.QR.containerDiv = $('<div class="CRC_QR_view"></div>').appendTo(cell.view.QR.lm_view._contentElement);
-
 
                     // TODO: add rest of initialization code here
                     container.on('open', () => {
