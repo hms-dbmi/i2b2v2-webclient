@@ -17,10 +17,12 @@ i2b2.ONT.ctrlr.Search = {
     clickSearchTerm: function() {
         let search_info = {};
         search_info.SearchStr = $("#searchTermText").val();
-        let searchBy = $("#searchOptionsSelect").val();
-        if(searchBy === "category")
+        let searchFilterElem = $("#searchFilter");
+        let filterValue = searchFilterElem.data("selectedFilterValue");
+        let filterType = searchFilterElem.data("selectedFilterType");
+        if(filterType === "category")
         {
-            search_info.Category = $("#categoryOptionsSelect").val();
+            search_info.Category = filterValue;
             search_info.Strategy = "contains";
             setTimeout(function(){i2b2.ONT.ctrlr.Search.doNameSearch(search_info);},0);
         }

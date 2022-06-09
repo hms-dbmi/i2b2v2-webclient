@@ -81,7 +81,8 @@ i2b2.ONT.view.search.initSearchCatOptions = function(){
                 let catVal = cat.key.substring(2,cat.key.indexOf('\\',3))
                 categories.push({
                     name: cat.name,
-                    value: catVal
+                    value: catVal,
+                    filterType: "category"
                 });
             }
             let options = {
@@ -102,10 +103,12 @@ i2b2.ONT.view.search.initSearchCatOptions = function(){
 
             $(".submenu li").on("click", function(){
                 $(".active").removeClass("active");
-                let newDisplayText = $(this).find("button").addClass("active").text();
-                let newValue = $(this).find("button").addClass("active").data("search-filter-value");
+                let liItem = $(this).find("button");
+                let newDisplayText = liItem.addClass("active").text();
+                let filterValue = liItem.addClass("active").data("searchFilterValue");
+                let filterType = liItem.data("searchFilterType");
                 $("#searchFilterText").text(newDisplayText);
-                $("#searchFilter").data("selected-filter", newValue);
+                $("#searchFilter").data("selectedFilterValue", filterValue).data("selectedFilterType", filterType);
             });
 
             $("#searchActions .reset").click(function() {
@@ -143,7 +146,8 @@ i2b2.ONT.view.search.initCodingSysOptions = function(){
                 let cat = i2b2.ONT.model.Schemes[i];
                 codingSystems.push({
                     name: cat.name,
-                    value: cat.key
+                    value: cat.key,
+                    filterType: "coding"
                 });
             }
             let options = {
