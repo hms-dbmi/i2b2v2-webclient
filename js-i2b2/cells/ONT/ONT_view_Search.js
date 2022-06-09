@@ -155,9 +155,3 @@ i2b2.ONT.view.search.initCodingSysOptions = function(){
     });
 }
 //================================================================================================== //
-i2b2.ONT.view.search.showMinCharError = function(){
-    let leftp = $("#searchTermText").offset().left;
-    $("#searchTermError").offset({ left: leftp})
-        .text(i2b2.ONT.view.search.error.minCharError);
-}
-//================================================================================================== //
