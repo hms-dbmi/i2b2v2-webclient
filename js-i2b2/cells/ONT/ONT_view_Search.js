@@ -10,7 +10,7 @@ i2b2.ONT.view.search = {};
 
 i2b2.ONT.view.search.template = {};
 i2b2.ONT.view.search.error = {};
-i2b2.ONT.view.search.error.minCharError = "Search string must be at least 3 characters.";
+i2b2.ONT.view.search.error.minCharError = "Search term must be at least 3 characters.";
 
 i2b2.ONT.view.search.toggleSearchOptions = function(elem){
     let currentVal = $(elem).val();
@@ -34,6 +34,7 @@ i2b2.ONT.view.search.toggleSearchClearIcon = function(){
     else{
         $("#searchTerm .clearIcon").addClass("hidden");
     }
+    $("#searchTermError").empty();
 };
 
 //================================================================================================== //
@@ -41,6 +42,7 @@ i2b2.ONT.view.search.toggleSearchClearIcon = function(){
 i2b2.ONT.view.search.clearSearchInput = function(){
     $("#searchTermText").val("");
     $("#searchTerm .clearIcon").addClass("hidden");
+    $("#searchTermError").empty();
 };
 
 //================================================================================================== //
@@ -144,6 +146,10 @@ i2b2.ONT.view.search.initCodingSysOptions = function(){
 //================================================================================================== //
 i2b2.ONT.view.search.showMinCharError = function(){
     i2b2.ONT.view.search.showAlertDialog(i2b2.ONT.view.search.error.minCharError);
+    let leftp = $("#searchTermText").offset().left;
+    $("#searchTermError").offset({ left: leftp});
+    $("#searchTermError").text(i2b2.ONT.view.search.error.minCharError);
+
 }
 //================================================================================================== //
 i2b2.ONT.view.search.showAlertDialog = function(message){
