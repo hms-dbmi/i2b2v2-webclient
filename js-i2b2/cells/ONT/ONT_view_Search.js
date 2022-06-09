@@ -23,18 +23,29 @@ i2b2.ONT.view.search.toggleSearchOptions = function(elem){
         $("#codingOptions").addClass("hidden");
     }
 };
+//================================================================================================== //
+i2b2.ONT.view.search.handleSearchInputChange = function(newValue){
+    i2b2.ONT.view.search.toggleSearchClearIcon(newValue);
+    i2b2.ONT.view.search.enableSearch(newValue);
+}
+//================================================================================================== //
+
+i2b2.ONT.view.search.enableSearch = function(newValue){
+    if(newValue && newValue.length > 2) {
+        $("#submitTermSearch").attr('disabled', false);
+    }else{
+        $("#submitTermSearch").attr('disabled', true);
+    }
+};
 
 //================================================================================================== //
 
-i2b2.ONT.view.search.toggleSearchClearIcon = function(){
-    let currentVal = $("#searchTermText").val();
-    if(currentVal){
+i2b2.ONT.view.search.toggleSearchClearIcon = function(newValue){
+    if(newValue){
         $("#searchTerm .clearIcon").removeClass("hidden");
-    }
-    else{
+    } else{
         $("#searchTerm .clearIcon").addClass("hidden");
     }
-    $("#searchTermError").empty();
 };
 
 //================================================================================================== //
@@ -145,30 +156,8 @@ i2b2.ONT.view.search.initCodingSysOptions = function(){
 }
 //================================================================================================== //
 i2b2.ONT.view.search.showMinCharError = function(){
-    i2b2.ONT.view.search.showAlertDialog(i2b2.ONT.view.search.error.minCharError);
     let leftp = $("#searchTermText").offset().left;
-    $("#searchTermError").offset({ left: leftp});
-    $("#searchTermError").text(i2b2.ONT.view.search.error.minCharError);
-
+    $("#searchTermError").offset({ left: leftp})
+        .text(i2b2.ONT.view.search.error.minCharError);
 }
-//================================================================================================== //
-i2b2.ONT.view.search.showAlertDialog = function(message){
-    $("#searchErrorDialog").empty();
-    if(i2b2.ONT.view.search.template.alert === undefined)
-    {
-        $.ajax("/js-i2b2/cells/ONT/templates/AlertDialog.html", {
-            success: (template) => {
-                i2b2.ONT.view.search.template.alert = Handlebars.compile(template);
-                $(i2b2.ONT.view.search.template.alert({message:message})).appendTo("body");
-                $("#alertModal").modal("show");
-            },
-            error: (error) => { console.error("Could not retrieve template: AlertDialog.html"); }
-        });
-    }else{
-        $(i2b2.ONT.view.search.template.alert({message: message})).appendTo("#searchErrorDialog");
-        $("#alertModal").modal("show");
-
-    }
-}
-
 //================================================================================================== //

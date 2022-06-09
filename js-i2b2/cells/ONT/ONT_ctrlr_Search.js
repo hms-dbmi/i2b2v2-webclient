@@ -17,19 +17,15 @@ i2b2.ONT.ctrlr.Search = {
     clickSearchTerm: function() {
         let search_info = {};
         search_info.SearchStr = $("#searchTermText").val();
-        if (search_info.SearchStr.length < 3) {
-            i2b2.ONT.view.search.showMinCharError();
-        } else {
-            let searchBy = $("#searchOptionsSelect").val();
-            if(searchBy === "category")
-            {
-                search_info.Category = $("#categoryOptionsSelect").val();
-                search_info.Strategy = "contains";
-                setTimeout(function(){i2b2.ONT.ctrlr.Search.doNameSearch(search_info);},0);
-            }
-            else{
-                //TODO search by code
-            }
+        let searchBy = $("#searchOptionsSelect").val();
+        if(searchBy === "category")
+        {
+            search_info.Category = $("#categoryOptionsSelect").val();
+            search_info.Strategy = "contains";
+            setTimeout(function(){i2b2.ONT.ctrlr.Search.doNameSearch(search_info);},0);
+        }
+        else{
+            //TODO search by code
         }
     },
 
