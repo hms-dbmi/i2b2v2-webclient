@@ -33,15 +33,16 @@
         </nav>
         <div class="searchTermMain">
             <div class="input-group" id="searchTerm">
-                <input class="form-control form-control-sm" placeholder="Enter term" aria-label="Term" id="searchTermText" onkeyup="i2b2.ONT.view.nav.toggleSearchClearIcon();">
+                <input class="form-control form-control-sm" placeholder="Enter term" aria-label="Term" id="searchTermText" onkeyup="i2b2.ONT.view.search.toggleSearchClearIcon();">
                 <span class="input-group-append clear-input">
-                    <i class="bi bi-x  hidden clearIcon" onclick="i2b2.ONT.view.nav.clearSearchInput();"></i>
+                    <i class="bi bi-x  hidden clearIcon" onclick="i2b2.ONT.view.search.clearSearchInput();"></i>
                 </span>
             </div>
         </div>
         <div id="searchActions">
-            <button type="submit" class="btn btn-primary btn-sm invert search" >Search</button>
+            <button type="submit" class="btn btn-primary btn-sm invert search" onclick="i2b2.ONT.ctrlr.Search.clickSearchTerm();">Search</button>
             <button type="submit" class="btn btn-primary btn-sm invert reset" >Reset</button>
         </div>
     </div>
+    <div id="searchErrorDialog"></div>
 </div>

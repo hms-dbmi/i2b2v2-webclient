@@ -8,6 +8,10 @@
  */
 i2b2.ONT.view.search = {};
 
+i2b2.ONT.view.search.template = {};
+i2b2.ONT.view.search.error = {};
+i2b2.ONT.view.search.error.minCharError = "Search string must be at least 3 characters.";
+
 i2b2.ONT.view.search.toggleSearchOptions = function(elem){
     let currentVal = $(elem).val();
     if(currentVal === "coding"){
@@ -137,4 +141,28 @@ i2b2.ONT.view.search.initCodingSysOptions = function(){
         error: (error) => { console.error("Could not retrieve template: OntologyFinderCodingOptions.html"); }
     });
 }
+//================================================================================================== //
+i2b2.ONT.view.search.showMinCharError = function(){
+    i2b2.ONT.view.search.showAlertDialog(i2b2.ONT.view.search.error.minCharError);
+}
+//================================================================================================== //
+i2b2.ONT.view.search.showAlertDialog = function(message){
+    $("#searchErrorDialog").empty();
+    if(i2b2.ONT.view.search.template.alert === undefined)
+    {
+        $.ajax("/js-i2b2/cells/ONT/templates/AlertDialog.html", {
+            success: (template) => {
+                i2b2.ONT.view.search.template.alert = Handlebars.compile(template);
+                $(i2b2.ONT.view.search.template.alert({message:message})).appendTo("body");
+                $("#alertModal").modal("show");
+            },
+            error: (error) => { console.error("Could not retrieve template: AlertDialog.html"); }
+        });
+    }else{
+        $(i2b2.ONT.view.search.template.alert({message: message})).appendTo("#searchErrorDialog");
+        $("#alertModal").modal("show");
+
+    }
+}
+
 //================================================================================================== //

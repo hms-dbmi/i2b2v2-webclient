@@ -140,7 +140,6 @@ button.invert:hover{
 #i2b2FinderOnt .searchTermMain{
     margin-left: 0.6em;
     margin-right: 0.8em;
-    width: 38%;
     display: inline-block;
 }
 
@@ -181,6 +180,10 @@ button.invert:hover{
 
 .highlight-menu-item {
     background-color: #f1f1f1;
+}
+
+.centerText{
+    text-align: center;
 }
 
 

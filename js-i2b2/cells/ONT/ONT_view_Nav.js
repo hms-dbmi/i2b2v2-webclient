@@ -164,7 +164,7 @@ i2b2.events.afterCellInit.add((function(cell){
 
 i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
     if (updateInfo.DataLocation === "i2b2.ONT.model.Categories") {
-        i2b2.ONT.view.search.initSearchCatOptions(container._contentElement);
+        i2b2.ONT.view.search.initSearchCatOptions();
     }
 
     if (updateInfo.DataLocation === "i2b2.ONT.model.Schemes") {

@@ -14,12 +14,11 @@ console.time('execute time');
 
 //TODO re-work code -- THIS IS JUST PLACEHOLDER CODE
 i2b2.ONT.ctrlr.Search = {
-
     clickSearchTerm: function() {
         let search_info = {};
         search_info.SearchStr = $("#searchTermText").val();
         if (search_info.SearchStr.length < 3) {
-            alert("Search string must be at least 3 characters.");
+            i2b2.ONT.view.search.showMinCharError();
         } else {
             let searchBy = $("#searchOptionsSelect").val();
             if(searchBy === "category")
