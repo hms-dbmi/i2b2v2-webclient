@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    margin-bottom: -0.6rem;
+    font-weight: bold;
+}
+
+.container {
+    height: 4rem;
+    position: relative;
+    margin: 2rem;
+}
+
+#PatientSet {
+    border-radius: 5px 0 0 5px;
+    background: lightsteelblue;
+    border: 1px solid black;
+    border-right: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 9rem;
+    line-height: 3.8rem;
+    padding-left: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: default;
+}
+
+#download {
+    background: gainsboro;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 9rem;
+    border-radius: 0 5px 5px 0;
+    border-width: 1px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+#download.disabled {
+    color: gray;
+    cursor: not-allowed;
+}
+
+.i2b2DropTarget.dragging {
+    background-color: lightyellow !important;
+}
+

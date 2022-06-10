@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Export Patientset</title>
+
+    <script type="text/javascript" src="js/i2b2-loader.js" ></script>
+    <script type="text/javascript" src="js/main.js" ></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+<body>
+    <form>
+        <h1>Patient Set Exporter</h1>
+        <p class="header">Overview:</p>
+        <p>This plugin lets you export observations from a patient set.</p>
+        <p class="header">Instructions:</p>
+        <p>
+            <ul>
+                <li>Drop a patient set into the box below.</li>
+                <li>Press the "Download" button to download observations.</li>
+            </ul>
+        </p>
+
+        <p class="header">Credits:</p>
+        <p>This plugin was created as part of <a href="https://www.recovercovid.org" target="_blank">RECOVER</a> by Nick Benik &amp; Nick Brown of <a href="http://weber.hms.harvard.edu" target="_blank">Weber Lab</a>.</p>
+
+
+        <h></h>
+
+
+        <div class="container">
+            <div id="PatientSet">Drop a patient set here...</div>
+            <input id="download" type="button" class="disabled" onclick="i2b2.Exporter.download()" value="Download">
+        </div>
+
+    </form>
+</body>
+</html>

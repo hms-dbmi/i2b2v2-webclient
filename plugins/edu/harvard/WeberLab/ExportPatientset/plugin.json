@@ -1,0 +1,11 @@
+{
+  "title": "Patientset Exporter",
+  "description": "This plugin allows you to download a CSV dump of a patient set's observations.",
+  "category": ["export", "patientset"],
+  "icons": { "size32x32": "csv-file.png" },
+  "assetDir": "assets",
+  "plugin_version" : "1.0",
+  "i2b2_version" : "1.7.13",
+  "base": "index.html",
+  "sandbox": true
+}
