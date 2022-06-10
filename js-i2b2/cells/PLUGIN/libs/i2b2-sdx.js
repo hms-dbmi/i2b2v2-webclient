@@ -49,6 +49,12 @@ i2b2.sdx.AttachType = function(container, typeCode) {
     } else {
         ['drop', 'dragover', 'dragenter', 'dragleave'].forEach(function(e) {
             container.addEventListener(e, i2b2.sdx.onDragDropEvents);
+            // save sdx type as valid for drop
+            let acceptedtypes = container.dataset.RegSdxTypes;
+            if (acceptedtypes === undefined) acceptedtypes = "[]";
+            let temp = JSON.parse(acceptedtypes);
+            temp.push(typeCode);
+            container.dataset.RegSdxTypes = JSON.stringify([...new Set(temp)]);
         });
 
         return true;
@@ -65,7 +71,9 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
             sdxTypeList = sdxTypeList.concat(sdxTypes);
         }
     }
+
     let eventHandlers = i2b2.sdx.dd_events[this.id];
+    const acceptedtypes = JSON.parse(this.dataset.RegSdxTypes)
 
     switch(e.type) {
         case "drop":
@@ -84,6 +92,9 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
             // enable drop if a drop handler exists for the object being dropped
             while (sdxTypeList.length) {
                 let sdxType = sdxTypeList.pop();
+
+                if (acceptedtypes.includes(sdxType)) e.currentTarget.classList.add('dragging');
+
                 if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].DropHandler === "function") {
                     if (typeof eventHandlers[sdxType].DropChecker === "function") {
                         if (eventHandlers[sdxType].DropChecker(e.target, e, this)) {
@@ -96,17 +107,18 @@ i2b2.sdx.onDragDropEvents = function(e,a) {
                     }
                 }
             }
-            e.currentTarget.classList.add('dragging');
             break;
         case "dragenter":
             while (sdxTypeList.length) {
                 let sdxType = sdxTypeList.pop();
+
+                if (acceptedtypes.includes(sdxType)) e.currentTarget.classList.add('dragging');
+
                 if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].onHoverOver === "function") {
                     eventHandlers[sdxType].onHoverOver(e.target);
                 }
             }
             e.preventDefault();
-            e.currentTarget.classList.add('dragging');
             break;
         case "dragleave":
             while (sdxTypeList.length) {
