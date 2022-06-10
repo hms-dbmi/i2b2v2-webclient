@@ -26,7 +26,6 @@ window.addEventListener("I2B2_INIT_AJAX", function(evt) {
                 ajaxFunc: func,
                 ajaxData: data
             };
-            console.dir(msg);
             window.parent.postMessage(msg, "/");
         });
     };
@@ -50,6 +49,27 @@ window.addEventListener("I2B2_INIT_AJAX", function(evt) {
         delete cl_messageDB[eventData.msgId];
     };
 
+    const cl_func_rawSend = function(url, rawMsg) {
+        let msgId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+        cl_messageDB[msgId] = {};
+        return new Promise((resolve, reject) => {
+            // save the resolve/reject functions in the main msg db
+            cl_messageDB[msgId].resolve = resolve;
+            cl_messageDB[msgId].reject = reject;
+            // now send the message
+            let msg = {
+                msgType: "AJAX-RAW",
+                msgId: msgId,
+                ajaxCell: this+'', // convert to string (a little type hacking)
+                ajaxURL: url,
+                ajaxMsg: rawMsg
+            };
+            console.dir(msg);
+            window.parent.postMessage(msg, "/");
+        });
+    };
+
+
     // EVENT LISTENER TO ROUTE RETURNED MESSAGES FOR PROCESSING
     // ----------------------------------------------------------------------
     window.addEventListener("message", (event) => {
@@ -64,7 +84,7 @@ window.addEventListener("I2B2_INIT_AJAX", function(evt) {
     // ----------------------------------------------------------------------
     i2b2.ajax = {};
     for (let cell in evt.detail) {
-        i2b2.ajax[cell] = {};
+        i2b2.ajax[cell] = {"_RawSent": cl_func_rawSend.bind(cell)};
         evt.detail[cell].forEach((func) => {
             // create a closure to remember the target cell+function when invoked
             i2b2.ajax[cell][func] = function(data) {
