@@ -84,7 +84,7 @@ i2b2.ONT.ctrlr.Search = {
             // How long did it take?
             if (searchCatsCount === searchCats.length) {
                 let outtime = new Date().getTime()-mytime;
-                console.log("FindBy took "+outtime+"ms");
+                console.log("ONT:Search took "+outtime+"ms");
             }
         }
 
