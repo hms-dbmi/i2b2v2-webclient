@@ -12,9 +12,8 @@
 console.group('Load & Execute component file: ONT > ctrlr > Search');
 console.time('execute time');
 
-//TODO re-work code -- THIS IS JUST PLACEHOLDER CODE
 i2b2.ONT.ctrlr.Search = {
-    clickSearchTerm: function() {
+    clickSearch: function() {
         let search_info = {};
         search_info.SearchStr = $("#searchTermText").val();
         let searchFilterElem = $("#searchFilter");
@@ -24,13 +23,14 @@ i2b2.ONT.ctrlr.Search = {
         {
             search_info.Category = filterValue;
             search_info.Strategy = "contains";
-            setTimeout(function(){i2b2.ONT.ctrlr.Search.doNameSearch(search_info);},0);
+            i2b2.ONT.ctrlr.Search.doNameSearch(search_info);
         }
         else{
-            //TODO search by code
+            //Search by code
+            search_info.Coding =  filterValue;
+            i2b2.ONT.ctrlr.Search.doCodeSearch(search_info);
         }
     },
-
 // ================================================================================================== //
     doNameSearch: function(inSearchData) {
         // inSearchData is expected to have the following attributes:
@@ -41,14 +41,17 @@ i2b2.ONT.ctrlr.Search = {
         // Debug: add time check
         let mytime = new Date().getTime();
 
+        // VERIFY that the above information has been passed
+        if (!inSearchData) return false;
+
         // special client processing to search all categories
         let searchCats = [];
-        if (inSearchData.Category === "[[[ALL]]]") {
-            var d = i2b2.ONT.model.Categories;
-            var l = d.length
+        if (inSearchData.Category === "ALL CATEGORIES") {
+            let d = i2b2.ONT.model.Categories;
+            let l = d.length
             // build list of all categories to search
             for (let i=0; i<l; i++) {
-                var cid = d[i].key;
+                let cid = d[i].key;
                 cid = cid.substring(2);
                 cid = cid.substring(0,cid.indexOf("\\"));
                 if (cid != null) {
@@ -77,31 +80,17 @@ i2b2.ONT.ctrlr.Search = {
 
             // BUG FIX: WEBCLIENT-139 & WEBCLIENT-150
             searchCatsCount++;
-            if(searchCatsCount == searchCats.length){ // found last scopedCallback AJAX call
-                if(totalCount == 0 && s.length == 0){ // s.length fix - don't display err messages twice
-                    //alert('No records found.'); // ' for category ' + results.msgParams.ont_category);
-                    i2b2.CRC.view.QT.showDialog("Search by Names", "Sorry, no record found!", "Please try a different value or category!", "ui-icon-cancel");//refactored to a nicer jQuery dialog based equivaent of alert()
-                }
-                $('ontFindNameButtonWorking').innerHTML = "";
-            }
 
             // How long did it take?
-            if (searchCatsCount == searchCats.length) {
-                var outtime = new Date().getTime()-mytime;
+            if (searchCatsCount === searchCats.length) {
+                let outtime = new Date().getTime()-mytime;
                 console.log("FindBy took "+outtime+"ms");
             }
         }
 
 
         // add AJAX options
-        var searchOptions = {};
-        /*searchOptions.ont_max_records = "max='"+i2b2.ONT.view['find'].params.max+"' ";
-        searchOptions.ont_synonym_records = i2b2.ONT.view['find'].params.synonyms;
-        searchOptions.ont_hidden_records = i2b2.ONT.view['find'].params.hiddens;
-        searchOptions.ont_reduce_results = i2b2.ONT.view['find'].params.reduce;
-        searchOptions.ont_hierarchy = i2b2.ONT.view['find'].params.hierarchy;
-        searchOptions.ont_search_strategy = inSearchData.Strategy;
-        searchOptions.ont_search_string = inSearchData.SearchStr;*/
+        let searchOptions = {};
         searchOptions.ont_max_records = "max='200'";
         searchOptions.ont_synonym_records = false;
         searchOptions.ont_hidden_records = false;
@@ -118,6 +107,45 @@ i2b2.ONT.ctrlr.Search = {
             searchOptions.ont_category = searchCats[i];
             i2b2.ONT.ajax.GetNameInfo("ONT:FindBy", searchOptions, scopedCallback);
         }
+    },
+
+// ================================================================================================== //
+    doCodeSearch: function(inSearchData) {
+        // VERIFY that the above information has been passed
+        if (!inSearchData) return false;
+
+        // scope our callback function
+        let scopedCallback = new i2b2_scopedCallback();
+        scopedCallback.scope = this;
+        // define our callback function
+        scopedCallback.callback = function(results)
+        {
+            // THIS function is used to process the AJAX results of the getChild call
+            //		results data object contains the following attributes:
+            //			refXML: xmlDomObject <--- for data processing
+            //			msgRequest: xml (string)
+            //			msgResponse: xml (string)
+            //			error: boolean
+            //			errorStatus: string [only with error=true]
+            //			errorMsg: string [only with error=true]
+
+            let c = results.refXML.getElementsByTagName('concept');
+            if (c.length === 0)
+            {
+                alert("No Records Found");
+            }
+        }
+
+        // add options
+        let searchOptions = {};
+
+        searchOptions.ont_max_records = "max='200'";
+        searchOptions.ont_synonym_records = false;
+        searchOptions.ont_hidden_records = false;
+        searchOptions.ont_search_strategy = "exact";
+        searchOptions.ont_search_coding = (inSearchData.Coding === 'ALL CODING'  ? '' : inSearchData.Coding);
+        searchOptions.ont_search_string = inSearchData.SearchStr;
+        i2b2.ONT.ajax.GetCodeInfo("ONT:Search", searchOptions, scopedCallback);
     }
 }
 

@@ -1,7 +1,7 @@
 <div class="finder-main" id="i2b2FinderOnt">
     <div class="" id="searchOptions">
         <span class="searchLabel">Search By:</span>
-        <nav id="searchFilter" class="nav navbar-expand-sm" data-selected-filter="Any Category"  data-selected-filter-value="i2b2" data-selected-filter-type="category">
+        <nav id="searchFilter" class="nav navbar-expand-sm" data-selected-filter="Any Category"  data-selected-filter-value="ALL CATEGORIES" data-selected-filter-type="category">
             <div class="navbarMain">
                 <div class="collapse navbar-collapse" id="main_nav">
                     <ul class="navbar-nav">
@@ -13,7 +13,7 @@
                                     <button class="dropdown-item">Category &raquo; </button>
                                     <ul class="submenu dropdown-menu" id="categorySubmenu">
                                         <li>
-                                            <button class="dropdown-item active" type="button" data-search-filter-value="i2b2">Any Category</button>
+                                            <button class="dropdown-item active" type="button" data-search-filter-value="ALL CATEGORIES">Any Category</button>
                                         </li>
                                     </ul>
                                 </li>
@@ -21,7 +21,7 @@
                                     <button class="dropdown-item" href="#"> Coding System &raquo; </button>
                                     <ul class="submenu dropdown-menu" id="codingSubmenu">
                                         <li>
-                                            <button class="dropdown-item" type="button" data-search-filter-value="">Any Coding System </button>
+                                            <button class="dropdown-item" type="button" data-search-filter-value="ALL CODING">Any Coding System </button>
                                         </li>
                                     </ul>
                                 </li>
@@ -40,7 +40,7 @@
             </div>
         </div>
         <div id="searchActions">
-            <button type="submit" id="submitTermSearch" class="btn btn-primary btn-sm invert search" onclick="i2b2.ONT.ctrlr.Search.clickSearchTerm();" disabled>Search</button>
+            <button type="submit" id="submitTermSearch" class="btn btn-primary btn-sm invert search" onclick="i2b2.ONT.ctrlr.Search.clickSearch();" disabled>Search</button>
             <button type="submit" class="btn btn-primary btn-sm invert reset" >Reset</button>
         </div>
     </div>
