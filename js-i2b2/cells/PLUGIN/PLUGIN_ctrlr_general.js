@@ -58,6 +58,65 @@ i2b2.PLUGIN.ctrlr._handleAjaxMsg = function(msgEvent, instanceRef) {
 
 
 // ====[ msg handling for the plugin's AJAX messages ]==================================================================
+i2b2.PLUGIN.ctrlr._handleRawAjaxMsg = function(msgEvent, instanceRef) {
+    // define error handling function
+    const funcSendError = function(msgEvent, errorMsg, errorData) {
+        let msg = {"msgType":"AJAX_ERROR", "msgId":msgEvent.data.msgId, "error": true, "errorMsg": errorMsg};
+        if (errorData !== undefined) msg.errorData = errorData;
+        msgEvent.source.postMessage(msg, '/');
+    };
+    // verify that the cell is valid
+    const cell = msgEvent.data.ajaxCell;
+    if (i2b2.PLUGIN.model.config.ajax[cell] === undefined) {
+        funcSendError(msgEvent, "Requested cell does not exist or was blocked by security settings");
+        return false;
+    }
+    // build the URL
+    const url = i2b2[cell].cfg.cellURL + msgEvent.data.ajaxURL;
+    // get the regular params
+    let sMsgValues = {
+        proxy_info: "<proxy><redirect_url>" + url + "</redirect_url></proxy>",
+        sec_user: i2b2.h.getUser(),
+        sec_pass_node: i2b2.h.getPass(),
+        sec_domain: i2b2.h.getDomain(),
+        sec_project: i2b2.h.getProject(),
+        header_msg_id: i2b2.h.GenerateAlphaNumId(20),
+        header_msg_datetime: moment().toISOString(true),
+        result_wait_time: "180"
+    };
+    // populate the raw Msg's template tags
+    let rawMsg = msgEvent.data.ajaxMsg;
+    for (var tag in sMsgValues) {
+        rawMsg = rawMsg.replace(new RegExp("{{{"+tag+"}}}", 'g'), sMsgValues[tag]);
+    }
+    $.ajax({
+        type: "POST",
+        url:  i2b2.h.getProxy(),
+        data: rawMsg
+    }).done((response)=>{
+        msgEvent.source.postMessage({
+            msgType: "AJAX_REPLY",
+            msgId: msgEvent.data.msgId,
+            ajaxReply: response
+        }, '/');
+    }).fail((xhr, status, error)=>{
+        let response;
+        try {
+            // handle JSON returned with erroneous text/xml MIME header
+            response = JSON.parse(xhr.responseText);
+            msgEvent.source.postMessage({
+                msgType: "AJAX_REPLY",
+                msgId: msgEvent.data.msgId,
+                ajaxReply: xhr.responseText // send the raw string, not objects
+            }, '/');
+        } catch(e) {
+            funcSendError(msgEvent, "AJAX ERROR:" + status);
+        }
+    });
+};
+
+
+// ====[ msg handling for the plugin's State messages ]==================================================================
 i2b2.PLUGIN.ctrlr._handleStateMsg = function(msgEvent, instanceRef) {
     instanceRef.state = msgEvent.data.stateData;
 };
@@ -140,6 +199,9 @@ i2b2.events.afterAllCellsLoaded.add((function() {
                     break;
                 case "AJAX":
                     i2b2.PLUGIN.ctrlr._handleAjaxMsg(event, foundInstance);
+                    break;
+                case "AJAX-RAW":
+                    i2b2.PLUGIN.ctrlr._handleRawAjaxMsg(event, foundInstance);
                     break;
                 case "STATE":
                     i2b2.PLUGIN.ctrlr._handleStateMsg(event, foundInstance);
