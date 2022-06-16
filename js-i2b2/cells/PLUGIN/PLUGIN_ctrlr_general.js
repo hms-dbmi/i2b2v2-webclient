@@ -141,8 +141,10 @@ i2b2.events.afterCellInit.add((function(cell) {
             });
         });
 
+        // BUG FIX: I2B2UI-152 "#" gets included in baseUrl
+        const {origin, pathname} = window.location;
+        const baseUrl = origin + pathname + "js-i2b2/cells/PLUGIN/libs/";
         // define the dependency files that are to be load by the plugins
-        const baseUrl = window.location.href + "js-i2b2/cells/PLUGIN/libs/";
         i2b2.PLUGIN.model.libs = {};
         i2b2.PLUGIN.model.libs["AJAX"] = baseUrl + "i2b2-ajax.js";
         i2b2.PLUGIN.model.libs["SDX"] = baseUrl + "i2b2-sdx.js";
