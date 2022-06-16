@@ -6,7 +6,7 @@
     flex-direction: column;
     position: absolute;
     bottom: 0;
-    top: 4.2em;
+    top: 4.7em;
     left: 0;
     right: 0;
     height: auto;
@@ -16,11 +16,11 @@
 #i2b2FinderOnt {
     position: absolute;
     top: 0;
-    height: 4.4em;
+    height: 4.8em;
     border: solid #63758c;
     border-width: 1px 1px 0 1px;
     width: 100%;
-    padding-top: 0.3em;
+    padding-top: 0.4em;
     padding-left: 0.8em;
     background: rgba(235, 238, 238, 0.3);
     font-size: 0.98em;
@@ -140,7 +140,6 @@ button.invert:hover{
 #i2b2FinderOnt .searchTermMain{
     margin-left: 0.6em;
     margin-right: 0.8em;
-    width: 38%;
     display: inline-block;
 }
 
@@ -181,6 +180,16 @@ button.invert:hover{
 
 .highlight-menu-item {
     background-color: #f1f1f1;
+}
+
+.centerText{
+    text-align: center;
+}
+
+#searchTermError{
+    color: red;
+    font-size: 0.85em;
+    width: 22.4em;
 }
 
 
