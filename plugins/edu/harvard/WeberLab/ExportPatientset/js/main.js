@@ -14,22 +14,88 @@ i2b2.Exporter.render = function() {
 };
 
 i2b2.Exporter.dropEvent = function(sdxData) {
-    console.dir(sdxData);
+    // save new drop attribute, clear any stale results
     i2b2.model.Patientset = sdxData;
+    i2b2.model.result_instance_id = undefined;
     i2b2.state.save();
+
+    // clear stale download link
+    let link = document.getElementById("DownloaderLink");
+    if (link !== null) link.remove();
+
     i2b2.Exporter.render();
 };
 
-i2b2.Exporter.download = function() {
-    // create/reuse the download anchor element in the DOM
-    if (i2b2.Exporter.downloadLink === undefined) {
-        let el = document.createElement("a");
-        el.style.display = "none";
-        document.body.appendChild(el);
-        i2b2.Exporter.downloadLink = el;
-    }
-    let downloadLink = i2b2.Exporter.downloadLink;
 
+i2b2.Exporter.getResults = function(){
+    // this function should only be called when "i2b2.model.result_instance_id" has been set
+    if (i2b2.model.result_instance_id === undefined) {
+        console.error('ABORT: model.result_instance_id has not been set!');
+        return false;
+    }
+    // now get the results
+    i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryResultInstanceId({qr_key_value: i2b2.model.result_instance_id}).then((finalData) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(finalData, "application/xml");
+        const nsResolver = document.createNSResolver(doc.ownerDocument === null ? doc.documentElement : doc.ownerDocument.documentElement);
+        const resultJSON = doc.evaluate(
+            'descendant::xml_value/text()/..',
+            doc, nsResolver, XPathResult.STRING_TYPE, null
+        ).stringValue;
+
+        // parse the JSON from the XML message
+        let records = JSON.parse(resultJSON);
+        // get attribute list (CSV columns)
+        let attrlist = {};
+        records.forEach((rec) => { Object.keys(rec).forEach((attrname) => {attrlist[attrname] = 1 })});
+        const columns = Object.keys(attrlist);
+
+        let outputLines = [];
+        let currentLine = [];
+        // create header
+        columns.forEach((column) => { currentLine.push('"' + column + '"'); });
+        outputLines.push(currentLine.join(','));
+        // create CSV lines
+        records.forEach((line) => {
+            currentLine = [];
+            columns.forEach((column) => { currentLine.push( line[column] !== undefined ? '"' + line[column] + '"' : '""'); });
+            outputLines.push(currentLine.join(','));
+        });
+        const finalOutput = outputLines.join('\n');
+
+        // create/reuse the download anchor element in the DOM
+        let downloadLink = document.getElementById("DownloaderLink");
+        if (downloadLink === null) {
+            downloadLink = document.createElement("a");
+            downloadLink.id = "DownloaderLink";
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+
+        }
+        // send the data for download
+        downloadLink.setAttribute("href", "data:text/csv," + finalOutput);
+        downloadLink.setAttribute("download", "PatientSet-" + i2b2.model.Patientset.sdxInfo.sdxKeyValue + "_(" + i2b2.model.result_instance_id + ").csv");
+        downloadLink.click();
+    });
+};
+
+i2b2.Exporter.startDownload = function() {
+    // check to see if the link exists, download from that if present
+    let link = document.getElementById("DownloaderLink");
+    if (link !== null) {
+        // trigger the download from the existing link
+        link.click();
+        return true;
+    }
+
+    // check to see if we have already run an export,
+    // if so use its results instance ID and retreve results
+    if (i2b2.model.result_instance_id !== undefined) {
+        i2b2.Exporter.getResults();
+        return true;
+    }
+
+    // we must issue a request to export data first...
     let request = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/"
     xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/"
@@ -73,30 +139,21 @@ i2b2.Exporter.download = function() {
 
     request = request.replace(new RegExp("{{{PatientSetId}}}", 'g'), i2b2.model.Patientset.sdxInfo.sdxKeyValue);
 
-    i2b2.ajax.CRC._RawSent('getRawData', request).then((data)=> {
-        let records = JSON.parse(data);
-        // get attribute list (CSV columns)
-        let attrlist = {};
-        records.forEach((rec) => { Object.keys(rec).forEach((attrname) => {attrlist[attrname] = 1 })});
-        const columns = Object.keys(attrlist);
+    i2b2.ajax.CRC._RawSent('request', request).then((data)=> {
+        // load the string into XML document and use XPath to extract the result instance ID
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, "application/xml");
+        const nsResolver = document.createNSResolver(doc.ownerDocument === null ? doc.documentElement : doc.ownerDocument.documentElement);
 
-        let outputLines = [];
-        let currentLine = [];
-        // create header
-        columns.forEach((column) => { currentLine.push('"' + column + '"'); });
-        outputLines.push(currentLine.join(','));
-        // create CSV lines
-        records.forEach((line) => {
-            currentLine = [];
-            columns.forEach((column) => { currentLine.push( line[column] !== undefined ? '"' + line[column] + '"' : '""'); });
-            outputLines.push(currentLine.join(','));
-        });
-        const finalOutput = outputLines.join('\n');
+        // save the result instance ID to the model
+        i2b2.model.result_instance_id = doc.evaluate(
+            'descendant::query_result_instance/result_instance_id/text()/..',
+            doc, nsResolver, XPathResult.STRING_TYPE, null
+        ).stringValue;
+        i2b2.state.save();
 
-        // send the data for download
-        downloadLink.setAttribute("href", "data:text/csv," + finalOutput);
-        downloadLink.setAttribute("download", "PatientSet-" + i2b2.model.Patientset.sdxInfo.sdxKeyValue + ".csv");
-        downloadLink.click();
+        // now get the results and save to a file...
+        i2b2.Exporter.getResults();
     })
 };
 
