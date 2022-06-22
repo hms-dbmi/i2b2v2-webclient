@@ -218,6 +218,7 @@ i2b2.events.afterCellInit.add((function(cell){
 
                 $.ajax("js-i2b2/cells/PLUGIN/templates/PluginListingContainer.html", {
                     success: (template) => {
+                        // TODO: Fix possible race condition error on next line
                         i2b2.PLUGIN.view.list.load(template);
 
                         console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');

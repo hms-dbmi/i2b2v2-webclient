@@ -93,11 +93,11 @@ i2b2.PLUGIN.ctrlr._handleRawAjaxMsg = function(msgEvent, instanceRef) {
         type: "POST",
         url:  i2b2.h.getProxy(),
         data: rawMsg
-    }).done((response)=>{
+    }).done((response, status, xhr)=>{
         msgEvent.source.postMessage({
             msgType: "AJAX_REPLY",
             msgId: msgEvent.data.msgId,
-            ajaxReply: response
+            ajaxReply: xhr.responseText
         }, '/');
     }).fail((xhr, status, error)=>{
         let response;
