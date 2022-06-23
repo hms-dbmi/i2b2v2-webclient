@@ -1,3 +1,4 @@
+if (i2b2.PLUGIN.view === undefined) i2b2.PLUGIN.view = {};
 i2b2.PLUGIN.view.list = {};
 i2b2.PLUGIN.view.list.category = {
     ALL: "ALL"
@@ -218,10 +219,7 @@ i2b2.events.afterCellInit.add((function(cell){
 
                 $.ajax("js-i2b2/cells/PLUGIN/templates/PluginListingContainer.html", {
                     success: (template) => {
-                        // TODO: Fix possible race condition error on next line
                         i2b2.PLUGIN.view.list.load(template);
-
-                        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
                     },
                     error: (error) => { console.error("Could not retrieve template: PluginListingContainer.html"); }
                 });
