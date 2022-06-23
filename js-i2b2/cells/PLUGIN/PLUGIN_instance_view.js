@@ -1,36 +1,36 @@
-i2b2.PLUGIN.view = {
-    windows: [],
-    newInstance: function(pluginId) {
-        // get the plugin info from the model
-        const pluginData = i2b2.PLUGIN.model.plugins[pluginId];
-        if (pluginData === undefined) {
-            console.error("Plugin does not exist: " + pluginId);
-            return false;
-        }
+if (i2b2.PLUGIN.view === undefined) i2b2.PLUGIN.view = {};
 
-        let componentName = 'i2b2.PLUGIN.view';
-        let pluginTitle = pluginData.title;
-        if(pluginData.isLegacy){
-            componentName = 'i2b2.LEGACYPLUGIN.view.main';
-            pluginTitle = pluginData.name;
-        }
-
-        // create the new tab configuration
-        let newPluginWindow = {
-            type:'component',
-            isClosable:false,
-            componentName: componentName,
-            componentPlugin: pluginData,
-            componentPluginCode: pluginId,
-            title:pluginTitle
-        };
-        // this function creates or replaces the current plugin tab with this new plugin
-        if(i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems.length > 2)
-        {
-            i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems[2].remove();
-        }
-        i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].addChild(newPluginWindow, 2);
+i2b2.PLUGIN.view.windows = [];
+i2b2.PLUGIN.view.newInstance = function(pluginId) {
+    // get the plugin info from the model
+    const pluginData = i2b2.PLUGIN.model.plugins[pluginId];
+    if (pluginData === undefined) {
+        console.error("Plugin does not exist: " + pluginId);
+        return false;
     }
+
+    let componentName = 'i2b2.PLUGIN.view';
+    let pluginTitle = pluginData.title;
+    if(pluginData.isLegacy){
+        componentName = 'i2b2.LEGACYPLUGIN.view.main';
+        pluginTitle = pluginData.name;
+    }
+
+    // create the new tab configuration
+    let newPluginWindow = {
+        type:'component',
+        isClosable:false,
+        componentName: componentName,
+        componentPlugin: pluginData,
+        componentPluginCode: pluginId,
+        title:pluginTitle
+    };
+    // this function creates or replaces the current plugin tab with this new plugin
+    if(i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems.length > 2)
+    {
+        i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems[2].remove();
+    }
+    i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].addChild(newPluginWindow, 2);
 };
 
 //================================================================================================== //
