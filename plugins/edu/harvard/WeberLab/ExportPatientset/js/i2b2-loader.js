@@ -56,6 +56,13 @@ i2b2.h.initPlugin = function(initData) {
 // =====================================================================================================================
 i2b2.h.getScript = function(url) {
     return new Promise((resolve, reject) => {
+        // SECURITY: Enforce same-origin urls
+        if (url.indexOf(document.location.origin) !== 0) {
+            console.error("SECURITY FAULT! Plugin was asked to load non-orign script => " + url);
+            reject();
+            return;
+        }
+
         let head	= document.getElementsByTagName("head")[0];
         let script	= document.createElement("script");
         let done 	= false;
