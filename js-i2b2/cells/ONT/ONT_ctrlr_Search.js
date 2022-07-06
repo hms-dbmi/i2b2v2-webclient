@@ -19,13 +19,11 @@ i2b2.ONT.ctrlr.Search = {
         let searchFilterElem = $("#searchFilter");
         let filterValue = searchFilterElem.data("selectedFilterValue");
         let filterType = searchFilterElem.data("selectedFilterType");
-        if(filterType === "category")
-        {
+        if(filterType === "category") {
             search_info.Category = filterValue;
             search_info.Strategy = "contains";
             i2b2.ONT.ctrlr.Search.doNameSearch(search_info);
-        }
-        else{
+        } else{
             //Search by code
             search_info.Coding =  filterValue;
             i2b2.ONT.ctrlr.Search.doCodeSearch(search_info);
@@ -66,8 +64,7 @@ i2b2.ONT.ctrlr.Search = {
         let scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = this;
         // define our callback function
-        scopedCallback.callback = function(results)
-        {
+        scopedCallback.callback = function(results) {
             // THIS function is used to process the AJAX results of the getChild call
             //		results data object contains the following attributes:
             //			refXML: xmlDomObject <--- for data processing
@@ -118,8 +115,7 @@ i2b2.ONT.ctrlr.Search = {
         let scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = this;
         // define our callback function
-        scopedCallback.callback = function(results)
-        {
+        scopedCallback.callback = function(results) {
             // THIS function is used to process the AJAX results of the getChild call
             //		results data object contains the following attributes:
             //			refXML: xmlDomObject <--- for data processing
@@ -134,7 +130,7 @@ i2b2.ONT.ctrlr.Search = {
             {
                 alert("No Records Found");
             }
-        }
+        };
 
         // add options
         let searchOptions = {};
