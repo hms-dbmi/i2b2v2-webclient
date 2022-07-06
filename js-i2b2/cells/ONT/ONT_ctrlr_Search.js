@@ -14,6 +14,7 @@ console.time('execute time');
 
 i2b2.ONT.ctrlr.Search = {
     clickSearch: function() {
+        i2b2.ONT.model.searchResults = {};
         let search_info = {};
         search_info.SearchStr = $("#searchTermText").val();
         let searchFilterElem = $("#searchFilter");
@@ -82,8 +83,20 @@ i2b2.ONT.ctrlr.Search = {
             if (searchCatsCount === searchCats.length) {
                 let outtime = new Date().getTime()-mytime;
                 console.log("ONT:Search took "+outtime+"ms");
+                i2b2.ONT.ctrlr.Search.backfillResultNodes();
             }
-        }
+
+            // extract any returned info
+            if (!results.error) {
+                let c = results.refXML.getElementsByTagName('concept');
+                for(let i=0; i<1*c.length; i++) {
+                    i2b2.ONT.ctrlr.Search.addResultNode(c[i]);
+                }
+            } else {
+                alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
+            }
+
+        };
 
 
         // add AJAX options
@@ -142,8 +155,104 @@ i2b2.ONT.ctrlr.Search = {
         searchOptions.ont_search_coding = (inSearchData.Coding === 'ALL CODING'  ? '' : inSearchData.Coding);
         searchOptions.ont_search_string = inSearchData.SearchStr;
         i2b2.ONT.ajax.GetCodeInfo("ONT:Search", searchOptions, scopedCallback);
+    },
+
+// ================================================================================================== //
+    addResultNode: function(node) {
+        // extract data
+        let o = {};
+        o.xmlOrig = node;
+        o.name = i2b2.h.getXNodeVal(node, 'name');
+        o.hasChildren = i2b2.h.getXNodeVal(node, 'visualattributes').substring(0, 2);
+        o.level = i2b2.h.getXNodeVal(node, 'level');
+        o.key = i2b2.h.getXNodeVal(node, 'key');
+//console.log("X:"+o.key);
+        o.tooltip = i2b2.h.getXNodeVal(node, 'tooltip');
+        o.icd9 = '';
+        o.table_name = i2b2.h.getXNodeVal(node, 'tablename');
+        o.column_name = i2b2.h.getXNodeVal(node, 'columnname');
+        o.operator = i2b2.h.getXNodeVal(node, 'operator');
+        o.dim_code = i2b2.h.getXNodeVal(node, 'dimcode');
+
+        // build the path that the node sits on in ONT search results data model
+        let model = i2b2.ONT.model.searchResults;
+        let paths = o.key.substr(2).split('\\');
+        let parent = model;
+        do {
+            let subpath = paths.shift();
+            if (subpath.trim().length) {
+                if (parent[subpath] === undefined) parent[subpath] = {};
+                parent = parent[subpath];
+            }
+        } while (paths.length > 0);
+        parent['_$$_'] = o;
+    },
+
+// ================================================================================================== //
+    backfillResultNodes: function() {
+        let model = i2b2.ONT.model.searchResults;
+        let nodesToLoad = [];
+        let loadCount = 0;
+        let func_recurseWalk = (targetNode, path) =>  {
+            let loaded = false;
+            for (let node in targetNode) {
+                if (node === '_$$_') {
+                    loaded = true;
+                } else {
+                    func_recurseWalk(targetNode[node], path + node + "\\");
+                }
+            }
+            if (!loaded) nodesToLoad.push(path);
+        };
+        // start recursion at the roots
+        for (let initial in model) {
+            func_recurseWalk(model[initial], "\\\\" + initial + "\\");
+        }
+        loadCount = nodesToLoad.length;
+
+        // fire off requests to the server
+        let scopedCallback = new i2b2_scopedCallback();
+        scopedCallback.scope = this;
+        // define our callback function
+        scopedCallback.callback = function(results) {
+            // THIS function is used to process the AJAX results of the getChild call
+            //		results data object contains the following attributes:
+            //			refXML: xmlDomObject <--- for data processing
+            //			msgRequest: xml (string)
+            //			msgResponse: xml (string)
+            //			error: boolean
+            //			errorStatus: string [only with error=true]
+            //			errorMsg: string [only with error=true]
+
+            if (!results.error) {
+                let c = results.refXML.getElementsByTagName('concept');
+                for(let i=0; i<1*c.length; i++) {
+                    i2b2.ONT.ctrlr.Search.addResultNode(c[i]);
+                }
+            } else {
+                alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
+            }
+
+            // see if we are done with all our requests
+            loadCount = loadCount - 1;
+            if (loadCount === 0) {
+                // render the results tree
+            }
+        };
+
+        // add options
+        let searchOptions = {};
+        searchOptions.ont_max_records = "max='200'";
+        searchOptions.ont_synonym_records = false;
+        searchOptions.ont_hidden_records = false;
+        do {
+            searchOptions.concept_key_value = nodesToLoad.pop();
+//console.log("O:"+searchOptions.concept_key_value);
+            i2b2.ONT.ajax.GetTermInfo("ONT:Search", searchOptions, scopedCallback);
+        } while (nodesToLoad.length > 0);
     }
-}
+
+};
 
 console.timeEnd('execute time');
 console.groupEnd();
