@@ -191,6 +191,7 @@ i2b2.events.afterAllCellsLoaded.add((function() {
             }
             if (foundInstance === undefined) {
                 console.warn("PluginMgr: MESSAGE FROM UNKNOWN WINDOW");
+                console.dir(event);
                 return false;
             }
 
