@@ -54,6 +54,13 @@ i2b2.ONT.view.search.clearSearchInput = function(){
     $("#searchTermText").val("");
     $("#searchTerm .clearIcon").addClass("hidden");
     $("#searchTermError").empty();
+
+    // hide and clear the search results
+    i2b2.ONT.view.search.treeview.hide();
+    i2b2.ONT.view.search.treeview.data('treeview').clear();
+
+    // show the navigation treeview
+    i2b2.ONT.view.nav.treeview.show();
 };
 
 //================================================================================================== //
