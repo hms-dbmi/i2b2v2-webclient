@@ -14,6 +14,14 @@ console.time('execute time');
 
 i2b2.ONT.ctrlr.Search = {
     clickSearch: function() {
+        // hide nav and show search results
+        i2b2.ONT.view.nav.treeview.hide();
+        i2b2.ONT.view.search.treeview.show();
+
+        let status = $("#i2b2OntSearchStatus");
+        status[0].innerHTML = "Searching...";
+        status.show();
+
         i2b2.ONT.model.searchResults = {};
         let search_info = {};
         search_info.SearchStr = $("#searchTermText").val();
@@ -24,7 +32,7 @@ i2b2.ONT.ctrlr.Search = {
             search_info.Category = filterValue;
             search_info.Strategy = "contains";
             i2b2.ONT.ctrlr.Search.doNameSearch(search_info);
-        } else{
+        } else {
             //Search by code
             search_info.Coding =  filterValue;
             i2b2.ONT.ctrlr.Search.doCodeSearch(search_info);
@@ -36,6 +44,9 @@ i2b2.ONT.ctrlr.Search = {
         //   SearchStr:  what is being searched for
         //   Category: what category is being searched.
         //   Strategy: what matching strategy should be used
+
+        i2b2.ONT.model.searchParams = inSearchData;
+        i2b2.ONT.model.searchResultCount = 0;
 
         // Debug: add time check
         let mytime = new Date().getTime();
@@ -79,23 +90,30 @@ i2b2.ONT.ctrlr.Search = {
             // BUG FIX: WEBCLIENT-139 & WEBCLIENT-150
             searchCatsCount++;
 
-            // How long did it take?
-            if (searchCatsCount === searchCats.length) {
-                let outtime = new Date().getTime()-mytime;
-                console.log("ONT:Search took "+outtime+"ms");
-                i2b2.ONT.ctrlr.Search.backfillResultNodes();
-            }
-
             // extract any returned info
             if (!results.error) {
                 let c = results.refXML.getElementsByTagName('concept');
                 for(let i=0; i<1*c.length; i++) {
-                    i2b2.ONT.ctrlr.Search.addResultNode(c[i]);
+                    i2b2.ONT.model.searchResultCount++;
+                    i2b2.ONT.ctrlr.Search.addResultNode(c[i], true);
                 }
             } else {
                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }
 
+            // search is finished
+            if (searchCatsCount === searchCats.length) {
+                // How long did it take?
+                let outtime = new Date().getTime()-mytime;
+                console.log("ONT:Search took "+outtime+"ms");
+                let status = $("#i2b2OntSearchStatus");
+                if (i2b2.ONT.model.searchResultCount === 0) {
+                    status[0].innerHTML = "No Records Found.";
+                } else {
+                    status[0].innerHTML = "Found " + i2b2.ONT.model.searchResultCount + " Records...";
+                    i2b2.ONT.ctrlr.Search.backfillResultNodes();
+                }
+            }
         };
 
 
@@ -139,9 +157,10 @@ i2b2.ONT.ctrlr.Search = {
             //			errorMsg: string [only with error=true]
 
             let c = results.refXML.getElementsByTagName('concept');
-            if (c.length === 0)
-            {
-                alert("No Records Found");
+            if (c.length === 0) {
+                let status = $("#i2b2OntSearchStatus");
+                status[0].innerHTML = "No Records Found.";
+                status.show();
             }
         };
 
@@ -158,34 +177,32 @@ i2b2.ONT.ctrlr.Search = {
     },
 
 // ================================================================================================== //
-    addResultNode: function(node) {
+    addResultNode: function(node, highlight) {
         // extract data
-        let o = {};
-        o.xmlOrig = node;
-        o.name = i2b2.h.getXNodeVal(node, 'name');
-        o.hasChildren = i2b2.h.getXNodeVal(node, 'visualattributes').substring(0, 2);
-        o.level = i2b2.h.getXNodeVal(node, 'level');
-        o.key = i2b2.h.getXNodeVal(node, 'key');
-//console.log("X:"+o.key);
-        o.tooltip = i2b2.h.getXNodeVal(node, 'tooltip');
-        o.icd9 = '';
-        o.table_name = i2b2.h.getXNodeVal(node, 'tablename');
-        o.column_name = i2b2.h.getXNodeVal(node, 'columnname');
-        o.operator = i2b2.h.getXNodeVal(node, 'operator');
-        o.dim_code = i2b2.h.getXNodeVal(node, 'dimcode');
+        let {sdx, tv} = i2b2.ONT.ctrlr.gen.generateNodeData(node);
 
         // build the path that the node sits on in ONT search results data model
         let model = i2b2.ONT.model.searchResults;
-        let paths = o.key.substr(2).split('\\');
+        let paths = sdx.sdxInfo.sdxKeyValue.substr(2).split('\\');
         let parent = model;
+        let fullPath = "\\\\";
         do {
             let subpath = paths.shift();
             if (subpath.trim().length) {
                 if (parent[subpath] === undefined) parent[subpath] = {};
+                fullPath = fullPath + subpath + "\\";
+                let root = i2b2.ONT.model.Categories.filter((node) => { return node.key === fullPath });
+                if (root.length) {
+                    root = root.pop();
+                    let temp = i2b2.ONT.ctrlr.gen.generateNodeData(false, root);
+                    parent[subpath]._$R$_ = temp.tv;
+                }
                 parent = parent[subpath];
             }
         } while (paths.length > 0);
-        parent['_$$_'] = o;
+        parent['_$$_'] = tv;
+        // color the node for matching our search criteria
+        if (highlight) parent['_$$_'].icon += " highlight";
     },
 
 // ================================================================================================== //
@@ -196,7 +213,7 @@ i2b2.ONT.ctrlr.Search = {
         let func_recurseWalk = (targetNode, path) =>  {
             let loaded = false;
             for (let node in targetNode) {
-                if (node === '_$$_') {
+                if (node === '_$$_' || node === '_$R$_') {
                     loaded = true;
                 } else {
                     func_recurseWalk(targetNode[node], path + node + "\\");
@@ -215,15 +232,6 @@ i2b2.ONT.ctrlr.Search = {
         scopedCallback.scope = this;
         // define our callback function
         scopedCallback.callback = function(results) {
-            // THIS function is used to process the AJAX results of the getChild call
-            //		results data object contains the following attributes:
-            //			refXML: xmlDomObject <--- for data processing
-            //			msgRequest: xml (string)
-            //			msgResponse: xml (string)
-            //			error: boolean
-            //			errorStatus: string [only with error=true]
-            //			errorMsg: string [only with error=true]
-
             if (!results.error) {
                 let c = results.refXML.getElementsByTagName('concept');
                 for(let i=0; i<1*c.length; i++) {
@@ -237,6 +245,45 @@ i2b2.ONT.ctrlr.Search = {
             loadCount = loadCount - 1;
             if (loadCount === 0) {
                 // render the results tree
+                console.warn("Render Search Results Treeview!");
+                let treeStruct = [];
+                let func_crawl_builder = (node, parent) => {
+                    let ret = [];
+                    let bypass = (node._$$_ === undefined && node._$R$_ === undefined) || (node._$$_ !== undefined && parent === null);
+                    if (bypass) {
+                        // passes back only a collection of child nodes (which should be built)
+                        // this bubbles up navigatable nodes through non-navigatable nodes
+                        for (let subpath in node) {
+                            if (!["_$$_", "_$R$_"].includes(subpath)) {
+                                ret = ret.concat(func_crawl_builder(node[subpath], parent));
+                            }
+                        }
+                    } else {
+                        // passes back current node fully built with its "nodes" attribute populated
+                        ret = node._$$_ !== undefined ? node._$$_ : node._$R$_;
+                        ret.state = {
+                            loaded: true,
+                            expanded: true
+                        };
+                        let children = [];
+                        for (let subpath in node) {
+                            if (!["_$$_", "_$R$_"].includes(subpath)) {
+                                children = children.concat(func_crawl_builder(node[subpath], node));
+                            }
+                        }
+                        ret.nodes = children
+                    }
+                    return ret;
+                };
+
+                for (let subpath in i2b2.ONT.model.searchResults) {
+                    let subtree = func_crawl_builder(i2b2.ONT.model.searchResults[subpath], null);
+                    treeStruct = treeStruct.concat(subtree);
+                }
+
+                // display the tree
+                i2b2.ONT.view.search.displayResults(treeStruct);
+
             }
         };
 
@@ -247,11 +294,9 @@ i2b2.ONT.ctrlr.Search = {
         searchOptions.ont_hidden_records = false;
         do {
             searchOptions.concept_key_value = nodesToLoad.pop();
-//console.log("O:"+searchOptions.concept_key_value);
             i2b2.ONT.ajax.GetTermInfo("ONT:Search", searchOptions, scopedCallback);
         } while (nodesToLoad.length > 0);
     }
-
 };
 
 console.timeEnd('execute time');

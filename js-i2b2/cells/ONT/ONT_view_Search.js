@@ -66,7 +66,7 @@ i2b2.ONT.view.search.clearSearchInput = function(){
 //================================================================================================== //
 
 i2b2.ONT.view.search.initSearch = function(container){
-    // Load the finder templatee
+    // Load the finder template
     $.ajax("js-i2b2/cells/ONT/assets/OntologyFinder.html", {
         success: (template) => {
             let finderTemplate = Handlebars.compile(template);
@@ -74,6 +74,38 @@ i2b2.ONT.view.search.initSearch = function(container){
         },
         error: (error) => { console.error("Could not retrieve template: OntologyFinder.html"); }
     });
+    // add the status DIV
+    let status = $('<div id="i2b2OntSearchStatus"></div>').prependTo(container);
+    status.hide();
+    // add the results treeview
+    let treeTarget = $('<div id="i2b2TreeviewOntSearch"></div>').prependTo(container);
+    // create an empty treeview for navigation
+    i2b2.ONT.view.search.treeview = $(treeTarget).treeview({
+        showBorder: false,
+        highlightSelected: false,
+        dynamicLoading: false,
+        levels: 1,
+        data: []
+    });
+    i2b2.ONT.view.search.treeview.on('onRedraw', () =>{
+        // attach drag drop attribute after the tree has been redrawn
+        i2b2.ONT.view.search.treeview.find('li:not(:has(span.tvRoot))').attr("draggable", true);
+
+        // TECHNICAL DEBT: Change this when CSS selector :has() is implemented
+        // applies the highlighting CSS style to indicated nodes
+        $("#i2b2TreeviewOntSearch li:has(.sdxStyleONT-CONCPT.highlight)").addClass("search-highlighted");
+    });
+    i2b2.ONT.view.search.treeview.on('onDrag', i2b2.sdx.Master.onDragStart);
+
+};
+
+//================================================================================================== //
+
+i2b2.ONT.view.search.displayResults = function(treeData) {
+    $("#i2b2OntSearchStatus").hide();
+    let treeview = i2b2.ONT.view.search.treeview.data('treeview');
+    treeview.clear();
+    treeview.init({data: treeData});
 };
 
 //================================================================================================== //

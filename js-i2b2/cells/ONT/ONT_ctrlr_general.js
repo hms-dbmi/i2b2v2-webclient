@@ -25,6 +25,64 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
 }).bind(i2b2.ONT));
 
 
+//================================================================================================== //
+i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
+
+    let data = {};
+    if (xmlData) {
+        data.xmlOrig = xmlData;
+        data.name = i2b2.h.getXNodeVal(xmlData, 'name');
+        data.hasChildren = i2b2.h.getXNodeVal(xmlData, 'visualattributes').substring(0, 2);
+        data.level = i2b2.h.getXNodeVal(xmlData, 'level');
+        data.key = i2b2.h.getXNodeVal(xmlData, 'key');
+        data.tooltip = i2b2.h.getXNodeVal(xmlData, 'tooltip');
+        data.icd9 = '';
+        data.table_name = i2b2.h.getXNodeVal(xmlData, 'tablename');
+        data.column_name = i2b2.h.getXNodeVal(xmlData, 'columnname');
+        data.operator = i2b2.h.getXNodeVal(xmlData, 'operator');
+        data.dim_code = i2b2.h.getXNodeVal(xmlData, 'dimcode');
+    } else {
+        data = sdxData;
+    }
+
+    // generate treeview info
+    let sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT', data);
+    if (!sdxDataNode) {
+        console.error("SDX could not encapsulate CONCPT data!");
+        console.dir(data);
+        return false;
+    }
+
+    let renderOptions = {
+        title: data.name,
+        icon: {
+            root: "sdx_ONT_CONCPT_root.gif",
+            rootExp: "sdx_ONT_CONCPT_root-exp.gif",
+            branch: "sdx_ONT_CONCPT_branch.gif",
+            branchExp: "sdx_ONT_CONCPT_branch-exp.gif",
+            leaf: "sdx_ONT_CONCPT_leaf.gif"
+        }
+    };
+    sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+    sdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
+    let tvDataNode = {
+        title: sdxDataNode.renderData.moreDescriptMinor,
+        text: sdxDataNode.renderData.title,
+        icon: sdxDataNode.renderData.cssClassMain,
+        key: sdxDataNode.sdxInfo.sdxKeyValue,
+        iconImg: sdxDataNode.renderData.iconImg,
+        iconImgExp: sdxDataNode.renderData.iconImgExp,
+        i2b2: sdxDataNode
+    };
+    tvDataNode.state = sdxDataNode.renderData.tvNodeState;
+    if(sdxDataNode.renderData.cssClassMinor !== undefined) {
+        tvDataNode.icon += " " + sdxDataNode.renderData.cssClassMinor;
+    }
+    // add number counts
+    if (sdxDataNode.origData.total_num !== undefined) tvDataNode.text += ' - (' + sdxDataNode.origData.total_num + ')';
+    return {sdx: sdxDataNode, tv: tvDataNode};
+};
+
 // ================================================================================================== //
 i2b2.ONT.ctrlr.gen.loadCategories = function() {
     console.info("CALLED i2b2.ONT.ctrlr.gen.loadCategories()");
@@ -41,9 +99,9 @@ i2b2.ONT.ctrlr.gen.loadCategories = function() {
         // the THIS scope is already set to i2b2.ONT.model.Categories
         i2b2.ONT.model.Categories = [];
         if (!i2b2CellMsg.error) {
-            var c = i2b2CellMsg.refXML.getElementsByTagName('concept');
-            for(var i=0; i<1*c.length; i++) {
-                var o = new Object;
+            let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
+            for(let i=0; i<1*c.length; i++) {
+                let o = {};
                 o.xmlOrig = c[i];
                 o.name = i2b2.h.getXNodeVal(c[i],'name');
                 o.hasChildren = i2b2.h.getXNodeVal(c[i],'visualattributes').substring(0,2);
