@@ -1,4 +1,4 @@
-#i2b2TreeviewOntNav {
+#i2b2TreeviewOntNav, #i2b2TreeviewOntSearch, #i2b2OntSearchStatus {
     background: #FFFFFF;
     border: solid 1px #63758c;
     overflow: auto;
@@ -11,6 +11,20 @@
     right: 0;
     height: auto;
     border-top: 1px solid rgba(212, 105, 255, 0.18);
+}
+
+#i2b2OntSearchStatus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* TECHNICAL DEBT: Change this when CSS selector :has() is implemented
+#i2b2TreeviewOntSearch li:has(.sdxStyleONT-CONCPT.highlight) span.indent {
+*/
+#i2b2TreeviewOntSearch .search-highlighted {
+    font-weight: bold;
 }
 
 #i2b2FinderOnt {
