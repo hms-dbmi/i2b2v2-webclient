@@ -101,20 +101,9 @@ i2b2.ONT.ctrlr.gen.loadCategories = function() {
         if (!i2b2CellMsg.error) {
             let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
             for(let i=0; i<1*c.length; i++) {
-                let o = {};
-                o.xmlOrig = c[i];
-                o.name = i2b2.h.getXNodeVal(c[i],'name');
-                o.hasChildren = i2b2.h.getXNodeVal(c[i],'visualattributes').substring(0,2);
-                o.level = i2b2.h.getXNodeVal(c[i],'level');
-                o.key = i2b2.h.getXNodeVal(c[i],'key');
-                o.tooltip = i2b2.h.getXNodeVal(c[i],'tooltip');
-                o.icd9 = '';
-                o.table_name = i2b2.h.getXNodeVal(c[i],'tablename');
-                o.column_name = i2b2.h.getXNodeVal(c[i],'columnname');
-                o.operator = i2b2.h.getXNodeVal(c[i],'operator');
-                o.dim_code = i2b2.h.getXNodeVal(c[i],'dimcode');
+                let {sdx, tv} = i2b2.ONT.ctrlr.gen.generateNodeData(c[i]);
                 // save the node to the ONT data model
-                i2b2.ONT.model.Categories.push(o);
+                i2b2.ONT.model.Categories.push(sdx.origData);
             }
         } else {
             alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
