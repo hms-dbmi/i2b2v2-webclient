@@ -86,17 +86,11 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
 // ================================================================================================== //
 i2b2.ONT.ctrlr.gen.loadCategories = function() {
     console.info("CALLED i2b2.ONT.ctrlr.gen.loadCategories()");
-    // THIS FUNCTION DOES THE FOLLOWING:
-    //	1) fires a call to ajax.getCategories(),
-    //	2) interprets the XML / populates the ONT data model,
-    //	3) fires it's onDataUpdate event
 
-    // make sure the categories section of the data model exists
-    if (!i2b2.ONT.model.Categories) i2b2.ONT.model.Categories = [];
-    // define the XML processing function
-    let processXML = function(i2b2CellMsg) {
+    i2b2.ONT.model.Categories = undefined;
+    // create a scoped callback message to pass the XML to our function defined above
+    let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
         console.group("CALLBACK Processing AJAX i2b2CellMsg");
-        // the THIS scope is already set to i2b2.ONT.model.Categories
         i2b2.ONT.model.Categories = [];
         if (!i2b2CellMsg.error) {
             let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
@@ -114,11 +108,8 @@ i2b2.ONT.ctrlr.gen.loadCategories = function() {
             DataRef: i2b2.ONT.model.Categories
         };
         console.info("EVENT FIRE i2b2.ONT.ctrlr.gen.events.onDataUpdate; Msg:",DataUpdateSignal);
-        console.groupEnd();
         i2b2.ONT.ctrlr.gen.events.onDataUpdate.fire(DataUpdateSignal);
-    };
-    // create a scoped callback message to pass the XML to our function defined above
-    let scopeCB = new i2b2_scopedCallback(processXML,i2b2.ONT.model.Categories);
+    },i2b2.ONT.model.Categories);
     // fire the AJAX call
     let options = {};
     options.ont_hidden_records = i2b2.ONT.view.nav.params.hiddens;
@@ -129,18 +120,9 @@ i2b2.ONT.ctrlr.gen.loadCategories = function() {
 // ================================================================================================== //
 i2b2.ONT.ctrlr.gen.loadSchemes = function() {
     console.info("CALLED i2b2.ONT.ctrlr.gen.loadSchemes()");
-    // THIS FUNCTION DOES THE FOLLOWING:
-    //	1) fires a call to ajax.getCategories(),
-    //	2) interprets the XML / populates the ONT data model,
-    //	3) fires it's onDataUpdate event
-
-    // make sure the schemes section of the data model exists
-    if (!i2b2.ONT.model.Schemes) i2b2.ONT.model.Schemes = [];
-    // define the XML processing function
-    let processXML = function(i2b2CellMsg) {
-        console.group("CALLBACK Processing AJAX i2b2CellMsg");
-        console.dir(i2b2CellMsg);
-        // the THIS scope is already set to i2b2.ONT.model.Categories
+    i2b2.ONT.model.Schemes = undefined;
+    // create a scoped callback message to pass the XML to our function defined above
+    let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
         i2b2.ONT.model.Schemes = [];
         if (!i2b2CellMsg.error) {
             let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
@@ -160,12 +142,8 @@ i2b2.ONT.ctrlr.gen.loadSchemes = function() {
             DataRef: i2b2.ONT.model.Schemes
         };
         console.info("EVENT FIRED i2b2.ONT.ctrlr.gen.events.onDataUpdate");
-        console.dir(DataUpdateSignal);
-        console.groupEnd();
         i2b2.ONT.ctrlr.gen.events.onDataUpdate.fire(DataUpdateSignal);
-    };
-    // create a scoped callback message to pass the XML to our function defined above
-    let scopeCB = new i2b2_scopedCallback(processXML,i2b2.ONT.model.Schemes);
+    },i2b2.ONT.model.Schemes);
     // fire the AJAX call
     i2b2.ONT.ajax.GetSchemes("ONT:generalView", {}, scopeCB);
 };
