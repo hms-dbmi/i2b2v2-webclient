@@ -142,31 +142,46 @@ i2b2.ONT.ctrlr.Search = {
         // VERIFY that the above information has been passed
         if (!inSearchData) return false;
 
+        i2b2.ONT.model.searchParams = inSearchData;
+        i2b2.ONT.model.searchResultCount = 0;
+
+        // Debug: add time check
+        let mytime = new Date().getTime();
+
         // scope our callback function
         let scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = this;
         // define our callback function
         scopedCallback.callback = function(results) {
-            // THIS function is used to process the AJAX results of the getChild call
-            //		results data object contains the following attributes:
-            //			refXML: xmlDomObject <--- for data processing
-            //			msgRequest: xml (string)
-            //			msgResponse: xml (string)
-            //			error: boolean
-            //			errorStatus: string [only with error=true]
-            //			errorMsg: string [only with error=true]
 
-            let c = results.refXML.getElementsByTagName('concept');
-            if (c.length === 0) {
+            // How long did it take?
+            let outtime = new Date().getTime()-mytime;
+            console.log("ONT:Search took "+outtime+"ms");
+            
+            if (!results.error) {
+                let c = results.refXML.getElementsByTagName('concept');
+
                 let status = $("#i2b2OntSearchStatus");
-                status[0].innerHTML = "No Records Found.";
+                if (c.length === 0) {
+                    status[0].innerHTML = "No Records Found.";
+                } else {
+                    status[0].innerHTML = "Found " + c.length + " Records...";
+                }
                 status.show();
+
+                for(let i=0; i<1*c.length; i++) {
+                    i2b2.ONT.model.searchResultCount++;
+                    i2b2.ONT.ctrlr.Search.addResultNode(c[i], true);
+                }
+                i2b2.ONT.ctrlr.Search.backfillResultNodes();
+
+            } else {
+                alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }
         };
 
         // add options
         let searchOptions = {};
-
         searchOptions.ont_max_records = "max='200'";
         searchOptions.ont_synonym_records = false;
         searchOptions.ont_hidden_records = false;
