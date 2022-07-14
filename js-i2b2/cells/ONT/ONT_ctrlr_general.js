@@ -17,7 +17,7 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate = $.Callbacks();
 
 
 //================================================================================================== //
-// should this be in the view controller?
+// TODO: should this be in the view controller?
 i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
     if (updateInfo.DataLocation === "i2b2.ONT.model.Categories") {
         this.view.nav.PopulateCategories();
@@ -75,7 +75,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         i2b2: sdxDataNode
     };
     tvDataNode.state = sdxDataNode.renderData.tvNodeState;
-    if(sdxDataNode.renderData.cssClassMinor !== undefined) {
+    if (sdxDataNode.renderData.cssClassMinor !== undefined) {
         tvDataNode.icon += " " + sdxDataNode.renderData.cssClassMinor;
     }
     // add number counts
@@ -92,7 +92,7 @@ i2b2.ONT.ctrlr.gen.loadCategories = function() {
     //	3) fires it's onDataUpdate event
 
     // make sure the categories section of the data model exists
-    if (!i2b2.ONT.model.Categories) { i2b2.ONT.model.Categories = []; }
+    if (!i2b2.ONT.model.Categories) i2b2.ONT.model.Categories = [];
     // define the XML processing function
     let processXML = function(i2b2CellMsg) {
         console.group("CALLBACK Processing AJAX i2b2CellMsg");
@@ -100,7 +100,7 @@ i2b2.ONT.ctrlr.gen.loadCategories = function() {
         i2b2.ONT.model.Categories = [];
         if (!i2b2CellMsg.error) {
             let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
-            for(let i=0; i<1*c.length; i++) {
+            for (let i=0; i<1*c.length; i++) {
                 let {sdx, tv} = i2b2.ONT.ctrlr.gen.generateNodeData(c[i]);
                 // save the node to the ONT data model
                 i2b2.ONT.model.Categories.push(sdx.origData);
@@ -135,7 +135,7 @@ i2b2.ONT.ctrlr.gen.loadSchemes = function() {
     //	3) fires it's onDataUpdate event
 
     // make sure the schemes section of the data model exists
-    if (!i2b2.ONT.model.Schemes) { i2b2.ONT.model.Schemes = []; }
+    if (!i2b2.ONT.model.Schemes) i2b2.ONT.model.Schemes = [];
     // define the XML processing function
     let processXML = function(i2b2CellMsg) {
         console.group("CALLBACK Processing AJAX i2b2CellMsg");
@@ -144,7 +144,7 @@ i2b2.ONT.ctrlr.gen.loadSchemes = function() {
         i2b2.ONT.model.Schemes = [];
         if (!i2b2CellMsg.error) {
             let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
-            for(let i=0; i<1*c.length; i++) {
+            for (let i=0; i<1*c.length; i++) {
                 let o = {};
                 o.name = i2b2.h.getXNodeVal(c[i],'name');
                 o.key = i2b2.h.getXNodeVal(c[i],'key');

@@ -1,7 +1,7 @@
 i2b2.ONT.view.info = {
     windows: [],
     newInstance: function(data) {
-
+        alert("TODO: Implement i2b2.ONT.view.info.newInstance()");
     }
 };
 
@@ -9,7 +9,7 @@ i2b2.ONT.view.info = {
 
 //================================================================================================== //
 i2b2.events.afterCellInit.add((function(cell){
-    if (cell.cellCode == "ONT") {
+    if (cell.cellCode === "ONT") {
         console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.ONT.view.info",

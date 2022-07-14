@@ -28,7 +28,7 @@ i2b2.ONT.ctrlr.Search = {
         let searchFilterElem = $("#searchFilter");
         let filterValue = searchFilterElem.data("selectedFilterValue");
         let filterType = searchFilterElem.data("selectedFilterType");
-        if(filterType === "category") {
+        if (filterType === "category") {
             search_info.Category = filterValue;
             search_info.Strategy = "contains";
             i2b2.ONT.ctrlr.Search.doNameSearch(search_info);
@@ -58,15 +58,13 @@ i2b2.ONT.ctrlr.Search = {
         let searchCats = [];
         if (inSearchData.Category === "ALL CATEGORIES") {
             let d = i2b2.ONT.model.Categories;
-            let l = d.length
+            let l = d.length;
             // build list of all categories to search
             for (let i=0; i<l; i++) {
                 let cid = d[i].key;
                 cid = cid.substring(2);
                 cid = cid.substring(0,cid.indexOf("\\"));
-                if (cid != null) {
-                    searchCats.push(cid);
-                }
+                if (cid !== null) searchCats.push(cid);
             }
         } else {
             // just a single category to search
@@ -77,23 +75,12 @@ i2b2.ONT.ctrlr.Search = {
         scopedCallback.scope = this;
         // define our callback function
         scopedCallback.callback = function(results) {
-            // THIS function is used to process the AJAX results of the getChild call
-            //		results data object contains the following attributes:
-            //			refXML: xmlDomObject <--- for data processing
-            //			msgRequest: xml (string)
-            //			msgResponse: xml (string)
-            //			error: boolean
-            //			errorStatus: string [only with error=true]
-            //			errorMsg: string [only with error=true]
-
-
-            // BUG FIX: WEBCLIENT-139 & WEBCLIENT-150
             searchCatsCount++;
 
             // extract any returned info
             if (!results.error) {
                 let c = results.refXML.getElementsByTagName('concept');
-                for(let i=0; i<1*c.length; i++) {
+                for (let i=0; i<1*c.length; i++) {
                     i2b2.ONT.model.searchResultCount++;
                     i2b2.ONT.ctrlr.Search.addResultNode(c[i], true);
                 }
@@ -127,11 +114,9 @@ i2b2.ONT.ctrlr.Search = {
         searchOptions.ont_search_strategy = inSearchData.Strategy;
         searchOptions.ont_search_string = inSearchData.SearchStr;
 
-        l = searchCats.length;
         let totalCount = 0;
         let searchCatsCount = 0;
-
-        for (let i=0; i<l; i++) {
+        for (let i=0; i<searchCats.length; i++) {
             searchOptions.ont_category = searchCats[i];
             i2b2.ONT.ajax.GetNameInfo("ONT:FindBy", searchOptions, scopedCallback);
         }
@@ -157,7 +142,7 @@ i2b2.ONT.ctrlr.Search = {
             // How long did it take?
             let outtime = new Date().getTime()-mytime;
             console.log("ONT:Search took "+outtime+"ms");
-            
+
             if (!results.error) {
                 let c = results.refXML.getElementsByTagName('concept');
 
@@ -169,12 +154,11 @@ i2b2.ONT.ctrlr.Search = {
                 }
                 status.show();
 
-                for(let i=0; i<1*c.length; i++) {
+                for (let i=0; i<1*c.length; i++) {
                     i2b2.ONT.model.searchResultCount++;
                     i2b2.ONT.ctrlr.Search.addResultNode(c[i], true);
                 }
                 i2b2.ONT.ctrlr.Search.backfillResultNodes();
-
             } else {
                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }
@@ -298,7 +282,6 @@ i2b2.ONT.ctrlr.Search = {
 
                 // display the tree
                 i2b2.ONT.view.search.displayResults(treeStruct);
-
             }
         };
 

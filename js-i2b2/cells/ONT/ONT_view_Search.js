@@ -14,11 +14,10 @@ i2b2.ONT.view.search.error.minCharError = "Search term must be at least 3 charac
 
 i2b2.ONT.view.search.toggleSearchOptions = function(elem){
     let currentVal = $(elem).val();
-    if(currentVal === "coding"){
+    if (currentVal === "coding"){
         $("#categoryOptions").addClass("hidden");
         $("#codingOptions").removeClass("hidden");
-    }
-    else{
+    } else {
         $("#categoryOptions").removeClass("hidden");
         $("#codingOptions").addClass("hidden");
     }
@@ -27,14 +26,14 @@ i2b2.ONT.view.search.toggleSearchOptions = function(elem){
 i2b2.ONT.view.search.handleSearchInputChange = function(newValue){
     i2b2.ONT.view.search.toggleSearchClearIcon(newValue);
     i2b2.ONT.view.search.enableSearch(newValue);
-}
+};
 //================================================================================================== //
 
 i2b2.ONT.view.search.enableSearch = function(newValue){
     let searchType = $("#searchFilter").data("selectedFilterType");
-    if((newValue && newValue.length > 2 && searchType === 'category' ) || (newValue && newValue.length > 0 && (searchType === 'coding' || $("#searchFilter").data("selectedFilterValue") === 'ALL CODING'))) {
+    if ((newValue && newValue.length > 2 && searchType === 'category' ) || (newValue && newValue.length > 0 && (searchType === 'coding' || $("#searchFilter").data("selectedFilterValue") === 'ALL CODING'))) {
         $("#submitTermSearch").attr('disabled', false);
-    }else{
+    } else {
         $("#submitTermSearch").attr('disabled', true);
     }
 };
@@ -42,9 +41,9 @@ i2b2.ONT.view.search.enableSearch = function(newValue){
 //================================================================================================== //
 
 i2b2.ONT.view.search.toggleSearchClearIcon = function(newValue){
-    if(newValue){
+    if (newValue){
         $("#searchTerm .clearIcon").removeClass("hidden");
-    } else{
+    } else {
         $("#searchTerm .clearIcon").addClass("hidden");
     }
 };
@@ -119,7 +118,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
             let categories = [];
             for (let i=0; i<i2b2.ONT.model.Categories.length; i++) {
                 let cat = i2b2.ONT.model.Categories[i];
-                let catVal = cat.key.substring(2,cat.key.indexOf('\\',3))
+                let catVal = cat.key.substring(2,cat.key.indexOf('\\',3));
                 categories.push({
                     name: cat.name,
                     value: catVal,
@@ -140,7 +139,6 @@ i2b2.ONT.view.search.initSearchOptions = function(){
             }
             $(submenuOptions({"option": codingSystems})).appendTo("#codingSubmenu");
 
-
             $("#liCat").hover(function(){
                 $("#codingSubmenu").hide().closest("li").removeClass("highlight-menu-item");
                 $("#categorySubmenu").css("left", "100%").show();
@@ -152,13 +150,14 @@ i2b2.ONT.view.search.initSearchOptions = function(){
             });
 
             $("#i2b2FinderOnt .submenu li").on("click", function(){
-                $(".active").removeClass("active");
+                $("#i2b2FinderOnt .active").removeClass("active");
                 let liItem = $(this).find("button");
                 let newDisplayText = liItem.addClass("active").text();
                 let filterValue = liItem.addClass("active").data("searchFilterValue");
                 let filterType = liItem.data("searchFilterType");
                 $("#searchFilterText").text(newDisplayText);
                 $("#searchFilter").data("selectedFilterValue", filterValue).data("selectedFilterType", filterType);
+                i2b2.ONT.view.search.handleSearchInputChange($('#i2b2FinderOnt #searchTerm input').val());
             });
 
             $("#searchActions .reset").click(function() {

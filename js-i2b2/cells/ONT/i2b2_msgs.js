@@ -17,9 +17,9 @@ i2b2.ONT.cfg.parsers.ExtractConcepts = function(){
     if (!this.error) {
         this.model = [];
         // extract records from XML msg
-        var c = this.refXML.getElementsByTagName('concept');
-        for(var i=0; i<1*c.length; i++) {
-            var o = new Object;
+        let c = this.refXML.getElementsByTagName('concept');
+        for(let i=0; i<1*c.length; i++) {
+            let o = {};
             o.xmlOrig = c[i];
             o.name = i2b2.h.getXNodeVal(c[i],'name');
             o.hasChildren = i2b2.h.getXNodeVal(c[i],'visualattributes');
@@ -31,7 +31,7 @@ i2b2.ONT.cfg.parsers.ExtractConcepts = function(){
             o.synonym = i2b2.h.getXNodeVal(c[i],'synonym_cd');
             o.visual_attributes = i2b2.h.getXNodeVal(c[i],'visualattributes');
             o.totalnum = i2b2.h.getXNodeVal(c[i],'totalnum');
-            o.basecode = i2b2.h.getXNodeVal(c[i],'basecode');;
+            o.basecode = i2b2.h.getXNodeVal(c[i],'basecode');
             o.fact_table_column = i2b2.h.getXNodeVal(c[i],'facttablecolumn');
             o.table_name = i2b2.h.getXNodeVal(c[i],'tablename');
             o.column_name = i2b2.h.getXNodeVal(c[i],'columnname');
@@ -39,7 +39,7 @@ i2b2.ONT.cfg.parsers.ExtractConcepts = function(){
             o.operator = i2b2.h.getXNodeVal(c[i],'operator');
             o.dim_code = i2b2.h.getXNodeVal(c[i],'dimcode');
             // encapsulate the data node into SDX package
-            var sdxDataPack = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
+            let sdxDataPack = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
             // save extracted info
             this.model.push(sdxDataPack);
         }
@@ -278,9 +278,9 @@ i2b2.ONT.cfg.parsers.GetModifiers = function(){
     if (!this.error) {
         this.model = [];
         // extract records from XML msg
-        var c = this.refXML.getElementsByTagName('modifier');
-        for(var i=0; i<1*c.length; i++) {
-            var o = new Object;
+        let c = this.refXML.getElementsByTagName('modifier');
+        for (let i=0; i<1*c.length; i++) {
+            let o = {};
             o.xmlOrig = c[i];
             o.level = i2b2.h.getXNodeVal(c[i],'level');
             o.basecode = i2b2.h.getXNodeVal(c[i],'basecode');
@@ -292,7 +292,6 @@ i2b2.ONT.cfg.parsers.GetModifiers = function(){
     } else {
         this.model = false;
         console.error("[GetModifiers] Could not parse() data!");
-        return null;
     }
     return this;
 };
@@ -355,9 +354,9 @@ i2b2.ONT.cfg.parsers.GetSchemes = function(){
     if (!this.error) {
         this.model = [];
         // extract records from XML msg
-        var c = this.refXML.getElementsByTagName('concept');
-        for(var i=0; i<1*c.length; i++) {
-            var o = new Object;
+        let c = this.refXML.getElementsByTagName('concept');
+        for (let i=0; i<1*c.length; i++) {
+            let o = {};
             o.xmlOrig = c[i];
             o.level = i2b2.h.getXNodeVal(c[i],'level');
             o.key = i2b2.h.getXNodeVal(c[i],'key');

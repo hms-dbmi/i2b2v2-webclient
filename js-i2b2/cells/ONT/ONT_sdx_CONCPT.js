@@ -29,7 +29,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     // default CONCPT icons
     if (!$.isArray(options.icon)) {
         if (typeof options.icon === 'string') {
-            var t = options.icon;
+            let t = options.icon;
             options.icon = {
                 root: t,
                 rootExp: t,
@@ -73,6 +73,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 
     // process allowing children to be viewed
     let bCanExp = false;
+    let icon;
     if (sdxData.origData.hasChildren.substring(1,0) === "C"){
         // render as category
         icon = 'root';
@@ -92,15 +93,15 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
         bCanExp = true;
     } else {
         // render as not having children
-        var icon = 'leaf';
+        icon = 'leaf';
         bCanExp = false;
     }
     // user can override
     if (typeof options.showchildren === "boolean" && !options.showchildren) {
         bCanExp = false;
     }
-    if(sdxData.origData.hasOwnProperty('parent') && sdxData.origData.parent !== undefined){ // WEBCLIENT-190
-        if (sdxData.origData.parent.origData.hasChildren.substring(2,1) === "I" && sdxData.origData.isModifier){
+    if (sdxData.origData.hasOwnProperty('parent') && sdxData.origData.parent !== undefined) { // WEBCLIENT-190
+        if (sdxData.origData.parent.origData.hasChildren.substring(2,1) === "I" && sdxData.origData.isModifier) {
             sdxData.origData.hasChildren = sdxData.origData.hasChildren.replace("A","I");
         }
     }
@@ -127,8 +128,8 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
             nodeInfo.iconImgExp = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ options.icon[icon+'Exp'];
         }
         // in cases of one set icon, copy valid icon to the missing icon
-        if ((nodeInfo.iconImg === undefined) && (nodeInfo.iconImgExp !== undefined)) {	nodeInfo.iconImg = nodeInfo.iconImgExp; }
-        if ((nodeInfo.iconImg !== undefined) && (nodeInfo.iconImgExp === undefined)) {	nodeInfo.iconImgExp = nodeInfo.iconImg; }
+        if ((nodeInfo.iconImg === undefined) && (nodeInfo.iconImgExp !== undefined)) nodeInfo.iconImg = nodeInfo.iconImgExp;
+        if ((nodeInfo.iconImg !== undefined) && (nodeInfo.iconImgExp === undefined)) nodeInfo.iconImgExp = nodeInfo.iconImg;
 
         switch(icon) {
             case "root":
@@ -153,17 +154,15 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 
     //Added to provide tooltip information for concepts/terms
     nodeInfo.moreDescriptMinor = "";
-    try{
-        if (($('ONTNAVshowShortTooltips').checked) || ($('ONTFINDshowShortTooltips').checked) )
-        {
+    try {
+        if ($('ONTNAVshowShortTooltips').checked || $('ONTFINDshowShortTooltips').checked) {
             nodeInfo.moreDescriptMinor += sdxData.origData.name;
         } else {
             if (sdxData.origData.tooltip !== undefined) {
                 nodeInfo.moreDescriptMinor += sdxData.origData.tooltip;
             }
         }
-        if ((($('ONTNAVshowCodeTooltips').checked) || ($('ONTFINDshowCodeTooltips').checked) ) && (sdxData.origData.basecode !== undefined))
-        {
+        if ((($('ONTNAVshowCodeTooltips').checked) || $('ONTFINDshowCodeTooltips').checked) && sdxData.origData.basecode !== undefined) {
             nodeInfo.moreDescriptMinor += " - " + sdxData.origData.basecode;
         }
     }
@@ -196,33 +195,25 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
         let cl_node = node;
         let cl_options = options;
         let cl_onCompleteCB = onCompleteCallback;
-        // THIS function is used to process the AJAX results of the getChild call
-        //		results data object contains the following attributes:
-        //			refXML: xmlDomObject <--- for data processing
-        //			msgRequest: xml (string)
-        //			msgResponse: xml (string)
-        //			error: boolean
-        //			errorStatus: string [only with error=true]
-        //			errorMsg: string [only with error=true]
-
         // handle any errors in the message
         if (results.error) {
+            let t;
             // process the specific error
             switch (cl_node.tree) {
                 case "ontNavResults":
-                    var t = i2b2.ONT.view.nav.params;
+                    t = i2b2.ONT.view.nav.params;
                     break;
                 case "ontSearchCodesResults":
-                    var t = i2b2.ONT.view.find.params;
+                    t = i2b2.ONT.view.find.params;
                     break;
                 case "ontSearchModifiersResults":
-                    var t = i2b2.ONT.view.find.params;
+                    t = i2b2.ONT.view.find.params;
                     break;
                 case "ontSearchNamesResults":
-                    var t = i2b2.ONT.view.find.params;
+                    t = i2b2.ONT.view.find.params;
                     break;
                 default:
-                    var t = i2b2.ONT.params;
+                    t = i2b2.ONT.params;
             }
             var errorCode = results.refXML.getElementsByTagName('status')[0].firstChild.nodeValue;
             var eaction = false;
@@ -246,9 +237,10 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
             cl_onCompleteCB();
             return false;
         }
+        let c, renderOptions;
         if (modifier) {
-            var c = results.refXML.getElementsByTagName('modifier');
-            var renderOptions = {
+            c = results.refXML.getElementsByTagName('modifier');
+            renderOptions = {
                 icon: {
                     root: "sdx_ONT_MODIFIER_root.gif",
                     rootExp: "sdx_ONT_MODIFIER_root-exp.gif",
@@ -258,8 +250,8 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                 }
             };
         } else {
-            var c = results.refXML.getElementsByTagName('concept');
-            var renderOptions = {
+            c = results.refXML.getElementsByTagName('concept');
+            renderOptions = {
                 icon: {
                     root: "sdx_ONT_CONCPT_root.gif",
                     rootExp: "sdx_ONT_CONCPT_root-exp.gif",
@@ -270,7 +262,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
             };
         }
         let retList = [];
-        for(let i=0; i<1*c.length; i++) {
+        for (let i=0; i<1*c.length; i++) {
             let sdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(c[i], modifier, cl_options, this.i2b2);
 
             renderOptions.title = i2b2.h.getXNodeVal(c[i],'name');
@@ -287,9 +279,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                 i2b2: sdxDataNode
             };
             temp.state = sdxDataNode.renderData.tvNodeState;
-            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
-                temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
-            }
+            if (sdxDataNode.renderData.cssClassMinor !== undefined) temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             if (typeof cl_node === 'undefined' || (typeof cl_node === 'string' && String(cl_node).trim() === '')) {
                 temp.parentKey = undefined;
             } else if(typeof cl_node === 'object') {
@@ -318,8 +308,8 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
         cl_onCompleteCB(retList, retParents);
     };
     // TODO: Implement param routing from node's container
-    var options = {};
-    var t = i2b2.ONT.params;
+    let options = {};
+    let t = i2b2.ONT.params;
     if (t === undefined) t = {};
     if (t.hiddens !== undefined) {
         options.ont_hidden_records = t.hiddens;
@@ -417,7 +407,7 @@ i2b2.sdx.TypeControllers.CONCPT.MakeObject = function(c, modifier, cl_options, o
 
 // *********************************************************************************
 i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallback, modifier) {
-    var scopedCallback = new i2b2_scopedCallback();
+    let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = node;
     scopedCallback.callback = function(results){
         let cl_node = node;
@@ -439,11 +429,12 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
             i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(node, onCompleteCallback, false);
             return false;
         }
-        var c = results.refXML.getElementsByTagName('modifier');
-        for(let i=0; i<1*c.length; i++) {
-            var sdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(c[i], modifier, cl_options, cl_node.i2b2);
+        let c = results.refXML.getElementsByTagName('modifier');
+        for (let i=0; i<1*c.length; i++) {
+            let sdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(c[i], modifier, cl_options, cl_node.i2b2);
+            let renderOptions;
             if (modifier) {
-                var renderOptions = {
+                renderOptions = {
                     title: i2b2.h.getXNodeVal(c[i],'name'),
                     icon: {
                         root: "sdx_ONT_MODIFIER_root.gif",
@@ -454,7 +445,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
                     }
                 };
             } else {
-                var renderOptions = {
+                renderOptions = {
                     title: i2b2.h.getXNodeVal(c[i],'name'),
                     icon: {
                         root: "sdx_ONT_CONCPT_root.gif",
@@ -468,7 +459,6 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
 
             sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
             sdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
-
         }
         // handle the YUI treeview
         //mm 10-7 cl_onCompleteCB();
@@ -478,10 +468,10 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
         } else {
             cl_onCompleteCB();
         }
-    }
+    };
     // TODO: Implement param routing from node's container
-    var options = {};
-    var t = i2b2.ONT.params;
+    let options = {};
+    let t = i2b2.ONT.params;
     if (t !== undefined) {
         if (t.hiddens !== undefined) options.ont_hidden_records = t.hiddens;
         if (t.max !== undefined) options.ont_max_records = "max='"+t.max+"' ";
@@ -490,7 +480,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
         if (t.shortTooltip !== undefined) options.ont_short_tooltip = t.shortTooltip;
         if (t.showConceptCode !== undefined) options.ont_show_concept_code = t.showConceptCode;
     }
-    options.concept_key_value = node.i2b2.sdxInfo.sdxKeyValue;;
+    options.concept_key_value = node.i2b2.sdxInfo.sdxKeyValue;
 
     switch (node.i2b2.origData.hasChildren) {
         case "DA":
@@ -500,7 +490,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
             options.modifier_key_value = node.i2b2.origData.key;
             options.modifier_applied_path = node.i2b2.origData.applied_path;
 
-            var realdata = node.i2b2.origData;
+            let realdata = node.i2b2.origData;
             while ((realdata.hasChildren !== "FA") &&
             (realdata.hasChildren !== "CA") &&
             (realdata.hasChildren !== "FAE") &&
