@@ -49,27 +49,35 @@
 }
 
 
-
-#i2b2FinderOnt #searchFilter{
-    position:absolute;
-    right: 0;
-    margin-right: 9.6rem;
+#i2b2FinderOnt .searchTermMain{
+    flex-grow: 1;
+    min-width: 6.5rem;
 }
 
+
+#i2b2FinderOnt #searchFilter{
+    padding: 0 0.8rem;
+}
+
+#i2b2FinderOnt #searchFilterText {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+    display: inline-block;
+}
 
 
 
 
 #i2b2FinderOnt #searchActions {
-    display: inline-block;
-    padding-top: 0.2em;
-    position: absolute;
-    right: 0;
+    min-width: 9rem;
+    text-align: right;
 }
 
 #i2b2FinderOnt #searchActions button {
     width: 4rem;
-    height: 2.5rem;
+    height: 2rem;
 }
 
 #i2b2FinderOnt .form-control{
@@ -153,15 +161,6 @@ button.invert:hover{
     margin-right: 0.2em;
 }
 
-#i2b2FinderOnt #searchFilterText {
-    text-overflow: ellipsis;
-    max-width: 8em;
-    width: 8em;
-    white-space: nowrap;
-    overflow: hidden;
-    vertical-align: middle;
-    display: inline-block;
-}
 
 #i2b2FinderOnt .dropdown-menu{
     font-size: 1em;
@@ -175,13 +174,6 @@ button.invert:hover{
 
 #i2b2FinderOnt .search{
     margin-right: 0.5em;
-}
-
-#i2b2FinderOnt .searchTermMain{
-    margin-right: 19rem;
-    display: inline-block;
-    width: 100%;
-    min-width: 6.5rem;
 }
 
 @media all and (min-width: 992px) {
