@@ -30,16 +30,46 @@
 #i2b2FinderOnt {
     position: absolute;
     top: 0;
-    height: 4.8em;
+    height: 4.8rem;
     border: solid #63758c;
     border-width: 1px 1px 0 1px;
     width: 100%;
-    padding-top: 0.4em;
-    padding-left: 0.8em;
+    padding: 0.4em 0.8em;
     background: rgba(235, 238, 238, 0.3);
     font-size: 0.98em;
     padding-bottom: 6px;
     overflow: auto;
+}
+
+#i2b2FinderOnt #searchOptions {
+    position: relative;
+    align-items: center;
+    display: flex;
+    height: 100%;
+}
+
+
+
+#i2b2FinderOnt #searchFilter{
+    position:absolute;
+    right: 0;
+    margin-right: 9.6rem;
+}
+
+
+
+
+
+#i2b2FinderOnt #searchActions {
+    display: inline-block;
+    padding-top: 0.2em;
+    position: absolute;
+    right: 0;
+}
+
+#i2b2FinderOnt #searchActions button {
+    width: 4rem;
+    height: 2.5rem;
 }
 
 #i2b2FinderOnt .form-control{
@@ -118,10 +148,6 @@ button.invert:hover{
     background-color: #FFFFFF;
 }
 
-#i2b2FinderOnt #searchFilter{
-    display: inline-block;
-}
-
 #i2b2FinderOnt .nav-link{
     color: #212529;
     margin-right: 0.2em;
@@ -152,14 +178,10 @@ button.invert:hover{
 }
 
 #i2b2FinderOnt .searchTermMain{
-    margin-left: 0.6em;
-    margin-right: 0.8em;
+    margin-right: 19rem;
     display: inline-block;
-}
-
-#searchActions {
-    display: inline-block;
-    padding-top: 0.2em;
+    width: 100%;
+    min-width: 6.5rem;
 }
 
 @media all and (min-width: 992px) {
