@@ -159,14 +159,10 @@ i2b2.events.afterCellInit.add((function(cell){
 // ================================================================================================== //
 
 i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
-    if (updateInfo.DataLocation === "i2b2.ONT.model.Categories") {
-        i2b2.ONT.view.search.initSearchCatOptions();
+    // initialize the search bar dropdowns when the data model is fully populated
+    if (i2b2.ONT.model.Categories !== undefined && i2b2.ONT.model.Schemes !== undefined) {
+        i2b2.ONT.view.search.initSearchOptions();
     }
-
-    if (updateInfo.DataLocation === "i2b2.ONT.model.Schemes") {
-        i2b2.ONT.view.search.initCodingSysOptions();
-    }
-
 }).bind(i2b2.ONT));
 
 // ================================================================================================== //

@@ -110,10 +110,11 @@ i2b2.ONT.view.search.displayResults = function(treeData) {
 
 //================================================================================================== //
 
-i2b2.ONT.view.search.initSearchCatOptions = function(){
+i2b2.ONT.view.search.initSearchOptions = function(){
     $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderFilterOptions.html", {
         success: (template) => {
-            let categoryOptions = Handlebars.compile(template);
+            // generate a list of categories
+            let submenuOptions = Handlebars.compile(template);
             let categories = [];
             for (let i=0; i<i2b2.ONT.model.Categories.length; i++) {
                 let cat = i2b2.ONT.model.Categories[i];
@@ -124,10 +125,20 @@ i2b2.ONT.view.search.initSearchCatOptions = function(){
                     filterType: "category"
                 });
             }
-            let options = {
-                "option": categories
-            };
-            $(categoryOptions(options)).appendTo("#categorySubmenu");
+            $(submenuOptions({"option": categories})).appendTo("#categorySubmenu");
+
+            // generate a list of coding systems options
+            let codingSystems = [];
+            for (let i=0; i<i2b2.ONT.model.Schemes.length; i++) {
+                let cat = i2b2.ONT.model.Schemes[i];
+                codingSystems.push({
+                    name: cat.name,
+                    value: cat.key,
+                    filterType: "coding"
+                });
+            }
+            $(submenuOptions({"option": codingSystems})).appendTo("#codingSubmenu");
+
 
             $("#liCat").hover(function(){
                 $("#codingSubmenu").hide().closest("li").removeClass("highlight-menu-item");
@@ -135,12 +146,11 @@ i2b2.ONT.view.search.initSearchCatOptions = function(){
             });
 
             $("#liCoding").hover(function(){
-
                 $("#categorySubmenu").hide().closest("li").removeClass("highlight-menu-item");
                 $("#codingSubmenu").css("left", "100%").show();
             });
 
-            $(".submenu li").on("click", function(){
+            $("#i2b2FinderOnt .submenu li").on("click", function(){
                 $(".active").removeClass("active");
                 let liItem = $(this).find("button");
                 let newDisplayText = liItem.addClass("active").text();
@@ -174,27 +184,4 @@ i2b2.ONT.view.search.initSearchCatOptions = function(){
     });
 };
 
-//================================================================================================== //
-
-i2b2.ONT.view.search.initCodingSysOptions = function(){
-    $.ajax("js-i2b2/cells/ONT/templates/OntologyFinderFilterOptions.html", {
-        success: (template) => {
-            let codingSystemOptions = Handlebars.compile(template);
-            let codingSystems = [];
-            for (let i=0; i<i2b2.ONT.model.Schemes.length; i++) {
-                let cat = i2b2.ONT.model.Schemes[i];
-                codingSystems.push({
-                    name: cat.name,
-                    value: cat.key,
-                    filterType: "coding"
-                });
-            }
-            let options = {
-                "option": codingSystems
-            };
-            $(codingSystemOptions(options)).appendTo("#codingSubmenu");
-        },
-        error: (error) => { console.error("Could not retrieve template: OntologyFinderCodingOptions.html"); }
-    });
-}
 //================================================================================================== //
