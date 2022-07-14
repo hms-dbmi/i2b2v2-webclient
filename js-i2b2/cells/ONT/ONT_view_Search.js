@@ -32,7 +32,7 @@ i2b2.ONT.view.search.handleSearchInputChange = function(newValue){
 
 i2b2.ONT.view.search.enableSearch = function(newValue){
     let searchType = $("#searchFilter").data("selectedFilterType");
-    if((newValue && newValue.length > 2 && searchType !== 'coding') || (newValue && newValue.length > 0)) {
+    if((newValue && newValue.length > 2 && searchType === 'category' ) || (newValue && newValue.length > 0 && (searchType === 'coding' || $("#searchFilter").data("selectedFilterValue") === 'ALL CODING'))) {
         $("#submitTermSearch").attr('disabled', false);
     }else{
         $("#submitTermSearch").attr('disabled', true);
