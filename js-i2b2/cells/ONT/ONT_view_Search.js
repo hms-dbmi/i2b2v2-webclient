@@ -52,8 +52,8 @@ i2b2.ONT.view.search.toggleSearchClearIcon = function(newValue){
 
 i2b2.ONT.view.search.clearSearchInput = function(){
     $("#searchTermText").val("");
-    $("#searchTerm .clearIcon").addClass("hidden");
     $("#searchTermError").empty();
+    i2b2.ONT.view.search.handleSearchInputChange("");
 
     // hide and clear the search results
     i2b2.ONT.view.search.treeview.hide();
