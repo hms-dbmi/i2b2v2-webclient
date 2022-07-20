@@ -9,8 +9,6 @@
 i2b2.ONT.view.search = {};
 
 i2b2.ONT.view.search.template = {};
-i2b2.ONT.view.search.error = {};
-i2b2.ONT.view.search.error.minCharError = "Search term must be at least 3 characters.";
 
 i2b2.ONT.view.search.toggleSearchOptions = function(elem){
     let currentVal = $(elem).val();
