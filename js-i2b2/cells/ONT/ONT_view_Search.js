@@ -55,6 +55,10 @@ i2b2.ONT.view.search.clearSearchInput = function(){
     $("#searchTermError").empty();
     i2b2.ONT.view.search.handleSearchInputChange("");
 
+    // Reset dropdown menu settings
+    $("#searchFilterText").text("Any Category");
+    $("#searchFilter").data("selectedFilterValue", "ALL CATEGORIES").data("selectedFilterType", "category");
+
     // hide and clear the search results
     i2b2.ONT.view.search.treeview.hide();
     i2b2.ONT.view.search.treeview.data('treeview').clear();
@@ -161,7 +165,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
             });
 
             $("#searchActions .reset").click(function() {
-                $("#searchTermText").val("");
+                i2b2.ONT.view.search.clearSearchInput();
             });
 
             $('#i2b2FinderOnt .navbar-nav').on('shown.bs.dropdown', function () {
