@@ -185,16 +185,22 @@ i2b2.ONT.ctrlr.Search = {
         let paths = sdx.sdxInfo.sdxKeyValue.substr(2).split('\\');
         let parent = model;
         let fullPath = "\\\\";
+        let root;
         do {
             let subpath = paths.shift();
             if (subpath.trim().length) {
                 if (parent[subpath] === undefined) parent[subpath] = {};
                 fullPath = fullPath + subpath + "\\";
-                let root = i2b2.ONT.model.Categories.filter((node) => { return node.key === fullPath });
-                if (root.length) {
-                    root = root.pop();
-                    let temp = i2b2.ONT.ctrlr.gen.generateNodeData(false, root);
-                    parent[subpath]._$R$_ = temp.tv;
+//                let root = i2b2.ONT.model.Categories.filter((node) => { return node.key === fullPath });
+                if (root === undefined) {
+                    root = i2b2.ONT.model.Categories.filter((node) => { return fullPath.indexOf(node.dim_code) > 0 });
+                    if (root.length) {
+                        root = root.pop();
+                        let temp = i2b2.ONT.ctrlr.gen.generateNodeData(false, root);
+                        parent[subpath]._$R$_ = temp.tv;
+                    } else {
+                        root = undefined;
+                    }
                 }
                 parent = parent[subpath];
             }
