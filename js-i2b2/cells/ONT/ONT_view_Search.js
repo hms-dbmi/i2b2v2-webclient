@@ -174,6 +174,14 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     $(this).show();
                 }).closest("li").addClass("highlight-menu-item");
             });
+
+            $('#searchTermText').on('keypress',function(e) {
+                if(e.which == 13) {
+                    // enter key was pressed while in the search term entry box
+                    if ($("#submitTermSearch").attr('disabled') === undefined) i2b2.ONT.ctrlr.Search.clickSearch();
+                }
+            });
+
         },
         error: (error) => { console.error("Could not retrieve template: OntologyFinderFilterOption.html"); }
     });
