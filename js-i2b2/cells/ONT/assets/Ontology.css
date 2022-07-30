@@ -1,4 +1,4 @@
-#i2b2TreeviewOntNav {
+#i2b2TreeviewOntNav, #i2b2TreeviewOntSearch, #i2b2OntSearchStatus {
     background: #FFFFFF;
     border: solid 1px #63758c;
     overflow: auto;
@@ -13,19 +13,71 @@
     border-top: 1px solid rgba(212, 105, 255, 0.18);
 }
 
+#i2b2OntSearchStatus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* TECHNICAL DEBT: Change this when CSS selector :has() is implemented
+#i2b2TreeviewOntSearch li:has(.sdxStyleONT-CONCPT.highlight) span.indent {
+*/
+#i2b2TreeviewOntSearch .search-highlighted {
+    font-weight: bold;
+}
+
 #i2b2FinderOnt {
     position: absolute;
     top: 0;
-    height: 4.8em;
+    height: 4.8rem;
     border: solid #63758c;
     border-width: 1px 1px 0 1px;
     width: 100%;
-    padding-top: 0.4em;
-    padding-left: 0.8em;
+    padding: 0.4em 0.8em;
     background: rgba(235, 238, 238, 0.3);
     font-size: 0.98em;
     padding-bottom: 6px;
     overflow: auto;
+}
+
+#i2b2FinderOnt #searchOptions {
+    position: relative;
+    align-items: center;
+    display: flex;
+    height: 100%;
+}
+
+
+#i2b2FinderOnt .searchTermMain{
+    flex-grow: 1;
+    min-width: 6.5rem;
+}
+
+
+#i2b2FinderOnt #searchFilter{
+    padding: 0 0.8rem;
+}
+
+#i2b2FinderOnt #searchFilterText {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+
+
+
+#i2b2FinderOnt #searchActions {
+    min-width: 9rem;
+    text-align: right;
+}
+
+#i2b2FinderOnt #searchActions button {
+    width: 4rem;
+    height: 2rem;
 }
 
 #i2b2FinderOnt .form-control{
@@ -104,24 +156,11 @@ button.invert:hover{
     background-color: #FFFFFF;
 }
 
-#i2b2FinderOnt #searchFilter{
-    display: inline-block;
-}
-
 #i2b2FinderOnt .nav-link{
     color: #212529;
     margin-right: 0.2em;
 }
 
-#i2b2FinderOnt #searchFilterText {
-    text-overflow: ellipsis;
-    max-width: 8em;
-    width: 8em;
-    white-space: nowrap;
-    overflow: hidden;
-    vertical-align: middle;
-    display: inline-block;
-}
 
 #i2b2FinderOnt .dropdown-menu{
     font-size: 1em;
@@ -135,17 +174,6 @@ button.invert:hover{
 
 #i2b2FinderOnt .search{
     margin-right: 0.5em;
-}
-
-#i2b2FinderOnt .searchTermMain{
-    margin-left: 0.6em;
-    margin-right: 0.8em;
-    display: inline-block;
-}
-
-#searchActions {
-    display: inline-block;
-    padding-top: 0.2em;
 }
 
 @media all and (min-width: 992px) {
