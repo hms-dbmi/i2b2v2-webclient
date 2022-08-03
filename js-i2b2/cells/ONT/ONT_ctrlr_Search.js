@@ -47,6 +47,7 @@ i2b2.ONT.ctrlr.Search = {
 
         i2b2.ONT.model.searchParams = inSearchData;
         i2b2.ONT.model.searchResultCount = 0;
+        i2b2.ONT.model.searchResultsExceeded = false;
 
         // Debug: add time check
         let mytime = new Date().getTime();
@@ -78,7 +79,16 @@ i2b2.ONT.ctrlr.Search = {
             searchCatsCount++;
 
             // extract any returned info
-            if (!results.error) {
+            let hasError = false;
+            if (results.error) {
+                let status = i2b2.h.XPath(results.refXML, "//status/text()")[0].nodeValue;
+                if (status == "MAX_EXCEEDED") {
+                    i2b2.ONT.model.searchResultsExceeded = true;
+                } else {
+                    hasError = true;
+                }
+            }
+            if (!hasError) {
                 let c = results.refXML.getElementsByTagName('concept');
                 for (let i=0; i<1*c.length; i++) {
                     i2b2.ONT.model.searchResultCount++;
@@ -129,6 +139,7 @@ i2b2.ONT.ctrlr.Search = {
 
         i2b2.ONT.model.searchParams = inSearchData;
         i2b2.ONT.model.searchResultCount = 0;
+        i2b2.ONT.model.searchResultsExceeded = false;
 
         // Debug: add time check
         let mytime = new Date().getTime();
@@ -143,7 +154,16 @@ i2b2.ONT.ctrlr.Search = {
             let outtime = new Date().getTime()-mytime;
             console.log("ONT:Search took "+outtime+"ms");
 
-            if (!results.error) {
+            let hasError = false;
+            if (results.error) {
+                let status = i2b2.h.XPath(results.refXML, "//status/text()")[0].nodeValue;
+                if (status == "MAX_EXCEEDED") {
+                    i2b2.ONT.model.searchResultsExceeded = true;
+                } else {
+                    hasError = true;
+                }
+            }
+            if (!hasError) {
                 let c = results.refXML.getElementsByTagName('concept');
 
                 let status = $("#i2b2OntSearchStatus");
