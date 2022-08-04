@@ -20,11 +20,23 @@ i2b2.ONT.view.search.toggleSearchOptions = function(elem){
         $("#codingOptions").addClass("hidden");
     }
 };
+
 //================================================================================================== //
 i2b2.ONT.view.search.handleSearchInputChange = function(newValue){
     i2b2.ONT.view.search.toggleSearchClearIcon(newValue);
     i2b2.ONT.view.search.enableSearch(newValue);
 };
+//================================================================================================== //
+
+i2b2.ONT.view.search.searchErrorMsg = function(msg){
+    if (typeof msg !== 'string') {
+        // hide the message
+        $("#finder-msg").hide();
+    } else {
+        $("#finder-msg").text(msg.trim()).show();
+    }
+}
+
 //================================================================================================== //
 
 i2b2.ONT.view.search.enableSearch = function(newValue){

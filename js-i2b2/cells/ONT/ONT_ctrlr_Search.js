@@ -22,6 +22,8 @@ i2b2.ONT.ctrlr.Search = {
         status[0].innerHTML = "Searching...";
         status.show();
 
+        i2b2.ONT.view.search.searchErrorMsg(false);
+
         i2b2.ONT.model.searchResults = {};
         let search_info = {};
         search_info.SearchStr = $("#searchTermText").val();
@@ -110,6 +112,13 @@ i2b2.ONT.ctrlr.Search = {
                     status[0].innerHTML = "Found " + i2b2.ONT.model.searchResultCount + " Records...";
                     i2b2.ONT.ctrlr.Search.backfillResultNodes();
                 }
+
+                // display the error message if the maximum number of results is surpassed
+                if (i2b2.ONT.model.searchResultsExceeded) {
+                    i2b2.ONT.view.search.searchErrorMsg("Max search results exceeded. Please refine and rerun search");
+                } else {
+                    i2b2.ONT.view.search.searchErrorMsg(false);
+                }
             }
         };
 
@@ -179,6 +188,13 @@ i2b2.ONT.ctrlr.Search = {
                     i2b2.ONT.ctrlr.Search.addResultNode(c[i], true);
                 }
                 i2b2.ONT.ctrlr.Search.backfillResultNodes();
+
+                // display the error message if the maximum number of results is surpassed
+                if (i2b2.ONT.model.searchResultsExceeded) {
+                    i2b2.ONT.view.search.searchErrorMsg("Max search results exceeded. Please refine and rerun search");
+                } else {
+                    i2b2.ONT.view.search.searchErrorMsg(false);
+                }
             } else {
                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }
