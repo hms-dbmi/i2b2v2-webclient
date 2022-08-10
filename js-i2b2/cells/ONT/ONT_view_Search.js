@@ -41,7 +41,7 @@ i2b2.ONT.view.search.searchErrorMsg = function(msg){
 
 i2b2.ONT.view.search.enableSearch = function(newValue){
     let searchType = $("#searchFilter").data("selectedFilterType");
-    if ((newValue && newValue.length > 2 && searchType === 'category' ) || (newValue && newValue.length > 0 && (searchType === 'coding' || $("#searchFilter").data("selectedFilterValue") === 'ALL CODING'))) {
+    if ((newValue && newValue.trim().length > 2 && searchType === 'category' ) || (newValue && newValue.trim().length > 0 && (searchType === 'coding' || $("#searchFilter").data("selectedFilterValue") === 'ALL CODING'))) {
         $("#submitTermSearch").attr('disabled', false);
     } else {
         $("#submitTermSearch").attr('disabled', true);
