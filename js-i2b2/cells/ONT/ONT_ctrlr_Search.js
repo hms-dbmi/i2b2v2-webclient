@@ -334,7 +334,7 @@ i2b2.ONT.ctrlr.Search = {
         searchOptions.ont_hidden_records = false;
         do {
             searchOptions.concept_key_value = nodesToLoad.pop();
-            i2b2.ONT.ajax.GetTermInfo("ONT:Search", searchOptions, scopedCallback);
+            if (searchOptions.concept_key_value !== undefined) i2b2.ONT.ajax.GetTermInfo("ONT:Search", searchOptions, scopedCallback);
         } while (nodesToLoad.length > 0);
     }
 };
