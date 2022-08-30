@@ -1,3 +1,42 @@
-<div class="finder-main" id="i2b2FinderCrcHistory">
-    Find Stuff
+<div class="finder-main" id="i2b2QueryHistoryFinder">
+    <div class="searchOptions">
+        <div class="searchTermMain">
+            <div class="input-group" id="querySearchTerm">
+                <input class="form-control form-control-sm" placeholder="Find query" aria-label="Term" id="querySearchTermText" onkeyup="i2b2.CRC.view.search.handleSearchInputChange(this.value);">
+                <span class="input-group-append clear-input">
+                    <i class="bi bi-x  hidden clearIcon" onclick="i2b2.CRC.view.search.clearSearchInput();"></i>
+                </span>
+            </div>
+        </div>
+        <nav id="querySearchFilter" class="nav navbar-expand-sm searchFilter" data-selected-filter="Any Category"  data-selected-filter-value="@">
+            <div class="navbarMain">
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <div id="querySearchFilterText">Any Category</div></a>
+                            <ul class="dropdown-menu main-menu">
+                                <li onclick="i2b2.CRC.view.search.selectSearchType(this);">
+                                    <button class="dropdown-item active" data-search-filter-value="@"> Any Category </button>
+                                </li>
+                                <li onclick="i2b2.CRC.view.search.selectSearchType(this);">
+                                    <button class="dropdown-item" data-search-filter-value="top"> Previous Query Name </button>
+                                </li>
+                                <li onclick="i2b2.CRC.view.search.selectSearchType(this);">
+                                    <button class="dropdown-item" data-search-filter-value="results" > Previous Result Type </button>
+                                </li>
+                                <li onclick="i2b2.CRC.view.search.selectSearchType(this);">
+                                    <button class="dropdown-item" data-search-filter-value="pdo"> Patient Number </button>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="queryHistorySearchActions">
+            <button type="submit" id="submitQueryHistorySearch" class="btn btn-primary btn-sm invert search" onclick="i2b2.CRC.ctrlr.Search.clickSearch(); this.blur();" disabled>Search</button>
+            <button type="submit" class="btn btn-primary btn-sm invert reset" onclick="i2b2.CRC.view.search.clearSearchInput(); this.blur();">Reset</button>
+        </div>
+    </div>
 </div>

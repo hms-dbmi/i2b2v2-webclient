@@ -1,22 +1,185 @@
 #i2b2TreeviewCrcHistory {
     background: #FFFFFF;
     border: solid 1px #63758c;
+     border-top: none;
     overflow: auto;
     border-radius: 0 0 3px 3px;
     flex-direction: column;
     position: absolute;
     bottom: 0;
-    top: 2em;
+    top: 4.2em;
     left: 0;
     right: 0;
     height: auto;
+    border-top: 1px solid rgba(212, 105, 255, 0.18);
 }
 
-#i2b2FinderCrcHistory {
+#i2b2QueryHistoryFinder {
     position: absolute;
     top: 0;
-    height: 2em;
+    height: 4.0rem;
     border: solid #63758c;
     border-width: 1px 1px 0 1px;
     width: 100%;
+    padding: 0.4em 0.8em;
+    padding-bottom: 6px;
+    background: rgba(235, 238, 238, 0.3);
+    font-size: 0.98em;
+    overflow: auto;
+}
+
+#i2b2QueryHistoryFinder .searchOptions {
+    position: relative;
+    align-items: center;
+    display: flex;
+    height: 100%;
+}
+
+#i2b2QueryHistoryFinder .searchTermMain{
+    flex-grow: 1;
+    min-width: 6.5rem;
+}
+
+
+#i2b2QueryHistoryFinder .searchFilter{
+    padding: 0 0.8rem;
+}
+
+#i2b2QueryHistoryFinder #querySearchFilterText {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+#i2b2QueryHistoryFinder #queryHistorySearchActions {
+    min-width: 9rem;
+    text-align: right;
+}
+
+#i2b2QueryHistoryFinder #queryHistorySearchActions button {
+    width: 4rem;
+    height: 2rem;
+}
+
+#i2b2QueryHistoryFinder #queryHistorySearchActions button:disabled {
+    color: #444;
+    background: #ccc;
+}
+
+#i2b2QueryHistoryFinder .form-control{
+    margin-top: 0.8em;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-radius: 0;
+    border-bottom: 1px solid gray;
+    box-shadow: none;
+    background: transparent;
+}
+
+#i2b2QueryHistoryFinder button{
+    display: inline-block;
+}
+button.invert{
+    color: #0d6efd;
+    background: #FFFFFF;
+}
+
+button.invert:hover{
+    opacity: 0.7;
+}
+
+.hidden{
+    display: none;
+}
+
+#i2b2QueryHistoryFinder .form-select-sm{
+    font-size: 0.84em;
+}
+
+#i2b2QueryHistoryFinder .btn-sm{
+    font-size: 0.89em;
+}
+
+#i2b2QueryHistoryFinder .searchLabel{
+    font-size: 0.92em;
+    margin-right: 5px;
+}
+
+#i2b2QueryHistoryFinder .form-control-sm{
+    font-size: 0.95em;
+    padding-left: 0.1em;
+}
+
+.form-check-input {
+    border: 1px solid black;
+    margin-top: 2px;
+}
+
+.form-check-inline {
+    margin-top: 5px;
+}
+
+.clear-input{
+    padding-top: 1.2em;
+    border-bottom: 1px solid gray;
+}
+
+.clearIcon{
+    font-size: 1.4em;
+}
+
+.clearIcon:hover{
+    background: lightgray;
+    padding-top: 0.2em;
+}
+
+#i2b2QueryHistoryFinder .nav-link{
+    color: #212529;
+    margin-right: 0.2em;
+}
+
+#i2b2QueryHistoryFinder .dropdown-menu{
+    font-size: 1em;
+    position: fixed !important;
+}
+
+#i2b2QueryHistoryFinder .submenu{
+    max-height: 18em;
+    overflow-y: auto;
+}
+
+#i2b2QueryHistoryFinder .search{
+    margin-right: 0.5em;
+}
+
+@media all and (min-width: 992px) {
+    .dropdown-menu li {
+        position: relative;
+    }
+    .nav-item .submenu {
+        display: none;
+        position: absolute;
+        top: -0.2em;
+        padding-right: 0.2em;
+    }
+    .nav-item .submenu-left {
+        right: 100%;
+        left: auto;
+    }
+    .dropdown-menu > li:hover {
+        background-color: #f1f1f1
+    }
+}
+/* ============ desktop view .end// ============ */
+
+/* ============ small devices ============ */
+@media (max-width: 991px) {
+    .dropdown-menu .dropdown-menu{
+        margin-left:0.7rem;
+        margin-right:0.7rem;
+        margin-bottom: .5rem;
+    }
 }
