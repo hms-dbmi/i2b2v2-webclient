@@ -1,0 +1,54 @@
+<div class="titlebar">Detailed Information for Term:</div>
+{{#if title}}
+    <h2><img src="{{icon}}" /> {{title}}</h2>
+
+    <div class="label">Description</div>
+    <div>
+        <div class="dataline">This term is a draggable folder...</div>
+    </div>
+
+    <div class="label">Hierarchy</div>
+    <div>
+        <div class="dataline">
+            {{heirarchy}}
+            {{#if canGoUp}}- <a href="#">Go Up</a>{{/if}}
+        </div>
+    </div>
+
+    <div class="label">Concept Path</div>
+    <div>
+        <i class="bi bi-clipboard" data-clip-contents='{{{escKey}}}'></i>
+        <div class="dataline path">{{key}}</div>
+    </div>
+
+    <div class="label">SQL Code (to retreve children)</div>
+    <div>
+        <i class="bi bi-clipboard" data-clip-contents='SELECT * FROM {{{table}}} WHERE {{{column}}} {{{operator}}} "{{{escPath}}}%";'></i>
+        <div class="dataline sql">SELECT * FROM {{table}} WHERE {{column}} {{operator}} "{{{path}}}%";</div>
+    </div>
+
+    <div class="label">Values</div>
+    <div>
+        {{#if values}}
+            <div class="dataline path">{{key}}</div>
+        {{else}}
+            <div class="dataline">This term does not allow values to be set.</div>
+        {{/if}}
+    </div>
+
+    <div class="label">Children of Term</div>
+    <table class="dataline children">
+        <th class="childrow">
+            <td class="name">Name</td>
+            <td class="value">Code</td>
+        </th>
+        <tr class="childrow">
+            <td class="name">some actual name</td>
+            <td class="value">CODE:SOMETHING</td>
+        </tr>
+    </table>
+
+
+{{else}}
+    <h2><img src="js-i2b2/cells/ONT/assets/ONT_SEARCH.png" /> Please select a term to view its details</h2>
+{{/if}}
