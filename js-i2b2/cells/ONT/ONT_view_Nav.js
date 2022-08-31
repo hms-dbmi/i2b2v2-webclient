@@ -151,6 +151,24 @@ i2b2.events.afterCellInit.add((function(cell){
                 i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
 
                 i2b2.ONT.view.search.initSearch(container._contentElement);
+
+                // -------------------- setup context menu --------------------
+                i2b2.ONT.view.nav.ContextMenu = new BootstrapMenu('#i2b2TreeviewOntNav li.list-group-item', {
+                    fetchElementData: function($rowElem) {
+                        // fetch the data from the treeview
+                        return i2b2.ONT.view.nav.treeview.treeview('getNode', $rowElem.data('nodeid'));
+                    },
+                    // TODO: Finish wiring implementation
+                    actions: {
+                        nodeAnnotate: {
+                            name: 'Show Term Info...',
+                            onClick: function(node) {
+                                i2b2.ONT.view.info.load(node.i2b2, true);
+                            }
+                        }
+                    }
+                });
+
             }).bind(this)
         );
     }
