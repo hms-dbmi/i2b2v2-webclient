@@ -74,15 +74,7 @@ i2b2.CRC.view.QT.termActionInfo = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
     let eventIdx = $(evt.target).closest('.event').data('eventidx');
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
-    alert("get term info for group-"+queryGroupIdx+"/event-"+eventIdx+"/concept-"+conceptIdx);
-    i2b2.layout.gl_instances.leftCol.root.contentItems[0].contentItems[0].addChild({
-            componentName: "i2b2.ONT.view.info",
-            type: "component",
-            isClosable: true,
-            reorderEnabled: true,
-            title: "Term Info",
-            sdx: i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx]
-    });
+    i2b2.ONT.view.info.load(i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx], true);
 };
 
 

@@ -1,9 +1,6 @@
 
 i2b2.ONT.view.info = {
     model: {},
-    newInstance: function(data) {
-        alert("TODO: Implement i2b2.ONT.view.info.newInstance()");
-    },
     loadParent: function() {
         // generate the parent's key
         let parentKey = i2b2.ONT.view.info.model.sdxData.sdxInfo.sdxKeyValue.split('\\');
