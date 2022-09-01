@@ -1,6 +1,11 @@
 
 i2b2.ONT.view.info = {
     model: {},
+    showLabWindow: function() {
+        // display's the lab value entry modal
+        let d = i2b2.ONT.view.info.model.sdxData.origData.basecode;
+        if (d && d.startsWith("LOINC") || d.startsWith("LCS-I2B2")) i2b2.CRC.view.QT.labValue.showLabValues(i2b2.ONT.view.info.model.sdxData);
+    },
     loadParent: function() {
         // generate the parent's key
         let parentKey = i2b2.ONT.view.info.model.sdxData.sdxInfo.sdxKeyValue.split('\\');
@@ -61,6 +66,10 @@ i2b2.ONT.view.info = {
         }
         termDescript += 'have children below it.';
 
+        // deal with lab values
+        let hasValues = false;
+        if (data.origData.basecode && data.origData.basecode.startsWith("LOINC") || data.origData.basecode.startsWith("LCS-I2B2")) hasValues = true;
+
         // create display data for handlebars template
         let displayData = {
             icon: data.renderData.iconImg,
@@ -77,10 +86,10 @@ i2b2.ONT.view.info = {
             column: data.origData.column_name,
             operator: data.origData.operator,
             patientCnt: data.origData.total_num,
-            children: []
+            children: [],
+            hasValues: hasValues
         };
         i2b2.ONT.view.info.model.displayData = displayData;
-
 
         // get the children of the node
         let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
@@ -97,7 +106,7 @@ i2b2.ONT.view.info = {
             // rerender the screen to show the child nodes
             i2b2.ONT.view.info.render();
             // create click handlers for the child links
-            $('.i2b2OntInfo .child-link span').on('click', (evt) => {
+            $('.i2b2OntInfo .child-link a').on('click', (evt) => {
                 let key = $(evt.target).data('sdxKey');
                 let data = i2b2.ONT.view.info.model.displayData.children.filter((child) => { return child.sdxInfo.sdxKeyValue == key });
                 if (data.length > 0) {
@@ -118,6 +127,7 @@ i2b2.ONT.view.info = {
         options.concept_key_value = data.sdxInfo.sdxKeyValue;
         i2b2.ONT.ajax.GetChildConcepts("ONT:Info", options, scopeCB);
 
+        // render what we have and make the tab active if asked to do so
         i2b2.ONT.view.info.render();
         if (display) i2b2.ONT.view.info.model.lm_view.parent.parent.setActiveContentItem(i2b2.ONT.view.info.model.lm_view.parent);
     },

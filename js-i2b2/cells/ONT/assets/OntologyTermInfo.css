@@ -49,20 +49,12 @@
 }
 
 .i2b2OntInfo table.children .value {
-    width: 20%;
+    width: 9rem;
 }
 
 .i2b2OntInfo table.children td.value {
     font-family: monospace;
 }
-
-
-.i2b2OntInfo table.children .child-link span {
-    cursor: pointer;
-    text-decoration: underline;
-    color: blue;
-}
-
 
 .i2b2OntInfo .sql, .i2b2OntInfo .path, .i2b2OntInfo .basecode {
     font-family: monospace;
