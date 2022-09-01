@@ -17,73 +17,73 @@ i2b2.CRC.ctrlr.history = {
 
 // ================================================================================================== //
     Refresh: function() {
-        console.info("CALLED i2b2.CRC.ctrlr.history.Refresh()");
-        // THIS FUNCTION DOES THE FOLLOWING:
-        //	1) fires a call to ajax.getCategories(),
-        //	2) interprets the XML / populates the ONT data model,
-        //	3) fires it's onDataUpdate event
-
-
-        // create a scoped callback message
-        let scopeCB = new i2b2_scopedCallback();
-        scopeCB.scope = i2b2.CRC.model.QueryMasters;
-        scopeCB.callback = function(i2b2CellMsg) {
-            // define the XML processing function
-            // the THIS scope is already set to i2b2.CRC.model.QueryMasters
-            if (!i2b2CellMsg.error) {
-                let qm = i2b2CellMsg.refXML.getElementsByTagName('query_master');
-                // for(let i=0; i<1*qm.length; i++) {
-                //     let o = {};
-                //     o.xmlOrig = qm[i];
-                //     o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
-                //     o.realname = i2b2.h.getXNodeVal(qm[i],'name');
-                //     o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
-                //     o.group = i2b2.h.getXNodeVal(qm[i],'group_id');
-                //     o.created = i2b2.h.getXNodeVal(qm[i],'create_date');
-                //     o.master_type_cd = i2b2.h.getXNodeVal(qm[i],'master_type_cd');
-                //
-                //     // TODO: Use moment.js here
-                //     let dStr = '';
-                //     let d = o.created.match(/^[0-9\-]*/).toString();
-                //     if (d) {
-                //         d = d.replace(/-/g,'/');
-                //         d = new Date(Date.parse(d));
-                //         if (d) {
-                //             dStr = ' [' + (d.getMonth()+1) + '-' + d.getDate() + '-' + d.getFullYear().toString() + ']';
-                //         }
-                //     }
-                //     o.name = o.realname +  dStr + ' ['+o.userid+']';
-                //     // encapsulate into an SDX package
-                //     var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QM',o);
-                //     // save the node to the CRC data model
-                //     i2b2.sdx.Master.Save(sdxDataPack, null);
-                // }
-            } else {
-                alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
-            }
-            // Broadcast an update event letting interested view controllers know that the Categories data model has been updated
-            let DataUpdateSignal = {
-                DataLocation: "i2b2.CRC.model.QueryMasters",
-                DataRef: i2b2.CRC.model.QueryMasters
-            };
-            console.info("EVENT FIRE i2b2.CRC.ctrlr.gen.events.onDataUpdate; Msg:",DataUpdateSignal);
-            console.groupEnd();
-            i2b2.CRC.ctrlr.history.events.onDataUpdate.fire(DataUpdateSignal);
-            $('refreshPQImg').src = "assets/images/refreshButton.gif";
-        };
-
-        $('refreshPQImg').src="assets/images/spin.gif";
-
-        // fire the AJAX call
-        let options = {
-            result_wait_time: 180,
-//			crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp,
-            crc_max_records: "20",
-            crc_sort_by: i2b2.CRC.view['history'].params.sortBy,
-            crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") == -1? 	"CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
-            crc_sort_order: i2b2.CRC.view['history'].params.sortOrder
-        };
-        i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", options, scopeCB);
+//         console.info("CALLED i2b2.CRC.ctrlr.history.Refresh()");
+//         // THIS FUNCTION DOES THE FOLLOWING:
+//         //	1) fires a call to ajax.getCategories(),
+//         //	2) interprets the XML / populates the ONT data model,
+//         //	3) fires it's onDataUpdate event
+//
+//
+//         // create a scoped callback message
+//         let scopeCB = new i2b2_scopedCallback();
+//         scopeCB.scope = i2b2.CRC.model.QueryMasters;
+//         scopeCB.callback = function(i2b2CellMsg) {
+//             // define the XML processing function
+//             // the THIS scope is already set to i2b2.CRC.model.QueryMasters
+//             if (!i2b2CellMsg.error) {
+//                 let qm = i2b2CellMsg.refXML.getElementsByTagName('query_master');
+//                 // for(let i=0; i<1*qm.length; i++) {
+//                 //     let o = {};
+//                 //     o.xmlOrig = qm[i];
+//                 //     o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
+//                 //     o.realname = i2b2.h.getXNodeVal(qm[i],'name');
+//                 //     o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
+//                 //     o.group = i2b2.h.getXNodeVal(qm[i],'group_id');
+//                 //     o.created = i2b2.h.getXNodeVal(qm[i],'create_date');
+//                 //     o.master_type_cd = i2b2.h.getXNodeVal(qm[i],'master_type_cd');
+//                 //
+//                 //     // TODO: Use moment.js here
+//                 //     let dStr = '';
+//                 //     let d = o.created.match(/^[0-9\-]*/).toString();
+//                 //     if (d) {
+//                 //         d = d.replace(/-/g,'/');
+//                 //         d = new Date(Date.parse(d));
+//                 //         if (d) {
+//                 //             dStr = ' [' + (d.getMonth()+1) + '-' + d.getDate() + '-' + d.getFullYear().toString() + ']';
+//                 //         }
+//                 //     }
+//                 //     o.name = o.realname +  dStr + ' ['+o.userid+']';
+//                 //     // encapsulate into an SDX package
+//                 //     var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QM',o);
+//                 //     // save the node to the CRC data model
+//                 //     i2b2.sdx.Master.Save(sdxDataPack, null);
+//                 // }
+//             } else {
+//                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
+//             }
+//             // Broadcast an update event letting interested view controllers know that the Categories data model has been updated
+//             let DataUpdateSignal = {
+//                 DataLocation: "i2b2.CRC.model.QueryMasters",
+//                 DataRef: i2b2.CRC.model.QueryMasters
+//             };
+//             console.info("EVENT FIRE i2b2.CRC.ctrlr.gen.events.onDataUpdate; Msg:",DataUpdateSignal);
+//             console.groupEnd();
+//             i2b2.CRC.ctrlr.history.events.onDataUpdate.fire(DataUpdateSignal);
+//             $('refreshPQImg').src = "assets/images/refreshButton.gif";
+//         };
+//
+//         $('refreshPQImg').src="assets/images/spin.gif";
+//
+//         // fire the AJAX call
+//         let options = {
+//             result_wait_time: 180,
+// //			crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp,
+//             crc_max_records: "20",
+//             crc_sort_by: i2b2.CRC.view['history'].params.sortBy,
+//             crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") == -1? 	"CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
+//             crc_sort_order: i2b2.CRC.view['history'].params.sortOrder
+//         };
+//         i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", options, scopeCB);
     },
 
 // ================================================================================================== //
@@ -95,66 +95,64 @@ i2b2.CRC.ctrlr.history = {
         //	3) fires it's onDataUpdate event
 
 
+        // Hide Navigate treeview and display search results treeview
+        $("#i2b2TreeviewQueryHistory").hide();
+        $("#i2b2TreeviewQueryHistoryFinder").show();
+
+        // clear treeview
+        i2b2.CRC.view.history.treeviewFinder.treeview('clear');
+
         // create a scoped callback message
         var scopeCB = new i2b2_scopedCallback();
-        scopeCB.scope = i2b2.CRC.model.QueryMasters;
-        scopeCB.callback = function(i2b2CellMsg) {
-            // define the XML processing function
-            console.group("CALLBACK Processing AJAX i2b2CellMsg");
-            console.dir(i2b2CellMsg);
+        scopeCB.scope = i2b2.CRC.model;
+        scopeCB.callback = function(cellResult) {
+            // auto-extract SDX objects from returned XML
+            cellResult.parse();
 
-            // the THIS scope is already set to i2b2.CRC.model.QueryMasters
-            i2b2.sdx.Master.ClearAll('QM');
-            if (!i2b2CellMsg.error) {
-                var qm = i2b2CellMsg.refXML.getElementsByTagName('query_master');
-                for(var i=0; i<1*qm.length; i++) {
-                    var o = new Object;
-                    o.xmlOrig = qm[i];
-                    o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
-                    o.realname = i2b2.h.getXNodeVal(qm[i],'name');
-                    o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
-                    o.group = i2b2.h.getXNodeVal(qm[i],'group_id');
-                    o.created = i2b2.h.getXNodeVal(qm[i],'create_date');
-                    o.master_type_cd = i2b2.h.getXNodeVal(qm[i],'master_type_cd');
-
-                    var dStr = '';
-                    var d = o.created.match(/^[0-9\-]*/).toString();
-                    if (d) {
-                        d = d.replace(/-/g,'/');
-                        d = new Date(Date.parse(d));
-                        if (d) {
-                            dStr = ' [' + (d.getMonth()+1) + '-' + d.getDate() + '-' + d.getFullYear().toString() + ']';
-                        }
-                    }
-                    o.name = o.realname +  dStr + ' ['+o.userid+']';
-                    // encapsulate into an SDX package
-                    var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QM',o);
-                    // save the node to the CRC data model
-                    i2b2.sdx.Master.Save(sdxDataPack, null);
+            // display the tree results
+            let newNodes = [];
+            for ( let i1=0; i1 < cellResult.model.length; i1++) {
+                let sdxDataNode = cellResult.model[i1];
+                let renderOptions = {
+                    title: sdxDataNode.sdxDisplayName ,
+                    icon: "sdx_CRC_QM.gif",
+                    showchildren: true
+                };
+                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                sdxDataNode.renderData.idDOM = "CRC_H_TV-" + i2b2.GUID();
+                let temp = {
+                    title: sdxDataNode.renderData.moreDescriptMinor,
+                    text: sdxDataNode.renderData.title,
+                    icon: sdxDataNode.renderData.cssClassMain,
+                    key: sdxDataNode.sdxInfo.sdxType + "-" + sdxDataNode.sdxInfo.sdxKeyValue,
+                    iconImg: sdxDataNode.renderData.iconImg,
+                    iconImgExp: sdxDataNode.renderData.iconImgExp,
+                    i2b2: sdxDataNode
+                };
+                temp.state = sdxDataNode.renderData.tvNodeState;
+                if(sdxDataNode.renderData.cssClassMinor !== undefined) {
+                    temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
                 }
-            } else {
-                alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
+                newNodes.push(temp);
             }
-            // Broadcast an update event letting interested view controllers know that the Categories data model has been updated
-            var DataUpdateSignal = {
-                DataLocation: "i2b2.CRC.model.QueryMasters",
-                DataRef: i2b2.CRC.model.QueryMasters
-            }
-            console.info("EVENT FIRE i2b2.CRC.ctrlr.gen.events.onDataUpdate; Msg:",DataUpdateSignal);
-            console.groupEnd();
-            i2b2.CRC.ctrlr.history.events.onDataUpdate.fire(DataUpdateSignal);
+            // push new nodes into the treeview
+            i2b2.CRC.view.history.treeviewFinder.treeview('addNodes', [newNodes, true]);
+
+            // render tree
+            i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);
+
         };
 
         // fire the AJAX call
         var options = {
             result_wait_time: 180,
-            crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp,
-            crc_sort_by: i2b2.CRC.view['history'].params.sortBy,
-            crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") == -1? 	"CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
-            crc_sort_order: (i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") == -1?"true": "false"),
-            crc_find_category: $('crcFindCategory').value,
-            crc_find_strategy: $('crcFindStrategy').value,
-            crc_find_string: $('crcFindNameMatch').value
+            crc_max_records: 50,
+            crc_sort_by: "DATE",
+            crc_user_type: 	"CRC_QRY_getQueryMasterList_fromUserId",
+            crc_sort_order: "false",
+            crc_find_category: "@",
+            crc_find_strategy: "contains",
+            crc_find_string: $("#querySearchTermText").val()
         };
         i2b2.CRC.ajax.getNameInfo("CRC:History", options, scopeCB);
     },
