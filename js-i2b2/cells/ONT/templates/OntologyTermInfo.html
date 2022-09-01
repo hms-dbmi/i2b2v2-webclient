@@ -4,15 +4,7 @@
 
     <div class="label">Description</div>
     <div>
-        <div class="dataline">This term is a draggable folder...</div>
-    </div>
-
-    <div class="label">Hierarchy</div>
-    <div>
-        <div class="dataline">
-            {{heirarchy}}
-            {{#if canGoUp}}- <a href="#">Go Up</a>{{/if}}
-        </div>
+        <div class="dataline">{{{descript}}}</div>
     </div>
 
     <div class="label">Concept Path</div>
@@ -23,8 +15,12 @@
 
     <div class="label">SQL Code (to retreve children)</div>
     <div>
+        {{#if hasSQL}}
         <i class="bi bi-clipboard" data-clip-contents='SELECT * FROM {{{table}}} WHERE {{{column}}} {{{operator}}} "{{{escPath}}}%";'></i>
         <div class="dataline sql">SELECT * FROM {{table}} WHERE {{column}} {{operator}} "{{{path}}}%";</div>
+        {{else}}
+        <div class="dataline sql">(n/a)</div>
+        {{/if}}
     </div>
 
     <div class="label">Values</div>
@@ -36,17 +32,31 @@
         {{/if}}
     </div>
 
+    <div class="label">Hierarchy</div>
+    <div>
+        <div class="dataline">
+            {{heirarchy}}
+            {{#if canGoUp}}- <a href="#" onclick="i2b2.ONT.view.info.loadParent()">Go Up</a>{{/if}}
+        </div>
+    </div>
+
     <div class="label">Children of Term</div>
+    {{#if children}}
     <table class="dataline children">
-        <th class="childrow">
-            <td class="name">Name</td>
-            <td class="value">Code</td>
-        </th>
         <tr class="childrow">
-            <td class="name">some actual name</td>
-            <td class="value">CODE:SOMETHING</td>
+            <th class="name">Name</th>
+            <th class="value">Code</th>
         </tr>
+        {{#each children}}
+        <tr class="childrow">
+            <td class="name child-link" title="{{renderData.moreDescriptMinor}}"><img src="{{renderData.iconImg}}" /> <span data-sdx-key="{{sdxInfo.sdxKeyValue}}" >{{renderData.title}}</span></td>
+            <td class="value">{{origData.basecode}}</td>
+        </tr>
+        {{/each}}
     </table>
+    {{else}}
+    <div><div class="dataline">This term has no children.</div></div>
+    {{/if}}
 
 
 {{else}}

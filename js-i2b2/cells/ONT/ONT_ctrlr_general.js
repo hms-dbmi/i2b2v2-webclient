@@ -41,6 +41,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         data.column_name = i2b2.h.getXNodeVal(xmlData, 'columnname');
         data.operator = i2b2.h.getXNodeVal(xmlData, 'operator');
         data.dim_code = i2b2.h.getXNodeVal(xmlData, 'dimcode');
+        data.basecode = i2b2.h.getXNodeVal(xmlData, 'basecode');
     } else {
         data = sdxData;
     }
