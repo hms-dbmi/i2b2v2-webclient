@@ -4,11 +4,11 @@
             <div class="input-group" id="querySearchTerm">
                 <input class="form-control form-control-sm" placeholder="Find query" aria-label="Term" id="querySearchTermText" onkeyup="i2b2.CRC.view.search.handleSearchInputChange(this.value);">
                 <span class="input-group-append clear-input">
-                    <i class="bi bi-x  hidden clearIcon" onclick="i2b2.CRC.view.search.clearSearchInput();"></i>
+                    <i class="bi bi-x  hidden clearIcon" onclick="i2b2.CRC.view.search.reset();"></i>
                 </span>
             </div>
         </div>
-        <nav id="querySearchFilter" class="nav navbar-expand-sm searchFilter" data-selected-filter="Any Category"  data-selected-filter-value="@">
+        <nav id="querySearchFilter" class="nav navbar-expand-sm searchFilter" data-selected-filter-value="@">
             <div class="navbarMain">
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav">
@@ -36,7 +36,7 @@
         </nav>
         <div id="queryHistorySearchActions">
             <button type="submit" id="submitQueryHistorySearch" class="btn btn-primary btn-sm invert search" onclick="i2b2.CRC.ctrlr.history.clickSearchName(); this.blur();" disabled>Search</button>
-            <button type="submit" class="btn btn-primary btn-sm invert reset" onclick="i2b2.CRC.view.search.clearSearchInput(); this.blur();">Reset</button>
+            <button type="submit" class="btn btn-primary btn-sm invert reset" onclick="i2b2.CRC.view.search.reset(); this.blur();">Reset</button>
         </div>
     </div>
 </div>

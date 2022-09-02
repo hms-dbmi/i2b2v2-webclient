@@ -144,13 +144,13 @@ i2b2.CRC.ctrlr.history = {
         };
 
         // fire the AJAX call
-        var options = {
+        let options = {
             result_wait_time: 180,
-            crc_max_records: 50,
-            crc_sort_by: "DATE",
-            crc_user_type: 	"CRC_QRY_getQueryMasterList_fromUserId",
-            crc_sort_order: "false",
-            crc_find_category: "@",
+            crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp,
+            crc_sort_by: i2b2.CRC.view['history'].params.sortBy,
+            crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") === -1? 	"CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
+            crc_sort_order: (i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1?"true": "false"),
+            crc_find_category: $("#querySearchFilter").data("selectedFilterValue"),
             crc_find_strategy: "contains",
             crc_find_string: $("#querySearchTermText").val()
         };

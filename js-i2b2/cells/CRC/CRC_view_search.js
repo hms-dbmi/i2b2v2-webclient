@@ -35,22 +35,25 @@ i2b2.CRC.view.search.toggleSearchClearIcon = function(newValue){
     }
 };
 //================================================================================================== //
+i2b2.CRC.view.search.selectSearchType = function(elem) {
+    $("#i2b2QueryHistoryFinder .active").removeClass("active");
+    let liItem = $(elem);
+    let newDisplayText = liItem.addClass("active").text();
+    let filterValue = liItem.addClass("active").find(".dropdown-item").data("searchFilterValue");
+    $("#querySearchFilterText").text(newDisplayText);
+    $("#querySearchFilter").data("selectedFilterValue", filterValue);
+    i2b2.CRC.view.search.handleSearchInputChange($('#i2b2QueryHistoryFinder #querySearchTerm input').val());
+};
+//================================================================================================== //
 
-i2b2.CRC.view.search.clearSearchInput = function(){
+i2b2.CRC.view.search.reset = function(){
     $("#querySearchTermText").val("");
     $("#querySearchTermError").empty();
     i2b2.CRC.view.search.handleSearchInputChange("");
     $("#querySearchFilterText").text("Any Category");
     $("#querySearchFilter").data("selectedFilterValue", "@");
-};
-//================================================================================================== //
-i2b2.CRC.view.search.selectSearchType = function(elem) {
-    console.log("select search type");
-    $("#i2b2QueryHistoryFinder .active").removeClass("active");
-    let liItem = $(elem);
-    let newDisplayText = liItem.addClass("active").text();
-    let filterValue = liItem.addClass("active").data("searchFilterValue");
-    $("#querySearchFilterText").text(newDisplayText);
-    $("#querySearchFilter").data("selectedFilterValue", filterValue);
-    i2b2.ONT.view.search.handleSearchInputChange($('#i2b2QueryHistoryFinder #querySearchTerm input').val());
+
+    //Show Navigate treeview and hidesearch results treeview
+    $("#i2b2TreeviewQueryHistory").show();
+    $("#i2b2TreeviewQueryHistoryFinder").hide();
 };
