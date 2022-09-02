@@ -234,7 +234,7 @@ i2b2.events.afterCellInit.add((function(cell){
 
 
                     // -------------------- setup context menu --------------------
-                    i2b2.WORK.view.main.ContextMenu = new BootstrapMenu('#i2b2TreeviewCrcHistory li.list-group-item', {
+                    i2b2.CRC.view.history.ContextMenu = new BootstrapMenu('#i2b2TreeviewQueryHistory li.list-group-item', {
                         fetchElementData: function($rowElem) {
                             // fetch the data from the treeview
                             return i2b2.CRC.view.history.treeview.treeview('getNode', $rowElem.data('nodeid'));
