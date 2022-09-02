@@ -58,20 +58,20 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
         }
 
         // add the children to the parent node
-        i2b2.CRC.view.history.treeview.treeview('addNodes', [
+        $(ev.currentTarget).treeview('addNodes', [
             newNodes,
             function(parent, child){ return parent.key === child.parentKey },
             false
         ]);
 
         // change the treeview icon to show it is no longer loading
-        i2b2.CRC.view.history.treeview.treeview('setNodeLoaded', [
+        $(ev.currentTarget).treeview('setNodeLoaded', [
             function(parent, parentKey){ return parent.key === parentKey },
             parentNode
         ]);
 
         // render tree
-        i2b2.CRC.view.history.treeview.treeview('redraw', []);
+        $(ev.currentTarget).treeview('redraw', []);
 
         // change the treeview icon to show it is no longer loading
         $('#stackRefreshIcon_i2b2-CRC-view-history').removeClass("refreshing");
@@ -220,7 +220,7 @@ i2b2.events.afterCellInit.add((function(cell){
                         data: []
                     });
                     // TODO: THIS NEXT FUNCTION MAY BE USING GLOBAL VARIABLES IN THE i2b2.CRC... NAMESPACE
-                    // i2b2.CRC.view.history.treeviewFinder.on('nodeLoading', i2b2.CRC.view.history.loadChildren);
+                    i2b2.CRC.view.history.treeviewFinder.on('nodeLoading', i2b2.CRC.view.history.loadChildren);
                     i2b2.CRC.view.history.treeviewFinder.on('onRedraw', i2b2.CRC.view.history.treeRedraw);
                     i2b2.CRC.view.history.treeviewFinder.on('onDrag', i2b2.sdx.Master.onDragStart);
 
