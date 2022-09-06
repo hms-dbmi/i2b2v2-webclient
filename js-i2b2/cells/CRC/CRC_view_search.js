@@ -20,7 +20,7 @@ i2b2.CRC.view.search.handleSearchInputChange = function(newValue){
 };
 //================================================================================================== //
 i2b2.CRC.view.search.enableSearch = function(newValue){
-    if (newValue && newValue.trim().length > 2 ) {
+    if (newValue && newValue.trim().length > 0 ) {
         $("#submitQueryHistorySearch").attr('disabled', false);
     } else {
         $("#submitQueryHistorySearch").attr('disabled', true);
