@@ -187,11 +187,20 @@ i2b2.events.afterCellInit.add((function(cell){
                     i2b2.CRC.view.history.lm_view = container;
 
                     // Load the finder templatee
-                    $.ajax("js-i2b2/cells/CRC/templates/QueryHistoryFinder.html", {
+                    $.ajax("js-i2b2/cells/CRC/assets/QueryHistoryFinder.html", {
                         success: (template) => {
                             cell.view.history.template.finder = Handlebars.compile(template);
                             // Render the template into place
                             $(cell.view.history.template.finder({})).prependTo(container._contentElement);
+
+                            $("#querySearchTermText").on("keypress",function(e) {
+                                if(e.which === 13) {
+                                    // enter key was pressed while in the query history search entry box
+                                    if($("#submitQueryHistorySearch").attr("disabled") === undefined) {
+                                        i2b2.CRC.ctrlr.history.clickSearchName();
+                                    }
+                                }
+                            });
                         },
                         error: (error) => { console.error("Could not retrieve template: QueryHistoryFinder.html"); }
                     });
