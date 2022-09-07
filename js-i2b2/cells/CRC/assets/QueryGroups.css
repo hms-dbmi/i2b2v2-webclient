@@ -34,6 +34,7 @@
 
 .CRC_QT_view .CRC_QT_query {
     overflow-y: scroll;
+    overflow-x: hidden;
     position: absolute;
     top: 0;
     left: 0;
@@ -191,6 +192,10 @@
 
 .QueryGroup .topbar {
     width: 100%;
+    display: flex;
+    white-space: nowrap;
+    overflow: hidden;
+
 }
 
 .QueryGroup .topbar .JoinText {
@@ -212,8 +217,7 @@
 .QueryGroup .topbar .without,
 .QueryGroup .topbar .when,
 .QueryGroup .topbar .qgclose {
-    display: inline-flex;
-    float:left;
+    display: inline-block;
     padding: 0.5em;
     height: 2.3em;
 }
@@ -292,7 +296,7 @@
 .QueryGroup.when .DateRange1Body,
 .QueryGroup.when .DateRange2Body,
 .QueryGroup.when .SequenceBar {
-    display: block;
+    display: flex;
 }
 
 .QueryGroup.when .DateRange1Lbl,
@@ -326,6 +330,7 @@
     transition: max-height 0.75s cubic-bezier(0.075, 0.82, 0.165, 1), background-color 0.3s ease;
     max-height: 0;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 .QueryGroup .EventLbl,

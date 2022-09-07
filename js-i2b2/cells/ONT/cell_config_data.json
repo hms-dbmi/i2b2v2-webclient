@@ -1,8 +1,10 @@
 {
   "files": [
     "ONT_ctrlr_general.js",
+    "ONT_ctrlr_Search.js",
     "ONT_view_Nav.js",
     "ONT_view_Info.js",
+    "ONT_view_Search.js",
     "ONT_sdx_CONCPT.js",
     "i2b2_msgs.js"
   ],
@@ -15,6 +17,8 @@
     "assets/sdx_ONT_MODIFIER_leaf.gif"
   ],
   "css": [
+    "Ontology.css",
+    "OntologyTermInfo.css",
     "sdx_ONT_types.css"
   ],
   "config": {

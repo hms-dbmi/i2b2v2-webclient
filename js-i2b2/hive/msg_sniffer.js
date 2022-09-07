@@ -38,7 +38,8 @@ i2b2.hive.MsgSniffer = {
             if (this.sniffSources[i].channelSniffEvent === regMsg.channelSniffEvent) {
                 was_found = true;
                 t = this.sniffSources[i].channelActions.concat(regMsg.channelActions);
-                this.sniffSources[i].channelActions = $.unique(t);
+                // make it unique
+                this.sniffSources[i].channelActions = t.filter((value, index, self) => (self.indexOf(value) === index));
             }
         }
         if (was_found === false) {

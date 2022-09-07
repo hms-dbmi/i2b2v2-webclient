@@ -7,18 +7,10 @@
             <!--<td class="logo"><img src="https://www.i2b2.org/webclient/assets/images/title.gif" alt="" /></td>-->
             <td class="logo"> <h5><strong>i2b2 </strong>Query & Analysis Tool</h5> </td>
             <td>
-                <!--<a href="Javascript:void(0)" onClick="showFindPatients();">Find Patients</a>
-                &nbsp;|&nbsp;
-                <a href="Javascript:void(0);" onClick="showAnalysisTools();">Analysis Tools</a>
-                &nbsp;|&nbsp;
-                <a href="Javascript:void(0);" onClick="myClick();">Message Log</a>
-
-               -->
-
                 <div id="headerOptions" class="fs-4 mb-3">
-                    <i class="bi bi-question-circle"></i>
-                    <div class="dropdown" onClick="i2b2.PM.setUserAccountInfo()">
-                        <i data-bs-toggle="dropdown" class="bi bi-person-circle"></i>
+                    <a href="#" title="Help Page"><i class="bi bi-question-circle"></i></a>
+                    <div class="dropdown">
+                        <a href="#" onclick="i2b2.PM.setUserAccountInfo()" title="Account Information" data-bs-toggle="dropdown"><i class="bi bi-person-circle"></i></a>
                         <ul id="userInfo" class="dropdown-menu">
                             <li>
                                 <h6 class="dropdown-header">User</h6>

@@ -22,9 +22,9 @@ i2b2.layout = {
 i2b2.layout.resize = function() {
     // resize handler
     i2b2.layout.gl_instances.main.updateSize();
-    var y = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutLeftColFrame")[0].container.height;
-    var w1 = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutLeftColFrame")[0].container.width;
-    var w2 = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutRightColFrame")[0].container.width;
+    let y = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutLeftColFrame")[0].container.height;
+    let w1 = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutLeftColFrame")[0].container.width;
+    let w2 = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutRightColFrame")[0].container.width;
     i2b2.layout.gl_instances.leftCol.updateSize(w1 - 5, y - 22);
     i2b2.layout.gl_instances.rightCol.updateSize(w2 - 8, y - 22);
     if (i2b2.layout.gl_instances.Zoom.root) {
@@ -96,6 +96,11 @@ i2b2.layout.init = function () {
                                 isClosable:false,
                                 componentName: "i2b2.ONT.view.nav",
                                 title:'Terms'
+                            }, {
+                                type:'component',
+                                isClosable:false,
+                                componentName: "i2b2.ONT.view.info",
+                                title:'Info'
                             }
                         ]
                     },{
@@ -161,8 +166,8 @@ i2b2.layout.init = function () {
                     },{
                         type:'component',
                         isClosable:false,
-                        componentName: 'i2b2.LEGACYPLUGIN.view.main',
-                        title:'Analyze Patients'
+                        componentName: 'i2b2.PLUGIN.view.list',
+                        title:'Analysis Tools'
                     }]
             },
             {
@@ -173,15 +178,15 @@ i2b2.layout.init = function () {
                         type:'component',
                         id:'QR',
                         isClosable:false,
-                        componentName: 'i2b2.CRC.view.QR',
+                        componentName: 'i2b2.CRC.view.QS',
                         title:'Query Status'
                     },{
                         type:'component',
                         isClosable:false,
-                        componentName: 'whiteComponent',
+                        componentName: 'i2b2.CRC.view.QR',
                         title:'Query Results'
                 }]
-            }
+            },
         ]
     };
 
@@ -272,7 +277,7 @@ i2b2.layout.init = function () {
     });
     // ========== MAGIC TRICK ==========
     // delayed calling of all the registration callbacks registered by cells during their initialization
-    for (var k in i2b2.layout.__regCallbacks) {
+    for (let k in i2b2.layout.__regCallbacks) {
         i2b2.layout.gl_instances.rightCol.registerComponent(k,i2b2.layout.__regCallbacks[k]);
     }
     i2b2.layout.gl_instances.rightCol.init();
@@ -284,7 +289,7 @@ i2b2.layout.init = function () {
     });
     // ========== MAGIC TRICK ==========
     // delayed calling of all the registration callbacks registered by cells during their initialization
-    for (var k in i2b2.layout.__regCallbacks) {
+    for (let k in i2b2.layout.__regCallbacks) {
         i2b2.layout.gl_instances.Zoom.registerComponent(k,i2b2.layout.__regCallbacks[k]);
     }
     i2b2.layout.gl_instances.Zoom.init();

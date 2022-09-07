@@ -13,7 +13,7 @@ console.time('execute time');
 
 // create and save the view object
 i2b2.ONT.view.nav = new i2b2Base_cellViewController(i2b2.ONT, 'nav');
-
+i2b2.ONT.view.nav.template = {};
 
 // ================================================================================================== //
 i2b2.ONT.view.nav.PopulateCategories = function() {		
@@ -104,13 +104,6 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
 
 
 //================================================================================================== //
-i2b2.ONT.view.nav.treeRedraw = function() {
-    // attach drag drop attribute after the tree has been redrawn
-    i2b2.ONT.view.nav.lm_view._contentElement.find('li:not(:has(span.tvRoot))').attr("draggable", true);
-};
-
-
-//================================================================================================== //
 i2b2.ONT.view.nav.doRefreshAll = function() {
     // set the loading icon in the stack buttons list
     $('#stackRefreshIcon_i2b2-ONT-view-nav').addClass("refreshing");
@@ -122,7 +115,7 @@ i2b2.ONT.view.nav.doRefreshAll = function() {
     i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
     i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
 };
-
+//================================================================================================== //
 
 // Below code is executed once the entire cell has been loaded
 //================================================================================================== //
@@ -136,29 +129,61 @@ i2b2.events.afterCellInit.add((function(cell){
                 i2b2.ONT.view.nav.lm_view = container;
 
                 // add the cellWhite flare
-                let treeTarget = $('<div class="cellWhite" id="i2b2TreeviewOntNav"></div>').appendTo(container._contentElement);
+                let treeEl = $('<div class="cellWhite" id="i2b2TreeviewOntNav"></div>').appendTo(container._contentElement);
 
-                // create an empty treeview
-                i2b2.ONT.view.nav.treeview = $(treeTarget).treeview({
+                // create an empty treeview for navigation
+                let treeRef = $(treeEl).treeview({
                     showBorder: false,
                     highlightSelected: false,
                     dynamicLoading: true,
                     levels: 1,
                     data: []
                 });
-
-                i2b2.ONT.view.nav.treeview.on('nodeLoading', i2b2.ONT.view.nav.loadChildren);
-                i2b2.ONT.view.nav.treeview.on('onRedraw', i2b2.ONT.view.nav.treeRedraw);
-                i2b2.ONT.view.nav.treeview.on('onDrag', i2b2.sdx.Master.onDragStart);
+                i2b2.ONT.view.nav.treeview = treeRef;
+                treeRef.on('nodeLoading', i2b2.ONT.view.nav.loadChildren);
+                treeRef.on('onDrag', i2b2.sdx.Master.onDragStart);
+                treeRef.on('onRedraw', () => {
+                    // attach drag drop attribute after the tree has been redrawn
+                    i2b2.ONT.view.nav.treeview.find('li:not(:has(span.tvRoot))').attr("draggable", true);
+                });
 
                 i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
                 i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
+
+                i2b2.ONT.view.search.initSearch(container._contentElement);
+
+                // -------------------- setup context menu --------------------
+                i2b2.ONT.view.nav.ContextMenu = new BootstrapMenu('#i2b2TreeviewOntNav li.list-group-item', {
+                    fetchElementData: function($rowElem) {
+                        // fetch the data from the treeview
+                        return i2b2.ONT.view.nav.treeview.treeview('getNode', $rowElem.data('nodeid'));
+                    },
+                    // TODO: Finish wiring implementation
+                    actions: {
+                        nodeAnnotate: {
+                            name: 'Show More Info',
+                            onClick: function(node) {
+                                i2b2.ONT.view.info.load(node.i2b2, true);
+                            }
+                        }
+                    }
+                });
+
             }).bind(this)
         );
     }
 }));
 
+// ================================================================================================== //
+
+i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
+    // initialize the search bar dropdowns when the data model is fully populated
+    if (i2b2.ONT.model.Categories !== undefined && i2b2.ONT.model.Schemes !== undefined) {
+        i2b2.ONT.view.search.initSearchOptions();
+    }
+}).bind(i2b2.ONT));
 
 // ================================================================================================== //
+
 console.timeEnd('execute time');
 console.groupEnd();

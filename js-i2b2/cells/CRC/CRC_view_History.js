@@ -15,7 +15,7 @@ console.time('execute time');
 i2b2.CRC.view.history = new i2b2Base_cellViewController(i2b2.CRC, 'history');
 i2b2.CRC.view.history.visible = false;
 i2b2.CRC.view.history.params.maxQueriesDisp = 20; // TODO: This does not work
-
+i2b2.CRC.view.history.template = {};
 
 // ================================================================================================== //
 i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
@@ -58,20 +58,20 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
         }
 
         // add the children to the parent node
-        i2b2.CRC.view.history.treeview.treeview('addNodes', [
+        $(ev.currentTarget).treeview('addNodes', [
             newNodes,
             function(parent, child){ return parent.key === child.parentKey },
             false
         ]);
 
         // change the treeview icon to show it is no longer loading
-        i2b2.CRC.view.history.treeview.treeview('setNodeLoaded', [
+        $(ev.currentTarget).treeview('setNodeLoaded', [
             function(parent, parentKey){ return parent.key === parentKey },
             parentNode
         ]);
 
         // render tree
-        i2b2.CRC.view.history.treeview.treeview('redraw', []);
+        $(ev.currentTarget).treeview('redraw', []);
 
         // change the treeview icon to show it is no longer loading
         $('#stackRefreshIcon_i2b2-CRC-view-history').removeClass("refreshing");
@@ -81,8 +81,6 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
 
 //================================================================================================== //
 i2b2.CRC.view.history.treeRedraw = function(ev, b) {
-    // called via i2b2.CRC.view.history.treeview.on('onRedraw', i2b2.CRC.view.history.treeRedraw);
-    $('#stackRefreshIcon_i2b2-CRC-view-history').removeClass("refreshing");
     // attach drag drop attribute
     i2b2.CRC.view.history.lm_view._contentElement.find('li:not(:has(span.tvRoot))').attr("draggable", true);
 };
@@ -94,6 +92,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = this;
     scopedCallback.callback = function(cellResult) {
+        //TODO: this icon is NOT used
         let refreshIcon = $('#stackRefreshIcon_i2b2-CRC-view-history');
         refreshIcon.removeClass("refreshing");
         i2b2.CRC.view.history.treeview.treeview('clear');
@@ -187,28 +186,64 @@ i2b2.events.afterCellInit.add((function(cell){
                     // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
                     i2b2.CRC.view.history.lm_view = container;
 
-                    // add the cellWhite flare
-                    let treeTarget = $('<div class="cellWhite" id="i2b2TreeviewCrcHistory"></div>').appendTo(container._contentElement);
+                    // Load the finder templatee
+                    $.ajax("js-i2b2/cells/CRC/assets/QueryHistoryFinder.html", {
+                        success: (template) => {
+                            cell.view.history.template.finder = Handlebars.compile(template);
+                            // Render the template into place
+                            $(cell.view.history.template.finder({})).prependTo(container._contentElement);
 
-                    // create an empty treeview
-                    i2b2.CRC.view.history.treeview = $(treeTarget).treeview({
+                            $("#querySearchTermText").on("keypress",function(e) {
+                                if(e.which === 13) {
+                                    // enter key was pressed while in the query history search entry box
+                                    if($("#submitQueryHistorySearch").attr("disabled") === undefined) {
+                                        i2b2.CRC.ctrlr.history.clickSearchName();
+                                    }
+                                }
+                            });
+                        },
+                        error: (error) => { console.error("Could not retrieve template: QueryHistoryFinder.html"); }
+                    });
+
+                    // create an empty Navigation treeview
+                    let treeTargetNav = $('<div id="i2b2TreeviewQueryHistory"></div>').appendTo(container._contentElement);
+                    i2b2.CRC.view.history.treeview = $(treeTargetNav).treeview({
                         showBorder: false,
                         highlightSelected: false,
                         dynamicLoading: true,
                         levels: 1,
                         data: []
                     });
-
                     i2b2.CRC.view.history.treeview.on('nodeLoading', i2b2.CRC.view.history.loadChildren);
                     i2b2.CRC.view.history.treeview.on('onRedraw', i2b2.CRC.view.history.treeRedraw);
                     i2b2.CRC.view.history.treeview.on('onDrag', i2b2.sdx.Master.onDragStart);
 
-                    // call the loading request for the history view
+                    // create an empty Finder treeview
+                    let treeTargetFinder = $('<div id="i2b2TreeviewQueryHistoryFinder"></div>').appendTo(container._contentElement);
+                    treeTargetFinder.hide();
+                    i2b2.CRC.view.history.treeviewFinder = $(treeTargetFinder).treeview({
+                        showBorder: false,
+                        highlightSelected: false,
+                        dynamicLoading: true,
+                        levels: 1,
+                        data: []
+                    });
+                    // TODO: THIS NEXT FUNCTION MAY BE USING GLOBAL VARIABLES IN THE i2b2.CRC... NAMESPACE
+                    i2b2.CRC.view.history.treeviewFinder.on('nodeLoading', i2b2.CRC.view.history.loadChildren);
+                    i2b2.CRC.view.history.treeviewFinder.on('onRedraw', i2b2.CRC.view.history.treeRedraw);
+                    i2b2.CRC.view.history.treeviewFinder.on('onDrag', i2b2.sdx.Master.onDragStart);
+
+
+
+                    // call the loading request for the history navigation view
                     i2b2.CRC.view.history.LoadQueryMasters();
 
 
+
+
+
                     // -------------------- setup context menu --------------------
-                    i2b2.WORK.view.main.ContextMenu = new BootstrapMenu('#i2b2TreeviewCrcHistory li.list-group-item', {
+                    i2b2.CRC.view.history.ContextMenu = new BootstrapMenu('#i2b2TreeviewQueryHistory li.list-group-item', {
                         fetchElementData: function($rowElem) {
                             // fetch the data from the treeview
                             return i2b2.CRC.view.history.treeview.treeview('getNode', $rowElem.data('nodeid'));

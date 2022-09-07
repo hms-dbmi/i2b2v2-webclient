@@ -1,0 +1,65 @@
+.i2b2OntInfo {
+    background: #fff;
+    border: 1px solid #678;
+    overflow: auto;
+    border-radius: 0 0 3px 3px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: .4rem;
+}
+
+
+.i2b2OntInfo .titlebar {
+    background: #d0d0d0;
+    margin-bottom: 0.3rem;
+    padding: 0.2rem;
+    font-size: 0.75rem;
+}
+
+
+.i2b2OntInfo > h2 {
+    font-size: .9rem;
+    font-weight: bold;
+}
+
+.i2b2OntInfo > h2 img {
+    height: 1rem;
+    vertical-align: top;
+}
+
+
+.i2b2OntInfo .label {
+    margin: 0.75rem 0 0.25rem 0.5rem;
+    color: #ed9b40;
+    font-weight: bold;
+}
+
+
+.i2b2OntInfo i.bi {
+    float: left;
+}
+.i2b2OntInfo i.bi-clipboard {
+    cursor: pointer;
+}
+
+
+.i2b2OntInfo table.children {
+    margin-right: 1.4rem;
+}
+
+.i2b2OntInfo table.children .value {
+    width: 9rem;
+}
+
+.i2b2OntInfo table.children td.value {
+    font-family: monospace;
+}
+
+.i2b2OntInfo .sql, .i2b2OntInfo .path, .i2b2OntInfo .basecode {
+    font-family: monospace;
+}
+
+.i2b2OntInfo .dataline {
+    margin-left: 1.4rem;
+}

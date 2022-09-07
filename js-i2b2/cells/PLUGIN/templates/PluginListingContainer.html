@@ -1,0 +1,37 @@
+<div id="pluginListMain">
+    <div id="pluginListBody">
+        <div id="PluginListBox">
+            <!--TODO implement logic for displaying available plugins-->
+            <div class="pluginMenu " oncontextmenu="return false">
+                <form action="javascript:void(0)" >
+                    <div class="row row-cols-lg-auto g-20">
+                        <div class="col-3">
+                            <label for="pluginListMode" class="col-form-label col-form-label-sm">View Type:</label>
+                        </div>
+                        <div class="col-5">
+                            <select id="pluginListMode" class="form-select form-select-sm" onchange="i2b2.PLUGIN.view.list.changeListMode(this.value)">
+                                <option value="DETAIL">Detailed List View</option>
+                                <option value="SUMMARY">Summary List View</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row row-cols-lg-auto g-20 mtop10">
+                        <div class="col-3">
+                            <label for="pluginCategory" class="col-form-label col-form-label-sm col-auto">Category:</label>
+                        </div>
+                        <div class="col-5">
+                            <select id="pluginCategory" class="form-select form-select-sm col-auto"
+                                    onchange="i2b2.PLUGIN.view.list.filterByCategory(this.value);">
+                                {{#each pluginCategory}}
+                                    <option value="{{this}}">{{this}} </option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <hr/>
+            <div id="pluginList"></div>
+        </div>
+    </div>
+</div>

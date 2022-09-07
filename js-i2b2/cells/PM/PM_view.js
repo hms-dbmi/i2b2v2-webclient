@@ -77,8 +77,37 @@ i2b2.PM.doLoginDialog = function() {
             event.preventDefault();
             i2b2.PM.doLogin();
         });
+        // attach event handlers for the SSO buttons
+        let func_lauchSaml = (evt) => { i2b2.PM.doSamlLogin($(evt.currentTarget).data('service')); };
+        $('.sso-button').on('click', func_lauchSaml);
+        $('.sso-button').on('keyup', (evt) => {
+            if (evt.which === 13) func_lauchSaml(evt);
+        });
+
+        // attach event handler for domain changes
+        $('#logindomain').on('change', i2b2.PM.doChangeDomain);
+
+        // initial handling to display/hide SAML buttons based on the Domain
+        i2b2.PM.doChangeDomain();
     }));
 };
+
+// ================================================================================================== //
+i2b2.PM.doChangeDomain = function() {
+    let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+    console.dir(selectedDomain);
+    let loginElements = $(".login-user, .login-password, .login-button");
+    if (selectedDomain.saml !== undefined) {
+        loginElements.hide();
+        selectedDomain.saml.forEach((service) => {
+            $(".sso-button[data-service='"+service+"']").show();
+        });
+    } else {
+        loginElements.show();
+        $(".sso-button").hide();
+    }
+};
+
 
 
 console.timeEnd('execute time');

@@ -89,7 +89,9 @@ function i2b2_BaseCell(configObj) {
 			var cellParams = inParams;
 			// copy all params to all View Controllers
 			for (var i in i2b2[cellCode].view) {
-				if (getObjectClass(i2b2[cellCode].view[i])=='i2b2Base_cellViewController') { i2b2[cellCode].view[i].params = Object.clone(i2b2[cellCode].cfg.params); }
+				if (getObjectClass(i2b2[cellCode].view[i])=='i2b2Base_cellViewController') {
+					i2b2[cellCode].view[i].params = Object.clone(i2b2[cellCode].cfg.params);
+				}
 			}
 			// send the signal that the Cell is now loaded
 			console.info('EVENT FIRED i2b2.events.afterCellInit['+cellCode+']');
@@ -124,24 +126,28 @@ function i2b2_BaseCell(configObj) {
 		}
 		
 		// Cell Parameters Descriptor Array: XML<->ThinClient translation / default values
-		if (Object.isUndefined(i2b2[configObj.code].cfg.config.paramTranslation)) { i2b2[configObj.code].cfg.config.paramTranslation = []; }
-		var paramsInfo = i2b2[configObj.code].cfg.config.paramTranslation;
+		if (i2b2[configObj.code].cfg.config.paramTranslation === undefined) {
+			i2b2[configObj.code].cfg.config.paramTranslation = [];
+		}
+		let paramsInfo = i2b2[configObj.code].cfg.config.paramTranslation;
 		
 		// record every param that has a defaultValue set
 		i2b2[configObj.code].cfg.params = {};
-		for (var i1=0; i1<paramsInfo.length; i1++) {
-			if (!Object.isUndefined(paramsInfo[i1].defaultValue)) { i2b2[configObj.code].cfg.params[paramsInfo[i1].thinClientName] = paramsInfo[i1].defaultValue; }
+		for (let i1=0; i1<paramsInfo.length; i1++) {
+			if (paramsInfo[i1].defaultValue !== undefined) {
+				i2b2[configObj.code].cfg.params[paramsInfo[i1].thinClientName] = paramsInfo[i1].defaultValue;
+			}
 		}
 		// insert translated XML params into the cell's params Object
-		for (var paramName in inParams) {
-			var found = false;
+		for (let paramName in inParams) {
+			let found = false;
 			var pName = paramName;
-			var pValue = inParams[paramName]; 
-			for (var i2=0; i2<paramsInfo.length; i2++) {
-				if (pName == paramsInfo[i2].xmlName) {
+			let pValue = inParams[paramName];
+			for (let i2=0; i2<paramsInfo.length; i2++) {
+				if (pName === paramsInfo[i2].xmlName) {
 					// we found a parameter descriptor record
 					if (paramsInfo[i2].thinClientName) { var pName = paramsInfo[i2].thinClientName; }
-					if (!Object.isUndefined(paramsInfo[i2].defaultValue)) {
+					if (paramsInfo[i2].defaultValue !== undefined) {
 						// convert the type to the same as defaultValue if needed
 						switch ((typeof paramsInfo[i2].defaultValue)) {
 							case "number": 

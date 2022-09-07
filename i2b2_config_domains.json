@@ -7,6 +7,13 @@
       "urlCellPM": "http://services.i2b2.org/i2b2/services/PMService/",
       "allowAnalysis": true,
       "debug": false
+    }, {
+      "domain": "i2b2demo",
+      "name": "CQ2",
+      "urlCellPM": "http://weberdemo.hms.harvard.edu/i2b2/CQ2ServiceProxy.php/PMService/",
+      "allowAnalysis": true,
+      "debug": false,
+      "saml" : ["okta"]
     }
   ],
   "loginTimeout": 5

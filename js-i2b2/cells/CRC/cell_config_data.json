@@ -14,8 +14,12 @@
     "CRC_view_QryTool.js",
     "CRC_ctrlr_QryRun.js",
     "CRC_view_QryRun.js",
+    "CRC_ctrl_QryStatus.js",
+    "CRC_view_QryStatus.js",
     "i2b2_msgs.js",
-    "CRC_ctrlr_LabValues.js"
+    "CRC_ctrlr_LabValues.js",
+    "CRC_view_graphs.js",
+    "CRC_view_search.js"
   ],
   "preload": [
     "assets/sdx_CRC_PDO.gif",
@@ -30,8 +34,10 @@
     "assets/sdx_CRC_QMT.gif"
   ],
   "css": [
+    "QueryHistory.css",
     "QueryGroups.css",
     "QueryRunner.css",
+    "QueryStatus.css",
     "sdx_CRC_types.css"
   ],
   "config": {

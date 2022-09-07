@@ -22,7 +22,8 @@ function QueryRunner() {
             startTime: new Date(),
             status: "Running",
             abortable: true,
-            finished: false
+            finished: false,
+            breakdowns: {}
         };
 
         i2b2.CRC.view.QR.timerID = setInterval(i2b2.CRC.view.QR.timerTick, 100);
@@ -74,6 +75,7 @@ function QueryRunner() {
                 i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryRunner", {qi_key_value: qiID}, callbackQueryResultInstance);
             }
             i2b2.CRC.view.QR.render();
+            i2b2.CRC.ctrlr.QueryStatus.updateStatus(results);
         };
 
         // process the results to get the query resultInstance
@@ -81,7 +83,7 @@ function QueryRunner() {
         callbackQueryResultInstance.callback = function(results) {
             // see if error
             if (results.error) {
-                i2b2.CRC.model.runner.status = "ERROR RETREVING RESULTS";
+                i2b2.CRC.model.runner.status = "ERROR RETRIEVING RESULTS";
                 i2b2.CRC.view.QR.render();
                 alert(results.errorMsg);
                 return;
@@ -98,6 +100,12 @@ function QueryRunner() {
             // rerender the results
             i2b2.CRC.view.QR.render();
         };
+
+        i2b2.CRC.ctrlr.QueryStatus.startTime = new Date();
+        //i2b2.CRC.ctrlr.QueryStatus.private_refreshInterrupt = setInterval("i2b2.CRC.ctrlr.QueryStatus.refreshStatus()", 100);
+        //i2b2.CRC.ctrlr.QueryStatus.QM.name = queryName;
+
+        i2b2.CRC.ctrlr.QueryStatus.startStatus(queryName);
 
         // run query using the passed query definition
         // ==========================================================

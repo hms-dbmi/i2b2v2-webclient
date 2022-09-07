@@ -1,0 +1,18 @@
+{{#each pluginDetail}}
+<a id="{{this.name}}" class="pluginRecordBox DETAIL" onclick="i2b2.PLUGIN.view.list.loadPlugin('{{this.id}}');">
+    <div class="Icon"><img src="{{this.iconSrc}}" alt=""></div>
+    <div class="txtBoundBox">
+        <div class="Name">{{this.title}}</div>
+        <div class="Descript">{{this.description}}</div>
+    </div>
+    <div style="clear:both"></div>
+</a>
+{{/each}}
+
+{{#each pluginSummary}}
+<a id="{{this.name}}" class="pluginRecordBox SUMMARY" onclick="i2b2.PLUGIN.view.list.loadPlugin('{{this.id}}');">
+    <div class="Icon"><img src="{{this.iconSrc}}" alt="" /></div>
+    <div class="txtBoundBox Name">{{this.title}}</div>
+    <div style="clear:both"></div>
+</a>
+{{/each}}
