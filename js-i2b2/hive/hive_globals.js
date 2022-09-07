@@ -194,6 +194,20 @@ function i2b2_BaseCell(configObj) {
         }
 
 
+        // Cell Parameters Descriptor Array: XML<->ThinClient translation / default values
+        if (i2b2[configObj.code].cfg.config.paramTranslation === undefined) {
+            i2b2[configObj.code].cfg.config.paramTranslation = [];
+        }
+        var paramsInfo = i2b2[configObj.code].cfg.config.paramTranslation;
+
+        // record every param that has a defaultValue set
+        i2b2[configObj.code].cfg.params = {};
+        for (var i1=0; i1<paramsInfo.length; i1++) {
+            if (paramsInfo[i1].defaultValue !== undefined) {
+                i2b2[configObj.code].cfg.params[paramsInfo[i1].thinClientName] = paramsInfo[i1].defaultValue;
+                console.log("loading param " + paramsInfo[i1].thinClientName + "\tvalue=\t" +paramsInfo[i1].defaultValue);
+            }
+        }
     });
 
 
