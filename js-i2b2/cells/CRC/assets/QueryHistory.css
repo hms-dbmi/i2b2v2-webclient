@@ -1,4 +1,4 @@
-#i2b2TreeviewQueryHistory, #i2b2TreeviewQueryHistoryFinder {
+#i2b2TreeviewQueryHistory, #i2b2TreeviewQueryHistoryFinder, #i2b2QueryHistoryFinderStatus, #i2b2QueryHistoryFinderMessage {
     background: #FFFFFF;
     border: solid 1px #63758c;
     border-top: 1px solid rgba(212, 105, 255, 0.18);
@@ -11,6 +11,12 @@
     left: 0;
     right: 0;
     height: auto;
+}
+
+#i2b2QueryHistoryFinderStatus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #i2b2QueryHistoryFinder {
@@ -27,7 +33,7 @@
     overflow: auto;
 }
 
-#i2b2QueryHistoryFinderMessage {
+/*#i2b2QueryHistoryFinderMessage {
     background: #FFFFFF;
     border: solid 1px #63758c;
     border-top: 1px solid rgba(212, 105, 255, 0.18);
@@ -41,7 +47,7 @@
     right: 0;
     height: auto;
     padding: 0.4em 0.8em;
-}
+}*/
 
 #i2b2QueryHistoryFinder .searchOptions {
     position: relative;
@@ -97,6 +103,7 @@
 #i2b2QueryHistoryFinder button{
     display: inline-block;
 }
+
 button.invert{
     color: #0d6efd;
     background: #FFFFFF;

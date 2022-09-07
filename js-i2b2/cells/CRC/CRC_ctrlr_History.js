@@ -94,11 +94,10 @@ i2b2.CRC.ctrlr.history = {
         //	2) interprets the XML / populates the ONT data model,
         //	3) fires it's onDataUpdate event
 
-
-        // Hide Navigate treeview and display search results treeview
+        // Hide Navigate treeview and search results message and display search status message
+        $("#i2b2QueryHistoryFinderStatus").text("Searching...").show();
         $("#i2b2TreeviewQueryHistory").hide();
-        $("#i2b2TreeviewQueryHistoryFinder").show();
-
+        $("#i2b2QueryHistoryFinderMessage").hide();
         // clear treeview
         i2b2.CRC.view.history.treeviewFinder.treeview('clear');
 
@@ -129,6 +128,7 @@ i2b2.CRC.ctrlr.history = {
                     iconImgExp: sdxDataNode.renderData.iconImgExp,
                     i2b2: sdxDataNode
                 };
+
                 temp.state = sdxDataNode.renderData.tvNodeState;
                 if(sdxDataNode.renderData.cssClassMinor !== undefined) {
                     temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
@@ -141,9 +141,14 @@ i2b2.CRC.ctrlr.history = {
             // render tree
             i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);
 
+            $("#i2b2QueryHistoryFinderStatus").hide();
+
+            // Display search results treeview
+            let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
+
             if(cellResult.model.length === 0){
-                $("#i2b2QueryHistoryFinderMessage").text("No queries found.");
-                $("#i2b2TreeviewQueryHistoryFinder").hide();
+                $("#i2b2QueryHistoryFinderMessage").text("No queries found.").show();
+                historyFinderTreeview.hide();
             }
         };
 

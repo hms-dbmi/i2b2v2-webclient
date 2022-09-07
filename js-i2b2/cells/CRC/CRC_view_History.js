@@ -205,7 +205,10 @@ i2b2.events.afterCellInit.add((function(cell){
                         error: (error) => { console.error("Could not retrieve template: QueryHistoryFinder.html"); }
                     });
 
-                    $('<div id="i2b2QueryHistoryFinderMessage"></div>').prependTo(container._contentElement);
+                    $('<div id="i2b2QueryHistoryFinderMessage"></div>').prependTo(container._contentElement).hide();
+
+                    // add the status DIV
+                    $('<div id="i2b2QueryHistoryFinderStatus"></div>').prependTo(container._contentElement).hide();
 
                     // create an empty Navigation treeview
                     let treeTargetNav = $('<div id="i2b2TreeviewQueryHistory"></div>').appendTo(container._contentElement);
