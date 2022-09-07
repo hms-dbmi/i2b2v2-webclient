@@ -141,6 +141,10 @@ i2b2.CRC.ctrlr.history = {
             // render tree
             i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);
 
+            if(cellResult.model.length === 0){
+                $("#i2b2QueryHistoryFinderMessage").text("No queries found.");
+                $("#i2b2TreeviewQueryHistoryFinder").hide();
+            }
         };
 
         // fire the AJAX call
