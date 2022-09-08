@@ -244,19 +244,17 @@ i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
                     if (typeof eventHandlers[sdxType].DropChecker === "function") {
                         if (eventHandlers[sdxType].DropChecker(e.target, e, this)) {
                             // this is REQUIRED for proper drop
-                            //ev.preventDefault();
-                            //ev.stopPropagation();
-                            //return false;
+                            ev.preventDefault();
+                            return false;
                         }
+                        return true; // this makes it an invalid drop target
                     } else {
                         // this is REQUIRED for proper drop
                         ev.preventDefault();
-                        //return false;
-                        //ev.stopPropagation();
+                        return false;
                     }
                 }
             }
-            return false;
         });
         return true;
     }
