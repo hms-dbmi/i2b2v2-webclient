@@ -104,10 +104,13 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                         if (eventHandlers[sdxType].DropChecker(e.target, e, this)) {
                             // this is REQUIRED for proper drop
                             ev.preventDefault();
+                            return false;
                         }
+                        return true; // this makes it an invalid drop target
                     } else {
                         // this is REQUIRED for proper drop
                         ev.preventDefault();
+                        return false;
                     }
                 }
             }
@@ -218,7 +221,6 @@ i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
 
         // start listening for DD events
         $(container).on("drop dragover dragenter dragleave", i2b2.sdx.Master.onDragDropEvents);
-
         return true;
     }
 };
