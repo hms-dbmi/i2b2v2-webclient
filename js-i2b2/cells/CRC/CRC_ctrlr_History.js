@@ -152,6 +152,12 @@ i2b2.CRC.ctrlr.history = {
             }
         };
 
+        let crc_find_strategy = "contains"
+        let crc_find_category = $("#querySearchFilter").data("selectedFilterValue");
+        if(crc_find_category === "pdo"){
+            crc_find_strategy = "exact"
+        }
+
         // fire the AJAX call
         let options = {
             result_wait_time: 180,
@@ -159,8 +165,8 @@ i2b2.CRC.ctrlr.history = {
             crc_sort_by: i2b2.CRC.view['history'].params.sortBy,
             crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") === -1? 	"CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
             crc_sort_order: (i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1?"true": "false"),
-            crc_find_category: $("#querySearchFilter").data("selectedFilterValue"),
-            crc_find_strategy: "contains",
+            crc_find_category: crc_find_category,
+            crc_find_strategy: crc_find_strategy,
             crc_find_string: $("#querySearchTermText").val()
         };
         i2b2.CRC.ajax.getNameInfo("CRC:History", options, scopeCB);
