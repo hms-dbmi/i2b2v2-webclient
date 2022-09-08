@@ -149,7 +149,7 @@ i2b2.CRC.ctrlr.history = {
             let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
 
             if(cellResult.model.length === 0){
-                $("#i2b2QueryHistoryFinderMessage").text("No queries found.").show();
+                $("#i2b2QueryHistoryFinderMessage").text("No records found.").show();
                 historyFinderTreeview.hide();
             }
         };
