@@ -95,9 +95,11 @@ i2b2.CRC.ctrlr.history = {
         //	3) fires it's onDataUpdate event
 
         // Hide Navigate treeview and search results message and display search status message
-        $("#i2b2QueryHistoryFinderStatus").text("Searching...").show();
+        $("#i2b2TreeviewQueryHistoryFinder").hide();
         $("#i2b2TreeviewQueryHistory").hide();
         $("#i2b2QueryHistoryFinderMessage").hide();
+        $("#i2b2QueryHistoryFinderStatus").text("Searching...").show();
+
         // clear treeview
         i2b2.CRC.view.history.treeviewFinder.treeview('clear');
 
