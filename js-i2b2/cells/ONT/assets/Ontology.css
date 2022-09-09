@@ -207,7 +207,9 @@ button.invert:hover{
     border-bottom: 1px solid gray;
     border-radius: 0;
     font-size: 1.4em !important;
-    z-index: 10;
+    margin-left: -5px;
+    margin-right: 0;
+    margin-top: 1px;
 }
 
 #searchTerm .searchBtn:hover{
@@ -219,11 +221,20 @@ button.invert:hover{
 }
 
 .clearIcon {
-    margin-left: -43px !important;
-    top: 10px;
     font-size: 1.4em;
     border: none;
-    z-index: 6 !important;
+    border-radius: 0;
+}
+
+.clearIcon:hover {
+    border-radius: 3px;
+}
+
+.clearIconMain {
+    border-bottom: 1px solid gray;
+    display: inline-block;
+    margin-right: 0;
+    margin-left: 0;
 }
 
 .invisible {
