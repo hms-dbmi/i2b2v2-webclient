@@ -53,7 +53,7 @@ i2b2.CRC.view.search.reset = function(){
     $("#querySearchFilterText").text("Any Category");
     $("#querySearchFilter").data("selectedFilterValue", "@");
 
-    //Show Navigate treeview and hidesearch results treeview
+    //Show Navigate treeview and hide search results treeview
     $("#i2b2TreeviewQueryHistory").show();
     $("#i2b2TreeviewQueryHistoryFinder").hide();
 };

@@ -21,7 +21,14 @@ i2b2.CRC.view.QT.updateQueryName = function() {
 
 
 // ================================================================================================== //
+i2b2.CRC.view.QT.resetToCRCHistoryView = function() {
+    i2b2.CRC.view.search.reset();
+    $("#i2b2TreeviewQueryHistoryFinder").hide();
+    $("#i2b2TreeviewQueryHistory").show();
+}
+// ================================================================================================== //
 i2b2.CRC.view.QT.showRun = function() {
+
     // show the options modal screen
     if ($('body #crcModal').length === 0) {
         $('body').append("<div id='crcModal'/>");
@@ -43,6 +50,7 @@ i2b2.CRC.view.QT.showRun = function() {
 
         // run the query on button press
         $('body #crcModal button.i2b2-save').on('click', (evt) => {
+            i2b2.CRC.view.QT.resetToCRCHistoryView();
             // build list of selected result types
             let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
             // run the query
