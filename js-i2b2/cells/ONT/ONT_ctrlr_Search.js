@@ -22,8 +22,6 @@ i2b2.ONT.ctrlr.Search = {
         status[0].innerHTML = "Searching...";
         status.show();
 
-        i2b2.ONT.view.search.searchErrorMsg(false);
-
         i2b2.ONT.model.searchResults = {};
         let search_info = {};
         search_info.SearchStr = $("#searchTermText").val();

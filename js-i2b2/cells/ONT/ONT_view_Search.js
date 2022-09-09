@@ -28,17 +28,6 @@ i2b2.ONT.view.search.handleSearchInputChange = function(newValue){
 };
 //================================================================================================== //
 
-i2b2.ONT.view.search.searchErrorMsg = function(msg){
-    if (typeof msg !== 'string') {
-        // hide the message
-        $("#finder-msg").hide();
-    } else {
-        $("#finder-msg").text(msg.trim()).show();
-    }
-}
-
-//================================================================================================== //
-
 i2b2.ONT.view.search.enableSearch = function(newValue){
     let searchType = $("#searchFilter").data("selectedFilterType");
     if ((newValue && newValue.trim().length > 2 && searchType === 'category' ) || (newValue && newValue.trim().length > 0 && (searchType === 'coding' || $("#searchFilter").data("selectedFilterValue") === 'ALL CODING'))) {
@@ -52,9 +41,9 @@ i2b2.ONT.view.search.enableSearch = function(newValue){
 
 i2b2.ONT.view.search.toggleSearchClearIcon = function(newValue){
     if (newValue){
-        $("#searchTerm .clearIcon").removeClass("hidden");
+        $("#searchTerm .clearIcon").removeClass("invisible");
     } else {
-        $("#searchTerm .clearIcon").addClass("hidden");
+        $("#searchTerm .clearIcon").addClass("invisible");
     }
 };
 
@@ -188,7 +177,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
             });
 
             $('#searchTermText').on('keypress',function(e) {
-                if(e.which == 13) {
+                if(e.which === 13) {
                     // enter key was pressed while in the search term entry box
                     if ($("#submitTermSearch").attr('disabled') === undefined) i2b2.ONT.ctrlr.Search.clickSearch();
                 }

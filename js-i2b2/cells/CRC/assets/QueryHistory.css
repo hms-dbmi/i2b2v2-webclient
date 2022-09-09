@@ -133,20 +133,6 @@ button.invert:hover{
     margin-top: 5px;
 }
 
-.clear-input{
-    padding-top: 1.2em;
-    border-bottom: 1px solid gray;
-}
-
-.clearIcon{
-    font-size: 1.4em;
-}
-
-.clearIcon:hover{
-    background: lightgray;
-    padding-top: 0.2em;
-}
-
 #i2b2QueryHistoryFinder .nav-link{
     color: #212529;
     margin-right: 0.2em;

@@ -67,33 +67,11 @@
 }
 
 
-#i2b2FinderOnt #finder-msg {
-    z-index: 1;
-    position: absolute;
-    top: 0;
-    left: 1rem;
-    right: 1rem;
-    border: solid 1px #000;
-    background: #f33;
-    border-radius: 0 0 0.5rem 0.5rem;
-    padding: 0.1rem 0.5rem;
-    text-align: center;
-    border-top: none;
-    color: #fff;
-}
-
-
-
-
 #i2b2FinderOnt #searchActions {
     min-width: 9rem;
     text-align: right;
 }
 
-#i2b2FinderOnt #searchActions button {
-    width: 4rem;
-    height: 2rem;
-}
 
 #i2b2FinderOnt #searchActions button:disabled {
     color: #444;
@@ -155,20 +133,6 @@ button.invert:hover{
 
 .form-check-inline {
     margin-top: 5px;
-}
-
-.clear-input{
-    padding-top: 1.2em;
-    border-bottom: 1px solid gray;
-}
-
-.clearIcon{
-    font-size: 1.4em;
-}
-
-.clearIcon:hover{
-    background: lightgray;
-    padding-top: 0.2em;
 }
 
 .navbar-nav{
@@ -242,4 +206,18 @@ button.invert:hover{
     width: 22.4em;
 }
 
+#searchTerm .searchBtn{
+    border: none;
+    border-bottom: 1px solid gray;
+    border-radius: 0;
+    margin-left: -4px;
+    font-size: 1.4em !important;
+}
 
+#searchTerm .searchActions {
+    margin-top: 15px;
+}
+
+.invisible {
+    visibility: hidden;
+}
