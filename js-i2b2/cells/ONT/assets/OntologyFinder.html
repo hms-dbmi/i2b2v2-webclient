@@ -3,10 +3,12 @@
         <div class="searchTermMain">
             <div class="input-group" id="searchTerm">
                 <input class="form-control form-control-sm" placeholder="Find term in" aria-label="Term" id="searchTermText" onkeyup="i2b2.ONT.view.search.handleSearchInputChange(this.value);">
-                <span class="input-group-append searchActions">
-                    <button class="btn btn-outline-secondary pb-sm-0 pt-sm-0 searchBtn">
-                        <i class="bi bi-x clearIcon invisible" onclick="i2b2.ONT.view.search.clearSearchInput();"></i>
+                <span class="input-group-append">
+                    <button class="btn btn-outline-secondary pb-sm-0 pt-sm-0 invisible clearIcon">
+                        <i class="bi bi-x" onclick="i2b2.ONT.view.search.clearSearchInput();"></i>
                     </button>
+                </span>
+                <span class="input-group-append searchActions">
                     <button class="btn btn-outline-secondary pb-sm-0 pt-sm-0 searchBtn">
                         <i class="bi bi-search" onclick="i2b2.ONT.ctrlr.Search.clickSearch();"></i>
                     </button>
@@ -39,5 +41,6 @@
                 </div>
             </div>
         </nav>
+        <span class="fs-5 mb-3 mt-4"><i class="bi bi-info-circle srTooltip" title="A maximum of 200 records per category will be returned." data-bs-toggle="tooltip" data-bs-placement="bottom"></i></span>
     </div>
 </div>

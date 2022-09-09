@@ -74,6 +74,9 @@ i2b2.ONT.view.search.initSearch = function(container){
         success: (template) => {
             let finderTemplate = Handlebars.compile(template);
             $(finderTemplate({})).prependTo(container);
+
+            //init search result tooltip
+            $(".srTooltip").tooltip();
         },
         error: (error) => { console.error("Could not retrieve template: OntologyFinder.html"); }
     });
