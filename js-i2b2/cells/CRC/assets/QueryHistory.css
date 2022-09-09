@@ -13,6 +13,11 @@
     height: auto;
 }
 
+#i2b2QueryHistoryFinderMessage{
+    padding-top: 0.6em;
+    padding-left: 0.9em;
+}
+
 #i2b2QueryHistoryFinderStatus {
     display: flex;
     justify-content: center;
@@ -32,22 +37,6 @@
     font-size: 0.98em;
     overflow: auto;
 }
-
-/*#i2b2QueryHistoryFinderMessage {
-    background: #FFFFFF;
-    border: solid 1px #63758c;
-    border-top: 1px solid rgba(212, 105, 255, 0.18);
-    overflow: auto;
-    border-radius: 0 0 3px 3px;
-    flex-direction: column;
-    position: absolute;
-    bottom: 0;
-    top: 4.2em;
-    left: 0;
-    right: 0;
-    height: auto;
-    padding: 0.4em 0.8em;
-}*/
 
 #i2b2QueryHistoryFinder .searchOptions {
     position: relative;
