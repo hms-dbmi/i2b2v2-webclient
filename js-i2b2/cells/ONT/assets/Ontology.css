@@ -208,7 +208,6 @@ button.invert:hover{
     border-radius: 0;
     font-size: 1.4em !important;
     margin-left: -5px;
-    margin-right: 0;
     margin-top: 1px;
 }
 
@@ -217,7 +216,7 @@ button.invert:hover{
 }
 
 #searchTerm .searchActions {
-    margin-top: 12px;
+    margin-top: 0.8em;
 }
 
 .clearIcon {
@@ -240,7 +239,6 @@ button.invert:hover{
 .invisible {
     visibility: hidden;
 }
-
 
 .tooltip-inner {
     background-color: #fff !important;
