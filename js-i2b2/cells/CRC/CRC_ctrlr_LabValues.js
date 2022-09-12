@@ -53,7 +53,7 @@ i2b2.CRC.ctrlr.labValues = {
             } else {
                 c = i2b2.h.XPath(response.refXML, 'descendant::concept');
             }
-            if (c.length > 0) sdxConcept.origData.xmlOrig = c[0];
+            if (c.length > 0) sdxConcept.origData.xmlOrig = c[0].outerHTML;
 
             const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
             if (valueMetaDataArr.length > 0) i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);

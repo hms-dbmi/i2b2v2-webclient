@@ -141,7 +141,7 @@ i2b2.sdx.TypeControllers.PRS.getChildRecords = function(sdxParentNode, onComplet
         let dm = i2b2.CRC.model.QueryMasters;
         for(let i1=0; i1<ps.length; i1++) {
             let o = {};
-            o.xmlOrig = ps[i1];
+            o.xmlOrig = ps[i1].outerHTML;
             o.patient_id = i2b2.h.getXNodeVal(ps[i1],'patient_id');
 //			if (!Object.isUndefined(i2b2.h.XPath(ps[i1],'param[@name="vital_status_cd"]/text()')[0])) {
 //				o.vital_status = i2b2.h.XPath(ps[i1],'param[@name="vital_status_cd"]/text()')[0].nodeValue;
@@ -203,9 +203,8 @@ i2b2.sdx.TypeControllers.PRS.DropHandler = function(sdxData) {
 
 // ==========================================================================
 i2b2.sdx.TypeControllers.PRS.dragStartHandler = function(i2b2Data) {
-    delete i2b2Data.origData.xmlOrig;
     delete i2b2Data.origData.parent;
-    delete i2b2Data.renderData.idDOM;
+    if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
     return i2b2Data;
 };
 
