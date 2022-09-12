@@ -180,12 +180,8 @@ i2b2.layout.init = function () {
                         isClosable:false,
                         componentName: 'i2b2.CRC.view.QS',
                         title:'Query Status'
-                    },{
-                        type:'component',
-                        isClosable:false,
-                        componentName: 'i2b2.CRC.view.QR',
-                        title:'Query Results'
-                }]
+                    }
+                ]
             },
         ]
     };

@@ -13,7 +13,6 @@
     "CRC_ctrlr_QryTool.js",
     "CRC_view_QryTool.js",
     "CRC_ctrlr_QryRun.js",
-    "CRC_view_QryRun.js",
     "CRC_ctrl_QryStatus.js",
     "CRC_view_QryStatus.js",
     "i2b2_msgs.js",

@@ -26,7 +26,7 @@ function QueryRunner() {
             breakdowns: {}
         };
 
-        i2b2.CRC.view.QR.timerID = setInterval(i2b2.CRC.view.QR.timerTick, 100);
+        i2b2.CRC.view.QS.timerID = setInterval(i2b2.CRC.view.QS.timerTick, 100);
 
         // define the 2 scoped callbacks that query runner uses
         let callbackQueryDef = new i2b2_scopedCallback();
@@ -50,13 +50,13 @@ function QueryRunner() {
             i2b2.CRC.model.runner.finished = true;
 
             // stop the run timer
-            clearInterval(i2b2.CRC.view.QR.timerID);
-            i2b2.CRC.view.QR.timerTick();
+            clearInterval(i2b2.CRC.view.QS.timerID);
+            i2b2.CRC.view.QS.timerTick();
 
             // see if error
             if (results.error) {
                 i2b2.CRC.model.runner.status = "ERROR";
-                i2b2.CRC.view.QR.render();
+                //i2b2.CRC.view.QR.render();
                 alert(results.errorMsg);
                 return;
             }
@@ -74,8 +74,8 @@ function QueryRunner() {
                 // run the second request to get the result set
                 i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryRunner", {qi_key_value: qiID}, callbackQueryResultInstance);
             }
-            i2b2.CRC.view.QR.render();
-            i2b2.CRC.ctrlr.QueryStatus.updateStatus(results);
+            //i2b2.CRC.view.QR.render();
+            i2b2.CRC.ctrlr.QS.updateStatus(results);
         };
 
         // process the results to get the query resultInstance
@@ -84,7 +84,7 @@ function QueryRunner() {
             // see if error
             if (results.error) {
                 i2b2.CRC.model.runner.status = "ERROR RETRIEVING RESULTS";
-                i2b2.CRC.view.QR.render();
+               // i2b2.CRC.view.QR.render();
                 alert(results.errorMsg);
                 return;
             }
@@ -98,14 +98,14 @@ function QueryRunner() {
                 i2b2.CRC.model.runner.patientCount = i2b2.h.getXNodeVal(qrsList[0], 'set_size');
             }
             // rerender the results
-            i2b2.CRC.view.QR.render();
+            //i2b2.CRC.view.QR.render();
         };
 
-        i2b2.CRC.ctrlr.QueryStatus.startTime = new Date();
+        i2b2.CRC.ctrlr.QS.startTime = new Date();
         //i2b2.CRC.ctrlr.QueryStatus.private_refreshInterrupt = setInterval("i2b2.CRC.ctrlr.QueryStatus.refreshStatus()", 100);
         //i2b2.CRC.ctrlr.QueryStatus.QM.name = queryName;
 
-        i2b2.CRC.ctrlr.QueryStatus.startStatus(queryName);
+        i2b2.CRC.ctrlr.QS.startStatus(queryName);
 
         // run query using the passed query definition
         // ==========================================================

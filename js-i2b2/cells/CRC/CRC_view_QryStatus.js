@@ -24,7 +24,11 @@ i2b2.CRC.view.QS.render = function(breakdowns) {
 
     $((Handlebars.compile("{{> QueryResultBreakdownTable}}"))(breakdowns)).appendTo(statusTable);
 };
-
+// ================================================================================================== //
+i2b2.CRC.view.QS.clearQuery = function() {
+    $("#infoQueryStatusTable").empty();
+    $("#infoQueryStatusGraph").hide();
+};
 // ================================================================================================== //
 // This is done once the entire cell has been loaded
 console.info("SUBSCRIBED TO i2b2.events.afterCellInit");
@@ -69,6 +73,10 @@ i2b2.events.afterCellInit.add(
         }
     }
 );
+// ================================================================================================== //
+i2b2.CRC.view.QS.timerTick = function() {
+    i2b2.CRC.model.runner.elapsedTime = Math.round((new Date() - i2b2.CRC.model.runner.startTime) / 100) / 10;
+};
 
 console.timeEnd('execute time');
 console.groupEnd();
