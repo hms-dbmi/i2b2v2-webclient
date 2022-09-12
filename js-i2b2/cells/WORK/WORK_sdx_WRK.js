@@ -50,7 +50,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
             x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::query_master_id/..")[0];
             // extract and create an SDX object for this node
-            o.xmlOrig = x;
+            o.xmlOrig = x.outerHTML;
             o.query_master_id = i2b2.h.getXNodeVal(x, "query_master_id");
             o.id = o.query_master_id;
             o.name = i2b2.h.getXNodeVal(x, "name");
@@ -69,7 +69,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             sdxCode = "PRS";
             // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
             x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::result_instance_id/..")[0];
-            o.xmlOrig = x;
+            o.xmlOrig = x.outerHTML;
             o.result_type = "PATIENTSET";
             o.size = i2b2.h.getXNodeVal(x, "set_size");
             o.result_instance_id = i2b2.h.getXNodeVal(x, "result_instance_id");
@@ -90,7 +90,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             sdxCode = "ENS";
             // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
             x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::result_instance_id/..")[0];
-            o.xmlOrig = x;
+            o.xmlOrig = x.outerHTML;
             o.result_type = "ENCOUNTERSET";
             o.size = i2b2.h.getXNodeVal(x, "set_size");
             o.result_instance_id = i2b2.h.getXNodeVal(x, "result_instance_id");
@@ -111,7 +111,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             sdxCode = "PR";
             // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
             x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::patient/..")[0];
-            o.xmlOrig = x;
+            o.xmlOrig = x.outerHTML;
             o.result_type = "PATIENTSET";
             o.patient_id = i2b2.h.XPath(x, "descendant::patient/patient_id/text()")[0].nodeValue;
             o.PRS_id = i2b2.h.XPath(x, "@patient_set_id")[0].nodeValue;
@@ -125,7 +125,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
         case "CONCEPT":
             sdxCode = "CONCPT";
             x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant-or-self::concept")[0];
-            o.xmlOrig = x;
+            o.xmlOrig = x.outerHTML;
             o.key = i2b2.h.getXNodeVal(x, "key");
             o.level = i2b2.h.getXNodeVal(x, "level");
             o.name = i2b2.h.getXNodeVal(x, "name");
@@ -143,7 +143,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             sdxCode = "PRC";
             // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges that perform no resolving
             x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::result_instance_id/..")[0];
-            o.xmlOrig = x;
+            o.xmlOrig = x.outerHTML;
             o.result_instance_id = i2b2.h.getXNodeVal(x, "result_instance_id");
             o.PRC_id = o.result_instance_id;
             o.QI_id = i2b2.h.getXNodeVal(x, "query_instance_id");
@@ -171,7 +171,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             sdxCode = "QGDEF";
             // XPath query exploits faults in XML message namespace declarations to avoid creation of namespace resolver kluges
             x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::panel_number/..")[0];
-            o.xmlOrig = x;
+            o.xmlOrig = x.outerHTML;
             o.result_type = "GROUP_TEMPLATE";
             o.QGDEF_name = i2b2.h.XPath(x, "@name")[0].nodeValue;
             o.key = false;
@@ -182,7 +182,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
         case "QUERY_DEFINITION":
             sdxCode = "QDEF";
             x = i2b2.h.XPath(sdxData.origData.xmlOrig, "work_xml/descendant::query_name/..")[0];
-            o.xmlOrig = x;
+            o.xmlOrig = x.outerHTML;
             o.result_type = "QUERY_DEFINITION";
             o.QDEF_name = i2b2.h.XPath(x,"//descendant::query_name/text()")[0].nodeValue;
             o.key = false;
@@ -197,7 +197,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             let t = i2b2.h.XPath(sdxData.origData.xmlOrig, "descendant::work_xml")[0].childNodes;
             for (i=0; i<t.length; i++) {
                 if (t[i].nodeType === 1) {
-                    o.xmlOrig = t[i];
+                    o.xmlOrig = t[i].outerHTML;
                     break;
                 }
             }
@@ -243,10 +243,9 @@ i2b2.sdx.TypeControllers.WRK.DropHandler = function(sdxData) {
 
 // ==========================================================================
 i2b2.sdx.TypeControllers.WRK.dragStartHandler = function(i2b2Data) {
-    delete i2b2Data.origData.xmlOrig;
     delete i2b2Data.origData.parent;
     if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
-    if (i2b2.sdxUnderlyingPackage !== undefined && i2b2Data.sdxUnderlyingPackage.origData !== undefined) {
+    if (i2b2Data.sdxUnderlyingPackage !== undefined) {
         delete i2b2Data.sdxUnderlyingPackage.origData.xmlOrig;
         delete i2b2Data.sdxUnderlyingPackage.origData.parent;
     }

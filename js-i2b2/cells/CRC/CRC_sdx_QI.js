@@ -152,7 +152,7 @@ i2b2.sdx.TypeControllers.QI.getChildRecords = function(sdxParentNode, onComplete
         let ps = results.refXML.getElementsByTagName('query_result_instance');
         for (let i1 = 0; i1 < ps.length; i1++) {
             let o = {};
-            o.xmlOrig = ps[i1];
+            o.xmlOrig = ps[i1].outerHTML;
             o.QI_id = keyValue;
             o.QM_id = parent_QM;
             o.size = i2b2.h.getXNodeVal(ps[i1], 'set_size');
@@ -252,7 +252,6 @@ i2b2.sdx.TypeControllers.QI.DropHandler = function(sdxData) {
 
 // ==========================================================================
 i2b2.sdx.TypeControllers.QI.dragStartHandler = function(i2b2Data) {
-    delete i2b2Data.origData.xmlOrig;
     delete i2b2Data.origData.parent;
     if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
     return i2b2Data;

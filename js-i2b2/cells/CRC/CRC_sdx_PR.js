@@ -120,7 +120,6 @@ i2b2.sdx.TypeControllers.PR.DropHandler = function(sdxData) {
 
 // ==========================================================================
 i2b2.sdx.TypeControllers.PR.dragStartHandler = function(i2b2Data) {
-    delete i2b2Data.origData.xmlOrig;
     delete i2b2Data.origData.parent;
     if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
     return i2b2Data;

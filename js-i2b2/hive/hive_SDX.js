@@ -385,11 +385,9 @@ i2b2.sdx.Master.onDragStart = function(event, node) {
                 i2b2Data = i2b2.sdx.TypeControllers[sdxType].dragStartHandler(i2b2Data);
             } else {
                 // i2b2 data
-                delete i2b2Data.origData.xmlOrig;
                 delete i2b2Data.origData.parent;
                 if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
                 if (i2b2.sdxUnderlyingPackage !== undefined && i2b2Data.sdxUnderlyingPackage.origData !== undefined) {
-                    delete i2b2Data.sdxUnderlyingPackage.origData.xmlOrig;
                     delete i2b2Data.sdxUnderlyingPackage.origData.parent;
                 }
             }

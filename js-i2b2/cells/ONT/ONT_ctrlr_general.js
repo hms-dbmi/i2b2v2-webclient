@@ -30,7 +30,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
 
     let data = {};
     if (xmlData) {
-        data.xmlOrig = xmlData;
+        data.xmlOrig = xmlData.outerHTML;
         data.name = i2b2.h.getXNodeVal(xmlData, 'name');
         data.hasChildren = i2b2.h.getXNodeVal(xmlData, 'visualattributes').substring(0, 2);
         data.level = i2b2.h.getXNodeVal(xmlData, 'level');

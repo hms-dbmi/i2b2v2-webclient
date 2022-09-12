@@ -34,7 +34,7 @@ i2b2.CRC.ctrlr.history = {
 //                 let qm = i2b2CellMsg.refXML.getElementsByTagName('query_master');
 //                 // for(let i=0; i<1*qm.length; i++) {
 //                 //     let o = {};
-//                 //     o.xmlOrig = qm[i];
+//                 //     o.xmlOrig = qm[i].outerHTML;
 //                 //     o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
 //                 //     o.realname = i2b2.h.getXNodeVal(qm[i],'name');
 //                 //     o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
@@ -94,10 +94,11 @@ i2b2.CRC.ctrlr.history = {
         //	2) interprets the XML / populates the ONT data model,
         //	3) fires it's onDataUpdate event
 
-
-        // Hide Navigate treeview and display search results treeview
+        // Hide Navigate treeview and search results message and display search status message
+        $("#i2b2TreeviewQueryHistoryFinder").hide();
         $("#i2b2TreeviewQueryHistory").hide();
-        $("#i2b2TreeviewQueryHistoryFinder").show();
+        $("#i2b2QueryHistoryFinderMessage").hide();
+        $("#i2b2QueryHistoryFinderStatus").text("Searching...").show();
 
         // clear treeview
         i2b2.CRC.view.history.treeviewFinder.treeview('clear');
@@ -129,6 +130,7 @@ i2b2.CRC.ctrlr.history = {
                     iconImgExp: sdxDataNode.renderData.iconImgExp,
                     i2b2: sdxDataNode
                 };
+
                 temp.state = sdxDataNode.renderData.tvNodeState;
                 if(sdxDataNode.renderData.cssClassMinor !== undefined) {
                     temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
@@ -141,7 +143,22 @@ i2b2.CRC.ctrlr.history = {
             // render tree
             i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);
 
+            $("#i2b2QueryHistoryFinderStatus").hide();
+
+            // Display search results treeview
+            let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
+
+            if(cellResult.model.length === 0){
+                $("#i2b2QueryHistoryFinderMessage").text("No records found.").show();
+                historyFinderTreeview.hide();
+            }
         };
+
+        let crc_find_strategy = "contains"
+        let crc_find_category = $("#querySearchFilter").data("selectedFilterValue");
+        if(crc_find_category === "pdo"){
+            crc_find_strategy = "exact"
+        }
 
         // fire the AJAX call
         let options = {
@@ -150,8 +167,8 @@ i2b2.CRC.ctrlr.history = {
             crc_sort_by: i2b2.CRC.view['history'].params.sortBy,
             crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") === -1? 	"CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
             crc_sort_order: (i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1?"true": "false"),
-            crc_find_category: $("#querySearchFilter").data("selectedFilterValue"),
-            crc_find_strategy: "contains",
+            crc_find_category: crc_find_category,
+            crc_find_strategy: crc_find_strategy,
             crc_find_string: $("#querySearchTermText").val()
         };
         i2b2.CRC.ajax.getNameInfo("CRC:History", options, scopeCB);
