@@ -174,7 +174,7 @@ i2b2.CRC.ctrlr.QS = {
                 // display status of query in box
                 switch (rec.QRS_Status) {
                     case "ERROR":
-                        //i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="clear:both; height:16px; line-height:16px; "><div style="float:left; font-weight:bold; height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#dd0000">ERROR</font></div>';
+                        //i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '<div style="clear:both; height:16px; line-height:16px; "><div style="float:left; font-weight:bold; height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#dd0000">ERROR</font></div>';
                         breakdown.title = rec.title;
                         breakdown.result = {statusMessage: "ERROR"};
                         foundError = true;
@@ -186,7 +186,7 @@ i2b2.CRC.ctrlr.QS = {
                     case "INCOMPLETE":
                     case "WAITTOPROCESS":
                     case "PROCESSING":
-                        //i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="clear:both; height:16px;line-height:16px; "><div style="float:left; font-weight:bold;  height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#00dd00">PROCESSING</font></div>';
+                        //i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '<div style="clear:both; height:16px;line-height:16px; "><div style="float:left; font-weight:bold;  height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#00dd00">PROCESSING</font></div>';
                         breakdown.title = rec.title;
                         breakdown.result = {statusMessage: "PROCESSING"};
                         alert('Your query has timed out and has been rescheduled to run in the background.  The results will appear in "Previous Queries"');
