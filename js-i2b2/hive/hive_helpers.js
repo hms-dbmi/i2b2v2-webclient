@@ -38,6 +38,18 @@ i2b2.h.parseXml = function(xmlString){
 // ================================================================================================== //
 i2b2.h.XPath = function(xmlDoc, xPath) {
     var retArray = [];
+
+    // do some inline translation of the xmlDoc from string to XMLDocument
+    if (typeof xmlDoc === 'string') {
+        try {
+            let parser = new DOMParser();
+            let test = parser.parseFromString(xmlDoc, "text/xml");
+            xmlDoc = test.documentElement;
+        } catch(e) {
+            return retArray;
+        }
+    }
+
     if (!xmlDoc) {
         console.warn("An invalid XMLDoc was passed to i2b2.h.XPath");
         return retArray;
@@ -84,6 +96,17 @@ i2b2.h.XPath = function(xmlDoc, xPath) {
 // ================================================================================================== //
 i2b2.h.getXNodeVal = function(xmlElement, nodeName, includeChildren) {
     if (xmlElement === undefined) return undefined;
+    // do some inline translation of the xmlDoc from string to XMLDocument
+    if (typeof xmlElement === 'string') {
+        try {
+            let parser = new DOMParser();
+            let test = parser.parseFromString(xmlElement, "text/xml");
+            xmlElement = test.documentElement;
+        } catch(e) {
+            return undefined;
+        }
+    }
+
     var gotten = i2b2.h.XPath(xmlElement, "descendant-or-self::"+nodeName+"/text()");
 
     if (gotten.length == 0) return undefined;

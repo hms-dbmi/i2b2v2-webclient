@@ -161,7 +161,7 @@ i2b2.events.afterCellInit.add((function(cell){
                     // TODO: Finish wiring implementation
                     actions: {
                         nodeAnnotate: {
-                            name: 'Show Term Info...',
+                            name: 'Show More Info',
                             onClick: function(node) {
                                 i2b2.ONT.view.info.load(node.i2b2, true);
                             }

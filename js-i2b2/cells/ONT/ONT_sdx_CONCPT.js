@@ -359,7 +359,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
 // *********************************************************************************
 i2b2.sdx.TypeControllers.CONCPT.MakeObject = function(c, modifier, cl_options, origData, objectType) {
             let o = {};
-            o.xmlOrig = c;
+            o.xmlOrig = c.outerHTML;
             o.parent = origData;
             if (modifier) {
                 o.isModifier = true;
@@ -518,9 +518,8 @@ i2b2.sdx.TypeControllers.CONCPT.DropHandler = function(sdxData) {alert('[Concept
 
 // *********************************************************************************
 i2b2.sdx.TypeControllers.CONCPT.dragStartHandler = function(i2b2Data) {
-    delete i2b2Data.origData.xmlOrig;
     delete i2b2Data.origData.parent;
-    delete i2b2Data.renderData.idDOM;
+    if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
     return i2b2Data;
 };
 
