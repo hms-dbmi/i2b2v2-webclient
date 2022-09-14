@@ -32,7 +32,7 @@
     border-width: 1px 1px 0 1px;
     width: 100%;
     padding: 0.3em 0.8em;
-    padding-bottom: 0.7em;
+    padding-bottom: 1.2em;
     background: rgba(235, 238, 238, 0.3);
     font-size: 0.98em;
     overflow: auto;
@@ -62,6 +62,7 @@
     overflow: hidden;
     vertical-align: middle;
     display: inline-block;
+    width: 102px;
 }
 
 #i2b2QueryHistoryFinder #queryHistorySearchActions {
@@ -120,12 +121,12 @@ button.invert:hover{
     padding-left: 0.1em;
 }
 
-.form-check-input {
+#i2b2QueryHistoryFinder .form-check-input {
     border: 1px solid black;
     margin-top: 2px;
 }
 
-.form-check-inline {
+#i2b2QueryHistoryFinder .form-check-inline {
     margin-top: 5px;
 }
 
@@ -184,6 +185,7 @@ button.invert:hover{
     font-size: 1.4em !important;
     margin-left: -5px;
     margin-top: 1px;
+    padding: 3px 7px !important;
 }
 
 #querySearchTerm .searchBtn:hover{
@@ -194,23 +196,25 @@ button.invert:hover{
     margin-top: 0.8em;
 }
 
-.clearIcon {
-    font-size: 1.4em;
+#i2b2QueryHistoryFinder .clearIcon {
+    font-size: 1.6em;
     border: none;
     border-radius: 0;
+    margin-right: 4px;
+    padding: 1px 5px !important;
 }
 
-.clearIcon:hover {
+#i2b2QueryHistoryFinder .clearIcon:hover {
     border-radius: 3px;
 }
 
-.clearIconMain {
+#i2b2QueryHistoryFinder.clearIconMain {
     border-bottom: 1px solid gray;
     display: inline-block;
     margin-right: 0;
     margin-left: 0;
 }
 
-.invisible {
+#i2b2QueryHistoryFinder .invisible {
     visibility: hidden;
 }
