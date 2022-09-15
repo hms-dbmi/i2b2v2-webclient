@@ -114,13 +114,8 @@ button.invert:hover{
     font-size: 0.89em;
 }
 
-#i2b2QueryHistoryFinder .searchLabel{
-    font-size: 0.92em;
-    margin-right: 5px;
-}
-
 #i2b2QueryHistoryFinder .form-control-sm{
-    font-size: 0.95em;
+    font-size: 1em;
     padding-left: 0.1em;
 }
 
@@ -131,20 +126,6 @@ button.invert:hover{
 
 .form-check-inline {
     margin-top: 5px;
-}
-
-.clear-input{
-    padding-top: 1.2em;
-    border-bottom: 1px solid gray;
-}
-
-.clearIcon{
-    font-size: 1.4em;
-}
-
-.clearIcon:hover{
-    background: lightgray;
-    padding-top: 0.2em;
 }
 
 #i2b2QueryHistoryFinder .nav-link{
