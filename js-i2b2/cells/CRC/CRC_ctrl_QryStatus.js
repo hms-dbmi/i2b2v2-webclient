@@ -1,12 +1,12 @@
 /**
  * @projectDescription	The Asynchronous Query Status controller (GUI-only controller).
  * @inherits 	i2b2.CRC.ctrlr
- * @namespace	i2b2.CRC.ctrlr.QueryStatus
+ * @namespace	i2b2.CRC.ctrlr.QS
  * @author		Marc-Danie Nazaire
  * @version 	2.0
  * ----------------------------------------------------------------------------------------
  */
-i2b2.CRC.ctrlr.QueryStatus = {
+i2b2.CRC.ctrlr.QS = {
     dispDIV: $("<div></div>")[0],
     isRunning: false,
     startTime: false,
@@ -15,7 +15,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
 
     refreshStatus: function () {
         $("#infoQueryStatusTable").empty();
-        i2b2.CRC.ctrlr.QueryStatus.breakdowns  = {
+        i2b2.CRC.ctrlr.QS.breakdowns  = {
             resultTable: [],
             patientCount: {}
         };
@@ -23,7 +23,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
 
         // callback processor to check the Query Instance
         let scopedCallbackQRSI = new i2b2_scopedCallback();
-        scopedCallbackQRSI.scope = i2b2.CRC.ctrlr.QueryStatus; //self;
+        scopedCallbackQRSI.scope = i2b2.CRC.ctrlr.QS; //self;
         // This is where each breakdown in the results is obtained
         // each breakdown comes through here separately
         scopedCallbackQRSI.callback = function (results) {
@@ -86,8 +86,8 @@ i2b2.CRC.ctrlr.QueryStatus = {
                         }
 
                         if (params[i2].getAttribute("column") === 'patient_count') {
-                            i2b2.CRC.ctrlr.QueryStatus.breakdowns.patientCount.title = description;
-                            i2b2.CRC.ctrlr.QueryStatus.breakdowns.patientCount.value = graphValue;
+                            i2b2.CRC.ctrlr.QS.breakdowns.patientCount.title = description;
+                            i2b2.CRC.ctrlr.QS.breakdowns.patientCount.value = graphValue;
                         } else {
                             sCompiledResultsTest += description + '\n';
                             sCompiledResultsTest += params[i2].getAttribute("column").substring(0,20) + " : " + value + "\n"; //snm0
@@ -100,7 +100,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     }
 
                     if(breakdown.title) {
-                        i2b2.CRC.ctrlr.QueryStatus.breakdowns.resultTable.push(breakdown);
+                        i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
                     }
                 }
 
@@ -124,20 +124,20 @@ i2b2.CRC.ctrlr.QueryStatus = {
                 //self.dispDIV.innerHTML += this.dispMsg;
             }
 
-            i2b2.CRC.ctrlr.QueryStatus.breakdowns.isRunning = i2b2.CRC.ctrlr.QueryStatus.isRunning;
-            i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QueryStatus.breakdowns});
+            i2b2.CRC.ctrlr.QS.breakdowns.isRunning = i2b2.CRC.ctrlr.QS.isRunning;
+            i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QS.breakdowns});
         };
 
         // this private function refreshes the display DIV
         let d = new Date();
-        t = Math.floor((d.getTime() - i2b2.CRC.ctrlr.QueryStatus.startTime) / 100) / 10;
+        t = Math.floor((d.getTime() - i2b2.CRC.ctrlr.QS.startTime) / 100) / 10;
         let s = t.toString();
         if (s.indexOf('.') < 0) {
             s += '.0';
         }
 
-        i2b2.CRC.ctrlr.QueryStatus.breakdowns.runDuration = s;
-        i2b2.CRC.ctrlr.QueryStatus.breakdowns.name = i2b2.CRC.ctrlr.QueryStatus.QM.name;
+        i2b2.CRC.ctrlr.QS.breakdowns.runDuration = s;
+        i2b2.CRC.ctrlr.QS.breakdowns.name = i2b2.CRC.ctrlr.QS.QM.name;
 
         /*if (!i2b2.CRC.ctrlr.QueryStatus.isRunning) {
             //Query Report BG
@@ -156,15 +156,15 @@ i2b2.CRC.ctrlr.QueryStatus = {
 
         }*/
 
-        if ((!i2b2.CRC.ctrlr.QueryStatus.isRunning) && (undefined !== i2b2.CRC.ctrlr.QueryStatus.QI.end_date)) {
-            i2b2.CRC.ctrlr.QueryStatus.breakdowns.computeTime = (Math.floor((i2b2.CRC.ctrlr.QueryStatus.QI.end_date - i2b2.CRC.ctrlr.QueryStatus.QI.start_date) / 100)) / 10;
+        if ((!i2b2.CRC.ctrlr.QS.isRunning) && (undefined !== i2b2.CRC.ctrlr.QS.QI.end_date)) {
+            i2b2.CRC.ctrlr.QS.breakdowns.computeTime = (Math.floor((i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date) / 100)) / 10;
         }
 
         let foundError = false;
 
-        i2b2.CRC.ctrlr.QueryStatus.breakdowns.resulTable = [];
-        for (let i in i2b2.CRC.ctrlr.QueryStatus.QRS) {
-            let rec = i2b2.CRC.ctrlr.QueryStatus.QRS[i];
+        i2b2.CRC.ctrlr.QS.breakdowns.resulTable = [];
+        for (let i in i2b2.CRC.ctrlr.QS.QRS) {
+            let rec = i2b2.CRC.ctrlr.QS.QRS[i];
             let breakdown = {
                 title: null,
                 statusMessage: null
@@ -174,7 +174,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
                 // display status of query in box
                 switch (rec.QRS_Status) {
                     case "ERROR":
-                        //i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="clear:both; height:16px; line-height:16px; "><div style="float:left; font-weight:bold; height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#dd0000">ERROR</font></div>';
+                        //i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '<div style="clear:both; height:16px; line-height:16px; "><div style="float:left; font-weight:bold; height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#dd0000">ERROR</font></div>';
                         breakdown.title = rec.title;
                         breakdown.result = {statusMessage: "ERROR"};
                         foundError = true;
@@ -186,7 +186,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     case "INCOMPLETE":
                     case "WAITTOPROCESS":
                     case "PROCESSING":
-                        //i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="clear:both; height:16px;line-height:16px; "><div style="float:left; font-weight:bold;  height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#00dd00">PROCESSING</font></div>';
+                        //i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '<div style="clear:both; height:16px;line-height:16px; "><div style="float:left; font-weight:bold;  height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#00dd00">PROCESSING</font></div>';
                         breakdown.title = rec.title;
                         breakdown.result = {statusMessage: "PROCESSING"};
                         alert('Your query has timed out and has been rescheduled to run in the background.  The results will appear in "Previous Queries"');
@@ -195,12 +195,12 @@ i2b2.CRC.ctrlr.QueryStatus = {
                 }
                 t += '</font> ';
             }
-            i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '</div>';
+            i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '</div>';
             if (foundError === false) {
                 if (rec.QRS_DisplayType === "CATNUM") {
                     i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
                 } else if ((rec.QRS_DisplayType === "LIST")) {
-                    i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
+                    i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
                 }
             }
         }
@@ -219,10 +219,10 @@ i2b2.CRC.ctrlr.QueryStatus = {
         };
 
 
-        if ((undefined !== i2b2.CRC.ctrlr.QueryStatus.QI.message) && (foundError === false)) {
-            i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="clear:both; float:left;  padding-top: 10px; font-weight:bold">Status</div>';
+        if ((undefined !== i2b2.CRC.ctrlr.QS.QI.message) && (foundError === false)) {
+            i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '<div style="clear:both; float:left;  padding-top: 10px; font-weight:bold">Status</div>';
 
-            let mySplitResult = i2b2.CRC.ctrlr.QueryStatus.QI.message.split("<?xml");
+            let mySplitResult = i2b2.CRC.ctrlr.QS.QI.message.split("<?xml");
 
             for (let i3 = 1; i3 < mySplitResult.length; i3++) {
 
@@ -245,17 +245,17 @@ i2b2.CRC.ctrlr.QueryStatus = {
                                 value = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber.toString();
                             }
                         }
-                        i2b2.CRC.ctrlr.QueryStatus.dispDIV.innerHTML += '<div style="margin-left:20px; clear:both; line-height:16px; ">' + i2b2.h.XPath(xml_v, 'descendant::name/text()/..')[i2].firstChild.nodeValue + '<font color="#0000dd">: ' + value + ' secs</font></div>';
+                        i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '<div style="margin-left:20px; clear:both; line-height:16px; ">' + i2b2.h.XPath(xml_v, 'descendant::name/text()/..')[i2].firstChild.nodeValue + '<font color="#0000dd">: ' + value + ' secs</font></div>';
                     } catch (e) {}
                 }
             }
         }
 
-        if (!i2b2.CRC.ctrlr.QueryStatus.isRunning && i2b2.CRC.ctrlr.QueryStatus.refreshInterrupt) {
+        if (!i2b2.CRC.ctrlr.QS.isRunning && i2b2.CRC.ctrlr.QS.refreshInterrupt) {
             // make sure our refresh interrupt is turned off
             try {
-                clearInterval(i2b2.CRC.ctrlr.QueryStatus.refreshInterrupt);
-                i2b2.CRC.ctrlr.QueryStatus.refreshInterrupt = false;
+                clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
+                i2b2.CRC.ctrlr.QS.refreshInterrupt = false;
             } catch (e) {
             }
         }
@@ -265,7 +265,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
         // this is a private function that is used by all QueryStatus object instances to check their status
         // callback processor to check the Query Instance
         let scopedCallbackQI = new i2b2_scopedCallback();
-        scopedCallbackQI.scope = i2b2.CRC.ctrlr.QueryStatus;
+        scopedCallbackQI.scope = i2b2.CRC.ctrlr.QS;
         scopedCallbackQI.callback = function (results) {
             if (results.error) {
                 alert(results.errorMsg);
@@ -294,9 +294,9 @@ i2b2.CRC.ctrlr.QueryStatus = {
                         // found the query instance, extract the info
                         this.QI.status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
                         this.QI.statusID = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
-                        i2b2.CRC.ctrlr.QueryStatus.isRunning = false;
+                        i2b2.CRC.ctrlr.QS.isRunning = false;
 
-                        i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryStatus", {qi_key_value: i2b2.CRC.ctrlr.QueryStatus.QI.id}, scopedCallbackQRS);
+                        i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryStatus", {qi_key_value: i2b2.CRC.ctrlr.QS.QI.id}, scopedCallbackQRS);
                         break;
                     }
                 }
@@ -305,7 +305,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
 
         // callback processor to check the Query Result Set
         let scopedCallbackQRS = new i2b2_scopedCallback();
-        scopedCallbackQRS.scope = i2b2.CRC.ctrlr.QueryStatus;
+        scopedCallbackQRS.scope = i2b2.CRC.ctrlr.QS;
         scopedCallbackQRS.callback = function (results) {
             if (results.error) {
                 alert(results.errorMsg);
@@ -318,8 +318,8 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     let rec = new Object();
                     let temp = qrs_list[i];
                     let qrs_id = i2b2.h.XPath(temp, 'descendant-or-self::result_instance_id')[0].firstChild.nodeValue;
-                    if (i2b2.CRC.ctrlr.QueryStatus.QRS.hasOwnProperty(qrs_id)) {
-                        rec = i2b2.CRC.ctrlr.QueryStatus.QRS[qrs_id];
+                    if (i2b2.CRC.ctrlr.QS.QRS.hasOwnProperty(qrs_id)) {
+                        rec = i2b2.CRC.ctrlr.QS.QRS[qrs_id];
                     } else {
                         rec.QRS_ID = qrs_id;
                         rec.size = i2b2.h.getXNodeVal(temp, 'set_size');
@@ -341,7 +341,7 @@ i2b2.CRC.ctrlr.QueryStatus = {
                     rec.QRS_Status_ID = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
                     // create execution time string
                     let d = new Date();
-                    let t = Math.floor((d.getTime() - i2b2.CRC.ctrlr.QueryStatus.startTime) / 100) / 10;
+                    let t = Math.floor((d.getTime() - i2b2.CRC.ctrlr.QS.startTime) / 100) / 10;
                     let exetime = t.toString();
                     if (exetime.indexOf('.') < 0) {
                         exetime += '.0';
@@ -353,57 +353,59 @@ i2b2.CRC.ctrlr.QueryStatus = {
 
                     // set the proper title if it was not already set
                     if (!rec.title) {
-                        rec.title = i2b2.CRC.ctrlr.QueryStatus._GetTitle(rec.QRS_Type, rec, temp);
+                        rec.title = i2b2.CRC.ctrlr.QS._GetTitle(rec.QRS_Type, rec, temp);
                     }
-                    i2b2.CRC.ctrlr.QueryStatus.QRS[qrs_id] = rec;
+                    i2b2.CRC.ctrlr.QS.QRS[qrs_id] = rec;
                 }
                 i2b2.CRC.ctrlr.history.Refresh();
             }
             // force a redraw
-            i2b2.CRC.ctrlr.QueryStatus.refreshStatus();
+            i2b2.CRC.ctrlr.QS.refreshStatus();
         };
 
-        i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryStatus", {qm_key_value: i2b2.CRC.ctrlr.QueryStatus.QM.id}, scopedCallbackQI);
+        i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryStatus", {qm_key_value: i2b2.CRC.ctrlr.QS.QM.id}, scopedCallbackQI);
     }
 };
-
-i2b2.CRC.ctrlr.QueryStatus.startStatus = function(queryName) {
-    i2b2.CRC.ctrlr.QueryStatus.QRS = {};
-    i2b2.CRC.ctrlr.QueryStatus.QI = {};
-    i2b2.CRC.ctrlr.QueryStatus.QM = {};
+// ================================================================================================== //
+i2b2.CRC.ctrlr.QS.startStatus = function(queryName) {
+    i2b2.CRC.ctrlr.QS.QRS = {};
+    i2b2.CRC.ctrlr.QS.QI = {};
+    i2b2.CRC.ctrlr.QS.QM = {};
 
     i2b2.CRC.view.QS.renderStart();
     i2b2.CRC.view.QS.render({breakdowns: {isProcessing: true, name: queryName}});
 };
+// ================================================================================================== //
 
-i2b2.CRC.ctrlr.QueryStatus.updateStatus = function(results) {
+i2b2.CRC.ctrlr.QS.updateStatus = function(results) {
     let queryMaster = results.refXML.getElementsByTagName('query_master')[0];
-    i2b2.CRC.ctrlr.QueryStatus.QM.id = i2b2.h.getXNodeVal(queryMaster, 'query_master_id');
-    i2b2.CRC.ctrlr.QueryStatus.QM.name = i2b2.h.XPath(queryMaster, 'descendant-or-self::name')[0].firstChild.nodeValue;
+    i2b2.CRC.ctrlr.QS.QM.id = i2b2.h.getXNodeVal(queryMaster, 'query_master_id');
+    i2b2.CRC.ctrlr.QS.QM.name = i2b2.h.XPath(queryMaster, 'descendant-or-self::name')[0].firstChild.nodeValue;
 
     // save the query instance
     let queryInstance = results.refXML.getElementsByTagName('query_instance')[0];
-    i2b2.CRC.ctrlr.QueryStatus.QI.id = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_instance_id')[0].firstChild.nodeValue;
-    i2b2.CRC.ctrlr.QueryStatus.QI.start_date = i2b2.h.XPath(queryInstance, 'descendant-or-self::start_date')[0].firstChild.nodeValue; //Query Report BG
+    i2b2.CRC.ctrlr.QS.QI.id = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_instance_id')[0].firstChild.nodeValue;
+    i2b2.CRC.ctrlr.QS.QI.start_date = i2b2.h.XPath(queryInstance, 'descendant-or-self::start_date')[0].firstChild.nodeValue; //Query Report BG
     let temp = i2b2.h.XPath(queryInstance, 'descendant-or-self::end_date')[0];
     if (undefined !== temp) {
-        i2b2.CRC.ctrlr.QueryStatus.QI.end_date = i2b2.h.XPath(temp, 'descendant-or-self::end_date')[0].firstChild.nodeValue; //Query Report BG
+        i2b2.CRC.ctrlr.QS.QI.end_date = i2b2.h.XPath(temp, 'descendant-or-self::end_date')[0].firstChild.nodeValue; //Query Report BG
     }
 
-    i2b2.CRC.ctrlr.QueryStatus.QI.status = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/name')[0];
-    if (undefined !== i2b2.CRC.ctrlr.QueryStatus.QI.status ) {
-        i2b2.CRC.ctrlr.QueryStatus.QI.status = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
+    i2b2.CRC.ctrlr.QS.QI.status = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/name')[0];
+    if (undefined !== i2b2.CRC.ctrlr.QS.QI.status ) {
+        i2b2.CRC.ctrlr.QS.QI.status = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
     }
 
-    i2b2.CRC.ctrlr.QueryStatus.QI.statusID = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/status_type_id')[0];
-    if (undefined !== i2b2.CRC.ctrlr.QueryStatus.QI.statusID) {
-        i2b2.CRC.ctrlr.QueryStatus.QI.statusID = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
+    i2b2.CRC.ctrlr.QS.QI.statusID = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/status_type_id')[0];
+    if (undefined !== i2b2.CRC.ctrlr.QS.QI.statusID) {
+        i2b2.CRC.ctrlr.QS.QI.statusID = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
     }
 
-    setTimeout("i2b2.CRC.ctrlr.QueryStatus.pollStatus()", i2b2.CRC.ctrlr.QueryStatus.polling_interval);
+    setTimeout("i2b2.CRC.ctrlr.QS.pollStatus()", i2b2.CRC.ctrlr.QS.polling_interval);
 };
+// ================================================================================================== //
 
-i2b2.CRC.ctrlr.QueryStatus._GetTitle = function(resultType, oRecord, oXML) {
+i2b2.CRC.ctrlr.QS._GetTitle = function(resultType, oRecord, oXML) {
     let title = "";
     switch (resultType) {
         case "PATIENT_ENCOUNTER_SET":

@@ -387,7 +387,7 @@ i2b2.sdx.Master.onDragStart = function(event, node) {
                 // i2b2 data
                 delete i2b2Data.origData.xmlOrig;
                 delete i2b2Data.origData.parent;
-                delete i2b2Data.renderData.idDOM;
+                if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
                 if (i2b2.sdxUnderlyingPackage !== undefined) {
                     delete i2b2Data.sdxUnderlyingPackage.origData.xmlOrig;
                     delete i2b2Data.sdxUnderlyingPackage.origData.parent;

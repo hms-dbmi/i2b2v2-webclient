@@ -104,10 +104,13 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                         if (eventHandlers[sdxType].DropChecker(e.target, e, this)) {
                             // this is REQUIRED for proper drop
                             ev.preventDefault();
+                            return false;
                         }
+                        return true; // this makes it an invalid drop target
                     } else {
                         // this is REQUIRED for proper drop
                         ev.preventDefault();
+                        return false;
                     }
                 }
             }
@@ -218,7 +221,6 @@ i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
 
         // start listening for DD events
         $(container).on("drop dragover dragenter dragleave", i2b2.sdx.Master.onDragDropEvents);
-
         return true;
     }
 };
@@ -381,11 +383,9 @@ i2b2.sdx.Master.onDragStart = function(event, node) {
                 i2b2Data = i2b2.sdx.TypeControllers[sdxType].dragStartHandler(i2b2Data);
             } else {
                 // i2b2 data
-                delete i2b2Data.origData.xmlOrig;
                 delete i2b2Data.origData.parent;
-                delete i2b2Data.renderData.idDOM;
-                if (i2b2.sdxUnderlyingPackage !== undefined) {
-                    delete i2b2Data.sdxUnderlyingPackage.origData.xmlOrig;
+                if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
+                if (i2b2.sdxUnderlyingPackage !== undefined && i2b2Data.sdxUnderlyingPackage.origData !== undefined) {
                     delete i2b2Data.sdxUnderlyingPackage.origData.parent;
                 }
             }

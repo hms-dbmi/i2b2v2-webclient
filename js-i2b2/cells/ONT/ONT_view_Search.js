@@ -161,7 +161,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                 let newDisplayText = liItem.addClass("active").text();
                 let filterValue = liItem.addClass("active").data("searchFilterValue");
                 let filterType = liItem.data("searchFilterType");
-                $("#searchFilterText").text(newDisplayText);
+                $("#searchFilterText").text(newDisplayText).prop('title', newDisplayText);
                 $("#searchFilter").data("selectedFilterValue", filterValue).data("selectedFilterType", filterType);
                 i2b2.ONT.view.search.handleSearchInputChange($('#i2b2FinderOnt #searchTerm input').val());
             });
