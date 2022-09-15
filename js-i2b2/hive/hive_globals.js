@@ -205,11 +205,9 @@ function i2b2_BaseCell(configObj) {
         for (var i1=0; i1<paramsInfo.length; i1++) {
             if (paramsInfo[i1].defaultValue !== undefined) {
                 i2b2[configObj.code].cfg.params[paramsInfo[i1].thinClientName] = paramsInfo[i1].defaultValue;
-                console.log("loading param " + paramsInfo[i1].thinClientName + "\tvalue=\t" +paramsInfo[i1].defaultValue);
             }
         }
     });
-
 
     // load the cell's configuration info into the base cell object being constructed
     this.loadState = 1;
