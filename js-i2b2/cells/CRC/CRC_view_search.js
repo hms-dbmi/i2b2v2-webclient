@@ -29,18 +29,18 @@ i2b2.CRC.view.search.enableSearch = function(newValue){
 //================================================================================================== //
 i2b2.CRC.view.search.toggleSearchClearIcon = function(newValue){
     if (newValue){
-        $("#querySearchTerm .clearIcon").removeClass("hidden");
+        $("#querySearchTerm .clearIcon").removeClass("invisible");
     } else {
-        $("#querySearchTerm .clearIcon").addClass("hidden");
+        $("#querySearchTerm .clearIcon").addClass("invisible");
     }
 };
 //================================================================================================== //
 i2b2.CRC.view.search.selectSearchType = function(elem) {
     $("#i2b2QueryHistoryFinder .active").removeClass("active");
     let liItem = $(elem);
-    let newDisplayText = liItem.addClass("active").text();
+    let newDisplayText = liItem.addClass("active").text().trim();
     let filterValue = liItem.addClass("active").find(".dropdown-item").data("searchFilterValue");
-    $("#querySearchFilterText").text(newDisplayText);
+    $("#querySearchFilterText").text(newDisplayText).prop("title", newDisplayText);
     $("#querySearchFilter").data("selectedFilterValue", filterValue);
     i2b2.CRC.view.search.handleSearchInputChange($('#i2b2QueryHistoryFinder #querySearchTerm input').val());
 };
