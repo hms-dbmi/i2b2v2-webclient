@@ -149,6 +149,7 @@ i2b2.events.afterCellInit.add((function(cell) {
         i2b2.PLUGIN.model.libs["AJAX"] = baseUrl + "i2b2-ajax.js";
         i2b2.PLUGIN.model.libs["SDX"] = baseUrl + "i2b2-sdx.js";
         i2b2.PLUGIN.model.libs["STATE"] = baseUrl + "i2b2-state.js";
+        i2b2.PLUGIN.model.libs["TUNNEL"] = baseUrl + "i2b2-auth-tunnel.js";
     }
 }));
 
