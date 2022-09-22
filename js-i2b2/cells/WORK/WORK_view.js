@@ -4,7 +4,6 @@ console.time('execute time');
 
 i2b2.WORK.view.main = new i2b2Base_cellViewController(i2b2.WORK, 'main');
 
-
 // ================================================================================================== //
 i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
     let funcAddWrkNode = function(renderInfo){
@@ -210,6 +209,33 @@ i2b2.WORK.view.main.refreshNode = function(target_node){
     parentNode.refTreeview.deleteNodes(parentChildren, true);
     parentNode.refTreeview.expandNode(parentNode.nodeId);
 }
+// ======================================================================================
+
+// ======================================================================================
+i2b2.WORK.view.main.displayContextDialog = function(prompt, currentValue, okCallBack, cancelCallback){
+    let contextDialogModal = $("#workContextDialog");
+    if (contextDialogModal.length === 0) {
+        $("body").append("<div id='workContextDialog'/>");
+        contextDialogModal = $("#workContextDialog");
+    }
+    contextDialogModal.empty();
+
+    i2b2.WORK.view.main.dialogCallbackWrapper = function() {
+        let newValue = $("#WKContextMenuInput").val();
+        okCallBack(newValue);
+        $("#WKContextMenuDialog").modal('hide');
+    }
+
+    let data = {
+        "title": "Edit Work Item Annotation",
+        "inputLabel": "Change this work item's annotation to:",
+        "currentValue": currentValue,
+        "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper()",
+    };
+    $(i2b2.WORK.view.main.templates.contextDialog(data)).appendTo(contextDialogModal);
+    $("#WKContextMenuDialog").modal('show');
+
+}
 // =========================================================
 i2b2.events.afterCellInit.add((function(cell){
     if (cell.cellCode === "WORK") {
@@ -355,6 +381,13 @@ i2b2.events.afterCellInit.add((function(cell){
                     }
                 });
 
+                i2b2.WORK.view.main.templates = {};
+                $.ajax("js-i2b2/cells/WORK/templates/ContextMenuDialog.html", {
+                    success: (template) => {
+                        cell.view.main.templates.contextDialog = Handlebars.compile(template);
+                    },
+                    error: (error) => { console.error("Could not retrieve template: ContextMenuDialog.html"); }
+                });
             }).bind(this)
         );
     }

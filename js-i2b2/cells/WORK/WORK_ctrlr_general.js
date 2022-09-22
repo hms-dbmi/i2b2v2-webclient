@@ -213,9 +213,16 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
             origAnno = '';
         }
     }
-    let newAnno = prompt('Change this work item\'s annotation to:', origAnno);
-    if (!newAnno || newAnno === origAnno) { return false; }
 
+    let okCallback =function(newValue){
+        i2b2.WORK.ctrlr.main.handleChangeAnnotation(target_node, newValue);
+    };
+    i2b2.WORK.view.main.displayContextDialog("Change this work item\'s annotation to:'", origAnno,
+        okCallback);
+};
+// ======================================================================================
+i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {
+    console.log("running handle change annotation");
     // create callback display routine
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = target_node;
@@ -232,8 +239,7 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
         result_wait_time: 180
     };
     i2b2.WORK.ajax.annotateChild("WORK:Workplace", varInput, scopedCallback);
-};
-
+}
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.HandleDrop = function(sdxDropped) {
