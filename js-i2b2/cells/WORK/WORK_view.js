@@ -203,7 +203,13 @@ i2b2.WORK.view.main.treeRedraw = function() {
     i2b2.WORK.view.main.lm_view._contentElement.find('li:not(:has(span.tv-depth-1))').attr("draggable", true);
 };
 
-
+// ======================================================================================
+i2b2.WORK.view.main.refreshNode = function(target_node){
+    let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+    let parentChildren = parentNode.nodes.map(function(node) { return node.nodeId; });
+    parentNode.refTreeview.deleteNodes(parentChildren, true);
+    parentNode.refTreeview.expandNode(parentNode.nodeId);
+}
 // =========================================================
 i2b2.events.afterCellInit.add((function(cell){
     if (cell.cellCode === "WORK") {

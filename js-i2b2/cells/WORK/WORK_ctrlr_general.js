@@ -191,14 +191,6 @@ i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
     i2b2.WORK.ajax.deleteChild("WORK:Workplace", varInput, scopedCallback);
 };
 // ======================================================================================
-i2b2.WORK.ctrlr.main.refreshNode = function(target_node){
-    let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
-    let parentChildren = parentNode.nodes.map(function(node) { return node.nodeId; });
-    parentNode.refTreeview.deleteNodes(parentChildren, true);
-    parentNode.refTreeview.expandNode(parentNode.nodeId);
-}
-
-// ======================================================================================
 i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
     // TODO: This needs to be done
     let nd = target_node.i2b2;
@@ -231,10 +223,7 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
         if (results.error) {
             alert("An error occurred while trying to annotate the selected item!");
         } else {
-            // GUI refresh is not needed
-            //this.data.i2b2_SDX.origData.annotation = newAnno;
-            //i2b2.WORK.view.main.refreshNode();
-            i2b2.WORK.ctrlr.main.refreshNode(target_node);
+            i2b2.WORK.view.main.refreshNode(target_node);
         }
     };
     let varInput = {
