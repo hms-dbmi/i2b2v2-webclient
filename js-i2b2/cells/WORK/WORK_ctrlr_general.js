@@ -190,8 +190,6 @@ i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
     };
     i2b2.WORK.ajax.deleteChild("WORK:Workplace", varInput, scopedCallback);
 };
-
-
 // ======================================================================================
 i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
     // TODO: This needs to be done
@@ -215,9 +213,22 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
             origAnno = '';
         }
     }
-    let newAnno = prompt('Change this work item\'s annotation to:', origAnno);
-    if (!newAnno || newAnno === origAnno) { return false; }
 
+    let okCallback = function(newValue){
+        i2b2.WORK.ctrlr.main.handleChangeAnnotation(target_node, newValue);
+    };
+    let data = {
+        "title": "Edit Work Item Annotation",
+        "prompt": "Change this work item\'s annotation to:",
+        "placeHolder": origAnno,
+        "onOk": okCallback,
+    };
+
+    i2b2.WORK.view.main.displayContextDialog(data);
+};
+// ======================================================================================
+i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {
+    console.log("running handle change annotation");
     // create callback display routine
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = target_node;
@@ -225,19 +236,16 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
         if (results.error) {
             alert("An error occurred while trying to annotate the selected item!");
         } else {
-            // GUI refresh is not needed
-            //this.data.i2b2_SDX.origData.annotation = newAnno;
-            i2b2.WORK.view.main.refreshTree();
+            i2b2.WORK.view.main.refreshNode(target_node);
         }
     };
     let varInput = {
         annotation_text: newAnno,
-        annotation_target_id: dn.sdxInfo.sdxKeyValue,
+        annotation_target_id: target_node.key,
         result_wait_time: 180
     };
     i2b2.WORK.ajax.annotateChild("WORK:Workplace", varInput, scopedCallback);
-};
-
+}
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.HandleDrop = function(sdxDropped) {

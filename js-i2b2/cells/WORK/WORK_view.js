@@ -4,7 +4,6 @@ console.time('execute time');
 
 i2b2.WORK.view.main = new i2b2Base_cellViewController(i2b2.WORK, 'main');
 
-
 // ================================================================================================== //
 i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
     let funcAddWrkNode = function(renderInfo){
@@ -203,7 +202,40 @@ i2b2.WORK.view.main.treeRedraw = function() {
     i2b2.WORK.view.main.lm_view._contentElement.find('li:not(:has(span.tv-depth-1))').attr("draggable", true);
 };
 
+// ======================================================================================
+i2b2.WORK.view.main.refreshNode = function(target_node){
+    let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+    let parentChildren = parentNode.nodes.map(function(node) { return node.nodeId; });
+    parentNode.refTreeview.deleteNodes(parentChildren, true);
+    parentNode.refTreeview.expandNode(parentNode.nodeId);
+}
+// ======================================================================================
 
+// ======================================================================================
+i2b2.WORK.view.main.displayContextDialog = function(inputData){
+    let contextDialogModal = $("#workContextDialog");
+    if (contextDialogModal.length === 0) {
+        $("body").append("<div id='workContextDialog'/>");
+        contextDialogModal = $("#workContextDialog");
+    }
+    contextDialogModal.empty();
+
+    i2b2.WORK.view.main.dialogCallbackWrapper = function() {
+        let newValue = $("#WKContextMenuInput").val();
+        inputData.onOk(newValue);
+        $("#WKContextMenuDialog").modal('hide');
+    }
+
+    let data = {
+        "title": inputData.title,
+        "inputLabel": inputData.prompt,
+        "placeHolder": inputData.placeHolder,
+        "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper()",
+    };
+    $(i2b2.WORK.view.main.templates.contextDialog(data)).appendTo(contextDialogModal);
+    $("#WKContextMenuDialog").modal('show');
+
+}
 // =========================================================
 i2b2.events.afterCellInit.add((function(cell){
     if (cell.cellCode === "WORK") {
@@ -349,6 +381,13 @@ i2b2.events.afterCellInit.add((function(cell){
                     }
                 });
 
+                i2b2.WORK.view.main.templates = {};
+                $.ajax("js-i2b2/cells/WORK/templates/ContextMenuDialog.html", {
+                    success: (template) => {
+                        cell.view.main.templates.contextDialog = Handlebars.compile(template);
+                    },
+                    error: (error) => { console.error("Could not retrieve template: ContextMenuDialog.html"); }
+                });
             }).bind(this)
         );
     }
