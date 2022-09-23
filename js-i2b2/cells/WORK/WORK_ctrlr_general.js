@@ -108,39 +108,20 @@ i2b2.WORK.ctrlr.main.Rename = function(target_node) {
         console.error("The target node does not have SDX data attached.");
         return false;
     }
-    let origName = nd.origData.name;
-    let newName = prompt('Rename this work item to:', origName);
-    if (!newName || newName === origName) return false;
 
-    // set loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
+  let origName = nd.origData.name;
 
-    // create callback display routine
-    let scopedCallback = new i2b2_scopedCallback();
-    scopedCallback.scope = target_node;
-    scopedCallback.callback = function(results) {
-        // reset loading icon in the stack buttons list
-        $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
-
-        let cl_parent_node = target_node.parentNode; // TODO: is this valid?
-        if (results.error) {
-            alert("An error occurred while trying to rename the selected item!");
-        } else {
-            // whack the "already loaded" status out of the parent node and initiate a
-            // dynamic reloading of the childs nodes (including our newest addition)
-            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
-            temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
-            i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
-            i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
-        }
+    let okCallback = function(newValue){
+        i2b2.WORK.ctrlr.main.handleRename(target_node, newValue);
     };
-    let pn = target_node.i2b2;
-    let varInput = {
-        rename_text: newName,
-        rename_target_id: pn.sdxInfo.sdxKeyValue,
-        result_wait_time: 180
+    let data = {
+        "title": "Rename Work Item",
+        "prompt": "Rename this work item to:",
+        "placeHolder": origName,
+        "onOk": okCallback,
     };
-    i2b2.WORK.ajax.renameChild("WORK:Workplace", varInput, scopedCallback);
+
+    i2b2.WORK.view.main.displayContextDialog(data);
 };
 
 
@@ -245,6 +226,38 @@ i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {
         result_wait_time: 180
     };
     i2b2.WORK.ajax.annotateChild("WORK:Workplace", varInput, scopedCallback);
+}
+// ======================================================================================
+i2b2.WORK.ctrlr.main.handleRename = function (target_node, newName) {
+    // set loading icon in the stack buttons list
+    $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
+
+    // create callback display routine
+    let scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.scope = target_node;
+    scopedCallback.callback = function(results) {
+        // reset loading icon in the stack buttons list
+        $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
+
+        let cl_parent_node = target_node.parentNode; // TODO: is this valid?
+        if (results.error) {
+            alert("An error occurred while trying to rename the selected item!");
+        } else {
+            // whack the "already loaded" status out of the parent node and initiate a
+            // dynamic reloading of the childs nodes (including our newest addition)
+            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+            temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
+            i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
+            i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
+        }
+    };
+    let pn = target_node.i2b2;
+    let varInput = {
+        rename_text: newName,
+        rename_target_id: pn.sdxInfo.sdxKeyValue,
+        result_wait_time: 180
+    };
+    i2b2.WORK.ajax.renameChild("WORK:Workplace", varInput, scopedCallback);
 }
 
 // ======================================================================================
