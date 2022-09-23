@@ -109,7 +109,7 @@ i2b2.WORK.ctrlr.main.Rename = function(target_node) {
         return false;
     }
 
-  let origName = nd.origData.name;
+    let origName = nd.origData.name;
 
     let okCallback = function(newValue){
         i2b2.WORK.ctrlr.main.handleRename(target_node, newValue);
@@ -131,45 +131,28 @@ i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
     let nd = target_node.i2b2;
     if (!options) { options = {}; }
     if (!options.silent) {
+
         let nodeTitle = target_node.text;
         nodeTitle = String(nodeTitle).trim();
-        let go;
+        let confirmMsg;
         if (nd.origData.encapType === "FOLDER") {
-            go = confirm('Are you sure you want to delete the folder "'+nodeTitle+'" and all of it\'s contents?');
+            confirmMsg = 'Are you sure you want to delete the folder "'+nodeTitle+'" and all of it\'s contents?';
         } else {
-            go = confirm('Are you sure you want to delete "'+nodeTitle+'"?');
+            confirmMsg = 'Are you sure you want to delete "'+nodeTitle+'"?';
         }
-        if (!go) return false;
+        let okCallback = function(){
+            i2b2.WORK.ctrlr.main.handleDelete(target_node, options, nd);
+        };
+        let data = {
+            "title": "Delete work item",
+            "confirmMsg": confirmMsg,
+            "onOk": okCallback,
+        };
+        i2b2.WORK.view.main.displayContextDialog(data);
     }
-
-    // set loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
-
-    let scopedCallback;
-    if (options.callback) {
-        scopedCallback = options.callback;
-    } else {
-        // create callback GUI update routine
-        scopedCallback = new i2b2_scopedCallback();
-        scopedCallback.scope = target_node;
-        scopedCallback.callback = function(results) {
-            // unsetset loading icon in the stack buttons list
-            $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
-
-            if (results.error) {
-                alert("An error occurred while trying to delete the selected item!");
-            } else {
-                // Delete targeted node from the treeview and refresh it
-                i2b2.WORK.view.main.treeview.treeview('deleteNodes', [target_node.nodeId, false]);
-                i2b2.WORK.view.main.treeview.treeview('redraw', []);
-            }
-        }
+    else {
+        i2b2.WORK.ctrlr.main.handleDelete(target_node, options, nd);
     }
-    let varInput = {
-        delete_target_id: nd.sdxInfo.sdxKeyValue,
-        result_wait_time: 180
-    };
-    i2b2.WORK.ajax.deleteChild("WORK:Workplace", varInput, scopedCallback);
 };
 // ======================================================================================
 i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
@@ -258,6 +241,37 @@ i2b2.WORK.ctrlr.main.handleRename = function (target_node, newName) {
         result_wait_time: 180
     };
     i2b2.WORK.ajax.renameChild("WORK:Workplace", varInput, scopedCallback);
+}
+// ======================================================================================
+i2b2.WORK.ctrlr.main.handleDelete = function (target_node, options, nd) {
+    // set loading icon in the stack buttons list
+    $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
+
+    let scopedCallback;
+    if (options.callback) {
+        scopedCallback = options.callback;
+    } else {
+        // create callback GUI update routine
+        scopedCallback = new i2b2_scopedCallback();
+        scopedCallback.scope = target_node;
+        scopedCallback.callback = function(results) {
+            // unsetset loading icon in the stack buttons list
+            $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
+
+            if (results.error) {
+                alert("An error occurred while trying to delete the selected item!");
+            } else {
+                // Delete targeted node from the treeview and refresh it
+                i2b2.WORK.view.main.treeview.treeview('deleteNodes', [target_node.nodeId, false]);
+                i2b2.WORK.view.main.treeview.treeview('redraw', []);
+            }
+        }
+    }
+    let varInput = {
+        delete_target_id: nd.sdxInfo.sdxKeyValue,
+        result_wait_time: 180
+    };
+    i2b2.WORK.ajax.deleteChild("WORK:Workplace", varInput, scopedCallback);
 }
 
 // ======================================================================================

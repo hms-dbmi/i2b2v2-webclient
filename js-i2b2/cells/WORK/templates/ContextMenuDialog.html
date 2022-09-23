@@ -10,13 +10,19 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-                <form style="margin: 0px 40px">
+                <form class="modal-form">
                     <div class="form-group row">
                         <div >
-                            <div>
-                                <span id="WK-ann-label">{{inputLabel}} </span>
-                            </div>
-                            <input type="text" id="WKContextMenuInput" class="form-control" placeholder="{{placeHolder}}" aria-label="Work item annotation input" aria-describedby="WK-ann-label">
+                            {{#if confirmMsg}}
+                                <div>
+                                    <span id="WK-confirm-msg" class="WK-prompt">{{confirmMsg}}</span>
+                                </div>
+                            {{else}}
+                                <div>
+                                    <span id="WK-ann-label" class="WK-prompt">{{inputLabel}} </span>
+                                </div>
+                                <input type="text" id="WKContextMenuInput" class="form-control" placeholder="{{placeHolder}}" aria-label="Work item annotation input" aria-describedby="WK-ann-label">
+                            {{/if}}
                         </div>
                     </div>
                 </form>
