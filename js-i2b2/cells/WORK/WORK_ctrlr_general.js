@@ -214,11 +214,17 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
         }
     }
 
-    let okCallback =function(newValue){
+    let okCallback = function(newValue){
         i2b2.WORK.ctrlr.main.handleChangeAnnotation(target_node, newValue);
     };
-    i2b2.WORK.view.main.displayContextDialog("Change this work item\'s annotation to:'", origAnno,
-        okCallback);
+    let data = {
+        "title": "Edit Work Item Annotation",
+        "prompt": "Change this work item\'s annotation to:",
+        "placeHolder": origAnno,
+        "onOk": okCallback,
+    };
+
+    i2b2.WORK.view.main.displayContextDialog(data);
 };
 // ======================================================================================
 i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {

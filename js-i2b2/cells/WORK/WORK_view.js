@@ -212,7 +212,7 @@ i2b2.WORK.view.main.refreshNode = function(target_node){
 // ======================================================================================
 
 // ======================================================================================
-i2b2.WORK.view.main.displayContextDialog = function(prompt, currentValue, okCallBack, cancelCallback){
+i2b2.WORK.view.main.displayContextDialog = function(inputData){
     let contextDialogModal = $("#workContextDialog");
     if (contextDialogModal.length === 0) {
         $("body").append("<div id='workContextDialog'/>");
@@ -222,14 +222,14 @@ i2b2.WORK.view.main.displayContextDialog = function(prompt, currentValue, okCall
 
     i2b2.WORK.view.main.dialogCallbackWrapper = function() {
         let newValue = $("#WKContextMenuInput").val();
-        okCallBack(newValue);
+        inputData.onOk(newValue);
         $("#WKContextMenuDialog").modal('hide');
     }
 
     let data = {
-        "title": "Edit Work Item Annotation",
-        "inputLabel": "Change this work item's annotation to:",
-        "currentValue": currentValue,
+        "title": inputData.title,
+        "inputLabel": inputData.prompt,
+        "placeHolder": inputData.placeHolder,
         "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper()",
     };
     $(i2b2.WORK.view.main.templates.contextDialog(data)).appendTo(contextDialogModal);
