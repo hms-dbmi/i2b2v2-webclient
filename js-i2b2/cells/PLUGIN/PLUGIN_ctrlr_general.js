@@ -14,7 +14,8 @@ i2b2.PLUGIN.ctrlr._handleInitMsg = function(msgEvent, windowInstance) {
         "libs": i2b2.PLUGIN.model.libs,
         "sdx": i2b2.PLUGIN.model.config.sdx,
         "ajax": i2b2.PLUGIN.model.config.ajax,
-        "state": windowInstance.state
+        "state": windowInstance.state,
+        "tunnel": windowInstance.data.authorizedTunnel // TODO: Filter this list based on a deployment-level security config
     }, '/');
 };
 
@@ -116,9 +117,95 @@ i2b2.PLUGIN.ctrlr._handleRawAjaxMsg = function(msgEvent, instanceRef) {
 };
 
 
-// ====[ msg handling for the plugin's State messages ]==================================================================
+// ====[ msg handling for the plugin's State messages ]=================================================================
 i2b2.PLUGIN.ctrlr._handleStateMsg = function(msgEvent, instanceRef) {
     instanceRef.state = msgEvent.data.stateData;
+};
+
+
+
+// ====[ msg handling for the plugin's AuthorizedTunnel variable messages ]=============================================
+i2b2.PLUGIN.ctrlr._handleTunnelVarMsg = function(msgEvent, instanceRef) {
+    // define error handling function
+    const funcSendError = function(msgEvent, errorMsg, errorData) {
+        let msg = {"msgType":"TUNNEL_VAR_ERROR", "msgId":msgEvent.data.msgId, "error": true, "errorMsg": errorMsg};
+        if (errorData !== undefined) msg.errorData = errorData;
+        msgEvent.source.postMessage(msg, '/');
+    };
+
+    // remove invalid path characters []'",
+    let temp = msgEvent.data.variablePath;
+    temp = ["[","]", "'", '"', ','].reduce((acc, val)=> { return acc.replaceAll(val, ''); }, temp);
+    msgEvent.data.variablePath = temp;
+
+    // see if the variable path has definition with valid security bits
+    let securityBits = false;
+    if (instanceRef.data.authorizedTunnel &&
+        instanceRef.data.authorizedTunnel.variables &&
+        Object.keys(instanceRef.data.authorizedTunnel.variables).includes(msgEvent.data.variablePath)) {
+        securityBits = String(instanceRef.data.authorizedTunnel.variables[msgEvent.data.variablePath]).toUpperCase();
+    } else {
+        funcSendError(msgEvent,"Variable path is not defined/allowed", "REF_ERROR");
+        return;
+    }
+
+
+    try {
+        let pathArray = msgEvent.data.variablePath.split(".");
+        let lastPoint = window;
+        while (pathArray.length) {
+            lastPoint = lastPoint[pathArray.shift()];
+            if (!["object","string","number","boolean"].includes(typeof lastPoint)) {
+                funcSendError(msgEvent,"Variable path is non-navigatable",  "REF_ERROR");
+                return;
+            }
+        }
+
+        // we have the correct variable, confirm that we can return its value,
+        let retValue;
+        switch(typeof lastPoint) {
+            case "string":
+            case "number":
+            case "boolean":
+                retValue = lastPoint;
+                break;
+            case "object":
+                // confirm object read permission
+                if (!securityBits.includes("O")) {
+                    funcSendError(msgEvent,"Variable path object is not allowed!", "TYPE_ERROR");
+                    return;
+                } else {
+                    // safely strip all functions and other references that cannot be passed by windowMessage
+                    retValue = JSON.parse(JSON.stringify(lastPoint));
+                }
+                break;
+        }
+
+        // do we read or write?
+        if (msgEvent.data.variableAction === "READ") {
+            // READ REQUEST! Confirm permission
+            if (!securityBits.includes("R")) {
+                funcSendError(msgEvent, "Attempting to read variable without permission!", "REF_ERROR");
+                return;
+            } else {
+                let msg = {"msgType":"TUNNEL_VAR_VALUE", "msgId":msgEvent.data.msgId, "error": false, "variableValue": retValue};
+                msgEvent.source.postMessage(msg, '/');
+            }
+        } else {
+            // WRITE REQUEST! Confirm permission
+            if (!securityBits.includes("W")) {
+                funcSendError(msgEvent, "Attempting to write variable without permission!", "REF_ERROR");
+                return;
+            } else {
+                lastPoint = msgEvent.data.variableNewValue;
+                let msg = {"msgType":"TUNNEL_VAR_VALUE", "msgId":msgEvent.data.msgId, "error": false, "variableValue": msgEvent.data.variableNewValue};
+                msgEvent.source.postMessage(msg, '/');
+            }
+        }
+    } catch(e) {
+        funcSendError(msgEvent,"Variable path traversal error!");
+        return;
+    }
 };
 
 
@@ -209,6 +296,10 @@ i2b2.events.afterAllCellsLoaded.add((function() {
                     break;
                 case "STATE":
                     i2b2.PLUGIN.ctrlr._handleStateMsg(event, foundInstance);
+                    break;
+                case "TUNNEL_VAR":
+                    i2b2.PLUGIN.ctrlr._handleTunnelVarMsg(event, foundInstance);
+                    break;
             }
         }
     });
