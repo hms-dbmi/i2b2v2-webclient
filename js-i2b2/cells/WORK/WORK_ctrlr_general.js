@@ -112,7 +112,9 @@ i2b2.WORK.ctrlr.main.Rename = function(target_node) {
     let origName = nd.origData.name;
 
     let okCallback = function(newValue){
-        i2b2.WORK.ctrlr.main.handleRename(target_node, newValue);
+        if(newValue && newValue.length > 0) {
+            i2b2.WORK.ctrlr.main.handleRename(target_node, newValue);
+        }
     };
     let data = {
         "title": "Rename Work Item",
