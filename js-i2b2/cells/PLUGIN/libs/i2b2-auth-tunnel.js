@@ -99,15 +99,16 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
     // run a function call
     i2b2.authorizedTunnel.function = new Proxy({}, {
         get: function (target, prop, reciever) {
-            if (!i2b2.authorizedTunnel.authorizedList.functions.contains(prop)) {
+            if (!i2b2.authorizedTunnel.authorizedList.functions.includes(prop)) {
                 // failed preauthorized for read permission
-                throw new ReferenceError("AuthorizedTunnel cannot find or access the main UI variable: " + prop);
+                throw new ReferenceError("AuthorizedTunnel cannot find or access the main UI function: " + prop + "()");
             }
             // return an anonymous function that puts its passed params in an array and passes it on
             return (function () {
-                let passedArgs = Array.slice(arguments);
+                let passedArgs = [];
+                for (let i=0; i<arguments.length; i++) passedArgs.push(arguments[i]);
                 return new Promise((resolve, reject) => {
-                    cl_func_tunnelExecuteFunction(passedArgs).then((resultMsg)=>{
+                    cl_func_tunnelExecuteFunction(prop, passedArgs).then((resultMsg)=>{
                         resolve(resultMsg.functionResults);
                     }).catch((resultMsg) => {
                         // TODO: Meaningful error message generated here

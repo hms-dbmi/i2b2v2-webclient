@@ -124,6 +124,75 @@ i2b2.PLUGIN.ctrlr._handleStateMsg = function(msgEvent, instanceRef) {
 
 
 
+// ====[ msg handling for the plugin's AuthorizedTunnel function execution messages ]===================================
+i2b2.PLUGIN.ctrlr._handleTunnelFuncExec = function(msgEvent, instanceRef) {
+    // define error handling function
+    const funcSendError = function(msgEvent, errorMsg, errorData) {
+        let msg = {"msgType":"TUNNEL_FUNC_ERROR", "msgId":msgEvent.data.msgId, "error": true, "errorMsg": errorMsg};
+        if (errorData !== undefined) msg.errorData = errorData;
+        msgEvent.source.postMessage(msg, '/');
+    };
+
+    // remove invalid path characters []()'",
+    let temp = msgEvent.data.functionPath;
+    temp = ["[","]","(",")", "'", '"', ','].reduce((acc, val)=> { return acc.replaceAll(val, ''); }, temp);
+    msgEvent.data.functionPath = temp;
+
+    // Check the function in the authorization list
+    if (!instanceRef.data.authorizedTunnel ||
+        !instanceRef.data.authorizedTunnel.functions ||
+        !instanceRef.data.authorizedTunnel.functions.includes(msgEvent.data.functionPath)) {
+        funcSendError(msgEvent, "No authorization to run the requested function", "REF_ERROR");
+        return;
+    }
+
+    try {
+        // Check to see if the path is navigatible and ends in a function
+        let pathArray = msgEvent.data.functionPath.split(".");
+        let lastPoint = window;
+        while (pathArray.length) {
+            lastPoint = lastPoint[pathArray.shift()];
+            if (!["object", "function"].includes(typeof lastPoint)) {
+                funcSendError(msgEvent, "Function path is non-navigatable", "REF_ERROR");
+                return;
+            }
+        }
+
+        // call the function and get the results, send them via window msg (for now)
+        if (typeof lastPoint !== 'function') {
+            funcSendError(msgEvent, "Function path is non-navigatable", "REF_ERROR");
+            return;
+        }
+        let origResults = lastPoint(...msgEvent.data.functionArguments);
+
+        // see if function returns a Promise, wait for promise to resolve or reject and send proper window msg based on that
+        let msg = {"msgType":"TUNNEL_FUNC_RESULT", "msgId":msgEvent.data.msgId, "error": false};
+        let func_sendResults = function(result) {
+            if (typeof result === 'object') result = JSON.parse(JSON.stringify(result));
+            msg.functionResults = result;
+            msgEvent.source.postMessage(msg, '/');
+        }
+        if (typeof origResults === 'object' && typeof origResults.then === 'function') {
+            // we have a promise wait for resolution to sent back data (or error)
+            origResults.then((result)=>{
+                func_sendResults(result);
+            }).catch(()=>{
+                funcSendError(msgEvent, msgEvent.data.functionPath+"() returned a Promise that rejected!");
+            });
+        } else {
+            func_sendResults(origResults);
+        }
+
+
+    } catch(e) {
+        funcSendError(msgEvent,"Variable path traversal error!");
+        return;
+    }
+
+}
+
+
+
 // ====[ msg handling for the plugin's AuthorizedTunnel variable messages ]=============================================
 i2b2.PLUGIN.ctrlr._handleTunnelVarMsg = function(msgEvent, instanceRef) {
     // define error handling function
@@ -299,6 +368,9 @@ i2b2.events.afterAllCellsLoaded.add((function() {
                     break;
                 case "TUNNEL_VAR":
                     i2b2.PLUGIN.ctrlr._handleTunnelVarMsg(event, foundInstance);
+                    break;
+                case "TUNNEL_FUNC":
+                    i2b2.PLUGIN.ctrlr._handleTunnelFuncExec(event, foundInstance);
                     break;
             }
         }
