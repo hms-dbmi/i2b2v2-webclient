@@ -33,7 +33,6 @@ window.addEventListener("I2B2_INIT_AJAX", function(evt) {
     // USING CLOSURE FUNCTION FOR RECEIVING MSGS
     // ----------------------------------------------------------------------
     const cl_func_receiveMsg = function(eventData) {
-        console.dir(eventData);
         // check to see if the message is in the DB
         const msgId = eventData.msgId;
         if (msgId === undefined || cl_messageDB[eventData.msgId] === undefined) return false;
@@ -64,7 +63,6 @@ window.addEventListener("I2B2_INIT_AJAX", function(evt) {
                 ajaxURL: url,
                 ajaxMsg: rawMsg
             };
-            console.dir(msg);
             window.parent.postMessage(msg, "/");
         });
     };
