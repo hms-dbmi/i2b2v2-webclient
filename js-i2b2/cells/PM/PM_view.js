@@ -10,22 +10,6 @@
 console.group('Load & Execute component file: cells > PM > view');
 console.time('execute time');
 
-var myDataTable = {};
-var mySubDataTable = {};
-var callerid = "";
-var parentid = "";
-
-
-i2b2.PM.ShowParameter = function(origin, index) {
-    // TODO: Reimplement
-    alert("REIMPLEMENT ME!");
-};
-
-i2b2.PM.ShowRole = function(index) {
-    // TODO: Reimplement
-    alert("REIMPLEMENT ME!");
-};
-
 i2b2.PM.setUserAccountInfo = function(){
     let userInfo = $("#userInfo");
     userInfo.find(".user").text(i2b2.PM.model.login_username);

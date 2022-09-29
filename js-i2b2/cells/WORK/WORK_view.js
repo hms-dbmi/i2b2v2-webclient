@@ -237,10 +237,11 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
         "placeHolder": inputData.placeHolder,
         "confirmMsg": inputData.confirmMsg,
         "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper()",
+        "inputValue" : inputData.inputValue,
+        "onCancel": inputData.onCancel
     };
     $(i2b2.WORK.view.main.templates.contextDialog(data)).appendTo(contextDialogModal);
     $("#WKContextMenuDialog").modal('show');
-
 }
 // =========================================================
 i2b2.events.afterCellInit.add((function(cell){

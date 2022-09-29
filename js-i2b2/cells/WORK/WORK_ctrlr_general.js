@@ -62,42 +62,18 @@ i2b2.WORK.ctrlr.main.moveFolder = function(target_nodeTV, new_parent_nodeTV) {
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.NewFolder = function(parent_node) {
-    let fldrName = prompt("What name should be used for the new folder?", "New Folder");
-    if (!fldrName)  return false;
-
-    // create callback display routine
-    let scopedCallback = new i2b2_scopedCallback();
-    scopedCallback.scope = parent_node;
-    scopedCallback.callback = function(results) {
-        let cl_new_key = newChildKey;
-        let cl_parent_node = parent_node;
-        if (results.error) {
-            alert("An error occurred while trying to create a new work item!");
-        } else {
-            // TODO: THIS IS NOT DONE YET!
-            // whack the "already loaded" status out of the parent node and initiate a
-            // dynamic reloading of the childs nodes (including our newest addition)
-            // You may need to delete the child nodes first
-            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
-            temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
-            i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
-            i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
-        }
+    let okCallback =function(newValue){
+        i2b2.WORK.ctrlr.main.handleNewFolder(parent_node, newValue);
     };
 
-    let newChildKey = i2b2.h.GenerateAlphaNumId(20);
-    let pn = parent_node.i2b2;
-    let varInput = {
-            child_name: fldrName,
-            share_id: pn.origData.share_id,
-            child_index: newChildKey,
-            parent_key_value: pn.sdxInfo.sdxKeyValue,
-            child_visual_attributes: "FA",
-            child_annotation: "FOLDER:"+fldrName,
-            child_work_type: "FOLDER",
-            result_wait_time: 180
+    let data = {
+        "title": "Create New Folder",
+        "prompt": "What name should be used for the new folder?",
+        "inputValue": "New Folder",
+        "onOk": okCallback
     };
-    i2b2.WORK.ajax.addChild("WORK:Workplace", varInput, scopedCallback);
+
+    i2b2.WORK.view.main.displayContextDialog(data);
 };
 
 
@@ -211,6 +187,44 @@ i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {
         result_wait_time: 180
     };
     i2b2.WORK.ajax.annotateChild("WORK:Workplace", varInput, scopedCallback);
+}
+i2b2.WORK.ctrlr.main.handleNewFolder = function (parent_node, fldrName) {
+    //let fldrName = prompt("What name should be used for the new folder?", "New Folder");
+    //if (!fldrName)  return false;
+
+    // create callback display routine
+    let scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.scope = parent_node;
+    scopedCallback.callback = function(results) {
+        let cl_new_key = newChildKey;
+        let cl_parent_node = parent_node;
+        if (results.error) {
+            alert("An error occurred while trying to create a new work item!");
+        } else {
+            // TODO: THIS IS NOT DONE YET!
+            // whack the "already loaded" status out of the parent node and initiate a
+            // dynamic reloading of the childs nodes (including our newest addition)
+            // You may need to delete the child nodes first
+            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+            temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
+            i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
+            i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
+        }
+    };
+
+    let newChildKey = i2b2.h.GenerateAlphaNumId(20);
+    let pn = parent_node.i2b2;
+    let varInput = {
+        child_name: fldrName,
+        share_id: pn.origData.share_id,
+        child_index: newChildKey,
+        parent_key_value: pn.sdxInfo.sdxKeyValue,
+        child_visual_attributes: "FA",
+        child_annotation: "FOLDER:"+fldrName,
+        child_work_type: "FOLDER",
+        result_wait_time: 180
+    };
+    i2b2.WORK.ajax.addChild("WORK:Workplace", varInput, scopedCallback);
 }
 // ======================================================================================
 i2b2.WORK.ctrlr.main.handleRename = function (target_node, newName) {

@@ -227,7 +227,7 @@ i2b2.events.afterCellInit.add((function(cell){
                 // handle listing of legacy plugins
                 if(i2b2.hive.cfg.LoadedCells["LEGACYPLUGIN"]){
                     let iframe = $("<iframe id='pluginframe' onload='i2b2.PLUGIN.view.list.onPluginFrameLoad();' src='' class='pluginCell'></iframe>");
-                    iframe.attr("src", "/js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
+                    iframe.attr("src", "js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
 
                     let frameDiv = $("<div class='cellWhite pluginCellMain' style='display: none'></div>");
                     frameDiv.append(iframe);
