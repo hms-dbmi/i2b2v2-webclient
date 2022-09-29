@@ -6,13 +6,20 @@
 window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
 
     i2b2.authorizedTunnel = {};
-
+    i2b2.authorizedTunnel.MSG_TYPES = {
+        VAR_REQ: "TUNNEL_VAR",
+        VAR_RESULT: "TUNNEL_VAR_VALUE",
+        VAR_ERROR: "TUNNEL_VAR_ERROR",
+        FUNC_REQ:  "TUNNEL_FUNC",
+        FUNC_RESULT: "TUNNEL_FUNC_RESULT",
+        FUNC_ERROR: "TUNNEL_FUNC_ERROR"
+    };
     // data model to save authorized var/func
     let tempAuths= {
         functions: [],
         variables: {}
-    }
-    // TODO SECURTY: limit function and variables to only entries that start with 'i2b2.'
+    };
+    // TODO SECURITY: limit function and variables to only entries that start with 'i2b2.'
     if (Array.isArray(event.detail.functions)) tempAuths.functions = event.detail.functions;
     if (typeof event.detail.variables === 'object') {
         Object.entries(event.detail.variables).forEach((entry) => {
@@ -29,7 +36,7 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
 
 
 
-    // USE CLOSEURE VARIABLES TO KEEP TRACK OF SENT/RECEIVED MESSAGES
+    // USE CLOSURE VARIABLES TO KEEP TRACK OF SENT/RECEIVED MESSAGES
     let cl_messageDB = {};
 
     // USING CLOSURE FUNCTION FOR SENDING
@@ -43,7 +50,7 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
             cl_messageDB[msgId].reject = reject;
             // now send the message
             let msg = {
-                msgType: "TUNNEL_VAR",
+                msgType: i2b2.authorizedTunnel.MSG_TYPES.VAR_REQ,
                 msgId: msgId,
                 variablePath: varPath,
                 variableAction: action
@@ -63,7 +70,7 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
             cl_messageDB[msgId].reject = reject;
             // now send the message
             let msg = {
-                msgType: "TUNNEL_FUNC",
+                msgType: i2b2.authorizedTunnel.MSG_TYPES.FUNC_REQ,
                 msgId: msgId,
                 functionPath: funcPath,
                 functionArguments: argumentsArray
@@ -84,10 +91,10 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
         } else {
             // resolve the promise
             switch (eventData.msgType) {
-                case "TUNNEL_VAR_VALUE":
+                case i2b2.authorizedTunnel.MSG_TYPES.VAR_RESULT:
                     cl_messageDB[eventData.msgId].resolve(eventData.variableValue);
                     break;
-                case "TUNNEL_FUNC_RESULT":
+                case i2b2.authorizedTunnel.MSG_TYPES.FUNC_RESULT:
                     cl_messageDB[eventData.msgId].resolve(eventData);
                     break;
             }
@@ -158,17 +165,12 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
     });
 
 
-    // get/set a variable
-    // i2b2.authorizedTunnel.variable = function(variableName, newValue) {
-    //     return cl_func_tunnelSetVariable(variableName,  newValue);
-    // };
-
-
     // EVENT LISTENER TO ROUTE RETURNED MESSAGES FOR PROCESSING
     // ----------------------------------------------------------------------
     window.addEventListener("message", (event) => {
         if (event.origin === window.location.origin) {
-            if (["TUNNEL_VAR_ERROR", "TUNNEL_VAR_VALUE", "TUNNEL_FUNC_ERROR", "TUNNEL_FUNC_RESULT"].includes(event.data.msgType)) {
+            let MSG_TYPES = i2b2.authorizedTunnel.MSG_TYPES;
+            if ([MSG_TYPES.VAR_RESULT, MSG_TYPES.FUNC_RESULT, MSG_TYPES.VAR_ERROR, MSG_TYPES.FUNC_ERROR].includes(event.data.msgType)) {
                 cl_func_receiveMsg(event.data);
             }
         }
