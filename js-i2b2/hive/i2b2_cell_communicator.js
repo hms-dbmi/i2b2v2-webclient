@@ -252,13 +252,13 @@ i2b2.hive.communicatorFactory = function(cellCode){
        //update timeout
         i2b2.PM.model.IdleTimer.resetTimeout();
 
-        // debug messages
-        if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)) {
-            console.group("[AJAX RESULT i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName + "]");
-            console.info("AJAX Transport SUCCESS");
-            console.dir(transport);
-        }
-
+        // // debug messages
+        // if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)) {
+        //     console.group("[AJAX RESULT i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName + "]");
+        //     console.info("AJAX Transport SUCCESS");
+        //     console.dir(transport);
+        // }
+        //
         // create our data message to send to the callback function
         var cbMsg = {
             msgParams: execBubble.params,
@@ -276,7 +276,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
             cbMsg.error = true;
             cbMsg.errorStatus = transport.status;
             cbMsg.errorMsg = "The cell's message could not be interpreted as valid XML.";
-            console.error(transport.responseText);
+//            console.error(transport.responseText);
         }
         else {
             cbMsg.refXML = xmlRecv;
@@ -290,7 +290,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
                 cbMsg.error = true;
                 cbMsg.errorStatus = transport.status;
                 cbMsg.errorMsg = "The cell's status message could not be understood.";
-                console.error(transport.responseText);
+//                console.error(transport.responseText);
             }
         }
         // attach the parse() function
@@ -327,9 +327,9 @@ i2b2.hive.communicatorFactory = function(cellCode){
         execBubble.timeRecv = new Date();
         var origCallback = execBubble.callback;
 
-        console.group("[AJAX RESULT i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName + "]");
-        console.error("AJAX Transport FAILURE");
-        console.dir(transport);
+        // console.group("[AJAX RESULT i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName + "]");
+        // console.error("AJAX Transport FAILURE");
+        // console.dir(transport);
 
         // create our data message to send to the callback fuction
         var cbMsg = {
