@@ -224,9 +224,6 @@ i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {
 }
 // ======================================================================================
 i2b2.WORK.ctrlr.main.handleNewFolder = function (parent_node, fldrName) {
-    //let fldrName = prompt("What name should be used for the new folder?", "New Folder");
-    //if (!fldrName)  return false;
-
     // create callback display routine
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = parent_node;
