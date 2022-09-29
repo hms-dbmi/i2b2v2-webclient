@@ -228,8 +228,6 @@ i2b2.WORK.ctrlr.main.handleNewFolder = function (parent_node, fldrName) {
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = parent_node;
     scopedCallback.callback = function(results) {
-        let cl_new_key = newChildKey;
-        let cl_parent_node = parent_node;
         if (results.error) {
             alert("An error occurred while trying to create a new work item!");
         } else {
