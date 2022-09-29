@@ -68,7 +68,7 @@ i2b2.ONT.view.info = {
 
         // deal with lab values
         let hasValues = false;
-        if (data.origData.basecode && data.origData.basecode.startsWith("LOINC") || data.origData.basecode.startsWith("LCS-I2B2")) hasValues = true;
+        if (data.origData.basecode && (data.origData.basecode.startsWith("LOINC") || data.origData.basecode.startsWith("LCS-I2B2"))) hasValues = true;
 
         // create display data for handlebars template
         let displayData = {
