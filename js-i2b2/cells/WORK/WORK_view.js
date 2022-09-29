@@ -203,8 +203,14 @@ i2b2.WORK.view.main.treeRedraw = function() {
 };
 
 // ======================================================================================
-i2b2.WORK.view.main.refreshNode = function(target_node){
-    let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+i2b2.WORK.view.main.refreshNode = function(target_node, isParent){
+    let parentNode;
+    if(isParent){
+        parentNode = target_node;
+    }
+    else{
+        parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+    }
     let parentChildren = parentNode.nodes.map(function(node) { return node.nodeId; });
     parentNode.refTreeview.deleteNodes(parentChildren, true);
     parentNode.refTreeview.expandNode(parentNode.nodeId);

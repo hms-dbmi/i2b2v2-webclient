@@ -236,14 +236,7 @@ i2b2.WORK.ctrlr.main.handleNewFolder = function (parent_node, fldrName) {
         if (results.error) {
             alert("An error occurred while trying to create a new work item!");
         } else {
-            // TODO: THIS IS NOT DONE YET!
-            // whack the "already loaded" status out of the parent node and initiate a
-            // dynamic reloading of the childs nodes (including our newest addition)
-            // You may need to delete the child nodes first
-            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
-            temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
-            i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
-            i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
+            i2b2.WORK.view.main.refreshNode(parent_node, true);
         }
     };
 
