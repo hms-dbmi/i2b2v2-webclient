@@ -1088,15 +1088,12 @@ i2b2.events.afterCellInit.add(
                         if (visual_attribute_type === "LA") {
                             cell.model.resultTypes[name] = i2b2.h.getXNodeVal(ps[i1],'description');
                             if(name === "PATIENT_COUNT_XML"){
-                                cell.model.selectedResultTypes = [
-                                    "PATIENT_COUNT_XML"
-                                ];
+                                cell.model.selectedResultTypes = name;
                             }
                         }
                     }
                 }
             }
-
             i2b2.CRC.ajax.getQRY_getResultType("CRC:SDX:PatientRecordSet", null, scopedCallback);
         }
     }
