@@ -1057,23 +1057,6 @@ i2b2.events.afterCellInit.add(
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItem.xml"); }
             });
 
-            /*cell.model.resultTypes = {
-                "PATIENTSET": "Patient set",
-                "PATIENT_ENCOUNTER_SET":"Encounter set",
-                "PATIENT_COUNT_XML": "Number of patients",
-                "PATIENT_GENDER_COUNT_XML": "Gender patient breakdown",
-                "PATIENT_VITALSTATUS_COUNT_XML": "Vital Status patient breakdown",
-                "PATIENT_RACE_COUNT_XML": "Race patient breakdown",
-                "PATIENT_AGE_COUNT_XML": "Age patient breakdown",
-                // "PATIENTSET": "Timeline",
-                "PATIENT_LOS_XML": "Length of stay breakdown",
-                "PATIENT_TOP50MEDS_XML": "Top 50 medications breakdown",
-                "PATIENT_TOP50DIAG_XML": "Top 50 diangosis breakdown",
-                "PATIENT_INOUT_XML": "Inpatient and outpatient breakdown",
-            };*/
-            cell.model.selectedResultTypes = [
-                "PATIENT_COUNT_XML"
-            ];
             cell.model.query = {
                 name: 'default query name',
                 groups: []
@@ -1099,11 +1082,17 @@ i2b2.events.afterCellInit.add(
                 else{
                     // extract records from XML msg
                     let ps = results.refXML.getElementsByTagName('query_result_type');
+                    let visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
                     for(let i1=0; i1<ps.length; i1++) {
                         let name = i2b2.h.getXNodeVal(ps[i1],'name');
-                        let description = i2b2.h.getXNodeVal(ps[i1],'description');
-                        console.log()
-                        cell.model.resultTypes[name] = description;
+                        if (visual_attribute_type === "LA") {
+                            cell.model.resultTypes[name] = i2b2.h.getXNodeVal(ps[i1],'description');
+                            if(name === "PATIENT_COUNT_XML"){
+                                cell.model.selectedResultTypes = [
+                                    "PATIENT_COUNT_XML"
+                                ];
+                            }
+                        }
                     }
                 }
             }
