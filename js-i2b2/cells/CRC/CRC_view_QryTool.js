@@ -1082,9 +1082,9 @@ i2b2.events.afterCellInit.add(
                 else{
                     // extract records from XML msg
                     let ps = results.refXML.getElementsByTagName('query_result_type');
-                    let visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
                     for(let i1=0; i1<ps.length; i1++) {
                         let name = i2b2.h.getXNodeVal(ps[i1],'name');
+                        let visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
                         if (visual_attribute_type === "LA") {
                             cell.model.resultTypes[name] = i2b2.h.getXNodeVal(ps[i1],'description');
                             if(name === "PATIENT_COUNT_XML"){
