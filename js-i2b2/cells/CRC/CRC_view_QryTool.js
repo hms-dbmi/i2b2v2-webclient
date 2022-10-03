@@ -1057,7 +1057,7 @@ i2b2.events.afterCellInit.add(
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItem.xml"); }
             });
 
-            cell.model.resultTypes = {
+            /*cell.model.resultTypes = {
                 "PATIENTSET": "Patient set",
                 "PATIENT_ENCOUNTER_SET":"Encounter set",
                 "PATIENT_COUNT_XML": "Number of patients",
@@ -1070,7 +1070,7 @@ i2b2.events.afterCellInit.add(
                 "PATIENT_TOP50MEDS_XML": "Top 50 medications breakdown",
                 "PATIENT_TOP50DIAG_XML": "Top 50 diangosis breakdown",
                 "PATIENT_INOUT_XML": "Inpatient and outpatient breakdown",
-            };
+            };*/
             cell.model.selectedResultTypes = [
                 "PATIENT_COUNT_XML"
             ];
@@ -1079,6 +1079,36 @@ i2b2.events.afterCellInit.add(
                 groups: []
             };
 
+            //Update the result types from ajax call
+            var scopedCallback = new i2b2_scopedCallback();
+            scopedCallback.callback = function(results) {
+                //var cl_onCompleteCB = onCompleteCallback;
+                // THIS function is used to process the AJAX results of the getChild call
+                //		results data object contains the following attributes:
+                //			refXML: xmlDomObject <--- for data processing
+                //			msgRequest: xml (string)
+                //			msgResponse: xml (string)
+                //			error: boolean
+                //			errorStatus: string [only with error=true]
+                //			errorMsg: string [only with error=true]
+                cell.model.resultTypes = {};
+
+                if(results.error){
+                    console.log("ERROR: Unable to retrieve result types from server", results.msgResponse);
+                }
+                else{
+                    // extract records from XML msg
+                    let ps = results.refXML.getElementsByTagName('query_result_type');
+                    for(let i1=0; i1<ps.length; i1++) {
+                        let name = i2b2.h.getXNodeVal(ps[i1],'name');
+                        let description = i2b2.h.getXNodeVal(ps[i1],'description');
+                        console.log()
+                        cell.model.resultTypes[name] = description;
+                    }
+                }
+            }
+
+            i2b2.CRC.ajax.getQRY_getResultType("CRC:SDX:PatientRecordSet", null, scopedCallback);
         }
     }
 );
