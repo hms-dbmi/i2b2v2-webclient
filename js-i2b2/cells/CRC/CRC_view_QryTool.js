@@ -39,11 +39,13 @@ i2b2.CRC.view.QT.showRun = function() {
         // ==> i2b2.CRC.model.resultTypes
         // ==> i2b2.CRC.model.selectedResultTypes
         let checkContainer = $("#crcModal .ResultTypes");
-        for (let description in i2b2.CRC.model.resultTypes) {
-            let checked = '';
-            let code = i2b2.CRC.model.resultTypes[description];
-            if (i2b2.CRC.model.selectedResultTypes.includes(description)) checked = ' checked="checked" ';
-            $('<div id="crcDlgResultOutput' + description + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(checkContainer);
+        for (let code in i2b2.CRC.model.resultTypes) {
+            let descriptions = i2b2.CRC.model.resultTypes[code];
+            descriptions.forEach(description => {
+                let checked = '';
+                if (i2b2.CRC.model.selectedResultTypes.includes(code)) checked = ' checked="checked" ';
+                $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(checkContainer);
+            });
         }
 
         // now show the modal form
@@ -1086,11 +1088,13 @@ i2b2.events.afterCellInit.add(
                     for(let i1=0; i1<ps.length; i1++) {
                         let name = i2b2.h.getXNodeVal(ps[i1],'name');
                         let visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
-                        let description = i2b2.h.getXNodeVal(ps[i1],'description');
                         if (visual_attribute_type === "LA") {
-                            cell.model.resultTypes[description] = name;
+                            if(cell.model.resultTypes[name] === undefined){
+                                cell.model.resultTypes[name] = [];
+                            }
+                            cell.model.resultTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
                             if(name === "PATIENT_COUNT_XML"){
-                                cell.model.selectedResultTypes = description;
+                                cell.model.selectedResultTypes = name;
                             }
                         }
                     }
