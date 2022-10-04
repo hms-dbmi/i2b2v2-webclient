@@ -3,7 +3,11 @@
  * SDX-style drag and drop with the main i2b2 UI.
  **/
 
-i2b2.sdx = {};
+// ----- Magic Strings -----
+i2b2.MSG_TYPES.SDX = {};
+i2b2.MSG_TYPES.SDX.LIB_INIT = "I2B2_INIT_SDX";
+i2b2.MSG_TYPES.SDX.LIB_READY = "I2B2_SDX_READY";
+// -------------------------
 i2b2.sdx = {};
 i2b2.sdx.dd_events = {};
 
@@ -200,6 +204,6 @@ window.addEventListener(i2b2.MSG_TYPES.SDX.LIB_INIT, function(evt) {
         i2b2.sdx.TypeControllers[e] = {};
     });
     // once initialized, sent the ready signal to the plugin's i2b2 loader
-    window.dispatchEvent(new Event('I2B2_SDX_READY'));
+    window.dispatchEvent(new Event(i2b2.MSG_TYPES.SDX.LIB_READY));
 });
 
