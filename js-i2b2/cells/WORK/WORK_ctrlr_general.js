@@ -54,7 +54,7 @@ i2b2.WORK.ctrlr.refreshAll = function(view_component) {
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main = {};
-i2b2.WORK.ctrlr.main.moveFolder = function(target_nodeTV, new_parent_nodeTV) {
+i2b2.WORK.ctrlr.main.moveItem = function(target_nodeTV, new_parent_nodeTV) {
     // TODO: Reimplement this
     alert("not yet implemented");
 };
@@ -241,16 +241,18 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.HandleDrop = function(sdxDropped) {
-    // TODO: This needs to be done
+    // TODO: This needs to be done (or does it?)
 };
 
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
+    debugger;
+
     // TODO: This needs to be done
     if (!options) { options={}; }
     // sanity check can only add children to WRK folders
-    if (targetTvNode.data.i2b2_SDX.sdxInfo.sdxType !== "WRK") {
+    if (targetTvNode.i2b2.sdxInfo.sdxType !== "WRK") {
         console.error("This operation was refused. Only a Workplace folder can contain child work items.");
         return false;
     }
@@ -359,17 +361,19 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
     }
     // package the work_xml snippet
     i2b2.h.EscapeTemplateVars(encapValues, encapNoEscape);
-    let syntax = /(^|.|\r|\n)(\{{{\s*(\w+)\s*}}})/; //matches symbols like '{{{ field }}}'
-    let t = new Template(encapXML, syntax);
-    let encapMsg = t.evaluate(encapValues);
+    let encapMsg = encapXML;
+    Object.entries(encapValues).forEach((entry) => {
+        console.dir(entry);
+        encapMsg = encapMsg.replace(new RegExp("{{{"+entry[0]+"}}}", 'g'), entry[1]);
+    });
 
     // gather primary message info
     let newChildKey = i2b2.h.GenerateAlphaNumId(20);
     let varInput = {
         child_name: encapTitle,
         child_index: newChildKey,
-        parent_key_value: targetTvNode.data.i2b2_SDX.sdxInfo.sdxKeyValue,
-        share_id: targetTvNode.data.i2b2_SDX.origData.share_id,
+        parent_key_value: targetTvNode.i2b2.sdxInfo.sdxKeyValue,
+        share_id: targetTvNode.i2b2.origData.share_id,
         child_visual_attributes: "ZA",
         child_annotation: "",
         child_work_type: encapWorkType,
@@ -389,13 +393,12 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
             if (results.error) {
                 alert("An error occurred while trying to create a new work item!");
             } else {
-                // whack the "already loaded" status out of the parent node and initiate a
-                // dynamic loading of the childs nodes (including our newest addition)
-                cl_parent_node.collapse();
-                cl_parent_node.dynamicLoadComplete = false;
-                cl_parent_node.childrenRendered = false;
-                cl_parent_node.tree.removeChildren(cl_parent_node);
-                cl_parent_node.expand();
+                // get a list of all children in the parent node
+                let parentChildren = cl_parent_node.refTreeview.findNodes(cl_parent_node.nodeId, '', 'parentId').map((node)=>{return node.nodeId});
+                // delete the nodes and reset the dynamic loading settings
+                cl_parent_node.refTreeview.deleteNodes(parentChildren, true);
+                // trigger that the treeview node is opened (and reloaded)
+                cl_parent_node.refTreeview.expandNode(cl_parent_node.nodeId);
             }
         }
     }
