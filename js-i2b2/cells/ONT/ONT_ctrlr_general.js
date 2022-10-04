@@ -149,6 +149,15 @@ i2b2.ONT.ctrlr.gen.loadSchemes = function() {
     i2b2.ONT.ajax.GetSchemes("ONT:generalView", {}, scopeCB);
 };
 
+// ================================================================================================== //
+
+i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
+    // initialize the search bar dropdowns when the data model is fully populated
+    if (i2b2.ONT.model.Categories !== undefined && i2b2.ONT.model.Schemes !== undefined) {
+        i2b2.ONT.view.search.initSearchOptions();
+    }
+}).bind(i2b2.ONT));
+
 
 console.timeEnd('execute time');
 console.groupEnd();
