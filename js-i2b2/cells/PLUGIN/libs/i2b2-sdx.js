@@ -6,8 +6,9 @@
 i2b2.sdx = {};
 i2b2.sdx = {};
 i2b2.sdx.dd_events = {};
-i2b2.sdx.AttachType = function(container, typeCode) {
 
+//======================================================================================================================
+i2b2.sdx.AttachType = function(container, typeCode) {
     // change the container into a DOM element reference
     if (typeof container === "string") {
         container = document.getElementById(container);
@@ -60,6 +61,7 @@ i2b2.sdx.AttachType = function(container, typeCode) {
         return true;
     }
 };
+
 //======================================================================================================================
 i2b2.sdx.onDragDropEvents = function(e,a) {
     // get a list of SDX types that are in this DD operation
@@ -191,13 +193,12 @@ i2b2.sdx.setHandlerCustom = function(container, typeCode, handlerName, newHandle
     }
 };
 
-window.addEventListener("I2B2_INIT_SDX", function(evt) {
-
+//======================================================================================================================
+window.addEventListener(i2b2.MSG_TYPES.SDX.LIB_INIT, function(evt) {
     i2b2.sdx.TypeControllers = {};
     evt.detail.forEach(function(e) {
         i2b2.sdx.TypeControllers[e] = {};
     });
-
     // once initialized, sent the ready signal to the plugin's i2b2 loader
     window.dispatchEvent(new Event('I2B2_SDX_READY'));
 });

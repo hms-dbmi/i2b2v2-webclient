@@ -181,5 +181,3 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
     // ----------------------------------------------------------------------
     window.dispatchEvent(new Event('I2B2_TUNNEL_READY'));
 });
-
-
