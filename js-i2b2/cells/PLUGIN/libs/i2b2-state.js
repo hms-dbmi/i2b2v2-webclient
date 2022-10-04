@@ -4,8 +4,16 @@
  * upon iframe movement within the DOM (as performed by Golden Layout)
  **/
 
+if (i2b2 === undefined) i2b2 = {};
+// ----- Magic Strings -----
+if (i2b2.MSG_TYPES === undefined) i2b2.MSG_TYPES = {};
+i2b2.MSG_TYPES.STATE = {};
+i2b2.MSG_TYPES.STATE.LIB_INIT = "I2B2_INIT_STATE";
+i2b2.MSG_TYPES.STATE.LIB_READY = "I2B2_STATE_READY";
+i2b2.MSG_TYPES.STATE.REQ = "STATE";
 
-window.addEventListener("I2B2_INIT_STATE", function(event) {
+//======================================================================================================================
+window.addEventListener(i2b2.MSG_TYPES.STATE.LIB_INIT, function(event) {
 
     if (i2b2.model === undefined) i2b2.model = {};
     // move the previously saved state back into i2b2.model namespace
@@ -17,7 +25,7 @@ window.addEventListener("I2B2_INIT_STATE", function(event) {
     i2b2.state.save = function() {
         try {
             window.parent.postMessage({
-                msgType: "STATE",
+                msgType: i2b2.MSG_TYPES.STATE.REQ,
                 stateData: i2b2.model
             }, "/");
             return true;
@@ -31,7 +39,7 @@ window.addEventListener("I2B2_INIT_STATE", function(event) {
 
     // once initialized, sent the ready signal to the plugin's i2b2 loader
     // ----------------------------------------------------------------------
-    window.dispatchEvent(new Event('I2B2_STATE_READY'));
+    window.dispatchEvent(new Event(i2b2.MSG_TYPES.STATE.LIB_READY));
 });
 
 

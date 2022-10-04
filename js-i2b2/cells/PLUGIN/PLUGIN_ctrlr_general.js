@@ -10,7 +10,7 @@ console.time('execute time');
 // ====[ msg handling for the plugin's INIT message ]===================================================================
 i2b2.PLUGIN.ctrlr._handleInitMsg = function(msgEvent, windowInstance) {
     msgEvent.source.postMessage({
-        "msgType":"INIT_REPLY",
+        "msgType": i2b2.PLUGIN.model.MSG_TYPES.INIT_REPLY,
         "libs": i2b2.PLUGIN.model.libs,
         "sdx": i2b2.PLUGIN.model.config.sdx,
         "ajax": i2b2.PLUGIN.model.config.ajax,
@@ -24,7 +24,7 @@ i2b2.PLUGIN.ctrlr._handleInitMsg = function(msgEvent, windowInstance) {
 i2b2.PLUGIN.ctrlr._handleAjaxMsg = function(msgEvent, instanceRef) {
     // define error handling function
     const funcSendError = function(msgEvent, errorMsg, errorData) {
-        let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.AJAX_ERROR, "msgId":msgEvent.data.msgId, "error": true, "errorMsg": errorMsg};
+        let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.AJAX.ERROR, "msgId":msgEvent.data.msgId, "error": true, "errorMsg": errorMsg};
         if (errorData !== undefined) msg.errorData = errorData;
         msgEvent.source.postMessage(msg, '/');
     };
@@ -47,7 +47,7 @@ i2b2.PLUGIN.ctrlr._handleAjaxMsg = function(msgEvent, instanceRef) {
         }
         // relay message
         let msg = {
-            msgType: i2b2.PLUGIN.model.MSG_TYPES.AJAX_RESULT,
+            msgType: i2b2.PLUGIN.model.MSG_TYPES.AJAX.RESULT,
             msgId: msgEvent.data.msgId,
             ajaxReply: i2b2CellMsg.msgResponse
         };
@@ -62,7 +62,7 @@ i2b2.PLUGIN.ctrlr._handleAjaxMsg = function(msgEvent, instanceRef) {
 i2b2.PLUGIN.ctrlr._handleRawAjaxMsg = function(msgEvent, instanceRef) {
     // define error handling function
     const funcSendError = function(msgEvent, errorMsg, errorData) {
-        let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.AJAX_ERROR, "msgId":msgEvent.data.msgId, "error": true, "errorMsg": errorMsg};
+        let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.AJAX.ERROR, "msgId":msgEvent.data.msgId, "error": true, "errorMsg": errorMsg};
         if (errorData !== undefined) msg.errorData = errorData;
         msgEvent.source.postMessage(msg, '/');
     };
@@ -96,7 +96,7 @@ i2b2.PLUGIN.ctrlr._handleRawAjaxMsg = function(msgEvent, instanceRef) {
         data: rawMsg
     }).done((response, status, xhr)=>{
         msgEvent.source.postMessage({
-            msgType: i2b2.PLUGIN.model.MSG_TYPES.AJAX_RESULT,
+            msgType: i2b2.PLUGIN.model.MSG_TYPES.AJAX.RESULT,
             msgId: msgEvent.data.msgId,
             ajaxReply: xhr.responseText
         }, '/');
@@ -106,7 +106,7 @@ i2b2.PLUGIN.ctrlr._handleRawAjaxMsg = function(msgEvent, instanceRef) {
             // handle JSON returned with erroneous text/xml MIME header
             response = JSON.parse(xhr.responseText);
             msgEvent.source.postMessage({
-                msgType: i2b2.PLUGIN.model.MSG_TYPES.AJAX_RESULT,
+                msgType: i2b2.PLUGIN.model.MSG_TYPES.AJAX.RESULT,
                 msgId: msgEvent.data.msgId,
                 ajaxReply: xhr.responseText // send the raw string, not objects
             }, '/');
@@ -128,7 +128,7 @@ i2b2.PLUGIN.ctrlr._handleStateMsg = function(msgEvent, instanceRef) {
 i2b2.PLUGIN.ctrlr._handleTunnelFuncExec = function(msgEvent, instanceRef) {
     // define error handling function
     const funcSendError = function(msgEvent, errorMsg, errorData) {
-        let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.TUNNEL_FUNC_ERROR, "msgId":msgEvent.data.msgId, "error": true, "errorMsg": errorMsg};
+        let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.TUNNEL.FUNC_ERROR, "msgId":msgEvent.data.msgId, "error": true, "errorMsg": errorMsg};
         if (errorData !== undefined) msg.errorData = errorData;
         msgEvent.source.postMessage(msg, '/');
     };
@@ -166,7 +166,7 @@ i2b2.PLUGIN.ctrlr._handleTunnelFuncExec = function(msgEvent, instanceRef) {
         let origResults = lastPoint(...msgEvent.data.functionArguments);
 
         // see if function returns a Promise, wait for promise to resolve or reject and send proper window msg based on that
-        let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.TUNNEL_FUNC_RESULT, "msgId":msgEvent.data.msgId, "error": false};
+        let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.TUNNEL.FUNC_RESULT, "msgId":msgEvent.data.msgId, "error": false};
         let func_sendResults = function(result) {
             if (typeof result === 'object') result = JSON.parse(JSON.stringify(result));
             msg.functionResults = result;
@@ -195,7 +195,7 @@ i2b2.PLUGIN.ctrlr._handleTunnelFuncExec = function(msgEvent, instanceRef) {
 i2b2.PLUGIN.ctrlr._handleTunnelVarMsg = function(msgEvent, instanceRef) {
     // define error handling function
     const funcSendError = function(msgEvent, errorMsg, errorData) {
-        let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.TUNNEL_VAR_ERROR, "msgId":msgEvent.data.msgId, "error": true, "errorMsg": errorMsg};
+        let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.TUNNEL.VAR_ERROR, "msgId":msgEvent.data.msgId, "error": true, "errorMsg": errorMsg};
         if (errorData !== undefined) msg.errorData = errorData;
         msgEvent.source.postMessage(msg, '/');
     };
@@ -254,7 +254,7 @@ i2b2.PLUGIN.ctrlr._handleTunnelVarMsg = function(msgEvent, instanceRef) {
                 funcSendError(msgEvent, "Attempting to read variable without permission!", "REF_ERROR");
                 return;
             } else {
-                let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.TUNNEL_VAR_RESULT, "msgId":msgEvent.data.msgId, "error": false, "variableValue": retValue};
+                let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.TUNNEL.VAR_RESULT, "msgId":msgEvent.data.msgId, "error": false, "variableValue": retValue};
                 msgEvent.source.postMessage(msg, '/');
             }
         } else {
@@ -264,7 +264,7 @@ i2b2.PLUGIN.ctrlr._handleTunnelVarMsg = function(msgEvent, instanceRef) {
                 return;
             } else {
                 lastPoint = msgEvent.data.variableNewValue;
-                let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.TUNNEL_VAR_RESULT, "msgId":msgEvent.data.msgId, "error": false, "variableValue": msgEvent.data.variableNewValue};
+                let msg = {"msgType":i2b2.PLUGIN.model.MSG_TYPES.TUNNEL.VAR_RESULT, "msgId":msgEvent.data.msgId, "error": false, "variableValue": msgEvent.data.variableNewValue};
                 msgEvent.source.postMessage(msg, '/');
             }
         }
@@ -326,17 +326,25 @@ i2b2.events.afterAllCellsLoaded.add((function() {
 
     // different message types that can be sent between plugin iframes and plugin control window
     i2b2.PLUGIN.model.MSG_TYPES = {
-        STATE_REQ: "STATE",
-        AJAX_REQ: "AJAX",
-        AJAX_RESULT: "AJAX_REPLY",
-        AJAX_ERROR: "AJAX_ERROR",
-        AJAX_RAW_REQ: "AJAX-RAW",
-        TUNNEL_VAR_REQ: "TUNNEL_VAR",
-        TUNNEL_FUNC_REQ:  "TUNNEL_FUNC",
-        TUNNEL_VAR_RESULT: "TUNNEL_VAR_VALUE",
-        TUNNEL_FUNC_RESULT: "TUNNEL_FUNC_RESULT",
-        TUNNEL_VAR_ERROR: "TUNNEL_VAR_ERROR",
-        TUNNEL_FUNC_ERROR: "TUNNEL_FUNC_ERROR"
+        INIT_REQ: "INIT",
+        INIT_REPLY: "INIT_REPLY",
+        STATE: {
+            REQ: "STATE"
+        },
+        AJAX: {
+            REQ: "AJAX",
+            RESULT: "AJAX_REPLY",
+            ERROR: "AJAX_ERROR",
+            RAW_REQ: "AJAX-RAW",
+        },
+        TUNNEL: {
+            VAR_REQ: "TUNNEL_VAR",
+            FUNC_REQ:  "TUNNEL_FUNC",
+            VAR_RESULT: "TUNNEL_VAR_VALUE",
+            FUNC_RESULT: "TUNNEL_FUNC_RESULT",
+            VAR_ERROR: "TUNNEL_VAR_ERROR",
+            FUNC_ERROR: "TUNNEL_FUNC_ERROR"
+        }
     }
 
     i2b2.PLUGIN.model.config = {};
@@ -367,22 +375,22 @@ i2b2.events.afterAllCellsLoaded.add((function() {
 
             // main processing of incoming messages
             switch (event.data.msgType) {
-                case "INIT":
+                case i2b2.PLUGIN.model.MSG_TYPES.INIT_REQ:
                     i2b2.PLUGIN.ctrlr._handleInitMsg(event, foundInstance);
                     break;
-                case i2b2.PLUGIN.model.MSG_TYPES.AJAX_REQ:
+                case i2b2.PLUGIN.model.MSG_TYPES.AJAX.REQ:
                     i2b2.PLUGIN.ctrlr._handleAjaxMsg(event, foundInstance);
                     break;
-                case i2b2.PLUGIN.model.MSG_TYPES.AJAX_RAW_REQ:
+                case i2b2.PLUGIN.model.MSG_TYPES.AJAX.RAW_REQ:
                     i2b2.PLUGIN.ctrlr._handleRawAjaxMsg(event, foundInstance);
                     break;
-                case i2b2.PLUGIN.model.MSG_TYPES.STATE_REQ:
+                case i2b2.PLUGIN.model.MSG_TYPES.STATE.REQ:
                     i2b2.PLUGIN.ctrlr._handleStateMsg(event, foundInstance);
                     break;
-                case i2b2.PLUGIN.model.MSG_TYPES.TUNNEL_VAR_REQ:
+                case i2b2.PLUGIN.model.MSG_TYPES.TUNNEL.VAR_REQ:
                     i2b2.PLUGIN.ctrlr._handleTunnelVarMsg(event, foundInstance);
                     break;
-                case i2b2.PLUGIN.model.MSG_TYPES.TUNNEL_FUNC_REQ:
+                case i2b2.PLUGIN.model.MSG_TYPES.TUNNEL.FUNC_REQ:
                     i2b2.PLUGIN.ctrlr._handleTunnelFuncExec(event, foundInstance);
                     break;
             }
