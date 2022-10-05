@@ -76,7 +76,7 @@ i2b2.sdx.TypeControllers.PR.RenderData = function(sdxData, options) {
 
 
     let bCanExp = false;
-    if (options.showchildren === true) bCanExp = true;
+    //if (options.showchildren === true) bCanExp = true;
     if (!bCanExp) {
         // cannot expand node
         nodeInfo.tvNodeState.loaded = true;
