@@ -1101,7 +1101,7 @@ i2b2.events.afterCellInit.add(
                     }
                 }
             }
-            i2b2.CRC.ajax.getQRY_getResultType("CRC:SDX:PatientRecordSet", null, scopedCallback);
+            i2b2.CRC.ajax.getQRY_getResultType("CRC:QueryTool", null, scopedCallback);
         }
     }
 );
