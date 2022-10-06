@@ -203,8 +203,14 @@ i2b2.WORK.view.main.treeRedraw = function() {
 };
 
 // ======================================================================================
-i2b2.WORK.view.main.refreshNode = function(target_node){
-    let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+i2b2.WORK.view.main.refreshNode = function(target_node, isParent){
+    let parentNode;
+    if(isParent){
+        parentNode = target_node;
+    }
+    else{
+        parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+    }
     let parentChildren = parentNode.nodes.map(function(node) { return node.nodeId; });
     parentNode.refTreeview.deleteNodes(parentChildren, true);
     parentNode.refTreeview.expandNode(parentNode.nodeId);
@@ -221,8 +227,13 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
     contextDialogModal.empty();
 
     i2b2.WORK.view.main.dialogCallbackWrapper = function() {
-        let newValue = $("#WKContextMenuInput").val();
-        inputData.onOk(newValue);
+        if (inputData.confirmMsg) {
+            inputData.onOk();
+        }
+        else {
+            let newValue = $("#WKContextMenuInput").val();
+            inputData.onOk(newValue);
+        }
         $("#WKContextMenuDialog").modal('hide');
     }
 
@@ -230,6 +241,7 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
         "title": inputData.title,
         "inputLabel": inputData.prompt,
         "placeHolder": inputData.placeHolder,
+        "confirmMsg": inputData.confirmMsg,
         "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper()",
         "inputValue" : inputData.inputValue,
         "onCancel": inputData.onCancel

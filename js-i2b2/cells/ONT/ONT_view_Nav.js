@@ -153,36 +153,31 @@ i2b2.events.afterCellInit.add((function(cell){
                 i2b2.ONT.view.search.initSearch(container._contentElement);
 
                 // -------------------- setup context menu --------------------
-                i2b2.ONT.view.nav.ContextMenu = new BootstrapMenu('#i2b2TreeviewOntNav li.list-group-item', {
-                    fetchElementData: function($rowElem) {
-                        // fetch the data from the treeview
-                        return i2b2.ONT.view.nav.treeview.treeview('getNode', $rowElem.data('nodeid'));
-                    },
-                    // TODO: Finish wiring implementation
-                    actions: {
-                        nodeAnnotate: {
-                            name: 'Show More Info',
-                            onClick: function(node) {
-                                i2b2.ONT.view.info.load(node.i2b2, true);
-                            }
-                        }
-                    }
-                });
-
+                i2b2.ONT.view.nav.ContextMenu =  i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntNav',i2b2.ONT.view.nav.treeview);
             }).bind(this)
         );
     }
 }));
+//================================================================================================== //
+i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview) {
 
-// ================================================================================================== //
-
-i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
-    // initialize the search bar dropdowns when the data model is fully populated
-    if (i2b2.ONT.model.Categories !== undefined && i2b2.ONT.model.Schemes !== undefined) {
-        i2b2.ONT.view.search.initSearchOptions();
-    }
-}).bind(i2b2.ONT));
-
+    //    return new BootstrapMenu('#' + treeviewElemId + ' li.list-group-item', {
+    return new BootstrapMenu('#' + treeviewElemId + ' li.list-group-item', {
+        fetchElementData: function($rowElem) {
+            // fetch the data from the treeview
+            return treeview.treeview('getNode', $rowElem.data('nodeid'));
+        },
+        // TODO: Finish wiring implementation
+        actions: {
+            nodeAnnotate: {
+                name: 'Show More Info',
+                onClick: function(node) {
+                    i2b2.ONT.view.info.load(node.i2b2, true);
+                }
+            }
+        }
+    });
+};
 // ================================================================================================== //
 
 console.timeEnd('execute time');

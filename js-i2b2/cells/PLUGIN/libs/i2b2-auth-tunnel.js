@@ -3,17 +3,21 @@
  * plugins to access protected variables and functions in the parent UI.
  **/
 
-window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
+// ----- Magic Strings -----
+i2b2.MSG_TYPES.TUNNEL = {};
+i2b2.MSG_TYPES.TUNNEL.LIB_INIT = "I2B2_INIT_TUNNEL";
+i2b2.MSG_TYPES.TUNNEL.LIB_READY = "I2B2_TUNNEL_READY";
+i2b2.MSG_TYPES.TUNNEL.VAR_REQ = "TUNNEL_VAR";
+i2b2.MSG_TYPES.TUNNEL.VAR_RESULT = "TUNNEL_VAR_VALUE";
+i2b2.MSG_TYPES.TUNNEL.VAR_ERROR = "TUNNEL_VAR_ERROR";
+i2b2.MSG_TYPES.TUNNEL.FUNC_REQ = "TUNNEL_FUNC";
+i2b2.MSG_TYPES.TUNNEL.FUNC_RESULT = "TUNNEL_FUNC_RESULT";
+i2b2.MSG_TYPES.TUNNEL.FUNC_ERROR = "TUNNEL_FUNC_ERROR";
+// -------------------------
 
+
+window.addEventListener(i2b2.MSG_TYPES.TUNNEL.LIB_INIT, function(event) {
     i2b2.authorizedTunnel = {};
-    i2b2.authorizedTunnel.MSG_TYPES = {
-        VAR_REQ: "TUNNEL_VAR",
-        VAR_RESULT: "TUNNEL_VAR_VALUE",
-        VAR_ERROR: "TUNNEL_VAR_ERROR",
-        FUNC_REQ:  "TUNNEL_FUNC",
-        FUNC_RESULT: "TUNNEL_FUNC_RESULT",
-        FUNC_ERROR: "TUNNEL_FUNC_ERROR"
-    };
     // data model to save authorized var/func
     let tempAuths= {
         functions: [],
@@ -50,7 +54,7 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
             cl_messageDB[msgId].reject = reject;
             // now send the message
             let msg = {
-                msgType: i2b2.authorizedTunnel.MSG_TYPES.VAR_REQ,
+                msgType: i2b2.MSG_TYPES.TUNNEL.VAR_REQ,
                 msgId: msgId,
                 variablePath: varPath,
                 variableAction: action
@@ -70,7 +74,7 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
             cl_messageDB[msgId].reject = reject;
             // now send the message
             let msg = {
-                msgType: i2b2.authorizedTunnel.MSG_TYPES.FUNC_REQ,
+                msgType: i2b2.MSG_TYPES.TUNNEL.FUNC_REQ,
                 msgId: msgId,
                 functionPath: funcPath,
                 functionArguments: argumentsArray
@@ -85,16 +89,16 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
         if (msgId === undefined || cl_messageDB[eventData.msgId] === undefined) return false;
         // see if it is an error
 
-        if (["TUNNEL_VAR_ERROR", "TUNNEL_FUNC_ERROR"].includes(eventData.msgType)) {
+        if ([i2b2.MSG_TYPES.TUNNEL.VAR_ERROR, i2b2.MSG_TYPES.TUNNEL.FUNC_ERROR].includes(eventData.msgType)) {
             // reject the promise
             cl_messageDB[eventData.msgId].reject(eventData);
         } else {
             // resolve the promise
             switch (eventData.msgType) {
-                case i2b2.authorizedTunnel.MSG_TYPES.VAR_RESULT:
+                case i2b2.MSG_TYPES.TUNNEL.VAR_RESULT:
                     cl_messageDB[eventData.msgId].resolve(eventData.variableValue);
                     break;
-                case i2b2.authorizedTunnel.MSG_TYPES.FUNC_RESULT:
+                case i2b2.MSG_TYPES.TUNNEL.FUNC_RESULT:
                     cl_messageDB[eventData.msgId].resolve(eventData);
                     break;
             }
@@ -169,7 +173,7 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
     // ----------------------------------------------------------------------
     window.addEventListener("message", (event) => {
         if (event.origin === window.location.origin) {
-            let MSG_TYPES = i2b2.authorizedTunnel.MSG_TYPES;
+            let MSG_TYPES = i2b2.MSG_TYPES.TUNNEL;
             if ([MSG_TYPES.VAR_RESULT, MSG_TYPES.FUNC_RESULT, MSG_TYPES.VAR_ERROR, MSG_TYPES.FUNC_ERROR].includes(event.data.msgType)) {
                 cl_func_receiveMsg(event.data);
             }
@@ -179,7 +183,5 @@ window.addEventListener("I2B2_INIT_TUNNEL", function(event) {
 
     // once initialized, sent the ready signal to the plugin's i2b2 loader
     // ----------------------------------------------------------------------
-    window.dispatchEvent(new Event('I2B2_TUNNEL_READY'));
+    window.dispatchEvent(new Event(i2b2.MSG_TYPES.TUNNEL.LIB_READY));
 });
-
-
