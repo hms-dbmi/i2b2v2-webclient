@@ -1372,58 +1372,6 @@
         return orphans;
     }
 
-
-    Tree.prototype.deleteNodeRecursive = function (nodeID) {
-        // console.error("Not Refactored");
-        // // get the index of the node in nodes.list (this is single instance)
-        // var nodeIndex = false;
-        // for (var i=0; i < this.nodes.length; i++) {                                                                     // TODO: Change this to an object
-        //     if (this.nodes[i].nodeId == nodeId) {                                                                       // TODO: Change this to an object
-        //         nodeIndex = i;
-        //         break;
-        //     }
-        // }
-        // // node was not found
-        // if (!this.nodes.has(nodeIndex)) return [];
-        //
-        // // delete any child nodes
-        // var childNodes = [];
-        // if (typeof this.nodes[nodeIndex].nodes !== 'undefined' && this.nodes[nodeIndex].nodes.length > 0) {             // TODO: Change this to an object
-        //     this.nodes[nodeIndex].nodes.forEach(function(childNode) {                                                   // TODO: Change this to an object
-        //         var deletedChildren = this.deleteNodeRecursive(childNode.nodeId);
-        //         childNodes.concat(deletedChildren);
-        //     });
-        // }
-        //
-        // // delete the node itself from the tree's tree array
-        // var recurseTree = function(id, treeNode) {
-        //     if (typeof treeNode.nodes !== 'undefined' && treeNode.nodes.length > 0) {
-        //         treeNode.forEach(function (subtreeNode, index) {
-        //             if (subtreeNode.nodeId === id) {
-        //                 // delete the node itself
-        //                 delete treeNode[index];
-        //             }
-        //         });
-        //     }
-        // };
-        //
-        // // delete the node itself from the tree's "tree" array
-        // recurseTree(nodeIndex, this.tree);
-        // // delete the node's children from the tree's "tree" array
-        // this.tree.forEach(function (subtreeNode, index) {
-        //     if (subtreeNode.nodeId === id) {
-        //         // delete the node itself
-        //         delete treeNode[index];
-        //     }
-        // });
-        //
-        // // delete the node itself from the tree's "nodes" array
-        // delete this.nodes[nodeIndex];                                                                                   // TODO: Change this to an object
-        // // return a list of all nodes that were deleted
-        // return childNodes;
-    };
-
-
     Tree.prototype.deleteNodes = function (targetNodes, resetDynamicLoading) {
 //        this.forEachIdentifier(targetNodes, options, $.proxy(function (node, options) {
 //            this.setDisabledState(node, !node.state.disabled, options);
