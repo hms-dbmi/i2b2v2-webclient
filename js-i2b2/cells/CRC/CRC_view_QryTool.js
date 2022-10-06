@@ -991,7 +991,7 @@ i2b2.events.afterCellInit.add(
 
                     i2b2.sdx.Master.AttachType(queryName, 'QM');
                     i2b2.sdx.Master.setHandlerCustom(queryName, 'QM', 'DropHandler',function(sdxData, elem) {
-                       $(elem.target).prop("placeholder", sdxData.sdxInfo.sdxDisplayName);
+                        $(elem.target).prop("placeholder", sdxData.sdxInfo.sdxDisplayName);
                         $(elem.target).removeClass("DropHover");
                     });
 
