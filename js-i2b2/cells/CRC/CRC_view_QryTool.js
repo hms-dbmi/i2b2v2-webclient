@@ -995,14 +995,12 @@ i2b2.events.afterCellInit.add(
                         $(elem.target).removeClass("DropHover");
                     });
 
-                    let funcHovOverQM = function(elem) {
-                        $(elem).addClass("DropHover");
-                    }
-                    let funcHovOutQM = function(elem) {
+                    i2b2.sdx.Master.setHandlerCustom(queryName, 'QM', 'onHoverOut', function(elem) {
                         $(elem).removeClass("DropHover");
-                    }
-                    i2b2.sdx.Master.setHandlerCustom(queryName, 'QM', 'onHoverOut', funcHovOutQM);
-                    i2b2.sdx.Master.setHandlerCustom(queryName, 'QM', 'onHoverOver', funcHovOverQM);
+                    });
+                    i2b2.sdx.Master.setHandlerCustom(queryName, 'QM', 'onHoverOver', function(elem) {
+                        $(elem).addClass("DropHover");
+                    });
 
                     container.on('open', () => {
                         // capture "run query" button click ---------------------------------------------------
