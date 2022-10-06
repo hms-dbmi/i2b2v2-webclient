@@ -189,26 +189,14 @@ i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {
     i2b2.WORK.ajax.annotateChild("WORK:Workplace", varInput, scopedCallback);
 }
 i2b2.WORK.ctrlr.main.handleNewFolder = function (parent_node, fldrName) {
-    //let fldrName = prompt("What name should be used for the new folder?", "New Folder");
-    //if (!fldrName)  return false;
-
     // create callback display routine
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = parent_node;
     scopedCallback.callback = function(results) {
-        let cl_new_key = newChildKey;
-        let cl_parent_node = parent_node;
         if (results.error) {
             alert("An error occurred while trying to create a new work item!");
         } else {
-            // TODO: THIS IS NOT DONE YET!
-            // whack the "already loaded" status out of the parent node and initiate a
-            // dynamic reloading of the childs nodes (including our newest addition)
-            // You may need to delete the child nodes first
-            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
-            temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
-            i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
-            i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
+            i2b2.WORK.view.main.refreshNode(parent_node, true);
         }
     };
 
