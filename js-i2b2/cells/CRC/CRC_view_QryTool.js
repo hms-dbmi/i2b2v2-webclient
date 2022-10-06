@@ -1010,8 +1010,6 @@ i2b2.events.afterCellInit.add(
                             evt.target.blur();
                             // only run if the query has entries
                             if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
-                            console.log("attaching type");
-
                         });
 
                         // capture "clear query" button click -------------------------------------------------
