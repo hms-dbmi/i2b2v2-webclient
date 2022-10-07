@@ -1058,17 +1058,7 @@ i2b2.events.afterCellInit.add(
 
             cell.model.resultTypes = {
                 "PATIENTSET": "Patient set",
-                "PATIENT_ENCOUNTER_SET":"Encounter set",
-                "PATIENT_COUNT_XML": "Number of patients",
-                "PATIENT_GENDER_COUNT_XML": "Gender patient breakdown",
-                "PATIENT_VITALSTATUS_COUNT_XML": "Vital Status patient breakdown",
-                "PATIENT_RACE_COUNT_XML": "Race patient breakdown",
-                "PATIENT_AGE_COUNT_XML": "Age patient breakdown",
-                // "PATIENTSET": "Timeline",
-                "PATIENT_LOS_XML": "Length of stay breakdown",
-                "PATIENT_TOP50MEDS_XML": "Top 50 medications breakdown",
-                "PATIENT_TOP50DIAG_XML": "Top 50 diangosis breakdown",
-                "PATIENT_INOUT_XML": "Inpatient and outpatient breakdown",
+                "PATIENT_COUNT_XML": "Number of patients"
             };
             cell.model.selectedResultTypes = [
                 "PATIENT_COUNT_XML"
