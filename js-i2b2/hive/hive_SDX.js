@@ -417,6 +417,11 @@ i2b2.sdx.Master.getChildRecords = function(sdxParent, onCompleteCallback) {
 // ================================================================================================== //
 // hack to allow drag targets to alter their target DOM
 document.addEventListener("dragstart", function(event) {
+    // <BUG FIX> for Chrome and Edge!
+    let gl = $('.goldenLayout')[0];
+    gl.style.display = 'inline-block';
+    setTimeout(()=>{gl.style.display = '';}, 0);
+    // </BUG FIX>
     $(".i2b2DropTarget").addClass("i2b2DropPrep");
 }, false);
 
