@@ -1,3 +1,5 @@
+console.group('Load & Execute component file: WORK > view > main');
+console.time('execute time');
 
 
 i2b2.WORK.view.main = new i2b2Base_cellViewController(i2b2.WORK, 'main');
@@ -146,6 +148,7 @@ i2b2.WORK.view.main.loadChildren = function(e, nodeData){
             function(parent, parentKey){ return parent.key === parentKey },
             parentNode
         ]);
+
         // render tree
         i2b2.WORK.view.main.treeview.treeview('redraw', []);
         // reset the loading icon in the stack buttons list
@@ -189,8 +192,10 @@ i2b2.WORK.view.main.DropChecker = function(targetEl, ev, parentEl) {
     let nodeID = $(targetEl).data("nodeid");
     if (typeof nodeID === "undefined") return false;
     // get the treeview node data
-    let nodeData = $(parentEl).data("treeview").getNode(nodeID);
-    return (nodeData.i2b2.origData.visual === "CA" || nodeData.i2b2.origData.visual === "FA" );
+    //let nodeData =$(targetEl).parent().parent().data("treeview").getNode(nodeID); //$(parentEl).data("treeview").getNode(nodeID);
+
+    let nodeData = i2b2.WORK.view.main.treeview.data("treeview").getNode(nodeID);
+    return (["CA", "FA"].includes(nodeData.i2b2.origData.visual));
 };
 
 
@@ -198,8 +203,46 @@ i2b2.WORK.view.main.DropChecker = function(targetEl, ev, parentEl) {
 i2b2.WORK.view.main.treeRedraw = function() {
     // attach HTML5 drag drop attribute
     i2b2.WORK.view.main.lm_view._contentElement.find('li:not(:has(span.tv-depth-1))').attr("draggable", true);
-};
+    i2b2.WORK.view.main.treeview.treeview('getNodes', function() { return true }).forEach((treeItem) => {
+        let treeview = $(treeItem.el_Node);
+        if (treeItem.el_Node.hasClass("i2b2DropPrep") || treeItem.el_Node.hasClass("i2b2DropTarget")) return;
 
+        i2b2.sdx.Master.AttachType(treeview, "CONCPT");
+        i2b2.sdx.Master.AttachType(treeview, "WRK");
+        i2b2.sdx.Master.AttachType(treeview, "QM");
+        i2b2.sdx.Master.AttachType(treeview, "QI");
+        i2b2.sdx.Master.AttachType(treeview, "PRC");
+        i2b2.sdx.Master.AttachType(treeview, "PRS");
+        i2b2.sdx.Master.AttachType(treeview, "ENS");
+        i2b2.sdx.Master.AttachType(treeview, "PR");
+        /* i2b2.sdx.Master.AttachType(treeview, "QDEF");
+         i2b2.sdx.Master.AttachType(treeview, "QGDEF");
+         i2b2.sdx.Master.AttachType(treeview, "XML");*/
+
+        i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropHandler", i2b2.WORK.view.main.DropHandler);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropHandler", i2b2.WORK.view.main.DropHandler);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropHandler", i2b2.WORK.view.main.DropHandler);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropHandler", i2b2.WORK.view.main.DropHandler);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropHandler", i2b2.WORK.view.main.DropHandler);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropHandler", i2b2.WORK.view.main.DropHandler);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropHandler", i2b2.WORK.view.main.DropHandler);
+        /*i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropHandler", i2b2.WORK.view.main.DropHandler);*/
+
+        i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropChecker", i2b2.WORK.view.main.DropChecker);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropChecker", i2b2.WORK.view.main.DropChecker);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropChecker", i2b2.WORK.view.main.DropChecker);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropChecker", i2b2.WORK.view.main.DropChecker);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropChecker", i2b2.WORK.view.main.DropChecker);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropChecker", i2b2.WORK.view.main.DropChecker);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropChecker", i2b2.WORK.view.main.DropChecker);
+        /*i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
+        i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropChecker", i2b2.WORK.view.main.DropChecker);*/
+
+    });
+};
 // ======================================================================================
 i2b2.WORK.view.main.refreshNode = function(target_node, isParent){
     let parentNode;
@@ -214,7 +257,39 @@ i2b2.WORK.view.main.refreshNode = function(target_node, isParent){
     parentNode.refTreeview.expandNode(parentNode.nodeId);
 }
 // ======================================================================================
+i2b2.WORK.view.main.DropHandler = function(sdx, evt){
+    let treeview = $(evt.currentTarget).closest(".treeview").data("treeview");
+    // remove the hover and drop target fix classes
+    $(evt.target).closest(".i2b2DropTarget").removeClass("DropHover");
+    $(evt.target).closest(".i2b2DropTarget").removeClass("i2b2DropPrep");
 
+    let dropTarget = treeview.getNode($(evt.originalEvent.target).data("nodeid"));
+
+    // see if we are moving a node within the workspace
+    let droppedNodeKey = sdx.sdxInfo.sdxKeyValue;
+    if (dropTarget.i2b2.sdxInfo.sdxType === "WRK") {
+        // we can only drop things into a workspace folder
+        if (sdx.sdxInfo.sdxType === "WRK") {
+            // Drag and drop within the Workspace
+            let parentNode = treeview.getParent(dropTarget.nodeId);
+            // See if user is trying to drag a parent into the child (this should be prevented!)
+            while (parentNode !== undefined) {
+                // drill up the ancestor nodes to see if any of them have been dropped on one of their children
+                if (parentNode.i2b2.sdxInfo.sdxKeyValue === droppedNodeKey) {
+                    alert("You cannot move a parent folder into a folder that is its child.");
+                    return false;
+                }
+                parentNode = treeview.getParent(parentNode.nodeId);
+            }
+            console.dir({type: "within workspace", dropTarget: dropTarget, toSave: sdx});
+            i2b2.WORK.ctrlr.main.moveItem(sdx, dropTarget);
+        } else {
+            // saves the external item to the workspace
+            i2b2.WORK.ctrlr.main.AddWorkItem(sdx, dropTarget);
+        }
+    }
+
+};
 // ======================================================================================
 i2b2.WORK.view.main.displayContextDialog = function(inputData){
     let contextDialogModal = $("#workContextDialog");
@@ -277,41 +352,41 @@ i2b2.events.afterCellInit.add((function(cell){
                 i2b2.WORK.ctrlr.refreshAll();
 
                 // attach SDX object DragDrop handlers
-                let treeview = i2b2.WORK.view.main.treeview[0];
-                i2b2.sdx.Master.AttachType(treeview, "QM");
-                i2b2.sdx.Master.AttachType(treeview, "QI");
-                i2b2.sdx.Master.AttachType(treeview, "PRC");
-                i2b2.sdx.Master.AttachType(treeview, "PRS");
-                i2b2.sdx.Master.AttachType(treeview, "ENS");
-                i2b2.sdx.Master.AttachType(treeview, "PR");
-                i2b2.sdx.Master.AttachType(treeview, "CONCPT");
-                i2b2.sdx.Master.AttachType(treeview, "QDEF");
-                i2b2.sdx.Master.AttachType(treeview, "QGDEF");
-                i2b2.sdx.Master.AttachType(treeview, "XML");
-                i2b2.sdx.Master.AttachType(treeview, "WRK");
+                /* let treeview = i2b2.WORK.view.main.treeview[0];
+                 i2b2.sdx.Master.AttachType(treeview, "QM");
+                 i2b2.sdx.Master.AttachType(treeview, "QI");
+                 i2b2.sdx.Master.AttachType(treeview, "PRC");
+                 i2b2.sdx.Master.AttachType(treeview, "PRS");
+                 i2b2.sdx.Master.AttachType(treeview, "ENS");
+                 i2b2.sdx.Master.AttachType(treeview, "PR");
+                 i2b2.sdx.Master.AttachType(treeview, "CONCPT");
+                 i2b2.sdx.Master.AttachType(treeview, "QDEF");
+                 i2b2.sdx.Master.AttachType(treeview, "QGDEF");
+                 i2b2.sdx.Master.AttachType(treeview, "XML");
+                 i2b2.sdx.Master.AttachType(treeview, "WRK");
 
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropHandler", i2b2.WORK.view.main.DropHandler);
 
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropChecker", i2b2.WORK.view.main.DropChecker);
-
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 */
 
 
                 // -------------------- setup context menu --------------------
