@@ -31,6 +31,140 @@ function QueryToolController() {
 
 // ================================================================================================== //
     this.doQueryLoad = function(qm_id) {  // function to load query from Query History or Workspace
+        // clear existing query
+        i2b2.CRC.view.QT.clearAll();
+        // show on GUI that work is being done
+        //i2b2.h.LoadingMask.show();
+
+        // callback processor
+        var scopedCallback = new i2b2_scopedCallback();
+        scopedCallback.scope = this;
+        scopedCallback.callback = function(results) {
+            var cl_queryMasterId = qm_id;
+            // THIS function is used to process the AJAX results of the getChild call
+            //		results data object contains the following attributes:
+            //			refXML: xmlDomObject <--- for data processing
+            //			msgRequest: xml (string)
+            //			msgResponse: xml (string)
+            //			error: boolean
+            //			errorStatus: string [only with error=true]
+            //			errorMsg: string [only with error=true]
+            i2b2.CRC.view.QT.queryRequest = results.msgRequest;
+            i2b2.CRC.view.QT.queryResponse = results.msgResponse;
+            //TODO MARCDANIE Is showDisplay still needed
+            // switch to status tab
+            //i2b2.CRC.view.status.showDisplay();
+
+            // did we get a valid query definition back?
+            var qd = i2b2.h.XPath(results.refXML, 'descendant::query_name/..');
+            if (qd.length !== 0) {
+                //i2b2.CRC.view.QT.clearAll();
+                let dObj = {};
+                dObj.name = i2b2.h.getXNodeVal(results.refXML,'name');
+                this.doSetQueryName(dObj.name);
+                dObj.timing = i2b2.h.XPath(qd[0],'descendant-or-self::query_timing/text()');
+                dObj.specificity = i2b2.h.getXNodeVal(qd[0],'specificity_scale');
+
+                for (var j=0; j <qd.length; j++) {
+                    dObj.panels = [];
+                    let qp;
+                    if (j===0)
+                        qp = i2b2.h.XPath(qd[j], 'panel');
+                    else
+                        qp = i2b2.h.XPath(qd[j], 'descendant::panel');
+
+                    let total_panels = qp.length;
+                    for (let i1=0; i1<total_panels; i1++) {
+
+                        let sdxDataNodeList = [];
+                        let pi = i2b2.h.XPath(qp[i1], 'descendant::item[item_key]');
+                        for (let i2=0; i2<pi.length; i2++) {
+                            let itm = {};
+                            // get the item's details from the ONT Cell
+                            let ckey = i2b2.h.getXNodeVal(pi[i2],'item_key');
+
+                            // Determine what item this is
+                            let sdxDataNode;
+                            if (ckey.toLowerCase().startsWith("query_master_id")) {
+                                let o = {};
+                                o.name =i2b2.h.getXNodeVal(pi[i2],'item_name');
+                                o.id = ckey.substring(16);
+                                o.result_instance_id = o.PRS_id ;
+
+                                sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
+                            } else 	if (ckey.toLowerCase().startsWith("masterid")) {
+                                let o = {};
+                                o.name =i2b2.h.getXNodeVal(pi[i2],'item_name');
+                                o.id = ckey;
+                                o.result_instance_id = o.PRS_id ;
+
+                                sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
+                            } else  if (ckey.toLowerCase().startsWith("folder")) {
+                                let o = {};
+                                o.titleCRC =  i2b2.h.getXNodeVal(pi[i2],'item_name');
+                                o.PRS_id = ckey.substring(19);
+                                o.result_instance_id = o.PRS_id ;
+                                o.id = ckey;
+
+                                sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS',o);
+                            } else if (ckey.toLowerCase().startsWith("patient_set_coll_id")) {
+                                let o = {};
+                                o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
+                                o.PRS_id = ckey.substring(20);
+                                o.result_instance_id = o.PRS_id ;
+
+                                sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS',o);
+                            } else if (ckey.toLowerCase().startsWith("patient_set_enc_id")) {
+                                let o = {};
+                                o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
+                                o.PRS_id = ckey.substring(19);
+                                o.result_instance_id = o.PRS_id ;
+
+                                sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
+                            } else {
+                                let o = {};
+                                o.level = i2b2.h.getXNodeVal(pi[i2],'hlevel');
+                                o.name = i2b2.h.getXNodeVal(pi[i2],'item_name');
+                                o.tooltip = i2b2.h.getXNodeVal(pi[i2],'tooltip');
+
+                                // nw096 - If string starts with path \\, lookup path in Ontology cell
+                                if(o.name.slice(0, 2) === '\\\\'){
+                                    let results = i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.name}).parse();
+                                    if(results.model.length > 0){
+                                        o.name = results.model[0].origData.name;
+                                        o.tooltip = results.model[0].origData.tooltip;
+                                    }
+                                }
+
+                                o.key = i2b2.h.getXNodeVal(pi[i2],'item_key');
+                                o.synonym_cd = i2b2.h.getXNodeVal(pi[i2],'item_is_synonym');
+                                o.hasChildren = i2b2.h.getXNodeVal(pi[i2],'item_icon');
+
+                                // Lab Values processing
+                                let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
+                                /////
+
+                                // sdx encapsulate
+                                sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
+                                let renderOptions = {};
+                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                                if (itm.dateFrom) {
+                                    sdxDataNode.dateFrom = itm.dateFrom;
+                                }
+                                if (itm.dateTo) {
+                                    sdxDataNode.dateTo = itm.dateTo;
+                                }
+                            }
+                            sdxDataNodeList.push(sdxDataNode);
+                        }
+                        i2b2.CRC.view.QT.addNewQueryGroup(sdxDataNodeList);
+                    }
+                    i2b2.CRC.view.QT.render();
+                }
+            }
+        }
+        // AJAX CALL
+        i2b2.CRC.ajax.getRequestXml_fromQueryMasterId("CRC:QueryTool", { qm_key_value: qm_id }, scopedCallback);
     };
 
 // ================================================================================================== //

@@ -105,13 +105,11 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
             sdxData.origData.hasChildren = sdxData.origData.hasChildren.replace("A","I");
         }
     }
+
     if (sdxData.origData.hasChildren.substring(2,1) === "I") {
         bCanExp = true;
-        sDD = " style='color: #c0c0c0;' ";
     } else if (sdxData.origData.hasChildren.substring(2,1) === "H") {
-        sDD += " style='color: #c00000;' ";
     } else if ((sdxData.origData.synonym_cd !== undefined) && (sdxData.origData.synonym_cd !== 'N')) {
-        sDD += " style='color: #0000ff;' ";
     }
 
     // see if we can expand
@@ -120,28 +118,26 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
         nodeInfo.tvNodeState.expanded = true;
     }
 
-    if (icon !== undefined) {
-        if (options.icon[icon] !== undefined) {
-            nodeInfo.iconImg = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ options.icon[icon];
-        }
-        if (options.icon[icon+'Exp'] !== undefined) {
-            nodeInfo.iconImgExp = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ options.icon[icon+'Exp'];
-        }
-        // in cases of one set icon, copy valid icon to the missing icon
-        if ((nodeInfo.iconImg === undefined) && (nodeInfo.iconImgExp !== undefined)) nodeInfo.iconImg = nodeInfo.iconImgExp;
-        if ((nodeInfo.iconImg !== undefined) && (nodeInfo.iconImgExp === undefined)) nodeInfo.iconImgExp = nodeInfo.iconImg;
+    if (options.icon[icon] !== undefined) {
+        nodeInfo.iconImg = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ options.icon[icon];
+    }
+    if (options.icon[icon+'Exp'] !== undefined) {
+        nodeInfo.iconImgExp = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/'+ options.icon[icon+'Exp'];
+    }
+    // in cases of one set icon, copy valid icon to the missing icon
+    if ((nodeInfo.iconImg === undefined) && (nodeInfo.iconImgExp !== undefined)) nodeInfo.iconImg = nodeInfo.iconImgExp;
+    if ((nodeInfo.iconImg !== undefined) && (nodeInfo.iconImgExp === undefined)) nodeInfo.iconImgExp = nodeInfo.iconImg;
 
-        switch(icon) {
-            case "root":
-                nodeInfo.cssClassMinor = "tvRoot";
-                break;
-            case "branch":
-                nodeInfo.cssClassMinor = "tvBranch";
-                break;
-            case "leaf":
-                nodeInfo.cssClassMinor = "tvLeaf";
-                break;
-        }
+    switch(icon) {
+        case "root":
+            nodeInfo.cssClassMinor = "tvRoot";
+            break;
+        case "branch":
+            nodeInfo.cssClassMinor = "tvBranch";
+            break;
+        case "leaf":
+            nodeInfo.cssClassMinor = "tvLeaf";
+            break;
     }
 
     // cleanup
