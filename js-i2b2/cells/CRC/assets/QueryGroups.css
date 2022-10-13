@@ -5,7 +5,8 @@
 
 .Event1Container.i2b2DropTarget.DropHover,
 .Event2Container.i2b2DropTarget.DropHover,
-.Event1Container .i2b2DropTarget.DropHover {
+.Event1Container .i2b2DropTarget.DropHover,
+.CRC_QT_runbar .i2b2DropTarget.DropHover {
     background: #d1f0ff;
 }
 
@@ -46,7 +47,7 @@
 }
 
 .CRC_QT_view .CRC_QT_runbar {
-    background: #b0c7ce;/*#cdd8db;*/ /*#82a6b2;*/
+    background: #b0c7ce;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -135,7 +136,6 @@
 
 .CRC_QT_runbar .button-clear:active{
     border-color:#be9566;
-    /*box-shadow: none*/
 }
 
 .hoverover {

@@ -62,42 +62,18 @@ i2b2.WORK.ctrlr.main.moveItem = function(target_nodeTV, new_parent_nodeTV) {
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.NewFolder = function(parent_node) {
-    let fldrName = prompt("What name should be used for the new folder?", "New Folder");
-    if (!fldrName)  return false;
-
-    // create callback display routine
-    let scopedCallback = new i2b2_scopedCallback();
-    scopedCallback.scope = parent_node;
-    scopedCallback.callback = function(results) {
-        let cl_new_key = newChildKey;
-        let cl_parent_node = parent_node;
-        if (results.error) {
-            alert("An error occurred while trying to create a new work item!");
-        } else {
-            // TODO: THIS IS NOT DONE YET!
-            // whack the "already loaded" status out of the parent node and initiate a
-            // dynamic reloading of the childs nodes (including our newest addition)
-            // You may need to delete the child nodes first
-            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
-            temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
-            i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
-            i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
-        }
+    let okCallback =function(newValue){
+        i2b2.WORK.ctrlr.main.handleNewFolder(parent_node, newValue);
     };
 
-    let newChildKey = i2b2.h.GenerateAlphaNumId(20);
-    let pn = parent_node.i2b2;
-    let varInput = {
-            child_name: fldrName,
-            share_id: pn.origData.share_id,
-            child_index: newChildKey,
-            parent_key_value: pn.sdxInfo.sdxKeyValue,
-            child_visual_attributes: "FA",
-            child_annotation: "FOLDER:"+fldrName,
-            child_work_type: "FOLDER",
-            result_wait_time: 180
+    let data = {
+        "title": "Create New Folder",
+        "prompt": "What name should be used for the new folder?",
+        "inputValue": "New Folder",
+        "onOk": okCallback
     };
-    i2b2.WORK.ajax.addChild("WORK:Workplace", varInput, scopedCallback);
+
+    i2b2.WORK.view.main.displayContextDialog(data);
 };
 
 
@@ -108,10 +84,138 @@ i2b2.WORK.ctrlr.main.Rename = function(target_node) {
         console.error("The target node does not have SDX data attached.");
         return false;
     }
-    let origName = nd.origData.name;
-    let newName = prompt('Rename this work item to:', origName);
-    if (!newName || newName === origName) return false;
 
+    let origName = nd.origData.name;
+
+    let okCallback = function(newValue){
+        if(newValue && newValue.length > 0) {
+            i2b2.WORK.ctrlr.main.handleRename(target_node, newValue);
+        }
+    };
+    let data = {
+        "title": "Rename Work Item",
+        "prompt": "Rename this work item to:",
+        "placeHolder": origName,
+        "onOk": okCallback,
+    };
+
+    i2b2.WORK.view.main.displayContextDialog(data);
+};
+
+
+// ======================================================================================
+i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
+    // TODO: This needs to be done
+    let nd = target_node.i2b2;
+    if (!options) { options = {}; }
+    if (!options.silent) {
+
+        let nodeTitle = target_node.text;
+        nodeTitle = String(nodeTitle).trim();
+        let confirmMsg;
+        if (nd.origData.encapType === "FOLDER") {
+            confirmMsg = 'Are you sure you want to delete the folder "'+nodeTitle+'" and all of it\'s contents?';
+        } else {
+            confirmMsg = 'Are you sure you want to delete "'+nodeTitle+'"?';
+        }
+        let okCallback = function(){
+            i2b2.WORK.ctrlr.main.handleDelete(target_node, options, nd);
+        };
+        let data = {
+            "title": "Delete work item",
+            "confirmMsg": confirmMsg,
+            "onOk": okCallback,
+        };
+        i2b2.WORK.view.main.displayContextDialog(data);
+    }
+    else {
+        i2b2.WORK.ctrlr.main.handleDelete(target_node, options, nd);
+    }
+};
+// ======================================================================================
+i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
+    // TODO: This needs to be done
+    let nd = target_node.i2b2;
+    if (typeof nd === 'undefined') {
+        console.error("The target node does not have SDX data attached.");
+        return false;
+    }
+    let origAnno = nd.origData.annotation;
+    if (!origAnno) {
+        origAnno = '';
+    } else {
+        let eachLine = origAnno.split('\n');
+        if(eachLine.length > 1){ // an annotation was found
+            let tempAnno = '';
+            for(let i = 1, l = eachLine.length; i < l; i++) {
+                tempAnno += eachLine[i];
+            }
+            origAnno = tempAnno;
+        } else {
+            origAnno = '';
+        }
+    }
+
+    let okCallback = function(newValue){
+        i2b2.WORK.ctrlr.main.handleChangeAnnotation(target_node, newValue);
+    };
+    let data = {
+        "title": "Edit Work Item Annotation",
+        "prompt": "Change this work item\'s annotation to:",
+        "placeHolder": origAnno,
+        "onOk": okCallback,
+    };
+
+    i2b2.WORK.view.main.displayContextDialog(data);
+};
+// ======================================================================================
+i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {
+    console.log("running handle change annotation");
+    // create callback display routine
+    let scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.scope = target_node;
+    scopedCallback.callback = function(results) {
+        if (results.error) {
+            alert("An error occurred while trying to annotate the selected item!");
+        } else {
+            i2b2.WORK.view.main.refreshNode(target_node);
+        }
+    };
+    let varInput = {
+        annotation_text: newAnno,
+        annotation_target_id: target_node.key,
+        result_wait_time: 180
+    };
+    i2b2.WORK.ajax.annotateChild("WORK:Workplace", varInput, scopedCallback);
+}
+i2b2.WORK.ctrlr.main.handleNewFolder = function (parent_node, fldrName) {
+    // create callback display routine
+    let scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.scope = parent_node;
+    scopedCallback.callback = function(results) {
+        if (results.error) {
+            alert("An error occurred while trying to create a new work item!");
+        } else {
+            i2b2.WORK.view.main.refreshNode(parent_node, true);
+        }
+    };
+
+    let newChildKey = i2b2.h.GenerateAlphaNumId(20);
+    let pn = parent_node.i2b2;
+    let varInput = {
+        child_name: fldrName,
+        share_id: pn.origData.share_id,
+        child_index: newChildKey,
+        parent_key_value: pn.sdxInfo.sdxKeyValue,
+        child_visual_attributes: "FA",
+        child_annotation: "FOLDER:"+fldrName,
+        child_work_type: "FOLDER",
+        result_wait_time: 180
+    };
+    i2b2.WORK.ajax.addChild("WORK:Workplace", varInput, scopedCallback);
+}
+// ======================================================================================
+i2b2.WORK.ctrlr.main.handleRename = function (target_node, newName) {
     // set loading icon in the stack buttons list
     $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
 
@@ -141,26 +245,9 @@ i2b2.WORK.ctrlr.main.Rename = function(target_node) {
         result_wait_time: 180
     };
     i2b2.WORK.ajax.renameChild("WORK:Workplace", varInput, scopedCallback);
-};
-
-
+}
 // ======================================================================================
-i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
-    // TODO: This needs to be done
-    let nd = target_node.i2b2;
-    if (!options) { options = {}; }
-    if (!options.silent) {
-        let nodeTitle = target_node.text;
-        nodeTitle = String(nodeTitle).trim();
-        let go;
-        if (nd.origData.encapType === "FOLDER") {
-            go = confirm('Are you sure you want to delete the folder "'+nodeTitle+'" and all of it\'s contents?');
-        } else {
-            go = confirm('Are you sure you want to delete "'+nodeTitle+'"?');
-        }
-        if (!go) return false;
-    }
-
+i2b2.WORK.ctrlr.main.handleDelete = function (target_node, options, nd) {
     // set loading icon in the stack buttons list
     $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
 
@@ -189,55 +276,7 @@ i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
         result_wait_time: 180
     };
     i2b2.WORK.ajax.deleteChild("WORK:Workplace", varInput, scopedCallback);
-};
-
-
-// ======================================================================================
-i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
-    // TODO: This needs to be done
-    let nd = target_node.i2b2;
-    if (typeof nd === 'undefined') {
-        console.error("The target node does not have SDX data attached.");
-        return false;
-    }
-    let origAnno = nd.origData.annotation;
-    if (!origAnno) {
-        origAnno = '';
-    } else {
-        let eachLine = origAnno.split('\n');
-        if(eachLine.length > 1){ // an annotation was found
-            let tempAnno = '';
-            for(let i = 1, l = eachLine.length; i < l; i++) {
-                tempAnno += eachLine[i];
-            }
-            origAnno = tempAnno;
-        } else {
-            origAnno = '';
-        }
-    }
-    let newAnno = prompt('Change this work item\'s annotation to:', origAnno);
-    if (!newAnno || newAnno === origAnno) { return false; }
-
-    // create callback display routine
-    let scopedCallback = new i2b2_scopedCallback();
-    scopedCallback.scope = target_node;
-    scopedCallback.callback = function(results) {
-        if (results.error) {
-            alert("An error occurred while trying to annotate the selected item!");
-        } else {
-            // GUI refresh is not needed
-            //this.data.i2b2_SDX.origData.annotation = newAnno;
-            i2b2.WORK.view.main.refreshTree();
-        }
-    };
-    let varInput = {
-        annotation_text: newAnno,
-        annotation_target_id: dn.sdxInfo.sdxKeyValue,
-        result_wait_time: 180
-    };
-    i2b2.WORK.ajax.annotateChild("WORK:Workplace", varInput, scopedCallback);
-};
-
+}
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.HandleDrop = function(sdxDropped) {

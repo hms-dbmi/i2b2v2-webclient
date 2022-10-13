@@ -40,9 +40,12 @@ i2b2.CRC.view.QT.showRun = function() {
         // ==> i2b2.CRC.model.selectedResultTypes
         let checkContainer = $("#crcModal .ResultTypes");
         for (let code in i2b2.CRC.model.resultTypes) {
-            let checked = '';
-            if (i2b2.CRC.model.selectedResultTypes.includes(code)) checked = ' checked="checked" ';
-            $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + i2b2.CRC.model.resultTypes[code] + '</div>').appendTo(checkContainer);
+            let descriptions = i2b2.CRC.model.resultTypes[code];
+            descriptions.forEach(description => {
+                let checked = '';
+                if (i2b2.CRC.model.selectedResultTypes.includes(code)) checked = ' checked="checked" ';
+                $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(checkContainer);
+            });
         }
 
         // now show the modal form
@@ -970,20 +973,34 @@ i2b2.events.afterCellInit.add(
 
                     // add the cellWhite flare
                     cell.view.QT.containerRoot = $('<div class="CRC_QT_view"></div>').appendTo(cell.view.QT.lm_view._contentElement);
-                    $('<div class="CRC_QT_runbar">' +
-                        '<div class="left">' +
-                            '<label>Name:</label>' +
-                        '</div>' +
-                        '<div class="center">' +
-                            '<input class="name">' +
-                        '</div>' +
-                        '<div class="right">' +
-                            '<button type="button" class="btn btn-primary btn-sm button-run">Find Patients</button>' +
-                            '<button type="button" class="btn btn-primary btn-sm button-clear">Clear All</button>' +
-                        '</div>' +
-                    '</div>')
-                        .appendTo(cell.view.QT.containerRoot)
+                    let runBar = $('<div class="CRC_QT_runbar">' +
+                            '<div class="left">' +
+                                '<label>Name:</label>' +
+                            '</div>' +
+                        '</div>');
+                    let queryName = $('<input id="queryName" class="name">');
+                    $('<div class="center"></div>').append(queryName).appendTo(runBar);
+                    runBar.append('<div class="right">' +
+                        '<button type="button" class="btn btn-primary btn-sm button-run">Find Patients</button>' +
+                        '<button type="button" class="btn btn-primary btn-sm button-clear">Clear All</button>' +
+                        '</div>');
+
+                    runBar.appendTo(cell.view.QT.containerRoot);
+
                     cell.view.QT.containerDiv = $('<div class="CRC_QT_query"></div>').appendTo(cell.view.QT.containerRoot);
+
+                    i2b2.sdx.Master.AttachType(queryName, 'QM');
+                    i2b2.sdx.Master.setHandlerCustom(queryName, 'QM', 'DropHandler',function(sdxData, elem) {
+                        $(elem.target).prop("placeholder", sdxData.sdxInfo.sdxDisplayName);
+                        $(elem.target).removeClass("DropHover");
+                    });
+
+                    i2b2.sdx.Master.setHandlerCustom(queryName, 'QM', 'onHoverOut', function(elem) {
+                        $(elem).removeClass("DropHover");
+                    });
+                    i2b2.sdx.Master.setHandlerCustom(queryName, 'QM', 'onHoverOver', function(elem) {
+                        $(elem).addClass("DropHover");
+                    });
 
                     container.on('open', () => {
                         // capture "run query" button click ---------------------------------------------------
@@ -1000,6 +1017,7 @@ i2b2.events.afterCellInit.add(
                             if (i2b2.CRC.model.query.groups.length === 0) return;
                             i2b2.CRC.ctrlr.QT.clearQuery();
                             i2b2.CRC.view.QT.clearQuery();
+                            i2b2.CRC.view.QS.clearQuery();
                         });
                     });
 
@@ -1056,28 +1074,48 @@ i2b2.events.afterCellInit.add(
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItem.xml"); }
             });
 
-            cell.model.resultTypes = {
-                "PATIENTSET": "Patient set",
-                "PATIENT_ENCOUNTER_SET":"Encounter set",
-                "PATIENT_COUNT_XML": "Number of patients",
-                "PATIENT_GENDER_COUNT_XML": "Gender patient breakdown",
-                "PATIENT_VITALSTATUS_COUNT_XML": "Vital Status patient breakdown",
-                "PATIENT_RACE_COUNT_XML": "Race patient breakdown",
-                "PATIENT_AGE_COUNT_XML": "Age patient breakdown",
-                // "PATIENTSET": "Timeline",
-                "PATIENT_LOS_XML": "Length of stay breakdown",
-                "PATIENT_TOP50MEDS_XML": "Top 50 medications breakdown",
-                "PATIENT_TOP50DIAG_XML": "Top 50 diangosis breakdown",
-                "PATIENT_INOUT_XML": "Inpatient and outpatient breakdown",
-            };
-            cell.model.selectedResultTypes = [
-                "PATIENT_COUNT_XML"
-            ];
             cell.model.query = {
                 name: 'default query name',
                 groups: []
             };
 
+            //Update the result types from ajax call
+            var scopedCallback = new i2b2_scopedCallback();
+            scopedCallback.callback = function(results) {
+                //var cl_onCompleteCB = onCompleteCallback;
+                // THIS function is used to process the AJAX results of the getChild call
+                //		results data object contains the following attributes:
+                //			refXML: xmlDomObject <--- for data processing
+                //			msgRequest: xml (string)
+                //			msgResponse: xml (string)
+                //			error: boolean
+                //			errorStatus: string [only with error=true]
+                //			errorMsg: string [only with error=true]
+                cell.model.resultTypes = {};
+
+                if(results.error){
+                    console.log("ERROR: Unable to retrieve result types from server", results.msgResponse);
+                }
+                else{
+                    // extract records from XML msg
+                    let ps = results.refXML.getElementsByTagName('query_result_type');
+                    cell.model.selectedResultTypes = [];
+                    for(let i1=0; i1<ps.length; i1++) {
+                        let name = i2b2.h.getXNodeVal(ps[i1],'name');
+                        let visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
+                        if (visual_attribute_type === "LA") {
+                            if(cell.model.resultTypes[name] === undefined){
+                                cell.model.resultTypes[name] = [];
+                            }
+                            cell.model.resultTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
+                            if(name === "PATIENT_COUNT_XML"){
+                                cell.model.selectedResultTypes.push(name);
+                            }
+                        }
+                    }
+                }
+            }
+            i2b2.CRC.ajax.getQRY_getResultType("CRC:QueryTool", null, scopedCallback);
         }
     }
 );

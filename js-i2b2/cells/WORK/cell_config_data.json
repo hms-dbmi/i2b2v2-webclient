@@ -11,7 +11,7 @@
     "assets/sdx_WORK_folder.gif",
     "assets/sdx_WORK_XML.gif"
   ],
-  "css": ["sdx_WORK_types.css"],
+  "css": ["sdx_WORK_types.css", "ContextMenuDialog.css"],
   "config": {
     "name": "Workplace Cell",
     "icons": {},

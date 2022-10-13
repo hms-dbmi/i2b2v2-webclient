@@ -4,7 +4,6 @@ console.time('execute time');
 
 i2b2.WORK.view.main = new i2b2Base_cellViewController(i2b2.WORK, 'main');
 
-
 // ================================================================================================== //
 i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
     let funcAddWrkNode = function(renderInfo){
@@ -216,9 +215,9 @@ i2b2.WORK.view.main.treeRedraw = function() {
         i2b2.sdx.Master.AttachType(treeview, "PRS");
         i2b2.sdx.Master.AttachType(treeview, "ENS");
         i2b2.sdx.Master.AttachType(treeview, "PR");
-       /* i2b2.sdx.Master.AttachType(treeview, "QDEF");
-        i2b2.sdx.Master.AttachType(treeview, "QGDEF");
-        i2b2.sdx.Master.AttachType(treeview, "XML");*/
+        /* i2b2.sdx.Master.AttachType(treeview, "QDEF");
+         i2b2.sdx.Master.AttachType(treeview, "QGDEF");
+         i2b2.sdx.Master.AttachType(treeview, "XML");*/
 
         i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropHandler", i2b2.WORK.view.main.DropHandler);
         i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropHandler", i2b2.WORK.view.main.DropHandler);
@@ -245,7 +244,21 @@ i2b2.WORK.view.main.treeRedraw = function() {
     });
 };
 
-// ==================================================================================================
+// ======================================================================================
+i2b2.WORK.view.main.refreshNode = function(target_node, isParent){
+    let parentNode;
+    if(isParent){
+        parentNode = target_node;
+    }
+    else{
+        parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+    }
+    let parentChildren = parentNode.nodes.map(function(node) { return node.nodeId; });
+    parentNode.refTreeview.deleteNodes(parentChildren, true);
+    parentNode.refTreeview.expandNode(parentNode.nodeId);
+}
+
+// ======================================================================================
 i2b2.WORK.view.main.DropHandler = function(sdx, evt){
     let treeview = $(evt.currentTarget).closest(".treeview").data("treeview");
     // remove the hover and drop target fix classes
@@ -280,6 +293,38 @@ i2b2.WORK.view.main.DropHandler = function(sdx, evt){
 
 };
 
+// ======================================================================================
+i2b2.WORK.view.main.displayContextDialog = function(inputData){
+    let contextDialogModal = $("#workContextDialog");
+    if (contextDialogModal.length === 0) {
+        $("body").append("<div id='workContextDialog'/>");
+        contextDialogModal = $("#workContextDialog");
+    }
+    contextDialogModal.empty();
+
+    i2b2.WORK.view.main.dialogCallbackWrapper = function() {
+        if (inputData.confirmMsg) {
+            inputData.onOk();
+        }
+        else {
+            let newValue = $("#WKContextMenuInput").val();
+            inputData.onOk(newValue);
+        }
+        $("#WKContextMenuDialog").modal('hide');
+    }
+
+    let data = {
+        "title": inputData.title,
+        "inputLabel": inputData.prompt,
+        "placeHolder": inputData.placeHolder,
+        "confirmMsg": inputData.confirmMsg,
+        "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper()",
+        "inputValue" : inputData.inputValue,
+        "onCancel": inputData.onCancel
+    };
+    $(i2b2.WORK.view.main.templates.contextDialog(data)).appendTo(contextDialogModal);
+    $("#WKContextMenuDialog").modal('show');
+}
 // =========================================================
 i2b2.events.afterCellInit.add((function(cell){
     if (cell.cellCode === "WORK") {
@@ -310,41 +355,41 @@ i2b2.events.afterCellInit.add((function(cell){
                 i2b2.WORK.ctrlr.refreshAll();
 
                 // attach SDX object DragDrop handlers
-               /* let treeview = i2b2.WORK.view.main.treeview[0];
-                i2b2.sdx.Master.AttachType(treeview, "QM");
-                i2b2.sdx.Master.AttachType(treeview, "QI");
-                i2b2.sdx.Master.AttachType(treeview, "PRC");
-                i2b2.sdx.Master.AttachType(treeview, "PRS");
-                i2b2.sdx.Master.AttachType(treeview, "ENS");
-                i2b2.sdx.Master.AttachType(treeview, "PR");
-                i2b2.sdx.Master.AttachType(treeview, "CONCPT");
-                i2b2.sdx.Master.AttachType(treeview, "QDEF");
-                i2b2.sdx.Master.AttachType(treeview, "QGDEF");
-                i2b2.sdx.Master.AttachType(treeview, "XML");
-                i2b2.sdx.Master.AttachType(treeview, "WRK");
+                /* let treeview = i2b2.WORK.view.main.treeview[0];
+                 i2b2.sdx.Master.AttachType(treeview, "QM");
+                 i2b2.sdx.Master.AttachType(treeview, "QI");
+                 i2b2.sdx.Master.AttachType(treeview, "PRC");
+                 i2b2.sdx.Master.AttachType(treeview, "PRS");
+                 i2b2.sdx.Master.AttachType(treeview, "ENS");
+                 i2b2.sdx.Master.AttachType(treeview, "PR");
+                 i2b2.sdx.Master.AttachType(treeview, "CONCPT");
+                 i2b2.sdx.Master.AttachType(treeview, "QDEF");
+                 i2b2.sdx.Master.AttachType(treeview, "QGDEF");
+                 i2b2.sdx.Master.AttachType(treeview, "XML");
+                 i2b2.sdx.Master.AttachType(treeview, "WRK");
 
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropHandler", i2b2.WORK.view.main.DropHandler);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropHandler", i2b2.WORK.view.main.DropHandler);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropHandler", i2b2.WORK.view.main.DropHandler);
 
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropChecker", i2b2.WORK.view.main.DropChecker);
-                */
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "ENS", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "PR", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "QGDEF", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "XML", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropChecker", i2b2.WORK.view.main.DropChecker);
+                 */
 
 
                 // -------------------- setup context menu --------------------
@@ -425,6 +470,13 @@ i2b2.events.afterCellInit.add((function(cell){
                     }
                 });
 
+                i2b2.WORK.view.main.templates = {};
+                $.ajax("js-i2b2/cells/WORK/templates/ContextMenuDialog.html", {
+                    success: (template) => {
+                        cell.view.main.templates.contextDialog = Handlebars.compile(template);
+                    },
+                    error: (error) => { console.error("Could not retrieve template: ContextMenuDialog.html"); }
+                });
             }).bind(this)
         );
     }

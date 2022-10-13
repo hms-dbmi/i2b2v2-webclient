@@ -110,8 +110,35 @@ i2b2.CRC.ctrlr.history = {
             // auto-extract SDX objects from returned XML
             cellResult.parse();
 
+            let sortResultsByDate = function(resultNode1, resultNode2){
+                // proper date handling (w/improper handling for latest changes to output format)
+                let dateStr1 = resultNode1.origData["created"];
+                let dateStr2 = resultNode2.origData["created"];
+
+                let dateTime1 = Date.parse(dateStr1);
+                let dateTime2 = Date.parse(dateStr2);
+
+                let result;
+                if(dateTime1 < dateTime2){
+                    result = -1;
+                }
+                else if(dateTime1 > dateTime2){
+                    result = 1;
+                }
+                else {
+                    result = 0;
+                }
+
+                return result;
+            }
             // display the tree results
-            let newNodes = [];
+            let newNodes = {};
+            cellResult.model.sort(sortResultsByDate);
+
+            let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
+            if(!isAscending){
+                cellResult.model.reverse();
+            }
             for ( let i1=0; i1 < cellResult.model.length; i1++) {
                 let sdxDataNode = cellResult.model[i1];
                 let renderOptions = {
@@ -135,10 +162,12 @@ i2b2.CRC.ctrlr.history = {
                 if(sdxDataNode.renderData.cssClassMinor !== undefined) {
                     temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
                 }
-                newNodes.push(temp);
+                if(!newNodes[temp.key]) {
+                    newNodes[temp.key] = temp;
+                }
             }
             // push new nodes into the treeview
-            i2b2.CRC.view.history.treeviewFinder.treeview('addNodes', [newNodes, true]);
+            i2b2.CRC.view.history.treeviewFinder.treeview('addNodes', [Object.values(newNodes), true]);
 
             // render tree
             i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);
