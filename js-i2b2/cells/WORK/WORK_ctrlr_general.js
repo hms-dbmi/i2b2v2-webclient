@@ -282,8 +282,6 @@ i2b2.WORK.ctrlr.main.handleDelete = function (target_node, options, nd) {
 i2b2.WORK.ctrlr.main.HandleDrop = function(sdxDropped) {
     // TODO: This needs to be done (or does it?)
 };
-
-
 // ======================================================================================
 i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
     debugger;
