@@ -87,7 +87,7 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
             // enable drop if a drop handler exists for the object being dropped
             while (sdxTypeList.length) {
                 let sdxType = sdxTypeList.pop();
-                if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].DropHandler === "function") {
+                if (typeof eventHandlers[sdxType] === "object") {
                     if (typeof eventHandlers[sdxType].DropChecker === "function") {
                         if (eventHandlers[sdxType].DropChecker(e.target, e, this)) {
                             // this is REQUIRED for proper drop
@@ -95,7 +95,7 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                             return false;
                         }
                         return true; // this makes it an invalid drop target
-                    } else {
+                    } else if (typeof eventHandlers[sdxType].DropHandler === "function") {
                         // this is REQUIRED for proper drop
                         ev.preventDefault();
                         return false;
