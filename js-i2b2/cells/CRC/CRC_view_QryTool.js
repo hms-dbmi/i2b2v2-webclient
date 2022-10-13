@@ -157,7 +157,7 @@ i2b2.CRC.view.QT.HoverOut = function(el) { $(el).closest(".i2b2DropTarget").remo
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
-// append the new query group to the data model
+    // append the new query group to the data model
     i2b2.CRC.model.query.groups.push({
         display: "with",
         with: true,
@@ -189,12 +189,10 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
     let eventIdx = 0;
     i2b2.CRC.model.query.groups[qgIdx].events[eventIdx].concepts= sdxList;
 
-    // insert the new concept into the record
+    // set additional query group metadata if specified
     if(metadata) {
         let queryGroup = i2b2.CRC.model.query.groups[qgIdx];
-        if(metadata.dateRange !== undefined){
-            queryGroup.dateRange = metadata.dateRange;
-        }
+
         if(metadata.without !== undefined){
             queryGroup.without = metadata.without;
             queryGroup.with = !metadata.without;

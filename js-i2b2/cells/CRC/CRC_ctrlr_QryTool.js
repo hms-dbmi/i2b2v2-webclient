@@ -37,10 +37,9 @@ function QueryToolController() {
         //i2b2.h.LoadingMask.show();
 
         // callback processor
-        var scopedCallback = new i2b2_scopedCallback();
+        let scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = this;
         scopedCallback.callback = function(results) {
-            var cl_queryMasterId = qm_id;
             // THIS function is used to process the AJAX results of the getChild call
             //		results data object contains the following attributes:
             //			refXML: xmlDomObject <--- for data processing
@@ -51,9 +50,6 @@ function QueryToolController() {
             //			errorMsg: string [only with error=true]
             i2b2.CRC.view.QT.queryRequest = results.msgRequest;
             i2b2.CRC.view.QT.queryResponse = results.msgResponse;
-            //TODO MARCDANIE Is showDisplay still needed
-            // switch to status tab
-            //i2b2.CRC.view.status.showDisplay();
 
             // did we get a valid query definition back?
             let qd = i2b2.h.XPath(results.refXML, 'descendant::query_name/..');
