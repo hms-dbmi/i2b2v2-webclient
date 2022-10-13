@@ -156,7 +156,7 @@ i2b2.CRC.view.QT.HoverOver = function(el) { $(el).closest(".i2b2DropTarget").add
 i2b2.CRC.view.QT.HoverOut = function(el) { $(el).closest(".i2b2DropTarget").removeClass("DropHover"); };
 
 // ================================================================================================== //
-i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList){
+i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
 // append the new query group to the data model
     i2b2.CRC.model.query.groups.push({
         display: "with",
@@ -186,7 +186,41 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList){
 
     // insert the new concept into the record
     let qgIdx = i2b2.CRC.model.query.groups.length - 1;
-    i2b2.CRC.model.query.groups[qgIdx].events[0].concepts= sdxList;
+    let eventIdx = 0;
+    i2b2.CRC.model.query.groups[qgIdx].events[eventIdx].concepts= sdxList;
+
+    // insert the new concept into the record
+    if(metadata) {
+        let queryGroup = i2b2.CRC.model.query.groups[qgIdx];
+        if(metadata.dateRange !== undefined){
+            queryGroup.dateRange = metadata.dateRange;
+        }
+        if(metadata.without !== undefined){
+            queryGroup.without = metadata.without;
+            queryGroup.with = !metadata.without;
+            queryGroup.display = queryGroup.with ? "with": "without";
+        }
+
+        if(metadata.instances !== undefined){
+            queryGroup.events[eventIdx].instances = metadata.instances;
+        }
+
+        if(metadata.startDate !== undefined){
+            queryGroup.events[eventIdx].dateRange.start = metadata.startDate;
+        }
+
+        if(metadata.endDate !== undefined){
+            queryGroup.events[eventIdx].dateRange.end = metadata.endDate;
+        }
+    }
+}
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateQueryGroupDetails = function(qgIdx, metadata, eventIdx){
+
+    if(eventIdx === undefined){
+        eventIdx = 0;
+    }
+    return qgIdx;
 }
 // ================================================================================================== //
 i2b2.CRC.view.QT.handleLabValues = function(sdx, qgIndex){

@@ -30,7 +30,7 @@ function QueryToolController() {
     };
 
 // ================================================================================================== //
-    this.doQueryLoad = function(qm_id) {  // function to load query from Query History or Workspace
+    this.doQueryLoad = function(qm_id) {  // function to reload query from Query History or Workspace
         // clear existing query
         i2b2.CRC.view.QT.clearAll();
         // show on GUI that work is being done
@@ -56,7 +56,7 @@ function QueryToolController() {
             //i2b2.CRC.view.status.showDisplay();
 
             // did we get a valid query definition back?
-            var qd = i2b2.h.XPath(results.refXML, 'descendant::query_name/..');
+            let qd = i2b2.h.XPath(results.refXML, 'descendant::query_name/..');
             if (qd.length !== 0) {
                 //i2b2.CRC.view.QT.clearAll();
                 let dObj = {};
@@ -65,7 +65,14 @@ function QueryToolController() {
                 dObj.timing = i2b2.h.XPath(qd[0],'descendant-or-self::query_timing/text()');
                 dObj.specificity = i2b2.h.getXNodeVal(qd[0],'specificity_scale');
 
-                for (var j=0; j <qd.length; j++) {
+                function reformatDate(date) {
+                    let year = date.substring(0,4);
+                    let month = date.substring(5,7);
+                    let day = date.substring(8,10);
+                    return [month,day,year].join("/");
+                }
+
+                for (let j=0; j <qd.length; j++) {
                     dObj.panels = [];
                     let qp;
                     if (j===0)
@@ -77,9 +84,26 @@ function QueryToolController() {
                     for (let i1=0; i1<total_panels; i1++) {
 
                         let sdxDataNodeList = [];
+                        let without = i2b2.h.getXNodeVal(qp[i1],'invert') === "1";
+                        let occurs = i2b2.h.getXNodeVal(qp[i1],'total_item_occurrences');
+                        let instances = (1*occurs);
+
+                        let metadata = {};
+                        metadata.without = without;
+                        metadata.instances = instances;
+
+                        let panelFromDate = i2b2.h.getXNodeVal(qp[i1],'panel_date_from');
+                        if (panelFromDate) {
+                            metadata.startDate = reformatDate(panelFromDate);
+                        }
+
+                        let panelToDate = i2b2.h.getXNodeVal(qp[i1],'panel_date_to');
+                        if (panelToDate) {
+                            metadata.endDate = reformatDate(panelToDate);
+                        }
+
                         let pi = i2b2.h.XPath(qp[i1], 'descendant::item[item_key]');
                         for (let i2=0; i2<pi.length; i2++) {
-                            let itm = {};
                             // get the item's details from the ONT Cell
                             let ckey = i2b2.h.getXNodeVal(pi[i2],'item_key');
 
@@ -141,23 +165,18 @@ function QueryToolController() {
                                 o.hasChildren = i2b2.h.getXNodeVal(pi[i2],'item_icon');
 
                                 // Lab Values processing
-                                let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
+                                ///let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
                                 /////
 
                                 // sdx encapsulate
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
+
                                 let renderOptions = {};
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
-                                if (itm.dateFrom) {
-                                    sdxDataNode.dateFrom = itm.dateFrom;
-                                }
-                                if (itm.dateTo) {
-                                    sdxDataNode.dateTo = itm.dateTo;
-                                }
                             }
                             sdxDataNodeList.push(sdxDataNode);
                         }
-                        i2b2.CRC.view.QT.addNewQueryGroup(sdxDataNodeList);
+                        i2b2.CRC.view.QT.addNewQueryGroup(sdxDataNodeList, metadata);
                     }
                     i2b2.CRC.view.QT.render();
                 }
