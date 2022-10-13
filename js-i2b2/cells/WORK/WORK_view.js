@@ -263,6 +263,9 @@ i2b2.WORK.view.main.DropHandler = function(sdx, evt, handlerSelector){
     let dropTarget = treeview.getNode($(evt.originalEvent.target).data("nodeid"));
     let droppedNodeKey = sdx.sdxInfo.sdxKeyValue;
 
+    // ignore the tricky double triggering by the SDX subsystem
+    if (handlerSelector !== sdx.sdxInfo.sdxType) return false;
+
     // ignore if a node is dropped on itself
     if (dropTarget.i2b2.sdxInfo.sdxKeyValue === droppedNodeKey) return false;
 
