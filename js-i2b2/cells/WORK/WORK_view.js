@@ -215,7 +215,7 @@ i2b2.WORK.view.main.treeRedraw = function() {
          i2b2.sdx.Master.AttachType(treeview, "XML");*/
 
         i2b2.sdx.Master.setHandlerCustom(treeview, "CONCPT", "DropHandler", i2b2.WORK.view.main.DropHandler);
-        i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropHandler", undefined); // cause doubling of drop event
+        i2b2.sdx.Master.setHandlerCustom(treeview, "WRK", "DropHandler", i2b2.WORK.view.main.DropHandler);
         i2b2.sdx.Master.setHandlerCustom(treeview, "QM", "DropHandler", i2b2.WORK.view.main.DropHandler);
         i2b2.sdx.Master.setHandlerCustom(treeview, "PRC", "DropHandler", i2b2.WORK.view.main.DropHandler);
         i2b2.sdx.Master.setHandlerCustom(treeview, "PRS", "DropHandler", i2b2.WORK.view.main.DropHandler);
@@ -238,6 +238,7 @@ i2b2.WORK.view.main.treeRedraw = function() {
 
     });
 };
+
 // ======================================================================================
 i2b2.WORK.view.main.refreshNode = function(target_node, isParent){
     let parentNode;
@@ -251,17 +252,21 @@ i2b2.WORK.view.main.refreshNode = function(target_node, isParent){
     parentNode.refTreeview.deleteNodes(parentChildren, true);
     parentNode.refTreeview.expandNode(parentNode.nodeId);
 }
+
 // ======================================================================================
-i2b2.WORK.view.main.DropHandler = function(sdx, evt){
+i2b2.WORK.view.main.DropHandler = function(sdx, evt, handlerSelector){
     let treeview = $(evt.currentTarget).closest(".treeview").data("treeview");
     // remove the hover and drop target fix classes
     $(evt.target).closest(".i2b2DropTarget").removeClass("DropHover");
     $(evt.target).closest(".i2b2DropTarget").removeClass("i2b2DropPrep");
 
     let dropTarget = treeview.getNode($(evt.originalEvent.target).data("nodeid"));
+    let droppedNodeKey = sdx.sdxInfo.sdxKeyValue;
+
+    // ignore if a node is dropped on itself
+    if (dropTarget.i2b2.sdxInfo.sdxKeyValue === droppedNodeKey) return false;
 
     // see if we are moving a node within the workspace
-    let droppedNodeKey = sdx.sdxInfo.sdxKeyValue;
     if (dropTarget.i2b2.sdxInfo.sdxType === "WRK") {
         // we can only drop things into a workspace folder
         if (sdx.sdxInfo.sdxType === "WRK") {
