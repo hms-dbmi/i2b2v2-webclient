@@ -327,60 +327,6 @@ i2b2.sdx.TypeControllers.QI.getChildRecords = function(sdxParentNode, onComplete
 	i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:SDX:QueryInstance", {qi_key_value: sdxParentNode.sdxInfo.sdxKeyValue}, scopedCallback);
 }
 
-i2b2.sdx.TypeControllers.QI.SaveToDataModel = function(sdxData, sdxParentNode) {
-	// save to CRC data model
-	if (!sdxParentNode) { return false; }
-	var qm_id = sdxData.sdxInfo.sdxKeyValue;
-	var qm_hash = i2b2.sdx.Master._KeyHash(qm_id);
-
-	// class for all SDX communications
-	function i2b2_SDX_Encapsulation_EXTENDED() {}
-	// create an instance and populate with info
-	var t = new i2b2_SDX_Encapsulation_EXTENDED();
-	t.origData = Object.clone(sdxData.origData);
-	t.sdxInfo = Object.clone(sdxData.sdxInfo);
-	t.parent = sdxParentNode;
-	t.children = new Hash();
-	t.children.loaded = false;
-	// add to hash
-	sdxParentNode.children.set(qm_hash, t);
-	// TODO: send data update signal (use JOINING-MUTEX or AGGREGATING-MUTEX to avoid rapid fire of event!)
-	return t;
-}
-
-
-i2b2.sdx.TypeControllers.QI.LoadFromDataModel = function(key_value) {}
-
-
-i2b2.sdx.TypeControllers.QI.ClearAllFromDataModel= function(sdxOptionalParent) {
-	if (sdxOptionalParent) {
-		try {
-			var findFunc = function(item_rec) {
-				// this function expects the second argument to be the target node's key value
-				var hash_key = item_rec[0];
-				var QM_rec = item_rec[1];
-				if (QM_rec.sdxInfo.sdxKeyValue == this.strip()) { return true; }
-			}
-			var dm_loc = 'i2b2.CRC.model.QueryMasters.'+i2b2.sdx.Master._KeyHash(sdxOptionalParent.sdxInfo.sdxKeyValue);
-			var targets = i2b2.CRC.model.QueryMasters.findAll(findFunc, sdxOptionalParent.sdxInfo.sdxKeyValue);
-			for (var i=0; i < targets.length; i++) {
-				var t = parent_QM[i].value;
-				t.children = new Hash();
-			}
-		} catch(e) { console.error('Could not clear children of given parent node!'); }
-	} else {
-		var dm_loc = 'i2b2.CRC.model.QueryMasters';
-		i2b2.CRC.model.QueryMasters.each(function(item_rec) {
-			try {
-				item_rec[1].children = new Hash();
-			} catch(e) { console.error('Could not clear children of all QueryMasters'); }
-		});
-	}
-	// TODO: send data update signal (use JOINING-MUTEX or AGGREGATING-MUTEX to avoid rapid fire of event!)
-	// updated dm_loc of the data model
-	return true;
-}
-
 
 i2b2.sdx.TypeControllers.QI.LoadChildrenFromTreeview = function(node, onCompleteCallback) {
 	var scopedCallback = new i2b2_scopedCallback();
