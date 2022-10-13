@@ -151,17 +151,12 @@ i2b2.WORK.view.main.loadChildren = function(e, nodeData){
 
         // render tree
         i2b2.WORK.view.main.treeview.treeview('redraw', []);
-        // reset the loading icon in the stack buttons list
-        $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
     };
     // ajax communicator call
     let varInput = {
         parent_key_value: nodeData.i2b2.sdxInfo.sdxKeyValue,
         result_wait_time: 180
     };
-    // set loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
-
     i2b2.WORK.ajax.getChildren("WORK:Workplace", varInput, scopedCallback);
 };
 

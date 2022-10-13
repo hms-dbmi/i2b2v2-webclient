@@ -5,9 +5,6 @@ console.time('execute time');
 // ======================================================================================
 i2b2.WORK.ctrlr.refreshAll = function(view_component) {
 
-    // set loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
-
     i2b2.WORK.view.main.treeview.treeview('clear', []);
 
     // create initial loader display routine
@@ -40,8 +37,6 @@ i2b2.WORK.ctrlr.refreshAll = function(view_component) {
         ]);
         // render tree
         i2b2.WORK.view.main.treeview.treeview('redraw', []);
-        // reset the loading icon in the stack buttons list
-        $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
     };
     // ajax communicator call
     if (i2b2.PM.model.userRoles.indexOf("MANAGER") === -1) {
@@ -51,14 +46,12 @@ i2b2.WORK.ctrlr.refreshAll = function(view_component) {
     }
 };
 
-
 // ======================================================================================
 i2b2.WORK.ctrlr.main = {};
 i2b2.WORK.ctrlr.main.moveItem = function(target_nodeTV, new_parent_nodeTV) {
     // TODO: Reimplement this
-    alert("not yet implemented");
+    console.warn("i2b2.WORK.ctrlr.main.moveItem()");
 };
-
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.NewFolder = function(parent_node) {
@@ -75,7 +68,6 @@ i2b2.WORK.ctrlr.main.NewFolder = function(parent_node) {
 
     i2b2.WORK.view.main.displayContextDialog(data);
 };
-
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.Rename = function(target_node) {
@@ -98,10 +90,8 @@ i2b2.WORK.ctrlr.main.Rename = function(target_node) {
         "placeHolder": origName,
         "onOk": okCallback,
     };
-
     i2b2.WORK.view.main.displayContextDialog(data);
 };
-
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
@@ -132,6 +122,7 @@ i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
         i2b2.WORK.ctrlr.main.handleDelete(target_node, options, nd);
     }
 };
+
 // ======================================================================================
 i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
     // TODO: This needs to be done
@@ -168,6 +159,7 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
 
     i2b2.WORK.view.main.displayContextDialog(data);
 };
+
 // ======================================================================================
 i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {
     console.log("running handle change annotation");
@@ -188,6 +180,8 @@ i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {
     };
     i2b2.WORK.ajax.annotateChild("WORK:Workplace", varInput, scopedCallback);
 }
+
+// ======================================================================================
 i2b2.WORK.ctrlr.main.handleNewFolder = function (parent_node, fldrName) {
     // create callback display routine
     let scopedCallback = new i2b2_scopedCallback();
@@ -214,18 +208,13 @@ i2b2.WORK.ctrlr.main.handleNewFolder = function (parent_node, fldrName) {
     };
     i2b2.WORK.ajax.addChild("WORK:Workplace", varInput, scopedCallback);
 }
+
 // ======================================================================================
 i2b2.WORK.ctrlr.main.handleRename = function (target_node, newName) {
-    // set loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
-
     // create callback display routine
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = target_node;
     scopedCallback.callback = function(results) {
-        // reset loading icon in the stack buttons list
-        $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
-
         let cl_parent_node = target_node.parentNode; // TODO: is this valid?
         if (results.error) {
             alert("An error occurred while trying to rename the selected item!");
@@ -246,11 +235,9 @@ i2b2.WORK.ctrlr.main.handleRename = function (target_node, newName) {
     };
     i2b2.WORK.ajax.renameChild("WORK:Workplace", varInput, scopedCallback);
 }
+
 // ======================================================================================
 i2b2.WORK.ctrlr.main.handleDelete = function (target_node, options, nd) {
-    // set loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
-
     let scopedCallback;
     if (options.callback) {
         scopedCallback = options.callback;
@@ -259,9 +246,6 @@ i2b2.WORK.ctrlr.main.handleDelete = function (target_node, options, nd) {
         scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = target_node;
         scopedCallback.callback = function(results) {
-            // unsetset loading icon in the stack buttons list
-            $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
-
             if (results.error) {
                 alert("An error occurred while trying to delete the selected item!");
             } else {
@@ -279,14 +263,7 @@ i2b2.WORK.ctrlr.main.handleDelete = function (target_node, options, nd) {
 }
 
 // ======================================================================================
-i2b2.WORK.ctrlr.main.HandleDrop = function(sdxDropped) {
-    // TODO: This needs to be done (or does it?)
-};
-// ======================================================================================
 i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
-    debugger;
-
-    // TODO: This needs to be done
     if (!options) { options={}; }
     // sanity check can only add children to WRK folders
     if (targetTvNode.i2b2.sdxInfo.sdxType !== "WRK") {
@@ -400,7 +377,6 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
     i2b2.h.EscapeTemplateVars(encapValues, encapNoEscape);
     let encapMsg = encapXML;
     Object.entries(encapValues).forEach((entry) => {
-        console.dir(entry);
         encapMsg = encapMsg.replace(new RegExp("{{{"+entry[0]+"}}}", 'g'), entry[1]);
     });
 
