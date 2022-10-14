@@ -213,7 +213,7 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
     }
 }
 // ================================================================================================== //
-i2b2.CRC.view.QT.handleLabValues = function(sdx, qgIndex){
+i2b2.CRC.view.QT.handleLabValues = function(sdx){
     // see if it is a lab
     let isLab = i2b2.CRC.view.QT.isLabs(sdx);
 
