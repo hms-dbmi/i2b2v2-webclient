@@ -159,9 +159,6 @@ i2b2.sdx.TypeControllers.XML.AppendTreeNode = function(yuiTree, yuiRootNode, sdx
 }
 
 
-i2b2.sdx.TypeControllers.XML.SaveToDataModel = function(sdxData) { return undefined; }
-i2b2.sdx.TypeControllers.XML.LoadFromDataModel = function(key_value) { return undefined; }
-i2b2.sdx.TypeControllers.XML.ClearAllFromDataModel= function(sdxOptionalParent) { return true; }
 i2b2.sdx.TypeControllers.XML.getChildRecords = function(sdxParentNode, onCompleteCallback) {
 	var retMsg = {
 		error: true,

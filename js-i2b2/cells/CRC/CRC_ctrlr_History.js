@@ -132,7 +132,7 @@ i2b2.CRC.ctrlr.history = {
                 return result;
             }
             // display the tree results
-            let newNodes = [];
+            let newNodes = {};
             cellResult.model.sort(sortResultsByDate);
 
             let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
@@ -162,10 +162,12 @@ i2b2.CRC.ctrlr.history = {
                 if(sdxDataNode.renderData.cssClassMinor !== undefined) {
                     temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
                 }
-                newNodes.push(temp);
+                if(!newNodes[temp.key]) {
+                    newNodes[temp.key] = temp;
+                }
             }
             // push new nodes into the treeview
-            i2b2.CRC.view.history.treeviewFinder.treeview('addNodes', [newNodes, true]);
+            i2b2.CRC.view.history.treeviewFinder.treeview('addNodes', [Object.values(newNodes), true]);
 
             // render tree
             i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);

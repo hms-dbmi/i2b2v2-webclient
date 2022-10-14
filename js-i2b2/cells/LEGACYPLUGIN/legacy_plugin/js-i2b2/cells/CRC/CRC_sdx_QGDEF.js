@@ -22,11 +22,6 @@ i2b2.sdx.TypeControllers.QGDEF.getEncapsulateInfo = function() {
 	return {sdxType: 'QGDEF', sdxKeyName: 'key', sdxControlCell:'CRC', sdxDisplayNameKey: 'QGDEF_name'};
 }
 
-i2b2.sdx.TypeControllers.QGDEF.SaveToDataModel = function(sdxData, sdxParentNode) { return undefined; }
-i2b2.sdx.TypeControllers.QGDEF.LoadFromDataModel = function(key_value) {}
-i2b2.sdx.TypeControllers.QGDEF.ClearAllFromDataModel= function(sdxOptionalParent) { return true; }
-
-
 // *********************************************************************************
 //	GENERATE HTML (DEFAULT HANDLER)
 // *********************************************************************************
