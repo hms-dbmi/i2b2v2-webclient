@@ -109,38 +109,36 @@ function QueryToolController() {
                                 let o = {};
                                 o.name =i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.id = ckey.substring(16);
-                                o.result_instance_id = o.PRS_id ;
-
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
+                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, {});
                             } else 	if (ckey.toLowerCase().startsWith("masterid")) {
                                 let o = {};
                                 o.name =i2b2.h.getXNodeVal(pi[i2],'item_name');
-                                o.id = ckey;
-                                o.result_instance_id = o.PRS_id ;
-
+                                o.id = ckey.substring(9);
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
+                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, {});
                             } else  if (ckey.toLowerCase().startsWith("folder")) {
                                 let o = {};
                                 o.titleCRC =  i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.PRS_id = ckey.substring(19);
                                 o.result_instance_id = o.PRS_id ;
                                 o.id = ckey;
-
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS',o);
+                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, {});
                             } else if (ckey.toLowerCase().startsWith("patient_set_coll_id")) {
                                 let o = {};
                                 o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.PRS_id = ckey.substring(20);
                                 o.result_instance_id = o.PRS_id ;
-
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS',o);
+                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, {});
                             } else if (ckey.toLowerCase().startsWith("patient_set_enc_id")) {
                                 let o = {};
                                 o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.PRS_id = ckey.substring(19);
                                 o.result_instance_id = o.PRS_id ;
-
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
+                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, {});
                             } else {
                                 let o = {};
                                 o.level = i2b2.h.getXNodeVal(pi[i2],'hlevel');
