@@ -100,6 +100,8 @@ function QueryToolController() {
 
                         let pi = i2b2.h.XPath(qp[i1], 'descendant::item[item_key]');
                         for (let i2=0; i2<pi.length; i2++) {
+                            let renderOptions = {};
+
                             // get the item's details from the ONT Cell
                             let ckey = i2b2.h.getXNodeVal(pi[i2],'item_key');
 
@@ -110,13 +112,13 @@ function QueryToolController() {
                                 o.name =i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.id = ckey.substring(16);
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
-                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, {});
+                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             } else 	if (ckey.toLowerCase().startsWith("masterid")) {
                                 let o = {};
                                 o.name =i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.id = ckey.substring(9);
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
-                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, {});
+                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             } else  if (ckey.toLowerCase().startsWith("folder")) {
                                 let o = {};
                                 o.titleCRC =  i2b2.h.getXNodeVal(pi[i2],'item_name');
@@ -124,21 +126,21 @@ function QueryToolController() {
                                 o.result_instance_id = o.PRS_id ;
                                 o.id = ckey;
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS',o);
-                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, {});
+                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             } else if (ckey.toLowerCase().startsWith("patient_set_coll_id")) {
                                 let o = {};
                                 o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.PRS_id = ckey.substring(20);
                                 o.result_instance_id = o.PRS_id ;
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS',o);
-                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, {});
+                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             } else if (ckey.toLowerCase().startsWith("patient_set_enc_id")) {
                                 let o = {};
                                 o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.PRS_id = ckey.substring(19);
                                 o.result_instance_id = o.PRS_id ;
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
-                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, {});
+                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             } else {
                                 let o = {};
                                 o.level = i2b2.h.getXNodeVal(pi[i2],'hlevel');
@@ -162,10 +164,8 @@ function QueryToolController() {
                                 ///let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
                                 /////
 
-                                // sdx encapsulate
+                                // build sdx packet
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
-
-                                let renderOptions = {};
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             }
                             sdxDataNodeList.push(sdxDataNode);
