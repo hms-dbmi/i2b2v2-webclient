@@ -285,7 +285,7 @@ i2b2.WORK.view.main.DropHandler = function(sdx, evt, handlerSelector){
                 parentNode = treeview.getParent(parentNode.nodeId);
             }
             console.dir({type: "within workspace", dropTarget: dropTarget, toSave: sdx});
-            i2b2.WORK.ctrlr.main.moveItem(sdx, dropTarget);
+            i2b2.WORK.ctrlr.main.MoveWorkItem(sdx, dropTarget);
         } else {
             // saves the external item to the workspace
             i2b2.WORK.ctrlr.main.AddWorkItem(sdx, dropTarget);

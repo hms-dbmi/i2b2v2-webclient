@@ -48,10 +48,6 @@ i2b2.WORK.ctrlr.refreshAll = function(view_component) {
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main = {};
-i2b2.WORK.ctrlr.main.moveItem = function(target_nodeTV, new_parent_nodeTV) {
-    // TODO: Reimplement this
-    console.warn("i2b2.WORK.ctrlr.main.moveItem()");
-};
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.NewFolder = function(parent_node) {
@@ -260,6 +256,52 @@ i2b2.WORK.ctrlr.main.handleDelete = function (target_node, options, nd) {
         result_wait_time: 180
     };
     i2b2.WORK.ajax.deleteChild("WORK:Workplace", varInput, scopedCallback);
+}
+
+// ======================================================================================
+i2b2.WORK.ctrlr.main.MoveWorkItem = function(sdxChild, targetTvNode) {
+    console.warn("i2b2.WORK.ctrlr.main.MoveWorkItem");
+    let childKey = sdxChild.sdxInfo.sdxKeyValue;
+    let parentKey = targetTvNode.i2b2.sdxInfo.sdxKeyValue.split("\\").pop(); // just the final ID
+
+
+    // create callback display routine
+    var scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.scope = targetTvNode;
+    scopedCallback.callback = function(results) {
+        i2b2.WORK.view.main.queryResponse = results.msgResponse;
+        i2b2.WORK.view.main.queryRequest = results.msgRequest;
+        if (results.error) {
+            alert("An error occurred while trying to move a work item folder!");
+        } else {
+            // remove child node from its previous parent
+            let childId = Array.from(targetTvNode.refTreeview.nodes.values()).filter((x)=>{ return x.key === childKey}).map(y => y.nodeId);
+            targetTvNode.refTreeview.deleteNodes(childId, false);
+            i2b2.WORK.view.main.treeview.treeview('redraw', []);
+
+            // get a list of all children in the parent node
+            let parentChildren = targetTvNode.refTreeview.findNodes(targetTvNode.nodeId, '', 'parentId').map((node)=>{return node.nodeId});
+            // delete the nodes and reset the dynamic loading settings
+            targetTvNode.refTreeview.deleteNodes(parentChildren, false);
+            targetTvNode.state.loaded = false;
+            targetTvNode.state.requested = false;
+
+            // trigger that the treeview node is opened (and reloaded) if it is already open
+            if (targetTvNode.state.expanded) {
+                targetTvNode.state.expanded = false;
+                targetTvNode.refTreeview.expandNode(targetTvNode.nodeId);
+            }
+        }
+    }
+
+    console.log(childKey);
+    console.log(parentKey);
+    var varData = {
+        result_wait_time: 180,
+        target_node_id: childKey,
+        new_parent_node_id: parentKey
+    };
+    i2b2.WORK.ajax.moveChild("WORK:Workplace", varData, scopedCallback);
 }
 
 // ======================================================================================
