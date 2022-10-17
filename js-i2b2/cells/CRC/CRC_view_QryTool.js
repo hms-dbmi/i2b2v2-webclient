@@ -141,7 +141,7 @@ i2b2.CRC.view.QT.deleteQueryGroup = function(event) {
 
 
 // ================================================================================================== //
-i2b2.CRC.view.QT.handleLabs = function(sdx) {
+i2b2.CRC.view.QT.isLabs = function(sdx) {
     // see if the concept is a lab, prompt for value if it is
     sdx.isLab = false;
     if (sdx.origData.basecode !== undefined) {
@@ -155,9 +155,8 @@ i2b2.CRC.view.QT.handleLabs = function(sdx) {
 i2b2.CRC.view.QT.HoverOver = function(el) { $(el).closest(".i2b2DropTarget").addClass("DropHover"); };
 i2b2.CRC.view.QT.HoverOut = function(el) { $(el).closest(".i2b2DropTarget").removeClass("DropHover"); };
 
-
 // ================================================================================================== //
-i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
+i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
     // append the new query group to the data model
     i2b2.CRC.model.query.groups.push({
         display: "with",
@@ -187,15 +186,47 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
 
     // insert the new concept into the record
     let qgIdx = i2b2.CRC.model.query.groups.length - 1;
-    i2b2.CRC.model.query.groups[qgIdx].events[0].concepts.push(sdx);
+    let eventIdx = 0;
+    i2b2.CRC.model.query.groups[qgIdx].events[eventIdx].concepts= sdxList;
 
+    // set additional query group metadata if specified
+    if(metadata) {
+        let queryGroup = i2b2.CRC.model.query.groups[qgIdx];
+
+        if(metadata.without !== undefined){
+            queryGroup.without = metadata.without;
+            queryGroup.with = !metadata.without;
+            queryGroup.display = queryGroup.with ? "with": "without";
+        }
+
+        if(metadata.instances !== undefined){
+            queryGroup.events[eventIdx].instances = metadata.instances;
+        }
+
+        if(metadata.startDate !== undefined){
+            queryGroup.events[eventIdx].dateRange.start = metadata.startDate;
+        }
+
+        if(metadata.endDate !== undefined){
+            queryGroup.events[eventIdx].dateRange.end = metadata.endDate;
+        }
+    }
+}
+// ================================================================================================== //
+i2b2.CRC.view.QT.handleLabValues = function(sdx){
     // see if it is a lab
-    let isLab = i2b2.CRC.view.QT.handleLabs(sdx);
+    let isLab = i2b2.CRC.view.QT.isLabs(sdx);
 
     if(isLab){
         i2b2.CRC.view.QT.current  = {"conceptSdx": sdx};
         i2b2.CRC.view.QT.labValue.showLabValues(sdx);
     }
+}
+// ================================================================================================== //
+i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
+
+    i2b2.CRC.view.QT.addNewQueryGroup([sdx]);
+    i2b2.CRC.view.QT.handleLabValues(sdx);
     // render the new query group (by re-rendering all the query groups)
     i2b2.CRC.view.QT.render();
 
@@ -214,7 +245,7 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     let temp = $(evt.target).closest(".event");
     let eventIdx = temp.data('eventidx');
     let cncptListEl = $('.TermList', temp[0]);
-    i2b2.CRC.view.QT.handleLabs(sdx);
+    i2b2.CRC.view.QT.isLabs(sdx);
     // add the data to the correct terms list (also prevent duplicates)
     let eventData = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx];
     temp = eventData.concepts.filter((term)=>{ return term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue; });
@@ -231,8 +262,6 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
 };
-
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget) {
     let qgModel = i2b2.CRC.model.query.groups[qgModelIndex];
@@ -316,7 +345,7 @@ i2b2.CRC.view.QT.render = function() {
             i2b2.CRC.view.QT.renderTermList(qgData.events[1], temp);
         }
 
-        // attach the data picker functionality
+        // attach the date picker functionality
         $('.DateStart', newQG).datepicker({uiLibrary: 'bootstrap4'});
         $('.DateEnd', newQG).datepicker({uiLibrary: 'bootstrap4'});
         $('.DateRange1Start', newQG).datepicker({uiLibrary: 'bootstrap4'});
@@ -954,7 +983,15 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
     });
 };
 // ================================================================================================== //
+i2b2.CRC.view.QT.clearAll = function(){
+    // only run if the query has entries
+    if (i2b2.CRC.model.query.groups.length === 0) return;
+    i2b2.CRC.ctrlr.QT.clearQuery();
+    i2b2.CRC.view.QT.clearQuery();
+    i2b2.CRC.view.QS.clearQuery();
+}
 
+// ================================================================================================== //
 
 // ================================================================================================== //
 // This is done once the entire cell has been loaded
@@ -991,8 +1028,12 @@ i2b2.events.afterCellInit.add(
 
                     i2b2.sdx.Master.AttachType(queryName, 'QM');
                     i2b2.sdx.Master.setHandlerCustom(queryName, 'QM', 'DropHandler',function(sdxData, elem) {
+                        // handle if QM drag drop is comming from a WORK item
+                        if (sdxData.sdxInfo.sdxType === "WRK") sdxData = sdxData.sdxUnderlyingPackage;
                         $(elem.target).prop("placeholder", sdxData.sdxInfo.sdxDisplayName);
                         $(elem.target).removeClass("DropHover");
+                        let qm_id = sdxData.sdxInfo.sdxKeyValue;
+                        i2b2.CRC.ctrlr.QT.doQueryLoad(qm_id);
                     });
 
                     i2b2.sdx.Master.setHandlerCustom(queryName, 'QM', 'onHoverOut', function(elem) {
@@ -1013,11 +1054,7 @@ i2b2.events.afterCellInit.add(
                         // capture "clear query" button click -------------------------------------------------
                         $(".CRC_QT_runbar .button-clear", cell.view.QT.containerRoot).on("click", (evt)=> {
                             evt.target.blur();
-                            // only run if the query has entries
-                            if (i2b2.CRC.model.query.groups.length === 0) return;
-                            i2b2.CRC.ctrlr.QT.clearQuery();
-                            i2b2.CRC.view.QT.clearQuery();
-                            i2b2.CRC.view.QS.clearQuery();
+                            i2b2.CRC.view.QT.clearAll();
                         });
                     });
 

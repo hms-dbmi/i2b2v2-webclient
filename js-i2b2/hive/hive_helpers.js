@@ -269,6 +269,19 @@ i2b2.h.Xml2String = function(x) {
 
 
 // ================================================================================================== //
+Handlebars.registerHelper('ifeq', function (a, b, options) {
+    if (a == b) { return options.fn(this); }
+    return options.inverse(this);
+});
+
+// ================================================================================================== //
+Handlebars.registerHelper('ifnoteq', function (a, b, options) {
+    if (a != b) { return options.fn(this); }
+    return options.inverse(this);
+});
+
+
+// ================================================================================================== //
 // helper function to build a sniffer package for Cell Communications events
 i2b2.h.BuildSniffPack = function(cellName, cellFuncName, results, signalOrigin) {
     function i2b2_CellCommPackage() {}
