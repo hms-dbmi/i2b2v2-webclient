@@ -260,7 +260,7 @@ i2b2.CRC.ctrlr.QS = {
         }
     },
     pollStatus: function () {
-        i2b2.CRC.ctrlr.QS.loadQueryStatus(i2b2.CRC.ctrlr.QS.QM.id);
+        i2b2.CRC.ctrlr.QS.loadQueryStatus();
     }
 };
 
@@ -293,13 +293,13 @@ i2b2.CRC.ctrlr.QS.loadQueryStatus = function(queryMasterId) {
                     this.QI.end_date =  new Date(this.QI.end_date.substring(0,4), this.QI.end_date.substring(5,7)-1, this.QI.end_date.substring(8,10), this.QI.end_date.substring(11,13),this.QI.end_date.substring(14,16),this.QI.end_date.substring(17,19),this.QI.end_date.substring(20,23));
                 }
 
-                if (qi_id === this.QI.id) {
+                if (qi_id === this.QI.id || this.QI.id === undefined) {
                     // found the query instance, extract the info
                     this.QI.status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
                     this.QI.statusID = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
                     i2b2.CRC.ctrlr.QS.isRunning = false;
 
-                    i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryStatus", {qi_key_value: i2b2.CRC.ctrlr.QS.QI.id}, scopedCallbackQRS);
+                    i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryStatus", {qi_key_value: qi_id}, scopedCallbackQRS);
                     break;
                 }
             }
@@ -366,7 +366,7 @@ i2b2.CRC.ctrlr.QS.loadQueryStatus = function(queryMasterId) {
         i2b2.CRC.ctrlr.QS.refreshStatus();
     };
 
-    i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryStatus", {qm_key_value: queryMasterId}, scopedCallbackQI);
+    i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryStatus", {qm_key_value: i2b2.CRC.ctrlr.QS.QM.id}, scopedCallbackQI);
 };
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QS.startStatus = function(queryName) {

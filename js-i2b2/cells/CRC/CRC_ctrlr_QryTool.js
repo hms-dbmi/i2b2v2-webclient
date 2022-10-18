@@ -244,11 +244,11 @@ function QueryToolController() {
 // ================================================================================================== //
     this.loadQueryStatus = function( queryMasterId, queryName) {
         i2b2.CRC.ctrlr.QS.QRS = {};
-        i2b2.CRC.ctrlr.QS.QI = {id: queryMasterId};
-        i2b2.CRC.ctrlr.QS.QM = {name: queryName};
+        i2b2.CRC.ctrlr.QS.QI = {};
+        i2b2.CRC.ctrlr.QS.QM = {name: queryName, id: queryMasterId};
         i2b2.CRC.ctrlr.QS.startTime = new Date();
         i2b2.CRC.view.QS.renderStart();
-        i2b2.CRC.ctrlr.QS.loadQueryStatus(queryMasterId);
+        i2b2.CRC.ctrlr.QS.loadQueryStatus();
     }
 // ================================================================================================== //
     this.runQuery = function(queryTypes) {
