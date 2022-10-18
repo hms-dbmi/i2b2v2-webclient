@@ -146,12 +146,12 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
 };
 
 
-
 // =========== Context Menu Suff =========== 
 // ================================================================================================== //
 i2b2.CRC.view.history.doDisplay = function(node) {
-    let op = node.i2b2;
-    i2b2.CRC.ctrlr.QT.doQueryLoad(op, node);
+    let sdxData = node.i2b2;
+    let qm_id = sdxData.sdxInfo.sdxKeyValue;
+    i2b2.CRC.ctrlr.QT.doQueryLoad(qm_id);
 };
 
 // ================================================================================================== //
@@ -266,8 +266,7 @@ i2b2.events.afterCellInit.add((function(cell){
                                     } else {
                                         return false;
                                     }
-                                },
-                                isEnabled: false
+                                }
                             },
                             nodeRename: {
                                 name: 'Rename',
