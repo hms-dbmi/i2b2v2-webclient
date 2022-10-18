@@ -156,11 +156,26 @@ function QueryToolController() {
                                 o.hasChildren = i2b2.h.getXNodeVal(pi[i2],'item_icon');
 
                                 // Lab Values processing
-                                ///let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
-                                /////
+                                let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
 
                                 // build sdx packet
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
+
+                                //Check whether this is a lab term
+                                if ((lvd.length > 0) && (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length === 0))
+                                {
+                                   sdxDataNode.isLab = true;
+                                }else{
+                                    i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
+                                        results.parse();
+                                        if(results.model.length > 0){
+                                            let data = results.model[0];
+                                            sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
+                                            i2b2.CRC.view.QT.render();
+                                        }
+                                    });
+
+                                }
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             }
                             sdxDataNodeList.push(sdxDataNode);
