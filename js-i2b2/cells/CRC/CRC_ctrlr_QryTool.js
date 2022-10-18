@@ -165,6 +165,7 @@ function QueryToolController() {
                                 if ((lvd.length > 0) && (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length === 0))
                                 {
                                    sdxDataNode.isLab = true;
+                                   sdxDataNode.LabValues = this.parseValueConstraint( lvd );
                                 }else{
                                     i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
                                         results.parse();
@@ -294,7 +295,74 @@ function QueryToolController() {
         // hand over execution of query to the QueryRunner component
         i2b2.CRC.ctrlr.QR.doRunQuery(queryName, params);
     };
+// ================================================================================================== //
+    // tdw9: parses value constraint in Value Constraints and Modifier Constraints
+    this.parseValueConstraint = function( lvd )
+    {
+        lvd = lvd[0];
+        let labValues = {
+            valueType: null,
+            valueOperator: null,
+            value: null,
+            flagValue: null,
+            numericValueRangeLow: null,
+            numericValueRangeHigh: null,
+            unitValue: null
+        };
 
+        let valueConstraint = i2b2.h.getXNodeVal(lvd, "value_constraint");
+        labValues.valueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
+        let rawValueType = i2b2.h.getXNodeVal(lvd, "value_type");
+        switch (rawValueType)
+        {
+            case "NUMBER":
+                if (valueConstraint.indexOf(' and ') !== -1)
+                {
+                    // extract high and low labValues
+                    valueConstraint = valueConstraint.split(' and ');
+                    labValues.numericValueRangeLow = valueConstraint[0];
+                    labValues.numericValueRangeHigh = valueConstraint[1];
+                } else {
+                    labValues.value = valueConstraint;
+                }
+                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER;
+                labValues.unitValue = i2b2.h.getXNodeVal(lvd, "value_unit_of_measure");
+                break;
+            case "STRING":
+                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT;
+                labValues.value = valueConstraint;
+                labValues.isString = true;
+                break;
+            case "LARGETEXT":
+                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT;
+                labValues.value = valueConstraint;
+                labValues.isString = true;
+                break;
+            case "TEXT":
+                // This is an ENUM
+                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT;
+                try
+                {
+                    labValues.value = eval("(Array" + valueConstraint + ")");
+                    labValues.isEnum = true;
+                }
+                catch (e)
+                {
+                    //This is a string
+                    labValues.valueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
+                    labValues.value = valueConstraint;
+                    labValues.valueType = i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT; // tdw9: this line is missing for modifiers in current code. Does it make a different to have it here? Also, "TEXT" is changed from "STRING" to make sure TEXT works in modifiers
+                }
+                break;
+            case "FLAG":
+                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG;
+                labValues.flagValue = valueConstraint;
+                break;
+            default:
+                labValues.value = valueConstraint;
+        }
+        return labValues;
+    };
 
 // ================================================================================================== //
     this._processModel = function() {
