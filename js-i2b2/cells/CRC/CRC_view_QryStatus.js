@@ -25,7 +25,7 @@ i2b2.CRC.view.QS.render = function(breakdowns) {
     $((Handlebars.compile("{{> QueryResultBreakdownTable}}"))(breakdowns)).appendTo(statusTable);
 };
 // ================================================================================================== //
-i2b2.CRC.view.QS.clearQuery = function() {
+i2b2.CRC.view.QS.clearStatus = function() {
     $("#infoQueryStatusTable").empty();
     $("#infoQueryStatusGraph").hide();
 };
