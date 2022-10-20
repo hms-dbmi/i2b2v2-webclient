@@ -130,7 +130,7 @@ i2b2.CRC.ctrlr.QS = {
 
         // this private function refreshes the display DIV
         let d = new Date();
-        t = Math.floor((d.getTime() - i2b2.CRC.ctrlr.QS.startTime) / 100) / 10;
+        let t = Math.floor((d.getTime() - i2b2.CRC.ctrlr.QS.startTime) / 100) / 10;
         let s = t.toString();
         if (s.indexOf('.') < 0) {
             s += '.0';
@@ -162,7 +162,6 @@ i2b2.CRC.ctrlr.QS = {
 
         let foundError = false;
 
-        i2b2.CRC.ctrlr.QS.breakdowns.resulTable = [];
         for (let i in i2b2.CRC.ctrlr.QS.QRS) {
             let rec = i2b2.CRC.ctrlr.QS.QRS[i];
             let breakdown = {
@@ -260,111 +259,114 @@ i2b2.CRC.ctrlr.QS = {
             }
         }
     },
-
     pollStatus: function () {
-        // this is a private function that is used by all QueryStatus object instances to check their status
-        // callback processor to check the Query Instance
-        let scopedCallbackQI = new i2b2_scopedCallback();
-        scopedCallbackQI.scope = i2b2.CRC.ctrlr.QS;
-        scopedCallbackQI.callback = function (results) {
-            if (results.error) {
-                alert(results.errorMsg);
-                return;
-            } else {
-                // find our query instance
-                let qi_list = results.refXML.getElementsByTagName('query_instance');
-                let l = qi_list.length;
-                for (let i = 0; i < l; i++) {
-                    let temp = qi_list[i];
-                    let qi_id = i2b2.h.XPath(temp, 'descendant-or-self::query_instance_id')[0].firstChild.nodeValue;
-
-                    this.QI.message = i2b2.h.getXNodeVal(temp, 'message');
-                    this.QI.start_date = i2b2.h.getXNodeVal(temp, 'start_date');
-                    if (this.QI.start_date !== undefined) {
-                        //012345678901234567890123
-                        //2010-12-21T16:12:01.427
-                        this.QI.start_date =  new Date(this.QI.start_date.substring(0,4), this.QI.start_date.substring(5,7)-1, this.QI.start_date.substring(8,10), this.QI.start_date.substring(11,13),this.QI.start_date.substring(14,16),this.QI.start_date.substring(17,19),this.QI.start_date.substring(20,23));
-                    }
-                    this.QI.end_date = i2b2.h.getXNodeVal(temp, 'end_date');
-                    if (this.QI.end_date !== undefined) {
-                        this.QI.end_date =  new Date(this.QI.end_date.substring(0,4), this.QI.end_date.substring(5,7)-1, this.QI.end_date.substring(8,10), this.QI.end_date.substring(11,13),this.QI.end_date.substring(14,16),this.QI.end_date.substring(17,19),this.QI.end_date.substring(20,23));
-                    }
-
-                    if (qi_id === this.QI.id) {
-                        // found the query instance, extract the info
-                        this.QI.status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
-                        this.QI.statusID = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
-                        i2b2.CRC.ctrlr.QS.isRunning = false;
-
-                        i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryStatus", {qi_key_value: i2b2.CRC.ctrlr.QS.QI.id}, scopedCallbackQRS);
-                        break;
-                    }
-                }
-            }
-        };
-
-        // callback processor to check the Query Result Set
-        let scopedCallbackQRS = new i2b2_scopedCallback();
-        scopedCallbackQRS.scope = i2b2.CRC.ctrlr.QS;
-        scopedCallbackQRS.callback = function (results) {
-            if (results.error) {
-                alert(results.errorMsg);
-                return;
-            } else {
-                // find our query instance
-                let qrs_list = results.refXML.getElementsByTagName('query_result_instance');
-                let l = qrs_list.length;
-                for (let i = 0; i < l; i++) {
-                    let rec = new Object();
-                    let temp = qrs_list[i];
-                    let qrs_id = i2b2.h.XPath(temp, 'descendant-or-self::result_instance_id')[0].firstChild.nodeValue;
-                    if (i2b2.CRC.ctrlr.QS.QRS.hasOwnProperty(qrs_id)) {
-                        rec = i2b2.CRC.ctrlr.QS.QRS[qrs_id];
-                    } else {
-                        rec.QRS_ID = qrs_id;
-                        rec.size = i2b2.h.getXNodeVal(temp, 'set_size');
-                        rec.start_date = i2b2.h.getXNodeVal(temp, 'start_date');
-                         if (rec.start_date !== undefined) {
-                             rec.start_date =  new Date(rec.start_date.substring(0,4), rec.start_date.substring(5,7)-1, rec.start_date.substring(8,10), rec.start_date.substring(11,13),rec.start_date.substring(14,16),rec.start_date.substring(17,19),rec.start_date.substring(20,23));
-                         }
-                        rec.end_date = i2b2.h.getXNodeVal(temp, 'end_date');
-                        if (rec.end_date !== undefined) {
-                            rec.end_date =  new Date(rec.end_date.substring(0,4), rec.end_date.substring(5,7)-1, rec.end_date.substring(8,10), rec.end_date.substring(11,13),rec.end_date.substring(14,16),rec.end_date.substring(17,19),rec.end_date.substring(20,23));
-                        }
-
-                        rec.QRS_DisplayType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/display_type')[0].firstChild.nodeValue;
-                        rec.QRS_Type = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
-                        rec.QRS_Description = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
-                        rec.QRS_TypeID = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/result_type_id')[0].firstChild.nodeValue;
-                    }
-                    rec.QRS_Status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
-                    rec.QRS_Status_ID = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
-                    // create execution time string
-                    let d = new Date();
-                    let t = Math.floor((d.getTime() - i2b2.CRC.ctrlr.QS.startTime) / 100) / 10;
-                    let exetime = t.toString();
-                    if (exetime.indexOf('.') < 0) {
-                        exetime += '.0';
-                    }
-                    // deal with time/status setting
-                    if (!rec.QRS_time) {
-                        rec.QRS_time = exetime;
-                    }
-
-                    // set the proper title if it was not already set
-                    if (!rec.title) {
-                        rec.title = i2b2.CRC.ctrlr.QS._GetTitle(rec.QRS_Type, rec, temp);
-                    }
-                    i2b2.CRC.ctrlr.QS.QRS[qrs_id] = rec;
-                }
-                i2b2.CRC.ctrlr.history.Refresh();
-            }
-            // force a redraw
-            i2b2.CRC.ctrlr.QS.refreshStatus();
-        };
-
-        i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryStatus", {qm_key_value: i2b2.CRC.ctrlr.QS.QM.id}, scopedCallbackQI);
+        i2b2.CRC.ctrlr.QS.loadQueryStatus();
     }
+};
+
+// ================================================================================================== //
+i2b2.CRC.ctrlr.QS.loadQueryStatus = function(queryMasterId) {
+    // this is a private function that is used by all QueryStatus object instances to check their status
+    // callback processor to check the Query Instance
+    let scopedCallbackQI = new i2b2_scopedCallback();
+    scopedCallbackQI.scope = i2b2.CRC.ctrlr.QS;
+    scopedCallbackQI.callback = function (results) {
+        if (results.error) {
+            alert(results.errorMsg);
+            return;
+        } else {
+            // find our query instance
+            let qi_list = results.refXML.getElementsByTagName('query_instance');
+            let l = qi_list.length;
+            for (let i = 0; i < l; i++) {
+                let temp = qi_list[i];
+                let qi_id = i2b2.h.XPath(temp, 'descendant-or-self::query_instance_id')[0].firstChild.nodeValue;
+
+                this.QI.message = i2b2.h.getXNodeVal(temp, 'message');
+                this.QI.start_date = i2b2.h.getXNodeVal(temp, 'start_date');
+                if (this.QI.start_date !== undefined) {
+                    //2010-12-21T16:12:01.427
+                    this.QI.start_date =  new Date(this.QI.start_date.substring(0,4), this.QI.start_date.substring(5,7)-1, this.QI.start_date.substring(8,10), this.QI.start_date.substring(11,13),this.QI.start_date.substring(14,16),this.QI.start_date.substring(17,19),this.QI.start_date.substring(20,23));
+                }
+                this.QI.end_date = i2b2.h.getXNodeVal(temp, 'end_date');
+                if (this.QI.end_date !== undefined) {
+                    this.QI.end_date =  new Date(this.QI.end_date.substring(0,4), this.QI.end_date.substring(5,7)-1, this.QI.end_date.substring(8,10), this.QI.end_date.substring(11,13),this.QI.end_date.substring(14,16),this.QI.end_date.substring(17,19),this.QI.end_date.substring(20,23));
+                }
+
+                if (qi_id === this.QI.id || this.QI.id === undefined) {
+                    // found the query instance, extract the info
+                    this.QI.status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
+                    this.QI.statusID = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
+                    i2b2.CRC.ctrlr.QS.isRunning = false;
+
+                    i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryStatus", {qi_key_value: qi_id}, scopedCallbackQRS);
+                    break;
+                }
+            }
+        }
+    };
+
+    // callback processor to check the Query Result Set
+    let scopedCallbackQRS = new i2b2_scopedCallback();
+    scopedCallbackQRS.scope = i2b2.CRC.ctrlr.QS;
+    scopedCallbackQRS.callback = function (results) {
+        if (results.error) {
+            alert(results.errorMsg);
+            return;
+        } else {
+            // find our query instance
+            let qrs_list = results.refXML.getElementsByTagName('query_result_instance');
+            let l = qrs_list.length;
+            for (let i = 0; i < l; i++) {
+                let rec = new Object();
+                let temp = qrs_list[i];
+                let qrs_id = i2b2.h.XPath(temp, 'descendant-or-self::result_instance_id')[0].firstChild.nodeValue;
+                if (i2b2.CRC.ctrlr.QS.QRS.hasOwnProperty(qrs_id)) {
+                    rec = i2b2.CRC.ctrlr.QS.QRS[qrs_id];
+                } else {
+                    rec.QRS_ID = qrs_id;
+                    rec.size = i2b2.h.getXNodeVal(temp, 'set_size');
+                    rec.start_date = i2b2.h.getXNodeVal(temp, 'start_date');
+                    if (rec.start_date !== undefined) {
+                        rec.start_date =  new Date(rec.start_date.substring(0,4), rec.start_date.substring(5,7)-1, rec.start_date.substring(8,10), rec.start_date.substring(11,13),rec.start_date.substring(14,16),rec.start_date.substring(17,19),rec.start_date.substring(20,23));
+                    }
+                    rec.end_date = i2b2.h.getXNodeVal(temp, 'end_date');
+                    if (rec.end_date !== undefined) {
+                        rec.end_date =  new Date(rec.end_date.substring(0,4), rec.end_date.substring(5,7)-1, rec.end_date.substring(8,10), rec.end_date.substring(11,13),rec.end_date.substring(14,16),rec.end_date.substring(17,19),rec.end_date.substring(20,23));
+                    }
+
+                    rec.QRS_DisplayType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/display_type')[0].firstChild.nodeValue;
+                    rec.QRS_Type = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
+                    rec.QRS_Description = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
+                    rec.QRS_TypeID = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/result_type_id')[0].firstChild.nodeValue;
+                }
+                rec.QRS_Status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
+                rec.QRS_Status_ID = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
+                // create execution time string
+                let d = new Date();
+                let t = Math.floor((d.getTime() - i2b2.CRC.ctrlr.QS.startTime) / 100) / 10;
+                let exetime = t.toString();
+                if (exetime.indexOf('.') < 0) {
+                    exetime += '.0';
+                }
+                // deal with time/status setting
+                if (!rec.QRS_time) {
+                    rec.QRS_time = exetime;
+                }
+
+                // set the proper title if it was not already set
+                if (!rec.title) {
+                    rec.title = i2b2.CRC.ctrlr.QS._GetTitle(rec.QRS_Type, rec, temp);
+                }
+                i2b2.CRC.ctrlr.QS.QRS[qrs_id] = rec;
+            }
+            i2b2.CRC.ctrlr.history.Refresh();
+        }
+        // force a redraw
+        i2b2.CRC.ctrlr.QS.refreshStatus();
+    };
+
+    i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryStatus", {qm_key_value: i2b2.CRC.ctrlr.QS.QM.id}, scopedCallbackQI);
 };
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QS.startStatus = function(queryName) {

@@ -14,7 +14,7 @@ console.time('execute time');
 i2b2.CRC.view['QS'] = new i2b2Base_cellViewController(i2b2.CRC, 'QS');
 
 // ================================================================================================== //
-i2b2.CRC.view.QS.renderStart = function(breakdowns) {
+i2b2.CRC.view.QS.renderStart = function() {
     $("#infoQueryStatusGraph").hide();
 };
 

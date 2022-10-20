@@ -54,12 +54,8 @@ function QueryToolController() {
             // did we get a valid query definition back?
             let qd = i2b2.h.XPath(results.refXML, 'descendant::query_name/..');
             if (qd.length !== 0) {
-                //i2b2.CRC.view.QT.clearAll();
-                let dObj = {};
-                dObj.name = i2b2.h.getXNodeVal(results.refXML,'name');
-                this.doSetQueryName(dObj.name);
-                dObj.timing = i2b2.h.XPath(qd[0],'descendant-or-self::query_timing/text()');
-                dObj.specificity = i2b2.h.getXNodeVal(qd[0],'specificity_scale');
+                let queryName = i2b2.h.getXNodeVal(results.refXML,'name');
+                this.doSetQueryName(queryName);
 
                 function reformatDate(date) {
                     let year = date.substring(0,4);
@@ -69,7 +65,6 @@ function QueryToolController() {
                 }
 
                 for (let j=0; j <qd.length; j++) {
-                    dObj.panels = [];
                     let qp;
                     if (j===0)
                         qp = i2b2.h.XPath(qd[j], 'panel');
@@ -174,6 +169,7 @@ function QueryToolController() {
                     }
                     i2b2.CRC.view.QT.render();
                 }
+                i2b2.CRC.ctrlr.QT.loadQueryStatus(qm_id, queryName);
             }
         }
         // AJAX CALL
@@ -245,8 +241,15 @@ function QueryToolController() {
         let queryNameInput = $('dialogQryRun').select('INPUT.inputQueryName')[0];
         queryNameInput.value = qn;
     };
-
-
+// ================================================================================================== //
+    this.loadQueryStatus = function( queryMasterId, queryName) {
+        i2b2.CRC.ctrlr.QS.QRS = {};
+        i2b2.CRC.ctrlr.QS.QI = {};
+        i2b2.CRC.ctrlr.QS.QM = {name: queryName, id: queryMasterId};
+        i2b2.CRC.ctrlr.QS.startTime = new Date();
+        i2b2.CRC.view.QS.renderStart();
+        i2b2.CRC.ctrlr.QS.loadQueryStatus();
+    }
 // ================================================================================================== //
     this.runQuery = function(queryTypes) {
         let params = {
