@@ -376,7 +376,7 @@
         $.each(node.nodes, function checkStates(index, node) {
 
             // nodeId : unique, incremental identifier
-            node.nodeId = _this.idGenerator;
+            node.nodeId = _this.idGenerator();
 
             // parentId : transversing up the tree
             node.parentId = parent.nodeId;
