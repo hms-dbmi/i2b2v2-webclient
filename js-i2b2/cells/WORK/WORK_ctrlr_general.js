@@ -266,7 +266,7 @@ i2b2.WORK.ctrlr.main.MoveWorkItem = function(sdxChild, targetTvNode) {
 
 
     // create callback display routine
-    var scopedCallback = new i2b2_scopedCallback();
+    let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = targetTvNode;
     scopedCallback.callback = function(results) {
         i2b2.WORK.view.main.queryResponse = results.msgResponse;
@@ -296,7 +296,7 @@ i2b2.WORK.ctrlr.main.MoveWorkItem = function(sdxChild, targetTvNode) {
 
     console.log(childKey);
     console.log(parentKey);
-    var varData = {
+    let varData = {
         result_wait_time: 180,
         target_node_id: childKey,
         new_parent_node_id: parentKey
