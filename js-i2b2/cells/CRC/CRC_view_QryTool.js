@@ -596,7 +596,9 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 flagValue: null,
                 numericValueRangeLow: null,
                 numericValueRangeHigh: null,
-                unitValue: null
+                unitValue: null,
+                isEnum: false,
+                isString: false
             };
 
             $("#labValuesModal div").eq(0).modal("show");
@@ -612,6 +614,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         newLabValues.numericValueRangeHigh = null;
                         newLabValues.unitValue = null;
                         newLabValues.value = null;
+                        newLabValues.isEnum = false;
                         break;
                     case null:
                         newLabValues = {};
