@@ -172,7 +172,10 @@ function QueryToolController() {
                                         if(results.model.length > 0){
                                             let data = results.model[0];
                                             sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
-                                            i2b2.CRC.view.QT.render();
+                                            if(sdxDataNode.isLab)
+                                            {
+                                                i2b2.CRC.view.QT.render();
+                                            }
                                         }
                                     });
 
