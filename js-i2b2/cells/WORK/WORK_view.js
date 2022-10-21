@@ -248,7 +248,15 @@ i2b2.WORK.view.main.refreshNode = function(target_node, isParent){
     else{
         parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
     }
-    let parentChildren = parentNode.nodes.map(function(node) { return node.nodeId; });
+
+    let parentChildren = [];
+    if(parentNode.nodes) {
+        parentChildren = parentNode.nodes.map(function (node) {
+            return node.nodeId;
+        });
+    }
+
+    //delete triggers refresh of tree node
     parentNode.refTreeview.deleteNodes(parentChildren, true);
     parentNode.refTreeview.expandNode(parentNode.nodeId);
 }
