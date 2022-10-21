@@ -3,12 +3,15 @@
         <div class="searchTermMain">
             <div class="mx-auto">
                 <div class="input-group" id="querySearchTerm">
-                    <input class="form-control bg-transparent border-start-0 border-top-0 border-end-0 border" type="search" aria-label="Term" id="querySearchTermText" onkeyup="i2b2.CRC.view.search.handleSearchInputChange(this.value);">
+                    <input class="form-control bg-transparent border-start-0 border-top-0 border-end-0 border" type="text" aria-label="Term" id="querySearchTermText" onkeyup="i2b2.CRC.view.search.handleSearchInputChange(this.value);">
                     <span class="input-group-append searchActions">
-                    <button class="btn border-start-0 border-end-0 border-top-0 border searchBtn" type="button" id="submitQueryHistorySearch" onclick="i2b2.CRC.ctrlr.history.clickSearchName(); this.blur();" disabled>
-                        <i class="bi bi-search"></i>
-                    </button>
-                </span>
+                        <button class="btn btn border-start-0 border-end-0 border-top-0 border searchBtn" type="button" onclick="i2b2.CRC.view.search.reset();this.blur()">
+                            <i class="bi bi-x invisible clearIcon"></i>
+                        </button>
+                        <button class="btn border-start-0 border-end-0 border-top-0 border searchBtn" type="button" id="submitQueryHistorySearch" onclick="i2b2.CRC.ctrlr.history.clickSearchName(); this.blur();" disabled>
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </span>
                 </div>
             </div>
         </div>

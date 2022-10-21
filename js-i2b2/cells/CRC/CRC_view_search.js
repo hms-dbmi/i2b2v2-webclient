@@ -15,7 +15,7 @@ console.time('execute time');
 i2b2.CRC.view.search = {};
 //================================================================================================== //
 i2b2.CRC.view.search.handleSearchInputChange = function(newValue){
-    //i2b2.CRC.view.search.toggleSearchClearIcon(newValue);
+    i2b2.CRC.view.search.toggleSearchClearIcon(newValue);
     i2b2.CRC.view.search.enableSearch(newValue);
 };
 //================================================================================================== //
