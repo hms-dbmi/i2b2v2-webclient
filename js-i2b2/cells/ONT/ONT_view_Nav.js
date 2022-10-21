@@ -134,6 +134,7 @@ i2b2.events.afterCellInit.add((function(cell){
                 // create an empty treeview for navigation
                 let treeRef = $(treeEl).treeview({
                     showBorder: false,
+                    onhoverColor: "rgba(205, 208, 208, 0.56)",
                     highlightSelected: false,
                     dynamicLoading: true,
                     levels: 1,

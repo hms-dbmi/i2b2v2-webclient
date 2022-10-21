@@ -5,7 +5,8 @@
     bottom: 5px;
     left: 1px;
     right: 0px;
-    border: 1px solid #678;
+    border: solid 1px rgba(99, 117, 140, 0.34);
+    border-top: none;
     overflow: auto;
     padding: 0.4em;
     border-radius: 0 0 3px 3px;

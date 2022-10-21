@@ -1,6 +1,6 @@
 #i2b2TreeviewQueryHistory, #i2b2TreeviewQueryHistoryFinder, #i2b2QueryHistoryFinderStatus, #i2b2QueryHistoryFinderMessage {
     background: #FFFFFF;
-    border: solid 1px #63758c;
+    border: solid 1px rgba(99, 117, 140, 0.34);
     border-top: none;
     overflow: auto;
     border-radius: 0 0 3px 3px;
@@ -28,9 +28,9 @@
     position: absolute;
     top: 0;
     height: 3.1rem;
-    border: solid #63758c;
-    border-bottom: none;
-    border-width: 1px 1px 0 1px;
+    border: solid 1px rgba(99, 117, 140, 0.34);
+    border-bottom: solid 1px rgba(99, 117, 140, 0.17);
+    border-top: none;
     width: 100%;
     padding: 0.3em 0.3em 1.2em 1.3em;
     background: rgba(222, 225, 225, 0.3);
@@ -208,7 +208,7 @@ button.invert:hover{
     opacity: 0.65;
 }
 
-#querySearchTerm .searchActions {
+#i2b2QueryHistoryFinder .searchActions {
     /*margin-top: 0.99em;
     font-size: 1.5em;*/
     border-color: #797a7c !important;
@@ -216,23 +216,10 @@ button.invert:hover{
 }
 
 #i2b2QueryHistoryFinder .clearIcon {
-    /*font-size: 1.6em;
-    border: none;
-    border-radius: 0;
-    /*margin-right: 4px;
-    padding: 1px 5px !important;*/
     margin-right: 0;
     margin-left: 0;
     border-color: #797a7c !important;
     border-radius: 0 !important;
-}
-
-#i2b2QueryHistoryFinder .clearIcon {
-    /*font-size: 1.6em;
-    border: none;
-    border-radius: 0;
-    /*margin-right: 4px;
-    padding: 1px 5px !important;*/
 }
 
 #i2b2QueryHistoryFinder .clearIcon:hover {
@@ -248,3 +235,7 @@ button.invert:hover{
 #i2b2QueryHistoryFinder .invisible {
     visibility: hidden;
 }
+
+/*.node-i2b2TreeviewQueryHistory:not(.node-disabled):hover {
+    background-color: #d5d2d2 !important;
+}*/

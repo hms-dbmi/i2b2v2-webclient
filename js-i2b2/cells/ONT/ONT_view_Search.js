@@ -88,6 +88,7 @@ i2b2.ONT.view.search.initSearch = function(container){
     // create an empty treeview for navigation
     i2b2.ONT.view.search.treeview = $(treeTarget).treeview({
         showBorder: false,
+        onhoverColor: "rgba(205, 208, 208, 0.56)",
         highlightSelected: false,
         dynamicLoading: false,
         levels: 1,

@@ -349,6 +349,7 @@ i2b2.events.afterCellInit.add((function(cell){
                 // create an empty treeview
                 i2b2.WORK.view.main.treeview = $(treeTarget).treeview({
                     showBorder: false,
+                    onhoverColor: "rgba(205, 208, 208, 0.56)",
                     highlightSelected: false,
                     dynamicLoading: true,
                     levels: 1,
