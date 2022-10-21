@@ -1,13 +1,13 @@
 #i2b2TreeviewQueryHistory, #i2b2TreeviewQueryHistoryFinder, #i2b2QueryHistoryFinderStatus, #i2b2QueryHistoryFinderMessage {
     background: #FFFFFF;
     border: solid 1px #63758c;
-    border-top: 1px solid rgba(212, 105, 255, 0.18);
+    border-top: none;
     overflow: auto;
     border-radius: 0 0 3px 3px;
     flex-direction: column;
     position: absolute;
     bottom: 0;
-    top: 3.3em;
+    top: 3.5em;
     left: 0;
     right: 0;
     height: auto;
@@ -27,13 +27,13 @@
 #i2b2QueryHistoryFinder {
     position: absolute;
     top: 0;
-    height: 2.9rem;
+    height: 3.1rem;
     border: solid #63758c;
+    border-bottom: none;
     border-width: 1px 1px 0 1px;
     width: 100%;
-    padding: 0.3em 0.8em;
-    padding-bottom: 1.2em;
-    background: rgba(235, 238, 238, 0.3);
+    padding: 0.3em 0.3em 1.2em 1.3em;
+    background: rgba(222, 225, 225, 0.3);
     font-size: 0.98em;
     overflow: auto;
 }
@@ -46,14 +46,27 @@
 }
 
 #i2b2QueryHistoryFinder .searchTermMain{
+     flex-grow: 1;
+     min-width: 6.5rem;
+     margin-top: -0.1em;
+ }
+
+#i2b2QueryHistoryFinder #querySearchTermText{
     flex-grow: 1;
     min-width: 6.5rem;
+    margin-top: 0.3em;
+    border-color: #797a7c !important;
+    opacity: 0.65;
 }
 
+#i2b2QueryHistoryFinder #submitQueryHistorySearch{
+    border-color: #797a7c !important;
+    border-radius: 0 !important;
+}
 
-#i2b2QueryHistoryFinder .searchFilter{
-    padding: 0 0.8rem;
-    margin-bottom: -5px;
+#i2b2QueryHistoryFinder #querySearchFilter{
+    padding: 0 0.7rem;
+    margin-bottom: -10px;
 }
 
 #i2b2QueryHistoryFinder #querySearchFilterText {
@@ -62,37 +75,14 @@
     overflow: hidden;
     vertical-align: middle;
     display: inline-block;
-    width: 102px;
+    width: 80px;
 }
 
-#i2b2QueryHistoryFinder #queryHistorySearchActions {
-    min-width: 9rem;
-    text-align: right;
-}
-
-#i2b2QueryHistoryFinder #queryHistorySearchActions button {
-    width: 4rem;
-    height: 2rem;
-}
-
-#i2b2QueryHistoryFinder #queryHistorySearchActions button:disabled {
-    color: #444;
-    background: #ccc;
-}
 
 #i2b2QueryHistoryFinder .form-control{
-    margin-top: 0.8em;
-    border-top: none;
-    border-right: none;
-    border-left: none;
     border-radius: 0;
-    border-bottom: 1px solid gray;
     box-shadow: none;
     background: transparent;
-}
-
-#i2b2QueryHistoryFinder button{
-    display: inline-block;
 }
 
 button.invert{
@@ -130,6 +120,13 @@ button.invert:hover{
     margin-top: 5px;
 }
 
+#i2b2QueryHistoryFinder .navbar-nav{
+    border: 1px solid #ced4da;
+    border-radius: 5px 5px 5px 5px;
+    font-size: 0.9em;
+    background-color: #FFFFFF;
+}
+
 #i2b2QueryHistoryFinder .nav-link{
     color: #212529;
     margin-right: 0.2em;
@@ -140,7 +137,7 @@ button.invert:hover{
     position: fixed !important;
 }
 
-#i2b2QueryHistoryFinder .submenu{
+#i2b2FinderOnt .submenu{
     max-height: 18em;
     overflow-y: auto;
 }
@@ -177,42 +174,39 @@ button.invert:hover{
         margin-bottom: .5rem;
     }
 }
+/* ============ small devices .end// ============ */
 
-#querySearchTerm .searchBtn{
-    border: none;
-    border-bottom: 1px solid gray;
-    border-radius: 0;
+#i2b2QueryHistoryFinder .highlight-menu-item {
+    background-color: #f1f1f1;
+}
+
+#i2b2QueryHistoryFinder .centerText{
+    text-align: center;
+}
+
+#searchTermError{
+    color: red;
+    font-size: 0.85em;
+    width: 22.4em;
+}
+
+#i2b2QueryHistoryFinder .searchBtn{
     font-size: 1.4em !important;
-    margin-left: -5px;
-    margin-top: 1px;
-    padding: 3px 7px !important;
 }
 
-#querySearchTerm .searchBtn:hover{
+#i2b2QueryHistoryFinder .searchBtn:hover{
     border-radius: 3px;
+    background-color: #6c757d;
+    border-color: #797a7c !important;
 }
 
-#querySearchTerm .searchActions {
-    margin-top: 0.8em;
+#i2b2QueryHistoryFinder .searchBtn:enabled{
+    opacity: 0.65;
 }
 
-#i2b2QueryHistoryFinder .clearIcon {
-    font-size: 1.6em;
-    border: none;
-    border-radius: 0;
-    margin-right: 4px;
-    padding: 1px 5px !important;
-}
-
-#i2b2QueryHistoryFinder .clearIcon:hover {
-    border-radius: 3px;
-}
-
-#i2b2QueryHistoryFinder.clearIconMain {
-    border-bottom: 1px solid gray;
-    display: inline-block;
-    margin-right: 0;
-    margin-left: 0;
+#searchTerm .searchActions {
+    margin-top: 0.99em;
+    font-size: 1.5em;
 }
 
 #i2b2QueryHistoryFinder .invisible {

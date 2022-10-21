@@ -1,21 +1,15 @@
 <div class="finder-main" id="i2b2QueryHistoryFinder">
     <div class="searchOptions">
         <div class="searchTermMain">
-            <div class="input-group" id="querySearchTerm">
-                <input class="form-control form-control-sm" placeholder="Find query in" aria-label="Term" id="querySearchTermText" onkeyup="i2b2.CRC.view.search.handleSearchInputChange(this.value);">
-                <span class="input-group-append clear-input">
-                    <i class="bi bi-x  hidden clearIcon" onclick="i2b2.CRC.view.search.reset();"></i>
-                </span>
-                <span class="input-group-append searchActions">
-                    <div class="clearIconMain">
-                        <button class="btn btn-outline-secondary px-sm-0 pb-sm-0 pt-sm-0 invisible clearIcon" onclick="i2b2.CRC.view.search.reset();this.blur()">
-                            <i class="bi bi-x"></i>
-                        </button>
-                    </div>
-                    <button class="btn btn-outline-secondary px-sm-1 pb-sm-0 pt-sm-0 searchBtn" onclick="i2b2.CRC.ctrlr.history.clickSearchName(); this.blur();">
+            <div class="mx-auto">
+                <div class="input-group" id="querySearchTerm">
+                    <input class="form-control bg-transparent border-start-0 border-top-0 border-end-0 border" type="search" aria-label="Term" id="querySearchTermText" onkeyup="i2b2.CRC.view.search.handleSearchInputChange(this.value);">
+                    <span class="input-group-append searchActions">
+                    <button class="btn border-start-0 border-end-0 border-top-0 border searchBtn" type="button" id="submitQueryHistorySearch" onclick="i2b2.CRC.ctrlr.history.clickSearchName(); this.blur();" disabled>
                         <i class="bi bi-search"></i>
                     </button>
                 </span>
+                </div>
             </div>
         </div>
         <nav id="querySearchFilter" class="nav navbar-expand-sm searchFilter" data-selected-filter-value="@">

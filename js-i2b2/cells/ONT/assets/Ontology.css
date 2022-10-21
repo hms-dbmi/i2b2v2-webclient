@@ -6,11 +6,11 @@
     flex-direction: column;
     position: absolute;
     bottom: 0;
-    top: 3.3em;
+    top: 3.5em;
     left: 0;
     right: 0;
     height: auto;
-    border-top: 1px solid rgba(212, 105, 255, 0.18);
+    border-top: none;
 }
 
 #i2b2OntSearchStatus {
@@ -30,14 +30,14 @@
 #i2b2FinderOnt {
     position: absolute;
     top: 0;
-    height: 2.9rem;
+    height: 3.1rem;
     border: solid #63758c;
+    border-bottom: none;
     border-width: 1px 1px 0 1px;
     width: 100%;
-    padding: 0.3em 0.8em;
-    background: rgba(235, 238, 238, 0.3);
+    padding: 0.3em 1.0em 1.2em 1.3em;
+    background: rgba(222, 225, 225, 0.3);
     font-size: 0.98em;
-    padding-bottom: 1.1em;
     overflow: auto;
 }
 
@@ -51,12 +51,25 @@
 #i2b2FinderOnt .searchTermMain{
     flex-grow: 1;
     min-width: 6.5rem;
+    margin-top: 0.1em;
 }
 
+#i2b2FinderOnt #searchTermText{
+    flex-grow: 1;
+    min-width: 6.5rem;
+    margin-top: 0.3em;
+    border-color: #797a7c !important;
+    opacity: 0.65;
+}
+
+#i2b2FinderOnt #submitTermSearch{
+    border-color: #797a7c !important;
+    border-radius: 0 !important;
+}
 
 #i2b2FinderOnt #searchFilter{
     padding: 0 0.7rem;
-    margin-bottom: -10px;
+    margin-bottom: -8px;
 }
 
 #i2b2FinderOnt #searchFilterText {
@@ -68,33 +81,15 @@
     width: 80px;
 }
 
-
-#i2b2FinderOnt #searchActions {
-    min-width: 9rem;
-    text-align: right;
-}
-
-
 #i2b2FinderOnt #searchActions button:disabled {
     color: #444;
     background: #ccc;
 }
 
-
-
 #i2b2FinderOnt .form-control{
-    margin-top: 0.8em;
-    border-top: none;
-    border-right: none;
-    border-left: none;
     border-radius: 0;
-    border-bottom: 1px solid gray;
     box-shadow: none;
     background: transparent;
-}
-
-#i2b2FinderOnt button{
-    display: inline-block;
 }
 
 button.invert{
@@ -123,16 +118,16 @@ button.invert:hover{
     padding-left: 0.1em;
 }
 
-.form-check-input {
+#i2b2FinderOnt .form-check-input {
     border: 1px solid black;
     margin-top: 2px;
 }
 
-.form-check-inline {
+#i2b2FinderOnt .form-check-inline {
     margin-top: 5px;
 }
 
-.navbar-nav{
+#i2b2FinderOnt .navbar-nav{
     border: 1px solid #ced4da;
     border-radius: 5px 5px 5px 5px;
     font-size: 0.9em;
@@ -143,7 +138,6 @@ button.invert:hover{
     color: #212529;
     margin-right: 0.2em;
 }
-
 
 #i2b2FinderOnt .dropdown-menu{
     font-size: 1em;
@@ -189,11 +183,11 @@ button.invert:hover{
 }
 /* ============ small devices .end// ============ */
 
-.highlight-menu-item {
+#i2b2FinderOnt .highlight-menu-item {
     background-color: #f1f1f1;
 }
 
-.centerText{
+#i2b2FinderOnt .centerText{
     text-align: center;
 }
 
@@ -203,44 +197,25 @@ button.invert:hover{
     width: 22.4em;
 }
 
-#searchTerm .searchBtn{
-    border: none;
-    border-bottom: 1px solid gray;
-    border-radius: 0;
+#i2b2FinderOnt .searchBtn{
     font-size: 1.4em !important;
-    margin-left: -5px;
-    margin-top: 1px;
-    padding: 3px 7px !important;
 }
 
-#searchTerm .searchBtn:hover{
+#i2b2FinderOnt .searchBtn:hover{
     border-radius: 3px;
+    background-color: #6c757d;
+}
+
+#i2b2FinderOnt .searchBtn:enabled{
+    opacity: 0.65;
 }
 
 #searchTerm .searchActions {
-    margin-top: 0.8em;
+    margin-top: 0.99em;
+    font-size: 1.5em;
 }
 
-.clearIcon {
-    font-size: 1.6em;
-    border: none;
-    border-radius: 0;
-    margin-right: 4px;
-    padding: 1px 5px !important;
-}
-
-.clearIcon:hover {
-    border-radius: 3px;
-}
-
-.clearIconMain {
-    border-bottom: 1px solid gray;
-    display: inline-block;
-    margin-right: 0;
-    margin-left: 0;
-}
-
-.invisible {
+#i2b2FinderOnt .invisible {
     visibility: hidden;
 }
 
