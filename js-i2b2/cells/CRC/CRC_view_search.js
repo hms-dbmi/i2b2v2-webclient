@@ -17,6 +17,10 @@ i2b2.CRC.view.search = {};
 i2b2.CRC.view.search.handleSearchInputChange = function(newValue){
     i2b2.CRC.view.search.toggleSearchClearIcon(newValue);
     i2b2.CRC.view.search.enableSearch(newValue);
+
+    if(!newValue){
+        i2b2.CRC.view.search.reset();
+    }
 };
 //================================================================================================== //
 i2b2.CRC.view.search.enableSearch = function(newValue){
@@ -30,8 +34,10 @@ i2b2.CRC.view.search.enableSearch = function(newValue){
 i2b2.CRC.view.search.toggleSearchClearIcon = function(newValue){
     if (newValue){
         $("#querySearchTerm .clearIcon").removeClass("invisible");
+        $("#querySearchClearBtn").attr('disabled', false);
     } else {
         $("#querySearchTerm .clearIcon").addClass("invisible");
+        $("#querySearchClearBtn").attr('disabled', true);
     }
 };
 //================================================================================================== //
@@ -49,7 +55,6 @@ i2b2.CRC.view.search.selectSearchType = function(elem) {
 i2b2.CRC.view.search.reset = function(){
     $("#querySearchTermText").val("");
     $("#querySearchTermError").empty();
-    i2b2.CRC.view.search.handleSearchInputChange("");
     $("#querySearchFilterText").text("Any Category");
     $("#querySearchFilter").data("selectedFilterValue", "@");
 

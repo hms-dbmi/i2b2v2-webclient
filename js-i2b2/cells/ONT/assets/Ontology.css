@@ -37,8 +37,6 @@
     width: 100%;
     padding: 0.3em 1.0em 1.2em 1.3em;
     background: rgba(222, 225, 225, 0.3);
-    /*background: rgba(205, 208, 208, 0.47);*/
-
     font-size: 0.98em;
     overflow: auto;
 }
@@ -67,6 +65,7 @@
 #i2b2FinderOnt #submitTermSearch{
     border-color: #797a7c !important;
     border-radius: 0 !important;
+    margin-left: -0.2em;
 }
 
 #i2b2FinderOnt #searchFilter{
@@ -81,6 +80,11 @@
     vertical-align: middle;
     display: inline-block;
     width: 80px;
+}
+
+#i2b2FinderOnt .searchActions {
+    border-color: #797a7c !important;
+    border-radius: 0 !important;
 }
 
 #i2b2FinderOnt #searchActions button:disabled {
@@ -201,20 +205,30 @@ button.invert:hover{
 
 #i2b2FinderOnt .searchBtn{
     font-size: 1.4em !important;
+    margin-left: 0;
+    border-color: #797a7c !important;
+    border-radius: 0 !important;
 }
 
-#i2b2FinderOnt .searchBtn:hover{
+#i2b2FinderOnt .searchBtn:hover:enabled{
     border-radius: 3px;
     background-color: #6c757d;
+    border-color: #797a7c !important;
 }
 
 #i2b2FinderOnt .searchBtn:enabled{
     opacity: 0.65;
 }
 
-#searchTerm .searchActions {
-    margin-top: 0.99em;
-    font-size: 1.5em;
+#i2b2FinderOnt .clearIcon {
+    margin-right: 0;
+    margin-left: 0;
+    border-color: #797a7c !important;
+    border-radius: 0 !important;
+}
+
+#i2b2FinderOnt .clearIcon:hover {
+    border-radius: 3px;
 }
 
 #i2b2FinderOnt .invisible {

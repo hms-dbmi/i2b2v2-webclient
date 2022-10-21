@@ -198,7 +198,7 @@ button.invert:hover{
     border-radius: 0 !important;
 }
 
-#i2b2QueryHistoryFinder .searchBtn:hover{
+#i2b2QueryHistoryFinder .searchBtn:hover:enabled{
     border-radius: 3px;
     background-color: #6c757d;
     border-color: #797a7c !important;
@@ -209,8 +209,6 @@ button.invert:hover{
 }
 
 #i2b2QueryHistoryFinder .searchActions {
-    /*margin-top: 0.99em;
-    font-size: 1.5em;*/
     border-color: #797a7c !important;
     border-radius: 0 !important;
 }
@@ -226,16 +224,6 @@ button.invert:hover{
     border-radius: 3px;
 }
 
-#i2b2QueryHistoryFinder.clearIconMain {
-    /*border-bottom: 1px solid gray;
-    margin-right: 0;
-    margin-left: 0;*/
-}
-
 #i2b2QueryHistoryFinder .invisible {
     visibility: hidden;
 }
-
-/*.node-i2b2TreeviewQueryHistory:not(.node-disabled):hover {
-    background-color: #d5d2d2 !important;
-}*/

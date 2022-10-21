@@ -25,6 +25,10 @@ i2b2.ONT.view.search.toggleSearchOptions = function(elem){
 i2b2.ONT.view.search.handleSearchInputChange = function(newValue){
     i2b2.ONT.view.search.toggleSearchClearIcon(newValue);
     i2b2.ONT.view.search.enableSearch(newValue);
+
+    if(!newValue){
+        i2b2.ONT.view.search.clearSearchInput();
+    }
 };
 //================================================================================================== //
 
@@ -41,9 +45,11 @@ i2b2.ONT.view.search.enableSearch = function(newValue){
 
 i2b2.ONT.view.search.toggleSearchClearIcon = function(newValue){
     if (newValue){
-        $("#searchTerm .clearIcon").removeClass("invisible");
+        $("#termSearchClearBtn .clearIcon").removeClass("invisible");
+        $("#termSearchClearBtn").attr('disabled', false);
     } else {
-        $("#searchTerm .clearIcon").addClass("invisible");
+        $("#termSearchClearBtn .clearIcon").addClass("invisible");
+        $("#termSearchClearBtn").attr('disabled', true);
     }
 };
 
@@ -52,7 +58,6 @@ i2b2.ONT.view.search.toggleSearchClearIcon = function(newValue){
 i2b2.ONT.view.search.clearSearchInput = function(){
     $("#searchTermText").val("");
     $("#searchTermError").empty();
-    i2b2.ONT.view.search.handleSearchInputChange("");
 
     // Reset dropdown menu settings
     $("#searchFilterText").text("Any Category");
