@@ -232,6 +232,7 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
 
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
+    i2b2.CRC.view.QS.clearStatus();
 };
 
 
@@ -261,6 +262,7 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     }
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget) {
@@ -346,12 +348,15 @@ i2b2.CRC.view.QT.render = function() {
         }
 
         // attach the date picker functionality
-        $('.DateStart', newQG).datepicker({uiLibrary: 'bootstrap4'});
-        $('.DateEnd', newQG).datepicker({uiLibrary: 'bootstrap4'});
-        $('.DateRange1Start', newQG).datepicker({uiLibrary: 'bootstrap4'});
-        $('.DateRange1End', newQG).datepicker({uiLibrary: 'bootstrap4'});
-        $('.DateRange2Start', newQG).datepicker({uiLibrary: 'bootstrap4'});
-        $('.DateRange2End', newQG).datepicker({uiLibrary: 'bootstrap4'});
+        let onDateChange = function (e) {
+            i2b2.CRC.view.QS.clearStatus();
+        }
+        $('.DateStart', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
+        $('.DateEnd', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
+        $('.DateRange1Start', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
+        $('.DateRange1End', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
+        $('.DateRange2Start', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
+        $('.DateRange2End', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
 
         // attach the i2b2 SDX handlers
         let dropTarget = $(".Event1Container", newQG);
@@ -380,6 +385,7 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].with = true;
         i2b2.CRC.model.query.groups[qgIndex].without = false;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
+        i2b2.CRC.view.QS.clearStatus();
     });
     $('.QueryGroup .topbar .without', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // change the CSS styling
@@ -392,6 +398,7 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].with = false;
         i2b2.CRC.model.query.groups[qgIndex].without = true;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
+        i2b2.CRC.view.QS.clearStatus();
     });
     $('.QueryGroup .topbar .when', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // change the CSS styling
@@ -404,6 +411,7 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].with = false;
         i2b2.CRC.model.query.groups[qgIndex].without = false;
         i2b2.CRC.model.query.groups[qgIndex].when = true;
+        i2b2.CRC.view.QS.clearStatus();
     });
     // Query Group delete button
     $('.QueryGroup .topbar .qgclose i', i2b2.CRC.view.QT.containerDiv).on('click', i2b2.CRC.view.QT.deleteQueryGroup);
@@ -625,6 +633,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 }
                 sdxConcept.LabValues = newLabValues;
                 $("#labValuesModal div").eq(0).modal("hide");
+                i2b2.CRC.view.QS.clearStatus();
             });
 
             $("#labAnyValueType").click(function () {
@@ -991,7 +1000,7 @@ i2b2.CRC.view.QT.clearAll = function(){
     if (i2b2.CRC.model.query.groups.length === 0) return;
     i2b2.CRC.ctrlr.QT.clearQuery();
     i2b2.CRC.view.QT.clearQuery();
-    i2b2.CRC.view.QS.clearQuery();
+    i2b2.CRC.view.QS.clearStatus();
 }
 
 // ================================================================================================== //
