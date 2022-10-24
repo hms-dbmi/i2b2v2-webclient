@@ -28,7 +28,7 @@
     position: absolute;
     background: #FFF;
     top: 0px;
-    bottom: 5px;
+    bottom: 0px;
     left: 1px;
     right: 0px;
 }
@@ -56,7 +56,7 @@
     height: 3.1em;
     padding: 0.7em 0 0 0;
     border-radius: 0 0 3px 3px;
-    border: 1px solid rgba(102, 119, 136, 0.36);
+    border: 1px solid rgba(102, 119, 136, 0.25);
 }
 
 .CRC_QT_view .CRC_QT_runbar .left {

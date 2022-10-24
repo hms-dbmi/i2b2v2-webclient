@@ -323,8 +323,13 @@ DIV.tabText {}
 
 .goldenLayout .lm_splitter:hover,
 .goldenLayout .lm_splitter.lm_dragging {
-	background:#369;
+	background: #369;
 	opacity: 1;
+}
+
+.goldenLayout .lm_splitter{
+	background: transparent;
+
 }
 
 .goldenLayout .lm_content {
@@ -436,6 +441,8 @@ DIV.tabText {}
 	overflow:hidden;
 	border-radius: 0 0 3px 3px;
 }
+
+
 
 #goldenLayoutId2 {
 	position:absolute;
