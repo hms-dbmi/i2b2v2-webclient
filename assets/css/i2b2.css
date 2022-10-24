@@ -325,7 +325,6 @@ DIV.tabText {}
 .goldenLayout .lm_splitter.lm_dragging {
 	background:#369;
 	opacity: 1;
-	height: 10px;
 }
 
 .goldenLayout .lm_content {
