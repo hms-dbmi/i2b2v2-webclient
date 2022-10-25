@@ -388,6 +388,7 @@
 
 .QueryGroup .Event1Container {
     border-bottom: none;
+    padding-left: 2px;
 }
 .QueryGroup .Event1Container .EventLbl {
     position: relative;
@@ -542,6 +543,8 @@
     width: 0.3em;
     display: inline-block;
     text-align: right;
+    padding-left: 8px;
+    margin-right: 15px;
 }
 .TermList .actions {
     margin-left: 0.75em;
