@@ -35,13 +35,13 @@
 }
 
 .CRC_QT_view .CRC_QT_query {
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 3.1em;
+    bottom: 3.4em;
     border: solid 1px rgba(99, 117, 140, 0.28);
     border-bottom: none;
     border-top: none;
