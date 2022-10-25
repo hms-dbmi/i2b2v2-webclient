@@ -332,6 +332,9 @@ DIV.tabText {}
 
 }
 
+.lm_splitter.lm_vertical .lm_drag_handle {
+	height: 5px;
+}
 .goldenLayout .lm_content {
 	background:none;
 	border:none;
@@ -421,7 +424,7 @@ DIV.tabText {}
 
 .goldenLayout div.cellWhite {
 	background:#FFF;
-	border: solid 1px rgba(99, 117, 140, 0.34);
+	border: solid 1px rgba(99, 117, 140, 0.28);
 	border-top: none;
 	overflow:auto;
 	border-radius: 0 0 3px 3px;

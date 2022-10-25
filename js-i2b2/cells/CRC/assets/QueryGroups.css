@@ -8,6 +8,7 @@
 .Event1Container .i2b2DropTarget.DropHover,
 .CRC_QT_runbar .i2b2DropTarget.DropHover {
     background: #d1f0ff;
+    box-shadow: 0 5px 20px rgb(0 0 0 / 19%), 0 6px 6px rgb(0 0 0 / 23%);
 }
 
 .i2b2DropTarget {
@@ -34,21 +35,21 @@
 }
 
 .CRC_QT_view .CRC_QT_query {
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 3.1em;
-    border: solid 1px rgba(99, 117, 140, 0.34);
+    border: solid 1px rgba(99, 117, 140, 0.28);
     border-bottom: none;
     border-top: none;
     border-radius: 0 0 0 0;
 }
 
 .CRC_QT_view .CRC_QT_runbar {
-    background: #b0c7ce;
+    background: rgba(204, 194, 182, 0.6);
     position: absolute;
     bottom: 0;
     right: 0;
@@ -56,7 +57,10 @@
     height: 3.1em;
     padding: 0.7em 0 0 0;
     border-radius: 0 0 3px 3px;
-    border: 1px solid rgba(102, 119, 136, 0.25);
+    color: #2782a3;
+    font-weight: bold;
+    font-size: 1.1em;
+    border: 1px solid rgba(39, 130, 163, 0.41); /*rgba(102, 119, 136, 0.23);*/
 }
 
 .CRC_QT_view .CRC_QT_runbar .left {
@@ -117,7 +121,7 @@
 .CRC_QT_runbar .button-clear{
     margin-top: 0em;
     background-color: #fff;
-    color: #be9566; /*#0d6efd;*/ /*#2782a3;*/ /*#0d6efd;*/
+    color: #be9566;
     border-color: #be9566;
     padding: 0.1rem 0.4rem;
     line-height: 1.5em;
@@ -188,7 +192,7 @@
 
 .QueryGroup {
     min-width: 20em;
-    margin: 1em;
+    margin: 1em 2.3em 1em 2.3em;
 }
 
 .QueryGroup .topbar {
@@ -196,7 +200,8 @@
     display: flex;
     white-space: nowrap;
     overflow: hidden;
-
+    box-shadow: none;
+    z-index: 1
 }
 
 .QueryGroup .topbar .JoinText {
@@ -204,7 +209,7 @@
     border-radius: 5px 0px 0px 0px;
     -webkit-border-radius: 5px 0px 0px 0px;
     -moz-border-radius: 5px 0px 0px 0px;
-    padding-left: 2.5em !important;
+    padding-left: 2.0em !important;
 }
 .QueryGroup .topbar .qgclose {
     border-radius: 0px 5px 0px 0px;
@@ -279,14 +284,54 @@
 .QueryGroup.with .body .leftbar {
     background: #7ab893;
 }
+
+.QueryGroup.with .body .leftbar,
+.QueryGroup.without .body .leftbar,
+.QueryGroup.when .body .leftbar{
+    display: block;
+    border-top: none;
+}
+
 .QueryGroup .SequenceBar,
 .QueryGroup .topbar .JoinText,
 .QueryGroup .topbar .with,
 .QueryGroup .topbar .without,
 .QueryGroup .topbar .when,
 .QueryGroup .topbar .qgclose,
-.QueryGroup .body .leftbar {
-    background: #cccccc;
+.QueryGroup .body .leftbar
+{
+    border: 1px solid #ececec;
+}
+
+
+
+.QueryGroup .topbar .qgclose,
+.QueryGroup .topbar .with,
+.QueryGroup .topbar .without,
+.QueryGroup .topbar .when{
+    border-left: none;
+}
+
+.QueryGroup .topbar .JoinText,
+.QueryGroup .topbar .with,
+.QueryGroup .topbar .without,
+.QueryGroup .topbar .when,
+.QueryGroup .body .leftbar{
+    border-right: none;
+}
+
+.QueryGroup .topbar .JoinText,
+.QueryGroup .topbar .with,
+.QueryGroup .topbar .without,
+.QueryGroup .topbar .when,
+.QueryGroup .topbar .qgclose{
+    border-bottom: none;
+}
+
+.QueryGroup .body .leftbar{
+    border-width: 1px 0 1px 1px;
+    border-bottom-left-radius: 5px;
+    display: none;
 }
 
 
@@ -342,7 +387,7 @@
 }
 
 .QueryGroup .Event1Container {
-    border-top: 1px solid #ddd;
+    border-bottom: none;
 }
 .QueryGroup .Event1Container .EventLbl {
     position: relative;
@@ -406,8 +451,15 @@
 .QueryGroup .body {
     display: flex;
     clear: both;
-    box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+    /*box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);*/
 }
+
+
+.QueryGroup:hover .body{
+    box-shadow: 0 5px 20px rgb(0 0 0 / 19%), 0 6px 6px rgb(0 0 0 / 23%);
+}
+
+
 .QueryGroup .body .leftbar {
     float: left;
     width: 1.5em;
@@ -416,19 +468,27 @@
 .QueryGroup .body .main {
     width:100%
 }
+
 .QueryGroup .body .main .content {
-    xxxborder: 1px solid #ececec;
-    background: #f9f9f9;
+    border: 1px solid #ececec;
+    border-top: 1px solid rgba(213, 212, 212, 0.48);
     width:100%;
-    border-radius: 0px 5px 5px 0px;
-    -webkit-border-radius: 0px 5px 5px 0px;
-    -moz-border-radius: 0px 5px 5px 0px;
+    border-radius: 0px 5px 5px 5px;
+    -webkit-border-radius: 0px 5px 5px 5px;
+    -moz-border-radius: 0px 5px 5px 5px;
 }
 
 .QueryGroup .body .main .content .orDragAdditional {
     color: #878787;
     font-style: italic;
-    margin: 0.6em;
+    margin: 0.9em 0.6em 0.6em 0.6em;
+}
+
+.QueryGroup .body .main .content .dragFirst {
+    color: #878787;
+    font-style: italic;
+    margin: 2.2em 3em 1.6em 1.6em;
+    padding-left: 0.5em;
 }
 
 .QueryGroup .with i,
@@ -479,7 +539,7 @@
     vertical-align: text-bottom;
 }
 .TermList .termOr {
-    width: 2em;
+    width: 0.3em;
     display: inline-block;
     text-align: right;
 }
