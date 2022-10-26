@@ -92,11 +92,12 @@
 
 .CRC_QT_view .CRC_QT_runbar input.name {
     width: 100%;
-    margin: 0.1em 0;
+    margin: 0.2em 0 0 0;
     font-weight: 400;
     font-size: 15px;
     border: 1px solid rgba(0, 0, 0, .12);
-    height: 1.8em;
+    height: 2.1em;
+    border-radius: 0.2rem;
 }
 
 .CRC_QT_view .CRC_QT_runbar label {
@@ -109,9 +110,9 @@
 }
 
 .CRC_QT_runbar .button-run{
-    padding: 0.1rem 0.4rem;
+    padding: 0.22rem 0.4rem;
     line-height: 1.5em;
-    margin-top: 0em;
+    margin-top: -0.1em;
     margin-right: 0.8em;
     color: #2782a3;
     background-color: #fff;
@@ -119,11 +120,11 @@
 
 
 .CRC_QT_runbar .button-clear{
-    margin-top: 0em;
+    margin-top: -0.1em;
     background-color: #fff;
     color: #be9566;
     border-color: #be9566;
-    padding: 0.1rem 0.4rem;
+    padding: 0.22rem 0.4rem;
     line-height: 1.5em;
 }
 
