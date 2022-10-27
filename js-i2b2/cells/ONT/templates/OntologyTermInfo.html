@@ -10,7 +10,7 @@
     <div>
         <div>
             <span class="dataline path">{{key}}</span>
-            <i class="bi bi-clipboard" title="copy to clipboard" data-clip-contents='{{{escKey}}}' ></i>
+            <a href="#"><i class="bi bi-clipboard" title="copy to clipboard" data-clip-contents='{{{escKey}}}' ></i></a>
         </div>
     </div>
 
@@ -20,7 +20,7 @@
 
         <div class="dataline sql">
             <span>SELECT * FROM {{table}} WHERE {{column}} {{operator}} "{{{path}}}%";</span>
-            <i class="bi bi-clipboard" title="copy to clipboard" data-clip-contents='SELECT * FROM {{{table}}} WHERE {{{column}}} {{{operator}}} "{{{escPath}}}%";'></i>
+            <a href="#"><i class="bi bi-clipboard" title="copy to clipboard" data-clip-contents='SELECT * FROM {{{table}}} WHERE {{{column}}} {{{operator}}} "{{{escPath}}}%";'></i></a>
         </div>
         {{else}}
         <div class="dataline sql">(n/a)</div>
