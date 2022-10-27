@@ -401,9 +401,14 @@ document.addEventListener("dragstart", function(event) {
     // <BUG FIX> for Chrome and Edge!
     let gl = $('.goldenLayout')[0];
     gl.style.display = 'inline-block';
-    setTimeout(()=>{gl.style.display = '';}, 0);
+    setTimeout(()=>{
+        gl.style.display = '';
+        $(event.target).width($(event.target).data("origWidth"));
+    }, 0);
     // </BUG FIX>
     $(".i2b2DropTarget").addClass("i2b2DropPrep");
+    $(event.target).data("origWidth", $(event.target).css("width"));
+    $(event.target).css("width", "fit-content");
 }, false);
 
 
