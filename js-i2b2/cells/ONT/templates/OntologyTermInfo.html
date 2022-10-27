@@ -54,7 +54,11 @@
         {{#each children}}
         <tr class="childrow">
             <td class="name child-link" title="{{renderData.moreDescriptMinor}}"><img src="{{renderData.iconImg}}" /> <a href="#" data-sdx-key="{{sdxInfo.sdxKeyValue}}" >{{renderData.title}}</a></td>
-            <td class="value">{{origData.basecode}}</td>
+            {{#if origData.basecode}}
+                <td class="value">{{origData.basecode}}</td>
+            {{else}}
+                <td class="value">(n/a)</td>
+            {{/if}}
         </tr>
         {{/each}}
     </table>
