@@ -9,15 +9,6 @@
     padding: .4rem;
 }
 
-
-.i2b2OntInfo .titlebar {
-    background: #d0d0d0;
-    margin-bottom: 0.3rem;
-    padding: 0.2rem;
-    font-size: 0.75rem;
-}
-
-
 .i2b2OntInfo > h2 {
     font-size: .9rem;
     font-weight: bold;
@@ -28,21 +19,18 @@
     vertical-align: top;
 }
 
-
 .i2b2OntInfo .label {
     margin: 0.75rem 0 0.25rem 0.5rem;
-    color: #ed9b40;
+    text-decoration: underline;
     font-weight: bold;
 }
 
-
-.i2b2OntInfo i.bi {
-    float: left;
-}
 .i2b2OntInfo i.bi-clipboard {
     cursor: pointer;
+    color: #2782a3;
+    font-size: 1.2em;
+    margin-left: 0.45em;
 }
-
 
 .i2b2OntInfo table.children {
     margin-right: 1.4rem;
@@ -50,14 +38,6 @@
 
 .i2b2OntInfo table.children .value {
     width: 9rem;
-}
-
-.i2b2OntInfo table.children td.value {
-    font-family: monospace;
-}
-
-.i2b2OntInfo .sql, .i2b2OntInfo .path, .i2b2OntInfo .basecode {
-    font-family: monospace;
 }
 
 .i2b2OntInfo .dataline {

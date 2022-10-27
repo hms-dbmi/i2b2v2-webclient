@@ -1,6 +1,5 @@
-<div class="titlebar">Detailed Information for Term:</div>
 {{#if title}}
-    <h2><img src="{{icon}}" /> {{title}}</h2>
+    <h2 class="title"><img src="{{icon}}" /> {{title}}</h2>
 
     <div class="label">Description</div>
     <div>
@@ -9,15 +8,20 @@
 
     <div class="label">Concept Path</div>
     <div>
-        <i class="bi bi-clipboard" data-clip-contents='{{{escKey}}}'></i>
-        <div class="dataline path">{{key}}</div>
+        <div>
+            <span class="dataline path">{{key}}</span>
+            <i class="bi bi-clipboard" title="copy to clipboard" data-clip-contents='{{{escKey}}}' ></i>
+        </div>
     </div>
 
     <div class="label">SQL Code (to retreve children)</div>
     <div>
         {{#if hasSQL}}
-        <i class="bi bi-clipboard" data-clip-contents='SELECT * FROM {{{table}}} WHERE {{{column}}} {{{operator}}} "{{{escPath}}}%";'></i>
-        <div class="dataline sql">SELECT * FROM {{table}} WHERE {{column}} {{operator}} "{{{path}}}%";</div>
+
+        <div class="dataline sql">
+            <span>SELECT * FROM {{table}} WHERE {{column}} {{operator}} "{{{path}}}%";</span>
+            <a href="#"><i class="bi bi-clipboard" title="copy to clipboard" data-clip-contents='SELECT * FROM {{{table}}} WHERE {{{column}}} {{{operator}}} "{{{escPath}}}%";'></i></a>
+        </div>
         {{else}}
         <div class="dataline sql">(n/a)</div>
         {{/if}}
