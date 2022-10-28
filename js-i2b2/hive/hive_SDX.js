@@ -403,12 +403,9 @@ document.addEventListener("dragstart", function(event) {
     gl.style.display = 'inline-block';
     setTimeout(()=>{
         gl.style.display = '';
-        $(event.target).width($(event.target).data("origWidth"));
     }, 0);
     // </BUG FIX>
     $(".i2b2DropTarget").addClass("i2b2DropPrep");
-    $(event.target).data("origWidth", $(event.target).css("width"));
-    $(event.target).css("width", "fit-content");
 }, false);
 
 
