@@ -251,3 +251,7 @@ button.invert:hover{
 .srTooltip {
     color: #87898a;
 }
+
+.node-i2b2TreeviewOntNav, .node-i2b2TreeviewOntSearch{
+    width: fit-content !important;
+}
