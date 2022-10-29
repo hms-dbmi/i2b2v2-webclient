@@ -403,8 +403,24 @@ document.addEventListener("dragstart", function(event) {
     gl.style.display = 'inline-block';
     setTimeout(()=>{
         gl.style.display = '';
+        $("#dragElementImage").empty();
     }, 0);
     // </BUG FIX>
+    let dragElement = $("#dragElementImage");
+    if(dragElement.length === 0){
+        let newElement = $("<div id='dragElementImage'></div>");
+        newElement.css("width", "fit-content");
+        newElement.css("position", "absolute");
+        newElement.css("padding", "2px 4px 3px 4px");
+        newElement.css("background", "white");
+        newElement.css("z-index", "-50");
+        $(event.target).append(newElement);
+    }
+    dragElement = $("#dragElementImage").empty();
+    let text = $(event.target).text();
+    let spanWithTypeIcon = $(event.target).find("span").last();
+    dragElement.text(text).prepend(spanWithTypeIcon[0].outerHTML);
+    event.dataTransfer.setDragImage(document.getElementById('dragElementImage'),50,50);
     $(".i2b2DropTarget").addClass("i2b2DropPrep");
 }, false);
 
