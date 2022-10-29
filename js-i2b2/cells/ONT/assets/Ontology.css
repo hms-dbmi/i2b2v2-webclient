@@ -251,3 +251,9 @@ button.invert:hover{
 .srTooltip {
     color: #87898a;
 }
+
+#i2b2FinderOnt .searchTermMain .input-group{
+    border-color: #474849;
+    border-style: solid;
+    border-width: 0 0 1px 0 !important;
+}
