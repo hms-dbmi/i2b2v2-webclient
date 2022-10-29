@@ -65,7 +65,6 @@
 }
 
 #i2b2FinderOnt #submitTermSearch{
-    border-radius: 0 !important;
     margin-left: -0.2em;
 }
 
@@ -85,12 +84,12 @@
 
 #i2b2FinderOnt .searchActions {
     border-color: #797a7c !important;
-    border-radius: 0 !important;
 }
 
 #i2b2FinderOnt .searchActions .btn {
     padding: 0.05em 0.55em;
     margin-top: 0.7em;
+    border-radius: 3px;
 }
 
 #i2b2FinderOnt #searchActions button:disabled {
@@ -214,11 +213,9 @@ button.invert:hover{
     margin-left: 0;
     border-color: #474849 !important;
     border-width: 0.10em !important;
-    border-radius: 0 !important;
 }
 
 #i2b2FinderOnt .searchBtn:hover:enabled{
-    border-radius: 3px;
     background-color: #6c757d;
     border-color: #797a7c !important;
 }
@@ -231,7 +228,6 @@ button.invert:hover{
     margin-right: 0;
     margin-left: 0;
     border-color: #797a7c !important;
-    border-radius: 0 !important;
 }
 
 #i2b2FinderOnt .clearIcon:hover {
