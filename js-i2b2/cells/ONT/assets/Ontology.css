@@ -82,10 +82,6 @@
     width: 80px;
 }
 
-#i2b2FinderOnt .searchActions {
-    border-color: #797a7c !important;
-}
-
 #i2b2FinderOnt .searchActions .btn {
     padding: 0.05em 0.55em;
     margin-top: 0.7em;
@@ -249,7 +245,7 @@ button.invert:hover{
 }
 
 #i2b2FinderOnt .searchTermMain .input-group{
-    border-color: #474849;
+    border-color: rgba(71, 72, 73, 0.63);
     border-style: solid;
-    border-width: 0 0 1px 0 !important;
+    border-width: 0 0 2px 0 !important;
 }
