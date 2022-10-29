@@ -3,12 +3,12 @@
         <div class="searchTermMain">
             <div class="mx-auto">
                 <div class="input-group">
-                    <input class="form-control bg-transparent border-start-0 border-top-0 border-end-0 border" type="text" aria-label="Term" id="searchTermText" onkeyup="i2b2.ONT.view.search.handleSearchInputChange(this.value);">
+                    <input class="form-control bg-transparent border-start-0 border-top-0 border-end-0 border-bottom-0 border" type="text" aria-label="Term" id="searchTermText" onkeyup="i2b2.ONT.view.search.handleSearchInputChange(this.value);">
                     <span class="input-group-append searchActions">
-                        <button class="btn btn border-start-0 border-end-0 border-top-0 border searchBtn" type="button" id="termSearchClearBtn" onclick="i2b2.ONT.view.search.clearSearchInput();this.blur()" disabled>
+                        <button class="btn btn border-start-0 border-end-0 border-top-0 border-bottom-0 border searchBtn" type="button" id="termSearchClearBtn" onclick="i2b2.ONT.view.search.clearSearchInput();this.blur()" disabled>
                             <i class="bi bi-x invisible clearIcon"></i>
                         </button>
-                        <button class="btn border-start-0 border-end-0 border-top-0 border searchBtn" type="button" id="submitTermSearch" onclick="i2b2.ONT.ctrlr.Search.clickSearch(); this.blur();" disabled>
+                        <button class="btn border-start-0 border-end-0 border-top-0 border-bottom-0 border searchBtn" type="button" id="submitTermSearch" onclick="i2b2.ONT.ctrlr.Search.clickSearch(); this.blur();" disabled>
                             <i class="bi bi-search"></i>
                         </button>
                     </span>
