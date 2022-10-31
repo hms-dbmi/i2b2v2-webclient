@@ -453,11 +453,13 @@
 .QueryGroup .body {
     display: flex;
     clear: both;
+    transition: box-shadow 200ms ease;
 }
 
 
 .QueryGroup:hover .body{
     box-shadow: 0 5px 20px rgb(0 0 0 / 19%), 0 6px 6px rgb(0 0 0 / 23%);
+    transition: box-shadow 200ms ease;
 }
 
 
