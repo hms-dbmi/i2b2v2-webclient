@@ -1,7 +1,7 @@
 iframe.i2b2PluginIFrame {
     width: 100%;
     height: 100%;
-    border: 1px solid black;
+    border: solid 1px rgba(99, 117, 140, 0.28);
     overflow: scroll;
 }
 

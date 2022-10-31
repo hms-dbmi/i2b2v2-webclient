@@ -28,10 +28,10 @@
 .CRC_QT_view {
     position: absolute;
     background: #FFF;
-    top: 0px;
-    bottom: 0px;
-    left: 1px;
-    right: 0px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .CRC_QT_view .CRC_QT_query {
@@ -95,7 +95,7 @@
     margin: 0.2em 0 0 0;
     font-weight: 400;
     font-size: 15px;
-    border: 1px solid rgba(0, 0, 0, .12);
+    border: 1px solid rgba(0, 0, 0, .3);
     height: 2.1em;
     border-radius: 0.2rem;
 }

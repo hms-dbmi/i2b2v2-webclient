@@ -39,6 +39,7 @@
     background: rgba(234, 236, 236, 0.3);
     font-size: 0.98em;
     overflow: auto;
+    min-width: 23.5rem;
 }
 
 #i2b2FinderOnt #searchOptions {
