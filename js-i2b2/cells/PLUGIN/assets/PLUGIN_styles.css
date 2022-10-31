@@ -1,7 +1,7 @@
 iframe.i2b2PluginIFrame {
     width: 100%;
     height: 100%;
-    border: 1px solid black;
+    border: solid 1px rgba(99, 117, 140, 0.28);
     overflow: scroll;
 }
 
@@ -35,14 +35,13 @@ DIV#PluginListBox A.pluginRecordBox {
     text-decoration: none;
     border-radius: 5px;
     box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
+    transition: box-shadow 100ms ease;
 }
 
 DIV#PluginListBox A.pluginRecordBox:hover {
     background-color:#FFFFCC;
-    border-top: 2px solid #667788;
-    border-left: 2px solid #667788;
-    border-right: 2px solid #667788;
-    border-bottom: 2px solid #667788;
+    box-shadow: rgb(60 64 67 / 60%) 0 4px 5px 0, rgb(60 64 67 / 30%) 0 4px 8px 5px;
+    transition: box-shadow 100ms ease;
 }
 
 DIV#PluginListBox A.pluginRecordBox DIV.Icon {

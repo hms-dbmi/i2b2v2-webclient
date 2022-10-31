@@ -310,12 +310,15 @@ DIV.tabText {}
 .goldenLayout .lm_goldenlayout {
 	background: none;
 }
-.goldenLayout .lm_splitter {
-	opacity:1;
-	background: #999999;
+
+.goldenLayout .lm_splitter.lm_horizontal{
+	cursor: ew-resize !important;
+}
+.goldenLayout .lm_splitter.lm_vertical{
+	cursor: ns-resize !important;
 }
 
-.goldenLayoutCol .lm_splitter {
+.goldenLayout .lm_splitter {
 	background:#369;
 	opacity: 0.001;
 	transition: opacity 200ms ease;
@@ -323,24 +326,20 @@ DIV.tabText {}
 
 .goldenLayout .lm_splitter:hover,
 .goldenLayout .lm_splitter.lm_dragging {
-	background: #369;
 	opacity: 1;
-}
-
-.goldenLayout .lm_splitter{
-	background: transparent;
-
+	transition: opacity 200ms ease;
 }
 
 .lm_splitter.lm_vertical .lm_drag_handle {
 	height: 5px;
 }
+
 .goldenLayout .lm_content {
 	background:none;
 	border:none;
 }
 
-.goldenLayout  .lm_header {
+.goldenLayout .lm_header {
 	height:26px;
 	background-color: #ed9b40;
 	border-radius: 3px 3px 0 0;
