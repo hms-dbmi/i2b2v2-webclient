@@ -250,3 +250,9 @@ button.invert:hover{
     border-style: solid;
     border-width: 0 0 2px 0 !important;
 }
+
+.node-i2b2TreeviewOntNav, .node-i2b2TreeviewOntSearch{
+    width: fit-content !important;
+}
+
+

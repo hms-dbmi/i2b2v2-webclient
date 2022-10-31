@@ -401,8 +401,28 @@ document.addEventListener("dragstart", function(event) {
     // <BUG FIX> for Chrome and Edge!
     let gl = $('.goldenLayout')[0];
     gl.style.display = 'inline-block';
-    setTimeout(()=>{gl.style.display = '';}, 0);
+    setTimeout(()=>{
+        gl.style.display = '';
+        $("#dragElementImage").empty();
+    }, 0);
     // </BUG FIX>
+    let dragElement = $("#dragElementImage");
+    if(dragElement.length === 0){
+        let newElement = $("<div id='dragElementImage'></div>");
+        newElement.css("width", "fit-content");
+        newElement.css("position", "absolute");
+        newElement.css("padding", "2px 4px 3px 4px");
+        newElement.css("background", "white");
+        newElement.css("z-index", "-50");
+        $('body').append(newElement);
+    }
+    dragElement = $("#dragElementImage");
+    let text = $(event.target).text();
+    let spanWithTypeIcon = $(event.target).find("span").last();
+    spanWithTypeIcon = $(spanWithTypeIcon[0].outerHTML);
+    spanWithTypeIcon.css("margin-right", "3px");
+    dragElement.text(text).prepend(spanWithTypeIcon);
+    event.dataTransfer.setDragImage(dragElement[0],50,20);
     $(".i2b2DropTarget").addClass("i2b2DropPrep");
 }, false);
 
