@@ -22,7 +22,7 @@ i2b2.ONT.view.search.toggleSearchOptions = function(elem){
 };
 
 //================================================================================================== //
-i2b2.ONT.view.search.handleSearchInputChange = function(newValue){
+i2b2.ONT.view.search.handleSearchInputChange = function(newValue, oldValue){
     i2b2.ONT.view.search.toggleSearchClearIcon(newValue);
     i2b2.ONT.view.search.enableSearch(newValue);
 
@@ -69,6 +69,7 @@ i2b2.ONT.view.search.clearSearchInput = function(){
 
     // show the navigation treeview
     i2b2.ONT.view.nav.treeview.show();
+    i2b2.ONT.view.search.toggleSearchClearIcon();
 };
 
 //================================================================================================== //
@@ -171,7 +172,6 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                 let filterType = liItem.data("searchFilterType");
                 $("#searchFilterText").text(newDisplayText).prop('title', newDisplayText);
                 $("#searchFilter").data("selectedFilterValue", filterValue).data("selectedFilterType", filterType);
-                i2b2.ONT.view.search.handleSearchInputChange($('#i2b2FinderOnt #searchTerm input').val());
             });
 
             $("#searchActions .reset").click(function() {
