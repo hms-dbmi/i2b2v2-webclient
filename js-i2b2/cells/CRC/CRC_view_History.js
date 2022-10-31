@@ -214,6 +214,7 @@ i2b2.events.afterCellInit.add((function(cell){
                     let treeTargetNav = $('<div id="i2b2TreeviewQueryHistory"></div>').appendTo(container._contentElement);
                     i2b2.CRC.view.history.treeview = $(treeTargetNav).treeview({
                         showBorder: false,
+                        onhoverColor: "rgba(205, 208, 208, 0.56)",
                         highlightSelected: false,
                         dynamicLoading: true,
                         levels: 1,
@@ -228,6 +229,7 @@ i2b2.events.afterCellInit.add((function(cell){
                     treeTargetFinder.hide();
                     i2b2.CRC.view.history.treeviewFinder = $(treeTargetFinder).treeview({
                         showBorder: false,
+                        onhoverColor: "rgba(205, 208, 208, 0.56)",
                         highlightSelected: false,
                         dynamicLoading: true,
                         levels: 1,
