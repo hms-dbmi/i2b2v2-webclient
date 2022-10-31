@@ -416,11 +416,11 @@ document.addEventListener("dragstart", function(event) {
         newElement.css("z-index", "-50");
         $(event.target).append(newElement);
     }
-    dragElement = $("#dragElementImage").empty();
+    dragElement = $("#dragElementImage");
     let text = $(event.target).text();
     let spanWithTypeIcon = $(event.target).find("span").last();
     dragElement.text(text).prepend(spanWithTypeIcon[0].outerHTML);
-    event.dataTransfer.setDragImage(document.getElementById('dragElementImage'),50,50);
+    event.dataTransfer.setDragImage(dragElement[0],50,50);
     $(".i2b2DropTarget").addClass("i2b2DropPrep");
 }, false);
 
