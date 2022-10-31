@@ -414,10 +414,11 @@ document.addEventListener("dragstart", function(event) {
         newElement.css("padding", "2px 4px 3px 4px");
         newElement.css("background", "white");
         newElement.css("z-index", "-50");
-        $(event.target).append(newElement);
+        $('body').append(newElement);
     }
     dragElement = $("#dragElementImage");
     let text = $(event.target).text();
+    console.log("text is ", $(event.target).text());
     let spanWithTypeIcon = $(event.target).find("span").last();
     dragElement.text(text).prepend(spanWithTypeIcon[0].outerHTML);
     event.dataTransfer.setDragImage(dragElement[0],50,50);
