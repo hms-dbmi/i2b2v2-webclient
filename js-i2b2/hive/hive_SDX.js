@@ -418,7 +418,6 @@ document.addEventListener("dragstart", function(event) {
     }
     dragElement = $("#dragElementImage");
     let text = $(event.target).text();
-    console.log("text is ", $(event.target).text());
     let spanWithTypeIcon = $(event.target).find("span").last();
     dragElement.text(text).prepend(spanWithTypeIcon[0].outerHTML);
     event.dataTransfer.setDragImage(dragElement[0],50,50);
