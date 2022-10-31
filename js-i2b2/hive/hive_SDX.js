@@ -419,7 +419,9 @@ document.addEventListener("dragstart", function(event) {
     dragElement = $("#dragElementImage");
     let text = $(event.target).text();
     let spanWithTypeIcon = $(event.target).find("span").last();
-    dragElement.text(text).prepend(spanWithTypeIcon[0].outerHTML);
+    spanWithTypeIcon = $(spanWithTypeIcon[0].outerHTML);
+    spanWithTypeIcon.css("margin-right", "3px");
+    dragElement.text(text).prepend(spanWithTypeIcon);
     event.dataTransfer.setDragImage(dragElement[0],50,50);
     $(".i2b2DropTarget").addClass("i2b2DropPrep");
 }, false);
