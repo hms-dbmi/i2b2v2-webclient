@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plugin Example</title>
+
+    <script type="text/javascript" src="js/i2b2-loader.js" ></script>
+    <script type="text/javascript" src="js/msb-main.js" ></script>
+    <link rel="stylesheet" type="text/css" href="css/msb-main.css">
+    <!--Font Awesome Kit-->
+    <script src="https://kit.fontawesome.com/670d8efae8.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <!-- D3 -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-sm-10">
+                <h1>Multiset Breakdowns</h1>                
+                <p><span class="fw-bold">Credits:</span> Thomas Naughton, Marc-Danie Nazaire, and Nick Benik.</p>
+                <p>The purpose of this plugin is to visualize breakdowns side by side across many queries. Drag one or more query instances and drop them into the field below.</p>              
+                <input class="d-none" type="button" onclick="sendInitMsg()" value="Send Init Notice" />
+                <input class="d-none" type="button" onclick="sendTestMsg()" value="Send Message" />
+            </div><!-- /.col -->
+            <div class="col-sm-2">
+                <button class="btn btn-primary" onclick="window.location.reload()">Reload Plugin</button>
+            </div><!-- /.col-sm-2 -->
+        </div><!-- /.row -->
+        <div class="row">
+            <div class="col-lg-10">
+                <input class="d-none" type="text" name="stateString" id="stateString" onkeyup="saveState()">
+                <div id="multiset-breakdowns-psmaindiv" class="form-control form-control-lg mb-4 "  aria-label="destination for dragging and dropping query instances">
+                    <span id="qi-drop-ph" class="d-block">Drop a query instance here</span> 
+                    <div class="multiset-breakdowns-psmaindiv-content"></div>                                      
+                </div>
+                <div id="multiset-breakdowns-chartdiv"></div><!-- /#multiset-breakdowns-chartdiv -->                
+            </div><!-- /.col -->
+            <div class="col-lg-2 my-auto">
+                <button class="btn btn-success" id="createGraphs">Create Graphs</button>
+            </div><!-- /.col -->
+        </div><!-- /.row -->      
+    </div><!-- /.container -->
+</body>
+</html>

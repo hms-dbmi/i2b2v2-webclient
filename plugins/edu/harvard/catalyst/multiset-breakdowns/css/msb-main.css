@@ -1,0 +1,32 @@
+
+#multiset-breakdowns-psmaindiv {
+    border: 1px solid black;
+    margin-top: 1em;        
+    padding: 0.6em;
+    overflow: auto;
+    box-shadow: 5px 5px 5px rgb(173, 172, 172);
+}
+
+#multiset-breakdowns-maindiv {
+    border:1px solid blue;
+    margin-top:1.5em;
+    margin-left:0.5em;
+    width:30em;
+    padding:0.6em;
+    overflow: auto;
+}
+
+.i2b2DropTarget.dragging {
+    background-color: lightyellow;
+}
+
+
+.delete-qi{
+    border:none;
+    color: #0d6efd;
+    background-color: transparent;
+}
+
+.delete-qi:hover{
+    color: #000897;
+}

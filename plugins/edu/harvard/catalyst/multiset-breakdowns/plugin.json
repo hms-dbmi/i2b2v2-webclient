@@ -1,0 +1,11 @@
+{
+  "title": "Multiset Breakdowns",
+  "description": "This is a plugin that allows users to visualize multiple breakdowns for multiple query instances.",
+  "category": [],
+  "icons": { "size32x32": "exampleplugin_32x32.gif" },
+  "assetDir": "assets",
+  "plugin_version" : "1.0",
+  "i2b2_version" : "1.7.12a",
+  "base": "index.html",
+  "sandbox": true
+}
