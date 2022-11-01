@@ -5,7 +5,6 @@ i2b2.MultisetBreakdowns = {};
 //actual rendering of the breakdowns
 
 i2b2.MultisetBreakdowns.prsDropped = function(sdxData) {
-    //console.dir("multiset breakdowns plugin received patient drop " + JSON.stringify(sdxData));
     let mainDiv = document.getElementsByClassName("multiset-breakdowns-psmaindiv-content")[0];
     mainDiv.innerHTML= JSON.stringify(sdxData);
 };
@@ -50,14 +49,15 @@ i2b2.MultisetBreakdowns.renderQIList = function(){
     multiSetPSMainDiv.innerHTML = instanceNames.join("");  
     
     //delete individual QI and when we render, we re-attach handlers
-    document.querySelectorAll('.delete-qi').forEach(function(node){node.addEventListener("click", function(){
-        let deleteTargetId = this.parentNode.dataset['qiId'];
-        delete i2b2.model.qiList[deleteTargetId];
-        i2b2.state.save();
-        i2b2.MultisetBreakdowns.renderQIList();
+    document.querySelectorAll('.delete-qi').forEach(function(node){
+        node.addEventListener("click", function(){
+            let deleteTargetId = this.parentNode.dataset['qiId'];
+            delete i2b2.model.qiList[deleteTargetId];
+            i2b2.state.save();
+            i2b2.MultisetBreakdowns.renderQIList();
+        });
     });
-});  
-}
+};
 
 //Parse XML for saved QI's 
 i2b2.MultisetBreakdowns.parseQIXML = function(keyValue){
@@ -66,29 +66,31 @@ i2b2.MultisetBreakdowns.parseQIXML = function(keyValue){
             const xmlStr = data;
             const parser = new DOMParser();            
             const doc = parser.parseFromString(xmlStr, "text/xml");
-            //console.dir(data);
-            let queryResultInst = doc.getElementsByTagName("query_result_instance");  
-            for (let  i = 0;i < queryResultInst.length; i++) { 
-                let resultInstId = queryResultInst[i].getElementsByTagName("result_instance_id")[0].childNodes[0].nodeValue;
-                let resultTypeId = queryResultInst[i].getElementsByTagName("result_type_id")[0].childNodes[0].nodeValue;
-                let queryInstId = queryResultInst[i].getElementsByTagName("query_instance_id")[0].childNodes[0].nodeValue;               
-                i2b2.model.qiList[queryInstId].qriList[resultInstId]= {typeId : resultTypeId, data : {}};
-                i2b2.MultisetBreakdowns.parseQRIXML(queryInstId, resultInstId);
-            } 
+            let queryResultInst = doc.getElementsByTagName("query_result_instance");
+            for (let  i = 0;i < queryResultInst.length; i++) {
+                if (queryResultInst[i].getElementsByTagName("display_type")[0].childNodes[0].nodeValue.toUpperCase() === "CATNUM") {
+                    let resultInstId = queryResultInst[i].getElementsByTagName("result_instance_id")[0].childNodes[0].nodeValue;
+                    let resultTypeId = queryResultInst[i].getElementsByTagName("result_type_id")[0].childNodes[0].nodeValue;
+                    let queryInstId = queryResultInst[i].getElementsByTagName("query_instance_id")[0].childNodes[0].nodeValue;
+                    let resultTypeName = queryResultInst[i].getElementsByTagName("description")[1].childNodes[0].nodeValue;
+                    i2b2.model.qiList[queryInstId].qriList[resultInstId]= {typeId : resultTypeId, name: resultTypeName, data: {}};
+                    i2b2.MultisetBreakdowns.parseQRIXML(queryInstId, resultInstId);
+                }
+            }
             // print the name of the root element or error message
             const errorNode = doc.querySelector("parsererror");
             if (errorNode) {
-            console.log("error while parsing");
+                console.log("error while parsing");
             } else {
-            console.log(doc.documentElement.nodeName);
+                console.log(doc.documentElement.nodeName);
             }
         })
     });
-}
+};
+
 
 //Parse XML for QRI's from QI's
-i2b2.MultisetBreakdowns.parseQRIXML = function(queryInstId, resultInstId){   
-   
+i2b2.MultisetBreakdowns.parseQRIXML = function(queryInstId, resultInstId){
         i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryResultInstanceId({qr_key_value : resultInstId}).then(function(data){                       
             const xmlStr = data;
             const parser = new DOMParser();           
@@ -126,8 +128,7 @@ i2b2.MultisetBreakdowns.parseQRIXML = function(queryInstId, resultInstId){
             console.log(doc.documentElement.nodeName);
             }
         })
-    
-}
+};
 
 
 //Breakdown Data Organization
@@ -287,40 +288,15 @@ function GroupedBarChart(data, {
 
 
 window.addEventListener("I2B2_SDX_READY", (event) => {
-    i2b2.sdx.AttachType("multiset-breakdowns-psmaindiv", "QI");
-    
-
     // drop event handlers used by this plugin
-    i2b2.sdx.setHandlerCustom("multiset-breakdowns-psmaindiv", "QI", "DropHandler", i2b2.MultisetBreakdowns.qiDropHandler);            
+    i2b2.sdx.AttachType("multiset-breakdowns-psmaindiv", "QI");
+    i2b2.sdx.setHandlerCustom("multiset-breakdowns-psmaindiv", "QI", "DropHandler", i2b2.MultisetBreakdowns.qiDropHandler);
 });
 
-function saveState() {
-    i2b2.model.stateString = document.getElementById("stateString").value;
-    i2b2.state.save();
-}
-
-function sendInitMsg() {
-    console.log("sending Init message...");
-    window.parent.postMessage({"msgType":"INIT"}, "/");
-}
-
-function sendTestMsg() {
-    console.log("sending test message...");
-    let ajaxData = {
-        ont_synonym_records: "N",
-        ont_hidden_records: "N"
-    };
-    i2b2.ajax.ONT.GetCategories(ajaxData).then((data)=> {
-        console.log("Got response base from ONT.GetCategories()");
-        console.log(data);
-    })
-}
 
 window.addEventListener("I2B2_READY", ()=> { //anything we need initialized on plugin active
     // the i2b2 framework is loaded and ready (including population of i2b2.model namespace)
     //trigger separate render function that displays the list
-    if (i2b2.model.stateString === undefined) i2b2.model.stateString = "";
-    document.getElementById("stateString").value = i2b2.model.stateString;
     if (i2b2.model.qiList === undefined) i2b2.model.qiList = {};
     if (i2b2.model.renderCharts === undefined) i2b2.model.renderCharts = {};    
     i2b2.MultisetBreakdowns.renderQIList();
