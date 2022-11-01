@@ -40,7 +40,7 @@ i2b2.MultisetBreakdowns.renderQIList = function(){
         let titleTrimmed = titleFull.replace('Results of', '');
         let titleCleaned = titleTrimmed.replace(/^\s*/gm, '');
            
-        instanceNames.push("<div class='qi-row' data-qi-id='" + qiKeyValue + "'>" + "<button class ='delete-qi'><i class='fas fa-times-circle mx-2'></i><span class='sr-only'>Delete</span></button>" +  titleCleaned + "</div>");
+        instanceNames.push("<div class='qi-row' data-qi-id='" + qiKeyValue + "'>" + "<button class ='delete-qi'><i class='fas fa-times-circle mx-2' title='Delete'></i><span class='sr-only'>Delete</span></button>" +  titleCleaned + "</div>");
     }); 
     if (instanceNames.length > 0){
         document.getElementById("qi-drop-ph").classList.remove("d-block");
