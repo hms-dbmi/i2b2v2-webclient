@@ -30,3 +30,9 @@
 .delete-qi:hover{
     color: #000897;
 }
+
+h1 img {
+    height: 64px;
+    border: 1px solid black;
+    margin-right: 0.6rem;
+}
