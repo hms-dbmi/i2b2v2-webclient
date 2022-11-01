@@ -2,12 +2,6 @@
 i2b2.MultisetBreakdowns = {};
 
 
-//actual rendering of the breakdowns
-
-i2b2.MultisetBreakdowns.prsDropped = function(sdxData) {
-    let mainDiv = document.getElementsByClassName("multiset-breakdowns-psmaindiv-content")[0];
-    mainDiv.innerHTML= JSON.stringify(sdxData);
-};
 
 //drop handler
 i2b2.MultisetBreakdowns.qiDropHandler = function(sdxData){
