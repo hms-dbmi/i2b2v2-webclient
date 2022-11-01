@@ -1,14 +1,28 @@
 //init for mb only for now
 i2b2.MultisetBreakdowns = {};
 
+i2b2.MultisetBreakdowns.labelCreateButton = function() {
+    let button = document.getElementById("createGraphs");
+    if (Object.keys(i2b2.model.renderCharts).length === 0) {
+        button.innerHTML = "Create Graphs";
+    } else {
+        button.innerHTML = "Update Graphs";
+    }
+    if (i2b2.model.isDirty && Object.keys(i2b2.model.qiList) > 0) {
+        button.classList.remove("disabled");
+    } else {
+        button.classList.add("disabled");
+        if (Object.keys(i2b2.model.qiList).length === 0) document.getElementById("qi-drop-ph").classList.remove('d-none');
+    }
+}
+
 
 
 //drop handler
 i2b2.MultisetBreakdowns.qiDropHandler = function(sdxData){
     i2b2.model.qiList[sdxData.sdxInfo.sdxKeyValue] = sdxData; //data packet 
-    i2b2.model.qiList[sdxData.sdxInfo.sdxKeyValue].qriList = {}; 
-    
-    //console.dir(sdxData);
+    i2b2.model.qiList[sdxData.sdxInfo.sdxKeyValue].qriList = {};
+    i2b2.model.isDirty = true;
     i2b2.state.save();
 
     // Start a crawl to retrieve subdocuments of dropped QI's
@@ -21,8 +35,9 @@ i2b2.MultisetBreakdowns.qiDropHandler = function(sdxData){
 };
 
 //Render List function
-i2b2.MultisetBreakdowns.renderQIList = function(){ 
-    
+i2b2.MultisetBreakdowns.renderQIList = function(){
+    i2b2.MultisetBreakdowns.labelCreateButton();
+
     let multiSetPSMainDiv = document.getElementsByClassName("multiset-breakdowns-psmaindiv-content")[0];
     
     //create an array to store the names of each query
@@ -47,6 +62,7 @@ i2b2.MultisetBreakdowns.renderQIList = function(){
         node.addEventListener("click", function(){
             let deleteTargetId = this.parentNode.dataset['qiId'];
             delete i2b2.model.qiList[deleteTargetId];
+            i2b2.model.isDirty = true;
             i2b2.state.save();
             i2b2.MultisetBreakdowns.renderQIList();
         });
@@ -141,6 +157,9 @@ document.addEventListener('DOMContentLoaded', function (){
         console.dir(qilistph);
         i2b2.model.renderCharts = qilistph;
 
+        i2b2.model.isDirty = false;
+        i2b2.state.save();
+        i2b2.MultisetBreakdowns.labelCreateButton();
      });
 });
 
@@ -291,6 +310,7 @@ window.addEventListener("I2B2_SDX_READY", (event) => {
 window.addEventListener("I2B2_READY", ()=> { //anything we need initialized on plugin active
     // the i2b2 framework is loaded and ready (including population of i2b2.model namespace)
     //trigger separate render function that displays the list
+    if (i2b2.model.isDirty === undefined) i2b2.model.isDirty = false;
     if (i2b2.model.qiList === undefined) i2b2.model.qiList = {};
     if (i2b2.model.renderCharts === undefined) i2b2.model.renderCharts = {};    
     i2b2.MultisetBreakdowns.renderQIList();
