@@ -31,6 +31,10 @@
     color: #000897;
 }
 
+.qi-row {
+    font-size: 0.8rem;
+}
+
 h1 img {
     height: 64px;
     border: 1px solid black;
