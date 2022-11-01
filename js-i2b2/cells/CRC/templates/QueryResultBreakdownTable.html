@@ -1,71 +1,37 @@
-<div id="infoQueryStatusText" class="StatusBoxText" oncontextmenu="return false">
-    <div style="clear:both;">
-        {{#if breakdowns.name}}
-            {{#if breakdowns.isProcessing}}
-                <div style="clear:both;"><div style="float:left; font-weight:bold">Processing Query: {{breakdowns.name}} </div>
-                <div class="spinner-border text-success queryRunningSpinner" role="status"><span class="visually-hidden">Loading...</span></div>
-            {{else if breakdowns.isRunning}}
-                <div style="clear:both;"><div style="float:left; font-weight:bold">Running Query: {{breakdowns.name}} </div>
-                <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
-            {{else}}
-                <div style="clear:both;"><div style="float:left; font-weight:bold">Finished Query: {{breakdowns.name}} </div>
-            {{/if}}
+{{#if breakdowns.resultTable}}
+    <div class="accordion">
+        <div class="accordion-item">
+            <div class="accordion-header">
+                <button class="accordion-button breakDownHeader" type="button" data-bs-toggle="collapse" data-bs-target="#breakdownDetails" aria-expanded="true" aria-controls="breakdownCharts">
+                    Demographic Details
+                </button>
+            </div>
 
-            {{#if breakdowns.runDuration}}
-                <div style="float:right">[{{breakdowns.runDuration}} &nbsp; secs]</div>
-            {{/if}}
-            {{#if breakdowns.computeTime}}
-                <div class="computeTime">Compute Time: {{breakdowns.computeTime}} &nbsp;secs</div>
-            {{/if}}
-        {{/if}}
-
-        {{#if breakdowns.patientCount.title}}
-            <table style="width: 400px; margin-left: auto; margin-right: auto;">
-                <tr style="background-color: #ed9b40">
-                    <td style="color: black; text-align: center; vertical-align: middle;">
-                        {{breakdowns.patientCount.title}}
-                    </td>
-                </tr>
-                <tr style="background-color: #ed9b40">
-                    <td style="color: black; text-align: center; vertical-align: middle; font-size: 45px">
-                        {{breakdowns.patientCount.value}}
-                </td>
-                </tr>
-                <tr style="background-color: white">
-                    <td style="color: red; text-align: center; vertical-align: middle;">&nbsp</td>
-                </tr>
-            </table>
-        {{/if}}
-
-        <div class="accordion" id="breakdownAccordion">
-            {{#each breakdowns.resultTable}}
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="resultStatus{{@index}}">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapse{{@index}}" aria-expanded="true" aria-controls="collapse{{@index}}">
-                            {{this.title}}
-                        </button>
-                    </h2>
-                    <div id="collapse{{@index}}" class="accordion-collapse collapse show" aria-labelledby="resultStatus{{@index}}">
-                        <div class="accordion-body">
+            <div id="breakdownDetails" data-bs-toggle="collapse" class="accordion-body">
+                {{#each breakdowns.resultTable}}
+                <div>
+                    <label class="breakdownLabel" id="resultStatus{{@index}}"> {{this.title}} </label>
+                    <div id="collapse{{@index}}" class="breakdownResultList" aria-labelledby="resultStatus{{@index}}">
+                        <div>
                             <table>
                                 {{#each this.result}}
-                                   {{#if this.statusMessage}}
-                                    <tr>
-                                        <td><span>{{this.name}}</span><span class="breakdownStatus">{{this.statusMessage}}</span></td>
-                                    </tr>
-                                    {{else}}
-                                        <tr>
-                                            <td>{{this.name}}</td>
-                                            <td class="breakdownValue">{{this.value}}</td>
-                                        </tr>
-                                    {{/if}}
+                                {{#if this.statusMessage}}
+                                <tr>
+                                    <td><span>{{this.name}}</span><span class="breakdownStatus">{{this.statusMessage}}</span></td>
+                                </tr>
+                                {{else}}
+                                <tr>
+                                    <td>{{this.name}}</td>
+                                    <td class="breakdownValue">{{this.value}}</td>
+                                </tr>
+                                {{/if}}
                                 {{/each}}
                             </table>
                         </div>
                     </div>
                 </div>
-            {{/each}}
+                {{/each}}
+            </div>
         </div>
     </div>
-</div>
+{{/if}}

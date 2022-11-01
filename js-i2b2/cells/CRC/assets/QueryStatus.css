@@ -38,10 +38,9 @@
 
 .CRC_QS_view .computeTime {
     margin-left: 0;
-    clear:both;
     line-height: 16px;
     margin-bottom: 0.5em;
-    margin-top: 0.5em;
+    margin-top: 0.4em;
 }
 
 .CRC_QS_view .queryRunningSpinner {
@@ -52,9 +51,27 @@
 
 .CRC_QS_view .breakdownStatus {
     color: #00dd00;
-    margin-left: 0.3em;
 }
 
 .CRC_QS_view .breakdownValue {
     color: #0000dd;
+}
+
+.CRC_QS_view .breakdownLabel {
+    font-weight: 700;
+    font-size: 1em;
+}
+
+.CRC_QS_view #breakdownDetails {
+    padding-left: 0.99em;
+    margin-bottom: 0.3em;
+}
+
+.CRC_QS_view .breakDownHeader{
+    font-size: 1.1em;
+}
+
+.CRC_QS_view .breakdownResultList {
+    margin-left: 0.6em;
+    margin-bottom: 0.5em;
 }

@@ -46,7 +46,8 @@ i2b2.CRC.ctrlr.QS = {
                     let temp = ri_list[i];
                     resultType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
                     // get the query name for display in the box
-                    description = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
+                    descriptionShort = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/description')[0].firstChild.nodeValue;
+                    descriptionLong = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
                 }
 
                 let crc_xml = results.refXML.getElementsByTagName('crc_xml_result');
@@ -86,12 +87,12 @@ i2b2.CRC.ctrlr.QS = {
                         }
 
                         if (params[i2].getAttribute("column") === 'patient_count') {
-                            i2b2.CRC.ctrlr.QS.breakdowns.patientCount.title = description;
+                            i2b2.CRC.ctrlr.QS.breakdowns.patientCount.title = descriptionShort;
                             i2b2.CRC.ctrlr.QS.breakdowns.patientCount.value = graphValue;
                         } else {
-                            sCompiledResultsTest += description + '\n';
+                            sCompiledResultsTest += descriptionLong + '\n';
                             sCompiledResultsTest += params[i2].getAttribute("column").substring(0,20) + " : " + value + "\n"; //snm0
-                            breakdown.title = description;
+                            breakdown.title = descriptionShort;
                             breakdown.result.push({
                                 name: params[i2].getAttribute("column"),
                                 value: displayValue
