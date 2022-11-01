@@ -6,6 +6,7 @@
 i2b2 = {};
 i2b2.model = {};
 i2b2.h = {};
+i2b2.MSG_TYPES = {};
 
 
 // send init messages to newly loaded i2b2 support libraries
