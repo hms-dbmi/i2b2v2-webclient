@@ -59,6 +59,11 @@ h3 img {
 svg {
     margin: 0 20px;
 }
+svg rect {
+    stroke: #999;
+    stroke-width: 1px;
+}
+
 .graph-title {
     font-size: 1.2em;
     text-align: center;

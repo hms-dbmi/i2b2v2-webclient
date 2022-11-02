@@ -260,7 +260,12 @@ i2b2.MultisetBreakdowns.renderGraphs = function() {
             zDomain: qiData.map(x => x[0]),
             colors: qiData.map(x => x[1]),
             width: document.body.clientWidth - 60,
-            height: 300
+            height: 300,
+            title: (d) => {
+                let groupName = String(d.bucket).trim();
+                if (groupName.length < 3) groupName = '"' + groupName + '"';
+                return d.qi + "\r\n" + groupName + ": " + parseInt(d.count).toLocaleString() + " patients"
+            }
         })
         let title = document.createElement("div");
         title.classList.add('graph-title');
