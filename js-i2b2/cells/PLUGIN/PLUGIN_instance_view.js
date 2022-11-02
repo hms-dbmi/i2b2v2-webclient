@@ -26,8 +26,7 @@ i2b2.PLUGIN.view.newInstance = function(pluginId) {
         title:pluginTitle
     };
     // this function creates or replaces the current plugin tab with this new plugin
-    if(i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems.length > 2)
-    {
+    if (i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems.length > 2) {
         i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems[2].remove();
     }
     i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].addChild(newPluginWindow, 2);

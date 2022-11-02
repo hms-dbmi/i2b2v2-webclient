@@ -22,36 +22,6 @@ i2b2.sdx.TypeControllers.WRKF.getEncapsulateInfo = function() {
 	return {sdxType: 'WRKF', sdxKeyName: 'folder_id', sdxControlCell:'CRC', sdxDisplayNameKey: 'title'};
 }
 
-i2b2.sdx.TypeControllers.WRKF.SaveToDataModel = function(sdxData, sdxParentNode) {
-	// do not save save to CRC data model because of sheer 
-	if (!sdxParentNode) { return false; }
-	var pr_id = sdxData.sdxInfo.sdxKeyValue;
-	var pr_hash = i2b2.sdx.Master._KeyHash(pr_id);
-
-	// class for all SDX communications
-	function i2b2_SDX_Encapsulation_EXTENDED() {}
-	// create an instance and populate with info
-	var t = new i2b2_SDX_Encapsulation_EXTENDED();
-	t.origData = Object.clone(sdxData.origData);
-	t.sdxInfo = Object.clone(sdxData.sdxInfo);
-	t.parent = sdxParentNode;
-	t.children = new Hash();
-	t.children.loaded = false;
-	// add to hash
-	sdxParentNode.children.set(pr_hash, t);
-	// TODO: send data update signal (use JOINING-MUTEX or AGGREGATING-MUTEX to avoid rapid fire of event!)
-	return t;
-}
-
-
-i2b2.sdx.TypeControllers.WRKF.LoadFromDataModel = function(key_value) {}
-
-
-i2b2.sdx.TypeControllers.WRKF.ClearAllFromDataModel= function(sdxOptionalParent) {
-	// never called
-	return true;
-}
-
 
 // *********************************************************************************
 //	GENERATE HTML (DEFAULT HANDLER)

@@ -2,6 +2,10 @@
     margin-top: 10px;
 }
 
-#WK-ann-label {
+.WK-prompt {
     font-size: 1.1em;
+}
+
+.modal-form {
+    margin: 0px 40px;
 }

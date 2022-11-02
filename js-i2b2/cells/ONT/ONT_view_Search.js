@@ -22,9 +22,13 @@ i2b2.ONT.view.search.toggleSearchOptions = function(elem){
 };
 
 //================================================================================================== //
-i2b2.ONT.view.search.handleSearchInputChange = function(newValue){
+i2b2.ONT.view.search.handleSearchInputChange = function(newValue, oldValue){
     i2b2.ONT.view.search.toggleSearchClearIcon(newValue);
     i2b2.ONT.view.search.enableSearch(newValue);
+
+    if(!newValue){
+        i2b2.ONT.view.search.clearSearchInput();
+    }
 };
 //================================================================================================== //
 
@@ -41,9 +45,11 @@ i2b2.ONT.view.search.enableSearch = function(newValue){
 
 i2b2.ONT.view.search.toggleSearchClearIcon = function(newValue){
     if (newValue){
-        $("#searchTerm .clearIcon").removeClass("invisible");
+        $("#termSearchClearBtn .clearIcon").removeClass("invisible");
+        $("#termSearchClearBtn").attr('disabled', false);
     } else {
-        $("#searchTerm .clearIcon").addClass("invisible");
+        $("#termSearchClearBtn .clearIcon").addClass("invisible");
+        $("#termSearchClearBtn").attr('disabled', true);
     }
 };
 
@@ -52,7 +58,6 @@ i2b2.ONT.view.search.toggleSearchClearIcon = function(newValue){
 i2b2.ONT.view.search.clearSearchInput = function(){
     $("#searchTermText").val("");
     $("#searchTermError").empty();
-    i2b2.ONT.view.search.handleSearchInputChange("");
 
     // Reset dropdown menu settings
     $("#searchFilterText").text("Any Category");
@@ -64,6 +69,7 @@ i2b2.ONT.view.search.clearSearchInput = function(){
 
     // show the navigation treeview
     i2b2.ONT.view.nav.treeview.show();
+    i2b2.ONT.view.search.toggleSearchClearIcon();
 };
 
 //================================================================================================== //
@@ -88,6 +94,7 @@ i2b2.ONT.view.search.initSearch = function(container){
     // create an empty treeview for navigation
     i2b2.ONT.view.search.treeview = $(treeTarget).treeview({
         showBorder: false,
+        onhoverColor: "rgba(205, 208, 208, 0.56)",
         highlightSelected: false,
         dynamicLoading: false,
         levels: 1,
@@ -103,6 +110,8 @@ i2b2.ONT.view.search.initSearch = function(container){
     });
     i2b2.ONT.view.search.treeview.on('onDrag', i2b2.sdx.Master.onDragStart);
 
+    // -------------------- setup context menu --------------------
+    i2b2.ONT.view.search.ContextMenu = i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntSearch',i2b2.ONT.view.search.treeview);
 };
 
 //================================================================================================== //
@@ -163,7 +172,6 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                 let filterType = liItem.data("searchFilterType");
                 $("#searchFilterText").text(newDisplayText).prop('title', newDisplayText);
                 $("#searchFilter").data("selectedFilterValue", filterValue).data("selectedFilterType", filterType);
-                i2b2.ONT.view.search.handleSearchInputChange($('#i2b2FinderOnt #searchTerm input').val());
             });
 
             $("#searchActions .reset").click(function() {

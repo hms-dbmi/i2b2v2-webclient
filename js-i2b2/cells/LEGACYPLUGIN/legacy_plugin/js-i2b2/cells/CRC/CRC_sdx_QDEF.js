@@ -22,10 +22,6 @@ i2b2.sdx.TypeControllers.QDEF.getEncapsulateInfo = function() {
 	return {sdxType: 'QDEF', sdxKeyName: 'key', sdxControlCell:'CRC', sdxDisplayNameKey: 'QDEF_name'};
 }
 
-i2b2.sdx.TypeControllers.QDEF.SaveToDataModel = function(sdxData, sdxParentNode) { return undefined;}
-i2b2.sdx.TypeControllers.QDEF.LoadFromDataModel = function(key_value) {}
-i2b2.sdx.TypeControllers.QDEF.ClearAllFromDataModel= function(sdxOptionalParent) { return true; }
-
 
 // *********************************************************************************
 //	GENERATE HTML (DEFAULT HANDLER)

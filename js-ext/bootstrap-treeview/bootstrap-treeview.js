@@ -173,7 +173,7 @@
     Tree.prototype.init = function (options) {
 
         this.tree = [];
-        this.nodes = [];
+        this.nodes = new Map();
 
         if (options.data) {
             if (typeof options.data === 'string') {
@@ -192,7 +192,7 @@
 
     Tree.prototype.clear = function () {
         this.tree = [];
-        this.nodes = [];
+        this.nodes = new Map();
         this.render();
     };
 
@@ -376,7 +376,7 @@
         $.each(node.nodes, function checkStates(index, node) {
 
             // nodeId : unique, incremental identifier
-            node.nodeId = _this.nodes.length;
+            node.nodeId = _this.idGenerator();
 
             // parentId : transversing up the tree
             node.parentId = parent.nodeId;
@@ -391,7 +391,7 @@
             node.refTreeview = _this;
 
             // index nodes in a flattened structure for use later
-            _this.nodes.push(node);
+            _this.nodes.set(node.nodeId, node);
 
             // recurse child nodes and transverse the tree
             if (node.nodes) {
@@ -444,7 +444,7 @@
     Tree.prototype.findNode = function (target) {
 
         var nodeId = target.closest('li.list-group-item').attr('data-nodeid');
-        var node = this.nodes[nodeId];
+        var node = this.nodes.get(parseInt(nodeId));
 
         if (!node) {
             console.log('Error: node does not exist');
@@ -830,7 +830,7 @@
      @return {Object} node - Matching node
      */
     Tree.prototype.getNode = function (nodeId) {
-        return this.nodes[nodeId];
+        return this.nodes.get(parseInt(nodeId));
     };
 
     /**
@@ -843,7 +843,7 @@
         var ret = [];
         var args = [];
         for (var i in arguments) { args.push(arguments[i]); }
-        return this.nodes.filter(function(obj) {
+        return Array.from(this.nodes.values()).filter(function(obj) {
             try {
                 args[0] = obj;
                 return filterFunc.apply(_this, args);
@@ -861,7 +861,7 @@
      */
     Tree.prototype.getParent = function (identifier) {
         var node = this.identifyNode(identifier);
-        return this.nodes.find(function(n) { return n.nodeId === node.parentId; });
+        return Array.from(this.nodes.values()).find(function(n) { return n.nodeId === node.parentId; });
 //        return this.nodes[node.parentId];
     };
 
@@ -1240,8 +1240,8 @@
      Identifies a node from either a node id or object
      */
     Tree.prototype.identifyNode = function (identifier) {
-        return ((typeof identifier) === 'number') ?
-            this.nodes[identifier] :
+        return ((typeof identifier) === 'number' || (typeof identifier) === 'string') ?
+            this.nodes.get(parseInt(identifier)) :
             identifier;
     };
 
@@ -1348,8 +1348,8 @@
                 // found parent(s), prepare to add by making sure the new node has a valid initial state
                 childNode = this.singleNodeInitialState.call(this, childNode);
                 // add the node to tree and make child of the first parent found
-                childNode.nodeId = this.nodes.length;
-                this.nodes.push(childNode);
+                childNode.nodeId = this.idGenerator();
+                this.nodes.set(childNode.nodeId, childNode);
                 if (parents.length) {
                     // add under found parent node(s)
                     var parentNode = parents[0];
@@ -1371,57 +1371,6 @@
         }
         return orphans;
     }
-
-
-    Tree.prototype.deleteNodeRecursive = function (nodeID) {
-        // get the index of the node in nodes.list (this is single instance)
-        var nodeIndex = false;
-        for (var i=0; i < this.nodes.length; i++) {
-            if (this.nodes[i].nodeId == nodeId) {
-                nodeIndex = i;
-                break;
-            }
-        }
-        // node was not found
-        if (nodeIndex === false) return [];
-
-        // delete any child nodes
-        var childNodes = [];
-        if (typeof this.nodes[nodeIndex].nodes !== 'undefined' && this.nodes[nodeIndex].nodes.length > 0) {
-            this.nodes[nodeIndex].nodes.forEach(function(childNode) {
-                var deletedChildren = this.deleteNodeRecursive(childNode.nodeId);
-                childNodes.concat(deletedChildren);
-            });
-        }
-
-        // delete the node itself from the tree's tree array
-        var recurseTree = function(id, treeNode) {
-            if (typeof treeNode.nodes !== 'undefined' && treeNode.nodes.length > 0) {
-                treeNode.forEach(function (subtreeNode, index) {
-                    if (subtreeNode.nodeId  === id) {
-                        // delete the node itself
-                        delete treeNode[index];
-                    }
-                });
-            }
-        };
-
-        // delete the node itself from the tree's "tree" array
-        recurseTree(nodeIndex, this.tree);
-        // delete the node's children from the tree's "tree" array
-        this.tree.forEach(function (subtreeNode, index) {
-            if (subtreeNode.nodeId === id) {
-                // delete the node itself
-                delete treeNode[index];
-            }
-        });
-
-        // delete the node itself from the tree's "nodes" array
-        delete this.nodes[nodeIndex];
-        // return a list of all nodes that were deleted
-        return childNodes;
-    };
-
 
     Tree.prototype.deleteNodes = function (targetNodes, resetDynamicLoading) {
 //        this.forEachIdentifier(targetNodes, options, $.proxy(function (node, options) {
@@ -1445,7 +1394,7 @@
         // STEP 1: find the node(s) to be deleted and mark them along with all their children as to be deleted
         var recursiveSearchAndDelete = (function (targetIds, subtreeNode) {
             var deletedNodeIds = [];
-            if (targetIds.indexOf(subtreeNode.nodeId) !== -1) {
+            if (targetIds.includes(subtreeNode.nodeId)) {
                 // this node is targeted for deletion
                 if ($.isArray(subtreeNode.nodes)) {
                     // build a list of ids for all child nodes
@@ -1472,21 +1421,19 @@
 
         // start recursive search at root
         var toDeleteNodes = [];
-        _this.nodes.forEach(
+        _this.nodes.forEach(                                                                                            // TODO: Change this to an object
             function (node) { toDeleteNodes = toDeleteNodes.concat(recursiveSearchAndDelete(targetNodes, node)); }
         );
 
         // go through nodes array of tree and delete all targeted nodes
-        _this.nodes = _this.nodes.filter(function(node) {
-            return (toDeleteNodes.indexOf(node.nodeId) === -1);
-        });
+        toDeleteNodes.forEach((nodeId) => _this.nodes.delete(nodeId));
 
         // delete any references to targeted nodes from "nodes" array in other (parent) nodes, also reset dynamic loading
-        _this.nodes.forEach(function (node) {
+        Array.from(_this.nodes.values()).forEach(function (node) {
             if ($.isArray(node.nodes)) {
                 var origChildCnt = node.nodes.length;
                 node.nodes = node.nodes.filter(function (childNode) {
-                    return (toDeleteNodes.indexOf(childNode.nodeId) === -1);
+                    return (!toDeleteNodes.includes(childNode.nodeId));
                 });
 
                 // see if this is an affected parent node and reset dynamic load if needed
@@ -1497,8 +1444,6 @@
                 }
             }
         });
-
-
         return toDeleteNodes;
     }
 
@@ -1511,6 +1456,7 @@
     Tree.prototype.getNodesLoading = function () {
         // TODO: Implement this
         //(node.state.requested);
+        console.error("Tree.prototype.getNodesLoading: Not Implemented!");
     };
 
 
@@ -1548,7 +1494,7 @@
         attribute = attribute || 'text';
 
         var _this = this;
-        return $.grep(this.nodes, function (node) {
+        return $.grep(Array.from(this.nodes.values()), function (node) {
             var val = _this.getNodeValue(node, attribute);
             if (typeof val === 'string') {
                 return val.match(new RegExp(pattern, modifier));

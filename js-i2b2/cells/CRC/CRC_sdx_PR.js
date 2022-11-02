@@ -70,18 +70,16 @@ i2b2.sdx.TypeControllers.PR.RenderData = function(sdxData, options) {
     if (options.cssClass !== undefined) nodeInfo.cssClassMain = options.cssClass;
     if (options.title !== undefined) {
         nodeInfo.title = options.title;
-    } else  {
+    } else if (sdxData.sdxInfo.sdxDisplayName !== undefined) {
         nodeInfo.title = sdxData.sdxInfo.sdxDisplayName;
+    }  else{
+        console.warn('[SDX RenderData] no title was given in the creation options for an CRC > PR node!');
+        let id = "CRC_ID-" + i2b2.GUID();
+        nodeInfo.title = ' PR '+id;
     }
 
-
-    let bCanExp = false;
-    if (options.showchildren === true) bCanExp = true;
-    if (!bCanExp) {
-        // cannot expand node
-        nodeInfo.tvNodeState.loaded = true;
-        nodeInfo.tvNodeState.expanded = true;
-    }
+    nodeInfo.tvNodeState.loaded = true;
+    nodeInfo.tvNodeState.expanded = true;
 
     let icon = 'leaf';
     switch(icon) {

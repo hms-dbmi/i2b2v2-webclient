@@ -166,7 +166,7 @@ i2b2.sdx.TypeControllers.PRS.getChildRecords = function(sdxParentNode, onComplet
             // append the data node to our returned results
             retChildren.push(sdxDataNode);
         }
-        cl_node.children.loaded = true;
+       // cl_node.children.loaded = true;
         // TODO: broadcast a data update event of the CRC data model
         retMsg.results = retChildren;
         if (i2b2.h.getObjectClass(cl_onCompleteCB) === 'i2b2_scopedCallback') {

@@ -256,47 +256,6 @@ i2b2.sdx.TypeControllers.QM.getChildRecords = function(sdxParentNode, onComplete
 }
 
 
-i2b2.sdx.TypeControllers.QM.SaveToDataModel = function(sdxData) {
-	// save to CRC data model
-	var dm_loc = 'i2b2.CRC.model.QueryMasters';
-	var qm_id = sdxData.sdxInfo.sdxKeyValue;
-	var qm_hash = i2b2.sdx.Master._KeyHash(qm_id);
-
-	// class for all SDX communications
-	function i2b2_SDX_Encapsulation_EXTENDED() {}
-	// create an instance and populate with info
-	var t = new i2b2_SDX_Encapsulation_EXTENDED();
-	t.origData = Object.clone(sdxData.origData);
-	t.sdxInfo = Object.clone(sdxData.sdxInfo);
-	t.parent = null;
-	t.children = new Hash();
-	t.children.loaded = false;
-	// add to hash
-	i2b2.CRC.model.QueryMasters.set(qm_hash, t);
-
-	// TODO: send data update signal (use JOINING-MUTEX or AGGREGATING-MUTEX to avoid rapid fire of event!)
-	return t;
-}
-
-
-i2b2.sdx.TypeControllers.QM.LoadFromDataModel = function(key_value) {
-	// load from CRC data model
-	var dm = i2b2.CRC.model.QueryMasters;
-	var dm_loc = 'i2b2.CRC.model.QueryMasters';
-	var qm_id = key_value;
-	var qm_hash = i2b2.sdx.Master._KeyHash(qm_id);
-	// retreve the record
-	return dm.get(qm_hash);
-}
-
-
-i2b2.sdx.TypeControllers.QM.ClearAllFromDataModel= function(sdxOptionalParent) {
-	i2b2.CRC.model.QueryMasters = new Hash();
-	var dm_loc = 'i2b2.CRC.model.QueryMasters';
-	// TODO: send data update signal (use JOINING-MUTEX or AGGREGATING-MUTEX to avoid rapid fire of event!)
-	return true;
-}
-
 i2b2.sdx.TypeControllers.QM.LoadChildrenFromTreeview = function(node, onCompleteCallback) {
 	var scopedCallback = new i2b2_scopedCallback();
 	scopedCallback.scope = node.data.i2b2_SDX;

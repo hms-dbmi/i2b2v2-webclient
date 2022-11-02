@@ -5,9 +5,6 @@ console.time('execute time');
 // ======================================================================================
 i2b2.WORK.ctrlr.refreshAll = function(view_component) {
 
-    // set loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
-
     i2b2.WORK.view.main.treeview.treeview('clear', []);
 
     // create initial loader display routine
@@ -40,8 +37,6 @@ i2b2.WORK.ctrlr.refreshAll = function(view_component) {
         ]);
         // render tree
         i2b2.WORK.view.main.treeview.treeview('redraw', []);
-        // reset the loading icon in the stack buttons list
-        $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
     };
     // ajax communicator call
     if (i2b2.PM.model.userRoles.indexOf("MANAGER") === -1) {
@@ -51,14 +46,8 @@ i2b2.WORK.ctrlr.refreshAll = function(view_component) {
     }
 };
 
-
 // ======================================================================================
 i2b2.WORK.ctrlr.main = {};
-i2b2.WORK.ctrlr.main.moveFolder = function(target_nodeTV, new_parent_nodeTV) {
-    // TODO: Reimplement this
-    alert("not yet implemented");
-};
-
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.NewFolder = function(parent_node) {
@@ -76,7 +65,6 @@ i2b2.WORK.ctrlr.main.NewFolder = function(parent_node) {
     i2b2.WORK.view.main.displayContextDialog(data);
 };
 
-
 // ======================================================================================
 i2b2.WORK.ctrlr.main.Rename = function(target_node) {
     let nd = target_node.i2b2;
@@ -84,41 +72,22 @@ i2b2.WORK.ctrlr.main.Rename = function(target_node) {
         console.error("The target node does not have SDX data attached.");
         return false;
     }
+
     let origName = nd.origData.name;
-    let newName = prompt('Rename this work item to:', origName);
-    if (!newName || newName === origName) return false;
 
-    // set loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
-
-    // create callback display routine
-    let scopedCallback = new i2b2_scopedCallback();
-    scopedCallback.scope = target_node;
-    scopedCallback.callback = function(results) {
-        // reset loading icon in the stack buttons list
-        $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
-
-        let cl_parent_node = target_node.parentNode; // TODO: is this valid?
-        if (results.error) {
-            alert("An error occurred while trying to rename the selected item!");
-        } else {
-            // whack the "already loaded" status out of the parent node and initiate a
-            // dynamic reloading of the childs nodes (including our newest addition)
-            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
-            temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
-            i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
-            i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
+    let okCallback = function(newValue){
+        if(newValue && newValue.length > 0) {
+            i2b2.WORK.ctrlr.main.handleRename(target_node, newValue);
         }
     };
-    let pn = target_node.i2b2;
-    let varInput = {
-        rename_text: newName,
-        rename_target_id: pn.sdxInfo.sdxKeyValue,
-        result_wait_time: 180
+    let data = {
+        "title": "Rename Work Item",
+        "prompt": "Rename this work item to:",
+        "placeHolder": origName,
+        "onOk": okCallback,
     };
-    i2b2.WORK.ajax.renameChild("WORK:Workplace", varInput, scopedCallback);
+    i2b2.WORK.view.main.displayContextDialog(data);
 };
-
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
@@ -126,46 +95,30 @@ i2b2.WORK.ctrlr.main.Delete = function(target_node, options) {
     let nd = target_node.i2b2;
     if (!options) { options = {}; }
     if (!options.silent) {
+
         let nodeTitle = target_node.text;
         nodeTitle = String(nodeTitle).trim();
-        let go;
+        let confirmMsg;
         if (nd.origData.encapType === "FOLDER") {
-            go = confirm('Are you sure you want to delete the folder "'+nodeTitle+'" and all of it\'s contents?');
+            confirmMsg = 'Are you sure you want to delete the folder "'+nodeTitle+'" and all of it\'s contents?';
         } else {
-            go = confirm('Are you sure you want to delete "'+nodeTitle+'"?');
+            confirmMsg = 'Are you sure you want to delete "'+nodeTitle+'"?';
         }
-        if (!go) return false;
+        let okCallback = function(){
+            i2b2.WORK.ctrlr.main.handleDelete(target_node, options, nd);
+        };
+        let data = {
+            "title": "Delete work item",
+            "confirmMsg": confirmMsg,
+            "onOk": okCallback,
+        };
+        i2b2.WORK.view.main.displayContextDialog(data);
     }
-
-    // set loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-WORK-view-main').addClass("refreshing");
-
-    let scopedCallback;
-    if (options.callback) {
-        scopedCallback = options.callback;
-    } else {
-        // create callback GUI update routine
-        scopedCallback = new i2b2_scopedCallback();
-        scopedCallback.scope = target_node;
-        scopedCallback.callback = function(results) {
-            // unsetset loading icon in the stack buttons list
-            $('#stackRefreshIcon_i2b2-WORK-view-main').removeClass("refreshing");
-
-            if (results.error) {
-                alert("An error occurred while trying to delete the selected item!");
-            } else {
-                // Delete targeted node from the treeview and refresh it
-                i2b2.WORK.view.main.treeview.treeview('deleteNodes', [target_node.nodeId, false]);
-                i2b2.WORK.view.main.treeview.treeview('redraw', []);
-            }
-        }
+    else {
+        i2b2.WORK.ctrlr.main.handleDelete(target_node, options, nd);
     }
-    let varInput = {
-        delete_target_id: nd.sdxInfo.sdxKeyValue,
-        result_wait_time: 180
-    };
-    i2b2.WORK.ajax.deleteChild("WORK:Workplace", varInput, scopedCallback);
 };
+
 // ======================================================================================
 i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
     // TODO: This needs to be done
@@ -202,6 +155,7 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
 
     i2b2.WORK.view.main.displayContextDialog(data);
 };
+
 // ======================================================================================
 i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {
     console.log("running handle change annotation");
@@ -222,28 +176,17 @@ i2b2.WORK.ctrlr.main.handleChangeAnnotation = function (target_node, newAnno) {
     };
     i2b2.WORK.ajax.annotateChild("WORK:Workplace", varInput, scopedCallback);
 }
+
 // ======================================================================================
 i2b2.WORK.ctrlr.main.handleNewFolder = function (parent_node, fldrName) {
-    //let fldrName = prompt("What name should be used for the new folder?", "New Folder");
-    //if (!fldrName)  return false;
-
     // create callback display routine
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = parent_node;
     scopedCallback.callback = function(results) {
-        let cl_new_key = newChildKey;
-        let cl_parent_node = parent_node;
         if (results.error) {
             alert("An error occurred while trying to create a new work item!");
         } else {
-            // TODO: THIS IS NOT DONE YET!
-            // whack the "already loaded" status out of the parent node and initiate a
-            // dynamic reloading of the childs nodes (including our newest addition)
-            // You may need to delete the child nodes first
-            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
-            temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
-            i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
-            i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
+            i2b2.WORK.view.main.refreshNode(parent_node, true);
         }
     };
 
@@ -263,17 +206,109 @@ i2b2.WORK.ctrlr.main.handleNewFolder = function (parent_node, fldrName) {
 }
 
 // ======================================================================================
-i2b2.WORK.ctrlr.main.HandleDrop = function(sdxDropped) {
-    // TODO: This needs to be done
-};
+i2b2.WORK.ctrlr.main.handleRename = function (target_node, newName) {
+    // create callback display routine
+    let scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.scope = target_node;
+    scopedCallback.callback = function(results) {
+        let cl_parent_node = target_node.parentNode; // TODO: is this valid?
+        if (results.error) {
+            alert("An error occurred while trying to rename the selected item!");
+        } else {
+            // whack the "already loaded" status out of the parent node and initiate a
+            // dynamic reloading of the childs nodes (including our newest addition)
+            let parentNode = i2b2.WORK.view.main.treeview.treeview('getParent', [target_node]);
+            temp_children = parentNode.nodes.map(function(node) { return node.nodeId; });
+            i2b2.WORK.view.main.treeview.treeview('deleteNodes', [temp_children]);
+            i2b2.WORK.view.main.treeview.treeview('expandNode', [parentNode.nodeId]);
+        }
+    };
+    let pn = target_node.i2b2;
+    let varInput = {
+        rename_text: newName,
+        rename_target_id: pn.sdxInfo.sdxKeyValue,
+        result_wait_time: 180
+    };
+    i2b2.WORK.ajax.renameChild("WORK:Workplace", varInput, scopedCallback);
+}
 
+// ======================================================================================
+i2b2.WORK.ctrlr.main.handleDelete = function (target_node, options, nd) {
+    let scopedCallback;
+    if (options.callback) {
+        scopedCallback = options.callback;
+    } else {
+        // create callback GUI update routine
+        scopedCallback = new i2b2_scopedCallback();
+        scopedCallback.scope = target_node;
+        scopedCallback.callback = function(results) {
+            if (results.error) {
+                alert("An error occurred while trying to delete the selected item!");
+            } else {
+                // Delete targeted node from the treeview and refresh it
+                i2b2.WORK.view.main.treeview.treeview('deleteNodes', [target_node.nodeId, false]);
+                i2b2.WORK.view.main.treeview.treeview('redraw', []);
+            }
+        }
+    }
+    let varInput = {
+        delete_target_id: nd.sdxInfo.sdxKeyValue,
+        result_wait_time: 180
+    };
+    i2b2.WORK.ajax.deleteChild("WORK:Workplace", varInput, scopedCallback);
+}
+
+// ======================================================================================
+i2b2.WORK.ctrlr.main.MoveWorkItem = function(sdxChild, targetTvNode) {
+    console.warn("i2b2.WORK.ctrlr.main.MoveWorkItem");
+    let childKey = sdxChild.sdxInfo.sdxKeyValue;
+    let parentKey = targetTvNode.i2b2.sdxInfo.sdxKeyValue.split("\\").pop(); // just the final ID
+
+
+    // create callback display routine
+    let scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.scope = targetTvNode;
+    scopedCallback.callback = function(results) {
+        i2b2.WORK.view.main.queryResponse = results.msgResponse;
+        i2b2.WORK.view.main.queryRequest = results.msgRequest;
+        if (results.error) {
+            alert("An error occurred while trying to move a work item folder!");
+        } else {
+            // remove child node from its previous parent
+            let childId = Array.from(targetTvNode.refTreeview.nodes.values()).filter((x)=>{ return x.key === childKey}).map(y => y.nodeId);
+            targetTvNode.refTreeview.deleteNodes(childId, false);
+            i2b2.WORK.view.main.treeview.treeview('redraw', []);
+
+            // get a list of all children in the parent node
+            let parentChildren = targetTvNode.refTreeview.findNodes(targetTvNode.nodeId, '', 'parentId').map((node)=>{return node.nodeId});
+            // delete the nodes and reset the dynamic loading settings
+            targetTvNode.refTreeview.deleteNodes(parentChildren, false);
+            targetTvNode.state.loaded = false;
+            targetTvNode.state.requested = false;
+
+            // trigger that the treeview node is opened (and reloaded) if it is already open
+            if (targetTvNode.state.expanded) {
+                targetTvNode.state.expanded = false;
+                targetTvNode.refTreeview.expandNode(targetTvNode.nodeId);
+            }
+        }
+    }
+
+    console.log(childKey);
+    console.log(parentKey);
+    let varData = {
+        result_wait_time: 180,
+        target_node_id: childKey,
+        new_parent_node_id: parentKey
+    };
+    i2b2.WORK.ajax.moveChild("WORK:Workplace", varData, scopedCallback);
+}
 
 // ======================================================================================
 i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
-    // TODO: This needs to be done
     if (!options) { options={}; }
     // sanity check can only add children to WRK folders
-    if (targetTvNode.data.i2b2_SDX.sdxInfo.sdxType !== "WRK") {
+    if (targetTvNode.i2b2.sdxInfo.sdxType !== "WRK") {
         console.error("This operation was refused. Only a Workplace folder can contain child work items.");
         return false;
     }
@@ -382,17 +417,18 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
     }
     // package the work_xml snippet
     i2b2.h.EscapeTemplateVars(encapValues, encapNoEscape);
-    let syntax = /(^|.|\r|\n)(\{{{\s*(\w+)\s*}}})/; //matches symbols like '{{{ field }}}'
-    let t = new Template(encapXML, syntax);
-    let encapMsg = t.evaluate(encapValues);
+    let encapMsg = encapXML;
+    Object.entries(encapValues).forEach((entry) => {
+        encapMsg = encapMsg.replace(new RegExp("{{{"+entry[0]+"}}}", 'g'), entry[1]);
+    });
 
     // gather primary message info
     let newChildKey = i2b2.h.GenerateAlphaNumId(20);
     let varInput = {
         child_name: encapTitle,
         child_index: newChildKey,
-        parent_key_value: targetTvNode.data.i2b2_SDX.sdxInfo.sdxKeyValue,
-        share_id: targetTvNode.data.i2b2_SDX.origData.share_id,
+        parent_key_value: targetTvNode.i2b2.sdxInfo.sdxKeyValue,
+        share_id: targetTvNode.i2b2.origData.share_id,
         child_visual_attributes: "ZA",
         child_annotation: "",
         child_work_type: encapWorkType,
@@ -412,13 +448,12 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
             if (results.error) {
                 alert("An error occurred while trying to create a new work item!");
             } else {
-                // whack the "already loaded" status out of the parent node and initiate a
-                // dynamic loading of the childs nodes (including our newest addition)
-                cl_parent_node.collapse();
-                cl_parent_node.dynamicLoadComplete = false;
-                cl_parent_node.childrenRendered = false;
-                cl_parent_node.tree.removeChildren(cl_parent_node);
-                cl_parent_node.expand();
+                // get a list of all children in the parent node
+                let parentChildren = cl_parent_node.refTreeview.findNodes(cl_parent_node.nodeId, '', 'parentId').map((node)=>{return node.nodeId});
+                // delete the nodes and reset the dynamic loading settings
+                cl_parent_node.refTreeview.deleteNodes(parentChildren, true);
+                // trigger that the treeview node is opened (and reloaded)
+                cl_parent_node.refTreeview.expandNode(cl_parent_node.nodeId);
             }
         }
     }
