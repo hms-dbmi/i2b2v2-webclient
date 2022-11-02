@@ -26,21 +26,21 @@
     <div class="container">
         <div class="row mt-4">
             <div class="col-sm-10">
-                <h1><img src="assets/large_icon.png" />Multiset Breakdowns</h1>
-                <p><span class="fw-bold">Credits:</span> Thomas Naughton, Marc-Danie Nazaire, and Nick Benik.</p>
-                <p>The purpose of this plugin is to visualize breakdowns side by side across many queries. Drag one or more query instances and drop them into the field below.</p>              
+                <h3><img src="assets/large_icon.png" />Multiset Breakdowns</h3>
+                <p class="intro"><span class="fw-bold">Credits:</span> Thomas Naughton, Marc-Danie Nazaire, and Nick Benik.</p>
+                <p class="intro">The purpose of this plugin is to visualize breakdowns side by side across many queries. Drag one or more query instances and drop them into the field below.</p>
                 <input class="d-none" type="button" onclick="sendInitMsg()" value="Send Init Notice" />
                 <input class="d-none" type="button" onclick="sendTestMsg()" value="Send Message" />
             </div><!-- /.col -->
             <div class="col-sm-2">
-                <button class="btn btn-primary" onclick="window.location.reload()">Reload Plugin</button>
+                <button class="btn btn-primary" onclick="window.location.reload()">Reload</button>
             </div><!-- /.col-sm-2 -->
         </div><!-- /.row -->
         <div class="row">
             <div class="col-lg-10">
                 <input class="d-none" type="text" name="stateString" id="stateString" onkeyup="saveState()">
-                <div id="multiset-breakdowns-psmaindiv" class="form-control form-control-lg mb-4 "  aria-label="destination for dragging and dropping query instances">
-                    <span id="qi-drop-ph" class="d-block">Drop a query instance here</span> 
+                <div id="multiset-breakdowns-psmaindiv" class="form-control form-control-lg mb-4"  aria-label="destination for dragging and dropping query instances">
+                    <div id="qi-drop-ph" class="d-block">Drop query instance here</div>
                     <div class="multiset-breakdowns-psmaindiv-content"></div>                                      
                 </div>
                 <div id="multiset-breakdowns-chartdiv"></div><!-- /#multiset-breakdowns-chartdiv -->                
