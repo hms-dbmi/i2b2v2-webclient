@@ -1,0 +1,64 @@
+
+#createGraphs {
+    transition: background-color 1s ease;
+}
+
+#createGraphs.click {
+    transition: background-color 0ms ease;
+    background-color: #00dd00;
+}
+
+
+#multiset-breakdowns-psmaindiv {
+    border: 1px solid black;
+    margin-top: 1em;        
+    padding: 0.6em;
+    overflow: auto;
+    box-shadow: 5px 5px 5px rgb(173, 172, 172);
+}
+
+#multiset-breakdowns-maindiv {
+    border:1px solid blue;
+    margin-top:1.5em;
+    margin-left:0.5em;
+    width:30em;
+    padding:0.6em;
+    overflow: auto;
+}
+
+.i2b2DropTarget.dragging {
+    background-color: lightyellow;
+}
+
+
+.delete-qi{
+    border:none;
+    color: #fff;
+    background-color: transparent;
+    text-shadow: 0 0 3px black;
+}
+
+.delete-qi:hover{
+    text-shadow: 0 0 2px #000;
+    background: #ddd;
+}
+
+.qi-row {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+h1 img {
+    height: 64px;
+    border: 1px solid black;
+    margin-right: 0.6rem;
+}
+
+svg {
+    margin: 0 20px;
+}
+.graph-title {
+    font-size: 1.2em;
+    text-align: center;
+    margin-top: 2rem;
+}
