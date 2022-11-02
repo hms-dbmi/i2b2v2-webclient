@@ -256,7 +256,7 @@ i2b2.WORK.view.main.refreshNode = function(target_node, isParent){
         });
     }
 
-    //these state settings for reload of the tree node
+    //these state settings force reload of the tree node
     parentNode.state.loaded = false;
     parentNode.state.expanded = false;
     parentNode.state.requested = false;
