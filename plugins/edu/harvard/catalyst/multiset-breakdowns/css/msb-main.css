@@ -15,7 +15,7 @@
     padding: 0.6em;
     overflow: auto;
     box-shadow: 5px 5px 5px rgb(173, 172, 172);
-    height: 8em;
+    min-height: 8em;
     font-size: 0.99em;
 }
 
