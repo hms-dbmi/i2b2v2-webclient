@@ -256,7 +256,11 @@ i2b2.WORK.view.main.refreshNode = function(target_node, isParent){
         });
     }
 
-    //delete triggers refresh of tree node
+    //these state settings for reload of the tree node
+    parentNode.state.loaded = false;
+    parentNode.state.expanded = false;
+    parentNode.state.requested = false;
+
     parentNode.refTreeview.deleteNodes(parentChildren, true);
     parentNode.refTreeview.expandNode(parentNode.nodeId);
 }
