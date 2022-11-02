@@ -8,28 +8,41 @@ i2b2.MultisetBreakdowns.labelCreateButton = function() {
     } else {
         button.innerHTML = "Update Graphs";
     }
-    if (i2b2.model.isDirty && Object.keys(i2b2.model.qiList) > 0) {
-        button.classList.remove("disabled");
-    } else {
-        button.classList.add("disabled");
-        if (Object.keys(i2b2.model.qiList).length === 0) document.getElementById("qi-drop-ph").classList.remove('d-none');
-    }
+    // if (i2b2.model.isDirty && Object.keys(i2b2.model.qiList) > 0) {
+    //     button.classList.remove("disabled");
+    // } else {
+    //     button.classList.add("disabled");
+    //     if (Object.keys(i2b2.model.qiList).length === 0) document.getElementById("qi-drop-ph").classList.remove('d-none');
+    // }
 }
 
 
 
 //drop handler
 i2b2.MultisetBreakdowns.qiDropHandler = function(sdxData){
+    // process title
+    let titleFull = sdxData.renderData.title;
+    sdxData.cleanTitle = titleFull.replace('Results of', '').replace(' - FINISHED','').replace(/^\s*/gm, '');
+
+    // save to the model
     i2b2.model.qiList[sdxData.sdxInfo.sdxKeyValue] = sdxData; //data packet
     i2b2.model.qiList[sdxData.sdxInfo.sdxKeyValue].qriList = {};
     i2b2.model.isDirty = true;
+
+    // recolor the QI instances
+    let cnt = Object.keys(i2b2.model.qiList).length;
+    if (cnt < 3) cnt = 3;
+    qiColors = d3.schemeSpectral[cnt];
+    Object.values(i2b2.model.qiList).forEach((qi, idx) => qi.color = qiColors[idx] );
+
+    // save the state
     i2b2.state.save();
 
     // Start a crawl to retrieve subdocuments of dropped QI's
     i2b2.MultisetBreakdowns.parseQIXML([sdxData.sdxInfo.sdxKeyValue]);
 
     //trigger separate render function that displays the list
-    i2b2.MultisetBreakdowns.renderQIList([sdxData.sdxInfo.sdxKeyValue]);
+    i2b2.MultisetBreakdowns.renderQIList();
 
     //i2b2.MultisetBreakdowns.qiChartHandler(sdxData);
 };
@@ -45,11 +58,8 @@ i2b2.MultisetBreakdowns.renderQIList = function(){
 
     //for each of the keys in the list, push an element containing the name into an array
     Object.keys(i2b2.model.qiList).forEach(qiKeyValue => {
-        let titleFull = i2b2.model.qiList[qiKeyValue].renderData.title;
-        let titleTrimmed = titleFull.replace('Results of', '');
-        let titleCleaned = titleTrimmed.replace(/^\s*/gm, '');
-
-        instanceNames.push("<div class='qi-row' data-qi-id='" + qiKeyValue + "'>" + "<button class ='delete-qi'><i class='fas fa-times-circle mx-2' title='Delete'></i><span class='sr-only'>Delete</span></button>" +  titleCleaned + "</div>");
+        let qiColor = i2b2.model.qiList[qiKeyValue].color;
+        instanceNames.push("<div class='qi-row' data-qi-id='" + qiKeyValue + "' style='background-color:"+qiColor+"'>" + "<button class ='delete-qi'><i class='fas fa-times-circle mx-2' title='Delete'></i><span class='sr-only'>Delete</span></button>" +  i2b2.model.qiList[qiKeyValue].cleanTitle + "</div>");
     });
     if (instanceNames.length > 0){
         document.getElementById("qi-drop-ph").classList.remove("d-block");
@@ -140,30 +150,6 @@ i2b2.MultisetBreakdowns.parseQRIXML = function(queryInstId, resultInstId){
         })
 };
 
-
-//Breakdown Data Organization
-// i2b2.MultisetBreakdowns.qiChartHandler = function(sdxData){
-//     i2b2.model.renderCharts[sdxData.sdxInfo.sdxKeyValue] = sdxData; //data packet
-//     i2b2.model.renderCharts[sdxData.sdxInfo.sdxKeyValue].chartList = {};
-
-//     //array({breakdownValue, QMid : count})
-// }
-
-document.addEventListener('DOMContentLoaded', function (){
-    let graphsButton = document.getElementById("createGraphs");
-    graphsButton.addEventListener('click', function(){
-        alert("we're here!");
-        let qilistph = i2b2.model.qiList;
-        console.dir(qilistph);
-        i2b2.model.renderCharts = qilistph;
-
-        i2b2.model.isDirty = false;
-        i2b2.state.save();
-        i2b2.MultisetBreakdowns.labelCreateButton();
-     });
-});
-
-
 // new render object for the model
 //1 array for each breakdown type
 
@@ -208,7 +194,6 @@ i2b2.MultisetBreakdowns.processData = function() {
             reportList[qri.typeId] = qri.name;
         });
     });
-
     i2b2.model.renderReports = reportList;
 
     // extract the data for each report
@@ -237,11 +222,11 @@ i2b2.MultisetBreakdowns.processData = function() {
             if (report[1] === undefined ) {
                 // report does not exist, make 0-count entries
                 bucketNames.forEach((name) => {
-                    i2b2.model.renderCharts[reportId].push({qi: report[0], bucket: name, count: 0});
+                    i2b2.model.renderCharts[reportId].push({qi: i2b2.model.qiList[report[0]].cleanTitle, bucket: name, count: 0});
                 });
             } else {
                 bucketNames.forEach((name) => {
-                    let record = {qi: report[0], bucket: name};
+                    let record = {qi: i2b2.model.qiList[report[0]].cleanTitle, bucket: name};
                     let ptCount = report[1][name];
                     if (ptCount === undefined) ptCount = 0;
                     record.count = parseInt(ptCount);
@@ -257,19 +242,33 @@ i2b2.MultisetBreakdowns.processData = function() {
 
 
 i2b2.MultisetBreakdowns.renderGraphs = function() {
+    // remove previous graphs
+    Object.values(document.querySelectorAll('.graph-title')).forEach(el=>el.remove());
+    Object.values(document.getElementsByTagName('svg')).forEach(el=>el.remove());
 
-    i2b2.
-    chart = GroupedBarChart(stateages, {
-        x: d => d.state,
-        y: d => d.population / 1e6,
-        z: d => d.age,
-        xDomain: d3.groupSort(stateages, D => d3.sum(D, d => -d.population), d => d.state).slice(0, 6), // top 6
-        yLabel: "↑ Population (millions)",
-        zDomain: ages,
-        colors: d3.schemeSpectral[ages.length],
-        width,
-        height: 500
-    })
+
+    Object.entries(i2b2.model.renderReports).forEach(([reportId, reportName]) => {
+        let chartData = i2b2.model.renderCharts[reportId];
+        let qiData = Object.entries(i2b2.model.qiList).map(([id, data]) => [data.cleanTitle, data.color]);
+        let buckets = Array.from(new Set(chartData.map(x => x.bucket)));
+        chart = GroupedBarChart(chartData, {
+            x: d => d.bucket,
+            y: d => d.count,
+            z: d => d.qi,
+            xDomain: buckets,
+            yLabel: "↑ Patient Count",
+            zDomain: qiData.map(x => x[0]),
+            colors: qiData.map(x => x[1]),
+            width: document.body.clientWidth - 60,
+            height: 300
+        })
+        let title = document.createElement("div");
+        title.classList.add('graph-title');
+        title.textContent = i2b2.model.renderReports[reportId];
+        document.body.append(title);
+        document.body.append(chart);
+    });
+
 
 };
 
@@ -390,5 +389,24 @@ window.addEventListener("I2B2_READY", ()=> { //anything we need initialized on p
     if (i2b2.model.isDirty === undefined) i2b2.model.isDirty = false;
     if (i2b2.model.qiList === undefined) i2b2.model.qiList = {};
     if (i2b2.model.renderCharts === undefined) i2b2.model.renderCharts = {};
+    // display the QIs that are loaded
     i2b2.MultisetBreakdowns.renderQIList();
+    // display the graphs if they have already been processed
+    if (Object.keys(i2b2.model.renderCharts).length > 0) i2b2.MultisetBreakdowns.renderGraphs();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    // event listener for the Create Graphs button
+    let graphsButton = document.getElementById("createGraphs");
+    graphsButton.addEventListener('click', function(){
+        graphsButton.classList.add("click");
+        queueMicrotask(()=>{graphsButton.classList.remove("click")});
+        i2b2.MultisetBreakdowns.processData();
+        i2b2.MultisetBreakdowns.renderGraphs();
+
+        i2b2.model.isDirty = false;
+        i2b2.state.save();
+        i2b2.MultisetBreakdowns.labelCreateButton();
+
+    });
 });

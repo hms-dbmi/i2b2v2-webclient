@@ -1,4 +1,14 @@
 
+#createGraphs {
+    transition: background-color 1s ease;
+}
+
+#createGraphs.click {
+    transition: background-color 0ms ease;
+    background-color: #00dd00;
+}
+
+
 #multiset-breakdowns-psmaindiv {
     border: 1px solid black;
     margin-top: 1em;        
@@ -23,20 +33,32 @@
 
 .delete-qi{
     border:none;
-    color: #0d6efd;
+    color: #fff;
     background-color: transparent;
+    text-shadow: 0 0 3px black;
 }
 
 .delete-qi:hover{
-    color: #000897;
+    text-shadow: 0 0 2px #000;
+    background: #ddd;
 }
 
 .qi-row {
     font-size: 1rem;
+    font-weight: 600;
 }
 
 h1 img {
     height: 64px;
     border: 1px solid black;
     margin-right: 0.6rem;
+}
+
+svg {
+    margin: 0 20px;
+}
+.graph-title {
+    font-size: 1.2em;
+    text-align: center;
+    margin-top: 2rem;
 }
