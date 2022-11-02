@@ -264,7 +264,7 @@ i2b2.MultisetBreakdowns.renderGraphs = function() {
             title: (d) => {
                 let groupName = String(d.bucket).trim();
                 if (groupName.length < 3) groupName = '"' + groupName + '"';
-                return d.qi + "\r\n" + groupName + ": " + String(d.count).toLocaleString() + " patients"
+                return d.qi + "\r\n" + groupName + ": " + parseInt(d.count).toLocaleString() + " patients"
             }
         })
         let title = document.createElement("div");
