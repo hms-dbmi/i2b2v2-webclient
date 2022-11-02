@@ -119,7 +119,7 @@ i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
     $('.concept .actions .editLabValue', targetEl).on('click', i2b2.CRC.view.QT.labValue.editLabValue);
     $('.concept .actions .info', targetEl).on('click', i2b2.CRC.view.QT.termActionInfo);
     $('.concept .actions .delete', targetEl).on('click', i2b2.CRC.view.QT.termActionDelete);
-    $('.concept .actions .dateConstraint', targetEl).on('click', i2b2.CRC.view.QT.termActionDelete);
+    $('.concept .actions .dateConstraint', targetEl).on('click', i2b2.CRC.view.QT.termActionDateConstraint);
 };
 
 
