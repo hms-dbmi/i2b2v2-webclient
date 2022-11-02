@@ -15,7 +15,7 @@
     padding: 0.6em;
     overflow: auto;
     box-shadow: 5px 5px 5px rgb(173, 172, 172);
-    height: 8em;
+    min-height: 8em;
     font-size: 0.99em;
 }
 
@@ -59,6 +59,11 @@ h3 img {
 svg {
     margin: 0 20px;
 }
+svg rect {
+    stroke: #999;
+    stroke-width: 1px;
+}
+
 .graph-title {
     font-size: 1.2em;
     text-align: center;
