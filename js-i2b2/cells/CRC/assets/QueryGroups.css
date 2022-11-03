@@ -686,18 +686,24 @@
     font-weight: 600;
 }
 
+/*#termDateConstraintModal .DateStart,
+#termDateConstraintModal .DateEnd {
+    margin-bottom: 0.6em;
+}*/
+
 #termDateConstraintModal .note {
-    margin-top: 0.7em;
+    margin-top: 1.9em;
     font-size: 0.9em;
     text-align: center;
 }
 
-#termDateConstraintModal .modal-body{
+#termDateConstraintModal .modal-body {
+    padding-top: 0.4em;
     padding-left: 2em;
     padding-right: 2em;
 }
 
-#termDateConstraintModal label{
-    margin-top: 0.3em;
-    margin-bottom: 0.7em;
+#termDateConstraintModal .constrainDateLabel {
+    margin-top: 0.8em;
+    margin-bottom: 0.4em;
 }
