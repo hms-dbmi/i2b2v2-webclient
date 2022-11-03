@@ -681,3 +681,23 @@
 .textLeft {
     text-align: left;
 }
+
+#termDateConstraintModal .conceptTitle {
+    font-weight: 600;
+}
+
+#termDateConstraintModal .note {
+    margin-top: 0.7em;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+#termDateConstraintModal .modal-body{
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+#termDateConstraintModal label{
+    margin-top: 0.3em;
+    margin-bottom: 0.7em;
+}

@@ -1,0 +1,33 @@
+<div class="modal fade">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <span class="modal-title">Constrain <span class="conceptTitle">{{this.concept}}</span> by Date Range</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form>
+                    <div>
+                        <label for="conceptConstrainDateStart">From</label>
+                        <input id="conceptConstrainDateStart"class="DateStart form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateStartt}}" />
+                        <label for="conceptConstrainDateEnd">To</label>
+                        <input id="conceptConstrainDateEnd" class="DateEnd form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateEnd}}"/>
+                    </div>
+                    <div class="note">
+                        Date constraints do not apply on Demographics data, Patient Sets and Previous Queries.
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary date-constraint-save">Ok</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

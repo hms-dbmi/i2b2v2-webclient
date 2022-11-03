@@ -106,6 +106,22 @@ i2b2.CRC.view.QT.termActionDelete = function(evt) {
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionDateConstraint = function(evt) {
     //TODO apply date constraint to concept
+    if ($('body #termDateConstraintModal').length === 0) {
+        $('body').append("<div id='termDateConstraintModal'/>");
+    }
+    let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
+    let eventIdx = $(evt.target).closest('.event').data('eventidx');
+    let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
+    let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
+    let data = {concept: sdx.sdxInfo.sdxDisplayName};
+    let termDateConstraint = $("#termDateConstraintModal").empty();
+    $(i2b2.CRC.view.QT.template.dateConstraint(data)).appendTo(termDateConstraint);
+
+    $("#termDateConstraintModal .DateStart").datepicker({uiLibrary: 'bootstrap4'});
+    $("#termDateConstraintModal .DateEnd").datepicker({uiLibrary: 'bootstrap4'});
+
+    //$('body #crcModal div:eq(0)').modal('show');
+    $("#termDateConstraintModal div:eq(0)").modal('show');
 };
 
 // ================================================================================================== //
@@ -1126,6 +1142,14 @@ i2b2.events.afterCellInit.add(
                     Handlebars.registerPartial("QueryPanelItem", req.responseText);
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItem.xml"); }
+            });
+
+            //template for the setting date constraint on concept
+            $.ajax("js-i2b2/cells/CRC/templates/ConceptDateConstraint.html", {
+                success: (template) => {
+                    cell.view.QT.template.dateConstraint = Handlebars.compile(template);
+                },
+                error: (error) => { console.error("Could not retrieve template: ConceptDateConstraint.html"); }
             });
 
             cell.model.query = {
