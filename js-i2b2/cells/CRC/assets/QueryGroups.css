@@ -686,11 +686,6 @@
     font-weight: 600;
 }
 
-/*#termDateConstraintModal .DateStart,
-#termDateConstraintModal .DateEnd {
-    margin-bottom: 0.6em;
-}*/
-
 #termDateConstraintModal .note {
     margin-top: 1.9em;
     font-size: 0.9em;
