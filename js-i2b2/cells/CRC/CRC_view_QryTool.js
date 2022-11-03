@@ -117,8 +117,39 @@ i2b2.CRC.view.QT.termActionDateConstraint = function(evt) {
     let termDateConstraint = $("#termDateConstraintModal").empty();
     $(i2b2.CRC.view.QT.template.dateConstraint(data)).appendTo(termDateConstraint);
 
-    $("#termDateConstraintModal .DateStart").datepicker({uiLibrary: 'bootstrap4'});
-    $("#termDateConstraintModal .DateEnd").datepicker({uiLibrary: 'bootstrap4'});
+    $("#termDateConstraintModal .DateStart").datepicker({
+        uiLibrary: 'bootstrap4',
+        change: function() {
+            let startDateElem = $("#termDateConstraintModal .DateStart");
+            let endDateElem = $("#termDateConstraintModal .DateEnd");
+            let startDate =  startDateElem.datepicker().value();
+            let endDate =  endDateElem.datepicker().value();
+
+            startDate = new Date(startDate);
+            endDate = new Date(endDate);
+
+            if(startDate > endDate){
+                endDateElem.datepicker().value("");
+            }
+        }
+    });
+
+    $("#termDateConstraintModal .DateEnd").datepicker({
+        uiLibrary: 'bootstrap4',
+        change: function() {
+            let startDateElem = $("#termDateConstraintModal .DateStart");
+            let endDateElem = $("#termDateConstraintModal .DateEnd");
+            let startDate =  startDateElem.datepicker().value();
+            let endDate =  endDateElem.datepicker().value();
+
+            startDate = new Date(startDate);
+            endDate = new Date(endDate);
+
+            if(startDate > endDate){
+                startDateElem.datepicker().value("");
+            }
+        }
+    });
 
     //$('body #crcModal div:eq(0)').modal('show');
     $("#termDateConstraintModal div:eq(0)").modal('show');
