@@ -438,6 +438,18 @@ function QueryToolController() {
                     tempItem.isString = item.LabValues.isString;
                     tempItem.isEnum = item.LabValues.isEnum;
                 }
+
+                if (item.dateRange !== undefined) {
+                    if (item.dateRange.start !== undefined && item.dateRange.start !== "")
+                    {
+                        tempItem.dateFrom = funcTranslateDate(new Date(item.dateRange.start));
+                        tempItem.hasDate = true;
+                    }
+                    if (item.dateRange.end !== undefined && item.dateRange.end !== ""){
+                        tempItem.dateTo = funcTranslateDate(new Date(item.dateRange.end));
+                        tempItem.hasDate = true;
+                    }
+                }
                 tempPanel.items.push(tempItem);
             });
             if (tempPanel.items.length > 0) transformedModel.panels.push(tempPanel);

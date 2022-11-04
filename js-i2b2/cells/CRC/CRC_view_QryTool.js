@@ -105,17 +105,53 @@ i2b2.CRC.view.QT.termActionDelete = function(evt) {
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionDateConstraint = function(evt) {
-    //TODO apply date constraint to concept
-    if ($('body #termDateConstraintModal').length === 0) {
-        $('body').append("<div id='termDateConstraintModal'/>");
-    }
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
     let eventIdx = $(evt.target).closest('.event').data('eventidx');
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
     let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
-    let data = {concept: sdx.sdxInfo.sdxDisplayName};
+    i2b2.CRC.view.QT.addConceptDateConstraint(sdx);
+};
+
+// ================================================================================================== //
+i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
+    if ($('body #termDateConstraintModal').length === 0) {
+        $('body').append("<div id='termDateConstraintModal'/>");
+    }
     let termDateConstraint = $("#termDateConstraintModal").empty();
+
+    let dateStart = '';
+    let dateEnd = '';
+    if(sdx.dateRange !== undefined){
+        if(sdx.dateRange.start !== undefined){
+            dateStart = sdx.dateRange.start;
+        }
+        if(sdx.dateRange.end !== undefined){
+            dateEnd = sdx.dateRange.end;
+        }
+    }
+
+    let data = {
+        concept: sdx.sdxInfo.sdxDisplayName,
+        dateStart: dateStart,
+        dateEnd: dateEnd
+    };
     $(i2b2.CRC.view.QT.template.dateConstraint(data)).appendTo(termDateConstraint);
+
+    $('#termDateConstraintModal button.i2b2-save').on('click', (evt) => {
+        let dateRange = sdx.dateRange;
+        if(dateRange === undefined){
+            dateRange = {};
+        }
+
+        let startDate = $("#termDateConstraintModal .DateStart").datepicker().value();
+        let endDate = $("#termDateConstraintModal .DateEnd").datepicker().value();
+
+        dateRange.start = startDate;
+        dateRange.end = endDate;
+
+        sdx.dateRange = dateRange;
+        $('#termDateConstraintModal div:eq(0)').modal('hide');
+    });
 
     $("#termDateConstraintModal .DateStart").datepicker({
         uiLibrary: 'bootstrap4',
@@ -151,10 +187,8 @@ i2b2.CRC.view.QT.termActionDateConstraint = function(evt) {
         }
     });
 
-    //$('body #crcModal div:eq(0)').modal('show');
     $("#termDateConstraintModal div:eq(0)").modal('show');
-};
-
+}
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
     // rerender the query event and add to the DOM
