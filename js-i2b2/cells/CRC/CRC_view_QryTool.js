@@ -137,20 +137,31 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
     };
     $(i2b2.CRC.view.QT.template.dateConstraint(data)).appendTo(termDateConstraint);
 
+
     $('#termDateConstraintModal button.i2b2-save').on('click', (evt) => {
-        let dateRange = sdx.dateRange;
-        if(dateRange === undefined){
-            dateRange = {};
+        let startDateStr = $("#termDateConstraintModal .DateStart").datepicker().value();
+        let endDateStr = $("#termDateConstraintModal .DateEnd").datepicker().value();
+
+        let startDate = new Date(startDateStr);
+        let endDate = new Date(endDateStr);
+
+        startDate = moment(startDate, 'MM-DD-YYYY');
+        endDate = moment(endDate, 'MM-DD-YYYY');
+        let isStartDateValid = startDate.isValid();
+        let isEndDateValid = endDate.isValid();
+
+        if (isStartDateValid && isEndDateValid) {
+            let dateRange = sdx.dateRange;
+            if (dateRange === undefined) {
+                dateRange = {};
+            }
+
+            dateRange.start = startDateStr;
+            dateRange.end = endDateStr;
+
+            sdx.dateRange = dateRange;
+            $('#termDateConstraintModal div:eq(0)').modal('hide');
         }
-
-        let startDate = $("#termDateConstraintModal .DateStart").datepicker().value();
-        let endDate = $("#termDateConstraintModal .DateEnd").datepicker().value();
-
-        dateRange.start = startDate;
-        dateRange.end = endDate;
-
-        sdx.dateRange = dateRange;
-        $('#termDateConstraintModal div:eq(0)').modal('hide');
     });
 
     $("#termDateConstraintModal .DateStart").datepicker({
@@ -167,6 +178,10 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
             if(startDate > endDate){
                 endDateElem.datepicker().value("");
             }
+
+            let date = moment(startDate, 'MM-DD-YYYY');
+            let isDateValid = date.isValid();
+            !isDateValid ? $("#termDateConstraintModal .startDateError").show() : $("#termDateConstraintModal .startDateError").hide();
         }
     });
 
@@ -184,6 +199,10 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
             if(startDate > endDate){
                 startDateElem.datepicker().value("");
             }
+
+            let date = moment(endDate, 'MM-DD-YYYY');
+            let isDateValid = date.isValid();
+            !isDateValid ? $("#termDateConstraintModal .endDateError").show() : $("#termDateConstraintModal .endDateError").hide();
         }
     });
 
