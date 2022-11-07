@@ -161,6 +161,9 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
 
             sdx.dateRange = dateRange;
             $('#termDateConstraintModal div:eq(0)').modal('hide');
+
+            //clear eny existing query results
+            i2b2.CRC.view.QS.clearStatus();
         }
     });
 
