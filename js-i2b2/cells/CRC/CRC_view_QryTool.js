@@ -138,6 +138,7 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
     $(i2b2.CRC.view.QT.template.dateConstraint(data)).appendTo(termDateConstraint);
 
     $('#termDateConstraintModal button.i2b2-save').on('click', (evt) => {
+
         let dateRange = sdx.dateRange;
         if(dateRange === undefined){
             dateRange = {};
@@ -151,6 +152,9 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
 
         sdx.dateRange = dateRange;
         $('#termDateConstraintModal div:eq(0)').modal('hide');
+
+        //clear eny existing query results
+        i2b2.CRC.view.QS.clearStatus();
     });
 
     $("#termDateConstraintModal .DateStart").datepicker({
