@@ -153,7 +153,7 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
         let isStartDateValid = startDate.isValid();
         let isEndDateValid = endDate.isValid();
 
-        if (isStartDateValid && isEndDateValid) {
+        if ((startDateStr.length === 0 || isStartDateValid) && (endDateStr.length === 0 || isEndDateValid)) {
             let dateRange = sdx.dateRange;
             if (dateRange === undefined) {
                 dateRange = {};
