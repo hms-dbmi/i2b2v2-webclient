@@ -561,6 +561,15 @@
     margin-left: .3em;
 }
 
+.TermList  .concept .dateRange{
+    color: rgba(33, 37, 41, 0.77);
+    line-height: 1.6em;
+    position: relative;
+    top: 0.2em;
+    font-style: italic;
+    margin-left: 0.3em;
+}
+
 .dropDownSelect {
     color: #007bff;
     background: white;
@@ -709,3 +718,5 @@
     font-size: 0.89em;
     display: none;
 }
+
+

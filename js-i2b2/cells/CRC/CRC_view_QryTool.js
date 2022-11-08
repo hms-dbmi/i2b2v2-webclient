@@ -109,11 +109,17 @@ i2b2.CRC.view.QT.termActionDateConstraint = function(evt) {
     let eventIdx = $(evt.target).closest('.event').data('eventidx');
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
     let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
-    i2b2.CRC.view.QT.addConceptDateConstraint(sdx);
+    let callbackFunc = function(){
+        let temp = $(evt.target).closest(".event");
+        let cncptListEl = $('.TermList', temp[0]);
+        let eventData = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx];
+        i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
+    }
+    i2b2.CRC.view.QT.addConceptDateConstraint(sdx, callbackFunc);
 };
 
 // ================================================================================================== //
-i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
+i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
     if ($('body #termDateConstraintModal').length === 0) {
         $('body').append("<div id='termDateConstraintModal'/>");
     }
@@ -164,6 +170,8 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
 
             //clear eny existing query results
             i2b2.CRC.view.QS.clearStatus();
+
+            callbackFunc();
         }
     });
 
