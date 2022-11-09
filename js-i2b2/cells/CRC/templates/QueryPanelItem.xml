@@ -6,6 +6,16 @@
             <class>{{class}}</class>
             <item_icon>{{icon}}</item_icon>
             <item_is_synonym>{{isSynonym}}</item_is_synonym>
+            {{#if hasDate}}
+                <constrain_by_date>
+                    {{#if dateFrom}}
+                        <date_from>{{dateFrom}}</date_from>
+                    {{/if}}
+                    {{#if dateTo}}
+                        <date_to>{{dateTo}}</date_to>
+                    {{/if}}
+                </constrain_by_date>
+            {{/if}}
             {{#if valueType}}
                 <constrain_by_value>
                     <value_type>{{valueType}}</value_type>

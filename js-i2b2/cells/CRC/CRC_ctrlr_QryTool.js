@@ -155,11 +155,26 @@ function QueryToolController() {
                                 o.synonym_cd = i2b2.h.getXNodeVal(pi[i2],'item_is_synonym');
                                 o.hasChildren = i2b2.h.getXNodeVal(pi[i2],'item_icon');
 
-                                // Lab Values processing
-                                let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
-
                                 // build sdx packet
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
+
+                                // Date constraint processing
+                                let dateConstraint = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date');
+                                if(dateConstraint.length >0)
+                                {
+                                    sdxDataNode.dateRange = {};
+                                    let dateStart = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_from");
+                                    if(dateStart !== undefined){
+                                        sdxDataNode.dateRange.start = reformatDate(dateStart);
+                                    }
+                                    let dateEnd = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_to");
+                                    if(dateEnd !== undefined){
+                                        sdxDataNode.dateRange.end = reformatDate(dateEnd);
+                                    }
+                                }
+
+                                // Lab Values processing
+                                let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
 
                                 //Check whether this is a lab term
                                 if ((lvd.length > 0) && (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length === 0))
@@ -437,6 +452,18 @@ function QueryToolController() {
                     }
                     tempItem.isString = item.LabValues.isString;
                     tempItem.isEnum = item.LabValues.isEnum;
+                }
+
+                if (item.dateRange !== undefined) {
+                    if (item.dateRange.start !== undefined && item.dateRange.start !== "")
+                    {
+                        tempItem.dateFrom = funcTranslateDate(new Date(item.dateRange.start));
+                        tempItem.hasDate = true;
+                    }
+                    if (item.dateRange.end !== undefined && item.dateRange.end !== ""){
+                        tempItem.dateTo = funcTranslateDate(new Date(item.dateRange.end));
+                        tempItem.hasDate = true;
+                    }
                 }
                 tempPanel.items.push(tempItem);
             });
