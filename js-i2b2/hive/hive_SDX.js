@@ -82,6 +82,7 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                         //send the underlying sdx data instead
                         sdxFromJSON.origData = sdxFromJSON.sdxUnderlyingPackage.origData;
                         sdxFromJSON.sdxInfo = sdxFromJSON.sdxUnderlyingPackage.sdxInfo;
+                        sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON);
                     }
                     eventHandlers[sdxType].DropHandler(sdxFromJSON, e, sdxType);
                 }
