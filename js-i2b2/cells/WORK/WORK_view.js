@@ -314,7 +314,7 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
     }
     contextDialogModal.empty();
 
-    i2b2.WORK.view.main.dialogCallbackWrapper = function() {
+    i2b2.WORK.view.main.dialogCallbackWrapper = function(event) {
         if (inputData.confirmMsg) {
             inputData.onOk();
         }
@@ -325,12 +325,19 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
         $("#WKContextMenuDialog").modal('hide');
     }
 
+    i2b2.WORK.view.main.dialogKeyupCallbackWrapper = function(event) {
+        if(event.keyCode === 13){
+            $("#WKContextMenuDialog .context-menu-save").click();
+        }
+    }
+
     let data = {
         "title": inputData.title,
         "inputLabel": inputData.prompt,
         "placeHolder": inputData.placeHolder,
         "confirmMsg": inputData.confirmMsg,
-        "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper()",
+        "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper(event)",
+        "onKeyup": "i2b2.WORK.view.main.dialogKeyupCallbackWrapper(event)",
         "inputValue" : inputData.inputValue,
         "onCancel": inputData.onCancel
     };
