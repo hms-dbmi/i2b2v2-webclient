@@ -443,11 +443,10 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
         scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = targetTvNode;
         scopedCallback.callback = function(results) {
-            let cl_new_key = newChildKey;
-            let cl_parent_node = targetTvNode;
             if (results.error) {
                 alert("An error occurred while trying to create a new work item!");
             } else {
+                let cl_parent_node = targetTvNode;
                 i2b2.WORK.view.main.refreshNode(cl_parent_node, true);
             }
         }
