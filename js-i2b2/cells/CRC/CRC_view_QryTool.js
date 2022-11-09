@@ -363,13 +363,14 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
         // rerender the query event and add to the DOM
         i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
 
+        if (sdx.isLab) {
+            i2b2.CRC.view.QT.labValue.showLabValues(sdx);
+        }
+        // update the query name
+        i2b2.CRC.view.QT.updateQueryName();
+        i2b2.CRC.view.QS.clearStatus();
     }
-    if (sdx.isLab) {
-        i2b2.CRC.view.QT.labValue.showLabValues(sdx);
-    }
-    // update the query name
-    i2b2.CRC.view.QT.updateQueryName();
-    i2b2.CRC.view.QS.clearStatus();
+
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget) {

@@ -132,6 +132,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.column_name = i2b2.h.getXNodeVal(x, "columnname");
             o.dim_code = i2b2.h.getXNodeVal(x, "dimcode");
             o.operator = i2b2.h.getXNodeVal(x, "operator");
+            o.basecode= i2b2.h.getXNodeVal(x, "basecode");
             o.table_name = i2b2.h.getXNodeVal(x, "tablename");
             o.tooltip = i2b2.h.getXNodeVal(x, "tooltip");
             o.hasChildren = i2b2.h.getXNodeVal(x, "visualattributes");
