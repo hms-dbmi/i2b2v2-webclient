@@ -159,11 +159,12 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
             dateRange.start = startDateStr;
             dateRange.end = endDateStr;
 
-        sdx.dateRange = dateRange;
-        $('#termDateConstraintModal div:eq(0)').modal('hide');
+            sdx.dateRange = dateRange;
+            $('#termDateConstraintModal div:eq(0)').modal('hide');
 
-        //clear eny existing query results
-        i2b2.CRC.view.QS.clearStatus();
+            //clear eny existing query results
+            i2b2.CRC.view.QS.clearStatus();
+        }
     });
 
     $("#termDateConstraintModal .DateStart").datepicker({
