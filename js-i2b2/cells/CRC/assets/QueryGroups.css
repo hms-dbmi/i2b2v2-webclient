@@ -701,3 +701,11 @@
     margin-top: 0.8em;
     margin-bottom: 0.4em;
 }
+
+#termDateConstraintModal .startDateError,
+#termDateConstraintModal .endDateError{
+    color: #f44336;
+    margin-top: 0.2em;
+    font-size: 0.89em;
+    display: none;
+}
