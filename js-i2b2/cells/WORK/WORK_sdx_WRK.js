@@ -137,7 +137,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.tooltip = i2b2.h.getXNodeVal(x, "tooltip");
             o.hasChildren = i2b2.h.getXNodeVal(x, "visualattributes");
             newOptions.showchildren = false;
-            newOptions.title = o.name;
+            if (newOptions.title === "") newOptions.title = o.name;
             break;
         case "PATIENT_COUNT_XML":
             // Patient Record Count
@@ -213,8 +213,8 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
 
     if (sdxCode) {
         if (sdxDataNode = i2b2.sdx.Master.EncapsulateData(sdxCode, o)) {
-            sdxDataNode.origData.name = options.title;
-            sdxDataNode.sdxInfo.sdxDisplayName = options.title;
+            //sdxDataNode.origData.name = options.title;
+            //sdxDataNode.sdxInfo.sdxDisplayName = options.title;
             sdxData.sdxUnderlyingPackage = sdxDataNode;
             subclassData = i2b2.sdx.Master.RenderData(sdxDataNode, newOptions);
         }
