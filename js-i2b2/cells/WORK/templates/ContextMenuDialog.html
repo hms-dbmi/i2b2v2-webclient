@@ -10,7 +10,7 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-                <form class="modal-form">
+                <div class="modal-form">
                     <div class="form-group row">
                         <div >
                             {{#if confirmMsg}}
@@ -21,14 +21,14 @@
                                 <div>
                                     <span id="WK-ann-label" class="WK-prompt">{{inputLabel}} </span>
                                 </div>
-                                <input type="text" id="WKContextMenuInput" class="form-control" placeholder="{{placeHolder}}" value="{{inputValue}}" aria-label="Work item annotation input" aria-describedby="WK-ann-label">
+                                <input type="text" id="WKContextMenuInput" class="form-control" placeholder="{{placeHolder}}" value="{{inputValue}}" aria-label="Work item annotation input" aria-describedby="WK-ann-label" onkeyup="{{onKeyup}}">
                             {{/if}}
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary lab-save" onclick={{onOk}}>Ok</button>
+                <button type="button" class="btn btn-primary context-menu-save" onclick={{onOk}}>Ok</button>
                 {{#if onCancel}}
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick={{onCancel}}> Cancel </button>
                 {{else}}

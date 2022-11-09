@@ -443,17 +443,11 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
         scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = targetTvNode;
         scopedCallback.callback = function(results) {
-            let cl_new_key = newChildKey;
-            let cl_parent_node = targetTvNode;
             if (results.error) {
                 alert("An error occurred while trying to create a new work item!");
             } else {
-                // get a list of all children in the parent node
-                let parentChildren = cl_parent_node.refTreeview.findNodes(cl_parent_node.nodeId, '', 'parentId').map((node)=>{return node.nodeId});
-                // delete the nodes and reset the dynamic loading settings
-                cl_parent_node.refTreeview.deleteNodes(parentChildren, true);
-                // trigger that the treeview node is opened (and reloaded)
-                cl_parent_node.refTreeview.expandNode(cl_parent_node.nodeId);
+                let cl_parent_node = targetTvNode;
+                i2b2.WORK.view.main.refreshNode(cl_parent_node, true);
             }
         }
     }
