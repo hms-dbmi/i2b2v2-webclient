@@ -77,8 +77,13 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                 let sdxType = sdxTypeList.pop();
                 if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].DropHandler === "function") {
                     // TODO: Finish this to pass the data
-                    let sdxJSON = JSON.parse(e.originalEvent.dataTransfer.getData("application/i2b2+json"));
-                    eventHandlers[sdxType].DropHandler(sdxJSON, e, sdxType);
+                    let sdxFromJSON = JSON.parse(e.originalEvent.dataTransfer.getData("application/i2b2+json"));
+                    if(sdxFromJSON.sdxInfo.sdxType !== sdxType && sdxFromJSON.sdxInfo.sdxType === "WRK"){
+                        //send the underlying sdx data instead
+                        sdxFromJSON.origData = sdxFromJSON.sdxUnderlyingPackage.origData;
+                        sdxFromJSON.sdxInfo = sdxFromJSON.sdxUnderlyingPackage.sdxInfo;
+                    }
+                    eventHandlers[sdxType].DropHandler(sdxFromJSON, e, sdxType);
                 }
             }
             e.stopImmediatePropagation();
