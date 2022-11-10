@@ -212,9 +212,8 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
     }
 
     if (sdxCode) {
+        //TODO: Is this if condition needed?
         if (sdxDataNode = i2b2.sdx.Master.EncapsulateData(sdxCode, o)) {
-            //sdxDataNode.origData.name = options.title;
-            //sdxDataNode.sdxInfo.sdxDisplayName = options.title;
             sdxData.sdxUnderlyingPackage = sdxDataNode;
             subclassData = i2b2.sdx.Master.RenderData(sdxDataNode, newOptions);
         }
