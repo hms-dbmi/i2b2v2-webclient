@@ -101,6 +101,9 @@ i2b2.CRC.view.QT.termActionDelete = function(evt) {
     i2b2.CRC.view.QT.renderTermList(i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx], $(evt.target).closest('.TermList'));
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
+
+    //clear any existing query results;
+    i2b2.CRC.view.QS.clearStatus();
 };
 
 // ================================================================================================== //
@@ -253,6 +256,9 @@ i2b2.CRC.view.QT.deleteQueryGroup = function(event) {
     i2b2.CRC.view.QT.updateQueryName();
     // correct the query group titles so first one says "Find Patients"
     i2b2.CRC.view.QT._correctQgTitles();
+
+    //clear any existing query results;
+    i2b2.CRC.view.QS.clearStatus();
 };
 
 
@@ -372,13 +378,14 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
         // rerender the query event and add to the DOM
         i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
 
+        if (sdx.isLab) {
+            i2b2.CRC.view.QT.labValue.showLabValues(sdx);
+        }
+        // update the query name
+        i2b2.CRC.view.QT.updateQueryName();
+        i2b2.CRC.view.QS.clearStatus();
     }
-    if (sdx.isLab) {
-        i2b2.CRC.view.QT.labValue.showLabValues(sdx);
-    }
-    // update the query name
-    i2b2.CRC.view.QT.updateQueryName();
-    i2b2.CRC.view.QS.clearStatus();
+
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget) {
