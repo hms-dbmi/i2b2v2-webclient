@@ -491,7 +491,7 @@
 .QueryGroup .body .main .content .orDragAdditional {
     color: #878787;
     font-style: italic;
-    margin: 0.9em 0.6em 0.6em 0.6em;
+    margin: 0.9em 0.6em 0.6em 0.92em;
 }
 
 .QueryGroup .body .main .content .dragFirst {
