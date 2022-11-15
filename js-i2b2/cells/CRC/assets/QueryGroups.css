@@ -98,6 +98,7 @@
     border: 1px solid rgba(0, 0, 0, .3);
     height: 2.1em;
     border-radius: 0.2rem;
+    padding-left: 0.4em;
 }
 
 .CRC_QT_view .CRC_QT_runbar label {
@@ -352,7 +353,7 @@
     border-radius: 0.3em;
     display: inline-flex;
     padding: 0.5em;
-    margin: 0.5em;
+    margin: 0.5em 0.5em 0.5em 0.19em;
     cursor: pointer;
     font-size: 0.95em;
     color: #2782a3;
@@ -491,7 +492,7 @@
 .QueryGroup .body .main .content .orDragAdditional {
     color: #878787;
     font-style: italic;
-    margin: 0.9em 0.6em 0.6em 0.92em;
+    margin: 0.9em 0.6em 0.6em 0.6em;
 }
 
 .QueryGroup .body .main .content .dragFirst {
