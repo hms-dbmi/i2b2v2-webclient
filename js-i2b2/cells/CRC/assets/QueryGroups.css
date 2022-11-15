@@ -158,7 +158,7 @@
 }
 
 .DateOccursBody > div{
-    padding: 1em 0em;
+    padding: 0.4em 0em 1em 0em;
 }
 
 .DateOccursBody.expander {
@@ -349,7 +349,7 @@
     border-radius: 0.3em;
     display: inline-flex;
     padding: 0.5em;
-    margin: 0.5em 0.5em 0.1em 0.19em;
+    margin: 0.5em 0.5em 0.5em 0.19em;
     cursor: pointer;
     font-size: 0.95em;
     color: #2782a3;
