@@ -562,11 +562,10 @@
 }
 
 .TermList  .concept .dateRange{
-    color: rgba(33, 37, 41, 0.77);
+    color: #7191af;
     line-height: 1.6em;
     position: relative;
     top: 0.2em;
-    font-style: italic;
     margin-left: 0.3em;
 }
 
