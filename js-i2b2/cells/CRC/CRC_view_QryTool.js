@@ -101,9 +101,119 @@ i2b2.CRC.view.QT.termActionDelete = function(evt) {
     i2b2.CRC.view.QT.renderTermList(i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx], $(evt.target).closest('.TermList'));
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
+
+    //clear any existing query results;
+    i2b2.CRC.view.QS.clearStatus();
 };
 
+// ================================================================================================== //
+i2b2.CRC.view.QT.termActionDateConstraint = function(evt) {
+    let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
+    let eventIdx = $(evt.target).closest('.event').data('eventidx');
+    let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
+    let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
+    i2b2.CRC.view.QT.addConceptDateConstraint(sdx);
+};
 
+// ================================================================================================== //
+i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx) {
+    if ($('body #termDateConstraintModal').length === 0) {
+        $('body').append("<div id='termDateConstraintModal'/>");
+    }
+    let termDateConstraint = $("#termDateConstraintModal").empty();
+
+    let dateStart = '';
+    let dateEnd = '';
+    if(sdx.dateRange !== undefined){
+        if(sdx.dateRange.start !== undefined){
+            dateStart = sdx.dateRange.start;
+        }
+        if(sdx.dateRange.end !== undefined){
+            dateEnd = sdx.dateRange.end;
+        }
+    }
+
+    let data = {
+        concept: sdx.sdxInfo.sdxDisplayName,
+        dateStart: dateStart,
+        dateEnd: dateEnd
+    };
+    $(i2b2.CRC.view.QT.template.dateConstraint(data)).appendTo(termDateConstraint);
+
+
+    $('#termDateConstraintModal button.i2b2-save').on('click', (evt) => {
+        let startDateStr = $("#termDateConstraintModal .DateStart").datepicker().value();
+        let endDateStr = $("#termDateConstraintModal .DateEnd").datepicker().value();
+
+        let startDate = new Date(startDateStr);
+        let endDate = new Date(endDateStr);
+
+        startDate = moment(startDate, 'MM-DD-YYYY');
+        endDate = moment(endDate, 'MM-DD-YYYY');
+        let isStartDateValid = startDate.isValid();
+        let isEndDateValid = endDate.isValid();
+
+        if ((startDateStr.length === 0 || isStartDateValid) && (endDateStr.length === 0 || isEndDateValid)) {
+            let dateRange = sdx.dateRange;
+            if (dateRange === undefined) {
+                dateRange = {};
+            }
+
+            dateRange.start = startDateStr;
+            dateRange.end = endDateStr;
+
+            sdx.dateRange = dateRange;
+            $('#termDateConstraintModal div:eq(0)').modal('hide');
+
+            //clear eny existing query results
+            i2b2.CRC.view.QS.clearStatus();
+        }
+    });
+
+    $("#termDateConstraintModal .DateStart").datepicker({
+        uiLibrary: 'bootstrap4',
+        change: function() {
+            let startDateElem = $("#termDateConstraintModal .DateStart");
+            let endDateElem = $("#termDateConstraintModal .DateEnd");
+            let startDate =  startDateElem.datepicker().value();
+            let endDate =  endDateElem.datepicker().value();
+
+            startDate = new Date(startDate);
+            endDate = new Date(endDate);
+
+            if(startDate > endDate){
+                endDateElem.datepicker().value("");
+            }
+
+            let date = moment(startDate, 'MM-DD-YYYY');
+            let isDateValid = date.isValid();
+            !isDateValid ? $("#termDateConstraintModal .startDateError").show() : $("#termDateConstraintModal .startDateError").hide();
+        }
+    });
+
+    $("#termDateConstraintModal .DateEnd").datepicker({
+        uiLibrary: 'bootstrap4',
+        change: function() {
+            let startDateElem = $("#termDateConstraintModal .DateStart");
+            let endDateElem = $("#termDateConstraintModal .DateEnd");
+            let startDate =  startDateElem.datepicker().value();
+            let endDate =  endDateElem.datepicker().value();
+
+            startDate = new Date(startDate);
+            endDate = new Date(endDate);
+
+            if(startDate > endDate){
+                startDateElem.datepicker().value("");
+            }
+
+            let date = moment(endDate, 'MM-DD-YYYY');
+            let isDateValid = date.isValid();
+            !isDateValid ? $("#termDateConstraintModal .endDateError").show() : $("#termDateConstraintModal .endDateError").hide();
+        }
+    });
+
+    $("#termDateConstraintModal div:eq(0)").modal('show');
+}
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
     // rerender the query event and add to the DOM
@@ -115,6 +225,7 @@ i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
     $('.concept .actions .editLabValue', targetEl).on('click', i2b2.CRC.view.QT.labValue.editLabValue);
     $('.concept .actions .info', targetEl).on('click', i2b2.CRC.view.QT.termActionInfo);
     $('.concept .actions .delete', targetEl).on('click', i2b2.CRC.view.QT.termActionDelete);
+    $('.concept .actions .dateConstraint', targetEl).on('click', i2b2.CRC.view.QT.termActionDateConstraint);
 };
 
 
@@ -137,6 +248,9 @@ i2b2.CRC.view.QT.deleteQueryGroup = function(event) {
     i2b2.CRC.view.QT.updateQueryName();
     // correct the query group titles so first one says "Find Patients"
     i2b2.CRC.view.QT._correctQgTitles();
+
+    //clear any existing query results;
+    i2b2.CRC.view.QS.clearStatus();
 };
 
 
@@ -256,13 +370,14 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
         // rerender the query event and add to the DOM
         i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
 
+        if (sdx.isLab) {
+            i2b2.CRC.view.QT.labValue.showLabValues(sdx);
+        }
+        // update the query name
+        i2b2.CRC.view.QT.updateQueryName();
+        i2b2.CRC.view.QS.clearStatus();
     }
-    if (sdx.isLab) {
-        i2b2.CRC.view.QT.labValue.showLabValues(sdx);
-    }
-    // update the query name
-    i2b2.CRC.view.QT.updateQueryName();
-    i2b2.CRC.view.QS.clearStatus();
+
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget) {
@@ -1121,6 +1236,14 @@ i2b2.events.afterCellInit.add(
                     Handlebars.registerPartial("QueryPanelItem", req.responseText);
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItem.xml"); }
+            });
+
+            //template for the setting date constraint on concept
+            $.ajax("js-i2b2/cells/CRC/templates/ConceptDateConstraint.html", {
+                success: (template) => {
+                    cell.view.QT.template.dateConstraint = Handlebars.compile(template);
+                },
+                error: (error) => { console.error("Could not retrieve template: ConceptDateConstraint.html"); }
             });
 
             cell.model.query = {

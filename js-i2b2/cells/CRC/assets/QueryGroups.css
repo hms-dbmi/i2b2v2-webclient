@@ -681,3 +681,31 @@
 .textLeft {
     text-align: left;
 }
+
+#termDateConstraintModal .conceptTitle {
+    font-weight: 600;
+}
+
+#termDateConstraintModal .note {
+    margin-top: 1.9em;
+    font-size: 0.9em;
+}
+
+#termDateConstraintModal .modal-body {
+    padding-top: 0.4em;
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+#termDateConstraintModal .constrainDateLabel {
+    margin-top: 0.8em;
+    margin-bottom: 0.4em;
+}
+
+#termDateConstraintModal .startDateError,
+#termDateConstraintModal .endDateError{
+    color: #f44336;
+    margin-top: 0.2em;
+    font-size: 0.89em;
+    display: none;
+}
