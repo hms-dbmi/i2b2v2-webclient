@@ -456,20 +456,6 @@ DIV.tabText {}
 	display:none;
 }
 
-.goldenLayoutCol .stack-cfg-button {
-	background-image: url(../images/stack_options_icon.gif);
-}
-
-.goldenLayoutCol .stack-refresh-button {
-	margin-top: 2px;
-}
-
-.goldenLayoutCol .stack-refresh-button.refreshing {
-	background-image: url(../images/spin.gif);
-	background-size: 18px 18px;
-	cursor: progress !important;
-}
-
 .goldenLayoutCol .lm_maximise {
 	background-image: url(../images/stack_zoom_icon.gif);
 }
