@@ -480,15 +480,12 @@ i2b2.CRC.view.QT.render = function() {
         }
 
         // attach the date picker functionality
-        let onDateChange = function (e) {
-            i2b2.CRC.view.QS.clearStatus();
-        }
-        $('.DateStart', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
-        $('.DateEnd', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
-        $('.DateRange1Start', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
-        $('.DateRange1End', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
-        $('.DateRange2Start', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
-        $('.DateRange2End', newQG).datepicker({uiLibrary: 'bootstrap4', change: onDateChange});
+        $('.DateStart', newQG).datepicker({uiLibrary: 'bootstrap4'});
+        $('.DateEnd', newQG).datepicker({uiLibrary: 'bootstrap4'});
+        $('.DateRange1Start', newQG).datepicker({uiLibrary: 'bootstrap4'});
+        $('.DateRange1End', newQG).datepicker({uiLibrary: 'bootstrap4'});
+        $('.DateRange2Start', newQG).datepicker({uiLibrary: 'bootstrap4'});
+        $('.DateRange2End', newQG).datepicker({uiLibrary: 'bootstrap4'});
 
         // attach the i2b2 SDX handlers
         let dropTarget = $(".Event1Container", newQG);
@@ -705,6 +702,8 @@ i2b2.CRC.view.QT.render = function() {
                 i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
             }
         }
+
+        i2b2.CRC.view.QS.clearStatus();
     });
 
     $('.QueryGroup .OccursCount', i2b2.CRC.view.QT.containerDiv).on('blur', (event) => {
