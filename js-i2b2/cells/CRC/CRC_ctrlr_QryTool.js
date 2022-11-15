@@ -83,16 +83,6 @@ function QueryToolController() {
                         metadata.without = without;
                         metadata.instances = instances;
 
-                        let panelFromDate = i2b2.h.getXNodeVal(qp[i1],'panel_date_from');
-                        if (panelFromDate) {
-                            metadata.startDate = reformatDate(panelFromDate);
-                        }
-
-                        let panelToDate = i2b2.h.getXNodeVal(qp[i1],'panel_date_to');
-                        if (panelToDate) {
-                            metadata.endDate = reformatDate(panelToDate);
-                        }
-
                         let pi = i2b2.h.XPath(qp[i1], 'descendant::item[item_key]');
                         for (let i2=0; i2<pi.length; i2++) {
                             let renderOptions = {};
@@ -198,6 +188,33 @@ function QueryToolController() {
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             }
                             sdxDataNodeList.push(sdxDataNode);
+                        }
+
+                        if(sdxDataNodeList.length > 1){
+                            let startDate;
+                            let endDate;
+                            if(sdxDataNodeList[0].dateRange !== undefined){
+                                startDate = sdxDataNodeList[0].dateRange.start;
+                                endDate = sdxDataNodeList[0].dateRange.end;
+                            }
+
+                            let matchingSdxNodeDates = sdxDataNodeList.filter(function(sdx) {
+                                if(sdx.dateRange !== undefined &&
+                                sdx.dateRange.start === startDate
+                                && sdx.dateRange.end === endDate) {
+                                    return true;
+                                }
+
+                                return false;
+                            });
+
+                            if(matchingSdxNodeDates.length === sdxDataNodeList.length){
+                                //delete [metadata.startDate];
+                                //delete [metadata.endDate];
+
+                                metadata.startDate = sdxDataNodeList[0].dateRange.start;
+                                metadata.endDate = sdxDataNodeList[0].dateRange.end;
+                            }
                         }
                         i2b2.CRC.view.QT.addNewQueryGroup(sdxDataNodeList, metadata);
                     }
