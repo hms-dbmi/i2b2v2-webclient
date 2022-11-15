@@ -350,13 +350,20 @@
 .QueryGroup.when .DateRange2Lbl,
 .QueryGroup .DateOccursLbl {
     border-radius: 0.3em;
-    background: #cccccc;
-    border: solid 1px black;
     display: inline-flex;
     padding: 0.5em;
     margin: 0.5em;
     cursor: pointer;
+    font-size: 0.95em;
+    color: #2782a3;
 }
+
+.QueryGroup.when .DateRange1Lbl:hover,
+.QueryGroup.when .DateRange2Lbl:hover,
+.QueryGroup .DateOccursLbl:hover {
+    background: rgba(114, 109, 109, 0.22);
+}
+
 .QueryGroup .DateRange1Lbl i.bi,
 .QueryGroup .DateRange2Lbl i.bi,
 .QueryGroup .DateOccursLbl i.bi {

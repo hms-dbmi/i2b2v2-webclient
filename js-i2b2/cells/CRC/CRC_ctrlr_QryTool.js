@@ -409,10 +409,6 @@ function QueryToolController() {
                     break;
                 case "without":
                 case "with":
-                    if (qgData.events[0].dateRange !== undefined) {
-                        if (qgData.events[0].dateRange.start !== undefined && qgData.events[0].dateRange.start !== "") tempPanel.dateFrom = funcTranslateDate(new Date(qgData.events[0].dateRange.start));
-                        if (qgData.events[0].dateRange.end !== undefined && qgData.events[0].dateRange.end !== "") tempPanel.dateTo = funcTranslateDate(new Date(qgData.events[0].dateRange.end));
-                    }
                     break;
             }
             // Process ontology terms

@@ -373,6 +373,15 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     let eventData = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx];
     temp = eventData.concepts.filter((term)=>{ return term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue; });
     if (temp.length === 0) {
+        //add date constraint to concept if there is a group date range specified{
+        if(i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange !== undefined &&
+            (sdx.dateRange === undefined || (sdx.dateRange.start === 0 && sdx.dateRange.end.length === 0))){
+
+            if(sdx.dateRange === undefined) sdx.dateRange = {start: "", end: ""};
+            sdx.dateRange.start = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange.start;
+            sdx.dateRange.end = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange.end;
+        }
+
         // not a duplicate, add to the event's term list
         eventData.concepts.push(sdx);
         // rerender the query event and add to the DOM
@@ -637,12 +646,18 @@ i2b2.CRC.view.QT.render = function() {
         let jqTarget = $(event.target);
         let errorFrameEl = $(jqTarget)[0].parentNode;
         let dateVal = String(jqTarget.val());
+
+        let isValid = false;
+
         // display red box on error
         if (dateVal.match(/^[0|1][0-9]\/[0|1|2|3][0-9]\/[1|2][0-9][0-9][0-9]$/) === null && dateVal !== '') {
             $(errorFrameEl).css('border', 'solid');
         } else {
             $(errorFrameEl).css('border', '');
+            isValid = true;
         }
+
+        return isValid;
     };
 
     $('.DateStart, .DateEnd, .DateRange1Start, .DateRange1End, .DateRange2Start, .DateRange2End', i2b2.CRC.view.QT.containerDiv).on('input', (event) => {
@@ -651,6 +666,7 @@ i2b2.CRC.view.QT.render = function() {
 
     $('.DateStart, .DateEnd, .DateRange1Start, .DateRange1End, .DateRange2Start, .DateRange2End', i2b2.CRC.view.QT.containerDiv).on('change', (event) => {
         let jqTarget = $(event.target);
+        let newDate = jqTarget.val();
         let qgBody = jqTarget.closest(".QueryGroup");
         let qgIndex = qgBody.data("queryGroup");
         let qgData = i2b2.CRC.model.query.groups[qgIndex];
@@ -658,16 +674,37 @@ i2b2.CRC.view.QT.render = function() {
         if (jqTarget.hasClass('DateRange2Start') || jqTarget.hasClass('DateRange2End')) eventIdx = 1;
         if (qgData.events[eventIdx] === undefined) qgData.events[eventIdx] = {};
         if (qgData.events[eventIdx].dateRange === undefined) qgData.events[eventIdx].dateRange = {"start":"", "end":""};
-        if (jqTarget.hasClass('DateStart') || jqTarget.hasClass('DateRange1Start') || jqTarget.hasClass('DateRange2Start')) {
-            qgData.events[eventIdx].dateRange.start = event.target.value;
-            // keep both Event 1 start date inputs synced
-            if (eventIdx === 0) $('.DateStart, .DateRange1Start', qgBody).val(event.target.value);
-        } else {
-            qgData.events[eventIdx].dateRange.end = event.target.value;
-            // keep both Event 1 end date inputs synced
-            if (eventIdx === 0) $('.DateEnd, .DateRange1End', qgBody).val(event.target.value);
+
+        let isValidDate = funcValidateDate(event);
+
+        if(isValidDate) {
+
+            if (jqTarget.hasClass('DateStart') || jqTarget.hasClass('DateRange1Start') || jqTarget.hasClass('DateRange2Start')) {
+                qgData.events[eventIdx].dateRange.start = event.target.value;
+                // keep both Event 1 start date inputs synced
+                if (eventIdx === 0) $('.DateStart, .DateRange1Start', qgBody).val(event.target.value);
+            } else {
+                qgData.events[eventIdx].dateRange.end = event.target.value;
+                // keep both Event 1 end date inputs synced
+                if (eventIdx === 0) $('.DateEnd, .DateRange1End', qgBody).val(event.target.value);
+            }
+
+            if(qgData.events[eventIdx].concepts && qgData.events[eventIdx].concepts.length > 0) {
+                qgData.events[eventIdx].concepts.forEach(concept => {
+                    if (concept.dateRange === undefined) concept.dateRange = {
+                        "start": "",
+                        "end": ""
+                    };
+                    concept.dateRange.start = qgData.events[eventIdx].dateRange.start;
+                    concept.dateRange.end = qgData.events[eventIdx].dateRange.end;
+                });
+
+                let temp = $(event.target).closest(".event");
+                let cncptListEl = $('.TermList', temp[0]);
+                let eventData = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx];
+                i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
+            }
         }
-        funcValidateDate(event);
     });
 
     $('.QueryGroup .OccursCount', i2b2.CRC.view.QT.containerDiv).on('blur', (event) => {
