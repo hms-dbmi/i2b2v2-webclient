@@ -13,10 +13,16 @@
                 <div>
                     <div>
                         <label for="conceptConstrainDateStart" class="constrainDateLabel">From</label>
-                        <input id="conceptConstrainDateStart" class="DateStart form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateStart}}" />
+                        <div class="dateRange">
+                            <input id="conceptConstrainDateStart" class="DateStart form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateStart}}"/>
+                            <button class="btn btn-outline-secondary border-0 refreshStartDate"><i class="bi bi-arrow-clockwise"></i></button>
+                        </div>
                         <div class="startDateError">Invalid Date</div>
                         <label for="conceptConstrainDateEnd" class="constrainDateLabel">To</label>
-                        <input id="conceptConstrainDateEnd" class="DateEnd form-control"  placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateEnd}}"/>
+                        <div class="dateRange">
+                            <input id="conceptConstrainDateEnd" class="DateEnd form-control"  placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateEnd}}"/>
+                            <button class="btn btn-outline-secondary border-0 refreshEndDate" onclick="event"><i class="bi bi-arrow-clockwise"></i></button>
+                        </div>
                         <div class="endDateError">Invalid Date</div>
                     </div>
                     <div class="note">

@@ -156,22 +156,18 @@
 .expander.hidden {
     max-height: 0 !important;
 }
-.DateOccursBody {
-        text-align: center;
-}
+
 .DateOccursBody > div{
     padding: 1em 0em;
 }
+
 .DateOccursBody.expander {
     max-height: 10em;
 }
+
 .QueryGroup .DateRange1Body,
 .QueryGroup .DateRange2Body {
     max-height: 10em;
-}
-
-.DateOccursBody > div {
-    padding: 1em 0em;
 }
 
 .gj-datepicker {
@@ -539,7 +535,32 @@
     white-space: nowrap;
 }
 
+.refreshStartDate,
+.refreshEndDate{
+    font-size: 1.3em;
+    color: rgba(0, 0, 0, 0.67);
+    padding: 0.2em 0.2em 0.2em 0.6em;
+}
 
+.refreshStartDate:focus,
+.refreshEndDate:focus{
+    box-shadow: none !important;
+}
+
+.refreshStartDate:hover,
+.refreshEndDate:hover{
+    background: none !important;
+    color: #2782a3;
+}
+
+.DateOccursBody .dateRange{
+     display: flex;
+     width: 15em;
+}
+
+#termDateConstraintModal .dateRange{
+    display: flex;
+}
 
 .TermList span {
     line-height: 1.6em;
