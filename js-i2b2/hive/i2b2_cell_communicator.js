@@ -249,7 +249,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         execBubble.timeRecv = new Date();
         var origCallback = execBubble.callback;
 
-       //update timeout
+       // update timeout
         i2b2.PM.model.IdleTimer.resetTimeout();
 
         // // debug messages
@@ -326,10 +326,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
         var execBubble = transport.request.options.i2b2_execBubble;
         execBubble.timeRecv = new Date();
         var origCallback = execBubble.callback;
-
-        // console.group("[AJAX RESULT i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName + "]");
-        // console.error("AJAX Transport FAILURE");
-        // console.dir(transport);
 
         // create our data message to send to the callback fuction
         var cbMsg = {

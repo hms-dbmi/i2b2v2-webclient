@@ -163,7 +163,6 @@ i2b2.events.afterCellInit.add((function(cell){
                 // change the tab's hover over to be the name of the term
                 let funcRetitle = (function(sdxData) {
                     // this can only be run after a bit when the tab has been created in the DOM
-                    console.dir(sdxData);
                     this.tab.element[0].title = "title";
                 }).bind(container, i2b2.ONT.view.info.model.sdxData);
 

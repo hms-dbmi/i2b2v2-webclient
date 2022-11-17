@@ -36,9 +36,7 @@ i2b2.sdx.Master.EncapsulateData = function(inType, inData) {
         console.error('Key information was not found during an attempt to encapsulate '+inType+' data');
         console.group('(more info)');
         console.info('SDX Encapsulation header');
-        console.dir(headInfo);
         console.info('Data sent to be Encapsulated');
-        console.dir(inData);
         console.groupEnd();
         return false;
     }
@@ -134,7 +132,6 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
 // ================================================================================================== //
 i2b2.sdx.Master.ProcessDrop = function(sdxData, DroppedOnID){
     console.group("SDX Process DropEvent on container ID:"+DroppedOnID);
-    console.dir(sdxData);
     // TODO: clean up these array processing hacks
     let typeCode;
     if (sdxData[0]) {

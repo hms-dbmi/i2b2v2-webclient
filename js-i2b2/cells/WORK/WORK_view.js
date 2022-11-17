@@ -296,7 +296,6 @@ i2b2.WORK.view.main.DropHandler = function(sdx, evt, handlerSelector){
                 }
                 parentNode = treeview.getParent(parentNode.nodeId);
             }
-            console.dir({type: "within workspace", dropTarget: dropTarget, toSave: sdx});
             i2b2.WORK.ctrlr.main.MoveWorkItem(sdx, dropTarget);
         } else {
             // saves the external item to the workspace
@@ -388,7 +387,6 @@ i2b2.events.afterCellInit.add((function(cell){
                         nodeRename: {
                             name: 'Rename',
                             onClick: function(node) {
-                                console.dir(node);
                                 i2b2.WORK.ctrlr.main.Rename(node);
                             },
                             isShown: function(node) {
@@ -404,7 +402,6 @@ i2b2.events.afterCellInit.add((function(cell){
                         nodeAnnotate: {
                             name: 'Annotate',
                             onClick: function(node) {
-                                console.dir(node);
                                 i2b2.WORK.ctrlr.main.Annotate(node);
                             },
                             isShown: function(node) {
@@ -420,7 +417,6 @@ i2b2.events.afterCellInit.add((function(cell){
                         nodeDelete: {
                             name: 'Delete',
                             onClick: function(node) {
-                                console.dir(node);
                                 i2b2.WORK.ctrlr.main.Delete(node);
                             },
                             isShown: function(node) {
@@ -436,7 +432,6 @@ i2b2.events.afterCellInit.add((function(cell){
                         newFolder: {
                             name: 'New Folder',
                             onClick: function (node) {
-                                console.dir(node);
                                 i2b2.WORK.ctrlr.main.NewFolder(node);
                             },
                             isShown: function (node) {
