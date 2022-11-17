@@ -171,20 +171,18 @@ function QueryToolController() {
                                 {
                                    sdxDataNode.isLab = true;
                                    sdxDataNode.LabValues = this.parseValueConstraint( lvd );
-                                }else{
-                                    i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
-                                        results.parse();
-                                        if(results.model.length > 0){
-                                            let data = results.model[0];
-                                            sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
-                                            if(sdxDataNode.isLab)
-                                            {
-                                                i2b2.CRC.view.QT.render();
-                                            }
-                                        }
-                                    });
-
                                 }
+
+                                i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
+                                    results.parse();
+                                    if(results.model.length > 0){
+                                        let data = results.model[0];
+                                        sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
+                                        sdxDataNode.origData = data.origData;
+                                        i2b2.CRC.view.QT.render();
+                                    }
+                                });
+
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             }
                             sdxDataNodeList.push(sdxDataNode);

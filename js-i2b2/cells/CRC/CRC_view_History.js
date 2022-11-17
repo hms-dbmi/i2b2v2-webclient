@@ -27,8 +27,6 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
         return;
     }
 
-    $('#stackRefreshIcon_i2b2-CRC-view-history').addClass("refreshing");
-
     i2b2.sdx.Master.getChildRecords(nodeData.i2b2, (function(cellResult) {
 
         if (cellResult.error !== false) {return false;}
@@ -72,9 +70,6 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
 
         // render tree
         $(ev.currentTarget).treeview('redraw', []);
-
-        // change the treeview icon to show it is no longer loading
-        $('#stackRefreshIcon_i2b2-CRC-view-history').removeClass("refreshing");
     }).bind(nodeData));
 };
 
@@ -88,13 +83,9 @@ i2b2.CRC.view.history.treeRedraw = function(ev, b) {
 
 //================================================================================================== //
 i2b2.CRC.view.history.LoadQueryMasters = function() {
-    $('#stackRefreshIcon_i2b2-CRC-view-history').addClass("refreshing");
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = this;
     scopedCallback.callback = function(cellResult) {
-        //TODO: this icon is NOT used
-        let refreshIcon = $('#stackRefreshIcon_i2b2-CRC-view-history');
-        refreshIcon.removeClass("refreshing");
         i2b2.CRC.view.history.treeview.treeview('clear');
         // THIS function is used to process the AJAX results of the getChild call
         //              results data object contains the following attributes:
@@ -139,8 +130,6 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
 
         // render tree
         i2b2.CRC.view.history.treeview.treeview('redraw', []);
-        // reset the loading icon in the stack buttons list
-        refreshIcon.removeClass("refreshing");
     };
     i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":"20"}, scopedCallback);
 };
@@ -168,7 +157,6 @@ i2b2.CRC.view.history.doDelete = function(node) {
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doRefreshAll = function() {
-    $('#stackRefreshIcon_i2b2-CRC-view-history').addClass("refreshing");
     i2b2.CRC.view.history.treeview.treeview('clear');
     i2b2.CRC.view.history.LoadQueryMasters();
 };
