@@ -375,6 +375,9 @@
 .QueryGroup.when .EventLbl {
     max-height: 2em;
 }
+.QueryGroup.when .EventLbl.first {
+    border-radius: 0 6px 0 0;
+}
 
 .QueryGroup.when .Event1Container,
 .QueryGroup.when .Event2Container {
@@ -397,17 +400,32 @@
 
 .QueryGroup .Event1Container {
     border-bottom: none;
-    padding-left: 2px;
 }
 .QueryGroup .Event1Container .EventLbl {
     position: relative;
     top: -1px;
 }
 
+.QueryGroup.when .EventLbl div {
+    float:left;
+    margin:4px 10px;
+}
+
+.QueryGroup.when .EventLbl i {
+    float: right;
+    margin: 0px 10px;
+    font-size: 1.2em;
+    position: relative;
+    top: 0.4em;
+}
 
 .QueryGroup.when .SequenceBar {
     max-height: 2.3em;
     padding: 0.4em;
+    border-right: 1px solid #d8a407;
+    border-top: 0px;
+    border-bottom: 0px;
+    border-left: 1px solid #d8a407;
 }
 
 .QueryGroup.when .SequenceBar select.occurs {
@@ -418,7 +436,7 @@
     border-top: 0px;
     border-right: 0px;
     border-left: 0px;
-    border-bottom: solid 1px black;
+    border-bottom: 1px solid black;
     background: none;
 }
 .QueryGroup.when .SequenceBar select {
@@ -439,7 +457,7 @@
 .QueryGroup.when .SequenceBar .occursNumber {
     width: 2em;
     position: relative;
-    top: -0.15em;
+    margin-left: 0.25rem;
     text-align: center;
 }
 
@@ -484,6 +502,7 @@
 .QueryGroup .body .main .content {
     border: 1px solid #ececec;
     border-top: 1px solid rgba(213, 212, 212, 0.48);
+    border-left: 0px;
     width:100%;
     border-radius: 0px 5px 5px 5px;
     -webkit-border-radius: 0px 5px 5px 5px;
