@@ -83,6 +83,16 @@ function QueryToolController() {
                         metadata.without = without;
                         metadata.instances = instances;
 
+                        let panelFromDate = i2b2.h.getXNodeVal(qp[i1],'panel_date_from');
+                        if (panelFromDate) {
+                            metadata.startDate = reformatDate(panelFromDate);
+                        }
+
+                        let panelToDate = i2b2.h.getXNodeVal(qp[i1],'panel_date_to');
+                        if (panelToDate) {
+                            metadata.endDate = reformatDate(panelToDate);
+                        }
+
                         let pi = i2b2.h.XPath(qp[i1], 'descendant::item[item_key]');
                         for (let i2=0; i2<pi.length; i2++) {
                             let renderOptions = {};
@@ -149,10 +159,10 @@ function QueryToolController() {
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
 
                                 // Date constraint processing
+                                sdxDataNode.dateRange = {};
                                 let dateConstraint = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date');
                                 if(dateConstraint.length >0)
                                 {
-                                    sdxDataNode.dateRange = {};
                                     let dateStart = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_from");
                                     if(dateStart !== undefined){
                                         sdxDataNode.dateRange.start = reformatDate(dateStart);
@@ -160,6 +170,14 @@ function QueryToolController() {
                                     let dateEnd = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_to");
                                     if(dateEnd !== undefined){
                                         sdxDataNode.dateRange.end = reformatDate(dateEnd);
+                                    }
+                                }
+                                else{
+                                    if(metadata.startDate !== undefined){
+                                        sdxDataNode.dateRange.start = metadata.startDate;
+                                    }
+                                    if(metadata.endDate !== undefined){
+                                        sdxDataNode.dateRange.end = metadata.endDate;
                                     }
                                 }
 
@@ -171,20 +189,18 @@ function QueryToolController() {
                                 {
                                    sdxDataNode.isLab = true;
                                    sdxDataNode.LabValues = this.parseValueConstraint( lvd );
-                                }else{
-                                    i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
-                                        results.parse();
-                                        if(results.model.length > 0){
-                                            let data = results.model[0];
-                                            sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
-                                            if(sdxDataNode.isLab)
-                                            {
-                                                i2b2.CRC.view.QT.render();
-                                            }
-                                        }
-                                    });
-
                                 }
+
+                                i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
+                                    results.parse();
+                                    if(results.model.length > 0){
+                                        let data = results.model[0];
+                                        sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
+                                        sdxDataNode.origData = data.origData;
+                                        i2b2.CRC.view.QT.render();
+                                    }
+                                });
+
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             }
                             sdxDataNodeList.push(sdxDataNode);
@@ -209,9 +225,6 @@ function QueryToolController() {
                             });
 
                             if(matchingSdxNodeDates.length === sdxDataNodeList.length){
-                                //delete [metadata.startDate];
-                                //delete [metadata.endDate];
-
                                 metadata.startDate = sdxDataNodeList[0].dateRange.start;
                                 metadata.endDate = sdxDataNodeList[0].dateRange.end;
                             }
@@ -433,50 +446,63 @@ function QueryToolController() {
             qgData.events[0].concepts.forEach((item) => {
                 let tempItem = {};
                 // TODO: how/if we need to handle "<constrain_by_date><date_from/><date_to/></>"
-                tempItem.key = i2b2.h.Escape(item.origData.key);
-                tempItem.name = i2b2.h.Escape(item.origData.name);
-                if (item.origData.tooltip) tempItem.tooltip = i2b2.h.Escape(item.origData.tooltip);
-                tempItem.hlevel = item.origData.level;
-                tempItem.class = "ENC";
-                tempItem.icon = item.origData.hasChildren;
-                if (item.origData.synonym_cd !== undefined) {
-                    if (item.origData.synonym_cd === true || item.origData.synonym_cd === "Y") {
-                        tempItem.isSynonym = "true";
-                    } else {
+                switch (item.sdxInfo.sdxType) {
+                    case "QM":
+                        tempItem.key = "masterid:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                        let name = i2b2.h.Escape(item.origData.name);
+                        name = name.substring(0, name.indexOf(" ", name.lastIndexOf("@")));
+                        tempItem.name = "(PrevQuery)" + name;
+                        tempItem.tooltip = name;
                         tempItem.isSynonym = "false";
-                    }
-                } else {
-                    tempItem.isSynonym = "false";
-                }
+                        tempItem.hlevel = 0;
+                        break;
+                    case "CONCPT":
+                        tempItem.key = i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                        tempItem.name = i2b2.h.Escape(item.origData.name);
+                        if (item.origData.tooltip) tempItem.tooltip = i2b2.h.Escape(item.origData.tooltip);
+                        tempItem.hlevel = item.origData.level;
+                        tempItem.class = "ENC";
+                        tempItem.icon = item.origData.hasChildren;
+                        if (item.origData.synonym_cd !== undefined) {
+                            if (item.origData.synonym_cd === true || item.origData.synonym_cd === "Y") {
+                                tempItem.isSynonym = "true";
+                            } else {
+                                tempItem.isSynonym = "false";
+                            }
+                        } else {
+                            tempItem.isSynonym = "false";
+                        }
 
-                if (item.LabValues) {
-                    tempItem.valueType = item.LabValues.valueType;
-                    tempItem.valueOperator = item.LabValues.valueOperator;
-                    tempItem.unitValue= item.LabValues.unitValue;
+                        if (item.LabValues) {
+                            tempItem.valueType = item.LabValues.valueType;
+                            tempItem.valueOperator = item.LabValues.valueOperator;
+                            tempItem.unitValue= item.LabValues.unitValue;
 
-                    if (item.LabValues.numericValueRangeLow){
-                        tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
-                    }
-                    else if(tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
-                        tempItem.value = item.LabValues.flagValue;
-                    }
-                    else {
-                        tempItem.value = item.LabValues.value;
-                    }
-                    tempItem.isString = item.LabValues.isString;
-                    tempItem.isEnum = item.LabValues.isEnum;
-                }
+                            if (item.LabValues.numericValueRangeLow){
+                                tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
+                            }
+                            else if(tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
+                                tempItem.value = item.LabValues.flagValue;
+                            }
+                            else {
+                                tempItem.value = item.LabValues.value;
+                            }
+                            tempItem.isString = item.LabValues.isString;
+                            tempItem.isEnum = item.LabValues.isEnum;
+                        }
 
-                if (item.dateRange !== undefined) {
-                    if (item.dateRange.start !== undefined && item.dateRange.start !== "")
-                    {
-                        tempItem.dateFrom = funcTranslateDate(new Date(item.dateRange.start));
-                        tempItem.hasDate = true;
-                    }
-                    if (item.dateRange.end !== undefined && item.dateRange.end !== ""){
-                        tempItem.dateTo = funcTranslateDate(new Date(item.dateRange.end));
-                        tempItem.hasDate = true;
-                    }
+                        if (item.dateRange !== undefined) {
+                            if (item.dateRange.start !== undefined && item.dateRange.start !== "")
+                            {
+                                tempItem.dateFrom = funcTranslateDate(new Date(item.dateRange.start));
+                                tempItem.hasDate = true;
+                            }
+                            if (item.dateRange.end !== undefined && item.dateRange.end !== ""){
+                                tempItem.dateTo = funcTranslateDate(new Date(item.dateRange.end));
+                                tempItem.hasDate = true;
+                            }
+                        }
+                        break;
                 }
                 tempPanel.items.push(tempItem);
             });
@@ -487,7 +513,7 @@ function QueryToolController() {
         if (transformedModel.panels.length > 0) {
             let queryDate = new Date();
             queryDate = String(queryDate.getHours()) + ":" + String(queryDate.getMinutes()) + ":" + String(queryDate.getSeconds());
-            let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.trim()});
+            let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.replace("(PrevQuery)","").trim()});
             let adjuster = 1 / ((names.map((rec) => rec.length ).reduce((acc, val) => acc + val) + names.length - 1) / 120);
             if (adjuster > 1) adjuster = 1;
             names = names.map((rec) => rec.substr(0, Math.floor(rec.length * adjuster)));

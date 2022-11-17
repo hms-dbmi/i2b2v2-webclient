@@ -314,7 +314,7 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
     // insert the new concept into the record
     let qgIdx = i2b2.CRC.model.query.groups.length - 1;
     let eventIdx = 0;
-    i2b2.CRC.model.query.groups[qgIdx].events[eventIdx].concepts= sdxList;
+    i2b2.CRC.model.query.groups[qgIdx].events[eventIdx].concepts = sdxList;
 
     // set additional query group metadata if specified
     if(metadata) {
@@ -351,7 +351,6 @@ i2b2.CRC.view.QT.handleLabValues = function(sdx){
 }
 // ================================================================================================== //
 i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
-
     i2b2.CRC.view.QT.addNewQueryGroup([sdx]);
     i2b2.CRC.view.QT.handleLabValues(sdx);
     // render the new query group (by re-rendering all the query groups)
@@ -374,6 +373,7 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     let eventIdx = temp.data('eventidx');
     let cncptListEl = $('.TermList', temp[0]);
     i2b2.CRC.view.QT.isLabs(sdx);
+
     // add the data to the correct terms list (also prevent duplicates)
     let eventData = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx];
     temp = eventData.concepts.filter((term)=>{ return term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue; });
@@ -505,11 +505,19 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "DropHandler", i2b2.CRC.view.QT.DropHandler);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+        i2b2.sdx.Master.AttachType(dropTarget, "QM");
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "DropHandler", i2b2.CRC.view.QT.DropHandler);
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
         dropTarget = $(".Event2Container", newQG);
         i2b2.sdx.Master.AttachType(dropTarget, "CONCPT");
         i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "DropHandler", i2b2.CRC.view.QT.DropHandler);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+        i2b2.sdx.Master.AttachType(dropTarget, "QM");
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "DropHandler", i2b2.CRC.view.QT.DropHandler);
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
     }
 
     // attach the event listeners
@@ -757,6 +765,10 @@ i2b2.CRC.view.QT.render = function() {
     i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
     i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
     i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+    i2b2.sdx.Master.AttachType(dropTarget, "QM");
+    i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
+    i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
+    i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
 };
 // ==================================================================================================
 i2b2.CRC.view.QT.labValue = {};

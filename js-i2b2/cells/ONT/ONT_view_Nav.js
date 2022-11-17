@@ -65,8 +65,6 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
     i2b2.ONT.view.nav.treeview.treeview('addNodes', [newNodes, true]);
     // render tree
     i2b2.ONT.view.nav.treeview.treeview('redraw', []);
-    // reset the loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-ONT-view-nav').removeClass("refreshing");
 };
 
 
@@ -77,7 +75,6 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
         return;
     }
 
-    $('#stackRefreshIcon_i2b2-ONT-view-nav').addClass("refreshing");
     i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview(nodeData, function(newNodes, parentNodes) {
         // change the tiles to contain the counts
         newNodes.forEach((node) => {
@@ -98,16 +95,12 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
         ]);
         // render tree
         i2b2.ONT.view.nav.treeview.treeview('redraw', []);
-        $('#stackRefreshIcon_i2b2-ONT-view-nav').removeClass("refreshing");
     });
 };
 
 
 //================================================================================================== //
 i2b2.ONT.view.nav.doRefreshAll = function() {
-    // set the loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-ONT-view-nav').addClass("refreshing");
-
     // clear out the treeview
     i2b2.ONT.view.nav.treeview.treeview('clear');
 
