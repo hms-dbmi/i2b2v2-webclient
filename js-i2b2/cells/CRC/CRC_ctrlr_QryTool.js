@@ -418,50 +418,63 @@ function QueryToolController() {
             qgData.events[0].concepts.forEach((item) => {
                 let tempItem = {};
                 // TODO: how/if we need to handle "<constrain_by_date><date_from/><date_to/></>"
-                tempItem.key = i2b2.h.Escape(item.origData.key);
-                tempItem.name = i2b2.h.Escape(item.origData.name);
-                if (item.origData.tooltip) tempItem.tooltip = i2b2.h.Escape(item.origData.tooltip);
-                tempItem.hlevel = item.origData.level;
-                tempItem.class = "ENC";
-                tempItem.icon = item.origData.hasChildren;
-                if (item.origData.synonym_cd !== undefined) {
-                    if (item.origData.synonym_cd === true || item.origData.synonym_cd === "Y") {
-                        tempItem.isSynonym = "true";
-                    } else {
+                switch (item.sdxInfo.sdxType) {
+                    case "QM":
+                        tempItem.key = "masterid:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                        let name = i2b2.h.Escape(item.origData.name);
+                        name = name.substring(0, name.indexOf(" ", name.lastIndexOf("@")));
+                        tempItem.name = "(PrevQuery)" + name;
+                        tempItem.tooltip = name;
                         tempItem.isSynonym = "false";
-                    }
-                } else {
-                    tempItem.isSynonym = "false";
-                }
+                        tempItem.hlevel = 0;
+                        break;
+                    case "CONCPT":
+                        tempItem.key = i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                        tempItem.name = i2b2.h.Escape(item.origData.name);
+                        if (item.origData.tooltip) tempItem.tooltip = i2b2.h.Escape(item.origData.tooltip);
+                        tempItem.hlevel = item.origData.level;
+                        tempItem.class = "ENC";
+                        tempItem.icon = item.origData.hasChildren;
+                        if (item.origData.synonym_cd !== undefined) {
+                            if (item.origData.synonym_cd === true || item.origData.synonym_cd === "Y") {
+                                tempItem.isSynonym = "true";
+                            } else {
+                                tempItem.isSynonym = "false";
+                            }
+                        } else {
+                            tempItem.isSynonym = "false";
+                        }
 
-                if (item.LabValues) {
-                    tempItem.valueType = item.LabValues.valueType;
-                    tempItem.valueOperator = item.LabValues.valueOperator;
-                    tempItem.unitValue= item.LabValues.unitValue;
+                        if (item.LabValues) {
+                            tempItem.valueType = item.LabValues.valueType;
+                            tempItem.valueOperator = item.LabValues.valueOperator;
+                            tempItem.unitValue= item.LabValues.unitValue;
 
-                    if (item.LabValues.numericValueRangeLow){
-                        tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
-                    }
-                    else if(tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
-                        tempItem.value = item.LabValues.flagValue;
-                    }
-                    else {
-                        tempItem.value = item.LabValues.value;
-                    }
-                    tempItem.isString = item.LabValues.isString;
-                    tempItem.isEnum = item.LabValues.isEnum;
-                }
+                            if (item.LabValues.numericValueRangeLow){
+                                tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
+                            }
+                            else if(tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
+                                tempItem.value = item.LabValues.flagValue;
+                            }
+                            else {
+                                tempItem.value = item.LabValues.value;
+                            }
+                            tempItem.isString = item.LabValues.isString;
+                            tempItem.isEnum = item.LabValues.isEnum;
+                        }
 
-                if (item.dateRange !== undefined) {
-                    if (item.dateRange.start !== undefined && item.dateRange.start !== "")
-                    {
-                        tempItem.dateFrom = funcTranslateDate(new Date(item.dateRange.start));
-                        tempItem.hasDate = true;
-                    }
-                    if (item.dateRange.end !== undefined && item.dateRange.end !== ""){
-                        tempItem.dateTo = funcTranslateDate(new Date(item.dateRange.end));
-                        tempItem.hasDate = true;
-                    }
+                        if (item.dateRange !== undefined) {
+                            if (item.dateRange.start !== undefined && item.dateRange.start !== "")
+                            {
+                                tempItem.dateFrom = funcTranslateDate(new Date(item.dateRange.start));
+                                tempItem.hasDate = true;
+                            }
+                            if (item.dateRange.end !== undefined && item.dateRange.end !== ""){
+                                tempItem.dateTo = funcTranslateDate(new Date(item.dateRange.end));
+                                tempItem.hasDate = true;
+                            }
+                        }
+                        break;
                 }
                 tempPanel.items.push(tempItem);
             });
@@ -472,7 +485,7 @@ function QueryToolController() {
         if (transformedModel.panels.length > 0) {
             let queryDate = new Date();
             queryDate = String(queryDate.getHours()) + ":" + String(queryDate.getMinutes()) + ":" + String(queryDate.getSeconds());
-            let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.trim()});
+            let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.replace("(PrevQuery)","").trim()});
             let adjuster = 1 / ((names.map((rec) => rec.length ).reduce((acc, val) => acc + val) + names.length - 1) / 120);
             if (adjuster > 1) adjuster = 1;
             names = names.map((rec) => rec.substr(0, Math.floor(rec.length * adjuster)));
