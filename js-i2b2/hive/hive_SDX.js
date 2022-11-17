@@ -19,8 +19,9 @@ i2b2.sdx.Master.EncapsulateData = function(inType, inData) {
         return false;
     }
 
+    let headInfo
     try {
-        var headInfo = i2b2.sdx.TypeControllers[inType].getEncapsulateInfo();
+        headInfo = i2b2.sdx.TypeControllers[inType].getEncapsulateInfo();
     } catch(e) {
         console.error('SDX Controller for Data Type: '+inType+' does not allow Encapsulation!');
         return false;
@@ -29,9 +30,9 @@ i2b2.sdx.Master.EncapsulateData = function(inType, inData) {
     // class for all SDX communications
     function i2b2_SDX_Encapsulation() {}
     // create an instance and populate with info
-    var sdxEncap = new i2b2_SDX_Encapsulation();
+    let sdxEncap = new i2b2_SDX_Encapsulation();
     sdxEncap.sdxInfo = headInfo;
-    if (undefined==inData[headInfo.sdxKeyName]) {
+    if (inData[headInfo.sdxKeyName] === undefined) {
         console.error('Key information was not found during an attempt to encapsulate '+inType+' data');
         console.group('(more info)');
         console.info('SDX Encapsulation header');
@@ -43,7 +44,7 @@ i2b2.sdx.Master.EncapsulateData = function(inType, inData) {
     }
     sdxEncap.sdxInfo.sdxKeyValue = inData[headInfo.sdxKeyName];
     if (headInfo.sdxDisplayNameKey) {
-        var t = inData[headInfo.sdxDisplayNameKey];
+        let t = inData[headInfo.sdxDisplayNameKey];
         if (t) {
             sdxEncap.sdxInfo.sdxDisplayName = t;
             delete sdxEncap.sdxInfo.sdxDisplayNameKey;
@@ -51,15 +52,6 @@ i2b2.sdx.Master.EncapsulateData = function(inType, inData) {
     }
     sdxEncap.origData = inData;
     return sdxEncap;
-};
-
-
-// ================================================================================================== //
-i2b2.sdx.Master._KeyHash = function(key) {
-    // create hash from key
-    var kh = escape(key);
-    kh = kh.replace('%','_');
-    return "H$__"+kh;
 };
 
 
@@ -78,10 +70,6 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
     let eventHandlers = {};
     eventHandlers = $(this).data("i2b2DragdropEvents");
 
-//    console.dir(sdxTypeList);
-//    console.dir(eventHandlers);
-//    console.dir(e);
-
     switch(e.type) {
         case "drop":
             // forward the event to the drop handler passing the object being dropped
@@ -89,8 +77,14 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                 let sdxType = sdxTypeList.pop();
                 if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].DropHandler === "function") {
                     // TODO: Finish this to pass the data
-                    let sdxJSON = JSON.parse(e.originalEvent.dataTransfer.getData("application/i2b2+json"));
-                    eventHandlers[sdxType].DropHandler(sdxJSON, e);
+                    let sdxFromJSON = JSON.parse(e.originalEvent.dataTransfer.getData("application/i2b2+json"));
+                    if(sdxFromJSON.sdxInfo.sdxType !== sdxType && sdxFromJSON.sdxInfo.sdxType === "WRK"){
+                        //send the underlying sdx data instead
+                        sdxFromJSON.origData = sdxFromJSON.sdxUnderlyingPackage.origData;
+                        sdxFromJSON.sdxInfo = sdxFromJSON.sdxUnderlyingPackage.sdxInfo;
+                        sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON);
+                    }
+                    eventHandlers[sdxType].DropHandler(sdxFromJSON, e, sdxType);
                 }
             }
             e.stopImmediatePropagation();
@@ -99,15 +93,18 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
             // enable drop if a drop handler exists for the object being dropped
             while (sdxTypeList.length) {
                 let sdxType = sdxTypeList.pop();
-                if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].DropHandler === "function") {
+                if (typeof eventHandlers[sdxType] === "object") {
                     if (typeof eventHandlers[sdxType].DropChecker === "function") {
                         if (eventHandlers[sdxType].DropChecker(e.target, e, this)) {
                             // this is REQUIRED for proper drop
                             ev.preventDefault();
+                            return false;
                         }
-                    } else {
+                        return true; // this makes it an invalid drop target
+                    } else if (typeof eventHandlers[sdxType].DropHandler === "function") {
                         // this is REQUIRED for proper drop
                         ev.preventDefault();
+                        return false;
                     }
                 }
             }
@@ -129,6 +126,8 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
             }
             break;
     }
+
+    return false;
 };
 
 
@@ -207,9 +206,6 @@ i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
         }
         // add new events
         dd_events[typeCode] = {
-//            "RenderHTML": i2b2.sdx.Master.getHandlerDefault(typeCode, "RenderHTML"),
-//            "AppendTreeNode": i2b2.sdx.Master.getHandlerDefault(typeCode, "AppendTreeNode"),
-//            "LoadChildrenFromTreeview":i2b2.sdx.Master.getHandlerDefault(typeCode, "LoadChildrenFromTreeview"),
             "onHoverOver":i2b2.sdx.Master.getHandlerDefault(typeCode, "onHoverOver"),
             "onHoverOut":i2b2.sdx.Master.getHandlerDefault(typeCode, "onHoverOut"),
             "DropHandler":i2b2.sdx.Master.setHandlerDefault(typeCode, "DropHandler")
@@ -218,7 +214,6 @@ i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
 
         // start listening for DD events
         $(container).on("drop dragover dragenter dragleave", i2b2.sdx.Master.onDragDropEvents);
-
         return true;
     }
 };
@@ -238,9 +233,7 @@ i2b2.sdx.Master.setHandlerCustom = function(container, typeCode, handlerName, ne
         }
     }
     // manage if it is a jQuery reference
-    if (container.length && container.length > 0) {
-        container = container[0];
-    }
+    if (container.length && container.length > 0) container = container[0];
 
     // confirm that it is a proper DOM node
     let attrlist = [
@@ -279,18 +272,16 @@ i2b2.sdx.Master.setHandlerDefault = function(containerID, typeCode, handlerName)
     // typeCode: string
     // handlerName: string (example: Render, AddChild, ddStart, ddMove)
     // newHandlerFunction: function to be used
-    if (undefined === i2b2.sdx.TypeControllers[typeCode]) {
-        console.error("SDX TypeController does not exist for data type: " + typeCode);
+    if (i2b2.sdx.TypeControllers[typeCode] === undefined) {
+        //console.error("SDX TypeController does not exist for data type: " + typeCode);
         return false;
     }
     // do we have the container registered?
-    if (Object.isUndefined(this._sysData[containerID])) {
+    if (this._sysData[containerID] === undefined) {
         console.error("SDX does not have any references to a containerID: " + containerID);
         return false;
     }
-    if (Object.isUndefined(i2b2.sdx.TypeControllers[typeCode][handlerName])) {
-        console.warn("No default SDX '"+handlerName+"' handler exists for "+typeCode);
-    } else {
+    if (i2b2.sdx.TypeControllers[typeCode][handlerName] === undefined) {
         this._sysData[containerID][typeCode][handlerName] = i2b2.sdx.TypeControllers[typeCode][handlerName];
         console.info("ATTACHED default SDX '"+handlerName+"' handler for "+typeCode);
     }
@@ -302,13 +293,11 @@ i2b2.sdx.Master.setHandlerDefault = function(containerID, typeCode, handlerName)
 i2b2.sdx.Master.getHandlerDefault = function(typeCode, handlerName) {
     // typeCode: string
     // handlerName: string (example: Render, AddChild, ddStart, ddMove)
-    if (typeof i2b2.sdx.TypeControllers[typeCode] === "undefined") {
+    if (i2b2.sdx.TypeControllers[typeCode] === undefined) {
         console.error("SDX TypeController does not exist for data type: " + typeCode);
         return false;
     }
-    if (typeof i2b2.sdx.TypeControllers[typeCode][handlerName] === "undefined") {
-        console.warn("No default SDX '"+handlerName+"' handler exists for "+typeCode);
-    } else {
+    if (i2b2.sdx.TypeControllers[typeCode][handlerName] !== undefined) {
         return i2b2.sdx.TypeControllers[typeCode][handlerName];
     }
     return undefined;
@@ -381,11 +370,9 @@ i2b2.sdx.Master.onDragStart = function(event, node) {
                 i2b2Data = i2b2.sdx.TypeControllers[sdxType].dragStartHandler(i2b2Data);
             } else {
                 // i2b2 data
-                delete i2b2Data.origData.xmlOrig;
                 delete i2b2Data.origData.parent;
-                delete i2b2Data.renderData.idDOM;
-                if (i2b2.sdxUnderlyingPackage !== undefined) {
-                    delete i2b2Data.sdxUnderlyingPackage.origData.xmlOrig;
+                if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
+                if (i2b2.sdxUnderlyingPackage !== undefined && i2b2Data.sdxUnderlyingPackage.origData !== undefined) {
                     delete i2b2Data.sdxUnderlyingPackage.origData.parent;
                 }
             }
@@ -417,6 +404,31 @@ i2b2.sdx.Master.getChildRecords = function(sdxParent, onCompleteCallback) {
 // ================================================================================================== //
 // hack to allow drag targets to alter their target DOM
 document.addEventListener("dragstart", function(event) {
+    // <BUG FIX> for Chrome and Edge!
+    let gl = $('.goldenLayout')[0];
+    gl.style.display = 'inline-block';
+    setTimeout(()=>{
+        gl.style.display = '';
+        $("#dragElementImage").empty();
+    }, 0);
+    // </BUG FIX>
+    let dragElement = $("#dragElementImage");
+    if(dragElement.length === 0){
+        let newElement = $("<div id='dragElementImage'></div>");
+        newElement.css("width", "fit-content");
+        newElement.css("position", "absolute");
+        newElement.css("padding", "2px 4px 3px 4px");
+        newElement.css("background", "white");
+        newElement.css("z-index", "-50");
+        $('body').append(newElement);
+    }
+    dragElement = $("#dragElementImage");
+    let text = $(event.target).text();
+    let spanWithTypeIcon = $(event.target).find("span").last();
+    spanWithTypeIcon = $(spanWithTypeIcon[0].outerHTML);
+    spanWithTypeIcon.css("margin-right", "3px");
+    dragElement.text(text).prepend(spanWithTypeIcon);
+    event.dataTransfer.setDragImage(dragElement[0],50,20);
     $(".i2b2DropTarget").addClass("i2b2DropPrep");
 }, false);
 

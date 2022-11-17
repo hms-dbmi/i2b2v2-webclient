@@ -1,46 +1,103 @@
-#i2b2TreeviewOntNav {
+#i2b2TreeviewOntNav, #i2b2TreeviewOntSearch, #i2b2OntSearchStatus {
     background: #FFFFFF;
-    border: solid 1px #63758c;
+    border: solid 1px rgba(99, 117, 140, 0.28);
+    border-top: none;
     overflow: auto;
     border-radius: 0 0 3px 3px;
     flex-direction: column;
     position: absolute;
     bottom: 0;
-    top: 4.7em;
+    top: 3.5em;
     left: 0;
     right: 0;
     height: auto;
-    border-top: 1px solid rgba(212, 105, 255, 0.18);
+}
+
+#i2b2OntSearchStatus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* TECHNICAL DEBT: Change this when CSS selector :has() is implemented
+#i2b2TreeviewOntSearch li:has(.sdxStyleONT-CONCPT.highlight) span.indent {
+*/
+#i2b2TreeviewOntSearch .search-highlighted {
+    font-weight: bold;
 }
 
 #i2b2FinderOnt {
     position: absolute;
     top: 0;
-    height: 4.8em;
-    border: solid #63758c;
-    border-width: 1px 1px 0 1px;
+    height: 3.1rem;
+    border: solid 1px rgba(99, 117, 140, 0.28);
+    border-bottom: 0px;
+    border-top: none;
     width: 100%;
-    padding-top: 0.4em;
-    padding-left: 0.8em;
-    background: rgba(235, 238, 238, 0.3);
+    padding: 0.3em 1.0em 1.2em 1.3em;
+    background: rgba(234, 236, 236, 0.3);
     font-size: 0.98em;
-    padding-bottom: 6px;
-    overflow: auto;
+    overflow: clip;
+}
+
+#i2b2FinderOnt #searchOptions {
+    position: relative;
+    align-items: center;
+    display: flex;
+    height: 100%;
+    min-width: 22rem;
+}
+
+#i2b2FinderOnt .searchTermMain{
+    flex-grow: 1;
+    min-width: 6.5rem;
+    margin-top: 0.1em;
+}
+
+#i2b2FinderOnt #searchTermText{
+    flex-grow: 1;
+    min-width: 6.5rem;
+    margin-top: 0.9em;
+    opacity: 0.65;
+    border-color: #474849 !important;
+    border-width: 0.11em !important;
+    padding-bottom: 0;
+}
+
+#i2b2FinderOnt #submitTermSearch{
+    margin-left: -0.2em;
+}
+
+#i2b2FinderOnt #searchFilter{
+    padding: 0 0.7rem;
+    margin-bottom: -10px;
+}
+
+#i2b2FinderOnt #searchFilterText {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+    display: inline-block;
+    width: 80px;
+}
+
+#i2b2FinderOnt .searchActions .btn {
+    padding: 0.05em 0.55em;
+    margin-top: 0.7em;
+    border-radius: 3px;
+}
+
+#i2b2FinderOnt #searchActions button:disabled {
+    color: #444;
+    background: #ccc;
 }
 
 #i2b2FinderOnt .form-control{
-    margin-top: 0.8em;
-    border-top: none;
-    border-right: none;
-    border-left: none;
     border-radius: 0;
-    border-bottom: 1px solid gray;
     box-shadow: none;
     background: transparent;
-}
-
-#i2b2FinderOnt button{
-    display: inline-block;
 }
 
 button.invert{
@@ -64,63 +121,30 @@ button.invert:hover{
     font-size: 0.89em;
 }
 
-#i2b2FinderOnt .searchLabel{
-    font-size: 0.92em;
-    margin-right: 5px;
-}
-
 #i2b2FinderOnt .form-control-sm{
-    font-size: 0.95em;
+    font-size: 1em;
     padding-left: 0.1em;
 }
 
-.form-check-input {
+#i2b2FinderOnt .form-check-input {
     border: 1px solid black;
     margin-top: 2px;
 }
 
-.form-check-inline {
+#i2b2FinderOnt .form-check-inline {
     margin-top: 5px;
 }
 
-.clear-input{
-    padding-top: 1.2em;
-    border-bottom: 1px solid gray;
-}
-
-.clearIcon{
-    font-size: 1.4em;
-}
-
-.clearIcon:hover{
-    background: lightgray;
-    padding-top: 0.2em;
-}
-
-.navbar-nav{
+#i2b2FinderOnt .navbar-nav{
     border: 1px solid #ced4da;
     border-radius: 5px 5px 5px 5px;
     font-size: 0.9em;
     background-color: #FFFFFF;
 }
 
-#i2b2FinderOnt #searchFilter{
-    display: inline-block;
-}
-
 #i2b2FinderOnt .nav-link{
     color: #212529;
     margin-right: 0.2em;
-}
-
-#i2b2FinderOnt #searchFilterText {
-    text-overflow: ellipsis;
-    max-width: 8em;
-    width: 8em;
-    white-space: nowrap;
-    overflow: hidden;
-    vertical-align: middle;
-    display: inline-block;
 }
 
 #i2b2FinderOnt .dropdown-menu{
@@ -135,17 +159,6 @@ button.invert:hover{
 
 #i2b2FinderOnt .search{
     margin-right: 0.5em;
-}
-
-#i2b2FinderOnt .searchTermMain{
-    margin-left: 0.6em;
-    margin-right: 0.8em;
-    display: inline-block;
-}
-
-#searchActions {
-    display: inline-block;
-    padding-top: 0.2em;
 }
 
 @media all and (min-width: 992px) {
@@ -178,11 +191,11 @@ button.invert:hover{
 }
 /* ============ small devices .end// ============ */
 
-.highlight-menu-item {
+#i2b2FinderOnt .highlight-menu-item {
     background-color: #f1f1f1;
 }
 
-.centerText{
+#i2b2FinderOnt .centerText{
     text-align: center;
 }
 
@@ -190,6 +203,56 @@ button.invert:hover{
     color: red;
     font-size: 0.85em;
     width: 22.4em;
+}
+
+#i2b2FinderOnt .searchBtn{
+    font-size: 1.4em !important;
+    margin-left: 0;
+    border-color: #474849 !important;
+    border-width: 0.10em !important;
+}
+
+#i2b2FinderOnt .searchBtn:hover:enabled{
+    background-color: #6c757d;
+    border-color: #797a7c !important;
+}
+
+#i2b2FinderOnt .searchBtn:enabled{
+    opacity: 0.65;
+}
+
+#i2b2FinderOnt .clearIcon {
+    margin-right: 0;
+    margin-left: 0;
+    border-color: #797a7c !important;
+}
+
+#i2b2FinderOnt .clearIcon:hover {
+    border-radius: 3px;
+}
+
+#i2b2FinderOnt .invisible {
+    visibility: hidden;
+}
+
+.tooltip-inner {
+    background-color: #fff !important;
+    color: #000 !important;
+    border: 1px solid #c8cdce;
+}
+
+.srTooltip {
+    color: #87898a;
+}
+
+#i2b2FinderOnt .searchTermMain .input-group{
+    border-color: rgba(71, 72, 73, 0.63);
+    border-style: solid;
+    border-width: 0 0 2px 0 !important;
+}
+
+.node-i2b2TreeviewOntNav, .node-i2b2TreeviewOntSearch{
+    width: fit-content !important;
 }
 
 

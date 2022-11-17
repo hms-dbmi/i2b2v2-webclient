@@ -1,0 +1,72 @@
+{{#if title}}
+    <h2 class="title"><img src="{{icon}}" /> {{title}}</h2>
+
+    <div class="label">Description</div>
+    <div>
+        <div class="dataline">{{{descript}}}</div>
+    </div>
+
+    <div class="label">Concept Path</div>
+    <div>
+        <div>
+            <span class="dataline path">{{key}}</span>
+            <a href="#"><i class="bi bi-clipboard" title="copy to clipboard" data-clip-contents='{{{escKey}}}' ></i></a>
+        </div>
+    </div>
+
+    <div class="label">SQL Code (to retreve children)</div>
+    <div>
+        {{#if hasSQL}}
+
+        <div class="dataline sql">
+            <span>SELECT * FROM {{table}} WHERE {{column}} {{operator}} "{{{path}}}%";</span>
+            <a href="#"><i class="bi bi-clipboard" title="copy to clipboard" data-clip-contents='SELECT * FROM {{{table}}} WHERE {{{column}}} {{{operator}}} "{{{escPath}}}%";'></i></a>
+        </div>
+        {{else}}
+        <div class="dataline sql">(n/a)</div>
+        {{/if}}
+    </div>
+
+    <div class="label">Values</div>
+    <div>
+        {{#if hasValues}}
+            <div class="dataline">This term accepts values to be set when using the term in a query. <a href="#" onclick="i2b2.ONT.view.info.showLabWindow()">Preview Value Box</a></div>
+        {{else}}
+            <div class="dataline">This term does not allow values to be set.</div>
+        {{/if}}
+    </div>
+
+    <div class="label">Hierarchy</div>
+    <div>
+        <div class="dataline">
+            {{heirarchy}}
+            {{#if canGoUp}}- <a href="#" onclick="i2b2.ONT.view.info.loadParent()">Go Up</a>{{/if}}
+        </div>
+    </div>
+
+    <div class="label">Children of Term</div>
+    {{#if children}}
+    <table class="dataline children">
+        <tr class="childrow">
+            <th class="name">Name</th>
+            <th class="value">Code</th>
+        </tr>
+        {{#each children}}
+        <tr class="childrow">
+            <td class="name child-link" title="{{renderData.moreDescriptMinor}}"><img src="{{renderData.iconImg}}" /> <a href="#" data-sdx-key="{{sdxInfo.sdxKeyValue}}" >{{renderData.title}}</a></td>
+            {{#if origData.basecode}}
+                <td class="value">{{origData.basecode}}</td>
+            {{else}}
+                <td class="value">(n/a)</td>
+            {{/if}}
+        </tr>
+        {{/each}}
+    </table>
+    {{else}}
+    <div><div class="dataline">This term has no children.</div></div>
+    {{/if}}
+
+
+{{else}}
+    <h2><img src="js-i2b2/cells/ONT/assets/ONT_SEARCH.png" /> Please select a term to view its details</h2>
+{{/if}}

@@ -65,8 +65,6 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
     i2b2.ONT.view.nav.treeview.treeview('addNodes', [newNodes, true]);
     // render tree
     i2b2.ONT.view.nav.treeview.treeview('redraw', []);
-    // reset the loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-ONT-view-nav').removeClass("refreshing");
 };
 
 
@@ -77,7 +75,6 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
         return;
     }
 
-    $('#stackRefreshIcon_i2b2-ONT-view-nav').addClass("refreshing");
     i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview(nodeData, function(newNodes, parentNodes) {
         // change the tiles to contain the counts
         newNodes.forEach((node) => {
@@ -98,23 +95,12 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
         ]);
         // render tree
         i2b2.ONT.view.nav.treeview.treeview('redraw', []);
-        $('#stackRefreshIcon_i2b2-ONT-view-nav').removeClass("refreshing");
     });
 };
 
 
 //================================================================================================== //
-i2b2.ONT.view.nav.treeRedraw = function() {
-    // attach drag drop attribute after the tree has been redrawn
-    i2b2.ONT.view.nav.lm_view._contentElement.find('li:not(:has(span.tvRoot))').attr("draggable", true);
-};
-
-
-//================================================================================================== //
 i2b2.ONT.view.nav.doRefreshAll = function() {
-    // set the loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-ONT-view-nav').addClass("refreshing");
-
     // clear out the treeview
     i2b2.ONT.view.nav.treeview.treeview('clear');
 
@@ -136,43 +122,56 @@ i2b2.events.afterCellInit.add((function(cell){
                 i2b2.ONT.view.nav.lm_view = container;
 
                 // add the cellWhite flare
-                let treeTarget = $('<div class="cellWhite" id="i2b2TreeviewOntNav"></div>').appendTo(container._contentElement);
+                let treeEl = $('<div class="cellWhite" id="i2b2TreeviewOntNav"></div>').appendTo(container._contentElement);
 
-                // create an empty treeview
-                i2b2.ONT.view.nav.treeview = $(treeTarget).treeview({
+                // create an empty treeview for navigation
+                let treeRef = $(treeEl).treeview({
                     showBorder: false,
+                    onhoverColor: "rgba(205, 208, 208, 0.56)",
                     highlightSelected: false,
                     dynamicLoading: true,
                     levels: 1,
                     data: []
                 });
-
-                i2b2.ONT.view.nav.treeview.on('nodeLoading', i2b2.ONT.view.nav.loadChildren);
-                i2b2.ONT.view.nav.treeview.on('onRedraw', i2b2.ONT.view.nav.treeRedraw);
-                i2b2.ONT.view.nav.treeview.on('onDrag', i2b2.sdx.Master.onDragStart);
+                i2b2.ONT.view.nav.treeview = treeRef;
+                treeRef.on('nodeLoading', i2b2.ONT.view.nav.loadChildren);
+                treeRef.on('onDrag', i2b2.sdx.Master.onDragStart);
+                treeRef.on('onRedraw', () => {
+                    // attach drag drop attribute after the tree has been redrawn
+                    i2b2.ONT.view.nav.treeview.find('li:not(:has(span.tvRoot))').attr("draggable", true);
+                });
 
                 i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
                 i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
 
                 i2b2.ONT.view.search.initSearch(container._contentElement);
+
+                // -------------------- setup context menu --------------------
+                i2b2.ONT.view.nav.ContextMenu =  i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntNav',i2b2.ONT.view.nav.treeview);
             }).bind(this)
         );
     }
 }));
+//================================================================================================== //
+i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview) {
 
-// ================================================================================================== //
-
-i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
-    if (updateInfo.DataLocation === "i2b2.ONT.model.Categories") {
-        i2b2.ONT.view.search.initSearchCatOptions();
-    }
-
-    if (updateInfo.DataLocation === "i2b2.ONT.model.Schemes") {
-        i2b2.ONT.view.search.initCodingSysOptions();
-    }
-
-}).bind(i2b2.ONT));
-
+    //    return new BootstrapMenu('#' + treeviewElemId + ' li.list-group-item', {
+    return new BootstrapMenu('#' + treeviewElemId + ' li.list-group-item', {
+        fetchElementData: function($rowElem) {
+            // fetch the data from the treeview
+            return treeview.treeview('getNode', $rowElem.data('nodeid'));
+        },
+        // TODO: Finish wiring implementation
+        actions: {
+            nodeAnnotate: {
+                name: 'Show More Info',
+                onClick: function(node) {
+                    i2b2.ONT.view.info.load(node.i2b2, true);
+                }
+            }
+        }
+    });
+};
 // ================================================================================================== //
 
 console.timeEnd('execute time');

@@ -18,6 +18,7 @@
   ],
   "css": [
     "Ontology.css",
+    "OntologyTermInfo.css",
     "sdx_ONT_types.css"
   ],
   "config": {

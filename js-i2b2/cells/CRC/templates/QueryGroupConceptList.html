@@ -2,6 +2,19 @@
 <div class="concept" data-concept-index="{{@index}}">
     <span class="termOr">or</span>
     <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}"><img src="{{this.renderData.iconImg}}"/> {{this.renderData.title}}</span>
+    <span class="dateRange">
+        {{#if this.dateRange}}
+            {{#if this.dateRange.start }}
+                {{#if this.dateRange.end }}
+                    [{{this.dateRange.start}} to {{this.dateRange.end}}]
+                {{else}}
+                    [&ge; {{this.dateRange.start}}]
+                {{/if}}
+            {{else if this.dateRange.end }}
+                [&le; {{this.dateRange.end}}]
+            {{/if}}
+        {{/if}}
+    </span>
     <span class="actions">
         {{#if this.isLab}}
             <i class="bi bi-moisture editLabValue" title="Edit lab values"></i>
@@ -12,8 +25,12 @@
             <i class="bi bi-thermometer-half" title="Edit Lab Values"></i>
         -->
         {{/if}}
-        <i class="bi bi-info-circle info" title="More info about term"></i>
+        {{#ifeq this.sdxInfo.sdxType "CONCPT"}}
+            <i class="bi bi-calendar-day dateConstraint" title="Set Date Constraint"></i>
+            <i class="bi bi-info-circle info" title="More info about term"></i>
+        {{/ifeq}}
         <i class="bi bi-x-circle delete" title="Remove"></i>
     </span>
+
 </div>
 {{/each}}

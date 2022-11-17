@@ -1,22 +1,239 @@
-#i2b2TreeviewCrcHistory {
+#i2b2TreeviewQueryHistory, #i2b2TreeviewQueryHistoryFinder, #i2b2QueryHistoryFinderStatus, #i2b2QueryHistoryFinderMessage {
     background: #FFFFFF;
-    border: solid 1px #63758c;
+    border: solid 1px rgba(99, 117, 140, 0.28);
+    border-top: none;
     overflow: auto;
     border-radius: 0 0 3px 3px;
     flex-direction: column;
     position: absolute;
     bottom: 0;
-    top: 2em;
+    top: 3.5em;
     left: 0;
     right: 0;
     height: auto;
 }
 
-#i2b2FinderCrcHistory {
+#i2b2QueryHistoryFinderMessage{
+    padding-top: 0.6em;
+    padding-left: 0.9em;
+}
+
+#i2b2QueryHistoryFinderStatus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#i2b2QueryHistoryFinder {
     position: absolute;
     top: 0;
-    height: 2em;
-    border: solid #63758c;
-    border-width: 1px 1px 0 1px;
+    height: 3.1rem;
+    border: solid 1px rgba(99, 117, 140, 0.28);
+    border-bottom: 0;
+    border-top: none;
     width: 100%;
+    padding: 0.3em 0.3em 1.2em 1.3em;
+    background: rgba(234, 236, 236, 0.3);
+    font-size: 0.98em;
+    overflow: clip;
+}
+
+#i2b2QueryHistoryFinder .searchOptions {
+    position: relative;
+    align-items: center;
+    display: flex;
+    height: 100%;
+    min-width: 20rem;
+}
+
+#i2b2QueryHistoryFinder .searchTermMain{
+     flex-grow: 1;
+     min-width: 6.5rem;
+     margin-top: -0.1em;
+}
+
+#i2b2QueryHistoryFinder #querySearchTermText{
+    flex-grow: 1;
+    min-width: 6.5rem;
+    margin-top: 0.9em;
+    opacity: 0.65;
+    border-color: #474849 !important;
+    border-width: 0.11em !important;
+    padding-bottom: 0;
+}
+
+#i2b2QueryHistoryFinder #submitQueryHistorySearch{
+    margin-left: -0.2em;
+}
+
+#i2b2QueryHistoryFinder #querySearchFilter{
+    padding: 0 0.7rem;
+    margin-bottom: -10px;
+}
+
+#i2b2QueryHistoryFinder #querySearchFilterText {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+    display: inline-block;
+    width: 80px;
+}
+
+
+#i2b2QueryHistoryFinder .form-control{
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
+button.invert{
+    color: #0d6efd;
+    background: #FFFFFF;
+}
+
+button.invert:hover{
+    opacity: 0.7;
+}
+
+.hidden{
+    display: none;
+}
+
+#i2b2QueryHistoryFinder .form-select-sm{
+    font-size: 0.84em;
+}
+
+#i2b2QueryHistoryFinder .btn-sm{
+    font-size: 0.89em;
+}
+
+#i2b2QueryHistoryFinder .form-control-sm{
+    font-size: 1em;
+    padding-left: 0.1em;
+}
+
+#i2b2QueryHistoryFinder .form-check-input {
+    border: 1px solid black;
+    margin-top: 2px;
+}
+
+#i2b2QueryHistoryFinder .form-check-inline {
+    margin-top: 5px;
+}
+
+#i2b2QueryHistoryFinder .navbar-nav{
+    border: 1px solid #ced4da;
+    border-radius: 5px 5px 5px 5px;
+    font-size: 0.9em;
+    background-color: #FFFFFF;
+}
+
+#i2b2QueryHistoryFinder .nav-link{
+    color: #212529;
+    margin-right: 0.2em;
+}
+
+#i2b2QueryHistoryFinder .dropdown-menu{
+    font-size: 1em;
+    position: fixed !important;
+}
+
+#i2b2FinderOnt .submenu{
+    max-height: 18em;
+    overflow-y: auto;
+}
+
+#i2b2QueryHistoryFinder .search{
+    margin-right: 0.5em;
+}
+
+@media all and (min-width: 992px) {
+    .dropdown-menu li {
+        position: relative;
+    }
+    .nav-item .submenu {
+        display: none;
+        position: absolute;
+        top: -0.2em;
+        padding-right: 0.2em;
+    }
+    .nav-item .submenu-left {
+        right: 100%;
+        left: auto;
+    }
+    .dropdown-menu > li:hover {
+        background-color: #f1f1f1
+    }
+}
+/* ============ desktop view .end// ============ */
+
+/* ============ small devices ============ */
+@media (max-width: 991px) {
+    .dropdown-menu .dropdown-menu{
+        margin-left:0.7rem;
+        margin-right:0.7rem;
+        margin-bottom: .5rem;
+    }
+}
+/* ============ small devices .end// ============ */
+
+#i2b2QueryHistoryFinder .highlight-menu-item {
+    background-color: #f1f1f1;
+}
+
+#i2b2QueryHistoryFinder .centerText{
+    text-align: center;
+}
+
+#searchTermError{
+    color: red;
+    font-size: 0.85em;
+    width: 22.4em;
+}
+
+#i2b2QueryHistoryFinder .searchBtn{
+    font-size: 1.4em !important;
+    margin-left: 0;
+    border-radius: 3px;
+    border-width: 0.10em !important;
+}
+
+#i2b2QueryHistoryFinder .searchBtn:hover:enabled{
+    background-color: #6c757d;
+    border-color: #797a7c !important;
+}
+
+#i2b2QueryHistoryFinder .searchBtn:enabled{
+    opacity: 0.65;
+}
+
+#i2b2QueryHistoryFinder .searchActions {
+    border-color: #797a7c !important;
+}
+
+#i2b2QueryHistoryFinder .searchActions .btn {
+    padding: 0.05em 0.55em;
+    margin-top: 0.7em;
+}
+
+#i2b2QueryHistoryFinder .searchActions .btn:hover {
+    padding: 0.05em 0.55em;
+    margin-top: 0.7em;
+}
+
+#i2b2QueryHistoryFinder .clearIcon {
+    margin-right: 0;
+    margin-left: 0;
+    border-color: #797a7c !important;
+}
+
+#i2b2QueryHistoryFinder .invisible {
+    visibility: hidden;
+}
+
+#i2b2QueryHistoryFinder .searchTermMain .input-group{
+    border-color: rgba(71, 72, 73, 0.63);
+    border-style: solid;
+    border-width: 0 0 2px 0 !important;
 }

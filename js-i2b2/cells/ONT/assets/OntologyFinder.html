@@ -1,6 +1,20 @@
 <div class="finder-main" id="i2b2FinderOnt">
-    <div class="" id="searchOptions">
-        <span class="searchLabel">Search By:</span>
+    <div id="searchOptions">
+        <div class="searchTermMain">
+            <div class="mx-auto">
+                <div class="input-group" id="searchTerm">
+                    <input class="form-control bg-transparent border-start-0 border-top-0 border-end-0 border-bottom-0 border" type="text" aria-label="Term" id="searchTermText" onkeyup="i2b2.ONT.view.search.handleSearchInputChange(this.value);">
+                    <span class="input-group-append searchActions">
+                        <button class="btn btn border-start-0 border-end-0 border-top-0 border-bottom-0 border searchBtn" type="button" id="termSearchClearBtn" onclick="i2b2.ONT.view.search.clearSearchInput();this.blur()" disabled>
+                            <i class="bi bi-x invisible clearIcon"></i>
+                        </button>
+                        <button class="btn border-start-0 border-end-0 border-top-0 border-bottom-0 border searchBtn" type="button" id="submitTermSearch" onclick="i2b2.ONT.ctrlr.Search.clickSearch(); this.blur();" disabled>
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
         <nav id="searchFilter" class="nav navbar-expand-sm" data-selected-filter="Any Category"  data-selected-filter-value="ALL CATEGORIES" data-selected-filter-type="category">
             <div class="navbarMain">
                 <div class="collapse navbar-collapse" id="main_nav">
@@ -13,17 +27,13 @@
                                     <button class="dropdown-item">Category &raquo; </button>
                                     <ul class="submenu dropdown-menu" id="categorySubmenu">
                                         <li>
-                                            <button class="dropdown-item active" type="button" data-search-filter-value="ALL CATEGORIES">Any Category</button>
+                                            <button class="dropdown-item active" type="button" data-search-filter-value="ALL CATEGORIES" data-search-filter-type="category">Any Category</button>
                                         </li>
                                     </ul>
                                 </li>
                                 <li id="liCoding">
-                                    <button class="dropdown-item" href="#"> Coding System &raquo; </button>
-                                    <ul class="submenu dropdown-menu" id="codingSubmenu">
-                                        <li>
-                                            <button class="dropdown-item" type="button" data-search-filter-value="ALL CODING">Any Coding System </button>
-                                        </li>
-                                    </ul>
+                                    <button class="dropdown-item"> Coding System &raquo; </button>
+                                    <ul class="submenu dropdown-menu" id="codingSubmenu"></ul>
                                 </li>
                             </ul>
                         </li>
@@ -31,17 +41,6 @@
                 </div>
             </div>
         </nav>
-        <div class="searchTermMain">
-            <div class="input-group" id="searchTerm">
-                <input class="form-control form-control-sm" placeholder="Enter term" aria-label="Term" id="searchTermText" onkeyup="i2b2.ONT.view.search.handleSearchInputChange(this.value);">
-                <span class="input-group-append clear-input">
-                    <i class="bi bi-x  hidden clearIcon" onclick="i2b2.ONT.view.search.clearSearchInput();"></i>
-                </span>
-            </div>
-        </div>
-        <div id="searchActions">
-            <button type="submit" id="submitTermSearch" class="btn btn-primary btn-sm invert search" onclick="i2b2.ONT.ctrlr.Search.clickSearch();" disabled>Search</button>
-            <button type="submit" class="btn btn-primary btn-sm invert reset" >Reset</button>
-        </div>
+        <span class="fs-5 mb-3 mt-4"><i class="bi bi-info-circle srTooltip" title="A maximum of 200 records per category will be returned." data-bs-toggle="tooltip" data-bs-placement="bottom"></i></span>
     </div>
 </div>

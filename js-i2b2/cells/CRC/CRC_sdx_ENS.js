@@ -142,19 +142,14 @@ i2b2.sdx.TypeControllers.ENS.getChildRecords = function(sdxParentNode, onComplet
         let dm = i2b2.CRC.model.QueryMasters;
         for(let i1=0; i1<ps.length; i1++) {
             let o = {};
-            o.xmlOrig = ps[i1];
+            o.xmlOrig = ps[i1].outerHTML;
             o.patient_id = i2b2.h.getXNodeVal(ps[i1],'patient_id');
             o.event_id = i2b2.h.getXNodeVal(ps[i1],'event_id');
-            //o.vital_status = i2b2.h.XPath(ps[i1],'param[@name="vital_status_cd"]/text()')[0].nodeValue;
-            //o.age = i2b2.h.XPath(ps[i1],'param[@name="age_in_years_num"]/text()')[0].nodeValue;
-            //o.sex = i2b2.h.XPath(ps[i1],'param[@name="sex_cd"]/text()')[0].nodeValue;
-            //o.race = i2b2.h.XPath(ps[i1],'param[@name="race_cd"]/text()')[0].nodeValue;
-            //o.title = o.patient_id+" ["+o.age+" y/o "+ o.sex+" "+o.race+"]";
             let sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
             // append the data node to our returned results
             retChildren.push(sdxDataNode);
         }
-        cl_node.children.loaded = true;
+        //cl_node.children.loaded = true;
         // TODO: broadcast a data update event of the CRC data model
         retMsg.results = retChildren;
         if (i2b2.h.getObjectClass(onCompleteCallback)==='i2b2_scopedCallback') {
@@ -192,9 +187,8 @@ i2b2.sdx.TypeControllers.ENS.DropHandler = function(sdxData) {
 
 // ==========================================================================
 i2b2.sdx.TypeControllers.ENS.dragStartHandler = function(i2b2Data) {
-    delete i2b2Data.origData.xmlOrig;
     delete i2b2Data.origData.parent;
-    delete i2b2Data.renderData.idDOM;
+    if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
     return i2b2Data;
 };
 

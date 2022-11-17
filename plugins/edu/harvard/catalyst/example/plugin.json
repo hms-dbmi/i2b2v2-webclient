@@ -7,5 +7,17 @@
   "plugin_version" : "1.0",
   "i2b2_version" : "1.7.12a",
   "base": "index.html",
-  "sandbox": true
+  "sandbox": true,
+
+  "authorizedTunnel": {
+    "variables" :{
+      "i2b2.PM.model.isAdmin": "R",
+      "i2b2.ONT.cfg": "RO"
+    },
+    "functions": [
+      "i2b2.h.getDomain",
+      "i2b2.h.getProject",
+      "i2b2.ONT.view.nav.doRefreshAll"
+    ]
+  }
 }

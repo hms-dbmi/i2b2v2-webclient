@@ -3,8 +3,19 @@
  * communications with the i2b2 cells.
  **/
 
+// ----- Magic Strings -----
+i2b2.MSG_TYPES.AJAX = {};
+i2b2.MSG_TYPES.AJAX.LIB_INIT = "I2B2_INIT_AJAX";
+i2b2.MSG_TYPES.AJAX.LIB_READY = "I2B2_AJAX_READY";
+i2b2.MSG_TYPES.AJAX.REQ = "AJAX";
+i2b2.MSG_TYPES.AJAX.RESULT = "AJAX_REPLY";
+i2b2.MSG_TYPES.AJAX.ERROR = "AJAX_ERROR";
+i2b2.MSG_TYPES.AJAX.RAW_REQ = "AJAX-RAW";
+// -------------------------
+
+
 //======================================================================================================================
-window.addEventListener("I2B2_INIT_AJAX", function(evt) {
+window.addEventListener(i2b2.MSG_TYPES.AJAX.LIB_INIT, function(evt) {
 
     // USE CLOSEURE VARIABLES TO KEEP TRACK OF SENT/RECEIVED MESSAGES
     let cl_messageDB = {};
@@ -20,7 +31,7 @@ window.addEventListener("I2B2_INIT_AJAX", function(evt) {
             cl_messageDB[msgId].reject = reject;
             // now send the message
             let msg = {
-                msgType: "AJAX",
+                msgType: i2b2.MSG_TYPES.AJAX.REQ,
                 msgId: msgId,
                 ajaxCell: cell,
                 ajaxFunc: func,
@@ -37,7 +48,7 @@ window.addEventListener("I2B2_INIT_AJAX", function(evt) {
         const msgId = eventData.msgId;
         if (msgId === undefined || cl_messageDB[eventData.msgId] === undefined) return false;
         // see if it is an error
-        if (eventData.msgType === "AJAX_ERROR") {
+        if (eventData.msgType === i2b2.MSG_TYPES.AJAX.ERROR) {
             // reject the promise
             cl_messageDB[eventData.msgId].reject(eventData);
         } else {
@@ -57,7 +68,7 @@ window.addEventListener("I2B2_INIT_AJAX", function(evt) {
             cl_messageDB[msgId].reject = reject;
             // now send the message
             let msg = {
-                msgType: "AJAX-RAW",
+                msgType: i2b2.MSG_TYPES.AJAX.RAW_REQ,
                 msgId: msgId,
                 ajaxCell: this+'', // convert to string (a little type hacking)
                 ajaxURL: url,
@@ -73,7 +84,7 @@ window.addEventListener("I2B2_INIT_AJAX", function(evt) {
     // ----------------------------------------------------------------------
     window.addEventListener("message", (event) => {
         if (event.origin === window.location.origin) {
-            if (event.data.msgType === "AJAX_REPLY" || event.data.msgType === "AJAX_ERROR") {
+            if (event.data.msgType === i2b2.MSG_TYPES.AJAX.RESULT || event.data.msgType === i2b2.MSG_TYPES.AJAX.ERROR) {
                 cl_func_receiveMsg(event.data);
             }
         }
@@ -95,5 +106,5 @@ window.addEventListener("I2B2_INIT_AJAX", function(evt) {
 
     // once initialized, sent the ready signal to the plugin's i2b2 loader
     // ----------------------------------------------------------------------
-    window.dispatchEvent(new Event('I2B2_AJAX_READY'));
+    window.dispatchEvent(new Event(i2b2.MSG_TYPES.AJAX.LIB_READY));
 });

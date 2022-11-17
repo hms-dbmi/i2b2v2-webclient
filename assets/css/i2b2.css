@@ -273,12 +273,15 @@ DIV.tabText {}
 .goldenLayout .lm_goldenlayout {
 	background: none;
 }
-.goldenLayout .lm_splitter {
-	opacity:1;
-	background: #999999;
+
+.goldenLayout .lm_splitter.lm_horizontal{
+	cursor: ew-resize !important;
+}
+.goldenLayout .lm_splitter.lm_vertical{
+	cursor: ns-resize !important;
 }
 
-.goldenLayoutCol .lm_splitter {
+.goldenLayout .lm_splitter {
 	background:#369;
 	opacity: 0.001;
 	transition: opacity 200ms ease;
@@ -286,8 +289,12 @@ DIV.tabText {}
 
 .goldenLayout .lm_splitter:hover,
 .goldenLayout .lm_splitter.lm_dragging {
-	background:#369;
 	opacity: 1;
+	transition: opacity 200ms ease;
+}
+
+.lm_splitter.lm_vertical .lm_drag_handle {
+	height: 5px;
 }
 
 .goldenLayout .lm_content {
@@ -295,7 +302,7 @@ DIV.tabText {}
 	border:none;
 }
 
-.goldenLayout  .lm_header {
+.goldenLayout .lm_header {
 	height:26px;
 	background-color: #ed9b40;
 	border-radius: 3px 3px 0 0;
@@ -379,7 +386,8 @@ DIV.tabText {}
 
 .goldenLayout div.cellWhite {
 	background:#FFF;
-	border: 1px solid #678;
+	border: solid 1px rgba(99, 117, 140, 0.28);
+	border-top: none;
 	overflow:auto;
 	border-radius: 0 0 3px 3px;
 	display: flex;
@@ -399,6 +407,8 @@ DIV.tabText {}
 	border-radius: 0 0 3px 3px;
 }
 
+
+
 #goldenLayoutId2 {
 	position:absolute;
 	top:43px;
@@ -407,20 +417,6 @@ DIV.tabText {}
 	bottom:12px;
 	z-index:100;
 	display:none;
-}
-
-.goldenLayoutCol .stack-cfg-button {
-	background-image: url(../images/stack_options_icon.gif);
-}
-
-.goldenLayoutCol .stack-refresh-button {
-	margin-top: 2px;
-}
-
-.goldenLayoutCol .stack-refresh-button.refreshing {
-	background-image: url(../images/spin.gif);
-	background-size: 18px 18px;
-	cursor: progress !important;
 }
 
 .goldenLayoutCol .lm_maximise {

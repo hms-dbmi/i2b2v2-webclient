@@ -1,0 +1,44 @@
+.i2b2OntInfo {
+    background: #fff;
+    border: solid 1px rgba(99, 117, 140, 0.28);
+    overflow: auto;
+    border-radius: 0 0 3px 3px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: .4rem;
+}
+
+.i2b2OntInfo > h2 {
+    font-size: .9rem;
+    font-weight: bold;
+}
+
+.i2b2OntInfo > h2 img {
+    height: 1rem;
+    vertical-align: top;
+}
+
+.i2b2OntInfo .label {
+    margin: 0.75rem 0 0.25rem 0.5rem;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.i2b2OntInfo i.bi-clipboard {
+    cursor: pointer;
+    font-size: 1.2em;
+    margin-left: 0.45em;
+}
+
+.i2b2OntInfo table.children {
+    margin-right: 1.4rem;
+}
+
+.i2b2OntInfo table.children .value {
+    width: 9rem;
+}
+
+.i2b2OntInfo .dataline {
+    margin-left: 1.4rem;
+}

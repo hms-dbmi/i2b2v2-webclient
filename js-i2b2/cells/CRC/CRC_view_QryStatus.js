@@ -14,17 +14,24 @@ console.time('execute time');
 i2b2.CRC.view['QS'] = new i2b2Base_cellViewController(i2b2.CRC, 'QS');
 
 // ================================================================================================== //
-i2b2.CRC.view.QS.renderStart = function(breakdowns) {
+i2b2.CRC.view.QS.renderStart = function() {
     $("#infoQueryStatusGraph").hide();
 };
 
 // ================================================================================================== //
 i2b2.CRC.view.QS.render = function(breakdowns) {
+    let status = $("#infoQueryStatus").empty();
     let statusTable = $("#infoQueryStatusTable").empty();
 
+    $((Handlebars.compile("{{> QueryResultStatus}}"))(breakdowns)).appendTo(status);
     $((Handlebars.compile("{{> QueryResultBreakdownTable}}"))(breakdowns)).appendTo(statusTable);
 };
-
+// ================================================================================================== //
+i2b2.CRC.view.QS.clearStatus = function() {
+    $("#infoQueryStatus").empty();
+    $("#infoQueryStatusTable").empty();
+    $("#infoQueryStatusGraph").hide();
+};
 // ================================================================================================== //
 // This is done once the entire cell has been loaded
 console.info("SUBSCRIBED TO i2b2.events.afterCellInit");
@@ -42,8 +49,9 @@ i2b2.events.afterCellInit.add(
 
                     // add the cellWhite flare
                     cell.view.QS.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(cell.view.QS.lm_view._contentElement);
-                    cell.view.QS.containerDiv.append('<div id="infoQueryStatusTable"></div>');
+                    cell.view.QS.containerDiv.append('<div id="infoQueryStatus"></div>');
                     cell.view.QS.containerDiv.append('<div id="infoQueryStatusGraph"></div>');
+                    cell.view.QS.containerDiv.append('<div id="infoQueryStatusTable"></div>');
 
                     $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownGraph.html", {
                         success: (template, status, req) => {
@@ -66,9 +74,20 @@ i2b2.events.afterCellInit.add(
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultBreakdownTable.html"); }
             });
+
+            $.ajax("js-i2b2/cells/CRC/templates/QueryResultStatus.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("QueryResultStatus", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultStatus.html"); }
+            });
         }
     }
 );
+// ================================================================================================== //
+i2b2.CRC.view.QS.timerTick = function() {
+    i2b2.CRC.model.runner.elapsedTime = Math.round((new Date() - i2b2.CRC.model.runner.startTime) / 100) / 10;
+};
 
 console.timeEnd('execute time');
 console.groupEnd();
