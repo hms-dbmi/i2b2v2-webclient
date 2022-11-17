@@ -151,13 +151,8 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
         let startDateStr = $("#termDateConstraintModal .DateStart").val();
         let endDateStr = $("#termDateConstraintModal .DateEnd").val();
 
-        let startDate = new Date(startDateStr);
-        let endDate = new Date(endDateStr);
-
-        //startDate = moment(startDate, 'MM-DD-YYYY');
-        //endDate = moment(endDate, 'MM-DD-YYYY');
-        let isStartDateValid = i2b2.CRC.view.QT.isValidDate(startDateStr); //startDate.isValid();
-        let isEndDateValid =  i2b2.CRC.view.QT.isValidDate(endDateStr); //endDate.isValid();
+        let isStartDateValid = i2b2.CRC.view.QT.isValidDate(startDateStr);
+        let isEndDateValid =  i2b2.CRC.view.QT.isValidDate(endDateStr);
 
         if ((startDateStr.length === 0 || isStartDateValid) && (endDateStr.length === 0 || isEndDateValid)) {
             let dateRange = sdx.dateRange;
