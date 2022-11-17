@@ -83,6 +83,16 @@ function QueryToolController() {
                         metadata.without = without;
                         metadata.instances = instances;
 
+                        let panelFromDate = i2b2.h.getXNodeVal(qp[i1],'panel_date_from');
+                        if (panelFromDate) {
+                            metadata.startDate = reformatDate(panelFromDate);
+                        }
+
+                        let panelToDate = i2b2.h.getXNodeVal(qp[i1],'panel_date_to');
+                        if (panelToDate) {
+                            metadata.endDate = reformatDate(panelToDate);
+                        }
+
                         let pi = i2b2.h.XPath(qp[i1], 'descendant::item[item_key]');
                         for (let i2=0; i2<pi.length; i2++) {
                             let renderOptions = {};
@@ -149,10 +159,10 @@ function QueryToolController() {
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
 
                                 // Date constraint processing
+                                sdxDataNode.dateRange = {};
                                 let dateConstraint = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date');
                                 if(dateConstraint.length >0)
                                 {
-                                    sdxDataNode.dateRange = {};
                                     let dateStart = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_from");
                                     if(dateStart !== undefined){
                                         sdxDataNode.dateRange.start = reformatDate(dateStart);
@@ -160,6 +170,14 @@ function QueryToolController() {
                                     let dateEnd = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_to");
                                     if(dateEnd !== undefined){
                                         sdxDataNode.dateRange.end = reformatDate(dateEnd);
+                                    }
+                                }
+                                else{
+                                    if(metadata.startDate !== undefined){
+                                        sdxDataNode.dateRange.start = metadata.startDate;
+                                    }
+                                    if(metadata.endDate !== undefined){
+                                        sdxDataNode.dateRange.end = metadata.endDate;
                                     }
                                 }
 
