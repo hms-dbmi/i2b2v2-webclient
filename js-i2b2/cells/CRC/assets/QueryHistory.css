@@ -27,10 +27,25 @@
     color: var(--bs-blue);
     cursor: pointer;
     display: inline-block;
+    font-size: 1rem;
 }
 #i2b2TreeviewQueryHistory .history-more-bar:hover {
     text-decoration: underline;
 }
+#i2b2TreeviewQueryHistory .history-more-bar i.bi {
+    color: #000;
+    animation: spin-animation 1s infinite;
+    display: inline-block;
+}
+@keyframes spin-animation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg);
+    }
+}
+
 
 #i2b2QueryHistoryFinderMessage{
     padding-top: 0.6em;

@@ -80,6 +80,7 @@ i2b2.CRC.view.history.treeRedraw = function(ev, b) {
 };
 
 i2b2.CRC.view.history.loadMore = function() {
+    $('.history-more-bar i.bi').removeClass("d-none");
     let newcount = i2b2.CRC.view.history.treeview.data('treeview').getNodes(()=>true).length;
     newcount = newcount + i2b2.CRC.view.history.params.maxQueriesDisp;
     i2b2.CRC.view.history.LoadQueryMasters(newcount);
@@ -134,6 +135,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
 
         // render tree
         i2b2.CRC.view.history.treeview.treeview('redraw', []);
+        $('.history-more-bar i.bi').addClass("d-none");
     };
     let max = maxRecords ? maxRecords : i2b2.CRC.view.history.params.maxQueriesDisp;
     i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":max}, scopedCallback);
@@ -208,7 +210,7 @@ i2b2.events.afterCellInit.add((function(cell){
                         <div id="i2b2TreeviewQueryHistory">
                             <div class="history-container">
                                 <div class="history-tv"></div>
-                                <div class="history-more-bar">Load more...</div>
+                                <div class="history-more-bar">Load more...<i class="bi bi-arrow-repeat d-none"></i></div>
                             </div>
                         </div>
                     `).appendTo(container._contentElement);
