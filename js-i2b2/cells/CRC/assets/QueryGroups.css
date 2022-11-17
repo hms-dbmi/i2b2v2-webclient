@@ -98,6 +98,7 @@
     border: 1px solid rgba(0, 0, 0, .3);
     height: 2.1em;
     border-radius: 0.2rem;
+    padding-left: 0.4em;
 }
 
 .CRC_QT_view .CRC_QT_runbar label {
@@ -350,13 +351,20 @@
 .QueryGroup.when .DateRange2Lbl,
 .QueryGroup .DateOccursLbl {
     border-radius: 0.3em;
-    background: #cccccc;
-    border: solid 1px black;
     display: inline-flex;
     padding: 0.5em;
-    margin: 0.5em;
+    margin: 0.5em 0.5em 0.5em 0.19em;
     cursor: pointer;
+    font-size: 0.95em;
+    color: #2782a3;
 }
+
+.QueryGroup.when .DateRange1Lbl:hover,
+.QueryGroup.when .DateRange2Lbl:hover,
+.QueryGroup .DateOccursLbl:hover {
+    background: rgba(114, 109, 109, 0.22);
+}
+
 .QueryGroup .DateRange1Lbl i.bi,
 .QueryGroup .DateRange2Lbl i.bi,
 .QueryGroup .DateOccursLbl i.bi {

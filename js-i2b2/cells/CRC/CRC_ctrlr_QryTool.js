@@ -159,10 +159,10 @@ function QueryToolController() {
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
 
                                 // Date constraint processing
+                                sdxDataNode.dateRange = {};
                                 let dateConstraint = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date');
                                 if(dateConstraint.length >0)
                                 {
-                                    sdxDataNode.dateRange = {};
                                     let dateStart = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_from");
                                     if(dateStart !== undefined){
                                         sdxDataNode.dateRange.start = reformatDate(dateStart);
@@ -170,6 +170,14 @@ function QueryToolController() {
                                     let dateEnd = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_to");
                                     if(dateEnd !== undefined){
                                         sdxDataNode.dateRange.end = reformatDate(dateEnd);
+                                    }
+                                }
+                                else{
+                                    if(metadata.startDate !== undefined){
+                                        sdxDataNode.dateRange.start = metadata.startDate;
+                                    }
+                                    if(metadata.endDate !== undefined){
+                                        sdxDataNode.dateRange.end = metadata.endDate;
                                     }
                                 }
 
@@ -196,6 +204,30 @@ function QueryToolController() {
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             }
                             sdxDataNodeList.push(sdxDataNode);
+                        }
+
+                        if(sdxDataNodeList.length > 1){
+                            let startDate;
+                            let endDate;
+                            if(sdxDataNodeList[0].dateRange !== undefined){
+                                startDate = sdxDataNodeList[0].dateRange.start;
+                                endDate = sdxDataNodeList[0].dateRange.end;
+                            }
+
+                            let matchingSdxNodeDates = sdxDataNodeList.filter(function(sdx) {
+                                if(sdx.dateRange !== undefined &&
+                                sdx.dateRange.start === startDate
+                                && sdx.dateRange.end === endDate) {
+                                    return true;
+                                }
+
+                                return false;
+                            });
+
+                            if(matchingSdxNodeDates.length === sdxDataNodeList.length){
+                                metadata.startDate = sdxDataNodeList[0].dateRange.start;
+                                metadata.endDate = sdxDataNodeList[0].dateRange.end;
+                            }
                         }
                         i2b2.CRC.view.QT.addNewQueryGroup(sdxDataNodeList, metadata);
                     }
@@ -407,10 +439,6 @@ function QueryToolController() {
                     break;
                 case "without":
                 case "with":
-                    if (qgData.events[0].dateRange !== undefined) {
-                        if (qgData.events[0].dateRange.start !== undefined && qgData.events[0].dateRange.start !== "") tempPanel.dateFrom = funcTranslateDate(new Date(qgData.events[0].dateRange.start));
-                        if (qgData.events[0].dateRange.end !== undefined && qgData.events[0].dateRange.end !== "") tempPanel.dateTo = funcTranslateDate(new Date(qgData.events[0].dateRange.end));
-                    }
                     break;
             }
             // Process ontology terms
