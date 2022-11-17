@@ -13,6 +13,22 @@
     height: auto;
 }
 
+
+#i2b2TreeviewQueryHistory .history-container {
+    position: absolute;
+}
+
+#i2b2TreeviewQueryHistory .history-tv {
+    overflow: visible;
+}
+
+#i2b2TreeviewQueryHistory .history-more-bar {
+    margin-left: 1.55rem;
+    margin-top: 0.2rem;
+    color: var(--bs-blue);
+    cursor: pointer;
+}
+
 #i2b2QueryHistoryFinderMessage{
     padding-top: 0.6em;
     padding-left: 0.9em;

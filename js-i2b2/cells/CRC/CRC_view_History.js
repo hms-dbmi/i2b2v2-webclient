@@ -79,6 +79,9 @@ i2b2.CRC.view.history.treeRedraw = function(ev, b) {
     i2b2.CRC.view.history.lm_view._contentElement.find('li:not(:has(span.tvRoot))').attr("draggable", true);
 };
 
+i2b2.CRC.view.history.loadMore = function() {
+    alert("ping");
+}
 
 //================================================================================================== //
 i2b2.CRC.view.history.LoadQueryMasters = function() {
@@ -198,7 +201,16 @@ i2b2.events.afterCellInit.add((function(cell){
                     $('<div id="i2b2QueryHistoryFinderStatus"></div>').prependTo(container._contentElement).hide();
 
                     // create an empty Navigation treeview
-                    let treeTargetNav = $('<div id="i2b2TreeviewQueryHistory"></div>').appendTo(container._contentElement);
+                    let treeRoot = $(`
+                        <div id="i2b2TreeviewQueryHistory">
+                            <div class="history-container">
+                                <div class="history-tv"></div>
+                                <div class="history-more-bar">Load more...</div>
+                            </div>
+                        </div>
+                    `).appendTo(container._contentElement);
+                    $('.history-more-bar', treeRoot).on('click', i2b2.CRC.view.history.loadMore);
+                    let treeTargetNav = $('.history-tv', treeRoot);
                     i2b2.CRC.view.history.treeview = $(treeTargetNav).treeview({
                         showBorder: false,
                         onhoverColor: "rgba(205, 208, 208, 0.56)",
