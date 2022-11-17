@@ -79,7 +79,6 @@ i2b2.PM.doLoginDialog = function() {
 // ================================================================================================== //
 i2b2.PM.doChangeDomain = function() {
     let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
-    console.dir(selectedDomain);
     let loginElements = $(".login-user, .login-password, .login-button");
     if (selectedDomain.saml !== undefined) {
         loginElements.hide();

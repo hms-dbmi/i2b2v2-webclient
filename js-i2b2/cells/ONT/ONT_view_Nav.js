@@ -29,7 +29,6 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
         let sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT',catData);
         if (!sdxDataNode) {
             console.error("SDX could not encapsulate CONCPT data!");
-            console.dir(catData);
             return false;
         }
 

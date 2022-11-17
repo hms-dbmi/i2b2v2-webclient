@@ -25,7 +25,6 @@ i2b2.hive.MsgSniffer = {
         // }
         if (!regMsg.channelName || !regMsg.channelActions || !regMsg.channelSniffEvent || !regMsg.channelSniffEvent.add) {
             console.error('MsgSniffer: bad registration info / ');
-            console.dir(regMsg);
             return false;
         }
         let t = regMsg.channelName;

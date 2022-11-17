@@ -50,7 +50,6 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
     let sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT', data);
     if (!sdxDataNode) {
         console.error("SDX could not encapsulate CONCPT data!");
-        console.dir(data);
         return false;
     }
 

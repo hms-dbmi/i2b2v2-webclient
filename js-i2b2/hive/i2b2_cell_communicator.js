@@ -249,7 +249,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         execBubble.timeRecv = new Date();
         var origCallback = execBubble.callback;
 
-       //update timeout
+       // update timeout
         i2b2.PM.model.IdleTimer.resetTimeout();
 
         // debug messages

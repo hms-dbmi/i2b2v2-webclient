@@ -143,7 +143,6 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     // cleanup
     if (nodeInfo.iconImg === undefined) {
         console.warn("[SDX RenderData] no '"+icon+"' icon has been set in the options passed");
-        console.dir(options);
         nodeInfo.iconImg = '';
         nodeInfo.iconImgExp = '';
     }

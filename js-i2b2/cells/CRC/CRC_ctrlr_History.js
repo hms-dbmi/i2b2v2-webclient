@@ -214,7 +214,6 @@ i2b2.CRC.ctrlr.history = {
             scopeCB.callback = function(i2b2CellMsg) {
                 // define the XML processing function
                 console.group("CALLBACK Processing AJAX i2b2CellMsg");
-                console.dir(i2b2CellMsg);
                 if (i2b2CellMsg.error) {
                     alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
                 }
@@ -240,7 +239,6 @@ i2b2.CRC.ctrlr.history = {
             scopeCB.callback = function(i2b2CellMsg) {
                 // define the XML processing function
                 console.group("CALLBACK Processing AJAX i2b2CellMsg");
-                console.dir(i2b2CellMsg);
                 //if (i2b2CellMsg.error) {
                 //	alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
                 //}
@@ -282,7 +280,6 @@ i2b2.CRC.ctrlr.history = {
         scopeCB.callback = function(i2b2CellMsg) {
             // define the XML processing function
             console.group("CALLBACK Processing AJAX i2b2CellMsg");
-            console.dir(i2b2CellMsg);
             if (i2b2CellMsg.error) {
                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }

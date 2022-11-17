@@ -263,7 +263,6 @@ i2b2.events.afterCellInit.add((function(cell){
                             nodeDisplay: {
                                 name: 'Display',
                                 onClick: function(node) {
-                                    // console.dir(node);
                                     i2b2.CRC.view.history.doDisplay(node);
                                 },
                                 isShown: function(node) {
@@ -277,7 +276,6 @@ i2b2.events.afterCellInit.add((function(cell){
                             nodeRename: {
                                 name: 'Rename',
                                 onClick: function(node) {
-                                    console.dir(node);
                                     i2b2.CRC.view.history.doRename(node);
                                 },
                                 isShown: function(node) {
@@ -291,7 +289,6 @@ i2b2.events.afterCellInit.add((function(cell){
                             nodeDelete: {
                                 name: 'Delete',
                                 onClick: function(node) {
-                                    console.dir(node);
                                     i2b2.CRC.view.history.doDelete(node);
                                 },
                                 isShown: function(node) {
@@ -305,7 +302,6 @@ i2b2.events.afterCellInit.add((function(cell){
                             newRefresh: {
                                 name: 'Refresh All',
                                 onClick: function (node) {
-                                    console.dir(node);
                                     i2b2.CRC.view.history.doRefreshAll(node);
                                 },
                                 isShown: function (node) {

@@ -77,7 +77,6 @@ i2b2.Init = function() {
                 frameworkFiles
             ).fail(function() {
                 console.error("FAILED loading an i2b2 framework file");
-                console.dir(this);
             }).promise();
 
         }).fail(function() {
