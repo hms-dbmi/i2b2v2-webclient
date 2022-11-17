@@ -207,9 +207,6 @@ function QueryToolController() {
                             });
 
                             if(matchingSdxNodeDates.length === sdxDataNodeList.length){
-                                //delete [metadata.startDate];
-                                //delete [metadata.endDate];
-
                                 metadata.startDate = sdxDataNodeList[0].dateRange.start;
                                 metadata.endDate = sdxDataNodeList[0].dateRange.end;
                             }
