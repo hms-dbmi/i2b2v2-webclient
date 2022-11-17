@@ -54,7 +54,7 @@
       },
       {
         "thinClientName": "maxQueriesDisp",
-        "defaultValue": 20
+        "defaultValue": 25
       },
       {
         "thinClientName": "maxChildren",

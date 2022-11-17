@@ -14,7 +14,6 @@ console.time('execute time');
 // create and save the screen objects
 i2b2.CRC.view.history = new i2b2Base_cellViewController(i2b2.CRC, 'history');
 i2b2.CRC.view.history.visible = false;
-i2b2.CRC.view.history.params.maxQueriesDisp = 20; // TODO: This does not work
 i2b2.CRC.view.history.template = {};
 
 // ================================================================================================== //
@@ -131,7 +130,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
         // render tree
         i2b2.CRC.view.history.treeview.treeview('redraw', []);
     };
-    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":"20"}, scopedCallback);
+    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":i2b2.CRC.view.history.params.maxQueriesDisp}, scopedCallback);
 };
 
 
