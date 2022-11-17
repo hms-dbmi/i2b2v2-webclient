@@ -80,11 +80,13 @@ i2b2.CRC.view.history.treeRedraw = function(ev, b) {
 };
 
 i2b2.CRC.view.history.loadMore = function() {
-    alert("ping");
+    let newcount = i2b2.CRC.view.history.treeview.data('treeview').getNodes(()=>true).length;
+    newcount = newcount + i2b2.CRC.view.history.params.maxQueriesDisp;
+    i2b2.CRC.view.history.LoadQueryMasters(newcount);
 }
 
 //================================================================================================== //
-i2b2.CRC.view.history.LoadQueryMasters = function() {
+i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = this;
     scopedCallback.callback = function(cellResult) {
@@ -133,7 +135,8 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
         // render tree
         i2b2.CRC.view.history.treeview.treeview('redraw', []);
     };
-    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":i2b2.CRC.view.history.params.maxQueriesDisp}, scopedCallback);
+    let max = maxRecords ? maxRecords : i2b2.CRC.view.history.params.maxQueriesDisp;
+    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":max}, scopedCallback);
 };
 
 

@@ -13,7 +13,6 @@
     height: auto;
 }
 
-
 #i2b2TreeviewQueryHistory .history-container {
     position: absolute;
 }
@@ -27,6 +26,10 @@
     margin-top: 0.2rem;
     color: var(--bs-blue);
     cursor: pointer;
+    display: inline-block;
+}
+#i2b2TreeviewQueryHistory .history-more-bar:hover {
+    text-decoration: underline;
 }
 
 #i2b2QueryHistoryFinderMessage{
