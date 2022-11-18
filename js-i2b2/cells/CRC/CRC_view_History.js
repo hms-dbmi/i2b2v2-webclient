@@ -14,7 +14,6 @@ console.time('execute time');
 // create and save the screen objects
 i2b2.CRC.view.history = new i2b2Base_cellViewController(i2b2.CRC, 'history');
 i2b2.CRC.view.history.visible = false;
-i2b2.CRC.view.history.params.maxQueriesDisp = 20; // TODO: This does not work
 i2b2.CRC.view.history.template = {};
 
 // ================================================================================================== //
@@ -80,9 +79,15 @@ i2b2.CRC.view.history.treeRedraw = function(ev, b) {
     i2b2.CRC.view.history.lm_view._contentElement.find('li:not(:has(span.tvRoot))').attr("draggable", true);
 };
 
+i2b2.CRC.view.history.loadMore = function() {
+    $('.history-more-bar i.bi').removeClass("d-none");
+    let newcount = i2b2.CRC.view.history.treeview.data('treeview').getNodes(()=>true).length;
+    newcount = newcount + i2b2.CRC.view.history.params.maxQueriesDisp;
+    i2b2.CRC.view.history.LoadQueryMasters(newcount);
+}
 
 //================================================================================================== //
-i2b2.CRC.view.history.LoadQueryMasters = function() {
+i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = this;
     scopedCallback.callback = function(cellResult) {
@@ -130,8 +135,10 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
 
         // render tree
         i2b2.CRC.view.history.treeview.treeview('redraw', []);
+        $('.history-more-bar i.bi').addClass("d-none");
     };
-    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":"20"}, scopedCallback);
+    let max = maxRecords ? maxRecords : i2b2.CRC.view.history.params.maxQueriesDisp;
+    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":max}, scopedCallback);
 };
 
 
@@ -199,7 +206,16 @@ i2b2.events.afterCellInit.add((function(cell){
                     $('<div id="i2b2QueryHistoryFinderStatus"></div>').prependTo(container._contentElement).hide();
 
                     // create an empty Navigation treeview
-                    let treeTargetNav = $('<div id="i2b2TreeviewQueryHistory"></div>').appendTo(container._contentElement);
+                    let treeRoot = $(`
+                        <div id="i2b2TreeviewQueryHistory">
+                            <div class="history-container">
+                                <div class="history-tv"></div>
+                                <div class="history-more-bar">Load more...<i class="bi bi-arrow-repeat d-none"></i></div>
+                            </div>
+                        </div>
+                    `).appendTo(container._contentElement);
+                    $('.history-more-bar', treeRoot).on('click', i2b2.CRC.view.history.loadMore);
+                    let treeTargetNav = $('.history-tv', treeRoot);
                     i2b2.CRC.view.history.treeview = $(treeTargetNav).treeview({
                         showBorder: false,
                         onhoverColor: "rgba(205, 208, 208, 0.56)",

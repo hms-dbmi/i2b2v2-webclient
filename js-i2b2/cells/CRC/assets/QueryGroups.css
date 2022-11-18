@@ -566,6 +566,12 @@
     position: relative;
     top: 0.2em;
 }
+
+.TermList span.prevquery {
+    position: static;
+    font-style: italic;
+}
+
 .TermList span img {
     vertical-align: text-bottom;
 }

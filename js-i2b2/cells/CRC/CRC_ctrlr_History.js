@@ -194,7 +194,7 @@ i2b2.CRC.ctrlr.history = {
             result_wait_time: 180,
             crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp,
             crc_sort_by: i2b2.CRC.view['history'].params.sortBy,
-            crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") === -1? 	"CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
+            crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") === -1 ? "CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
             crc_sort_order: (i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1?"true": "false"),
             crc_find_category: crc_find_category,
             crc_find_strategy: crc_find_strategy,
