@@ -148,16 +148,11 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
 
 
     $('#termDateConstraintModal button.i2b2-save').on('click', (evt) => {
-        let startDateStr = $("#termDateConstraintModal .DateStart").datepicker().value();
-        let endDateStr = $("#termDateConstraintModal .DateEnd").datepicker().value();
+        let startDateStr = $("#termDateConstraintModal .DateStart").val();
+        let endDateStr = $("#termDateConstraintModal .DateEnd").val();
 
-        let startDate = new Date(startDateStr);
-        let endDate = new Date(endDateStr);
-
-        startDate = moment(startDate, 'MM-DD-YYYY');
-        endDate = moment(endDate, 'MM-DD-YYYY');
-        let isStartDateValid = startDate.isValid();
-        let isEndDateValid = endDate.isValid();
+        let isStartDateValid = i2b2.CRC.view.QT.isValidDate(startDateStr);
+        let isEndDateValid =  i2b2.CRC.view.QT.isValidDate(endDateStr);
 
         if ((startDateStr.length === 0 || isStartDateValid) && (endDateStr.length === 0 || isEndDateValid)) {
             let dateRange = sdx.dateRange;
@@ -183,8 +178,10 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
         change: function() {
             let startDateElem = $("#termDateConstraintModal .DateStart");
             let endDateElem = $("#termDateConstraintModal .DateEnd");
-            let startDate =  startDateElem.datepicker().value();
-            let endDate =  endDateElem.datepicker().value();
+            let startDate =  startDateElem.val();
+            let endDate =  endDateElem.val();
+
+            let isDateValid = i2b2.CRC.view.QT.isValidDate(startDate); //startDate.isValid();
 
             startDate = new Date(startDate);
             endDate = new Date(endDate);
@@ -194,7 +191,8 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
             }
 
             let date = moment(startDate, 'MM-DD-YYYY');
-            let isDateValid = date.isValid();
+            //let isDateValid = date.isValid();
+
             !isDateValid ? $("#termDateConstraintModal .startDateError").show() : $("#termDateConstraintModal .startDateError").hide();
         }
     });
@@ -204,8 +202,10 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
         change: function() {
             let startDateElem = $("#termDateConstraintModal .DateStart");
             let endDateElem = $("#termDateConstraintModal .DateEnd");
-            let startDate =  startDateElem.datepicker().value();
-            let endDate =  endDateElem.datepicker().value();
+            let startDate =  startDateElem.val();
+            let endDate =  endDateElem.val();
+
+            let isDateValid = i2b2.CRC.view.QT.isValidDate(endDate); //startDate.isValid();
 
             startDate = new Date(startDate);
             endDate = new Date(endDate);
@@ -215,7 +215,7 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
             }
 
             let date = moment(endDate, 'MM-DD-YYYY');
-            let isDateValid = date.isValid();
+            //let isDateValid = date.isValid();
             !isDateValid ? $("#termDateConstraintModal .endDateError").show() : $("#termDateConstraintModal .endDateError").hide();
         }
     });
@@ -430,6 +430,13 @@ i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget)
 i2b2.CRC.view.QT.clearQuery = function() {
     i2b2.CRC.view.QT.updateQueryName();
     i2b2.CRC.view.QT.render();
+}
+// ================================================================================================== //
+
+i2b2.CRC.view.QT.isValidDate = function(dateStr) {
+    let dateVal = String(dateStr);
+
+    return !(dateVal.match(/^[0|1][0-9]\/[0|1|2|3][0-9]\/[1|2][0-9][0-9][0-9]$/) === null && dateVal !== '');
 }
 
 // ================================================================================================== //
@@ -650,12 +657,11 @@ i2b2.CRC.view.QT.render = function() {
     let funcValidateDate = (event) => {
         let jqTarget = $(event.target);
         let errorFrameEl = $(jqTarget)[0].parentNode;
-        let dateVal = String(jqTarget.val());
 
         let isValid = false;
 
         // display red box on error
-        if (dateVal.match(/^[0|1][0-9]\/[0|1|2|3][0-9]\/[1|2][0-9][0-9][0-9]$/) === null && dateVal !== '') {
+        if (!i2b2.CRC.view.QT.isValidDate(jqTarget.val())) {
             $(errorFrameEl).css('border', 'solid');
         } else {
             $(errorFrameEl).css('border', '');
@@ -732,6 +738,16 @@ i2b2.CRC.view.QT.render = function() {
         } else {
             $(event.target).css('border','solid 2px red');
         }
+    });
+
+    $('body').on('click', '.refreshStartDate, .refreshEndDate', (event) => {
+        let jqTarget = $(event.target);
+        let dateElement = jqTarget.parents(".dateRange").find(".DateStart");
+        if(dateElement.length === 0){
+            dateElement = jqTarget.parents(".dateRange").find(".DateEnd");
+        }
+        dateElement.val("");
+        dateElement.trigger("change");
     });
 
     // append the final query group drop target
