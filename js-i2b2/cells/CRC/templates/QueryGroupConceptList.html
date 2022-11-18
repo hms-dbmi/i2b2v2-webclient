@@ -1,7 +1,7 @@
 {{#each concepts}}
 <div class="concept" data-concept-index="{{@index}}">
     <span class="termOr">or</span>
-    <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}"><img src="{{this.renderData.iconImg}}"/> {{this.renderData.title}}</span>
+    <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}"><img src="{{this.renderData.iconImg}}"/> {{{this.renderData.title}}}</span>
     <span class="dateRange">
         {{#if this.dateRange}}
             {{#if this.dateRange.start }}

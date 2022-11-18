@@ -104,16 +104,18 @@ function QueryToolController() {
                             let sdxDataNode;
                             if (ckey.toLowerCase().startsWith("query_master_id")) {
                                 let o = {};
-                                o.name =i2b2.h.getXNodeVal(pi[i2],'item_name');
+                                o.name = i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.id = ckey.substring(16);
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                                sdxDataNode.renderData.title = sdxDataNode.renderData.title.replace("(PrevQuery)","<span class='prevquery'>(PrevQuery)</span>");
                             } else 	if (ckey.toLowerCase().startsWith("masterid")) {
                                 let o = {};
                                 o.name =i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.id = ckey.substring(9);
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                                sdxDataNode.renderData.title = sdxDataNode.renderData.title.replace("(PrevQuery)","<span class='prevquery'>(PrevQuery)</span>");
                             } else  if (ckey.toLowerCase().startsWith("folder")) {
                                 let o = {};
                                 o.titleCRC =  i2b2.h.getXNodeVal(pi[i2],'item_name');
@@ -451,7 +453,7 @@ function QueryToolController() {
                         tempItem.key = "masterid:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
                         let name = i2b2.h.Escape(item.origData.name);
                         name = name.substring(0, name.indexOf(" ", name.lastIndexOf("@")));
-                        tempItem.name = "(PrevQuery)" + name;
+                        tempItem.name = "(PrevQuery) " + name;
                         tempItem.tooltip = name;
                         tempItem.isSynonym = "false";
                         tempItem.hlevel = 0;
