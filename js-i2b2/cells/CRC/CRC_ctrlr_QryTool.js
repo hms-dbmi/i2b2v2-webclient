@@ -10,21 +10,23 @@
 
 i2b2.CRC.ctrlr.QT = new QueryToolController();
 function QueryToolController() {
-    i2b2.CRC.model.queryCurrent = {};
-    this.queryNameDefault = 'New Query';
-
 // ================================================================================================== //
     this.doSetQueryName = function(inName) {
-        i2b2.CRC.model.queryCurrent.name = inName;
+        i2b2.CRC.model.query.name = inName;
     };
 
 // ================================================================================================== //
     this.clearQuery = function() {
         i2b2.CRC.model.query = {
-            name: 'default query name',
+            name: 'New Query',
             groups: []
         };
     };
+
+// run the clear the first time to initialize data structures.
+    this.clearQuery();
+
+
 
 // ================================================================================================== //
     this.doQueryLoad = function(qm_id) {  // function to reload query from Query History or Workspace

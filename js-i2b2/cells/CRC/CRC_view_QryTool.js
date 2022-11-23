@@ -770,6 +770,7 @@ i2b2.CRC.view.QT.render = function() {
 // ==================================================================================================
 i2b2.CRC.view.QT.labValue = {};
 
+// ==================================================================================================
 i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
     let eventIdx = $(evt.target).closest('.event').data('eventidx');
@@ -778,6 +779,7 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
     i2b2.CRC.view.QT.labValue.showLabValues(sdx);
 };
 
+// ==================================================================================================
 i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
     let labValuesCallback = function() {
@@ -1183,6 +1185,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
         i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
     });
 };
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.clearAll = function(){
     // only run if the query has entries
