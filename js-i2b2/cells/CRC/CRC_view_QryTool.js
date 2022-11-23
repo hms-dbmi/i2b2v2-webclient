@@ -440,12 +440,6 @@ i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget)
 };
 // ================================================================================================== //
 
-i2b2.CRC.view.QT.clearQuery = function() {
-    i2b2.CRC.view.QT.updateQueryName();
-    i2b2.CRC.view.QT.render();
-}
-// ================================================================================================== //
-
 i2b2.CRC.view.QT.isValidDate = function(dateStr) {
     let dateVal = String(dateStr);
 
@@ -1205,7 +1199,8 @@ i2b2.CRC.view.QT.clearAll = function(){
     // only run if the query has entries
     if (i2b2.CRC.model.query.groups.length === 0) return;
     i2b2.CRC.ctrlr.QT.clearQuery();
-    i2b2.CRC.view.QT.clearQuery();
+    i2b2.CRC.view.QT.updateQueryName();
+    i2b2.CRC.view.QT.render();
     i2b2.CRC.view.QS.clearStatus();
 }
 
