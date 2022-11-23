@@ -19,8 +19,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
     retCommObj.globalParams = {}; //TODO: remove this => new Hash;
     retCommObj.cellParams = {}; //TODO: remove this => new Hash;
     retCommObj._commData = {};
-    // setup for sniffer message
-    retCommObj._SniffMsg =  $.Callbacks(); //TODO: remove this => new YAHOO.util.CustomEvent('CellCommMessage');
 
     retCommObj._addFunctionCall = function(name, url_string, xmlmsg, escapeless_params, parseFunc){
         var protectedNames = ["ParentCell", "globalParams", "cellParams", "_commMsgs", "_addFunctionCall", "_doSendMsg", "_defaultCallbackOK", "_defaultCallbackFAIL"];
@@ -45,16 +43,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
             // - the parse() function is responsible for creating and populating the "model" namespace withing the communicator packet.
             this._commData[name].parser = parseFunc;
         }
-        // register with the sniffer subsystem
-        //    channelName: "CELLNAME",
-        //    channelActions: ["the names", "of the", "Cell's server calls"],
-        //    channelSniffEvent: {yui custom event}
-        var msg = {
-            channelName: this.ParentCell,
-            channelActions: Object.keys(this._commData),
-            channelSniffEvent: this._SniffMsg
-        };
-        i2b2.hive.MsgSniffer.RegisterMessageSource(msg);
     };
 
 
@@ -298,12 +286,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
             cbMsg.parse = execBubble.self._commData[execBubble.funcName].parser;
         }
 
-        // send the result message to the callback function
-        if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)){
-            // broadcast a debug message to any sniffers/tools
-            var sniffPackage = i2b2.h.BuildSniffPack(execBubble.cellName, execBubble.funcName, cbMsg, execBubble.reqOrigin);
-            execBubble.self._SniffMsg.fire(sniffPackage);
-        }
         // return results to caller
         if (origCallback !== undefined )
         if (i2b2.h.getObjectClass(origCallback)=='i2b2_scopedCallback') {
@@ -334,13 +316,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
             error: true
         };
 
-        // broadcast a debug message to any sniffers/tools
-        // send the result message to the callback function
-        if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)){
-            // broadcast a debug message to any sniffers/tools
-            var sniffPackage = i2b2.h.BuildSniffPack(execBubble.cellName, execBubble.funcName, cbMsg, execBubble.reqOrigin);
-            execBubble.self._SniffMsg.fire(sniffPackage);
-        }
         // return results to caller
         if (origCallback !== undefined)
         if (i2b2.h.getObjectClass(origCallback)=='i2b2_scopedCallback') {
