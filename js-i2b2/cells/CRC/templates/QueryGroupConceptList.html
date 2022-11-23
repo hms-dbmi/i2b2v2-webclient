@@ -26,7 +26,9 @@
         -->
         {{/if}}
         {{#ifeq this.sdxInfo.sdxType "CONCPT"}}
-            <i class="bi bi-calendar-day dateConstraint" title="Set Date Constraint"></i>
+            {{#ifeq this.withDates true}}
+                <i class="bi bi-calendar-day dateConstraint" title="Set Date Constraint"></i>
+            {{/ifeq}}
             <i class="bi bi-info-circle info" title="More info about term"></i>
         {{/ifeq}}
         <i class="bi bi-x-circle delete" title="Remove"></i>
