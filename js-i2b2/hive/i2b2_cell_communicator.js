@@ -68,12 +68,12 @@ i2b2.hive.communicatorFactory = function(cellCode){
             params: parameters
         };
         // mix in our transport options from the originator call
-        $.extend(commOptions, transportOptions);
+        Object.assign(commOptions, transportOptions);
         // if no callback is set then we want to make this interaction synchronous
         if (!callback) { commOptions.asynchronous = false; }
         // collect message values
         var sMsgValues = {};
-        $.extend(sMsgValues, parameters);
+        Object.assign(sMsgValues, parameters);
         // proxy server data
         sMsgValues.proxy_info = '';
         if (commOptions.url !== undefined) {
@@ -180,10 +180,8 @@ i2b2.hive.communicatorFactory = function(cellCode){
         ];
         var tmp = Object.keys(commOptions);
         tmp = tmp.filter(function(v) { return (removeKeys.indexOf(v) === -1) });
-        console.groupEnd();
         execBubble.timeSent = new Date();
         commOptions.i2b2_execBubble = execBubble;
-
 
         var myCallback = {
                   success: function(o) {
@@ -224,7 +222,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
                 .done(myCallback.success)
                 .fail(myCallback.failure);
         }
-        console.groupEnd();
         return true;
     };
 

@@ -150,7 +150,7 @@ function i2b2_BaseCell(configObj) {
                 // copy all params to all View Controllers
                 for (var i in i2b2[cellCode].view) {
                     if (i2b2.h.getObjectClass(i2b2[cellCode].view[i]) == 'i2b2Base_cellViewController') {
-                        i2b2[cellCode].view[i].params = $.extend({}, i2b2[cellCode].cfg.params);
+                        i2b2[cellCode].view[i].params = Object.assign({}, i2b2[cellCode].cfg.params);
                     }
                 }
                 // send the signal that the Cell is now loaded
