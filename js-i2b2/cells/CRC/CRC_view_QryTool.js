@@ -371,12 +371,14 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     temp = eventData.concepts.filter((term)=>{ return term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue; });
     if (temp.length === 0) {
         //add date constraint to concept if there is a group date range specified{
-        if(i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange !== undefined &&
-            (sdx.dateRange === undefined || (sdx.dateRange.start === 0 && sdx.dateRange.end.length === 0))){
-
-            if(sdx.dateRange === undefined) sdx.dateRange = {start: "", end: ""};
-            sdx.dateRange.start = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange.start;
-            sdx.dateRange.end = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange.end;
+        if (i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange !== undefined &&
+            (sdx.dateRange === undefined || (sdx.dateRange.start === 0 && sdx.dateRange.end.length === 0))) {
+            // only include date range for specific SDX types
+            if (["CONCPT"].includes(sdx.sdxInfo.sdxType)) {
+                if (sdx.dateRange === undefined) sdx.dateRange = {start: "", end: ""};
+                sdx.dateRange.start = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange.start;
+                sdx.dateRange.end = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange.end;
+            }
         }
 
         // not a duplicate, add to the event's term list
@@ -685,7 +687,7 @@ i2b2.CRC.view.QT.render = function() {
 
         let isValidDate = funcValidateDate(event);
 
-        if(isValidDate) {
+        if (isValidDate) {
 
             if (jqTarget.hasClass('DateStart') || jqTarget.hasClass('DateRange1Start') || jqTarget.hasClass('DateRange2Start')) {
                 qgData.events[eventIdx].dateRange.start = event.target.value;
@@ -699,12 +701,15 @@ i2b2.CRC.view.QT.render = function() {
 
             if(qgData.events[eventIdx].concepts && qgData.events[eventIdx].concepts.length > 0) {
                 qgData.events[eventIdx].concepts.forEach(concept => {
-                    if (concept.dateRange === undefined) concept.dateRange = {
-                        "start": "",
-                        "end": ""
-                    };
-                    concept.dateRange.start = qgData.events[eventIdx].dateRange.start;
-                    concept.dateRange.end = qgData.events[eventIdx].dateRange.end;
+                    // only include date range for specific SDX types
+                    if (["CONCPT"].includes(concept.sdxInfo.sdxType)) {
+                        if (concept.dateRange === undefined) concept.dateRange = {
+                            "start": "",
+                            "end": ""
+                        };
+                        concept.dateRange.start = qgData.events[eventIdx].dateRange.start;
+                        concept.dateRange.end = qgData.events[eventIdx].dateRange.end;
+                    }
                 });
 
                 let temp = $(event.target).closest(".event");
@@ -740,7 +745,7 @@ i2b2.CRC.view.QT.render = function() {
     $('body').on('click', '.refreshStartDate, .refreshEndDate', (event) => {
         let jqTarget = $(event.target);
         let dateElement = jqTarget.parents(".dateRange").find(".DateStart");
-        if(dateElement.length === 0){
+        if (dateElement.length === 0) {
             dateElement = jqTarget.parents(".dateRange").find(".DateEnd");
         }
         dateElement.val("");
