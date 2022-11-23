@@ -84,7 +84,6 @@ i2b2.ONT.ctrlr.gen.loadCategories = function() {
     i2b2.ONT.model.Categories = undefined;
     // create a scoped callback message to pass the XML to our function defined above
     let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
-        console.group("CALLBACK Processing AJAX i2b2CellMsg");
         i2b2.ONT.model.Categories = [];
         if (!i2b2CellMsg.error) {
             let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
