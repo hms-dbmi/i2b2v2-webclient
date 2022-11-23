@@ -123,7 +123,7 @@ window.addEventListener(i2b2.MSG_TYPES.TUNNEL.LIB_INIT, function(event) {
                         resolve(resultMsg.functionResults);
                     }).catch((resultMsg) => {
                         // TODO: Meaningful error message generated here
-                        console.error(resultMsg.errorMsg);
+                        console.error(i2b2.h.StripCRLF(resultMsg.errorMsg));
                         reject();
                     });
                 })
@@ -162,7 +162,7 @@ window.addEventListener(i2b2.MSG_TYPES.TUNNEL.LIB_INIT, function(event) {
             }
             // run the SetVar request, assume success, throw error if promise rejects one
             cl_func_tunnelSendVariableReq(prop, "WRITE", value).catch((errEvent) => {
-                if (errEvent.errorData) console.error(errEvent.errorData);
+                if (errEvent.errorData) console.error(i2b2.h.StripCRLF(errEvent.errorData));
                 throw new Error("AuthorizedTunnel:SetVariable['"+prop+"'] operation generated the error: " +errEvent.errorMsg);
             });
         }

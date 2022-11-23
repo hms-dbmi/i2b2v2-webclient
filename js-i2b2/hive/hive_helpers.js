@@ -295,5 +295,12 @@ i2b2.h.BuildSniffPack = function(cellName, cellFuncName, results, signalOrigin) 
 
 
 // ================================================================================================== //
+i2b2.h.StripCRLF = function(input) {
+    let ret = String(input).replace(/\r/g, ">");
+    return ret.replace(/\n/g, ">");
+};
+
+
+// ================================================================================================== //
 console.timeEnd('execute time');
 console.groupEnd();
