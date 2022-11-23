@@ -205,5 +205,3 @@ i2b2.ONT.view.search.initSearchOptions = function(){
         }).closest("li").addClass("highlight-menu-item");
     });
 };
-
-//================================================================================================== //

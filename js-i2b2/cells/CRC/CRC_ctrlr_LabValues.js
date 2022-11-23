@@ -5,8 +5,6 @@
  * @author		Marc-Danie Nazaire
  * ----------------------------------------------------------------------------------------
  */
-console.group('Load & Execute component file: CRC > ctrlr > LabValues');
-console.time('execute time');
 // ================================================================================================== //
 
 
@@ -321,8 +319,3 @@ i2b2.CRC.ctrlr.labValues = {
         this.extractedModel.rangeInfo.total = nSituation;
     }
 };
-
-
-// ================================================================================================== //
-console.timeEnd('execute time');
-console.groupEnd();

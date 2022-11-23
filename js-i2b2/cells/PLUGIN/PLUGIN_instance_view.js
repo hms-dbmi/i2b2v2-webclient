@@ -33,9 +33,10 @@ i2b2.PLUGIN.view.newInstance = function(pluginId) {
 };
 
 //================================================================================================== //
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
     if (cell.cellCode === "PLUGIN") {
-        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.PLUGIN.view",
             (function (container, scope) {
@@ -65,4 +66,4 @@ i2b2.events.afterCellInit.add((function(cell){
             }).bind(this)
         );
     }
-}));
+});

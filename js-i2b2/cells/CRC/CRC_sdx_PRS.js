@@ -5,9 +5,6 @@
  * @version 	2.0
  * @see 		i2b2.sdx
  **/
-console.group('Load & Execute component file: CRC > SDX > Patient Record Set');
-console.time('execute time');
-
 
 i2b2.sdx.TypeControllers.PRS = {};
 i2b2.sdx.TypeControllers.PRS.model = {};
@@ -208,7 +205,3 @@ i2b2.sdx.TypeControllers.PRS.dragStartHandler = function(i2b2Data) {
     return i2b2Data;
 };
 
-
-// ==========================================================================
-console.timeEnd('execute time');
-console.groupEnd();

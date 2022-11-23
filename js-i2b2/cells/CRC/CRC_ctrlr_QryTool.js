@@ -7,10 +7,7 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: CRC > ctrlr > QueryTool');
-console.time('execute time');
- 
- 
+
 i2b2.CRC.ctrlr.QT = new QueryToolController();
 function QueryToolController() {
     i2b2.CRC.model.queryCurrent = {};
@@ -527,7 +524,3 @@ function QueryToolController() {
         i2b2.CRC.model.transformedQuery = transformedModel;
     };
 }
-
-
-console.timeEnd('execute time');
-console.groupEnd();

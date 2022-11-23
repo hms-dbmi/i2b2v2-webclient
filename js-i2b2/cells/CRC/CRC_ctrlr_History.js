@@ -7,8 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: CRC > ctrlr > History');
-console.time('execute time');
 
 
 i2b2.CRC.ctrlr.history = {
@@ -303,8 +301,3 @@ i2b2.CRC.ctrlr.history = {
 // ================================================================================================== //
 i2b2.CRC.ctrlr.history.events = new Object;
 i2b2.CRC.ctrlr.history.events.onDataUpdate = $.Callbacks();
-
-
-// ================================================================================================== //
-console.timeEnd('execute time');
-console.groupEnd();

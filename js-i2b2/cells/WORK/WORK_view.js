@@ -1,6 +1,3 @@
-console.group('Load & Execute component file: WORK > view > main');
-console.time('execute time');
-
 
 i2b2.WORK.view.main = new i2b2Base_cellViewController(i2b2.WORK, 'main');
 
@@ -344,9 +341,10 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
     $("#WKContextMenuDialog").modal('show');
 }
 // =========================================================
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
     if (cell.cellCode === "WORK") {
-        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.WORK.view.main",
             (function (container, scope) {
@@ -457,9 +455,4 @@ i2b2.events.afterCellInit.add((function(cell){
             }).bind(this)
         );
     }
-}));
-
-
-// =========================================================
-console.timeEnd('execute time');
-console.groupEnd();
+});

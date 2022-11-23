@@ -7,9 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 2-3-2022: Relaunch [Nick Benik]
  */
-console.group('Load & Execute component file: CRC > ctrlr > QueryRunner');
-console.time('execute time');
-
 
 i2b2.CRC.ctrlr.QR = new QueryRunner();
 function QueryRunner() {
@@ -120,7 +117,3 @@ function QueryRunner() {
 
     };
 }
-
-
-console.timeEnd('execute time');
-console.groupEnd();

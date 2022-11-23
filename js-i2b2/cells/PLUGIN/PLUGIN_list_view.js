@@ -14,6 +14,7 @@ i2b2.PLUGIN.view.list.mode = {
     SUMMARY: "SUMMARY"
 };
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.buildListCategory = function() {
 
     let pluginsListCategories = [i2b2.PLUGIN.view.list.category.ALL];
@@ -34,8 +35,8 @@ i2b2.PLUGIN.view.list.buildListCategory = function() {
     pluginsListCategories.sort();
     return pluginsListCategories;
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.buildListData = function(mode, category, searchString){
     let xIconVarName = 'size32x32';
     if(mode === i2b2.PLUGIN.view.list.mode.SUMMARY){
@@ -100,8 +101,8 @@ i2b2.PLUGIN.view.list.buildListData = function(mode, category, searchString){
 
     return pluginsListData;
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.load = function(template){
     let pluginListCategory = i2b2.PLUGIN.view.list.buildListCategory();
     let pluginTemplateData = {"pluginCategory": pluginListCategory};
@@ -120,20 +121,20 @@ i2b2.PLUGIN.view.list.load = function(template){
         error: (error) => { console.error("Could not retrieve template: PluginListing.html"); }
     });
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.filterByCategory = function(category){
     let listMode = $("#pluginListMode").val();
     i2b2.PLUGIN.view.list.renderList(listMode, category);
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.changeListMode = function(listMode){
     let category =  $("#pluginCategory").val();
     i2b2.PLUGIN.view.list.renderList(listMode, category);
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.renderList = function(listMode, category, searchString){
 
     let pluginsListData = i2b2.PLUGIN.view.list.buildListData(listMode, category, searchString);
@@ -152,29 +153,29 @@ i2b2.PLUGIN.view.list.renderList = function(listMode, category, searchString){
     pluginList.empty();
     $(i2b2.PLUGIN.view.list.pluginListTemplate(pluginTemplateData)).appendTo(pluginList);
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.loadPlugin= function(pluginId, isLegacy){
     i2b2.PLUGIN.view.newInstance(pluginId, isLegacy === 'true');
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.resetSearchPluginList= function(){
     $("#pluginListMode").val(i2b2.PLUGIN.view.list.mode.DETAIL);
     $("#pluginCategory").val(i2b2.PLUGIN.view.list.category.ALL);
     $("#pluginSearchText").val("");
     i2b2.PLUGIN.view.list.renderList(i2b2.PLUGIN.view.list.mode.DETAIL, i2b2.PLUGIN.view.list.category.ALL);
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.searchPluginList= function(){
     let category =  $("#pluginCategory").val();
     let listMode = $("#pluginListMode").val();
     let searchString = $("#pluginSearchText").val();
     i2b2.PLUGIN.view.list.renderList(listMode, category, searchString);
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.updateCategories = function(){
     let pluginListCategory = i2b2.PLUGIN.view.list.buildListCategory();
     let pluginTemplateData = {"pluginCategory": pluginListCategory};
@@ -183,8 +184,8 @@ i2b2.PLUGIN.view.list.updateCategories = function(){
     $(i2b2.PLUGIN.view.list.listContainerTemplate(pluginTemplateData)).appendTo(pluginListing);
     i2b2.PLUGIN.view.list.changeListMode(i2b2.PLUGIN.view.list.mode.DETAIL);
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.updatePluginDescription = function(){
     let pluginListCategory = i2b2.PLUGIN.view.list.buildListCategory();
     let pluginTemplateData = {"pluginCategory": pluginListCategory};
@@ -193,8 +194,8 @@ i2b2.PLUGIN.view.list.updatePluginDescription = function(){
     $(i2b2.PLUGIN.view.list.listContainerTemplate(pluginTemplateData)).appendTo(pluginListing);
     i2b2.PLUGIN.view.list.changeListMode(i2b2.PLUGIN.view.list.mode.DETAIL);
 };
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PLUGIN.view.list.onPluginFrameLoad = function(){
 
     if(!i2b2.PM.model.data.loginXMLStr)
@@ -206,10 +207,13 @@ i2b2.PLUGIN.view.list.onPluginFrameLoad = function(){
     let loginData = JSON.stringify(i2b2.PM.model.data);
     document.getElementById("pluginframe").contentWindow.postMessage(loginData, window.location.origin);
 };
+
+
 // ================================================================================================== //
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
     if (cell.cellCode === "PLUGIN") {
-        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.PLUGIN.view.list",
             (function (container, scope) {
@@ -239,8 +243,9 @@ i2b2.events.afterCellInit.add((function(cell){
             }).bind(this)
         );
     }
-}));
+});
 
+// ================================================================================================== //
 window.addEventListener("message", (event) => {
     // security check and make sure that we only listen to messages from the legacy listing window
     if (event.origin === window.location.origin && i2b2.PLUGIN.view.list.listingEventWindow === event.source) {

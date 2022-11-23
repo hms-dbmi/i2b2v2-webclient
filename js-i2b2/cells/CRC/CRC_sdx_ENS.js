@@ -7,9 +7,6 @@
  * @see 		i2b2.sdx
  * ----------------------------------------------------------------------------------------
  */
-console.group('Load & Execute component file: CRC > SDX > Encounter Record Set');
-console.time('execute time');
-
 
 i2b2.sdx.TypeControllers.ENS = {};
 i2b2.sdx.TypeControllers.ENS.model = {};
@@ -191,8 +188,3 @@ i2b2.sdx.TypeControllers.ENS.dragStartHandler = function(i2b2Data) {
     if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
     return i2b2Data;
 };
-
-
-// ==========================================================================
-console.timeEnd('execute time');
-console.groupEnd();

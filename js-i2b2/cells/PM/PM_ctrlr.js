@@ -4,19 +4,15 @@
  * @namespace	i2b2.PM
  * @version 	2.0
  **/
-console.group('Load & Execute component file: cells > PM > ctrlr');
-console.time('execute time');
-
 
 // display the modal login form after the PM cell is fully loaded
 // ================================================================================================== //
-i2b2.events.afterCellInit.add(
-    (function(cell_ref){
-        if (cell_ref.cellCode === "PM") {
-            console.warn("PM CELL: Load the login form");
+i2b2.events.afterCellInit.add((cell) => {
+        if (cell.cellCode === "PM") {
+            console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
             i2b2.PM.doLoginDialog();
         }
-    })
+    }
 );
 
 // ================================================================================================== //
@@ -617,8 +613,3 @@ i2b2.PM.trigger_WDT = function() {
         i2b2.hive.loadMonitor();
     }
 };
-
-
-// ================================================================================================== //
-console.timeEnd('execute time');
-console.groupEnd();

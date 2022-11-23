@@ -9,11 +9,9 @@ i2b2.hive.communicatorFactory = function(cellCode){
 
     try {
         var cellURL = i2b2[cellCode].cfg.cellURL;
-    }
-    catch (e) {}
-    if (!cellURL) {
-        console.warn("communicatorFactory: '"+cellCode+"' does not have a cellURL specified");
-    }
+    } catch (e) {}
+
+    if (!cellURL) console.warn("communicatorFactory: '"+cellCode+"' does not have a cellURL specified");
 
     function i2b2Base_communicator(){}
     var retCommObj = new i2b2Base_communicator;
@@ -253,11 +251,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         i2b2.PM.model.IdleTimer.resetTimeout();
 
         // debug messages
-        if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)) {
-            console.group("[AJAX RESULT i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName + "]");
-            console.info("AJAX Transport SUCCESS");
-            console.dir(transport);
-        }
+        console.info("[AJAX SUCCESS] i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName);
 
         // create our data message to send to the callback function
         var cbMsg = {
@@ -303,7 +297,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
         else {
             cbMsg.parse = execBubble.self._commData[execBubble.funcName].parser;
         }
-        console.groupEnd();
 
         // send the result message to the callback function
         if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)){
@@ -327,9 +320,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         execBubble.timeRecv = new Date();
         var origCallback = execBubble.callback;
 
-        console.group("[AJAX RESULT i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName + "]");
-        console.error("AJAX Transport FAILURE");
-        console.dir(transport);
+        console.error("[AJAX FAILURE] i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName);
 
         // create our data message to send to the callback fuction
         var cbMsg = {
@@ -342,6 +333,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
             proxyUrl: execBubble.proxyURL,
             error: true
         };
+
         // broadcast a debug message to any sniffers/tools
         // send the result message to the callback function
         if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)){
@@ -360,5 +352,3 @@ i2b2.hive.communicatorFactory = function(cellCode){
 
     return retCommObj;
 };
-
-

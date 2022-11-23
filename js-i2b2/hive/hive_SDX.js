@@ -4,8 +4,6 @@
  * @namespace	i2b2
  * @version 	2.0
  **/
-console.group('Load & Execute component file: hive > SDX');
-console.time('execute time');
 
 i2b2.sdx.Master = {};
 i2b2.sdx.TypeControllers = {};
@@ -434,8 +432,3 @@ document.addEventListener("dragstart", function(event) {
 document.addEventListener("dragend", function(event) {
     $(".i2b2DropTarget").removeClass("i2b2DropPrep");
 }, false);
-
-
-// ================================================================================================== //
-console.timeEnd('execute time');
-console.groupEnd();

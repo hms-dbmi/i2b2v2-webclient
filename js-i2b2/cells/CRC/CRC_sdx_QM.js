@@ -7,9 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: CRC > SDX > QueryMaster');
-console.time('execute time');
-
 
 i2b2.sdx.TypeControllers.QM = {};
 i2b2.sdx.TypeControllers.QM.model = {};
@@ -194,8 +191,3 @@ i2b2.sdx.TypeControllers.QM.dragStartHandler = function(i2b2Data) {
     if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
     return i2b2Data;
 };
-
-
-// ==========================================================================
-console.timeEnd('execute time');
-console.groupEnd();

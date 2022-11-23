@@ -7,9 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: cells > PM > misc');
-console.time('execute time');
-
 
 // helper functions in the object scope
 // ================================================================================================== //
@@ -140,7 +137,3 @@ i2b2.PM.model.IdleTimer.add(function(eventName){
                
 // TODO: Reimplement project selection
 // TODO: Reimplement announcement modal on login
-
-
-console.timeEnd('execute time');
-console.groupEnd();

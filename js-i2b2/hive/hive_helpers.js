@@ -4,9 +4,6 @@
  * @namespace	i2b2.h
  * @version 	2.0
  **/
-console.group('Load & Execute component file: hive > helpers');
-console.time('execute time');
-
 
 if (typeof i2b2.h === "undefined") i2b2.h = {};
 
@@ -299,8 +296,3 @@ i2b2.h.StripCRLF = function(input) {
     let ret = String(input).replace(/\r/g, ">");
     return ret.replace(/\n/g, ">");
 };
-
-
-// ================================================================================================== //
-console.timeEnd('execute time');
-console.groupEnd();

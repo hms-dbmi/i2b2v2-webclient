@@ -4,9 +4,6 @@
  * @namespace	i2b2.sdx.TypeControllers.CONCPT
  * @version 	2.0
  **/
-console.group('Load & Execute component file: ONT > SDX > CONCPT');
-console.time('execute time');
-
 
 i2b2.sdx.TypeControllers.CONCPT = {};
 i2b2.sdx.TypeControllers.CONCPT.model = {};
@@ -517,8 +514,3 @@ i2b2.sdx.TypeControllers.CONCPT.dragStartHandler = function(i2b2Data) {
     if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
     return i2b2Data;
 };
-
-
-// *********************************************************************************
-console.timeEnd('execute time');
-console.groupEnd();

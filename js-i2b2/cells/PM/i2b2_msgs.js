@@ -9,7 +9,7 @@
  */
 
 i2b2.PM.model.attemptingLogin = false;
-i2b2.PM.cfg.msgs = {};	
+i2b2.PM.cfg.msgs = {};
 i2b2.PM.cfg.parsers = {};
 // create the communicator Object
 i2b2.PM.ajax = i2b2.hive.communicatorFactory("PM");

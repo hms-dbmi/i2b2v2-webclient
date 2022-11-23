@@ -7,8 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: CRC > view > History');
-console.time('execute time');
 
 
 // create and save the screen objects
@@ -171,10 +169,10 @@ i2b2.CRC.view.history.doRefreshAll = function() {
 
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
         if (cell.cellCode === "CRC") {
-// =========================================================
-            console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+            console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
             // ___ Register this view with the layout manager ____________________
             i2b2.layout.registerWindowHandler("i2b2.CRC.view.history",
                 (function (container, scope) {
@@ -245,12 +243,8 @@ i2b2.events.afterCellInit.add((function(cell){
                     i2b2.CRC.view.history.treeviewFinder.on('onDrag', i2b2.sdx.Master.onDragStart);
 
 
-
                     // call the loading request for the history navigation view
                     i2b2.CRC.view.history.LoadQueryMasters();
-
-
-
 
 
                     // -------------------- setup context menu --------------------
@@ -319,10 +313,5 @@ i2b2.events.afterCellInit.add((function(cell){
                 }).bind(this)
             );
         }
-}));
-console.info("SUBSCRIBED TO i2b2.events.afterCellInit");
+});
 
-
-// =========================================================
-console.timeEnd('execute time');
-console.groupEnd();

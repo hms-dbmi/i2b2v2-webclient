@@ -1,6 +1,3 @@
-console.group('Load & Execute component file: WORK > ctrl > general');
-console.time('execute time');
-
 
 // ======================================================================================
 i2b2.WORK.ctrlr.refreshAll = function(view_component) {
@@ -453,8 +450,3 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
     }
     i2b2.WORK.ajax.addChild("WORK:Workplace", varInput, scopedCallback);
 };
-
-
-// ======================================================================================
-console.timeEnd('execute time');
-console.groupEnd();

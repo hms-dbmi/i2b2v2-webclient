@@ -150,10 +150,12 @@ i2b2.ONT.view.info = {
 
 
 
+// This is done once the entire cell has been loaded
 //================================================================================================== //
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
     if (cell.cellCode === "ONT") {
-        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.ONT.view.info",
             (function (container, scope) {
@@ -182,4 +184,4 @@ i2b2.events.afterCellInit.add((function(cell){
             }).bind(this)
         );
     }
-}));
+});
