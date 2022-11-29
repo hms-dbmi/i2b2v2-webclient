@@ -57,6 +57,7 @@ i2b2.CRC.ctrlr.QS = {
                     let xml_value = i2b2.h.XPath(temp, 'descendant-or-self::xml_value')[0].firstChild.nodeValue;
                     let xml_v = i2b2.h.parseXml(xml_value);
 
+                    let isPatientCount = false;
                     let params = i2b2.h.XPath(xml_v, 'descendant::data[@column]/text()/..');
                     for (let i2 = 0; i2 < params.length; i2++) {
                         let name = params[i2].getAttribute("name");
@@ -173,13 +174,11 @@ i2b2.CRC.ctrlr.QS = {
             rec.QRS_Status = "PROCESSING";
 
             if (rec.QRS_time) {
-                let t = '<font color="';
                 // display status of query in box
                 switch (rec.QRS_Status) {
                     case "ERROR":
-                        //i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '<div style="clear:both; height:16px; line-height:16px; "><div style="float:left; font-weight:bold; height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#dd0000">ERROR</font></div>';
                         breakdown.title = rec.title;
-                        breakdown.result = {statusMessage: "ERROR"};
+                        breakdown.statusMessage =  "ERROR";
                         i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
                         foundError = true;
                         break;
@@ -190,17 +189,14 @@ i2b2.CRC.ctrlr.QS = {
                     case "INCOMPLETE":
                     case "WAITTOPROCESS":
                     case "PROCESSING":
-                        //i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '<div style="clear:both; height:16px;line-height:16px; "><div style="float:left; font-weight:bold;  height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#00dd00">PROCESSING</font></div>';
                         breakdown.title = rec.title;
-                        breakdown.result = {statusMessage: "PROCESSING"};
+                        breakdown.statusMessage = "PROCESSING";
                         i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
                         alert('Your query has timed out and has been rescheduled to run in the background.  The results will appear in "Previous Queries"');
                         foundError = true;
                         break;
                 }
-                t += '</font> ';
             }
-            i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '</div>';
             if (foundError === false) {
                 if (rec.QRS_DisplayType === "CATNUM") {
                     i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
