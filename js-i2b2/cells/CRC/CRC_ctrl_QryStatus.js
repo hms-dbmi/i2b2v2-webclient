@@ -171,8 +171,6 @@ i2b2.CRC.ctrlr.QS = {
                 statusMessage: null
             };
 
-            rec.QRS_Status = "PROCESSING";
-
             if (rec.QRS_time) {
                 // display status of query in box
                 switch (rec.QRS_Status) {
