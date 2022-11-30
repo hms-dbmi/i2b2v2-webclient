@@ -501,25 +501,15 @@ i2b2.CRC.view.QT.render = function() {
         $('.DateRange2Start', newQG).datepicker({uiLibrary: 'bootstrap4'});
         $('.DateRange2End', newQG).datepicker({uiLibrary: 'bootstrap4'});
 
-        // attach the i2b2 SDX handlers
-        let dropTarget = $(".Event1Container", newQG);
-        i2b2.sdx.Master.AttachType(dropTarget, "CONCPT");
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "DropHandler", i2b2.CRC.view.QT.DropHandler);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
-        i2b2.sdx.Master.AttachType(dropTarget, "QM");
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "DropHandler", i2b2.CRC.view.QT.DropHandler);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
-        dropTarget = $(".Event2Container", newQG);
-        i2b2.sdx.Master.AttachType(dropTarget, "CONCPT");
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "DropHandler", i2b2.CRC.view.QT.DropHandler);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
-        i2b2.sdx.Master.AttachType(dropTarget, "QM");
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "DropHandler", i2b2.CRC.view.QT.DropHandler);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+        // attach the i2b2 SDX handlers for each code... on both event1 and event2 containers
+        ["CONCPT","QM","PRS"].forEach((sdxCode) => {
+            [$(".Event1Container", newQG), $(".Event2Container", newQG)].forEach((dropTarget) => {
+                i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
+                i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
+                i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOver", i2b2.CRC.view.QT.HoverOver);
+                i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+            });
+        });
     }
 
     // attach the event listeners
@@ -766,14 +756,12 @@ i2b2.CRC.view.QT.render = function() {
     i2b2.CRC.view.QT._correctQgTitles();
     // wire drop handler to the final query group
     let dropTarget = $(".Event1Container .i2b2DropTarget", newQG);
-    i2b2.sdx.Master.AttachType(dropTarget, "CONCPT");
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
-    i2b2.sdx.Master.AttachType(dropTarget, "QM");
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+    ["CONCPT","QM","PRS"].forEach((sdxType) => {
+        i2b2.sdx.Master.AttachType(dropTarget, sdxType);
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "onHoverOver", i2b2.CRC.view.QT.HoverOver);
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+    });
 };
 // ==================================================================================================
 i2b2.CRC.view.QT.labValue = {};

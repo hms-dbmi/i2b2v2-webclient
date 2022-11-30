@@ -129,7 +129,10 @@ function QueryToolController() {
                                 o.PRS_id = ckey.substring(20);
                                 o.result_instance_id = o.PRS_id ;
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS',o);
+                                sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                                sdxDataNode.renderData.moreDescriptMinor = sdxDataNode.sdxInfo.sdxDisplayName;
+                                sdxDataNode.renderData.title = sdxDataNode.renderData.title.replace("Patient Set for ", "<span class='prevquery'>Patient Set for </span>");
                             } else if (ckey.toLowerCase().startsWith("patient_set_enc_id")) {
                                 let o = {};
                                 o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
@@ -381,14 +384,25 @@ function QueryToolController() {
             tempPanel.items = [];
             qgData.events[0].concepts.forEach((item) => {
                 let tempItem = {};
+                let name;
                 // TODO: how/if we need to handle "<constrain_by_date><date_from/><date_to/></>"
                 switch (item.sdxInfo.sdxType) {
+                    case "PRS":
+                        tempItem.key = "patient_set_coll_id:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                        name = i2b2.h.Escape(item.origData.titleCRC);
+                        let trimPos = name.lastIndexOf(" - ");
+                        name = trimPos === -1 ? name : name.substring(0, trimPos);
+                        tempItem.name = name;
+                        tempItem.tooltip = item.origData.title;
+                        tempItem.isSynonym = "false";
+                        tempItem.hlevel = 0;
+                        break;
                     case "QM":
                         tempItem.key = "masterid:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
-                        let name = i2b2.h.Escape(item.origData.name);
+                        name = i2b2.h.Escape(item.origData.name);
                         name = name.substring(0, name.indexOf(" ", name.lastIndexOf("@")));
                         tempItem.name = "(PrevQuery) " + name;
-                        tempItem.tooltip = name;
+                        tempItem.tooltip = item.origData.name;
                         tempItem.isSynonym = "false";
                         tempItem.hlevel = 0;
                         break;
