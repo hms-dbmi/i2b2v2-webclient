@@ -59,6 +59,14 @@ i2b2.sdx.TypeControllers.PRS.RenderData = function(sdxData, options) {
     } else  {
         nodeInfo.title = sdxData.sdxInfo.sdxDisplayName;
     }
+    nodeInfo.moreDescriptMinor = nodeInfo.title;
+    let temp = sdxData.origData.titleCRC
+    let trimPos = temp.lastIndexOf(" - ");
+    if (trimPos > 0) {
+        nodeInfo.title = temp.substring(0, trimPos);
+    } else {
+        nodeInfo.title = temp;
+    }
 
 
     if (options.showchildren === false) {
