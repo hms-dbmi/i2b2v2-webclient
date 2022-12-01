@@ -306,7 +306,10 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
     // insert the new concept into the record
     let qgIdx = i2b2.CRC.model.query.groups.length - 1;
     let eventIdx = 0;
-    i2b2.CRC.model.query.groups[qgIdx].events[eventIdx].concepts = sdxList;
+
+    sdxList.forEach((sdx) => {
+        i2b2.CRC.view.QT.addConcept(sdx, qgIdx, eventIdx);
+    });
 
     // set additional query group metadata if specified
     if(metadata) {
@@ -341,18 +344,6 @@ i2b2.CRC.view.QT.handleLabValues = function(sdx){
         i2b2.CRC.view.QT.labValue.showLabValues(sdx);
     }
 }
-// ================================================================================================== //
-i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
-    i2b2.CRC.view.QT.addNewQueryGroup([sdx]);
-    i2b2.CRC.view.QT.handleLabValues(sdx);
-    // render the new query group (by re-rendering all the query groups)
-    i2b2.CRC.view.QT.render();
-
-    // update the query name
-    i2b2.CRC.view.QT.updateQueryName();
-    i2b2.CRC.view.QS.clearStatus();
-};
-
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
@@ -361,38 +352,63 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     $(evt.target).closest(".i2b2DropTarget").removeClass("i2b2DropPrep");
 
     let qgIndex = $(evt.target).closest(".QueryGroup").data("queryGroup");
-    let temp = $(evt.target).closest(".event");
-    let eventIdx = temp.data('eventidx');
-    let cncptListEl = $('.TermList', temp[0]);
+    let eventIdx = $(evt.target).closest(".event").data('eventidx');
+
+    i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx);
+};
+
+// ================================================================================================== //
+i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
+    // add the item to the query
+    i2b2.CRC.view.QT.addNewQueryGroup([sdx]);
+
+    // render the new query group (by re-rendering all the query groups)
+    i2b2.CRC.view.QT.render();
+};
+
+// ================================================================================================== //
+i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
+
+    // handle labs processing
     i2b2.CRC.view.QT.isLabs(sdx);
 
+    // mark if dates can be applied to this item
+    sdx.withDates = false;
+    if (["CONCPT"].includes(sdx.sdxInfo.sdxType)) sdx.withDates = true;
+    if (String(sdx.origData.table_name).toLowerCase() === "patient_dimension") sdx.withDates = false;
+
     // add the data to the correct terms list (also prevent duplicates)
-    let eventData = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx];
+    let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
     temp = eventData.concepts.filter((term)=>{ return term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue; });
     if (temp.length === 0) {
         //add date constraint to concept if there is a group date range specified{
-        if(i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange !== undefined &&
-            (sdx.dateRange === undefined || (sdx.dateRange.start === 0 && sdx.dateRange.end.length === 0))){
-
-            if(sdx.dateRange === undefined) sdx.dateRange = {start: "", end: ""};
-            sdx.dateRange.start = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange.start;
-            sdx.dateRange.end = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx].dateRange.end;
+        if (i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange !== undefined &&
+            (sdx.dateRange === undefined || (sdx.dateRange.start === 0 && sdx.dateRange.end.length === 0))) {
+            // only include date range for specific SDX types
+            if (sdx.withDates === true) {
+                if (sdx.dateRange === undefined) sdx.dateRange = {start: "", end: ""};
+                sdx.dateRange.start = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange.start;
+                sdx.dateRange.end = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange.end;
+            }
         }
 
         // not a duplicate, add to the event's term list
         eventData.concepts.push(sdx);
-        // rerender the query event and add to the DOM
-        i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
 
-        if (sdx.isLab) {
-            i2b2.CRC.view.QT.labValue.showLabValues(sdx);
-        }
+        // rerender the query event and add to the DOM
+        const targetQueryGroup = $('.CRC_QT_query .QueryGroup')[groupIdx];
+        const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+        i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+
+        // handle the lab values
+        if (sdx.isLab) i2b2.CRC.view.QT.labValue.showLabValues(sdx);
+
         // update the query name
         i2b2.CRC.view.QT.updateQueryName();
         i2b2.CRC.view.QS.clearStatus();
     }
-
 };
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget) {
     let qgModel = i2b2.CRC.model.query.groups[qgModelIndex];
@@ -422,12 +438,6 @@ i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget)
         i2b2.CRC.view.QT.renderTermList(qgData.events[1], temp);
     }
 };
-// ================================================================================================== //
-
-i2b2.CRC.view.QT.clearQuery = function() {
-    i2b2.CRC.view.QT.updateQueryName();
-    i2b2.CRC.view.QT.render();
-}
 // ================================================================================================== //
 
 i2b2.CRC.view.QT.isValidDate = function(dateStr) {
@@ -491,25 +501,15 @@ i2b2.CRC.view.QT.render = function() {
         $('.DateRange2Start', newQG).datepicker({uiLibrary: 'bootstrap4'});
         $('.DateRange2End', newQG).datepicker({uiLibrary: 'bootstrap4'});
 
-        // attach the i2b2 SDX handlers
-        let dropTarget = $(".Event1Container", newQG);
-        i2b2.sdx.Master.AttachType(dropTarget, "CONCPT");
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "DropHandler", i2b2.CRC.view.QT.DropHandler);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
-        i2b2.sdx.Master.AttachType(dropTarget, "QM");
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "DropHandler", i2b2.CRC.view.QT.DropHandler);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
-        dropTarget = $(".Event2Container", newQG);
-        i2b2.sdx.Master.AttachType(dropTarget, "CONCPT");
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "DropHandler", i2b2.CRC.view.QT.DropHandler);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
-        i2b2.sdx.Master.AttachType(dropTarget, "QM");
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "DropHandler", i2b2.CRC.view.QT.DropHandler);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-        i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+        // attach the i2b2 SDX handlers for each code... on both event1 and event2 containers
+        ["CONCPT","QM","PRS"].forEach((sdxCode) => {
+            [$(".Event1Container", newQG), $(".Event2Container", newQG)].forEach((dropTarget) => {
+                i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
+                i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
+                i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOver", i2b2.CRC.view.QT.HoverOver);
+                i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+            });
+        });
     }
 
     // attach the event listeners
@@ -685,7 +685,7 @@ i2b2.CRC.view.QT.render = function() {
 
         let isValidDate = funcValidateDate(event);
 
-        if(isValidDate) {
+        if (isValidDate) {
 
             if (jqTarget.hasClass('DateStart') || jqTarget.hasClass('DateRange1Start') || jqTarget.hasClass('DateRange2Start')) {
                 qgData.events[eventIdx].dateRange.start = event.target.value;
@@ -699,12 +699,15 @@ i2b2.CRC.view.QT.render = function() {
 
             if(qgData.events[eventIdx].concepts && qgData.events[eventIdx].concepts.length > 0) {
                 qgData.events[eventIdx].concepts.forEach(concept => {
-                    if (concept.dateRange === undefined) concept.dateRange = {
-                        "start": "",
-                        "end": ""
-                    };
-                    concept.dateRange.start = qgData.events[eventIdx].dateRange.start;
-                    concept.dateRange.end = qgData.events[eventIdx].dateRange.end;
+                    // only include date range for specific SDX types
+                    if (concept.withDates) {
+                        if (concept.dateRange === undefined) concept.dateRange = {
+                            "start": "",
+                            "end": ""
+                        };
+                        concept.dateRange.start = qgData.events[eventIdx].dateRange.start;
+                        concept.dateRange.end = qgData.events[eventIdx].dateRange.end;
+                    }
                 });
 
                 let temp = $(event.target).closest(".event");
@@ -740,7 +743,7 @@ i2b2.CRC.view.QT.render = function() {
     $('body').on('click', '.refreshStartDate, .refreshEndDate', (event) => {
         let jqTarget = $(event.target);
         let dateElement = jqTarget.parents(".dateRange").find(".DateStart");
-        if(dateElement.length === 0){
+        if (dateElement.length === 0) {
             dateElement = jqTarget.parents(".dateRange").find(".DateEnd");
         }
         dateElement.val("");
@@ -753,18 +756,17 @@ i2b2.CRC.view.QT.render = function() {
     i2b2.CRC.view.QT._correctQgTitles();
     // wire drop handler to the final query group
     let dropTarget = $(".Event1Container .i2b2DropTarget", newQG);
-    i2b2.sdx.Master.AttachType(dropTarget, "CONCPT");
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "CONCPT", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
-    i2b2.sdx.Master.AttachType(dropTarget, "QM");
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOver", i2b2.CRC.view.QT.HoverOver);
-    i2b2.sdx.Master.setHandlerCustom(dropTarget, "QM", "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+    ["CONCPT","QM","PRS"].forEach((sdxType) => {
+        i2b2.sdx.Master.AttachType(dropTarget, sdxType);
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "onHoverOver", i2b2.CRC.view.QT.HoverOver);
+        i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+    });
 };
 // ==================================================================================================
 i2b2.CRC.view.QT.labValue = {};
 
+// ==================================================================================================
 i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
     let eventIdx = $(evt.target).closest('.event').data('eventidx');
@@ -773,6 +775,7 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
     i2b2.CRC.view.QT.labValue.showLabValues(sdx);
 };
 
+// ==================================================================================================
 i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
     let labValuesCallback = function() {
@@ -1178,12 +1181,14 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
         i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
     });
 };
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.clearAll = function(){
     // only run if the query has entries
     if (i2b2.CRC.model.query.groups.length === 0) return;
     i2b2.CRC.ctrlr.QT.clearQuery();
-    i2b2.CRC.view.QT.clearQuery();
+    i2b2.CRC.view.QT.updateQueryName();
+    i2b2.CRC.view.QT.render();
     i2b2.CRC.view.QS.clearStatus();
 }
 
