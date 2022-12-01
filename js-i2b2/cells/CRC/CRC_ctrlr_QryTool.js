@@ -317,7 +317,7 @@ function QueryToolController() {
 // ================================================================================================== //
     this.runQuery = function(queryTypes) {
         let params = {
-            result_wait_time: i2b2.CRC.view.QT.params.queryTimeout,
+            result_wait_time: 180, //30, //i2b2.CRC.view.QT.params.queryTimeout,
             psm_query_definition: "",
             psm_result_output: "",
             shrine_topic: ""

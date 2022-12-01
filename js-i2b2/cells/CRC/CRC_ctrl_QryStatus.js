@@ -42,6 +42,8 @@ i2b2.CRC.ctrlr.QS = {
                 };
 
                 let resultType = "";
+                let descriptionShort;
+                let descriptionLong;
                 for (let i = 0; i < l; i++) {
                     let temp = ri_list[i];
                     resultType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
@@ -140,6 +142,9 @@ i2b2.CRC.ctrlr.QS = {
 
         i2b2.CRC.ctrlr.QS.breakdowns.runDuration = s;
         i2b2.CRC.ctrlr.QS.breakdowns.name = i2b2.CRC.ctrlr.QS.QM.name;
+        i2b2.CRC.ctrlr.QS.breakdowns.isRunning = i2b2.CRC.ctrlr.QS.isRunning;
+
+        console.log("getting duration ", s, " name is ", i2b2.CRC.ctrlr.QS.breakdowns.name);
 
         /*if (!i2b2.CRC.ctrlr.QueryStatus.isRunning) {
             //Query Report BG
@@ -195,17 +200,17 @@ i2b2.CRC.ctrlr.QS = {
                         break;
                 }
             }
+
             if (foundError === false) {
                 if (rec.QRS_DisplayType === "CATNUM") {
                     i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
                 } else if ((rec.QRS_DisplayType === "LIST")) {
                     i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
                 }
-            }else{
-                i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QS.breakdowns});
             }
         }
 
+        i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QS.breakdowns});
 
         let func_trim = function(sString) {
             while (sString.substring(0,1) === '\n')
@@ -316,6 +321,7 @@ i2b2.CRC.ctrlr.QS.loadQueryStatus = function(queryMasterId) {
             alert(results.errorMsg);
             return;
         } else {
+            console.log("in qrs looped");
             // find our query instance
             let qrs_list = results.refXML.getElementsByTagName('query_result_instance');
             let l = qrs_list.length;
@@ -374,7 +380,10 @@ i2b2.CRC.ctrlr.QS.loadQueryStatus = function(queryMasterId) {
 i2b2.CRC.ctrlr.QS.startStatus = function(queryName) {
     i2b2.CRC.ctrlr.QS.QRS = {};
     i2b2.CRC.ctrlr.QS.QI = {};
-    i2b2.CRC.ctrlr.QS.QM = {};
+    i2b2.CRC.ctrlr.QS.QM = {
+        name:  queryName
+    };
+    i2b2.CRC.ctrlr.QS.isRunning = true;
 
     i2b2.CRC.view.QS.renderStart();
     i2b2.CRC.view.QS.render({breakdowns: {isProcessing: true, name: queryName}});

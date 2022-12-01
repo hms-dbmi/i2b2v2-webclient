@@ -599,21 +599,21 @@ i2b2.CRC.cfg.msgs.runQueryInstance_fromQueryDefinition = '<?xml version="1.0" en
 '		{{{proxy_info}}}\n'+
 '		<sending_application>\n'+
 '			<application_name>i2b2_QueryTool</application_name>\n'+
-'			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+'			<application_version> 1.6</application_version>\n'+
 '		</sending_application>\n'+
 '		<sending_facility>\n'+
 '			<facility_name>PHS</facility_name>\n'+
 '		</sending_facility>\n'+
 '		<receiving_application>\n'+
 '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
-'			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+'			<application_version>1.6</application_version>\n'+
 '		</receiving_application>\n'+
 '		<receiving_facility>\n'+
 '			<facility_name>PHS</facility_name>\n'+
 '		</receiving_facility>\n'+
 '		<security>\n'+
-'			<domain>{{{sec_domain}}}</domain>\n'+
-'			<username>{{{sec_user}}}</username>\n'+
+'			<domain>i2b2demo</domain>\n'+
+'			<username>demo</username>\n'+
 '			{{{sec_pass_node}}}\n'+
 '		</security>\n'+
 '		<message_type>\n'+
@@ -621,7 +621,7 @@ i2b2.CRC.cfg.msgs.runQueryInstance_fromQueryDefinition = '<?xml version="1.0" en
 '			<event_type>EQQ</event_type>\n'+
 '		</message_type>\n'+
 '		<message_control_id>\n'+
-'			<message_num>{{{header_msg_id}}}</message_num>\n'+
+'			<message_num>PQnkIA9MBkr5DvDg5727f</message_num>\n'+
 '			<instance_num>0</instance_num>\n'+
 '		</message_control_id>\n'+
 '		<processing_id>\n'+
@@ -629,14 +629,14 @@ i2b2.CRC.cfg.msgs.runQueryInstance_fromQueryDefinition = '<?xml version="1.0" en
 '			<processing_mode>I</processing_mode>\n'+
 '		</processing_id>\n'+
 '		<accept_acknowledgement_type>messageId</accept_acknowledgement_type>\n'+
-'		<project_id>{{{sec_project}}}</project_id>\n'+
+'		<project_id>Demo</project_id>\n'+
 '	</message_header>\n'+
 '	<request_header>\n'+
-'		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+'		<result_waittime_ms>180000</result_waittime_ms>\n'+
 '	</request_header>\n'+
 '	<message_body>\n'+
 '		<ns4:psmheader>\n'+
-'			<user group="{{{sec_project}}}" login="{{{sec_user}}}">{{{sec_user}}}</user>\n'+
+'			<user group="Demo" login="demo">demo</user>\n'+
 '			<patient_set_limit>0</patient_set_limit>\n'+
 '			<estimated_time>0</estimated_time>\n'+
 '			<query_mode>optimize_without_temp_table</query_mode>\n'+
@@ -644,7 +644,12 @@ i2b2.CRC.cfg.msgs.runQueryInstance_fromQueryDefinition = '<?xml version="1.0" en
 '		</ns4:psmheader>\n'+
 '		<ns4:request xsi:type="ns4:query_definition_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
 '			{{{psm_query_definition}}}\n'+
-'			{{{psm_result_output}}}\n'+
+'			<result_output_list><result_output priority_index="9" name="patient_count_xml"/>\n' +
+    '<result_output priority_index="10" name="patient_gender_count_xml"/>\n' +
+    '<result_output priority_index="11" name="patient_vitalstatus_count_xml"/>\n' +
+    '<result_output priority_index="12" name="patient_race_count_xml"/>\n' +
+    '<result_output priority_index="13" name="patient_age_count_xml"/>\n' +
+    '</result_output_list>\n\n'+
 '		</ns4:request>\n'+
 '		{{{shrine_topic}}}\n'+
 '	</message_body>\n'+
