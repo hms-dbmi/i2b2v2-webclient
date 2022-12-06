@@ -60,7 +60,7 @@ i2b2.sdx.TypeControllers.PRS.RenderData = function(sdxData, options) {
         nodeInfo.title = sdxData.sdxInfo.sdxDisplayName;
     }
     nodeInfo.moreDescriptMinor = nodeInfo.title;
-    let temp = sdxData.origData.titleCRC
+    let temp = sdxData.origData.titleCRC ? sdxData.origData.titleCRC : nodeInfo.title;
     let trimPos = temp.lastIndexOf(" - ");
     if (trimPos > 0) {
         nodeInfo.title = temp.substring(0, trimPos);
