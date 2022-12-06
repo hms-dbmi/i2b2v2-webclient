@@ -383,7 +383,7 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
     if (temp.length === 0) {
         //add date constraint to concept if there is a group date range specified{
         if (i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange !== undefined &&
-            (sdx.dateRange === undefined || (sdx.dateRange.start.length === 0 && sdx.dateRange.end.length === 0))) {
+            (sdx.dateRange === undefined || (sdx.dateRange.start?.length === 0 && sdx.dateRange.end?.length === 0))) {
             // only include date range for specific SDX types
             if (sdx.withDates === true) {
                 if (sdx.dateRange === undefined) sdx.dateRange = {start: "", end: ""};
