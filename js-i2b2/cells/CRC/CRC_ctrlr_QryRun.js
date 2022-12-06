@@ -99,10 +99,9 @@ function QueryRunner() {
         };
 
         i2b2.CRC.ctrlr.QS.startTime = new Date();
-        //i2b2.CRC.ctrlr.QueryStatus.private_refreshInterrupt = setInterval("i2b2.CRC.ctrlr.QueryStatus.refreshStatus()", 100);
-        //i2b2.CRC.ctrlr.QueryStatus.QM.name = queryName;
 
         i2b2.CRC.ctrlr.QS.startStatus(queryName);
+        i2b2.CRC.ctrlr.QS.refreshInterrupt = setInterval(i2b2.CRC.ctrlr.QS.refreshStatus, 100);
 
         // run query using the passed query definition
         // ==========================================================
