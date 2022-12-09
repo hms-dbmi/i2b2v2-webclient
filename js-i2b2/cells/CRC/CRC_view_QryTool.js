@@ -80,14 +80,23 @@ i2b2.CRC.view.QT.createEventLink = function() {
         aggregateOp1: "FIRST",
         aggregateOp2: "FIRST",
         operator: "LESS",
-        timeSpan: {
-            operator: "GREATEREQUAL",
-            value: null,
-            unit: "DAY"
-        }
+        timeSpan: null
     }
 
     return eventLink;
+};
+
+i2b2.CRC.view.QT.createEvent = function() {
+    let event = {
+        dateRange: {
+            start: "",
+            end: ""
+        },
+        instances: 1,
+        concepts: []
+    };
+
+    return event;
 };
 
 // ================================================================================================== //
@@ -290,28 +299,16 @@ i2b2.CRC.view.QT.HoverOut = function(el) { $(el).closest(".i2b2DropTarget").remo
 // ================================================================================================== //
 i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
     // append the new query group to the data model
-    i2b2.CRC.model.query.groups.push({
+    let newGroup = {
         display: "with",
         with: true,
         without: false,
         when:false,
         eventLinks: [],
-        events: [{
-            dateRange: {
-                start: "",
-                end: ""
-            },
-            instances: 1,
-            concepts: []
-        }, {
-            dateRange: {
-                start: "",
-                end: ""
-            },
-            instances: 1,
-            concepts: []
-        }]
-    });
+        events: []
+    };
+    newGroup.events.push(i2b2.CRC.view.QT.createEvent());
+    i2b2.CRC.model.query.groups.push(newGroup);
 
     // insert the new concept into the record
     let qgIdx = i2b2.CRC.model.query.groups.length - 1;
@@ -536,6 +533,9 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].with = true;
         i2b2.CRC.model.query.groups[qgIndex].without = false;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
+        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [];
+        i2b2.CRC.model.query.groups[qgIndex].events = i2b2.CRC.model.query.groups[qgIndex].events.slice(0,1);
+
         i2b2.CRC.view.QS.clearStatus();
     });
     $('.QueryGroup .topbar .without', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
@@ -549,6 +549,8 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].with = false;
         i2b2.CRC.model.query.groups[qgIndex].without = true;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
+        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [];
+        i2b2.CRC.model.query.groups[qgIndex].events = i2b2.CRC.model.query.groups[qgIndex].events.slice(0,1);
         i2b2.CRC.view.QS.clearStatus();
     });
     $('.QueryGroup .topbar .when', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
@@ -563,6 +565,7 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].without = false;
         i2b2.CRC.model.query.groups[qgIndex].when = true;
         i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
+        i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
         i2b2.CRC.view.QS.clearStatus();
     });
     // Query Group delete button
