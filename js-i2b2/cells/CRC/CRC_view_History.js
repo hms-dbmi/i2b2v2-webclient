@@ -190,20 +190,13 @@ i2b2.CRC.view.history.clickSearchName = function() {
     };
     i2b2.CRC.ajax.getNameInfo("CRC:History", options, scopeCB);
 };
+
 //================================================================================================== //
 i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = this;
     scopedCallback.callback = function(cellResult) {
         i2b2.CRC.view.history.treeview.treeview('clear');
-        // THIS function is used to process the AJAX results of the getChild call
-        //              results data object contains the following attributes:
-        //                      refXML: xmlDomObject <--- for data processing
-        //                      msgRequest: xml (string)
-        //                      msgResponse: xml (string)
-        //                      error: boolean
-        //                      errorStatus: string [only with error=true]
-        //                      errorMsg: string [only with error=true]
 
         // auto-extract SDX objects from returned XML
         cellResult.parse();
@@ -234,6 +227,14 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
             }
             newNodes.push(temp);
         }
+
+        // hide "Load More" link if we have all the records
+        if (newNodes.length < maxRecords) {
+            $('.history-more-bar').addClass("d-none");
+        } else {
+            $('.history-more-bar').removeClass("d-none");
+        }
+
         // push new nodes into the treeview
         i2b2.CRC.view.history.treeview.treeview('addNodes', [newNodes, true]);
 
