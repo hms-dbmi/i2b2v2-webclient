@@ -80,7 +80,7 @@ i2b2.CRC.view.QT.createEventLink = function() {
         aggregateOp1: "FIRST",
         aggregateOp2: "FIRST",
         operator: "LESS",
-        timeSpan: null
+        timeSpans: []
     }
 
     return eventLink;
