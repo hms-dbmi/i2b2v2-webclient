@@ -86,7 +86,6 @@ i2b2.CRC.view.history.loadMore = function() {
 
 // ================================================================================================== //
 i2b2.CRC.view.history.clickSearchName = function() {
-    console.info("CALLED i2b2.CRC.ctrlr.history.clickSearchName()");
     // Hide Navigate treeview and search results message and display search status message
     $("#i2b2TreeviewQueryHistoryFinder").hide();
     $("#i2b2TreeviewQueryHistory").hide();
