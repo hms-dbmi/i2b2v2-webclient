@@ -229,7 +229,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         }
 
         // hide "Load More" link if we have all the records
-        if (newNodes.length < maxRecords) {
+        if (newNodes.length < max) {
             $('.history-more-bar').addClass("d-none");
         } else {
             $('.history-more-bar').removeClass("d-none");
