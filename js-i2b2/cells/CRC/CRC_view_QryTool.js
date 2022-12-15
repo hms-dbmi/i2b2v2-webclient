@@ -80,6 +80,8 @@ i2b2.CRC.view.QT.createEventLink = function() {
         aggregateOp1: "FIRST",
         aggregateOp2: "FIRST",
         operator: "LESS",
+        joinColumn1: "STARTDATE",
+        joinColumn2: "STARTDATE",
         timeSpans: []
     }
 

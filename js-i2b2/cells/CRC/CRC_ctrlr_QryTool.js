@@ -449,8 +449,7 @@ function QueryToolController() {
         transformedModel.queryTiming = "ANY";
         transformedModel.useShrine = false;
         transformedModel.panels = [];
-        transformedModel.subQuery = [];
-        transformedModel.subQueryConst = [];
+        transformedModel.subQueries = [];
         for (let qgIdx=0; qgIdx < i2b2.CRC.model.query.groups.length; qgIdx++) {
             let qgData = i2b2.CRC.model.query.groups[qgIdx];
             let invert = qgData.without === true;
@@ -475,27 +474,28 @@ function QueryToolController() {
                         });
                         if (tempPanel.items.length > 0) {
                             subQuery.panels.push(tempPanel);
-                            transformedModel.subQuery.push(subQuery);
+                            transformedModel.subQueries.push(subQuery);
                         }
                     });
                     let subQueryConstraints  = [];
                     qgData.eventLinks.forEach((link, idx) => {
                         let constraints = {};
                         constraints.firstQuery = {};
-                        constraints.firstQuery.id = transformedModel.subQuery[idx].name;
+                        constraints.firstQuery.id = transformedModel.subQueries[idx].name;
                         constraints.firstQuery.aggregateOp = link.aggregateOp1;
-                        constraints.firstQuery.operator = link.operator;
+                        constraints.firstQuery.joinColumn = link.joinColumn1;
+                        constraints.operator = link.operator;
 
                         constraints.secondQuery = {};
-                        constraints.secondQuery.id = transformedModel.subQuery[idx+1].name;
+                        constraints.secondQuery.id = transformedModel.subQueries[idx+1].name;
                         constraints.secondQuery.aggregateOp = link.aggregateOp2;
-                        constraints.secondQuery.operator = link.operator;
+                        constraints.secondQuery.joinColumn = link.joinColumn2;
                         constraints.timeSpans = link.timeSpans;
 
                         subQueryConstraints.push(constraints);
                     });
 
-                    transformedModel.subQueryConst.push(subQueryConstraints);
+                    transformedModel.subQueryConstraints = subQueryConstraints;
                     break;
                 case "without":
                 case "with":
