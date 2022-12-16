@@ -479,20 +479,23 @@ function QueryToolController() {
                     });
                     let subQueryConstraints  = [];
                     qgData.eventLinks.forEach((link, idx) => {
-                        let constraints = {};
-                        constraints.firstQuery = {};
-                        constraints.firstQuery.id = transformedModel.subQueries[idx].name;
-                        constraints.firstQuery.aggregateOp = link.aggregateOp1;
-                        constraints.firstQuery.joinColumn = link.joinColumn1;
-                        constraints.operator = link.operator;
+                        //check if event has terms
+                        if(transformedModel.subQueries.length > idx+1) {
+                            let constraints = {};
+                            constraints.firstQuery = {};
+                            constraints.firstQuery.id = transformedModel.subQueries[idx].name;
+                            constraints.firstQuery.aggregateOp = link.aggregateOp1;
+                            constraints.firstQuery.joinColumn = link.joinColumn1;
+                            constraints.operator = link.operator;
 
-                        constraints.secondQuery = {};
-                        constraints.secondQuery.id = transformedModel.subQueries[idx+1].name;
-                        constraints.secondQuery.aggregateOp = link.aggregateOp2;
-                        constraints.secondQuery.joinColumn = link.joinColumn2;
-                        constraints.timeSpans = link.timeSpans;
+                            constraints.secondQuery = {};
+                            constraints.secondQuery.id = transformedModel.subQueries[idx + 1].name;
+                            constraints.secondQuery.aggregateOp = link.aggregateOp2;
+                            constraints.secondQuery.joinColumn = link.joinColumn2;
+                            constraints.timeSpans = link.timeSpans;
 
-                        subQueryConstraints.push(constraints);
+                            subQueryConstraints.push(constraints);
+                        }
                     });
 
                     transformedModel.subQueryConstraints = subQueryConstraints;
