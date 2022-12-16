@@ -5,6 +5,6 @@
         <panel_timing>{{timing}}</panel_timing>
         <total_item_occurrences>{{occursCount}}</total_item_occurrences>
         {{#each items}}
-{{#> QueryPanelItem }}QueryPanelItem partial/template not registered!{{/QueryPanelItem}}
+                {{#> QueryPanelItem }}QueryPanelItem partial/template not registered!{{/QueryPanelItem}}
         {{/each}}
     </panel>

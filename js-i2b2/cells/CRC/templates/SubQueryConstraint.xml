@@ -1,0 +1,21 @@
+<subquery_constraint>
+    <first_query>
+        <query_id>{{firstQuery.id}}</query_id>
+        <join_column>{{firstQuery.joinColumn}}</join_column>
+        <aggregate_operator>{{firstQuery.aggregateOp}}</aggregate_operator>
+    </first_query>
+        <operator>{{operator}}</operator>
+    <second_query>
+        <query_id>{{secondQuery.id}}</query_id>
+        <join_column>{{secondQuery.joinColumn}}</join_column>
+        <aggregate_operator>{{secondQuery.aggregateOp}}</aggregate_operator>
+    </second_query>
+
+    {{#each timeSpans}}
+        <span>
+            <operator>{{operator}}</operator>
+            <span_value>{{value}}</span_value>
+            <units>{{unit}}</units>
+        </span>
+    {{/each}}
+</subquery_constraint>

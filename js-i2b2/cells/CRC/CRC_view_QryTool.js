@@ -80,7 +80,9 @@ i2b2.CRC.view.QT.createEventLink = function() {
         aggregateOp1: "FIRST",
         aggregateOp2: "FIRST",
         operator: "LESS",
-        timeSpan: null
+        joinColumn1: "STARTDATE",
+        joinColumn2: "STARTDATE",
+        timeSpans: []
     }
 
     return eventLink;
@@ -1320,6 +1322,21 @@ i2b2.events.afterCellInit.add((cell) => {
                     Handlebars.registerPartial("QueryPanelItem", req.responseText);
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItem.xml"); }
+            });
+            // ... XML for the query request (main body)
+            $.ajax("js-i2b2/cells/CRC/templates/SubQuery.xml", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("SubQuery", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: SubQuery.xml"); }
+            });
+
+            // ... XML for the query request (main body)
+            $.ajax("js-i2b2/cells/CRC/templates/SubQueryConstraint.xml", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("SubQueryConstraint", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: SubQueryConstraint.xml"); }
             });
 
             //template for the setting date constraint on concept

@@ -3,9 +3,17 @@
     <query_timing>{{queryTiming}}</query_timing>
     <specificity_scale>{{specificity}}</specificity_scale>
     {{#if useShrine}}
-    <use_shrine>1</use_shrine>
+        <use_shrine>1</use_shrine>
     {{/if}}
+    {{#each subQueryConstraints}}
+        {{#> SubQueryConstraint }}SubQuery partial/template not registered!{{/SubQueryConstraint}}
+    {{/each}}
+
+    {{#each subQueries}}
+        {{#> SubQuery }}SubQuery partial/template not registered!{{/SubQuery}}
+    {{/each}}
+
     {{#each panels}}
-{{#> QueryPanel }}QueryPanel partial/template not registered!{{/QueryPanel}}
+        {{#> QueryPanel }}QueryPanel partial/template not registered!{{/QueryPanel}}
     {{/each}}
 </query_definition>

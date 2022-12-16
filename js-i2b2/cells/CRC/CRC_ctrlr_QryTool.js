@@ -358,105 +358,162 @@ function QueryToolController() {
             return String(trgtdate.getFullYear())+"-"+String(trgtdate.getMonth()+1).padStart(2, "0")+"-"+String(trgtdate.getDate()).padStart(2, "0")+"T00:00:00.00-"+String(trgtdate.getUTCHours()).padStart(2, "0")+":"+String(trgtdate.getUTCMinutes()).padStart(2, "0");
         };
 
+        let createPanelItem = function(item){
+            let tempItem = {};
+            let name;
+            // TODO: how/if we need to handle "<constrain_by_date><date_from/><date_to/></>"
+            switch (item.sdxInfo.sdxType) {
+                case "PRS":
+                    tempItem.key = "patient_set_coll_id:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                    name = i2b2.h.Escape(item.origData.titleCRC);
+                    let trimPos = name.lastIndexOf(" - ");
+                    name = trimPos === -1 ? name : name.substring(0, trimPos);
+                    tempItem.name = name;
+                    tempItem.tooltip = item.origData.title;
+                    tempItem.isSynonym = "false";
+                    tempItem.hlevel = 0;
+                    break;
+                case "QM":
+                    tempItem.key = "masterid:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                    name = i2b2.h.Escape(item.origData.name);
+                    name = name.substring(0, name.indexOf(" ", name.lastIndexOf("@")));
+                    tempItem.name = "(PrevQuery) " + name;
+                    tempItem.tooltip = item.origData.name;
+                    tempItem.isSynonym = "false";
+                    tempItem.hlevel = 0;
+                    break;
+                case "CONCPT":
+                    tempItem.key = i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                    tempItem.name = i2b2.h.Escape(item.origData.name);
+                    if (item.origData.tooltip) tempItem.tooltip = i2b2.h.Escape(item.origData.tooltip);
+                    tempItem.hlevel = item.origData.level;
+                    tempItem.class = "ENC";
+                    tempItem.icon = item.origData.hasChildren;
+                    if (item.origData.synonym_cd !== undefined) {
+                        if (item.origData.synonym_cd === true || item.origData.synonym_cd === "Y") {
+                            tempItem.isSynonym = "true";
+                        } else {
+                            tempItem.isSynonym = "false";
+                        }
+                    } else {
+                        tempItem.isSynonym = "false";
+                    }
+
+                    if (item.LabValues) {
+                        tempItem.valueType = item.LabValues.valueType;
+                        tempItem.valueOperator = item.LabValues.valueOperator;
+                        tempItem.unitValue= item.LabValues.unitValue;
+
+                        if (item.LabValues.numericValueRangeLow){
+                            tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
+                        }
+                        else if(tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
+                            tempItem.value = item.LabValues.flagValue;
+                        }
+                        else {
+                            tempItem.value = item.LabValues.value;
+                        }
+                        tempItem.isString = item.LabValues.isString;
+                        tempItem.isEnum = item.LabValues.isEnum;
+                    }
+
+                    if (item.dateRange !== undefined) {
+                        if (item.dateRange.start !== undefined && item.dateRange.start !== "")
+                        {
+                            tempItem.dateFrom = funcTranslateDate(new Date(item.dateRange.start));
+                            tempItem.hasDate = true;
+                        }
+                        if (item.dateRange.end !== undefined && item.dateRange.end !== ""){
+                            tempItem.dateTo = funcTranslateDate(new Date(item.dateRange.end));
+                            tempItem.hasDate = true;
+                        }
+                    }
+                    break;
+            }
+
+            return tempItem;
+        }
+
+        let createPanel = function(panelNumber, invert, occursCount, timing){
+            let tempPanel = {};
+            tempPanel.number =
+            tempPanel.invert = invert ? "1" : "0";
+            tempPanel.timing = timing;
+            tempPanel.occursCount = occursCount;
+
+            return tempPanel;
+        }
         let transformedModel = {};
         transformedModel.name = i2b2.CRC.model.query.name;
         transformedModel.specificity = "0";
         transformedModel.queryTiming = "ANY";
         transformedModel.useShrine = false;
         transformedModel.panels = [];
+        transformedModel.subQueries = [];
         for (let qgIdx=0; qgIdx < i2b2.CRC.model.query.groups.length; qgIdx++) {
             let qgData = i2b2.CRC.model.query.groups[qgIdx];
-            let tempPanel = {};
-            tempPanel.number = String(qgIdx+1);
-            tempPanel.invert = "0";
-            if (qgData.without === true) tempPanel.invert = "1";
-            tempPanel.timing = "ANY";
-            tempPanel.occursCount = qgData.events[0].instances;
+            let invert = qgData.without === true;
             switch (qgData.display) {
                 case "when":
-                    // TODO: Handle "when" processing
+                    qgData.events.forEach((item, idx) => {
+                        let subQuery  = {};
+                        subQuery.name = "Event " + String(idx+1);
+                        subQuery.id = subQuery.name;
+                        subQuery.type= "EVENT";
+                        subQuery.timing = "SAMEINSTANCENUM";
+                        subQuery.specificity = "0";
+                        subQuery.panels = [];
+                        let number = String(qgIdx+1);
+                        let timing = "SAMEINSTANCENUM";
+                        let occursCount = item.instances;
+                        let tempPanel = createPanel(number, invert, occursCount, timing);
+                        tempPanel.items = [];
+                        item.concepts.forEach((item) => {
+                            let tempItem = createPanelItem(item);
+                            tempPanel.items.push(tempItem);
+                        });
+                        if (tempPanel.items.length > 0) {
+                            subQuery.panels.push(tempPanel);
+                            transformedModel.subQueries.push(subQuery);
+                        }
+                    });
+                    let subQueryConstraints  = [];
+                    qgData.eventLinks.forEach((link, idx) => {
+                        //check if event has terms
+                        if(transformedModel.subQueries.length > idx+1) {
+                            let constraints = {};
+                            constraints.firstQuery = {};
+                            constraints.firstQuery.id = transformedModel.subQueries[idx].name;
+                            constraints.firstQuery.aggregateOp = link.aggregateOp1;
+                            constraints.firstQuery.joinColumn = link.joinColumn1;
+                            constraints.operator = link.operator;
+
+                            constraints.secondQuery = {};
+                            constraints.secondQuery.id = transformedModel.subQueries[idx + 1].name;
+                            constraints.secondQuery.aggregateOp = link.aggregateOp2;
+                            constraints.secondQuery.joinColumn = link.joinColumn2;
+                            constraints.timeSpans = link.timeSpans;
+
+                            subQueryConstraints.push(constraints);
+                        }
+                    });
+
+                    transformedModel.subQueryConstraints = subQueryConstraints;
                     break;
                 case "without":
                 case "with":
+                    let number =String(qgIdx+1);
+                    let timing = "ANY";
+                    let occursCount = qgData.events[0].instances;
+                    let tempPanel = createPanel(number, invert, occursCount, timing);
+                    tempPanel.items = [];
+                    qgData.events[0].concepts.forEach((item) => {
+                        let tempItem = createPanelItem(item);
+                        tempPanel.items.push(tempItem);
+                    });
+                    if (tempPanel.items.length > 0) transformedModel.panels.push(tempPanel);
                     break;
             }
-            // Process ontology terms
-            tempPanel.items = [];
-            qgData.events[0].concepts.forEach((item) => {
-                let tempItem = {};
-                let name;
-                // TODO: how/if we need to handle "<constrain_by_date><date_from/><date_to/></>"
-                switch (item.sdxInfo.sdxType) {
-                    case "PRS":
-                        tempItem.key = "patient_set_coll_id:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
-                        name = i2b2.h.Escape(item.origData.titleCRC);
-                        let trimPos = name.lastIndexOf(" - ");
-                        name = trimPos === -1 ? name : name.substring(0, trimPos);
-                        tempItem.name = name;
-                        tempItem.tooltip = item.origData.title;
-                        tempItem.isSynonym = "false";
-                        tempItem.hlevel = 0;
-                        break;
-                    case "QM":
-                        tempItem.key = "masterid:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
-                        name = i2b2.h.Escape(item.origData.name);
-                        name = name.substring(0, name.indexOf(" ", name.lastIndexOf("@")));
-                        tempItem.name = "(PrevQuery) " + name;
-                        tempItem.tooltip = item.origData.name;
-                        tempItem.isSynonym = "false";
-                        tempItem.hlevel = 0;
-                        break;
-                    case "CONCPT":
-                        tempItem.key = i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
-                        tempItem.name = i2b2.h.Escape(item.origData.name);
-                        if (item.origData.tooltip) tempItem.tooltip = i2b2.h.Escape(item.origData.tooltip);
-                        tempItem.hlevel = item.origData.level;
-                        tempItem.class = "ENC";
-                        tempItem.icon = item.origData.hasChildren;
-                        if (item.origData.synonym_cd !== undefined) {
-                            if (item.origData.synonym_cd === true || item.origData.synonym_cd === "Y") {
-                                tempItem.isSynonym = "true";
-                            } else {
-                                tempItem.isSynonym = "false";
-                            }
-                        } else {
-                            tempItem.isSynonym = "false";
-                        }
-
-                        if (item.LabValues) {
-                            tempItem.valueType = item.LabValues.valueType;
-                            tempItem.valueOperator = item.LabValues.valueOperator;
-                            tempItem.unitValue= item.LabValues.unitValue;
-
-                            if (item.LabValues.numericValueRangeLow){
-                                tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
-                            }
-                            else if(tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
-                                tempItem.value = item.LabValues.flagValue;
-                            }
-                            else {
-                                tempItem.value = item.LabValues.value;
-                            }
-                            tempItem.isString = item.LabValues.isString;
-                            tempItem.isEnum = item.LabValues.isEnum;
-                        }
-
-                        if (item.dateRange !== undefined) {
-                            if (item.dateRange.start !== undefined && item.dateRange.start !== "")
-                            {
-                                tempItem.dateFrom = funcTranslateDate(new Date(item.dateRange.start));
-                                tempItem.hasDate = true;
-                            }
-                            if (item.dateRange.end !== undefined && item.dateRange.end !== ""){
-                                tempItem.dateTo = funcTranslateDate(new Date(item.dateRange.end));
-                                tempItem.hasDate = true;
-                            }
-                        }
-                        break;
-                }
-                tempPanel.items.push(tempItem);
-            });
-            if (tempPanel.items.length > 0) transformedModel.panels.push(tempPanel);
         }
 
         // generate the initial name for query
