@@ -307,7 +307,11 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
         eventLinks: [],
         events: []
     };
+    // we must always have a minimum of 2 events and 1 eventLink to render correctly
     newGroup.events.push(i2b2.CRC.view.QT.createEvent());
+    newGroup.events.push(i2b2.CRC.view.QT.createEvent());
+    newGroup.eventLinks = [i2b2.CRC.view.QT.createEventLink()];
+
     i2b2.CRC.model.query.groups.push(newGroup);
 
     // insert the new concept into the record
@@ -435,6 +439,7 @@ i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget)
             break;
     }
 
+    // TODO: CHANGE THIS TO n EVENTS!
     // populate the event1 concept list
     let temp = $('.Event1Container .TermList', newQG[0]);
     i2b2.CRC.view.QT.renderTermList(qgData.events[0], temp);
@@ -472,9 +477,15 @@ i2b2.CRC.view.QT.render = function() {
         // - populate when "the first" / "any"
         // - populate when "day" / "month" / "year"
 
+        // populate the eventIndex attribute used by templates
+        qgData.events.forEach((event, idx) => {
+            event.eventIndex = idx + 1;
+        });
+
         let newQG = $(i2b2.CRC.view.QT.template.qg(i2b2.CRC.model.query.groups[qgnum])).appendTo(i2b2.CRC.view.QT.containerDiv);
         // set the query group index data
         newQG.data('queryGroup', qgnum);
+
         // set the query group style
         switch (qgData.display) {
             case "with":
@@ -487,37 +498,42 @@ i2b2.CRC.view.QT.render = function() {
                 newQG.addClass("when");
                 break;
         }
+
         // Change first query group title to display "Find Patients"
         if (qgnum === 0) $(".JoinText", newQG).text("Find Patients");
 
-        // populate the event1 concept list
-        let temp = $('.Event1Container .TermList', newQG[0]);
-        i2b2.CRC.view.QT.renderTermList(qgData.events[0], temp);
-
-        // populate the event2 concept list
-        if (qgData.events.length > 1) {
-            let temp = $('.Event2Container .TermList', newQG[0]);
-            i2b2.CRC.view.QT.renderTermList(qgData.events[1], temp);
-        }
+        // populate the concept list for events
+        let eventDivs = $('.event .TermList', newQG[0]);
+        qgData.events.forEach((event,idx) => {
+            i2b2.CRC.view.QT.renderTermList(event, eventDivs[idx]);
+        });
 
         // attach the date picker functionality
-        $('.DateStart', newQG).datepicker({uiLibrary: 'bootstrap4'});
-        $('.DateEnd', newQG).datepicker({uiLibrary: 'bootstrap4'});
-        $('.DateRange1Start', newQG).datepicker({uiLibrary: 'bootstrap4'});
-        $('.DateRange1End', newQG).datepicker({uiLibrary: 'bootstrap4'});
-        $('.DateRange2Start', newQG).datepicker({uiLibrary: 'bootstrap4'});
-        $('.DateRange2End', newQG).datepicker({uiLibrary: 'bootstrap4'});
+        $('.datepicker', newQG).toArray().forEach((el) => {
+            $(el).datepicker({uiLibrary: 'bootstrap4'});
+        });
 
         // attach the i2b2 SDX handlers for each code... on both event1 and event2 containers
         ["CONCPT","QM","PRS"].forEach((sdxCode) => {
-            [$(".Event1Container", newQG), $(".Event2Container", newQG)].forEach((dropTarget) => {
+            $(".event", newQG).toArray().forEach((dropTarget) => {
                 i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
                 i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
                 i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOver", i2b2.CRC.view.QT.HoverOver);
                 i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
             });
         });
+
+        // remove the eventIndex attribute used by templates
+        qgData.events.forEach((event) => {
+            delete event.eventIndex;
+        });
     }
+
+    // unhide the first event in all the query groups
+    $('.event[data-eventidx="0"]').removeClass('toHide');
+
+    // hide the last event relationship bar in every query group
+    $('.QueryGroup .SequenceBar:last').hide();
 
     // attach the event listeners
     // -----------------------------------------
@@ -533,7 +549,11 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].with = true;
         i2b2.CRC.model.query.groups[qgIndex].without = false;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
-        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [];
+        // TODO: REFACTOR THIS TO HANDLE DYNAMIC MODIFICATIONS OF THE HTML FOR DELETING OF EVENTS OVER event[1]
+        // handle purging of eventLinks
+        i2b2.CRC.model.query.groups[qgIndex].eventLinks = i2b2.CRC.model.query.groups[qgIndex].eventLinks.slice(0,1);
+        // handle purging of events
+        i2b2.CRC.model.query.groups[qgIndex].events
         i2b2.CRC.model.query.groups[qgIndex].events = i2b2.CRC.model.query.groups[qgIndex].events.slice(0,1);
 
         i2b2.CRC.view.QS.clearStatus();
@@ -618,7 +638,7 @@ i2b2.CRC.view.QT.render = function() {
     // date dropdowns and calendars
     $('.QueryGroup .DateOccursLbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // parse (and if needed correct) the number value for days/months/years
-        let event1Container = $(event.target).closest(".Event1Container");
+        let event1Container = $(event.target).closest(".event");
         let body = $('.DateOccursBody', event1Container);
         let icon = $(".DateOccursLbl i", event1Container);
         if (body.hasClass('hidden')) {
@@ -633,11 +653,11 @@ i2b2.CRC.view.QT.render = function() {
             icon.addClass('bi-chevron-down');
         }
     });
-    $('.QueryGroup .DateRange1Lbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
+    $('.QueryGroup .DateRangeLbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // parse (and if needed correct) the number value for days/months/years
-        let event1Container = $(event.target).closest(".Event1Container");
-        let body = $('.DateRange1Body', event1Container);
-        let icon = $(".DateRange1Lbl i", event1Container);
+        let event1Container = $(event.target).closest(".event");
+        let body = $('.DateRangeBody', event1Container);
+        let icon = $(".DateRangeLbl i", event1Container);
         if (body.hasClass('hidden')) {
             body.removeClass('hidden');
             icon.removeClass('bi-chevron-down');
@@ -648,22 +668,6 @@ i2b2.CRC.view.QT.render = function() {
             icon.addClass('bi-chevron-down');
         }
     });
-    $('.QueryGroup .DateRange2Lbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
-        // parse (and if needed correct) the number value for days/months/years
-        let event2Container = $(event.target).closest(".Event2Container");
-        let body = $('.DateRange2Body', event2Container);
-        let icon = $(".DateRange2Lbl i", event2Container);
-        if (body.hasClass('hidden')) {
-            body.removeClass('hidden');
-            icon.removeClass('bi-chevron-down');
-            icon.addClass('bi-chevron-up');
-        } else {
-            body.addClass('hidden');
-            icon.removeClass('bi-chevron-up');
-            icon.addClass('bi-chevron-down');
-        }
-    });
-
 
     let funcValidateDate = (event) => {
         let jqTarget = $(event.target);
@@ -682,11 +686,11 @@ i2b2.CRC.view.QT.render = function() {
         return isValid;
     };
 
-    $('.DateStart, .DateEnd, .DateRange1Start, .DateRange1End, .DateRange2Start, .DateRange2End', i2b2.CRC.view.QT.containerDiv).on('input', (event) => {
+    $('.datepicker', i2b2.CRC.view.QT.containerDiv).on('input', (event) => {
         funcValidateDate(event);
     });
 
-    $('.DateStart, .DateEnd, .DateRange1Start, .DateRange1End, .DateRange2Start, .DateRange2End', i2b2.CRC.view.QT.containerDiv).on('change', (event) => {
+    $('.datepicker', i2b2.CRC.view.QT.containerDiv).on('change', (event) => {
         let jqTarget = $(event.target);
         let newDate = jqTarget.val();
         let qgBody = jqTarget.closest(".QueryGroup");
@@ -768,8 +772,9 @@ i2b2.CRC.view.QT.render = function() {
     let newQG = $(i2b2.CRC.view.QT.template.qgadd({})).appendTo(i2b2.CRC.view.QT.containerDiv);
     // fix query groups titles so that the first one always says "Find Patients"
     i2b2.CRC.view.QT._correctQgTitles();
+
     // wire drop handler to the final query group
-    let dropTarget = $(".Event1Container .i2b2DropTarget", newQG);
+    let dropTarget = $(".event .i2b2DropTarget", newQG);
     ["CONCPT","QM","PRS"].forEach((sdxType) => {
         i2b2.sdx.Master.AttachType(dropTarget, sdxType);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
