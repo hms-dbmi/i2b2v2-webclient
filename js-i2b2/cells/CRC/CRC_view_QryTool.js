@@ -87,7 +87,7 @@ i2b2.CRC.view.QT.createEventLink = function() {
 
     return eventLink;
 };
-
+// ================================================================================================== //
 i2b2.CRC.view.QT.createEvent = function() {
     let event = {
         dateRange: {
@@ -100,7 +100,12 @@ i2b2.CRC.view.QT.createEvent = function() {
 
     return event;
 };
-
+// ================================================================================================== //
+i2b2.CRC.view.QT.enableTimespan = function(elem) {
+    let timeSpanElem = $(elem).siblings(".timeSpanField");
+    let curState =  timeSpanElem.prop( "disabled");
+    timeSpanElem.prop( "disabled", !curState);
+};
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionInfo = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
@@ -568,6 +573,7 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].when = true;
         i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
+        i2b2.CRC.view.QT.render();
         i2b2.CRC.view.QS.clearStatus();
     });
     // Query Group delete button
@@ -1337,6 +1343,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     Handlebars.registerPartial("SubQueryConstraint", req.responseText);
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: SubQueryConstraint.xml"); }
+            });
+
+            //HTML template for event relationship
+            $.ajax("js-i2b2/cells/CRC/templates/EventLink.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("EventLink", req.responseText);
+                },
+                error: (error) => { console.error("Could not retrieve template: EventLink.html"); }
             });
 
             //template for the setting date constraint on concept

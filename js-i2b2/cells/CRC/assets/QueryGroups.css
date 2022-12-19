@@ -338,8 +338,7 @@
     display:none;
 }
 .QueryGroup.when .DateRange1Body,
-.QueryGroup.when .DateRange2Body,
-.QueryGroup.when .SequenceBar {
+.QueryGroup.when .DateRange2Body {
     display: flex;
 }
 
@@ -416,7 +415,7 @@
 }
 
 .QueryGroup.when .SequenceBar {
-    max-height: 2.3em;
+    max-height: 5.5em;
     padding: 0.4em;
     border-right: 1px solid #d8a407;
     border-top: 0px;
@@ -424,8 +423,20 @@
     border-left: 1px solid #d8a407;
 }
 
+.QueryGroup.when .SequenceBar span {
+    margin-top: 0.1em;
+}
+
+.QueryGroup.when .SequenceBar select.joinColumn {
+    width: 5.5em;
+}
+
+.QueryGroup.when .SequenceBar select.aggregateOp {
+    width: 5.5em;
+}
+
 .QueryGroup.when .SequenceBar select.occurs {
-    width: 8.5em;
+    width: auto;
 }
 .QueryGroup.when .SequenceBar select,
 .QueryGroup.when .SequenceBar input {
@@ -434,30 +445,18 @@
     border-left: 0px;
     border-bottom: 1px solid black;
     background: none;
+    margin-right: 0.6em;
 }
 .QueryGroup.when .SequenceBar select {
     cursor: pointer;
 }
 
-
-.occursBefore,
-.occursAtLeast {
-    display: none;
-}
-.QueryGroup.when .SequenceBar.occursBefore span.occursBefore {
-    display: inline;
-}
-.QueryGroup.when .SequenceBar.occursAtLeast span.occursAtLeast {
-    display: inline;
-}
 .QueryGroup.when .SequenceBar .occursNumber {
     width: 2em;
     position: relative;
     margin-left: 0.25rem;
     text-align: center;
 }
-
-
 
 
 .DateRange1Lbl,
@@ -536,6 +535,10 @@
 .QueryGroup.without .without i.sel,
 .QueryGroup.when .when i.sel {
     display: inline;
+}
+
+.QueryGroup.when .timeSpanValue {
+    width: 3.5em;
 }
 
 .QueryGroup .RunDialogContainer > div {

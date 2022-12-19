@@ -69,45 +69,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- when selection bar -->
-                <div class="SequenceBar {{this.when.occurs}}">
-                        <span>the first occurrence of Event 1
-                            <select class="occurs">
-                                {{#select this.when.occurs}}
-                                <option value="occursBefore">occurs before</option>
-                                <option value="occursAtLeast">occurs at least</option>
-                                {{/select}}
-                            </select>
-                        </span>
-                    <span class="occursBefore">
-                            <select class="thefirstany" onchange="javascript:this.blur()">
-                                {{#select this.when.firstany}}
-                                <option value="first">the first</option>
-                                <option value="any">any</option>
-                                {{/select}}
-                            </select>
-                            occurence of Event 2
-                        </span>
-                    <span class="occursAtLeast">
-                            <input class="occursNumber" placeholder="#" value="{{this.when.occursNum}}" type="text">
-
-                            <select class="occursUnit">
-                                {{#select this.when.occursUnit}}
-                                <option value="day">day(s)</option>
-                                <option value="month">month(s)</option>
-                                <option value="year">year(s)</option>
-                                {{/select}}
-                            </select>
-                            before
-                            <select class="thefirstany">
-                                {{#select this.when.firstany}}
-                                <option value="first">the first</option>
-                                <option value="any">any</option>
-                                {{/select}}
-                            </select>
-                            occurrence of Event 2
-                        </span>
-                </div>
+                <!-- event relationship -->
+                {{> EventLink index = 0 eventLink = this.eventLinks.[0]}}
                 <!-- event 2 entry -->
                 <div class="Event2Container event" data-eventIdx="1">
                     <div class="EventLbl">
