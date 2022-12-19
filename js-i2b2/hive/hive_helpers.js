@@ -264,19 +264,34 @@ i2b2.h.Xml2String = function(x) {
     }
 };
 
-
+// USE THIS FUNCTION FOR ALL TEMPLATE COMPARISONS
 // ================================================================================================== //
-Handlebars.registerHelper('ifeq', function (a, b, options) {
-    if (a == b) { return options.fn(this); }
-    return options.inverse(this);
+Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+    switch (operator) {
+        case '==':
+            return (v1 == v2) ? options.fn(this) : options.inverse(this);
+        case '===':
+            return (v1 === v2) ? options.fn(this) : options.inverse(this);
+        case '!=':
+            return (v1 != v2) ? options.fn(this) : options.inverse(this);
+        case '!==':
+            return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+        case '<':
+            return (v1 < v2) ? options.fn(this) : options.inverse(this);
+        case '<=':
+            return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+        case '>':
+            return (v1 > v2) ? options.fn(this) : options.inverse(this);
+        case '>=':
+            return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+        case '&&':
+            return (v1 && v2) ? options.fn(this) : options.inverse(this);
+        case '||':
+            return (v1 || v2) ? options.fn(this) : options.inverse(this);
+        default:
+            return options.inverse(this);
+    }
 });
-
-// ================================================================================================== //
-Handlebars.registerHelper('ifnoteq', function (a, b, options) {
-    if (a != b) { return options.fn(this); }
-    return options.inverse(this);
-});
-
 
 // ================================================================================================== //
 // helper function to build a sniffer package for Cell Communications events
