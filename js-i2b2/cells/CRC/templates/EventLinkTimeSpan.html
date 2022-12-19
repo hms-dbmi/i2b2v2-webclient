@@ -1,0 +1,48 @@
+{{#if checked }}
+    <span>
+        <input type="checkbox" onclick="i2b2.CRC.view.QT.enableTimespan(this);" checked/>
+        <span>{{label}}</span>
+        <select class="timeSpanOp timeSpanField spacing" onchange="javascript:this.blur()" data-timeSpanId={{index}}>
+            {{#select eventLink.timeSpan}}
+            <option value="GREATER">&#62;</option>
+            <option value="GREATEREQUAL">&ge;</option>
+            <option value="EQUAL">&#61;</option>
+            <option value="LESSEQUAL"> &leq;</option>
+            <option value="LESS">&#60;</option>
+            {{/select}}
+        </select>
+        <input class="timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur()"/>
+        <select class="timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur()">
+            {{#select eventLink.timeSpan.[0].unit}}
+            <option value="HOUR">hour(s)</option>
+            <option value="DAY">day(s)</option>
+            <option value="MONTH">month(s)</option>
+            <option value="YEAR">year(s)</option>
+            {{/select}}
+        </select>
+    </span>
+{{else}}
+    <span>
+        <input type="checkbox" onclick="i2b2.CRC.view.QT.enableTimespan(this);"/>
+        <span>{{label}}</span>
+        <select class="timeSpanOp timeSpanField spacing" onchange="javascript:this.blur()" data-timeSpanId={{index}} disabled>
+            {{#select eventLink.timeSpan}}
+            <option value="GREATER">&#62;</option>
+            <option value="GREATEREQUAL">&ge;</option>
+            <option value="EQUAL">&#61;</option>
+            <option value="LESSEQUAL"> &leq;</option>
+            <option value="LESS">&#60;</option>
+            {{/select}}
+        </select>
+        <input class="timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur()" disabled/>
+        <select class="timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur()" disabled>
+            {{#select eventLink.timeSpan.[0].unit}}
+            <option value="HOUR">hour(s)</option>
+            <option value="DAY">day(s)</option>
+            <option value="MONTH">month(s)</option>
+            <option value="YEAR">year(s)</option>
+            {{/select}}
+        </select>
+    </span>
+
+{{/if}}

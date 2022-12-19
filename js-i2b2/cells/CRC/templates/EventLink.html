@@ -1,13 +1,13 @@
-<div class="SequenceBar {{occurs}}">
+<div class="SequenceBar {{occurs}}" data-eventLinkIdx="{{index}}">
     <div>
         <span>the</span>
-        <select class="joinColumn">
+        <select class="joinColumn spacing">
             {{#select eventLink.joinColumn1}}
             <option value="STARTDATE">start of</option>
             <option value="ENDDATE">end of</option>
             {{/select}}
         </select>
-        <select class="aggregateOp">
+        <select class="aggregateOp spacing">
             {{#select eventLink.aggregateOperator1}}
             <option value="FIRST">the first</option>
             <option value="LAST">the last</option>
@@ -15,7 +15,7 @@
         {{/select}}
         </select>
         <span>occurrence of Event {{increment  index}}</span>
-        <select class="occurs">
+        <select class="occurs spacing">
             {{#select eventLink.operator}}
             <option value="LESS">occurs before</option>
             <option value="LESSEQUAL">occurs on or before</option>
@@ -23,13 +23,13 @@
             {{/select}}
         </select>
         <span>the</span>
-        <select class="joinColumn">
+        <select class="joinColumn spacing">
             {{#select eventLink.joinColumn2}}
             <option value="STARTDATE">start of</option>
             <option value="ENDDATE">end of</option>
             {{/select}}
         </select>
-        <select class="aggregateOp">
+        <select class="aggregateOp spacing">
             {{#select eventLink.aggregateOperator2}}
             <option value="FIRST">the first</option>
             <option value="LAST">the last</option>
@@ -39,36 +39,16 @@
         <span>occurrence of Event {{increment  index inc=2}}</span>
     </div>
     <div>
-        <input type="checkbox" onclick="i2b2.CRC.view.QT.enableTimespan(this);"/>
-        {{#if eventLink.timeSpans.[1]}}
-            <select class="timeSpanOp timeSpanField">
-                {{#select eventLink.timeSpan}}
-                <option value="GREATER">&#62;</option>
-                <option value="GREATEREQUAL">&ge;</option>
-                <option value="EQUAL">&#61;</option>
-                <option value="LESSEQUAL"> &leq;</option>
-                <option value="LESS">&#60;</option>
-                {{/select}}
-            </select>
+        {{#if eventLink.[0]}}
+            {{> EventLinkTimeSpan index = 0 label= "by" checked=true}}
         {{else}}
-            <select class="timeSpanOp timeSpanField" disabled>
-                {{#select eventLink.timeSpan}}
-                <option value="GREATER">&#62;</option>
-                <option value="GREATEREQUAL">&ge;</option>
-                <option value="EQUAL">&#61;</option>
-                <option value="LESSEQUAL"> &leq;</option>
-                <option value="LESS">&#60;</option>
-                {{/select}}
-            </select>
-            <input class="timeSpanValue timeSpanField" type="text" disabled/>
-            <select class="timeSpanUnit timeSpanField" disabled>
-                {{#select eventLink.timeSpan.[0].unit}}
-                <option value="HOUR">hour(s)</option>
-                <option value="DAY">day(s)</option>
-                <option value="MONTH">month(s)</option>
-                <option value="YEAR">year(s)</option>
-                {{/select}}
-            </select>
+            {{> EventLinkTimeSpan index = 0 label= "by" checked=false}}
+        {{/if}}
+
+        {{#if eventLink.[1]}}
+            {{> EventLinkTimeSpan index = 1 label= "and" checked=true}}
+        {{else}}
+            {{> EventLinkTimeSpan index = 1 label= "and" checked=false}}
         {{/if}}
     </div>
 </div>

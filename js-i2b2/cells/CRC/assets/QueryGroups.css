@@ -381,8 +381,7 @@
     display:none;
 }
 .QueryGroup.when .DateRange1Body,
-.QueryGroup.when .DateRange2Body,
-.QueryGroup.when .SequenceBar {
+.QueryGroup.when .DateRange2Body{
     display: flex;
 }
 
@@ -473,7 +472,7 @@
 }
 
 .QueryGroup.when .SequenceBar {
-    max-height: 2.3em;
+    max-height: 6.3em;
     padding: 0.4em;
     border-right: 1px solid #d8a407;
     border-top: 0px;
@@ -498,7 +497,14 @@
     cursor: pointer;
 }
 
+.QueryGroup.when .SequenceBar .spacing {
+    margin-left: 0.4em;
+    margin-right: 0.4em;
+}
 
+.QueryGroup.when .SequenceBar .timeSpanValue{
+  width: 3.5em;
+}
 
 /* Occurs */
 .occursBefore,

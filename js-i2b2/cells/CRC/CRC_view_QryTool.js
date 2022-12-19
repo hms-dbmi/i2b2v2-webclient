@@ -593,7 +593,6 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].when = true;
         i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
-        i2b2.CRC.view.QT.render();
         i2b2.CRC.view.QS.clearStatus();
     });
     // Query Group delete button
@@ -1356,6 +1355,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     Handlebars.registerPartial("EventLink", req.responseText);
                 },
                 error: (error) => { console.error("Could not retrieve template: EventLink.html"); }
+            });
+
+            //HTML template for event relationship
+            $.ajax("js-i2b2/cells/CRC/templates/EventLinkTimeSpan.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("EventLinkTimeSpan", req.responseText);
+                },
+                error: (error) => { console.error("Could not retrieve template: EventLinkTimeSpan.html"); }
             });
 
             //template for the setting date constraint on concept
