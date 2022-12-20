@@ -85,11 +85,11 @@ i2b2.CRC.view.QT.createEventLink = function() {
         timeSpans: [
             {
                 "operator": "GREATEREQUAL",
-                "unit": "DAYS"
+                "unit": "DAY"
             },
             {
                 "operator": "GREATEREQUAL",
-                "unit": "DAYS"
+                "unit": "DAY"
             }
         ]
     }
