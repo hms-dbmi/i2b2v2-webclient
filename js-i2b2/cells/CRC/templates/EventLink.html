@@ -1,4 +1,4 @@
-<div class="SequenceBar {{occurs}}" data-eventLinkIdx="{{index}}">
+<div class="SequenceBar eventLink" data-event-Link-Idx="{{index}}">
     <div>
         <span>the</span>
         <select class="joinColumn spacing">
@@ -39,13 +39,13 @@
         <span>occurrence of Event {{increment  index inc=2}}</span>
     </div>
     <div>
-        {{#if eventLink.[0]}}
+        {{#if eventLink.[0].operator}}
             {{> EventLinkTimeSpan index = 0 label= "by" checked=true}}
         {{else}}
             {{> EventLinkTimeSpan index = 0 label= "by" checked=false}}
         {{/if}}
 
-        {{#if eventLink.[1]}}
+        {{#if eventLink.[1].operator}}
             {{> EventLinkTimeSpan index = 1 label= "and" checked=true}}
         {{else}}
             {{> EventLinkTimeSpan index = 1 label= "and" checked=false}}

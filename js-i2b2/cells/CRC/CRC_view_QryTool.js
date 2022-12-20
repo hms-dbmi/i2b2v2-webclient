@@ -82,7 +82,16 @@ i2b2.CRC.view.QT.createEventLink = function() {
         operator: "LESS",
         joinColumn1: "STARTDATE",
         joinColumn2: "STARTDATE",
-        timeSpans: []
+        timeSpans: [
+            {
+                "operator": "GREATEREQUAL",
+                "unit": "DAYS"
+            },
+            {
+                "operator": "GREATEREQUAL",
+                "unit": "DAYS"
+            }
+        ]
     }
 
     return eventLink;
@@ -100,11 +109,62 @@ i2b2.CRC.view.QT.createEvent = function() {
 
     return event;
 };
+
 // ================================================================================================== //
-i2b2.CRC.view.QT.enableTimespan = function(elem) {
+i2b2.CRC.view.QT.createTimeSpan = function(operator, value, unit) {
+    let timeSpan = {
+        "operator":operator,
+        "value": value,
+        "unit": unit
+    }
+
+    return timeSpan;
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
     let timeSpanElem = $(elem).siblings(".timeSpanField");
     let curState =  timeSpanElem.prop( "disabled");
     timeSpanElem.prop( "disabled", !curState);
+
+    let timeSpanIdx = $(elem).parent(".timeSpan").data("timeSpanIdx");
+    let eventLinkIdx = $(elem).parents('.eventLink').first().data('eventLinkIdx');
+    let queryGroupIdx = $(elem).parents('.QueryGroup').first().data("queryGroup");
+
+    if(!$(elem).is("checked")) {
+        let parent = $(elem).parent(".timeSpan");
+        i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks[eventLinkIdx].timeSpans[timeSpanIdx] = {
+            operator: "GREATEREQUAL"
+        }
+        parent.find(".timeSpanOp").val("GREATEREQUAL");
+        parent.find(".timeSpanUnit").val("DAY");
+        parent.find(".timeSpanValue").val("");
+    }
+};
+
+// ================================================================================================== //
+i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
+    let timeSpanIdx = $(elem).parent(".timeSpan").data("timeSpanIdx");
+    let eventLinkIdx = $(elem).parents('.eventLink').first().data('eventLinkIdx');
+    let queryGroupIdx = $(elem).parents('.QueryGroup').first().data("queryGroup");
+
+    let timeSpan = i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks[eventLinkIdx].timeSpans[timeSpanIdx];
+    return timeSpan;
+};
+
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateTimeSpanOperator = function(elem) {
+    let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
+    timeSpan.operator = $(elem).val();
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateTimeSpanValue = function(elem) {
+    let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
+    timeSpan.value = $(elem).val();
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateTimeSpanUnit = function(elem) {
+    let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
+    timeSpan.unit = $(elem).val();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionInfo = function(evt) {

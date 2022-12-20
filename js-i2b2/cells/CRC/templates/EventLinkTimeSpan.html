@@ -1,9 +1,9 @@
 {{#if checked }}
-    <span>
-        <input type="checkbox" onclick="i2b2.CRC.view.QT.enableTimespan(this);" checked/>
+    <span class="timeSpan" data-time-Span-Idx={{index}}>
+        <input type="checkbox" onclick="javascript:this.blur();i2b2.CRC.view.QT.toggleTimeSpan(this);" checked/>
         <span>{{label}}</span>
-        <select class="timeSpanOp timeSpanField spacing" onchange="javascript:this.blur()" data-timeSpanId={{index}}>
-            {{#select eventLink.timeSpan}}
+        <select class="timeSpanOp timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanOperator(this);">
+            {{#select eventLink.timeSpans.[index].operator}}
             <option value="GREATER">&#62;</option>
             <option value="GREATEREQUAL">&ge;</option>
             <option value="EQUAL">&#61;</option>
@@ -11,9 +11,9 @@
             <option value="LESS">&#60;</option>
             {{/select}}
         </select>
-        <input class="timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur()"/>
-        <select class="timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur()">
-            {{#select eventLink.timeSpan.[0].unit}}
+        <input class="timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{eventLink.timeSpans.[index].value}}"/>
+        <select class="timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanUnit(this);">
+            {{#select eventLink.timeSpans.[index].unit}}
             <option value="HOUR">hour(s)</option>
             <option value="DAY">day(s)</option>
             <option value="MONTH">month(s)</option>
@@ -22,11 +22,11 @@
         </select>
     </span>
 {{else}}
-    <span>
-        <input type="checkbox" onclick="i2b2.CRC.view.QT.enableTimespan(this);"/>
+    <span class="timeSpan" data-time-Span-Idx={{index}}>
+        <input type="checkbox" onclick="javascript:this.blur();i2b2.CRC.view.QT.toggleTimeSpan(this)"/>
         <span>{{label}}</span>
-        <select class="timeSpanOp timeSpanField spacing" onchange="javascript:this.blur()" data-timeSpanId={{index}} disabled>
-            {{#select eventLink.timeSpan}}
+        <select class="timeSpanOp timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanOperator(this);" data-timeSpanId={{index}} disabled>
+            {{#select eventLink.timeSpans.[index].operator}}
             <option value="GREATER">&#62;</option>
             <option value="GREATEREQUAL">&ge;</option>
             <option value="EQUAL">&#61;</option>
@@ -34,9 +34,9 @@
             <option value="LESS">&#60;</option>
             {{/select}}
         </select>
-        <input class="timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur()" disabled/>
-        <select class="timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur()" disabled>
-            {{#select eventLink.timeSpan.[0].unit}}
+        <input class="timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{eventLink.timeSpans.[index].value}}" disabled/>
+        <select class="timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanUnit(this);" disabled>
+            {{#select eventLink.timeSpans.[index].unit}}
             <option value="HOUR">hour(s)</option>
             <option value="DAY">day(s)</option>
             <option value="MONTH">month(s)</option>
