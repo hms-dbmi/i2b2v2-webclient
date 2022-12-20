@@ -111,14 +111,28 @@ i2b2.CRC.view.QT.createEvent = function() {
 };
 
 // ================================================================================================== //
-i2b2.CRC.view.QT.createTimeSpan = function(operator, value, unit) {
-    let timeSpan = {
-        "operator":operator,
-        "value": value,
-        "unit": unit
-    }
+i2b2.CRC.view.QT.extractEventLinkFromElem = function(elem) {
+    let eventLinkIdx = $(elem).parents('.eventLink').first().data('eventLinkIdx');
+    let queryGroupIdx = $(elem).parents('.QueryGroup').first().data("queryGroup");
 
-    return timeSpan;
+    return i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks[eventLinkIdx];
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateEventLinkOperator = function(elem) {
+    let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
+    eventLink.operator = $(elem).val();
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateEventLinkAggregateOp = function(elem) {
+    let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
+    let eventLinkOpName = $(elem).data('aggregateOp');
+    eventLink[eventLinkOpName] = $(elem).val();
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateEventLinkJoinColumn = function(elem) {
+    let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
+    let eventLinkOpName = $(elem).data('joinColumn');
+    eventLink[eventLinkOpName] = $(elem).val();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
@@ -140,7 +154,6 @@ i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
         parent.find(".timeSpanValue").val("");
     }
 };
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
     let timeSpanIdx = $(elem).parent(".timeSpan").data("timeSpanIdx");
@@ -150,7 +163,6 @@ i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
     let timeSpan = i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks[eventLinkIdx].timeSpans[timeSpanIdx];
     return timeSpan;
 };
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateTimeSpanOperator = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
@@ -618,11 +630,11 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].when = false;
         // TODO: REFACTOR THIS TO HANDLE DYNAMIC MODIFICATIONS OF THE HTML FOR DELETING OF EVENTS OVER event[1]
         // handle purging of eventLinks
-        i2b2.CRC.model.query.groups[qgIndex].eventLinks = i2b2.CRC.model.query.groups[qgIndex].eventLinks.slice(0,1);
+        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         // handle purging of events
-        i2b2.CRC.model.query.groups[qgIndex].events
         i2b2.CRC.model.query.groups[qgIndex].events = i2b2.CRC.model.query.groups[qgIndex].events.slice(0,1);
-
+        //Must be at least two events
+        i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
         i2b2.CRC.view.QS.clearStatus();
     });
     $('.QueryGroup .topbar .without', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
@@ -636,8 +648,13 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].with = false;
         i2b2.CRC.model.query.groups[qgIndex].without = true;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
-        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [];
+        // handle purging of eventLinks
+        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
+        // handle purging of events
         i2b2.CRC.model.query.groups[qgIndex].events = i2b2.CRC.model.query.groups[qgIndex].events.slice(0,1);
+        //Must be at least two events
+        i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
+
         i2b2.CRC.view.QS.clearStatus();
     });
     $('.QueryGroup .topbar .when', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
@@ -651,8 +668,6 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].with = false;
         i2b2.CRC.model.query.groups[qgIndex].without = false;
         i2b2.CRC.model.query.groups[qgIndex].when = true;
-        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
-        i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
         i2b2.CRC.view.QS.clearStatus();
     });
     // Query Group delete button
