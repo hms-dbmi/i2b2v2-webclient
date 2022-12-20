@@ -170,8 +170,7 @@
     width: 15em;
 }
 
-.QueryGroup .DateRange1Body,
-.QueryGroup .DateRange2Body {
+.QueryGroup .DateRangeBody {
     max-height: 10em;
 }
 
@@ -380,14 +379,12 @@
 .QueryGroup.when .DateOccursBody {
     display:none;
 }
-.QueryGroup.when .DateRange1Body,
-.QueryGroup.when .DateRange2Body,
+.QueryGroup.when .DateRangeBody,
 .QueryGroup.when .SequenceBar {
     display: flex;
 }
 
-.QueryGroup.when .DateRange1Lbl,
-.QueryGroup.when .DateRange2Lbl,
+.QueryGroup.when .DateRangeLbl,
 .QueryGroup .DateOccursLbl {
     border-radius: 0.3em;
     display: inline-flex;
@@ -398,14 +395,12 @@
     color: #2782a3;
 }
 
-.QueryGroup.when .DateRange1Lbl:hover,
-.QueryGroup.when .DateRange2Lbl:hover,
+.QueryGroup.when .DateRangeLbl:hover,
 .QueryGroup .DateOccursLbl:hover {
     background: rgba(114, 109, 109, 0.22);
 }
 
-.QueryGroup .DateRange1Lbl i.bi,
-.QueryGroup .DateRange2Lbl i.bi,
+.QueryGroup .DateRangeLbl i.bi,
 .QueryGroup .DateOccursLbl i.bi {
     margin-left: 0.5em;
 }
@@ -426,7 +421,13 @@
 }
 
 .QueryGroup.when .event.toHide {
-    max-height: 1000em;
+    max-height: 150em;
+}
+
+.QueryGroup .event {
+    border-bottom: none;
+    transition: max-height 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+    overflow: hidden;
 }
 
 .QueryGroup .event.toHide {
@@ -434,19 +435,15 @@
     overflow: hidden;
 }
 
-.QueryGroup .EventLbl,
-.QueryGroup .Event2Container {
+.QueryGroup .EventLbl {
     max-height: 0;
-    transition: max-height 0.75s cubic-bezier(0.075, 0.82, 0.165, 1);
-    overflow: hidden;
 }
 
-.QueryGroup .Event1Container {
-    border-bottom: none;
-}
-.QueryGroup .Event1Container .EventLbl {
+.QueryGroup .event .EventLbl {
     position: relative;
     top: -1px;
+    transition: max-height 0.75s cubic-bezier(0.075, 0.82, 0.165, 1);
+    overflow: hidden;
 }
 
 .QueryGroup.when .EventLbl div {
@@ -456,7 +453,7 @@
 
 .QueryGroup.when .EventLbl i {
     float: right;
-    margin: 0px 10px;
+    margin: 0 10px;
     font-size: 1.2em;
     position: relative;
     top: 0.4em;
@@ -524,8 +521,8 @@
 
 
 /* Date Ranges */
-.DateRange1Lbl,
-.DateRange1Body {
+.DateRangeLbl,
+.DateRangeBody {
     display: none;
 }
 
@@ -649,7 +646,7 @@
     margin-left: .3em;
 }
 
-.TermList  .concept .dateRange{
+.TermList .concept .dateRange{
     color: #7191af;
     line-height: 1.6em;
     position: relative;
