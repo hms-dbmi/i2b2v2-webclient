@@ -39,13 +39,13 @@
         <span>occurrence of Event {{increment  index inc=2}}</span>
     </div>
     <div>
-        {{#if eventLink.[0].operator}}
+        {{#if eventLink.timeSpans.[0].operator}}
             {{> EventLinkTimeSpan index = 0 label= "by" checked=true timeSpan=eventLink.timeSpans.[0]}}
         {{else}}
             {{> EventLinkTimeSpan index = 0 label= "by" checked=false timeSpan=eventLink.timeSpans.[0]}}
         {{/if}}
 
-        {{#if eventLink.[1].operator}}
+        {{#if eventLink.timeSpans.[1].operator}}
             {{> EventLinkTimeSpan index = 1 label= "and" checked=true timeSpan=eventLink.timeSpans.[1]}}
         {{else}}
             {{> EventLinkTimeSpan index = 1 label= "and" checked=false timeSpan=eventLink.timeSpans.[1]}}
