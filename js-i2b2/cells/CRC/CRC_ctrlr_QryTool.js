@@ -492,7 +492,14 @@ function QueryToolController() {
                             constraints.secondQuery.id = transformedModel.subQueries[idx + 1].name;
                             constraints.secondQuery.aggregateOp = link.aggregateOp2;
                             constraints.secondQuery.joinColumn = link.joinColumn2;
-                            constraints.timeSpans = link.timeSpans;
+
+                            constraints.timeSpans = [];
+                            link.timeSpans.forEach((timeSpan) => {
+                                if(timeSpan.operator && timeSpan.value && timeSpan.unit
+                                    && timeSpan.operator.length > 0 && timeSpan.value.length > 0 && timeSpan.unit.length > 0) {
+                                    constraints.timeSpans.push(timeSpan);
+                                }
+                            });
 
                             subQueryConstraints.push(constraints);
                         }

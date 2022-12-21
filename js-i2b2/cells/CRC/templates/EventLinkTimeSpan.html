@@ -11,7 +11,7 @@
             <option value="LESS">&#60;</option>
             {{/select}}
         </select>
-        <input class="timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{timeSpan.value}}"/>
+        <input class="timeSpanValue timeSpanField spacing" type="number" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{timeSpan.value}}"/>
         <select class="timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanUnit(this);">
             {{#select timeSpan.unit}}
             <option value="HOUR">hour(s)</option>
@@ -34,7 +34,7 @@
             <option value="LESS">&#60;</option>
             {{/select}}
         </select>
-        <input class="timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{timeSpans.value}}" disabled/>
+        <input class="timeSpanValue timeSpanField spacing" type="number" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{timeSpans.value}}" disabled/>
         <select class="timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanUnit(this);" disabled>
             {{#select timeSpan.unit}}
             <option value="HOUR">hour(s)</option>

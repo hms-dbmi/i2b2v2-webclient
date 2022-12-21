@@ -492,7 +492,7 @@
 
 .QueryGroup.when .SequenceBar select {
     cursor: pointer;
-    color: #0000ff !important;
+    color: #0000ff;
     width: auto;
 }
 
