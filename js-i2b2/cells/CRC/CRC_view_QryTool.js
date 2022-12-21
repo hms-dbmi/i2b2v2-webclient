@@ -147,7 +147,8 @@ i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
     if(!$(elem).is("checked")) {
         let parent = $(elem).parent(".timeSpan");
         i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks[eventLinkIdx].timeSpans[timeSpanIdx] = {
-            operator: "GREATEREQUAL"
+            operator: "GREATEREQUAL",
+            unit: "DAY"
         }
         parent.find(".timeSpanOp").val("GREATEREQUAL");
         parent.find(".timeSpanUnit").val("DAY");

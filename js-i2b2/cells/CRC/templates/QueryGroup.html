@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <!-- event relationship -->
-                {{> EventLink index = @index eventLink = this.eventLinks.[@index]}}
+                {{> EventLink index = @index eventLink = (lookup @root.eventLinks @index)}}
                 {{/each}}
             </div>
         </div>

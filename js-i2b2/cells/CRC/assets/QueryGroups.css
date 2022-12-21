@@ -492,6 +492,12 @@
 
 .QueryGroup.when .SequenceBar select {
     cursor: pointer;
+    color: #0000ff !important;
+    width: auto;
+}
+
+.QueryGroup.when .SequenceBar select:disabled {
+    color: rgba(0, 0, 255, 0.62) !important;
 }
 
 .QueryGroup.when .SequenceBar .spacing {
