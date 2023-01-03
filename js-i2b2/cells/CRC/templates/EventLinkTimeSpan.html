@@ -1,8 +1,11 @@
 {{#if checked }}
-    <span class="timeSpan" data-time-Span-Idx={{index}}>
-        <input type="checkbox" onclick="javascript:this.blur();i2b2.CRC.view.QT.toggleTimeSpan(this);" checked/>
-        <span>{{label}}</span>
-        <select class="timeSpanOp timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanOperator(this);">
+    <div class="timeSpan" data-time-Span-Idx={{index}}>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" onclick="javascript:this.blur();i2b2.CRC.view.QT.toggleTimeSpan(this);" checked/>
+            <label class="form-check-label">{{label}}</label>
+        </div>
+
+        <select class=" form-select form-select-sm timeSpanOp timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanOperator(this);">
             {{#select timeSpan.operator}}
             <option value="GREATER">&#62;</option>
             <option value="GREATEREQUAL">&ge;</option>
@@ -11,8 +14,8 @@
             <option value="LESS">&#60;</option>
             {{/select}}
         </select>
-        <input class="timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{timeSpan.value}}"/>
-        <select class="timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanUnit(this);">
+        <input class="form-control form-control-sm timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{timeSpan.value}}"/>
+        <select class="form-select form-select-sm spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanUnit(this);">
             {{#select timeSpan.unit}}
             <option value="HOUR">hour(s)</option>
             <option value="DAY">day(s)</option>
@@ -20,12 +23,14 @@
             <option value="YEAR">year(s)</option>
             {{/select}}
         </select>
-    </span>
+    </div>
 {{else}}
-    <span class="timeSpan" data-time-Span-Idx={{index}}>
-        <input type="checkbox" onclick="javascript:this.blur();i2b2.CRC.view.QT.toggleTimeSpan(this)"/>
-        <span>{{label}}</span>
-        <select class="timeSpanOp timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanOperator(this);" data-timeSpanId={{index}} disabled>
+    <div class="timeSpan" data-time-Span-Idx={{index}}>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" onclick="javascript:this.blur();i2b2.CRC.view.QT.toggleTimeSpan(this)"/>
+            <label class="form-check-label">{{label}}</label>
+        </div>
+        <select class="form-select form-select-sm timeSpanOp timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanOperator(this);" data-timeSpanId={{index}} disabled>
             {{#select timeSpan.operator}}
             <option value="GREATER">&#62;</option>
             <option value="GREATEREQUAL">&ge;</option>
@@ -34,8 +39,8 @@
             <option value="LESS">&#60;</option>
             {{/select}}
         </select>
-        <input class="timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{timeSpans.value}}" disabled/>
-        <select class="timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanUnit(this);" disabled>
+        <input class="form-control form-control-sm timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{timeSpans.value}}" disabled/>
+        <select class="form-select form-select-sm timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanUnit(this);" disabled>
             {{#select timeSpan.unit}}
             <option value="HOUR">hour(s)</option>
             <option value="DAY">day(s)</option>
@@ -43,6 +48,6 @@
             <option value="YEAR">year(s)</option>
             {{/select}}
         </select>
-    </span>
+    </div>
 
 {{/if}}

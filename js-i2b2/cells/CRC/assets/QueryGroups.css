@@ -475,6 +475,8 @@
     border-top: 0px;
     border-bottom: 0px;
     border-left: 1px solid #d8a407;
+    line-height: 1.6em;
+    font-size: 1em;
 }
 
 .QueryGroup.when .SequenceBar select.occurs {
@@ -482,18 +484,21 @@
 }
 
 .QueryGroup.when .SequenceBar select,
-.QueryGroup.when .SequenceBar input {
+.QueryGroup.when .SequenceBar .timeSpanValue {
     border-top: 0px;
     border-right: 0px;
     border-left: 0px;
     border-bottom: 1px solid black;
-    background: none;
+    background-color: transparent;
+    border-radius: 0;
+    display: inline-block;
 }
 
 .QueryGroup.when .SequenceBar select {
     cursor: pointer;
     color: #0000ff;
     width: auto;
+    padding-bottom: 0;
 }
 
 .QueryGroup.when .SequenceBar select:disabled {
@@ -501,12 +506,22 @@
 }
 
 .QueryGroup.when .SequenceBar .spacing {
-    margin-left: 0.4em;
-    margin-right: 0.4em;
+    margin-left: 0.3em;
+    margin-right: 0.3em;
 }
 
-.QueryGroup.when .SequenceBar .timeSpanValue{
-  width: 3.5em;
+.QueryGroup.when .SequenceBar .timeSpanValue {
+    width: 3.5em;
+    min-height: 1.5em;
+    height: 1.5em;
+}
+
+.QueryGroup.when .SequenceBar .timeSpan {
+    display: inline-block;
+}
+
+.QueryGroup.when .SequenceBar .form-check-inline {
+    margin-right: 0;
 }
 
 /* Occurs */

@@ -1,13 +1,13 @@
 <div class="SequenceBar eventLink" data-event-Link-Idx="{{index}}">
     <div>
         <span>the</span>
-        <select class="joinColumn spacing" data-join-Column="joinColumn1" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkJoinColumn(this);">
+        <select class="form-select form-select-sm joinColumn spacing" data-join-Column="joinColumn1" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkJoinColumn(this);">
             {{#select eventLink.joinColumn1}}
             <option value="STARTDATE">start of</option>
             <option value="ENDDATE">end of</option>
             {{/select}}
         </select>
-        <select class="aggregateOp spacing" data-aggregate-Op="aggregateOp1" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkAggregateOp(this);">
+        <select class="form-select form-select-sm aggregateOp spacing" data-aggregate-Op="aggregateOp1" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkAggregateOp(this);">
             {{#select eventLink.aggregateOp1}}
             <option value="FIRST">the first</option>
             <option value="LAST">the last</option>
@@ -15,7 +15,7 @@
         {{/select}}
         </select>
         <span>occurrence of Event {{increment  index}}</span>
-        <select class="occurs spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkOperator(this);">
+        <select class="form-select form-select-sm occurs spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkOperator(this);">
             {{#select eventLink.operator}}
             <option value="LESS">occurs before</option>
             <option value="LESSEQUAL">occurs on or before</option>
@@ -23,13 +23,13 @@
             {{/select}}
         </select>
         <span>the</span>
-        <select class="joinColumn spacing" data-join-Column="joinColumn2" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkJoinColumn(this);">
+        <select class="form-select form-select-sm joinColumn spacing" data-join-Column="joinColumn2" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkJoinColumn(this);">
             {{#select eventLink.joinColumn2}}
             <option value="STARTDATE">start of</option>
             <option value="ENDDATE">end of</option>
             {{/select}}
         </select>
-        <select class="aggregateOp spacing" data-aggregate-Op="aggregateOp2" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkAggregateOp(this);">
+        <select class="form-select form-select-sm aggregateOp spacing" data-aggregate-Op="aggregateOp2" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkAggregateOp(this);">
             {{#select eventLink.aggregateOp2}}
             <option value="FIRST">the first</option>
             <option value="LAST">the last</option>

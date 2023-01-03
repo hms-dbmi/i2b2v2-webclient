@@ -136,7 +136,7 @@ i2b2.CRC.view.QT.updateEventLinkJoinColumn = function(elem) {
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
-    let timeSpanElem = $(elem).siblings(".timeSpanField");
+    let timeSpanElem = $(elem).parent().siblings(".timeSpanField");
     let curState =  timeSpanElem.prop( "disabled");
     timeSpanElem.prop( "disabled", !curState);
 
