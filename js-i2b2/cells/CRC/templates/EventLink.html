@@ -40,15 +40,15 @@
     </div>
     <div>
         {{#if eventLink.timeSpans.[0].value}}
-            {{> EventLinkTimeSpan index = 0 label= "by" checked=true timeSpan=eventLink.timeSpans.[0]}}
+            {{> EventLinkTimeSpan index = 0 label= "by" checked="checked" timeSpan=eventLink.timeSpans.[0]}}
         {{else}}
-            {{> EventLinkTimeSpan index = 0 label= "by" checked=false timeSpan=eventLink.timeSpans.[0]}}
+            {{> EventLinkTimeSpan index = 0 label= "by" checked="" disabled="disabled" timeSpan=eventLink.timeSpans.[0]}}
         {{/if}}
 
         {{#if eventLink.timeSpans.[1].value}}
-            {{> EventLinkTimeSpan index = 1 label= "and" checked=true timeSpan=eventLink.timeSpans.[1]}}
+            {{> EventLinkTimeSpan index = 1 label= "and" checked="checked" timeSpan=eventLink.timeSpans.[1]}}
         {{else}}
-            {{> EventLinkTimeSpan index = 1 label= "and" checked=false timeSpan=eventLink.timeSpans.[1]}}
+            {{> EventLinkTimeSpan index = 1 label= "and" checked="" disabled="disabled" timeSpan=eventLink.timeSpans.[1]}}
         {{/if}}
     </div>
 </div>
