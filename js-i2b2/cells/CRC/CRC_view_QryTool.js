@@ -75,6 +75,7 @@ i2b2.CRC.view.QT._correctQgTitles = function() {
     $(" .JoinText:first", i2b2.CRC.view.QT.containerDiv).text("Find Patients");
 };
 
+// ================================================================================================== //
 i2b2.CRC.view.QT.createEventLink = function() {
     let eventLink = {
         aggregateOp1: "FIRST",
@@ -86,6 +87,7 @@ i2b2.CRC.view.QT.createEventLink = function() {
     return eventLink;
 };
 
+// ================================================================================================== //
 i2b2.CRC.view.QT.createEvent = function() {
     let event = {
         dateRange: {
@@ -421,40 +423,8 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
 };
 
 // ================================================================================================== //
-i2b2.CRC.view.QT.renderQueryGroup = function(qgModelIndex, funcName, funcTarget) {
-    let qgModel = i2b2.CRC.model.query.groups[qgModelIndex];
-    let newQG = $(i2b2.CRC.view.QT.template.qg(qgModel))[funcName](funcTarget);
-    // set the query group index data
-    newQG.data('queryGroup', qgModelIndex);
-    // set the query group style
-    switch (qgData.display) {
-        case "with":
-            newQG.addClass("with");
-            break;
-        case "without":
-            newQG.addClass("without");
-            break;
-        case "when":
-            newQG.addClass("when");
-            break;
-    }
-
-    // TODO: CHANGE THIS TO n EVENTS!
-    // populate the event1 concept list
-    let temp = $('.Event1Container .TermList', newQG[0]);
-    i2b2.CRC.view.QT.renderTermList(qgData.events[0], temp);
-
-    // populate the event2 concept list
-    if (qgData.events.length > 1) {
-        let temp = $('.Event2Container .TermList', newQG[0]);
-        i2b2.CRC.view.QT.renderTermList(qgData.events[1], temp);
-    }
-};
-// ================================================================================================== //
-
 i2b2.CRC.view.QT.isValidDate = function(dateStr) {
     let dateVal = String(dateStr);
-
     return !(dateVal.match(/^[0|1][0-9]\/[0|1|2|3][0-9]\/[1|2][0-9][0-9][0-9]$/) === null && dateVal !== '');
 }
 
