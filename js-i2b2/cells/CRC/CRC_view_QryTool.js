@@ -613,7 +613,9 @@ i2b2.CRC.view.QT.render = function() {
     $('.event[data-eventidx="0"]').removeClass('toHide');
 
     // hide the last event relationship bar in every query group
-    $('.QueryGroup .SequenceBar:last').hide();
+    $('.QueryGroup').each(function() {
+        $(this).find('.SequenceBar:last').hide();
+    });
 
     // attach the event listeners
     // -----------------------------------------
