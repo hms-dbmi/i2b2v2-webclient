@@ -75,18 +75,27 @@ i2b2.CRC.view.QT._correctQgTitles = function() {
     $(" .JoinText:first", i2b2.CRC.view.QT.containerDiv).text("Find Patients");
 };
 
-// ================================================================================================== //
 i2b2.CRC.view.QT.createEventLink = function() {
     let eventLink = {
         aggregateOp1: "FIRST",
         aggregateOp2: "FIRST",
         operator: "LESS",
-        timeSpan: null
+        joinColumn1: "STARTDATE",
+        joinColumn2: "STARTDATE",
+        timeSpans: [
+            {
+                "operator": "GREATEREQUAL",
+                "unit": "DAY"
+            },
+            {
+                "operator": "GREATEREQUAL",
+                "unit": "DAY"
+            }
+        ]
     }
 
     return eventLink;
 };
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.createEvent = function() {
     let event = {
@@ -101,6 +110,75 @@ i2b2.CRC.view.QT.createEvent = function() {
     return event;
 };
 
+// ================================================================================================== //
+i2b2.CRC.view.QT.extractEventLinkFromElem = function(elem) {
+    let eventLinkIdx = $(elem).parents('.eventLink').first().data('eventLinkIdx');
+    let queryGroupIdx = $(elem).parents('.QueryGroup').first().data("queryGroup");
+
+    return i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks[eventLinkIdx];
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateEventLinkOperator = function(elem) {
+    let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
+    eventLink.operator = $(elem).val();
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateEventLinkAggregateOp = function(elem) {
+    let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
+    let eventLinkOpName = $(elem).data('aggregateOp');
+    eventLink[eventLinkOpName] = $(elem).val();
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateEventLinkJoinColumn = function(elem) {
+    let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
+    let eventLinkOpName = $(elem).data('joinColumn');
+    eventLink[eventLinkOpName] = $(elem).val();
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
+    let timeSpanElem = $(elem).parent().siblings(".timeSpanField");
+    let curState =  timeSpanElem.prop( "disabled");
+    timeSpanElem.prop( "disabled", !curState);
+
+    let timeSpanIdx = $(elem).parent(".timeSpan").data("timeSpanIdx");
+    let eventLinkIdx = $(elem).parents('.eventLink').first().data('eventLinkIdx');
+    let queryGroupIdx = $(elem).parents('.QueryGroup').first().data("queryGroup");
+
+    if(!$(elem).is("checked")) {
+        let parent = $(elem).parent(".timeSpan");
+        i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks[eventLinkIdx].timeSpans[timeSpanIdx] = {
+            operator: "GREATEREQUAL",
+            unit: "DAY"
+        }
+        parent.find(".timeSpanOp").val("GREATEREQUAL");
+        parent.find(".timeSpanUnit").val("DAY");
+        parent.find(".timeSpanValue").val("");
+    }
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
+    let timeSpanIdx = $(elem).parent(".timeSpan").data("timeSpanIdx");
+    let eventLinkIdx = $(elem).parents('.eventLink').first().data('eventLinkIdx');
+    let queryGroupIdx = $(elem).parents('.QueryGroup').first().data("queryGroup");
+
+    let timeSpan = i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks[eventLinkIdx].timeSpans[timeSpanIdx];
+    return timeSpan;
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateTimeSpanOperator = function(elem) {
+    let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
+    timeSpan.operator = $(elem).val();
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateTimeSpanValue = function(elem) {
+    let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
+    timeSpan.value = $(elem).val();
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateTimeSpanUnit = function(elem) {
+    let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
+    timeSpan.unit = $(elem).val();
+};
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionInfo = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
@@ -762,8 +840,6 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
     });
 };
-
-
 // ==================================================================================================
 i2b2.CRC.view.QT.labValue = {};
 // ==================================================================================================
@@ -1306,6 +1382,37 @@ i2b2.events.afterCellInit.add((cell) => {
                     Handlebars.registerPartial("QueryPanelItem", req.responseText);
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItem.xml"); }
+            });
+            // ... XML for the query request (main body)
+            $.ajax("js-i2b2/cells/CRC/templates/SubQuery.xml", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("SubQuery", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: SubQuery.xml"); }
+            });
+
+            // ... XML for the query request (main body)
+            $.ajax("js-i2b2/cells/CRC/templates/SubQueryConstraint.xml", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("SubQueryConstraint", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: SubQueryConstraint.xml"); }
+            });
+
+            //HTML template for event relationship
+            $.ajax("js-i2b2/cells/CRC/templates/EventLink.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("EventLink", req.responseText);
+                },
+                error: (error) => { console.error("Could not retrieve template: EventLink.html"); }
+            });
+
+            //HTML template for event relationship
+            $.ajax("js-i2b2/cells/CRC/templates/EventLinkTimeSpan.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("EventLinkTimeSpan", req.responseText);
+                },
+                error: (error) => { console.error("Could not retrieve template: EventLinkTimeSpan.html"); }
             });
 
             //template for the setting date constraint on concept
