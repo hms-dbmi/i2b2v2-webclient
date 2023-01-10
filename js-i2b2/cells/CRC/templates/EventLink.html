@@ -1,0 +1,54 @@
+<div class="SequenceBar eventLink" data-event-Link-Idx="{{index}}">
+    <div>
+        <span>the</span>
+        <select class="form-select form-select-sm joinColumn spacing" data-join-Column="joinColumn1" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkJoinColumn(this);">
+            {{#select eventLink.joinColumn1}}
+            <option value="STARTDATE">start of</option>
+            <option value="ENDDATE">end of</option>
+            {{/select}}
+        </select>
+        <select class="form-select form-select-sm aggregateOp spacing" data-aggregate-Op="aggregateOp1" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkAggregateOp(this);">
+            {{#select eventLink.aggregateOp1}}
+            <option value="FIRST">the first</option>
+            <option value="LAST">the last</option>
+            <option value="ANY">any</option>
+        {{/select}}
+        </select>
+        <span>occurrence of Event {{increment  index}}</span>
+        <select class="form-select form-select-sm occurs spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkOperator(this);">
+            {{#select eventLink.operator}}
+            <option value="LESS">occurs before</option>
+            <option value="LESSEQUAL">occurs on or before</option>
+            <option value="EQUAL">occurs simultaneously with</option>
+            {{/select}}
+        </select>
+        <span>the</span>
+        <select class="form-select form-select-sm joinColumn spacing" data-join-Column="joinColumn2" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkJoinColumn(this);">
+            {{#select eventLink.joinColumn2}}
+            <option value="STARTDATE">start of</option>
+            <option value="ENDDATE">end of</option>
+            {{/select}}
+        </select>
+        <select class="form-select form-select-sm aggregateOp spacing" data-aggregate-Op="aggregateOp2" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateEventLinkAggregateOp(this);">
+            {{#select eventLink.aggregateOp2}}
+            <option value="FIRST">the first</option>
+            <option value="LAST">the last</option>
+            <option value="ANY">any</option>
+        {{/select}}
+        </select>
+        <span>occurrence of Event {{increment  index inc=2}}</span>
+    </div>
+    <div>
+        {{#if eventLink.timeSpans.[0].value}}
+            {{> EventLinkTimeSpan index = 0 label= "by" checked="checked" timeSpan=eventLink.timeSpans.[0]}}
+        {{else}}
+            {{> EventLinkTimeSpan index = 0 label= "by" checked="" disabled="disabled" timeSpan=eventLink.timeSpans.[0]}}
+        {{/if}}
+
+        {{#if eventLink.timeSpans.[1].value}}
+            {{> EventLinkTimeSpan index = 1 label= "and" checked="checked" timeSpan=eventLink.timeSpans.[1]}}
+        {{else}}
+            {{> EventLinkTimeSpan index = 1 label= "and" checked="" disabled="disabled" timeSpan=eventLink.timeSpans.[1]}}
+        {{/if}}
+    </div>
+</div>

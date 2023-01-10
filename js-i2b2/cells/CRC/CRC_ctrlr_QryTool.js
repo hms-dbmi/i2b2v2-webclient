@@ -492,7 +492,14 @@ function QueryToolController() {
                             constraints.secondQuery.id = transformedModel.subQueries[idx + 1].name;
                             constraints.secondQuery.aggregateOp = link.aggregateOp2;
                             constraints.secondQuery.joinColumn = link.joinColumn2;
-                            constraints.timeSpans = link.timeSpans;
+
+                            constraints.timeSpans = [];
+                            link.timeSpans.forEach((timeSpan) => {
+                                if(timeSpan.operator && timeSpan.value && timeSpan.unit
+                                    && timeSpan.operator.length > 0 && timeSpan.value.length > 0 && timeSpan.unit.length > 0) {
+                                    constraints.timeSpans.push(timeSpan);
+                                }
+                            });
 
                             subQueryConstraints.push(constraints);
                         }
@@ -517,10 +524,15 @@ function QueryToolController() {
         }
 
         // generate the initial name for query
-        if (transformedModel.panels.length > 0) {
+        if (transformedModel.panels.length > 0 || transformedModel.subQueries.length > 0) {
             let queryDate = new Date();
             queryDate = String(queryDate.getHours()) + ":" + String(queryDate.getMinutes()) + ":" + String(queryDate.getSeconds());
             let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.replace("(PrevQuery)","").trim()});
+
+            //Handle temporal events
+            let temporalNames = transformedModel.subQueries.map((subQuery)=>{ return subQuery.panels[0].items[0].name.replace("(PrevQuery)","").trim()});
+            names = names.concat(temporalNames);
+
             let adjuster = 1 / ((names.map((rec) => rec.length ).reduce((acc, val) => acc + val) + names.length - 1) / 120);
             if (adjuster > 1) adjuster = 1;
             names = names.map((rec) => rec.substr(0, Math.floor(rec.length * adjuster)));
