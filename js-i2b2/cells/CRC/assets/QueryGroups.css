@@ -338,11 +338,6 @@
     border: 0;
 }
 
-.QueryGroup .SequenceBar:last-of-type {
-    display: none !important;
-}
-
-
 .QueryGroup .SequenceBar,
 .QueryGroup .topbar .JoinText,
 .QueryGroup .topbar .with,

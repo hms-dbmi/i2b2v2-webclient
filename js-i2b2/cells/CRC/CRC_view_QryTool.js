@@ -524,12 +524,6 @@ i2b2.CRC.view.QT.render = function() {
         // - populate when "occurs before" / "occurs at least"
         // - populate when "the first" / "any"
         // - populate when "day" / "month" / "year"
-
-        // populate the eventIndex attribute used by templates
-        qgData.events.forEach((event, idx) => {
-            event.eventIndex = idx + 1;
-        });
-
         let newQG = $(i2b2.CRC.view.QT.template.qg(i2b2.CRC.model.query.groups[qgnum])).appendTo(i2b2.CRC.view.QT.containerDiv);
         // set the query group index data
         newQG.data('queryGroup', qgnum);
@@ -570,18 +564,13 @@ i2b2.CRC.view.QT.render = function() {
                 i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
             });
         });
-
-        // remove the eventIndex attribute used by templates
-        qgData.events.forEach((event) => {
-            delete event.eventIndex;
-        });
     }
 
     // unhide the first event in all the query groups
     $('.event[data-eventidx="0"]').removeClass('toHide');
 
     // hide the last event relationship bar in every query group
-    $('.QueryGroup .SequenceBar:last').hide();
+    //$('.QueryGroup .SequenceBar:last').hide();
 
     // attach the event listeners
     // -----------------------------------------
@@ -1286,6 +1275,15 @@ i2b2.CRC.view.QT.addEvent = function(){
 
     i2b2.CRC.model.query.groups[qgIndex].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
     i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
+
+    ["CONCPT","QM","PRS"].forEach((sdxCode) => {
+        $(".event", templateQueryGroup).last().toArray().forEach((dropTarget) => {
+            i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
+            i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
+            i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOver", i2b2.CRC.view.QT.HoverOver);
+            i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+        });
+    });
 }
 // ================================================================================================== //
 // This is done once the entire cell has been loaded

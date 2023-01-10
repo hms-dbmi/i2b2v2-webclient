@@ -13,7 +13,9 @@
                 {{#each events}}
                 {{> Event index = @index group = (lookup @root.events @index)}}
                 <!-- event relationship -->
-                {{> EventLink index = @index eventLink = (lookup @root.eventLinks @index)}}
+                {{#ifCond @index '==' 0}}
+                    {{> EventLink index = @index eventLink = (lookup @root.eventLinks @index)}}
+                {{/ifCond}}
                 {{/each}}
             </div>
             <div class="addEvent">
