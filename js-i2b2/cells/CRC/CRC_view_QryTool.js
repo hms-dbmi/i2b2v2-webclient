@@ -1268,7 +1268,26 @@ i2b2.CRC.view.QT.clearAll = function(){
     i2b2.CRC.view.QS.clearStatus();
 }
 
+// ================================================================================================== //
+i2b2.CRC.view.QT.addEvent = function(){
+    let qgRoot = $(".QueryGroup.when");
+    let qgIndex = qgRoot.data("queryGroup");
+    let templateQueryGroup = $(".QueryGroup.when .content");
+    let data = {
+        index: i2b2.CRC.model.query.groups[qgIndex].eventLinks.length
+    }
 
+    let data1 = {
+        index: i2b2.CRC.model.query.groups[qgIndex].events.length
+    }
+
+    $((Handlebars.compile("{{> EventLink }}"))(data)).appendTo(templateQueryGroup);
+    $((Handlebars.compile("{{> Event }}"))(data1)).appendTo(templateQueryGroup);
+
+    i2b2.CRC.model.query.groups[qgIndex].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
+    i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
+}
+// ================================================================================================== //
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((cell) => {
@@ -1399,6 +1418,13 @@ i2b2.events.afterCellInit.add((cell) => {
                 error: (error) => { console.error("Error (retrieval or structure) with template: SubQueryConstraint.xml"); }
             });
 
+            //HTML template for event
+            $.ajax("js-i2b2/cells/CRC/templates/Event.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("Event", req.responseText);
+                },
+                error: (error) => { console.error("Could not retrieve template: Event.html"); }
+            });
             //HTML template for event relationship
             $.ajax("js-i2b2/cells/CRC/templates/EventLink.html", {
                 success: (template, status, req) => {
