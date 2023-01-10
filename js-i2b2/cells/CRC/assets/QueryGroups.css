@@ -496,6 +496,7 @@
     border-left: 1px solid #d8a407;
     line-height: 1.6em;
     font-size: 1em;
+    margin-left: -0.5em;
 }
 
 .QueryGroup.when .addEvent button{
