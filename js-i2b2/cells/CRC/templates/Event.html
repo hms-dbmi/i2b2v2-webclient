@@ -5,14 +5,14 @@
     </div>
     <div class="TermList clear"></div>
     <div class="orDragAdditional">or drag additional concepts</div>
-    <div class="DateOccursLbl">SET DATE RANGE OR MULTIPLE OCCURRENCES <i class="bi bi-chevron-down"></i></div>
+    <div class="DateOccursLbl">SET DATE RANGE OR MULTIPLE OCCURRENCES11 <i class="bi bi-chevron-down"></i></div>
     <div class="DateOccursBody expander hidden">
         <div style="float:left; width:50%;">
             <div style="width:16em; margin:auto; position:relative;">
                 <div style="font-size: 0.8em;">Concepts must occur between</div>
                 <div class="dateRange">
                     <div >
-                        <input class="datepicker DateStart form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.start}}" />
+                        <input class="datepicker DateStart form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateRange.start}}" />
                     </div>
                     <div style="max-width: 3em;">
                         <button class="btn btn-outline-secondary border-0 refreshStartDate"><i class="bi bi-arrow-clockwise"></i></button>
@@ -21,7 +21,7 @@
                 <div style="font-size: 0.8em;">and</div>
                 <div class="dateRange">
                     <div >
-                        <input class="datepicker DateEnd form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.end}}"/>
+                        <input class="datepicker DateEnd form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateRange.end}}"/>
                     </div>
                     <div style="max-width: 3em;">
                         <button class="btn btn-outline-secondary border-0 refreshEndDate"><i class="bi bi-arrow-clockwise"></i></button>
@@ -47,11 +47,11 @@
             <div style="width:11em; margin:auto; position:relative; text-align:center; ">
                 <div style="font-size: 0.8em;">Concepts must occur between</div>
                 <div style="width:11em;">
-                    <input class="datepicker DateRangeStart" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.start}}" />
+                    <input class="datepicker DateRangeStart" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateRange.start}}" />
                 </div>
                 <div style="font-size: 0.8em;">and</div>
                 <div style="width:11em;">
-                    <input class="datepicker DateRangeEnd" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.end}}" />
+                    <input class="datepicker DateRangeEnd" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateRange.end}}" />
                 </div>
             </div>
         </div>

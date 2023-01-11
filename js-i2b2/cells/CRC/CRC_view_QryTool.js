@@ -704,7 +704,8 @@ i2b2.CRC.view.QT.render = function() {
             icon.addClass('bi-chevron-down');
         }
     });
-    $('.QueryGroup .DateRangeLbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
+
+    $('.QueryGroup', i2b2.CRC.view.QT.containerDiv).on('click', '.DateRangeLbl', (event) => {
         // parse (and if needed correct) the number value for days/months/years
         let eventContainer = $(event.target).closest(".event");
         let body = $('.DateRangeBody', eventContainer);
@@ -1287,6 +1288,11 @@ i2b2.CRC.view.QT.addEvent = function(){
 
     //scroll to newly added event
     $(".addEvent").last().get(0).scrollIntoView({ behavior: 'smooth' });
+
+    // attach the date picker functionality
+    $('.datepicker', templateQueryGroup).toArray().forEach((el) => {
+        $(el).datepicker({uiLibrary: 'bootstrap4'});
+    });
 }
 // ================================================================================================== //
 // This is done once the entire cell has been loaded
