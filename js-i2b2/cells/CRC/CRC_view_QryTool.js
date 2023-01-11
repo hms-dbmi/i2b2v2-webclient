@@ -280,7 +280,7 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
             let startDate =  startDateElem.val();
             let endDate =  endDateElem.val();
 
-            let isDateValid = i2b2.CRC.view.QT.isValidDate(startDate); //startDate.isValid();
+            let isDateValid = i2b2.CRC.view.QT.isValidDate(startDate);
 
             startDate = new Date(startDate);
             endDate = new Date(endDate);
@@ -505,7 +505,66 @@ i2b2.CRC.view.QT.isValidDate = function(dateStr) {
     let dateVal = String(dateStr);
     return !(dateVal.match(/^[0|1][0-9]\/[0|1|2|3][0-9]\/[1|2][0-9][0-9][0-9]$/) === null && dateVal !== '');
 }
+// ================================================================================================== //
+i2b2.CRC.view.QT.handleUpdateDateRangeEvent = function(event){
+    let funcValidateDate = (event) => {
+        let jqTarget = $(event.target);
+        let errorFrameEl = $(jqTarget)[0].parentNode;
 
+        let isValid = false;
+
+        // display red box on error
+        if (!i2b2.CRC.view.QT.isValidDate(jqTarget.val())) {
+            $(errorFrameEl).css('border', 'solid');
+        } else {
+            $(errorFrameEl).css('border', '');
+            isValid = true;
+        }
+
+        return isValid;
+    };
+
+    let jqTarget = $(event.target);
+    let qgBody = jqTarget.closest(".QueryGroup");
+    let qgIndex = qgBody.data("queryGroup");
+    let qgData = i2b2.CRC.model.query.groups[qgIndex];
+    let eventIdx = $(event.target).closest(".event").data("eventidx");
+    if (qgData.events[eventIdx] === undefined) qgData.events[eventIdx] = i2b2.CRC.view.QT.createEvent();
+
+    let isValidDate = funcValidateDate(event);
+    if (isValidDate) {
+        if (jqTarget.hasClass('DateStart') || jqTarget.hasClass('DateRangeStart')) {
+            qgData.events[eventIdx].dateRange.start = event.target.value;
+            // keep both Event 1 start date inputs synced
+            if (eventIdx === 0) $('.DateStart, .event[data-eventidx=0] .DateRangeStart', qgBody).val(event.target.value);
+        } else {
+            qgData.events[eventIdx].dateRange.end = event.target.value;
+            // keep both Event 1 end date inputs synced
+            if (eventIdx === 0) $('.DateEnd, .event[data-eventidx=0] .DateRangeEnd', qgBody).val(event.target.value);
+        }
+
+        if (qgData.events[eventIdx].concepts && qgData.events[eventIdx].concepts.length > 0) {
+            qgData.events[eventIdx].concepts.forEach(concept => {
+                // only include date range for specific SDX types
+                if (concept.withDates) {
+                    if (concept.dateRange === undefined) concept.dateRange = {
+                        "start": "",
+                        "end": ""
+                    };
+                    concept.dateRange.start = qgData.events[eventIdx].dateRange.start;
+                    concept.dateRange.end = qgData.events[eventIdx].dateRange.end;
+                }
+            });
+
+            let temp = jqTarget.closest(".event");
+            let cncptListEl = $('.TermList', temp[0]);
+            let eventData = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx];
+            i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
+        }
+    }
+
+    i2b2.CRC.view.QS.clearStatus();
+}
 // ================================================================================================== //
 i2b2.CRC.view.QT.render = function() {
     // render HTML based on "i2b2.CRC.model.query" data
@@ -552,7 +611,12 @@ i2b2.CRC.view.QT.render = function() {
 
         // attach the date picker functionality
         $('.datepicker', newQG).toArray().forEach((el) => {
-            $(el).datepicker({uiLibrary: 'bootstrap4'});
+            $(el).datepicker({
+                uiLibrary: 'bootstrap4',
+                change: function (event) {
+                    i2b2.CRC.view.QT.handleUpdateDateRangeEvent(event);
+                }
+            });
         });
 
         // attach the i2b2 SDX handlers for each code... on both event1 and event2 containers
@@ -719,71 +783,6 @@ i2b2.CRC.view.QT.render = function() {
             icon.removeClass('bi-chevron-up');
             icon.addClass('bi-chevron-down');
         }
-    });
-
-    let funcValidateDate = (event) => {
-        let jqTarget = $(event.target);
-        let errorFrameEl = $(jqTarget)[0].parentNode;
-
-        let isValid = false;
-
-        // display red box on error
-        if (!i2b2.CRC.view.QT.isValidDate(jqTarget.val())) {
-            $(errorFrameEl).css('border', 'solid');
-        } else {
-            $(errorFrameEl).css('border', '');
-            isValid = true;
-        }
-
-        return isValid;
-    };
-
-    $('.datepicker', i2b2.CRC.view.QT.containerDiv).on('input', (event) => {
-        funcValidateDate(event);
-    });
-
-    $('.datepicker', i2b2.CRC.view.QT.containerDiv).on('change', (event) => {
-        let jqTarget = $(event.target);
-        let newDate = jqTarget.val();
-        let qgBody = jqTarget.closest(".QueryGroup");
-        let qgIndex = qgBody.data("queryGroup");
-        let qgData = i2b2.CRC.model.query.groups[qgIndex];
-        let eventIdx = $(event.target).closest(".event").data("eventidx");
-        if (qgData.events[eventIdx] === undefined) qgData.events[eventIdx] = i2b2.CRC.view.QT.createEvent();
-
-        let isValidDate = funcValidateDate(event);
-        if (isValidDate) {
-            if (jqTarget.hasClass('DateStart') || jqTarget.hasClass('DateRangeStart')) {
-                qgData.events[eventIdx].dateRange.start = event.target.value;
-                // keep both Event 1 start date inputs synced
-                if (eventIdx === 0) $('.DateStart, .event[data-eventidx=0] .DateRangeStart', qgBody).val(event.target.value);
-            } else {
-                qgData.events[eventIdx].dateRange.end = event.target.value;
-                // keep both Event 1 end date inputs synced
-                if (eventIdx === 0) $('.DateEnd, .event[data-eventidx=0] .DateRangeEnd', qgBody).val(event.target.value);
-            }
-
-            if (qgData.events[eventIdx].concepts && qgData.events[eventIdx].concepts.length > 0) {
-                qgData.events[eventIdx].concepts.forEach(concept => {
-                    // only include date range for specific SDX types
-                    if (concept.withDates) {
-                        if (concept.dateRange === undefined) concept.dateRange = {
-                            "start": "",
-                            "end": ""
-                        };
-                        concept.dateRange.start = qgData.events[eventIdx].dateRange.start;
-                        concept.dateRange.end = qgData.events[eventIdx].dateRange.end;
-                    }
-                });
-
-                let temp = $(event.target).closest(".event");
-                let cncptListEl = $('.TermList', temp[0]);
-                let eventData = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx];
-                i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
-            }
-        }
-
-        i2b2.CRC.view.QS.clearStatus();
     });
 
     $('.QueryGroup .OccursCount', i2b2.CRC.view.QT.containerDiv).on('blur', (event) => {
@@ -1291,7 +1290,12 @@ i2b2.CRC.view.QT.addEvent = function(){
 
     // attach the date picker functionality
     $('.datepicker', templateQueryGroup).toArray().forEach((el) => {
-        $(el).datepicker({uiLibrary: 'bootstrap4'});
+        $(el).datepicker({
+            uiLibrary: 'bootstrap4',
+            change: function (event) {
+                i2b2.CRC.view.QT.handleUpdateDateRangeEvent(event);
+            }
+        });
     });
 }
 // ================================================================================================== //
