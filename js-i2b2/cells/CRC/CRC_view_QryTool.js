@@ -1262,16 +1262,16 @@ i2b2.CRC.view.QT.addEvent = function(){
     let qgRoot = $(".QueryGroup.when");
     let qgIndex = qgRoot.data("queryGroup");
     let templateQueryGroup = $(".QueryGroup.when .content");
-    let data = {
+    let eventLinkData = {
         index: i2b2.CRC.model.query.groups[qgIndex].eventLinks.length
     }
 
-    let data1 = {
+    let eventData = {
         index: i2b2.CRC.model.query.groups[qgIndex].events.length
     }
 
-    $((Handlebars.compile("{{> EventLink }}"))(data)).appendTo(templateQueryGroup);
-    $((Handlebars.compile("{{> Event }}"))(data1)).appendTo(templateQueryGroup);
+    $((Handlebars.compile("{{> EventLink }}"))(eventLinkData)).appendTo(templateQueryGroup);
+    $((Handlebars.compile("{{> Event }}"))(eventData)).appendTo(templateQueryGroup);
 
     i2b2.CRC.model.query.groups[qgIndex].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
     i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
@@ -1284,6 +1284,9 @@ i2b2.CRC.view.QT.addEvent = function(){
             i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
         });
     });
+
+    //scroll to newly added event
+    $(".addEvent").last().get(0).scrollIntoView({ behavior: 'smooth' });
 }
 // ================================================================================================== //
 // This is done once the entire cell has been loaded
