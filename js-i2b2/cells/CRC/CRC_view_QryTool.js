@@ -67,14 +67,23 @@ i2b2.CRC.view.QT.showRun = function() {
 
     });
 };
-
-
 // ================================================================================================== //
 i2b2.CRC.view.QT._correctQgTitles = function() {
     // this function makes sure that the first query group always says "Find Patients"
     $(" .JoinText:first", i2b2.CRC.view.QT.containerDiv).text("Find Patients");
 };
+// ================================================================================================== //
+i2b2.CRC.view.QT.enableWhenIfAvail = function() {
+    let selectedWhen = $(".QueryGroup.when");
 
+    if(selectedWhen.length === 0){
+        $(".whenItem").removeClass("disabled");
+    }else{
+        $(".whenItem").addClass("disabled");
+        selectedWhen.find(".whenItem").removeClass("disabled");
+    }
+};
+// ================================================================================================== //
 i2b2.CRC.view.QT.createEventLink = function() {
     let eventLink = {
         aggregateOp1: "FIRST",
@@ -333,6 +342,7 @@ i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
     $('.concept .actions .info', targetEl).on('click', i2b2.CRC.view.QT.termActionInfo);
     $('.concept .actions .delete', targetEl).on('click', i2b2.CRC.view.QT.termActionDelete);
     $('.concept .actions .dateConstraint', targetEl).on('click', i2b2.CRC.view.QT.termActionDateConstraint);
+    i2b2.CRC.view.QT.enableWhenIfAvail();
 };
 
 
@@ -669,6 +679,7 @@ i2b2.CRC.view.QT.render = function() {
         $('.event[data-eventidx!="0"] .TermList', qgRoot).empty();
         // Clear out the HTML date fields
         $('.event[data-eventidx!="0"] .datepicker').val('');
+        i2b2.CRC.view.QT.enableWhenIfAvail();
         i2b2.CRC.view.QS.clearStatus();
     });
     $('.QueryGroup .topbar .without', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
@@ -690,23 +701,27 @@ i2b2.CRC.view.QT.render = function() {
         $('.event[data-eventidx!="0"] .TermList', qgRoot).empty();
         // Clear out the HTML date fields
         $('.event[data-eventidx!="0"] .datepicker').val('');
+        i2b2.CRC.view.QT.enableWhenIfAvail();
         i2b2.CRC.view.QS.clearStatus();
     });
     $('.QueryGroup .topbar .when', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
-        let qgRoot = $(event.target).closest(".QueryGroup");
+        if(!$(".whenItem").hasClass("disabled")) {
+            let qgRoot = $(event.target).closest(".QueryGroup");
 
-        // modify the model
-        let qgIndex = qgRoot.data("queryGroup");
-        i2b2.CRC.model.query.groups[qgIndex].display = "when";
-        i2b2.CRC.model.query.groups[qgIndex].with = false;
-        i2b2.CRC.model.query.groups[qgIndex].without = false;
-        i2b2.CRC.model.query.groups[qgIndex].when = true;
+            // modify the model
+            let qgIndex = qgRoot.data("queryGroup");
+            i2b2.CRC.model.query.groups[qgIndex].display = "when";
+            i2b2.CRC.model.query.groups[qgIndex].with = false;
+            i2b2.CRC.model.query.groups[qgIndex].without = false;
+            i2b2.CRC.model.query.groups[qgIndex].when = true;
 
-        i2b2.CRC.view.QS.clearStatus();
+            // change the CSS styling and display it
+            qgRoot.removeClass(['without', 'with']);
+            qgRoot.addClass("when");
 
-        // change the CSS styling and display it
-        qgRoot.removeClass(['without', 'with']);
-        qgRoot.addClass("when");
+            i2b2.CRC.view.QS.clearStatus();
+            i2b2.CRC.view.QT.enableWhenIfAvail();
+        }
     });
     // Query Group delete button
     $('.QueryGroup .topbar .qgclose i', i2b2.CRC.view.QT.containerDiv).on('click', i2b2.CRC.view.QT.deleteQueryGroup);

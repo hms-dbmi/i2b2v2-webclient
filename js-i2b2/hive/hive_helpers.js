@@ -292,7 +292,14 @@ Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
             return options.inverse(this);
     }
 });
+// ================= handlebars helper to increment index ==================
+Handlebars.registerHelper('increment', function(number, options) {
+    if(typeof(number) === 'undefined' || number === null)
+        return null;
 
+    // Increment by inc parameter if it exists or just by one
+    return number + (options.hash.inc || 1);
+});
 // ================================================================================================== //
 // helper function to build a sniffer package for Cell Communications events
 i2b2.h.BuildSniffPack = function(cellName, cellFuncName, results, signalOrigin) {
