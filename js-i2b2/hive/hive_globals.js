@@ -263,12 +263,3 @@ Handlebars.registerHelper('eachProperty', function(context, options) {
     }
     return ret;
 });
-
-// ================= handlebars helper to increment index ==================
-Handlebars.registerHelper('increment', function(number, options) {
-    if(typeof(number) === 'undefined' || number === null)
-        return null;
-
-    // Increment by inc parameter if it exists or just by one
-    return number + (options.hash.inc || 1);
-});
