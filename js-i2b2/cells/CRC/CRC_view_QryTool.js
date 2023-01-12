@@ -654,9 +654,6 @@ i2b2.CRC.view.QT.render = function() {
     // unhide the first event in all the query groups
     $('.event[data-eventidx="0"]').removeClass('toHide');
 
-    // hide the last event relationship bar in every query group
-    //$('.QueryGroup .SequenceBar:last').hide();
-
     // attach the event listeners
     // -----------------------------------------
     // Top bar events (with / without / when)
@@ -1302,6 +1299,7 @@ i2b2.CRC.view.QT.addEvent = function(){
     i2b2.CRC.model.query.groups[qgIndex].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
     i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
 
+    //add drag and drop handling
     ["CONCPT","QM","PRS"].forEach((sdxCode) => {
         $(".event", templateQueryGroup).last().toArray().forEach((dropTarget) => {
             i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
@@ -1310,9 +1308,6 @@ i2b2.CRC.view.QT.addEvent = function(){
             i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
         });
     });
-
-    //scroll to newly added event
-    $(".addEvent").last().get(0).scrollIntoView({ behavior: 'smooth' });
 
     // attach the date picker functionality
     $('.datepicker', templateQueryGroup).toArray().forEach((el) => {
@@ -1323,6 +1318,9 @@ i2b2.CRC.view.QT.addEvent = function(){
             }
         });
     });
+
+    //scroll to newly added event
+    qgRoot.find(".event").last().get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
 }
 // ================================================================================================== //
 // This is done once the entire cell has been loaded
