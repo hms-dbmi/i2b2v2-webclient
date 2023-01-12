@@ -534,7 +534,7 @@
     margin-right: 0;
 }
 
-.QueryGroup .disabled {
+.whenItem.disabled {
     cursor: not-allowed! important;
     color: rgba(33, 37, 41, 0.47);
 }
