@@ -643,9 +643,6 @@ i2b2.CRC.view.QT.render = function() {
     // unhide the first event in all the query groups
     $('.event[data-eventidx="0"]').removeClass('toHide');
 
-    // hide the last event relationship bar in every query group
-    //$('.QueryGroup .SequenceBar:last').hide();
-
     // attach the event listeners
     // -----------------------------------------
     // Top bar events (with / without / when)
@@ -1301,9 +1298,6 @@ i2b2.CRC.view.QT.addEvent = function(){
         });
     });
 
-    //scroll to newly added event
-    qgRoot.find(".event").last().get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
-
     // attach the date picker functionality
     $('.datepicker', templateQueryGroup).toArray().forEach((el) => {
         $(el).datepicker({
@@ -1313,6 +1307,9 @@ i2b2.CRC.view.QT.addEvent = function(){
             }
         });
     });
+
+    //scroll to newly added event
+    qgRoot.find(".event").last().get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
 }
 // ================================================================================================== //
 // This is done once the entire cell has been loaded
