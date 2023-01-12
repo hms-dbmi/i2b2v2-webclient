@@ -1291,6 +1291,7 @@ i2b2.CRC.view.QT.addEvent = function(){
     i2b2.CRC.model.query.groups[qgIndex].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
     i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
 
+    //add drag and drop handling
     ["CONCPT","QM","PRS"].forEach((sdxCode) => {
         $(".event", templateQueryGroup).last().toArray().forEach((dropTarget) => {
             i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
