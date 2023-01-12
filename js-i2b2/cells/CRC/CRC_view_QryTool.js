@@ -1301,7 +1301,7 @@ i2b2.CRC.view.QT.addEvent = function(){
     });
 
     //scroll to newly added event
-    $(".addEvent").last().get(0).scrollIntoView({ behavior: 'smooth' });
+    qgRoot.find(".event").last().get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
 
     // attach the date picker functionality
     $('.datepicker', templateQueryGroup).toArray().forEach((el) => {
