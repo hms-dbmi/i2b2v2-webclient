@@ -55,7 +55,6 @@ function QueryToolController() {
                 let without = i2b2.h.getXNodeVal(qp,'invert') === "1";
                 let occurs = i2b2.h.getXNodeVal(qp,'total_item_occurrences');
                 let instances = (1*occurs);
-
                 function reformatDate(date) {
                     let year = date.substring(0,4);
                     let month = date.substring(5,7);
@@ -246,8 +245,10 @@ function QueryToolController() {
                         let subQueryConstraints = i2b2.h.XPath(qd[j], 'subquery_constraint');
 
                         let temporalGroupIdx = -1;
+                        let queryIdToIndex = {};
                         for (let s=0; s <subqueries.length; s++) {
                             let subquery = subqueries[s];
+                            let queryId = i2b2.h.getXNodeVal(subquery,'query_id');
                             let isWhen = true;
                             if(s===0) {
                                 let subPanel = i2b2.h.XPath(subquery, 'panel');
@@ -273,26 +274,24 @@ function QueryToolController() {
                                     i2b2.CRC.model.query.groups[temporalGroupIdx].events[s].dateRange.end = data.metadata.endDate;
                                 }
                             }
+                            queryIdToIndex[queryId] = i2b2.CRC.model.query.groups[temporalGroupIdx].events.length-1;
                         }
                         if(temporalGroupIdx !== -1){
                             for (let s=0; s <subQueryConstraints.length; s++) {
                                 let queryId = i2b2.h.getXNodeVal(subQueryConstraints[s],'first_query/query_id');
-                                let eventLinkIndex = queryId.split(' ');
-                                if(eventLinkIndex.length >= 2){
-                                    eventLinkIndex = parseInt(eventLinkIndex[eventLinkIndex.length-1])-1;
-                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].joinColumn1 = i2b2.h.getXNodeVal(subQueryConstraints[s],'first_query/join_column');
-                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].aggregateOp1 = i2b2.h.getXNodeVal(subQueryConstraints[s],'first_query/aggregate_operator');
-                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].joinColumn2 = i2b2.h.getXNodeVal(subQueryConstraints[s],'second_query/join_column');
-                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].aggregateOp2 = i2b2.h.getXNodeVal(subQueryConstraints[s],'second_query/aggregate_operator');
-                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].operator = i2b2.h.XPath(subQueryConstraints[s],'descendant-or-self::operator/text()')[0].nodeValue;
+                                let eventLinkIndex = queryIdToIndex[queryId];
 
-                                    let timeSpans =  i2b2.h.XPath(subQueryConstraints[s], 'span');
-                                    for (let ts=0; ts <timeSpans.length; ts++) {
-                                        i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].operator = i2b2.h.getXNodeVal(timeSpans[ts],'operator');
-                                        i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].value = i2b2.h.getXNodeVal(timeSpans[ts],'span_value');
-                                        i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].unit = i2b2.h.getXNodeVal(timeSpans[ts],'units');
-                                    }
+                                i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].joinColumn1 = i2b2.h.getXNodeVal(subQueryConstraints[s],'first_query/join_column');
+                                i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].aggregateOp1 = i2b2.h.getXNodeVal(subQueryConstraints[s],'first_query/aggregate_operator');
+                                i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].joinColumn2 = i2b2.h.getXNodeVal(subQueryConstraints[s],'second_query/join_column');
+                                i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].aggregateOp2 = i2b2.h.getXNodeVal(subQueryConstraints[s],'second_query/aggregate_operator');
+                                i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].operator = i2b2.h.XPath(subQueryConstraints[s],'descendant-or-self::operator/text()')[0].nodeValue;
 
+                                let timeSpans =  i2b2.h.XPath(subQueryConstraints[s], 'span');
+                                for (let ts=0; ts <timeSpans.length; ts++) {
+                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].operator = i2b2.h.getXNodeVal(timeSpans[ts],'operator');
+                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].value = i2b2.h.getXNodeVal(timeSpans[ts],'span_value');
+                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].unit = i2b2.h.getXNodeVal(timeSpans[ts],'units');
                                 }
                             }
                         }
@@ -507,7 +506,7 @@ function QueryToolController() {
 
         let createPanel = function(panelNumber, invert, occursCount, timing){
             let tempPanel = {};
-            tempPanel.number =
+            tempPanel.number = panelNumber;
             tempPanel.invert = invert ? "1" : "0";
             tempPanel.timing = timing;
             tempPanel.occursCount = occursCount;
