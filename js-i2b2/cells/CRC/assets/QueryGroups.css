@@ -521,7 +521,8 @@
 }
 
 .QueryGroup.when .SequenceBar select.occurs {
-    width: 8.5em;
+    width: auto;
+    max-width: 9.2em;
 }
 
 .QueryGroup.when .SequenceBar select,
