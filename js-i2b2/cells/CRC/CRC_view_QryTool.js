@@ -686,7 +686,7 @@ i2b2.CRC.view.QT.render = function() {
                 $(this).remove();
             }
             else{
-                $(this).find('option:first').prop('selected',true);
+                $(this).find("select").find('option:first').prop('selected',true);
                 $(this).find( "input:checked").click();
             }
         });
@@ -723,7 +723,7 @@ i2b2.CRC.view.QT.render = function() {
                 $(this).remove();
             }
             else{
-                $(this).find('option:first').prop('selected',true);
+                $(this).find("select").find('option:first').prop('selected',true);
                 $(this).find( "input:checked").click();
             }
         });
