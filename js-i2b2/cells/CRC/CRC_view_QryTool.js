@@ -658,7 +658,7 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].without = false;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
         // handle purging of eventLinks
-        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.model.query.groups[qgIndex].eventLinks[0]];
+        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         // handle purging of events
         i2b2.CRC.model.query.groups[qgIndex].events = [i2b2.CRC.model.query.groups[qgIndex].events[0], i2b2.CRC.view.QT.createEvent()];
 
@@ -676,7 +676,7 @@ i2b2.CRC.view.QT.render = function() {
             }
             else{
                 $(this).find('option:first').prop('selected',true);
-                $(this).find('input').val("");
+                $(this).find( "input:checked").click();
             }
         });
         // Clear out the HTML date fields
@@ -696,7 +696,7 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].without = true;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
         // handle purging of eventLinks
-        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.model.query.groups[qgIndex].eventLinks[0]];
+        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         // handle purging of events
         i2b2.CRC.model.query.groups[qgIndex].events = [i2b2.CRC.model.query.groups[qgIndex].events[0], i2b2.CRC.view.QT.createEvent()];
 
@@ -713,7 +713,7 @@ i2b2.CRC.view.QT.render = function() {
             }
             else{
                 $(this).find('option:first').prop('selected',true);
-                $(this).find('input').val("");
+                $(this).find( "input:checked").click();
             }
         });
         // Clear out the HTML date fields
