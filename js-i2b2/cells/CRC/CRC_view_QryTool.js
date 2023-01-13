@@ -661,8 +661,24 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.model.query.groups[qgIndex].eventLinks[0]];
         // handle purging of events
         i2b2.CRC.model.query.groups[qgIndex].events = [i2b2.CRC.model.query.groups[qgIndex].events[0], i2b2.CRC.view.QT.createEvent()];
-        // DYNAMIC MODIFICATIONS OF THE HTML FOR DELETING OF EVENTS OVER event[1]
+
+
+        // DYNAMIC MODIFICATIONS OF THE HTML FOR DELETING OF EVENTS OVER event[0]
         $('.event[data-eventidx!="0"] .TermList', qgRoot).empty();
+        $('.event', qgRoot).each(function( index ) {
+            if(index > 1){
+                $(this).remove();
+            }
+        });
+        $('.eventLink', qgRoot).each(function( index ) {
+            if(index >= 1){
+                $(this).remove();
+            }
+            else{
+                $(this).find('option:first').prop('selected',true);
+                $(this).find('input').val("");
+            }
+        });
         // Clear out the HTML date fields
         $('.event[data-eventidx!="0"] .datepicker').val('');
         i2b2.CRC.view.QT.enableWhenIfAvail();
@@ -683,8 +699,23 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.model.query.groups[qgIndex].eventLinks[0]];
         // handle purging of events
         i2b2.CRC.model.query.groups[qgIndex].events = [i2b2.CRC.model.query.groups[qgIndex].events[0], i2b2.CRC.view.QT.createEvent()];
+
         // DYNAMIC MODIFICATIONS OF THE HTML FOR DELETING OF EVENTS OVER event[0]
         $('.event[data-eventidx!="0"] .TermList', qgRoot).empty();
+        $('.event', qgRoot).each(function( index ) {
+            if(index > 1){
+                $(this).remove();
+            }
+        });
+        $('.eventLink', qgRoot).each(function( index ) {
+            if(index >= 1){
+                $(this).remove();
+            }
+            else{
+                $(this).find('option:first').prop('selected',true);
+                $(this).find('input').val("");
+            }
+        });
         // Clear out the HTML date fields
         $('.event[data-eventidx!="0"] .datepicker').val('');
         i2b2.CRC.view.QT.enableWhenIfAvail();
