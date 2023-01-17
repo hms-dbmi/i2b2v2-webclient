@@ -434,12 +434,10 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
             queryGroup.events[eventIdx].dateRange.end = metadata.endDate;
         }
 
-        if(metadata.without === true){
-            queryGroup.without = true;
-            queryGroup.display = "without";
-        }
-        else if(metadata.when === true){
+        if(metadata.when === true){
             queryGroup.when = true;
+            queryGroup.with = false;
+            queryGroup.without = false;
             queryGroup.display = "when";
         }
     }
