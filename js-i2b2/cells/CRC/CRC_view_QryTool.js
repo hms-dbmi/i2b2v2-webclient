@@ -289,7 +289,7 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
             let startDate =  startDateElem.val();
             let endDate =  endDateElem.val();
 
-            let isDateValid = i2b2.CRC.view.QT.isValidDate(startDate); //startDate.isValid();
+            let isDateValid = i2b2.CRC.view.QT.isValidDate(startDate);
 
             startDate = new Date(startDate);
             endDate = new Date(endDate);
@@ -515,7 +515,66 @@ i2b2.CRC.view.QT.isValidDate = function(dateStr) {
     let dateVal = String(dateStr);
     return !(dateVal.match(/^[0|1][0-9]\/[0|1|2|3][0-9]\/[1|2][0-9][0-9][0-9]$/) === null && dateVal !== '');
 }
+// ================================================================================================== //
+i2b2.CRC.view.QT.handleUpdateDateRangeEvent = function(event){
+    let funcValidateDate = (event) => {
+        let jqTarget = $(event.target);
+        let errorFrameEl = $(jqTarget)[0].parentNode;
 
+        let isValid = false;
+
+        // display red box on error
+        if (!i2b2.CRC.view.QT.isValidDate(jqTarget.val())) {
+            $(errorFrameEl).css('border', 'solid');
+        } else {
+            $(errorFrameEl).css('border', '');
+            isValid = true;
+        }
+
+        return isValid;
+    };
+
+    let jqTarget = $(event.target);
+    let qgBody = jqTarget.closest(".QueryGroup");
+    let qgIndex = qgBody.data("queryGroup");
+    let qgData = i2b2.CRC.model.query.groups[qgIndex];
+    let eventIdx = $(event.target).closest(".event").data("eventidx");
+    if (qgData.events[eventIdx] === undefined) qgData.events[eventIdx] = i2b2.CRC.view.QT.createEvent();
+
+    let isValidDate = funcValidateDate(event);
+    if (isValidDate) {
+        if (jqTarget.hasClass('DateStart') || jqTarget.hasClass('DateRangeStart')) {
+            qgData.events[eventIdx].dateRange.start = event.target.value;
+            // keep both Event 1 start date inputs synced
+            if (eventIdx === 0) $('.DateStart, .event[data-eventidx=0] .DateRangeStart', qgBody).val(event.target.value);
+        } else {
+            qgData.events[eventIdx].dateRange.end = event.target.value;
+            // keep both Event 1 end date inputs synced
+            if (eventIdx === 0) $('.DateEnd, .event[data-eventidx=0] .DateRangeEnd', qgBody).val(event.target.value);
+        }
+
+        if (qgData.events[eventIdx].concepts && qgData.events[eventIdx].concepts.length > 0) {
+            qgData.events[eventIdx].concepts.forEach(concept => {
+                // only include date range for specific SDX types
+                if (concept.withDates) {
+                    if (concept.dateRange === undefined) concept.dateRange = {
+                        "start": "",
+                        "end": ""
+                    };
+                    concept.dateRange.start = qgData.events[eventIdx].dateRange.start;
+                    concept.dateRange.end = qgData.events[eventIdx].dateRange.end;
+                }
+            });
+
+            let temp = jqTarget.closest(".event");
+            let cncptListEl = $('.TermList', temp[0]);
+            let eventData = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx];
+            i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
+        }
+    }
+
+    i2b2.CRC.view.QS.clearStatus();
+}
 // ================================================================================================== //
 i2b2.CRC.view.QT.render = function() {
     // render HTML based on "i2b2.CRC.model.query" data
@@ -534,12 +593,6 @@ i2b2.CRC.view.QT.render = function() {
         // - populate when "occurs before" / "occurs at least"
         // - populate when "the first" / "any"
         // - populate when "day" / "month" / "year"
-
-        // populate the eventIndex attribute used by templates
-        qgData.events.forEach((event, idx) => {
-            event.eventIndex = idx + 1;
-        });
-
         let newQG = $(i2b2.CRC.view.QT.template.qg(i2b2.CRC.model.query.groups[qgnum])).appendTo(i2b2.CRC.view.QT.containerDiv);
         // set the query group index data
         newQG.data('queryGroup', qgnum);
@@ -568,7 +621,12 @@ i2b2.CRC.view.QT.render = function() {
 
         // attach the date picker functionality
         $('.datepicker', newQG).toArray().forEach((el) => {
-            $(el).datepicker({uiLibrary: 'bootstrap4'});
+            $(el).datepicker({
+                uiLibrary: 'bootstrap4',
+                change: function (event) {
+                    i2b2.CRC.view.QT.handleUpdateDateRangeEvent(event);
+                }
+            });
         });
 
         // attach the i2b2 SDX handlers for each code... on both event1 and event2 containers
@@ -580,18 +638,10 @@ i2b2.CRC.view.QT.render = function() {
                 i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
             });
         });
-
-        // remove the eventIndex attribute used by templates
-        qgData.events.forEach((event) => {
-            delete event.eventIndex;
-        });
     }
 
     // unhide the first event in all the query groups
     $('.event[data-eventidx="0"]').removeClass('toHide');
-
-    // hide the last event relationship bar in every query group
-    $('.QueryGroup .SequenceBar:last').hide();
 
     // attach the event listeners
     // -----------------------------------------
@@ -608,11 +658,27 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].without = false;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
         // handle purging of eventLinks
-        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.model.query.groups[qgIndex].eventLinks[0]];
+        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         // handle purging of events
         i2b2.CRC.model.query.groups[qgIndex].events = [i2b2.CRC.model.query.groups[qgIndex].events[0], i2b2.CRC.view.QT.createEvent()];
-        // DYNAMIC MODIFICATIONS OF THE HTML FOR DELETING OF EVENTS OVER event[1]
+
+
+        // DYNAMIC MODIFICATIONS OF THE HTML FOR DELETING OF EVENTS OVER event[0]
         $('.event[data-eventidx!="0"] .TermList', qgRoot).empty();
+        $('.event', qgRoot).each(function( index ) {
+            if(index > 1){
+                $(this).remove();
+            }
+        });
+        $('.eventLink', qgRoot).each(function( index ) {
+            if(index >= 1){
+                $(this).remove();
+            }
+            else{
+                $(this).find("select").find('option:first').prop('selected',true);
+                $(this).find( "input:checked").click();
+            }
+        });
         // Clear out the HTML date fields
         $('.event[data-eventidx!="0"] .datepicker').val('');
         i2b2.CRC.view.QT.enableWhenIfAvail();
@@ -630,11 +696,26 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].without = true;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
         // handle purging of eventLinks
-        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.model.query.groups[qgIndex].eventLinks[0]];
+        i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         // handle purging of events
         i2b2.CRC.model.query.groups[qgIndex].events = [i2b2.CRC.model.query.groups[qgIndex].events[0], i2b2.CRC.view.QT.createEvent()];
+
         // DYNAMIC MODIFICATIONS OF THE HTML FOR DELETING OF EVENTS OVER event[0]
         $('.event[data-eventidx!="0"] .TermList', qgRoot).empty();
+        $('.event', qgRoot).each(function( index ) {
+            if(index > 1){
+                $(this).remove();
+            }
+        });
+        $('.eventLink', qgRoot).each(function( index ) {
+            if(index >= 1){
+                $(this).remove();
+            }
+            else{
+                $(this).find("select").find('option:first').prop('selected',true);
+                $(this).find( "input:checked").click();
+            }
+        });
         // Clear out the HTML date fields
         $('.event[data-eventidx!="0"] .datepicker').val('');
         i2b2.CRC.view.QT.enableWhenIfAvail();
@@ -730,7 +811,8 @@ i2b2.CRC.view.QT.render = function() {
             icon.addClass('bi-chevron-down');
         }
     });
-    $('.QueryGroup .DateRangeLbl', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
+
+    $('.QueryGroup', i2b2.CRC.view.QT.containerDiv).on('click', '.DateRangeLbl', (event) => {
         // parse (and if needed correct) the number value for days/months/years
         let eventContainer = $(event.target).closest(".event");
         let body = $('.DateRangeBody', eventContainer);
@@ -744,71 +826,6 @@ i2b2.CRC.view.QT.render = function() {
             icon.removeClass('bi-chevron-up');
             icon.addClass('bi-chevron-down');
         }
-    });
-
-    let funcValidateDate = (event) => {
-        let jqTarget = $(event.target);
-        let errorFrameEl = $(jqTarget)[0].parentNode;
-
-        let isValid = false;
-
-        // display red box on error
-        if (!i2b2.CRC.view.QT.isValidDate(jqTarget.val())) {
-            $(errorFrameEl).css('border', 'solid');
-        } else {
-            $(errorFrameEl).css('border', '');
-            isValid = true;
-        }
-
-        return isValid;
-    };
-
-    $('.datepicker', i2b2.CRC.view.QT.containerDiv).on('input', (event) => {
-        funcValidateDate(event);
-    });
-
-    $('.datepicker', i2b2.CRC.view.QT.containerDiv).on('change', (event) => {
-        let jqTarget = $(event.target);
-        let newDate = jqTarget.val();
-        let qgBody = jqTarget.closest(".QueryGroup");
-        let qgIndex = qgBody.data("queryGroup");
-        let qgData = i2b2.CRC.model.query.groups[qgIndex];
-        let eventIdx = $(event.target).closest(".event").data("eventidx");
-        if (qgData.events[eventIdx] === undefined) qgData.events[eventIdx] = i2b2.CRC.view.QT.createEvent();
-
-        let isValidDate = funcValidateDate(event);
-        if (isValidDate) {
-            if (jqTarget.hasClass('DateStart') || jqTarget.hasClass('DateRangeStart')) {
-                qgData.events[eventIdx].dateRange.start = event.target.value;
-                // keep both Event 1 start date inputs synced
-                if (eventIdx === 0) $('.DateStart, .event[data-eventidx=0] .DateRangeStart', qgBody).val(event.target.value);
-            } else {
-                qgData.events[eventIdx].dateRange.end = event.target.value;
-                // keep both Event 1 end date inputs synced
-                if (eventIdx === 0) $('.DateEnd, .event[data-eventidx=0] .DateRangeEnd', qgBody).val(event.target.value);
-            }
-
-            if (qgData.events[eventIdx].concepts && qgData.events[eventIdx].concepts.length > 0) {
-                qgData.events[eventIdx].concepts.forEach(concept => {
-                    // only include date range for specific SDX types
-                    if (concept.withDates) {
-                        if (concept.dateRange === undefined) concept.dateRange = {
-                            "start": "",
-                            "end": ""
-                        };
-                        concept.dateRange.start = qgData.events[eventIdx].dateRange.start;
-                        concept.dateRange.end = qgData.events[eventIdx].dateRange.end;
-                    }
-                });
-
-                let temp = $(event.target).closest(".event");
-                let cncptListEl = $('.TermList', temp[0]);
-                let eventData = i2b2.CRC.model.query.groups[qgIndex].events[eventIdx];
-                i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
-            }
-        }
-
-        i2b2.CRC.view.QS.clearStatus();
     });
 
     $('.QueryGroup .OccursCount', i2b2.CRC.view.QT.containerDiv).on('blur', (event) => {
@@ -1283,7 +1300,49 @@ i2b2.CRC.view.QT.clearAll = function(){
     i2b2.CRC.view.QS.clearStatus();
 }
 
+// ================================================================================================== //
+i2b2.CRC.view.QT.addEvent = function(){
+    let qgRoot = $(".QueryGroup.when");
+    let qgIndex = qgRoot.data("queryGroup");
+    let templateQueryGroup = $(".QueryGroup.when .content");
+    let eventLinkData = {
+        index: i2b2.CRC.model.query.groups[qgIndex].eventLinks.length
+    }
 
+    let eventData = {
+        index: i2b2.CRC.model.query.groups[qgIndex].events.length
+    }
+
+    $((Handlebars.compile("{{> EventLink }}"))(eventLinkData)).appendTo(templateQueryGroup);
+    $((Handlebars.compile("{{> Event }}"))(eventData)).appendTo(templateQueryGroup);
+
+    i2b2.CRC.model.query.groups[qgIndex].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
+    i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
+
+    //add drag and drop handling
+    ["CONCPT","QM","PRS"].forEach((sdxCode) => {
+        $(".event", templateQueryGroup).last().toArray().forEach((dropTarget) => {
+            i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
+            i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
+            i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOver", i2b2.CRC.view.QT.HoverOver);
+            i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "onHoverOut", i2b2.CRC.view.QT.HoverOut);
+        });
+    });
+
+    // attach the date picker functionality
+    $('.datepicker', templateQueryGroup).toArray().forEach((el) => {
+        $(el).datepicker({
+            uiLibrary: 'bootstrap4',
+            change: function (event) {
+                i2b2.CRC.view.QT.handleUpdateDateRangeEvent(event);
+            }
+        });
+    });
+
+    //scroll to newly added event
+    qgRoot.find(".event").last().get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+}
+// ================================================================================================== //
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((cell) => {
@@ -1414,6 +1473,13 @@ i2b2.events.afterCellInit.add((cell) => {
                 error: (error) => { console.error("Error (retrieval or structure) with template: SubQueryConstraint.xml"); }
             });
 
+            //HTML template for event
+            $.ajax("js-i2b2/cells/CRC/templates/Event.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("Event", req.responseText);
+                },
+                error: (error) => { console.error("Could not retrieve template: Event.html"); }
+            });
             //HTML template for event relationship
             $.ajax("js-i2b2/cells/CRC/templates/EventLink.html", {
                 success: (template, status, req) => {
