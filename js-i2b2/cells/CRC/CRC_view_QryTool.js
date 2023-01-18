@@ -433,7 +433,16 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
         if(metadata.endDate !== undefined){
             queryGroup.events[eventIdx].dateRange.end = metadata.endDate;
         }
+
+        if(metadata.when === true){
+            queryGroup.when = true;
+            queryGroup.with = false;
+            queryGroup.without = false;
+            queryGroup.display = "when";
+        }
     }
+
+    return qgIdx;
 }
 // ================================================================================================== //
 i2b2.CRC.view.QT.handleLabValues = function(sdx){
