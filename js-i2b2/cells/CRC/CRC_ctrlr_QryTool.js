@@ -233,12 +233,6 @@ function QueryToolController() {
                 this.doSetQueryName(queryName);
 
                 for (let j=0; j <qd.length; j++) {
-                    let qp;
-                    /*if (j===0)
-                        qp = i2b2.h.XPath(qd[j], 'panel');
-                    else
-                        qp = i2b2.h.XPath(qd[j], 'descendant::panel');*/
-
                     if(j===0){
                         //handle temporal subquery panels
                         let subqueries = i2b2.h.XPath(qd[j], 'subquery');
