@@ -897,7 +897,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
     let labValuesCallback = function() {
 
-        let extractedLabValues = i2b2.CRC.ctrlr.labValues.extractedModel;
+        let extractedLabValues = i2b2.CRC.ctrlr.MetadataValues.extractedModel;
 
         if (extractedLabValues !== undefined) {
 
@@ -921,7 +921,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
 
             $("body #labValuesModal button.lab-save").click(function () {
                 switch (newLabValues.valueType) {
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
+                    case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.FLAG:
                         newLabValues.numericValueRangeLow = null;
                         newLabValues.numericValueRangeHigh = null;
                         newLabValues.unitValue = null;
@@ -953,7 +953,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 $(".labGraphUnitSection").addClass("hidden");
                 $("#labEnumValueMain").addClass("hidden");
                 $("#labFlag").removeClass("hidden");
-                newLabValues.valueType = i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG;
+                newLabValues.valueType = i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.FLAG;
                 newLabValues.valueOperator = 'EQ';
             });
 
@@ -961,7 +961,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                 $("#labFlag").addClass("hidden");
                 if (extractedLabValues.dataType === 'ENUM') {
                     $("#labEnumValueMain").removeClass("hidden");
-                } else if (extractedLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER) {
+                } else if (extractedLabValues.valueType === i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.NUMBER) {
                     $(".labGraphUnitSection").removeClass("hidden");
                     $(".labValueSection").removeClass("hidden");
                 } else {
@@ -973,13 +973,13 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
             if (sdxConcept.LabValues && sdxConcept.LabValues.valueType) {
                 newLabValues.valueType = sdxConcept.LabValues.valueType;
                 switch (newLabValues.valueType) {
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
+                    case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.FLAG:
                         $("input[name='labType'][value='BY_FLAG']").trigger("click");
                         break;
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER:
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT:
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT:
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.MODIFIER:
+                    case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.NUMBER:
+                    case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.LARGETEXT:
+                    case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.TEXT:
+                    case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.MODIFIER:
                         $("input[name='labType'][value='BY_VALUE']").trigger("click");
                         break;
                 }
@@ -1295,7 +1295,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
     }
 
     labValuesModal.load('js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
-        i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
+        i2b2.CRC.ctrlr.MetadataValues.loadData(sdxConcept, labValuesCallback);
     });
 };
 
@@ -1480,6 +1480,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     Handlebars.registerPartial("SubQueryConstraint", req.responseText);
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: SubQueryConstraint.xml"); }
+            });
+
+            // ... XML for the query request (main body)
+            $.ajax("js-i2b2/cells/CRC/templates/QueryPanelItemConstraint.xml", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("QueryPanelItemConstraint", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItemConstraint.xml"); }
             });
 
             //HTML template for event
