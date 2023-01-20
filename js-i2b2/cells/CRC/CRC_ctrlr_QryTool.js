@@ -466,12 +466,12 @@ function QueryToolController() {
                     if(item.origData.isModifier){
                         tempItem.modName = tempItem.name;
                         tempItem.modKey = tempItem.key;
-                        tempItem.name = (item.sdxInfo.origData.parent.name != null ? i2b2.h.Escape(item.sdxInfo.origData.parent.name) : tempItem.name);
-                        tempItem.key = item.sdxInfo.origData.parent.key;
+                        tempItem.name = (item.origData.parent.origData.name != null ? i2b2.h.Escape(item.origData.parent.origData.name) : tempItem.name);
+                        tempItem.key = item.origData.parent.origData.key;
                         tempItem.isModifier = true;
-                        tempItem.applied_path = item.sdxInfo.origData.applied_path;
+                        tempItem.applied_path = item.origData.applied_path;
 
-                        let modParent = item.sdxInfo.origData.parent;
+                        let modParent = item.origData.parent.origData;
                         while (modParent != null) {
                             if (modParent.isModifier) {
                                 modParent = modParent.parent;
