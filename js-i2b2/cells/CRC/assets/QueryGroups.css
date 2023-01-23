@@ -446,6 +446,11 @@
     overflow: hidden;
 }
 
+.QueryGroup .event .required{
+    color: #f44336;
+    margin-left: 0.6em;
+}
+
 .QueryGroup .EventLbl {
     max-height: 0;
 }
@@ -492,7 +497,7 @@
 }
 
 .QueryGroup.when .SequenceBar {
-    max-height: 5.8em;
+    max-height: 5.7em;
     padding: 0.4em 0.4em 0.4em 0.6em;
     border-right: 1px solid #d8a407;
     border-top: 0px;
@@ -534,8 +539,12 @@
     margin-right: 0.2em;
 }
 
+.QueryGroup.when .SequenceBar .input-group {
+    width: 3.8em;
+}
+
 .QueryGroup.when .SequenceBar .timeSpanValue {
-    width: 3.5em;
+    width: 3.8em;
     min-height: 1.5em;
     height: 1.5em;
 }
@@ -548,12 +557,12 @@
     margin-right: 0;
 }
 
-.QueryGroup.when .SequenceBar .required{
+.QueryGroup.when .SequenceBar input.required{
     border-bottom: 2px solid #f44336;
 }
 
 .QueryGroup.when .SequenceBar .timeSpanError {
-    font-size: 0.7em;
+    font-size: 1em;
     color: #f44336;
 }
 
