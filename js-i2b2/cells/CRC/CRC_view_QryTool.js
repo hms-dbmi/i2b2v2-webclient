@@ -23,6 +23,25 @@ i2b2.CRC.view.QT.resetToCRCHistoryView = function() {
     $("#i2b2TreeviewQueryHistory").show();
 }
 // ================================================================================================== //
+i2b2.CRC.view.QT.validateQuery = function() {
+    let validQuery = true;
+    $(".SequenceBar .timeSpan").each((index, elem) => {
+        if($(elem).find(".form-check-input").is(":checked")){
+            let timeSpanValueElem = $(elem).find(".timeSpanValue");
+            if(timeSpanValueElem.val().length === 0){
+                timeSpanValueElem.addClass("required");
+                timeSpanValueElem.parent().find(".timeSpanError").removeClass("vhidden");
+                validQuery = false;
+            }else{
+                timeSpanValueElem.removeClass("required");
+                timeSpanValueElem.parent().find(".timeSpanError").addClass("vhidden");
+            }
+        }
+    });
+
+    return validQuery;
+}
+// ================================================================================================== //
 i2b2.CRC.view.QT.showRun = function() {
 
     // show the options modal screen
@@ -52,7 +71,7 @@ i2b2.CRC.view.QT.showRun = function() {
             i2b2.CRC.view.QT.resetToCRCHistoryView();
             // build list of selected result types
             let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
-            // run the query
+
             i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes);
             // close the modal
             $('body #crcModal div:eq(0)').modal('hide');
@@ -145,7 +164,7 @@ i2b2.CRC.view.QT.updateEventLinkJoinColumn = function(elem) {
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
-    let timeSpanElem = $(elem).parent().siblings(".timeSpanField");
+    let timeSpanElem = $(elem).parents(".timeSpan").find(".timeSpanField");
     let curState =  timeSpanElem.prop( "disabled");
     timeSpanElem.prop( "disabled", !curState);
 
@@ -1430,9 +1449,12 @@ i2b2.events.afterCellInit.add((cell) => {
                     container.on('open', () => {
                         // capture "run query" button click ---------------------------------------------------
                         $(".CRC_QT_runbar .button-run", cell.view.QT.containerRoot).on("click", (evt)=> {
-                            evt.target.blur();
-                            // only run if the query has entries
-                            if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
+                            //check if this a valid query
+                            if(i2b2.CRC.view.QT.validateQuery()) {// run the query
+                                evt.target.blur();
+                                // only run if the query has entries
+                                if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
+                            }
                         });
 
                         // capture "clear query" button click -------------------------------------------------
