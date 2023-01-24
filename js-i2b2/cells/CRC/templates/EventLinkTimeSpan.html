@@ -3,7 +3,6 @@
         <input class="form-check-input" type="checkbox" onclick="javascript:this.blur();i2b2.CRC.view.QT.toggleTimeSpan(this);" {{checked}}/>
         <label class="form-check-label">{{label}}</label>
     </div>
-
     <select class=" form-select form-select-sm timeSpanOp timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanOperator(this);" {{disabled}}>
         {{#select timeSpan.operator}}
         <option value="GREATER">&#62;</option>
@@ -13,7 +12,12 @@
         <option value="LESS">&#60;</option>
         {{/select}}
     </select>
-    <input class="form-control form-control-sm timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{timeSpan.value}}" {{disabled}}/>
+    <div class="input-group-main">
+        <div class="input-group">
+            <input class="form-control form-control-sm timeSpanValue timeSpanField spacing" type="text" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanValue(this);" value="{{timeSpan.value}}" {{disabled}}/>
+            <span class="timeSpanError w-100 vhidden">required</span>
+        </div>
+    </div>
     <select class="form-select form-select-sm timeSpanUnit timeSpanField spacing" onchange="javascript:this.blur();i2b2.CRC.view.QT.updateTimeSpanUnit(this);" {{disabled}}>
         {{#select timeSpan.unit}}
         <option value="HOUR">hour(s)</option>
