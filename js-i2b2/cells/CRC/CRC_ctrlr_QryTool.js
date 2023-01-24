@@ -180,7 +180,7 @@ function QueryToolController() {
                         if ((lvd.length > 0) && (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length === 0))
                         {
                             sdxDataNode.isLab = true;
-                            sdxDataNode.LabValues = this.parseValueConstraint( lvd );
+                            sdxDataNode.LabValues = i2b2.CRC.ctrlr.QT.parseValueConstraint( lvd );
                         }
 
                         i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
