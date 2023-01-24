@@ -26,7 +26,7 @@ i2b2.CRC.view.QT.resetToCRCHistoryView = function() {
 i2b2.CRC.view.QT.validateQuery = function() {
     let validQuery = true;
     $(".SequenceBar .timeSpan").each((index, elem) => {
-        if($(elem).find(".form-check-input").is(":checked") && index < 2){
+        if($(elem).find(".form-check-input").is(":checked")){
             let timeSpanValueElem = $(elem).find(".timeSpanValue");
             if(timeSpanValueElem.val().length === 0){
                 timeSpanValueElem.addClass("required");
@@ -40,14 +40,12 @@ i2b2.CRC.view.QT.validateQuery = function() {
     });
 
     $(".QueryGroup.when .event").each((index, elem) => {
-        if(index < 2) {
-            let termList = $(elem).find(".TermList .concept");
-            if (termList.length === 0) {
-                $(elem).find(".required").removeClass("vhidden");
-                validQuery = false;
-            } else {
-                $(elem).find(".required").addClass("vhidden");
-            }
+        let termList = $(elem).find(".TermList .concept");
+        if (termList.length === 0) {
+            $(elem).find(".required").removeClass("hidden");
+            validQuery = false;
+        } else {
+            $(elem).find(".required").addClass("hidden");
         }
     });
 

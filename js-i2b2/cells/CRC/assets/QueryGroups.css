@@ -497,7 +497,7 @@
 }
 
 .QueryGroup.when .SequenceBar {
-    max-height: 5.7em;
+    max-height: 5.5em;
     padding: 0.4em 0.4em 0.4em 0.6em;
     border-right: 1px solid #d8a407;
     border-top: 0px;
@@ -572,9 +572,12 @@
     margin-left: 0.5em !important;
 }
 
-.QueryGroup.when .SequenceBar .vhidden,
-.QueryGroup .event .vhidden {
+.QueryGroup.when .SequenceBar .vhidden{
     visibility: hidden;
+}
+
+.QueryGroup .event .hidden {
+    display: none;
 }
 
 .QueryGroup.when .SequenceBar .input-group-main {
