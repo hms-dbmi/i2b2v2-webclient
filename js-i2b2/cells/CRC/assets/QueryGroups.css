@@ -458,16 +458,26 @@
 }
 
 .QueryGroup.when .EventLbl div {
-    float:left;
-    margin:4px 10px;
+    float: left;
+    margin: 0.4rem 0.6rem;
 }
 
-.QueryGroup.when .EventLbl i {
-    float: right;
-    margin: 0 10px;
-    font-size: 1.2em;
+.QueryGroup.when .EventLbl:hover .actions {
+    opacity: 1;
+    left: 0;
+}
+
+.QueryGroup.when .EventLbl .actions {
     position: relative;
-    top: 0.4em;
+    left: -0.5rem;
+    opacity: 0;
+    transition: opacity 0.5s ease, left 0.5s ease;
+}
+
+.QueryGroup.when .EventLbl .actions i {
+    position: relative;
+    top: 0.1rem;
+    cursor: pointer;
 }
 
 

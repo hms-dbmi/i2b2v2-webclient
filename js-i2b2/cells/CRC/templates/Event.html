@@ -1,7 +1,9 @@
 <div class="event toHide" data-eventIdx="{{index}}">
     <div class="EventLbl {{#ifCond index '==' 0}}first{{/ifCond}}">
         <div>Event {{increment  index}}</div>
-        <i class="bi bi-stopwatch"></i>
+        <div class="actions">
+            <i class="bi bi-x-circle delete" title="Remove Event"></i>
+        </div>
     </div>
     <div class="TermList clear"></div>
     <div class="orDragAdditional">or drag additional concepts</div>
