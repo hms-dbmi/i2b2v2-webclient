@@ -436,7 +436,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
             sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
             sdxDataNode.renderData.cssClassMain = "sdxStyleONT-MODIFIER";
             sdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
-            sdxDataNode.origData.conceptModifed = cl_node.i2b2;
+            sdxDataNode.origData.conceptModified = cl_node.i2b2;
             delete sdxDataNode.origData.conceptModifed.origData.parent;
             let temp = {
                 title: sdxDataNode.renderData.moreDescriptMinor,
