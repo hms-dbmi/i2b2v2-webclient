@@ -396,6 +396,7 @@ i2b2.CRC.view.QT.deleteQueryGroup = function(event) {
 
     //clear any existing query results;
     i2b2.CRC.view.QS.clearStatus();
+    i2b2.CRC.view.QT.enableWhenIfAvail();
 };
 
 
