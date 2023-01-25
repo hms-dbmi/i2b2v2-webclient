@@ -24,7 +24,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     // original SDX type controller to retreve the render data
     if (options === undefined) { options = {}; }
     // default CONCPT icons
-    if (!$.isArray(options.icon)) {
+    if (typeof options.icon !== "object") {
         if (typeof options.icon === 'string') {
             let t = options.icon;
             options.icon = {
@@ -113,6 +113,9 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     if (!bCanExp) {
         nodeInfo.tvNodeState.loaded = true;
         nodeInfo.tvNodeState.expanded = true;
+    } else {
+        nodeInfo.tvNodeState.loaded = false;
+        nodeInfo.tvNodeState.expanded = false;
     }
 
     if (options.icon[icon] !== undefined) {
@@ -169,13 +172,16 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 //	GET CHILD RECORDS (DEFAULT HANDELER)
 // *********************************************************************************
 i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview = function(node, onCompleteCallback) {
-    let cb_concepts = (function() {
+    let cb_concepts = (function(modifierNodes, modifiersParents) {
         let cl_node = node;
-        i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, onCompleteCallback, false);
-        // TODO: add options for modifiers too?
+        let cb_final = (function(conceptNodes, conceptParents) {
+            let allNodes = modifierNodes.concat(conceptNodes);
+            let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
+            onCompleteCallback(allNodes, allParents);
+        });
+        i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cb_final, false);
     });
-    cb_concepts();
-    //i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, cb_concepts, true);
+    i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, cb_concepts, true);
 };
 
 
@@ -254,6 +260,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
             };
         }
         let retList = [];
+        let retParents = [];
         for (let i=0; i<1*c.length; i++) {
             let sdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(c[i], modifier, cl_options, this.i2b2);
 
@@ -276,25 +283,16 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                 temp.parentKey = undefined;
             } else if(typeof cl_node === 'object') {
                 temp.parentKey = cl_node.i2b2.sdxInfo.sdxKeyValue;
+                retParents.push(temp.parentKey);
             } else {
                 temp.parentKey = cl_node;
+                retParents.push(cl_node.i2b2.sdxInfo.sdxKeyValue);
             }
             retList.push(temp);
         }
 
-        // create a unique list of parentKeys gathered from the children
-        let retParents = $.unique(retList.map(function(v) { return v.parentKey }));
-        // add the originally passed parent to the array (incase no children are returned)
-        switch (typeof node) {
-            case 'string':
-                retParents.push(cl_node);
-                break;
-            case 'object':
-                retParents.push(cl_node.i2b2.sdxInfo.sdxKeyValue);
-                break;
-            default:
-                break;
-        }
+        // make the parents array contain only unique values
+        retParents = Array.from(new Set(retParents));
 
         // Send the data back to the calling app
         cl_onCompleteCB(retList, retParents);
@@ -405,6 +403,8 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
         let cl_node = node;
         let cl_onCompleteCB = onCompleteCallback;
         let cl_options = options;
+        let retNodes = [];
+        let retParents = new Set();
         // THIS function is used to process the AJAX results of the getChild call
         //		results data object contains the following attributes:
         //			refXML: xmlDomObject <--- for data processing
@@ -417,49 +417,62 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
         // handle any errors in the message
         if (results.error) {
             // process the specific error
-            cl_onCompleteCB();
-            i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(node, onCompleteCallback, false);
+            cl_onCompleteCB([],[]);
             return false;
         }
+        let renderOptions = {
+            icon: {
+                root: "sdx_ONT_MODIFIER_root.gif",
+                rootExp: "sdx_ONT_MODIFIER_root-exp.gif",
+                branch: "sdx_ONT_MODIFIER_branch.gif",
+                branchExp: "sdx_ONT_MODIFIER_branch-exp.gif",
+                leaf: "sdx_ONT_MODIFIER_leaf.gif"
+            }
+        };
         let c = results.refXML.getElementsByTagName('modifier');
         for (let i=0; i<1*c.length; i++) {
+            renderOptions.title = i2b2.h.getXNodeVal(c[i],'name');
             let sdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(c[i], modifier, cl_options, cl_node.i2b2);
-            let renderOptions;
-            if (modifier) {
-                renderOptions = {
-                    title: i2b2.h.getXNodeVal(c[i],'name'),
-                    icon: {
-                        root: "sdx_ONT_MODIFIER_root.gif",
-                        rootExp: "sdx_ONT_MODIFIER_root-exp.gif",
-                        branch: "sdx_ONT_MODIFIER_branch.gif",
-                        branchExp: "sdx_ONT_MODIFIER_branch-exp.gif",
-                        leaf: "sdx_ONT_MODIFIER_leaf.gif"
-                    }
-                };
-            } else {
-                renderOptions = {
-                    title: i2b2.h.getXNodeVal(c[i],'name'),
-                    icon: {
-                        root: "sdx_ONT_CONCPT_root.gif",
-                        rootExp: "sdx_ONT_CONCPT_root-exp.gif",
-                        branch: "sdx_ONT_CONCPT_branch.gif",
-                        branchExp: "sdx_ONT_CONCPT_branch-exp.gif",
-                        leaf: "sdx_ONT_CONCPT_leaf.gif"
-                    }
-                };
-            }
-
             sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+            sdxDataNode.renderData.cssClassMain = "sdxStyleONT-MODIFIER";
             sdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
+            sdxDataNode.origData.parent = cl_node.i2b2;
+            let temp = {
+                title: sdxDataNode.renderData.moreDescriptMinor,
+                text: sdxDataNode.renderData.title,
+                icon: sdxDataNode.renderData.cssClassMain,
+                key: sdxDataNode.sdxInfo.sdxKeyValue,
+                iconImg: sdxDataNode.renderData.iconImg,
+                iconImgExp: sdxDataNode.renderData.iconImgExp,
+                i2b2: sdxDataNode
+            };
+            temp.state = sdxDataNode.renderData.tvNodeState;
+            if (sdxDataNode.renderData.cssClassMinor !== undefined) temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
+            if (typeof cl_node === 'undefined' || (typeof cl_node === 'string' && String(cl_node).trim() === '')) {
+                temp.parentKey = undefined;
+            } else if(typeof cl_node === 'object') {
+                temp.parentKey = cl_node.i2b2.sdxInfo.sdxKeyValue;
+                retParents.add(temp.parentKey);
+            } else {
+                temp.parentKey = cl_node;
+                retParents.add(cl_node.i2b2.sdxInfo.sdxKeyValue);
+            }
+            retNodes.push(temp);
         }
         // handle the YUI treeview
         //mm 10-7 cl_onCompleteCB();
+/*
         if ((node.i2b2.origData.hasChildren !== "DA") && (node.i2b2.origData.hasChildren !== "OAE") &&
         (node.i2b2.origData.hasChildren !== "DAE") && (node.i2b2.origData.hasChildren !== "OA") ){
-            i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(node, onCompleteCallback, false);
+            debugger;
+            alert("do something here?");
+// TODO: Is this logic still valid?
+//            i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(node, onCompleteCallback, false);
         } else {
             cl_onCompleteCB();
         }
+*/
+        cl_onCompleteCB(retNodes, Array.from(retParents));
     };
     // TODO: Implement param routing from node's container
     let options = {};
@@ -489,7 +502,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
             (realdata.hasChildren !== "CAE")) {
                 realdata  = realdata.parent;
             }
-            options.modifier_applied_concept = realdata.key;//node.data.i2b2_SDX.origData.parent.key;
+            options.modifier_applied_concept = realdata.key; //node.data.i2b2_SDX.origData.parent.key;
             i2b2.ONT.ajax.GetChildModifiers("ONT:SDX:Modifiers", options, scopedCallback );
             break;
         default:
