@@ -11,20 +11,19 @@
                 {{#each breakdowns.resultTable}}
                 <div>
                     <label class="breakdownLabel" id="resultStatus{{@index}}"> {{this.title}} </label>
+                    {{#if this.statusMessage}}
+                        <div style="float: right">
+                            <span class="breakdownStatus">{{this.statusMessage}}</span>
+                        </div>
+                    {{/if}}
                     <div id="collapse{{@index}}" class="breakdownResultList" aria-labelledby="resultStatus{{@index}}">
                         <div>
                             <table>
                                 {{#each this.result}}
-                                {{#if this.statusMessage}}
-                                <tr>
-                                    <td><span>{{this.name}}</span><span class="breakdownStatus">{{this.statusMessage}}</span></td>
-                                </tr>
-                                {{else}}
-                                <tr>
-                                    <td>{{this.name}}</td>
-                                    <td class="breakdownValue">{{this.value}}</td>
-                                </tr>
-                                {{/if}}
+                                    <tr>
+                                        <td>{{this.name}}</td>
+                                        <td class="breakdownValue">{{this.value}}</td>
+                                    </tr>
                                 {{/each}}
                             </table>
                         </div>

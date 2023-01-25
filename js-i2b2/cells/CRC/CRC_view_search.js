@@ -7,9 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik]
  */
-console.group('Load & Execute component file: CRC > view > Find');
-console.time('execute time');
-
 
 // create and save the screen objects
 i2b2.CRC.view.search = {};

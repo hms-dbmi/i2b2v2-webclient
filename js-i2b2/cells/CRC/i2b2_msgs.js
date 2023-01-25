@@ -15,7 +15,6 @@ i2b2.CRC.ajax = i2b2.hive.communicatorFactory("CRC");
 i2b2.CRC.cfg.msgs = {};
 i2b2.CRC.cfg.parsers = {};
 
-
 // ================================================================================================== //
 i2b2.CRC.cfg.msgs.getQueryMasterList_fromUserId = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+

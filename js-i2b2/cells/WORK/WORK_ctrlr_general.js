@@ -1,6 +1,3 @@
-console.group('Load & Execute component file: WORK > ctrl > general');
-console.time('execute time');
-
 
 // ======================================================================================
 i2b2.WORK.ctrlr.refreshAll = function(view_component) {
@@ -332,8 +329,8 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
             encapValues.concept_synonym = i2b2.h.getXNodeVal(sdxChild.origData.xmlOrig,'synonym_cd');
             encapValues.concept_visual_attributes = i2b2.h.getXNodeVal(sdxChild.origData.xmlOrig,'visualattributes');
             encapValues.concept_total = i2b2.h.getXNodeVal(sdxChild.origData.xmlOrig,'totalnum');
-            encapValues.concept_basecode = "";
-            encapValues.concept_fact_table_column = i2b2.h.getXNodeVal(sdxChild.origData.xmlOrig,'facttablecolumn');;
+            encapValues.concept_basecode = i2b2.h.getXNodeVal(sdxChild.origData.xmlOrig,'basecode');
+            encapValues.concept_fact_table_column = i2b2.h.getXNodeVal(sdxChild.origData.xmlOrig,'facttablecolumn');
             encapValues.concept_table_name = sdxChild.origData.table_name;
             encapValues.concept_column_name = sdxChild.origData.column_name;
             encapValues.concept_column_data_type = i2b2.h.getXNodeVal(sdxChild.origData.xmlOrig,'columndatatype');
@@ -443,24 +440,13 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
         scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = targetTvNode;
         scopedCallback.callback = function(results) {
-            let cl_new_key = newChildKey;
-            let cl_parent_node = targetTvNode;
             if (results.error) {
                 alert("An error occurred while trying to create a new work item!");
             } else {
-                // get a list of all children in the parent node
-                let parentChildren = cl_parent_node.refTreeview.findNodes(cl_parent_node.nodeId, '', 'parentId').map((node)=>{return node.nodeId});
-                // delete the nodes and reset the dynamic loading settings
-                cl_parent_node.refTreeview.deleteNodes(parentChildren, true);
-                // trigger that the treeview node is opened (and reloaded)
-                cl_parent_node.refTreeview.expandNode(cl_parent_node.nodeId);
+                let cl_parent_node = targetTvNode;
+                i2b2.WORK.view.main.refreshNode(cl_parent_node, true);
             }
         }
     }
     i2b2.WORK.ajax.addChild("WORK:Workplace", varInput, scopedCallback);
 };
-
-
-// ======================================================================================
-console.timeEnd('execute time');
-console.groupEnd();

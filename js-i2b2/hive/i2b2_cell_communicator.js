@@ -9,11 +9,9 @@ i2b2.hive.communicatorFactory = function(cellCode){
 
     try {
         var cellURL = i2b2[cellCode].cfg.cellURL;
-    }
-    catch (e) {}
-    if (!cellURL) {
-        console.warn("communicatorFactory: '"+cellCode+"' does not have a cellURL specified");
-    }
+    } catch (e) {}
+
+    if (!cellURL) console.warn("communicatorFactory: '"+cellCode+"' does not have a cellURL specified");
 
     function i2b2Base_communicator(){}
     var retCommObj = new i2b2Base_communicator;
@@ -21,8 +19,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
     retCommObj.globalParams = {}; //TODO: remove this => new Hash;
     retCommObj.cellParams = {}; //TODO: remove this => new Hash;
     retCommObj._commData = {};
-    // setup for sniffer message
-    retCommObj._SniffMsg =  $.Callbacks(); //TODO: remove this => new YAHOO.util.CustomEvent('CellCommMessage');
 
     retCommObj._addFunctionCall = function(name, url_string, xmlmsg, escapeless_params, parseFunc){
         var protectedNames = ["ParentCell", "globalParams", "cellParams", "_commMsgs", "_addFunctionCall", "_doSendMsg", "_defaultCallbackOK", "_defaultCallbackFAIL"];
@@ -47,16 +43,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
             // - the parse() function is responsible for creating and populating the "model" namespace withing the communicator packet.
             this._commData[name].parser = parseFunc;
         }
-        // register with the sniffer subsystem
-        //    channelName: "CELLNAME",
-        //    channelActions: ["the names", "of the", "Cell's server calls"],
-        //    channelSniffEvent: {yui custom event}
-        var msg = {
-            channelName: this.ParentCell,
-            channelActions: Object.keys(this._commData),
-            channelSniffEvent: this._SniffMsg
-        };
-        i2b2.hive.MsgSniffer.RegisterMessageSource(msg);
     };
 
 
@@ -82,12 +68,12 @@ i2b2.hive.communicatorFactory = function(cellCode){
             params: parameters
         };
         // mix in our transport options from the originator call
-        $.extend(commOptions, transportOptions);
+        Object.assign(commOptions, transportOptions);
         // if no callback is set then we want to make this interaction synchronous
         if (!callback) { commOptions.asynchronous = false; }
         // collect message values
         var sMsgValues = {};
-        $.extend(sMsgValues, parameters);
+        Object.assign(sMsgValues, parameters);
         // proxy server data
         sMsgValues.proxy_info = '';
         if (commOptions.url !== undefined) {
@@ -194,10 +180,8 @@ i2b2.hive.communicatorFactory = function(cellCode){
         ];
         var tmp = Object.keys(commOptions);
         tmp = tmp.filter(function(v) { return (removeKeys.indexOf(v) === -1) });
-        console.groupEnd();
         execBubble.timeSent = new Date();
         commOptions.i2b2_execBubble = execBubble;
-
 
         var myCallback = {
                   success: function(o) {
@@ -238,7 +222,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
                 .done(myCallback.success)
                 .fail(myCallback.failure);
         }
-        console.groupEnd();
         return true;
     };
 
@@ -249,15 +232,11 @@ i2b2.hive.communicatorFactory = function(cellCode){
         execBubble.timeRecv = new Date();
         var origCallback = execBubble.callback;
 
-       //update timeout
+       // update timeout
         i2b2.PM.model.IdleTimer.resetTimeout();
 
         // debug messages
-        if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)) {
-            console.group("[AJAX RESULT i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName + "]");
-            console.info("AJAX Transport SUCCESS");
-            console.dir(transport);
-        }
+        console.info("[AJAX SUCCESS] i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName);
 
         // create our data message to send to the callback function
         var cbMsg = {
@@ -303,14 +282,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         else {
             cbMsg.parse = execBubble.self._commData[execBubble.funcName].parser;
         }
-        console.groupEnd();
 
-        // send the result message to the callback function
-        if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)){
-            // broadcast a debug message to any sniffers/tools
-            var sniffPackage = i2b2.h.BuildSniffPack(execBubble.cellName, execBubble.funcName, cbMsg, execBubble.reqOrigin);
-            execBubble.self._SniffMsg.fire(sniffPackage);
-        }
         // return results to caller
         if (origCallback !== undefined )
         if (i2b2.h.getObjectClass(origCallback)=='i2b2_scopedCallback') {
@@ -327,9 +299,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         execBubble.timeRecv = new Date();
         var origCallback = execBubble.callback;
 
-        console.group("[AJAX RESULT i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName + "]");
-        console.error("AJAX Transport FAILURE");
-        console.dir(transport);
+        console.error("[AJAX FAILURE] i2b2." + execBubble.cellName + ".ajax." + execBubble.funcName);
 
         // create our data message to send to the callback fuction
         var cbMsg = {
@@ -342,13 +312,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
             proxyUrl: execBubble.proxyURL,
             error: true
         };
-        // broadcast a debug message to any sniffers/tools
-        // send the result message to the callback function
-        if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)){
-            // broadcast a debug message to any sniffers/tools
-            var sniffPackage = i2b2.h.BuildSniffPack(execBubble.cellName, execBubble.funcName, cbMsg, execBubble.reqOrigin);
-            execBubble.self._SniffMsg.fire(sniffPackage);
-        }
+
         // return results to caller
         if (origCallback !== undefined)
         if (i2b2.h.getObjectClass(origCallback)=='i2b2_scopedCallback') {
@@ -360,5 +324,3 @@ i2b2.hive.communicatorFactory = function(cellCode){
 
     return retCommObj;
 };
-
-

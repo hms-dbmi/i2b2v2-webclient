@@ -4,13 +4,7 @@
         <invert>{{invert}}</invert>
         <panel_timing>{{timing}}</panel_timing>
         <total_item_occurrences>{{occursCount}}</total_item_occurrences>
-        {{#if dateFrom}}
-        <panel_date_from>{{dateFrom}}</panel_date_from>
-        {{/if}}
-        {{#if dateTo}}
-        <panel_date_to>{{dateTo}}</panel_date_to>
-        {{/if}}
         {{#each items}}
-{{#> QueryPanelItem }}QueryPanelItem partial/template not registered!{{/QueryPanelItem}}
+                {{#> QueryPanelItem }}QueryPanelItem partial/template not registered!{{/QueryPanelItem}}
         {{/each}}
     </panel>

@@ -5,10 +5,6 @@
  * @version 	2.0
  **/
 
-console.group('Load & Execute component file: ONT > ctrlr > general');
-console.time('execute time');
-
-
 i2b2.ONT.ctrlr.gen = {};
 // signal that is fired when the ONT cell's data model is updated
 // ================================================================================================== //
@@ -50,7 +46,6 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
     let sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT', data);
     if (!sdxDataNode) {
         console.error("SDX could not encapsulate CONCPT data!");
-        console.dir(data);
         return false;
     }
 
@@ -86,12 +81,9 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
 
 // ================================================================================================== //
 i2b2.ONT.ctrlr.gen.loadCategories = function() {
-    console.info("CALLED i2b2.ONT.ctrlr.gen.loadCategories()");
-
     i2b2.ONT.model.Categories = undefined;
     // create a scoped callback message to pass the XML to our function defined above
     let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
-        console.group("CALLBACK Processing AJAX i2b2CellMsg");
         i2b2.ONT.model.Categories = [];
         if (!i2b2CellMsg.error) {
             let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
@@ -120,7 +112,6 @@ i2b2.ONT.ctrlr.gen.loadCategories = function() {
 
 // ================================================================================================== //
 i2b2.ONT.ctrlr.gen.loadSchemes = function() {
-    console.info("CALLED i2b2.ONT.ctrlr.gen.loadSchemes()");
     i2b2.ONT.model.Schemes = undefined;
     // create a scoped callback message to pass the XML to our function defined above
     let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
@@ -157,7 +148,3 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
         i2b2.ONT.view.search.initSearchOptions();
     }
 }).bind(i2b2.ONT));
-
-
-console.timeEnd('execute time');
-console.groupEnd();

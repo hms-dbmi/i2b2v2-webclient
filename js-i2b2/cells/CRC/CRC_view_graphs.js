@@ -24,8 +24,6 @@
  *              javascript file, and the default.htm folder in the main web client folder, they are:
  *              CRC_view_Status, CRC_ctlr_QryStatus, CRC_ctlr_QryTools, and cell_config_data
  ** -----------------------------------------------------------------------------------------------------------------------*/
-console.group('Load & Execute component file: CRC > view > Graphs');
-console.time('execute time');
 
 //i2b2.PM.model.isObfuscated =  true; // for testing
 
@@ -1318,6 +1316,3 @@ i2b2.CRC.view.graphs.returnTestString = function (isSHRINE) {
     }*/
     return sInput;
 }
-
-//console.timeEnd('execute time');
-//console.groupEnd();

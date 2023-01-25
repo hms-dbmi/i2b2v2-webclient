@@ -75,7 +75,6 @@ window.addEventListener(i2b2.MSG_TYPES.AJAX.LIB_INIT, function(evt) {
                 ajaxURL: url,
                 ajaxMsg: rawMsg
             };
-            console.dir(msg);
             window.parent.postMessage(msg, "/");
         });
     };

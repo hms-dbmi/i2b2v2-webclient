@@ -7,14 +7,11 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: CRC > view > History');
-console.time('execute time');
 
 
 // create and save the screen objects
 i2b2.CRC.view.history = new i2b2Base_cellViewController(i2b2.CRC, 'history');
 i2b2.CRC.view.history.visible = false;
-i2b2.CRC.view.history.params.maxQueriesDisp = 20; // TODO: This does not work
 i2b2.CRC.view.history.template = {};
 
 // ================================================================================================== //
@@ -26,8 +23,6 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
         console.error('i2b2.CRC.view.history.loadChildren could not find tv_node.i2b2.sdxInfo');
         return;
     }
-
-    $('#stackRefreshIcon_i2b2-CRC-view-history').addClass("refreshing");
 
     i2b2.sdx.Master.getChildRecords(nodeData.i2b2, (function(cellResult) {
 
@@ -72,12 +67,8 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
 
         // render tree
         $(ev.currentTarget).treeview('redraw', []);
-
-        // change the treeview icon to show it is no longer loading
-        $('#stackRefreshIcon_i2b2-CRC-view-history').removeClass("refreshing");
     }).bind(nodeData));
 };
-
 
 //================================================================================================== //
 i2b2.CRC.view.history.treeRedraw = function(ev, b) {
@@ -85,25 +76,126 @@ i2b2.CRC.view.history.treeRedraw = function(ev, b) {
     i2b2.CRC.view.history.lm_view._contentElement.find('li:not(:has(span.tvRoot))').attr("draggable", true);
 };
 
+//================================================================================================== //
+i2b2.CRC.view.history.loadMore = function() {
+    $('.history-more-bar i.bi').removeClass("d-none");
+    let newcount = i2b2.CRC.view.history.treeview.data('treeview').getNodes(()=>true).length;
+    newcount = newcount + i2b2.CRC.view.history.params.maxQueriesDisp;
+    i2b2.CRC.view.history.LoadQueryMasters(newcount);
+}
+
+// ================================================================================================== //
+i2b2.CRC.view.history.clickSearchName = function() {
+    // Hide Navigate treeview and search results message and display search status message
+    $("#i2b2TreeviewQueryHistoryFinder").hide();
+    $("#i2b2TreeviewQueryHistory").hide();
+    $("#i2b2QueryHistoryFinderMessage").hide();
+    $("#i2b2QueryHistoryFinderStatus").text("Searching...").show();
+
+    // clear treeview
+    i2b2.CRC.view.history.treeviewFinder.treeview('clear');
+
+    // create a scoped callback message
+    var scopeCB = new i2b2_scopedCallback();
+    scopeCB.scope = i2b2.CRC.model;
+    scopeCB.callback = function(cellResult) {
+        // auto-extract SDX objects from returned XML
+        cellResult.parse();
+
+        let sortResultsByDate = function(resultNode1, resultNode2){
+            // proper date handling (w/improper handling for latest changes to output format)
+            let dateStr1 = resultNode1.origData["created"];
+            let dateStr2 = resultNode2.origData["created"];
+
+            let dateTime1 = Date.parse(dateStr1);
+            let dateTime2 = Date.parse(dateStr2);
+
+            let result;
+            if(dateTime1 < dateTime2){
+                result = -1;
+            } else if(dateTime1 > dateTime2){
+                result = 1;
+            } else {
+                result = 0;
+            }
+
+            return result;
+        }
+        // display the tree results
+        let newNodes = {};
+        cellResult.model.sort(sortResultsByDate);
+
+        let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
+        if(!isAscending){
+            cellResult.model.reverse();
+        }
+        for ( let i1=0; i1 < cellResult.model.length; i1++) {
+            let sdxDataNode = cellResult.model[i1];
+            let renderOptions = {
+                title: sdxDataNode.sdxDisplayName ,
+                icon: "sdx_CRC_QM.gif",
+                showchildren: true
+            };
+            sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+            sdxDataNode.renderData.idDOM = "CRC_H_TV-" + i2b2.GUID();
+            let temp = {
+                title: sdxDataNode.renderData.moreDescriptMinor,
+                text: sdxDataNode.renderData.title,
+                icon: sdxDataNode.renderData.cssClassMain,
+                key: sdxDataNode.sdxInfo.sdxType + "-" + sdxDataNode.sdxInfo.sdxKeyValue,
+                iconImg: sdxDataNode.renderData.iconImg,
+                iconImgExp: sdxDataNode.renderData.iconImgExp,
+                i2b2: sdxDataNode
+            };
+
+            temp.state = sdxDataNode.renderData.tvNodeState;
+            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
+                temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
+            }
+            if(!newNodes[temp.key]) {
+                newNodes[temp.key] = temp;
+            }
+        }
+        // push new nodes into the treeview
+        i2b2.CRC.view.history.treeviewFinder.treeview('addNodes', [Object.values(newNodes), true]);
+
+        // render tree
+        i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);
+        $("#i2b2QueryHistoryFinderStatus").hide();
+
+        // Display search results treeview
+        let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
+
+        if(cellResult.model.length === 0){
+            $("#i2b2QueryHistoryFinderMessage").text("No records found.").show();
+            historyFinderTreeview.hide();
+        }
+    };
+
+    let crc_find_strategy = "contains"
+    let crc_find_category = $("#querySearchFilter").data("selectedFilterValue");
+    if(crc_find_category === "pdo") crc_find_strategy = "exact"
+
+    // fire the AJAX call
+    let options = {
+        result_wait_time: 180,
+        crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp,
+        crc_sort_by: i2b2.CRC.view['history'].params.sortBy,
+        crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") === -1 ? "CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
+        crc_sort_order: (i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1?"true": "false"),
+        crc_find_category: crc_find_category,
+        crc_find_strategy: crc_find_strategy,
+        crc_find_string: $("#querySearchTermText").val()
+    };
+    i2b2.CRC.ajax.getNameInfo("CRC:History", options, scopeCB);
+};
 
 //================================================================================================== //
-i2b2.CRC.view.history.LoadQueryMasters = function() {
-    $('#stackRefreshIcon_i2b2-CRC-view-history').addClass("refreshing");
+i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = this;
     scopedCallback.callback = function(cellResult) {
-        //TODO: this icon is NOT used
-        let refreshIcon = $('#stackRefreshIcon_i2b2-CRC-view-history');
-        refreshIcon.removeClass("refreshing");
         i2b2.CRC.view.history.treeview.treeview('clear');
-        // THIS function is used to process the AJAX results of the getChild call
-        //              results data object contains the following attributes:
-        //                      refXML: xmlDomObject <--- for data processing
-        //                      msgRequest: xml (string)
-        //                      msgResponse: xml (string)
-        //                      error: boolean
-        //                      errorStatus: string [only with error=true]
-        //                      errorMsg: string [only with error=true]
 
         // auto-extract SDX objects from returned XML
         cellResult.parse();
@@ -134,15 +226,23 @@ i2b2.CRC.view.history.LoadQueryMasters = function() {
             }
             newNodes.push(temp);
         }
+
+        // hide "Load More" link if we have all the records
+        if (newNodes.length < max) {
+            $('.history-more-bar').addClass("d-none");
+        } else {
+            $('.history-more-bar').removeClass("d-none");
+        }
+
         // push new nodes into the treeview
         i2b2.CRC.view.history.treeview.treeview('addNodes', [newNodes, true]);
 
         // render tree
         i2b2.CRC.view.history.treeview.treeview('redraw', []);
-        // reset the loading icon in the stack buttons list
-        refreshIcon.removeClass("refreshing");
+        $('.history-more-bar i.bi').addClass("d-none");
     };
-    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":"20"}, scopedCallback);
+    let max = maxRecords ? maxRecords : i2b2.CRC.view.history.params.maxQueriesDisp;
+    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":max}, scopedCallback);
 };
 
 
@@ -168,7 +268,6 @@ i2b2.CRC.view.history.doDelete = function(node) {
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doRefreshAll = function() {
-    $('#stackRefreshIcon_i2b2-CRC-view-history').addClass("refreshing");
     i2b2.CRC.view.history.treeview.treeview('clear');
     i2b2.CRC.view.history.LoadQueryMasters();
 };
@@ -176,10 +275,10 @@ i2b2.CRC.view.history.doRefreshAll = function() {
 
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
         if (cell.cellCode === "CRC") {
-// =========================================================
-            console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+            console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
             // ___ Register this view with the layout manager ____________________
             i2b2.layout.registerWindowHandler("i2b2.CRC.view.history",
                 (function (container, scope) {
@@ -197,7 +296,7 @@ i2b2.events.afterCellInit.add((function(cell){
                                 if(e.which === 13) {
                                     // enter key was pressed while in the query history search entry box
                                     if($("#submitQueryHistorySearch").attr("disabled") === undefined) {
-                                        i2b2.CRC.ctrlr.history.clickSearchName();
+                                        i2b2.CRC.view.history.clickSearchName();
                                     }
                                 }
                             });
@@ -211,7 +310,16 @@ i2b2.events.afterCellInit.add((function(cell){
                     $('<div id="i2b2QueryHistoryFinderStatus"></div>').prependTo(container._contentElement).hide();
 
                     // create an empty Navigation treeview
-                    let treeTargetNav = $('<div id="i2b2TreeviewQueryHistory"></div>').appendTo(container._contentElement);
+                    let treeRoot = $(`
+                        <div id="i2b2TreeviewQueryHistory">
+                            <div class="history-container">
+                                <div class="history-tv"></div>
+                                <div class="history-more-bar">Load more...<i class="bi bi-arrow-repeat d-none"></i></div>
+                            </div>
+                        </div>
+                    `).appendTo(container._contentElement);
+                    $('.history-more-bar', treeRoot).on('click', i2b2.CRC.view.history.loadMore);
+                    let treeTargetNav = $('.history-tv', treeRoot);
                     i2b2.CRC.view.history.treeview = $(treeTargetNav).treeview({
                         showBorder: false,
                         onhoverColor: "rgba(205, 208, 208, 0.56)",
@@ -241,12 +349,8 @@ i2b2.events.afterCellInit.add((function(cell){
                     i2b2.CRC.view.history.treeviewFinder.on('onDrag', i2b2.sdx.Master.onDragStart);
 
 
-
                     // call the loading request for the history navigation view
                     i2b2.CRC.view.history.LoadQueryMasters();
-
-
-
 
 
                     // -------------------- setup context menu --------------------
@@ -259,7 +363,6 @@ i2b2.events.afterCellInit.add((function(cell){
                             nodeDisplay: {
                                 name: 'Display',
                                 onClick: function(node) {
-                                    // console.dir(node);
                                     i2b2.CRC.view.history.doDisplay(node);
                                 },
                                 isShown: function(node) {
@@ -273,7 +376,6 @@ i2b2.events.afterCellInit.add((function(cell){
                             nodeRename: {
                                 name: 'Rename',
                                 onClick: function(node) {
-                                    console.dir(node);
                                     i2b2.CRC.view.history.doRename(node);
                                 },
                                 isShown: function(node) {
@@ -287,7 +389,6 @@ i2b2.events.afterCellInit.add((function(cell){
                             nodeDelete: {
                                 name: 'Delete',
                                 onClick: function(node) {
-                                    console.dir(node);
                                     i2b2.CRC.view.history.doDelete(node);
                                 },
                                 isShown: function(node) {
@@ -301,7 +402,6 @@ i2b2.events.afterCellInit.add((function(cell){
                             newRefresh: {
                                 name: 'Refresh All',
                                 onClick: function (node) {
-                                    console.dir(node);
                                     i2b2.CRC.view.history.doRefreshAll(node);
                                 },
                                 isShown: function (node) {
@@ -319,10 +419,5 @@ i2b2.events.afterCellInit.add((function(cell){
                 }).bind(this)
             );
         }
-}));
-console.info("SUBSCRIBED TO i2b2.events.afterCellInit");
+});
 
-
-// =========================================================
-console.timeEnd('execute time');
-console.groupEnd();

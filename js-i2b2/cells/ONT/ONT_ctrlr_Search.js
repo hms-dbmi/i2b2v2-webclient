@@ -9,8 +9,6 @@
  * updated 01-12-18: Mauro Bucalo
  * hierarchical result display 08-19 by Jeff Klann, PhD
  */
-console.group('Load & Execute component file: ONT > ctrlr > Search');
-console.time('execute time');
 
 i2b2.ONT.ctrlr.Search = {
     clickSearch: function() {
@@ -322,6 +320,3 @@ i2b2.ONT.ctrlr.Search = {
         } while (nodesToLoad.length > 0);
     }
 };
-
-console.timeEnd('execute time');
-console.groupEnd();

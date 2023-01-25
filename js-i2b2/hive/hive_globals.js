@@ -4,8 +4,6 @@
  * @inherits
  * @version 	2.0
  **/
-console.group('Load & Execute component file: hive > globals');
-console.time('execute time');
 
 // View Controllers
 // ================================================================================================== //
@@ -25,7 +23,7 @@ function i2b2Base_cellViewController(parentObj, viewName) {
 // base class for sending re-scoped callbacks
 // ================================================================================================== //
 function i2b2_scopedCallback(refFunction, refScope) {
-    console.warn("i2b2_scopedCallback() is depreciated!");
+//    console.warn("i2b2_scopedCallback() is depreciated!");
     this.callback = refFunction;
     this.scope = refScope;
 }
@@ -152,7 +150,7 @@ function i2b2_BaseCell(configObj) {
                 // copy all params to all View Controllers
                 for (var i in i2b2[cellCode].view) {
                     if (i2b2.h.getObjectClass(i2b2[cellCode].view[i]) == 'i2b2Base_cellViewController') {
-                        i2b2[cellCode].view[i].params = $.extend({}, i2b2[cellCode].cfg.params);
+                        i2b2[cellCode].view[i].params = Object.assign({}, i2b2[cellCode].cfg.params);
                     }
                 }
                 // send the signal that the Cell is now loaded
@@ -265,7 +263,3 @@ Handlebars.registerHelper('eachProperty', function(context, options) {
     }
     return ret;
 });
-
-
-console.timeEnd('execute time');
-console.groupEnd();

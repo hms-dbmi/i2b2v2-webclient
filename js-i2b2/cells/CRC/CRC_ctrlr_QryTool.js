@@ -7,27 +7,26 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: CRC > ctrlr > QueryTool');
-console.time('execute time');
- 
- 
+
 i2b2.CRC.ctrlr.QT = new QueryToolController();
 function QueryToolController() {
-    i2b2.CRC.model.queryCurrent = {};
-    this.queryNameDefault = 'New Query';
-
 // ================================================================================================== //
     this.doSetQueryName = function(inName) {
-        i2b2.CRC.model.queryCurrent.name = inName;
+        i2b2.CRC.model.query.name = inName;
     };
 
 // ================================================================================================== //
     this.clearQuery = function() {
         i2b2.CRC.model.query = {
-            name: 'default query name',
+            name: 'New Query',
             groups: []
         };
     };
+
+// run the clear the first time to initialize data structures.
+    this.clearQuery();
+
+
 
 // ================================================================================================== //
     this.doQueryLoad = function(qm_id) {  // function to reload query from Query History or Workspace
@@ -104,16 +103,18 @@ function QueryToolController() {
                             let sdxDataNode;
                             if (ckey.toLowerCase().startsWith("query_master_id")) {
                                 let o = {};
-                                o.name =i2b2.h.getXNodeVal(pi[i2],'item_name');
+                                o.name = i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.id = ckey.substring(16);
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                                sdxDataNode.renderData.title = sdxDataNode.renderData.title.replace("(PrevQuery)","<span class='prevquery'>(PrevQuery)</span>");
                             } else 	if (ckey.toLowerCase().startsWith("masterid")) {
                                 let o = {};
                                 o.name =i2b2.h.getXNodeVal(pi[i2],'item_name');
                                 o.id = ckey.substring(9);
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                                sdxDataNode.renderData.title = sdxDataNode.renderData.title.replace("(PrevQuery)","<span class='prevquery'>(PrevQuery)</span>");
                             } else  if (ckey.toLowerCase().startsWith("folder")) {
                                 let o = {};
                                 o.titleCRC =  i2b2.h.getXNodeVal(pi[i2],'item_name');
@@ -128,7 +129,10 @@ function QueryToolController() {
                                 o.PRS_id = ckey.substring(20);
                                 o.result_instance_id = o.PRS_id ;
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS',o);
+                                sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                                sdxDataNode.renderData.moreDescriptMinor = sdxDataNode.sdxInfo.sdxDisplayName;
+                                sdxDataNode.renderData.title = sdxDataNode.renderData.title.replace("Patient Set for ", "<span class='prevquery'>Patient Set for </span>");
                             } else if (ckey.toLowerCase().startsWith("patient_set_enc_id")) {
                                 let o = {};
                                 o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
@@ -155,34 +159,79 @@ function QueryToolController() {
                                 o.synonym_cd = i2b2.h.getXNodeVal(pi[i2],'item_is_synonym');
                                 o.hasChildren = i2b2.h.getXNodeVal(pi[i2],'item_icon');
 
-                                // Lab Values processing
-                                let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
-
                                 // build sdx packet
                                 sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT',o);
+
+                                // Date constraint processing
+                                sdxDataNode.dateRange = {};
+                                let dateConstraint = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date');
+                                if(dateConstraint.length >0)
+                                {
+                                    let dateStart = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_from");
+                                    if(dateStart !== undefined){
+                                        sdxDataNode.dateRange.start = reformatDate(dateStart);
+                                    }
+                                    let dateEnd = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_to");
+                                    if(dateEnd !== undefined){
+                                        sdxDataNode.dateRange.end = reformatDate(dateEnd);
+                                    }
+                                }
+                                else{
+                                    if(metadata.startDate !== undefined){
+                                        sdxDataNode.dateRange.start = metadata.startDate;
+                                    }
+                                    if(metadata.endDate !== undefined){
+                                        sdxDataNode.dateRange.end = metadata.endDate;
+                                    }
+                                }
+
+                                // Lab Values processing
+                                let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
 
                                 //Check whether this is a lab term
                                 if ((lvd.length > 0) && (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length === 0))
                                 {
                                    sdxDataNode.isLab = true;
                                    sdxDataNode.LabValues = this.parseValueConstraint( lvd );
-                                }else{
-                                    i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
-                                        results.parse();
-                                        if(results.model.length > 0){
-                                            let data = results.model[0];
-                                            sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
-                                            if(sdxDataNode.isLab)
-                                            {
-                                                i2b2.CRC.view.QT.render();
-                                            }
-                                        }
-                                    });
-
                                 }
+
+                                i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
+                                    results.parse();
+                                    if(results.model.length > 0){
+                                        let data = results.model[0];
+                                        sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
+                                        sdxDataNode.origData = data.origData;
+                                        i2b2.CRC.view.QT.render();
+                                    }
+                                });
+
                                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             }
                             sdxDataNodeList.push(sdxDataNode);
+                        }
+
+                        if(sdxDataNodeList.length > 1){
+                            let startDate;
+                            let endDate;
+                            if(sdxDataNodeList[0].dateRange !== undefined){
+                                startDate = sdxDataNodeList[0].dateRange.start;
+                                endDate = sdxDataNodeList[0].dateRange.end;
+                            }
+
+                            let matchingSdxNodeDates = sdxDataNodeList.filter(function(sdx) {
+                                if(sdx.dateRange !== undefined &&
+                                sdx.dateRange.start === startDate
+                                && sdx.dateRange.end === endDate) {
+                                    return true;
+                                }
+
+                                return false;
+                            });
+
+                            if(matchingSdxNodeDates.length === sdxDataNodeList.length){
+                                metadata.startDate = sdxDataNodeList[0].dateRange.start;
+                                metadata.endDate = sdxDataNodeList[0].dateRange.end;
+                            }
                         }
                         i2b2.CRC.view.QT.addNewQueryGroup(sdxDataNodeList, metadata);
                     }
@@ -195,71 +244,6 @@ function QueryToolController() {
         i2b2.CRC.ajax.getRequestXml_fromQueryMasterId("CRC:QueryTool", { qm_key_value: qm_id }, scopedCallback);
     };
 
-// ================================================================================================== //
-    this.doQueryRun = function() {
-        // function to build and run query
-        if (i2b2.CRC.ctrlr.currentQueryStatus !== false && i2b2.CRC.ctrlr.currentQueryStatus.isQueryRunning()) {
-            i2b2.CRC.ctrlr.deleteCurrentQuery.cancelled = true;
-            i2b2.CRC.ctrlr.currentQueryStatus.cancelQuery();
-            i2b2.CRC.ctrlr.currentQueryStatus = false;
-            //alert('A query is already running.\n Please wait until the currently running query has finished.');
-            return void(0);
-        }
-
-        if (i2b2.CRC.model.queryCurrent.panels[i2b2.CRC.ctrlr.QT.temporalGroup].length < 1) {
-            alert('You must enter at least one concept to run a query.');
-            return void(0);
-        }
-
-        // callback for dialog submission
-        let handleSubmit = function() {
-            // submit value(s)
-            if(this.submit()) {
-                // run the query
-                //if(jQuery("input:checkbox[name=queryType]:checked").length > 0){ // WEBCLIENT-170
-                    let t = $('dialogQryRun');
-                    let queryNameInput = t.select('INPUT.inputQueryName')[0];
-                    let options = {};
-                    let t2 = t.select('INPUT.chkQueryType');
-                    for (let i=0;i<t2.length; i++) {
-                        if (t2[i].checked === true) {
-                            options['chk_'+t2[i].value] = t2[i].checked;
-                        }
-                    }
-                    $('queryName').innerHTML = queryNameInput.value;
-                    i2b2.CRC.model.queryCurrent.name = queryNameInput.value;
-                    i2b2.CRC.ctrlr.QT._queryRun(queryNameInput.value, options);
-                //} else {
-                //	alert('You must select one query result type to run.');
-                //}
-            }
-        };
-        // display the query name input dialog
-        this._queryPromptRun(handleSubmit);
-        // autogenerate query name
-        // TODO: Use momentjs to do this
-        let myDate=new Date();
-
-        let hours = myDate.getHours();
-        if (hours < 10){
-            hours = "0" + hours
-        }
-        let minutes = myDate.getMinutes();
-        if (minutes < 10){
-            minutes = "0" + minutes
-        }
-        let seconds = myDate.getSeconds();
-        if (seconds < 10){
-            seconds = "0" + seconds
-        }
-        //var ds = myDate.toLocaleString();
-        let ts = hours + ":" + minutes + ":" + seconds; //ds.substring(ds.length-5,ds.length-13);
-        let defQuery = this._getQueryXML.call(this);
-        let qn = defQuery.queryAutoName+'@'+ts;
-        // display name
-        let queryNameInput = $('dialogQryRun').select('INPUT.inputQueryName')[0];
-        queryNameInput.value = qn;
-    };
 // ================================================================================================== //
     this.loadQueryStatus = function( queryMasterId, queryName) {
         i2b2.CRC.ctrlr.QS.QRS = {};
@@ -374,80 +358,181 @@ function QueryToolController() {
             return String(trgtdate.getFullYear())+"-"+String(trgtdate.getMonth()+1).padStart(2, "0")+"-"+String(trgtdate.getDate()).padStart(2, "0")+"T00:00:00.00-"+String(trgtdate.getUTCHours()).padStart(2, "0")+":"+String(trgtdate.getUTCMinutes()).padStart(2, "0");
         };
 
+        let createPanelItem = function(item){
+            let tempItem = {};
+            let name;
+            // TODO: how/if we need to handle "<constrain_by_date><date_from/><date_to/></>"
+            switch (item.sdxInfo.sdxType) {
+                case "PRS":
+                    tempItem.key = "patient_set_coll_id:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                    name = i2b2.h.Escape(item.origData.titleCRC);
+                    let trimPos = name.lastIndexOf(" - ");
+                    name = trimPos === -1 ? name : name.substring(0, trimPos);
+                    tempItem.name = name;
+                    tempItem.tooltip = item.origData.title;
+                    tempItem.isSynonym = "false";
+                    tempItem.hlevel = 0;
+                    break;
+                case "QM":
+                    tempItem.key = "masterid:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                    name = i2b2.h.Escape(item.origData.name);
+                    name = name.substring(0, name.indexOf(" ", name.lastIndexOf("@")));
+                    tempItem.name = "(PrevQuery) " + name;
+                    tempItem.tooltip = item.origData.name;
+                    tempItem.isSynonym = "false";
+                    tempItem.hlevel = 0;
+                    break;
+                case "CONCPT":
+                    tempItem.key = i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                    tempItem.name = i2b2.h.Escape(item.origData.name);
+                    if (item.origData.tooltip) tempItem.tooltip = i2b2.h.Escape(item.origData.tooltip);
+                    tempItem.hlevel = item.origData.level;
+                    tempItem.class = "ENC";
+                    tempItem.icon = item.origData.hasChildren;
+                    if (item.origData.synonym_cd !== undefined) {
+                        if (item.origData.synonym_cd === true || item.origData.synonym_cd === "Y") {
+                            tempItem.isSynonym = "true";
+                        } else {
+                            tempItem.isSynonym = "false";
+                        }
+                    } else {
+                        tempItem.isSynonym = "false";
+                    }
+
+                    if (item.LabValues) {
+                        tempItem.valueType = item.LabValues.valueType;
+                        tempItem.valueOperator = item.LabValues.valueOperator;
+                        tempItem.unitValue= item.LabValues.unitValue;
+
+                        if (item.LabValues.numericValueRangeLow){
+                            tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
+                        }
+                        else if(tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
+                            tempItem.value = item.LabValues.flagValue;
+                        }
+                        else {
+                            tempItem.value = item.LabValues.value;
+                        }
+                        tempItem.isString = item.LabValues.isString;
+                        tempItem.isEnum = item.LabValues.isEnum;
+                    }
+
+                    if (item.dateRange !== undefined) {
+                        if (item.dateRange.start !== undefined && item.dateRange.start !== "")
+                        {
+                            tempItem.dateFrom = funcTranslateDate(new Date(item.dateRange.start));
+                            tempItem.hasDate = true;
+                        }
+                        if (item.dateRange.end !== undefined && item.dateRange.end !== ""){
+                            tempItem.dateTo = funcTranslateDate(new Date(item.dateRange.end));
+                            tempItem.hasDate = true;
+                        }
+                    }
+                    break;
+            }
+
+            return tempItem;
+        }
+
+        let createPanel = function(panelNumber, invert, occursCount, timing){
+            let tempPanel = {};
+            tempPanel.number =
+            tempPanel.invert = invert ? "1" : "0";
+            tempPanel.timing = timing;
+            tempPanel.occursCount = occursCount;
+
+            return tempPanel;
+        }
         let transformedModel = {};
         transformedModel.name = i2b2.CRC.model.query.name;
         transformedModel.specificity = "0";
         transformedModel.queryTiming = "ANY";
         transformedModel.useShrine = false;
         transformedModel.panels = [];
+        transformedModel.subQueries = [];
         for (let qgIdx=0; qgIdx < i2b2.CRC.model.query.groups.length; qgIdx++) {
             let qgData = i2b2.CRC.model.query.groups[qgIdx];
-            let tempPanel = {};
-            tempPanel.number = String(qgIdx+1);
-            tempPanel.invert = "0";
-            if (qgData.without === true) tempPanel.invert = "1";
-            tempPanel.timing = "ANY";
-            tempPanel.occursCount = qgData.events[0].instances;
+            let invert = qgData.without === true;
             switch (qgData.display) {
                 case "when":
-                    // TODO: Handle "when" processing
+                    qgData.events.forEach((item, idx) => {
+                        let subQuery  = {};
+                        subQuery.name = "Event " + String(idx+1);
+                        subQuery.id = subQuery.name;
+                        subQuery.type= "EVENT";
+                        subQuery.timing = "SAMEINSTANCENUM";
+                        subQuery.specificity = "0";
+                        subQuery.panels = [];
+                        let number = String(qgIdx+1);
+                        let timing = "SAMEINSTANCENUM";
+                        let occursCount = item.instances;
+                        let tempPanel = createPanel(number, invert, occursCount, timing);
+                        tempPanel.items = [];
+                        item.concepts.forEach((item) => {
+                            let tempItem = createPanelItem(item);
+                            tempPanel.items.push(tempItem);
+                        });
+                        if (tempPanel.items.length > 0) {
+                            subQuery.panels.push(tempPanel);
+                            transformedModel.subQueries.push(subQuery);
+                        }
+                    });
+                    let subQueryConstraints  = [];
+                    qgData.eventLinks.forEach((link, idx) => {
+                        //check if event has terms
+                        if(transformedModel.subQueries.length > idx+1) {
+                            let constraints = {};
+                            constraints.firstQuery = {};
+                            constraints.firstQuery.id = transformedModel.subQueries[idx].name;
+                            constraints.firstQuery.aggregateOp = link.aggregateOp1;
+                            constraints.firstQuery.joinColumn = link.joinColumn1;
+                            constraints.operator = link.operator;
+
+                            constraints.secondQuery = {};
+                            constraints.secondQuery.id = transformedModel.subQueries[idx + 1].name;
+                            constraints.secondQuery.aggregateOp = link.aggregateOp2;
+                            constraints.secondQuery.joinColumn = link.joinColumn2;
+
+                            constraints.timeSpans = [];
+                            link.timeSpans.forEach((timeSpan) => {
+                                if(timeSpan.operator && timeSpan.value && timeSpan.unit
+                                    && timeSpan.operator.length > 0 && timeSpan.value.length > 0 && timeSpan.unit.length > 0) {
+                                    constraints.timeSpans.push(timeSpan);
+                                }
+                            });
+
+                            subQueryConstraints.push(constraints);
+                        }
+                    });
+
+                    transformedModel.subQueryConstraints = subQueryConstraints;
                     break;
                 case "without":
                 case "with":
-                    if (qgData.events[0].dateRange !== undefined) {
-                        if (qgData.events[0].dateRange.start !== undefined && qgData.events[0].dateRange.start !== "") tempPanel.dateFrom = funcTranslateDate(new Date(qgData.events[0].dateRange.start));
-                        if (qgData.events[0].dateRange.end !== undefined && qgData.events[0].dateRange.end !== "") tempPanel.dateTo = funcTranslateDate(new Date(qgData.events[0].dateRange.end));
-                    }
+                    let number =String(qgIdx+1);
+                    let timing = "ANY";
+                    let occursCount = qgData.events[0].instances;
+                    let tempPanel = createPanel(number, invert, occursCount, timing);
+                    tempPanel.items = [];
+                    qgData.events[0].concepts.forEach((item) => {
+                        let tempItem = createPanelItem(item);
+                        tempPanel.items.push(tempItem);
+                    });
+                    if (tempPanel.items.length > 0) transformedModel.panels.push(tempPanel);
                     break;
             }
-            // Process ontology terms
-            tempPanel.items = [];
-            qgData.events[0].concepts.forEach((item) => {
-                let tempItem = {};
-                // TODO: how/if we need to handle "<constrain_by_date><date_from/><date_to/></>"
-                tempItem.key = i2b2.h.Escape(item.origData.key);
-                tempItem.name = i2b2.h.Escape(item.origData.name);
-                if (item.origData.tooltip) tempItem.tooltip = i2b2.h.Escape(item.origData.tooltip);
-                tempItem.hlevel = item.origData.level;
-                tempItem.class = "ENC";
-                tempItem.icon = item.origData.hasChildren;
-                if (item.origData.synonym_cd !== undefined) {
-                    if (item.origData.synonym_cd === true || item.origData.synonym_cd === "Y") {
-                        tempItem.isSynonym = "true";
-                    } else {
-                        tempItem.isSynonym = "false";
-                    }
-                } else {
-                    tempItem.isSynonym = "false";
-                }
-
-                if (item.LabValues) {
-                    tempItem.valueType = item.LabValues.valueType;
-                    tempItem.valueOperator = item.LabValues.valueOperator;
-                    tempItem.unitValue= item.LabValues.unitValue;
-
-                    if (item.LabValues.numericValueRangeLow){
-                        tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
-                    }
-                    else if(tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
-                        tempItem.value = item.LabValues.flagValue;
-                    }
-                    else {
-                        tempItem.value = item.LabValues.value;
-                    }
-                    tempItem.isString = item.LabValues.isString;
-                    tempItem.isEnum = item.LabValues.isEnum;
-                }
-                tempPanel.items.push(tempItem);
-            });
-            if (tempPanel.items.length > 0) transformedModel.panels.push(tempPanel);
         }
 
         // generate the initial name for query
-        if (transformedModel.panels.length > 0) {
+        if (transformedModel.panels.length > 0 || transformedModel.subQueries.length > 0) {
             let queryDate = new Date();
             queryDate = String(queryDate.getHours()) + ":" + String(queryDate.getMinutes()) + ":" + String(queryDate.getSeconds());
-            let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.trim()});
+            let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.replace("(PrevQuery)","").trim()});
+
+            //Handle temporal events
+            let temporalNames = transformedModel.subQueries.map((subQuery)=>{ return subQuery.panels[0].items[0].name.replace("(PrevQuery)","").trim()});
+            names = names.concat(temporalNames);
+
             let adjuster = 1 / ((names.map((rec) => rec.length ).reduce((acc, val) => acc + val) + names.length - 1) / 120);
             if (adjuster > 1) adjuster = 1;
             names = names.map((rec) => rec.substr(0, Math.floor(rec.length * adjuster)));
@@ -459,7 +544,3 @@ function QueryToolController() {
         i2b2.CRC.model.transformedQuery = transformedModel;
     };
 }
-
-
-console.timeEnd('execute time');
-console.groupEnd();

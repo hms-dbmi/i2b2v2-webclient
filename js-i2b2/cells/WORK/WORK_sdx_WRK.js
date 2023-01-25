@@ -10,9 +10,6 @@
  * updated 1-12-09: added QDEF, QGDEF and default XML object handling for SDX subsystem
  */
 
-console.group('Load & Execute component file: WORK > SDX > Workplace Object');
-console.time('execute time');
-
 // ********************************* Patient Record Set Stuff *********************************
 i2b2.sdx.TypeControllers.WRK = {};
 i2b2.sdx.TypeControllers.WRK.model = {};
@@ -132,11 +129,12 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.column_name = i2b2.h.getXNodeVal(x, "columnname");
             o.dim_code = i2b2.h.getXNodeVal(x, "dimcode");
             o.operator = i2b2.h.getXNodeVal(x, "operator");
+            o.basecode= i2b2.h.getXNodeVal(x, "basecode");
             o.table_name = i2b2.h.getXNodeVal(x, "tablename");
             o.tooltip = i2b2.h.getXNodeVal(x, "tooltip");
             o.hasChildren = i2b2.h.getXNodeVal(x, "visualattributes");
             newOptions.showchildren = false;
-            newOptions.title = o.name;
+            if (newOptions.title === "") newOptions.title = o.name;
             break;
         case "PATIENT_COUNT_XML":
             // Patient Record Count
@@ -211,9 +209,8 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
     }
 
     if (sdxCode) {
+        //TODO: Is this if condition needed?
         if (sdxDataNode = i2b2.sdx.Master.EncapsulateData(sdxCode, o)) {
-            sdxDataNode.origData.name = options.title;
-            sdxDataNode.sdxInfo.sdxDisplayName = options.title;
             sdxData.sdxUnderlyingPackage = sdxDataNode;
             subclassData = i2b2.sdx.Master.RenderData(sdxDataNode, newOptions);
         }
@@ -251,8 +248,3 @@ i2b2.sdx.TypeControllers.WRK.dragStartHandler = function(i2b2Data) {
     }
     return i2b2Data;
 };
-
-
-// ==========================================================================
-console.timeEnd('execute time');
-console.groupEnd();

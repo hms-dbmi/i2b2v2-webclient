@@ -4,8 +4,7 @@ i2b2.LEGACYPLUGIN.view.main = new i2b2Base_cellViewController(i2b2.LEGACYPLUGIN,
 // ==================================================================================================
 
 i2b2.LEGACYPLUGIN.view.main.onPluginFrameLoad = function(){
-    if(!i2b2.PM.model.data.loginXMLStr)
-    {
+    if(!i2b2.PM.model.data.loginXMLStr) {
         i2b2.PM.model.data.loginXMLStr = i2b2.h.Xml2String(i2b2.PM.model.data.refXML);
         delete i2b2.PM.model.data.refXML;
     }
@@ -16,9 +15,10 @@ i2b2.LEGACYPLUGIN.view.main.onPluginFrameLoad = function(){
 
 // ==================================================================================================
 
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
     if (cell.cellCode === "LEGACYPLUGIN") {
-        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.LEGACYPLUGIN.view.main",
             (function (container, scope) {
@@ -82,4 +82,4 @@ i2b2.events.afterCellInit.add((function(cell){
             }).bind(this)
         );
     }
-}));
+});

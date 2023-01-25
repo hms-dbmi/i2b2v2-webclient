@@ -150,10 +150,12 @@ i2b2.ONT.view.info = {
 
 
 
+// This is done once the entire cell has been loaded
 //================================================================================================== //
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
     if (cell.cellCode === "ONT") {
-        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.ONT.view.info",
             (function (container, scope) {
@@ -163,7 +165,6 @@ i2b2.events.afterCellInit.add((function(cell){
                 // change the tab's hover over to be the name of the term
                 let funcRetitle = (function(sdxData) {
                     // this can only be run after a bit when the tab has been created in the DOM
-                    console.dir(sdxData);
                     this.tab.element[0].title = "title";
                 }).bind(container, i2b2.ONT.view.info.model.sdxData);
 
@@ -183,4 +184,4 @@ i2b2.events.afterCellInit.add((function(cell){
             }).bind(this)
         );
     }
-}));
+});

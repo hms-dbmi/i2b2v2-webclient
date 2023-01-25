@@ -446,9 +446,6 @@
         var nodeId = target.closest('li.list-group-item').attr('data-nodeid');
         var node = this.nodes.get(parseInt(nodeId));
 
-        if (!node) {
-            console.log('Error: node does not exist');
-        }
         return node;
     };
 

@@ -1,23 +1,21 @@
 <div id="infoQueryStatusText" class="StatusBoxText" oncontextmenu="return false">
     <div style="clear:both;">
         {{#if breakdowns.name}}
-        {{#if breakdowns.isProcessing}}
-        <div style="clear:both;"></div><div style="float:left; font-weight:bold">Processing Query: {{breakdowns.name}} </div>
-        <div class="spinner-border text-success queryRunningSpinner" role="status"><span class="visually-hidden">Loading...</span></div>
-        {{else if breakdowns.isRunning}}
-        <div style="clear:both;"></div><div style="float:left; font-weight:bold">Running Query: {{breakdowns.name}} </div>
-        <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
-        {{else}}
-        <div style="clear:both;"></div><div style="float:left; font-weight:bold">Finished Query: {{breakdowns.name}} </div>
-        {{/if}}
+            {{#if breakdowns.isProcessing}}
+                <div style="clear:both;"></div><div style="float:left; font-weight:bold">Processing Query: {{breakdowns.name}} </div>
+            {{else if breakdowns.isRunning}}
+                <div style="clear:both;"></div><div style="float:left; font-weight:bold">Running Query: {{breakdowns.name}} </div>
+            {{else}}
+                <div style="clear:both;"></div><div style="float:left; font-weight:bold">Finished Query: {{breakdowns.name}} </div>
+            {{/if}}
 
-        {{#if breakdowns.runDuration}}
-        <div style="float:right">[{{breakdowns.runDuration}} &nbsp; secs]</div>
-        {{/if}}
-        {{#if breakdowns.computeTime}}
-        <div style="clear:both;"></div>
-        <div class="computeTime">Compute Time: {{breakdowns.computeTime}} &nbsp;secs</div>
-        {{/if}}
+            {{#if breakdowns.runDuration}}
+                <div style="float:right">[{{breakdowns.runDuration}} &nbsp; secs]</div>
+            {{/if}}
+            {{#if breakdowns.computeTime}}
+                <div style="clear:both;"></div>
+                <div class="computeTime">Compute Time: {{breakdowns.computeTime}} &nbsp;secs</div>
+            {{/if}}
         {{/if}}
 
         {{#if breakdowns.patientCount.title}}

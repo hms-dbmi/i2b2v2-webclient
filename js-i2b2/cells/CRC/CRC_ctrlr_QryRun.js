@@ -7,9 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 2-3-2022: Relaunch [Nick Benik]
  */
-console.group('Load & Execute component file: CRC > ctrlr > QueryRunner');
-console.time('execute time');
-
 
 i2b2.CRC.ctrlr.QR = new QueryRunner();
 function QueryRunner() {
@@ -102,10 +99,9 @@ function QueryRunner() {
         };
 
         i2b2.CRC.ctrlr.QS.startTime = new Date();
-        //i2b2.CRC.ctrlr.QueryStatus.private_refreshInterrupt = setInterval("i2b2.CRC.ctrlr.QueryStatus.refreshStatus()", 100);
-        //i2b2.CRC.ctrlr.QueryStatus.QM.name = queryName;
 
         i2b2.CRC.ctrlr.QS.startStatus(queryName);
+        i2b2.CRC.ctrlr.QS.refreshInterrupt = setInterval(i2b2.CRC.ctrlr.QS.refreshStatus, 100);
 
         // run query using the passed query definition
         // ==========================================================
@@ -120,7 +116,3 @@ function QueryRunner() {
 
     };
 }
-
-
-console.timeEnd('execute time');
-console.groupEnd();

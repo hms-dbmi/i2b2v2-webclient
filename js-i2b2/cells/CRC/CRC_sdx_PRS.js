@@ -5,9 +5,6 @@
  * @version 	2.0
  * @see 		i2b2.sdx
  **/
-console.group('Load & Execute component file: CRC > SDX > Patient Record Set');
-console.time('execute time');
-
 
 i2b2.sdx.TypeControllers.PRS = {};
 i2b2.sdx.TypeControllers.PRS.model = {};
@@ -61,6 +58,14 @@ i2b2.sdx.TypeControllers.PRS.RenderData = function(sdxData, options) {
         nodeInfo.title = options.title;
     } else  {
         nodeInfo.title = sdxData.sdxInfo.sdxDisplayName;
+    }
+    nodeInfo.moreDescriptMinor = nodeInfo.title;
+    let temp = sdxData.origData.titleCRC ? sdxData.origData.titleCRC : nodeInfo.title;
+    let trimPos = temp.lastIndexOf(" - ");
+    if (trimPos > 0) {
+        nodeInfo.title = temp.substring(0, trimPos);
+    } else {
+        nodeInfo.title = temp;
     }
 
 
@@ -208,7 +213,3 @@ i2b2.sdx.TypeControllers.PRS.dragStartHandler = function(i2b2Data) {
     return i2b2Data;
 };
 
-
-// ==========================================================================
-console.timeEnd('execute time');
-console.groupEnd();

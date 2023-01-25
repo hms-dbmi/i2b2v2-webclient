@@ -7,8 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: cells > PM > view');
-console.time('execute time');
 
 i2b2.PM.setUserAccountInfo = function(){
     let userInfo = $("#userInfo");
@@ -43,19 +41,22 @@ i2b2.PM.doLoginDialog = function() {
         // execute this after the external HTML/CSS load
         $('loginusr').focus();
         // load info from the i2b2.UI.cfg data that may exist
-        var t = i2b2.UI.cfg.loginDefaultUsername;
-        if (t !== undefined) { $("#PM-login-modal input[name='loginusr']").val(t); }
-        var t = i2b2.UI.cfg.loginDefaultPassword;
-        if (t !== undefined) { $("#PM-login-modal input[name='loginpass']").val(t); }
+        try {
+            $("#PM-login-modal input[name='loginusr']").val(i2b2.UI.cfg.loginDefaultUsername);
+        } catch(e) {}
+        try {
+            $("#PM-login-modal input[name='loginpass']").val(i2b2.UI.cfg.loginDefaultPassword);
+        } catch(e) {}
+
         // clear any domains
         $('#logindomain option').remove();
         // load the domains into dropdown
-        $.each(i2b2.PM.model.Domains, function(i, domain){
+        i2b2.PM.model.Domains.forEach((domain, i)=>{
             $('#logindomain').append($('<option>', {
                 value: i,
                 text: domain.name
             }));
-        })
+        });
         // attach the onSubmit handler
         $("#PM-login-modal form").submit(function(event) {
             event.preventDefault();
@@ -79,7 +80,6 @@ i2b2.PM.doLoginDialog = function() {
 // ================================================================================================== //
 i2b2.PM.doChangeDomain = function() {
     let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
-    console.dir(selectedDomain);
     let loginElements = $(".login-user, .login-password, .login-button");
     if (selectedDomain.saml !== undefined) {
         loginElements.hide();
@@ -91,8 +91,3 @@ i2b2.PM.doChangeDomain = function() {
         $(".sso-button").hide();
     }
 };
-
-
-
-console.timeEnd('execute time');
-console.groupEnd();

@@ -7,9 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: ONT > view > Nav');
-console.time('execute time');
-
 
 // create and save the view object
 i2b2.ONT.view.nav = new i2b2Base_cellViewController(i2b2.ONT, 'nav');
@@ -18,9 +15,6 @@ i2b2.ONT.view.nav.template = {};
 // ================================================================================================== //
 i2b2.ONT.view.nav.PopulateCategories = function() {		
     // insert the categories nodes into the Nav Treeview
-    console.info("Populating Nav treeview with Categories");
-    // clear the data first
-//    i2b2.ONT.view.nav.treeview.clear();
 
     let newNodes = [];
     for (let i=0; i<i2b2.ONT.model.Categories.length; i++) {
@@ -29,7 +23,6 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
         let sdxDataNode = i2b2.sdx.Master.EncapsulateData('CONCPT',catData);
         if (!sdxDataNode) {
             console.error("SDX could not encapsulate CONCPT data!");
-            console.dir(catData);
             return false;
         }
 
@@ -65,8 +58,6 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
     i2b2.ONT.view.nav.treeview.treeview('addNodes', [newNodes, true]);
     // render tree
     i2b2.ONT.view.nav.treeview.treeview('redraw', []);
-    // reset the loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-ONT-view-nav').removeClass("refreshing");
 };
 
 
@@ -77,7 +68,6 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
         return;
     }
 
-    $('#stackRefreshIcon_i2b2-ONT-view-nav').addClass("refreshing");
     i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview(nodeData, function(newNodes, parentNodes) {
         // change the tiles to contain the counts
         newNodes.forEach((node) => {
@@ -98,16 +88,12 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
         ]);
         // render tree
         i2b2.ONT.view.nav.treeview.treeview('redraw', []);
-        $('#stackRefreshIcon_i2b2-ONT-view-nav').removeClass("refreshing");
     });
 };
 
 
 //================================================================================================== //
 i2b2.ONT.view.nav.doRefreshAll = function() {
-    // set the loading icon in the stack buttons list
-    $('#stackRefreshIcon_i2b2-ONT-view-nav').addClass("refreshing");
-
     // clear out the treeview
     i2b2.ONT.view.nav.treeview.treeview('clear');
 
@@ -115,13 +101,14 @@ i2b2.ONT.view.nav.doRefreshAll = function() {
     i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
     i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
 };
-//================================================================================================== //
+
 
 // Below code is executed once the entire cell has been loaded
 //================================================================================================== //
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
     if (cell.cellCode === "ONT") {
-        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.ONT.view.nav",
             (function (container, scope) {
@@ -158,7 +145,7 @@ i2b2.events.afterCellInit.add((function(cell){
             }).bind(this)
         );
     }
-}));
+});
 //================================================================================================== //
 i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview) {
 
@@ -179,7 +166,3 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview) {
         }
     });
 };
-// ================================================================================================== //
-
-console.timeEnd('execute time');
-console.groupEnd();

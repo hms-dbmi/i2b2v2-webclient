@@ -8,13 +8,9 @@
  * ----------------------------------------------------------------------------------------
  * updated 1-12-09: RC5 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: WORK > SDX > Generic XML');
-console.time('execute time');
-
 
 i2b2.sdx.TypeControllers.XML = {};
 i2b2.sdx.TypeControllers.XML.model = {};
-
 
 // ==========================================================================
 i2b2.sdx.TypeControllers.XML.getEncapsulateInfo = function() {
@@ -56,8 +52,3 @@ i2b2.sdx.TypeControllers.XML.dragStartHandler = function(i2b2Data) {
     }
     return i2b2Data;
 };
-
-
-// ==========================================================================
-console.timeEnd('execute time');
-console.groupEnd();

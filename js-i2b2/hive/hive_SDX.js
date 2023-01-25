@@ -4,8 +4,6 @@
  * @namespace	i2b2
  * @version 	2.0
  **/
-console.group('Load & Execute component file: hive > SDX');
-console.time('execute time');
 
 i2b2.sdx.Master = {};
 i2b2.sdx.TypeControllers = {};
@@ -36,9 +34,7 @@ i2b2.sdx.Master.EncapsulateData = function(inType, inData) {
         console.error('Key information was not found during an attempt to encapsulate '+inType+' data');
         console.group('(more info)');
         console.info('SDX Encapsulation header');
-        console.dir(headInfo);
         console.info('Data sent to be Encapsulated');
-        console.dir(inData);
         console.groupEnd();
         return false;
     }
@@ -77,8 +73,14 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                 let sdxType = sdxTypeList.pop();
                 if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].DropHandler === "function") {
                     // TODO: Finish this to pass the data
-                    let sdxJSON = JSON.parse(e.originalEvent.dataTransfer.getData("application/i2b2+json"));
-                    eventHandlers[sdxType].DropHandler(sdxJSON, e, sdxType);
+                    let sdxFromJSON = JSON.parse(e.originalEvent.dataTransfer.getData("application/i2b2+json"));
+                    if(sdxFromJSON.sdxInfo.sdxType !== sdxType && sdxFromJSON.sdxInfo.sdxType === "WRK"){
+                        //send the underlying sdx data instead
+                        sdxFromJSON.origData = sdxFromJSON.sdxUnderlyingPackage.origData;
+                        sdxFromJSON.sdxInfo = sdxFromJSON.sdxUnderlyingPackage.sdxInfo;
+                        sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON);
+                    }
+                    eventHandlers[sdxType].DropHandler(sdxFromJSON, e, sdxType);
                 }
             }
             e.stopImmediatePropagation();
@@ -128,7 +130,6 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
 // ================================================================================================== //
 i2b2.sdx.Master.ProcessDrop = function(sdxData, DroppedOnID){
     console.group("SDX Process DropEvent on container ID:"+DroppedOnID);
-    console.dir(sdxData);
     // TODO: clean up these array processing hacks
     let typeCode;
     if (sdxData[0]) {
@@ -431,8 +432,3 @@ document.addEventListener("dragstart", function(event) {
 document.addEventListener("dragend", function(event) {
     $(".i2b2DropTarget").removeClass("i2b2DropPrep");
 }, false);
-
-
-// ================================================================================================== //
-console.timeEnd('execute time');
-console.groupEnd();

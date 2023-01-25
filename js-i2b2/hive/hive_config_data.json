@@ -4,7 +4,6 @@
     "hive_helpers.js",
     "i2b2_layout.js",
     "hive_SDX.js",
-    "msg_sniffer.js",
     "i2b2_cell_communicator.js"
   ],
   "config": {}

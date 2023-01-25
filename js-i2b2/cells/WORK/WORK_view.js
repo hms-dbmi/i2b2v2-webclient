@@ -1,6 +1,3 @@
-console.group('Load & Execute component file: WORK > view > main');
-console.time('execute time');
-
 
 i2b2.WORK.view.main = new i2b2Base_cellViewController(i2b2.WORK, 'main');
 
@@ -296,7 +293,6 @@ i2b2.WORK.view.main.DropHandler = function(sdx, evt, handlerSelector){
                 }
                 parentNode = treeview.getParent(parentNode.nodeId);
             }
-            console.dir({type: "within workspace", dropTarget: dropTarget, toSave: sdx});
             i2b2.WORK.ctrlr.main.MoveWorkItem(sdx, dropTarget);
         } else {
             // saves the external item to the workspace
@@ -314,7 +310,7 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
     }
     contextDialogModal.empty();
 
-    i2b2.WORK.view.main.dialogCallbackWrapper = function() {
+    i2b2.WORK.view.main.dialogCallbackWrapper = function(event) {
         if (inputData.confirmMsg) {
             inputData.onOk();
         }
@@ -325,12 +321,19 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
         $("#WKContextMenuDialog").modal('hide');
     }
 
+    i2b2.WORK.view.main.dialogKeyupCallbackWrapper = function(event) {
+        if(event.keyCode === 13){
+            $("#WKContextMenuDialog .context-menu-save").click();
+        }
+    }
+
     let data = {
         "title": inputData.title,
         "inputLabel": inputData.prompt,
         "placeHolder": inputData.placeHolder,
         "confirmMsg": inputData.confirmMsg,
-        "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper()",
+        "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper(event)",
+        "onKeyup": "i2b2.WORK.view.main.dialogKeyupCallbackWrapper(event)",
         "inputValue" : inputData.inputValue,
         "onCancel": inputData.onCancel
     };
@@ -338,9 +341,10 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
     $("#WKContextMenuDialog").modal('show');
 }
 // =========================================================
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
     if (cell.cellCode === "WORK") {
-        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.WORK.view.main",
             (function (container, scope) {
@@ -381,7 +385,6 @@ i2b2.events.afterCellInit.add((function(cell){
                         nodeRename: {
                             name: 'Rename',
                             onClick: function(node) {
-                                console.dir(node);
                                 i2b2.WORK.ctrlr.main.Rename(node);
                             },
                             isShown: function(node) {
@@ -397,7 +400,6 @@ i2b2.events.afterCellInit.add((function(cell){
                         nodeAnnotate: {
                             name: 'Annotate',
                             onClick: function(node) {
-                                console.dir(node);
                                 i2b2.WORK.ctrlr.main.Annotate(node);
                             },
                             isShown: function(node) {
@@ -413,7 +415,6 @@ i2b2.events.afterCellInit.add((function(cell){
                         nodeDelete: {
                             name: 'Delete',
                             onClick: function(node) {
-                                console.dir(node);
                                 i2b2.WORK.ctrlr.main.Delete(node);
                             },
                             isShown: function(node) {
@@ -429,7 +430,6 @@ i2b2.events.afterCellInit.add((function(cell){
                         newFolder: {
                             name: 'New Folder',
                             onClick: function (node) {
-                                console.dir(node);
                                 i2b2.WORK.ctrlr.main.NewFolder(node);
                             },
                             isShown: function (node) {
@@ -455,9 +455,4 @@ i2b2.events.afterCellInit.add((function(cell){
             }).bind(this)
         );
     }
-}));
-
-
-// =========================================================
-console.timeEnd('execute time');
-console.groupEnd();
+});
