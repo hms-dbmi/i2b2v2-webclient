@@ -12,6 +12,7 @@ span.sdxStyleONT-MODIFIER::before {
 /* ========================================== */
 span.sdxStyleONT-CONCPT::before {
     background-image: url(sdx_ONT_CONCPT_root.gif);
+    background-repeat: no-repeat;
 }
 span.sdxStyleONT-CONCPT.tvRoot::before {
     background-image: url(sdx_ONT_CONCPT_root.gif);
@@ -27,5 +28,14 @@ span.sdxStyleONT-CONCPT.tvLeaf::before {
 
 span.sdxStyleONT-MODIFIER::before {
     background-image: url(sdx_ONT_MODIFIER_root.gif);
+    background-repeat: no-repeat;
 }
-
+span.sdxStyleONT-MODIFIER.tvRoot::before {
+    background-image: url(sdx_ONT_MODIFIER_root.gif);
+}
+span.sdxStyleONT-MODIFIER.tvBranch::before {
+    background-image: url(sdx_ONT_MODIFIER_branch.gif);
+}
+span.sdxStyleONT-MODIFIER.tvLeaf::before {
+    background-image: url(sdx_ONT_MODIFIER_leaf.gif);
+}
