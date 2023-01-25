@@ -549,6 +549,11 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
             }
         }
 
+        // Modifiers processing
+        if (sdx.origData.conceptModified) {
+            sdx.renderData.title = sdx.origData.conceptModified.renderData.title + " {" + sdx.origData.name + "}";
+        }
+
         // not a duplicate, add to the event's term list
         eventData.concepts.push(sdx);
 
