@@ -607,33 +607,4 @@ function QueryToolController() {
 
         i2b2.CRC.model.transformedQuery = transformedModel;
     };
-    // ================================================================================================== //
-    this.loadModifierInfo = function(sdxConcept, callBack){
-        let modifierResponseCallback = function(response) {
-            try { new ActiveXObject ("MSXML2.DOMDocument.6.0"); isActiveXSupported =  true; } catch (e) { isActiveXSupported =  false; }
-
-            let c;
-            if (isActiveXSupported) {
-                //Internet Explorer
-                xmlDocRet = new ActiveXObject("Microsoft.XMLDOM");
-                xmlDocRet.async = "false";
-                xmlDocRet.loadXML(response.msgResponse);
-                xmlDocRet.setProperty("SelectionLanguage", "XPath");
-                c = i2b2.h.XPath(xmlDocRet, 'descendant::modifier');
-            } else {
-                c = i2b2.h.XPath(response.refXML, 'descendant::modifier');
-            }
-            if (c.length > 0) {
-                sdxConcept.origData.xmlOrig = c[0];
-            }
-            callBack();
-        };
-
-        i2b2.ONT.ajax.GetModifierInfo("CRC:QueryTool", {
-            modifier_applied_path:sdxConcept.origData.applied_path,
-            modifier_key_value:sdxConcept.origData.key,
-            ont_max_records: 'max="1"',
-            ont_synonym_records: true,
-            ont_hidden_records: true}, modifierResponseCallback);
-    }
 }

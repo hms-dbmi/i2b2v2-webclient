@@ -572,15 +572,6 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.handleModifier = function(sdxConcept){
-    let modifierCallback = function() {
-        const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
-        if (valueMetaDataArr.length > 0)
-        {
-            let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
-            i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedLabModel);
-        }
-    }
-
     let labValuesModal = $("#labValuesModal");
     if (labValuesModal.length === 0) {
         $("body").append("<div id='labValuesModal'/>");
@@ -588,7 +579,11 @@ i2b2.CRC.view.QT.handleModifier = function(sdxConcept){
     }
 
     labValuesModal.load('js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
-        i2b2.CRC.ctrlr.QT.loadModifierInfo(sdxConcept, modifierCallback);
+        const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
+        if (valueMetaDataArr.length > 0) {
+            let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
+            i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedLabModel);
+        }
     });
 }
 // ================================================================================================== //

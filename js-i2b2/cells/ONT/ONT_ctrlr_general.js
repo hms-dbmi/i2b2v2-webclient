@@ -141,6 +141,44 @@ i2b2.ONT.ctrlr.gen.loadSchemes = function() {
 };
 
 // ================================================================================================== //
+i2b2.ONT.model.cacheModifiers = {};
+i2b2.ONT.ctrlr.gen.getModifierDetails = function(sdxConcept) {
+    let cacheRecord = i2b2.ONT.model.cacheModifiers[sdxConcept.sdxInfo.sdxKeyValue];
+    if (cacheRecord) {
+        sdxConcept.origData.xmlOrig = cacheRecord.xml;
+        sdxConcept.origData.hasMetadata = cacheRecord.hasMetadata;
+    } else {
+        i2b2.ONT.ajax.GetModifierInfo("CRC:QueryTool", {
+            modifier_applied_path:sdxConcept.origData.applied_path,
+            modifier_key_value:sdxConcept.origData.key,
+            ont_max_records: 'max="1"',
+            ont_synonym_records: true,
+            ont_hidden_records: true
+        }, (response) => {
+            let c = i2b2.h.XPath(response.refXML, 'descendant::modifier');
+            if (c.length > 0) {
+                cacheRecord = {};
+                cacheRecord.xml = c[0].outerHTML;
+                const valueMetaDataArr = i2b2.h.XPath(cacheRecord.xml, "metadataxml/ValueMetadata[string-length(Version)>0]");
+                if (valueMetaDataArr.length > 0) {
+                    cacheRecord.hasMetadata = true;
+                } else {
+                    cacheRecord.hasMetadata = false;
+                }
+                sdxConcept.origData.xmlOrig = cacheRecord.xml;
+                sdxConcept.origData.hasMetadata = cacheRecord.hasMetadata;
+                i2b2.ONT.model.cacheModifiers[sdxConcept.sdxInfo.sdxKeyValue] = cacheRecord;
+            }
+        });
+    }
+}
+
+
+
+
+
+
+// ================================================================================================== //
 
 i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
     // initialize the search bar dropdowns when the data model is fully populated
