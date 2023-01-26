@@ -256,6 +256,17 @@ i2b2.CRC.view.QT.termActionDateConstraint = function(evt) {
     }
     i2b2.CRC.view.QT.addConceptDateConstraint(sdx, callbackFunc);
 };
+// ================================================================================================== //
+i2b2.CRC.view.QT.termActionModifer = function(evt) {
+    let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
+    let eventIdx = $(evt.target).closest('.event').data('eventidx');
+    let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
+    let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
+
+    const valueMetaDataArr = i2b2.h.XPath(sdx.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
+    let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
+    i2b2.CRC.view.QT.labValue.showLabValues(sdx, extractedLabModel);
+};
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
@@ -370,6 +381,7 @@ i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
     $('.concept .actions .info', targetEl).on('click', i2b2.CRC.view.QT.termActionInfo);
     $('.concept .actions .delete', targetEl).on('click', i2b2.CRC.view.QT.termActionDelete);
     $('.concept .actions .dateConstraint', targetEl).on('click', i2b2.CRC.view.QT.termActionDateConstraint);
+    $('.concept .actions .modifier', targetEl).on('click', i2b2.CRC.view.QT.termActionModifer);
     i2b2.CRC.view.QT.enableWhenIfAvail();
 };
 
