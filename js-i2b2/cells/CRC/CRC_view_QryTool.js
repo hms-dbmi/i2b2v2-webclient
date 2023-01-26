@@ -1018,12 +1018,12 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
             if(sdxConcept.origData.isModifier) {
                 let modifierInfoText;
                 if(newLabValues.numericValueRangeLow && newLabValues.numericValueRangeHigh){
-                    modifierInfoText  = newLabValues.numericValueRangeLow - newLabValues.numericValueRangeHigh;
+                    modifierInfoText  = newLabValues.numericValueRangeLow + "-" +  newLabValues.numericValueRangeHigh;
                 }else if(newLabValues.flagValue){
                     modifierInfoText  = newLabValues.flagValue;
                 }
                 else if(newLabValues.isEnum){
-                    modifierInfoText  = "(" + extractedLabValues.enumInfo[newLabValues.value] + ")";
+                    modifierInfoText  = extractedLabValues.enumInfo[newLabValues.value];
                 }
                 else if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER){
                     let numericOperatorMapping = {
@@ -1044,6 +1044,9 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                     }
                     modifierInfoText = textOperatorMapping[newLabValues.valueOperator] + ": ";
                     modifierInfoText  += newLabValues.value;
+                }
+                else if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT){
+                    modifierInfoText = "Contains: " + newLabValues.value;
                 }
                 else{
                     modifierInfoText = "";
@@ -1300,6 +1303,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                         labUnits.val(sdxConcept.LabValues.unitValue);
                         labUnits.trigger("change");
                         newLabValues.unitValue = sdxConcept.LabValues.unitValue;
+                    }else{
+                        labUnits.trigger("change");
                     }
                 }
                 break;
