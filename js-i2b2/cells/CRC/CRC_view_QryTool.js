@@ -559,7 +559,6 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
         eventData.concepts.push(sdx);
 
         // rerender the query event and add to the DOM
-        const targetQueryGroup = $('.CRC_QT_query .QueryGroup')[groupIdx];
         const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
         i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
 
@@ -583,7 +582,6 @@ i2b2.CRC.view.QT.handleModifier = function(sdxConcept){
     }
 
     let labValuesModal = $("#labValuesModal");
-
     if (labValuesModal.length === 0) {
         $("body").append("<div id='labValuesModal'/>");
         labValuesModal = $("#labValuesModal");
@@ -998,7 +996,6 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
         });
 
         $("body #labValuesModal button.lab-save").click(function () {
-            let value="";
             switch (newLabValues.valueType) {
                 case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
                     newLabValues.numericValueRangeLow = null;
@@ -1022,19 +1019,34 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 let modifierInfoText;
                 if(newLabValues.numericValueRangeLow && newLabValues.numericValueRangeHigh){
                     modifierInfoText  = newLabValues.numericValueRangeLow - newLabValues.numericValueRangeHigh;
-                     + " " + newLabValues.unit;
-                }else if(newLabValues.numericValueRangeLow){
-                    modifierInfoText  = newLabValues.numericValueRangeLow;
-                } else if(newLabValues.numericValueRangeHigh){
-                    modifierInfoText  = newLabValues.numericValueRangeHigh;
                 }else if(newLabValues.flagValue){
                     modifierInfoText  = newLabValues.flagValue;
                 }
-                else{
-                    if(newLabValues.valueOperator){
-                       modifierInfoText = newLabValues.valueOperator.toString().toLowerCase() + ": ";
+                else if(newLabValues.isEnum){
+                    modifierInfoText  = "(" + extractedLabValues.enumInfo[newLabValues.value] + ")";
+                }
+                else if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER){
+                    let numericOperatorMapping = {
+                        "LT": "<",
+                        "LE": "<=",
+                        "EQ": "=",
+                        "GT": ">",
+                        "GE": ">="
                     }
+                    modifierInfoText = numericOperatorMapping[newLabValues.valueOperator] + " " + newLabValues.value;
+                }
+                else if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT){
+                    let textOperatorMapping = {
+                        "LIKE[exact]": "Exact",
+                        "LIKE[begin]": "Starts With",
+                        "LIKE[end]": "Ends With",
+                        "LIKE[contains]": "Contains",
+                    }
+                    modifierInfoText = textOperatorMapping[newLabValues.valueOperator] + ": ";
                     modifierInfoText  += newLabValues.value;
+                }
+                else{
+                    modifierInfoText = "";
                 }
 
                 if(newLabValues.unitValue){
