@@ -498,7 +498,7 @@ i2b2.CRC.view.QT.handleLabValues = function(sdx){
 
     if(isLab){
         i2b2.CRC.view.QT.current  = {"conceptSdx": sdx};
-        i2b2.CRC.view.QT.labValue.showLabValues(sdx);
+        i2b2.CRC.view.QT.labValue.getLabValues(sdx);
     }
 }
 
@@ -552,6 +552,7 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
         // Modifiers processing
         if (sdx.origData.conceptModified) {
             sdx.renderData.title = sdx.origData.conceptModified.renderData.title + " {" + sdx.origData.name + "}";
+            i2b2.CRC.view.QT.handleModifier(sdx);
         }
 
         // not a duplicate, add to the event's term list
@@ -563,14 +564,35 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
         i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
 
         // handle the lab values
-        if (sdx.isLab) i2b2.CRC.view.QT.labValue.showLabValues(sdx);
+        if (sdx.isLab) i2b2.CRC.view.QT.labValue.getLabValues(sdx);
 
         // update the query name
         i2b2.CRC.view.QT.updateQueryName();
         i2b2.CRC.view.QS.clearStatus();
     }
 };
+// ================================================================================================== //
+i2b2.CRC.view.QT.handleModifier = function(sdxConcept){
+    let modifierCallback = function() {
+        const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
+        if (valueMetaDataArr.length > 0)
+        {
+            let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
+            i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedLabModel);
+        }
+    }
 
+    let labValuesModal = $("#labValuesModal");
+
+    if (labValuesModal.length === 0) {
+        $("body").append("<div id='labValuesModal'/>");
+        labValuesModal = $("#labValuesModal");
+    }
+
+    labValuesModal.load('js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
+        i2b2.CRC.ctrlr.QT.loadModifierInfo(sdxConcept, modifierCallback);
+    });
+}
 // ================================================================================================== //
 i2b2.CRC.view.QT.isValidDate = function(dateStr) {
     let dateVal = String(dateStr);
@@ -949,404 +971,433 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
     let eventIdx = $(evt.target).closest('.event').data('eventidx');
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
     let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
-    i2b2.CRC.view.QT.labValue.showLabValues(sdx);
+    i2b2.CRC.view.QT.labValue.getLabValues(sdx);
 };
 
 // ==================================================================================================
-i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
+i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValues) {
 
-    let labValuesCallback = function() {
+    if (extractedLabValues !== undefined) {
 
-        let extractedLabValues = i2b2.CRC.ctrlr.labValues.extractedModel;
+        let newLabValues = {
+            valueType: null,
+            valueOperator: null,
+            value: null,
+            flagValue: null,
+            numericValueRangeLow: null,
+            numericValueRangeHigh: null,
+            unitValue: null,
+            isEnum: false,
+            isString: false
+        };
 
-        if (extractedLabValues !== undefined) {
+        $("#labValuesModal div").eq(0).modal("show");
 
-            let newLabValues = {
-                valueType: null,
-                valueOperator: null,
-                value: null,
-                flagValue: null,
-                numericValueRangeLow: null,
-                numericValueRangeHigh: null,
-                unitValue: null,
-                isEnum: false,
-                isString: false
-            };
+        $("#labValuesModal .dropdown-menu li").click(function () {
+            $("#labDropDown").text($(this).text());
+        });
 
-            $("#labValuesModal div").eq(0).modal("show");
-
-            $("#labValuesModal .dropdown-menu li").click(function () {
-                $("#labDropDown").text($(this).text());
-            });
-
-            $("body #labValuesModal button.lab-save").click(function () {
-                switch (newLabValues.valueType) {
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
-                        newLabValues.numericValueRangeLow = null;
-                        newLabValues.numericValueRangeHigh = null;
-                        newLabValues.unitValue = null;
-                        newLabValues.value = null;
-                        newLabValues.isEnum = false;
-                        break;
-                    case null:
-                        newLabValues = {};
-                        break;
-                    default:
-                        newLabValues.flagValue = null;
-                        break;
-                }
-                sdxConcept.LabValues = newLabValues;
-                $("#labValuesModal div").eq(0).modal("hide");
-                i2b2.CRC.view.QS.clearStatus();
-            });
-
-            $("#labAnyValueType").click(function () {
-                $(".labValueSection").addClass("hidden");
-                $(".labGraphUnitSection").addClass("hidden");
-                $("#labEnumValueMain").addClass("hidden");
-                $("#labFlag").addClass("hidden");
-                newLabValues.valueType = null;
-            });
-
-            $("#labFlagType").click(function () {
-                $(".labValueSection").addClass("hidden");
-                $(".labGraphUnitSection").addClass("hidden");
-                $("#labEnumValueMain").addClass("hidden");
-                $("#labFlag").removeClass("hidden");
-                newLabValues.valueType = i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG;
-                newLabValues.valueOperator = 'EQ';
-            });
-
-            $("#labByValueType").click(function () {
-                $("#labFlag").addClass("hidden");
-                if (extractedLabValues.dataType === 'ENUM') {
-                    $("#labEnumValueMain").removeClass("hidden");
-                } else if (extractedLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER) {
-                    $(".labGraphUnitSection").removeClass("hidden");
-                    $(".labValueSection").removeClass("hidden");
-                } else {
-                    $(".labValueSection").removeClass("hidden");
-                }
-                newLabValues.valueType = extractedLabValues.valueType;
-            });
-
-            if (sdxConcept.LabValues && sdxConcept.LabValues.valueType) {
-                newLabValues.valueType = sdxConcept.LabValues.valueType;
-                switch (newLabValues.valueType) {
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
-                        $("input[name='labType'][value='BY_FLAG']").trigger("click");
-                        break;
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER:
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT:
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT:
-                    case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.MODIFIER:
-                        $("input[name='labType'][value='BY_VALUE']").trigger("click");
-                        break;
-                }
-            }
-
-            $("#labHeader").text(extractedLabValues.name);
-
-            if (extractedLabValues.flagType) {
-                let labFlagValueSelection = $("#labFlagValue");
-                for (let i = 0; i < extractedLabValues.flags.length; i++) {
-                    let flagOption = $("<option></option>");
-                    flagOption.text(extractedLabValues.flags[i].name);
-                    flagOption.val(extractedLabValues.flags[i].value);
-                    labFlagValueSelection.append(flagOption);
-                }
-                labFlagValueSelection.change(function () {
-                    newLabValues.flagValue = $(this).val();
-                });
-
-                if (sdxConcept.LabValues && sdxConcept.LabValues.flagValue) {
-                    labFlagValueSelection.val(sdxConcept.LabValues.flagValue);
-                    newLabValues.flagValue = sdxConcept.LabValues.flagValue;
-                    newLabValues.valueOperator = sdxConcept.LabValues.valueOperator;
-                }
-
-                labFlagValueSelection.trigger("change");
-            }
-            else{
-                $("#labFlagTypeMain").hide();
-            }
-
-            switch (extractedLabValues.dataType) {
-                case "POSFLOAT":
-                case "POSINT":
-                case "FLOAT":
-                case "INT":
-                    $("#labNumericValueOperatorMain").removeClass("hidden");
-                    $("#labNumericValueMain").removeClass("hidden");
-
-                    let numericValueOperatorSelection = $("#labNumericValueOperator");
-                    numericValueOperatorSelection.change(function () {
-                        let value = $(this).val();
-                        if (value === "BETWEEN") {
-                            $("#labNumericValueMain").addClass("hidden");
-                            $("#labNumericValueRangeMain").removeClass("hidden");
-                        } else {
-                            $("#labNumericValueMain").removeClass("hidden");
-                            $("#labNumericValueRangeMain").addClass("hidden");
-                        }
-
-                        newLabValues.valueOperator = value;
-                    });
-                    let numericValueSelection = $("#labNumericValue");
-                    numericValueSelection.change(function () {
-                        newLabValues.value = $(this).val();
-                    });
-
-                    let numericValueRangeLowSelection = $("#labNumericValueRangeLow");
-                    numericValueRangeLowSelection.change(function () {
-                        newLabValues.numericValueRangeLow = $(this).val();
-                    });
-
-                    let numericValueRangeHighSelection = $("#labNumericValueRangeHigh");
-                    numericValueRangeHighSelection.change(function () {
-                        newLabValues.numericValueRangeHigh = $(this).val();
-                    });
-
-                    if (sdxConcept.LabValues && sdxConcept.LabValues.valueOperator) {
-                        numericValueOperatorSelection.val(sdxConcept.LabValues.valueOperator).trigger("change");
-                        newLabValues.valueOperator = sdxConcept.LabValues.valueOperator;
-
-                        if (sdxConcept.LabValues.valueOperator === "BETWEEN") {
-                            newLabValues.numericValueRangeLow = sdxConcept.LabValues.numericValueRangeLow;
-                            newLabValues.numericValueRangeHigh = sdxConcept.LabValues.numericValueRangeHigh;
-                            numericValueRangeLowSelection.val(sdxConcept.LabValues.numericValueRangeLow);
-                            numericValueRangeHighSelection.val(sdxConcept.LabValues.numericValueRangeHigh);
-                        } else {
-                            numericValueSelection.val(sdxConcept.LabValues.value);
-                            newLabValues.value = sdxConcept.LabValues.value;
-                        }
-                    }
-                    numericValueOperatorSelection.trigger("change");
-
-                    //Bar segment
-                    try {
-                        if (extractedLabValues.rangeInfo.total !== 0) {
-                            $("#barNormMain").removeClass("hidden");
-                            if (isFinite(extractedLabValues.rangeInfo.LowOfToxic)) {
-                                $("#lblToxL").text(extractedLabValues.rangeInfo.LowOfToxic);
-                                $("#barToxL").click(function () {
-                                    let value = $("#lblToxL").text();
-                                    $("#labNumericValueOperator").val("LE");
-                                    $("#labNumericValue").val(value);
-                                });
-                                $("#barToxLMain").removeClass("hidden");
-                            } else {
-                                $("#lblToxL").text("");
-                            }
-                            if (isFinite(extractedLabValues.rangeInfo.LowOfLow) && (extractedLabValues.rangeInfo.LowOfLowRepeat === false)) {
-                                $("#lblLofL").text(extractedLabValues.rangeInfo.LowOfLow);
-                                $("#barLofL").click(function (event) {
-                                    let value = $("#lblLofL").text();
-                                    $("#labNumericValueOperator").val("LE").trigger("change");
-                                    $("#labNumericValue").val(value).trigger("change");
-                                });
-                                $("#barLofLMain").removeClass("hidden");
-                            } else {
-                                $("#lblLofL").text("");
-                            }
-                            if (isFinite(extractedLabValues.rangeInfo.HighOfLow) && (extractedLabValues.rangeInfo.HighOfLowRepeat === false)) {
-                                $("#lblHofL").text(extractedLabValues.rangeInfo.HighOfLow);
-                                $("#barHofL").click(function (event) {
-                                    let value = $("#lblHofL").text();
-                                    $("#labNumericValueOperator").val("LE").trigger("change");
-                                    $("#labNumericValue").val(value).trigger("change");
-                                });
-                                $("#barHofLMain").removeClass("hidden");
-                            } else {
-                                $("#lblHofL").text("");
-                            }
-                            if (isFinite(extractedLabValues.rangeInfo.LowOfHigh) && (extractedLabValues.rangeInfo.LowOfHighRepeat === false)) {
-                                $("#lblLofH").text(extractedLabValues.rangeInfo.LowOfHigh);
-                                $("#barLofH").click(function (event) {
-                                    let value = $("#lblLofH").text();
-                                    $("#labNumericValueOperator").val("GE").trigger("change");
-                                    $("#labNumericValue").val(value).trigger("change");
-                                });
-                                $("#barLofHMain").removeClass("hidden");
-                            } else {
-                                $("#lblLofH").text("");
-                            }
-                            if (isFinite(extractedLabValues.rangeInfo.HighOfHigh) && (extractedLabValues.rangeInfo.HighOfHighRepeat === false)) {
-                                $("#lblHofH").text(extractedLabValues.rangeInfo.HighOfHigh);
-                                $("#barHofH").click(function (event) {
-                                    let value = $("#lblHofH").text();
-                                    $("#labNumericValueOperator").val("GE").trigger("change");
-                                    $("#labNumericValue").val(value).trigger("change");
-                                });
-                                $("#barHofHMain").removeClass("hidden");
-                            } else {
-                                $("#lblHofH").text("");
-                            }
-                            if (isFinite(extractedLabValues.rangeInfo.HighOfToxic)) {
-                                $("#lblToxH").text(extractedLabValues.rangeInfo.HighOfToxic);
-                                $("#barToxH").click(function (event) {
-                                    let value = $("#lblToxH").text();
-                                    $("#labNumericValueOperator").val("GE").trigger("change");
-                                    $("#labNumericValue").val(value).trigger("change");
-                                });
-                                $("#barToxHMain").removeClass("hidden");
-                            } else {
-                                $("#lblToxH").text("");
-                            }
-                        } else {
-                            $("#labBarMain").hide();
-                        }
-                    } catch (e) {
-                        let errString = "Description: " + e.description;
-                        alert(errString);
-                    }
-
-                    if (extractedLabValues.valueUnits.length !== 0) {
-                        let labUnits = $("#labUnits");
-
-                        let labUnitKeys = Object.keys(extractedLabValues.valueUnits);
-                        for (let i = 0; i < labUnitKeys.length; i++) {
-                            let unitOption = $("<option></option>");
-                            unitOption.val(extractedLabValues.valueUnits[labUnitKeys[i]].name);
-                            if (extractedLabValues.valueUnits[labUnitKeys[i]].masterUnit) {
-                                labUnits.val(extractedLabValues.valueUnits[labUnitKeys[i]].name);
-                                $("#labUnitsLabel").text(extractedLabValues.valueUnits[labUnitKeys[i]].name);
-                            }
-                            unitOption.text(extractedLabValues.valueUnits[labUnitKeys[i]].name);
-                            labUnits.append(unitOption);
-                        }
-
-                        labUnits.change(function () {
-                            // message if selected Unit is excluded from use
-                            let value = $(this).val();
-                            $("#labUnitsLabel").text(extractedLabValues.valueUnits[value].name);
-                            if (extractedLabValues.valueUnits[value].excluded) {
-                                $("#labUnitExcluded").removeClass("hidden");
-                                $("#labNumericValue").prop("disabled", true);
-                                $("#labNumericValueRangeLow").prop("disabled", true);
-                                $("#labNumericValueRangeHigh").prop("disabled", true);
-                            } else {
-                                $("#labUnitExcluded").addClass("hidden");
-                                $("#labNumericValue").prop("disabled", false);
-                                $("#labNumericValueRangeLow").prop("disabled", false);
-                                $("#labNumericValueRangeHigh").prop("disabled", false);
-                            }
-
-                            newLabValues.unitValue = value;
-                        });
-                        if (sdxConcept.LabValues && sdxConcept.LabValues.unitValue) {
-                            labUnits.val(sdxConcept.LabValues.unitValue);
-                            labUnits.trigger("change");
-                            newLabValues.unitValue = sdxConcept.LabValues.unitValue;
-                        }
-                    }
+        $("body #labValuesModal button.lab-save").click(function () {
+            let value="";
+            switch (newLabValues.valueType) {
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
+                    newLabValues.numericValueRangeLow = null;
+                    newLabValues.numericValueRangeHigh = null;
+                    newLabValues.unitValue = null;
+                    newLabValues.value = null;
+                    newLabValues.isEnum = false;
                     break;
-                case "LRGSTR":
-                    let largeStringValueOperatorSelection = $("#labLargeStringValueOperator");
-                    let stringValueSelection = $("#labStringValue");
-
-                    $("#labLargeStringValueOperatorMain").removeClass("hidden");
-                    $("#labStringValueMain").removeClass("hidden");
-                    $("label[for='labAnyValueType']").text("No Search Requested");
-                    $("label[for='labByValueType']").text("Search within Text");
-                    largeStringValueOperatorSelection.change(function () {
-                        let value = "CONTAINS";
-                        if ($(this).is(":checked")) {
-                            value = "CONTAINS[database]";
-                        }
-                        newLabValues.valueOperator = value;
-                    });
-
-                    stringValueSelection.change(function () {
-                        newLabValues.value = $(this).val();
-                    });
-
-                    if (sdxConcept.LabValues) {
-                        if (sdxConcept.LabValues.valueOperator === "CONTAINS[database]" ) {
-                            largeStringValueOperatorSelection.trigger("click");
-                        }
-
-                        if (sdxConcept.LabValues.value) {
-                            stringValueSelection.val(sdxConcept.LabValues.value).trigger("change");
-                        }
-                    }
-                    largeStringValueOperatorSelection.trigger("change");
-                    newLabValues.isString = true;
-                    break;
-                case "STR":
-                    $("#labStringValueOperatorMain").removeClass("hidden");
-                    $("#labStringValueMain").removeClass("hidden");
-                    let stringSelection = $("#labStringValue");
-                    let stringValueOperatorSelection = $("#labStringValueOperator");
-
-                    stringValueOperatorSelection.change(function () {
-                        newLabValues.valueOperator = $(this).val();
-                    });
-
-                    stringSelection.change(function () {
-                        newLabValues.value = $(this).val();
-                    });
-
-                    if (sdxConcept.LabValues) {
-                        if (sdxConcept.LabValues.valueOperator) {
-                            stringValueOperatorSelection.val(sdxConcept.LabValues.valueOperator);
-                            if (sdxConcept.LabValues.value) {
-                                stringSelection.val(sdxConcept.LabValues.value).trigger("change");
-                            }
-                        }
-                    }
-                    stringValueOperatorSelection.trigger("change");
-                    newLabValues.isString = true;
-                    break;
-                case "ENUM":
-                    if (Object.keys(extractedLabValues.enumInfo).length > 0) {
-                        let labEnumValueSelection = $("#labEnumValue");
-                        Object.entries(extractedLabValues.enumInfo).forEach(([key, value]) => {
-                            let enumOption = $("<option></option");
-                            enumOption.text(value);
-                            enumOption.val(key);
-                            labEnumValueSelection.append(enumOption);
-                        });
-
-                        labEnumValueSelection.change(function () {
-                            newLabValues.value = $(this).val();
-                            newLabValues.valueOperator = "IN";
-                        });
-
-                        //scroll to selected enum value in list
-                        const ro = new ResizeObserver(() => {
-                            if (labEnumValueSelection.is(':visible')) {
-                                let selectedOption = labEnumValueSelection.find(":selected");
-                                let optionTop = selectedOption.offset().top;
-                                let selectTop = labEnumValueSelection.offset().top;
-                                labEnumValueSelection.scrollTop(labEnumValueSelection.scrollTop() + (optionTop - selectTop));
-                            }
-                        });
-                        ro.observe(labEnumValueSelection[0]);
-
-                        if (sdxConcept.LabValues && sdxConcept.LabValues.value) {
-                            labEnumValueSelection.val(sdxConcept.LabValues.value);
-                        }
-                        labEnumValueSelection.trigger("change");
-                        newLabValues.isEnum = true;
-                    }
+                case null:
+                    newLabValues = {};
                     break;
                 default:
-                    $("#labByValueTypeMain").hide();
-                    break
+                    newLabValues.flagValue = null;
+                    break;
             }
+            sdxConcept.LabValues = newLabValues;
+            $("#labValuesModal div").eq(0).modal("hide");
 
-            if (extractedLabValues.valueType === "LARGETEXT") {
-                $("#labHelpText").text("You are allowed to search within the narrative text associated with the term "
-                    + extractedLabValues.name);
-            } else if (sdxConcept.isModifier) {
-                $("#labHelpText").text("Searches by Modifier values can be constrained by either a flag set by the sourcesystem or by the values themselves.");
+            //update the concept title if this is a modifier
+            if(sdxConcept.origData.isModifier) {
+                let modifierInfoText;
+                if(newLabValues.numericValueRangeLow && newLabValues.numericValueRangeHigh){
+                    modifierInfoText  = newLabValues.numericValueRangeLow - newLabValues.numericValueRangeHigh;
+                     + " " + newLabValues.unit;
+                }else if(newLabValues.numericValueRangeLow){
+                    modifierInfoText  = newLabValues.numericValueRangeLow;
+                } else if(newLabValues.numericValueRangeHigh){
+                    modifierInfoText  = newLabValues.numericValueRangeHigh;
+                }else if(newLabValues.flagValue){
+                    modifierInfoText  = newLabValues.flagValue;
+                }
+                else{
+                    if(newLabValues.valueOperator){
+                       modifierInfoText = newLabValues.valueOperator.toString().toLowerCase() + ": ";
+                    }
+                    modifierInfoText  += newLabValues.value;
+                }
+
+                if(newLabValues.unitValue){
+                    modifierInfoText += "" + newLabValues.unitValue;
+                }
+
+                if(modifierInfoText && modifierInfoText.length > 0) {
+                    sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.conceptModified.renderData.title
+                        + " {" + sdxConcept.origData.name + " = " + modifierInfoText + "}");
+                    i2b2.CRC.view.QT.render();
+                }
+            }
+            i2b2.CRC.view.QS.clearStatus();
+        });
+
+        $("#labAnyValueType").click(function () {
+            $(".labValueSection").addClass("hidden");
+            $(".labGraphUnitSection").addClass("hidden");
+            $("#labEnumValueMain").addClass("hidden");
+            $("#labFlag").addClass("hidden");
+            newLabValues.valueType = null;
+        });
+
+        $("#labFlagType").click(function () {
+            $(".labValueSection").addClass("hidden");
+            $(".labGraphUnitSection").addClass("hidden");
+            $("#labEnumValueMain").addClass("hidden");
+            $("#labFlag").removeClass("hidden");
+            newLabValues.valueType = i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG;
+            newLabValues.valueOperator = 'EQ';
+        });
+
+        $("#labByValueType").click(function () {
+            $("#labFlag").addClass("hidden");
+            if (extractedLabValues.dataType === 'ENUM') {
+                $("#labEnumValueMain").removeClass("hidden");
+            } else if (extractedLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER) {
+                $(".labGraphUnitSection").removeClass("hidden");
+                $(".labValueSection").removeClass("hidden");
             } else {
-                $("#labHelpText").text("Searches by Lab values can be constrained by the high/low flag set by the performing laboratory, or by the values themselves.");
+                $(".labValueSection").removeClass("hidden");
+            }
+            newLabValues.valueType = extractedLabValues.valueType;
+        });
+
+        if (sdxConcept.LabValues && sdxConcept.LabValues.valueType) {
+            newLabValues.valueType = sdxConcept.LabValues.valueType;
+            switch (newLabValues.valueType) {
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
+                    $("input[name='labType'][value='BY_FLAG']").trigger("click");
+                    break;
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER:
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT:
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT:
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.MODIFIER:
+                    $("input[name='labType'][value='BY_VALUE']").trigger("click");
+                    break;
             }
         }
-    };
 
+        $("#labHeader").text(extractedLabValues.name);
+
+        if (extractedLabValues.flagType) {
+            let labFlagValueSelection = $("#labFlagValue");
+            for (let i = 0; i < extractedLabValues.flags.length; i++) {
+                let flagOption = $("<option></option>");
+                flagOption.text(extractedLabValues.flags[i].name);
+                flagOption.val(extractedLabValues.flags[i].value);
+                labFlagValueSelection.append(flagOption);
+            }
+            labFlagValueSelection.change(function () {
+                newLabValues.flagValue = $(this).val();
+            });
+
+            if (sdxConcept.LabValues && sdxConcept.LabValues.flagValue) {
+                labFlagValueSelection.val(sdxConcept.LabValues.flagValue);
+                newLabValues.flagValue = sdxConcept.LabValues.flagValue;
+                newLabValues.valueOperator = sdxConcept.LabValues.valueOperator;
+            }
+
+            labFlagValueSelection.trigger("change");
+        }
+        else{
+            $("#labFlagTypeMain").hide();
+        }
+
+        switch (extractedLabValues.dataType) {
+            case "POSFLOAT":
+            case "POSINT":
+            case "FLOAT":
+            case "INT":
+                $("#labNumericValueOperatorMain").removeClass("hidden");
+                $("#labNumericValueMain").removeClass("hidden");
+
+                let numericValueOperatorSelection = $("#labNumericValueOperator");
+                numericValueOperatorSelection.change(function () {
+                    let value = $(this).val();
+                    if (value === "BETWEEN") {
+                        $("#labNumericValueMain").addClass("hidden");
+                        $("#labNumericValueRangeMain").removeClass("hidden");
+                    } else {
+                        $("#labNumericValueMain").removeClass("hidden");
+                        $("#labNumericValueRangeMain").addClass("hidden");
+                    }
+
+                    newLabValues.valueOperator = value;
+                });
+                let numericValueSelection = $("#labNumericValue");
+                numericValueSelection.change(function () {
+                    newLabValues.value = $(this).val();
+                });
+
+                let numericValueRangeLowSelection = $("#labNumericValueRangeLow");
+                numericValueRangeLowSelection.change(function () {
+                    newLabValues.numericValueRangeLow = $(this).val();
+                });
+
+                let numericValueRangeHighSelection = $("#labNumericValueRangeHigh");
+                numericValueRangeHighSelection.change(function () {
+                    newLabValues.numericValueRangeHigh = $(this).val();
+                });
+
+                if (sdxConcept.LabValues && sdxConcept.LabValues.valueOperator) {
+                    numericValueOperatorSelection.val(sdxConcept.LabValues.valueOperator).trigger("change");
+                    newLabValues.valueOperator = sdxConcept.LabValues.valueOperator;
+
+                    if (sdxConcept.LabValues.valueOperator === "BETWEEN") {
+                        newLabValues.numericValueRangeLow = sdxConcept.LabValues.numericValueRangeLow;
+                        newLabValues.numericValueRangeHigh = sdxConcept.LabValues.numericValueRangeHigh;
+                        numericValueRangeLowSelection.val(sdxConcept.LabValues.numericValueRangeLow);
+                        numericValueRangeHighSelection.val(sdxConcept.LabValues.numericValueRangeHigh);
+                    } else {
+                        numericValueSelection.val(sdxConcept.LabValues.value);
+                        newLabValues.value = sdxConcept.LabValues.value;
+                    }
+                }
+                numericValueOperatorSelection.trigger("change");
+
+                //Bar segment
+                try {
+                    if (extractedLabValues.rangeInfo.total !== 0) {
+                        $("#barNormMain").removeClass("hidden");
+                        if (isFinite(extractedLabValues.rangeInfo.LowOfToxic)) {
+                            $("#lblToxL").text(extractedLabValues.rangeInfo.LowOfToxic);
+                            $("#barToxL").click(function () {
+                                let value = $("#lblToxL").text();
+                                $("#labNumericValueOperator").val("LE");
+                                $("#labNumericValue").val(value);
+                            });
+                            $("#barToxLMain").removeClass("hidden");
+                        } else {
+                            $("#lblToxL").text("");
+                        }
+                        if (isFinite(extractedLabValues.rangeInfo.LowOfLow) && (extractedLabValues.rangeInfo.LowOfLowRepeat === false)) {
+                            $("#lblLofL").text(extractedLabValues.rangeInfo.LowOfLow);
+                            $("#barLofL").click(function (event) {
+                                let value = $("#lblLofL").text();
+                                $("#labNumericValueOperator").val("LE").trigger("change");
+                                $("#labNumericValue").val(value).trigger("change");
+                            });
+                            $("#barLofLMain").removeClass("hidden");
+                        } else {
+                            $("#lblLofL").text("");
+                        }
+                        if (isFinite(extractedLabValues.rangeInfo.HighOfLow) && (extractedLabValues.rangeInfo.HighOfLowRepeat === false)) {
+                            $("#lblHofL").text(extractedLabValues.rangeInfo.HighOfLow);
+                            $("#barHofL").click(function (event) {
+                                let value = $("#lblHofL").text();
+                                $("#labNumericValueOperator").val("LE").trigger("change");
+                                $("#labNumericValue").val(value).trigger("change");
+                            });
+                            $("#barHofLMain").removeClass("hidden");
+                        } else {
+                            $("#lblHofL").text("");
+                        }
+                        if (isFinite(extractedLabValues.rangeInfo.LowOfHigh) && (extractedLabValues.rangeInfo.LowOfHighRepeat === false)) {
+                            $("#lblLofH").text(extractedLabValues.rangeInfo.LowOfHigh);
+                            $("#barLofH").click(function (event) {
+                                let value = $("#lblLofH").text();
+                                $("#labNumericValueOperator").val("GE").trigger("change");
+                                $("#labNumericValue").val(value).trigger("change");
+                            });
+                            $("#barLofHMain").removeClass("hidden");
+                        } else {
+                            $("#lblLofH").text("");
+                        }
+                        if (isFinite(extractedLabValues.rangeInfo.HighOfHigh) && (extractedLabValues.rangeInfo.HighOfHighRepeat === false)) {
+                            $("#lblHofH").text(extractedLabValues.rangeInfo.HighOfHigh);
+                            $("#barHofH").click(function (event) {
+                                let value = $("#lblHofH").text();
+                                $("#labNumericValueOperator").val("GE").trigger("change");
+                                $("#labNumericValue").val(value).trigger("change");
+                            });
+                            $("#barHofHMain").removeClass("hidden");
+                        } else {
+                            $("#lblHofH").text("");
+                        }
+                        if (isFinite(extractedLabValues.rangeInfo.HighOfToxic)) {
+                            $("#lblToxH").text(extractedLabValues.rangeInfo.HighOfToxic);
+                            $("#barToxH").click(function (event) {
+                                let value = $("#lblToxH").text();
+                                $("#labNumericValueOperator").val("GE").trigger("change");
+                                $("#labNumericValue").val(value).trigger("change");
+                            });
+                            $("#barToxHMain").removeClass("hidden");
+                        } else {
+                            $("#lblToxH").text("");
+                        }
+                    } else {
+                        $("#labBarMain").hide();
+                    }
+                } catch (e) {
+                    let errString = "Description: " + e.description;
+                    alert(errString);
+                }
+
+                if (extractedLabValues.valueUnits.length !== 0) {
+                    let labUnits = $("#labUnits");
+
+                    let labUnitKeys = Object.keys(extractedLabValues.valueUnits);
+                    for (let i = 0; i < labUnitKeys.length; i++) {
+                        let unitOption = $("<option></option>");
+                        unitOption.val(extractedLabValues.valueUnits[labUnitKeys[i]].name);
+                        if (extractedLabValues.valueUnits[labUnitKeys[i]].masterUnit) {
+                            labUnits.val(extractedLabValues.valueUnits[labUnitKeys[i]].name);
+                            $("#labUnitsLabel").text(extractedLabValues.valueUnits[labUnitKeys[i]].name);
+                        }
+                        unitOption.text(extractedLabValues.valueUnits[labUnitKeys[i]].name);
+                        labUnits.append(unitOption);
+                    }
+
+                    labUnits.change(function () {
+                        // message if selected Unit is excluded from use
+                        let value = $(this).val();
+                        $("#labUnitsLabel").text(extractedLabValues.valueUnits[value].name);
+                        if (extractedLabValues.valueUnits[value].excluded) {
+                            $("#labUnitExcluded").removeClass("hidden");
+                            $("#labNumericValue").prop("disabled", true);
+                            $("#labNumericValueRangeLow").prop("disabled", true);
+                            $("#labNumericValueRangeHigh").prop("disabled", true);
+                        } else {
+                            $("#labUnitExcluded").addClass("hidden");
+                            $("#labNumericValue").prop("disabled", false);
+                            $("#labNumericValueRangeLow").prop("disabled", false);
+                            $("#labNumericValueRangeHigh").prop("disabled", false);
+                        }
+
+                        newLabValues.unitValue = value;
+                    });
+                    if (sdxConcept.LabValues && sdxConcept.LabValues.unitValue) {
+                        labUnits.val(sdxConcept.LabValues.unitValue);
+                        labUnits.trigger("change");
+                        newLabValues.unitValue = sdxConcept.LabValues.unitValue;
+                    }
+                }
+                break;
+            case "LRGSTR":
+                let largeStringValueOperatorSelection = $("#labLargeStringValueOperator");
+                let stringValueSelection = $("#labStringValue");
+
+                $("#labLargeStringValueOperatorMain").removeClass("hidden");
+                $("#labStringValueMain").removeClass("hidden");
+                $("label[for='labAnyValueType']").text("No Search Requested");
+                $("label[for='labByValueType']").text("Search within Text");
+                largeStringValueOperatorSelection.change(function () {
+                    let value = "CONTAINS";
+                    if ($(this).is(":checked")) {
+                        value = "CONTAINS[database]";
+                    }
+                    newLabValues.valueOperator = value;
+                });
+
+                stringValueSelection.change(function () {
+                    newLabValues.value = $(this).val();
+                });
+
+                if (sdxConcept.LabValues) {
+                    if (sdxConcept.LabValues.valueOperator === "CONTAINS[database]" ) {
+                        largeStringValueOperatorSelection.trigger("click");
+                    }
+
+                    if (sdxConcept.LabValues.value) {
+                        stringValueSelection.val(sdxConcept.LabValues.value).trigger("change");
+                    }
+                }
+                largeStringValueOperatorSelection.trigger("change");
+                newLabValues.isString = true;
+                break;
+            case "STR":
+                $("#labStringValueOperatorMain").removeClass("hidden");
+                $("#labStringValueMain").removeClass("hidden");
+                let stringSelection = $("#labStringValue");
+                let stringValueOperatorSelection = $("#labStringValueOperator");
+
+                stringValueOperatorSelection.change(function () {
+                    newLabValues.valueOperator = $(this).val();
+                });
+
+                stringSelection.change(function () {
+                    newLabValues.value = $(this).val();
+                });
+
+                if (sdxConcept.LabValues) {
+                    if (sdxConcept.LabValues.valueOperator) {
+                        stringValueOperatorSelection.val(sdxConcept.LabValues.valueOperator);
+                        if (sdxConcept.LabValues.value) {
+                            stringSelection.val(sdxConcept.LabValues.value).trigger("change");
+                        }
+                    }
+                }
+                stringValueOperatorSelection.trigger("change");
+                newLabValues.isString = true;
+                break;
+            case "ENUM":
+                if (Object.keys(extractedLabValues.enumInfo).length > 0) {
+                    let labEnumValueSelection = $("#labEnumValue");
+                    Object.entries(extractedLabValues.enumInfo).forEach(([key, value]) => {
+                        let enumOption = $("<option></option");
+                        enumOption.text(value);
+                        enumOption.val(key);
+                        labEnumValueSelection.append(enumOption);
+                    });
+
+                    labEnumValueSelection.change(function () {
+                        newLabValues.value = $(this).val();
+                        newLabValues.valueOperator = "IN";
+                    });
+
+                    //scroll to selected enum value in list
+                    const ro = new ResizeObserver(() => {
+                        if (labEnumValueSelection.is(':visible')) {
+                            let selectedOption = labEnumValueSelection.find(":selected");
+                            let optionTop = selectedOption.offset().top;
+                            let selectTop = labEnumValueSelection.offset().top;
+                            labEnumValueSelection.scrollTop(labEnumValueSelection.scrollTop() + (optionTop - selectTop));
+                        }
+                    });
+                    ro.observe(labEnumValueSelection[0]);
+
+                    if (sdxConcept.LabValues && sdxConcept.LabValues.value) {
+                        labEnumValueSelection.val(sdxConcept.LabValues.value);
+                    }
+                    labEnumValueSelection.trigger("change");
+                    newLabValues.isEnum = true;
+                }
+                break;
+            default:
+                $("#labByValueTypeMain").hide();
+                break
+        }
+
+        if (extractedLabValues.valueType === "LARGETEXT") {
+            $("#labHelpText").text("You are allowed to search within the narrative text associated with the term "
+                + extractedLabValues.name);
+        } else if (sdxConcept.isModifier) {
+            $("#labHelpText").text("Searches by Modifier values can be constrained by either a flag set by the sourcesystem or by the values themselves.");
+        } else {
+            $("#labHelpText").text("Searches by Lab values can be constrained by the high/low flag set by the performing laboratory, or by the values themselves.");
+        }
+    }
+};
+// ==================================================================================================
+i2b2.CRC.view.QT.labValue.getLabValues = function(sdxConcept) {
     let labValuesModal = $("#labValuesModal");
 
     if (labValuesModal.length === 0) {
@@ -1355,10 +1406,9 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
     }
 
     labValuesModal.load('js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
-        i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
+        i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, i2b2.CRC.view.QT.labValue.showLabValues);
     });
 };
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.clearAll = function(){
     // only run if the query has entries
