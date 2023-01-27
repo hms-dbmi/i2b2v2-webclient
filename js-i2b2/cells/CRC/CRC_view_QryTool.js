@@ -584,15 +584,6 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.handleModifier = function(sdxConcept, groupIdx, eventIdx){
-    let modifierCallback = function() {
-        const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
-        if (valueMetaDataArr.length > 0)
-        {
-            let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
-            i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedLabModel, groupIdx, eventIdx);
-        }
-    }
-
     let labValuesModal = $("#labValuesModal");
     if (labValuesModal.length === 0) {
         $("body").append("<div id='labValuesModal'/>");
@@ -600,7 +591,11 @@ i2b2.CRC.view.QT.handleModifier = function(sdxConcept, groupIdx, eventIdx){
     }
 
     labValuesModal.load('js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
-        i2b2.CRC.ctrlr.QT.loadModifierInfo(sdxConcept, modifierCallback);
+        const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
+        if (valueMetaDataArr.length > 0) {
+            let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
+            i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedLabModel, groupIdx, eventIdx);
+        }
     });
 }
 // ================================================================================================== //
@@ -1072,7 +1067,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                     sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.conceptModified.renderData.title
                         + " {" + sdxConcept.origData.name + " " + modifierInfoText + "}");
 
-                    if(eventIdx && groupIdx) {
+                    if(eventIdx !== undefined && groupIdx !== undefined) {
                         let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
                         const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
                         i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
