@@ -248,6 +248,7 @@ function QueryToolController() {
                                 let subPanel = i2b2.h.XPath(subquery, 'panel');
                                 let data = processPanel(subPanel[0], isWhen);
                                 temporalGroupIdx = i2b2.CRC.view.QT.addNewQueryGroup(data.panel, data.metadata);
+                                queryIdToIndex[queryId] = 0;
                             }else{
                                 if(i2b2.CRC.model.query.groups[temporalGroupIdx].events.length <= s){
                                     i2b2.CRC.model.query.groups[temporalGroupIdx].events.push(i2b2.CRC.view.QT.createEvent());
@@ -267,8 +268,8 @@ function QueryToolController() {
                                 if(data.metadata.endDate !== undefined){
                                     i2b2.CRC.model.query.groups[temporalGroupIdx].events[s].dateRange.end = data.metadata.endDate;
                                 }
+                                queryIdToIndex[queryId] = i2b2.CRC.model.query.groups[temporalGroupIdx].events.length-1;
                             }
-                            queryIdToIndex[queryId] = i2b2.CRC.model.query.groups[temporalGroupIdx].events.length-1;
                         }
                         if(temporalGroupIdx !== -1){
                             for (let s=0; s <subQueryConstraints.length; s++) {
