@@ -23,6 +23,35 @@ i2b2.CRC.view.QT.resetToCRCHistoryView = function() {
     $("#i2b2TreeviewQueryHistory").show();
 }
 // ================================================================================================== //
+i2b2.CRC.view.QT.validateQuery = function() {
+    let validQuery = true;
+    $(".SequenceBar .timeSpan").each((index, elem) => {
+        if($(elem).find(".form-check-input").is(":checked")){
+            let timeSpanValueElem = $(elem).find(".timeSpanValue");
+            if(timeSpanValueElem.val().length === 0){
+                timeSpanValueElem.addClass("required");
+                timeSpanValueElem.parent().find(".timeSpanError").removeClass("vhidden");
+                validQuery = false;
+            }else{
+                timeSpanValueElem.removeClass("required");
+                timeSpanValueElem.parent().find(".timeSpanError").addClass("vhidden");
+            }
+        }
+    });
+
+    $(".QueryGroup.when .event").each((index, elem) => {
+        let termList = $(elem).find(".TermList .concept");
+        if (termList.length === 0) {
+            $(elem).find(".required").removeClass("hidden");
+            validQuery = false;
+        } else {
+            $(elem).find(".required").addClass("hidden");
+        }
+    });
+
+    return validQuery;
+}
+// ================================================================================================== //
 i2b2.CRC.view.QT.showRun = function() {
 
     // show the options modal screen
@@ -52,7 +81,7 @@ i2b2.CRC.view.QT.showRun = function() {
             i2b2.CRC.view.QT.resetToCRCHistoryView();
             // build list of selected result types
             let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
-            // run the query
+
             i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes);
             // close the modal
             $('body #crcModal div:eq(0)').modal('hide');
@@ -145,7 +174,7 @@ i2b2.CRC.view.QT.updateEventLinkJoinColumn = function(elem) {
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
-    let timeSpanElem = $(elem).parent().siblings(".timeSpanField");
+    let timeSpanElem = $(elem).parents(".timeSpan").find(".timeSpanField");
     let curState =  timeSpanElem.prop( "disabled");
     timeSpanElem.prop( "disabled", !curState);
 
@@ -188,6 +217,8 @@ i2b2.CRC.view.QT.updateTimeSpanUnit = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.unit = $(elem).val();
 };
+
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionInfo = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
@@ -195,8 +226,6 @@ i2b2.CRC.view.QT.termActionInfo = function(evt) {
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
     i2b2.ONT.view.info.load(i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx], true);
 };
-
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionDelete = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
@@ -213,7 +242,6 @@ i2b2.CRC.view.QT.termActionDelete = function(evt) {
     //clear any existing query results;
     i2b2.CRC.view.QS.clearStatus();
 };
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionDateConstraint = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
@@ -368,7 +396,26 @@ i2b2.CRC.view.QT.deleteQueryGroup = function(event) {
 
     //clear any existing query results;
     i2b2.CRC.view.QS.clearStatus();
+    i2b2.CRC.view.QT.enableWhenIfAvail();
 };
+
+
+// ================================================================================================== //
+i2b2.CRC.view.QT.eventActionDelete = function(evt) {
+    let elem = evt.currentTarget;
+    let eventIdx = $(elem).parents('.event').first().data("eventidx");
+    let qgEl = $(elem).parents('.QueryGroup').first();
+    let queryGroupIdx = qgEl.data("queryGroup");
+
+    if (i2b2.CRC.model.query.groups[queryGroupIdx].events.length > 2) {
+        // delete the data elements
+        i2b2.CRC.model.query.groups[queryGroupIdx].events.splice(eventIdx,1);
+        i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks.splice(eventIdx,1);
+
+        // rerender the Query Tool
+        i2b2.CRC.view.QT.render();
+    }
+}
 
 
 // ================================================================================================== //
@@ -502,6 +549,11 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
             }
         }
 
+        // Modifiers processing
+        if (sdx.origData.conceptModified) {
+            sdx.renderData.title = sdx.origData.conceptModified.renderData.title + " {" + sdx.origData.name + "}";
+        }
+
         // not a duplicate, add to the event's term list
         eventData.concepts.push(sdx);
 
@@ -628,6 +680,13 @@ i2b2.CRC.view.QT.render = function() {
             i2b2.CRC.view.QT.renderTermList(event, eventDivs[idx]);
         });
 
+        // hide the delete event buttons if only 1-2 events exist
+        if (i2b2.CRC.model.query.groups[qgnum].events.length <= 2) {
+            $('.EventLbl .actions .delete', newQG).hide();
+        } else {
+            $('.EventLbl .actions .delete', newQG).show();
+        }
+
         // attach the date picker functionality
         $('.datepicker', newQG).toArray().forEach((el) => {
             $(el).datepicker({
@@ -670,7 +729,6 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         // handle purging of events
         i2b2.CRC.model.query.groups[qgIndex].events = [i2b2.CRC.model.query.groups[qgIndex].events[0], i2b2.CRC.view.QT.createEvent()];
-
 
         // DYNAMIC MODIFICATIONS OF THE HTML FOR DELETING OF EVENTS OVER event[0]
         $('.event[data-eventidx!="0"] .TermList', qgRoot).empty();
@@ -752,6 +810,8 @@ i2b2.CRC.view.QT.render = function() {
     // Query Group delete button
     $('.QueryGroup .topbar .qgclose i', i2b2.CRC.view.QT.containerDiv).on('click', i2b2.CRC.view.QT.deleteQueryGroup);
 
+    // Query Events delete button
+    $('.QueryGroup .event .actions i.delete', i2b2.CRC.view.QT.containerDiv).on('click', i2b2.CRC.view.QT.eventActionDelete);
 
     // TODO: Change Sequence Bar coding
     // Sequence bar events
@@ -1328,6 +1388,18 @@ i2b2.CRC.view.QT.addEvent = function(){
     i2b2.CRC.model.query.groups[qgIndex].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
     i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
 
+    // handle delete event buttons
+    if (i2b2.CRC.model.query.groups[qgIndex].events.length <= 2) {
+        $('.EventLbl .actions .delete', qgRoot).hide();
+    } else {
+        $('.EventLbl .actions .delete', qgRoot).show();
+    }
+
+    // Rebind the Query Events delete buttons
+    let deleteFunc = i2b2.CRC.view.QT.eventActionDelete;
+    $('.EventLbl .actions .delete', qgRoot).unbind('click', deleteFunc);
+    $('.EventLbl .actions .delete', qgRoot).on('click', deleteFunc);
+
     //add drag and drop handling
     ["CONCPT","QM","PRS"].forEach((sdxCode) => {
         $(".event", templateQueryGroup).last().toArray().forEach((dropTarget) => {
@@ -1402,9 +1474,12 @@ i2b2.events.afterCellInit.add((cell) => {
                     container.on('open', () => {
                         // capture "run query" button click ---------------------------------------------------
                         $(".CRC_QT_runbar .button-run", cell.view.QT.containerRoot).on("click", (evt)=> {
-                            evt.target.blur();
-                            // only run if the query has entries
-                            if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
+                            //check if this a valid query
+                            if(i2b2.CRC.view.QT.validateQuery()) {// run the query
+                                evt.target.blur();
+                                // only run if the query has entries
+                                if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
+                            }
                         });
 
                         // capture "clear query" button click -------------------------------------------------

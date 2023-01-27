@@ -180,7 +180,7 @@ function QueryToolController() {
                         if ((lvd.length > 0) && (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length === 0))
                         {
                             sdxDataNode.isLab = true;
-                            sdxDataNode.LabValues = this.parseValueConstraint( lvd );
+                            sdxDataNode.LabValues = i2b2.CRC.ctrlr.QT.parseValueConstraint( lvd );
                         }
 
                         i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
@@ -248,6 +248,7 @@ function QueryToolController() {
                                 let subPanel = i2b2.h.XPath(subquery, 'panel');
                                 let data = processPanel(subPanel[0], isWhen);
                                 temporalGroupIdx = i2b2.CRC.view.QT.addNewQueryGroup(data.panel, data.metadata);
+                                queryIdToIndex[queryId] = 0;
                             }else{
                                 if(i2b2.CRC.model.query.groups[temporalGroupIdx].events.length <= s){
                                     i2b2.CRC.model.query.groups[temporalGroupIdx].events.push(i2b2.CRC.view.QT.createEvent());
@@ -267,8 +268,8 @@ function QueryToolController() {
                                 if(data.metadata.endDate !== undefined){
                                     i2b2.CRC.model.query.groups[temporalGroupIdx].events[s].dateRange.end = data.metadata.endDate;
                                 }
+                                queryIdToIndex[queryId] = i2b2.CRC.model.query.groups[temporalGroupIdx].events.length-1;
                             }
-                            queryIdToIndex[queryId] = i2b2.CRC.model.query.groups[temporalGroupIdx].events.length-1;
                         }
                         if(temporalGroupIdx !== -1){
                             for (let s=0; s <subQueryConstraints.length; s++) {
