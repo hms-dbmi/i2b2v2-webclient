@@ -60,13 +60,8 @@ i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
                 let renderOptions = {
                     'title': title,
                     'tooltip': nodeData.annotation.replace("\n", "\nAnnotation: "), // PARTIAL BUG-FIX: WEBCLIENT-98
-                    icon: {
-                        root: "sdx_ONT_CONCPT_root.gif",
-                        rootExp: "sdx_ONT_CONCPT_root-exp.gif",
-                        branch: "sdx_ONT_CONCPT_branch.gif",
-                        branchExp: "sdx_ONT_CONCPT_branch-exp.gif",
-                        leaf: "sdx_ONT_CONCPT_leaf.gif"
-                    }
+                    // TODO: Set the correct icon for Modifiers that have been dropped into the workplace
+                    icon: i2b2.ONT.model.icons.term
                 };
                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                 if (!sdxDataNode.renderData) {

@@ -11,31 +11,31 @@ span.sdxStyleONT-MODIFIER::before {
 
 /* ========================================== */
 span.sdxStyleONT-CONCPT::before {
-    background-image: url(sdx_ONT_CONCPT_root.gif);
+    background-image: url(sdx_ONT_CONCPT_root.png);
     background-repeat: no-repeat;
 }
 span.sdxStyleONT-CONCPT.tvRoot::before {
-    background-image: url(sdx_ONT_CONCPT_root.gif);
+    background-image: url(sdx_ONT_CONCPT_root.png);
 }
 span.sdxStyleONT-CONCPT.tvBranch::before {
-    background-image: url(sdx_ONT_CONCPT_branch.gif);
+    background-image: url(sdx_ONT_CONCPT_branch.png);
 }
 span.sdxStyleONT-CONCPT.tvLeaf::before {
-    background-image: url(sdx_ONT_CONCPT_leaf.gif);
+    background-image: url(sdx_ONT_CONCPT_leaf.png);
 }
 
 
 
 span.sdxStyleONT-MODIFIER::before {
-    background-image: url(sdx_ONT_MODIFIER_root.gif);
+    background-image: url(sdx_ONT_MODIFIER_root.png);
     background-repeat: no-repeat;
 }
 span.sdxStyleONT-MODIFIER.tvRoot::before {
-    background-image: url(sdx_ONT_MODIFIER_root.gif);
+    background-image: url(sdx_ONT_MODIFIER_root.png);
 }
 span.sdxStyleONT-MODIFIER.tvBranch::before {
-    background-image: url(sdx_ONT_MODIFIER_branch.gif);
+    background-image: url(sdx_ONT_MODIFIER_branch.png);
 }
 span.sdxStyleONT-MODIFIER.tvLeaf::before {
-    background-image: url(sdx_ONT_MODIFIER_leaf.gif);
+    background-image: url(sdx_ONT_MODIFIER_leaf.png);
 }

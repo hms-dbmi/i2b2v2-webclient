@@ -15,6 +15,28 @@ i2b2.sdx.TypeControllers.CONCPT.getEncapsulateInfo = function() {
     return {sdxType: 'CONCPT', sdxKeyName: 'key', sdxControlCell:'ONT', sdxDisplayNameKey: 'name'};
 };
 
+// ================================================================================================== //
+// add icon locations to i2b2.ONT.model for centralized management
+if (i2b2.ONT.model === undefined) i2b2.ONT.model = {};
+i2b2.ONT.model.icons = {
+    term: {
+        root: "sdx_ONT_CONCPT_root.png",
+        rootExp: "sdx_ONT_CONCPT_root-exp.png",
+        branch: "sdx_ONT_CONCPT_branch.png",
+        branchExp: "sdx_ONT_CONCPT_branch-exp.png",
+        leaf: "sdx_ONT_CONCPT_leaf.png"
+    },
+    modifier: {
+        root: "sdx_ONT_MODIFIER_root.png",
+        rootExp: "sdx_ONT_MODIFIER_root-exp.png",
+        branch: "sdx_ONT_MODIFIER_branch.png",
+        branchExp: "sdx_ONT_MODIFIER_branch-exp.png",
+        leaf: "sdx_ONT_MODIFIER_leaf.png"
+    }
+};
+// ================================================================================================== //
+
+
 
 // *********************************************************************************
 //	GENERATE RENDER DATA (DEFAULT HANDLER)
@@ -35,16 +57,14 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
                 leaf: t
             };
         } else {
-            options.icon = {
-                root: 'sdx_ONT_CONCPT_root.gif',
-                rootExp: 'sdx_ONT_CONCPT_root-exp.gif',
-                branch: 'sdx_ONT_CONCPT_branch.gif',
-                branchExp: 'sdx_ONT_CONCPT_branch-exp.gif',
-                leaf: 'sdx_ONT_CONCPT_leaf.gif'
-            };
+            // TODO: determine if we use term or modifier icons based on sdxData
+            if (sdxData.origData.hasChildren.substring(1,0) === "R") {
+                options.icon = i2b2.ONT.model.icons.modifier;
+            } else {
+                options.icon = i2b2.ONT.model.icons.term;
+            }
         }
     }
-
     let nodeInfo = {
             title: undefined,
             iconImg: undefined,
@@ -56,6 +76,10 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
             annotation: undefined,
             tvNodeState: {}
     };
+    // Modifier or Term
+    if (sdxData.origData.hasChildren.substring(1,0) === "R") {
+        nodeInfo.cssClassMain = "sdxStyleONT-MODIFIER";
+    }
 
     if (options.title !== undefined) {
         // BUG FIX: Partners uses "zz " to move items to the bottom of lists, java client removes the "zz " prefix.
@@ -238,26 +262,10 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
         let c, renderOptions;
         if (modifier) {
             c = results.refXML.getElementsByTagName('modifier');
-            renderOptions = {
-                icon: {
-                    root: "sdx_ONT_MODIFIER_root.gif",
-                    rootExp: "sdx_ONT_MODIFIER_root-exp.gif",
-                    branch: "sdx_ONT_MODIFIER_branch.gif",
-                    branchExp: "sdx_ONT_MODIFIER_branch-exp.gif",
-                    leaf: "sdx_ONT_MODIFIER_leaf.gif"
-                }
-            };
+            renderOptions = { icon: i2b2.ONT.model.icons.modifier };
         } else {
             c = results.refXML.getElementsByTagName('concept');
-            renderOptions = {
-                icon: {
-                    root: "sdx_ONT_CONCPT_root.gif",
-                    rootExp: "sdx_ONT_CONCPT_root-exp.gif",
-                    branch: "sdx_ONT_CONCPT_branch.gif",
-                    branchExp: "sdx_ONT_CONCPT_branch-exp.gif",
-                    leaf: "sdx_ONT_CONCPT_leaf.gif"
-                }
-            };
+            renderOptions = { icon: i2b2.ONT.model.icons.term };
         }
         let retList = [];
         let retParents = [];
@@ -405,30 +413,13 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
         let cl_options = options;
         let retNodes = [];
         let retParents = new Set();
-        // THIS function is used to process the AJAX results of the getChild call
-        //		results data object contains the following attributes:
-        //			refXML: xmlDomObject <--- for data processing
-        //			msgRequest: xml (string)
-        //			msgResponse: xml (string)
-        //			error: boolean
-        //			errorStatus: string [only with error=true]
-        //			errorMsg: string [only with error=true]
-
         // handle any errors in the message
         if (results.error) {
             // process the specific error
             cl_onCompleteCB([],[]);
             return false;
         }
-        let renderOptions = {
-            icon: {
-                root: "sdx_ONT_MODIFIER_root.gif",
-                rootExp: "sdx_ONT_MODIFIER_root-exp.gif",
-                branch: "sdx_ONT_MODIFIER_branch.gif",
-                branchExp: "sdx_ONT_MODIFIER_branch-exp.gif",
-                leaf: "sdx_ONT_MODIFIER_leaf.gif"
-            }
-        };
+        let renderOptions = { icon: i2b2.ONT.model.icons.modifier };
         let c = results.refXML.getElementsByTagName('modifier');
         for (let i=0; i<1*c.length; i++) {
             renderOptions.title = i2b2.h.getXNodeVal(c[i],'name');

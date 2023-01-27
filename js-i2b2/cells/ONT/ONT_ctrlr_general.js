@@ -51,13 +51,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
 
     let renderOptions = {
         title: data.name,
-        icon: {
-            root: "sdx_ONT_CONCPT_root.gif",
-            rootExp: "sdx_ONT_CONCPT_root-exp.gif",
-            branch: "sdx_ONT_CONCPT_branch.gif",
-            branchExp: "sdx_ONT_CONCPT_branch-exp.gif",
-            leaf: "sdx_ONT_CONCPT_leaf.gif"
-        }
+        icon: i2b2.ONT.model.icons.term
     };
     sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
     sdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
