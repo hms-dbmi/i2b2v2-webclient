@@ -467,15 +467,15 @@ function QueryToolController() {
                     if(item.origData.isModifier){
                         tempItem.modName = tempItem.name;
                         tempItem.modKey = tempItem.key;
-                        tempItem.name = (item.origData.parent.origData.name != null ? i2b2.h.Escape(item.origData.parent.origData.name) : tempItem.name);
-                        tempItem.key = item.origData.parent.origData.key;
+                        tempItem.name = (item.origData.conceptModified.origData.name != null ? i2b2.h.Escape(item.origData.conceptModified.origData.name) : tempItem.name);
+                        tempItem.key = item.origData.conceptModified.origData.key;
                         tempItem.isModifier = true;
                         tempItem.applied_path = item.origData.applied_path;
 
-                        let modParent = item.origData.parent.origData;
+                        let modParent = item.origData.conceptModified.origData;
                         while (modParent != null) {
                             if (modParent.isModifier) {
-                                modParent = modParent.parent;
+                                modParent = modParent.conceptModified;
                             } else {
                                 tempItem.level=modParent.level;
                                 tempItem.key = modParent.key;
