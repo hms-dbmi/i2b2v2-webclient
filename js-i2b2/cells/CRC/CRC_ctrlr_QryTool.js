@@ -186,7 +186,7 @@ function QueryToolController() {
                         // parse for modifier
                         if (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length > 0)
                         {
-                            sdxDataNode.origData.parent = {};
+                            /*sdxDataNode.origData.parent = {};
                             sdxDataNode.origData.parent.key = o.key;
                             sdxDataNode.origData.parent.hasChildren = o.hasChildren;
                             sdxDataNode.origData.parent.level = o.level;
@@ -203,7 +203,7 @@ function QueryToolController() {
                                 o.LabValues = i2b2.CRC.ctrlr.QT.parseValueConstraint( mvd );
                             }
 
-                            if (o.LabValues) sdxDataNode.LabValues = o.LabValues;
+                            if (o.LabValues) sdxDataNode.LabValues = o.LabValues;*/
                         }
 
                         i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
