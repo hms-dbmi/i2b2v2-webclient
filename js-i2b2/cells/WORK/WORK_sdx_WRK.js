@@ -135,6 +135,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.hasChildren = i2b2.h.getXNodeVal(x, "visualattributes");
             newOptions.showchildren = false;
             if (newOptions.title === "") newOptions.title = o.name;
+            delete newOptions.icon; // ONT object can pick correct icon
             break;
         case "PATIENT_COUNT_XML":
             // Patient Record Count
