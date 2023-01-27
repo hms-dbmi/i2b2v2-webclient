@@ -1004,7 +1004,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
 
         $("body #labValuesModal button.lab-save").click(function () {
             switch (newLabValues.valueType) {
-                case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.FLAG:
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
                     newLabValues.numericValueRangeLow = null;
                     newLabValues.numericValueRangeHigh = null;
                     newLabValues.unitValue = null;
@@ -1090,7 +1090,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
             $(".labGraphUnitSection").addClass("hidden");
             $("#labEnumValueMain").addClass("hidden");
             $("#labFlag").removeClass("hidden");
-            newLabValues.valueType = i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.FLAG;
+            newLabValues.valueType = i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG;
             newLabValues.valueOperator = 'EQ';
         });
 
@@ -1098,7 +1098,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
             $("#labFlag").addClass("hidden");
             if (extractedLabValues.dataType === 'ENUM') {
                 $("#labEnumValueMain").removeClass("hidden");
-            } else if (extractedLabValues.valueType === i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.NUMBER) {
+            } else if (extractedLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER) {
                 $(".labGraphUnitSection").removeClass("hidden");
                 $(".labValueSection").removeClass("hidden");
             } else {
@@ -1110,13 +1110,13 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
         if (sdxConcept.LabValues && sdxConcept.LabValues.valueType) {
             newLabValues.valueType = sdxConcept.LabValues.valueType;
             switch (newLabValues.valueType) {
-                case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.FLAG:
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
                     $("input[name='labType'][value='BY_FLAG']").trigger("click");
                     break;
-                case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.NUMBER:
-                case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.LARGETEXT:
-                case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.TEXT:
-                case i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.MODIFIER:
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER:
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT:
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT:
+                case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.MODIFIER:
                     $("input[name='labType'][value='BY_VALUE']").trigger("click");
                     break;
             }

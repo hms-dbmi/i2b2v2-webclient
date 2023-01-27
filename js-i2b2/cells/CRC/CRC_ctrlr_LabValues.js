@@ -1,14 +1,14 @@
 /**
  * @projectDescription	The main controller for the lab values viewport.
  * @inherits 	i2b2.CRC.ctrlr
- * @namespace	i2b2.CRC.ctrlr.MetadataValues
+ * @namespace	i2b2.CRC.ctrlr.labValues
  * @author		Marc-Danie Nazaire
  * ----------------------------------------------------------------------------------------
  */
 // ================================================================================================== //
 
 
-i2b2.CRC.ctrlr.MetadataValues = {
+i2b2.CRC.ctrlr.labValues = {
     VALUE_TYPES: {
         TEXT: "TEXT",
         LARGETEXT: "LARGETEXT",
@@ -41,7 +41,7 @@ i2b2.CRC.ctrlr.MetadataValues = {
             const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
             let extractedModel = {};
             if (valueMetaDataArr.length > 0) {
-                extractedModel = i2b2.CRC.ctrlr.MetadataValues.extractValues(valueMetaDataArr[0]);
+                extractedModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
                 callBack(extractedModel);
             }
         };
@@ -50,7 +50,7 @@ i2b2.CRC.ctrlr.MetadataValues = {
             ont_max_records: 'max="1"', ont_synonym_records: true, ont_hidden_records: true}, labResponseCallback );
     },
 // ================================================================================================== //
-    extractValues: function(valueMetaDataXml) {
+    extractLabValues: function(valueMetaDataXml) {
         let extractedModel = {
             name: "",
             flagType: "NA",
@@ -66,6 +66,7 @@ i2b2.CRC.ctrlr.MetadataValues = {
             rangeInfo: {},
             enumInfo: {}
         };
+
         const flagsToUse = i2b2.h.getXNodeVal(valueMetaDataXml, "Flagstouse");
 
         extractedModel.flagType = false;
