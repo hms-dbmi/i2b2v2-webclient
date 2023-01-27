@@ -9,21 +9,6 @@
 
 
 i2b2.CRC.ctrlr.labValues = {
-    extractedModel: {
-        name: "",
-        flagType: "NA",
-        flags: [{name: "Abnormal", value: "A"}, {name: "Normal", value: "@"}],
-        valueValidate: {
-            onlyPos: true,
-            onlyInt: true,
-            maxString: 0
-        },
-        valueType: "PosFloat",
-        valueUnitsCurrent: 0,
-        valueUnits: {},
-        rangeInfo: {},
-        enumInfo: {}
-    },
     VALUE_TYPES: {
         TEXT: "TEXT",
         LARGETEXT: "LARGETEXT",
@@ -54,9 +39,11 @@ i2b2.CRC.ctrlr.labValues = {
             if (c.length > 0) sdxConcept.origData.xmlOrig = c[0].outerHTML;
 
             const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
-            if (valueMetaDataArr.length > 0) i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
-
-            callBack();
+            let extractedModel = {};
+            if (valueMetaDataArr.length > 0) {
+                extractedModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
+                callBack(sdxConcept, extractedModel);
+            }
         };
 
         i2b2.ONT.ajax.GetTermInfo("ONT", {concept_key_value:sdxConcept.origData.key,
@@ -64,60 +51,76 @@ i2b2.CRC.ctrlr.labValues = {
     },
 // ================================================================================================== //
     extractLabValues: function(valueMetaDataXml) {
+        let extractedModel = {
+            name: "",
+            flagType: "NA",
+            flags: [{name: "Abnormal", value: "A"}, {name: "Normal", value: "@"}],
+            valueValidate: {
+                onlyPos: true,
+                onlyInt: true,
+                maxString: 0
+            },
+            valueType: "PosFloat",
+            valueUnitsCurrent: 0,
+            valueUnits: {},
+            rangeInfo: {},
+            enumInfo: {}
+        };
+
         const flagsToUse = i2b2.h.getXNodeVal(valueMetaDataXml, "Flagstouse");
 
-        this.extractedModel.flagType = false;
+        extractedModel.flagType = false;
         if (flagsToUse) {
             if (flagsToUse === "A") {
-                this.extractedModel.flagType = "NA";
-                this.extractedModel.flags = [{name: "Normal", value: "@"}, {name: "Abnormal", value: "A"}];
+                extractedModel.flagType = "NA";
+                extractedModel.flags = [{name: "Normal", value: "@"}, {name: "Abnormal", value: "A"}];
             } else if (flagsToUse === "HL") {
-                this.extractedModel.flagType = "HL";
-                this.extractedModel.flags = [{name: "Normal", value: "@"}, {name: "High", value: "H"}, {
+                extractedModel.flagType = "HL";
+                extractedModel.flags = [{name: "Normal", value: "@"}, {name: "High", value: "H"}, {
                     name: "Low",
                     value: "L"
                 }];
             }
         }
 
-        this.extractedModel.enumInfo = [];
-        this.extractedModel.valueUnits = [];
+        extractedModel.enumInfo = [];
+        extractedModel.valueUnits = [];
         try {
             let dataType = i2b2.h.getXNodeVal(valueMetaDataXml, "DataType");
             switch (dataType) {
                 case "PosFloat":
-                    this.extractedModel.dataType = "POSFLOAT";
-                    this.extractedModel.valueType = this.VALUE_TYPES.NUMBER;
-                    this.extractedModel.valueValidate.onlyPos = true;
-                    this.extractedModel.valueValidate.onlyInt = false;
-                    this.extractedModel.valueValidate.maxString = false;
+                    extractedModel.dataType = "POSFLOAT";
+                    extractedModel.valueType = this.VALUE_TYPES.NUMBER;
+                    extractedModel.valueValidate.onlyPos = true;
+                    extractedModel.valueValidate.onlyInt = false;
+                    extractedModel.valueValidate.maxString = false;
                     break;
                 case "PosInteger":
-                    this.extractedModel.dataType = "POSINT";
-                    this.extractedModel.valueType = this.VALUE_TYPES.NUMBER;
-                    this.extractedModel.valueValidate.onlyPos = true;
-                    this.extractedModel.valueValidate.onlyInt = true;
-                    this.extractedModel.valueValidate.maxString = false;
+                    extractedModel.dataType = "POSINT";
+                    extractedModel.valueType = this.VALUE_TYPES.NUMBER;
+                    extractedModel.valueValidate.onlyPos = true;
+                    extractedModel.valueValidate.onlyInt = true;
+                    extractedModel.valueValidate.maxString = false;
                     break;
                 case "Float":
-                    this.extractedModel.dataType = "FLOAT";
-                    this.extractedModel.valueType = this.VALUE_TYPES.NUMBER;
-                    this.extractedModel.valueValidate.onlyPos = false;
-                    this.extractedModel.valueValidate.onlyInt = false;
-                    this.extractedModel.valueValidate.maxString = false;
+                    extractedModel.dataType = "FLOAT";
+                    extractedModel.valueType = this.VALUE_TYPES.NUMBER;
+                    extractedModel.valueValidate.onlyPos = false;
+                    extractedModel.valueValidate.onlyInt = false;
+                    extractedModel.valueValidate.maxString = false;
                     break;
                 case "Integer":
-                    this.extractedModel.dataType = "INT";
-                    this.extractedModel.valueType = this.VALUE_TYPES.NUMBER;
-                    this.extractedModel.valueValidate.onlyPos = true;
-                    this.extractedModel.valueValidate.onlyInt = true;
-                    this.extractedModel.valueValidate.maxString = false;
+                    extractedModel.dataType = "INT";
+                    extractedModel.valueType = this.VALUE_TYPES.NUMBER;
+                    extractedModel.valueValidate.onlyPos = true;
+                    extractedModel.valueValidate.onlyInt = true;
+                    extractedModel.valueValidate.maxString = false;
                     break;
                 case "String":
-                    this.extractedModel.dataType = "STR";
-                    this.extractedModel.valueType = this.VALUE_TYPES.TEXT;
-                    this.extractedModel.valueValidate.onlyPos = false;
-                    this.extractedModel.valueValidate.onlyInt = false;
+                    extractedModel.dataType = "STR";
+                    extractedModel.valueType = this.VALUE_TYPES.TEXT;
+                    extractedModel.valueValidate.onlyPos = false;
+                    extractedModel.valueValidate.onlyInt = false;
 
                     // extract max string setting
                     let strMaxStringLength;
@@ -128,16 +131,16 @@ i2b2.CRC.ctrlr.labValues = {
                         strMaxStringLength = -1;
                     }
                     if (strMaxStringLength > 0) {
-                        this.extractedModel.valueValidate.maxString = dataType;
+                        extractedModel.valueValidate.maxString = dataType;
                     } else {
-                        this.extractedModel.valueValidate.maxString = false;
+                        extractedModel.valueValidate.maxString = false;
                     }
                     break;
                 case "largestring":
-                    this.extractedModel.dataType = "LRGSTR";
-                    this.extractedModel.valueType = this.VALUE_TYPES.LARGETEXT;
-                    this.extractedModel.valueValidate.onlyPos = false;
-                    this.extractedModel.valueValidate.onlyInt = false;
+                    extractedModel.dataType = "LRGSTR";
+                    extractedModel.valueType = this.VALUE_TYPES.LARGETEXT;
+                    extractedModel.valueValidate.onlyPos = false;
+                    extractedModel.valueValidate.onlyInt = false;
                     // extract max string setting
                     let lrgMaxStringLength;
                     try {
@@ -147,17 +150,17 @@ i2b2.CRC.ctrlr.labValues = {
                         lrgMaxStringLength = -1;
                     }
                     if (lrgMaxStringLength > 0) {
-                        this.extractedModel.valueValidate.maxString = dataType;
+                        extractedModel.valueValidate.maxString = dataType;
                     } else {
-                        this.extractedModel.valueValidate.maxString = false;
+                        extractedModel.valueValidate.maxString = false;
                     }
                     break;
                 case "Enum":
-                    this.extractedModel.dataType = "ENUM";
-                    this.extractedModel.valueType = this.VALUE_TYPES.TEXT;
-                    this.extractedModel.valueValidate.onlyPos = false;
-                    this.extractedModel.valueValidate.onlyInt = false;
-                    this.extractedModel.valueValidate.maxString = false;
+                    extractedModel.dataType = "ENUM";
+                    extractedModel.valueType = this.VALUE_TYPES.TEXT;
+                    extractedModel.valueValidate.onlyPos = false;
+                    extractedModel.valueValidate.onlyInt = false;
+                    extractedModel.valueValidate.maxString = false;
                     // extract the enum data
                     let enumValuesXml = i2b2.h.XPath(valueMetaDataXml,"descendant::EnumValues/Val");
 
@@ -171,7 +174,7 @@ i2b2.CRC.ctrlr.labValues = {
                         }
                         enumValuesObj[(enumValuesXml[i].childNodes[0].nodeValue)] = name;
                     }
-                    this.extractedModel.enumInfo = enumValuesObj;
+                    extractedModel.enumInfo = enumValuesObj;
 
                     // remove any Enums found in <CommentsDeterminingExclusion> section
                     let commentsDetExclusion = i2b2.h.XPath(valueMetaDataXml,"descendant::CommentsDeterminingExclusion/Com/text()");
@@ -182,32 +185,32 @@ i2b2.CRC.ctrlr.labValues = {
                     commentsDetExclusion = exclusionArr;
                     if (commentsDetExclusion.length > 0) {
                         for (let i=0;i<commentsDetExclusion.length; i++){
-                            for (let i2=0;i2<this.extractedModel.enumInfo.length; i2++) {
-                                if (this.extractedModel.enumInfo[i2].indexOf(commentsDetExclusion[i]) > -1 ) {
-                                    this.extractedModel.enumInfo[i2] = null;
+                            for (let i2=0;i2<extractedModel.enumInfo.length; i2++) {
+                                if (extractedModel.enumInfo[i2].indexOf(commentsDetExclusion[i]) > -1 ) {
+                                    extractedModel.enumInfo[i2] = null;
                                 }
                             }
                             // clean up the array
-                            this.extractedModel.enumInfo = this.extractedModel.enumInfo.compact();
+                            extractedModel.enumInfo = extractedModel.enumInfo.compact();
                         }
                     }
                     break;
                 default:
-                    this.extractedModel.dataType = false;
+                    extractedModel.dataType = false;
             }
         }
         catch(e) {
-            this.extractedModel.dataType = false;
-            this.extractedModel.valueValidate.onlyPos = false;
-            this.extractedModel.valueValidate.onlyInt = false;
-            this.extractedModel.valueValidate.maxString = false;
+            extractedModel.dataType = false;
+            extractedModel.valueValidate.onlyPos = false;
+            extractedModel.valueValidate.onlyInt = false;
+            extractedModel.valueValidate.maxString = false;
         }
 
         // set the title bar (TestName and TestID are assumed to be mandatory)
-        if (this.extractedModel.valueType === "LRGSTR") {
-            this.extractedModel.name = "Search within the " + i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName');
+        if (extractedModel.valueType === "LRGSTR") {
+            extractedModel.name = "Search within the " + i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName');
         } else {
-            this.extractedModel.name = "Choose value of "+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName')+" (Test:"+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestID')+")";
+            extractedModel.name = "Choose value of "+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestName')+" (Test:"+i2b2.h.getXNodeVal(valueMetaDataXml, 'TestID')+")";
         }
 
         //lab units
@@ -263,59 +266,61 @@ i2b2.CRC.ctrlr.labValues = {
         }
 
         //valueUnits: {name: "ng/l", multFactor: 1, masterUnit: true}
-        this.extractedModel.valueUnits = tProcessing;
+        extractedModel.valueUnits = tProcessing;
 
 
         var nBarLength = 520; // fixed width of bar
         //fd.bHidebar = false;  // set to true if decide bar not worth showing
         var nSituation = 0; // how many values are there?
-        this.extractedModel.rangeInfo = {};
+        extractedModel.rangeInfo = {};
         //
         // get preliminary bar length results and set up array
         try {
-            this.extractedModel.rangeInfo.LowOfToxic = parseFloat(valueMetaDataXml.getElementsByTagName('LowofToxicValue')[0].firstChild.nodeValue);
+            extractedModel.rangeInfo.LowOfToxic = parseFloat(valueMetaDataXml.getElementsByTagName('LowofToxicValue')[0].firstChild.nodeValue);
             nSituation = nSituation +1;
         } catch(e) {}
         try {
-            this.extractedModel.rangeInfo.LowOfLow = parseFloat(valueMetaDataXml.getElementsByTagName('LowofLowValue')[0].firstChild.nodeValue);
-            if ((isFinite(this.extractedModel.rangeInfo.LowOfToxic)) && (this.extractedModel.rangeInfo.LowOfToxic === this.extractedModel.rangeInfo.LowOfLow)) {
-                this.extractedModel.rangeInfo.LowOfLowRepeat = true;
+            extractedModel.rangeInfo.LowOfLow = parseFloat(valueMetaDataXml.getElementsByTagName('LowofLowValue')[0].firstChild.nodeValue);
+            if ((isFinite(extractedModel.rangeInfo.LowOfToxic)) && (extractedModel.rangeInfo.LowOfToxic === extractedModel.rangeInfo.LowOfLow)) {
+                extractedModel.rangeInfo.LowOfLowRepeat = true;
             } else {
-                this.extractedModel.rangeInfo.LowOfLowRepeat = false;
+                extractedModel.rangeInfo.LowOfLowRepeat = false;
                 nSituation = nSituation +1;
             }
         } catch(e) {}
         try {
-            this.extractedModel.rangeInfo.HighOfLow = parseFloat(valueMetaDataXml.getElementsByTagName('HighofLowValue')[0].firstChild.nodeValue);
-            if ((isFinite(this.extractedModel.rangeInfo.LowOfLow)) && (this.extractedModel.rangeInfo.LowOfLow === this.extractedModel.rangeInfo.HighOfLow)) {
-                this.extractedModel.rangeInfo.HighOfLowRepeat = true;
+            extractedModel.rangeInfo.HighOfLow = parseFloat(valueMetaDataXml.getElementsByTagName('HighofLowValue')[0].firstChild.nodeValue);
+            if ((isFinite(extractedModel.rangeInfo.LowOfLow)) && (extractedModel.rangeInfo.LowOfLow === extractedModel.rangeInfo.HighOfLow)) {
+                extractedModel.rangeInfo.HighOfLowRepeat = true;
             } else {
-                this.extractedModel.rangeInfo.HighOfLowRepeat = false;
+                extractedModel.rangeInfo.HighOfLowRepeat = false;
                 nSituation = nSituation +1;
             }
         } catch(e) {}
         try {
-            this.extractedModel.rangeInfo.HighOfToxic = parseFloat(valueMetaDataXml.getElementsByTagName('HighofToxicValue')[0].firstChild.nodeValue);
+            extractedModel.rangeInfo.HighOfToxic = parseFloat(valueMetaDataXml.getElementsByTagName('HighofToxicValue')[0].firstChild.nodeValue);
             nSituation = nSituation +1;
         } catch(e) {}
         try {
-            this.extractedModel.rangeInfo.HighOfHigh = parseFloat(valueMetaDataXml.getElementsByTagName('HighofHighValue')[0].firstChild.nodeValue);
-            if ((isFinite(this.extractedModel.rangeInfo.HighOfToxic)) && (this.extractedModel.rangeInfo.HighOfToxic === this.extractedModel.rangeInfo.HighOfHigh)) {
-                this.extractedModel.rangeInfo.HighOfHighRepeat = true;
+            extractedModel.rangeInfo.HighOfHigh = parseFloat(valueMetaDataXml.getElementsByTagName('HighofHighValue')[0].firstChild.nodeValue);
+            if ((isFinite(extractedModel.rangeInfo.HighOfToxic)) && (extractedModel.rangeInfo.HighOfToxic === extractedModel.rangeInfo.HighOfHigh)) {
+                extractedModel.rangeInfo.HighOfHighRepeat = true;
             } else {
-                this.extractedModel.rangeInfo.HighOfHighRepeat = false;
+                extractedModel.rangeInfo.HighOfHighRepeat = false;
                 nSituation = nSituation +1;
             }
         } catch(e) {}
         try {
-            this.extractedModel.rangeInfo.LowOfHigh = parseFloat(valueMetaDataXml.getElementsByTagName('LowofHighValue')[0].firstChild.nodeValue);
-            if ((isFinite(this.extractedModel.rangeInfo.HighOfHigh)) && (this.extractedModel.rangeInfo.HighOfHigh === this.extractedModel.rangeInfo.LowOfHigh)) {
-                this.extractedModel.rangeInfo.LowOfHighRepeat = true;
+            extractedModel.rangeInfo.LowOfHigh = parseFloat(valueMetaDataXml.getElementsByTagName('LowofHighValue')[0].firstChild.nodeValue);
+            if ((isFinite(extractedModel.rangeInfo.HighOfHigh)) && (extractedModel.rangeInfo.HighOfHigh === extractedModel.rangeInfo.LowOfHigh)) {
+                extractedModel.rangeInfo.LowOfHighRepeat = true;
             } else {
-                this.extractedModel.rangeInfo.LowOfHighRepeat = false;
+                extractedModel.rangeInfo.LowOfHighRepeat = false;
                 nSituation = nSituation +1;
             }
         } catch(e) {}
-        this.extractedModel.rangeInfo.total = nSituation;
+        extractedModel.rangeInfo.total = nSituation;
+
+        return extractedModel;
     }
 };

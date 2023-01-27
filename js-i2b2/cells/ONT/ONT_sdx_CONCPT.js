@@ -449,21 +449,10 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
                 temp.parentKey = cl_node;
                 retParents.add(cl_node.i2b2.sdxInfo.sdxKeyValue);
             }
+            // get full details of the modifier
+            i2b2.ONT.ctrlr.gen.getModifierDetails(temp.i2b2);
             retNodes.push(temp);
         }
-        // handle the YUI treeview
-        //mm 10-7 cl_onCompleteCB();
-/*
-        if ((node.i2b2.origData.hasChildren !== "DA") && (node.i2b2.origData.hasChildren !== "OAE") &&
-        (node.i2b2.origData.hasChildren !== "DAE") && (node.i2b2.origData.hasChildren !== "OA") ){
-            debugger;
-            alert("do something here?");
-// TODO: Is this logic still valid?
-//            i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(node, onCompleteCallback, false);
-        } else {
-            cl_onCompleteCB();
-        }
-*/
         cl_onCompleteCB(retNodes, Array.from(retParents));
     };
     // TODO: Implement param routing from node's container
@@ -502,7 +491,6 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
             break;
     }
 };
-
 
 
 // *********************************************************************************
