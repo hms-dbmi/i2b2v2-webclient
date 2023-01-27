@@ -400,22 +400,22 @@ function QueryToolController() {
                 } else {
                     labValues.value = valueConstraint;
                 }
-                labValues.valueType= i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.NUMBER;
+                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER;
                 labValues.unitValue = i2b2.h.getXNodeVal(lvd, "value_unit_of_measure");
                 break;
             case "STRING":
-                labValues.valueType= i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.TEXT;
+                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT;
                 labValues.value = valueConstraint;
                 labValues.isString = true;
                 break;
             case "LARGETEXT":
-                labValues.valueType= i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.LARGETEXT;
+                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT;
                 labValues.value = valueConstraint;
                 labValues.isString = true;
                 break;
             case "TEXT":
                 // This is an ENUM
-                labValues.valueType= i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.TEXT;
+                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT;
                 try
                 {
                     labValues.value = eval("(Array" + valueConstraint + ")");
@@ -426,11 +426,11 @@ function QueryToolController() {
                     //This is a string
                     labValues.valueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
                     labValues.value = valueConstraint;
-                    labValues.valueType = i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.TEXT; // tdw9: this line is missing for modifiers in current code. Does it make a different to have it here? Also, "TEXT" is changed from "STRING" to make sure TEXT works in modifiers
+                    labValues.valueType = i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT; // tdw9: this line is missing for modifiers in current code. Does it make a different to have it here? Also, "TEXT" is changed from "STRING" to make sure TEXT works in modifiers
                 }
                 break;
             case "FLAG":
-                labValues.valueType= i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.FLAG;
+                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG;
                 labValues.flagValue = valueConstraint;
                 break;
             default:
@@ -518,7 +518,7 @@ function QueryToolController() {
                         if (item.LabValues.numericValueRangeLow){
                             tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
                         }
-                        else if(tempItem.valueType === i2b2.CRC.ctrlr.MetadataValues.VALUE_TYPES.FLAG){
+                        else if(tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
                             tempItem.value = item.LabValues.flagValue;
                         }
                         else {

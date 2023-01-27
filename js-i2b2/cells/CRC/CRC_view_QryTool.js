@@ -1435,7 +1435,7 @@ i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, e
     }
 
     labValuesModal.load('js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
-        i2b2.CRC.ctrlr.MetadataValues.loadData(sdxConcept, function(extractedDataModel){
+        i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, function(extractedDataModel){
             i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedDataModel, groupIdx, eventIdx);
         });
     });
