@@ -200,7 +200,7 @@ function QueryToolController() {
                             // Mod Values processing
                             let mvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier/constrain_by_value');
                             if (mvd.length > 0) {
-                                o.LabValues = i2b2.CRC.ctrlr.QT.parseValueConstraint( lvd );
+                                o.LabValues = i2b2.CRC.ctrlr.QT.parseValueConstraint( mvd );
                             }
 
                             if (o.LabValues) sdxDataNode.LabValues = o.LabValues;
