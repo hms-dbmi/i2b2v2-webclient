@@ -510,7 +510,7 @@ i2b2.CRC.view.QT.handleLabValues = function(sdx){
 
     if(isLab){
         i2b2.CRC.view.QT.current  = {"conceptSdx": sdx};
-        i2b2.CRC.view.QT.labValue.getLabValues(sdx);
+        i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx);
     }
 }
 
@@ -564,7 +564,7 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
         // Modifiers processing
         if (sdx.origData.conceptModified) {
             sdx.renderData.title = sdx.origData.conceptModified.renderData.title + " {" + sdx.origData.name + "}";
-            i2b2.CRC.view.QT.handleModifier(sdx);
+            i2b2.CRC.view.QT.handleModifier(sdx,  groupIdx, eventIdx);
         }
 
         // not a duplicate, add to the event's term list
@@ -575,7 +575,7 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
         i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
 
         // handle the lab values
-        if (sdx.isLab) i2b2.CRC.view.QT.labValue.getLabValues(sdx);
+        if (sdx.isLab) i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx);
 
         // update the query name
         i2b2.CRC.view.QT.updateQueryName();
@@ -583,7 +583,7 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
     }
 };
 // ================================================================================================== //
-i2b2.CRC.view.QT.handleModifier = function(sdxConcept){
+i2b2.CRC.view.QT.handleModifier = function(sdxConcept, groupIdx, eventIdx){
     let labValuesModal = $("#labValuesModal");
     if (labValuesModal.length === 0) {
         $("body").append("<div id='labValuesModal'/>");
@@ -594,7 +594,7 @@ i2b2.CRC.view.QT.handleModifier = function(sdxConcept){
         const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
         if (valueMetaDataArr.length > 0) {
             let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
-            i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedLabModel);
+            i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedLabModel, groupIdx, eventIdx);
         }
     });
 }
@@ -976,11 +976,11 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
     let eventIdx = $(evt.target).closest('.event').data('eventidx');
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
     let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
-    i2b2.CRC.view.QT.labValue.getLabValues(sdx);
+    i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, queryGroupIdx, eventIdx);
 };
 
 // ==================================================================================================
-i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValues) {
+i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValues, groupIdx, eventIdx) {
 
     if (extractedLabValues !== undefined) {
 
@@ -1025,12 +1025,12 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
             if(sdxConcept.origData.isModifier) {
                 let modifierInfoText;
                 if(newLabValues.numericValueRangeLow && newLabValues.numericValueRangeHigh){
-                    modifierInfoText  = newLabValues.numericValueRangeLow + "-" +  newLabValues.numericValueRangeHigh;
+                    modifierInfoText  = newLabValues.numericValueRangeLow + " - " +  newLabValues.numericValueRangeHigh;
                 }else if(newLabValues.flagValue){
-                    modifierInfoText  = newLabValues.flagValue;
+                    modifierInfoText  = "= "  + newLabValues.flagValue;
                 }
                 else if(newLabValues.isEnum){
-                    modifierInfoText  = extractedLabValues.enumInfo[newLabValues.value];
+                    modifierInfoText  = "= " + extractedLabValues.enumInfo[newLabValues.value];
                 }
                 else if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER){
                     let numericOperatorMapping = {
@@ -1044,29 +1044,34 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 }
                 else if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT){
                     let textOperatorMapping = {
-                        "LIKE[exact]": "Exact",
-                        "LIKE[begin]": "Starts With",
-                        "LIKE[end]": "Ends With",
-                        "LIKE[contains]": "Contains",
+                        "LIKE[exact]": "exact",
+                        "LIKE[begin]": "starts with",
+                        "LIKE[end]": "ends with",
+                        "LIKE[contains]": "contains",
                     }
-                    modifierInfoText = textOperatorMapping[newLabValues.valueOperator] + ": ";
-                    modifierInfoText  += newLabValues.value;
+                    modifierInfoText = textOperatorMapping[newLabValues.valueOperator] + " ";
+                    modifierInfoText  += '"' + newLabValues.value + '"';
                 }
                 else if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT){
-                    modifierInfoText = "Contains: " + newLabValues.value;
+                    modifierInfoText = "contains " + '"' + newLabValues.value + '"';
                 }
                 else{
                     modifierInfoText = "";
                 }
 
                 if(newLabValues.unitValue){
-                    modifierInfoText += "" + newLabValues.unitValue;
+                    modifierInfoText += " " + newLabValues.unitValue;
                 }
 
                 if(modifierInfoText && modifierInfoText.length > 0) {
                     sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.conceptModified.renderData.title
-                        + " {" + sdxConcept.origData.name + " = " + modifierInfoText + "}");
-                    i2b2.CRC.view.QT.render();
+                        + " {" + sdxConcept.origData.name + " " + modifierInfoText + "}");
+
+                    if(eventIdx !== undefined && groupIdx !== undefined) {
+                        let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+                        const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+                        i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+                    }
                 }
             }
             i2b2.CRC.view.QS.clearStatus();
@@ -1421,7 +1426,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
     }
 };
 // ==================================================================================================
-i2b2.CRC.view.QT.labValue.getLabValues = function(sdxConcept) {
+i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, eventIdx) {
     let labValuesModal = $("#labValuesModal");
 
     if (labValuesModal.length === 0) {
@@ -1430,7 +1435,9 @@ i2b2.CRC.view.QT.labValue.getLabValues = function(sdxConcept) {
     }
 
     labValuesModal.load('js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
-        i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, i2b2.CRC.view.QT.labValue.showLabValues);
+        i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, function(extractedDataModel){
+            i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedDataModel, groupIdx, eventIdx);
+        });
     });
 };
 // ================================================================================================== //
