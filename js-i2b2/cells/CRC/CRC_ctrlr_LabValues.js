@@ -42,7 +42,7 @@ i2b2.CRC.ctrlr.labValues = {
             let extractedModel = {};
             if (valueMetaDataArr.length > 0) {
                 extractedModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
-                callBack(sdxConcept, extractedModel);
+                callBack(extractedModel);
             }
         };
 
