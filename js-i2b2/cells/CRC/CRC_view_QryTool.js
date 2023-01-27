@@ -1018,12 +1018,12 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
             if(sdxConcept.origData.isModifier) {
                 let modifierInfoText;
                 if(newLabValues.numericValueRangeLow && newLabValues.numericValueRangeHigh){
-                    modifierInfoText  = newLabValues.numericValueRangeLow + "-" +  newLabValues.numericValueRangeHigh;
+                    modifierInfoText  = newLabValues.numericValueRangeLow + " - " +  newLabValues.numericValueRangeHigh;
                 }else if(newLabValues.flagValue){
-                    modifierInfoText  = newLabValues.flagValue;
+                    modifierInfoText  = "= "  + newLabValues.flagValue;
                 }
                 else if(newLabValues.isEnum){
-                    modifierInfoText  = extractedLabValues.enumInfo[newLabValues.value];
+                    modifierInfoText  = "= " + extractedLabValues.enumInfo[newLabValues.value];
                 }
                 else if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER){
                     let numericOperatorMapping = {
@@ -1037,28 +1037,28 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 }
                 else if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT){
                     let textOperatorMapping = {
-                        "LIKE[exact]": "Exact",
-                        "LIKE[begin]": "Starts With",
-                        "LIKE[end]": "Ends With",
-                        "LIKE[contains]": "Contains",
+                        "LIKE[exact]": "exact",
+                        "LIKE[begin]": "starts with",
+                        "LIKE[end]": "ends with",
+                        "LIKE[contains]": "contains",
                     }
-                    modifierInfoText = textOperatorMapping[newLabValues.valueOperator] + ": ";
-                    modifierInfoText  += newLabValues.value;
+                    modifierInfoText = textOperatorMapping[newLabValues.valueOperator] + " ";
+                    modifierInfoText  += '"' + newLabValues.value + '"';
                 }
                 else if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT){
-                    modifierInfoText = "Contains: " + newLabValues.value;
+                    modifierInfoText = "contains " + '"' + newLabValues.value + '"';
                 }
                 else{
                     modifierInfoText = "";
                 }
 
                 if(newLabValues.unitValue){
-                    modifierInfoText += "" + newLabValues.unitValue;
+                    modifierInfoText += " " + newLabValues.unitValue;
                 }
 
                 if(modifierInfoText && modifierInfoText.length > 0) {
                     sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.conceptModified.renderData.title
-                        + " {" + sdxConcept.origData.name + " = " + modifierInfoText + "}");
+                        + " {" + sdxConcept.origData.name + " " + modifierInfoText + "}");
                     i2b2.CRC.view.QT.render();
                 }
             }
