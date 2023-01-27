@@ -183,6 +183,29 @@ function QueryToolController() {
                             sdxDataNode.LabValues = i2b2.CRC.ctrlr.QT.parseValueConstraint( lvd );
                         }
 
+                        // parse for modifier
+                        if (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length > 0)
+                        {
+                            sdxDataNode.origData.parent = {};
+                            sdxDataNode.origData.parent.key = o.key;
+                            sdxDataNode.origData.parent.hasChildren = o.hasChildren;
+                            sdxDataNode.origData.parent.level = o.level;
+                            sdxDataNode.origData.parent.name = o.name;
+                            sdxDataNode.origData.key = i2b2.h.getXNodeVal(pi[i2], 'constrain_by_modifier/modifier_key');
+                            sdxDataNode.origData.applied_path = i2b2.h.getXNodeVal(pi[i2], 'constrain_by_modifier/applied_path');
+                            sdxDataNode.origData.name = i2b2.h.getXNodeVal(pi[i2], 'constrain_by_modifier/modifier_name');
+                            sdxDataNode.origData.isModifier = true;
+                            //this.hasModifier = true;
+
+                            // Mod Values processing
+                            let mvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier/constrain_by_value');
+                            if (mvd.length > 0) {
+                                o.LabValues = i2b2.CRC.ctrlr.QT.parseValueConstraint( lvd );
+                            }
+
+                            if (o.LabValues) sdxDataNode.LabValues = o.LabValues;
+                        }
+
                         i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.key}, function(results){
                             results.parse();
                             if(results.model.length > 0){
