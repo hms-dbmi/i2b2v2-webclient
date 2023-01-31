@@ -1638,6 +1638,14 @@ i2b2.events.afterCellInit.add((cell) => {
                 error: (error) => { console.error("Error (retrieval or structure) with template: SubQueryConstraint.xml"); }
             });
 
+            // ... XML for the query request (main body)
+            $.ajax("js-i2b2/cells/CRC/templates/QueryPanelItemConstraint.xml", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("QueryPanelItemConstraint", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItemConstraint.xml"); }
+            });
+
             //HTML template for event
             $.ajax("js-i2b2/cells/CRC/templates/Event.html", {
                 success: (template, status, req) => {

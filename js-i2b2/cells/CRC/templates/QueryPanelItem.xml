@@ -4,6 +4,16 @@
             <item_key>{{{key}}}</item_key>
             <tooltip>{{{tooltip}}}</tooltip>
             {{#if class}}<class>{{class}}</class>{{/if}}
+            {{#if isModifier}}
+                <constrain_by_modifier>
+                    <modifier_name>{{modName}}</modifier_name>
+                    <applied_path>{{applied_path}}</applied_path>
+                    <modifier_key>{{modKey}}</modifier_key>
+                    {{#if valueType}}
+                        {{> QueryPanelItemConstraint }}
+                    {{/if}}
+            </constrain_by_modifier>
+            {{/if}}
             {{#if icon}}<item_icon>{{icon}}</item_icon>{{/if}}
             <item_is_synonym>{{isSynonym}}</item_is_synonym>
             {{#if hasDate}}
@@ -17,20 +27,7 @@
                 </constrain_by_date>
             {{/if}}
             {{#if valueType}}
-                <constrain_by_value>
-                    <value_type>{{valueType}}</value_type>
-                    <value_operator>{{valueOperator}}</value_operator>
-                    {{#if isString}}
-                        <value_constraint><![CDATA[{{value}}]]></value_constraint>
-                    {{else if isEnum}}
-                        <value_constraint>({{#each value}}'{{this}}'{{#unless @last}},{{/unless}}{{/each}})</value_constraint>
-                    {{else}}
-                        <value_constraint>{{value}}</value_constraint>
-                    {{/if}}
-                    {{#if unitValue}}
-                        <value_unit_of_measure>{{unitValue}}</value_unit_of_measure>
-                    {{/if}}
-                </constrain_by_value>
+                {{> QueryPanelItemConstraint }}
             {{/if}}
             {{!--
             <dim_tablename>dim_tablename0</dim_tablename>
