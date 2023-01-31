@@ -195,7 +195,7 @@ i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
-    let timeSpanIdx = $(elem).parent(".timeSpan").data("timeSpanIdx");
+    let timeSpanIdx = $(elem).parents(".timeSpan").data("timeSpanIdx");
     let eventLinkIdx = $(elem).parents('.eventLink').first().data('eventLinkIdx');
     let queryGroupIdx = $(elem).parents('.QueryGroup').first().data("queryGroup");
 
