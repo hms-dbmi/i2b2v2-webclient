@@ -422,7 +422,7 @@ i2b2.CRC.view.QT.eventActionDelete = function(evt) {
     if (i2b2.CRC.model.query.groups[queryGroupIdx].events.length > 2) {
         // delete the data elements
         i2b2.CRC.model.query.groups[queryGroupIdx].events.splice(eventIdx,1);
-        i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks.splice(eventIdx,1);
+        i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks.splice(eventIdx-1,1);
 
         // rerender the Query Tool
         i2b2.CRC.view.QT.render();
