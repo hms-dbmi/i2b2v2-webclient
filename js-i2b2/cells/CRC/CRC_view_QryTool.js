@@ -159,18 +159,21 @@ i2b2.CRC.view.QT.extractEventLinkFromElem = function(elem) {
 i2b2.CRC.view.QT.updateEventLinkOperator = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     eventLink.operator = $(elem).val();
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateEventLinkAggregateOp = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     let eventLinkOpName = $(elem).data('aggregateOp');
     eventLink[eventLinkOpName] = $(elem).val();
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateEventLinkJoinColumn = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     let eventLinkOpName = $(elem).data('joinColumn');
     eventLink[eventLinkOpName] = $(elem).val();
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
@@ -192,6 +195,8 @@ i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
         parent.find(".timeSpanUnit").val("DAY");
         parent.find(".timeSpanValue").val("");
     }
+
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
@@ -206,16 +211,22 @@ i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
 i2b2.CRC.view.QT.updateTimeSpanOperator = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.operator = $(elem).val();
+
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateTimeSpanValue = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.value = $(elem).val();
+
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateTimeSpanUnit = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.unit = $(elem).val();
+
+    i2b2.CRC.view.QS.clearStatus();
 };
 
 
@@ -426,6 +437,8 @@ i2b2.CRC.view.QT.eventActionDelete = function(evt) {
 
         // rerender the Query Tool
         i2b2.CRC.view.QT.render();
+
+        i2b2.CRC.view.QS.clearStatus();
     }
 }
 
@@ -1503,6 +1516,8 @@ i2b2.CRC.view.QT.addEvent = function(){
 
     //scroll to newly added event
     qgRoot.find(".event").last().get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+
+    i2b2.CRC.view.QS.clearStatus();
 }
 // ================================================================================================== //
 // This is done once the entire cell has been loaded
