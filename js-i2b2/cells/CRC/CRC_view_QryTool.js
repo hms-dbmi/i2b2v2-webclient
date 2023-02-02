@@ -561,7 +561,17 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
 
     // add the data to the correct terms list (also prevent duplicates)
     let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
-    temp = eventData.concepts.filter((term)=>{ return term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue; });
+    temp = eventData.concepts.filter((term) => {
+        if (term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue) {
+            if (term.origData.conceptModified && sdx.origData.conceptModified) {
+                return term.origData.conceptModified.sdxInfo.sdxKeyValue === sdx.origData.conceptModified.sdxInfo.sdxKeyValue;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    });
     if (temp.length === 0) {
         //add date constraint to concept if there is a group date range specified{
         if (i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange !== undefined &&
