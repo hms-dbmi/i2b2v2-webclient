@@ -49,15 +49,14 @@ function QueryToolController() {
             //			errorMsg: string [only with error=true]
             i2b2.CRC.view.QT.queryRequest = results.msgRequest;
             i2b2.CRC.view.QT.queryResponse = results.msgResponse;
-            let modifierInfo = [];
             let loadAllModifierInfo = function(queryDef, callback){
                 //get details for all modifiers
                 let modifierConstraints = i2b2.h.XPath(queryDef, "descendant::constrain_by_modifier");
                 let allModRequest=[];
+                let modifierInfo = [];
                 for (let m=0; m <modifierConstraints.length; m++) {
                     let modifier_applied_path = i2b2.h.getXNodeVal(modifierConstraints[m], 'constrain_by_modifier/applied_path');
                     let modifier_key_value = i2b2.h.getXNodeVal(modifierConstraints[m], 'constrain_by_modifier/modifier_key');
-                    let options = {};
                     allModRequest.push(new Promise((resolve, reject) => {
                         i2b2.ONT.ajax.GetModifierInfo("CRC:QueryTool", {
                             modifier_applied_path: modifier_applied_path,
@@ -68,32 +67,7 @@ function QueryToolController() {
                         }, (response) => {
                             let c = i2b2.h.XPath(response.refXML, 'descendant::modifier');
                             if (c.length > 0) {
-                                let renderOptions = { icon: i2b2.ONT.model.icons.modifier };
-                                let i=0;
-                                renderOptions.title = i2b2.h.getXNodeVal(c[i],'name');
-                                let sdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(c[i], true, options);
-                                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
-                                sdxDataNode.renderData.cssClassMain = "sdxStyleONT-MODIFIER";
-                                sdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
-                                let temp = {
-                                    title: sdxDataNode.renderData.moreDescriptMinor,
-                                    text: sdxDataNode.renderData.title,
-                                    icon: sdxDataNode.renderData.cssClassMain,
-                                    key: sdxDataNode.sdxInfo.sdxKeyValue,
-                                    iconImg: sdxDataNode.renderData.iconImg,
-                                    iconImgExp: sdxDataNode.renderData.iconImgExp,
-                                    i2b2: sdxDataNode
-                                };
-                                temp.state = sdxDataNode.renderData.tvNodeState;
-                                if (sdxDataNode.renderData.cssClassMinor !== undefined) temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
-
-                                const valueMetaDataArr = i2b2.h.XPath(c[i], "metadataxml/ValueMetadata[string-length(Version)>0]");
-                                if (valueMetaDataArr.length > 0) {
-                                    sdxDataNode.origData.hasMetadata = true;
-                                } else {
-                                    sdxDataNode.origData.hasMetadata = false;
-                                }
-                                modifierInfo[modifier_key_value] = sdxDataNode;
+                                modifierInfo[modifier_key_value] = c[0];
                             }
                             resolve();
                         });
@@ -106,7 +80,7 @@ function QueryToolController() {
                 });
             }
 
-            let processPanel = function(qp, isWhenPanel){
+            let processPanel = function(qp, isWhenPanel, modifierXmlInfo){
                 let sdxDataNodeList = [];
                 let without = i2b2.h.getXNodeVal(qp,'invert') === "1";
                 let occurs = i2b2.h.getXNodeVal(qp,'total_item_occurrences');
@@ -247,7 +221,22 @@ function QueryToolController() {
                             // nw096 - If string starts with path \\, lookup path in Ontology cell
                             let modifier_key_value = i2b2.h.getXNodeVal(pi[i2], 'constrain_by_modifier/modifier_key');
 
-                            let modSdxDataNode = modifierInfo[modifier_key_value];
+                            let options = {}
+                            let modSdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(modifierXmlInfo[modifier_key_value], true, options);
+
+                            let renderOptions = { icon: i2b2.ONT.model.icons.modifier };
+                            renderOptions.title = i2b2.h.getXNodeVal(modifierXmlInfo[modifier_key_value],'name');
+                            modSdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                            modSdxDataNode.renderData.cssClassMain = "sdxStyleONT-MODIFIER";
+                            modSdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
+
+                            const valueMetaDataArr = i2b2.h.XPath(modifierXmlInfo[modifier_key_value], "metadataxml/ValueMetadata[string-length(Version)>0]");
+                            if (valueMetaDataArr.length > 0) {
+                                modSdxDataNode.origData.hasMetadata = true;
+                            } else {
+                                modSdxDataNode.origData.hasMetadata = false;
+                            }
+
                             modSdxDataNode.origData.conceptModified = sdxDataNode;
                             sdxDataNode = modSdxDataNode;
                             // Mod Values processing
@@ -312,7 +301,7 @@ function QueryToolController() {
                 let queryName = i2b2.h.getXNodeVal(results.refXML, 'name');
                 this.doSetQueryName(queryName);
 
-                loadAllModifierInfo(qd[0], function(modifierInfo){
+                loadAllModifierInfo(qd[0], function(modifierXmlInfo){
                     for (let j = 0; j < qd.length; j++) {
                         if (j === 0) {
                             //handle temporal subquery panels
@@ -327,7 +316,7 @@ function QueryToolController() {
                                 let isWhen = true;
                                 if (s === 0) {
                                     let subPanel = i2b2.h.XPath(subquery, 'panel');
-                                    let data = processPanel(subPanel[0], isWhen);
+                                    let data = processPanel(subPanel[0], isWhen, modifierXmlInfo);
                                     data.metadata.showLabValues = false;
                                     temporalGroupIdx = i2b2.CRC.view.QT.addNewQueryGroup(data.panel, data.metadata);
                                     queryIdToIndex[queryId] = 0;
@@ -337,7 +326,7 @@ function QueryToolController() {
                                         i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
                                     }
                                     let subPanel = i2b2.h.XPath(subquery, 'panel');
-                                    let data = processPanel(subPanel[0], isWhen);
+                                    let data = processPanel(subPanel[0], isWhen, modifierXmlInfo);
 
                                     data.panel.forEach((sdx) => {
                                         i2b2.CRC.view.QT.addConcept(sdx, temporalGroupIdx, s, false);
@@ -377,7 +366,7 @@ function QueryToolController() {
                             let total_panels = qp.length;
                             for (let i1 = 0; i1 < total_panels; i1++) {
                                 let isWhen = false;
-                                let data = processPanel(qp[i1], isWhen);
+                                let data = processPanel(qp[i1], isWhen, modifierXmlInfo);
                                 data.metadata.showLabValues = false;
                                 i2b2.CRC.view.QT.addNewQueryGroup(data.panel, data.metadata);
                             }
