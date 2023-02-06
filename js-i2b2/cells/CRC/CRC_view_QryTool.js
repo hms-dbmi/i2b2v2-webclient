@@ -1539,6 +1539,20 @@ i2b2.CRC.view.QT.addEvent = function(){
     i2b2.CRC.view.QS.clearStatus();
 }
 // ================================================================================================== //
+i2b2.CRC.view.QT.showQueryReport = function(){
+
+    let queryReportModal = $('body #queryReportModal');
+    if (queryReportModal.length === 0) {
+        queryReportModal = $("<div id='queryReportModal'/>").appendTo("body");
+    }
+
+    let data = {};
+    $(i2b2.CRC.view.QT.template.queryReport(data)).appendTo(queryReportModal);
+    $("#queryReportModal div:eq(0)").modal('show');
+}
+
+// ================================================================================================== //
+
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((cell) => {
@@ -1709,6 +1723,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QT.template.dateConstraint = Handlebars.compile(template);
                 },
                 error: (error) => { console.error("Could not retrieve template: ConceptDateConstraint.html"); }
+            });
+
+            //template for the setting date constraint on concept
+            $.ajax("js-i2b2/cells/CRC/templates/QueryReport.html", {
+                success: (template) => {
+                    cell.view.QT.template.queryReport = Handlebars.compile(template);
+                },
+                error: (error) => { console.error("Could not retrieve template: QueryReport.html"); }
             });
 
             cell.model.query = {
