@@ -296,86 +296,87 @@ function QueryToolController() {
                 };
             };
 
+            let reloadQuery = function(modifierXmlInfo){
+                for (let j = 0; j < qd.length; j++) {
+                    if (j === 0) {
+                        //handle temporal subquery panels
+                        let subqueries = i2b2.h.XPath(qd[j], 'subquery');
+                        let subQueryConstraints = i2b2.h.XPath(qd[j], 'subquery_constraint');
+
+                        let temporalGroupIdx = -1;
+                        let queryIdToIndex = {};
+                        for (let s = 0; s < subqueries.length; s++) {
+                            let subquery = subqueries[s];
+                            let queryId = i2b2.h.getXNodeVal(subquery, 'query_id');
+                            let isWhen = true;
+                            if (s === 0) {
+                                let subPanel = i2b2.h.XPath(subquery, 'panel');
+                                let data = processPanel(subPanel[0], isWhen, modifierXmlInfo);
+                                data.metadata.showLabValues = false;
+                                temporalGroupIdx = i2b2.CRC.view.QT.addNewQueryGroup(data.panel, data.metadata);
+                                queryIdToIndex[queryId] = 0;
+                            } else {
+                                if (i2b2.CRC.model.query.groups[temporalGroupIdx].events.length <= s) {
+                                    i2b2.CRC.model.query.groups[temporalGroupIdx].events.push(i2b2.CRC.view.QT.createEvent());
+                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
+                                }
+                                let subPanel = i2b2.h.XPath(subquery, 'panel');
+                                let data = processPanel(subPanel[0], isWhen, modifierXmlInfo);
+
+                                data.panel.forEach((sdx) => {
+                                    i2b2.CRC.view.QT.addConcept(sdx, temporalGroupIdx, s, false);
+                                });
+
+                                if (data.metadata.startDate !== undefined) {
+                                    i2b2.CRC.model.query.groups[temporalGroupIdx].events[s].dateRange.start = data.metadata.startDate;
+                                }
+
+                                if (data.metadata.endDate !== undefined) {
+                                    i2b2.CRC.model.query.groups[temporalGroupIdx].events[s].dateRange.end = data.metadata.endDate;
+                                }
+                                queryIdToIndex[queryId] = i2b2.CRC.model.query.groups[temporalGroupIdx].events.length - 1;
+                            }
+                        }
+                        if (temporalGroupIdx !== -1) {
+                            for (let s = 0; s < subQueryConstraints.length; s++) {
+                                let queryId = i2b2.h.getXNodeVal(subQueryConstraints[s], 'first_query/query_id');
+                                let eventLinkIndex = queryIdToIndex[queryId];
+
+                                i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].joinColumn1 = i2b2.h.getXNodeVal(subQueryConstraints[s], 'first_query/join_column');
+                                i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].aggregateOp1 = i2b2.h.getXNodeVal(subQueryConstraints[s], 'first_query/aggregate_operator');
+                                i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].joinColumn2 = i2b2.h.getXNodeVal(subQueryConstraints[s], 'second_query/join_column');
+                                i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].aggregateOp2 = i2b2.h.getXNodeVal(subQueryConstraints[s], 'second_query/aggregate_operator');
+                                i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].operator = i2b2.h.XPath(subQueryConstraints[s], 'descendant-or-self::operator/text()')[0].nodeValue;
+
+                                let timeSpans = i2b2.h.XPath(subQueryConstraints[s], 'span');
+                                for (let ts = 0; ts < timeSpans.length; ts++) {
+                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].operator = i2b2.h.getXNodeVal(timeSpans[ts], 'operator');
+                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].value = i2b2.h.getXNodeVal(timeSpans[ts], 'span_value');
+                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].unit = i2b2.h.getXNodeVal(timeSpans[ts], 'units');
+                                }
+                            }
+                        }
+
+                        let qp = i2b2.h.XPath(qd[j], 'panel');
+                        let total_panels = qp.length;
+                        for (let i1 = 0; i1 < total_panels; i1++) {
+                            let isWhen = false;
+                            let data = processPanel(qp[i1], isWhen, modifierXmlInfo);
+                            data.metadata.showLabValues = false;
+                            i2b2.CRC.view.QT.addNewQueryGroup(data.panel, data.metadata);
+                        }
+                    }
+
+                    i2b2.CRC.view.QT.render();
+                }
+            };
+
             let qd = i2b2.h.XPath(results.refXML, 'descendant::query_name/..');
             if (qd.length !== 0) {
                 let queryName = i2b2.h.getXNodeVal(results.refXML, 'name');
                 this.doSetQueryName(queryName);
-
-                loadAllModifierInfo(qd[0], function(modifierXmlInfo){
-                    for (let j = 0; j < qd.length; j++) {
-                        if (j === 0) {
-                            //handle temporal subquery panels
-                            let subqueries = i2b2.h.XPath(qd[j], 'subquery');
-                            let subQueryConstraints = i2b2.h.XPath(qd[j], 'subquery_constraint');
-
-                            let temporalGroupIdx = -1;
-                            let queryIdToIndex = {};
-                            for (let s = 0; s < subqueries.length; s++) {
-                                let subquery = subqueries[s];
-                                let queryId = i2b2.h.getXNodeVal(subquery, 'query_id');
-                                let isWhen = true;
-                                if (s === 0) {
-                                    let subPanel = i2b2.h.XPath(subquery, 'panel');
-                                    let data = processPanel(subPanel[0], isWhen, modifierXmlInfo);
-                                    data.metadata.showLabValues = false;
-                                    temporalGroupIdx = i2b2.CRC.view.QT.addNewQueryGroup(data.panel, data.metadata);
-                                    queryIdToIndex[queryId] = 0;
-                                } else {
-                                    if (i2b2.CRC.model.query.groups[temporalGroupIdx].events.length <= s) {
-                                        i2b2.CRC.model.query.groups[temporalGroupIdx].events.push(i2b2.CRC.view.QT.createEvent());
-                                        i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
-                                    }
-                                    let subPanel = i2b2.h.XPath(subquery, 'panel');
-                                    let data = processPanel(subPanel[0], isWhen, modifierXmlInfo);
-
-                                    data.panel.forEach((sdx) => {
-                                        i2b2.CRC.view.QT.addConcept(sdx, temporalGroupIdx, s, false);
-                                    });
-
-                                    if (data.metadata.startDate !== undefined) {
-                                        i2b2.CRC.model.query.groups[temporalGroupIdx].events[s].dateRange.start = data.metadata.startDate;
-                                    }
-
-                                    if (data.metadata.endDate !== undefined) {
-                                        i2b2.CRC.model.query.groups[temporalGroupIdx].events[s].dateRange.end = data.metadata.endDate;
-                                    }
-                                    queryIdToIndex[queryId] = i2b2.CRC.model.query.groups[temporalGroupIdx].events.length - 1;
-                                }
-                            }
-                            if (temporalGroupIdx !== -1) {
-                                for (let s = 0; s < subQueryConstraints.length; s++) {
-                                    let queryId = i2b2.h.getXNodeVal(subQueryConstraints[s], 'first_query/query_id');
-                                    let eventLinkIndex = queryIdToIndex[queryId];
-
-                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].joinColumn1 = i2b2.h.getXNodeVal(subQueryConstraints[s], 'first_query/join_column');
-                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].aggregateOp1 = i2b2.h.getXNodeVal(subQueryConstraints[s], 'first_query/aggregate_operator');
-                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].joinColumn2 = i2b2.h.getXNodeVal(subQueryConstraints[s], 'second_query/join_column');
-                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].aggregateOp2 = i2b2.h.getXNodeVal(subQueryConstraints[s], 'second_query/aggregate_operator');
-                                    i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].operator = i2b2.h.XPath(subQueryConstraints[s], 'descendant-or-self::operator/text()')[0].nodeValue;
-
-                                    let timeSpans = i2b2.h.XPath(subQueryConstraints[s], 'span');
-                                    for (let ts = 0; ts < timeSpans.length; ts++) {
-                                        i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].operator = i2b2.h.getXNodeVal(timeSpans[ts], 'operator');
-                                        i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].value = i2b2.h.getXNodeVal(timeSpans[ts], 'span_value');
-                                        i2b2.CRC.model.query.groups[temporalGroupIdx].eventLinks[eventLinkIndex].timeSpans[ts].unit = i2b2.h.getXNodeVal(timeSpans[ts], 'units');
-                                    }
-                                }
-                            }
-
-                            let qp = i2b2.h.XPath(qd[j], 'panel');
-                            let total_panels = qp.length;
-                            for (let i1 = 0; i1 < total_panels; i1++) {
-                                let isWhen = false;
-                                let data = processPanel(qp[i1], isWhen, modifierXmlInfo);
-                                data.metadata.showLabValues = false;
-                                i2b2.CRC.view.QT.addNewQueryGroup(data.panel, data.metadata);
-                            }
-                        }
-
-                        i2b2.CRC.view.QT.render();
-                    }
-                    i2b2.CRC.ctrlr.QT.loadQueryStatus(qm_id, queryName);
-                });
+                loadAllModifierInfo(qd[0], reloadQuery);
+                i2b2.CRC.ctrlr.QT.loadQueryStatus(qm_id, queryName);
             }
         }
         // AJAX CALL
