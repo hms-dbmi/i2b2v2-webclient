@@ -1,3 +1,13 @@
 body {
-    background-color: #86b7fe;
+    font-family: arial, helvetica, verdana, sans-serif;
+}
+
+.title {
+    border-bottom: 1px solid #000000;
+}
+
+.sub-title {
+    color-legacy_i2b2: #006699;
+    color: #2782a3;
+    border-bottom: 1px solid #2782a3;
 }

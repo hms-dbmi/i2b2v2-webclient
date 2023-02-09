@@ -1543,10 +1543,21 @@ i2b2.CRC.view.QT.showQueryReport = function() {
 
     // this function is used to generate the report and display the modal window
     const generateReport = function () {
-        // populate the document in the iframe
-        const reportHtml = i2b2.CRC.view.QT.template.queryReport({});
-        $('#queryReportWindow')[0].contentWindow.document.write(reportHtml);
+        const submittedByUsername = i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//query_master/user_id/text()")[0].nodeValue;
+        let reportData = {
+            name: i2b2.CRC.ctrlr.QS.QM.name,
+            submittedAt: i2b2.CRC.ctrlr.QS.QI.start_date.toLocaleString().replace(", ","@"),
+            completedAt: i2b2.CRC.ctrlr.QS.QI.end_date.toLocaleString().replace(", ","@"),
+            submittedBy: "TODO-run GetUser(" + submittedByUsername + ")",
+            runDuration: Number(i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date + 1000).toLocaleString()
+        };
 
+        // populate the document in the iframe
+        const reportHtml = i2b2.CRC.view.QT.template.queryReport(reportData);
+        const reportDocument = $('#queryReportWindow')[0].contentWindow.document;
+        reportDocument.open();
+        reportDocument.write(reportHtml);
+        reportDocument.close();
         // show report
         $("#queryReportModal div:eq(0)").modal('show');
     };
