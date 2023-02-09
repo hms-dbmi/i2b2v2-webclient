@@ -1553,6 +1553,8 @@ i2b2.CRC.view.QT.showQueryReport = function(){
     const reportWindow = $('#queryReportWindow')[0].contentWindow;
     $('#queryReportModal button.print').on('click', () => {reportWindow.print(); });
 
+    // populate the document in the iframe
+    reportWindow.document.body.innerHTML = Array(20).fill('<p>testing</p>').join('<br>');
 
     $("#queryReportModal div:eq(0)").modal('show');
 }
