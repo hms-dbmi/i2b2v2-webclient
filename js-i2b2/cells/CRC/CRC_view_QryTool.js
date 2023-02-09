@@ -1551,7 +1551,7 @@ i2b2.CRC.view.QT.showQueryReport = function(){
 
     // Attach print function
     const reportWindow = $('#queryReportWindow')[0].contentWindow;
-    $('#queryReportModal ').on('click', () => {reportWindow.print(); });
+    $('#queryReportModal button.print').on('click', () => {reportWindow.print(); });
 
 
     $("#queryReportModal div:eq(0)").modal('show');
