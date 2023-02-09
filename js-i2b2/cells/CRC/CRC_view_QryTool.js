@@ -1548,6 +1548,12 @@ i2b2.CRC.view.QT.showQueryReport = function(){
 
     let data = {};
     $(i2b2.CRC.view.QT.template.queryReport(data)).appendTo(queryReportModal);
+
+    // Attach print function
+    const reportWindow = $('#queryReportWindow')[0].contentWindow;
+    $('#queryReportModal ').on('click', () => {reportWindow.print(); });
+
+
     $("#queryReportModal div:eq(0)").modal('show');
 }
 
