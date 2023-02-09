@@ -1539,27 +1539,45 @@ i2b2.CRC.view.QT.addEvent = function(){
     i2b2.CRC.view.QS.clearStatus();
 }
 // ================================================================================================== //
-i2b2.CRC.view.QT.showQueryReport = function(){
+i2b2.CRC.view.QT.showQueryReport = function() {
 
+    // this function is used to generate the report and display the modal window
+    const generateReport = function () {
+        const reportWindow = $('#queryReportWindow')[0].contentWindow;
+
+        // populate the document in the iframe
+        reportWindow.document.body.innerHTML = Array(20).fill('<p>testing</p>').join('<br>');
+
+        // show report
+        $("#queryReportModal div:eq(0)").modal('show');
+    };
+
+    // load the modal window if needed
     let queryReportModal = $('body #queryReportModal');
     if (queryReportModal.length === 0) {
         queryReportModal = $("<div id='queryReportModal'/>").appendTo("body");
+        $.ajax("js-i2b2/cells/CRC/assets/modalQueryReport.html", {
+            success: (content) => {
+                queryReportModal.html(content);
+
+                // Attach print function
+                const reportWindow = $('#queryReportWindow')[0].contentWindow;
+                $('#queryReportModal button.print').on('click', () => {
+                    // automatically hide the preview modal
+                    $('#queryReportModal .modal').modal('hide');
+                    // print the document
+                    reportWindow.print();
+                });
+                generateReport();
+            },
+            error: () => {
+                alert("Error: cannot load report template!");
+            }
+        });
+    } else {
+        generateReport();
     }
-
-    let data = {};
-    $(i2b2.CRC.view.QT.template.queryReport(data)).appendTo(queryReportModal);
-
-    // Attach print function
-    const reportWindow = $('#queryReportWindow')[0].contentWindow;
-    const printBtn = $('#queryReportModal button.print');
-    printBtn.unbind('click');
-    printBtn.on('click', () => {reportWindow.print(); });
-
-    // populate the document in the iframe
-    reportWindow.document.body.innerHTML = Array(20).fill('<p>testing</p>').join('<br>');
-
-    $("#queryReportModal div:eq(0)").modal('show');
-}
+};
 
 // ================================================================================================== //
 
@@ -1733,14 +1751,6 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QT.template.dateConstraint = Handlebars.compile(template);
                 },
                 error: (error) => { console.error("Could not retrieve template: ConceptDateConstraint.html"); }
-            });
-
-            //template for the setting date constraint on concept
-            $.ajax("js-i2b2/cells/CRC/templates/QueryReport.html", {
-                success: (template) => {
-                    cell.view.QT.template.queryReport = Handlebars.compile(template);
-                },
-                error: (error) => { console.error("Could not retrieve template: QueryReport.html"); }
             });
 
             cell.model.query = {
