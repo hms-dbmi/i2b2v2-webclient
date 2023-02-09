@@ -1543,10 +1543,9 @@ i2b2.CRC.view.QT.showQueryReport = function() {
 
     // this function is used to generate the report and display the modal window
     const generateReport = function () {
-        const reportWindow = $('#queryReportWindow')[0].contentWindow;
-
         // populate the document in the iframe
-        reportWindow.document.body.innerHTML = Array(20).fill('<p>testing</p>').join('<br>');
+        const reportHtml = i2b2.CRC.view.QT.template.queryReport({});
+        $('#queryReportWindow')[0].contentWindow.document.write(reportHtml);
 
         // show report
         $("#queryReportModal div:eq(0)").modal('show');
@@ -1752,6 +1751,17 @@ i2b2.events.afterCellInit.add((cell) => {
                 },
                 error: (error) => { console.error("Could not retrieve template: ConceptDateConstraint.html"); }
             });
+
+            //template for the Query Report
+            $.ajax("js-i2b2/cells/CRC/templates/QueryReport.html", {
+                success: (template) => {
+                    cell.view.QT.template.queryReport = Handlebars.compile(template);
+                },
+                error: (error) => { console.error("Could not retrieve template: QueryReport.html"); }
+            });
+
+
+
 
             cell.model.query = {
                 name: 'default query name',
