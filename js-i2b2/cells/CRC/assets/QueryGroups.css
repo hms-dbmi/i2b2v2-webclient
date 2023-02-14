@@ -497,7 +497,7 @@
 }
 
 .QueryGroup.when .SequenceBar {
-    max-height: 5.5em;
+    max-height: 12.5em; /*added height for laptops */
     padding: 0.4em 0.4em 0.4em 0.6em;
     border-right: 1px solid #d8a407;
     border-top: 0px;
@@ -615,6 +615,18 @@
 .QueryGroup.whenItem.disabled {
     cursor: not-allowed! important;
     color: rgba(33, 37, 41, 0.47);
+}
+
+.DateRelationship{
+    background-color: #fff;
+    border-radius: 4px
+}
+
+
+.EventAccordion button{
+    background-color: transparent;
+    border-color: transparent;
+    color: black;
 }
 
 /* Occurs */

@@ -106,7 +106,7 @@ i2b2.CRC.view.QT.enableWhenIfAvail = function() {
     let selectedWhen = $(".QueryGroup.when");
 
     if(selectedWhen.length === 0){
-        $(".whenItem").removeClass("disabled");
+        $(".whenItem").removeClass("disabled");       
     }else{
         $(".whenItem").addClass("disabled");
         selectedWhen.find(".whenItem").removeClass("disabled");
@@ -159,6 +159,7 @@ i2b2.CRC.view.QT.extractEventLinkFromElem = function(elem) {
 i2b2.CRC.view.QT.updateEventLinkOperator = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     eventLink.operator = $(elem).val();
+    i2b2.CRC.view.QT.getFormValues(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
@@ -166,15 +167,63 @@ i2b2.CRC.view.QT.updateEventLinkAggregateOp = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     let eventLinkOpName = $(elem).data('aggregateOp');
     eventLink[eventLinkOpName] = $(elem).val();
-    i2b2.CRC.view.QS.clearStatus();
+    i2b2.CRC.view.QT.getFormValues(elem); 
+    i2b2.CRC.view.QS.clearStatus();       
+       
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateEventLinkJoinColumn = function(elem) {
-    let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
-    let eventLinkOpName = $(elem).data('joinColumn');
+    let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);  
+    let eventLinkOpName = $(elem).data('joinColumn');    
     eventLink[eventLinkOpName] = $(elem).val();
+    i2b2.CRC.view.QT.getFormValues(elem); 
     i2b2.CRC.view.QS.clearStatus();
+    
+       
+    
+    //console.log(innerHTML1);
 };
+// ================================================================================================== //
+
+
+i2b2.CRC.view.QT.getFormValues = function(elem) {
+    let eventLinkIdx = $(elem).parents('.eventLink').first().data('eventLinkIdx'); // eventlink idx +1     
+    let baseEvent = $(elem).parents('.eventLink')[0]; 
+    let text = 'The ';
+
+    text = text + $('.joinColumn.day1 option:selected', baseEvent).text();
+    text = text + ' ' + $('.aggregateOp.frame1 option:selected', baseEvent).text();
+    text = text + ' ' + 'the occurrence of Event ' + (eventLinkIdx+1); 
+    text = text + ' ' + $('.occurs.occOp option:selected', baseEvent).text();
+    text = text + ' ' + 'the ' + $('.joinColumn.day2 option:selected', baseEvent).text();
+    text = text + ' ' + $('.aggregateOp.frame2 option:selected', baseEvent).text() + ' occurrence of Event ' + (eventLinkIdx+2);
+    if($('.check1').prop('checked')){
+        text = text + ' ' + 'by';
+        text = text + ' ' + $('.op1 option:selected', baseEvent).text();
+        if ($('.incInt1', baseEvent).val().length === 0){
+            text = text + ' ' + '0'; 
+        } else{
+            text = text + ' ' + $('.incInt1', baseEvent).val();
+        }        
+        text = text + ' ' + $('.time1 option:selected', baseEvent).text();
+    }
+    if($('.check2').prop('checked')){
+        text = text + ' ' + 'and';
+        text = text + ' ' + $('.op2 option:selected', baseEvent).text();
+        if ($('.incInt2', baseEvent).val().length === 0){
+            text = text + ' ' + '0'; 
+        } else{
+            text = text + ' ' + $('.incInt2', baseEvent).val();
+        }        
+        text = text + ' ' + $('.time2 option:selected', baseEvent).text();
+    }
+    
+    console.log(text);
+
+    //check boxes are conditional
+    //set default value for day increment
+};
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
     let timeSpanElem = $(elem).parents(".timeSpan").find(".timeSpanField");
@@ -211,21 +260,21 @@ i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
 i2b2.CRC.view.QT.updateTimeSpanOperator = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.operator = $(elem).val();
-
+    i2b2.CRC.view.QT.getFormValues(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateTimeSpanValue = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.value = $(elem).val();
-
+    i2b2.CRC.view.QT.getFormValues(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateTimeSpanUnit = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.unit = $(elem).val();
-
+    i2b2.CRC.view.QT.getFormValues(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 
