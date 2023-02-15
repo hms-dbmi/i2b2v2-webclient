@@ -9,3 +9,7 @@
 .modal-form {
     margin: 0px 40px;
 }
+
+#i2b2TreeviewWork .icon.node-icon {
+    cursor: alias;
+}

@@ -1,0 +1,18 @@
+
+.rightClick {
+    cursor: url("/assets/images/right-click.png"), alias !important;
+}
+
+#i2b2TreeviewQueryHistory .sdxStyleCRC-QM.tvBranch.tv-depth-1 {
+    cursor: url("/assets/images/right-click.png"), alias !important;
+}
+
+/* right-click mouse cursor */
+#i2b2TreeviewOntNav .node-icon.sdxStyleONT-CONCPT,
+#i2b2TreeviewOntNav .node-icon.sdxStyleONT-MODIFIER {
+    cursor: url("/assets/images/right-click.png"), alias !important;
+}
+
+#i2b2TreeviewWork .icon.node-icon {
+    cursor: url("/assets/images/right-click.png"), alias !important;
+}

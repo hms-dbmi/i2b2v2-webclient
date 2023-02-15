@@ -47,6 +47,12 @@
 }
 
 
+
+#i2b2TreeviewQueryHistory .sdxStyleCRC-QM.tvBranch.tv-depth-1 {
+    cursor: alias;
+}
+
+
 #i2b2QueryHistoryFinderMessage{
     padding-top: 0.6em;
     padding-left: 0.9em;

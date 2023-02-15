@@ -184,6 +184,10 @@ A.selectedView { font-weight:bold; }
 }
 
 
+.rightClick {
+	cursor: alias;
+}
+
 
 /* function buttons on right of tabs */
 DIV.opXML {
@@ -200,7 +204,6 @@ DIV.TopTabs {
 	z-index:100 !important;
 	overflow:hidden;
 }
-
 
 DIV.tabBox {
 	background:#BBCCEE none repeat scroll 0%;
@@ -491,8 +494,7 @@ textarea {
 	height:50px;
 }
 
-.goldenLayout div.pluginCellMain
-{
+.goldenLayout div.pluginCellMain {
  	border: 1px solid #678;
 }
 

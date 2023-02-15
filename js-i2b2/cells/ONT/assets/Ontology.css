@@ -19,6 +19,14 @@
     align-items: center;
 }
 
+/* right-click mouse cursor */
+#i2b2TreeviewOntNav .node-icon.sdxStyleONT-CONCPT,
+#i2b2TreeviewOntNav .node-icon.sdxStyleONT-MODIFIER {
+    cursor: alias;
+}
+
+
+
 
 /* TECHNICAL DEBT: Change this when CSS selector :has() is implemented
 #i2b2TreeviewOntSearch li:has(.sdxStyleONT-CONCPT.highlight) span.indent {
