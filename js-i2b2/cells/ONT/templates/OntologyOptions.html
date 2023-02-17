@@ -1,0 +1,16 @@
+<div class="form-group row">
+    <div class="input-group input-group-sm mb-2">
+        <div class="input-group-prepend">
+        <label for="ONTNAVMaxQryDisp" class="input-group-text">Maximum Number of Children to Display:</label>
+        </div>
+        <input id="ONTNAVMaxQryDisp"  type="text"  value="200" class="form-control" placeholder="180" aria-label="Max Number of Children to Display">
+    </div>
+    <div style="margin-left:50px">
+        {{#if modifiers}}
+            <input type="checkbox" id="ONTNAVdisableModifiers" checked/>
+        {{else}}
+            <input type="checkbox" id="ONTNAVdisableModifiers" />
+        {{/if}}
+        <label for="ONTNAVdisableModifiers"> Disable Modifiers </label>
+    </div>
+</div>
