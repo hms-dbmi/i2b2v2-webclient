@@ -139,33 +139,38 @@ i2b2.events.afterCellInit.add((cell) => {
                 i2b2.ONT.view.nav.ContextMenu =  i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntNav',i2b2.ONT.view.nav.treeview);
 
                 container.on( 'tab', function( tab ){
-                    i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu(tab.element, {
-                        actions: {
-                            nodeAnnotate: {
-                                name: 'Show Options',
-                                onClick: function(node) {
-                                    let optionsDialogModal = $("#ontOptionsModal");
-                                    if (optionsDialogModal.length === 0) {
-                                        $("body").append("<div id='ontOptionsModal'/>");
-                                        optionsDialogModal = $("#ontOptionsModal");
-                                    }
-                                    optionsDialogModal.load('js-i2b2/cells/ONT/assets/modalOptionsONT.html', function() {
-                                        $((Handlebars.compile("{{> OntologyOptions}}"))(i2b2.ONT.view.nav.params)).appendTo("#ontOptionsFields");
+                    if(tab.element.text() === 'Terms') {
+                        //add unique id to the term tab
+                        let elemId = "ontologyTermTab";
+                        $(tab.element).attr("id", elemId);
+                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+                            actions: {
+                                nodeAnnotate: {
+                                    name: 'Show Options',
+                                    onClick: function (node) {
+                                        let optionsDialogModal = $("#ontOptionsModal");
+                                        if (optionsDialogModal.length === 0) {
+                                            $("body").append("<div id='ontOptionsModal'/>");
+                                            optionsDialogModal = $("#ontOptionsModal");
+                                        }
+                                        optionsDialogModal.load('js-i2b2/cells/ONT/assets/modalOptionsONT.html', function () {
+                                            $((Handlebars.compile("{{> OntologyOptions}}"))(i2b2.ONT.view.nav.params)).appendTo("#ontOptionsFields");
 
-                                        $("body #ontOptionsModal button.options-save").click(function () {
-                                            i2b2.ONT.view.nav.params.modifiers = $('#ONTNAVdisableModifiers').is(":checked");
-                                            i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(),10);
-                                            i2b2.ONT.view.nav.params.synonyms = $('#ONTNAVshowSynonyms').is(":checked");
-                                            i2b2.ONT.view.nav.params.hiddens = $('#ONTNAVshowHiddens').is(":checked");
-                                            i2b2.ONT.view.nav.doRefreshAll();
-                                            $("#ontOptionsModal div").eq(0).modal("hide");
+                                            $("body #ontOptionsModal button.options-save").click(function () {
+                                                i2b2.ONT.view.nav.params.modifiers = $('#ONTNAVdisableModifiers').is(":checked");
+                                                i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);
+                                                i2b2.ONT.view.nav.params.synonyms = $('#ONTNAVshowSynonyms').is(":checked");
+                                                i2b2.ONT.view.nav.params.hiddens = $('#ONTNAVshowHiddens').is(":checked");
+                                                i2b2.ONT.view.nav.doRefreshAll();
+                                                $("#ontOptionsModal div").eq(0).modal("hide");
+                                            });
+                                            $("#ontOptionsModal div").eq(0).modal("show");
                                         });
-                                        $("#ontOptionsModal div").eq(0).modal("show");
-                                    });
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 });
 
                 //HTML template for ontology options
