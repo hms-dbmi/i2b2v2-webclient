@@ -291,6 +291,10 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                 iconImgExp: sdxDataNode.renderData.iconImgExp,
                 i2b2: sdxDataNode
             };
+
+            if(sdxDataNode.origData.synonym_cd !== undefined && sdxDataNode.origData.synonym_cd !== 'N'){
+                temp.color = "#0000ff";
+            }
             temp.state = sdxDataNode.renderData.tvNodeState;
             if (sdxDataNode.renderData.cssClassMinor !== undefined) temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             if (typeof cl_node === 'undefined' || (typeof cl_node === 'string' && String(cl_node).trim() === '')) {
@@ -313,7 +317,15 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
     };
     // TODO: Implement param routing from node's container
     let options = {};
-    let t = i2b2.ONT.params;
+    let t;
+    switch (node.refTreeview.elementId) {
+        case "i2b2TreeviewOntNav":
+        case "i2b2TreeviewOntSearch":
+            t = i2b2.ONT.view.nav.params;
+            break;
+        default:
+            t = i2b2.ONT.params;
+    }
     if (t === undefined) t = {};
     if (t.hiddens !== undefined) {
         options.ont_hidden_records = t.hiddens;
