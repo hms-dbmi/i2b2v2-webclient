@@ -151,7 +151,6 @@ i2b2.events.afterCellInit.add((cell) => {
                     });
                 });
 
-
                 container.on( 'tab', function( tab ){
                     if(tab.element.text() === 'Terms') {
                         //add unique id to the term tab
@@ -168,14 +167,6 @@ i2b2.events.afterCellInit.add((cell) => {
                             }
                         });
                     }
-                });
-
-                //HTML template for ontology options
-                $.ajax("js-i2b2/cells/ONT/templates/OntologyOptions.html", {
-                    success: (template, status, req) => {
-                        Handlebars.registerPartial("OntologyOptions", req.responseText);
-                    },
-                    error: (error) => { console.error("Could not retrieve template: OntologyOptions.html"); }
                 });
 
                 //set default values
