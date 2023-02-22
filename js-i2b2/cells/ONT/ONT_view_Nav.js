@@ -138,6 +138,20 @@ i2b2.events.afterCellInit.add((cell) => {
                 // -------------------- setup context menu --------------------
                 i2b2.ONT.view.nav.ContextMenu =  i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntNav',i2b2.ONT.view.nav.treeview);
 
+                let optionsDialogModal = $("#ontOptionsModal");
+                $("body").append(optionsDialogModal);
+                optionsDialogModal.load('js-i2b2/cells/ONT/assets/modalOptionsONT.html', function () {
+                    $("body #ontOptionsModal button.options-save").click(function () {
+                        i2b2.ONT.view.nav.params.modifiers = $('#ONTNAVdisableModifiers').is(":checked");
+                        i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);
+                        i2b2.ONT.view.nav.params.synonyms = $('#ONTNAVshowSynonyms').is(":checked");
+                        i2b2.ONT.view.nav.params.hiddens = $('#ONTNAVshowHiddens').is(":checked");
+                        i2b2.ONT.view.nav.doRefreshAll();
+                        $("#ontOptionsModal div").eq(0).modal("hide");
+                    });
+                });
+
+
                 container.on( 'tab', function( tab ){
                     if(tab.element.text() === 'Terms') {
                         //add unique id to the term tab
@@ -148,24 +162,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 nodeAnnotate: {
                                     name: 'Show Options',
                                     onClick: function (node) {
-                                        let optionsDialogModal = $("#ontOptionsModal");
-                                        if (optionsDialogModal.length === 0) {
-                                            $("body").append("<div id='ontOptionsModal'/>");
-                                            optionsDialogModal = $("#ontOptionsModal");
-                                            optionsDialogModal.load('js-i2b2/cells/ONT/assets/modalOptionsONT.html', function () {
-                                                $("body #ontOptionsModal button.options-save").click(function () {
-                                                    i2b2.ONT.view.nav.params.modifiers = $('#ONTNAVdisableModifiers').is(":checked");
-                                                    i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);
-                                                    i2b2.ONT.view.nav.params.synonyms = $('#ONTNAVshowSynonyms').is(":checked");
-                                                    i2b2.ONT.view.nav.params.hiddens = $('#ONTNAVshowHiddens').is(":checked");
-                                                    i2b2.ONT.view.nav.doRefreshAll();
-                                                    $("#ontOptionsModal div").eq(0).modal("hide");
-                                                });
-                                                $("#ontOptionsModal div").eq(0).modal("show");
-                                            });
-                                        }else{
-                                            $("#ontOptionsModal div").eq(0).modal("show");
-                                        }
+                                        $("#ontOptionsModal div").eq(0).modal("show");
                                     }
                                 }
                             }
