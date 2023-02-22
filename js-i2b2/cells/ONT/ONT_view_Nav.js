@@ -66,7 +66,10 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
     i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview(nodeData, function(newNodes, parentNodes) {
         // change the tiles to contain the counts
         newNodes.forEach((node) => {
-            if (node.i2b2.origData.total_num !== undefined) node.text += ' - (' + node.i2b2.origData.total_num + ')';
+            let enablePatientCounts = $("#ONTNAVshowPatientCounts").is(":checked");
+            if (enablePatientCounts !== false && node.i2b2.origData.total_num !== undefined) {
+                node.text += ' - (' + node.i2b2.origData.total_num + ')';
+            }
         });
 
         // push new nodes into the treeview
