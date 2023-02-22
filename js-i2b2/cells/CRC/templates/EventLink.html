@@ -1,6 +1,6 @@
 <div class="SequenceBar eventLink" data-event-Link-Idx="{{index}}">
     <div class="accordion" id="whenExpander-{{index}}">
-        <span class="EventAccordion" id="rollUp-{{index}}"><span>The start of the first occurrence of Event 1 occurs before the start of the first occurrence of Event 2 by  &ge;  x day(s) and  &ge;  x day(s) </span><button type="button" data-bs-toggle="collapse" data-bs-target="#expandedContent-{{index}}" aria-expanded="false" aria-controls="expandedContent-{{index}}"> <i aria-hidden="true" class="bi bi-chevron-down"></i><span class="visually-hidden">expand relationship controls</span></button></span>
+        <span class="EventAccordion" id="rollUp-{{index}}"><span>The start of the first occurrence of Event {{increment  index}} occurs before the start of the first occurrence of Event {{increment  index inc=2}}  </span><button type="button" data-bs-toggle="collapse" data-bs-target="#expandedContent-{{index}}" aria-expanded="false" aria-controls="expandedContent-{{index}}"> <i aria-hidden="true" class="bi bi-chevron-down"></i><span class="visually-hidden">expand relationship controls</span></button></span>
         <div class="DateRelationship accordion-collapse collapse me-4 my-2 pt-2 px-3" id="expandedContent-{{index}}" data-bs-parent="#whenExpander-{{index}}">
             <div class="d-flex flex-wrap align-items-end mb-1">
                 <span>the</span>

@@ -218,11 +218,13 @@ i2b2.CRC.view.QT.getFormValues = function(elem) {
         text = text + ' ' + $('.time2 option:selected', baseEvent).text();
     }
     
-    console.log(text);
-
-    //check boxes are conditional
-    //set default value for day increment
+    i2b2.CRC.view.QT.updateExpanderText(text, baseEvent);
+   
 };
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateExpanderText= function(text, baseEvent){  
+    $('.EventAccordion > span', baseEvent).text(text);
+}
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
@@ -244,7 +246,7 @@ i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
         parent.find(".timeSpanUnit").val("DAY");
         parent.find(".timeSpanValue").val("");
     }
-
+    i2b2.CRC.view.QT.getFormValues(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
