@@ -138,7 +138,7 @@ i2b2.events.afterCellInit.add((cell) => {
                 // -------------------- setup context menu --------------------
                 i2b2.ONT.view.nav.ContextMenu =  i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntNav',i2b2.ONT.view.nav.treeview);
 
-                let optionsDialogModal = $("#ontOptionsModal");
+                let optionsDialogModal = $("<div id='ontOptionsModal'/>");
                 $("body").append(optionsDialogModal);
                 optionsDialogModal.load('js-i2b2/cells/ONT/assets/modalOptionsONT.html', function () {
                     $("body #ontOptionsModal button.options-save").click(function () {
