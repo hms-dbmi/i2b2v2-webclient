@@ -72,6 +72,8 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
 
 //================================================================================================== //
 i2b2.CRC.view.history.treeRedraw = function(ev, b) {
+    // put blank title attribute to suppress display of browser tooltip
+    i2b2.h.suppressTvIconTitle();
     // attach drag drop attribute
     i2b2.CRC.view.history.lm_view._contentElement.find('li:not(:has(span.tvRoot))').attr("draggable", true);
 };
@@ -239,7 +241,6 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
 
         // render tree
         i2b2.CRC.view.history.treeview.treeview('redraw', []);
-        i2b2.h.suppressTvIconTitle();
         $('.history-more-bar i.bi').addClass("d-none");
     };
     let max = maxRecords ? maxRecords : i2b2.CRC.view.history.params.maxQueriesDisp;

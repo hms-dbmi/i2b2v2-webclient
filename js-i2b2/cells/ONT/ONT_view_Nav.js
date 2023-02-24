@@ -53,7 +53,6 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
     i2b2.ONT.view.nav.treeview.treeview('addNodes', [newNodes, true]);
     // render tree
     i2b2.ONT.view.nav.treeview.treeview('redraw', []);
-    i2b2.h.suppressTvIconTitle();
 };
 
 
@@ -87,7 +86,6 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
         ]);
         // render tree
         i2b2.ONT.view.nav.treeview.treeview('redraw', []);
-        i2b2.h.suppressTvIconTitle();
     });
 };
 
@@ -133,6 +131,8 @@ i2b2.events.afterCellInit.add((cell) => {
                 treeRef.on('onRedraw', () => {
                     // attach drag drop attribute after the tree has been redrawn
                     i2b2.ONT.view.nav.treeview.find('li:not(:has(span.tvRoot))').attr("draggable", true);
+                    // put blank title attribute to suppress display of browser tooltip
+                    i2b2.h.suppressTvIconTitle();
                 });
 
                 i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model

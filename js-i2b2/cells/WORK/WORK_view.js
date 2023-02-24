@@ -143,7 +143,6 @@ i2b2.WORK.view.main.loadChildren = function(e, nodeData){
 
         // render tree
         i2b2.WORK.view.main.treeview.treeview('redraw', []);
-        i2b2.h.suppressTvIconTitle();
     };
     // ajax communicator call
     let varInput = {
@@ -363,6 +362,8 @@ i2b2.events.afterCellInit.add((cell) => {
                 i2b2.WORK.view.main.treeview.on('nodeLoading', i2b2.WORK.view.main.loadChildren);
                 i2b2.WORK.view.main.treeview.on('onRedraw', i2b2.WORK.view.main.treeRedraw);
                 i2b2.WORK.view.main.treeview.on('onDrag', i2b2.sdx.Master.onDragStart);
+                // put blank title attribute to suppress display of browser tooltip
+                i2b2.WORK.view.main.treeview.on('onRedraw',i2b2.h.suppressTvIconTitle);
 
                 // load the data
                 i2b2.WORK.ctrlr.refreshAll();

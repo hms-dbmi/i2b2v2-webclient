@@ -104,6 +104,9 @@ i2b2.ONT.view.search.initSearch = function(container){
         // attach drag drop attribute after the tree has been redrawn
         i2b2.ONT.view.search.treeview.find('li:not(:has(span.tvRoot))').attr("draggable", true);
 
+        // put blank title attribute to suppress display of browser tooltip
+        i2b2.h.suppressTvIconTitle();
+
         // TECHNICAL DEBT: Change this when CSS selector :has() is implemented
         // applies the highlighting CSS style to indicated nodes
         $("#i2b2TreeviewOntSearch li:has(.sdxStyleONT-CONCPT.highlight)").addClass("search-highlighted");
