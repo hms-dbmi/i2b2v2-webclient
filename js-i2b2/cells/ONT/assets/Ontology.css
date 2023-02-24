@@ -256,3 +256,8 @@ button.invert:hover{
 }
 
 
+#ontOptionsModal .ontologyCheckboxOptions{
+    vertical-align: -2px;
+    margin-top: 0.5em;
+}
+

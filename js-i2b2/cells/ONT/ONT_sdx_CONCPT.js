@@ -196,16 +196,22 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 //	GET CHILD RECORDS (DEFAULT HANDELER)
 // *********************************************************************************
 i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview = function(node, onCompleteCallback) {
-    let cb_concepts = (function(modifierNodes, modifiersParents) {
-        let cl_node = node;
-        let cb_final = (function(conceptNodes, conceptParents) {
-            let allNodes = modifierNodes.concat(conceptNodes);
-            let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
-            onCompleteCallback(allNodes, allParents);
+
+    if( i2b2.ONT.view.nav.params.modifiers === true){
+        i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(node, onCompleteCallback, false);
+    } else {
+        let cb_concepts = (function (modifierNodes, modifiersParents) {
+            let cl_node = node;
+            let cb_final = (function (conceptNodes, conceptParents) {
+                let allNodes = modifierNodes.concat(conceptNodes);
+                let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
+                onCompleteCallback(allNodes, allParents);
+            });
+            i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cb_final, false);
         });
-        i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cb_final, false);
-    });
-    i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, cb_concepts, true);
+
+        i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, cb_concepts, true);
+    }
 };
 
 
