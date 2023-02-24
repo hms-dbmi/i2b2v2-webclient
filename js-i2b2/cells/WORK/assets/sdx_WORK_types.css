@@ -9,13 +9,13 @@ span.sdxStyleWORK-XML::before {
 }
 
 span.sdxStyleWORK-WRK.tv-depth-1::before {
-    background-image: url(sdx_WORK_root.gif);
+    background-image: url(sdx_WORK_root.png);
 }
 
 span.sdxStyleWORK-WRK::before {
-    background-image: url(sdx_WORK_folder.gif);
+    background-image: url(sdx_WORK_folder.png);
 }
 
 span.sdxStyleWORK-XML::before {
-    background-image: url(sdx_WORK_XML.gif);
+    background-image: url(sdx_WORK_XML.png);
 }
