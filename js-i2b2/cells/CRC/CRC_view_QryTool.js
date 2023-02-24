@@ -31,6 +31,7 @@ i2b2.CRC.view.QT.validateQuery = function() {
             if(timeSpanValueElem.val().length === 0){
                 timeSpanValueElem.addClass("required");
                 timeSpanValueElem.parent().find(".timeSpanError").removeClass("vhidden");
+                $('.DateRelationship').collapse('show');
                 validQuery = false;
             }else{
                 timeSpanValueElem.removeClass("required");
