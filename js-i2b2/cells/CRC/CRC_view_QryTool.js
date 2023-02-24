@@ -194,7 +194,7 @@ i2b2.CRC.view.QT.getFormValues = function(elem) {
     text = text + ' ' + $('.occurs.occOp option:selected', baseEvent).text();
     text = text + ' ' + 'the ' + $('.joinColumn.day2 option:selected', baseEvent).text();
     text = text + ' ' + $('.aggregateOp.frame2 option:selected', baseEvent).text() + ' occurrence of Event ' + (eventLinkIdx+2);
-    if($('.check1').prop('checked')){
+    if($('.check1', baseEvent).prop('checked')){
         text = text + ' ' + 'by';
         text = text + ' ' + $('.op1 option:selected', baseEvent).text();
         if ($('.incInt1', baseEvent).val().length === 0){
@@ -204,7 +204,7 @@ i2b2.CRC.view.QT.getFormValues = function(elem) {
         }        
         text = text + ' ' + $('.time1 option:selected', baseEvent).text();
     }
-    if($('.check2').prop('checked')){
+    if($('.check2', baseEvent).prop('checked')){
         text = text + ' ' + 'and';
         text = text + ' ' + $('.op2 option:selected', baseEvent).text();
         if ($('.incInt2', baseEvent).val().length === 0){
