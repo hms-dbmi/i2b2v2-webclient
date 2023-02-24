@@ -177,11 +177,7 @@ i2b2.CRC.view.QT.updateEventLinkJoinColumn = function(elem) {
     let eventLinkOpName = $(elem).data('joinColumn');    
     eventLink[eventLinkOpName] = $(elem).val();
     i2b2.CRC.view.QT.getFormValues(elem); 
-    i2b2.CRC.view.QS.clearStatus();
-    
-       
-    
-    //console.log(innerHTML1);
+    i2b2.CRC.view.QS.clearStatus(); 
 };
 // ================================================================================================== //
 
@@ -193,7 +189,7 @@ i2b2.CRC.view.QT.getFormValues = function(elem) {
 
     text = text + $('.joinColumn.day1 option:selected', baseEvent).text();
     text = text + ' ' + $('.aggregateOp.frame1 option:selected', baseEvent).text();
-    text = text + ' ' + 'the occurrence of Event ' + (eventLinkIdx+1); 
+    text = text + ' ' + 'occurrence of Event ' + (eventLinkIdx+1); 
     text = text + ' ' + $('.occurs.occOp option:selected', baseEvent).text();
     text = text + ' ' + 'the ' + $('.joinColumn.day2 option:selected', baseEvent).text();
     text = text + ' ' + $('.aggregateOp.frame2 option:selected', baseEvent).text() + ' occurrence of Event ' + (eventLinkIdx+2);
@@ -223,10 +219,22 @@ i2b2.CRC.view.QT.getFormValues = function(elem) {
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateExpanderText= function(text, baseEvent){  
-    $('.EventAccordion > span', baseEvent).text(text);
+    $('.EventAccordion > button', baseEvent).text(text);
 }
-
 // ================================================================================================== //
+i2b2.CRC.view.QT.accordionChevron= function(){  
+    $('.DateRelationship.collapse.show').each(function(){
+        $(this).parent().find(".EventAccordion button").addClass("expanded");
+    });
+    
+    $('.DateRelationship.collapse').on('shown.bs.collapse', function(){
+        $(this).parent().find(".EventAccordion button").addClass("expanded");
+    }).on('hidden.bs.collapse', function(){
+        $(this).parent().find(".EventAccordion button").removeClass("expanded");
+    });
+}
+// ================================================================================================== //
+
 i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
     let timeSpanElem = $(elem).parents(".timeSpan").find(".timeSpanField");
     let curState =  timeSpanElem.prop( "disabled");
@@ -991,7 +999,7 @@ i2b2.CRC.view.QT.render = function() {
             icon.removeClass('bi-chevron-up');
             icon.addClass('bi-chevron-down');
         }
-    });
+    });     
 
     $('.QueryGroup', i2b2.CRC.view.QT.containerDiv).on('click', '.DateRangeLbl', (event) => {
         // parse (and if needed correct) the number value for days/months/years
@@ -1008,6 +1016,8 @@ i2b2.CRC.view.QT.render = function() {
             icon.addClass('bi-chevron-down');
         }
     });
+
+    i2b2.CRC.view.QT.accordionChevron();
 
     $('.QueryGroup .OccursCount', i2b2.CRC.view.QT.containerDiv).on('blur', (event) => {
         // parse (and if needed correct) the number value for days/months/years
@@ -1591,6 +1601,8 @@ i2b2.CRC.view.QT.addEvent = function(){
             }
         });
     });
+    
+    i2b2.CRC.view.QT.accordionChevron();
 
     //scroll to newly added event
     qgRoot.find(".event").last().get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
