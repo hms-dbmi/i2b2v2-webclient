@@ -38,6 +38,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         data.operator = i2b2.h.getXNodeVal(xmlData, 'operator');
         data.dim_code = i2b2.h.getXNodeVal(xmlData, 'dimcode');
         data.basecode = i2b2.h.getXNodeVal(xmlData, 'basecode');
+        data.total_num = i2b2.h.getXNodeVal(xmlData, 'totalnum');
     } else {
         data = sdxData;
     }
@@ -69,7 +70,10 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         tvDataNode.icon += " " + sdxDataNode.renderData.cssClassMinor;
     }
     // add number counts
-    if (sdxDataNode.origData.total_num !== undefined) tvDataNode.text += ' - (' + sdxDataNode.origData.total_num + ')';
+    let enablePatientCounts = $("#ONTNAVshowPatientCounts").is(":checked");
+    if (enablePatientCounts !== false && sdxDataNode.origData.total_num !== undefined){
+        tvDataNode.text += ' - (' + sdxDataNode.origData.total_num + ')';
+    }
     return {sdx: sdxDataNode, tv: tvDataNode};
 };
 
