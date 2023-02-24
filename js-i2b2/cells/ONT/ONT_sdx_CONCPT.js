@@ -196,16 +196,22 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 //	GET CHILD RECORDS (DEFAULT HANDELER)
 // *********************************************************************************
 i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview = function(node, onCompleteCallback) {
-    let cb_concepts = (function(modifierNodes, modifiersParents) {
-        let cl_node = node;
-        let cb_final = (function(conceptNodes, conceptParents) {
-            let allNodes = modifierNodes.concat(conceptNodes);
-            let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
-            onCompleteCallback(allNodes, allParents);
+
+    if( i2b2.ONT.view.nav.params.modifiers === true){
+        i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(node, onCompleteCallback, false);
+    } else {
+        let cb_concepts = (function (modifierNodes, modifiersParents) {
+            let cl_node = node;
+            let cb_final = (function (conceptNodes, conceptParents) {
+                let allNodes = modifierNodes.concat(conceptNodes);
+                let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
+                onCompleteCallback(allNodes, allParents);
+            });
+            i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cb_final, false);
         });
-        i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cb_final, false);
-    });
-    i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, cb_concepts, true);
+
+        i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, cb_concepts, true);
+    }
 };
 
 
@@ -285,6 +291,10 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                 iconImgExp: sdxDataNode.renderData.iconImgExp,
                 i2b2: sdxDataNode
             };
+
+            if(sdxDataNode.origData.synonym_cd !== undefined && sdxDataNode.origData.synonym_cd !== 'N'){
+                temp.color = "#0000ff";
+            }
             temp.state = sdxDataNode.renderData.tvNodeState;
             if (sdxDataNode.renderData.cssClassMinor !== undefined) temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             if (typeof cl_node === 'undefined' || (typeof cl_node === 'string' && String(cl_node).trim() === '')) {
@@ -307,7 +317,15 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
     };
     // TODO: Implement param routing from node's container
     let options = {};
-    let t = i2b2.ONT.params;
+    let t;
+    switch (node.refTreeview.elementId) {
+        case "i2b2TreeviewOntNav":
+        case "i2b2TreeviewOntSearch":
+            t = i2b2.ONT.view.nav.params;
+            break;
+        default:
+            t = i2b2.ONT.params;
+    }
     if (t === undefined) t = {};
     if (t.hiddens !== undefined) {
         options.ont_hidden_records = t.hiddens;
