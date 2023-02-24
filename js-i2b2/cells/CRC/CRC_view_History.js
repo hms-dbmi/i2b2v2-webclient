@@ -239,6 +239,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
 
         // render tree
         i2b2.CRC.view.history.treeview.treeview('redraw', []);
+        i2b2.h.suppressTvIconTitle();
         $('.history-more-bar i.bi').addClass("d-none");
     };
     let max = maxRecords ? maxRecords : i2b2.CRC.view.history.params.maxQueriesDisp;

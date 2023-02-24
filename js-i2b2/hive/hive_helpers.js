@@ -318,3 +318,10 @@ i2b2.h.StripCRLF = function(input) {
     let ret = String(input).replace(/\r/g, ">");
     return ret.replace(/\n/g, ">");
 };
+
+
+// ================================================================================================== //
+i2b2.h.suppressTvIconTitle = function() {
+    // this cleans up display for display of the right-click icon
+    $(".icon.node-icon:not([title])").attr("title","");
+};

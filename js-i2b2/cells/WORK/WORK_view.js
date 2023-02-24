@@ -143,6 +143,7 @@ i2b2.WORK.view.main.loadChildren = function(e, nodeData){
 
         // render tree
         i2b2.WORK.view.main.treeview.treeview('redraw', []);
+        i2b2.h.suppressTvIconTitle();
     };
     // ajax communicator call
     let varInput = {

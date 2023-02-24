@@ -53,6 +53,7 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
     i2b2.ONT.view.nav.treeview.treeview('addNodes', [newNodes, true]);
     // render tree
     i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+    i2b2.h.suppressTvIconTitle();
 };
 
 
@@ -86,6 +87,7 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
         ]);
         // render tree
         i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+        i2b2.h.suppressTvIconTitle();
     });
 };
 
@@ -159,6 +161,9 @@ i2b2.events.afterCellInit.add((cell) => {
                         //add unique id to the term tab
                         let elemId = "ontologyTermTab";
                         $(tab.element).attr("id", elemId);
+                        // attach the right-click mouseover icon (hide the title tooltip)
+                        $(tab.element).addClass("rightClick");
+                        $(tab.element).attr("title", "");
                         i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
                             actions: {
                                 nodeAnnotate: {

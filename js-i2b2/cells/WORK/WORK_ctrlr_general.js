@@ -34,6 +34,7 @@ i2b2.WORK.ctrlr.refreshAll = function(view_component) {
         ]);
         // render tree
         i2b2.WORK.view.main.treeview.treeview('redraw', []);
+        i2b2.h.suppressTvIconTitle();
     };
     // ajax communicator call
     if (i2b2.PM.model.userRoles.indexOf("MANAGER") === -1) {
@@ -245,6 +246,7 @@ i2b2.WORK.ctrlr.main.handleDelete = function (target_node, options, nd) {
                 // Delete targeted node from the treeview and refresh it
                 i2b2.WORK.view.main.treeview.treeview('deleteNodes', [target_node.nodeId, false]);
                 i2b2.WORK.view.main.treeview.treeview('redraw', []);
+                i2b2.h.suppressTvIconTitle();
             }
         }
     }
@@ -275,6 +277,7 @@ i2b2.WORK.ctrlr.main.MoveWorkItem = function(sdxChild, targetTvNode) {
             let childId = Array.from(targetTvNode.refTreeview.nodes.values()).filter((x)=>{ return x.key === childKey}).map(y => y.nodeId);
             targetTvNode.refTreeview.deleteNodes(childId, false);
             i2b2.WORK.view.main.treeview.treeview('redraw', []);
+            i2b2.h.suppressTvIconTitle();
 
             // get a list of all children in the parent node
             let parentChildren = targetTvNode.refTreeview.findNodes(targetTvNode.nodeId, '', 'parentId').map((node)=>{return node.nodeId});

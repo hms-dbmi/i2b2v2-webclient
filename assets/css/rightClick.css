@@ -1,4 +1,8 @@
 
+.rightClickNoTitle {
+    pointer-events: none;
+}
+
 .rightClick {
     cursor: url("/assets/images/right-click.png"), alias !important;
 }
