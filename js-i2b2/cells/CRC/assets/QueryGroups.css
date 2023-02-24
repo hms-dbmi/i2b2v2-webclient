@@ -618,7 +618,7 @@
 }
 
 .DateRelationship{
-    background-color: #fff;
+    background-color: #F3F3F3;
     border-radius: 4px
 }
 
@@ -627,6 +627,7 @@
     background-color: transparent;
     border-color: transparent;
     color: black;
+    padding-bottom:3px;
 }
 
 /* Occurs */
@@ -659,6 +660,7 @@
     font-weight: 900;
     content: '\F282';   
     font-size: 0.875rem;
+    vertical-align: middle;
     display: inline-block;    
     margin-left: 5px;
 }
@@ -667,6 +669,7 @@
     font-family: "bootstrap-icons";
     font-size: 0.875rem;
     font-weight: 900;
+    vertical-align: middle;
     display: inline-block;    
     margin-left: 5px;
     content: "\F286";
