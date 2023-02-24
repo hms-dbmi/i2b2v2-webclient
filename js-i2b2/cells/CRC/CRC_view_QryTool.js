@@ -31,7 +31,7 @@ i2b2.CRC.view.QT.validateQuery = function() {
             if(timeSpanValueElem.val().length === 0){
                 timeSpanValueElem.addClass("required");
                 timeSpanValueElem.parent().find(".timeSpanError").removeClass("vhidden");
-                $('.DateRelationship').collapse('show');
+                $(timeSpanValueElem.closest('.DateRelationship')).collapse('show');
                 validQuery = false;
             }else{
                 timeSpanValueElem.removeClass("required");
@@ -223,7 +223,7 @@ i2b2.CRC.view.QT.updateExpanderText= function(text, baseEvent){
     $('.EventAccordion > button', baseEvent).text(text);
 }
 // ================================================================================================== //
-i2b2.CRC.view.QT.accordionChevron= function(){  
+i2b2.CRC.view.QT.attachSequenceBarChevron= function(){  
     $('.DateRelationship.collapse.show').each(function(){
         $(this).parent().find(".EventAccordion button").addClass("expanded");
     });
@@ -1018,7 +1018,9 @@ i2b2.CRC.view.QT.render = function() {
         }
     });
 
-    i2b2.CRC.view.QT.accordionChevron();
+    // handles chevron expand/collapse chevron animation on click and rerenders the expander text in the SequenceBar
+    i2b2.CRC.view.QT.attachSequenceBarChevron();
+    $('.SequenceBar.eventLink input.check1').each((idx, element) => i2b2.CRC.view.QT.getFormValues(element));
 
     $('.QueryGroup .OccursCount', i2b2.CRC.view.QT.containerDiv).on('blur', (event) => {
         // parse (and if needed correct) the number value for days/months/years
@@ -1603,7 +1605,7 @@ i2b2.CRC.view.QT.addEvent = function(){
         });
     });
     
-    i2b2.CRC.view.QT.accordionChevron();
+    i2b2.CRC.view.QT.attachSequenceBarChevron();
 
     //scroll to newly added event
     qgRoot.find(".event").last().get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
