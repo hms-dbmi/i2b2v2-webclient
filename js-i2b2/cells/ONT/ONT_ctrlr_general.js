@@ -62,6 +62,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         icon: sdxDataNode.renderData.cssClassMain,
         key: sdxDataNode.sdxInfo.sdxKeyValue,
         iconImg: sdxDataNode.renderData.iconImg,
+        color: sdxDataNode.renderData.color,
         iconImgExp: sdxDataNode.renderData.iconImgExp,
         i2b2: sdxDataNode
     };
