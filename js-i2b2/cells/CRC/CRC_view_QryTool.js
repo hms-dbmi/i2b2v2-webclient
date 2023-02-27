@@ -491,9 +491,17 @@ i2b2.CRC.view.QT.eventActionDelete = function(evt) {
     let queryGroupIdx = qgEl.data("queryGroup");
 
     if (i2b2.CRC.model.query.groups[queryGroupIdx].events.length > 2) {
+        let eventIdxNum = eventIdx+1
+        //if this is the last event remove the eventLink that appears before it the UI
+        if(eventIdxNum !== i2b2.CRC.model.query.groups[queryGroupIdx].events.length) {
+            i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks.splice(eventIdx,1);
+        }else{
+            //remove the eventLink that appears after the event in the UI
+            i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks.splice(eventIdx-1,1);
+        }
+
         // delete the data elements
         i2b2.CRC.model.query.groups[queryGroupIdx].events.splice(eventIdx,1);
-        i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks.splice(eventIdx-1,1);
 
         // rerender the Query Tool
         i2b2.CRC.view.QT.render();

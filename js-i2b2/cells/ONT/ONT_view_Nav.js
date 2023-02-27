@@ -10,6 +10,7 @@
 
 // create and save the view object
 i2b2.ONT.view.nav = new i2b2Base_cellViewController(i2b2.ONT, 'nav');
+i2b2.ONT.view.nav.options = {};
 i2b2.ONT.view.nav.template = {};
 
 // ================================================================================================== //
@@ -65,7 +66,10 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
     i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview(nodeData, function(newNodes, parentNodes) {
         // change the tiles to contain the counts
         newNodes.forEach((node) => {
-            if (node.i2b2.origData.total_num !== undefined) node.text += ' - (' + node.i2b2.origData.total_num + ')';
+            let enablePatientCounts = $("#ONTNAVshowPatientCounts").is(":checked");
+            if (enablePatientCounts !== false && node.i2b2.origData.total_num !== undefined) {
+                node.text += ' - (' + node.i2b2.origData.total_num + ')';
+            }
         });
 
         // push new nodes into the treeview
@@ -136,6 +140,43 @@ i2b2.events.afterCellInit.add((cell) => {
 
                 // -------------------- setup context menu --------------------
                 i2b2.ONT.view.nav.ContextMenu =  i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntNav',i2b2.ONT.view.nav.treeview);
+
+                let optionsDialogModal = $("<div id='ontOptionsModal'/>");
+                $("body").append(optionsDialogModal);
+                optionsDialogModal.load('js-i2b2/cells/ONT/assets/modalOptionsONT.html', function () {
+                    $("body #ontOptionsModal button.options-save").click(function () {
+                        i2b2.ONT.view.nav.params.modifiers = $('#ONTNAVdisableModifiers').is(":checked");
+                        i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);
+                        i2b2.ONT.view.nav.params.synonyms = $('#ONTNAVshowSynonyms').is(":checked");
+                        i2b2.ONT.view.nav.params.hiddens = $('#ONTNAVshowHiddens').is(":checked");
+                        i2b2.ONT.view.nav.doRefreshAll();
+                        $("#ontOptionsModal div").eq(0).modal("hide");
+                    });
+                });
+
+                container.on( 'tab', function( tab ){
+                    if(tab.element.text() === 'Terms') {
+                        //add unique id to the term tab
+                        let elemId = "ontologyTermTab";
+                        $(tab.element).attr("id", elemId);
+                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+                            actions: {
+                                nodeAnnotate: {
+                                    name: 'Show Options',
+                                    onClick: function (node) {
+                                        $("#ontOptionsModal div").eq(0).modal("show");
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+
+                //set default values
+                i2b2.ONT.view.nav.params.modifiers = false;
+                i2b2.ONT.view.nav.params.synonyms = false;
+                i2b2.ONT.view.nav.params.hiddens = false;
+                i2b2.ONT.view.nav.params.max = 200;
             }).bind(this)
         );
     }
