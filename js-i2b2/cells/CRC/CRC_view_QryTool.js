@@ -1544,22 +1544,104 @@ i2b2.CRC.view.QT.showQueryReport = function() {
     // this function is used to generate the report and display the modal window
     const generateReport = function () {
         const submittedByUsername = i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//query_master/user_id/text()")[0].nodeValue;
+
+        // create lookup dictionaries for concepts/modifiers
+        let concepts = {};
+        let modifiers = {};
+        i2b2.CRC.model.query.groups.forEach((group) => {
+            group.events.forEach((event) => {
+                event.concepts.forEach((concept) => {
+                    if (concept.origData.conceptModified) {
+                        modifiers[concept.origData.conceptModified.sdxInfo.sdxKeyValue] = concept;
+                    } else {
+                        concepts[concept.sdxInfo.sdxKeyValue] = concept;
+                    }
+                });
+            });
+        });
+
+        /// expand the panels
+        let panels = Object.assign({}, i2b2.CRC.model.transformedQuery.panels);
+        panelKeys = Object.keys(panels);
+        panelKeys.forEach((panelKey) => {
+            let itemKeys = Object.keys(panels[panelKey].items);
+            itemKeys.forEach((itemKey) => {
+                let panelItem = panels[panelKey].items[itemKey];
+                if (panelItem.modKey) {
+                    panelItem.moreInfo = modifiers[panelItem.key];
+                } else {
+                    panelItem.moreInfo = concepts[panelItem.key];
+                }
+                // deal with dates
+                if (panelItem.moreInfo.dateRange.start == undefined || panelItem.moreInfo.dateRange.start == "") {
+                    panelItem.timingFrom = "earliest date available";
+                } else {
+                    panelItem.timingFrom = (new Date(Date.parse(panelItem.moreInfo.dateRange.start))).toLocaleDateString();
+                }
+                if (panelItem.moreInfo.dateRange.end == undefined || panelItem.moreInfo.dateRange.end == "") {
+                    panelItem.timingTo = "latest date available";
+                } else {
+                    panelItem.timingTo = (new Date(Date.parse(panelItem.moreInfo.dateRange.end))).toLocaleDateString();
+                }
+                panelItem.occurs = panels[panelKey].occursCount;
+                panelItem.timing = panels[panelKey].timing;
+            });
+        });
+
+
         let reportData = {
             name: i2b2.CRC.ctrlr.QS.QM.name,
-            submittedAt: i2b2.CRC.ctrlr.QS.QI.start_date.toLocaleString().replace(", ","@"),
-            completedAt: i2b2.CRC.ctrlr.QS.QI.end_date.toLocaleString().replace(", ","@"),
-            submittedBy: "TODO-run GetUser(" + submittedByUsername + ")",
-            runDuration: Number(i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date + 1000).toLocaleString()
+            submittedAt: i2b2.CRC.ctrlr.QS.QI.start_date.toLocaleString().replace(", "," @ "),
+            completedAt: i2b2.CRC.ctrlr.QS.QI.end_date.toLocaleString().replace(", "," @ "),
+            submittedBy: "USERNAME(" + submittedByUsername + ")",
+            runDuration: Number(i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date + 1000).toLocaleString(),
+            panels: panels
         };
 
-        // populate the document in the iframe
-        const reportHtml = i2b2.CRC.view.QT.template.queryReport(reportData);
-        const reportDocument = $('#queryReportWindow')[0].contentWindow.document;
-        reportDocument.open();
-        reportDocument.write(reportHtml);
-        reportDocument.close();
-        // show report
-        $("#queryReportModal div:eq(0)").modal('show');
+        // deal with the temporal constraint description
+        switch(i2b2.CRC.model.transformedQuery.queryTiming) {
+            case "ANY":
+                reportData.temporalMode = "Treat All Groups Independently";
+                break;
+        }
+
+        // Deal with the reports
+        let reports = [];
+        let graphs = $("#breakdownChartsBody>div");
+        let charts = $("#breakdownDetails>div");
+        let dataRef = i2b2.CRC.ctrlr.QS.breakdowns.resultTable;
+        for (let i=0; i<dataRef.length; i++) {
+            if (i == 0) {
+                reports.push({chart:charts[i].outerHTML, data: dataRef[i]});
+            } else {
+                reports.push({chart:charts[i].outerHTML, graph:graphs[i-1].outerHTML, data: dataRef[i]});
+            }
+        }
+        reportData.reports = reports;
+
+
+        let func_Display = function() {
+            // populate the document in the iframe
+            const reportHtml = i2b2.CRC.view.QT.template.queryReport(reportData);
+            const reportDocument = $('#queryReportWindow')[0].contentWindow.document;
+            reportDocument.open();
+            reportDocument.write(reportHtml);
+            reportDocument.close();
+            // show report
+            $("#queryReportModal div:eq(0)").modal('show');
+        }
+
+        // populate the user's real name via AJAX then display the report window
+        i2b2.PM.ajax.getUser("CRC:PrintQuery", {user_id:submittedByUsername}, (results) => {
+            try {
+                results.parse();
+                let data = results.model[0];
+                if (data.full_name) reportData.submittedBy = data.full_name;
+            } catch (e) {}
+            func_Display();
+        });
+
+
     };
 
     // load the modal window if needed
