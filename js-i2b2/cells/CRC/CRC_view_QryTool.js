@@ -1021,6 +1021,7 @@ i2b2.CRC.view.QT.render = function() {
     // handles chevron expand/collapse chevron animation on click and rerenders the expander text in the SequenceBar
     i2b2.CRC.view.QT.attachSequenceBarChevron();
     $('.SequenceBar.eventLink input.check1').each((idx, element) => i2b2.CRC.view.QT.getFormValues(element));
+    $('.SequenceBar.eventLink input.check2').each((idx, element) => i2b2.CRC.view.QT.getFormValues(element));
 
     $('.QueryGroup .OccursCount', i2b2.CRC.view.QT.containerDiv).on('blur', (event) => {
         // parse (and if needed correct) the number value for days/months/years
