@@ -182,7 +182,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
                 nodeInfo.moreDescriptMinor += sdxData.origData.tooltip;
             }
         }
-        if ($("#ONTNAVshowCodeTooltips").is(":checked") && sdxData.origData.basecode !== undefined) {
+        if (i2b2.ONT.view.nav.options.showBaseCode && sdxData.origData.basecode !== undefined) {
             nodeInfo.moreDescriptMinor += " - " + sdxData.origData.basecode;
         }
     }

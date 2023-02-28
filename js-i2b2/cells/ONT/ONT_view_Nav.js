@@ -150,6 +150,7 @@ i2b2.events.afterCellInit.add((cell) => {
                         i2b2.ONT.view.nav.params.synonyms = $('#ONTNAVshowSynonyms').is(":checked");
                         i2b2.ONT.view.nav.params.hiddens = $('#ONTNAVshowHiddens').is(":checked");
                         i2b2.ONT.view.nav.options.patientCounts = $('#ONTNAVshowPatientCounts').is(":checked");
+                        i2b2.ONT.view.nav.options.showBaseCode = $('#ONTNAVshowCodeTooltips').is(":checked");
                         i2b2.ONT.view.nav.doRefreshAll();
                         $("#ontOptionsModal div").eq(0).modal("hide");
                     });
