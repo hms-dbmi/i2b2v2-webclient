@@ -147,10 +147,12 @@ i2b2.hive.communicatorFactory = function(cellCode){
         for (var tag in sMsgValues) {
             sMessage = sMessage.replace(new RegExp("{{{"+tag+"}}}", 'g'), sMsgValues[tag]);
         }
-        var sMessageNoPWD = new String(sMessage);
-        if (execBubble.funcName == 'getUserAuth') {
-            sMessageNoPWD = sMessageNoPWD.replace(/<password>.*<\/password>/gi,"<password></password>");
-        }
+        // create a version that removes the password and session token from the msg
+        let sMessageNoPWD = new String(sMessage);
+        let posStart = sMessageNoPWD.indexOf("<password");
+        posStart = sMessageNoPWD.indexOf(">",posStart) + 1;
+        posEnd = sMessageNoPWD.indexOf("</password>", posStart);
+        sMessageNoPWD = sMessageNoPWD.substring(0,posStart) + "*****" + sMessageNoPWD.substring(posEnd);
         execBubble.msgSent = sMessageNoPWD;
         snifferPackage.msgSent = {
             msg: sMessageNoPWD,
