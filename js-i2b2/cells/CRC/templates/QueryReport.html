@@ -30,6 +30,9 @@ The search was completed in {{runDuration}} seconds.
           {{#ifCond this.timing "==" "SAMEVISIT"}}
           Occurs in Same Encounter
           {{/ifCond}}
+          {{#ifCond this.timing "==" "SAMEINSTANCENUM"}}
+          Items' Instance will be the same
+          {{/ifCond}}
         </div>
         <div class="item-dates">From {{this.timingFrom}} to {{this.timingTo}}</div>
         <div class="item-occurs"># of times an item is recorded is >= {{this.occurs}}</div>
