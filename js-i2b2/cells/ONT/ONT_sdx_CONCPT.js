@@ -129,7 +129,8 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 
     if (sdxData.origData.hasChildren.substring(2,1) === "I") {
         bCanExp = true;
-    } else if (sdxData.origData.hasChildren.substring(2,1) === "H") {
+    } else if (i2b2.ONT.view.nav.params.hiddens !== false && sdxData.origData.hasChildren.substring(2,1) === "H") {
+        nodeInfo.color = "#c00000;";
     } else if ((sdxData.origData.synonym_cd !== undefined) && (sdxData.origData.synonym_cd !== 'N')) {
     }
 
@@ -181,7 +182,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
                 nodeInfo.moreDescriptMinor += sdxData.origData.tooltip;
             }
         }
-        if ((($('ONTNAVshowCodeTooltips').checked) || $('ONTFINDshowCodeTooltips').checked) && sdxData.origData.basecode !== undefined) {
+        if ($("#ONTNAVshowCodeTooltips").is(":checked") && sdxData.origData.basecode !== undefined) {
             nodeInfo.moreDescriptMinor += " - " + sdxData.origData.basecode;
         }
     }
@@ -289,6 +290,7 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                 key: sdxDataNode.sdxInfo.sdxKeyValue,
                 iconImg: sdxDataNode.renderData.iconImg,
                 iconImgExp: sdxDataNode.renderData.iconImgExp,
+                color: sdxDataNode.renderData.color,
                 i2b2: sdxDataNode
             };
 
