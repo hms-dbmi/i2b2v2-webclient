@@ -497,8 +497,8 @@
 }
 
 .QueryGroup.when .SequenceBar {
-    max-height: 5.5em;
-    padding: 0.4em 0.4em 0.4em 0.6em;
+    max-height: 12.5em; /*added height for laptops */
+    padding: 0.4em 0.4em 0.4em 0.1em;
     border-right: 1px solid #d8a407;
     border-top: 0px;
     border-bottom: 0px;
@@ -617,6 +617,19 @@
     color: rgba(33, 37, 41, 0.47);
 }
 
+.DateRelationship{
+    background-color: #F3F3F3;
+    border-radius: 4px
+}
+
+
+.EventAccordion button{
+    background-color: transparent;
+    border-color: transparent;
+    color: black;
+    padding-bottom:3px;
+}
+
 /* Occurs */
 .occursBefore,
 .occursAtLeast {
@@ -638,6 +651,29 @@
     text-align: center;
 }
 
+.ExpandTrigger:hover{
+    background-color: #F2BE21;
+}
+
+.EventAccordion button:after{
+    font-family: "bootstrap-icons";
+    font-weight: 900;
+    content: '\F282';   
+    font-size: 0.875rem;
+    vertical-align: middle;
+    display: inline-block;    
+    margin-left: 5px;
+}
+
+.EventAccordion button.expanded:after {
+    font-family: "bootstrap-icons";
+    font-size: 0.875rem;
+    font-weight: 900;
+    vertical-align: middle;
+    display: inline-block;    
+    margin-left: 5px;
+    content: "\F286";
+}
 
 
 /* Date Ranges */
