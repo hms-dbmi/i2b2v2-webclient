@@ -5,6 +5,7 @@
  * @author		Nick Benik, Griffin Weber MD PhD
  * @version 	1.3
  **/
+
 i2b2.hive.communicatorFactory = function(cellCode){
 
     try {
@@ -47,6 +48,11 @@ i2b2.hive.communicatorFactory = function(cellCode){
 
 
     retCommObj._doSendMsg = function(funcName, originName, parameters, callback, transportOptions){
+        let snifferPackage = {
+            cell: this.ParentCell,
+            function: funcName,
+            requester: originName
+        };
         if (!this._commData[funcName]) {
             console.error("Requested function does not exist [" +this.ParentCell+"->"+funcName+"] called by "+originName);
             return false;
@@ -91,6 +97,8 @@ i2b2.hive.communicatorFactory = function(cellCode){
             sProxy_Url = sUrl;
         }
         execBubble.proxyURL = sProxy_Url;
+        snifferPackage.urlService = sUrl;
+        snifferPackage.urlProxy = sProxy_Url;
 
         // PM + security info
         if (commOptions.user !== undefined) {
@@ -144,9 +152,13 @@ i2b2.hive.communicatorFactory = function(cellCode){
             sMessageNoPWD = sMessageNoPWD.replace(/<password>.*<\/password>/gi,"<password></password>");
         }
         execBubble.msgSent = sMessageNoPWD;
+        snifferPackage.msgSent = {
+            msg: sMessageNoPWD,
+            when: new Date()
+        }
+
         var verify = i2b2.h.parseXml(sMessage);
         var verify_status = verify.getElementsByTagName('proxy')[0];
-
         if (!verify_status) {
             sMessage = sMessage.replace(/\&amp;/g,'&');
             sMessage = sMessage.replace(/\&/g, '\&amp;');
@@ -184,7 +196,15 @@ i2b2.hive.communicatorFactory = function(cellCode){
         commOptions.i2b2_execBubble = execBubble;
 
         var myCallback = {
-                  success: function(o) {
+                  success: function(o, status, xhr) {
+                      // Message logging for debug purposes
+                      snifferPackage.status = xhr.status;
+                      snifferPackage.msgRecv = {
+                          when: new Date(),
+                          msg: String(xhr.responseText)
+                      }
+                      if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
+
                       /* success handler code */
                       if (typeof o !== "object") {
                           alert("There is a problem contacting the server!");
@@ -195,7 +215,15 @@ i2b2.hive.communicatorFactory = function(cellCode){
                       o.request.options.i2b2_execBubble = commOptions.i2b2_execBubble;
                       retCommObj._defaultCallbackOK(o);
                   },
-                  failure: function(o) {
+                  failure: function(o, status, xhr) {
+                      // Message logging for debug purposes
+                      snifferPackage.status = xhr.status;
+                      snifferPackage.msgRecv = {
+                          when: new Date(),
+                          msg: String(xhr.responseText)
+                      }
+                      if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
+
                       /* failure handler code */
                       o.request = {};
                       o.request.options = {};
