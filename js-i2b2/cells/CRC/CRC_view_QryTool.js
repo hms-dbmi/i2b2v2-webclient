@@ -160,7 +160,7 @@ i2b2.CRC.view.QT.extractEventLinkFromElem = function(elem) {
 i2b2.CRC.view.QT.updateEventLinkOperator = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     eventLink.operator = $(elem).val();
-    i2b2.CRC.view.QT.getFormValues(elem); 
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
@@ -168,7 +168,7 @@ i2b2.CRC.view.QT.updateEventLinkAggregateOp = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     let eventLinkOpName = $(elem).data('aggregateOp');
     eventLink[eventLinkOpName] = $(elem).val();
-    i2b2.CRC.view.QT.getFormValues(elem); 
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();       
        
 };
@@ -177,13 +177,13 @@ i2b2.CRC.view.QT.updateEventLinkJoinColumn = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);  
     let eventLinkOpName = $(elem).data('joinColumn');    
     eventLink[eventLinkOpName] = $(elem).val();
-    i2b2.CRC.view.QT.getFormValues(elem); 
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus(); 
 };
 // ================================================================================================== //
 
 
-i2b2.CRC.view.QT.getFormValues = function(elem) {
+i2b2.CRC.view.QT.generateSequenceBarText = function(elem) {
     let eventLinkIdx = $(elem).parents('.eventLink').first().data('eventLinkIdx'); // eventlink idx +1     
     let baseEvent = $(elem).parents('.eventLink')[0]; 
     let text = 'The ';
@@ -255,7 +255,7 @@ i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
         parent.find(".timeSpanUnit").val("DAY");
         parent.find(".timeSpanValue").val("");
     }
-    i2b2.CRC.view.QT.getFormValues(elem); 
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
@@ -271,21 +271,21 @@ i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
 i2b2.CRC.view.QT.updateTimeSpanOperator = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.operator = $(elem).val();
-    i2b2.CRC.view.QT.getFormValues(elem); 
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateTimeSpanValue = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.value = $(elem).val();
-    i2b2.CRC.view.QT.getFormValues(elem); 
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateTimeSpanUnit = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.unit = $(elem).val();
-    i2b2.CRC.view.QT.getFormValues(elem); 
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 
@@ -1020,8 +1020,8 @@ i2b2.CRC.view.QT.render = function() {
 
     // handles chevron expand/collapse chevron animation on click and rerenders the expander text in the SequenceBar
     i2b2.CRC.view.QT.attachSequenceBarChevron();
-    $('.SequenceBar.eventLink input.check1').each((idx, element) => i2b2.CRC.view.QT.getFormValues(element));
-    $('.SequenceBar.eventLink input.check2').each((idx, element) => i2b2.CRC.view.QT.getFormValues(element));
+    $('.SequenceBar.eventLink input.check1').each((idx, element) => i2b2.CRC.view.QT.generateSequenceBarText(element));
+    $('.SequenceBar.eventLink input.check2').each((idx, element) => i2b2.CRC.view.QT.generateSequenceBarText(element));
 
     $('.QueryGroup .OccursCount', i2b2.CRC.view.QT.containerDiv).on('blur', (event) => {
         // parse (and if needed correct) the number value for days/months/years
