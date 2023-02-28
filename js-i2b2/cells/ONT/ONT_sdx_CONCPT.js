@@ -174,7 +174,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     //Added to provide tooltip information for concepts/terms
     nodeInfo.moreDescriptMinor = "";
     try {
-        if ($('ONTNAVshowShortTooltips').checked || $('ONTFINDshowShortTooltips').checked) {
+        if ($("#ONTNAVshowShortTooltips").is(":checked")) {
             nodeInfo.moreDescriptMinor += sdxData.origData.name;
         } else {
             if (sdxData.origData.tooltip !== undefined) {
