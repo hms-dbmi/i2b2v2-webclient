@@ -1564,6 +1564,7 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         let panels = Object.assign({}, i2b2.CRC.model.transformedQuery.panels);
         panelKeys = Object.keys(panels);
         panelKeys.forEach((panelKey) => {
+            panels[panelKey].timing = i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//panel_number[text()='" + panels[panelKey].number + "']/../panel_timing/text()")[0].nodeValue;
             let itemKeys = Object.keys(panels[panelKey].items);
             itemKeys.forEach((itemKey) => {
                 let panelItem = panels[panelKey].items[itemKey];
@@ -1599,9 +1600,15 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         };
 
         // deal with the temporal constraint description
-        switch(i2b2.CRC.model.transformedQuery.queryTiming) {
+        switch(i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//query_timing/text()")[0].nodeValue) {
             case "ANY":
                 reportData.temporalMode = "Treat All Groups Independently";
+                break;
+            case "SAMEVISIT":
+                reportData.temporalMode = "Selected groups occur in the same financial encounter";
+                break;
+            case "SAMEINSTANCENUM":
+                reportData.temporalMode = "Items Instance will be the same";
                 break;
         }
 
