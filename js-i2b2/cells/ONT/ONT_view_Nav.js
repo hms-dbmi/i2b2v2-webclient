@@ -66,7 +66,7 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
     i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview(nodeData, function(newNodes, parentNodes) {
         // change the tiles to contain the counts
         newNodes.forEach((node) => {
-            let enablePatientCounts = $("#ONTNAVshowPatientCounts").is(":checked");
+            let enablePatientCounts = i2b2.ONT.view.nav.options.patientCounts;
             if (enablePatientCounts !== false && node.i2b2.origData.total_num !== undefined) {
                 node.text += ' - (' + node.i2b2.origData.total_num + ')';
             }
@@ -149,6 +149,7 @@ i2b2.events.afterCellInit.add((cell) => {
                         i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);
                         i2b2.ONT.view.nav.params.synonyms = $('#ONTNAVshowSynonyms').is(":checked");
                         i2b2.ONT.view.nav.params.hiddens = $('#ONTNAVshowHiddens').is(":checked");
+                        i2b2.ONT.view.nav.options.patientCounts = $('#ONTNAVshowPatientCounts').is(":checked");
                         i2b2.ONT.view.nav.doRefreshAll();
                         $("#ontOptionsModal div").eq(0).modal("hide");
                     });
@@ -164,12 +165,26 @@ i2b2.events.afterCellInit.add((cell) => {
                                 nodeAnnotate: {
                                     name: 'Show Options',
                                     onClick: function (node) {
+                                        $("#ontOptionsFields").empty();
+                                        let allOptions = {
+                                            params: i2b2.ONT.view.nav.params,
+                                            options: i2b2.ONT.view.nav.options
+                                        };
+                                        $((Handlebars.compile("{{> OntologyOptions}}"))(allOptions)).appendTo("#ontOptionsFields");
                                         $("#ontOptionsModal div").eq(0).modal("show");
                                     }
                                 }
                             }
                         });
                     }
+                });
+
+                //HTML template for ontology options
+                $.ajax("js-i2b2/cells/ONT/templates/OntologyOptions.html", {
+                    success: (template, status, req) => {
+                        Handlebars.registerPartial("OntologyOptions", req.responseText);
+                    },
+                    error: (error) => { console.error("Could not retrieve template: OntologyOptions.html"); }
                 });
 
                 //set default values

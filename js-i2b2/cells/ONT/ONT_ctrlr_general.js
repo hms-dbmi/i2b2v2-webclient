@@ -71,7 +71,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         tvDataNode.icon += " " + sdxDataNode.renderData.cssClassMinor;
     }
     // add number counts
-    let enablePatientCounts = $("#ONTNAVshowPatientCounts").is(":checked");
+    let enablePatientCounts = i2b2.ONT.view.nav.options.patientCounts;
     if (enablePatientCounts !== false && sdxDataNode.origData.total_num !== undefined){
         tvDataNode.text += ' - (' + sdxDataNode.origData.total_num + ')';
     }
