@@ -131,7 +131,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
         bCanExp = true;
     } else if (i2b2.ONT.view.nav.params.hiddens !== false && sdxData.origData.hasChildren.substring(2,1) === "H") {
         nodeInfo.color = "#c00000";
-    } else if ((sdxData.origData.synonym_cd !== undefined) && (sdxData.origData.synonym_cd === 'N')) {
+    } else if (i2b2.ONT.view.nav.params.synonyms !== false && (sdxData.origData.synonym_cd !== 'N')) {
         nodeInfo.color = "#0000ff";
     }
 
