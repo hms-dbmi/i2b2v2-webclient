@@ -21,6 +21,9 @@ body {
     margin-bottom: 2rem;
     background-color: #CCCCCC;
 }
+.panel-definition.not {
+    background-color: #ad7070;
+}
 
 .item-container {
     background-color: white;

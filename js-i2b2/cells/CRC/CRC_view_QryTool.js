@@ -1563,8 +1563,13 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         /// expand the panels
         let panels = Object.assign({}, i2b2.CRC.model.transformedQuery.panels);
         panelKeys = Object.keys(panels);
-        panelKeys.forEach((panelKey) => {
+        panelKeys.forEach((panelKey, idx, keys) => {
             panels[panelKey].timing = i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//panel_number[text()='" + panels[panelKey].number + "']/../panel_timing/text()")[0].nodeValue;
+            if (keys.length > (idx+1)) {
+                if (panels[keys[idx+1]].invert == '1') {
+                    panels[panelKey].next_is_not = true;
+                }
+            }
             let itemKeys = Object.keys(panels[panelKey].items);
             itemKeys.forEach((itemKey) => {
                 let panelItem = panels[panelKey].items[itemKey];

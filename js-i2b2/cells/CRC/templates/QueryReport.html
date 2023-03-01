@@ -18,7 +18,7 @@ The search was completed in {{runDuration}} seconds.
 
 <div class="groups-container">
   {{#each panels}}
-  <div class="panel-definition">
+  <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
     {{#each this.items}}
       <div class="item-container">
         <div class="item-title"><img src="{{this.moreInfo.renderData.iconImg}}"/> {{this.moreInfo.renderData.title}}</div>
@@ -40,7 +40,7 @@ The search was completed in {{runDuration}} seconds.
       {{#unless @last}}<div class="joiner or">OR</div>{{/unless}}
     {{/each}}
   </div>
-  {{#unless @last}}<div class="joiner and">AND</div>{{/unless}}
+  {{#unless @last}}<div class="joiner and">AND {{#if this.next_is_not}}NOT{{/if}}</div>{{/unless}}
   {{/each}}
 </div>
 
