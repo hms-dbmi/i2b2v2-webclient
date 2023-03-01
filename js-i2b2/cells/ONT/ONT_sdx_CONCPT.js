@@ -175,14 +175,14 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     //Added to provide tooltip information for concepts/terms
     nodeInfo.moreDescriptMinor = "";
     try {
-        if ($("#ONTNAVshowShortTooltips").is(":checked")) {
+        if (i2b2.ONT.view.nav.options.showShortTooltips === true) {
             nodeInfo.moreDescriptMinor += sdxData.origData.name;
         } else {
             if (sdxData.origData.tooltip !== undefined) {
                 nodeInfo.moreDescriptMinor += sdxData.origData.tooltip;
             }
         }
-        if (i2b2.ONT.view.nav.options.showBaseCode && sdxData.origData.basecode !== undefined) {
+        if (i2b2.ONT.view.nav.options.showBaseCode  && sdxData.origData.basecode !== undefined) {
             nodeInfo.moreDescriptMinor += " - " + sdxData.origData.basecode;
         }
     }
