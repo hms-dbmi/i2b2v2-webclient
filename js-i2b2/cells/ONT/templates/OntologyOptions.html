@@ -1,0 +1,50 @@
+<div class="form-group row">
+    <div class="input-group input-group-sm mb-2">
+        <div class="input-group-prepend">
+            <label for="ONTNAVMaxQryDisp" class="input-group-text" style="font-size:0.84rem">Maximum Number of Children to Display:</label>
+        </div>
+        <input id="ONTNAVMaxQryDisp"  type="text"  value="200" class="form-control" placeholder="180" aria-label="Max Number of Children to Display">
+    </div>
+    <div class="ontOptionSection">
+        {{#if params.hiddens}}
+        <input type="checkbox" id="ONTNAVshowHiddens" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+        <input type="checkbox" id="ONTNAVshowHiddens" />
+        {{/if}}
+        <label for="ONTNAVshowHiddens"> Show Hidden Terms </label>
+    </div>
+
+    <div class="ontOptionSection">
+        {{#if  params.synonyms}}
+            <input type="checkbox" id="ONTNAVshowSynonyms" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+            <input type="checkbox" id="ONTNAVshowSynonyms" />
+        {{/if}}
+        <label for="ONTNAVshowSynonyms"> Show Synonymous Terms </label>
+    </div>
+    <div class="ontOptionSection">
+        {{#if  options.patientCounts}}
+        <input type="checkbox" id="ONTNAVshowPatientCounts" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+        <input type="checkbox" id="ONTNAVshowPatientCounts" />
+        {{/if}}
+        <label for="ONTNAVshowPatientCounts"> Enable Patient Counts </label>
+    </div>
+    <div class="ontOptionSection">
+        {{#if  options.showBaseCode}}
+        <input type="checkbox" id="ONTNAVshowCodeTooltips" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+        <input type="checkbox" id="ONTNAVshowCodeTooltips" />
+        {{/if}}
+        <label for="ONTNAVshowCodeTooltips"> Show Concept Codes in Tooltips </label>
+    </div>
+    <div class="ontOptionSection">
+        {{#if  params.modifiers}}
+            <input type="checkbox" id="ONTNAVdisableModifiers" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+            <input type="checkbox" id="ONTNAVdisableModifiers" />
+        {{/if}}
+        <label for="ONTNAVdisableModifiers"> Disable Modifiers </label>
+    </div>
+
+</div>

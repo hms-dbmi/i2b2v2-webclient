@@ -116,7 +116,7 @@ i2b2.ONT.ctrlr.Search = {
         let searchOptions = {};
         searchOptions.ont_max_records = "max='200'";
         searchOptions.ont_synonym_records = false;
-        searchOptions.ont_hidden_records = false;
+        searchOptions.ont_hidden_records = i2b2.ONT.view.nav.params.hiddens;
         searchOptions.ont_reduce_results = false;
         searchOptions.ont_hierarchy = false;
         searchOptions.ont_search_strategy = inSearchData.Strategy;
@@ -186,7 +186,7 @@ i2b2.ONT.ctrlr.Search = {
         let searchOptions = {};
         searchOptions.ont_max_records = "max='200'";
         searchOptions.ont_synonym_records = false;
-        searchOptions.ont_hidden_records = false;
+        searchOptions.ont_hidden_records = i2b2.ONT.view.nav.params.hiddens;
         searchOptions.ont_search_strategy = "exact";
         searchOptions.ont_search_coding = (inSearchData.Coding === 'ALL CODING'  ? '' : inSearchData.Coding);
         searchOptions.ont_search_string = inSearchData.SearchStr;

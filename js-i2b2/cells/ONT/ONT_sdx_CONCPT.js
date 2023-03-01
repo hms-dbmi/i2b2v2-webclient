@@ -130,7 +130,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     if (sdxData.origData.hasChildren.substring(2,1) === "I") {
         bCanExp = true;
     } else if (i2b2.ONT.view.nav.params.hiddens !== false && sdxData.origData.hasChildren.substring(2,1) === "H") {
-        nodeInfo.color = "#c00000;";
+        nodeInfo.color = "#c00000";
     } else if ((sdxData.origData.synonym_cd !== undefined) && (sdxData.origData.synonym_cd !== 'N')) {
     }
 
@@ -182,7 +182,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
                 nodeInfo.moreDescriptMinor += sdxData.origData.tooltip;
             }
         }
-        if ($("#ONTNAVshowCodeTooltips").is(":checked") && sdxData.origData.basecode !== undefined) {
+        if (i2b2.ONT.view.nav.options.showBaseCode && sdxData.origData.basecode !== undefined) {
             nodeInfo.moreDescriptMinor += " - " + sdxData.origData.basecode;
         }
     }
