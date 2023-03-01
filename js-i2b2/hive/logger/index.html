@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Message Log</title>
+</head>
+<body>
+This is the message log UI.
+<script type="text/javascript">
+    let events = {
+        dump: new CustomEvent("dump-request"),
+        clear: new CustomEvent("clear-request")
+    }
+
+    // handle the response to get a full dump of the log
+    window.addEventListener("dump-response", (e) => {
+        console.warn("Dump of message log arrived:");
+        console.dir(e.detail);
+    });
+
+    // handle event for when a new message is added to the log
+    window.addEventListener("add-response", (e) => {
+        console.warn("New message arrived:");
+        console.dir(e.detail);
+    });
+
+    // handle event for when a new message is added to the log
+    window.addEventListener("clear-response", (e) => {
+        console.warn("The message log has been cleared");
+    });
+
+    // request a log dump
+    window.dispatchEvent(events.dump);
+
+</script>
+</body>
+</html>

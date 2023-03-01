@@ -129,9 +129,10 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 
     if (sdxData.origData.hasChildren.substring(2,1) === "I") {
         bCanExp = true;
-    } else if (sdxData.origData.hasChildren.substring(2,1) === "H") {
+    } else if (i2b2.ONT.view.nav.params.hiddens !== false && sdxData.origData.hasChildren.substring(2,1) === "H") {
+        nodeInfo.color = "#c00000";
     } else if ((sdxData.origData.synonym_cd !== undefined) && (sdxData.origData.synonym_cd === 'N')) {
-         nodeInfo.color = "#0000ff";
+        nodeInfo.color = "#0000ff";
     }
 
     // see if we can expand
@@ -182,7 +183,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
                 nodeInfo.moreDescriptMinor += sdxData.origData.tooltip;
             }
         }
-        if ((($('ONTNAVshowCodeTooltips').checked) || $('ONTFINDshowCodeTooltips').checked) && sdxData.origData.basecode !== undefined) {
+        if (i2b2.ONT.view.nav.options.showBaseCode && sdxData.origData.basecode !== undefined) {
             nodeInfo.moreDescriptMinor += " - " + sdxData.origData.basecode;
         }
     }

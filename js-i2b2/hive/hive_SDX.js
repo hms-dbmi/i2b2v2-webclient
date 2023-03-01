@@ -345,6 +345,7 @@ i2b2.sdx.Master.RenderData = function(sdxDataPackage, options) {
         if (ret.cssClassMinor === undefined) ret.cssClassMinor = '';
         if (ret.moreDescriptMain === undefined) ret.moreDescriptMain = '';
         if (ret.moreDescriptMinor === undefined) ret.moreDescriptMinor = '';
+        if (ret.color === undefined) ret.color = '';
         if (ret.tvNodeState === undefined) ret.tvNodeState = {};
     }
 

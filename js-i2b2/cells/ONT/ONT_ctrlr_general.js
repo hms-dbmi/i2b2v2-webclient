@@ -63,6 +63,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         icon: sdxDataNode.renderData.cssClassMain,
         key: sdxDataNode.sdxInfo.sdxKeyValue,
         iconImg: sdxDataNode.renderData.iconImg,
+        color: sdxDataNode.renderData.color,
         iconImgExp: sdxDataNode.renderData.iconImgExp,
         color: sdxDataNode.renderData.color,
         i2b2: sdxDataNode
@@ -72,7 +73,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         tvDataNode.icon += " " + sdxDataNode.renderData.cssClassMinor;
     }
     // add number counts
-    let enablePatientCounts = $("#ONTNAVshowPatientCounts").is(":checked");
+    let enablePatientCounts = i2b2.ONT.view.nav.options.patientCounts;
     if (enablePatientCounts !== false && sdxDataNode.origData.total_num !== undefined){
         tvDataNode.text += ' - (' + sdxDataNode.origData.total_num + ')';
     }
