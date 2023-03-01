@@ -366,6 +366,8 @@ function QueryToolController() {
                             i2b2.CRC.view.QT.addNewQueryGroup(data.panel, data.metadata);
                         }
                     }
+                    // update the transformed model
+                    i2b2.CRC.ctrlr.QT._processModel();
 
                     i2b2.CRC.view.QT.render();
                 }
