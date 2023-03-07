@@ -131,6 +131,8 @@ i2b2.events.afterCellInit.add((cell) => {
                 treeRef.on('onRedraw', () => {
                     // attach drag drop attribute after the tree has been redrawn
                     i2b2.ONT.view.nav.treeview.find('li:not(:has(span.tvRoot))').attr("draggable", true);
+                    i2b2.ONT.view.nav.treeview.find('li:has(span.inactiveTerm)').attr("draggable", false)
+                        .addClass("inactiveTerm").find(".expand-icon").css("color","#212529");
                 });
 
                 i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model

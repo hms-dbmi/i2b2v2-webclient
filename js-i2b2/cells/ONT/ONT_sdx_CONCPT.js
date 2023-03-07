@@ -70,7 +70,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
             iconImg: undefined,
             iconImgExp: undefined,
             cssClassMain: "sdxStyleONT-CONCPT",
-            cssClassMinor: undefined,
+            cssClassMinor: "",
             moreDescriptMain: undefined,
             moreDescriptMinor: undefined,
             annotation: undefined,
@@ -129,6 +129,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 
     if (sdxData.origData.hasChildren.substring(2,1) === "I") {
         bCanExp = true;
+        nodeInfo.cssClassMinor += " inactiveTerm";
     } else if (i2b2.ONT.view.nav.params.hiddens !== false && sdxData.origData.hasChildren.substring(2,1) === "H") {
         nodeInfo.color = "#c00000";
     } else if ((sdxData.origData.synonym_cd !== undefined) && (sdxData.origData.synonym_cd !== 'N')) {
@@ -155,13 +156,13 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 
     switch(icon) {
         case "root":
-            nodeInfo.cssClassMinor = "tvRoot";
+            nodeInfo.cssClassMinor += " tvRoot";
             break;
         case "branch":
-            nodeInfo.cssClassMinor = "tvBranch";
+            nodeInfo.cssClassMinor += " tvBranch";
             break;
         case "leaf":
-            nodeInfo.cssClassMinor = "tvLeaf";
+            nodeInfo.cssClassMinor += " tvLeaf";
             break;
     }
 
