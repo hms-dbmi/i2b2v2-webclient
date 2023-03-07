@@ -15,11 +15,16 @@ body {
     width: 100%;
 }
 
-.MessageLog .rightPanel{
+.MessageLog #filterMenu .form-select {
+    display: inline-block;
+}
+
+
+.MessageLog .messageDetail{
     overflow: auto;
     position: absolute;
     top: 3.8em;
-    left: 260px;
+    left: 280px;
     font-size: 0.9em;
     right: 0;
     bottom: 0;
@@ -27,9 +32,10 @@ body {
     padding-left: 0.9em;
     border-left: 1px solid rgb(102, 119, 136);
 }
+
 .MessageLog .logItems{
     overflow-y: scroll;
-    width: 260px;
+    width: 280px;
     position: absolute;
     top: 4.8em;
     left: 0;
@@ -44,6 +50,14 @@ body {
     cursor: pointer;
     padding-right: 0.6em;
     border-bottom: 1px solid rgb(102, 119, 136);
+}
+
+.MessageLog .logItem.selected {
+    background: #FFD
+}
+
+.MessageLog .logItem:hover {
+    background: rgba(232, 228, 222, 0.6);
 }
 
 .MessageLog .msgTypes{
@@ -62,10 +76,6 @@ body {
     padding-left: 0.5em;
 }
 
-.MessageLog .logItem.selected {
-    background: #FFD
-}
-
 .MessageLog pre {
     overflow: visible;
 }
@@ -73,8 +83,13 @@ body {
 .MessageLog .sentStatus {
     background: #E99;
     border: 1px solid rgb(102, 119, 136);
+    border-top: none;
     flex-grow: 1;
     padding: 0.4em;
+}
+
+.MessageLog .sentStatus:hover {
+    background: #ec7777;
 }
 
 .MessageLog .rcvdStatus {
@@ -84,6 +99,9 @@ body {
     border-top: none;
     flex-grow: 1;
     padding: 0.4em;
+}
+.MessageLog .rcvdStatus:hover {
+    background: #4bee4b;
 }
 
 .MessageLog .errorStatus {
@@ -95,12 +113,38 @@ body {
     left: 0;
     bottom: 0;
     border-top: 1px solid rgb(102, 119, 136);
-    width: 260px;
+    width: 280px;
     height: 2.5em;
     display: flex;
     justify-content: center;
+    background: rgba(232, 228, 222, 0.6);
 }
 
 .MessageLog .actions .btn{
     margin: auto;
+}
+
+.MessageLog .msgSentXml{
+    border-left: 8px solid #E99;
+    padding: 0.4em;
+}
+
+.MessageLog .msgRcvdXml{
+    border-left: 8px solid #9E9;
+    padding: 0.4em;
+}
+
+.MessageLog #filterOrigin {
+    width: 13.1em;
+    margin-right: 0.7em;
+}
+
+.MessageLog #filterCell {
+    width: 13.1em;
+    margin-right: 0.7em;
+}
+
+.MessageLog #filterAction {
+    width: 18.5em;
+    margin-right: 0.7em;
 }

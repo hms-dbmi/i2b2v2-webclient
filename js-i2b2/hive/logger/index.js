@@ -35,9 +35,26 @@ window.addEventListener("dump-response", (e) => {
     updateLogItems();
 });
 
+// handle event for when a new message is added to the log
+window.addEventListener("add-response", (e) => {
+    console.warn("New message arrived:");
+    console.dir(e.detail);
+
+    let msg = e.detail;
+    msgLog.push(msg);
+    appendLogItem(msg, msgLog.length-1);
+});
+
+// handle event for when the messageLog is cleared
+window.addEventListener("clear-response", (e) => {
+    console.warn("The message log has been cleared");
+    $(".logItems").empty();
+    $(".messageDetail").empty();
+});
+
 function updateLogItems(){
     $(".logItems").empty();
-    $(".rightPanel").empty();
+    $(".messageDetail").empty();
     let origin = $("#filterOrigin").val().trim();
     let cell = $("#filterCell").val().trim();
     let action = $("#filterAction").val().trim();
@@ -56,13 +73,15 @@ function displayLogItem(logItem, sent, rcvd){
     logItem.addClass("selected");
     let msgIndex= logItem.data("index");
 
-    let rightPanel = $(".rightPanel").empty();
+    let messageDetail = $(".messageDetail").empty();
     let msgLogItem = msgLog[msgIndex];
     if(sent) {
-        rightPanel.append('<pre>' + i2b2.h.Escape(msgLogItem.msgSent.msg) +'</pre>')
+        let msgSentPanel = $("<pre>" + i2b2.h.Escape(msgLogItem.msgSent.msg) +"</pre>").addClass("msgSentXml");
+        messageDetail.append(msgSentPanel);
     }
     if(rcvd) {
-        rightPanel.append('<pre>' + i2b2.h.Escape(msgLogItem.msgRecv.msg) +'</pre>');
+        let msgRcvdPanel = $("<pre>" + i2b2.h.Escape(msgLogItem.msgRecv.msg) +"</pre>").addClass("msgRcvdXml");
+        messageDetail.append(msgRcvdPanel);
     }
 }
 
@@ -95,22 +114,6 @@ function appendLogItem(msg, index){
         displayLogItem($(this), true, true);
     });
 }
-// handle event for when a new message is added to the log
-window.addEventListener("add-response", (e) => {
-    console.warn("New message arrived:");
-    console.dir(e.detail);
-
-    let msg = e.detail;
-    msgLog.push(msg);
-    appendLogItem(msg, msgLog.length-1);
-});
-
-// handle event for when the messageLog is cleared
-window.addEventListener("clear-response", (e) => {
-    console.warn("The message log has been cleared");
-    $(".logItems").empty();
-    $(".rightPanel").empty();
-});
 
 function init(){
     console.log("initializing...");
@@ -140,6 +143,8 @@ function init(){
     });
 
     $(".MessageLog .refreshLog").on("click", function(){
+        $(".logItems").empty();
+        $(".messageDetail").empty();
         window.dispatchEvent(events.dump);
     });
 
