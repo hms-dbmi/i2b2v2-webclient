@@ -49,7 +49,6 @@ window.addEventListener("add-response", (e) => {
 window.addEventListener("clear-response", (e) => {
     console.warn("The message log has been cleared");
     msgLog = [];
-    source = [];
     $(".logItems").empty();
     $(".messageDetail").empty();
 });
