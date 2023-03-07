@@ -56,10 +56,6 @@ body {
     background: #FFD
 }
 
-.MessageLog .logItem:hover {
-    background: rgba(232, 228, 222, 0.6);
-}
-
 .MessageLog .msgTypes{
     width: 2.9em;
     display: flex;
@@ -70,10 +66,14 @@ body {
 }
 
 .MessageLog .msgData{
-    width: 100%;
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
-    padding-left: 0.5em;
+     width: 100%;
+     padding-top: 0.2em;
+     padding-bottom: 0.2em;
+     padding-left: 0.5em;
+ }
+
+.MessageLog .msgData:hover{
+    background: rgba(232, 228, 222, 0.6);
 }
 
 .MessageLog pre {
