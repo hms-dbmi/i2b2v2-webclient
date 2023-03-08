@@ -344,6 +344,9 @@
     -moz-transform: scaleX(-1);
     -webkit-transform: scaleX(-1);
     -ms-transform: scaleX(-1);
+}
+
+.QueryGroup .topbar .unlinkSlash {
     margin-left: -22px;
     font-size: 0.9em;
 }
