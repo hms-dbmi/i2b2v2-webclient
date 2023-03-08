@@ -316,7 +316,7 @@
 .QueryGroup.without .body .leftbar {
     background: #ad7070;
 }
-.QueryGroup.with .SequenceBarEVENTL,
+.QueryGroup.with .SequenceBar,
 .QueryGroup.with .topbar .JoinText,
 .QueryGroup.with .topbar .with,
 .QueryGroup.with .topbar .without,
