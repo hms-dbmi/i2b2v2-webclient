@@ -534,6 +534,7 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
         with: true,
         without: false,
         when:false,
+        timing: "ANY",
         eventLinks: [],
         events: []
     };
@@ -756,7 +757,52 @@ i2b2.CRC.view.QT.handleUpdateDateRangeEvent = function(event){
     }
 
     i2b2.CRC.view.QS.clearStatus();
-}
+};
+// ================================================================================================== //
+
+i2b2.CRC.view.QT.unLinkQueryGroup = function(elem) {
+    let queryGroupElem = $(elem).parents(".QueryGroup");
+    let queryGroupIdx = queryGroupElem.data("queryGroup");
+
+    i2b2.CRC.model.query.groups[queryGroupIdx].timing = "ANY";
+
+    $(".unLink").hide();
+    $(".instLink").hide();
+    $(".encLink").hide();
+    $(".noLink").show();
+    $(".linkOptionsItem").removeClass("active");
+};
+// ================================================================================================== //
+
+i2b2.CRC.view.QT.linkAsSameEncounter = function(elem) {
+    let queryGroupElem = $(elem).parents(".QueryGroup");
+    let queryGroupIdx = queryGroupElem.data("queryGroup");
+
+    i2b2.CRC.model.query.groups[queryGroupIdx].timing = "SAMEVISIT";
+
+    $(".noLink").hide();
+    $(".instLink").hide();
+    $(".unLink").show();
+    $(".encLink").show();
+    $(".linkOptionsItem").removeClass("active");
+    $(".sameEnc").addClass("active");
+};
+
+// ================================================================================================== //
+
+i2b2.CRC.view.QT.linkAsSameInstance = function(elem) {
+    let queryGroupElem = $(elem).parents(".QueryGroup");
+    let queryGroupIdx = queryGroupElem.data("queryGroup");
+
+    i2b2.CRC.model.query.groups[queryGroupIdx].timing = "SAMEINSTANCE";
+
+    $(".noLink").hide();
+    $(".encLink").hide();
+    $(".unLink").show();
+    $(".instLink").show();
+    $(".linkOptionsItem").removeClass("active");
+    $(".sameInst").addClass("active");
+};
 // ================================================================================================== //
 i2b2.CRC.view.QT.render = function() {
     // render HTML based on "i2b2.CRC.model.query" data
