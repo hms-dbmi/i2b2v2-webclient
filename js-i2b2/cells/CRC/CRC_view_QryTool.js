@@ -1600,7 +1600,7 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             submittedAt: i2b2.CRC.ctrlr.QS.QI.start_date.toLocaleString().replace(", "," @ "),
             completedAt: i2b2.CRC.ctrlr.QS.QI.end_date.toLocaleString().replace(", "," @ "),
             submittedBy: "USERNAME(" + submittedByUsername + ")",
-            runDuration: Number(i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date + 1000).toLocaleString(),
+            runDuration: Number((i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date) / 1000).toLocaleString(),
             panels: panels
         };
 
