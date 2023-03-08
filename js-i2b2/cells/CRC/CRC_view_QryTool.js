@@ -766,42 +766,42 @@ i2b2.CRC.view.QT.unLinkQueryGroup = function(elem) {
 
     i2b2.CRC.model.query.groups[queryGroupIdx].timing = "ANY";
 
-    $(".unLink").hide();
-    $(".instLink").hide();
-    $(".encLink").hide();
-    $(".noLink").show();
-    $(".linkOptionsItem").removeClass("active");
+    queryGroupElem.find(".unLink").hide();
+    queryGroupElem.find(".instLink").hide();
+    queryGroupElem.find(".encLink").hide();
+    queryGroupElem.find(".noLink").show();
+    queryGroupElem.find(".linkOptionsItem").removeClass("active");
 };
 // ================================================================================================== //
 
 i2b2.CRC.view.QT.linkAsSameEncounter = function(elem) {
-    let queryGroupElem = $(elem).parents(".QueryGroup");
+    let queryGroupElem = $(elem).parents(".QueryGroup").first();
     let queryGroupIdx = queryGroupElem.data("queryGroup");
 
     i2b2.CRC.model.query.groups[queryGroupIdx].timing = "SAMEVISIT";
 
-    $(".noLink").hide();
-    $(".instLink").hide();
-    $(".unLink").show();
-    $(".encLink").show();
-    $(".linkOptionsItem").removeClass("active");
-    $(".sameEnc").addClass("active");
+    queryGroupElem.find(".noLink").hide();
+    queryGroupElem.find(".instLink").hide();
+    queryGroupElem.find(".unLink").show();
+    queryGroupElem.find(".encLink").show();
+    queryGroupElem.find(".linkOptionsItem").removeClass("active");
+    queryGroupElem.find(".sameEnc").addClass("active");
 };
 
 // ================================================================================================== //
 
 i2b2.CRC.view.QT.linkAsSameInstance = function(elem) {
-    let queryGroupElem = $(elem).parents(".QueryGroup");
+    let queryGroupElem = $(elem).parents(".QueryGroup").first();
     let queryGroupIdx = queryGroupElem.data("queryGroup");
 
     i2b2.CRC.model.query.groups[queryGroupIdx].timing = "SAMEINSTANCE";
 
-    $(".noLink").hide();
-    $(".encLink").hide();
-    $(".unLink").show();
-    $(".instLink").show();
-    $(".linkOptionsItem").removeClass("active");
-    $(".sameInst").addClass("active");
+    queryGroupElem.find(".noLink").hide();
+    queryGroupElem.find(".encLink").hide();
+    queryGroupElem.find(".unLink").show();
+    queryGroupElem.find(".instLink").show();
+    queryGroupElem.find(".linkOptionsItem").removeClass("active");
+    queryGroupElem.find(".sameInst").addClass("active");
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.render = function() {

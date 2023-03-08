@@ -331,12 +331,12 @@
 }
 
 .QueryGroup .topbar .linkOptions {
-    position: absolute;
-    right: 1.55em;
+    margin-top: 0.2em;
+    margin-left: auto;
     font-size: 1.7em;
-    top: 0.85em;
     cursor: pointer;
     padding-right: 0.2em;
+    width: 1.5em;
 }
 
 .QueryGroup .topbar .iconFlipped {
@@ -347,8 +347,8 @@
 }
 
 .QueryGroup .topbar .unlinkSlash {
-    margin-left: -22px;
-    font-size: 0.9em;
+    margin-left: -22.5px;
+    font-size: 1.85em;
 }
 
 .QueryGroup .topbar .unLink {
@@ -356,18 +356,31 @@
 }
 
 .QueryGroup .topbar .encLink {
-   color: #FCAA00;
+    color: #FCAA00;
+    position: relative;
+    left: 0;
+}
+
+.QueryGroup .topbar .noLink {
+    position: relative;
+    margin-right: 0.3em;
+    left: 0;
 }
 
 .QueryGroup .topbar .instLink {
     color: #0D6EFD;
+    position: relative;
+    left: 0;
 }
 
 .QueryGroup .topbar .linkLetter {
     font-size: 0.5em;
-    position: absolute;
-    right: 0;
-    top: 1em;
+}
+
+.QueryGroup .topbar .linkLetter .bi-link {
+    font-size: 2.0em;
+    margin-top: -0.2em;
+    margin-left: auto;
 }
 
 .QueryGroup.with .body .leftbar,

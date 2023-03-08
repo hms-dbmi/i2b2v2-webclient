@@ -8,19 +8,19 @@
         {{#unless when}}
             <div id="linkOptions" class="linkOptions"  data-bs-toggle="dropdown">
                 {{#ifCond timing '===' 'ANY'}}
-                <div title="panel timing: same instance" class="instLink" style="display:none"><i class="bi bi-link"></i><div class="linkLetter">i</div></div>
-                <div title="panel timing: same encounter" class="encLink" style="display:none"><i class="bi bi-link"></i><div class="linkLetter">e</div></div>
-                <div title="panel timing: independent" class="noLink iconFlipped" ><i class="bi bi-link"></i><i class="bi bi-slash-lg unlinkSlash"></i></div>
+                    <div title="panel timing: same instance" class="instLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>i</div></div>
+                    <div title="panel timing: same encounter" class="encLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>e</div></div>
+                    <div title="panel timing: independent" class="noLink iconFlipped"><div class="linkLetter"><i class="bi bi-link"></i><i class="bi bi-slash-lg unlinkSlash"></i></div></div>
                 {{/ifCond}}
                 {{#ifCond timing '===' 'SAMEINSTANCE'}}
-                    <div title="panel timing: same instance" class="instLink"><i class="bi bi-link"></i><div class="linkLetter">i</div></div>
-                    <div title="panel timing: same encounter" class="encLink" style="display:none"><i class="bi bi-link"></i><div class="linkLetter">e</div></div>
-                    <div title="panel timing: independent" class="noLink iconFlipped" style="display:none"><i class="bi bi-link"></i><i class="bi bi-slash-lg"></i></div>
+                    <div title="panel timing: same instance" class="instLink"><div class="linkLetter"><i class="bi bi-link"></i>i</div></div>
+                    <div title="panel timing: same encounter" class="encLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>e</div></div>
+                    <div title="panel timing: independent" class="noLink iconFlipped" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i><i class="bi bi-slash-lg unlinkSlash"></i></div></div>
                 {{/ifCond}}
                 {{#ifCond timing '===' 'SAMEVISIT'}}
-                <div title="panel timing: same encounter" class="encLink"><i class="bi bi-link"></i><div class="linkLetter">e</div></div>
-                <div title="panel timing: same instance" class="instLink" style="display:none"><i class="bi bi-link"></i><div class="linkLetter">i</div></div>
-                    <div title="panel timing: independent" class="noLink iconFlipped" style="display:none"><i class="bi bi-link"></i><i class="bi bi-slash"></i></div>
+                    <div title="panel timing: same encounter" class="encLink"><div class="linkLetter"><i class="bi bi-link"></i>e</div></div>
+                    <div title="panel timing: same instance" class="instLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>i</div></div>
+                    <div title="panel timing: independent" class="noLink iconFlipped" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i><i class="bi bi-slash-lg unlinkSlash"></i></div></div>
                 {{/ifCond}}
             </div>
             <div class="linkOptionsDropdownMenu dropdown-menu"  aria-labelledby="linkOptions">
