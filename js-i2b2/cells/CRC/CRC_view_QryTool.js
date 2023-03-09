@@ -794,7 +794,7 @@ i2b2.CRC.view.QT.linkAsSameInstance = function(elem) {
     let queryGroupElem = $(elem).parents(".QueryGroup").first();
     let queryGroupIdx = queryGroupElem.data("queryGroup");
 
-    i2b2.CRC.model.query.groups[queryGroupIdx].timing = "SAMEINSTANCE";
+    i2b2.CRC.model.query.groups[queryGroupIdx].timing = "SAMEINSTANCENUM";
 
     queryGroupElem.find(".noLink").hide();
     queryGroupElem.find(".encLink").hide();
