@@ -6,7 +6,7 @@
         <input id="ONTNAVMaxQryDisp"  type="text"  value="200" class="form-control" placeholder="180" aria-label="Max Number of Children to Display">
     </div>
     <div class="ontOptionSection">
-        {{#if params.hiddens}}
+        {{#if hiddens}}
         <input type="checkbox" id="ONTNAVshowHiddens" class="ontologyCheckboxOptions" checked/>
         {{else}}
         <input type="checkbox" id="ONTNAVshowHiddens" />
@@ -15,7 +15,7 @@
     </div>
 
     <div class="ontOptionSection">
-        {{#if  params.synonyms}}
+        {{#if synonyms}}
             <input type="checkbox" id="ONTNAVshowSynonyms" class="ontologyCheckboxOptions" checked/>
         {{else}}
             <input type="checkbox" id="ONTNAVshowSynonyms" />
@@ -23,7 +23,7 @@
         <label for="ONTNAVshowSynonyms"> Show Synonymous Terms </label>
     </div>
     <div class="ontOptionSection">
-        {{#if  options.patientCounts}}
+        {{#if patientCounts}}
         <input type="checkbox" id="ONTNAVshowPatientCounts" class="ontologyCheckboxOptions" checked/>
         {{else}}
         <input type="checkbox" id="ONTNAVshowPatientCounts" />
@@ -31,7 +31,15 @@
         <label for="ONTNAVshowPatientCounts"> Enable Patient Counts </label>
     </div>
     <div class="ontOptionSection">
-        {{#if  options.showBaseCode}}
+        {{#if showShortTooltips}}
+        <input type="checkbox" id="ONTNAVshowShortTooltips" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+        <input type="checkbox" id="ONTNAVshowShortTooltips" />
+        {{/if}}
+        <label for="ONTNAVshowShortTooltips"> Use Short Tooltips </label>
+    </div>
+    <div class="ontOptionSection">
+        {{#if showConceptCode}}
         <input type="checkbox" id="ONTNAVshowCodeTooltips" class="ontologyCheckboxOptions" checked/>
         {{else}}
         <input type="checkbox" id="ONTNAVshowCodeTooltips" />
@@ -39,7 +47,7 @@
         <label for="ONTNAVshowCodeTooltips"> Show Concept Codes in Tooltips </label>
     </div>
     <div class="ontOptionSection">
-        {{#if  params.modifiers}}
+        {{#if modifiers}}
             <input type="checkbox" id="ONTNAVdisableModifiers" class="ontologyCheckboxOptions" checked/>
         {{else}}
             <input type="checkbox" id="ONTNAVdisableModifiers" />
