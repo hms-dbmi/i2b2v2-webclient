@@ -8,7 +8,6 @@
             <td class="logo"> <h5><strong>i2b2 </strong>Query & Analysis Tool</h5> </td>
             <td>
                 <div id="headerOptions" class="fs-4 mb-3">
-                    <a href="#" title="Message Log" onclick="i2b2.hive.msgSniffer.show();"><i class="bi bi-box-arrow-in-right"></i></a>
                     <a href="#" title="Help Page"><i class="bi bi-question-circle"></i></a>
                     <div class="dropdown">
                         <a href="#" onclick="i2b2.PM.setUserAccountInfo()" title="Account Information" data-bs-toggle="dropdown"><i class="bi bi-person-circle"></i></a>
@@ -34,6 +33,10 @@
                             </li>
                             <li class="dropdown-item static">
                                 <span class="versionNum"></span> - <span class="versionDate"></span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li class="center">
+                                <a href="#" title="Message Log" class="messageLogLnk" onclick="i2b2.hive.msgSniffer.show();">Message Log</a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li class="center">
