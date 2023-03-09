@@ -17,6 +17,7 @@ body {
 
 .MessageLog #filterMenu .form-select {
     display: inline-block;
+    font-size: 13px;
 }
 
 
@@ -37,7 +38,7 @@ body {
     overflow-y: scroll;
     width: 280px;
     position: absolute;
-    top: 4.8em;
+    top: 4.85em;
     left: 0;
     bottom: 3.5em;
     font-size: 0.7em;
