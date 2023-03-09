@@ -131,7 +131,8 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
         bCanExp = true;
     } else if (i2b2.ONT.view.nav.params.hiddens !== false && sdxData.origData.hasChildren.substring(2,1) === "H") {
         nodeInfo.color = "#c00000";
-    } else if ((sdxData.origData.synonym_cd !== undefined) && (sdxData.origData.synonym_cd !== 'N')) {
+    } else if (i2b2.ONT.view.nav.params.synonyms !== false && (sdxData.origData.synonym_cd !== 'N')) {
+        nodeInfo.color = "#0000ff";
     }
 
     // see if we can expand
@@ -294,9 +295,6 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                 i2b2: sdxDataNode
             };
 
-            if(sdxDataNode.origData.synonym_cd !== undefined && sdxDataNode.origData.synonym_cd !== 'N'){
-                temp.color = "#0000ff";
-            }
             temp.state = sdxDataNode.renderData.tvNodeState;
             if (sdxDataNode.renderData.cssClassMinor !== undefined) temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             if (typeof cl_node === 'undefined' || (typeof cl_node === 'string' && String(cl_node).trim() === '')) {
