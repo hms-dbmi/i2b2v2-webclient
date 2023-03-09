@@ -1,5 +1,7 @@
 body {
-    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
     margin: 0;
     padding: 0;
 }
