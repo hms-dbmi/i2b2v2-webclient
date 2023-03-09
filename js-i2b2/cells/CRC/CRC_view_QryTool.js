@@ -582,6 +582,8 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
             queryGroup.without = false;
             queryGroup.display = "when";
         }
+
+        queryGroup.timing = metadata.timing;
     }
 
     return qgIdx;
