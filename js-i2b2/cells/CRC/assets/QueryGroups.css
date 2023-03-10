@@ -1021,3 +1021,7 @@
 .clear {
     clear: both;
 }
+
+#queryOptionsModal #queryOptions .input-group-text{
+    font-size: 0.85em;
+}

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>Query Options</title>
     <meta charset="UTF-8">
 </head>
 <body>
@@ -16,21 +17,12 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-                <form style="margin: 0px 40px">
-                    <div class="form-group row">
-                        <div class="input-group input-group-sm mb-2">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="QryTimeout-text">Maximum time to wait for query results (in seconds)</span>
-                            </div>
-                            <input type="text" id="QryTimeout" class="form-control" placeholder="180" aria-label="Max time to wait for query results" aria-describedby="QryTimeout-text">
-                        </div>
-                    </div>
-                </form>
+                <form id="queryOptions" style="margin: 0px 40px"></form>
             </div>
 
             <!-- Modal footer -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary i2b2-save">Save</button>
+                <button type="button" class="btn btn-primary options-save">Save</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
 
