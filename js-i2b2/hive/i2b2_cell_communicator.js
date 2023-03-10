@@ -44,6 +44,12 @@ i2b2.hive.communicatorFactory = function(cellCode){
             // - the parse() function is responsible for creating and populating the "model" namespace withing the communicator packet.
             this._commData[name].parser = parseFunc;
         }
+
+        let msg = {
+            channelName: this.ParentCell,
+            channelActions: Object.keys(this._commData)
+        };
+        i2b2.hive.msgSniffer.registerMessageSource(msg);
     };
 
 
