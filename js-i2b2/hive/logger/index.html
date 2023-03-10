@@ -5,33 +5,51 @@
     <title>Message Log</title>
 </head>
 <body>
-This is the message log UI.
+<script type="text/javascript" src="../../../js-ext/jquery/3.6.0/jquery.min.js" ></script>
+<!-- LOAD Bootstrap FROM local server -->
+<script type="text/javascript" src="../../../js-ext/bootstrap/5.0.2/js/bootstrap.bundle.min.js" ></script>
+<link rel="stylesheet" href="../../../js-ext/bootstrap/5.0.2/css/bootstrap.min.css">
+
+<script type="text/javascript" src="../../../js-ext/handlebars/4.7.7/handlebars.min.js"></script>
+
+<script type="text/javascript" src="../../i2b2_loader.js" ></script>
+<script type="text/javascript" src="../hive_helpers.js" ></script>
+
+<link type="text/css" href="index.css" rel="stylesheet" />
+<script type="text/javascript" src="index.js" ></script>
+
 <script type="text/javascript">
-    let events = {
-        dump: new CustomEvent("dump-request"),
-        clear: new CustomEvent("clear-request")
-    }
-
-    // handle the response to get a full dump of the log
-    window.addEventListener("dump-response", (e) => {
-        console.warn("Dump of message log arrived:");
-        console.dir(e.detail);
-    });
-
-    // handle event for when a new message is added to the log
-    window.addEventListener("add-response", (e) => {
-        console.warn("New message arrived:");
-        console.dir(e.detail);
-    });
-
-    // handle event for when a new message is added to the log
-    window.addEventListener("clear-response", (e) => {
-        console.warn("The message log has been cleared");
-    });
-
-    // request a log dump
-    window.dispatchEvent(events.dump);
-
+    /****************************************************/
+    /******************** INITIALIZE ********************/
+    /****************************************************/
+    $(document).ready(function() {
+        init();
+     });
 </script>
+
+<div class="MessageLog">
+    <div class="filterMenuBar">
+        <div id="filterMenu">
+                <select id="filterOrigin" class="form-select form-select-sm">
+                    <option value="ALL">All Origins</option>
+                </select>
+                <select id="filterCell" class="form-select form-select-sm ">
+                    <option value="ALL">All Cells</option>
+                </select>
+
+                <select id="filterAction" class="form-select form-select-sm">
+                    <option value="ALL">All Actions</option>
+                </select>
+        </div>
+    </div>
+
+    <div class="logItems"></div>
+    <div class="actions">
+        <button type="button" class="btn btn-primary btn-sm refreshLog">Refresh</button>
+        <button type="button" class="btn btn-secondary  btn-sm clearLog">Clear</button>
+    </div>
+    <div class="messageDetail">
+    </div>
+</div>
 </body>
 </html>

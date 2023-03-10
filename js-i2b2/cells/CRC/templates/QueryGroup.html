@@ -5,6 +5,35 @@
         <div class="without"><i class="bi bi-circle nosel"></i><i class="bi bi-circle-fill sel"></i>without</div>
         <div class="when whenItem"><i class="bi bi-circle nosel" ></i><i class="bi bi-circle-fill sel"></i>when</div>
         <div class="qgclose"><i class="bi bi-x-lg" title="remove query group"></i></div>
+        {{#unless when}}
+            <div id="linkOptions" class="linkOptions"  data-bs-toggle="dropdown">
+                {{#ifCond timing '===' 'ANY'}}
+                    <div title="panel timing: same instance" class="instLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>i</div></div>
+                    <div title="panel timing: same encounter" class="encLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>e</div></div>
+                    <div title="panel timing: independent" class="noLink iconFlipped"><div class="linkLetter"><i class="bi bi-link"></i><i class="bi bi-slash-lg unlinkSlash"></i></div></div>
+                {{/ifCond}}
+                {{#ifCond timing '===' 'SAMEINSTANCENUM'}}
+                    <div title="panel timing: same instance" class="instLink"><div class="linkLetter"><i class="bi bi-link"></i>i</div></div>
+                    <div title="panel timing: same encounter" class="encLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>e</div></div>
+                    <div title="panel timing: independent" class="noLink iconFlipped" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i><i class="bi bi-slash-lg unlinkSlash"></i></div></div>
+                {{/ifCond}}
+                {{#ifCond timing '===' 'SAMEVISIT'}}
+                    <div title="panel timing: same encounter" class="encLink"><div class="linkLetter"><i class="bi bi-link"></i>e</div></div>
+                    <div title="panel timing: same instance" class="instLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>i</div></div>
+                    <div title="panel timing: independent" class="noLink iconFlipped" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i><i class="bi bi-slash-lg unlinkSlash"></i></div></div>
+                {{/ifCond}}
+            </div>
+            <div class="linkOptionsDropdownMenu dropdown-menu"  aria-labelledby="linkOptions">
+                <button class="dropdown-item linkOptionsItem sameEnc" type="button" onclick="i2b2.CRC.view.QT.linkAsSameEncounter(this);">same encounter</button>
+                <button class="dropdown-item linkOptionsItem sameInst" type="button" onclick="i2b2.CRC.view.QT.linkAsSameInstance(this);">same instance</button>
+                {{#ifCond timing '!==' 'ANY'}}
+                    <button class="dropdown-item linkOptionsItem unLink" type="button" onclick="i2b2.CRC.view.QT.unLinkQueryGroup(this);" style="display:none">unlink</button>
+                {{/ifCond}}
+                {{#ifCond timing '===' 'ANY'}}
+                    <button class="dropdown-item linkOptionsItem unLink" type="button" onclick="i2b2.CRC.view.QT.unLinkQueryGroup(this);">unlink</button>
+                {{/ifCond}}
+            </div>
+        {{/unless}}
     </div>
     <div class="body">
         <div class="leftbar"></div>

@@ -1,0 +1,150 @@
+body {
+    overflow-y: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin: 0;
+    padding: 0;
+}
+
+.MessageLog .filterMenuBar {
+    background-color: #2782a3;
+    padding-top: 0.8em;
+    padding-left: 1.3em;
+    padding-right: 1.3em;
+    position: absolute;
+    top: 0;
+    height: 3.4em;
+    width: 100%;
+}
+
+.MessageLog #filterMenu .form-select {
+    display: inline-block;
+    font-size: 13px;
+}
+
+
+.MessageLog .messageDetail{
+    overflow: auto;
+    position: absolute;
+    top: 3.8em;
+    left: 280px;
+    font-size: 0.9em;
+    right: 0;
+    bottom: 0;
+    padding: 0.5em;
+    padding-left: 0.9em;
+    border-left: 1px solid rgb(102, 119, 136);
+}
+
+.MessageLog .logItems{
+    overflow-y: scroll;
+    width: 280px;
+    position: absolute;
+    top: 4.85em;
+    left: 0;
+    bottom: 3.5em;
+    font-size: 0.7em;
+    padding-bottom: 5em;
+}
+.MessageLog .logItem {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    cursor: pointer;
+    border-bottom: 1px solid rgb(102, 119, 136);
+}
+
+.MessageLog .logItem.selected {
+    background: #FFD
+}
+
+.MessageLog .msgTypes{
+    width: 2.9em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.MessageLog .msgData{
+    width: 100%;
+    padding: 0.2em 0.5em 0.2em 0.5em;
+ }
+
+.MessageLog .msgData:hover{
+    background: rgba(232, 228, 222, 0.6);
+}
+
+.MessageLog pre {
+    overflow: visible;
+}
+
+.MessageLog .sentStatus {
+    background: #E99;
+    border: 1px solid rgb(102, 119, 136);
+    border-top: none;
+    flex-grow: 1;
+    padding: 0.4em;
+}
+
+.MessageLog .sentStatus:hover {
+    background: #ec7777;
+}
+
+.MessageLog .rcvdStatus {
+    background: #9E9;
+    border: 1px solid rgb(102, 119, 136);
+    border-bottom: none;
+    border-top: none;
+    flex-grow: 1;
+    padding: 0.4em;
+}
+.MessageLog .rcvdStatus:hover {
+    background: #4bee4b;
+}
+
+.MessageLog .errorStatus {
+    background: #FFFF90;
+}
+
+.MessageLog .actions {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border-top: 1px solid rgb(102, 119, 136);
+    width: 280px;
+    height: 2.5em;
+    display: flex;
+    justify-content: center;
+    background: rgba(232, 228, 222, 0.6);
+}
+
+.MessageLog .actions .btn{
+    margin: auto;
+}
+
+.MessageLog .msgSentXml{
+    border-left: 8px solid #E99;
+    padding: 0.4em;
+}
+
+.MessageLog .msgRcvdXml{
+    border-left: 8px solid #9E9;
+    padding: 0.4em;
+}
+
+.MessageLog #filterOrigin {
+    width: 13.1em;
+    margin-right: 0.7em;
+}
+
+.MessageLog #filterCell {
+    width: 13.1em;
+    margin-right: 0.7em;
+}
+
+.MessageLog #filterAction {
+    width: 18.5em;
+    margin-right: 0.7em;
+}

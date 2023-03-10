@@ -672,7 +672,7 @@ function QueryToolController() {
                 case "without":
                 case "with":
                     let number =String(qgIdx+1);
-                    let timing = "ANY";
+                    let timing = qgData.timing;
                     let occursCount = qgData.events[0].instances;
                     let tempPanel = createPanel(number, invert, occursCount, timing);
                     tempPanel.items = [];

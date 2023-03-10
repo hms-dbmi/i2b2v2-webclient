@@ -23,12 +23,20 @@
         <label for="ONTNAVshowSynonyms"> Show Synonymous Terms </label>
     </div>
     <div class="ontOptionSection">
-        {{#if  patientCounts}}
+        {{#if patientCounts}}
         <input type="checkbox" id="ONTNAVshowPatientCounts" class="ontologyCheckboxOptions" checked/>
         {{else}}
         <input type="checkbox" id="ONTNAVshowPatientCounts" />
         {{/if}}
         <label for="ONTNAVshowPatientCounts"> Enable Patient Counts </label>
+    </div>
+    <div class="ontOptionSection">
+        {{#if showShortTooltips}}
+        <input type="checkbox" id="ONTNAVshowShortTooltips" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+        <input type="checkbox" id="ONTNAVshowShortTooltips" />
+        {{/if}}
+        <label for="ONTNAVshowShortTooltips"> Use Short Tooltips </label>
     </div>
     <div class="ontOptionSection">
         {{#if showConceptCode}}
