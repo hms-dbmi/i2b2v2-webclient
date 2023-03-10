@@ -255,12 +255,16 @@ button.invert:hover{
     width: fit-content !important;
 }
 
-
 #ontOptionsModal .ontologyCheckboxOptions{
     vertical-align: -2px;
 }
 
 #ontOptionsModal .ontOptionSection {
     margin-bottom: 0.7em;
+}
+
+#i2b2TreeviewOntNav .inactiveTerm,
+#i2b2TreeviewOntSearch .inactiveTerm {
+    color: #c0c0c0;
 }
 
