@@ -128,7 +128,6 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     }
 
     if (sdxData.origData.hasChildren.substring(2,1) === "I") {
-        bCanExp = true;
         nodeInfo.cssClassMinor += " inactiveTerm";
     } else if (i2b2.ONT.view.nav.params.hiddens !== false && sdxData.origData.hasChildren.substring(2,1) === "H") {
         nodeInfo.color = "#c00000";
