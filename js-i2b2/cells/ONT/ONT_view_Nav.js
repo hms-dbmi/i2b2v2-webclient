@@ -236,9 +236,6 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
                     return modifiersDisplayed.length === 0;
                 },
                 onClick: function(node) {
-                    //do nothing if modifiers already displayed
-                    //let modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
-                    //if(modifiersDisplayed.length !== 0) { return; }
                     i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, function(newNodes) {
                         if (newNodes.length === 0) {
                             i2b2.ONT.view.nav.displayAlertDialog({
