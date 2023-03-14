@@ -229,20 +229,26 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
         }
     };
     if(includeModifier){
-       actions.nodeModifier =  {
-           name: 'Show Modifiers',
-               onClick: function(node) {
-                   i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, function(newNodes) {
-                       if (newNodes.length === 0) {
-                           i2b2.ONT.view.nav.displayAlertDialog({
+        actions.nodeModifier =  {
+            name: 'Show Modifiers',
+                isShown: function(node) {
+                    let modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
+                    return modifiersDisplayed.length === 0;
+                },
+                onClick: function(node) {
+                    //do nothing if modifiers already displayed
+                    //let modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
+                    //if(modifiersDisplayed.length !== 0) { return; }
+                    i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, function(newNodes) {
+                        if (newNodes.length === 0) {
+                            i2b2.ONT.view.nav.displayAlertDialog({
                                     title: "Show Modifiers",
                                     alertMsg: "No modifiers found for " + node.text + "."
-                                }
-                           );
-                       }
-                       else{
-                           //get existing children
-                           let getAllChildren = function (childNode, allChildren) {
+                            });
+                        }
+                        else{
+                            //get existing children
+                            let getAllChildren = function (childNode, allChildren) {
                                childNode.nodes.forEach((n) => {
                                    let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
                                    n.parentKey = parentNode.key;
@@ -251,26 +257,26 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
                                        return getAllChildren(n, allChildren);
                                    }
                                });
-                           }
+                            }
 
-                           let temp_childrenAll = [];
-                           getAllChildren(node, temp_childrenAll);
-                           let temp_childrenId = node.nodes.map(function (node) { return node.nodeId; });
-                           i2b2.ONT.view.search.treeview.treeview('deleteNodes', [temp_childrenId]);
+                            let temp_childrenAll = [];
+                            getAllChildren(node, temp_childrenAll);
+                            let temp_childrenId = node.nodes.map(function (node) { return node.nodeId; });
+                            i2b2.ONT.view.search.treeview.treeview('deleteNodes', [temp_childrenId]);
 
-                           //append existing children so that the modifiers appear first in the tree
-                           newNodes = newNodes.concat(temp_childrenAll);
+                            //append existing children so that the modifiers appear first in the tree
+                            newNodes = newNodes.concat(temp_childrenAll);
 
-                           i2b2.ONT.view.search.treeview.treeview('addNodes', [
-                               newNodes,
-                               function (parent, child) { return parent.key === child.parentKey},
-                               false
-                           ]);
+                            i2b2.ONT.view.search.treeview.treeview('addNodes', [
+                                newNodes,
+                                function (parent, child) { return parent.key === child.parentKey},
+                                false
+                            ]);
 
-                           // render tree
-                           i2b2.ONT.view.search.treeview.treeview('redraw', []);
-                       }
-                   }, true);
+                            // render tree
+                            i2b2.ONT.view.search.treeview.treeview('redraw', []);
+                        }
+                    }, true);
                }
        }
     }
