@@ -1685,7 +1685,24 @@ i2b2.CRC.view.QT.showQueryReport = function(){
 }
 
 // ================================================================================================== //
-
+i2b2.CRC.view.QT.showOptions = function() {
+    let queryOptionsModal = $('body #queryOptionsModal');
+    if (queryOptionsModal.length === 0) {
+        queryOptionsModal = $("<div id='queryOptionsModal'/>").appendTo("body");
+        queryOptionsModal.load('js-i2b2/cells/CRC/assets/modalOptionsQT.html', function () {
+            $("body #queryOptionsModal button.options-save").click(function () {
+                i2b2.CRC.view.QT.params.queryTimeout = parseInt($('#QryTimeout').val(), 10);
+                $("#queryOptionsModal div").eq(0).modal("hide");
+            });
+            $(i2b2.CRC.view.QT.template.queryOptions(i2b2.CRC.view.QT.params)).appendTo("#queryOptions");
+            $("#queryOptionsModal div:eq(0)").modal('show');
+        });
+    }else{
+        $("#queryOptions").empty();
+        $(i2b2.CRC.view.QT.template.queryOptions(i2b2.CRC.view.QT.params)).appendTo("#queryOptions");
+        $("#queryOptionsModal div:eq(0)").modal('show');
+    }
+}
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((cell) => {
@@ -1864,6 +1881,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QT.template.queryReport = Handlebars.compile(template);
                 },
                 error: (error) => { console.error("Could not retrieve template: QueryReport.html"); }
+            });
+
+            //template for the setting date constraint on concept
+            $.ajax("js-i2b2/cells/CRC/templates/QueryOptions.html", {
+                success: (template) => {
+                    cell.view.QT.template.queryOptions = Handlebars.compile(template);
+                },
+                error: (error) => { console.error("Could not retrieve template: QueryOptions.html"); }
             });
 
             cell.model.query = {

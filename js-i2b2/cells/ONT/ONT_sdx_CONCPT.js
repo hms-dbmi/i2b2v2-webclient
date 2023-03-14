@@ -70,7 +70,7 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
             iconImg: undefined,
             iconImgExp: undefined,
             cssClassMain: "sdxStyleONT-CONCPT",
-            cssClassMinor: undefined,
+            cssClassMinor: "",
             moreDescriptMain: undefined,
             moreDescriptMinor: undefined,
             annotation: undefined,
@@ -128,10 +128,11 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     }
 
     if (sdxData.origData.hasChildren.substring(2,1) === "I") {
-        bCanExp = true;
+        nodeInfo.cssClassMinor += " inactiveTerm";
     } else if (i2b2.ONT.view.nav.params.hiddens !== false && sdxData.origData.hasChildren.substring(2,1) === "H") {
         nodeInfo.color = "#c00000";
-    } else if ((sdxData.origData.synonym_cd !== undefined) && (sdxData.origData.synonym_cd !== 'N')) {
+    } else if (i2b2.ONT.view.nav.params.synonyms !== false && (sdxData.origData.synonym_cd !== 'N')) {
+        nodeInfo.color = "#0000ff";
     }
 
     // see if we can expand
@@ -155,13 +156,13 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 
     switch(icon) {
         case "root":
-            nodeInfo.cssClassMinor = "tvRoot";
+            nodeInfo.cssClassMinor += " tvRoot";
             break;
         case "branch":
-            nodeInfo.cssClassMinor = "tvBranch";
+            nodeInfo.cssClassMinor += " tvBranch";
             break;
         case "leaf":
-            nodeInfo.cssClassMinor = "tvLeaf";
+            nodeInfo.cssClassMinor += " tvLeaf";
             break;
     }
 
@@ -175,14 +176,14 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
     //Added to provide tooltip information for concepts/terms
     nodeInfo.moreDescriptMinor = "";
     try {
-        if ($('ONTNAVshowShortTooltips').checked || $('ONTFINDshowShortTooltips').checked) {
+        if (i2b2.ONT.view.nav.params.showShortTooltips === true) {
             nodeInfo.moreDescriptMinor += sdxData.origData.name;
         } else {
             if (sdxData.origData.tooltip !== undefined) {
                 nodeInfo.moreDescriptMinor += sdxData.origData.tooltip;
             }
         }
-        if (i2b2.ONT.view.nav.options.showBaseCode && sdxData.origData.basecode !== undefined) {
+        if (i2b2.ONT.view.nav.params.showConceptCode === true && sdxData.origData.basecode !== undefined) {
             nodeInfo.moreDescriptMinor += " - " + sdxData.origData.basecode;
         }
     }
@@ -294,9 +295,6 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                 i2b2: sdxDataNode
             };
 
-            if(sdxDataNode.origData.synonym_cd !== undefined && sdxDataNode.origData.synonym_cd !== 'N'){
-                temp.color = "#0000ff";
-            }
             temp.state = sdxDataNode.renderData.tvNodeState;
             if (sdxDataNode.renderData.cssClassMinor !== undefined) temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             if (typeof cl_node === 'undefined' || (typeof cl_node === 'string' && String(cl_node).trim() === '')) {
@@ -412,9 +410,7 @@ i2b2.sdx.TypeControllers.CONCPT.MakeObject = function(c, modifier, cl_options, o
             o.synonym_cd = i2b2.h.getXNodeVal(c,'synonym_cd');
             o.dim_code = i2b2.h.getXNodeVal(c,'dimcode');
             o.basecode = i2b2.h.getXNodeVal(c,'basecode');
-            if (cl_options !== undefined && cl_options.ont_show_concept_code && o.basecode !== undefined) {
-                o.tooltip  += "(" + o.basecode + ")";
-            }
+
             // append the data node
             if (objectType !== undefined) {
                 return i2b2.sdx.Master.EncapsulateData(objectType, o);
@@ -477,14 +473,21 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
     };
     // TODO: Implement param routing from node's container
     let options = {};
-    let t = i2b2.ONT.params;
+    let t;
+    switch (node.refTreeview.elementId) {
+        case "i2b2TreeviewOntNav":
+        case "i2b2TreeviewOntSearch":
+            t = i2b2.ONT.view.nav.params;
+            break;
+        default:
+            t = i2b2.ONT.params;
+    }
+
     if (t !== undefined) {
         if (t.hiddens !== undefined) options.ont_hidden_records = t.hiddens;
         if (t.max !== undefined) options.ont_max_records = "max='"+t.max+"' ";
         if (t.synonyms !== undefined) options.ont_synonym_records = t.synonyms;
         if (t.patientCount !== undefined) options.ont_patient_count = t.patientCount;
-        if (t.shortTooltip !== undefined) options.ont_short_tooltip = t.shortTooltip;
-        if (t.showConceptCode !== undefined) options.ont_show_concept_code = t.showConceptCode;
     }
     options.concept_key_value = node.i2b2.sdxInfo.sdxKeyValue;
 
