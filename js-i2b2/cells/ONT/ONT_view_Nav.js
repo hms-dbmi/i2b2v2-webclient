@@ -233,7 +233,7 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
             name: 'Show Modifiers',
                 isShown: function(node) {
                     let modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
-                    return modifiersDisplayed.length === 0;
+                    return modifiersDisplayed.length === 0 && (node.hasModifier === undefined || node.hasModifier !== false);
                 },
                 onClick: function(node) {
                     i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, function(newNodes) {
@@ -242,6 +242,7 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
                                     title: "Show Modifiers",
                                     alertMsg: "No modifiers found for " + node.text + "."
                             });
+                            node.hasModifier = false;
                         }
                         else{
                             //get existing children
@@ -264,6 +265,7 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
                             //append existing children so that the modifiers appear first in the tree
                             newNodes = newNodes.concat(temp_childrenAll);
 
+                            node.state.expanded = true;
                             i2b2.ONT.view.search.treeview.treeview('addNodes', [
                                 newNodes,
                                 function (parent, child) { return parent.key === child.parentKey},
