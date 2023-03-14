@@ -99,7 +99,22 @@ i2b2.ONT.view.nav.doRefreshAll = function() {
     i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
     i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
 };
+// ======================================================================================
+i2b2.ONT.view.nav.displayAlertDialog = function(inputData){
+    let ontMsgDialogModal = $("#ontMsgDialog");
+    if (ontMsgDialogModal.length === 0) {
+        $("body").append("<div id='ontMsgDialog'/>");
+        ontMsgDialogModal = $("#ontMsgDialog");
+    }
+    ontMsgDialogModal.empty();
 
+    let data = {
+        "title": inputData.title,
+        "alertMsg": inputData.alertMsg,
+    };
+    $(i2b2.ONT.view.nav.templates.alertDialog(data)).appendTo(ontMsgDialogModal);
+    $("#ONTAlertDialog").modal('show');
+}
 
 // Below code is executed once the entire cell has been loaded
 //================================================================================================== //
@@ -185,6 +200,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     error: (error) => { console.error("Could not retrieve template: OntologyOptions.html"); }
                 });
 
+                cell.view.nav.templates = {};
+                $.ajax("js-i2b2/cells/ONT/templates/AlertDialog.html", {
+                    success: (template) => {
+                        cell.view.nav.templates.alertDialog = Handlebars.compile(template);
+                    },
+                    error: (error) => { console.error("Could not retrieve template: AlertDialog.html"); }
+                });
+
                 //set default values
                 i2b2.ONT.view.nav.params.modifiers = false;
                 i2b2.ONT.view.nav.params.synonyms = false;
@@ -211,9 +234,14 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
                onClick: function(node) {
                    i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, function(newNodes) {
                        if (newNodes.length === 0) {
-                           alert("No modifiers found");
+                           i2b2.ONT.view.nav.displayAlertDialog({
+                                    title: "Show Modifiers",
+                                    alertMsg: "No modifiers found for " + node.text + "."
+                                }
+                           );
                        }
                        else{
+                           //get existing children
                            let getAllChildren = function (childNode, allChildren) {
                                childNode.nodes.forEach((n) => {
                                    let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
@@ -227,17 +255,15 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
 
                            let temp_childrenAll = [];
                            getAllChildren(node, temp_childrenAll);
-                           let temp_childrenId = node.nodes.map(function (node) {
-                               return node.nodeId;
-                           });
+                           let temp_childrenId = node.nodes.map(function (node) { return node.nodeId; });
                            i2b2.ONT.view.search.treeview.treeview('deleteNodes', [temp_childrenId]);
+
+                           //append existing children so that the modifiers appear first in the tree
                            newNodes = newNodes.concat(temp_childrenAll);
 
                            i2b2.ONT.view.search.treeview.treeview('addNodes', [
                                newNodes,
-                               function (parent, child) {
-                                   return parent.key === child.parentKey
-                               },
+                               function (parent, child) { return parent.key === child.parentKey},
                                false
                            ]);
 
