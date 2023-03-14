@@ -195,22 +195,64 @@ i2b2.events.afterCellInit.add((cell) => {
     }
 });
 //================================================================================================== //
-i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview) {
+i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, includeModifier) {
 
-    //    return new BootstrapMenu('#' + treeviewElemId + ' li.list-group-item', {
+    let actions = {
+        nodeAnnotate: {
+            name: 'Show More Info',
+                onClick: function(node) {
+                i2b2.ONT.view.info.load(node.i2b2, true);
+            }
+        }
+    };
+    if(includeModifier){
+       actions.nodeModifier =  {
+           name: 'Show Modifiers',
+               onClick: function(node) {
+                   i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, function(newNodes) {
+                       if (newNodes.length === 0) {
+                           alert("No modifiers found");
+                       }
+                       else{
+                           let getAllChildren = function (childNode, allChildren) {
+                               childNode.nodes.forEach((n) => {
+                                   let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
+                                   n.parentKey = parentNode.key;
+                                   allChildren.push(n);
+                                   if (n.nodes !== undefined && n.nodes.length >= 0) {
+                                       return getAllChildren(n, allChildren);
+                                   }
+                               });
+                           }
+
+                           let temp_childrenAll = [];
+                           getAllChildren(node, temp_childrenAll);
+                           let temp_childrenId = node.nodes.map(function (node) {
+                               return node.nodeId;
+                           });
+                           i2b2.ONT.view.search.treeview.treeview('deleteNodes', [temp_childrenId]);
+                           newNodes = newNodes.concat(temp_childrenAll);
+
+                           i2b2.ONT.view.search.treeview.treeview('addNodes', [
+                               newNodes,
+                               function (parent, child) {
+                                   return parent.key === child.parentKey
+                               },
+                               false
+                           ]);
+
+                           // render tree
+                           i2b2.ONT.view.search.treeview.treeview('redraw', []);
+                       }
+                   }, true);
+               }
+       }
+    }
     return new BootstrapMenu('#' + treeviewElemId + ' li.list-group-item', {
         fetchElementData: function($rowElem) {
             // fetch the data from the treeview
             return treeview.treeview('getNode', $rowElem.data('nodeid'));
         },
-        // TODO: Finish wiring implementation
-        actions: {
-            nodeAnnotate: {
-                name: 'Show More Info',
-                onClick: function(node) {
-                    i2b2.ONT.view.info.load(node.i2b2, true);
-                }
-            }
-        }
+        actions: actions
     });
 };
