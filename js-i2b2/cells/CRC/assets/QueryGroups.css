@@ -708,9 +708,7 @@
     text-align: center;
 }
 
-.ExpandTrigger{
-    display: inline-block;
-    width: 100%;
+.ExpandTrigger{ 
     text-align: left;
     white-space: normal;
 }
