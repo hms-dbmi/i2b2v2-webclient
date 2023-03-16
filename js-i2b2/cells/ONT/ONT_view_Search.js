@@ -125,7 +125,111 @@ i2b2.ONT.view.search.displayResults = function(treeData) {
     treeview.clear();
     treeview.init({data: treeData});
 };
+//================================================================================================== //
 
+i2b2.ONT.view.search.showModifiers = function(node){
+    i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, function(newNodes) {
+        if (newNodes.length === 0) {
+            i2b2.ONT.view.nav.displayAlertDialog({
+                title: "Show Modifiers",
+                alertMsg: "No modifiers found for " + node.text + "."
+            });
+            node.hasModifier = false;
+        }
+        else{
+            //get existing children
+            let getAllChildren = function (childNode, allChildren) {
+                childNode.nodes.forEach((n) => {
+                    let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
+                    n.parentKey = parentNode.key;
+                    allChildren.push(n);
+                    if (n.nodes !== undefined && n.nodes.length >= 0) {
+                        return getAllChildren(n, allChildren);
+                    }
+                });
+            }
+
+            let temp_childrenAll = [];
+            getAllChildren(node, temp_childrenAll);
+            let temp_childrenId = node.nodes.map(function (node) { return node.nodeId; });
+            i2b2.ONT.view.search.treeview.treeview('deleteNodes', [temp_childrenId]);
+
+            //append existing children so that the modifiers appear first in the tree
+            newNodes = newNodes.concat(temp_childrenAll);
+            node.state.expanded = true;
+            i2b2.ONT.view.search.treeview.treeview('addNodes', [
+                newNodes,
+                function (parent, child) { return parent.key === child.parentKey},
+                false
+            ]);
+
+            // render tree
+            i2b2.ONT.view.search.treeview.treeview('redraw', []);
+        }
+    }, true);
+}
+//================================================================================================== //
+
+i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
+    let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', node.nodeId);
+
+    if(parentNode.nodeId === undefined && (nodeSubList !== undefined  && nodeSubList.length > 0)){
+        let nodesToExpand = [];
+        nodesToExpand = nodesToExpand.concat(nodeSubList);
+
+        let currentNode = nodesToExpand[0];
+        //look up node in search tree in the nav tree using the key
+        let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode){
+            return snode.key === currentNode.key;
+        });
+
+        //skip over any nodes that are already expanded in the nav tree
+        while(nodesToExpand.size> 1 && (topLevelNode.length === 1 && topLevelNode[0].state.expanded === true)) {
+            nodesToExpand.shift();
+            let currentNode = nodesToExpand[0];
+            topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
+                return snode.key === currentNode.key;
+            });
+        }
+
+        if(topLevelNode.length === 1) {
+            i2b2.ONT.view.search.treeview.hide();
+            i2b2.ONT.view.nav.treeview.show();
+            topLevelNode = topLevelNode[0];
+            let onLoadChildrenComplete = function(nodeData){
+                nodesToExpand.shift();
+                i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
+
+                if(nodesToExpand.length > 1) {
+                    let currentNode = nodesToExpand[0];
+                    //look up node in search tree in the nav tree using the key
+                    let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
+                        return snode.key === currentNode.key;
+                    });
+
+                    i2b2.ONT.view.nav.loadChildren(topLevelNode[0], onLoadChildrenComplete);
+                }else{
+                    let currentNode = nodesToExpand[0];
+                    let selectedNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
+                        return snode.key === currentNode.key;
+                    });
+
+                    let selectNodeElem = $('[data-nodeid="' + selectedNode[0].nodeId + '"]');
+                    selectNodeElem.css("font-weight", "bold");
+                }
+            };
+
+            i2b2.ONT.view.nav.loadChildren(topLevelNode, onLoadChildrenComplete);
+        }
+    }
+    else{
+        if(nodeSubList === undefined){
+            nodeSubList = [node];
+        }
+        nodeSubList.unshift(parentNode);
+        i2b2.ONT.view.search.viewInNavTree(parentNode, nodeSubList);
+    }
+}
 //================================================================================================== //
 
 i2b2.ONT.view.search.initSearchOptions = function(){
