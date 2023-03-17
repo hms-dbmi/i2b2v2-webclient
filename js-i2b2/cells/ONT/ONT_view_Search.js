@@ -211,8 +211,7 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
             }
         } while (nodesToExpand.length > 1 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true));
 
-        i2b2.ONT.view.search.treeview.hide();
-        i2b2.ONT.view.nav.treeview.show();
+        i2b2.ONT.view.search.clearSearchInput();
 
         if(topLevelNode.length === 1 && nodesToExpand.length > 1) {
             topLevelNode = topLevelNode[0];
@@ -235,8 +234,13 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
                     });
 
                     //highlight the node the user selected
-                    let selectNodeElem = $('[data-nodeid="' + selectedNode[0].nodeId + '"]');
+                    let selectNodeElem = i2b2.ONT.view.nav.treeview.find('[data-nodeid="' + selectedNode[0].nodeId + '"]');
                     selectNodeElem.css("font-weight", "bold");
+
+                    //scroll to selected node
+                    let navTreeViewTop = i2b2.ONT.view.nav.treeview.offset().top;
+
+                    selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
                 }
             };
 
