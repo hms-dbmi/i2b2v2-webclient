@@ -101,6 +101,7 @@ function QueryToolController() {
                 }
                 metadata.instances = instances;
 
+                metadata.timing = i2b2.h.getXNodeVal(qp,'panel_timing') || 'ANY';
                 let panelFromDate = i2b2.h.getXNodeVal(qp,'panel_date_from');
                 if (panelFromDate) {
                     metadata.startDate = reformatDate(panelFromDate);
@@ -674,7 +675,7 @@ function QueryToolController() {
                 case "without":
                 case "with":
                     let number =String(qgIdx+1);
-                    let timing = "ANY";
+                    let timing = qgData.timing;
                     let occursCount = qgData.events[0].instances;
                     let tempPanel = createPanel(number, invert, occursCount, timing);
                     tempPanel.items = [];

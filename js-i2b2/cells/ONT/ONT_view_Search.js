@@ -107,11 +107,14 @@ i2b2.ONT.view.search.initSearch = function(container){
         // TECHNICAL DEBT: Change this when CSS selector :has() is implemented
         // applies the highlighting CSS style to indicated nodes
         $("#i2b2TreeviewOntSearch li:has(.sdxStyleONT-CONCPT.highlight)").addClass("search-highlighted");
+        i2b2.ONT.view.search.treeview.find('li:has(span.inactiveTerm)').attr("draggable", false)
+            .addClass("inactiveTerm").find(".expand-icon").css("color","#212529");
+
     });
     i2b2.ONT.view.search.treeview.on('onDrag', i2b2.sdx.Master.onDragStart);
 
     // -------------------- setup context menu --------------------
-    i2b2.ONT.view.search.ContextMenu = i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntSearch',i2b2.ONT.view.search.treeview);
+    i2b2.ONT.view.search.ContextMenu = i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntSearch',i2b2.ONT.view.search.treeview, true);
 };
 
 //================================================================================================== //
