@@ -139,7 +139,7 @@ The search was completed in {{runDuration}} seconds.
         {{#ifCond timeSpans.1.operator "==" "GREATER"}}>{{/ifCond}}
         {{#ifCond timeSpans.1.operator "==" "GREATEREQUAL"}}>={{/ifCond}}
         {{#ifCond timeSpans.1.operator "==" "EQUAL"}}={{/ifCond}}
-        {{#ifCond timeSpans.1.operator "==" "LESSEQUAL"}}<=>{{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "LESSEQUAL"}}<={{/ifCond}}
         {{#ifCond timeSpans.1.operator "==" "LESS"}}<{{/ifCond}}
         {{timeSpans.1.value}}
         {{#ifCond timeSpans.1.unit "==" "DAY"}}day(s){{/ifCond}}
