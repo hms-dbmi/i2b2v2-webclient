@@ -177,50 +177,45 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
         let nodesToExpand = [];
         nodesToExpand = nodesToExpand.concat(nodeSubList);
 
-        let currentNode = nodesToExpand[0];
+        let currentNode = nodesToExpand.shift();
         //look up node in search tree in the nav tree using the key
         let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode){
             return snode.key === currentNode.key;
         });
-
         //skip over any nodes that are already loaded in the nav tree
-        do {
-            let currentNode = nodesToExpand[0];
-            topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
+        while(nodesToExpand.length >= 0 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true)){
+
+            // if this is the last node highlight it since that is the node the user selected
+            if(nodesToExpand.length === 0){
+                let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
+                //selectNodeElem.css("font-weight", "bold");
+                $(".viewInTreeNode").removeClass("viewInTreeNode");
+                selectNodeElem.addClass("viewInTreeNode");
+                selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+            }
+
+            //expand any collapsed nodes that were already loaded
+            if(topLevelNode[0].state.loaded === true
+                && topLevelNode[0].state.expanded === false){
+                i2b2.ONT.view.nav.treeview.treeview('expandNode',topLevelNode[0].nodeId );
+            }
+
+            currentNode = nodesToExpand.shift();
+            //look up node in search tree in the nav tree using the key
+            topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode){
                 return snode.key === currentNode.key;
             });
-
-            if(topLevelNode.length === 1 && topLevelNode[0].state.loaded === true){
-                // if this is the last node highlight it since that is the node the user selected
-                if(nodesToExpand.length === 0){
-                    let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
-                    selectNodeElem.css("font-weight", "bold");
-                }
-
-                //expand any collapsed nodes that were already loaded
-                if(topLevelNode[0].state.loaded === true
-                    && topLevelNode[0].state.expanded === false){
-                    i2b2.ONT.view.nav.treeview.treeview('expandNode',topLevelNode[0].nodeId );
-                }
-
-                nodesToExpand.shift();
-                currentNode = nodesToExpand[0];
-                topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
-                    return snode.key === currentNode.key;
-                });
-            }
-        } while (nodesToExpand.length > 1 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true));
+        }
 
         i2b2.ONT.view.search.clearSearchInput();
 
         if(topLevelNode.length === 1 && nodesToExpand.length > 1) {
             topLevelNode = topLevelNode[0];
             let onLoadChildrenComplete = function(nodeData){
-                nodesToExpand.shift();
                 i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
 
                 if(nodesToExpand.length > 1) {
-                    let currentNode = nodesToExpand[0];
+                    let currentNode = nodesToExpand.shift();
                     //look up node in search tree in the nav tree using the key
                     let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
                         return snode.key === currentNode.key;
@@ -228,18 +223,16 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
 
                     i2b2.ONT.view.nav.loadChildren(topLevelNode[0], onLoadChildrenComplete);
                 }else{
-                    let currentNode = nodesToExpand[0];
+                    let currentNode = nodesToExpand.shift();
                     let selectedNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
                         return snode.key === currentNode.key;
                     });
 
                     //highlight the node the user selected
                     let selectNodeElem = i2b2.ONT.view.nav.treeview.find('[data-nodeid="' + selectedNode[0].nodeId + '"]');
-                    selectNodeElem.css("font-weight", "bold");
-
+                    $(".viewInTreeNode").removeClass("viewInTreeNode");
+                    selectNodeElem.addClass("viewInTreeNode");
                     //scroll to selected node
-                    let navTreeViewTop = i2b2.ONT.view.nav.treeview.offset().top;
-
                     selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
                 }
             };

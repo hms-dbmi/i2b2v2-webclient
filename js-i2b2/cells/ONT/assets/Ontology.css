@@ -268,3 +268,7 @@ button.invert:hover{
     color: #c0c0c0;
 }
 
+#i2b2TreeviewOntNav .viewInTreeNode {
+    font-weight: bold;
+}
+
