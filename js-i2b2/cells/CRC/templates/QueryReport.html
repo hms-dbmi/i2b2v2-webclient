@@ -16,7 +16,9 @@ The search was completed in {{runDuration}} seconds.
 <h2 class="sub-title">Query Definition</h2>
 <p class="temporal-constraint">Temporal Constraint: {{temporalMode}}</p>
 
+{{#if panels}}
 <div class="groups-container">
+  <h3>All Groups</h3>
   {{#each panels}}
   <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
     {{#each this.items}}
@@ -43,6 +45,114 @@ The search was completed in {{runDuration}} seconds.
   {{#unless @last}}<div class="joiner and">AND {{#if this.next_is_not}}NOT{{/if}}</div>{{/unless}}
   {{/each}}
 </div>
+{{/if}}
+
+{{#if events}}
+<div class="events-container">
+  <h3>All Events</h3>
+  {{#each events}}
+  <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
+    <div class="event-title">{{this.name}}</div>
+    {{#each this.panels}}
+    <div class="event-panel">
+      {{#each this.items}}
+      <div class="item-container">
+        <div class="item-title"><img src="{{this.moreInfo.renderData.iconImg}}"/> {{this.moreInfo.renderData.title}}</div>
+        <div class="item-discript">{{this.moreInfo.renderData.moreDescriptMinor}}</div>
+        <div class="item-timing">
+          {{#ifCond this.timing "==" "ANY"}}
+          Independent of Visit
+          {{/ifCond}}
+          {{#ifCond this.timing "==" "SAMEVISIT"}}
+          Occurs in Same Encounter
+          {{/ifCond}}
+          {{#ifCond this.timing "==" "SAMEINSTANCENUM"}}
+          Items' Instance will be the same
+          {{/ifCond}}
+        </div>
+        <div class="item-dates">From {{this.timingFrom}} to {{this.timingTo}}</div>
+        <div class="item-occurs"># of times an item is recorded is >= {{this.occurs}}</div>
+      </div>
+      {{#unless @last}}<div class="joiner or">OR</div>{{/unless}}
+      {{/each}}
+    </div>
+    {{#unless @last}}<div class="joiner and">AND {{#if this.next_is_not}}NOT{{/if}}</div>{{/unless}}
+    {{/each}}
+  </div>
+  {{/each}}
+</div>
+
+<h3 class="eventlinks-title">Order of Events</h3>
+<div class="eventlinks-container">
+  {{#each eventLinks}}
+  <div class="line
+    {{#if @first}}first{{/if}}
+    {{#if @last}}last{{/if}}
+  ">
+    {{#ifCond joinColumn1 "==" "STARTDATE"}}Start{{/ifCond}}
+    {{#ifCond joinColumn1 "==" "ENDDATE"}}End{{/ifCond}}
+
+    of the
+
+    {{#ifCond aggregateOp1 "==" "FIRST"}}first{{/ifCond}}
+    {{#ifCond aggregateOp1 "==" "LAST"}}last{{/ifCond}}
+    {{#ifCond aggregateOp1 "==" "ANY"}}any{{/ifCond}}
+
+    ever occurrence for Event {{prevNum}} occurs
+
+    {{#ifCond operator "==" "GREATER"}}before{{/ifCond}}
+    {{#ifCond operator "==" "GREATEREQUAL"}}on or before{{/ifCond}}
+    {{#ifCond operator "==" "EQUAL"}}simultaneously with{{/ifCond}}
+    {{#ifCond operator "==" "LESSEQUAL"}}on or after{{/ifCond}}
+    {{#ifCond operator "==" "LESS"}}after{{/ifCond}}
+
+    the <br/>
+
+    {{#ifCond joinColumn2 "==" "STARTDATE"}}start{{/ifCond}}
+    {{#ifCond joinColumn2 "==" "ENDDATE"}}end{{/ifCond}}
+
+    of the
+
+    {{#ifCond aggregateOp2 "==" "FIRST"}}first{{/ifCond}}
+    {{#ifCond aggregateOp2 "==" "LAST"}}last{{/ifCond}}
+    {{#ifCond aggregateOp2 "==" "ANY"}}any{{/ifCond}}
+
+    ever occurrence for Event {{nextNum}} occurs
+
+    {{#ifCond timeSpans.0.value "||" timeSpans.1.value}}
+      by
+      {{#if timeSpans.0.value}}
+        {{#ifCond timeSpans.0.operator "==" "GREATER"}}>{{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "GREATEREQUAL"}}>={{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "EQUAL"}}={{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "LESSEQUAL"}}<=>{{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "LESS"}}<{{/ifCond}}
+        {{timeSpans.0.value}}
+        {{#ifCond timeSpans.0.unit "==" "DAY"}}day(s){{/ifCond}}
+        {{#ifCond timeSpans.0.unit "==" "WEEK"}}week(s){{/ifCond}}
+        {{#ifCond timeSpans.0.unit "==" "MONTH"}}month(s){{/ifCond}}
+        {{#ifCond timeSpans.0.unit "==" "YEAR"}}year(s){{/ifCond}}
+
+        {{#if timeSpans.1.value}}and{{/if}}
+      {{/if}}
+      {{#if timeSpans.1.value}}
+        {{#ifCond timeSpans.1.operator "==" "GREATER"}}>{{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "GREATEREQUAL"}}>={{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "EQUAL"}}={{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "LESSEQUAL"}}<=>{{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "LESS"}}<{{/ifCond}}
+        {{timeSpans.1.value}}
+        {{#ifCond timeSpans.1.unit "==" "DAY"}}day(s){{/ifCond}}
+        {{#ifCond timeSpans.1.unit "==" "WEEK"}}week(s){{/ifCond}}
+        {{#ifCond timeSpans.1.unit "==" "MONTH"}}month(s){{/ifCond}}
+        {{#ifCond timeSpans.1.unit "==" "YEAR"}}year(s){{/ifCond}}
+      {{/if}}
+    {{/ifCond}}
+
+  </div>
+  {{/each}}
+</div>
+{{/if}}
 
 <h2 class="sub-title">Query Results</h2>
 

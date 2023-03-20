@@ -1560,6 +1560,29 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             });
         });
 
+        // function for expanding the panel items
+        let func_expandConcept = function(panelItem, panel) {
+            if (panelItem.modKey) {
+                panelItem.moreInfo = modifiers[panelItem.key];
+            } else {
+                panelItem.moreInfo = concepts[panelItem.key];
+            }
+            // deal with dates
+            if (panelItem.moreInfo.dateRange.start == undefined || panelItem.moreInfo.dateRange.start == "") {
+                panelItem.timingFrom = "earliest date available";
+            } else {
+                panelItem.timingFrom = (new Date(Date.parse(panelItem.moreInfo.dateRange.start))).toLocaleDateString();
+            }
+            if (panelItem.moreInfo.dateRange.end == undefined || panelItem.moreInfo.dateRange.end == "") {
+                panelItem.timingTo = "latest date available";
+            } else {
+                panelItem.timingTo = (new Date(Date.parse(panelItem.moreInfo.dateRange.end))).toLocaleDateString();
+            }
+            panelItem.occurs = panel.occursCount;
+            panelItem.timing = panel.timing;
+        };
+
+
         /// expand the panels
         let panels = Object.assign({}, i2b2.CRC.model.transformedQuery.panels);
         panelKeys = Object.keys(panels);
@@ -1573,24 +1596,7 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             let itemKeys = Object.keys(panels[panelKey].items);
             itemKeys.forEach((itemKey) => {
                 let panelItem = panels[panelKey].items[itemKey];
-                if (panelItem.modKey) {
-                    panelItem.moreInfo = modifiers[panelItem.key];
-                } else {
-                    panelItem.moreInfo = concepts[panelItem.key];
-                }
-                // deal with dates
-                if (panelItem.moreInfo.dateRange.start == undefined || panelItem.moreInfo.dateRange.start == "") {
-                    panelItem.timingFrom = "earliest date available";
-                } else {
-                    panelItem.timingFrom = (new Date(Date.parse(panelItem.moreInfo.dateRange.start))).toLocaleDateString();
-                }
-                if (panelItem.moreInfo.dateRange.end == undefined || panelItem.moreInfo.dateRange.end == "") {
-                    panelItem.timingTo = "latest date available";
-                } else {
-                    panelItem.timingTo = (new Date(Date.parse(panelItem.moreInfo.dateRange.end))).toLocaleDateString();
-                }
-                panelItem.occurs = panels[panelKey].occursCount;
-                panelItem.timing = panels[panelKey].timing;
+                func_expandConcept(panelItem, panels[panelKey]);
             });
         });
 
@@ -1603,6 +1609,46 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             runDuration: Number((i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date) / 1000).toLocaleString(),
             panels: panels
         };
+
+        // handle lack of populated panels
+        if (Object.keys(panels).length === 0) delete reportData.panels;
+
+        // handle events
+        reportData.events = i2b2.CRC.model.transformedQuery.subQueries;
+        reportData.events.forEach((event, idx) => {
+            event.panels.forEach((panel, idx) => {
+                panel.items.forEach((item, idx) => {
+                    func_expandConcept(item, panel);
+                });
+            });
+        });
+
+        // handle event links
+        let eventLinks = i2b2.CRC.model.query.groups.filter(group => group.when);
+        // there should only be one "when" group
+        if (eventLinks.length) reportData.eventLinks = eventLinks[0].eventLinks;
+        reportData.eventLinks.forEach((evtlnk, idx) => {
+            evtlnk.prevNum = idx + 1;
+            evtlnk.nextNum = idx + 2;
+        });
+        // let reportEventLines = [];
+        // reportData.eventLinks.forEach((evtlnk, idx) => {
+        //     if (idx==0) {
+        //         reportEventLines.push({
+        //             join: evtlnk.joinColumn1,
+        //             aggregate: evtlnk.aggregateOp1,
+        //             eventNum: idx + 1,
+        //             timespan: evtlnk.timeSpans[0]
+        //         });
+        //     }
+        //     reportEventLines.push({
+        //         join: evtlnk.joinColumn2,
+        //         aggregate: evtlnk.aggregateOp2,
+        //         eventNum: idx + 2,
+        //         timespan: evtlnk.timeSpans[1]
+        //     });
+        // });
+        // reportData.eventLines = reportEventLines;
 
         // deal with the temporal constraint description
         switch(i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//query_timing/text()")[0].nodeValue) {

@@ -12,9 +12,32 @@ body {
     border-bottom: 1px solid #2782a3;
 }
 
-.groups-container {
+.groups-container, .events-container, .eventlinks-container {
     margin-left: 3rem;
 }
+
+.eventlinks-container {
+    border: 1px solid;
+    background: aliceblue;
+    padding: 0.6rem;
+    text-align: center;
+}
+
+.eventlinks-container .line {
+    border: solid;
+    border-width: 1px 0;
+    padding: 0.4rem;
+}
+
+.eventlinks-container .line.first {
+    border-top: 0;
+}
+.eventlinks-container .line.last {
+    border-bottom: 0;
+}
+
+
+
 
 .panel-definition {
     border: 2px solid black;
@@ -23,6 +46,12 @@ body {
 }
 .panel-definition.not {
     background-color: #ad7070;
+}
+
+.event-title {
+    font-weight: bold;
+    padding: 0.5rem 0.5rem 0;
+    margin-bottom: -0.5rem;
 }
 
 .item-container {
