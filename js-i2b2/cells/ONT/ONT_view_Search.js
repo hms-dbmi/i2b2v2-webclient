@@ -177,23 +177,15 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
         let nodesToExpand = [];
         nodesToExpand = nodesToExpand.concat(nodeSubList);
 
+        i2b2.ONT.view.search.clearSearchInput();
+
         let currentNode = nodesToExpand.shift();
         //look up node in search tree in the nav tree using the key
         let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode){
             return snode.key === currentNode.key;
         });
         //skip over any nodes that are already loaded in the nav tree
-        while(nodesToExpand.length >= 0 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true)){
-
-            // if this is the last node highlight it since that is the node the user selected
-            if(nodesToExpand.length === 0){
-                let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
-                //selectNodeElem.css("font-weight", "bold");
-                $(".viewInTreeNode").removeClass("viewInTreeNode");
-                selectNodeElem.addClass("viewInTreeNode");
-                selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
-            }
-
+        while(nodesToExpand.length >= 1 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true)){
             //expand any collapsed nodes that were already loaded
             if(topLevelNode[0].state.loaded === true
                 && topLevelNode[0].state.expanded === false){
@@ -205,35 +197,38 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
             topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode){
                 return snode.key === currentNode.key;
             });
+
+            let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
+            selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+
+            // if this is the last node highlight it since that is the node the user selected
+            if(nodesToExpand.length === 0){
+                $(".viewInTreeNode").removeClass("viewInTreeNode");
+                selectNodeElem.addClass("viewInTreeNode");
+            }
         }
 
-        i2b2.ONT.view.search.clearSearchInput();
-
-        if(topLevelNode.length === 1 && nodesToExpand.length > 1) {
+        if(topLevelNode.length === 1 && nodesToExpand.length >= 1) {
             topLevelNode = topLevelNode[0];
             let onLoadChildrenComplete = function(nodeData){
                 i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
 
-                if(nodesToExpand.length > 1) {
-                    let currentNode = nodesToExpand.shift();
-                    //look up node in search tree in the nav tree using the key
-                    let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
-                        return snode.key === currentNode.key;
-                    });
+                let currentNode = nodesToExpand.shift();
+                //look up node in search tree in the nav tree using the key
+                let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
+                    return snode.key === currentNode.key;
+                });
 
+                let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
+                //scroll to selected node
+                selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+
+                if(nodesToExpand.length >= 1) {
                     i2b2.ONT.view.nav.loadChildren(topLevelNode[0], onLoadChildrenComplete);
                 }else{
-                    let currentNode = nodesToExpand.shift();
-                    let selectedNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
-                        return snode.key === currentNode.key;
-                    });
-
                     //highlight the node the user selected
-                    let selectNodeElem = i2b2.ONT.view.nav.treeview.find('[data-nodeid="' + selectedNode[0].nodeId + '"]');
                     $(".viewInTreeNode").removeClass("viewInTreeNode");
                     selectNodeElem.addClass("viewInTreeNode");
-                    //scroll to selected node
-                    selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
                 }
             };
 
