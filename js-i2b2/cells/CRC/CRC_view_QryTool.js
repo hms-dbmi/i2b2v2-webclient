@@ -1751,29 +1751,13 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         // handle event links
         let eventLinks = i2b2.CRC.model.query.groups.filter(group => group.when);
         // there should only be one "when" group
-        if (eventLinks.length) reportData.eventLinks = eventLinks[0].eventLinks;
-        reportData.eventLinks.forEach((evtlnk, idx) => {
-            evtlnk.prevNum = idx + 1;
-            evtlnk.nextNum = idx + 2;
-        });
-        // let reportEventLines = [];
-        // reportData.eventLinks.forEach((evtlnk, idx) => {
-        //     if (idx==0) {
-        //         reportEventLines.push({
-        //             join: evtlnk.joinColumn1,
-        //             aggregate: evtlnk.aggregateOp1,
-        //             eventNum: idx + 1,
-        //             timespan: evtlnk.timeSpans[0]
-        //         });
-        //     }
-        //     reportEventLines.push({
-        //         join: evtlnk.joinColumn2,
-        //         aggregate: evtlnk.aggregateOp2,
-        //         eventNum: idx + 2,
-        //         timespan: evtlnk.timeSpans[1]
-        //     });
-        // });
-        // reportData.eventLines = reportEventLines;
+        if (eventLinks.length) {
+            reportData.eventLinks = eventLinks[0].eventLinks;
+            reportData.eventLinks.forEach((evtlnk, idx) => {
+                evtlnk.prevNum = idx + 1;
+                evtlnk.nextNum = idx + 2;
+            });
+        }
 
         // deal with the temporal constraint description
         switch(i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//query_timing/text()")[0].nodeValue) {
