@@ -166,7 +166,6 @@ i2b2.events.afterCellInit.add((cell) => {
 
         $.ajax("js-i2b2/cells/PM/templates/ProjectSelectionDetail.html", {
             success: (template, status, req) => {
-                //cell.view.template.projectSelection.details = Handlebars.compile(template);
                 Handlebars.registerPartial("ProjectSelectionDetail", req.responseText);
             },
             error: (error) => { console.error("Could not retrieve template: ProjectSelectionDetail.html"); }
