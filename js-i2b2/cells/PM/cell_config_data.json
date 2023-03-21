@@ -3,9 +3,12 @@
     "PM_misc.js",
     "PM_view.js",
     "PM_ctrlr.js",
+    "i2b2_msgs.js",
     "i2b2_msgs.js"
   ],
-  "css": [],
+  "css": [
+    "PM.css"
+  ],
   "config": {
     "name": "Project Management",
     "description": "The Project Management cell is responsible for authentication and access control to other Cells within the i2b2 Hive.",

@@ -81,34 +81,55 @@ i2b2.PM.doLoginDialog = function() {
 };
 // ================================================================================================== //
 
+i2b2.PM.view.updateProjectSelection = function(projectSelElem){
+
+    let project = $(projectSelElem).val();
+    $("#projectSelectionDetails").empty();
+    let projectDetails = {
+        projectDetails: i2b2.PM.model.projects[project].details
+    }
+
+    $((Handlebars.compile("{{> ProjectSelectionDetail }}"))(projectDetails)).appendTo("#projectSelectionDetails");
+}
+// ================================================================================================== //
+
 i2b2.PM.view.showProjectSelectionModal = function(){
 
     let projectSelModal = $("#projectSelection");
 
+    let projects = [];
+    for (let code in i2b2.PM.model.projects) {
+        projects.push({
+            name : i2b2.PM.model.projects[code].name,
+            value: code,
+            details:  i2b2.PM.model.projects[code].details
+        });
+    }
+
+    let projectData = {
+        projects: projects,
+    }
     if (projectSelModal.length === 0) {
         $("body").append("<div id='projectSelection'/>");
         projectSelModal = $("#projectSelection");
         projectSelModal.load('js-i2b2/cells/PM/assets/modalProjectSelection.html', function(){
-            $(i2b2.PM.view.template.projectSelection({projects: i2b2.PM.model.projects})).appendTo("#projectSelectionForm");
+            $(i2b2.PM.view.template.projectSelection.projects(projectData)).appendTo("#projectSelectionForm");
             $("body #projectSelection button.i2b2-save").click(function () {
                 let selectedI2B2Project =  $("#selectedI2B2Project");
                 let ProjId = selectedI2B2Project.val();
-                let ProjName = selectedI2B2Project.text();
-                if (ProjId === 'admin_HY!5Axu&') {
-                    $('crcQueryToolBox').hide();
-                    i2b2.PM.model.login_project = ""; //i2b2.h.XPath(projs[0], 'attribute::id')[0].nodeValue;
-                    i2b2.PM.model.admin_only = true;
-                } else {
+                let ProjName = selectedI2B2Project.find("option:selected").text();
+                if (ProjId !== 'admin_HY!5Axu&') {
                     i2b2.PM.model.login_project = ProjId;
                     i2b2.PM.model.login_projectname = ProjName;
+                    i2b2.PM._processLaunchFramework();
                 }
-                i2b2.PM._processLaunchFramework();
+
                 $("#projectSelection div").eq(0).modal("hide");
             });
             $("#projectSelection div:eq(0)").modal('show');
         });
     }else{
-        $(i2b2.PM.view.template.projectSelection({projects: i2b2.PM.model.projects})).appendTo("#projectSelectionForm");
+        $(i2b2.PM.view.template.projectSelection.projects(projectData)).appendTo("#projectSelectionForm");
         $("#projectSelection div:eq(0)").modal('show');
     }
 }
@@ -135,11 +156,20 @@ i2b2.events.afterCellInit.add((cell) => {
         console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
         i2b2.PM.doLoginDialog();
 
+        cell.view.template.projectSelection = {};
         $.ajax("js-i2b2/cells/PM/templates/ProjectSelection.html", {
             success: (template) => {
-                cell.view.template.projectSelection = Handlebars.compile(template);
+                cell.view.template.projectSelection.projects = Handlebars.compile(template);
             },
             error: (error) => { console.error("Could not retrieve template: ProjectSelection.html"); }
+        });
+
+        $.ajax("js-i2b2/cells/PM/templates/ProjectSelectionDetail.html", {
+            success: (template, status, req) => {
+                //cell.view.template.projectSelection.details = Handlebars.compile(template);
+                Handlebars.registerPartial("ProjectSelectionDetail", req.responseText);
+            },
+            error: (error) => { console.error("Could not retrieve template: ProjectSelectionDetail.html"); }
         });
     }
 });
