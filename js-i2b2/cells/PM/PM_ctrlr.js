@@ -5,16 +5,6 @@
  * @version 	2.0
  **/
 
-// display the modal login form after the PM cell is fully loaded
-// ================================================================================================== //
-i2b2.events.afterCellInit.add((cell) => {
-        if (cell.cellCode === "PM") {
-            console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
-            i2b2.PM.doLoginDialog();
-        }
-    }
-);
-
 // ================================================================================================== //
 i2b2.PM.doSamlLogin = function(service) {
 
@@ -331,7 +321,7 @@ i2b2.PM._processUserConfig = function (data) {
         i2b2.PM._processLaunchFramework();
     } else {
         // display list of possible projects for the user to select
-        i2b2.PM.view.modal.projectDialog.showProjects();
+        i2b2.PM.view.showProjectSelectionModal();
     }
 };
 
