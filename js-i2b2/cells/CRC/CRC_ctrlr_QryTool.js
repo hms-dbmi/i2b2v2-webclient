@@ -224,6 +224,7 @@ function QueryToolController() {
 
                             let options = {}
                             let modSdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(modifierXmlInfo[modifier_key_value], true, options);
+                            modSdxDataNode.dateRange = sdxDataNode.dateRange;
 
                             let renderOptions = { icon: i2b2.ONT.model.icons.modifier };
                             renderOptions.title = i2b2.h.getXNodeVal(modifierXmlInfo[modifier_key_value],'name');
