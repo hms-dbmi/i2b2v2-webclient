@@ -41,10 +41,10 @@
         <legend class="col-form-label col-sm-6 pt-0">Display Order</legend>
         <div class="col-sm-4">
             <div class="form-check">
-                {{#ifCond sortBy '===' 'ASC'}}
+                {{#ifCond sortOrder '===' 'ASC'}}
                     <input class="form-check-input" type="radio" name="HISTsortOrder" id="HISTsortOrderASC" value="ASC" checked>
                 {{/ifCond}}
-                {{#ifCond sortBy '!==' 'ASC'}}
+                {{#ifCond sortOrder '!==' 'ASC'}}
                     <input class="form-check-input" type="radio" name="HISTsortOrder" id="HISTsortOrderASC" value="ASC" >
                 {{/ifCond}}
                 <label class="form-check-label" for="HISTsortOrderASC">

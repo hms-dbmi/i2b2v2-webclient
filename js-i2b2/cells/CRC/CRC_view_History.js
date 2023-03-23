@@ -85,6 +85,45 @@ i2b2.CRC.view.history.loadMore = function() {
 }
 
 // ================================================================================================== //
+
+i2b2.CRC.view.history.sortResultsByName = function(resultNode1, resultNode2){
+    // proper date handling (w/improper handling for latest changes to output format)
+    let nameStr1 = resultNode1.origData["name"];
+    let nameStr2 = resultNode2.origData["name"];
+
+    let result;
+    if(nameStr1 < nameStr2){
+        result = -1;
+    } else if(nameStr1 > nameStr2){
+        result = 1;
+    } else {
+        result = 0;
+    }
+
+    return result;
+}
+// ================================================================================================== //
+
+i2b2.CRC.view.history.sortResultsByDate = function(resultNode1, resultNode2){
+    // proper date handling (w/improper handling for latest changes to output format)
+    let dateStr1 = resultNode1.origData["created"];
+    let dateStr2 = resultNode2.origData["created"];
+
+    let dateTime1 = Date.parse(dateStr1);
+    let dateTime2 = Date.parse(dateStr2);
+
+    let result;
+    if(dateTime1 < dateTime2){
+        result = -1;
+    } else if(dateTime1 > dateTime2){
+        result = 1;
+    } else {
+        result = 0;
+    }
+
+    return result;
+}
+// ================================================================================================== //
 i2b2.CRC.view.history.clickSearchName = function() {
     // Hide Navigate treeview and search results message and display search status message
     $("#i2b2TreeviewQueryHistoryFinder").hide();
@@ -102,28 +141,13 @@ i2b2.CRC.view.history.clickSearchName = function() {
         // auto-extract SDX objects from returned XML
         cellResult.parse();
 
-        let sortResultsByDate = function(resultNode1, resultNode2){
-            // proper date handling (w/improper handling for latest changes to output format)
-            let dateStr1 = resultNode1.origData["created"];
-            let dateStr2 = resultNode2.origData["created"];
-
-            let dateTime1 = Date.parse(dateStr1);
-            let dateTime2 = Date.parse(dateStr2);
-
-            let result;
-            if(dateTime1 < dateTime2){
-                result = -1;
-            } else if(dateTime1 > dateTime2){
-                result = 1;
-            } else {
-                result = 0;
-            }
-
-            return result;
-        }
         // display the tree results
         let newNodes = {};
-        cellResult.model.sort(sortResultsByDate);
+        if(i2b2.CRC.view.history.params.sortBy === 'NAME') {
+            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByName);
+        }else{
+            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByDate);
+        }
 
         let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
         if(!isAscending){
@@ -200,6 +224,18 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         // auto-extract SDX objects from returned XML
         cellResult.parse();
 
+        //sort the results
+        if(i2b2.CRC.view.history.params.sortBy === 'NAME') {
+            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByName);
+        }else{
+            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByDate);
+        }
+
+        let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
+        if(!isAscending){
+            cellResult.model.reverse();
+        }
+
         // display the tree results
         let newNodes = [];
         for ( let i1=0; i1 < cellResult.model.length; i1++) {
@@ -241,8 +277,25 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         i2b2.CRC.view.history.treeview.treeview('redraw', []);
         $('.history-more-bar i.bi').addClass("d-none");
     };
+
+    // fire the AJAX call
+    let request_type = "CRC_QRY_getQueryMasterList_fromUserId";
+    var user_type = i2b2.PM.model.login_username;
+    if(i2b2.PM.model.userRoles.indexOf("MANAGER") > -1){
+        if($('#HISTUser').value === '@'){
+            request_type = "CRC_QRY_getQueryMasterList_fromGroupId";
+        } else {
+            user_type = $('HISTUser').value;
+        }
+    }
+
     let max = maxRecords ? maxRecords : i2b2.CRC.view.history.params.maxQueriesDisp;
-    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":max}, scopedCallback);
+    let options = {
+        crc_max_records: max,
+        crc_user_type: request_type,
+        crc_user_by: user_type
+    };
+    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", options,  scopedCallback);
 };
 
 
