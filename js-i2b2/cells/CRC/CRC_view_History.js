@@ -441,12 +441,14 @@ i2b2.events.afterCellInit.add((cell) => {
                                     i2b2.CRC.view.history.params.maxQueriesDisp = tmpValue;
                                     i2b2.CRC.view.history.params.userBy = userValue;
                                     // requery the history list
-                                    i2b2.CRC.ctrlr.history.Refresh();
+                                    i2b2.CRC.view.history.doRefreshAll();
 
                                     let refreshValue = parseInt($('#HISTAuto').val(), 10);
                                     if(refreshValue > 0){
                                         clearInterval(i2b2.CRC.view.history.autorefresh);
-                                        i2b2.CRC.view.history.autorefresh = setInterval(function(){ i2b2.CRC.ctrlr.history.Refresh(); }, refreshValue*1000);
+                                        i2b2.CRC.view.history.autorefresh = setInterval(function(){
+                                            i2b2.CRC.view.history.doRefreshAll();
+                                        }, refreshValue*1000);
                                     } else {
                                         clearInterval(i2b2.CRC.view.history.autorefresh);
                                     }
@@ -463,7 +465,6 @@ i2b2.events.afterCellInit.add((cell) => {
                             }
                         });
                     });
-
 
                     //HTML template for ontology options
                     $.ajax("js-i2b2/cells/CRC/templates/QueryHistoryOptions.html", {
