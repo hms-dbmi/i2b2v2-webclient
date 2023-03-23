@@ -1,0 +1,14 @@
+<div class="form-group row">
+    <select id="selectedI2B2Project" class="form-select form-select-sm projects" onchange="javascript:this.blur();i2b2.PM.view.updateProjectSelection(this);">
+        {{#each projects}}
+            <option value={{this.value}}>{{this.name}}</option>
+        {{/each}}
+    </select>
+
+    <div id="projectSelectionDetails">
+        {{> ProjectSelectionDetail projectDetails = projects.[0].details}}
+    </div>
+    </div>
+</div>
+
+
