@@ -415,6 +415,83 @@ i2b2.events.afterCellInit.add((cell) => {
                         }
                     });
 
+                    let crcHistoryOptionsModal = $("<div id='crcHistoryOptionsModal'/>");
+                    $("body").append(crcHistoryOptionsModal);
+                    crcHistoryOptionsModal.load('js-i2b2/cells/CRC/assets/modalOptionsHistory.html', function () {
+                        $("body #crcHistoryOptionsModal button.options-save").click(function () {
+                            let value = $('#HISTMaxQryDisp').val();
+                            let userValue = $('#HISTUser').val();
+                            if(!isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10))){
+                                if(parseInt(value, 10) > 0){
+                                    if ($('#HISTsortOrderASC').is(":checked")) {
+                                        tmpValue = 'ASC';
+                                    }
+                                    else {
+                                        tmpValue = 'DESC';
+                                    }
+                                    i2b2.CRC.view.history.params.sortOrder = tmpValue;
+                                    if ($('#HISTsortByNAME').is(":checked")) {
+                                        tmpValue = 'NAME';
+                                    }
+                                    else {
+                                        tmpValue = 'DATE';
+                                    }
+                                    i2b2.CRC.view.history.params.sortBy = tmpValue;
+                                    tmpValue = parseInt($('#HISTMaxQryDisp').val(), 10);
+                                    i2b2.CRC.view.history.params.maxQueriesDisp = tmpValue;
+                                    i2b2.CRC.view.history.params.userBy = userValue;
+                                    // requery the history list
+                                    i2b2.CRC.ctrlr.history.Refresh();
+
+                                    let refreshValue = parseInt($('#HISTAuto').val(), 10);
+                                    if(refreshValue > 0){
+                                        clearInterval(i2b2.CRC.view.history.autorefresh);
+                                        i2b2.CRC.view.history.autorefresh = setInterval(function(){ i2b2.CRC.ctrlr.history.Refresh(); }, refreshValue*1000);
+                                    } else {
+                                        clearInterval(i2b2.CRC.view.history.autorefresh);
+                                    }
+
+                                    $("#crcHistoryOptionsModal div").eq(0).modal("hide");
+                                } else {
+                                    $('#HISTMaxQryDisp').parent().css("border", "2px inset red");
+                                    $("#HISTMaxQryDisp-error").text("Please enter number greater than 0.")
+                                        .removeClass("hidden");
+                                }
+                            } else {
+                                $('#HISTMaxQryDisp').parent().css("border","2px inset red");
+                                $("#HISTMaxQryDisp-error").text("Please enter a valid number.").removeClass("hidden");
+                            }
+                        });
+                    });
+
+
+                    //HTML template for ontology options
+                    $.ajax("js-i2b2/cells/CRC/templates/QueryHistoryOptions.html", {
+                        success: (template, status, req) => {
+                            Handlebars.registerPartial("QueryHistoryOptions", req.responseText);
+                        },
+                        error: (error) => { console.error("Could not retrieve template: QueryHistoryOptions.html"); }
+                    });
+
+                    container.on( 'tab', function( tab ){
+                        if(tab.element.text() === 'Queries') {
+                            //add unique id to the term tab
+                            let elemId = "queryHistoryTab";
+                            $(tab.element).attr("id", elemId);
+                            i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+                                actions: {
+                                    nodeAnnotate: {
+                                        name: 'Show Options',
+                                        onClick: function (node) {
+                                            $("#queryHistoryOptionsFields").empty();
+                                            $((Handlebars.compile("{{> QueryHistoryOptions}}"))(i2b2.CRC.view.history.params)).appendTo("#queryHistoryOptionsFields");
+                                            $("#crcHistoryOptionsModal div").eq(0).modal("show");
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
 
                 }).bind(this)
             );
