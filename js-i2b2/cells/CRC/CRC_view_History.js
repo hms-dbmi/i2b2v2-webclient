@@ -282,10 +282,10 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
     let request_type = "CRC_QRY_getQueryMasterList_fromUserId";
     var user_type = i2b2.PM.model.login_username;
     if(i2b2.PM.model.userRoles.indexOf("MANAGER") > -1){
-        if($('#HISTUser').value === '@'){
+        if($('#HISTUser').val() === '@'){
             request_type = "CRC_QRY_getQueryMasterList_fromGroupId";
         } else {
-            user_type = $('HISTUser').value;
+            user_type = $('#HISTUser').val();
         }
     }
 
