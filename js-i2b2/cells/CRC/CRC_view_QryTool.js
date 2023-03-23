@@ -1668,7 +1668,14 @@ i2b2.CRC.view.QT.showQueryReport = function() {
 
     // this function is used to generate the report and display the modal window
     const generateReport = function () {
-        const submittedByUsername = i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//query_master/user_id/text()")[0].nodeValue;
+        let submittedByUsername;
+        if (i2b2.CRC.view.QT.queryResponse) {
+            // get username from a reloaded query
+            submittedByUsername = i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//query_master/user_id/text()")[0].nodeValue;
+        } else {
+            // this is a query that we have just run so we are the user that ran it
+            submittedByUsername = i2b2.PM.model.login_username;
+        }
 
         // create lookup dictionaries for concepts/modifiers
         let concepts = {};
@@ -1712,7 +1719,6 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         let panels = Object.assign({}, i2b2.CRC.model.transformedQuery.panels);
         panelKeys = Object.keys(panels);
         panelKeys.forEach((panelKey, idx, keys) => {
-            panels[panelKey].timing = i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//panel_number[text()='" + panels[panelKey].number + "']/../panel_timing/text()")[0].nodeValue;
             if (keys.length > (idx+1)) {
                 if (panels[keys[idx+1]].invert == '1') {
                     panels[panelKey].next_is_not = true;
@@ -1724,7 +1730,6 @@ i2b2.CRC.view.QT.showQueryReport = function() {
                 func_expandConcept(panelItem, panels[panelKey]);
             });
         });
-
 
         let reportData = {
             name: i2b2.CRC.ctrlr.QS.QM.name,
@@ -1760,7 +1765,7 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         }
 
         // deal with the temporal constraint description
-        switch(i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//query_timing/text()")[0].nodeValue) {
+        switch(i2b2.CRC.model.transformedQuery.queryTiming) {
             case "ANY":
                 reportData.temporalMode = "Treat All Groups Independently";
                 break;
