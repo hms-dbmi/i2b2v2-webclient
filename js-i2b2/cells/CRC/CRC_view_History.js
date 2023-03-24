@@ -85,6 +85,45 @@ i2b2.CRC.view.history.loadMore = function() {
 }
 
 // ================================================================================================== //
+
+i2b2.CRC.view.history.sortResultsByName = function(resultNode1, resultNode2){
+    // proper date handling (w/improper handling for latest changes to output format)
+    let nameStr1 = resultNode1.origData["name"];
+    let nameStr2 = resultNode2.origData["name"];
+
+    let result;
+    if(nameStr1 < nameStr2){
+        result = -1;
+    } else if(nameStr1 > nameStr2){
+        result = 1;
+    } else {
+        result = 0;
+    }
+
+    return result;
+}
+// ================================================================================================== //
+
+i2b2.CRC.view.history.sortResultsByDate = function(resultNode1, resultNode2){
+    // proper date handling (w/improper handling for latest changes to output format)
+    let dateStr1 = resultNode1.origData["created"];
+    let dateStr2 = resultNode2.origData["created"];
+
+    let dateTime1 = Date.parse(dateStr1);
+    let dateTime2 = Date.parse(dateStr2);
+
+    let result;
+    if(dateTime1 < dateTime2){
+        result = -1;
+    } else if(dateTime1 > dateTime2){
+        result = 1;
+    } else {
+        result = 0;
+    }
+
+    return result;
+}
+// ================================================================================================== //
 i2b2.CRC.view.history.clickSearchName = function() {
     // Hide Navigate treeview and search results message and display search status message
     $("#i2b2TreeviewQueryHistoryFinder").hide();
@@ -102,28 +141,13 @@ i2b2.CRC.view.history.clickSearchName = function() {
         // auto-extract SDX objects from returned XML
         cellResult.parse();
 
-        let sortResultsByDate = function(resultNode1, resultNode2){
-            // proper date handling (w/improper handling for latest changes to output format)
-            let dateStr1 = resultNode1.origData["created"];
-            let dateStr2 = resultNode2.origData["created"];
-
-            let dateTime1 = Date.parse(dateStr1);
-            let dateTime2 = Date.parse(dateStr2);
-
-            let result;
-            if(dateTime1 < dateTime2){
-                result = -1;
-            } else if(dateTime1 > dateTime2){
-                result = 1;
-            } else {
-                result = 0;
-            }
-
-            return result;
-        }
         // display the tree results
         let newNodes = {};
-        cellResult.model.sort(sortResultsByDate);
+        if(i2b2.CRC.view.history.params.sortBy === 'NAME') {
+            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByName);
+        }else{
+            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByDate);
+        }
 
         let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
         if(!isAscending){
@@ -200,6 +224,18 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         // auto-extract SDX objects from returned XML
         cellResult.parse();
 
+        //sort the results
+        if(i2b2.CRC.view.history.params.sortBy === 'NAME') {
+            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByName);
+        }else{
+            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByDate);
+        }
+
+        let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
+        if(!isAscending){
+            cellResult.model.reverse();
+        }
+
         // display the tree results
         let newNodes = [];
         for ( let i1=0; i1 < cellResult.model.length; i1++) {
@@ -241,8 +277,25 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         i2b2.CRC.view.history.treeview.treeview('redraw', []);
         $('.history-more-bar i.bi').addClass("d-none");
     };
+
+    // fire the AJAX call
+    let request_type = "CRC_QRY_getQueryMasterList_fromUserId";
+    var user_type = i2b2.PM.model.login_username;
+    if(i2b2.PM.model.userRoles.indexOf("MANAGER") > -1){
+        if($('#HISTUser').val() === '@'){
+            request_type = "CRC_QRY_getQueryMasterList_fromGroupId";
+        } else {
+            user_type = $('#HISTUser').val();
+        }
+    }
+
     let max = maxRecords ? maxRecords : i2b2.CRC.view.history.params.maxQueriesDisp;
-    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", {"crc_user_type": "CRC_QRY_getQueryMasterList_fromUserId", "crc_max_records":max}, scopedCallback);
+    let options = {
+        crc_max_records: max,
+        crc_user_type: request_type,
+        crc_user_by: user_type
+    };
+    i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", options,  scopedCallback);
 };
 
 
@@ -415,6 +468,84 @@ i2b2.events.afterCellInit.add((cell) => {
                         }
                     });
 
+                    let crcHistoryOptionsModal = $("<div id='crcHistoryOptionsModal'/>");
+                    $("body").append(crcHistoryOptionsModal);
+                    crcHistoryOptionsModal.load('js-i2b2/cells/CRC/assets/modalOptionsHistory.html', function () {
+                        $("body #crcHistoryOptionsModal button.options-save").click(function () {
+                            let value = $('#HISTMaxQryDisp').val();
+                            let userValue = $('#HISTUser').val();
+                            if(!isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10))){
+                                if(parseInt(value, 10) > 0){
+                                    if ($('#HISTsortOrderASC').is(":checked")) {
+                                        tmpValue = 'ASC';
+                                    }
+                                    else {
+                                        tmpValue = 'DESC';
+                                    }
+                                    i2b2.CRC.view.history.params.sortOrder = tmpValue;
+                                    if ($('#HISTsortByNAME').is(":checked")) {
+                                        tmpValue = 'NAME';
+                                    }
+                                    else {
+                                        tmpValue = 'DATE';
+                                    }
+                                    i2b2.CRC.view.history.params.sortBy = tmpValue;
+                                    tmpValue = parseInt($('#HISTMaxQryDisp').val(), 10);
+                                    i2b2.CRC.view.history.params.maxQueriesDisp = tmpValue;
+                                    i2b2.CRC.view.history.params.userBy = userValue;
+                                    // requery the history list
+                                    i2b2.CRC.view.history.doRefreshAll();
+
+                                    let refreshValue = parseInt($('#HISTAuto').val(), 10);
+                                    if(refreshValue > 0){
+                                        clearInterval(i2b2.CRC.view.history.autorefresh);
+                                        i2b2.CRC.view.history.autorefresh = setInterval(function(){
+                                            i2b2.CRC.view.history.doRefreshAll();
+                                        }, refreshValue*1000);
+                                    } else {
+                                        clearInterval(i2b2.CRC.view.history.autorefresh);
+                                    }
+
+                                    $("#crcHistoryOptionsModal div").eq(0).modal("hide");
+                                } else {
+                                    $('#HISTMaxQryDisp').parent().css("border", "2px inset red");
+                                    $("#HISTMaxQryDisp-error").text("Please enter number greater than 0.")
+                                        .removeClass("hidden");
+                                }
+                            } else {
+                                $('#HISTMaxQryDisp').parent().css("border","2px inset red");
+                                $("#HISTMaxQryDisp-error").text("Please enter a valid number.").removeClass("hidden");
+                            }
+                        });
+                    });
+
+                    //HTML template for ontology options
+                    $.ajax("js-i2b2/cells/CRC/templates/QueryHistoryOptions.html", {
+                        success: (template, status, req) => {
+                            Handlebars.registerPartial("QueryHistoryOptions", req.responseText);
+                        },
+                        error: (error) => { console.error("Could not retrieve template: QueryHistoryOptions.html"); }
+                    });
+
+                    container.on( 'tab', function( tab ){
+                        if(tab.element.text() === 'Queries') {
+                            //add unique id to the term tab
+                            let elemId = "queryHistoryTab";
+                            $(tab.element).attr("id", elemId);
+                            i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+                                actions: {
+                                    nodeAnnotate: {
+                                        name: 'Show Options',
+                                        onClick: function (node) {
+                                            $("#queryHistoryOptionsFields").empty();
+                                            $((Handlebars.compile("{{> QueryHistoryOptions}}"))(i2b2.CRC.view.history.params)).appendTo("#queryHistoryOptionsFields");
+                                            $("#crcHistoryOptionsModal div").eq(0).modal("show");
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
 
                 }).bind(this)
             );
