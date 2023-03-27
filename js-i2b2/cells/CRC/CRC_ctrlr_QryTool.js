@@ -101,6 +101,7 @@ function QueryToolController() {
                 }
                 metadata.instances = instances;
 
+                metadata.timing = i2b2.h.getXNodeVal(qp,'panel_timing') || 'ANY';
                 let panelFromDate = i2b2.h.getXNodeVal(qp,'panel_date_from');
                 if (panelFromDate) {
                     metadata.startDate = reformatDate(panelFromDate);

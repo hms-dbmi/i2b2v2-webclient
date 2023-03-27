@@ -114,7 +114,7 @@ i2b2.ONT.view.search.initSearch = function(container){
     i2b2.ONT.view.search.treeview.on('onDrag', i2b2.sdx.Master.onDragStart);
 
     // -------------------- setup context menu --------------------
-    i2b2.ONT.view.search.ContextMenu = i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntSearch',i2b2.ONT.view.search.treeview);
+    i2b2.ONT.view.search.ContextMenu = i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntSearch',i2b2.ONT.view.search.treeview, true);
 };
 
 //================================================================================================== //
