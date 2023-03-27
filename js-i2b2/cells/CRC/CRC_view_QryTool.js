@@ -74,6 +74,10 @@ i2b2.CRC.view.QT.showRun = function() {
             });
         }
 
+        //add the current generated query name
+        $("#crcQtQueryName").val(i2b2.CRC.model.transformedQuery.name)
+            .attr("placeholder", i2b2.CRC.model.transformedQuery.name);
+
         // now show the modal form
         $('body #crcModal div:eq(0)').modal('show');
 
@@ -1881,7 +1885,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 '<label>Name:</label>' +
                             '</div>' +
                         '</div>');
-                    let queryName = $('<input id="queryName" class="name">');
+                    let queryName = $('<input id="queryName" class="name" disabled>');
                     $('<div class="center"></div>').append(queryName).appendTo(runBar);
                     runBar.append('<div class="right">' +
                         '<button type="button" class="btn btn-primary btn-sm button-run">Find Patients</button>' +
