@@ -420,7 +420,6 @@ function QueryToolController() {
             queryName = i2b2.CRC.model.transformedQuery.name;
         }else{
             i2b2.CRC.model.transformedQuery.name = queryName;
-            $('.CRC_QT_runbar input.name',i2b2.CRC.view.QT.containerDiv).val(queryName);
         }
 
         // query definition
