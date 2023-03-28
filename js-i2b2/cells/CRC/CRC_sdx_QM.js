@@ -54,11 +54,16 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
         };
     }
 
+    let cssClassMain = "sdxStyleCRC-QM";
+    if(options.cssClassMain !== undefined){
+        cssClassMain = options.cssClassMain;
+    }
+
     let nodeInfo = {
         title: undefined,
         iconImg: undefined,
         iconImgExp: undefined,
-        cssClassMain: "sdxStyleCRC-QM",
+        cssClassMain: cssClassMain,
         cssClassMinor: undefined,
         moreDescriptMain: undefined,
         moreDescriptMinor: undefined,
@@ -72,6 +77,7 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
     } else  {
         nodeInfo.title = sdxData.sdxInfo.sdxDisplayName;
     }
+
 
 
     if (options.showchildren === false) {

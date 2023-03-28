@@ -245,6 +245,12 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
                 icon: "sdx_CRC_QM.gif",
                 showchildren: true
             };
+
+            //Change the icons for temporal query
+            if(sdxDataNode.sdxInfo.sdxDisplayName.startsWith("(t)")){
+                renderOptions.icon = 'sdx_CRC_QMT.gif';
+                renderOptions.cssClassMain = "sdxStyleCRC-QMT";
+            }
             sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
             sdxDataNode.renderData.idDOM = "CRC_H_TV-" + i2b2.GUID();
             let temp = {
