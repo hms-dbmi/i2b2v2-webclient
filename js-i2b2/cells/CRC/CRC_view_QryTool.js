@@ -73,6 +73,17 @@ i2b2.CRC.view.QT.showRun = function() {
                 $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(checkContainer);
             });
         }
+        // populate/delete the query run methods
+        if (!i2b2.CRC.model.queryExecutionOptions) {
+            // no query execution options, remove input from form
+            $("#crcModal .QueryMethodInput").remove();
+        } else {
+            // populate the query execution options
+            let targetSelect = $('#crcModal .QueryMethodInput select');
+            for (const [code, description] of Object.entries(i2b2.CRC.model.queryExecutionOptions)) {
+                $('<option value="' + code + '">' + description + '</option>').appendTo(targetSelect);
+            }
+        }
 
         //add the current generated query name
         $("#crcQtQueryName").val(i2b2.CRC.model.transformedQuery.name)
