@@ -36,6 +36,16 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
     // === moreDescriptMain
     // === moreDescriptMinor
     // === tvNodeState
+
+    let iconImg = "sdx_CRC_QMT.gif"
+    let cssClassMain = "sdxStyleCRC-QM";
+
+    //use a different default icon for temporal queries
+    if(sdxData.sdxInfo.sdxDisplayName.startsWith("(t)")){
+        iconImg = 'sdx_CRC_QMT.gif';
+       cssClassMain = "sdxStyleCRC-QMT";
+    }
+
     let t;
     if (options === undefined) { options = {}; }
     // default QM icons
@@ -43,7 +53,7 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
         if (typeof options.icon === 'string') {
             t = options.icon;
         } else {
-            t = 'sdx_CRC_QM.gif';
+            t = iconImg;
         }
         options.icon = {
             root: t,
@@ -54,7 +64,6 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
         };
     }
 
-    let cssClassMain = "sdxStyleCRC-QM";
     if(options.cssClassMain !== undefined){
         cssClassMain = options.cssClassMain;
     }
