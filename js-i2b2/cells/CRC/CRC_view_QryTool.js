@@ -1095,9 +1095,9 @@ i2b2.CRC.view.QT.render = function() {
 
     $('body').on('click', '.refreshStartDate, .refreshEndDate', (event) => {
         let jqTarget = $(event.target);
-        let dateElement = jqTarget.parents(".dateRange").find(".DateStart");
+        let dateElement = jqTarget.parents(".dateRange").find(".DateStart, .DateRangeStart");
         if (dateElement.length === 0) {
-            dateElement = jqTarget.parents(".dateRange").find(".DateEnd");
+            dateElement = jqTarget.parents(".dateRange").find(".DateEnd, .DateRangeEnd");
         }
         dateElement.val("");
         dateElement.trigger("change");

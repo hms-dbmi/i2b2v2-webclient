@@ -181,10 +181,12 @@
     }
 }
 
-.DateOccursBody .dateRange{
+.DateOccursBody .dateRange, .DateRangeBody .dateRange {
     display: flex;
     width: 15em;
 }
+
+
 
 .QueryGroup .DateRangeBody {
     max-height: 10em;
@@ -200,6 +202,11 @@
     height: 100%;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+}
+
+.gj-icon{
+    top: 5px!important;
+    left: 8px!important;
 }
 
 .OccursCount {
@@ -500,8 +507,7 @@
 
 /* Query Group events */
 .QueryGroup.when .event {
-    max-height: 30em;
-    padding-bottom: 1em;
+    max-height: 30em;    
 }
 
 .QueryGroup.when .event.toHide {
@@ -762,6 +768,21 @@
     text-align: right;
 }
 
+.fine-print{
+    font-size: .75rem!important;
+}
+
+.muted-small{
+    color:#757575!important;
+}
+
+.date-w-11{
+    width: 11em!important;
+}
+
+.btn-ref-max-w{
+    max-width: 3em!important;
+}
 
 /* Query Group */
 .QueryGroup {
@@ -801,13 +822,13 @@
 }
 
 .QueryGroup .body .main .content .orDragAdditional {
-    color: #878787;
+    color: #757575;
     font-style: italic;
     margin: 0.9em 0.6em 0.6em 0.6em;
 }
 
 .QueryGroup .body .main .content .dragFirst {
-    color: #878787;
+    color: #757575;
     font-style: italic;
     margin: 3.2em 3em 1.6em 1.6em;
     padding-left: 0.5em;
