@@ -1937,6 +1937,14 @@ i2b2.events.afterCellInit.add((cell) => {
                 }).bind(this)
             );
 
+            // parse any probabilistic sketch capabilities for the CRC
+            if (i2b2.CRC.cfg.cellParams['QUERY_OPTIONS_XML']) {
+                let queryOptions = {};
+                let results = i2b2.h.XPath(i2b2.CRC.cfg.cellParams["QUERY_OPTIONS_XML"], "//QueryMethod[@ID]");
+                results.forEach((node) => { queryOptions[node.attributes['ID'].value] = node.textContent; });
+                i2b2.CRC.model.queryExecutionOptions = queryOptions;
+            }
+
             // load the templates (TODO: Refactor this to loop using a varname/filename list)
             // TODO: Refactor templates to use Handlebars partals system
             cell.view.QT.template = {};
