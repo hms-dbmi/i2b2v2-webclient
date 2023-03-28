@@ -414,14 +414,18 @@ function QueryToolController() {
         });
         params.psm_result_output += "</result_output_list>";
 
+        // get the query name
+        let queryName = $("#crcQtQueryName").val().trim();
+        if (queryName.length === 0 ){
+            queryName = i2b2.CRC.model.transformedQuery.name;
+        }else{
+            i2b2.CRC.model.transformedQuery.name = queryName;
+        }
+
         // query definition
         params.psm_query_definition = (Handlebars.compile("{{> Query}}"))(i2b2.CRC.model.transformedQuery);
 
-        // get the query name
-        let queryName = $('.CRC_QT_runbar input.name',i2b2.CRC.view.QT.containerDiv).text().trim();
-        if (queryName.length === 0 ) queryName = i2b2.CRC.model.transformedQuery.name;
         queryName = i2b2.h.Escape(queryName);
-
         // hand over execution of query to the QueryRunner component
         i2b2.CRC.ctrlr.QR.doRunQuery(queryName, params);
     };
