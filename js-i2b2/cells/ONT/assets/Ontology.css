@@ -241,7 +241,7 @@ button.invert:hover{
     border: 1px solid #c8cdce;
 }
 
-.srTooltip {
+.srTooltip, .dcTooltip {
     color: #87898a;
 }
 

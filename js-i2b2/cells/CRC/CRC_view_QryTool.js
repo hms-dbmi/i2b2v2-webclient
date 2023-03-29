@@ -1846,8 +1846,10 @@ i2b2.events.afterCellInit.add((cell) => {
 
             //HTML template for event
             $.ajax("js-i2b2/cells/CRC/templates/Event.html", {
-                success: (template, status, req) => {
+                success: (template, status, req) => {                   
                     Handlebars.registerPartial("Event", req.responseText);
+                    //init date constraint panel tooltip
+                    $(".dcTooltip").tooltip('show');                    
                 },
                 error: (error) => { console.error("Could not retrieve template: Event.html"); }
             });
