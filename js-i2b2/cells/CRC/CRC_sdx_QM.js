@@ -37,7 +37,7 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
     // === moreDescriptMinor
     // === tvNodeState
 
-    let iconImg = "sdx_CRC_QMT.gif"
+    let iconImg = "sdx_CRC_QM.gif"
     let cssClassMain = "sdxStyleCRC-QM";
 
     //use a different default icon for temporal queries
