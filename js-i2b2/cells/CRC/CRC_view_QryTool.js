@@ -97,8 +97,9 @@ i2b2.CRC.view.QT.showRun = function() {
             i2b2.CRC.view.QT.resetToCRCHistoryView();
             // build list of selected result types
             let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
+            let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
 
-            i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes);
+            i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes, reqExecutionMethod);
             // close the modal
             $('body #crcModal div:eq(0)').modal('hide');
         });
