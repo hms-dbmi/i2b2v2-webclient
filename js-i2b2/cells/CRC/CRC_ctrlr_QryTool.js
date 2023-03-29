@@ -503,7 +503,7 @@ function QueryToolController() {
         let funcTranslateDate = function(trgtdate) {
             // this does proper setting of the timezone based on the browser's current timezone
             return String(trgtdate.getFullYear())+"-"+String(trgtdate.getMonth()+1).padStart(2, "0")+"-"+String(trgtdate.getDate()).padStart(2, "0")
-                +'T00:00:00.000-05:00';
+                +'T00:00:00';
         };
 
         let createPanelItem = function(item){
