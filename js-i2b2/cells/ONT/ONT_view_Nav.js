@@ -54,10 +54,13 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
     // render tree
     i2b2.ONT.view.nav.treeview.treeview('redraw', []);
 };
-
-
 // ================================================================================================== //
-i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
+
+i2b2.ONT.view.nav.loadChildrenAction =  function(e, nodeData) {
+    i2b2.ONT.view.nav.loadChildren(nodeData);
+}
+// ================================================================================================== //
+i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
     if (nodeData.i2b2.sdxInfo.sdxKeyValue === undefined) {
         console.error('i2b2.ONT.view.nav.loadChildren could not find tv_node.i2b2.sdxInfo');
         return;
@@ -84,8 +87,13 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
             function(node, parentKeys){ return !(parentKeys.indexOf(node.key)) },
             parentNodes
         ]);
+
         // render tree
         i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+
+        if(typeof onComplete === 'function') {
+            onComplete(nodeData);
+        }
     });
 };
 
@@ -141,7 +149,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     data: []
                 });
                 i2b2.ONT.view.nav.treeview = treeRef;
-                treeRef.on('nodeLoading', i2b2.ONT.view.nav.loadChildren);
+                treeRef.on('nodeLoading', i2b2.ONT.view.nav.loadChildrenAction);
                 treeRef.on('onDrag', i2b2.sdx.Master.onDragStart);
                 treeRef.on('onRedraw', () => {
                     // attach drag drop attribute after the tree has been redrawn
@@ -220,7 +228,7 @@ i2b2.events.afterCellInit.add((cell) => {
     }
 });
 //================================================================================================== //
-i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, includeModifier) {
+i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, includeSearchOptions) {
 
     let actions = {
         nodeAnnotate: {
@@ -230,56 +238,24 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
             }
         }
     };
-    if(includeModifier){
+
+    if(includeSearchOptions){
+        actions.nodeInTree = {
+            name: 'View in Tree',
+            onClick: function(node){
+                i2b2.ONT.view.search.viewInNavTree(node);
+            }
+        }
         actions.nodeModifier =  {
             name: 'Show Modifiers',
-                isShown: function(node) {
-                    let modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
-                    return modifiersDisplayed.length === 0 && (node.hasModifier === undefined || node.hasModifier !== false);
-                },
-                onClick: function(node) {
-                    i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, function(newNodes) {
-                        if (newNodes.length === 0) {
-                            i2b2.ONT.view.nav.displayAlertDialog({
-                                    title: "Show Modifiers",
-                                    alertMsg: "No modifiers found for " + node.text + "."
-                            });
-                            node.hasModifier = false;
-                        }
-                        else{
-                            //get existing children
-                            let getAllChildren = function (childNode, allChildren) {
-                               childNode.nodes.forEach((n) => {
-                                   let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
-                                   n.parentKey = parentNode.key;
-                                   allChildren.push(n);
-                                   if (n.nodes !== undefined && n.nodes.length >= 0) {
-                                       return getAllChildren(n, allChildren);
-                                   }
-                               });
-                            }
-
-                            let temp_childrenAll = [];
-                            getAllChildren(node, temp_childrenAll);
-                            let temp_childrenId = node.nodes.map(function (node) { return node.nodeId; });
-                            i2b2.ONT.view.search.treeview.treeview('deleteNodes', [temp_childrenId]);
-
-                            //append existing children so that the modifiers appear first in the tree
-                            newNodes = newNodes.concat(temp_childrenAll);
-
-                            node.state.expanded = true;
-                            i2b2.ONT.view.search.treeview.treeview('addNodes', [
-                                newNodes,
-                                function (parent, child) { return parent.key === child.parentKey},
-                                false
-                            ]);
-
-                            // render tree
-                            i2b2.ONT.view.search.treeview.treeview('redraw', []);
-                        }
-                    }, true);
-               }
-       }
+            isShown: function(node) {
+                let modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
+                return modifiersDisplayed.length === 0 && (node.hasModifier === undefined || node.hasModifier !== false);
+            },
+            onClick: function(node) {
+                i2b2.ONT.view.search.showModifiers(node);
+            }
+        }
     }
     return new BootstrapMenu('#' + treeviewElemId + ' li.list-group-item', {
         fetchElementData: function($rowElem) {

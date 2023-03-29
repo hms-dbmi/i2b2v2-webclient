@@ -67,7 +67,7 @@ i2b2.CRC.ctrlr.QS = {
 
                         if (i2b2.PM.model.isObfuscated) {
                             if (params[i2].firstChild.nodeValue < 4) {
-                                value = "<" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                                value = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                             } else {
                                 value = params[i2].firstChild.nodeValue + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                             }
@@ -78,7 +78,7 @@ i2b2.CRC.ctrlr.QS = {
                             }
                         }
                         // N.Benik - Override the display value if specified by server setting the "display" attribute
-                        let displayValue = value;
+                        let displayValue = i2b2.h.Unescape(value);
                         if (typeof params[i2].attributes.display !== 'undefined') {
                             displayValue = params[i2].attributes.display.textContent;
                         }
@@ -247,7 +247,7 @@ i2b2.CRC.ctrlr.QS = {
 
                         if (i2b2.PM.model.isObfuscated) {
                             if (i2b2.h.XPath(xml_v, 'descendant::total_time_second/text()/..')[i2].firstChild.nodeValue < 4) {
-                                value = "<" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                                value = " <" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                             } else {
                                 value = i2b2.h.XPath(xml_v, 'descendant::total_time_second/text()/..')[i2].firstChild.nodeValue + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                             }
@@ -437,7 +437,7 @@ i2b2.CRC.ctrlr.QS._GetTitle = function(resultType, oRecord, oXML) {
             // create the title using shrine setting
             if (oRecord.size >= 10) {
                 if (i2b2.PM.model.isObfuscated) {
-                    title = t+" - "+oRecord.size+"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" encounters";
+                    title = t+" - "+oRecord.size + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" encounters";
                 } else {
                     title = t;
                 }
@@ -459,7 +459,7 @@ i2b2.CRC.ctrlr.QS._GetTitle = function(resultType, oRecord, oXML) {
             // create the title using shrine setting
             if (oRecord.size >= 10) {
                 if (i2b2.PM.model.isObfuscated) {
-                    title = p+" - "+oRecord.size+"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
+                    title = p+" - "+oRecord.size + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
                 } else {
                     title = p;
                 }
@@ -482,7 +482,7 @@ i2b2.CRC.ctrlr.QS._GetTitle = function(resultType, oRecord, oXML) {
             // create the title using shrine setting
             if (oRecord.size >= 10) {
                 if (i2b2.PM.model.isObfuscated) {
-                    title = x+" - "+oRecord.size+"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
+                    title = x+" - "+oRecord.size + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
                 } else {
                     title = x+" - "+oRecord.size+" patients";
                 }
