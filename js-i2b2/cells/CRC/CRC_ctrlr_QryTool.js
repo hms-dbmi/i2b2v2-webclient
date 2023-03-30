@@ -416,9 +416,16 @@ function QueryToolController() {
 
         // get the query name
         let queryName = $("#crcQtQueryName").val().trim();
+
+        //add (t) prefix  if this is a temporal query
+        let queryNamePrefix = "";
+        if(i2b2.CRC.model.transformedQuery.subQueries && i2b2.CRC.model.transformedQuery.subQueries.length > 1){
+            queryNamePrefix = "(t) ";
+        }
         if (queryName.length === 0 ){
-            queryName = i2b2.CRC.model.transformedQuery.name;
+            queryName =  queryNamePrefix + i2b2.CRC.model.transformedQuery.name;
         }else{
+            queryName = queryNamePrefix  + queryName;
             i2b2.CRC.model.transformedQuery.name = queryName;
         }
 
@@ -502,7 +509,8 @@ function QueryToolController() {
     this._processModel = function() {
         let funcTranslateDate = function(trgtdate) {
             // this does proper setting of the timezone based on the browser's current timezone
-            return String(trgtdate.getFullYear())+"-"+String(trgtdate.getMonth()+1).padStart(2, "0")+"-"+String(trgtdate.getDate()).padStart(2, "0")+"T00:00:00.00-"+String(trgtdate.getUTCHours()).padStart(2, "0")+":"+String(trgtdate.getUTCMinutes()).padStart(2, "0");
+            return String(trgtdate.getFullYear())+"-"+String(trgtdate.getMonth()+1).padStart(2, "0")+"-"+String(trgtdate.getDate()).padStart(2, "0")
+                +'T00:00:00';
         };
 
         let createPanelItem = function(item){
@@ -697,10 +705,13 @@ function QueryToolController() {
         if (transformedModel.panels.length > 0 || transformedModel.subQueries.length > 0) {
             let queryDate = new Date();
             queryDate = String(queryDate.getHours()) + ":" + String(queryDate.getMinutes()) + ":" + String(queryDate.getSeconds());
-            let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.replace("(PrevQuery)","").trim()});
+            let temporalRegex = /^\(t\)/i;
+
+            let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.replace("(PrevQuery)","").trim().replace("(t)","").trim()});
 
             //Handle temporal events
-            let temporalNames = transformedModel.subQueries.map((subQuery)=>{ return subQuery.panels[0].items[0].name.replace("(PrevQuery)","").trim()});
+            let temporalNames = transformedModel.subQueries.map((subQuery)=>{ return subQuery.panels[0].items[0].name.replace("(PrevQuery)","")
+                .trim().replace(temporalRegex,"").trim()});
             names = names.concat(temporalNames);
 
             let adjuster = 1 / ((names.map((rec) => rec.length ).reduce((acc, val) => acc + val) + names.length - 1) / 120);
