@@ -74,10 +74,6 @@ i2b2.CRC.view.QT.showRun = function() {
             });
         }
 
-        //add the current generated query name
-        $("#crcQtQueryName").val(i2b2.CRC.model.transformedQuery.name)
-            .attr("placeholder", i2b2.CRC.model.transformedQuery.name);
-
         // now show the modal form
         $('body #crcModal div:eq(0)').modal('show');
 
@@ -1054,6 +1050,8 @@ i2b2.CRC.view.QT.render = function() {
             icon.removeClass('bi-chevron-up');
             icon.addClass('bi-chevron-down');
         }
+        //init date constraint panel tooltip
+        $(".dcTooltip").tooltip();
     });     
 
     $('.QueryGroup', i2b2.CRC.view.QT.containerDiv).on('click', '.DateRangeLbl', (event) => {
@@ -1624,6 +1622,7 @@ i2b2.CRC.view.QT.addEvent = function(){
 
     $((Handlebars.compile("{{> EventLink }}"))(eventLinkData)).appendTo(templateQueryGroup);
     $((Handlebars.compile("{{> Event }}"))(eventData)).appendTo(templateQueryGroup);
+  
 
     i2b2.CRC.model.query.groups[qgIndex].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
     i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
@@ -1668,184 +1667,25 @@ i2b2.CRC.view.QT.addEvent = function(){
     i2b2.CRC.view.QS.clearStatus();
 }
 // ================================================================================================== //
-i2b2.CRC.view.QT.showQueryReport = function() {
+i2b2.CRC.view.QT.showQueryReport = function(){
 
-    // this function is used to generate the report and display the modal window
-    const generateReport = function () {
-        let submittedByUsername;
-        if (i2b2.CRC.view.QT.queryResponse) {
-            // get username from a reloaded query
-            submittedByUsername = i2b2.h.XPath(i2b2.CRC.view.QT.queryResponse, "//query_master/user_id/text()")[0].nodeValue;
-        } else {
-            // this is a query that we have just run so we are the user that ran it
-            submittedByUsername = i2b2.PM.model.login_username;
-        }
-
-        // create lookup dictionaries for concepts/modifiers
-        let concepts = {};
-        let modifiers = {};
-        i2b2.CRC.model.query.groups.forEach((group) => {
-            group.events.forEach((event) => {
-                event.concepts.forEach((concept) => {
-                    if (concept.origData.conceptModified) {
-                        modifiers[concept.origData.conceptModified.sdxInfo.sdxKeyValue] = concept;
-                    } else {
-                        concepts[concept.sdxInfo.sdxKeyValue] = concept;
-                    }
-                });
-            });
-        });
-
-        // function for expanding the panel items
-        let func_expandConcept = function(panelItem, panel) {
-            if (panelItem.modKey) {
-                panelItem.moreInfo = modifiers[panelItem.key];
-            } else {
-                panelItem.moreInfo = concepts[panelItem.key];
-            }
-            // deal with dates
-            if (panelItem.moreInfo.dateRange.start == undefined || panelItem.moreInfo.dateRange.start == "") {
-                panelItem.timingFrom = "earliest date available";
-            } else {
-                panelItem.timingFrom = (new Date(Date.parse(panelItem.moreInfo.dateRange.start))).toLocaleDateString();
-            }
-            if (panelItem.moreInfo.dateRange.end == undefined || panelItem.moreInfo.dateRange.end == "") {
-                panelItem.timingTo = "latest date available";
-            } else {
-                panelItem.timingTo = (new Date(Date.parse(panelItem.moreInfo.dateRange.end))).toLocaleDateString();
-            }
-            panelItem.occurs = panel.occursCount;
-            panelItem.timing = panel.timing;
-        };
-
-
-        /// expand the panels
-        let panels = Object.assign({}, i2b2.CRC.model.transformedQuery.panels);
-        panelKeys = Object.keys(panels);
-        panelKeys.forEach((panelKey, idx, keys) => {
-            if (keys.length > (idx+1)) {
-                if (panels[keys[idx+1]].invert == '1') {
-                    panels[panelKey].next_is_not = true;
-                }
-            }
-            let itemKeys = Object.keys(panels[panelKey].items);
-            itemKeys.forEach((itemKey) => {
-                let panelItem = panels[panelKey].items[itemKey];
-                func_expandConcept(panelItem, panels[panelKey]);
-            });
-        });
-
-        let reportData = {
-            name: i2b2.CRC.ctrlr.QS.QM.name,
-            submittedAt: i2b2.CRC.ctrlr.QS.QI.start_date.toLocaleString().replace(", "," @ "),
-            completedAt: i2b2.CRC.ctrlr.QS.QI.end_date.toLocaleString().replace(", "," @ "),
-            submittedBy: "USERNAME(" + submittedByUsername + ")",
-            runDuration: Number((i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date) / 1000).toLocaleString(),
-            panels: panels
-        };
-
-        // handle lack of populated panels
-        if (Object.keys(panels).length === 0) delete reportData.panels;
-
-        // handle events
-        reportData.events = i2b2.CRC.model.transformedQuery.subQueries;
-        reportData.events.forEach((event, idx) => {
-            event.panels.forEach((panel, idx) => {
-                panel.items.forEach((item, idx) => {
-                    func_expandConcept(item, panel);
-                });
-            });
-        });
-
-        // handle event links
-        let eventLinks = i2b2.CRC.model.query.groups.filter(group => group.when);
-        // there should only be one "when" group
-        if (eventLinks.length) {
-            reportData.eventLinks = eventLinks[0].eventLinks;
-            reportData.eventLinks.forEach((evtlnk, idx) => {
-                evtlnk.prevNum = idx + 1;
-                evtlnk.nextNum = idx + 2;
-            });
-        }
-
-        // deal with the temporal constraint description
-        switch(i2b2.CRC.model.transformedQuery.queryTiming) {
-            case "ANY":
-                reportData.temporalMode = "Treat All Groups Independently";
-                break;
-            case "SAMEVISIT":
-                reportData.temporalMode = "Selected groups occur in the same financial encounter";
-                break;
-            case "SAMEINSTANCENUM":
-                reportData.temporalMode = "Items Instance will be the same";
-                break;
-        }
-
-        // Deal with the reports
-        let reports = [];
-        let graphs = $("#breakdownChartsBody>div");
-        let charts = $("#breakdownDetails>div");
-        let dataRef = i2b2.CRC.ctrlr.QS.breakdowns.resultTable;
-        for (let i=0; i<dataRef.length; i++) {
-            if (i == 0) {
-                reports.push({chart:charts[i].outerHTML, data: dataRef[i]});
-            } else {
-                reports.push({chart:charts[i].outerHTML, graph:graphs[i-1].outerHTML, data: dataRef[i]});
-            }
-        }
-        reportData.reports = reports;
-
-
-        let func_Display = function() {
-            // populate the document in the iframe
-            const reportHtml = i2b2.CRC.view.QT.template.queryReport(reportData);
-            const reportDocument = $('#queryReportWindow')[0].contentWindow.document;
-            reportDocument.open();
-            reportDocument.write(reportHtml);
-            reportDocument.close();
-            // show report
-            $("#queryReportModal div:eq(0)").modal('show');
-        }
-
-        // populate the user's real name via AJAX then display the report window
-        i2b2.PM.ajax.getUser("CRC:PrintQuery", {user_id:submittedByUsername}, (results) => {
-            try {
-                results.parse();
-                let data = results.model[0];
-                if (data.full_name) reportData.submittedBy = data.full_name;
-            } catch (e) {}
-            func_Display();
-        });
-
-
-    };
-
-    // load the modal window if needed
     let queryReportModal = $('body #queryReportModal');
     if (queryReportModal.length === 0) {
         queryReportModal = $("<div id='queryReportModal'/>").appendTo("body");
-        $.ajax("js-i2b2/cells/CRC/assets/modalQueryReport.html", {
-            success: (content) => {
-                queryReportModal.html(content);
-
-                // Attach print function
-                const reportWindow = $('#queryReportWindow')[0].contentWindow;
-                $('#queryReportModal button.print').on('click', () => {
-                    // automatically hide the preview modal
-                    $('#queryReportModal .modal').modal('hide');
-                    // print the document
-                    reportWindow.print();
-                });
-                generateReport();
-            },
-            error: () => {
-                alert("Error: cannot load report template!");
-            }
-        });
-    } else {
-        generateReport();
     }
-};
+
+    let data = {};
+    $(i2b2.CRC.view.QT.template.queryReport(data)).appendTo(queryReportModal);
+
+    // Attach print function
+    const reportWindow = $('#queryReportWindow')[0].contentWindow;
+    const printBtn = $('#queryReportModal button.print');
+    printBtn.unbind('click');
+    printBtn.on('click', () => {reportWindow.print(); });
+
+
+    $("#queryReportModal div:eq(0)").modal('show');
+}
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.showOptions = function() {
@@ -1885,7 +1725,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 '<label>Name:</label>' +
                             '</div>' +
                         '</div>');
-                    let queryName = $('<input id="queryName" class="name" disabled>');
+                    let queryName = $('<input id="queryName" class="name">');
                     $('<div class="center"></div>').append(queryName).appendTo(runBar);
                     runBar.append('<div class="right">' +
                         '<button type="button" class="btn btn-primary btn-sm button-run">Find Patients</button>' +
@@ -2009,10 +1849,8 @@ i2b2.events.afterCellInit.add((cell) => {
 
             //HTML template for event
             $.ajax("js-i2b2/cells/CRC/templates/Event.html", {
-                success: (template, status, req) => {                   
-                    Handlebars.registerPartial("Event", req.responseText);
-                    //init date constraint panel tooltip
-                    $(".dcTooltip").tooltip('show');                    
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("Event", req.responseText);                    
                 },
                 error: (error) => { console.error("Could not retrieve template: Event.html"); }
             });
@@ -2040,7 +1878,7 @@ i2b2.events.afterCellInit.add((cell) => {
                 error: (error) => { console.error("Could not retrieve template: ConceptDateConstraint.html"); }
             });
 
-            //template for the Query Report
+            //template for the setting date constraint on concept
             $.ajax("js-i2b2/cells/CRC/templates/QueryReport.html", {
                 success: (template) => {
                     cell.view.QT.template.queryReport = Handlebars.compile(template);

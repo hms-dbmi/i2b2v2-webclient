@@ -8,10 +8,10 @@
     <div class="TermList clear"></div>
     <div class="orDragAdditional">or drag additional concepts</div>
     <div class="required hidden">at least 1 concept is required</div>
-    <div class="DateOccursLbl">Set date range and/or occurrence for this entire group/panel <i class="bi bi-chevron-down"></i></div>
+    <div class="DateOccursLbl">Set date range and/or occurrence for this entire panel <i class="bi bi-chevron-down"></i></div>
     <div class="DateOccursBody expander hidden">
         <div class="d-flex flex-column">
-            <div class="d-flex flex-row px-3 my-2">
+            <div class="d-flex flex-row px-3 my-2">               
                 <span class="d-block align-self-center me-2">From:</span>
                 <div class="dateRange">
                     <div class="date-w-11">
@@ -28,8 +28,10 @@
                     </div>
                     <div class="btn-ref-max-w">
                         <button class="btn btn-outline-secondary border-0 refreshEndDate"><i class="bi bi-arrow-clockwise"></i></button>
-                    </div>                   
-                </div>                
+                    </div>
+                    <span class="fs-5 align-self-center ms-2 iconspan"><i class="bi bi-info-circle dcTooltip" title="<ul><li>Setting this will apply the date constraint to the entire panel.</li> <li> Any item-level date constraints will be overwritten.</li> <li> Date constraints do not apply on Demographics data, Patient Sets and Previous Queries.</li> </ul>" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"></i></span>                      
+                </div>
+                             
             </div>
             <div class="d-flex flex-row px-3 mb-2">
                 <span class="d-block align-self-center me-2">Concepts must occur</span>
@@ -37,19 +39,11 @@
                     <input class="OccursCount form-control form-control-sm" placeholder="1" value="{{this.instances}}" onchange="i2b2.CRC.view.QS.clearStatus();"/>
                 </div>
                 <span class="d-block align-self-center mx-2">or more time(s)</span>
-            </div>
-            <span class="fs-5 mb-3 mt-4"><i class="bi bi-info-circle dcTooltip" title="Setting this will apply the date constraint to the entire panel. Any item-level date constraints will be overwritten. Date constraints do not apply on Demographics data, Patient Sets and Previous Queries." data-bs-toggle="tooltip" data-bs-placement="bottom"></i></span>
-            <div class="px-3">
-                <ul class="ps-3 fine-print muted-small fst-italic mb-0">
-                    <li>Setting this will apply the date constraint to the entire panel</li>
-                    <li>Any item-level date constraints will be overwritten</li>
-                    <li>Date constraints do not apply on Demographics data, Patient Sets and Previous Queries</li>
-                </ul>
-            </div>
+            </div>            
         </div>
     </div>
     <!-- When display -->
-    <div class="DateRangeLbl" >Set date range and/or occurrence for this entire group/panel<i class="bi bi-chevron-down"></i></div>
+    <div class="DateRangeLbl" >Set date range this entire panel<i class="bi bi-chevron-down"></i></div>
     <div class="DateRangeBody expander hidden">
         <div class="d-flex flex-column">
             <div class="d-flex flex-row px-3 mt-2 mb-3">
@@ -70,16 +64,9 @@
                     <div class="btn-ref-max-w">
                         <button class="btn btn-outline-secondary border-0 refreshEndDate"><i class="bi bi-arrow-clockwise"></i></button>
                     </div>
-                </div> 
+                    <span class="fs-5 align-self-center ms-2"><i class="bi bi-info-circle dcTooltip" title="<ul><li>Setting this will apply the date constraint to the entire panel.</li> <li> Any item-level date constraints will be overwritten.</li> <li> Date constraints do not apply on Demographics data, Patient Sets and Previous Queries.</li> </ul>" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"></i></span> 
+                </div>                
             </div>
-            <span class="fs-5 mb-3 mt-4"><i class="bi bi-info-circle dcTooltip" title="Setting this will apply the date constraint to the entire panel. Any item-level date constraints will be overwritten. Date constraints do not apply on Demographics data, Patient Sets and Previous Queries." data-bs-toggle="tooltip" data-bs-placement="top"></i></span>
-            <div class="px-3">
-                <ul class="ps-3 fine-print muted-small fst-italic">
-                    <li>Setting this will apply the date constraint to the entire panel</li>
-                    <li>Any item-level date constraints will be overwritten</li>
-                    <li>Date constraints do not apply on Demographics data, Patient Sets and Previous Queries</li>
-                </ul>
-            </div> 
         </div> 
     </div>
 </div>

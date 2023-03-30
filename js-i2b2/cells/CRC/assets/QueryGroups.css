@@ -186,8 +186,6 @@
     width: 15em;
 }
 
-
-
 .QueryGroup .DateRangeBody {
     max-height: 10em;
 }
@@ -207,6 +205,12 @@
 .gj-icon{
     top: 5px!important;
     left: 8px!important;
+}
+
+.tooltip-inner ul{
+    text-align: left!important;
+    margin-bottom: 0!important;
+    
 }
 
 .OccursCount {
