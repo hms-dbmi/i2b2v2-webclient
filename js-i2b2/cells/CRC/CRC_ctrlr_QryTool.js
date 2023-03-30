@@ -509,7 +509,8 @@ function QueryToolController() {
     this._processModel = function() {
         let funcTranslateDate = function(trgtdate) {
             // this does proper setting of the timezone based on the browser's current timezone
-            return String(trgtdate.getFullYear())+"-"+String(trgtdate.getMonth()+1).padStart(2, "0")+"-"+String(trgtdate.getDate()).padStart(2, "0")+"T00:00:00.00-"+String(trgtdate.getUTCHours()).padStart(2, "0")+":"+String(trgtdate.getUTCMinutes()).padStart(2, "0");
+            return String(trgtdate.getFullYear())+"-"+String(trgtdate.getMonth()+1).padStart(2, "0")+"-"+String(trgtdate.getDate()).padStart(2, "0")
+                +'T00:00:00';
         };
 
         let createPanelItem = function(item){
