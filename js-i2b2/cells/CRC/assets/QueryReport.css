@@ -65,9 +65,9 @@ body {
 .item-title {
     font-weight: bold;
     font-size: 1.3rem;
-    height: 1.4rem;
     margin-bottom: 0.2rem;
 }
+
 .item-title img {
     margin-bottom: 0.3rem;
     vertical-align: middle;
