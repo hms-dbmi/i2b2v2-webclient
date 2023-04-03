@@ -378,8 +378,10 @@ function QueryToolController() {
             let qd = i2b2.h.XPath(results.refXML, 'descendant::query_name/..');
             if (qd.length !== 0) {
                 let queryName = i2b2.h.getXNodeVal(results.refXML, 'name');
-                this.doSetQueryName(queryName);
-                loadAllModifierInfo(qd[0], reloadQuery);
+                loadAllModifierInfo(qd[0], function(modifierXmlInfo){
+                    reloadQuery(modifierXmlInfo);
+                    $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
+                });
                 i2b2.CRC.ctrlr.QT.loadQueryStatus(qm_id, queryName);
             }
         }
@@ -428,6 +430,9 @@ function QueryToolController() {
             queryName = queryNamePrefix  + queryName;
             i2b2.CRC.model.transformedQuery.name = queryName;
         }
+
+        //update the query name field
+        $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
 
         // query definition
         params.psm_query_definition = (Handlebars.compile("{{> Query}}"))(i2b2.CRC.model.transformedQuery);
