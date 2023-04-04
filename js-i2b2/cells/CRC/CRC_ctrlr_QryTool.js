@@ -397,7 +397,7 @@ function QueryToolController() {
         i2b2.CRC.ctrlr.QS.loadQueryStatus();
     }
 // ================================================================================================== //
-    this.runQuery = function(queryTypes) {
+    this.runQuery = function(queryTypes, queryExecutionMethod) {
         let params = {
             result_wait_time: i2b2.CRC.view.QT.params.queryTimeout,
             psm_query_definition: "",
@@ -413,6 +413,13 @@ function QueryToolController() {
             params.psm_result_output += '<result_output priority_index="' + (idx + 1) + '" name="' + rec.toLowerCase() + '"/>';
         });
         params.psm_result_output += "</result_output_list>";
+
+        // query execution method
+        if (queryExecutionMethod) {
+            params.query_run_method = "<query_method>" + queryExecutionMethod + "</query_method>";
+        } else {
+            params.query_run_method = "";
+        }
 
         // get the query name
         let queryName = $("#crcQtQueryName").val().trim();

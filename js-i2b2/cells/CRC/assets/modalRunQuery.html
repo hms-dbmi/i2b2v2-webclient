@@ -16,16 +16,22 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-                <form style="margin: 0px 40px">
+                <form style="margin: 0 2.5rem -20px">
                     <div class="form-group row">
                         <div class="input-group input-group-sm mb-2">
-                            <label class="input-group-text" id="crcQtQueryName-text">Name for Query</label>
+                            <label class="input-group-text" id="crcQtQueryName-text" style="width: 7.5rem">Name for Query</label>
                             <input type="text" id="crcQtQueryName" class="form-control" maxlength="250" aria-label="Name for Query" aria-describedby="crcQtQueryName-text">
+                        </div>
+                    </div>
+                    <div class="form-group row QueryMethodInput">
+                        <div class="input-group input-group-sm mb-2" style="height:2rem">
+                            <label class="input-group-text" id="crcQtQueryMethod-text" style="width: 7.5rem; height:1.95rem">Query Method</label>
+                            <select id="crcQtQueryMethod" name="queryMethod" class="form-select" aria-label="Query Method" aria-describedby="crcQtQueryMethod-text"></select>
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="input-group input-group-sm mb-2">
-                            <label class="input-group-text">Query Result(s)</label>
+                            <label class="input-group-text" style="width: 7.5rem">Query Result(s)</label>
                             <div style="float:left; width:40%; height:100%;" class="form-control">
                                 <div class="ResultTypes"></div>
                             </div>
