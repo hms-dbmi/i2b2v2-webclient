@@ -73,6 +73,17 @@ i2b2.CRC.view.QT.showRun = function() {
                 $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(checkContainer);
             });
         }
+        // populate/delete the query run methods
+        if (!i2b2.CRC.model.queryExecutionOptions) {
+            // no query execution options, remove input from form
+            $("#crcModal .QueryMethodInput").remove();
+        } else {
+            // populate the query execution options
+            let targetSelect = $('#crcModal .QueryMethodInput select');
+            for (const [code, description] of Object.entries(i2b2.CRC.model.queryExecutionOptions)) {
+                $('<option value="' + code + '">' + description + '</option>').appendTo(targetSelect);
+            }
+        }
 
         // now show the modal form
         $('body #crcModal div:eq(0)').modal('show');
@@ -82,8 +93,9 @@ i2b2.CRC.view.QT.showRun = function() {
             i2b2.CRC.view.QT.resetToCRCHistoryView();
             // build list of selected result types
             let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
+            let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
 
-            i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes);
+            i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes, reqExecutionMethod);
             // close the modal
             $('body #crcModal div:eq(0)').modal('hide');
         });
@@ -1776,6 +1788,14 @@ i2b2.events.afterCellInit.add((cell) => {
 
                 }).bind(this)
             );
+
+            // parse any probabilistic sketch capabilities for the CRC
+            if (i2b2.CRC.cfg.cellParams['QUERY_OPTIONS_XML']) {
+                let queryOptions = {};
+                let results = i2b2.h.XPath(i2b2.CRC.cfg.cellParams["QUERY_OPTIONS_XML"], "//QueryMethod[@ID]");
+                results.forEach((node) => { queryOptions[node.attributes['ID'].value] = node.textContent; });
+                i2b2.CRC.model.queryExecutionOptions = queryOptions;
+            }
 
             // load the templates (TODO: Refactor this to loop using a varname/filename list)
             // TODO: Refactor templates to use Handlebars partals system
