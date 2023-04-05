@@ -428,7 +428,9 @@ function QueryToolController() {
 
         //add (t) prefix  if this is a temporal query
         let queryNamePrefix = "";
-        if(i2b2.CRC.model.transformedQuery.subQueries && i2b2.CRC.model.transformedQuery.subQueries.length > 1){
+        if(i2b2.CRC.model.transformedQuery.subQueries
+            && i2b2.CRC.model.transformedQuery.subQueries.length > 1
+            &&!queryName.startsWith("(t) ")){
             queryNamePrefix = "(t) ";
         }
         if (queryName.length === 0 ){
