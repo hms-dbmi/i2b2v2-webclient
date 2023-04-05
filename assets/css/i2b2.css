@@ -141,6 +141,10 @@ body, td, p {
 	padding: 0.6em;
 }
 
+#userInfo .center a {
+	margin-left: 0;
+}
+
 #userInfo button {
 	color: #0d6efd;
 	background: #fff;
