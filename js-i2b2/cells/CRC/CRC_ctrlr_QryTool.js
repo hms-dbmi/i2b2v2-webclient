@@ -430,7 +430,7 @@ function QueryToolController() {
         let queryNamePrefix = "";
         if(i2b2.CRC.model.transformedQuery.subQueries
             && i2b2.CRC.model.transformedQuery.subQueries.length > 1
-            &&!queryName.startsWith("(t) ")){
+            && !queryName.startsWith("(t) ")){
             queryNamePrefix = "(t) ";
         }
         if (queryName.length === 0 ){
