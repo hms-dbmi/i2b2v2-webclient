@@ -45,7 +45,6 @@ i2b2.CRC.view.search.selectSearchType = function(elem) {
     let filterValue = liItem.addClass("active").find(".dropdown-item").data("searchFilterValue");
     $("#querySearchFilterText").text(newDisplayText).prop("title", newDisplayText);
     $("#querySearchFilter").data("selectedFilterValue", filterValue);
-    i2b2.CRC.view.search.handleSearchInputChange($('#i2b2QueryHistoryFinder #querySearchTerm input').val());
 };
 //================================================================================================== //
 
