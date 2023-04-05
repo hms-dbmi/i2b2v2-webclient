@@ -23,7 +23,7 @@ The search was completed in {{runDuration}} seconds.
   <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
     {{#each this.items}}
       <div class="item-container">
-        <div class="item-title"><img src="{{this.moreInfo.renderData.iconImg}}"/> {{this.moreInfo.renderData.title}}
+        <div class="item-title"><img src="{{this.moreInfo.renderData.iconImg}}"/> {{{this.moreInfo.renderData.title}}}
           {{#if this.moreInfo.isLab}}
             <span class="item-value">
               {{#ifCond this.moreInfo.LabValues.valueOperator "===" "GT"}}
@@ -63,6 +63,7 @@ The search was completed in {{runDuration}} seconds.
           {{/if}}
         </div>
         <div class="item-discript">{{this.moreInfo.renderData.moreDescriptMinor}}</div>
+        {{#if this.timing}}
         <div class="item-timing">
           {{#ifCond this.timing "==" "ANY"}}
           Independent of Visit
@@ -74,8 +75,11 @@ The search was completed in {{runDuration}} seconds.
           Items' Instance will be the same
           {{/ifCond}}
         </div>
-        <div class="item-dates">From {{this.timingFrom}} to {{this.timingTo}}</div>
+        {{/if}}
+        <div class="item-dates">{{#if this.timingFrom}}From {{this.timingFrom}}{{/if}}{{#if this.timingTo}} to {{this.timingTo}}{{/if}}</div>
+        {{#if this.occurs}}
         <div class="item-occurs"># of times an item is recorded is >= {{this.occurs}}</div>
+        {{/if}}
       </div>
       {{#unless @last}}<div class="joiner or">OR</div>{{/unless}}
     {{/each}}
