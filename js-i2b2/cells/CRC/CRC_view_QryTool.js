@@ -1700,7 +1700,9 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             group.events.forEach((event) => {
                 event.concepts.forEach((concept) => {
                     if (concept.origData.conceptModified) {
-                        modifiers[concept.origData.conceptModified.sdxInfo.sdxKeyValue] = concept;
+                        let sdxKey = concept.origData.conceptModified.sdxInfo.sdxKeyValue;
+                        if (!modifiers[sdxKey]) modifiers[sdxKey] = {};
+                        modifiers[sdxKey][concept.origData.key] = concept;
                     } else {
                         concepts[concept.sdxInfo.sdxKeyValue] = concept;
                     }
@@ -1716,7 +1718,7 @@ i2b2.CRC.view.QT.showQueryReport = function() {
                 panelItem.moreInfo = concepts[sdxKey];
             } else {
                 if (panelItem.modKey) {
-                    panelItem.moreInfo = modifiers[panelItem.key];
+                    panelItem.moreInfo = modifiers[panelItem.key][panelItem.modKey];
                 } else {
                     panelItem.moreInfo = concepts[panelItem.key];
                 }
