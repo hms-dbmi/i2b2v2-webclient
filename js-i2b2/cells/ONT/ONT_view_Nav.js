@@ -71,7 +71,8 @@ i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
         newNodes.forEach((node) => {
             let enablePatientCounts = i2b2.ONT.view.nav.params.patientCounts;
             if (enablePatientCounts !== false && node.i2b2.origData.total_num !== undefined) {
-                node.text += ' - (' + node.i2b2.origData.total_num + ')';
+                node.tags = [];
+                node.tags.push( '- ' + node.i2b2.origData.total_num);
             }
         });
 
@@ -146,7 +147,8 @@ i2b2.events.afterCellInit.add((cell) => {
                     highlightSelected: false,
                     dynamicLoading: true,
                     levels: 1,
-                    data: []
+                    data: [],
+                    showTags: true
                 });
                 i2b2.ONT.view.nav.treeview = treeRef;
                 treeRef.on('nodeLoading', i2b2.ONT.view.nav.loadChildrenAction);
@@ -169,6 +171,8 @@ i2b2.events.afterCellInit.add((cell) => {
                 let optionsDialogModal = $("<div id='ontOptionsModal'/>");
                 $("body").append(optionsDialogModal);
                 optionsDialogModal.load('js-i2b2/cells/ONT/assets/modalOptionsONT.html', function () {
+                    //enable patient counts by default
+                    i2b2.ONT.view.nav.params.patientCounts = true;
                     $("body #ontOptionsModal button.options-save").click(function () {
                         i2b2.ONT.view.nav.params.modifiers = $('#ONTNAVdisableModifiers').is(":checked");
                         i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);

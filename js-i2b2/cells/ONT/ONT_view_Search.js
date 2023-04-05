@@ -98,7 +98,8 @@ i2b2.ONT.view.search.initSearch = function(container){
         highlightSelected: false,
         dynamicLoading: false,
         levels: 1,
-        data: []
+        data: [],
+        showTags: true
     });
     i2b2.ONT.view.search.treeview.on('onRedraw', () =>{
         // attach drag drop attribute after the tree has been redrawn
@@ -123,7 +124,7 @@ i2b2.ONT.view.search.displayResults = function(treeData) {
     $("#i2b2OntSearchStatus").hide();
     let treeview = i2b2.ONT.view.search.treeview.data('treeview');
     treeview.clear();
-    treeview.init({data: treeData});
+    treeview.init({data: treeData, showTags: true});
 };
 //================================================================================================== //
 
