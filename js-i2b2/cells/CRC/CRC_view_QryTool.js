@@ -1066,6 +1066,8 @@ i2b2.CRC.view.QT.render = function() {
             icon.removeClass('bi-chevron-up');
             icon.addClass('bi-chevron-down');
         }
+        //init date constraint panel tooltip
+        $(".dcTooltip").tooltip();
     });     
 
     $('.QueryGroup', i2b2.CRC.view.QT.containerDiv).on('click', '.DateRangeLbl', (event) => {
@@ -1111,9 +1113,9 @@ i2b2.CRC.view.QT.render = function() {
 
     $('body').on('click', '.refreshStartDate, .refreshEndDate', (event) => {
         let jqTarget = $(event.target);
-        let dateElement = jqTarget.parents(".dateRange").find(".DateStart");
+        let dateElement = jqTarget.parents(".dateRange").find(".DateStart, .DateRangeStart");
         if (dateElement.length === 0) {
-            dateElement = jqTarget.parents(".dateRange").find(".DateEnd");
+            dateElement = jqTarget.parents(".dateRange").find(".DateEnd, .DateRangeEnd");
         }
         dateElement.val("");
         dateElement.trigger("change");
@@ -1636,6 +1638,7 @@ i2b2.CRC.view.QT.addEvent = function(){
 
     $((Handlebars.compile("{{> EventLink }}"))(eventLinkData)).appendTo(templateQueryGroup);
     $((Handlebars.compile("{{> Event }}"))(eventData)).appendTo(templateQueryGroup);
+  
 
     i2b2.CRC.model.query.groups[qgIndex].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
     i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
@@ -2030,7 +2033,7 @@ i2b2.events.afterCellInit.add((cell) => {
             //HTML template for event
             $.ajax("js-i2b2/cells/CRC/templates/Event.html", {
                 success: (template, status, req) => {
-                    Handlebars.registerPartial("Event", req.responseText);
+                    Handlebars.registerPartial("Event", req.responseText);                    
                 },
                 error: (error) => { console.error("Could not retrieve template: Event.html"); }
             });
