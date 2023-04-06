@@ -71,8 +71,9 @@ i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
         newNodes.forEach((node) => {
             let enablePatientCounts = i2b2.ONT.view.nav.params.patientCounts;
             if (enablePatientCounts !== false && node.i2b2.origData.total_num !== undefined) {
+                node.text += ' - ';
                 node.tags = [];
-                node.tags.push( '- ' + node.i2b2.origData.total_num);
+                node.tags.push(node.i2b2.origData.total_num);
             }
         });
 
