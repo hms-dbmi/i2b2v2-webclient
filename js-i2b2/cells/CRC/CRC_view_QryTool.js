@@ -1703,7 +1703,9 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             group.events.forEach((event) => {
                 event.concepts.forEach((concept) => {
                     if (concept.origData.conceptModified) {
-                        modifiers[concept.origData.conceptModified.sdxInfo.sdxKeyValue] = concept;
+                        let sdxKey = concept.origData.conceptModified.sdxInfo.sdxKeyValue;
+                        if (!modifiers[sdxKey]) modifiers[sdxKey] = {};
+                        modifiers[sdxKey][concept.origData.key] = concept;
                     } else {
                         concepts[concept.sdxInfo.sdxKeyValue] = concept;
                     }
@@ -1713,24 +1715,30 @@ i2b2.CRC.view.QT.showQueryReport = function() {
 
         // function for expanding the panel items
         let func_expandConcept = function(panelItem, panel) {
-            if (panelItem.modKey) {
-                panelItem.moreInfo = modifiers[panelItem.key];
+            if (panelItem.key.indexOf(':') !== -1) {
+                // panel item is special
+                let sdxKey = panelItem.key.substring(panelItem.key.indexOf(':')+1);
+                panelItem.moreInfo = concepts[sdxKey];
             } else {
-                panelItem.moreInfo = concepts[panelItem.key];
+                if (panelItem.modKey) {
+                    panelItem.moreInfo = modifiers[panelItem.key][panelItem.modKey];
+                } else {
+                    panelItem.moreInfo = concepts[panelItem.key];
+                }
+                // deal with dates
+                if (panelItem.moreInfo.dateRange.start == undefined || panelItem.moreInfo.dateRange.start == "") {
+                    panelItem.timingFrom = "earliest date available";
+                } else {
+                    panelItem.timingFrom = (new Date(Date.parse(panelItem.moreInfo.dateRange.start))).toLocaleDateString();
+                }
+                if (panelItem.moreInfo.dateRange.end == undefined || panelItem.moreInfo.dateRange.end == "") {
+                    panelItem.timingTo = "latest date available";
+                } else {
+                    panelItem.timingTo = (new Date(Date.parse(panelItem.moreInfo.dateRange.end))).toLocaleDateString();
+                }
+                panelItem.occurs = panel.occursCount;
+                panelItem.timing = panel.timing;
             }
-            // deal with dates
-            if (panelItem.moreInfo.dateRange.start == undefined || panelItem.moreInfo.dateRange.start == "") {
-                panelItem.timingFrom = "earliest date available";
-            } else {
-                panelItem.timingFrom = (new Date(Date.parse(panelItem.moreInfo.dateRange.start))).toLocaleDateString();
-            }
-            if (panelItem.moreInfo.dateRange.end == undefined || panelItem.moreInfo.dateRange.end == "") {
-                panelItem.timingTo = "latest date available";
-            } else {
-                panelItem.timingTo = (new Date(Date.parse(panelItem.moreInfo.dateRange.end))).toLocaleDateString();
-            }
-            panelItem.occurs = panel.occursCount;
-            panelItem.timing = panel.timing;
         };
 
 
