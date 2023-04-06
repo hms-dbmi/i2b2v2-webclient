@@ -65,7 +65,6 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         iconImg: sdxDataNode.renderData.iconImg,
         color: sdxDataNode.renderData.color,
         iconImgExp: sdxDataNode.renderData.iconImgExp,
-        color: sdxDataNode.renderData.color,
         i2b2: sdxDataNode
     };
     tvDataNode.state = sdxDataNode.renderData.tvNodeState;
@@ -75,7 +74,9 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
     // add number counts
     let enablePatientCounts = i2b2.ONT.view.nav.params.patientCounts;
     if (enablePatientCounts !== false && sdxDataNode.origData.total_num !== undefined){
-        tvDataNode.text += ' - (' + sdxDataNode.origData.total_num + ')';
+        tvDataNode.text += ' - ';
+        tvDataNode.tags = [];
+        tvDataNode.tags.push(sdxDataNode.origData.total_num);
     }
     return {sdx: sdxDataNode, tv: tvDataNode};
 };
