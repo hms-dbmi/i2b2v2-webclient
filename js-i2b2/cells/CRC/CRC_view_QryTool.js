@@ -1157,7 +1157,7 @@ i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabV
             modifierInfoText  = "= "  + sdxConcept.LabValues.flagValue;
         }
         else if(sdxConcept.LabValues.isEnum){
-            modifierInfoText  = "= " + extractedLabValues.enumInfo[sdxConcept.LabValues.value];
+            modifierInfoText  = "= " + sdxConcept.LabValues.value.map(x => ' "' + extractedLabValues.enumInfo[x] + '"');
         }
         else if (sdxConcept.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER){
             let numericOperatorMapping = {
