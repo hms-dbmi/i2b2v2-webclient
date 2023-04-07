@@ -23,6 +23,35 @@ i2b2.CRC.view.QT.resetToCRCHistoryView = function() {
     $("#i2b2TreeviewQueryHistory").show();
 }
 // ================================================================================================== //
+i2b2.CRC.view.QT.validateQuery = function() {
+    let validQuery = true;
+    $(".SequenceBar .timeSpan").each((index, elem) => {
+        if($(elem).find(".form-check-input").is(":checked")){
+            let timeSpanValueElem = $(elem).find(".timeSpanValue");
+            if(timeSpanValueElem.val().length === 0){
+                timeSpanValueElem.addClass("required");
+                timeSpanValueElem.parent().find(".timeSpanError").removeClass("vhidden");
+                validQuery = false;
+            }else{
+                timeSpanValueElem.removeClass("required");
+                timeSpanValueElem.parent().find(".timeSpanError").addClass("vhidden");
+            }
+        }
+    });
+
+    $(".QueryGroup.when .event").each((index, elem) => {
+        let termList = $(elem).find(".TermList .concept");
+        if (termList.length === 0) {
+            $(elem).find(".required").removeClass("hidden");
+            validQuery = false;
+        } else {
+            $(elem).find(".required").addClass("hidden");
+        }
+    });
+
+    return validQuery;
+}
+// ================================================================================================== //
 i2b2.CRC.view.QT.showRun = function() {
 
     // show the options modal screen
@@ -52,7 +81,7 @@ i2b2.CRC.view.QT.showRun = function() {
             i2b2.CRC.view.QT.resetToCRCHistoryView();
             // build list of selected result types
             let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
-            // run the query
+
             i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes);
             // close the modal
             $('body #crcModal div:eq(0)').modal('hide');
@@ -130,22 +159,25 @@ i2b2.CRC.view.QT.extractEventLinkFromElem = function(elem) {
 i2b2.CRC.view.QT.updateEventLinkOperator = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     eventLink.operator = $(elem).val();
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateEventLinkAggregateOp = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     let eventLinkOpName = $(elem).data('aggregateOp');
     eventLink[eventLinkOpName] = $(elem).val();
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateEventLinkJoinColumn = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     let eventLinkOpName = $(elem).data('joinColumn');
     eventLink[eventLinkOpName] = $(elem).val();
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
-    let timeSpanElem = $(elem).parent().siblings(".timeSpanField");
+    let timeSpanElem = $(elem).parents(".timeSpan").find(".timeSpanField");
     let curState =  timeSpanElem.prop( "disabled");
     timeSpanElem.prop( "disabled", !curState);
 
@@ -163,10 +195,12 @@ i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
         parent.find(".timeSpanUnit").val("DAY");
         parent.find(".timeSpanValue").val("");
     }
+
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
-    let timeSpanIdx = $(elem).parent(".timeSpan").data("timeSpanIdx");
+    let timeSpanIdx = $(elem).parents(".timeSpan").data("timeSpanIdx");
     let eventLinkIdx = $(elem).parents('.eventLink').first().data('eventLinkIdx');
     let queryGroupIdx = $(elem).parents('.QueryGroup').first().data("queryGroup");
 
@@ -177,17 +211,25 @@ i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
 i2b2.CRC.view.QT.updateTimeSpanOperator = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.operator = $(elem).val();
+
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateTimeSpanValue = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.value = $(elem).val();
+
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateTimeSpanUnit = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.unit = $(elem).val();
+
+    i2b2.CRC.view.QS.clearStatus();
 };
+
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionInfo = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
@@ -195,8 +237,6 @@ i2b2.CRC.view.QT.termActionInfo = function(evt) {
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
     i2b2.ONT.view.info.load(i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx], true);
 };
-
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionDelete = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
@@ -213,7 +253,6 @@ i2b2.CRC.view.QT.termActionDelete = function(evt) {
     //clear any existing query results;
     i2b2.CRC.view.QS.clearStatus();
 };
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionDateConstraint = function(evt) {
     let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
@@ -227,6 +266,17 @@ i2b2.CRC.view.QT.termActionDateConstraint = function(evt) {
         i2b2.CRC.view.QT.renderTermList(eventData, cncptListEl);
     }
     i2b2.CRC.view.QT.addConceptDateConstraint(sdx, callbackFunc);
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.termActionModifier = function(evt) {
+    let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
+    let eventIdx = $(evt.target).closest('.event').data('eventidx');
+    let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
+    let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
+
+    const valueMetaDataArr = i2b2.h.XPath(sdx.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
+    let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
+    i2b2.CRC.view.QT.labValue.showLabValues(sdx, extractedLabModel, queryGroupIdx, eventIdx);
 };
 
 // ================================================================================================== //
@@ -342,6 +392,7 @@ i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
     $('.concept .actions .info', targetEl).on('click', i2b2.CRC.view.QT.termActionInfo);
     $('.concept .actions .delete', targetEl).on('click', i2b2.CRC.view.QT.termActionDelete);
     $('.concept .actions .dateConstraint', targetEl).on('click', i2b2.CRC.view.QT.termActionDateConstraint);
+    $('.concept .actions .modifier', targetEl).on('click', i2b2.CRC.view.QT.termActionModifier);
     i2b2.CRC.view.QT.enableWhenIfAvail();
 };
 
@@ -368,7 +419,36 @@ i2b2.CRC.view.QT.deleteQueryGroup = function(event) {
 
     //clear any existing query results;
     i2b2.CRC.view.QS.clearStatus();
+    i2b2.CRC.view.QT.enableWhenIfAvail();
 };
+
+
+// ================================================================================================== //
+i2b2.CRC.view.QT.eventActionDelete = function(evt) {
+    let elem = evt.currentTarget;
+    let eventIdx = $(elem).parents('.event').first().data("eventidx");
+    let qgEl = $(elem).parents('.QueryGroup').first();
+    let queryGroupIdx = qgEl.data("queryGroup");
+
+    if (i2b2.CRC.model.query.groups[queryGroupIdx].events.length > 2) {
+        let eventIdxNum = eventIdx+1
+        //if this is the last event remove the eventLink that appears before it the UI
+        if(eventIdxNum !== i2b2.CRC.model.query.groups[queryGroupIdx].events.length) {
+            i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks.splice(eventIdx,1);
+        }else{
+            //remove the eventLink that appears after the event in the UI
+            i2b2.CRC.model.query.groups[queryGroupIdx].eventLinks.splice(eventIdx-1,1);
+        }
+
+        // delete the data elements
+        i2b2.CRC.model.query.groups[queryGroupIdx].events.splice(eventIdx,1);
+
+        // rerender the Query Tool
+        i2b2.CRC.view.QT.render();
+
+        i2b2.CRC.view.QS.clearStatus();
+    }
+}
 
 
 // ================================================================================================== //
@@ -408,8 +488,9 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
     let qgIdx = i2b2.CRC.model.query.groups.length - 1;
     let eventIdx = 0;
 
+    let showLabValues = metadata !== undefined ? metadata.showLabValues : false;
     sdxList.forEach((sdx) => {
-        i2b2.CRC.view.QT.addConcept(sdx, qgIdx, eventIdx);
+        i2b2.CRC.view.QT.addConcept(sdx, qgIdx, eventIdx, showLabValues);
     });
 
     // set additional query group metadata if specified
@@ -433,7 +514,16 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
         if(metadata.endDate !== undefined){
             queryGroup.events[eventIdx].dateRange.end = metadata.endDate;
         }
+
+        if(metadata.when === true){
+            queryGroup.when = true;
+            queryGroup.with = false;
+            queryGroup.without = false;
+            queryGroup.display = "when";
+        }
     }
+
+    return qgIdx;
 }
 // ================================================================================================== //
 i2b2.CRC.view.QT.handleLabValues = function(sdx){
@@ -442,7 +532,7 @@ i2b2.CRC.view.QT.handleLabValues = function(sdx){
 
     if(isLab){
         i2b2.CRC.view.QT.current  = {"conceptSdx": sdx};
-        i2b2.CRC.view.QT.labValue.showLabValues(sdx);
+        i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx);
     }
 }
 
@@ -455,20 +545,20 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     let qgIndex = $(evt.target).closest(".QueryGroup").data("queryGroup");
     let eventIdx = $(evt.target).closest(".event").data('eventidx');
 
-    i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx);
+    i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, true);
 };
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
     // add the item to the query
-    i2b2.CRC.view.QT.addNewQueryGroup([sdx]);
+    i2b2.CRC.view.QT.addNewQueryGroup([sdx], {showLabValues: true});
 
     // render the new query group (by re-rendering all the query groups)
     i2b2.CRC.view.QT.render();
 };
 
 // ================================================================================================== //
-i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
+i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
 
     // handle labs processing
     i2b2.CRC.view.QT.isLabs(sdx);
@@ -480,8 +570,21 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
 
     // add the data to the correct terms list (also prevent duplicates)
     let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
-    temp = eventData.concepts.filter((term)=>{ return term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue; });
+    temp = eventData.concepts.filter((term) => {
+        if (term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue) {
+            if (term.origData.conceptModified && sdx.origData.conceptModified) {
+                return term.origData.conceptModified.sdxInfo.sdxKeyValue === sdx.origData.conceptModified.sdxInfo.sdxKeyValue;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    });
     if (temp.length === 0) {
+        // not a duplicate, add to the event's term list
+        eventData.concepts.push(sdx);
+
         //add date constraint to concept if there is a group date range specified{
         if (i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange !== undefined &&
             (sdx.dateRange === undefined || (sdx.dateRange.start?.length === 0 && sdx.dateRange.end?.length === 0))) {
@@ -493,23 +596,42 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx) {
             }
         }
 
-        // not a duplicate, add to the event's term list
-        eventData.concepts.push(sdx);
+        // Modifiers processing
+        if (sdx.origData.conceptModified) {
+            sdx.renderData.title = sdx.origData.conceptModified.renderData.title + " {" + sdx.origData.name + "}";
+            if(sdx.origData.hasMetadata){
+                if(showLabValues){
+                    i2b2.CRC.view.QT.showModifierValues(sdx,  groupIdx, eventIdx);
+                }else{
+                    const valueMetaDataArr = i2b2.h.XPath(sdx.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
+                    if (valueMetaDataArr.length > 0) {
+                        let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
+                        i2b2.CRC.view.QT.updateModifierDisplayValue(sdx, extractedLabModel, groupIdx, eventIdx);
+                    }
+                }
+            }
+        }
 
         // rerender the query event and add to the DOM
-        const targetQueryGroup = $('.CRC_QT_query .QueryGroup')[groupIdx];
         const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
         i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
 
         // handle the lab values
-        if (sdx.isLab) i2b2.CRC.view.QT.labValue.showLabValues(sdx);
+        if (sdx.isLab) i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx);
 
         // update the query name
         i2b2.CRC.view.QT.updateQueryName();
         i2b2.CRC.view.QS.clearStatus();
     }
 };
-
+// ================================================================================================== //
+i2b2.CRC.view.QT.showModifierValues = function(sdxConcept, groupIdx, eventIdx){
+    const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
+    if (valueMetaDataArr.length > 0) {
+        let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
+        i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedLabModel, groupIdx, eventIdx);
+    }
+}
 // ================================================================================================== //
 i2b2.CRC.view.QT.isValidDate = function(dateStr) {
     let dateVal = String(dateStr);
@@ -619,6 +741,13 @@ i2b2.CRC.view.QT.render = function() {
             i2b2.CRC.view.QT.renderTermList(event, eventDivs[idx]);
         });
 
+        // hide the delete event buttons if only 1-2 events exist
+        if (i2b2.CRC.model.query.groups[qgnum].events.length <= 2) {
+            $('.EventLbl .actions .delete', newQG).hide();
+        } else {
+            $('.EventLbl .actions .delete', newQG).show();
+        }
+
         // attach the date picker functionality
         $('.datepicker', newQG).toArray().forEach((el) => {
             $(el).datepicker({
@@ -661,7 +790,6 @@ i2b2.CRC.view.QT.render = function() {
         i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         // handle purging of events
         i2b2.CRC.model.query.groups[qgIndex].events = [i2b2.CRC.model.query.groups[qgIndex].events[0], i2b2.CRC.view.QT.createEvent()];
-
 
         // DYNAMIC MODIFICATIONS OF THE HTML FOR DELETING OF EVENTS OVER event[0]
         $('.event[data-eventidx!="0"] .TermList', qgRoot).empty();
@@ -743,6 +871,8 @@ i2b2.CRC.view.QT.render = function() {
     // Query Group delete button
     $('.QueryGroup .topbar .qgclose i', i2b2.CRC.view.QT.containerDiv).on('click', i2b2.CRC.view.QT.deleteQueryGroup);
 
+    // Query Events delete button
+    $('.QueryGroup .event .actions i.delete', i2b2.CRC.view.QT.containerDiv).on('click', i2b2.CRC.view.QT.eventActionDelete);
 
     // TODO: Change Sequence Bar coding
     // Sequence bar events
@@ -880,18 +1010,79 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
     let eventIdx = $(evt.target).closest('.event').data('eventidx');
     let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
     let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
-    i2b2.CRC.view.QT.labValue.showLabValues(sdx);
+    i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, queryGroupIdx, eventIdx);
 };
 
 // ==================================================================================================
-i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
+i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabValues, groupIdx, eventIdx){
+    //update the concept title if this is a modifier
+    if(sdxConcept.origData.isModifier) {
+        let modifierInfoText;
+        if(sdxConcept.LabValues.numericValueRangeLow && sdxConcept.LabValues.numericValueRangeHigh){
+            modifierInfoText  = sdxConcept.LabValues.numericValueRangeLow + " - " +  sdxConcept.LabValues.numericValueRangeHigh;
+        }else if(sdxConcept.LabValues.flagValue){
+            modifierInfoText  = "= "  + sdxConcept.LabValues.flagValue;
+        }
+        else if(sdxConcept.LabValues.isEnum){
+            modifierInfoText  = "= " + extractedLabValues.enumInfo[sdxConcept.LabValues.value];
+        }
+        else if (sdxConcept.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER){
+            let numericOperatorMapping = {
+                "LT": "<",
+                "LE": "<=",
+                "EQ": "=",
+                "GT": ">",
+                "GE": ">="
+            }
+            modifierInfoText = numericOperatorMapping[sdxConcept.LabValues.valueOperator] + " " + sdxConcept.LabValues.value;
+        }
+        else if (sdxConcept.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT){
+            let textOperatorMapping = {
+                "LIKE[exact]": "exact",
+                "LIKE[begin]": "starts with",
+                "LIKE[end]": "ends with",
+                "LIKE[contains]": "contains",
+            }
+            modifierInfoText = textOperatorMapping[sdxConcept.LabValues.valueOperator] + " ";
+            modifierInfoText  += '"' + sdxConcept.LabValues.value + '"';
+        }
+        else if (sdxConcept.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT){
+            modifierInfoText = "contains " + '"' + sdxConcept.LabValues.value + '"';
+        }
+        else{
+            modifierInfoText = "";
+        }
 
-    let labValuesCallback = function() {
+        if(sdxConcept.LabValues.unitValue){
+            modifierInfoText += " " + sdxConcept.LabValues.unitValue;
+        }
 
-        let extractedLabValues = i2b2.CRC.ctrlr.labValues.extractedModel;
+        if(modifierInfoText && modifierInfoText.length > 0) {
+            sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.conceptModified.renderData.title
+                + " {" + sdxConcept.origData.name + " " + modifierInfoText + "}");
 
-        if (extractedLabValues !== undefined) {
+            if(eventIdx !== undefined && groupIdx !== undefined) {
+                let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+                const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+                i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+            }
+        }
+    }
+};
+// ==================================================================================================
 
+i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValues, groupIdx, eventIdx) {
+
+    if (extractedLabValues !== undefined) {
+
+        let labValuesModal = $("#labValuesModal");
+
+        if (labValuesModal.length === 0) {
+            $("body").append("<div id='labValuesModal'/>");
+            labValuesModal = $("#labValuesModal");
+        }
+
+        labValuesModal.load('js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
             let newLabValues = {
                 valueType: null,
                 valueOperator: null,
@@ -911,6 +1102,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
             });
 
             $("body #labValuesModal button.lab-save").click(function () {
+                $("#labValuesModal div").eq(0).modal("hide");
                 switch (newLabValues.valueType) {
                     case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
                         newLabValues.numericValueRangeLow = null;
@@ -927,7 +1119,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                         break;
                 }
                 sdxConcept.LabValues = newLabValues;
-                $("#labValuesModal div").eq(0).modal("hide");
+
+                i2b2.CRC.view.QT.updateModifierDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
                 i2b2.CRC.view.QS.clearStatus();
             });
 
@@ -1169,6 +1362,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
                             labUnits.val(sdxConcept.LabValues.unitValue);
                             labUnits.trigger("change");
                             newLabValues.unitValue = sdxConcept.LabValues.unitValue;
+                        }else{
+                            labUnits.trigger("change");
                         }
                     }
                     break;
@@ -1275,21 +1470,16 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept) {
             } else {
                 $("#labHelpText").text("Searches by Lab values can be constrained by the high/low flag set by the performing laboratory, or by the values themselves.");
             }
-        }
-    };
-
-    let labValuesModal = $("#labValuesModal");
-
-    if (labValuesModal.length === 0) {
-        $("body").append("<div id='labValuesModal'/>");
-        labValuesModal = $("#labValuesModal");
+        });
     }
+};
+// ==================================================================================================
+i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, eventIdx) {
 
-    labValuesModal.load('js-i2b2/cells/CRC/assets/modalLabValues.html', function() {
-        i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, labValuesCallback);
+    i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, function(extractedDataModel){
+        i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedDataModel, groupIdx, eventIdx);
     });
 };
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.clearAll = function(){
     // only run if the query has entries
@@ -1319,6 +1509,18 @@ i2b2.CRC.view.QT.addEvent = function(){
     i2b2.CRC.model.query.groups[qgIndex].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
     i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
 
+    // handle delete event buttons
+    if (i2b2.CRC.model.query.groups[qgIndex].events.length <= 2) {
+        $('.EventLbl .actions .delete', qgRoot).hide();
+    } else {
+        $('.EventLbl .actions .delete', qgRoot).show();
+    }
+
+    // Rebind the Query Events delete buttons
+    let deleteFunc = i2b2.CRC.view.QT.eventActionDelete;
+    $('.EventLbl .actions .delete', qgRoot).unbind('click', deleteFunc);
+    $('.EventLbl .actions .delete', qgRoot).on('click', deleteFunc);
+
     //add drag and drop handling
     ["CONCPT","QM","PRS"].forEach((sdxCode) => {
         $(".event", templateQueryGroup).last().toArray().forEach((dropTarget) => {
@@ -1341,8 +1543,32 @@ i2b2.CRC.view.QT.addEvent = function(){
 
     //scroll to newly added event
     qgRoot.find(".event").last().get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+
+    i2b2.CRC.view.QS.clearStatus();
 }
 // ================================================================================================== //
+i2b2.CRC.view.QT.showQueryReport = function(){
+
+    let queryReportModal = $('body #queryReportModal');
+    if (queryReportModal.length === 0) {
+        queryReportModal = $("<div id='queryReportModal'/>").appendTo("body");
+    }
+
+    let data = {};
+    $(i2b2.CRC.view.QT.template.queryReport(data)).appendTo(queryReportModal);
+
+    // Attach print function
+    const reportWindow = $('#queryReportWindow')[0].contentWindow;
+    const printBtn = $('#queryReportModal button.print');
+    printBtn.unbind('click');
+    printBtn.on('click', () => {reportWindow.print(); });
+
+
+    $("#queryReportModal div:eq(0)").modal('show');
+}
+
+// ================================================================================================== //
+
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((cell) => {
@@ -1393,9 +1619,12 @@ i2b2.events.afterCellInit.add((cell) => {
                     container.on('open', () => {
                         // capture "run query" button click ---------------------------------------------------
                         $(".CRC_QT_runbar .button-run", cell.view.QT.containerRoot).on("click", (evt)=> {
-                            evt.target.blur();
-                            // only run if the query has entries
-                            if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
+                            //check if this a valid query
+                            if(i2b2.CRC.view.QT.validateQuery()) {// run the query
+                                evt.target.blur();
+                                // only run if the query has entries
+                                if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
+                            }
                         });
 
                         // capture "clear query" button click -------------------------------------------------
@@ -1473,6 +1702,14 @@ i2b2.events.afterCellInit.add((cell) => {
                 error: (error) => { console.error("Error (retrieval or structure) with template: SubQueryConstraint.xml"); }
             });
 
+            // ... XML for the query request (main body)
+            $.ajax("js-i2b2/cells/CRC/templates/QueryPanelItemConstraint.xml", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("QueryPanelItemConstraint", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItemConstraint.xml"); }
+            });
+
             //HTML template for event
             $.ajax("js-i2b2/cells/CRC/templates/Event.html", {
                 success: (template, status, req) => {
@@ -1502,6 +1739,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QT.template.dateConstraint = Handlebars.compile(template);
                 },
                 error: (error) => { console.error("Could not retrieve template: ConceptDateConstraint.html"); }
+            });
+
+            //template for the setting date constraint on concept
+            $.ajax("js-i2b2/cells/CRC/templates/QueryReport.html", {
+                success: (template) => {
+                    cell.view.QT.template.queryReport = Handlebars.compile(template);
+                },
+                error: (error) => { console.error("Could not retrieve template: QueryReport.html"); }
             });
 
             cell.model.query = {

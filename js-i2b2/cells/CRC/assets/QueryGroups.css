@@ -446,6 +446,11 @@
     overflow: hidden;
 }
 
+.QueryGroup .event .required{
+    color: #f44336;
+    margin-left: 0.6em;
+}
+
 .QueryGroup .EventLbl {
     max-height: 0;
 }
@@ -458,16 +463,26 @@
 }
 
 .QueryGroup.when .EventLbl div {
-    float:left;
-    margin:4px 10px;
+    float: left;
+    margin: 0.4rem 0.6rem;
 }
 
-.QueryGroup.when .EventLbl i {
-    float: right;
-    margin: 0 10px;
-    font-size: 1.2em;
+.QueryGroup.when .EventLbl:hover .actions {
+    opacity: 1;
+    left: 0;
+}
+
+.QueryGroup.when .EventLbl .actions {
     position: relative;
-    top: 0.4em;
+    left: -0.5rem;
+    opacity: 0;
+    transition: opacity 0.5s ease, left 0.5s ease;
+}
+
+.QueryGroup.when .EventLbl .actions i {
+    position: relative;
+    top: 0.1rem;
+    cursor: pointer;
 }
 
 
@@ -482,7 +497,7 @@
 }
 
 .QueryGroup.when .SequenceBar {
-    max-height: 6.3em;
+    max-height: 5.5em;
     padding: 0.4em 0.4em 0.4em 0.6em;
     border-right: 1px solid #d8a407;
     border-top: 0px;
@@ -490,34 +505,6 @@
     border-left: 1px solid #d8a407;
     line-height: 1.6em;
     font-size: 1em;
-}
-
-.QueryGroup.when .addEvent {
-    max-height: 2.6em;
-    padding: 0.3em;
-    border-right: 1px solid #d8a407;
-    border-top: 0px;
-    border-bottom: 0px;
-    border-left: 1px solid #d8a407;
-    line-height: 1.6em;
-    font-size: 1em;
-    margin-left: -0.3em;
-}
-
-.QueryGroup.when .addEvent button{
-    background-color: #d8a407;
-    color: #212529;
-    border: none;
-    font-weight: 500;
-    font-size: 1.05em;
-    margin: 0em 0em 0em 0.1em;
-}
-.QueryGroup.when .addEvent .bi{
-    margin-right: 0.5em;
-}
-
-.QueryGroup.when .addEvent button:hover {
-    background: rgba(0, 0, 0, 0.08)
 }
 
 .QueryGroup.when .SequenceBar select.occurs {
@@ -548,12 +535,16 @@
 }
 
 .QueryGroup.when .SequenceBar .spacing {
-    margin-left: 0.3em;
-    margin-right: 0.3em;
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+}
+
+.QueryGroup.when .SequenceBar .input-group {
+    width: 3.8em;
 }
 
 .QueryGroup.when .SequenceBar .timeSpanValue {
-    width: 3.5em;
+    width: 3.8em;
     min-height: 1.5em;
     height: 1.5em;
 }
@@ -566,7 +557,62 @@
     margin-right: 0;
 }
 
-.whenItem.disabled {
+.QueryGroup.when .SequenceBar input.required{
+    border-bottom: 2px solid #f44336;
+}
+
+.QueryGroup.when .SequenceBar .timeSpanError {
+    font-size: 1em;
+    color: #f44336;
+}
+
+.QueryGroup.when .SequenceBar span.timeSpanError {
+    font-size: 0.7em;
+    display: inline-block;
+    margin-left: 0.5em !important;
+}
+
+.QueryGroup.when .SequenceBar .vhidden{
+    visibility: hidden;
+}
+
+.QueryGroup .event .hidden {
+    display: none;
+}
+
+.QueryGroup.when .SequenceBar .input-group-main {
+    display: inline-block;
+}
+
+.QueryGroup.when .addEvent {
+    max-height: 2.6em;
+    padding: 0.3em;
+    border-right: 1px solid #d8a407;
+    border-top: 0px;
+    border-bottom: 0px;
+    border-left: 1px solid #d8a407;
+    line-height: 1.6em;
+    font-size: 1em;
+    margin-left: -0.3em;
+}
+
+.QueryGroup.when .addEvent button{
+    background-color: #d8a407;
+    color: #212529;
+    border: none;
+    font-weight: 500;
+    font-size: 1.05em;
+    margin: 0em 0em 0em 0.1em;
+}
+.QueryGroup.when .addEvent .bi{
+    margin-right: 0.5em;
+}
+
+.QueryGroup.when .addEvent button:hover {
+    background: rgba(0, 0, 0, 0.08)
+}
+
+.QueryGroup.whenItem.disabled {
     cursor: not-allowed! important;
     color: rgba(33, 37, 41, 0.47);
 }

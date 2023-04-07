@@ -26,6 +26,9 @@
         -->
         {{/if}}
         {{#ifCond this.sdxInfo.sdxType "===" "CONCPT"}}
+            {{#if this.origData.hasMetadata}}
+                <i class="bi bi-tag-fill modifier" title="Edit Modifier"></i>
+            {{/if}}
             {{#ifCond this.withDates "===" true}}
                 <i class="bi bi-calendar-day dateConstraint" title="Set Date Constraint"></i>
             {{/ifCond}}

@@ -47,6 +47,12 @@ i2b2.PM.doSamlLogin = function(service) {
         e += "\n  No login channel was selected";
     }
 
+    // save PM cell's URL and login domain to cookies for later use by proxy server
+    let now = new Date();
+    now.setTime(now.getTime() + (10 * 60 * 1000)); // give users 10 mins to finish the SAML redirect dance
+    document.cookie = "url="+encodeURIComponent(i2b2.PM.model.url)+"; expires=" + now.toUTCString() + "; SameSite=None; Secure;";
+    document.cookie = "domain="+encodeURIComponent(i2b2.PM.model.login_domain)+"; expires=" + now.toUTCString() + "; SameSite=None; Secure;";
+
     const popupCenter = ({url, title, w, h}) => {
         // Fixes dual-screen position                             Most browsers      Firefox
         const dualScreenLeft = window.screenLeft !==  undefined ? window.screenLeft : window.screenX;

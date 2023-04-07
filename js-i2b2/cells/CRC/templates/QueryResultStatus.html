@@ -9,13 +9,15 @@
                 <div style="clear:both;"></div><div style="float:left; font-weight:bold">Finished Query: {{breakdowns.name}} </div>
             {{/if}}
 
-            {{#if breakdowns.runDuration}}
+        <div class="viewReport" style="float:right;margin-left:10px;"><button type="button" class="btn btn-primary btn-sm" onclick="i2b2.CRC.view.QT.showQueryReport();">View Report</button></div>
+        {{#if breakdowns.runDuration}}
                 <div style="float:right">[{{breakdowns.runDuration}} &nbsp; secs]</div>
             {{/if}}
-            {{#if breakdowns.computeTime}}
+        {{#if breakdowns.computeTime}}
                 <div style="clear:both;"></div>
                 <div class="computeTime">Compute Time: {{breakdowns.computeTime}} &nbsp;secs</div>
             {{/if}}
+            <div style="clear:both;"></div>
         {{/if}}
 
         {{#if breakdowns.patientCount.title}}

@@ -38,6 +38,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         data.operator = i2b2.h.getXNodeVal(xmlData, 'operator');
         data.dim_code = i2b2.h.getXNodeVal(xmlData, 'dimcode');
         data.basecode = i2b2.h.getXNodeVal(xmlData, 'basecode');
+        data.total_num = i2b2.h.getXNodeVal(xmlData, 'totalnum');
     } else {
         data = sdxData;
     }
@@ -51,13 +52,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
 
     let renderOptions = {
         title: data.name,
-        icon: {
-            root: "sdx_ONT_CONCPT_root.gif",
-            rootExp: "sdx_ONT_CONCPT_root-exp.gif",
-            branch: "sdx_ONT_CONCPT_branch.gif",
-            branchExp: "sdx_ONT_CONCPT_branch-exp.gif",
-            leaf: "sdx_ONT_CONCPT_leaf.gif"
-        }
+        icon: i2b2.ONT.model.icons.term
     };
     sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
     sdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
@@ -75,7 +70,10 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         tvDataNode.icon += " " + sdxDataNode.renderData.cssClassMinor;
     }
     // add number counts
-    if (sdxDataNode.origData.total_num !== undefined) tvDataNode.text += ' - (' + sdxDataNode.origData.total_num + ')';
+    let enablePatientCounts = $("#ONTNAVshowPatientCounts").is(":checked");
+    if (enablePatientCounts !== false && sdxDataNode.origData.total_num !== undefined){
+        tvDataNode.text += ' - (' + sdxDataNode.origData.total_num + ')';
+    }
     return {sdx: sdxDataNode, tv: tvDataNode};
 };
 
@@ -139,6 +137,44 @@ i2b2.ONT.ctrlr.gen.loadSchemes = function() {
     // fire the AJAX call
     i2b2.ONT.ajax.GetSchemes("ONT:generalView", {}, scopeCB);
 };
+
+// ================================================================================================== //
+i2b2.ONT.model.cacheModifiers = {};
+i2b2.ONT.ctrlr.gen.getModifierDetails = function(sdxConcept) {
+    let cacheRecord = i2b2.ONT.model.cacheModifiers[sdxConcept.sdxInfo.sdxKeyValue];
+    if (cacheRecord) {
+        sdxConcept.origData.xmlOrig = cacheRecord.xml;
+        sdxConcept.origData.hasMetadata = cacheRecord.hasMetadata;
+    } else {
+        i2b2.ONT.ajax.GetModifierInfo("CRC:QueryTool", {
+            modifier_applied_path:sdxConcept.origData.applied_path,
+            modifier_key_value:sdxConcept.origData.key,
+            ont_max_records: 'max="1"',
+            ont_synonym_records: true,
+            ont_hidden_records: true
+        }, (response) => {
+            let c = i2b2.h.XPath(response.refXML, 'descendant::modifier');
+            if (c.length > 0) {
+                cacheRecord = {};
+                cacheRecord.xml = c[0].outerHTML;
+                const valueMetaDataArr = i2b2.h.XPath(cacheRecord.xml, "metadataxml/ValueMetadata[string-length(Version)>0]");
+                if (valueMetaDataArr.length > 0) {
+                    cacheRecord.hasMetadata = true;
+                } else {
+                    cacheRecord.hasMetadata = false;
+                }
+                sdxConcept.origData.xmlOrig = cacheRecord.xml;
+                sdxConcept.origData.hasMetadata = cacheRecord.hasMetadata;
+                i2b2.ONT.model.cacheModifiers[sdxConcept.sdxInfo.sdxKeyValue] = cacheRecord;
+            }
+        });
+    }
+}
+
+
+
+
+
 
 // ================================================================================================== //
 
