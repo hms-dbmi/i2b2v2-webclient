@@ -54,10 +54,13 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
     // render tree
     i2b2.ONT.view.nav.treeview.treeview('redraw', []);
 };
-
-
 // ================================================================================================== //
-i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
+
+i2b2.ONT.view.nav.loadChildrenAction =  function(e, nodeData) {
+    i2b2.ONT.view.nav.loadChildren(nodeData);
+}
+// ================================================================================================== //
+i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
     if (nodeData.i2b2.sdxInfo.sdxKeyValue === undefined) {
         console.error('i2b2.ONT.view.nav.loadChildren could not find tv_node.i2b2.sdxInfo');
         return;
@@ -84,8 +87,13 @@ i2b2.ONT.view.nav.loadChildren =  function(e, nodeData) {
             function(node, parentKeys){ return !(parentKeys.indexOf(node.key)) },
             parentNodes
         ]);
+
         // render tree
         i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+
+        if(typeof onComplete === 'function') {
+            onComplete(nodeData);
+        }
     });
 };
 
@@ -99,7 +107,22 @@ i2b2.ONT.view.nav.doRefreshAll = function() {
     i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
     i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
 };
+// ======================================================================================
+i2b2.ONT.view.nav.displayAlertDialog = function(inputData){
+    let ontMsgDialogModal = $("#ontMsgDialog");
+    if (ontMsgDialogModal.length === 0) {
+        $("body").append("<div id='ontMsgDialog'/>");
+        ontMsgDialogModal = $("#ontMsgDialog");
+    }
+    ontMsgDialogModal.empty();
 
+    let data = {
+        "title": inputData.title,
+        "alertMsg": inputData.alertMsg,
+    };
+    $(i2b2.ONT.view.nav.templates.alertDialog(data)).appendTo(ontMsgDialogModal);
+    $("#ONTAlertDialog").modal('show');
+}
 
 // Below code is executed once the entire cell has been loaded
 //================================================================================================== //
@@ -126,11 +149,13 @@ i2b2.events.afterCellInit.add((cell) => {
                     data: []
                 });
                 i2b2.ONT.view.nav.treeview = treeRef;
-                treeRef.on('nodeLoading', i2b2.ONT.view.nav.loadChildren);
+                treeRef.on('nodeLoading', i2b2.ONT.view.nav.loadChildrenAction);
                 treeRef.on('onDrag', i2b2.sdx.Master.onDragStart);
                 treeRef.on('onRedraw', () => {
                     // attach drag drop attribute after the tree has been redrawn
                     i2b2.ONT.view.nav.treeview.find('li:not(:has(span.tvRoot))').attr("draggable", true);
+                    i2b2.ONT.view.nav.treeview.find('li:has(span.inactiveTerm)').attr("draggable", false)
+                        .addClass("inactiveTerm").find(".expand-icon").css("color","#212529");
                 });
 
                 i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
@@ -185,6 +210,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     error: (error) => { console.error("Could not retrieve template: OntologyOptions.html"); }
                 });
 
+                cell.view.nav.templates = {};
+                $.ajax("js-i2b2/cells/ONT/templates/AlertDialog.html", {
+                    success: (template) => {
+                        cell.view.nav.templates.alertDialog = Handlebars.compile(template);
+                    },
+                    error: (error) => { console.error("Could not retrieve template: AlertDialog.html"); }
+                });
+
                 //set default values
                 i2b2.ONT.view.nav.params.modifiers = false;
                 i2b2.ONT.view.nav.params.synonyms = false;
@@ -195,22 +228,40 @@ i2b2.events.afterCellInit.add((cell) => {
     }
 });
 //================================================================================================== //
-i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview) {
+i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, includeSearchOptions) {
 
-    //    return new BootstrapMenu('#' + treeviewElemId + ' li.list-group-item', {
+    let actions = {
+        nodeAnnotate: {
+            name: 'Show More Info',
+                onClick: function(node) {
+                i2b2.ONT.view.info.load(node.i2b2, true);
+            }
+        }
+    };
+
+    if(includeSearchOptions){
+        actions.nodeInTree = {
+            name: 'View in Tree',
+            onClick: function(node){
+                i2b2.ONT.view.search.viewInNavTree(node);
+            }
+        }
+        actions.nodeModifier =  {
+            name: 'Show Modifiers',
+            isShown: function(node) {
+                let modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
+                return modifiersDisplayed.length === 0 && (node.hasModifier === undefined || node.hasModifier !== false);
+            },
+            onClick: function(node) {
+                i2b2.ONT.view.search.showModifiers(node);
+            }
+        }
+    }
     return new BootstrapMenu('#' + treeviewElemId + ' li.list-group-item', {
         fetchElementData: function($rowElem) {
             // fetch the data from the treeview
             return treeview.treeview('getNode', $rowElem.data('nodeid'));
         },
-        // TODO: Finish wiring implementation
-        actions: {
-            nodeAnnotate: {
-                name: 'Show More Info',
-                onClick: function(node) {
-                    i2b2.ONT.view.info.load(node.i2b2, true);
-                }
-            }
-        }
+        actions: actions
     });
 };

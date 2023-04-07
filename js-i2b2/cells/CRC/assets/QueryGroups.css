@@ -708,6 +708,11 @@
     text-align: center;
 }
 
+.ExpandTrigger{ 
+    text-align: left;
+    white-space: normal;
+}
+
 .ExpandTrigger:hover{
     background-color: #F2BE21;
 }

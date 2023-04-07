@@ -101,6 +101,7 @@ function QueryToolController() {
                 }
                 metadata.instances = instances;
 
+                metadata.timing = i2b2.h.getXNodeVal(qp,'panel_timing') || 'ANY';
                 let panelFromDate = i2b2.h.getXNodeVal(qp,'panel_date_from');
                 if (panelFromDate) {
                     metadata.startDate = reformatDate(panelFromDate);
@@ -223,6 +224,7 @@ function QueryToolController() {
 
                             let options = {}
                             let modSdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(modifierXmlInfo[modifier_key_value], true, options);
+                            modSdxDataNode.dateRange = sdxDataNode.dateRange;
 
                             let renderOptions = { icon: i2b2.ONT.model.icons.modifier };
                             renderOptions.title = i2b2.h.getXNodeVal(modifierXmlInfo[modifier_key_value],'name');
@@ -366,6 +368,8 @@ function QueryToolController() {
                             i2b2.CRC.view.QT.addNewQueryGroup(data.panel, data.metadata);
                         }
                     }
+                    // update the transformed model
+                    i2b2.CRC.ctrlr.QT._processModel();
 
                     i2b2.CRC.view.QT.render();
                 }
@@ -410,14 +414,18 @@ function QueryToolController() {
         });
         params.psm_result_output += "</result_output_list>";
 
+        // get the query name
+        let queryName = $("#crcQtQueryName").val().trim();
+        if (queryName.length === 0 ){
+            queryName = i2b2.CRC.model.transformedQuery.name;
+        }else{
+            i2b2.CRC.model.transformedQuery.name = queryName;
+        }
+
         // query definition
         params.psm_query_definition = (Handlebars.compile("{{> Query}}"))(i2b2.CRC.model.transformedQuery);
 
-        // get the query name
-        let queryName = $('.CRC_QT_runbar input.name',i2b2.CRC.view.QT.containerDiv).text().trim();
-        if (queryName.length === 0 ) queryName = i2b2.CRC.model.transformedQuery.name;
         queryName = i2b2.h.Escape(queryName);
-
         // hand over execution of query to the QueryRunner component
         i2b2.CRC.ctrlr.QR.doRunQuery(queryName, params);
     };
