@@ -31,6 +31,7 @@ i2b2.CRC.view.QT.validateQuery = function() {
             if(timeSpanValueElem.val().length === 0){
                 timeSpanValueElem.addClass("required");
                 timeSpanValueElem.parent().find(".timeSpanError").removeClass("vhidden");
+                $(timeSpanValueElem.closest('.DateRelationship')).collapse('show');
                 validQuery = false;
             }else{
                 timeSpanValueElem.removeClass("required");
@@ -106,7 +107,7 @@ i2b2.CRC.view.QT.enableWhenIfAvail = function() {
     let selectedWhen = $(".QueryGroup.when");
 
     if(selectedWhen.length === 0){
-        $(".whenItem").removeClass("disabled");
+        $(".whenItem").removeClass("disabled");       
     }else{
         $(".whenItem").addClass("disabled");
         selectedWhen.find(".whenItem").removeClass("disabled");
@@ -159,6 +160,7 @@ i2b2.CRC.view.QT.extractEventLinkFromElem = function(elem) {
 i2b2.CRC.view.QT.updateEventLinkOperator = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     eventLink.operator = $(elem).val();
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
@@ -166,16 +168,74 @@ i2b2.CRC.view.QT.updateEventLinkAggregateOp = function(elem) {
     let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
     let eventLinkOpName = $(elem).data('aggregateOp');
     eventLink[eventLinkOpName] = $(elem).val();
-    i2b2.CRC.view.QS.clearStatus();
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
+    i2b2.CRC.view.QS.clearStatus();       
+       
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateEventLinkJoinColumn = function(elem) {
-    let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);
-    let eventLinkOpName = $(elem).data('joinColumn');
+    let eventLink = i2b2.CRC.view.QT.extractEventLinkFromElem(elem);  
+    let eventLinkOpName = $(elem).data('joinColumn');    
     eventLink[eventLinkOpName] = $(elem).val();
-    i2b2.CRC.view.QS.clearStatus();
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
+    i2b2.CRC.view.QS.clearStatus(); 
 };
 // ================================================================================================== //
+
+
+i2b2.CRC.view.QT.generateSequenceBarText = function(elem) {
+    let eventLinkIdx = $(elem).parents('.eventLink').first().data('eventLinkIdx'); // eventlink idx +1     
+    let baseEvent = $(elem).parents('.eventLink')[0]; 
+    let text = 'The ';
+
+    text = text + $('.joinColumn.day1 option:selected', baseEvent).text();
+    text = text + ' ' + $('.aggregateOp.frame1 option:selected', baseEvent).text();
+    text = text + ' ' + 'occurrence of Event ' + (eventLinkIdx+1); 
+    text = text + ' ' + $('.occurs.occOp option:selected', baseEvent).text();
+    text = text + ' ' + 'the ' + $('.joinColumn.day2 option:selected', baseEvent).text();
+    text = text + ' ' + $('.aggregateOp.frame2 option:selected', baseEvent).text() + ' occurrence of Event ' + (eventLinkIdx+2);
+    if($('.check1', baseEvent).prop('checked')){
+        text = text + ' ' + 'by';
+        text = text + ' ' + $('.op1 option:selected', baseEvent).text();
+        if ($('.incInt1', baseEvent).val().length === 0){
+            text = text + ' ' + '0'; 
+        } else{
+            text = text + ' ' + $('.incInt1', baseEvent).val();
+        }        
+        text = text + ' ' + $('.time1 option:selected', baseEvent).text();
+    }
+    if($('.check2', baseEvent).prop('checked')){
+        text = text + ' ' + 'and';
+        text = text + ' ' + $('.op2 option:selected', baseEvent).text();
+        if ($('.incInt2', baseEvent).val().length === 0){
+            text = text + ' ' + '0'; 
+        } else{
+            text = text + ' ' + $('.incInt2', baseEvent).val();
+        }        
+        text = text + ' ' + $('.time2 option:selected', baseEvent).text();
+    }
+    
+    i2b2.CRC.view.QT.updateExpanderText(text, baseEvent);
+   
+};
+// ================================================================================================== //
+i2b2.CRC.view.QT.updateExpanderText= function(text, baseEvent){  
+    $('.EventAccordion > button', baseEvent).text(text);
+}
+// ================================================================================================== //
+i2b2.CRC.view.QT.attachSequenceBarChevron= function(){  
+    $('.DateRelationship.collapse.show').each(function(){
+        $(this).parent().find(".EventAccordion button").addClass("expanded");
+    });
+    
+    $('.DateRelationship.collapse').on('shown.bs.collapse', function(){
+        $(this).parent().find(".EventAccordion button").addClass("expanded");
+    }).on('hidden.bs.collapse', function(){
+        $(this).parent().find(".EventAccordion button").removeClass("expanded");
+    });
+}
+// ================================================================================================== //
+
 i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
     let timeSpanElem = $(elem).parents(".timeSpan").find(".timeSpanField");
     let curState =  timeSpanElem.prop( "disabled");
@@ -195,7 +255,7 @@ i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
         parent.find(".timeSpanUnit").val("DAY");
         parent.find(".timeSpanValue").val("");
     }
-
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
@@ -211,21 +271,21 @@ i2b2.CRC.view.QT.extractTimeSpanFromElem = function(elem) {
 i2b2.CRC.view.QT.updateTimeSpanOperator = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.operator = $(elem).val();
-
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateTimeSpanValue = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.value = $(elem).val();
-
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateTimeSpanUnit = function(elem) {
     let timeSpan = i2b2.CRC.view.QT.extractTimeSpanFromElem(elem);
     timeSpan.unit = $(elem).val();
-
+    i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
 
@@ -474,6 +534,7 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
         with: true,
         without: false,
         when:false,
+        timing: "ANY",
         eventLinks: [],
         events: []
     };
@@ -696,7 +757,52 @@ i2b2.CRC.view.QT.handleUpdateDateRangeEvent = function(event){
     }
 
     i2b2.CRC.view.QS.clearStatus();
-}
+};
+// ================================================================================================== //
+
+i2b2.CRC.view.QT.unLinkQueryGroup = function(elem) {
+    let queryGroupElem = $(elem).parents(".QueryGroup");
+    let queryGroupIdx = queryGroupElem.data("queryGroup");
+
+    i2b2.CRC.model.query.groups[queryGroupIdx].timing = "ANY";
+
+    queryGroupElem.find(".unLink").hide();
+    queryGroupElem.find(".instLink").hide();
+    queryGroupElem.find(".encLink").hide();
+    queryGroupElem.find(".noLink").show();
+    queryGroupElem.find(".linkOptionsItem").removeClass("active");
+};
+// ================================================================================================== //
+
+i2b2.CRC.view.QT.linkAsSameEncounter = function(elem) {
+    let queryGroupElem = $(elem).parents(".QueryGroup").first();
+    let queryGroupIdx = queryGroupElem.data("queryGroup");
+
+    i2b2.CRC.model.query.groups[queryGroupIdx].timing = "SAMEVISIT";
+
+    queryGroupElem.find(".noLink").hide();
+    queryGroupElem.find(".instLink").hide();
+    queryGroupElem.find(".unLink").show();
+    queryGroupElem.find(".encLink").show();
+    queryGroupElem.find(".linkOptionsItem").removeClass("active");
+    queryGroupElem.find(".sameEnc").addClass("active");
+};
+
+// ================================================================================================== //
+
+i2b2.CRC.view.QT.linkAsSameInstance = function(elem) {
+    let queryGroupElem = $(elem).parents(".QueryGroup").first();
+    let queryGroupIdx = queryGroupElem.data("queryGroup");
+
+    i2b2.CRC.model.query.groups[queryGroupIdx].timing = "SAMEINSTANCENUM";
+
+    queryGroupElem.find(".noLink").hide();
+    queryGroupElem.find(".encLink").hide();
+    queryGroupElem.find(".unLink").show();
+    queryGroupElem.find(".instLink").show();
+    queryGroupElem.find(".linkOptionsItem").removeClass("active");
+    queryGroupElem.find(".sameInst").addClass("active");
+};
 // ================================================================================================== //
 i2b2.CRC.view.QT.render = function() {
     // render HTML based on "i2b2.CRC.model.query" data
@@ -940,7 +1046,7 @@ i2b2.CRC.view.QT.render = function() {
             icon.removeClass('bi-chevron-up');
             icon.addClass('bi-chevron-down');
         }
-    });
+    });     
 
     $('.QueryGroup', i2b2.CRC.view.QT.containerDiv).on('click', '.DateRangeLbl', (event) => {
         // parse (and if needed correct) the number value for days/months/years
@@ -957,6 +1063,11 @@ i2b2.CRC.view.QT.render = function() {
             icon.addClass('bi-chevron-down');
         }
     });
+
+    // handles chevron expand/collapse chevron animation on click and rerenders the expander text in the SequenceBar
+    i2b2.CRC.view.QT.attachSequenceBarChevron();
+    $('.SequenceBar.eventLink input.check1').each((idx, element) => i2b2.CRC.view.QT.generateSequenceBarText(element));
+    $('.SequenceBar.eventLink input.check2').each((idx, element) => i2b2.CRC.view.QT.generateSequenceBarText(element));
 
     $('.QueryGroup .OccursCount', i2b2.CRC.view.QT.containerDiv).on('blur', (event) => {
         // parse (and if needed correct) the number value for days/months/years
@@ -1540,6 +1651,8 @@ i2b2.CRC.view.QT.addEvent = function(){
             }
         });
     });
+    
+    i2b2.CRC.view.QT.attachSequenceBarChevron();
 
     //scroll to newly added event
     qgRoot.find(".event").last().get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
@@ -1568,7 +1681,24 @@ i2b2.CRC.view.QT.showQueryReport = function(){
 }
 
 // ================================================================================================== //
-
+i2b2.CRC.view.QT.showOptions = function() {
+    let queryOptionsModal = $('body #queryOptionsModal');
+    if (queryOptionsModal.length === 0) {
+        queryOptionsModal = $("<div id='queryOptionsModal'/>").appendTo("body");
+        queryOptionsModal.load('js-i2b2/cells/CRC/assets/modalOptionsQT.html', function () {
+            $("body #queryOptionsModal button.options-save").click(function () {
+                i2b2.CRC.view.QT.params.queryTimeout = parseInt($('#QryTimeout').val(), 10);
+                $("#queryOptionsModal div").eq(0).modal("hide");
+            });
+            $(i2b2.CRC.view.QT.template.queryOptions(i2b2.CRC.view.QT.params)).appendTo("#queryOptions");
+            $("#queryOptionsModal div:eq(0)").modal('show');
+        });
+    }else{
+        $("#queryOptions").empty();
+        $(i2b2.CRC.view.QT.template.queryOptions(i2b2.CRC.view.QT.params)).appendTo("#queryOptions");
+        $("#queryOptionsModal div:eq(0)").modal('show');
+    }
+}
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((cell) => {
@@ -1747,6 +1877,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QT.template.queryReport = Handlebars.compile(template);
                 },
                 error: (error) => { console.error("Could not retrieve template: QueryReport.html"); }
+            });
+
+            //template for the setting date constraint on concept
+            $.ajax("js-i2b2/cells/CRC/templates/QueryOptions.html", {
+                success: (template) => {
+                    cell.view.QT.template.queryOptions = Handlebars.compile(template);
+                },
+                error: (error) => { console.error("Could not retrieve template: QueryOptions.html"); }
             });
 
             cell.model.query = {

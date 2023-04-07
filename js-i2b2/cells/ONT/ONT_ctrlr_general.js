@@ -33,6 +33,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         data.key = i2b2.h.getXNodeVal(xmlData, 'key');
         data.tooltip = i2b2.h.getXNodeVal(xmlData, 'tooltip');
         data.icd9 = '';
+        data.synonym_cd = i2b2.h.getXNodeVal(xmlData,'synonym_cd');
         data.table_name = i2b2.h.getXNodeVal(xmlData, 'tablename');
         data.column_name = i2b2.h.getXNodeVal(xmlData, 'columnname');
         data.operator = i2b2.h.getXNodeVal(xmlData, 'operator');
@@ -62,7 +63,9 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         icon: sdxDataNode.renderData.cssClassMain,
         key: sdxDataNode.sdxInfo.sdxKeyValue,
         iconImg: sdxDataNode.renderData.iconImg,
+        color: sdxDataNode.renderData.color,
         iconImgExp: sdxDataNode.renderData.iconImgExp,
+        color: sdxDataNode.renderData.color,
         i2b2: sdxDataNode
     };
     tvDataNode.state = sdxDataNode.renderData.tvNodeState;
@@ -70,7 +73,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         tvDataNode.icon += " " + sdxDataNode.renderData.cssClassMinor;
     }
     // add number counts
-    let enablePatientCounts = $("#ONTNAVshowPatientCounts").is(":checked");
+    let enablePatientCounts = i2b2.ONT.view.nav.params.patientCounts;
     if (enablePatientCounts !== false && sdxDataNode.origData.total_num !== undefined){
         tvDataNode.text += ' - (' + sdxDataNode.origData.total_num + ')';
     }
