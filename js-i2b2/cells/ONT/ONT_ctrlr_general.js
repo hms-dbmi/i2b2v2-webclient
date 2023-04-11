@@ -76,7 +76,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
     if (enablePatientCounts !== false && sdxDataNode.origData.total_num !== undefined){
         tvDataNode.text += ' - ';
         tvDataNode.tags = [];
-        tvDataNode.tags.push(sdxDataNode.origData.total_num);
+        tvDataNode.tags.push(sdxDataNode.origData.total_num.toLocaleString());
     }
     return {sdx: sdxDataNode, tv: tvDataNode};
 };
