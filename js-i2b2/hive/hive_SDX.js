@@ -80,7 +80,10 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                         sdxFromJSON.sdxInfo = sdxFromJSON.sdxUnderlyingPackage.sdxInfo;
                         sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON);
                     }
-                    eventHandlers[sdxType].DropHandler(sdxFromJSON, e, sdxType);
+                    else {
+                        // prevents duplicate calls to drop on a workplace folder when moving workplace items
+                        eventHandlers[sdxType].DropHandler(sdxFromJSON, e, sdxType);
+                    }
                 }
             }
             e.stopImmediatePropagation();
