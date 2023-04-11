@@ -212,6 +212,10 @@ i2b2.ONT.ctrlr.Search = {
 //                let root = i2b2.ONT.model.Categories.filter((node) => { return node.key === fullPath });
                 if (root === undefined) {
                     root = i2b2.ONT.model.Categories.filter((node) => { return fullPath.indexOf(node.dim_code) > 0 });
+                    //if there is more than one match take the match with the longest dim_code length
+                    if(root.length > 1){
+                        root = [root.reduce((a, b) => a.length <= b.length ? b : a)];
+                    }
                     if (root.length) {
                         root = root.pop();
                         let temp = i2b2.ONT.ctrlr.gen.generateNodeData(false, root);
@@ -277,6 +281,10 @@ i2b2.ONT.ctrlr.Search = {
                         // passes back only a collection of child nodes (which should be built)
                         // this bubbles up navigatable nodes through non-navigatable nodes
                         for (let subpath in node) {
+                            if(subpath.includes("Diagnoses"))
+                            {
+                                let stop = true;
+                            }
                             if (!["_$$_", "_$R$_"].includes(subpath)) {
                                 ret = ret.concat(func_crawl_builder(node[subpath], parent));
                             }
