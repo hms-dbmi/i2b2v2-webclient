@@ -327,7 +327,7 @@ i2b2.PM._processUserConfig = function (data) {
 
 // ================================================================================================== //
 i2b2.PM.extendUserSession = function() {
-    let login_password = i2b2.PM.model.login_password.substring(i2b2.PM.model.login_password.indexOf(">")+1,i2b2.PM.model.login_password.lastIndexOf("<") );
+    let login_password = i2b2.PM.model.login_password;
 
     // call the PM Cell's communicator Object
     let callback = new i2b2_scopedCallback(i2b2.PM._processUserConfig, i2b2.PM);
