@@ -281,10 +281,6 @@ i2b2.ONT.ctrlr.Search = {
                         // passes back only a collection of child nodes (which should be built)
                         // this bubbles up navigatable nodes through non-navigatable nodes
                         for (let subpath in node) {
-                            if(subpath.includes("Diagnoses"))
-                            {
-                                let stop = true;
-                            }
                             if (!["_$$_", "_$R$_"].includes(subpath)) {
                                 ret = ret.concat(func_crawl_builder(node[subpath], parent));
                             }
