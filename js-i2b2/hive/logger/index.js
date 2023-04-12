@@ -16,6 +16,7 @@ window.addEventListener("dump-response", (e) => {
     source = e.detail.source;
 
     msgLog.forEach((item, index) => {
+        item.pk = index;
         let itemRequestor = item.requester.trim();
         let originOption = $("<option>" + itemRequestor  + "</option>").val(itemRequestor);
         let filterOrigin = $('#filterOrigin');
@@ -41,8 +42,9 @@ window.addEventListener("add-response", (e) => {
     console.dir(e.detail);
 
     let msg = e.detail;
+    msg.pk = msgLog.length;
     msgLog.push(msg);
-    appendLogItem(msg, msgLog.length-1);
+    appendLogItem(msg, msg.pk);
 });
 
 // handle event for when the messageLog is cleared
@@ -66,7 +68,7 @@ function updateLogItems(){
         && (action === "ALL" || msgItem.function === action)
     );
 
-    filteredMsgLog.forEach((item, index) => appendLogItem(item, index));
+    filteredMsgLog.forEach((item, index) => appendLogItem(item, item.pk));
 }
 
 function displayLogItem(logItem, sent, rcvd){
@@ -108,7 +110,7 @@ function appendLogItem(msg, index){
         + "<div style='display:inline-block;float:right'>" + msg.cell + "</div>"
         + "<div style='clear:both'> called by " + msg.requester + "</div><div>" + msg.msgSent.when.toLocaleString() + "</div>");
     logItem.append(msgData)
-    logItem.data("index", index);
+    logItem.data("index", msg.pk);
     $(".logItems").append(logItem);
 
     logItem.on("click", function(event){
