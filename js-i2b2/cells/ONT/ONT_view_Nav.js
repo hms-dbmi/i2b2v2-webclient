@@ -73,7 +73,14 @@ i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
             if (enablePatientCounts !== false && node.i2b2.origData.total_num !== undefined) {
                 node.text += ' - ';
                 node.tags = [];
-                node.tags.push(node.i2b2.origData.total_num);
+                let totalnum = parseInt(node.i2b2.origData.total_num, 10);
+                //parse as integer or leave totalnum as is
+                if( !isNaN(totalnum)){
+                    node.tags.push(totalnum.toLocaleString());
+                }
+                else{
+                    node.tags.push(node.i2b2.origData.total_num);
+                }
             }
         });
 
