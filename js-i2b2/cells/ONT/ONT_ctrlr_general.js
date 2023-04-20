@@ -76,7 +76,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
     if (enablePatientCounts !== false && sdxDataNode.origData.total_num !== undefined){
         tvDataNode.text += ' - ';
         tvDataNode.tags = [];
-        let totalnum = parseInt(sdxDataNode.i2b2.origData.total_num, 10);
+        let totalnum = parseInt(sdxDataNode.origData.total_num, 10);
         //parse as integer or leave totalnum as is
         if( !isNaN(totalnum)){
             tvDataNode.tags.push(totalnum.toLocaleString());
