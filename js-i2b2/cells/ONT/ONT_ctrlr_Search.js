@@ -229,7 +229,10 @@ i2b2.ONT.ctrlr.Search = {
         } while (paths.length > 0);
         parent['_$$_'] = tv;
         // color the node for matching our search criteria
-        if (highlight) parent['_$$_'].icon += " highlight";
+        if (highlight) {
+            if (parent['_$R$_']) parent['_$R$_'].icon += " highlight";
+            parent['_$$_'].icon += " highlight";
+        }
     },
 
 // ================================================================================================== //
@@ -288,6 +291,7 @@ i2b2.ONT.ctrlr.Search = {
                     } else {
                         // passes back current node fully built with its "nodes" attribute populated
                         ret = node._$$_ !== undefined ? node._$$_ : node._$R$_;
+                        if (node._$R$_) ret = node._$R$_;
                         ret.state = {
                             loaded: true,
                             expanded: true
