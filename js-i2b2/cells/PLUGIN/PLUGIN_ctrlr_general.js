@@ -286,8 +286,17 @@ i2b2.events.afterCellInit.add((cell) => {
             data.forEach((id)=>{
                 const loc = id.replaceAll('.', '/');
                 $.getJSON("plugins/" + loc + "/plugin.json", (pluginJson) => {
-                    i2b2.PLUGIN.model.plugins[id] = pluginJson;
-                    i2b2.PLUGIN.model.plugins[id].url = "plugins/" + loc + '/' + pluginJson.base;
+                    if (pluginJson !== undefined) {
+                        let pluginAllowed = true;
+                        if (pluginJson.roles !== undefined && pluginJson.roles.length > 0){
+                            pluginAllowed = pluginJson.roles.some((role) => i2b2.PM.model.userRoles.indexOf(role) !== -1);
+                        }
+
+                        if (pluginAllowed) {
+                            i2b2.PLUGIN.model.plugins[id] = pluginJson;
+                            i2b2.PLUGIN.model.plugins[id].url = "plugins/" + loc + '/' + pluginJson.base;
+                        }
+                    }
                 });
             });
         });
