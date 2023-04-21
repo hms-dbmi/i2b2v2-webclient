@@ -426,8 +426,11 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
 
             let date = moment(startDate, 'MM-DD-YYYY');
             //let isDateValid = date.isValid();
-
-            !isDateValid ? $("#termDateConstraintModal .startDateError").show() : $("#termDateConstraintModal .startDateError").hide();
+            if(!date){
+                $("#termDateConstraintModal .startDateError").hide();
+            } else{
+                !isDateValid ? $("#termDateConstraintModal .startDateError").show() : $("#termDateConstraintModal .startDateError").hide();
+            }            
         }
     });
 
@@ -450,11 +453,20 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
 
             let date = moment(endDate, 'MM-DD-YYYY');
             //let isDateValid = date.isValid();
-            !isDateValid ? $("#termDateConstraintModal .endDateError").show() : $("#termDateConstraintModal .endDateError").hide();
+
+            if(!date){
+                $("#termDateConstraintModal .endDateError").hide();
+            } else{
+                !isDateValid ? $("#termDateConstraintModal .endDateError").show() : $("#termDateConstraintModal .endDateError").hide();
+            }
         }
     });
 
     $("#termDateConstraintModal div:eq(0)").modal('show');
+
+    $('.DateStart , .DateEnd').on('focus', function() {
+        $("#termDateConstraintModal .startDateError, #termDateConstraintModal .endDateError").hide();
+    });
 }
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
