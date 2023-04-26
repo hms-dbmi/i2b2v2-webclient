@@ -426,8 +426,11 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
 
             let date = moment(startDate, 'MM-DD-YYYY');
             //let isDateValid = date.isValid();
-
-            !isDateValid ? $("#termDateConstraintModal .startDateError").show() : $("#termDateConstraintModal .startDateError").hide();
+            if(!startDate){
+                $("#termDateConstraintModal .startDateError").hide();
+            } else{
+                !isDateValid ? $("#termDateConstraintModal .startDateError").show() : $("#termDateConstraintModal .startDateError").hide();
+            }            
         }
     });
 
@@ -444,17 +447,29 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
             startDate = new Date(startDate);
             endDate = new Date(endDate);
 
-            if(startDate > endDate){
+            if(startDateElem.val() && startDate > endDate){
                 startDateElem.datepicker().value("");
+                $("#termDateConstraintModal .startDateError").hide();
             }
 
             let date = moment(endDate, 'MM-DD-YYYY');
             //let isDateValid = date.isValid();
-            !isDateValid ? $("#termDateConstraintModal .endDateError").show() : $("#termDateConstraintModal .endDateError").hide();
+
+            if(!endDate){
+                $("#termDateConstraintModal .endDateError").hide();
+            } else{
+                !isDateValid ? $("#termDateConstraintModal .endDateError").show() : $("#termDateConstraintModal .endDateError").hide();
+            }
         }
     });
 
     $("#termDateConstraintModal div:eq(0)").modal('show');
+
+    $('.DateStart, .DateEnd').on('focus', function() {
+        let $this = $(this);
+        let $error = $this.hasClass('DateStart') ? $("#termDateConstraintModal .startDateError") : $("#termDateConstraintModal .endDateError");
+        $error.hide();
+      });
 }
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
