@@ -464,9 +464,11 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
 
     $("#termDateConstraintModal div:eq(0)").modal('show');
 
-    $('.DateStart , .DateEnd').on('focus', function() {
-        $("#termDateConstraintModal .startDateError, #termDateConstraintModal .endDateError").hide();
-    });
+    $('.DateStart, .DateEnd').on('focus', function() {
+        var $this = $(this);
+        var $error = $this.hasClass('DateStart') ? $("#termDateConstraintModal .startDateError") : $("#termDateConstraintModal .endDateError");
+        $error.hide();
+      });
 }
 // ================================================================================================== //
 i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
