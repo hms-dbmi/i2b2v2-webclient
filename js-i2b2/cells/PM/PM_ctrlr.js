@@ -24,6 +24,7 @@ i2b2.PM.doSamlLogin = function(service) {
 
     let domain = i2b2.PM.model.Domains[$("#PM-login-modal #logindomain").val()];
     if (domain) {
+	i2b2.PM.model.currentDomain = domain;
         // copy information from the domain record
         var login_url = domain.urlCellPM;
         i2b2.PM.model.url = login_url;
@@ -49,6 +50,15 @@ i2b2.PM.doSamlLogin = function(service) {
         }
     } else {
         e += "\n  No login channel was selected";
+    }
+
+    // save the SAML login method if it was used
+    if (domain.saml) {
+        let samlConfig = domain?.saml[service];
+        if (!samlConfig) samlConfig = {};
+        i2b2.PM.model.samlConfig = samlConfig;
+    } else {
+        i2b2.PM.model.samlConfig = false;
     }
 
     // save PM cell's URL and login domain to cookies for later use by proxy server
@@ -84,16 +94,23 @@ i2b2.PM.doSamlLogin = function(service) {
         return newWindow;
     };
 
-    i2b2.PM.model.samlWindow = popupCenter({url: 'saml/redirect/'+service, title: 'SSO Login', w: 500, h: 650});
+    let url = i2b2.PM.model?.samlConfig.redirect;
+    if (url === undefined) url = 'saml/redirect/'+service;
+
+    i2b2.PM.model.samlWindow = popupCenter({url: url, title: 'SSO Login', w: 500, h: 650});
 };
 
 // ================================================================================================== //
-i2b2.PM.ctrlr.SamlLogin = function(username, session) {
+i2b2.PM.ctrlr.SamlLogin = function(username, session, isPassword) {
     console.log(`Logged in ${username} with ${session}`);
 
     i2b2.PM.model.login_username = username;
     i2b2.PM.model.samlWindow.close();
-    i2b2.PM.model.login_password = `<password is_token="true" token_ms_timeout="1800000">${session}</password>`;
+    if (isPassword) {
+        i2b2.PM.model.login_password = `<password>${session}</password>`;
+    } else {
+        i2b2.PM.model.login_password = `<password is_token="true" token_ms_timeout="1800000">${session}</password>`;
+    }
     i2b2.PM.model.login_project = '';
 
     // call the PM Cell's communicator Object
@@ -365,8 +382,13 @@ i2b2.PM.extendUserSession = function() {
 
 // ================================================================================================== //
 i2b2.PM.doLogout = function() {
-    // bug fix - must reload page to avoid dirty data from lingering
-    window.location.reload();
+    // must reload page to avoid dirty data from lingering
+    const logoutUri = i2b2.PM.model?.samlConfig.logout;
+    if (logoutUri === undefined) {
+        window.location.reload();
+    } else {
+        window.location.href = logoutUri;
+    }
 };
 
 i2b2.PM.showUserInfo = function() {

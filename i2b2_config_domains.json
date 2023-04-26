@@ -13,17 +13,18 @@
       "urlCellPM": "http://weberdemo.hms.harvard.edu/i2b2/CQ2ServiceProxy.php/PMService/",
       "allowAnalysis": true,
       "debug": false,
-      "saml" : ["okta"]
+      "saml" : {"okta": null}
     }, {
       "domain": "i2b2demo",
       "name": "Shibboleth (localhost)",
       "urlCellPM": "http://127.0.0.1/i2b2/services/PMService/",
       "allowAnalysis": true,
       "debug": false,
-      "saml" : ["shibboleth"],
-      "samlConfig": {
-        "redirect": "saml-redirect.php",
-        "logout": "saml-logout.php"
+      "saml" : {
+        "shibboleth": {
+          "redirect": "saml-redirect.php",
+          "logout": "saml-logout.php"
+        }
       }
     }, {
       "domain": "i2b2demo",
@@ -31,10 +32,12 @@
       "urlCellPM": "http://127.0.0.1/i2b2/services/PMService/",
       "allowAnalysis": true,
       "debug": false,
-      "saml" : ["shibboleth", "okta"],
-      "samlConfig": {
-        "redirect": "saml-redirect.php",
-        "logout": "saml-logout.php"
+      "saml" : {
+        "shibboleth":  {
+          "redirect": "saml-redirect.php",
+          "logout": "saml-logout.php"
+        },
+        "okta": null
       }
     }
   ],

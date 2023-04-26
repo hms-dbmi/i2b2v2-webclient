@@ -83,7 +83,7 @@ i2b2.PM.doChangeDomain = function() {
     if (selectedDomain.saml !== undefined) {
         loginElements.hide();
         $(".sso-button").hide();
-        selectedDomain.saml.forEach((service) => {
+        Object.keys(selectedDomain.saml).forEach((service) => {
             $(".sso-button[data-service='"+service+"']").show();
         });
     } else {
