@@ -649,61 +649,64 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
     if (["CONCPT"].includes(sdx.sdxInfo.sdxType)) sdx.withDates = true;
     if (String(sdx.origData.table_name).toLowerCase() === "patient_dimension") sdx.withDates = false;
 
-    // add the data to the correct terms list (also prevent duplicates)
     let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
-    temp = eventData.concepts.filter((term) => {
-        if (term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue) {
-            if (term.origData.conceptModified && sdx.origData.conceptModified) {
-                return term.origData.conceptModified.sdxInfo.sdxKeyValue === sdx.origData.conceptModified.sdxInfo.sdxKeyValue;
-            } else {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    });
-    if (temp.length === 0) {
-        // not a duplicate, add to the event's term list
-        eventData.concepts.push(sdx);
 
-        //add date constraint to concept if there is a group date range specified{
-        if (i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange !== undefined &&
-            (sdx.dateRange === undefined || (sdx.dateRange.start?.length === 0 && sdx.dateRange.end?.length === 0))) {
-            // only include date range for specific SDX types
-            if (sdx.withDates === true) {
-                if (sdx.dateRange === undefined) sdx.dateRange = {start: "", end: ""};
-                sdx.dateRange.start = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange.start;
-                sdx.dateRange.end = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange.end;
-            }
-        }
+    // prevent duplicate adds - see if the term matches something in the existing concepts list
+    // 4.26.23 - allow users to enter duplicates entries because this is how the legacy system works
+    //           this should probably be modified to allow duplicates of items if they have lab values defined
+    // temp = eventData.concepts.filter((term) => {
+    //     if (term.sdxInfo.sdxKeyValue === sdx.sdxInfo.sdxKeyValue) {
+    //         if (term.origData.conceptModified && sdx.origData.conceptModified) {
+    //             return term.origData.conceptModified.sdxInfo.sdxKeyValue === sdx.origData.conceptModified.sdxInfo.sdxKeyValue;
+    //         } else {
+    //             return true;
+    //         }
+    //     } else {
+    //         return false;
+    //     }
+    // });
+    // if (temp.length !== 0) return;
 
-        // Modifiers processing
-        if (sdx.origData.conceptModified) {
-            sdx.renderData.title = sdx.origData.conceptModified.renderData.title + " {" + sdx.origData.name + "}";
-            if(sdx.origData.hasMetadata){
-                if(showLabValues){
-                    i2b2.CRC.view.QT.showModifierValues(sdx,  groupIdx, eventIdx);
-                }else{
-                    const valueMetaDataArr = i2b2.h.XPath(sdx.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
-                    if (valueMetaDataArr.length > 0) {
-                        let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
-                        i2b2.CRC.view.QT.updateModifierDisplayValue(sdx, extractedLabModel, groupIdx, eventIdx);
-                    }
+    // not a duplicate, add to the event's term list
+    eventData.concepts.push(sdx);
+
+    //add date constraint to concept if there is a group date range specified{
+    if (i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange !== undefined &&
+        (sdx.dateRange === undefined || (sdx.dateRange.start?.length === 0 && sdx.dateRange.end?.length === 0))) {
+        // only include date range for specific SDX types
+        if (sdx.withDates === true) {
+            if (sdx.dateRange === undefined) sdx.dateRange = {start: "", end: ""};
+            sdx.dateRange.start = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange.start;
+            sdx.dateRange.end = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx].dateRange.end;
+        }
+    }
+
+    // Modifiers processing
+    if (sdx.origData.conceptModified) {
+        sdx.renderData.title = sdx.origData.conceptModified.renderData.title + " {" + sdx.origData.name + "}";
+        if(sdx.origData.hasMetadata){
+            if(showLabValues){
+                i2b2.CRC.view.QT.showModifierValues(sdx,  groupIdx, eventIdx);
+            }else{
+                const valueMetaDataArr = i2b2.h.XPath(sdx.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
+                if (valueMetaDataArr.length > 0) {
+                    let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
+                    i2b2.CRC.view.QT.updateModifierDisplayValue(sdx, extractedLabModel, groupIdx, eventIdx);
                 }
             }
         }
-
-        // rerender the query event and add to the DOM
-        const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
-        i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
-
-        // handle the lab values
-        if (sdx.isLab) i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx);
-
-        // update the query name
-        i2b2.CRC.view.QT.updateQueryName();
-        i2b2.CRC.view.QS.clearStatus();
     }
+
+    // rerender the query event and add to the DOM
+    const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+    i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+
+    // handle the lab values
+    if (sdx.isLab) i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx);
+
+    // update the query name
+    i2b2.CRC.view.QT.updateQueryName();
+    i2b2.CRC.view.QS.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.showModifierValues = function(sdxConcept, groupIdx, eventIdx){
