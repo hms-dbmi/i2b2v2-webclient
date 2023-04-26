@@ -18,12 +18,16 @@ body, td, p {
 	padding: 0;
 	width: 100%;
 	position: relative;
+	margin-bottom: 0.5rem;
 }
+
 .sso-button img {
 	height: 4.6em;
 	width: 4.6em;
 	float: left;
-	margin-left: -1px;
+	border-right: 1px solid grey;
+	border-bottom-left-radius: 2px;
+	border-top-left-radius: 2px;
 }
 
 .sso-button div {
