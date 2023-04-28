@@ -261,6 +261,7 @@ function QueryToolController() {
                                     let data = results.model[0];
                                     sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
                                     sdxDataNode.origData = data.origData;
+                                    if (String(sdxDataNode.origData.table_name).toLowerCase() === "patient_dimension") sdxDataNode.withDates = false;
                                     i2b2.CRC.view.QT.render();
                                 }
                             });
@@ -378,8 +379,10 @@ function QueryToolController() {
             let qd = i2b2.h.XPath(results.refXML, 'descendant::query_name/..');
             if (qd.length !== 0) {
                 let queryName = i2b2.h.getXNodeVal(results.refXML, 'name');
-                this.doSetQueryName(queryName);
-                loadAllModifierInfo(qd[0], reloadQuery);
+                loadAllModifierInfo(qd[0], function(modifierXmlInfo){
+                    reloadQuery(modifierXmlInfo);
+                    $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
+                });
                 i2b2.CRC.ctrlr.QT.loadQueryStatus(qm_id, queryName);
             }
         }
@@ -397,7 +400,7 @@ function QueryToolController() {
         i2b2.CRC.ctrlr.QS.loadQueryStatus();
     }
 // ================================================================================================== //
-    this.runQuery = function(queryTypes) {
+    this.runQuery = function(queryTypes, queryExecutionMethod) {
         let params = {
             result_wait_time: i2b2.CRC.view.QT.params.queryTimeout,
             psm_query_definition: "",
@@ -414,13 +417,32 @@ function QueryToolController() {
         });
         params.psm_result_output += "</result_output_list>";
 
+        // query execution method
+        if (queryExecutionMethod) {
+            params.query_run_method = "<query_method>" + queryExecutionMethod + "</query_method>";
+        } else {
+            params.query_run_method = "";
+        }
+
         // get the query name
         let queryName = $("#crcQtQueryName").val().trim();
+
+        //add (t) prefix  if this is a temporal query
+        let queryNamePrefix = "";
+        if(i2b2.CRC.model.transformedQuery.subQueries
+            && i2b2.CRC.model.transformedQuery.subQueries.length > 1
+            && !queryName.startsWith("(t) ")){
+            queryNamePrefix = "(t) ";
+        }
         if (queryName.length === 0 ){
-            queryName = i2b2.CRC.model.transformedQuery.name;
+            queryName =  queryNamePrefix + i2b2.CRC.model.transformedQuery.name;
         }else{
+            queryName = queryNamePrefix  + queryName;
             i2b2.CRC.model.transformedQuery.name = queryName;
         }
+
+        //update the query name field
+        $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
 
         // query definition
         params.psm_query_definition = (Handlebars.compile("{{> Query}}"))(i2b2.CRC.model.transformedQuery);
@@ -502,7 +524,8 @@ function QueryToolController() {
     this._processModel = function() {
         let funcTranslateDate = function(trgtdate) {
             // this does proper setting of the timezone based on the browser's current timezone
-            return String(trgtdate.getFullYear())+"-"+String(trgtdate.getMonth()+1).padStart(2, "0")+"-"+String(trgtdate.getDate()).padStart(2, "0")+"T00:00:00.00-"+String(trgtdate.getUTCHours()).padStart(2, "0")+":"+String(trgtdate.getUTCMinutes()).padStart(2, "0");
+            return String(trgtdate.getFullYear())+"-"+String(trgtdate.getMonth()+1).padStart(2, "0")+"-"+String(trgtdate.getDate()).padStart(2, "0")
+                +'T00:00:00';
         };
 
         let createPanelItem = function(item){
@@ -697,10 +720,13 @@ function QueryToolController() {
         if (transformedModel.panels.length > 0 || transformedModel.subQueries.length > 0) {
             let queryDate = new Date();
             queryDate = String(queryDate.getHours()) + ":" + String(queryDate.getMinutes()) + ":" + String(queryDate.getSeconds());
-            let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.replace("(PrevQuery)","").trim()});
+            let temporalRegex = /^\(t\)/i;
+
+            let names = transformedModel.panels.map((rec)=>{ return rec.items[0].name.replace("(PrevQuery)","").trim().replace("(t)","").trim()});
 
             //Handle temporal events
-            let temporalNames = transformedModel.subQueries.map((subQuery)=>{ return subQuery.panels[0].items[0].name.replace("(PrevQuery)","").trim()});
+            let temporalNames = transformedModel.subQueries.map((subQuery)=>{ return subQuery.panels[0].items[0].name.replace("(PrevQuery)","")
+                .trim().replace(temporalRegex,"").trim()});
             names = names.concat(temporalNames);
 
             let adjuster = 1 / ((names.map((rec) => rec.length ).reduce((acc, val) => acc + val) + names.length - 1) / 120);

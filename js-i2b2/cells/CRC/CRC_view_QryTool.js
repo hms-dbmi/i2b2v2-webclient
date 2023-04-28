@@ -73,6 +73,17 @@ i2b2.CRC.view.QT.showRun = function() {
                 $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(checkContainer);
             });
         }
+        // populate/delete the query run methods
+        if (!i2b2.CRC.model.queryExecutionOptions) {
+            // no query execution options, remove input from form
+            $("#crcModal .QueryMethodInput").remove();
+        } else {
+            // populate the query execution options
+            let targetSelect = $('#crcModal .QueryMethodInput select');
+            for (const [code, description] of Object.entries(i2b2.CRC.model.queryExecutionOptions)) {
+                $('<option value="' + code + '">' + description + '</option>').appendTo(targetSelect);
+            }
+        }
 
         //add the current generated query name
         $("#crcQtQueryName").val(i2b2.CRC.model.transformedQuery.name)
@@ -86,8 +97,9 @@ i2b2.CRC.view.QT.showRun = function() {
             i2b2.CRC.view.QT.resetToCRCHistoryView();
             // build list of selected result types
             let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
+            let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
 
-            i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes);
+            i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes, reqExecutionMethod);
             // close the modal
             $('body #crcModal div:eq(0)').modal('hide');
         });
@@ -1054,6 +1066,8 @@ i2b2.CRC.view.QT.render = function() {
             icon.removeClass('bi-chevron-up');
             icon.addClass('bi-chevron-down');
         }
+        //init date constraint panel tooltip
+        $(".dcTooltip").tooltip();
     });     
 
     $('.QueryGroup', i2b2.CRC.view.QT.containerDiv).on('click', '.DateRangeLbl', (event) => {
@@ -1099,9 +1113,9 @@ i2b2.CRC.view.QT.render = function() {
 
     $('body').on('click', '.refreshStartDate, .refreshEndDate', (event) => {
         let jqTarget = $(event.target);
-        let dateElement = jqTarget.parents(".dateRange").find(".DateStart");
+        let dateElement = jqTarget.parents(".dateRange").find(".DateStart, .DateRangeStart");
         if (dateElement.length === 0) {
-            dateElement = jqTarget.parents(".dateRange").find(".DateEnd");
+            dateElement = jqTarget.parents(".dateRange").find(".DateEnd, .DateRangeEnd");
         }
         dateElement.val("");
         dateElement.trigger("change");
@@ -1143,7 +1157,8 @@ i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabV
             modifierInfoText  = "= "  + sdxConcept.LabValues.flagValue;
         }
         else if(sdxConcept.LabValues.isEnum){
-            modifierInfoText  = "= " + extractedLabValues.enumInfo[sdxConcept.LabValues.value];
+            let mappedEnumValues = sdxConcept.LabValues.value.map(x => '"' + extractedLabValues.enumInfo[x] + '"');
+            modifierInfoText  = "= (" + mappedEnumValues.join(", ") + ")";
         }
         else if (sdxConcept.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER){
             let numericOperatorMapping = {
@@ -1624,6 +1639,7 @@ i2b2.CRC.view.QT.addEvent = function(){
 
     $((Handlebars.compile("{{> EventLink }}"))(eventLinkData)).appendTo(templateQueryGroup);
     $((Handlebars.compile("{{> Event }}"))(eventData)).appendTo(templateQueryGroup);
+  
 
     i2b2.CRC.model.query.groups[qgIndex].eventLinks.push(i2b2.CRC.view.QT.createEventLink());
     i2b2.CRC.model.query.groups[qgIndex].events.push(i2b2.CRC.view.QT.createEvent());
@@ -1688,7 +1704,9 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             group.events.forEach((event) => {
                 event.concepts.forEach((concept) => {
                     if (concept.origData.conceptModified) {
-                        modifiers[concept.origData.conceptModified.sdxInfo.sdxKeyValue] = concept;
+                        let sdxKey = concept.origData.conceptModified.sdxInfo.sdxKeyValue;
+                        if (!modifiers[sdxKey]) modifiers[sdxKey] = {};
+                        modifiers[sdxKey][concept.origData.key] = concept;
                     } else {
                         concepts[concept.sdxInfo.sdxKeyValue] = concept;
                     }
@@ -1698,24 +1716,30 @@ i2b2.CRC.view.QT.showQueryReport = function() {
 
         // function for expanding the panel items
         let func_expandConcept = function(panelItem, panel) {
-            if (panelItem.modKey) {
-                panelItem.moreInfo = modifiers[panelItem.key];
+            if (panelItem.key.indexOf(':') !== -1) {
+                // panel item is special
+                let sdxKey = panelItem.key.substring(panelItem.key.indexOf(':')+1);
+                panelItem.moreInfo = concepts[sdxKey];
             } else {
-                panelItem.moreInfo = concepts[panelItem.key];
+                if (panelItem.modKey) {
+                    panelItem.moreInfo = modifiers[panelItem.key][panelItem.modKey];
+                } else {
+                    panelItem.moreInfo = concepts[panelItem.key];
+                }
+                // deal with dates
+                if (panelItem.moreInfo.dateRange.start == undefined || panelItem.moreInfo.dateRange.start == "") {
+                    panelItem.timingFrom = "earliest date available";
+                } else {
+                    panelItem.timingFrom = (new Date(Date.parse(panelItem.moreInfo.dateRange.start))).toLocaleDateString();
+                }
+                if (panelItem.moreInfo.dateRange.end == undefined || panelItem.moreInfo.dateRange.end == "") {
+                    panelItem.timingTo = "latest date available";
+                } else {
+                    panelItem.timingTo = (new Date(Date.parse(panelItem.moreInfo.dateRange.end))).toLocaleDateString();
+                }
+                panelItem.occurs = panel.occursCount;
+                panelItem.timing = panel.timing;
             }
-            // deal with dates
-            if (panelItem.moreInfo.dateRange.start == undefined || panelItem.moreInfo.dateRange.start == "") {
-                panelItem.timingFrom = "earliest date available";
-            } else {
-                panelItem.timingFrom = (new Date(Date.parse(panelItem.moreInfo.dateRange.start))).toLocaleDateString();
-            }
-            if (panelItem.moreInfo.dateRange.end == undefined || panelItem.moreInfo.dateRange.end == "") {
-                panelItem.timingTo = "latest date available";
-            } else {
-                panelItem.timingTo = (new Date(Date.parse(panelItem.moreInfo.dateRange.end))).toLocaleDateString();
-            }
-            panelItem.occurs = panel.occursCount;
-            panelItem.timing = panel.timing;
         };
 
 
@@ -1937,6 +1961,14 @@ i2b2.events.afterCellInit.add((cell) => {
                 }).bind(this)
             );
 
+            // parse any probabilistic sketch capabilities for the CRC
+            if (i2b2.CRC.cfg.cellParams['QUERY_OPTIONS_XML']) {
+                let queryOptions = {};
+                let results = i2b2.h.XPath(i2b2.CRC.cfg.cellParams["QUERY_OPTIONS_XML"], "//QueryMethod[@ID]");
+                results.forEach((node) => { queryOptions[node.attributes['ID'].value] = node.textContent; });
+                i2b2.CRC.model.queryExecutionOptions = queryOptions;
+            }
+
             // load the templates (TODO: Refactor this to loop using a varname/filename list)
             // TODO: Refactor templates to use Handlebars partals system
             cell.view.QT.template = {};
@@ -2010,7 +2042,7 @@ i2b2.events.afterCellInit.add((cell) => {
             //HTML template for event
             $.ajax("js-i2b2/cells/CRC/templates/Event.html", {
                 success: (template, status, req) => {
-                    Handlebars.registerPartial("Event", req.responseText);
+                    Handlebars.registerPartial("Event", req.responseText);                    
                 },
                 error: (error) => { console.error("Could not retrieve template: Event.html"); }
             });

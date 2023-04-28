@@ -1,5 +1,6 @@
 body {
     font-family: arial, helvetica, verdana, sans-serif;
+    margin: 1.8em;
 }
 
 .title {
@@ -40,9 +41,9 @@ body {
 
 
 .panel-definition {
-    border: 2px solid black;
+    border: 1px solid black;
     margin-bottom: 2rem;
-    background-color: #CCCCCC;
+    background-color: #dcdbdb;
 }
 .panel-definition.not {
     background-color: #ad7070;
@@ -63,10 +64,10 @@ body {
 
 .item-title {
     font-weight: bold;
-    font-size: 1.3rem;
-    height: 1.4rem;
+    font-size: 1.15rem;
     margin-bottom: 0.2rem;
 }
+
 .item-title img {
     margin-bottom: 0.3rem;
     vertical-align: middle;

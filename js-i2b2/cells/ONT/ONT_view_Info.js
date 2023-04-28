@@ -59,10 +59,13 @@ i2b2.ONT.view.info = {
         if (typeof data.origData.basecode !== "undefined"){
             termDescript += 'represents the code of <span class="basecode">' + data.origData.basecode + '</span> and ';
         }
+        let noChildren;
         if (children1 === "C" || children1 === "F" || children1 === "O" || children1 === "D"){
             termDescript += 'may ';
+            noChildren = false;
         } else {
             termDescript += 'does not ';
+            noChildren = true;
         }
         termDescript += 'have children below it.';
 
@@ -92,40 +95,42 @@ i2b2.ONT.view.info = {
         i2b2.ONT.view.info.model.displayData = displayData;
 
         // get the children of the node
-        let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
-            if (!i2b2CellMsg.error) {
-                let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
-                for (let i=0; i<1*c.length; i++) {
-                    let {sdx, tv} = i2b2.ONT.ctrlr.gen.generateNodeData(c[i]);
-                    // save the node to the ONT data model
-                    i2b2.ONT.view.info.model.displayData.children.push(sdx);
+        if (!noChildren) {
+            let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
+                if (!i2b2CellMsg.error) {
+                    let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
+                    for (let i=0; i<1*c.length; i++) {
+                        let {sdx, tv} = i2b2.ONT.ctrlr.gen.generateNodeData(c[i]);
+                        // save the node to the ONT data model
+                        i2b2.ONT.view.info.model.displayData.children.push(sdx);
+                    }
+                } else {
+                    alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
                 }
-            } else {
-                alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
-            }
-            // rerender the screen to show the child nodes
-            i2b2.ONT.view.info.render();
-            // create click handlers for the child links
-            $('.i2b2OntInfo .child-link a').on('click', (evt) => {
-                let key = $(evt.target).data('sdxKey');
-                let data = i2b2.ONT.view.info.model.displayData.children.filter((child) => { return child.sdxInfo.sdxKeyValue == key });
-                if (data.length > 0) {
-                    // scroll to the top of the window
-                    i2b2.ONT.view.info.model.viewport[0].scrollTop = 0;
-                    // load the new term
-                    i2b2.ONT.view.info.load(data[0]);
-                }
-            });
+                // rerender the screen to show the child nodes
+                i2b2.ONT.view.info.render();
+                // create click handlers for the child links
+                $('.i2b2OntInfo .child-link a').on('click', (evt) => {
+                    let key = $(evt.target).data('sdxKey');
+                    let data = i2b2.ONT.view.info.model.displayData.children.filter((child) => { return child.sdxInfo.sdxKeyValue == key });
+                    if (data.length > 0) {
+                        // scroll to the top of the window
+                        i2b2.ONT.view.info.model.viewport[0].scrollTop = 0;
+                        // load the new term
+                        i2b2.ONT.view.info.load(data[0]);
+                    }
+                });
 
-        }, i2b2.ONT.view.info.model.displayData);
-        // fire the AJAX call
-        let options = {};
-        options.version = "1.2";
-        options.ont_max_records = "";
-        options.ont_hidden_records = false;
-        options.ont_synonym_records = false;
-        options.concept_key_value = data.sdxInfo.sdxKeyValue;
-        i2b2.ONT.ajax.GetChildConcepts("ONT:Info", options, scopeCB);
+            }, i2b2.ONT.view.info.model.displayData);
+            // fire the AJAX call
+            let options = {};
+            options.version = "1.2";
+            options.ont_max_records = "";
+            options.ont_hidden_records = false;
+            options.ont_synonym_records = false;
+            options.concept_key_value = data.sdxInfo.sdxKeyValue;
+            i2b2.ONT.ajax.GetChildConcepts("ONT:Info", options, scopeCB);
+        }
 
         // render what we have and make the tab active if asked to do so
         i2b2.ONT.view.info.render();

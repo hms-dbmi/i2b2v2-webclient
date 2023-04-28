@@ -242,9 +242,9 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
             let sdxDataNode = cellResult.model[i1];
             let renderOptions = {
                 title: sdxDataNode.sdxDisplayName ,
-                icon: "sdx_CRC_QM.gif",
                 showchildren: true
             };
+
             sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
             sdxDataNode.renderData.idDOM = "CRC_H_TV-" + i2b2.GUID();
             let temp = {

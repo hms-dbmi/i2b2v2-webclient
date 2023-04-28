@@ -327,7 +327,7 @@ i2b2.PM._processUserConfig = function (data) {
 
 // ================================================================================================== //
 i2b2.PM.extendUserSession = function() {
-    let login_password = i2b2.PM.model.login_password.substring(i2b2.PM.model.login_password.indexOf(">")+1,i2b2.PM.model.login_password.lastIndexOf("<") );
+    let login_password = i2b2.PM.model.login_password;
 
     // call the PM Cell's communicator Object
     let callback = new i2b2_scopedCallback(i2b2.PM._processUserConfig, i2b2.PM);
@@ -473,7 +473,7 @@ i2b2.PM._processLaunchFramework = function() {
                 let x = i2b2.h.XPath(oXML, "//cell_data[@id='"+cellKey+"']/param[@name]");
                 for (let i = 0; i < x.length; i++) {
                     let n = i2b2.h.XPath(x[i], "attribute::name")[0].nodeValue;
-                    cellRef.params[n] = x[i].firstChild.nodeValue;
+                    cellRef.params[n] = x[i].innerHTML;
                 }
                 // do not save cell info unless the URL attribute has been set (exception is PM cell)
                 if (cellRef.url === "" && cellKey !== "PM") {

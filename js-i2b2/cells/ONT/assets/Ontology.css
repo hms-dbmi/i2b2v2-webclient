@@ -241,7 +241,7 @@ button.invert:hover{
     border: 1px solid #c8cdce;
 }
 
-.srTooltip {
+.srTooltip, .dcTooltip {
     color: #87898a;
 }
 
@@ -271,4 +271,14 @@ button.invert:hover{
 #i2b2TreeviewOntNav .viewInTreeNode {
     font-weight: bold;
 }
+
+#i2b2TreeviewOntNav .badge,
+#i2b2TreeviewOntSearch .badge{
+    color: #900;
+    font-weight: 400;
+    font-size: 0.91em;
+    margin-left: -0.7em;
+    padding: 0 0.5rem 0;
+}
+
 

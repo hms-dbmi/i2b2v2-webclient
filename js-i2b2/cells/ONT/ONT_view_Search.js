@@ -98,7 +98,8 @@ i2b2.ONT.view.search.initSearch = function(container){
         highlightSelected: false,
         dynamicLoading: false,
         levels: 1,
-        data: []
+        data: [],
+        showTags: true
     });
     i2b2.ONT.view.search.treeview.on('onRedraw', () =>{
         // attach drag drop attribute after the tree has been redrawn
@@ -123,7 +124,7 @@ i2b2.ONT.view.search.displayResults = function(treeData) {
     $("#i2b2OntSearchStatus").hide();
     let treeview = i2b2.ONT.view.search.treeview.data('treeview');
     treeview.clear();
-    treeview.init({data: treeData});
+    treeview.init({data: treeData, showTags: true});
 };
 //================================================================================================== //
 
@@ -173,7 +174,11 @@ i2b2.ONT.view.search.showModifiers = function(node){
 i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
     let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', node.nodeId);
 
-    if(parentNode.nodeId === undefined && (nodeSubList !== undefined  && nodeSubList.length > 0)){
+    //if this is a root node
+    if(parentNode.nodeId === undefined && nodeSubList === undefined){
+        nodeSubList = [node];
+    }
+    if(parentNode.nodeId === undefined && (nodeSubList !== undefined  && nodeSubList.length >= 0)){
         let nodesToExpand = [];
         nodesToExpand = nodesToExpand.concat(nodeSubList);
 
@@ -197,12 +202,14 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
             topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode){
                 return snode.key === currentNode.key;
             });
+        }
 
+        // if this is the last node highlight it since that is the node the user selected
+        if (nodesToExpand.length === 0 && topLevelNode.length === 1) {
             let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
-            selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+            selectNodeElem.get(0).scrollIntoView({alignToTop: false, behavior: 'smooth', block: 'center'});
 
-            // if this is the last node highlight it since that is the node the user selected
-            if(nodesToExpand.length === 0){
+            if (nodesToExpand.length === 0) {
                 $(".viewInTreeNode").removeClass("viewInTreeNode");
                 selectNodeElem.addClass("viewInTreeNode");
             }
