@@ -282,3 +282,24 @@ button.invert:hover{
 }
 
 
+/* date listing bar */
+#i2b2QueryHistoryBar .dateListing .text {
+    margin: auto;
+    padding-left: 0;
+}
+
+#i2b2QueryHistoryBar .dateListing .dateError {
+    text-align: center;
+    color: red;
+}
+
+#i2b2QueryHistoryBar .dateListing .input-group-append .button {
+    border-radius: 0;
+}
+
+#i2b2QueryHistoryBar .dateListing .input-group-append .dateListingCancel {
+    position: relative;
+    left: -1px;
+    border-bottom-right-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}

@@ -325,6 +325,18 @@ i2b2.CRC.view.history.doRefreshAll = function() {
     i2b2.CRC.view.history.LoadQueryMasters();
 };
 
+i2b2.CRC.view.history.showBrowseView = function() {
+    $('#i2b2QueryHistoryBar .dateListing').hide();
+    $('#i2b2QueryHistoryBar .searchOptions').show();
+
+//    setTimeout(()=>{$("#historyDateStart").datepicker().close();}, 1);
+};
+i2b2.CRC.view.history.showDateListingView = function() {
+    $('#i2b2QueryHistoryBar .searchOptions').hide();
+    $('#i2b2QueryHistoryBar .dateListing .dateError').hide();
+    $('#i2b2QueryHistoryBar .dateListing').show();
+
+};
 
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
@@ -353,6 +365,28 @@ i2b2.events.afterCellInit.add((cell) => {
                                     }
                                 }
                             });
+
+                            // init date picker for Date Listing view
+                            $("#historyDateStart").datepicker({
+                                uiLibrary: 'bootstrap4',
+                                change: function() {
+                                    let startDateElem = $("#historyDateStart");
+                                    let startDate =  startDateElem.val();
+
+                                    if (i2b2.CRC.view.QT.isValidDate(startDate)) {
+                                        $("#i2b2QueryHistoryBar .dateError").hide();
+                                    } else {
+                                        $("#i2b2QueryHistoryBar .dateError").show()
+                                    }
+                                }
+                            });
+                            // inject the cancel date listing button
+                            $(`<button class="btn border-left-0 dateListingCancel">
+                                    <i class="bi bi-x-lg" title="Cancel Listing by Date"></i></button>`).appendTo($("#i2b2QueryHistoryBar .dateListing .gj-datepicker"));
+                            // attach the controller
+                            $("#i2b2QueryHistoryBar .dateListingCancel").on('click', i2b2.CRC.view.history.showBrowseView);
+
+                            i2b2.CRC.view.history.showBrowseView();
                         },
                         error: (error) => { console.error("Could not retrieve template: QueryHistoryBar.html"); }
                     });
@@ -534,7 +568,14 @@ i2b2.events.afterCellInit.add((cell) => {
                             $(tab.element).attr("id", elemId);
                             i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
                                 actions: {
-                                    nodeAnnotate: {
+                                    nodeQueryDate: {
+                                        name: 'List By Date',
+                                        iconClass: 'bi bi-calendar3-range',
+                                        onClick: function(node) {
+                                            i2b2.CRC.view.history.showDateListingView();
+                                        }
+                                    },
+                                    nodeOptions: {
                                         name: 'Show Options',
                                         onClick: function (node) {
                                             $("#queryHistoryOptionsFields").empty();
