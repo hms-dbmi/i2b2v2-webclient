@@ -1202,21 +1202,18 @@ i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabV
             modifierInfoText += " " + sdxConcept.LabValues.unitValue;
         }
 
-        if (modifierInfoText && modifierInfoText.length > 0) {
+        if (sdxConcept.origData.isModifier) {
+            // modifier
+            sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.conceptModified.renderData.title + " {" + sdxConcept.origData.name + " " + modifierInfoText + "}");
+        } else {
+            // lab value
+            sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.name + " " + modifierInfoText);
+        }
 
-            if (sdxConcept.origData.isModifier) {
-                // modifier
-                sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.conceptModified.renderData.title + " {" + sdxConcept.origData.name + " " + modifierInfoText + "}");
-            } else {
-                // lab value
-                sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.name + " " + modifierInfoText);
-            }
-
-            if (eventIdx !== undefined && groupIdx !== undefined) {
-                let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
-                const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
-                i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
-            }
+        if (eventIdx !== undefined && groupIdx !== undefined) {
+            let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+            const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+            i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
         }
 //    }
 };
