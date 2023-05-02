@@ -339,7 +339,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     i2b2.CRC.view.history.lm_view = container;
 
                     // Load the finder templatee
-                    $.ajax("js-i2b2/cells/CRC/assets/QueryHistoryFinder.html", {
+                    $.ajax("js-i2b2/cells/CRC/assets/QueryHistoryBar.html", {
                         success: (template) => {
                             cell.view.history.template.finder = Handlebars.compile(template);
                             // Render the template into place
@@ -354,7 +354,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 }
                             });
                         },
-                        error: (error) => { console.error("Could not retrieve template: QueryHistoryFinder.html"); }
+                        error: (error) => { console.error("Could not retrieve template: QueryHistoryBar.html"); }
                     });
 
                     $('<div id="i2b2QueryHistoryFinderMessage"></div>').prependTo(container._contentElement).hide();
