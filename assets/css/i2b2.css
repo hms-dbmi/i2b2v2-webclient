@@ -390,11 +390,11 @@ DIV.tabText {}
 .goldenLayoutCol .lm_controls .lm_maximise {
 	margin-left:5px;
 	opacity:1;
-	background-image:url('../images/stack_zoom_icon.gif');
+	background-image:url('../images/maximize_square_iconfinder_16.png');
 }
 
 .goldenLayoutCol .lm_maximised .lm_controls .lm_maximise {
-	background-image:url('../images/stack_zoom_icon.gif');
+	background-image:url('../images/minimize_square_iconfinder_16.png');
 }
 
 .goldenLayout .lm_header .lm_tab.lm_active{
@@ -473,7 +473,7 @@ DIV.tabText {}
 }
 
 .goldenLayoutCol .lm_maximise {
-	background-image: url(../images/stack_zoom_icon.gif);
+	background-image: url(../images/maximize_square_iconfinder_16.png);
 }
 
 .goldenLayoutCol .lm_header .lm_controls>li {
