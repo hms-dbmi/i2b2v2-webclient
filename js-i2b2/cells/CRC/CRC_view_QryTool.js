@@ -1215,7 +1215,6 @@ i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabV
             const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
             i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
         }
-//    }
 };
 // ==================================================================================================
 
