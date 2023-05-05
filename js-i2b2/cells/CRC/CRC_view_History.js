@@ -209,6 +209,7 @@ i2b2.CRC.view.history.clickSearchName = function() {
         crc_sort_order: (i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1?"true": "false"),
         crc_find_category: crc_find_category,
         crc_find_strategy: crc_find_strategy,
+        crc_create_date: "",
         crc_find_string: $("#querySearchTermText").val()
     };
     i2b2.CRC.ajax.getNameInfo("CRC:History", options, scopeCB);
@@ -321,21 +322,31 @@ i2b2.CRC.view.history.doDelete = function(node) {
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doRefreshAll = function() {
+    // TODO: this should work different based on Browse vs. DateList mode
     i2b2.CRC.view.history.treeview.treeview('clear');
     i2b2.CRC.view.history.LoadQueryMasters();
 };
 
+
+// ================================================================================================== //
 i2b2.CRC.view.history.showBrowseView = function() {
+    // this function is used to display the query list using the default browse design
     $('#i2b2QueryHistoryBar .dateListing').hide();
     $('#i2b2QueryHistoryBar .searchOptions').show();
 
-//    setTimeout(()=>{$("#historyDateStart").datepicker().close();}, 1);
+    // refresh display
+    i2b2.CRC.view.history.treeview.treeview('clear');
+    i2b2.CRC.view.history.LoadQueryMasters();
 };
+// ================================================================================================== //
 i2b2.CRC.view.history.showDateListingView = function() {
+    // this function is used to display the query list using the newer list-by-date design
     $('#i2b2QueryHistoryBar .searchOptions').hide();
     $('#i2b2QueryHistoryBar .dateListing .dateError').hide();
     $('#i2b2QueryHistoryBar .dateListing').show();
 
+    // set the initial date to today
+    $('#historyDateStart').val(moment().format("MM/DD/YYYY"));
 };
 
 // This is done once the entire cell has been loaded
@@ -370,10 +381,7 @@ i2b2.events.afterCellInit.add((cell) => {
                             $("#historyDateStart").datepicker({
                                 uiLibrary: 'bootstrap4',
                                 change: function() {
-                                    let startDateElem = $("#historyDateStart");
-                                    let startDate =  startDateElem.val();
-
-                                    if (i2b2.CRC.view.QT.isValidDate(startDate)) {
+                                    if (i2b2.CRC.view.QT.isValidDate($("#historyDateStart").val())) {
                                         $("#i2b2QueryHistoryBar .dateError").hide();
                                     } else {
                                         $("#i2b2QueryHistoryBar .dateError").show()
@@ -568,14 +576,14 @@ i2b2.events.afterCellInit.add((cell) => {
                             $(tab.element).attr("id", elemId);
                             i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
                                 actions: {
-                                    nodeQueryDate: {
+                                    ListByDate: {
                                         name: 'List By Date',
                                         iconClass: 'bi bi-calendar3-range',
                                         onClick: function(node) {
                                             i2b2.CRC.view.history.showDateListingView();
                                         }
                                     },
-                                    nodeOptions: {
+                                    Options: {
                                         name: 'Show Options',
                                         onClick: function (node) {
                                             $("#queryHistoryOptionsFields").empty();
