@@ -1166,19 +1166,18 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
 
 // ==================================================================================================
 i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabValues, groupIdx, eventIdx){
-    //update the concept title if this is a modifier
-    if(sdxConcept.origData.isModifier) {
+    // update the concept title if this is a modifier
         let modifierInfoText;
-        if(sdxConcept.LabValues.numericValueRangeLow && sdxConcept.LabValues.numericValueRangeHigh){
+        if (sdxConcept.LabValues.numericValueRangeLow && sdxConcept.LabValues.numericValueRangeHigh) {
             modifierInfoText  = sdxConcept.LabValues.numericValueRangeLow + " - " +  sdxConcept.LabValues.numericValueRangeHigh;
-        }else if(sdxConcept.LabValues.flagValue){
+        } else if(sdxConcept.LabValues.flagValue) {
             modifierInfoText  = "= "  + sdxConcept.LabValues.flagValue;
-        }
-        else if(sdxConcept.LabValues.isEnum){
+            let name = extractedLabValues.flags.filter(x => x.value === sdxConcept.LabValues.flagValue).map(x => x.name);
+            if (name.length > 0) modifierInfoText += " (" + name[0] + ")";
+        } else if(sdxConcept.LabValues.isEnum) {
             let mappedEnumValues = sdxConcept.LabValues.value.map(x => '"' + extractedLabValues.enumInfo[x] + '"');
             modifierInfoText  = "= (" + mappedEnumValues.join(", ") + ")";
-        }
-        else if (sdxConcept.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER){
+        } else if (sdxConcept.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER) {
             let numericOperatorMapping = {
                 "LT": "<",
                 "LE": "<=",
@@ -1187,8 +1186,7 @@ i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabV
                 "GE": ">="
             }
             modifierInfoText = numericOperatorMapping[sdxConcept.LabValues.valueOperator] + " " + sdxConcept.LabValues.value;
-        }
-        else if (sdxConcept.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT){
+        } else if (sdxConcept.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT) {
             let textOperatorMapping = {
                 "LIKE[exact]": "exact",
                 "LIKE[begin]": "starts with",
@@ -1197,29 +1195,29 @@ i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabV
             }
             modifierInfoText = textOperatorMapping[sdxConcept.LabValues.valueOperator] + " ";
             modifierInfoText  += '"' + sdxConcept.LabValues.value + '"';
-        }
-        else if (sdxConcept.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT){
+        } else if (sdxConcept.LabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT) {
             modifierInfoText = "contains " + '"' + sdxConcept.LabValues.value + '"';
-        }
-        else{
+        } else {
             modifierInfoText = "";
         }
 
-        if(sdxConcept.LabValues.unitValue){
+        if (sdxConcept.LabValues.unitValue) {
             modifierInfoText += " " + sdxConcept.LabValues.unitValue;
         }
 
-        if(modifierInfoText && modifierInfoText.length > 0) {
-            sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.conceptModified.renderData.title
-                + " {" + sdxConcept.origData.name + " " + modifierInfoText + "}");
-
-            if(eventIdx !== undefined && groupIdx !== undefined) {
-                let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
-                const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
-                i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
-            }
+        if (sdxConcept.origData.isModifier) {
+            // modifier
+            sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.conceptModified.renderData.title + " {" + sdxConcept.origData.name + " " + modifierInfoText + "}");
+        } else {
+            // lab value
+            sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.name + " " + modifierInfoText);
         }
-    }
+
+        if (eventIdx !== undefined && groupIdx !== undefined) {
+            let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+            const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+            i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+        }
 };
 // ==================================================================================================
 
