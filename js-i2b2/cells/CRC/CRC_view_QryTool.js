@@ -1411,6 +1411,12 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                     $("#labNumericValueOperatorMain").removeClass("hidden");
                     $("#labNumericValueMain").removeClass("hidden");
 
+                    // display hints as to the data type expected to be entered
+                    let valueTypeString = "";
+                    if (["POSFLOAT", "POSINT"].includes(extractedLabValues.dataType)) valueTypeString += " positive ";
+                    if (["INT", "POSINT"].includes(extractedLabValues.dataType)) valueTypeString += " integer ";
+                    $("label span.dateTypeDesc").text(valueTypeString);
+
                     let numericValueOperatorSelection = $("#labNumericValueOperator");
                     numericValueOperatorSelection.change(function () {
                         let value = $(this).val();
