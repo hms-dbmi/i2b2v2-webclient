@@ -3,7 +3,9 @@
  * plugins to access protected variables and functions in the parent UI.
  **/
 
+if (i2b2 === undefined) i2b2 = {};
 // ----- Magic Strings -----
+if (i2b2.MSG_TYPES === undefined) i2b2.MSG_TYPES = {};
 i2b2.MSG_TYPES.TUNNEL = {};
 i2b2.MSG_TYPES.TUNNEL.LIB_INIT = "I2B2_INIT_TUNNEL";
 i2b2.MSG_TYPES.TUNNEL.LIB_READY = "I2B2_TUNNEL_READY";
