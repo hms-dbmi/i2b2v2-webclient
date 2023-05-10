@@ -3,7 +3,9 @@
  * SDX-style drag and drop with the main i2b2 UI.
  **/
 
+if (i2b2 === undefined) i2b2 = {};
 // ----- Magic Strings -----
+if (i2b2.MSG_TYPES === undefined) i2b2.MSG_TYPES = {};
 i2b2.MSG_TYPES.SDX = {};
 i2b2.MSG_TYPES.SDX.LIB_INIT = "I2B2_INIT_SDX";
 i2b2.MSG_TYPES.SDX.LIB_READY = "I2B2_SDX_READY";
