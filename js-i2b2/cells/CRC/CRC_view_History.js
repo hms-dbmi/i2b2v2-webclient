@@ -209,7 +209,90 @@ i2b2.CRC.view.history.clickSearchName = function() {
         crc_sort_order: (i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1?"true": "false"),
         crc_find_category: crc_find_category,
         crc_find_strategy: crc_find_strategy,
+        crc_create_date: "",
         crc_find_string: $("#querySearchTermText").val()
+    };
+    i2b2.CRC.ajax.getNameInfo("CRC:History", options, scopeCB);
+};
+
+// ================================================================================================== //
+i2b2.CRC.view.history.searchByDate = function(startDate) {
+    // Hide Navigate treeview and search results message and display search status message
+    $("#i2b2TreeviewQueryHistoryFinder").hide();
+    $("#i2b2TreeviewQueryHistory").hide();
+    $("#i2b2QueryHistoryFinderMessage").hide();
+    $("#i2b2QueryHistoryFinderStatus").text("Searching...").show();
+
+    // clear treeview
+    i2b2.CRC.view.history.treeviewFinder.treeview('clear');
+
+    // reformat date
+    startDate = moment(Date.parse(startDate)).format('YYYY-MM-DD');
+
+
+    // create a scoped callback message
+    var scopeCB = new i2b2_scopedCallback();
+    scopeCB.scope = i2b2.CRC.model;
+    scopeCB.callback = function(cellResult) {
+        // auto-extract SDX objects from returned XML
+        cellResult.parse();
+
+        // display the tree results
+        let newNodes = {};
+        for ( let i1=0; i1 < cellResult.model.length; i1++) {
+            let sdxDataNode = cellResult.model[i1];
+            let renderOptions = {
+                title: sdxDataNode.sdxDisplayName ,
+                icon: "sdx_CRC_QM.gif",
+                showchildren: true
+            };
+            sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+            sdxDataNode.renderData.idDOM = "CRC_H_TV-" + i2b2.GUID();
+            let temp = {
+                title: sdxDataNode.renderData.moreDescriptMinor,
+                text: sdxDataNode.renderData.title,
+                icon: sdxDataNode.renderData.cssClassMain,
+                key: sdxDataNode.sdxInfo.sdxType + "-" + sdxDataNode.sdxInfo.sdxKeyValue,
+                iconImg: sdxDataNode.renderData.iconImg,
+                iconImgExp: sdxDataNode.renderData.iconImgExp,
+                i2b2: sdxDataNode
+            };
+
+            temp.state = sdxDataNode.renderData.tvNodeState;
+            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
+                temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
+            }
+            if(!newNodes[temp.key]) {
+                newNodes[temp.key] = temp;
+            }
+        }
+        // push new nodes into the treeview
+        i2b2.CRC.view.history.treeviewFinder.treeview('addNodes', [Object.values(newNodes), true]);
+
+        // render tree
+        i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);
+        $("#i2b2QueryHistoryFinderStatus").hide();
+
+        // Display search results treeview
+        let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
+
+        if (cellResult.model.length === 0){
+            $("#i2b2QueryHistoryFinderMessage").text("No records found.").show();
+            historyFinderTreeview.hide();
+        }
+    };
+
+    // fire the AJAX call
+    let options = {
+        result_wait_time: 180,
+        crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp,
+        crc_sort_by: i2b2.CRC.view['history'].params.sortBy,
+        crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") === -1 ? "CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
+        crc_sort_order: (i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1?"true": "false"),
+        crc_find_category: "top",
+        crc_find_strategy: "contains",
+        crc_create_date: startDate,
+        crc_find_string: "" // $("#querySearchTermText").val()
     };
     i2b2.CRC.ajax.getNameInfo("CRC:History", options, scopeCB);
 };
@@ -321,10 +404,37 @@ i2b2.CRC.view.history.doDelete = function(node) {
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doRefreshAll = function() {
+    // TODO: this should work different based on Browse vs. DateList mode
     i2b2.CRC.view.history.treeview.treeview('clear');
     i2b2.CRC.view.history.LoadQueryMasters();
 };
 
+
+// ================================================================================================== //
+i2b2.CRC.view.history.showBrowseView = function() {
+    i2b2.CRC.view.history.viewDate = null;
+
+    // this function is used to display the query list using the default browse design
+    $('#i2b2QueryHistoryBar .dateListing').hide();
+    $('#i2b2QueryHistoryBar .searchOptions').show();
+
+    // refresh display
+    i2b2.CRC.view.history.treeview.treeview('clear');
+    i2b2.CRC.view.history.LoadQueryMasters();
+};
+// ================================================================================================== //
+i2b2.CRC.view.history.showDateListingView = function() {
+    // this function is used to display the query list using the newer list-by-date design
+    $('#i2b2QueryHistoryBar .searchOptions').hide();
+    $('#i2b2QueryHistoryBar .dateListing .dateError').hide();
+    $('#i2b2QueryHistoryBar .dateListing').show();
+
+    // set the initial date to today
+    let today = moment().format("MM/DD/YYYY");
+    i2b2.CRC.view.history.viewDate = today;
+    $('#historyDateStart').val(today);
+    i2b2.CRC.view.history.searchByDate(today);
+};
 
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
@@ -339,7 +449,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     i2b2.CRC.view.history.lm_view = container;
 
                     // Load the finder templatee
-                    $.ajax("js-i2b2/cells/CRC/assets/QueryHistoryFinder.html", {
+                    $.ajax("js-i2b2/cells/CRC/assets/QueryHistoryBar.html", {
                         success: (template) => {
                             cell.view.history.template.finder = Handlebars.compile(template);
                             // Render the template into place
@@ -353,8 +463,32 @@ i2b2.events.afterCellInit.add((cell) => {
                                     }
                                 }
                             });
+
+                            // init date picker for Date Listing view
+                            $("#historyDateStart").datepicker({
+                                uiLibrary: 'bootstrap4',
+                                change: function() {
+                                    if (i2b2.CRC.view.QT.isValidDate($("#historyDateStart").val())) {
+                                        $("#i2b2QueryHistoryBar .dateError").hide();
+                                        let newDate = $('#historyDateStart').val().trim();
+                                        if (newDate !== i2b2.CRC.view.history.viewDate) {
+                                            i2b2.CRC.view.history.viewDate = newDate;
+                                            i2b2.CRC.view.history.searchByDate(newDate);
+                                        }
+                                    } else {
+                                        $("#i2b2QueryHistoryBar .dateError").show();
+                                    }
+                                }
+                            });
+                            // inject the cancel date listing button
+                            $(`<button class="btn border-left-0 dateListingCancel">
+                                    <i class="bi bi-x-lg" title="Cancel Listing by Date"></i></button>`).appendTo($("#i2b2QueryHistoryBar .dateListing .gj-datepicker"));
+                            // attach the controller
+                            $("#i2b2QueryHistoryBar .dateListingCancel").on('click', i2b2.CRC.view.history.showBrowseView);
+
+                            i2b2.CRC.view.history.showBrowseView();
                         },
-                        error: (error) => { console.error("Could not retrieve template: QueryHistoryFinder.html"); }
+                        error: (error) => { console.error("Could not retrieve template: QueryHistoryBar.html"); }
                     });
 
                     $('<div id="i2b2QueryHistoryFinderMessage"></div>').prependTo(container._contentElement).hide();
@@ -534,7 +668,14 @@ i2b2.events.afterCellInit.add((cell) => {
                             $(tab.element).attr("id", elemId);
                             i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
                                 actions: {
-                                    nodeAnnotate: {
+                                    ListByDate: {
+                                        name: 'List By Date',
+                                        iconClass: 'bi bi-calendar3-range',
+                                        onClick: function(node) {
+                                            i2b2.CRC.view.history.showDateListingView();
+                                        }
+                                    },
+                                    Options: {
                                         name: 'Show Options',
                                         onClick: function (node) {
                                             $("#queryHistoryOptionsFields").empty();

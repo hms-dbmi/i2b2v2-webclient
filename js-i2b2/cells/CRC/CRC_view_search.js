@@ -39,7 +39,7 @@ i2b2.CRC.view.search.toggleSearchClearIcon = function(newValue){
 };
 //================================================================================================== //
 i2b2.CRC.view.search.selectSearchType = function(elem) {
-    $("#i2b2QueryHistoryFinder .active").removeClass("active");
+    $("#i2b2QueryHistoryBar .active").removeClass("active");
     let liItem = $(elem);
     let newDisplayText = liItem.addClass("active").text().trim();
     let filterValue = liItem.addClass("active").find(".dropdown-item").data("searchFilterValue");

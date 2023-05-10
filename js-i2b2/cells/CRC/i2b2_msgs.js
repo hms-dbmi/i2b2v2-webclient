@@ -163,6 +163,7 @@ i2b2.CRC.cfg.msgs.getNameInfo = '<?xml version="1.0" encoding="UTF-8" standalone
 '		</ns4:psmheader>\n'+
 '   	<ns4:get_name_info category="{{{crc_find_category}}}" max="{{{crc_max_records}}}">\n'+
 '      		<match_str strategy="{{{crc_find_strategy}}}">{{{crc_find_string}}}</match_str>\n'+
+'      		<create_date>{{{crc_create_date}}}</create_date>\n'+
 '      		<ascending>{{{crc_sort_order}}}</ascending>\n'+
 ' 	    </ns4:get_name_info>\n'+
 '	</message_body>\n'+
