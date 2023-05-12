@@ -953,6 +953,17 @@
     min-height: 100px;
 }
 
+#labNumericValue.error,
+#labNumericValueRangeLow.error,
+#labNumericValueRangeHigh.error {
+    border: 2px solid red;
+}
+
+#labNumericValueRangeLow, #labNumericValueRangeHigh {
+    display: inline;
+    width: 31%;
+}
+
 #labNumericValueOperator{
     width: 260px;
     margin-bottom: 20px;
