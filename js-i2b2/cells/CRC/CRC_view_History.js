@@ -450,7 +450,6 @@ i2b2.CRC.view.history._loadUsersInOptions =  function() {
                 }
             }
 
-            //delete projUserList;
             $.each(tmp, function (idx, obj) {
                 $('#HISTUser').append($('<option>', {value:idx, text:idx}));
             });
