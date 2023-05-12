@@ -1251,7 +1251,59 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 $("#labDropDown").text($(this).text());
             });
 
+
+            // Save button handler
             $("body #labValuesModal button.lab-save").click(function () {
+                // check for bad characters in number inputs
+                if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER) {
+                    const func_validateType = function(value, dataType) {
+                        const val = String(value).trim();
+                        let validData = true;
+                        // make sure it is a number
+                        if (/^[\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?$/.exec(val) === null) {
+                            validData = false;
+                        }
+                        if (["POSFLOAT", "FLOAT"].includes(dataType)) {
+                            if (String(parseFloat(val)) !== val) validData = false;
+                        }
+                        if (["POSINT", "INT"].includes(dataType)) {
+                            if (String(parseInt(val)) !== val) validData = false;
+                        }
+                        if (["POSINT","POSFLOAT"].includes(dataType)) {
+                            if (val < 0) validData = false;
+                        }
+                        return validData;
+                    }
+
+                    const dataType = extractedLabValues.dataType;
+                    let isValid = true;
+                    if (newLabValues.valueOperator === "BETWEEN") {
+                        // multi-value input
+                        if (!func_validateType(newLabValues.numericValueRangeLow, dataType)) {
+                            $("#labNumericValueRangeLow").addClass("error");
+                            isValid = false;
+                        } else {
+                            $("#labNumericValueRangeLow").removeClass("error");
+                        }
+                        if (!func_validateType(newLabValues.numericValueRangeHigh, dataType)) {
+                            $("#labNumericValueRangeHigh").addClass("error");
+                            isValid = false;
+                        } else {
+                            $("#labNumericValueRangeHigh").removeClass("error");
+                        }
+
+                    } else {
+                        // single value input
+                        if (!func_validateType(newLabValues.value, dataType)) {
+                            $("#labNumericValue").addClass("error");
+                            isValid = false;
+                        } else {
+                            $("#labNumericValue").removeClass("error");
+                        }
+                    }
+                    if (!isValid) return;
+                }
+
                 $("#labValuesModal div").eq(0).modal("hide");
                 switch (newLabValues.valueType) {
                     case i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG:
@@ -1268,12 +1320,14 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                         newLabValues.flagValue = null;
                         break;
                 }
+
                 sdxConcept.LabValues = newLabValues;
 
                 i2b2.CRC.view.QT.updateModifierDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
                 i2b2.CRC.view.QS.clearStatus();
             });
 
+            // UI event handler
             $("#labAnyValueType").click(function () {
                 $(".labValueSection").addClass("hidden");
                 $(".labGraphUnitSection").addClass("hidden");
@@ -1282,6 +1336,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 newLabValues.valueType = null;
             });
 
+            // UI event handler
             $("#labFlagType").click(function () {
                 $(".labValueSection").addClass("hidden");
                 $(".labGraphUnitSection").addClass("hidden");
@@ -1291,6 +1346,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 newLabValues.valueOperator = 'EQ';
             });
 
+            // UI event handler
             $("#labByValueType").click(function () {
                 $("#labFlag").addClass("hidden");
                 if (extractedLabValues.dataType === 'ENUM') {
@@ -1319,8 +1375,10 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 }
             }
 
+
             $("#labHeader").text(extractedLabValues.name);
 
+            // configure the UI display based on type
             if (extractedLabValues.flagType) {
                 let labFlagValueSelection = $("#labFlagValue");
                 for (let i = 0; i < extractedLabValues.flags.length; i++) {
@@ -1352,6 +1410,12 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 case "INT":
                     $("#labNumericValueOperatorMain").removeClass("hidden");
                     $("#labNumericValueMain").removeClass("hidden");
+
+                    // display hints as to the data type expected to be entered
+                    let valueTypeString = "";
+                    if (["POSFLOAT", "POSINT"].includes(extractedLabValues.dataType)) valueTypeString += " positive ";
+                    if (["INT", "POSINT"].includes(extractedLabValues.dataType)) valueTypeString += " integer ";
+                    $("label span.dateTypeDesc").text(valueTypeString);
 
                     let numericValueOperatorSelection = $("#labNumericValueOperator");
                     numericValueOperatorSelection.change(function () {
