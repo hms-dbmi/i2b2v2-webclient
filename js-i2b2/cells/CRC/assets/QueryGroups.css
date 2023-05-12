@@ -900,6 +900,12 @@
     opacity: 0;
     transition: opacity 0.35s, margin-left 0.5s;
 }
+
+.TermList .concept:hover .actions {
+    background-color: white;
+    padding-right: 1rem;
+}
+
 .TermList .concept:hover .actions i {
     opacity: 1;
     margin-left: .3em;
@@ -945,6 +951,17 @@
 .labTypeFlagAndValues {
     display: flex;
     min-height: 100px;
+}
+
+#labNumericValue.error,
+#labNumericValueRangeLow.error,
+#labNumericValueRangeHigh.error {
+    border: 2px solid red;
+}
+
+#labNumericValueRangeLow, #labNumericValueRangeHigh {
+    display: inline;
+    width: 31%;
 }
 
 #labNumericValueOperator{
