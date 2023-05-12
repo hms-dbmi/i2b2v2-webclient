@@ -454,6 +454,10 @@ i2b2.CRC.view.history._loadUsersInOptions =  function() {
             $.each(tmp, function (idx, obj) {
                 $('#HISTUser').append($('<option>', {value:idx, text:idx}));
             });
+
+            if(i2b2.CRC.view.history.params.userBy !== undefined) {
+                $('#HISTUser').val(i2b2.CRC.view.history.params.userBy);
+            }
         }
         if( i2b2.CRC.view.history.allUsers === undefined)
         {
