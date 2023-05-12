@@ -66,7 +66,7 @@ i2b2.CRC.cfg.msgs.getQueryMasterList_fromUserId = '<?xml version="1.0" encoding=
 '			<request_type>{{{crc_user_type}}}</request_type>\n'+
 '		</ns4:psmheader>\n'+
 '		<ns4:request xsi:type="ns4:user_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
-'			<user_id>{{{sec_user}}}</user_id>\n'+
+'			<user_id>{{{crc_user_by}}}</user_id>\n'+
 '			<group_id>{{{sec_project}}}</group_id>\n'+
 '			<fetch_size>{{{crc_max_records}}}</fetch_size>\n'+
 '		</ns4:request>\n'+

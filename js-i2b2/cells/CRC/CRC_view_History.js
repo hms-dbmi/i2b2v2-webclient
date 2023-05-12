@@ -363,12 +363,13 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
 
     // fire the AJAX call
     let request_type = "CRC_QRY_getQueryMasterList_fromUserId";
-    var user_type = i2b2.PM.model.login_username;
+    let user_type = i2b2.PM.model.login_username;
     if(i2b2.PM.model.userRoles.indexOf("MANAGER") > -1){
-        if($('#HISTUser').val() === '@'){
+        let histUser = $('#HISTUser').val();
+        if( histUser === '@'){
             request_type = "CRC_QRY_getQueryMasterList_fromGroupId";
         } else {
-            user_type = $('#HISTUser').val();
+            user_type = histUser;
         }
     }
 
@@ -436,6 +437,42 @@ i2b2.CRC.view.history.showDateListingView = function() {
     i2b2.CRC.view.history.searchByDate(today);
 };
 
+i2b2.CRC.view.history._loadUsersInOptions =  function() {
+    // check if manager
+    if(i2b2.PM.model.userRoles.indexOf("MANAGER") > -1){
+        // get all user roles call
+        // parse thru the list and add them to the drop down
+        let loadUsers = function(){
+            let tmp = {};
+            for (let i=0; i<i2b2.CRC.view.history.allUsers.model.length; i++) {
+                if(typeof i2b2.CRC.view.history.allUsers.model[i].username !== 'undefined'){
+                    tmp[i2b2.CRC.view.history.allUsers.model[i].username] = i2b2.CRC.view.history.allUsers.model[i];
+                }
+            }
+
+            //delete projUserList;
+            $.each(tmp, function (idx, obj) {
+                $('#HISTUser').append($('<option>', {value:idx, text:idx}));
+            });
+        }
+        if( i2b2.CRC.view.history.allUsers === undefined)
+        {
+             i2b2.PM.ajax.getAllRole("PM:Admin", { id: i2b2.PM.model.login_project }, function(results) {
+                 i2b2.CRC.view.history.allUsers = results.parse();
+                 loadUsers();
+             });
+        }
+        else{
+            loadUsers();
+        }
+
+    } else {
+        // if not manager, then disable the option
+        $('#HISTUserLabel').css('color', '#a6a6a6');
+        $('#HISTUser').prop('disabled', true);
+    }
+}
+// ================================================================================================== //
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((cell) => {
@@ -624,8 +661,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                         tmpValue = 'DATE';
                                     }
                                     i2b2.CRC.view.history.params.sortBy = tmpValue;
-                                    tmpValue = parseInt($('#HISTMaxQryDisp').val(), 10);
-                                    i2b2.CRC.view.history.params.maxQueriesDisp = tmpValue;
+                                    i2b2.CRC.view.history.params.maxQueriesDisp = parseInt($('#HISTMaxQryDisp').val(), 10);
                                     i2b2.CRC.view.history.params.userBy = userValue;
                                     // requery the history list
                                     i2b2.CRC.view.history.doRefreshAll();
@@ -680,6 +716,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                         onClick: function (node) {
                                             $("#queryHistoryOptionsFields").empty();
                                             $((Handlebars.compile("{{> QueryHistoryOptions}}"))(i2b2.CRC.view.history.params)).appendTo("#queryHistoryOptionsFields");
+                                            i2b2.CRC.view.history._loadUsersInOptions();
                                             $("#crcHistoryOptionsModal div").eq(0).modal("show");
                                         }
                                     }
