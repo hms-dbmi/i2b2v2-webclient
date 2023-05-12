@@ -23,6 +23,19 @@ span.sdxStyleONT-CONCPT.tvBranch::before {
 span.sdxStyleONT-CONCPT.tvLeaf::before {
     background-image: url(sdx_ONT_CONCPT_leaf.png);
 }
+span.sdxStyleONT-CONCPT.protected::before {
+    background-image: url(sdx_ONT_CONCPT_root_protected.png);
+    background-repeat: no-repeat;
+}
+span.sdxStyleONT-CONCPT.tvRoot.protected::before {
+    background-image: url(sdx_ONT_CONCPT_root_protected.png);
+}
+span.sdxStyleONT-CONCPT.tvBranch.protected::before {
+    background-image: url(sdx_ONT_CONCPT_branch_protected.png);
+}
+
+
+
 
 
 
