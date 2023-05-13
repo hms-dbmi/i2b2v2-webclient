@@ -7,9 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: CRC > SDX > QueryMaster');
-console.time('execute time');
-
 
 i2b2.sdx.TypeControllers.QM = {};
 i2b2.sdx.TypeControllers.QM.model = {};
@@ -39,6 +36,16 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
     // === moreDescriptMain
     // === moreDescriptMinor
     // === tvNodeState
+
+    let iconImg = "sdx_CRC_QM.gif"
+    let cssClassMain = "sdxStyleCRC-QM";
+
+    //use a different default icon for temporal queries
+    if(sdxData.sdxInfo.sdxDisplayName.startsWith("(t)")){
+        iconImg = 'sdx_CRC_QMT.gif';
+       cssClassMain = "sdxStyleCRC-QMT";
+    }
+
     let t;
     if (options === undefined) { options = {}; }
     // default QM icons
@@ -46,7 +53,7 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
         if (typeof options.icon === 'string') {
             t = options.icon;
         } else {
-            t = 'sdx_CRC_QM.gif';
+            t = iconImg;
         }
         options.icon = {
             root: t,
@@ -57,11 +64,15 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
         };
     }
 
+    if(options.cssClassMain !== undefined){
+        cssClassMain = options.cssClassMain;
+    }
+
     let nodeInfo = {
         title: undefined,
         iconImg: undefined,
         iconImgExp: undefined,
-        cssClassMain: "sdxStyleCRC-QM",
+        cssClassMain: cssClassMain,
         cssClassMinor: undefined,
         moreDescriptMain: undefined,
         moreDescriptMinor: undefined,
@@ -75,6 +86,7 @@ i2b2.sdx.TypeControllers.QM.RenderData = function(sdxData, options) {
     } else  {
         nodeInfo.title = sdxData.sdxInfo.sdxDisplayName;
     }
+
 
 
     if (options.showchildren === false) {
@@ -194,8 +206,3 @@ i2b2.sdx.TypeControllers.QM.dragStartHandler = function(i2b2Data) {
     if (i2b2Data.renderData !== undefined) delete i2b2Data.renderData.idDOM;
     return i2b2Data;
 };
-
-
-// ==========================================================================
-console.timeEnd('execute time');
-console.groupEnd();

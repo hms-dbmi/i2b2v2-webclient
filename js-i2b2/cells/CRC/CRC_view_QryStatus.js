@@ -7,8 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 2-3-2022: Relaunch [Marc-Danie]
  */
-console.group('Load & Execute component file: CRC > view > Query Status');
-console.time('execute time');
 
 // create and save the view objects
 i2b2.CRC.view['QS'] = new i2b2Base_cellViewController(i2b2.CRC, 'QS');
@@ -32,14 +30,12 @@ i2b2.CRC.view.QS.clearStatus = function() {
     $("#infoQueryStatusTable").empty();
     $("#infoQueryStatusGraph").hide();
 };
-// ================================================================================================== //
+
 // This is done once the entire cell has been loaded
-console.info("SUBSCRIBED TO i2b2.events.afterCellInit");
-i2b2.events.afterCellInit.add(
-    function (cell) {
-        if (cell.cellCode === 'CRC') {
 // ================================================================================================== //
-            console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+i2b2.events.afterCellInit.add((cell) => {
+        if (cell.cellCode === 'CRC') {
+            console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
 
             // ___ Register this view with the layout manager ____________________
             i2b2.layout.registerWindowHandler("i2b2.CRC.view.QS",
@@ -88,6 +84,3 @@ i2b2.events.afterCellInit.add(
 i2b2.CRC.view.QS.timerTick = function() {
     i2b2.CRC.model.runner.elapsedTime = Math.round((new Date() - i2b2.CRC.model.runner.startTime) / 100) / 10;
 };
-
-console.timeEnd('execute time');
-console.groupEnd();

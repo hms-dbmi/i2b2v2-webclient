@@ -5,15 +5,14 @@
  * @author		Nick Benik, Griffin Weber MD PhD
  * @version 	1.3
  **/
+
 i2b2.hive.communicatorFactory = function(cellCode){
 
     try {
         var cellURL = i2b2[cellCode].cfg.cellURL;
-    }
-    catch (e) {}
-    if (!cellURL) {
-        console.warn("communicatorFactory: '"+cellCode+"' does not have a cellURL specified");
-    }
+    } catch (e) {}
+
+    if (!cellURL) console.warn("communicatorFactory: '"+cellCode+"' does not have a cellURL specified");
 
     function i2b2Base_communicator(){}
     var retCommObj = new i2b2Base_communicator;
@@ -21,8 +20,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
     retCommObj.globalParams = {}; //TODO: remove this => new Hash;
     retCommObj.cellParams = {}; //TODO: remove this => new Hash;
     retCommObj._commData = {};
-    // setup for sniffer message
-    retCommObj._SniffMsg =  $.Callbacks(); //TODO: remove this => new YAHOO.util.CustomEvent('CellCommMessage');
 
     retCommObj._addFunctionCall = function(name, url_string, xmlmsg, escapeless_params, parseFunc){
         var protectedNames = ["ParentCell", "globalParams", "cellParams", "_commMsgs", "_addFunctionCall", "_doSendMsg", "_defaultCallbackOK", "_defaultCallbackFAIL"];
@@ -47,20 +44,21 @@ i2b2.hive.communicatorFactory = function(cellCode){
             // - the parse() function is responsible for creating and populating the "model" namespace withing the communicator packet.
             this._commData[name].parser = parseFunc;
         }
-        // register with the sniffer subsystem
-        //    channelName: "CELLNAME",
-        //    channelActions: ["the names", "of the", "Cell's server calls"],
-        //    channelSniffEvent: {yui custom event}
-        var msg = {
+
+        let msg = {
             channelName: this.ParentCell,
-            channelActions: Object.keys(this._commData),
-            channelSniffEvent: this._SniffMsg
+            channelActions: Object.keys(this._commData)
         };
-        i2b2.hive.MsgSniffer.RegisterMessageSource(msg);
+        i2b2.hive.msgSniffer.registerMessageSource(msg);
     };
 
 
     retCommObj._doSendMsg = function(funcName, originName, parameters, callback, transportOptions){
+        let snifferPackage = {
+            cell: this.ParentCell,
+            function: funcName,
+            requester: originName
+        };
         if (!this._commData[funcName]) {
             console.error("Requested function does not exist [" +this.ParentCell+"->"+funcName+"] called by "+originName);
             return false;
@@ -82,12 +80,12 @@ i2b2.hive.communicatorFactory = function(cellCode){
             params: parameters
         };
         // mix in our transport options from the originator call
-        $.extend(commOptions, transportOptions);
+        Object.assign(commOptions, transportOptions);
         // if no callback is set then we want to make this interaction synchronous
         if (!callback) { commOptions.asynchronous = false; }
         // collect message values
         var sMsgValues = {};
-        $.extend(sMsgValues, parameters);
+        Object.assign(sMsgValues, parameters);
         // proxy server data
         sMsgValues.proxy_info = '';
         if (commOptions.url !== undefined) {
@@ -105,6 +103,8 @@ i2b2.hive.communicatorFactory = function(cellCode){
             sProxy_Url = sUrl;
         }
         execBubble.proxyURL = sProxy_Url;
+        snifferPackage.urlService = sUrl;
+        snifferPackage.urlProxy = sProxy_Url;
 
         // PM + security info
         if (commOptions.user !== undefined) {
@@ -153,14 +153,20 @@ i2b2.hive.communicatorFactory = function(cellCode){
         for (var tag in sMsgValues) {
             sMessage = sMessage.replace(new RegExp("{{{"+tag+"}}}", 'g'), sMsgValues[tag]);
         }
-        var sMessageNoPWD = new String(sMessage);
-        if (execBubble.funcName == 'getUserAuth') {
-            sMessageNoPWD = sMessageNoPWD.replace(/<password>.*<\/password>/gi,"<password></password>");
-        }
+        // create a version that removes the password and session token from the msg
+        let sMessageNoPWD = new String(sMessage);
+        let posStart = sMessageNoPWD.indexOf("<password");
+        posStart = sMessageNoPWD.indexOf(">",posStart) + 1;
+        posEnd = sMessageNoPWD.indexOf("</password>", posStart);
+        sMessageNoPWD = sMessageNoPWD.substring(0,posStart) + "*****" + sMessageNoPWD.substring(posEnd);
         execBubble.msgSent = sMessageNoPWD;
+        snifferPackage.msgSent = {
+            msg: sMessageNoPWD,
+            when: new Date()
+        }
+
         var verify = i2b2.h.parseXml(sMessage);
         var verify_status = verify.getElementsByTagName('proxy')[0];
-
         if (!verify_status) {
             sMessage = sMessage.replace(/\&amp;/g,'&');
             sMessage = sMessage.replace(/\&/g, '\&amp;');
@@ -194,13 +200,19 @@ i2b2.hive.communicatorFactory = function(cellCode){
         ];
         var tmp = Object.keys(commOptions);
         tmp = tmp.filter(function(v) { return (removeKeys.indexOf(v) === -1) });
-        console.groupEnd();
         execBubble.timeSent = new Date();
         commOptions.i2b2_execBubble = execBubble;
 
-
         var myCallback = {
-                  success: function(o) {
+                  success: function(o, status, xhr) {
+                      // Message logging for debug purposes
+                      snifferPackage.status = xhr.status;
+                      snifferPackage.msgRecv = {
+                          when: new Date(),
+                          msg: String(xhr.responseText)
+                      }
+                      if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
+
                       /* success handler code */
                       if (typeof o !== "object") {
                           alert("There is a problem contacting the server!");
@@ -211,7 +223,15 @@ i2b2.hive.communicatorFactory = function(cellCode){
                       o.request.options.i2b2_execBubble = commOptions.i2b2_execBubble;
                       retCommObj._defaultCallbackOK(o);
                   },
-                  failure: function(o) {
+                  failure: function(o, status, xhr) {
+                      // Message logging for debug purposes
+                      snifferPackage.status = xhr.status;
+                      snifferPackage.msgRecv = {
+                          when: new Date(),
+                          msg: String(xhr.responseText)
+                      }
+                      if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
+
                       /* failure handler code */
                       o.request = {};
                       o.request.options = {};
@@ -238,7 +258,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
                 .done(myCallback.success)
                 .fail(myCallback.failure);
         }
-        console.groupEnd();
         return true;
     };
 
@@ -303,14 +322,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         else {
             cbMsg.parse = execBubble.self._commData[execBubble.funcName].parser;
         }
-        console.groupEnd();
 
-        // send the result message to the callback function
-        if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)){
-            // broadcast a debug message to any sniffers/tools
-            var sniffPackage = i2b2.h.BuildSniffPack(execBubble.cellName, execBubble.funcName, cbMsg, execBubble.reqOrigin);
-            execBubble.self._SniffMsg.fire(sniffPackage);
-        }
         // return results to caller
         if (origCallback !== undefined )
         if (i2b2.h.getObjectClass(origCallback)=='i2b2_scopedCallback') {
@@ -338,13 +350,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
             proxyUrl: execBubble.proxyURL,
             error: true
         };
-        // broadcast a debug message to any sniffers/tools
-        // send the result message to the callback function
-        if (i2b2.PM.login_debugging === undefined || (i2b2.PM.login_debugging && !i2b2.PM.login_debugging_suspend)){
-            // broadcast a debug message to any sniffers/tools
-            var sniffPackage = i2b2.h.BuildSniffPack(execBubble.cellName, execBubble.funcName, cbMsg, execBubble.reqOrigin);
-            execBubble.self._SniffMsg.fire(sniffPackage);
-        }
+
         // return results to caller
         if (origCallback !== undefined)
         if (i2b2.h.getObjectClass(origCallback)=='i2b2_scopedCallback') {
@@ -356,5 +362,3 @@ i2b2.hive.communicatorFactory = function(cellCode){
 
     return retCommObj;
 };
-
-

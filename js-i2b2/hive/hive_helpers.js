@@ -4,9 +4,6 @@
  * @namespace	i2b2.h
  * @version 	2.0
  **/
-console.group('Load & Execute component file: hive > helpers');
-console.time('execute time');
-
 
 if (typeof i2b2.h === "undefined") i2b2.h = {};
 
@@ -267,20 +264,46 @@ i2b2.h.Xml2String = function(x) {
     }
 };
 
-
+// USE THIS FUNCTION FOR ALL TEMPLATE COMPARISONS
 // ================================================================================================== //
-Handlebars.registerHelper('ifeq', function (a, b, options) {
-    if (a == b) { return options.fn(this); }
-    return options.inverse(this);
+Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+    switch (operator) {
+        case '==':
+            return (v1 == v2) ? options.fn(this) : options.inverse(this);
+        case '===':
+            return (v1 === v2) ? options.fn(this) : options.inverse(this);
+        case '!=':
+            return (v1 != v2) ? options.fn(this) : options.inverse(this);
+        case '!==':
+            return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+        case '<':
+            return (v1 < v2) ? options.fn(this) : options.inverse(this);
+        case '<=':
+            return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+        case '>':
+            return (v1 > v2) ? options.fn(this) : options.inverse(this);
+        case '>=':
+            return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+        case '&&':
+            return (v1 && v2) ? options.fn(this) : options.inverse(this);
+        case '||':
+            return (v1 || v2) ? options.fn(this) : options.inverse(this);
+        default:
+            return options.inverse(this);
+    }
 });
+// ================= handlebars helper to increment index ==================
+Handlebars.registerHelper('increment', function(number, options) {
+    if(typeof(number) === 'undefined' || number === null)
+        return null;
 
+    // Increment by inc parameter if it exists or just by one
+    return number + (options.hash.inc || 1);
+});
 // ================================================================================================== //
-Handlebars.registerHelper('ifnoteq', function (a, b, options) {
-    if (a != b) { return options.fn(this); }
-    return options.inverse(this);
+Handlebars.registerHelper("objLen", function(obj) {
+    return Object.keys(obj).length;
 });
-
-
 // ================================================================================================== //
 // helper function to build a sniffer package for Cell Communications events
 i2b2.h.BuildSniffPack = function(cellName, cellFuncName, results, signalOrigin) {
@@ -299,8 +322,3 @@ i2b2.h.StripCRLF = function(input) {
     let ret = String(input).replace(/\r/g, ">");
     return ret.replace(/\n/g, ">");
 };
-
-
-// ================================================================================================== //
-console.timeEnd('execute time');
-console.groupEnd();

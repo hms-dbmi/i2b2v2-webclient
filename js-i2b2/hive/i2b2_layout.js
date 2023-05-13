@@ -5,10 +5,6 @@
  * @version 	2.0
  **/
 
-
-console.group('Load & Execute component file: hive > layout');
-console.time('execute time');
-
 // ================================================================================================== //
 i2b2.layout = {
     __regCallbacks: {},
@@ -310,8 +306,3 @@ i2b2.events.afterLogin.add(
         // TODO: Manage this setting
     })
 );
-
-
-// ================================================================================================== //
-console.timeEnd('execute time');
-console.groupEnd();

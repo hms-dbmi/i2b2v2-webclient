@@ -4,7 +4,7 @@ i2b2.ONT.view.info = {
     showLabWindow: function() {
         // display's the lab value entry modal
         let d = i2b2.ONT.view.info.model.sdxData.origData.basecode;
-        if (d && d.startsWith("LOINC") || d.startsWith("LCS-I2B2")) i2b2.CRC.view.QT.labValue.showLabValues(i2b2.ONT.view.info.model.sdxData);
+        if (d && d.startsWith("LOINC") || d.startsWith("LCS-I2B2")) i2b2.CRC.view.QT.labValue.getAndShowLabValues(i2b2.ONT.view.info.model.sdxData);
     },
     loadParent: function() {
         // generate the parent's key
@@ -59,10 +59,13 @@ i2b2.ONT.view.info = {
         if (typeof data.origData.basecode !== "undefined"){
             termDescript += 'represents the code of <span class="basecode">' + data.origData.basecode + '</span> and ';
         }
+        let noChildren;
         if (children1 === "C" || children1 === "F" || children1 === "O" || children1 === "D"){
             termDescript += 'may ';
+            noChildren = false;
         } else {
             termDescript += 'does not ';
+            noChildren = true;
         }
         termDescript += 'have children below it.';
 
@@ -78,9 +81,11 @@ i2b2.ONT.view.info = {
             heirarchy: data.origData.tooltip,
             canGoUp: (parseInt(data.origData.level) > 1),
             key: data.sdxInfo.sdxKeyValue,
-            escKey: JSON.stringify(data.sdxInfo.sdxKeyValue).replace(/((^")|("$))/g, "").trim(),
+//            escKey: JSON.stringify(data.sdxInfo.sdxKeyValue).replace(/((^")|("$))/g, "").trim(),
+            escKey: data.sdxInfo.sdxKeyValue.trim(),
             path: data.origData.dim_code,
-            escPath: JSON.stringify(data.origData.dim_code).replace(/((^")|("$))/g, "").trim(),
+//            escPath: JSON.stringify(data.origData.dim_code).replace(/((^")|("$))/g, "").trim(),
+            escPath: data.origData.dim_code.trim(),
             hasSQL: data.origData.operator.toUpperCase() === "LIKE",
             table: data.origData.table_name,
             column: data.origData.column_name,
@@ -92,40 +97,42 @@ i2b2.ONT.view.info = {
         i2b2.ONT.view.info.model.displayData = displayData;
 
         // get the children of the node
-        let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
-            if (!i2b2CellMsg.error) {
-                let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
-                for (let i=0; i<1*c.length; i++) {
-                    let {sdx, tv} = i2b2.ONT.ctrlr.gen.generateNodeData(c[i]);
-                    // save the node to the ONT data model
-                    i2b2.ONT.view.info.model.displayData.children.push(sdx);
+        if (!noChildren) {
+            let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
+                if (!i2b2CellMsg.error) {
+                    let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
+                    for (let i=0; i<1*c.length; i++) {
+                        let {sdx, tv} = i2b2.ONT.ctrlr.gen.generateNodeData(c[i]);
+                        // save the node to the ONT data model
+                        i2b2.ONT.view.info.model.displayData.children.push(sdx);
+                    }
+                } else {
+                    alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
                 }
-            } else {
-                alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
-            }
-            // rerender the screen to show the child nodes
-            i2b2.ONT.view.info.render();
-            // create click handlers for the child links
-            $('.i2b2OntInfo .child-link a').on('click', (evt) => {
-                let key = $(evt.target).data('sdxKey');
-                let data = i2b2.ONT.view.info.model.displayData.children.filter((child) => { return child.sdxInfo.sdxKeyValue == key });
-                if (data.length > 0) {
-                    // scroll to the top of the window
-                    i2b2.ONT.view.info.model.viewport[0].scrollTop = 0;
-                    // load the new term
-                    i2b2.ONT.view.info.load(data[0]);
-                }
-            });
+                // rerender the screen to show the child nodes
+                i2b2.ONT.view.info.render();
+                // create click handlers for the child links
+                $('.i2b2OntInfo .child-link a').on('click', (evt) => {
+                    let key = $(evt.target).data('sdxKey');
+                    let data = i2b2.ONT.view.info.model.displayData.children.filter((child) => { return child.sdxInfo.sdxKeyValue == key });
+                    if (data.length > 0) {
+                        // scroll to the top of the window
+                        i2b2.ONT.view.info.model.viewport[0].scrollTop = 0;
+                        // load the new term
+                        i2b2.ONT.view.info.load(data[0]);
+                    }
+                });
 
-        }, i2b2.ONT.view.info.model.displayData);
-        // fire the AJAX call
-        let options = {};
-        options.version = "1.2";
-        options.ont_max_records = "";
-        options.ont_hidden_records = false;
-        options.ont_synonym_records = false;
-        options.concept_key_value = data.sdxInfo.sdxKeyValue;
-        i2b2.ONT.ajax.GetChildConcepts("ONT:Info", options, scopeCB);
+            }, i2b2.ONT.view.info.model.displayData);
+            // fire the AJAX call
+            let options = {};
+            options.version = "1.2";
+            options.ont_max_records = "";
+            options.ont_hidden_records = false;
+            options.ont_synonym_records = false;
+            options.concept_key_value = data.sdxInfo.sdxKeyValue;
+            i2b2.ONT.ajax.GetChildConcepts("ONT:Info", options, scopeCB);
+        }
 
         // render what we have and make the tab active if asked to do so
         i2b2.ONT.view.info.render();
@@ -150,10 +157,12 @@ i2b2.ONT.view.info = {
 
 
 
+// This is done once the entire cell has been loaded
 //================================================================================================== //
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
     if (cell.cellCode === "ONT") {
-        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.ONT.view.info",
             (function (container, scope) {
@@ -182,4 +191,4 @@ i2b2.events.afterCellInit.add((function(cell){
             }).bind(this)
         );
     }
-}));
+});

@@ -4,20 +4,6 @@
  * @namespace	i2b2.PM
  * @version 	2.0
  **/
-console.group('Load & Execute component file: cells > PM > ctrlr');
-console.time('execute time');
-
-
-// display the modal login form after the PM cell is fully loaded
-// ================================================================================================== //
-i2b2.events.afterCellInit.add(
-    (function(cell_ref){
-        if (cell_ref.cellCode === "PM") {
-            console.warn("PM CELL: Load the login form");
-            i2b2.PM.doLoginDialog();
-        }
-    })
-);
 
 // ================================================================================================== //
 i2b2.PM.doSamlLogin = function(service) {
@@ -352,13 +338,13 @@ i2b2.PM._processUserConfig = function (data) {
         i2b2.PM._processLaunchFramework();
     } else {
         // display list of possible projects for the user to select
-        i2b2.PM.view.modal.projectDialog.showProjects();
+        i2b2.PM.view.showProjectSelectionModal();
     }
 };
 
 // ================================================================================================== //
 i2b2.PM.extendUserSession = function() {
-    let login_password = i2b2.PM.model.login_password.substring(i2b2.PM.model.login_password.indexOf(">")+1,i2b2.PM.model.login_password.lastIndexOf("<") );
+    let login_password = i2b2.PM.model.login_password;
 
     // call the PM Cell's communicator Object
     let callback = new i2b2_scopedCallback(i2b2.PM._processUserConfig, i2b2.PM);
@@ -509,7 +495,7 @@ i2b2.PM._processLaunchFramework = function() {
                 let x = i2b2.h.XPath(oXML, "//cell_data[@id='"+cellKey+"']/param[@name]");
                 for (let i = 0; i < x.length; i++) {
                     let n = i2b2.h.XPath(x[i], "attribute::name")[0].nodeValue;
-                    cellRef.params[n] = x[i].firstChild.nodeValue;
+                    cellRef.params[n] = x[i].innerHTML;
                 }
                 // do not save cell info unless the URL attribute has been set (exception is PM cell)
                 if (cellRef.url === "" && cellKey !== "PM") {
@@ -645,8 +631,3 @@ i2b2.PM.trigger_WDT = function() {
         i2b2.hive.loadMonitor();
     }
 };
-
-
-// ================================================================================================== //
-console.timeEnd('execute time');
-console.groupEnd();

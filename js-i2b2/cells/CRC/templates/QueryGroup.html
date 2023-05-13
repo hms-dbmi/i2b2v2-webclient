@@ -3,125 +3,52 @@
         <div class="JoinText">and</div>
         <div class="with"><i class="bi bi-circle nosel"></i><i class="bi bi-circle-fill sel"></i>with</div>
         <div class="without"><i class="bi bi-circle nosel"></i><i class="bi bi-circle-fill sel"></i>without</div>
-        <div class="when"><i class="bi bi-circle nosel"></i><i class="bi bi-circle-fill sel"></i>when</div>
+        <div class="when whenItem"><i class="bi bi-circle nosel" ></i><i class="bi bi-circle-fill sel"></i>when</div>
         <div class="qgclose"><i class="bi bi-x-lg" title="remove query group"></i></div>
+        {{#unless when}}
+            <div id="linkOptions" class="linkOptions"  data-bs-toggle="dropdown">
+                {{#ifCond timing '===' 'ANY'}}
+                    <div title="panel timing: same instance" class="instLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>i</div></div>
+                    <div title="panel timing: same encounter" class="encLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>e</div></div>
+                    <div title="panel timing: independent" class="noLink iconFlipped"><div class="linkLetter"><i class="bi bi-link"></i><i class="bi bi-slash-lg unlinkSlash"></i></div></div>
+                {{/ifCond}}
+                {{#ifCond timing '===' 'SAMEINSTANCENUM'}}
+                    <div title="panel timing: same instance" class="instLink"><div class="linkLetter"><i class="bi bi-link"></i>i</div></div>
+                    <div title="panel timing: same encounter" class="encLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>e</div></div>
+                    <div title="panel timing: independent" class="noLink iconFlipped" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i><i class="bi bi-slash-lg unlinkSlash"></i></div></div>
+                {{/ifCond}}
+                {{#ifCond timing '===' 'SAMEVISIT'}}
+                    <div title="panel timing: same encounter" class="encLink"><div class="linkLetter"><i class="bi bi-link"></i>e</div></div>
+                    <div title="panel timing: same instance" class="instLink" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i>i</div></div>
+                    <div title="panel timing: independent" class="noLink iconFlipped" style="display:none"><div class="linkLetter"><i class="bi bi-link"></i><i class="bi bi-slash-lg unlinkSlash"></i></div></div>
+                {{/ifCond}}
+            </div>
+            <div class="linkOptionsDropdownMenu dropdown-menu"  aria-labelledby="linkOptions">
+                <button class="dropdown-item linkOptionsItem sameEnc" type="button" onclick="i2b2.CRC.view.QT.linkAsSameEncounter(this);">same encounter</button>
+                <button class="dropdown-item linkOptionsItem sameInst" type="button" onclick="i2b2.CRC.view.QT.linkAsSameInstance(this);">same instance</button>
+                {{#ifCond timing '!==' 'ANY'}}
+                    <button class="dropdown-item linkOptionsItem unLink" type="button" onclick="i2b2.CRC.view.QT.unLinkQueryGroup(this);" style="display:none">unlink</button>
+                {{/ifCond}}
+                {{#ifCond timing '===' 'ANY'}}
+                    <button class="dropdown-item linkOptionsItem unLink" type="button" onclick="i2b2.CRC.view.QT.unLinkQueryGroup(this);">unlink</button>
+                {{/ifCond}}
+            </div>
+        {{/unless}}
     </div>
     <div class="body">
         <div class="leftbar"></div>
         <div class="main">
             <div class="content">
-                <div class="Event1Container event" data-eventIdx="0">
-                    <div class="EventLbl first">
-                        <div>Event 1</div>
-                        <i class="bi bi-stopwatch"></i>
-                    </div>
-                    <div class="TermList" style="clear:both"></div>
-                    <div class="orDragAdditional">or drag additional concepts</div>
-                    <div class="DateOccursLbl">SET DATE RANGE OR MULTIPLE OCCURRENCES <i class="bi bi-chevron-down"></i></div>
-                    <div class="DateOccursBody expander hidden">
-                        <div style="float:left; width:50%;">
-                            <div style="width:11em; margin:auto; position:relative; text-align:center; ">
-                                <div style="font-size: 0.8em;">Concepts must occur between</div>
-                                <div style="width:11em;">
-                                    <input class="DateStart form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.start}}" />
-                                </div>
-                                <div style="font-size: 0.8em;">and</div>
-                                <div style="width:11em;">
-                                    <input class="DateEnd form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.end}}"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="float:left; width:50%">
-                            <div>
-                                <div style="font-size: 0.8em;">Concepts must occur</div>
-                                <div>
-                                    <input class="OccursCount form-control" placeholder="1" value="{{this.events.0.instances}}" onchange="i2b2.CRC.view.QS.clearStatus();"/>
-                                </div>
-                                <div style="font-size: 0.8em;">or more time(s)</div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- When display -->
-                    <div class="DateRange1Lbl" >SET DATE RANGE <i class="bi bi-chevron-down"></i></div>
-                    <div class="DateRange1Body expander hidden">
-                        <div style="float:left; width:50%; text-align:center; display:flex; padding:10px 0px">
-                            <div style="width:11em; margin:auto; position:relative; text-align:center; ">
-                                <div style="font-size: 0.8em;">Concepts must occur between</div>
-                                <div style="width:11em;">
-                                    <input class="DateRange1Start" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.start}}" />
-                                </div>
-                                <div style="font-size: 0.8em;">and</div>
-                                <div style="width:11em;">
-                                    <input class="DateRange1End" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.0.dateRange.end}}" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- when selection bar -->
-                <div class="SequenceBar {{this.when.occurs}}">
-                        <span>the first occurrence of Event 1
-                            <select class="occurs">
-                                {{#select this.when.occurs}}
-                                <option value="occursBefore">occurs before</option>
-                                <option value="occursAtLeast">occurs at least</option>
-                                {{/select}}
-                            </select>
-                        </span>
-                    <span class="occursBefore">
-                            <select class="thefirstany" onchange="javascript:this.blur()">
-                                {{#select this.when.firstany}}
-                                <option value="first">the first</option>
-                                <option value="any">any</option>
-                                {{/select}}
-                            </select>
-                            occurence of Event 2
-                        </span>
-                    <span class="occursAtLeast">
-                            <input class="occursNumber" placeholder="#" value="{{this.when.occursNum}}" type="text">
-
-                            <select class="occursUnit">
-                                {{#select this.when.occursUnit}}
-                                <option value="day">day(s)</option>
-                                <option value="month">month(s)</option>
-                                <option value="year">year(s)</option>
-                                {{/select}}
-                            </select>
-                            before
-                            <select class="thefirstany">
-                                {{#select this.when.firstany}}
-                                <option value="first">the first</option>
-                                <option value="any">any</option>
-                                {{/select}}
-                            </select>
-                            occurrence of Event 2
-                        </span>
-                </div>
-                <!-- event 2 entry -->
-                <div class="Event2Container event" data-eventIdx="1">
-                    <div class="EventLbl">
-                        <div style="float:left; margin:4px 10px">Event 2</div>
-                        <i style="float:right; margin:0px 10px; font-size: 1.2em; position: relative; top:0.4em;" class="bi bi-stopwatch"></i>
-                    </div>
-                    <div class="TermList" style="clear:both"></div>
-                    <div class="orDragAdditional">or drag additional concepts</div>
-                    <div class="DateRange2Lbl">SET DATE RANGE <i class="bi bi-chevron-down"></i></div>
-                    <div class="DateRange2Body expander hidden">
-                        <div style="float:left; width:50%; text-align:center; display:flex; padding:10px 0px">
-                            <div style="width:11em; margin:auto; position:relative; text-align:center; ">
-                                <div style="font-size: 0.8em;">Concepts must occur between</div>
-                                <div style="width:11em;">
-                                    <input class="DateRange2Start" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.1.dateRange.start}}"/>
-                                </div>
-                                <div style="font-size: 0.8em;">and</div>
-                                <div style="width:11em;">
-                                    <input class="DateRange2End" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.events.1.dateRange.end}}" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {{#each events}}
+                {{> Event index = @index group = (lookup @root.events @index)}}
+                <!-- event relationship -->
+                {{#ifCond @index '!==' @root.eventLinks.length}}
+                    {{> EventLink index = @index eventLink = (lookup @root.eventLinks @index)}}
+                {{/ifCond}}
+                {{/each}}
+            </div>
+            <div class="addEvent">
+                <button type="button" class="btn btn-sm btn-secondary" onclick="javascript:this.blur();i2b2.CRC.view.QT.addEvent();"><i class="bi bi-plus-circle-fill"></i>ADD EVENT</button>
             </div>
         </div>
     </div>

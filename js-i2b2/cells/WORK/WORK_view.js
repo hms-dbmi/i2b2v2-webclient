@@ -1,6 +1,3 @@
-console.group('Load & Execute component file: WORK > view > main');
-console.time('execute time');
-
 
 i2b2.WORK.view.main = new i2b2Base_cellViewController(i2b2.WORK, 'main');
 
@@ -63,13 +60,8 @@ i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
                 let renderOptions = {
                     'title': title,
                     'tooltip': nodeData.annotation.replace("\n", "\nAnnotation: "), // PARTIAL BUG-FIX: WEBCLIENT-98
-                    icon: {
-                        root: "sdx_ONT_CONCPT_root.gif",
-                        rootExp: "sdx_ONT_CONCPT_root-exp.gif",
-                        branch: "sdx_ONT_CONCPT_branch.gif",
-                        branchExp: "sdx_ONT_CONCPT_branch-exp.gif",
-                        leaf: "sdx_ONT_CONCPT_leaf.gif"
-                    }
+                    // TODO: Set the correct icon for Modifiers that have been dropped into the workplace
+                    icon: i2b2.ONT.model.icons.term
                 };
                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                 if (!sdxDataNode.renderData) {
@@ -344,9 +336,10 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
     $("#WKContextMenuDialog").modal('show');
 }
 // =========================================================
-i2b2.events.afterCellInit.add((function(cell){
+i2b2.events.afterCellInit.add((cell) => {
     if (cell.cellCode === "WORK") {
-        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.WORK.view.main",
             (function (container, scope) {
@@ -457,9 +450,4 @@ i2b2.events.afterCellInit.add((function(cell){
             }).bind(this)
         );
     }
-}));
-
-
-// =========================================================
-console.timeEnd('execute time');
-console.groupEnd();
+});

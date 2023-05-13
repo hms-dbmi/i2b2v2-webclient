@@ -7,9 +7,6 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik]
  */
-console.group('Load & Execute component file: CRC > view > Find');
-console.time('execute time');
-
 
 // create and save the screen objects
 i2b2.CRC.view.search = {};
@@ -48,7 +45,6 @@ i2b2.CRC.view.search.selectSearchType = function(elem) {
     let filterValue = liItem.addClass("active").find(".dropdown-item").data("searchFilterValue");
     $("#querySearchFilterText").text(newDisplayText).prop("title", newDisplayText);
     $("#querySearchFilter").data("selectedFilterValue", filterValue);
-    i2b2.CRC.view.search.handleSearchInputChange($('#i2b2QueryHistoryFinder #querySearchTerm input').val());
 };
 //================================================================================================== //
 

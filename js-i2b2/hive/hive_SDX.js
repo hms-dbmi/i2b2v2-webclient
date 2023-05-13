@@ -4,8 +4,6 @@
  * @namespace	i2b2
  * @version 	2.0
  **/
-console.group('Load & Execute component file: hive > SDX');
-console.time('execute time');
 
 i2b2.sdx.Master = {};
 i2b2.sdx.TypeControllers = {};
@@ -82,7 +80,10 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                         sdxFromJSON.sdxInfo = sdxFromJSON.sdxUnderlyingPackage.sdxInfo;
                         sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON);
                     }
-                    eventHandlers[sdxType].DropHandler(sdxFromJSON, e, sdxType);
+                    else {
+                        // prevents duplicate calls to drop on a workplace folder when moving workplace items
+                        eventHandlers[sdxType].DropHandler(sdxFromJSON, e, sdxType);
+                    }
                 }
             }
             e.stopImmediatePropagation();
@@ -347,6 +348,7 @@ i2b2.sdx.Master.RenderData = function(sdxDataPackage, options) {
         if (ret.cssClassMinor === undefined) ret.cssClassMinor = '';
         if (ret.moreDescriptMain === undefined) ret.moreDescriptMain = '';
         if (ret.moreDescriptMinor === undefined) ret.moreDescriptMinor = '';
+        if (ret.color === undefined) ret.color = '';
         if (ret.tvNodeState === undefined) ret.tvNodeState = {};
     }
 
@@ -434,8 +436,3 @@ document.addEventListener("dragstart", function(event) {
 document.addEventListener("dragend", function(event) {
     $(".i2b2DropTarget").removeClass("i2b2DropPrep");
 }, false);
-
-
-// ================================================================================================== //
-console.timeEnd('execute time');
-console.groupEnd();

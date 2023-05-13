@@ -1,0 +1,72 @@
+<div class="event toHide" data-eventIdx="{{index}}">
+    <div class="EventLbl {{#ifCond index '==' 0}}first{{/ifCond}}">
+        <div>Event {{increment  index}}</div>
+        <div class="actions">
+            <i class="bi bi-x-circle delete" title="Remove Event"></i>
+        </div>
+    </div>
+    <div class="TermList clear"></div>
+    <div class="orDragAdditional">or drag additional concepts</div>
+    <div class="required hidden">at least 1 concept is required</div>
+    <div class="DateOccursLbl">Set date range and/or occurrence for this entire panel <i class="bi bi-chevron-down"></i></div>
+    <div class="DateOccursBody expander hidden">
+        <div class="d-flex flex-column">
+            <div class="d-flex flex-row px-3 my-2">               
+                <span class="d-block align-self-center me-2">From:</span>
+                <div class="dateRange">
+                    <div class="date-w-11">
+                        <input class="datepicker DateStart form-control form-control-sm" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateRange.start}}" />
+                    </div>
+                    <div class="btn-ref-max-w">
+                        <button class="btn btn-outline-secondary border-0 refreshStartDate"><i class="bi bi-arrow-clockwise"></i></button>
+                    </div>
+                </div>            
+                <span class="d-block align-self-center mx-2">to:</span>
+                <div class="dateRange">
+                    <div class="date-w-11">
+                        <input class="datepicker DateEnd form-control form-control-sm" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateRange.end}}"/>
+                    </div>
+                    <div class="btn-ref-max-w">
+                        <button class="btn btn-outline-secondary border-0 refreshEndDate"><i class="bi bi-arrow-clockwise"></i></button>
+                    </div>
+                    <span class="fs-5 align-self-center ms-2 iconspan"><i class="bi bi-info-circle dcTooltip" title="<ul><li>Setting this will apply the date constraint to the entire panel.</li> <li> Any item-level date constraints will be overwritten.</li> <li> Date constraints do not apply on Demographics data, Patient Sets and Previous Queries.</li> </ul>" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"></i></span>                      
+                </div>
+                             
+            </div>
+            <div class="d-flex flex-row px-3 mb-2">
+                <span class="d-block align-self-center me-2">Concepts must occur</span>
+                <div>
+                    <input class="OccursCount form-control form-control-sm" placeholder="1" value="{{this.instances}}" onchange="i2b2.CRC.view.QS.clearStatus();"/>
+                </div>
+                <span class="d-block align-self-center mx-2">or more time(s)</span>
+            </div>            
+        </div>
+    </div>
+    <!-- When display -->
+    <div class="DateRangeLbl" >Set date range this entire panel<i class="bi bi-chevron-down"></i></div>
+    <div class="DateRangeBody expander hidden">
+        <div class="d-flex flex-column">
+            <div class="d-flex flex-row px-3 mt-2 mb-3">
+                <span class="d-block align-self-center me-2">From:</span>
+                <div class="dateRange">
+                    <div class="date-w-11">
+                        <input class="datepicker DateRangeStart form-control form-control-sm" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateRange.start}}" />
+                    </div>
+                    <div class="btn-ref-max-w">
+                        <button class="btn btn-outline-secondary border-0 refreshStartDate"><i class="bi bi-arrow-clockwise"></i></button>
+                    </div>                      
+                </div>                             
+                <span class="d-block align-self-center mx-2">to:</span>
+                <div class="dateRange">
+                    <div class="date-w-11">
+                        <input class="datepicker DateRangeEnd form-control form-control-sm" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateRange.end}}" />
+                    </div>
+                    <div class="btn-ref-max-w">
+                        <button class="btn btn-outline-secondary border-0 refreshEndDate"><i class="bi bi-arrow-clockwise"></i></button>
+                    </div>
+                    <span class="fs-5 align-self-center ms-2"><i class="bi bi-info-circle dcTooltip" title="<ul><li>Setting this will apply the date constraint to the entire panel.</li> <li> Any item-level date constraints will be overwritten.</li> <li> Date constraints do not apply on Demographics data, Patient Sets and Previous Queries.</li> </ul>" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"></i></span> 
+                </div>                
+            </div>
+        </div> 
+    </div>
+</div>

@@ -1,0 +1,10 @@
+<subquery>
+    <query_id>{{id}}</query_id>
+    <query_type>EVENT</query_type>
+    <query_name>{{name}}</query_name>
+    <query_timing>{{timing}}</query_timing>
+    <specificity_scale>{{specificity}}</specificity_scale>
+    {{#each panels}}
+        {{#> QueryPanel}}QueryPanel partial/template not registered!{{/QueryPanel}}
+    {{/each}}
+</subquery>

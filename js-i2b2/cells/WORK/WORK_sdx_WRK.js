@@ -10,9 +10,6 @@
  * updated 1-12-09: added QDEF, QGDEF and default XML object handling for SDX subsystem
  */
 
-console.group('Load & Execute component file: WORK > SDX > Workplace Object');
-console.time('execute time');
-
 // ********************************* Patient Record Set Stuff *********************************
 i2b2.sdx.TypeControllers.WRK = {};
 i2b2.sdx.TypeControllers.WRK.model = {};
@@ -138,6 +135,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.hasChildren = i2b2.h.getXNodeVal(x, "visualattributes");
             newOptions.showchildren = false;
             if (newOptions.title === "") newOptions.title = o.name;
+            delete newOptions.icon; // ONT object can pick correct icon
             break;
         case "PATIENT_COUNT_XML":
             // Patient Record Count
@@ -251,8 +249,3 @@ i2b2.sdx.TypeControllers.WRK.dragStartHandler = function(i2b2Data) {
     }
     return i2b2Data;
 };
-
-
-// ==========================================================================
-console.timeEnd('execute time');
-console.groupEnd();

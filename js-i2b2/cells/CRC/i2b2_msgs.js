@@ -15,7 +15,6 @@ i2b2.CRC.ajax = i2b2.hive.communicatorFactory("CRC");
 i2b2.CRC.cfg.msgs = {};
 i2b2.CRC.cfg.parsers = {};
 
-
 // ================================================================================================== //
 i2b2.CRC.cfg.msgs.getQueryMasterList_fromUserId = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
@@ -639,6 +638,7 @@ i2b2.CRC.cfg.msgs.runQueryInstance_fromQueryDefinition = '<?xml version="1.0" en
 '			<user group="{{{sec_project}}}" login="{{{sec_user}}}">{{{sec_user}}}</user>\n'+
 '			<patient_set_limit>0</patient_set_limit>\n'+
 '			<estimated_time>0</estimated_time>\n'+
+'           {{{query_run_method}}}' +
 '			<query_mode>optimize_without_temp_table</query_mode>\n'+
 '			<request_type>CRC_QRY_runQueryInstance_fromQueryDefinition</request_type>\n'+
 '		</ns4:psmheader>\n'+
@@ -652,7 +652,7 @@ i2b2.CRC.cfg.msgs.runQueryInstance_fromQueryDefinition = '<?xml version="1.0" en
 i2b2.CRC.ajax._addFunctionCall(	"runQueryInstance_fromQueryDefinition", 
                                 "{{{URL}}}request",
                                 i2b2.CRC.cfg.msgs.runQueryInstance_fromQueryDefinition,
-                                ["psm_result_output","psm_query_definition","shrine_topic"]);
+                                ["psm_result_output","psm_query_definition","shrine_topic","query_run_method"]);
 
 
 // ================================================================================================== //1

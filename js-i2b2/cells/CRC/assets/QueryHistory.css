@@ -271,3 +271,12 @@ button.invert:hover{
     border-style: solid;
     border-width: 0 0 2px 0 !important;
 }
+
+#queryHistoryOptionsFields .form-check-label{
+    margin-top: 0.15em;
+}
+
+#queryHistoryOptionsFields #HISTMaxQryDisp-error {
+    font-size: 0.9em;
+    color: red;
+}

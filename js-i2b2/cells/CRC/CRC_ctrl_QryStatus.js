@@ -42,6 +42,8 @@ i2b2.CRC.ctrlr.QS = {
                 };
 
                 let resultType = "";
+                let descriptionShort;
+                let descriptionLong;
                 for (let i = 0; i < l; i++) {
                     let temp = ri_list[i];
                     resultType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
@@ -57,6 +59,7 @@ i2b2.CRC.ctrlr.QS = {
                     let xml_value = i2b2.h.XPath(temp, 'descendant-or-self::xml_value')[0].firstChild.nodeValue;
                     let xml_v = i2b2.h.parseXml(xml_value);
 
+                    let isPatientCount = false;
                     let params = i2b2.h.XPath(xml_v, 'descendant::data[@column]/text()/..');
                     for (let i2 = 0; i2 < params.length; i2++) {
                         let name = params[i2].getAttribute("name");
@@ -64,7 +67,7 @@ i2b2.CRC.ctrlr.QS = {
 
                         if (i2b2.PM.model.isObfuscated) {
                             if (params[i2].firstChild.nodeValue < 4) {
-                                value = "<" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                                value = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                             } else {
                                 value = params[i2].firstChild.nodeValue + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                             }
@@ -75,7 +78,7 @@ i2b2.CRC.ctrlr.QS = {
                             }
                         }
                         // N.Benik - Override the display value if specified by server setting the "display" attribute
-                        let displayValue = value;
+                        let displayValue = i2b2.h.Unescape(value);
                         if (typeof params[i2].attributes.display !== 'undefined') {
                             displayValue = params[i2].attributes.display.textContent;
                         }
@@ -89,6 +92,12 @@ i2b2.CRC.ctrlr.QS = {
                         if (params[i2].getAttribute("column") === 'patient_count') {
                             i2b2.CRC.ctrlr.QS.breakdowns.patientCount.title = descriptionShort;
                             i2b2.CRC.ctrlr.QS.breakdowns.patientCount.value = graphValue;
+                            breakdown.title = descriptionShort;
+                            breakdown.result.push({
+                                name: params[i2].getAttribute("column"),
+                                value: displayValue
+                            });
+                            isPatientCount = true;
                         } else {
                             sCompiledResultsTest += descriptionLong + '\n';
                             sCompiledResultsTest += params[i2].getAttribute("column").substring(0,20) + " : " + value + "\n"; //snm0
@@ -101,7 +110,10 @@ i2b2.CRC.ctrlr.QS = {
                     }
 
                     if(breakdown.title) {
-                        i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
+                        if(isPatientCount) {
+                            i2b2.CRC.ctrlr.QS.breakdowns.resultTable.unshift(breakdown);
+                        }
+                        else i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
                     }
                 }
 
@@ -139,6 +151,7 @@ i2b2.CRC.ctrlr.QS = {
 
         i2b2.CRC.ctrlr.QS.breakdowns.runDuration = s;
         i2b2.CRC.ctrlr.QS.breakdowns.name = i2b2.CRC.ctrlr.QS.QM.name;
+        i2b2.CRC.ctrlr.QS.breakdowns.isRunning = i2b2.CRC.ctrlr.QS.isRunning;
 
         /*if (!i2b2.CRC.ctrlr.QueryStatus.isRunning) {
             //Query Report BG
@@ -169,14 +182,14 @@ i2b2.CRC.ctrlr.QS = {
                 title: null,
                 statusMessage: null
             };
+
             if (rec.QRS_time) {
-                let t = '<font color="';
                 // display status of query in box
                 switch (rec.QRS_Status) {
                     case "ERROR":
-                        //i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '<div style="clear:both; height:16px; line-height:16px; "><div style="float:left; font-weight:bold; height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#dd0000">ERROR</font></div>';
                         breakdown.title = rec.title;
-                        breakdown.result = {statusMessage: "ERROR"};
+                        breakdown.statusMessage =  "ERROR";
+                        i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
                         foundError = true;
                         break;
                     case "COMPLETED":
@@ -186,16 +199,15 @@ i2b2.CRC.ctrlr.QS = {
                     case "INCOMPLETE":
                     case "WAITTOPROCESS":
                     case "PROCESSING":
-                        //i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '<div style="clear:both; height:16px;line-height:16px; "><div style="float:left; font-weight:bold;  height:16px; line-height:16px; ">' + rec.title + '</div><div style="float:right; height:16px; line-height:16px; "><font color="#00dd00">PROCESSING</font></div>';
                         breakdown.title = rec.title;
-                        breakdown.result = {statusMessage: "PROCESSING"};
+                        breakdown.statusMessage = "PROCESSING";
+                        i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
                         alert('Your query has timed out and has been rescheduled to run in the background.  The results will appear in "Previous Queries"');
                         foundError = true;
                         break;
                 }
-                t += '</font> ';
             }
-            i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += '</div>';
+
             if (foundError === false) {
                 if (rec.QRS_DisplayType === "CATNUM") {
                     i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
@@ -205,6 +217,7 @@ i2b2.CRC.ctrlr.QS = {
             }
         }
 
+        i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QS.breakdowns});
 
         let func_trim = function(sString) {
             while (sString.substring(0,1) === '\n')
@@ -234,7 +247,7 @@ i2b2.CRC.ctrlr.QS = {
 
                         if (i2b2.PM.model.isObfuscated) {
                             if (i2b2.h.XPath(xml_v, 'descendant::total_time_second/text()/..')[i2].firstChild.nodeValue < 4) {
-                                value = "<" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                                value = " <" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                             } else {
                                 value = i2b2.h.XPath(xml_v, 'descendant::total_time_second/text()/..')[i2].firstChild.nodeValue + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                             }
@@ -373,7 +386,10 @@ i2b2.CRC.ctrlr.QS.loadQueryStatus = function(queryMasterId) {
 i2b2.CRC.ctrlr.QS.startStatus = function(queryName) {
     i2b2.CRC.ctrlr.QS.QRS = {};
     i2b2.CRC.ctrlr.QS.QI = {};
-    i2b2.CRC.ctrlr.QS.QM = {};
+    i2b2.CRC.ctrlr.QS.QM = {
+        name:  queryName
+    };
+    i2b2.CRC.ctrlr.QS.isRunning = true;
 
     i2b2.CRC.view.QS.renderStart();
     i2b2.CRC.view.QS.render({breakdowns: {isProcessing: true, name: queryName}});
@@ -421,7 +437,7 @@ i2b2.CRC.ctrlr.QS._GetTitle = function(resultType, oRecord, oXML) {
             // create the title using shrine setting
             if (oRecord.size >= 10) {
                 if (i2b2.PM.model.isObfuscated) {
-                    title = t+" - "+oRecord.size+"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" encounters";
+                    title = t+" - "+oRecord.size + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" encounters";
                 } else {
                     title = t;
                 }
@@ -443,7 +459,7 @@ i2b2.CRC.ctrlr.QS._GetTitle = function(resultType, oRecord, oXML) {
             // create the title using shrine setting
             if (oRecord.size >= 10) {
                 if (i2b2.PM.model.isObfuscated) {
-                    title = p+" - "+oRecord.size+"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
+                    title = p+" - "+oRecord.size + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
                 } else {
                     title = p;
                 }
@@ -466,7 +482,7 @@ i2b2.CRC.ctrlr.QS._GetTitle = function(resultType, oRecord, oXML) {
             // create the title using shrine setting
             if (oRecord.size >= 10) {
                 if (i2b2.PM.model.isObfuscated) {
-                    title = x+" - "+oRecord.size+"&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
+                    title = x+" - "+oRecord.size + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
                 } else {
                     title = x+" - "+oRecord.size+" patients";
                 }

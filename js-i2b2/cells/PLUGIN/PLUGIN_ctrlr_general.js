@@ -4,8 +4,6 @@
  * @namespace	i2b2.PLUGIN
  * @version 	2.0
  **/
-console.group('Load & Execute component file: PLUGIN');
-console.time('execute time');
 
 // ====[ msg handling for the plugin's INIT message ]===================================================================
 i2b2.PLUGIN.ctrlr._handleInitMsg = function(msgEvent, windowInstance) {
@@ -278,9 +276,9 @@ i2b2.PLUGIN.ctrlr._handleTunnelVarMsg = function(msgEvent, instanceRef) {
 
 // Below code is executed once the entire cell has been loaded
 //======================================================================================================================
-i2b2.events.afterCellInit.add((function(cell) {
+i2b2.events.afterCellInit.add((cell) => {
     if (cell.cellCode === "PLUGIN") {
-        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit]');
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
 
         // load a list of all plugins
         i2b2.PLUGIN.model.plugins = {};
@@ -288,8 +286,17 @@ i2b2.events.afterCellInit.add((function(cell) {
             data.forEach((id)=>{
                 const loc = id.replaceAll('.', '/');
                 $.getJSON("plugins/" + loc + "/plugin.json", (pluginJson) => {
-                    i2b2.PLUGIN.model.plugins[id] = pluginJson;
-                    i2b2.PLUGIN.model.plugins[id].url = "plugins/" + loc + '/' + pluginJson.base;
+                    if (pluginJson !== undefined) {
+                        let pluginAllowed = true;
+                        if (pluginJson.roles !== undefined && pluginJson.roles.length > 0){
+                            pluginAllowed = pluginJson.roles.some((role) => i2b2.PM.model.userRoles.indexOf(role) !== -1);
+                        }
+
+                        if (pluginAllowed) {
+                            i2b2.PLUGIN.model.plugins[id] = pluginJson;
+                            i2b2.PLUGIN.model.plugins[id].url = "plugins/" + loc + '/' + pluginJson.base;
+                        }
+                    }
                 });
             });
         });
@@ -304,7 +311,7 @@ i2b2.events.afterCellInit.add((function(cell) {
         i2b2.PLUGIN.model.libs["STATE"] = baseUrl + "i2b2-state.js";
         i2b2.PLUGIN.model.libs["TUNNEL"] = baseUrl + "i2b2-auth-tunnel.js";
     }
-}));
+});
 
 // Once all cells are loaded we crawl the i2b2 namespace to extract information for AJAX and SDX operations
 //======================================================================================================================
@@ -396,8 +403,3 @@ i2b2.events.afterAllCellsLoaded.add((function() {
         }
     });
 }));
-
-
-// =====================================================================================================================
-console.timeEnd('execute time');
-console.groupEnd();

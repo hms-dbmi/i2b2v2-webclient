@@ -24,8 +24,6 @@
  *              javascript file, and the default.htm folder in the main web client folder, they are:
  *              CRC_view_Status, CRC_ctlr_QryStatus, CRC_ctlr_QryTools, and cell_config_data
  ** -----------------------------------------------------------------------------------------------------------------------*/
-console.group('Load & Execute component file: CRC > view > Graphs');
-console.time('execute time');
 
 //i2b2.PM.model.isObfuscated =  true; // for testing
 
@@ -39,7 +37,7 @@ var msStringDefineingNumberOfPatients = "number of patients";  // this constant 
 i2b2.CRC.view.graphs = new i2b2Base_cellViewController(i2b2.CRC, 'graphs');
 i2b2.CRC.view.graphs.visible = false;
 i2b2.CRC.view.graphs.iObfuscatedFloorNumber = i2b2.UI.cfg.obfuscatedDisplayNumber;  // this is the amount reported that the numbers are obfuscated by
-i2b2.CRC.view.graphs.sObfuscatedText = "<"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();  // this is the text that is replaced for a small number in obfuscated mode
+i2b2.CRC.view.graphs.sObfuscatedText = " < "+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();  // this is the text that is replaced for a small number in obfuscated mode
 //                            so that it can be cleaned up before the next display
 i2b2.CRC.view.graphs.sObfuscatedEnding = "&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();  //this is the text that is added to all numbers in obfuscated mode
 i2b2.CRC.view.graphs.bIsSHRINE = false;  // this changes the way the graphs are made if the file is being run in SHRINE mode
@@ -512,8 +510,8 @@ function graph_singlesite_patient_breakdown(sDivName,sBreakdownType,asInputFragm
                 type: 'bar',
                 color: function (color, d) {return graph_color;},
                 labels: {
-                    format: {
-                        y: function (v, id) {
+                    format:
+                        function (v, id) {
                             if(i2b2.UI.cfg.useFloorThreshold){
                                 if (v < i2b2.UI.cfg.floorThresholdNumber){
                                     return i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber.toString();
@@ -530,7 +528,6 @@ function graph_singlesite_patient_breakdown(sDivName,sBreakdownType,asInputFragm
                                 return w;
                             }
                         }
-                    }
                 }
             },
             legend: {
@@ -1318,6 +1315,3 @@ i2b2.CRC.view.graphs.returnTestString = function (isSHRINE) {
     }*/
     return sInput;
 }
-
-//console.timeEnd('execute time');
-//console.groupEnd();

@@ -7,8 +7,9 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-console.group('Load & Execute component file: cells > PM > view');
-console.time('execute time');
+
+i2b2.PM.view.template = {};
+// ================================================================================================== //
 
 i2b2.PM.setUserAccountInfo = function(){
     let userInfo = $("#userInfo");
@@ -43,19 +44,22 @@ i2b2.PM.doLoginDialog = function() {
         // execute this after the external HTML/CSS load
         $('loginusr').focus();
         // load info from the i2b2.UI.cfg data that may exist
-        var t = i2b2.UI.cfg.loginDefaultUsername;
-        if (t !== undefined) { $("#PM-login-modal input[name='loginusr']").val(t); }
-        var t = i2b2.UI.cfg.loginDefaultPassword;
-        if (t !== undefined) { $("#PM-login-modal input[name='loginpass']").val(t); }
+        try {
+            $("#PM-login-modal input[name='loginusr']").val(i2b2.UI.cfg.loginDefaultUsername);
+        } catch(e) {}
+        try {
+            $("#PM-login-modal input[name='loginpass']").val(i2b2.UI.cfg.loginDefaultPassword);
+        } catch(e) {}
+
         // clear any domains
         $('#logindomain option').remove();
         // load the domains into dropdown
-        $.each(i2b2.PM.model.Domains, function(i, domain){
+        i2b2.PM.model.Domains.forEach((domain, i)=>{
             $('#logindomain').append($('<option>', {
                 value: i,
                 text: domain.name
             }));
-        })
+        });
         // attach the onSubmit handler
         $("#PM-login-modal form").submit(function(event) {
             event.preventDefault();
@@ -75,6 +79,60 @@ i2b2.PM.doLoginDialog = function() {
         i2b2.PM.doChangeDomain();
     }));
 };
+// ================================================================================================== //
+
+i2b2.PM.view.updateProjectSelection = function(projectSelElem){
+
+    let project = $(projectSelElem).val();
+    $("#projectSelectionDetails").empty();
+    let projectDetails = {
+        projectDetails: i2b2.PM.model.projects[project].details
+    }
+
+    $((Handlebars.compile("{{> ProjectSelectionDetail }}"))(projectDetails)).appendTo("#projectSelectionDetails");
+}
+// ================================================================================================== //
+
+i2b2.PM.view.showProjectSelectionModal = function(){
+
+    let projectSelModal = $("#projectSelection");
+
+    let projects = [];
+    for (let code in i2b2.PM.model.projects) {
+        projects.push({
+            name : i2b2.PM.model.projects[code].name,
+            value: code,
+            details:  i2b2.PM.model.projects[code].details
+        });
+    }
+
+    let projectData = {
+        projects: projects,
+    }
+    if (projectSelModal.length === 0) {
+        $("body").append("<div id='projectSelection'/>");
+        projectSelModal = $("#projectSelection");
+        projectSelModal.load('js-i2b2/cells/PM/assets/modalProjectSelection.html', function(){
+            $(i2b2.PM.view.template.projectSelection.projects(projectData)).appendTo("#projectSelectionForm");
+            $("body #projectSelection button.i2b2-save").click(function () {
+                let selectedI2B2Project =  $("#selectedI2B2Project");
+                let ProjId = selectedI2B2Project.val();
+                let ProjName = selectedI2B2Project.find("option:selected").text();
+                if (ProjId !== 'admin_HY!5Axu&') {
+                    i2b2.PM.model.login_project = ProjId;
+                    i2b2.PM.model.login_projectname = ProjName;
+                    i2b2.PM._processLaunchFramework();
+                }
+
+                $("#projectSelection div").eq(0).modal("hide");
+            });
+            $("#projectSelection div:eq(0)").modal('show');
+        });
+    }else{
+        $(i2b2.PM.view.template.projectSelection.projects(projectData)).appendTo("#projectSelectionForm");
+        $("#projectSelection div:eq(0)").modal('show');
+    }
+}
 
 // ================================================================================================== //
 i2b2.PM.doChangeDomain = function() {
@@ -92,7 +150,26 @@ i2b2.PM.doChangeDomain = function() {
     }
 };
 
+// display the modal login form after the PM cell is fully loaded
+// ================================================================================================== //
+i2b2.events.afterCellInit.add((cell) => {
+    if (cell.cellCode === "PM") {
+        console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
+        i2b2.PM.doLoginDialog();
 
+        cell.view.template.projectSelection = {};
+        $.ajax("js-i2b2/cells/PM/templates/ProjectSelection.html", {
+            success: (template) => {
+                cell.view.template.projectSelection.projects = Handlebars.compile(template);
+            },
+            error: (error) => { console.error("Could not retrieve template: ProjectSelection.html"); }
+        });
 
-console.timeEnd('execute time');
-console.groupEnd();
+        $.ajax("js-i2b2/cells/PM/templates/ProjectSelectionDetail.html", {
+            success: (template, status, req) => {
+                Handlebars.registerPartial("ProjectSelectionDetail", req.responseText);
+            },
+            error: (error) => { console.error("Could not retrieve template: ProjectSelectionDetail.html"); }
+        });
+    }
+});

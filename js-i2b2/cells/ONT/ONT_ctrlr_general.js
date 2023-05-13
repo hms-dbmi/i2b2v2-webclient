@@ -5,10 +5,6 @@
  * @version 	2.0
  **/
 
-console.group('Load & Execute component file: ONT > ctrlr > general');
-console.time('execute time');
-
-
 i2b2.ONT.ctrlr.gen = {};
 // signal that is fired when the ONT cell's data model is updated
 // ================================================================================================== //
@@ -37,11 +33,13 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         data.key = i2b2.h.getXNodeVal(xmlData, 'key');
         data.tooltip = i2b2.h.getXNodeVal(xmlData, 'tooltip');
         data.icd9 = '';
+        data.synonym_cd = i2b2.h.getXNodeVal(xmlData,'synonym_cd');
         data.table_name = i2b2.h.getXNodeVal(xmlData, 'tablename');
         data.column_name = i2b2.h.getXNodeVal(xmlData, 'columnname');
         data.operator = i2b2.h.getXNodeVal(xmlData, 'operator');
         data.dim_code = i2b2.h.getXNodeVal(xmlData, 'dimcode');
         data.basecode = i2b2.h.getXNodeVal(xmlData, 'basecode');
+        data.total_num = i2b2.h.getXNodeVal(xmlData, 'totalnum');
     } else {
         data = sdxData;
     }
@@ -55,13 +53,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
 
     let renderOptions = {
         title: data.name,
-        icon: {
-            root: "sdx_ONT_CONCPT_root.gif",
-            rootExp: "sdx_ONT_CONCPT_root-exp.gif",
-            branch: "sdx_ONT_CONCPT_branch.gif",
-            branchExp: "sdx_ONT_CONCPT_branch-exp.gif",
-            leaf: "sdx_ONT_CONCPT_leaf.gif"
-        }
+        icon: i2b2.ONT.model.icons.term
     };
     sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
     sdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
@@ -71,6 +63,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         icon: sdxDataNode.renderData.cssClassMain,
         key: sdxDataNode.sdxInfo.sdxKeyValue,
         iconImg: sdxDataNode.renderData.iconImg,
+        color: sdxDataNode.renderData.color,
         iconImgExp: sdxDataNode.renderData.iconImgExp,
         i2b2: sdxDataNode
     };
@@ -79,18 +72,27 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         tvDataNode.icon += " " + sdxDataNode.renderData.cssClassMinor;
     }
     // add number counts
-    if (sdxDataNode.origData.total_num !== undefined) tvDataNode.text += ' - (' + sdxDataNode.origData.total_num + ')';
+    let enablePatientCounts = i2b2.ONT.view.nav.params.patientCounts;
+    if (enablePatientCounts !== false && sdxDataNode.origData.total_num !== undefined){
+        tvDataNode.text += ' - ';
+        tvDataNode.tags = [];
+        let totalnum = parseInt(sdxDataNode.origData.total_num, 10);
+        //parse as integer or leave totalnum as is
+        if( !isNaN(totalnum)){
+            tvDataNode.tags.push(totalnum.toLocaleString());
+        }
+        else{
+            tvDataNode.tags.push(node.i2b2.origData.total_num);
+        }
+    }
     return {sdx: sdxDataNode, tv: tvDataNode};
 };
 
 // ================================================================================================== //
 i2b2.ONT.ctrlr.gen.loadCategories = function() {
-    console.info("CALLED i2b2.ONT.ctrlr.gen.loadCategories()");
-
     i2b2.ONT.model.Categories = undefined;
     // create a scoped callback message to pass the XML to our function defined above
     let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
-        console.group("CALLBACK Processing AJAX i2b2CellMsg");
         i2b2.ONT.model.Categories = [];
         if (!i2b2CellMsg.error) {
             let c = i2b2CellMsg.refXML.getElementsByTagName('concept');
@@ -119,7 +121,6 @@ i2b2.ONT.ctrlr.gen.loadCategories = function() {
 
 // ================================================================================================== //
 i2b2.ONT.ctrlr.gen.loadSchemes = function() {
-    console.info("CALLED i2b2.ONT.ctrlr.gen.loadSchemes()");
     i2b2.ONT.model.Schemes = undefined;
     // create a scoped callback message to pass the XML to our function defined above
     let scopeCB = new i2b2_scopedCallback(function(i2b2CellMsg) {
@@ -149,6 +150,44 @@ i2b2.ONT.ctrlr.gen.loadSchemes = function() {
 };
 
 // ================================================================================================== //
+i2b2.ONT.model.cacheModifiers = {};
+i2b2.ONT.ctrlr.gen.getModifierDetails = function(sdxConcept) {
+    let cacheRecord = i2b2.ONT.model.cacheModifiers[sdxConcept.sdxInfo.sdxKeyValue];
+    if (cacheRecord) {
+        sdxConcept.origData.xmlOrig = cacheRecord.xml;
+        sdxConcept.origData.hasMetadata = cacheRecord.hasMetadata;
+    } else {
+        i2b2.ONT.ajax.GetModifierInfo("CRC:QueryTool", {
+            modifier_applied_path:sdxConcept.origData.applied_path,
+            modifier_key_value:sdxConcept.origData.key,
+            ont_max_records: 'max="1"',
+            ont_synonym_records: true,
+            ont_hidden_records: true
+        }, (response) => {
+            let c = i2b2.h.XPath(response.refXML, 'descendant::modifier');
+            if (c.length > 0) {
+                cacheRecord = {};
+                cacheRecord.xml = c[0].outerHTML;
+                const valueMetaDataArr = i2b2.h.XPath(cacheRecord.xml, "metadataxml/ValueMetadata[string-length(Version)>0]");
+                if (valueMetaDataArr.length > 0) {
+                    cacheRecord.hasMetadata = true;
+                } else {
+                    cacheRecord.hasMetadata = false;
+                }
+                sdxConcept.origData.xmlOrig = cacheRecord.xml;
+                sdxConcept.origData.hasMetadata = cacheRecord.hasMetadata;
+                i2b2.ONT.model.cacheModifiers[sdxConcept.sdxInfo.sdxKeyValue] = cacheRecord;
+            }
+        });
+    }
+}
+
+
+
+
+
+
+// ================================================================================================== //
 
 i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
     // initialize the search bar dropdowns when the data model is fully populated
@@ -156,7 +195,3 @@ i2b2.ONT.ctrlr.gen.events.onDataUpdate.add((function(updateInfo) {
         i2b2.ONT.view.search.initSearchOptions();
     }
 }).bind(i2b2.ONT));
-
-
-console.timeEnd('execute time');
-console.groupEnd();

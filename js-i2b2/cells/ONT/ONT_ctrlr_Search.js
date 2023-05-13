@@ -9,8 +9,6 @@
  * updated 01-12-18: Mauro Bucalo
  * hierarchical result display 08-19 by Jeff Klann, PhD
  */
-console.group('Load & Execute component file: ONT > ctrlr > Search');
-console.time('execute time');
 
 i2b2.ONT.ctrlr.Search = {
     clickSearch: function() {
@@ -117,8 +115,8 @@ i2b2.ONT.ctrlr.Search = {
         // add AJAX options
         let searchOptions = {};
         searchOptions.ont_max_records = "max='200'";
-        searchOptions.ont_synonym_records = false;
-        searchOptions.ont_hidden_records = false;
+        searchOptions.ont_synonym_records = i2b2.ONT.view.nav.params.synonyms;
+        searchOptions.ont_hidden_records = i2b2.ONT.view.nav.params.hiddens;
         searchOptions.ont_reduce_results = false;
         searchOptions.ont_hierarchy = false;
         searchOptions.ont_search_strategy = inSearchData.Strategy;
@@ -187,8 +185,8 @@ i2b2.ONT.ctrlr.Search = {
         // add options
         let searchOptions = {};
         searchOptions.ont_max_records = "max='200'";
-        searchOptions.ont_synonym_records = false;
-        searchOptions.ont_hidden_records = false;
+        searchOptions.ont_synonym_records = i2b2.ONT.view.nav.params.synonyms;
+        searchOptions.ont_hidden_records = i2b2.ONT.view.nav.params.hiddens;
         searchOptions.ont_search_strategy = "exact";
         searchOptions.ont_search_coding = (inSearchData.Coding === 'ALL CODING'  ? '' : inSearchData.Coding);
         searchOptions.ont_search_string = inSearchData.SearchStr;
@@ -214,6 +212,10 @@ i2b2.ONT.ctrlr.Search = {
 //                let root = i2b2.ONT.model.Categories.filter((node) => { return node.key === fullPath });
                 if (root === undefined) {
                     root = i2b2.ONT.model.Categories.filter((node) => { return fullPath.indexOf(node.dim_code) > 0 });
+                    //if there is more than one match take the match with the longest dim_code length
+                    if(root.length > 1){
+                        root = [root.reduce((a, b) => a.length <= b.length ? b : a)];
+                    }
                     if (root.length) {
                         root = root.pop();
                         let temp = i2b2.ONT.ctrlr.gen.generateNodeData(false, root);
@@ -227,7 +229,10 @@ i2b2.ONT.ctrlr.Search = {
         } while (paths.length > 0);
         parent['_$$_'] = tv;
         // color the node for matching our search criteria
-        if (highlight) parent['_$$_'].icon += " highlight";
+        if (highlight) {
+            if (parent['_$R$_']) parent['_$R$_'].icon += " highlight";
+            parent['_$$_'].icon += " highlight";
+        }
     },
 
 // ================================================================================================== //
@@ -274,7 +279,7 @@ i2b2.ONT.ctrlr.Search = {
                 let treeStruct = [];
                 let func_crawl_builder = (node, parent) => {
                     let ret = [];
-                    let bypass = (node._$$_ === undefined && node._$R$_ === undefined) || (node._$$_ !== undefined && parent === null);
+                    let bypass = ((node._$$_ === undefined && node._$R$_ === undefined) || (node._$$_ !== undefined && parent === null)) && !(Object.keys(node).length === 2 && node._$$_ !== undefined && node._$R$_ !== undefined);
                     if (bypass) {
                         // passes back only a collection of child nodes (which should be built)
                         // this bubbles up navigatable nodes through non-navigatable nodes
@@ -286,6 +291,7 @@ i2b2.ONT.ctrlr.Search = {
                     } else {
                         // passes back current node fully built with its "nodes" attribute populated
                         ret = node._$$_ !== undefined ? node._$$_ : node._$R$_;
+                        if (node._$R$_) ret = node._$R$_;
                         ret.state = {
                             loaded: true,
                             expanded: true
@@ -322,6 +328,3 @@ i2b2.ONT.ctrlr.Search = {
         } while (nodesToLoad.length > 0);
     }
 };
-
-console.timeEnd('execute time');
-console.groupEnd();
