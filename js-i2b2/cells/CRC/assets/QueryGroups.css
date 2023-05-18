@@ -378,10 +378,6 @@
     font-size: 1.85em;
 }
 
-.QueryGroup .topbar .unLink {
-    display: none;
-}
-
 .QueryGroup .topbar .encLink {
     color: #FCAA00;
     position: relative;
