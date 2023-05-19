@@ -1139,6 +1139,12 @@ i2b2.CRC.view.QT.render = function() {
         dateElement.trigger("change");
     });
 
+    $('body').on('click', '.refreshOcc', (event) => {
+        let jqTarget = $(event.target);
+        let occElement = jqTarget.parents(".conceptOcc").find(".OccursCount");
+        occElement.val("").blur();
+    });
+
     // append the final query group drop target
     let newQG = $(i2b2.CRC.view.QT.template.qgadd({})).appendTo(i2b2.CRC.view.QT.containerDiv);
     // fix query groups titles so that the first one always says "Find Patients"
