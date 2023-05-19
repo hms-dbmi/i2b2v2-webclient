@@ -68,6 +68,18 @@
 
 <fieldset class="form-group">
     <div class="row">
+        <legend id="HISTUserLabel" class="col-form-label col-sm-6 pt-0">Get previous queries for: </legend>
+        <div class="col-sm-4">
+                <select id="HISTUser" class="form-select form-select-sm">
+                    <option value="@" selected="selected">All Users</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</fieldset>
+
+<fieldset class="form-group">
+    <div class="row">
         <legend class="col-form-label col-sm-6 pt-0">Auto refresh previous queries</legend>
         <div class="col-sm-4">
             <div >
@@ -75,7 +87,7 @@
                     <option value="0" selected="selected">Off</option>
                     <option value="10">10 seconds</option>
                     <option value="30">30 seconds</option>
-                    <option value="60">60 seconds</option></select>
+                    <option value="60">60 seconds</option>
                 </select>
 
             </div>
