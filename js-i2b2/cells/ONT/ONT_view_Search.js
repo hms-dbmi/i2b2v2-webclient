@@ -143,6 +143,7 @@ i2b2.ONT.view.search.showModifiers = function(node){
                 childNode.nodes.forEach((n) => {
                     let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
                     n.parentKey = parentNode.key;
+                    n.parentText = parentNode.text;
                     allChildren.push(n);
                     if (n.nodes !== undefined && n.nodes.length >= 0) {
                         return getAllChildren(n, allChildren);
@@ -160,7 +161,7 @@ i2b2.ONT.view.search.showModifiers = function(node){
             node.state.expanded = true;
             i2b2.ONT.view.search.treeview.treeview('addNodes', [
                 newNodes,
-                function (parent, child) { return parent.key === child.parentKey},
+                function(parent, child) { return (parent.key === child.parentKey) && (parent.text === child.parentText) },
                 false
             ]);
 
