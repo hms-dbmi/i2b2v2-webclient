@@ -77,17 +77,17 @@ i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
                 //parse as integer or leave totalnum as is
                 if( !isNaN(totalnum)){
                     node.tags.push(totalnum.toLocaleString());
-                }
-                else{
+                } else {
                     node.tags.push(node.i2b2.origData.total_num);
                 }
             }
+            node.parentText = nodeData.text;
         });
 
         // push new nodes into the treeview
         i2b2.ONT.view.nav.treeview.treeview('addNodes', [
             newNodes,
-            function(parent, child){ return parent.key === child.parentKey },
+            function(parent, child){ return (parent.key === child.parentKey) && (parent.text === child.parentText) },
             false
         ]);
 
