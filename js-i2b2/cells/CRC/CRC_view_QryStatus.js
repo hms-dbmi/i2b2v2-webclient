@@ -23,7 +23,18 @@ i2b2.CRC.view.QS.render = function(breakdowns) {
 
     $((Handlebars.compile("{{> QueryResultStatus}}"))(breakdowns)).appendTo(status);
     $((Handlebars.compile("{{> QueryResultBreakdownTable}}"))(breakdowns)).appendTo(statusTable);
+
+    if (!i2b2.CRC.ctrlr.QS.isRunning) {
+        // switch the display of query cancel button and the query report button
+        $("#infoQueryStatusText .statusButtons").removeClass("running");
+        if (i2b2.CRC.model.runner.deleteCurrentQuery) {
+            $("#infoQueryStatusText .statusButtons").addClass("cancelled");
+        } else {
+            $("#infoQueryStatusText .statusButtons").addClass("done");
+        }
+    }
 };
+
 // ================================================================================================== //
 i2b2.CRC.view.QS.clearStatus = function() {
     $("#infoQueryStatus").empty();

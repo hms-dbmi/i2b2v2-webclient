@@ -156,47 +156,49 @@ i2b2.CRC.ctrlr.QS = {
 
         let foundError = false;
 
-        for (let i in i2b2.CRC.ctrlr.QS.QRS) {
-            let rec = i2b2.CRC.ctrlr.QS.QRS[i];
-            let breakdown = {
-                title: null,
-                statusMessage: null
-            };
+        if (!i2b2.CRC.model.runner.deleteCurrentQuery) {
+            for (let i in i2b2.CRC.ctrlr.QS.QRS) {
+                let rec = i2b2.CRC.ctrlr.QS.QRS[i];
+                let breakdown = {
+                    title: null,
+                    statusMessage: null
+                };
 
-            if (rec.QRS_time) {
-                // display status of query in box
-                switch (rec.QRS_Status) {
-                    case "ERROR":
-                        breakdown.title = rec.title;
+                if (rec.QRS_time) {
+                    // display status of query in box
+                    switch (rec.QRS_Status) {
+                        case "ERROR":
+                            breakdown.title = rec.title;
                             breakdown.statusMessage = "ERROR";
-                        i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
-                        foundError = true;
-                        break;
-                    case "COMPLETED":
-                    case "FINISHED":
-                        foundError = false;
-                        break;
-                    case "INCOMPLETE":
-                    case "WAITTOPROCESS":
-                    case "PROCESSING":
-                        breakdown.title = rec.title;
-                        breakdown.statusMessage = "PROCESSING";
-                        i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
-                        alert('Your query has timed out and has been rescheduled to run in the background.  The results will appear in "Previous Queries"');
-                        foundError = true;
-                        break;
+                            i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
+                            foundError = true;
+                            break;
+                        case "COMPLETED":
+                        case "FINISHED":
+                            foundError = false;
+                            break;
+                        case "INCOMPLETE":
+                        case "WAITTOPROCESS":
+                        case "PROCESSING":
+                            breakdown.title = rec.title;
+                            breakdown.statusMessage = "PROCESSING";
+                            i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
+                            alert('Your query has timed out and has been rescheduled to run in the background.  The results will appear in "Previous Queries"');
+                            foundError = true;
+                            break;
+                    }
                 }
-            }
 
-            if (foundError === false) {
-                if (rec.QRS_DisplayType === "CATNUM") {
-                    i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
-                } else if ((rec.QRS_DisplayType === "LIST")) {
-                    i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
+                if (foundError === false) {
+                    if (rec.QRS_DisplayType === "CATNUM") {
+                        i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
+                    } else if ((rec.QRS_DisplayType === "LIST")) {
+                        i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
+                    }
                 }
             }
+            i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QS.breakdowns});
         }
-        i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QS.breakdowns});
 
         let func_trim = function(sString) {
             while (sString.substring(0,1) === '\n')
@@ -243,11 +245,20 @@ i2b2.CRC.ctrlr.QS = {
             }
         }
 
-        if (!i2b2.CRC.ctrlr.QS.isRunning && i2b2.CRC.ctrlr.QS.refreshInterrupt) {
-            // make sure our refresh interrupt is turned off
-            try {
-                clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
-                i2b2.CRC.ctrlr.QS.refreshInterrupt = false;
+        if (!i2b2.CRC.ctrlr.QS.isRunning) {
+            // switch the display of query cancel button and the query report button
+            $("#infoQueryStatusText .statusButtons").removeClass("running");
+            if (i2b2.CRC.model.runner.deleteCurrentQuery) {
+                $("#infoQueryStatusText .statusButtons").addClass("cancelled");
+            } else {
+                $("#infoQueryStatusText .statusButtons").addClass("done");
+            }
+
+            if (i2b2.CRC.ctrlr.QS.refreshInterrupt) {
+                // make sure our refresh interrupt is turned off
+                try {
+                    clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
+                    i2b2.CRC.ctrlr.QS.refreshInterrupt = false;
                 } catch (e) {}
             }
         }

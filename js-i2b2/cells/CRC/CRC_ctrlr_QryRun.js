@@ -10,6 +10,17 @@
 
 i2b2.CRC.ctrlr.QR = new QueryRunner();
 function QueryRunner() {
+    this._tick = function() {
+        if (!i2b2.CRC.ctrlr.QS.isRunning) clearInterval(i2b2.CRC.model.runner.intervalTimer);
+
+        if (i2b2.CRC.model.runner.deleteCurrentQuery) {
+            // delete the query master
+            let qmId = i2b2.CRC.ctrlr.QS?.QM.id;
+            if (qmId !== undefined) i2b2.CRC.ctrlr.history.queryDeleteNoPrompt(qmId);
+        }
+
+    };
+
     this.doRunQuery = function(queryName, queryDefinition) {
 
         i2b2.CRC.model.runner = {
@@ -20,10 +31,17 @@ function QueryRunner() {
             status: "Running",
             abortable: true,
             finished: false,
-            breakdowns: {}
+            deleteCurrentQuery: false,
+            breakdowns: {},
+            intervalTimer: null
         };
 
+
+
         i2b2.CRC.view.QS.timerID = setInterval(i2b2.CRC.view.QS.timerTick, 100);
+
+        // our internal "master" timer
+        i2b2.CRC.model.runner.intervalTimer = setInterval(this._tick, 100);
 
         // define the 2 scoped callbacks that query runner uses
         let callbackQueryDef = new i2b2_scopedCallback();
@@ -58,8 +76,8 @@ function QueryRunner() {
                 return;
             }
 
-            // refresh the query history window
-            i2b2.CRC.view.history.doRefreshAll();
+            // refresh the query history window if it was not deleted
+            if (!i2b2.CRC.model.runner.deleteCurrentQuery) i2b2.CRC.view.history.doRefreshAll();
 
             // get the query instance id
             let qiList = results.refXML.getElementsByTagName('query_instance');
@@ -72,6 +90,9 @@ function QueryRunner() {
                 i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryRunner", {qi_key_value: qiID}, callbackQueryResultInstance);
             }
             i2b2.CRC.ctrlr.QS.updateStatus(results);
+
+            // one last tick to process deleting of canceled query
+            i2b2.CRC.ctrlr.QR._tick();
         };
 
         // process the results to get the query resultInstance
@@ -106,9 +127,15 @@ function QueryRunner() {
         // ==========================================================
         i2b2.CRC.ajax.runQueryInstance_fromQueryDefinition("CRC:QueryRunner", i2b2.CRC.model.runner.definition, callbackQueryDef);
     };
+
     this.doAbortQuery = function() {
-        // TODO: Aborts query run
-        alert('abort query');
+        // Aborts a running query
+        i2b2.CRC.ctrlr.QS.isRunning = false;
+        i2b2.CRC.model.runner.deleteCurrentQuery = true;
+
+        // clear the query timer's interval
+        clearInterval(i2b2.CRC.view.QS.timerID);
+        clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
     };
 
     this.doQueryFinished = function() {
