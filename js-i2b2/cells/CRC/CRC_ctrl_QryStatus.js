@@ -117,7 +117,6 @@ i2b2.CRC.ctrlr.QS = {
                     }
                 }
 
-                //alert(sCompiledResultsTest); //snm0
                 //only create graphs if there is breakdown data
                 if(sCompiledResultsTest.length > 0) {
                     $("#infoQueryStatusGraph").hide();
@@ -134,7 +133,6 @@ i2b2.CRC.ctrlr.QS = {
                     //$(window).trigger('resize');
                     //window.dispatchEvent(new Event('resize'));
                 }
-                //self.dispDIV.innerHTML += this.dispMsg;
             }
 
             i2b2.CRC.ctrlr.QS.breakdowns.isRunning = i2b2.CRC.ctrlr.QS.isRunning;
@@ -148,27 +146,9 @@ i2b2.CRC.ctrlr.QS = {
         if (s.indexOf('.') < 0) {
             s += '.0';
         }
-
         i2b2.CRC.ctrlr.QS.breakdowns.runDuration = s;
         i2b2.CRC.ctrlr.QS.breakdowns.name = i2b2.CRC.ctrlr.QS.QM.name;
         i2b2.CRC.ctrlr.QS.breakdowns.isRunning = i2b2.CRC.ctrlr.QS.isRunning;
-
-        /*if (!i2b2.CRC.ctrlr.QueryStatus.isRunning) {
-            //Query Report BG
-            if((!Object.isUndefined(self.QI.start_date)) && (!Object.isUndefined(self.QI.end_date)))
-            {
-                var startDateElem = "<input type=\"hidden\" id=\"startDateElem\" value=\"" + self.QI.start_date + "\">";
-                var startDateMillsecElem = "<input type=\"hidden\" id=\"startDateMillsecElem\" value=\"" + moment(self.QI.start_date) + "\">";
-                var endDateElem = "<input type=\"hidden\" id=\"endDateElem\" value=\"" + self.QI.end_date + "\">";
-                var endDateMillisecElem = "<input type=\"hidden\" id=\"endDateMillsecElem\" value=\"" + moment(self.QI.end_date) + "\">";
-                self.dispDIV.innerHTML += startDateElem + startDateMillsecElem + endDateElem + endDateMillisecElem;
-            }
-            //End Query Report BG
-            //		self.dispDIV.innerHTML += '<div style="margin-left:20px; clear:both; height:16px; line-height:16px; "><div height:16px; line-height:16px; ">Compute Time: ' + (Math.floor((self.QI.end_date - self.QI.start_date)/100))/10 + ' secs</div></div>';
-            //		self.dispDIV.innerHTML += '</div>';
-            $('runBoxText').innerHTML = "Run Query";
-
-        }*/
 
         if ((!i2b2.CRC.ctrlr.QS.isRunning) && (undefined !== i2b2.CRC.ctrlr.QS.QI.end_date)) {
             i2b2.CRC.ctrlr.QS.breakdowns.computeTime = (Math.floor((i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date) / 100)) / 10;
@@ -188,7 +168,7 @@ i2b2.CRC.ctrlr.QS = {
                 switch (rec.QRS_Status) {
                     case "ERROR":
                         breakdown.title = rec.title;
-                        breakdown.statusMessage =  "ERROR";
+                            breakdown.statusMessage = "ERROR";
                         i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
                         foundError = true;
                         break;
@@ -216,7 +196,6 @@ i2b2.CRC.ctrlr.QS = {
                 }
             }
         }
-
         i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QS.breakdowns});
 
         let func_trim = function(sString) {
@@ -269,12 +248,9 @@ i2b2.CRC.ctrlr.QS = {
             try {
                 clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
                 i2b2.CRC.ctrlr.QS.refreshInterrupt = false;
-            } catch (e) {
+                } catch (e) {}
             }
         }
-    },
-    pollStatus: function () {
-        i2b2.CRC.ctrlr.QS.loadQueryStatus();
     }
 };
 
@@ -420,7 +396,7 @@ i2b2.CRC.ctrlr.QS.updateStatus = function(results) {
         i2b2.CRC.ctrlr.QS.QI.statusID = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
     }
 
-    setTimeout("i2b2.CRC.ctrlr.QS.pollStatus()", i2b2.CRC.ctrlr.QS.polling_interval);
+    setTimeout("i2b2.CRC.ctrlr.QS.loadQueryStatus();", i2b2.CRC.ctrlr.QS.polling_interval);
 };
 // ================================================================================================== //
 

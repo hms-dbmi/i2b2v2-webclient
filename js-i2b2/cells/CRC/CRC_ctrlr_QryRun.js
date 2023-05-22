@@ -71,7 +71,6 @@ function QueryRunner() {
                 // run the second request to get the result set
                 i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryRunner", {qi_key_value: qiID}, callbackQueryResultInstance);
             }
-            //i2b2.CRC.view.QR.render();
             i2b2.CRC.ctrlr.QS.updateStatus(results);
         };
 
@@ -111,6 +110,7 @@ function QueryRunner() {
         // TODO: Aborts query run
         alert('abort query');
     };
+
     this.doQueryFinished = function() {
         // TODO: query is done running
 

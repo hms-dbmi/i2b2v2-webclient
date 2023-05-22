@@ -51,15 +51,7 @@ i2b2.CRC.ctrlr.history = {
             // create a scoped callback message
             var scopeCB = new i2b2_scopedCallback();
             scopeCB.scope = i2b2.CRC.model.QueryMasters;
-            scopeCB.callback = function(i2b2CellMsg) {
-                // define the XML processing function
-                console.group("CALLBACK Processing AJAX i2b2CellMsg");
-                //if (i2b2CellMsg.error) {
-                //	alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
-                //}
-                // refresh the Query History data
-                i2b2.CRC.ctrlr.history.Refresh();
-            };
+            scopeCB.callback = i2b2.CRC.view.history.showBrowseView;
 
             // fire the AJAX call
             var options = {
