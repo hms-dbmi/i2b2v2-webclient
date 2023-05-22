@@ -35,8 +35,9 @@
             </div>
             <div class="d-flex flex-row px-3 mb-2">
                 <span class="d-block align-self-center me-2">Concepts must occur</span>
-                <div>
+                <div class="conceptOcc">
                     <input class="OccursCount form-control form-control-sm" placeholder="1" value="{{this.instances}}" onchange="i2b2.CRC.view.QS.clearStatus();"/>
+                    <button class="btn btn-outline-secondary border-0 refreshOcc"><i class="bi bi-arrow-clockwise"></i></button>
                 </div>
                 <span class="d-block align-self-center mx-2">or more time(s)</span>
             </div>            

@@ -28,6 +28,11 @@
     padding: 16px;
 }
 
+#PM-login-modal .footer div {
+    font-size: 0.85rem;
+}
+
+
 
 /* The Modal (background) */
 #PM-login-modal.modal {

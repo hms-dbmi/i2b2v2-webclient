@@ -220,23 +220,29 @@
 }
 
 .refreshStartDate,
-.refreshEndDate{
+.refreshEndDate,
+.refreshOcc {
     font-size: 1.3em;
     color: rgba(0, 0, 0, 0.67);
-    padding: 0.2em 0.2em 0.2em 0.6em;
+    padding: 0.2em 0.2em 0.2em 0.5em;
 }
 
 .refreshStartDate:focus,
-.refreshEndDate:focus{
+.refreshEndDate:focus,
+.refreshOcc:focus {
     box-shadow: none !important;
 }
 
 .refreshStartDate:hover,
-.refreshEndDate:hover{
+.refreshEndDate:hover,
+.refreshOcc:hover {
     background: none !important;
     color: #2782a3;
 }
 
+.refreshOcc {
+    padding-left: 0.25em;
+}
 
 
 /* Query Group Top Bar formatting */
@@ -900,6 +906,12 @@
     opacity: 0;
     transition: opacity 0.35s, margin-left 0.5s;
 }
+
+.TermList .concept:hover .actions {
+    background-color: white;
+    padding-right: 1rem;
+}
+
 .TermList .concept:hover .actions i {
     opacity: 1;
     margin-left: .3em;
@@ -945,6 +957,17 @@
 .labTypeFlagAndValues {
     display: flex;
     min-height: 100px;
+}
+
+#labNumericValue.error,
+#labNumericValueRangeLow.error,
+#labNumericValueRangeHigh.error {
+    border: 2px solid red;
+}
+
+#labNumericValueRangeLow, #labNumericValueRangeHigh {
+    display: inline;
+    width: 31%;
 }
 
 #labNumericValueOperator{
