@@ -136,6 +136,10 @@ function QueryRunner() {
         // clear the query timer's interval
         clearInterval(i2b2.CRC.view.QS.timerID);
         clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
+
+        // update the screen to show status as cancelled
+        $("#infoQueryStatusText .statusButtons").removeClass("running").addClass("cancelled");
+
     };
 
     this.doQueryFinished = function() {
