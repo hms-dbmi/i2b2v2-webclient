@@ -40,6 +40,15 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         data.dim_code = i2b2.h.getXNodeVal(xmlData, 'dimcode');
         data.basecode = i2b2.h.getXNodeVal(xmlData, 'basecode');
         data.total_num = i2b2.h.getXNodeVal(xmlData, 'totalnum');
+
+        let protected = i2b2.h.getXNodeVal(xmlData, 'protected_access');
+        if (protected === undefined || String(protected).toUpperCase() === "N") {
+            data.protected = false;
+        } else {
+            data.protected = true;
+            data.protected_permissions = i2b2.h.getXNodeVal(xmlData, 'ontology_protection');
+        }
+
     } else {
         data = sdxData;
     }

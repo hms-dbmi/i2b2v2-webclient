@@ -369,7 +369,7 @@ i2b2.PM.extendUserSession = function() {
 // ================================================================================================== //
 i2b2.PM.doLogout = function() {
     // must reload page to avoid dirty data from lingering
-    const logoutUri = i2b2.PM.model?.samlConfig.logout;
+    const logoutUri = i2b2.PM.model?.samlConfig?.logout;
     if (logoutUri === undefined) {
         window.location.reload();
     } else {

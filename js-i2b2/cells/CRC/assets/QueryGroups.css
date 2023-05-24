@@ -220,23 +220,29 @@
 }
 
 .refreshStartDate,
-.refreshEndDate{
+.refreshEndDate,
+.refreshOcc {
     font-size: 1.3em;
     color: rgba(0, 0, 0, 0.67);
-    padding: 0.2em 0.2em 0.2em 0.6em;
+    padding: 0.2em 0.2em 0.2em 0.5em;
 }
 
 .refreshStartDate:focus,
-.refreshEndDate:focus{
+.refreshEndDate:focus,
+.refreshOcc:focus {
     box-shadow: none !important;
 }
 
 .refreshStartDate:hover,
-.refreshEndDate:hover{
+.refreshEndDate:hover,
+.refreshOcc:hover {
     background: none !important;
     color: #2782a3;
 }
 
+.refreshOcc {
+    padding-left: 0.25em;
+}
 
 
 /* Query Group Top Bar formatting */
@@ -376,10 +382,6 @@
 .QueryGroup .topbar .unlinkSlash {
     margin-left: -22.5px;
     font-size: 1.85em;
-}
-
-.QueryGroup .topbar .unLink {
-    display: none;
 }
 
 .QueryGroup .topbar .encLink {

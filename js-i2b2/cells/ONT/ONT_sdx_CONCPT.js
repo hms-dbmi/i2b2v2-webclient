@@ -166,6 +166,8 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
             break;
     }
 
+    if (sdxData.origData.protected) nodeInfo.cssClassMinor += " protected";
+
     // cleanup
     if (nodeInfo.iconImg === undefined) {
         console.warn("[SDX RenderData] no '"+icon+"' icon has been set in the options passed");
@@ -410,6 +412,13 @@ i2b2.sdx.TypeControllers.CONCPT.MakeObject = function(c, modifier, cl_options, o
             o.synonym_cd = i2b2.h.getXNodeVal(c,'synonym_cd');
             o.dim_code = i2b2.h.getXNodeVal(c,'dimcode');
             o.basecode = i2b2.h.getXNodeVal(c,'basecode');
+            let protected = i2b2.h.getXNodeVal(c,'protected_access');
+            if (protected === undefined || String(protected).toUpperCase() === "N") {
+                o.protected = false;
+            } else {
+                o.protected = true;
+                o.protected_permissions = i2b2.h.getXNodeVal(c,'ontology_protection');
+            }
 
             // append the data node
             if (objectType !== undefined) {

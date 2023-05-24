@@ -28,6 +28,10 @@
     padding: 16px;
 }
 
+#PM-login-modal .classic {
+    padding: 15px 16px 16px 0px;
+}
+
 
 /* The Modal (background) */
 #PM-login-modal.modal {
