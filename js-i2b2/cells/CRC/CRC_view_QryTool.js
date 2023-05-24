@@ -25,7 +25,7 @@ i2b2.CRC.view.QT.resetToCRCHistoryView = function() {
 // ================================================================================================== //
 
 i2b2.CRC.view.QT.handleConceptValidation = function(){
-    let validQuery = true;
+    let validQuery = false;
     $(".QueryGroup.when .event").each((index, elem) => {
         let termList = $(elem).find(".TermList .concept");
         if (termList.length === 0) {
@@ -33,6 +33,7 @@ i2b2.CRC.view.QT.handleConceptValidation = function(){
             validQuery = false;
         } else {
             $(elem).find(".required").addClass("hidden");
+            validQuery= true;
         }
     });
     return validQuery;
@@ -49,6 +50,7 @@ i2b2.CRC.view.QT.validateQuery = function() {
                 timeSpanValueElem.parent().find(".timeSpanError").removeClass("vhidden");
                 $(timeSpanValueElem.closest('.DateRelationship')).collapse('show');
                 validQuery = false;
+                i2b2.CRC.view.QT.handleConceptValidation();
             }else{
                 timeSpanValueElem.removeClass("required");
                 timeSpanValueElem.parent().find(".timeSpanError").addClass("vhidden");
