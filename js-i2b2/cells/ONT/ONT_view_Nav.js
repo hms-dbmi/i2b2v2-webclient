@@ -84,6 +84,15 @@ i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
             node.parentText = nodeData.text;
         });
 
+        // save a list of the parents
+        let loadedParents = newNodes.map((d)=> { return {key: d.parentKey, text:d.parentText} } );
+        loadedParents = loadedParents.filter((val, idx, self) => {
+            for (let i=0; i < idx; i++) {
+                if (self[i].key === val.key && self[i].text === val.text) return false;
+            }
+            return true;
+        });
+
         // push new nodes into the treeview
         i2b2.ONT.view.nav.treeview.treeview('addNodes', [
             newNodes,
@@ -93,8 +102,8 @@ i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
 
         // change the treeview icon to show it is no longer loading
         i2b2.ONT.view.nav.treeview.treeview('setNodeLoaded', [
-            function(node, parentKeys){ return !(parentKeys.indexOf(node.key)) },
-            parentNodes
+            function(node, parentNodes){ return (parentNodes.filter((d) => (node.key === d.key && node.text === d.text)).length > 0) },
+            loadedParents
         ]);
 
         // render tree
