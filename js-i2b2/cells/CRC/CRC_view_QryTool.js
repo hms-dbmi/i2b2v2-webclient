@@ -25,7 +25,7 @@ i2b2.CRC.view.QT.resetToCRCHistoryView = function() {
 // ================================================================================================== //
 
 i2b2.CRC.view.QT.handleConceptValidation = function(){
-    let validQuery = false;
+    let validQuery = true;
     $(".QueryGroup.when .event").each((index, elem) => {
         let termList = $(elem).find(".TermList .concept");
         if (termList.length === 0) {
