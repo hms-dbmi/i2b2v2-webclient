@@ -580,7 +580,7 @@
 }
 
 .QueryGroup.when .SequenceBar {
-    max-height: 12.5em; /*added height for laptops */
+    max-height: 15.5em; /*added height for laptops */
     padding: 0.4em 0.4em 0.4em 0.1em;
     border-right: 1px solid #d8a407;
     border-top: 0px;
