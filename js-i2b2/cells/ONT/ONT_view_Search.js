@@ -136,8 +136,13 @@ i2b2.ONT.view.search.showModifiers = function(node){
                 alertMsg: "No modifiers found for " + node.text + "."
             });
             node.hasModifier = false;
-        }
-        else{
+        } else {
+            // add data for proper matching of parent nodes
+            newNodes.forEach((newNode) => {
+                newNode.parentKey = node.key;
+                newNode.parentText = node.text;
+            })
+
             //get existing children
             let getAllChildren = function (childNode, allChildren) {
                 childNode.nodes.forEach((n) => {
