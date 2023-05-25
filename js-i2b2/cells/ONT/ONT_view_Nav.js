@@ -270,7 +270,8 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
         actions.nodeModifier =  {
             name: 'Show Modifiers',
             isShown: function(node) {
-                let modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
+                let modifiersDisplayed = [];
+                if (node.nodes) modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
                 return modifiersDisplayed.length === 0 && (node.hasModifier === undefined || node.hasModifier !== false);
             },
             onClick: function(node) {
