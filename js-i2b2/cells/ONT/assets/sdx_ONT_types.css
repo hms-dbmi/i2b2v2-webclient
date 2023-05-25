@@ -24,6 +24,10 @@ span.sdxStyleONT-CONCPT.tvLeaf::before {
     background-image: url(sdx_ONT_CONCPT_leaf.png);
 }
 
+span.sdxStyleONT-CONCPT.protected::before {
+    background-image: url(ONT_protected.png) !important;
+    background-repeat: no-repeat;
+}
 
 
 span.sdxStyleONT-MODIFIER::before {

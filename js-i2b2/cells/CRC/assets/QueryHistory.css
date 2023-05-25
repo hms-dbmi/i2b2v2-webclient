@@ -58,7 +58,7 @@
     align-items: center;
 }
 
-#i2b2QueryHistoryFinder {
+#i2b2QueryHistoryBar {
     position: absolute;
     top: 0;
     height: 3.1rem;
@@ -72,7 +72,7 @@
     overflow: clip;
 }
 
-#i2b2QueryHistoryFinder .searchOptions {
+#i2b2QueryHistoryBar .searchOptions {
     position: relative;
     align-items: center;
     display: flex;
@@ -80,13 +80,13 @@
     min-width: 20rem;
 }
 
-#i2b2QueryHistoryFinder .searchTermMain{
+#i2b2QueryHistoryBar .searchTermMain{
      flex-grow: 1;
      min-width: 6.5rem;
      margin-top: -0.1em;
 }
 
-#i2b2QueryHistoryFinder #querySearchTermText{
+#i2b2QueryHistoryBar #querySearchTermText{
     flex-grow: 1;
     min-width: 6.5rem;
     margin-top: 0.9em;
@@ -96,16 +96,16 @@
     padding-bottom: 0;
 }
 
-#i2b2QueryHistoryFinder #submitQueryHistorySearch{
+#i2b2QueryHistoryBar #submitQueryHistorySearch{
     margin-left: -0.2em;
 }
 
-#i2b2QueryHistoryFinder #querySearchFilter{
+#i2b2QueryHistoryBar #querySearchFilter{
     padding: 0 0.7rem;
     margin-bottom: -10px;
 }
 
-#i2b2QueryHistoryFinder #querySearchFilterText {
+#i2b2QueryHistoryBar #querySearchFilterText {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -115,7 +115,7 @@
 }
 
 
-#i2b2QueryHistoryFinder .form-control{
+#i2b2QueryHistoryBar .form-control{
     border-radius: 0;
     box-shadow: none;
     background: transparent;
@@ -134,41 +134,41 @@ button.invert:hover{
     display: none;
 }
 
-#i2b2QueryHistoryFinder .form-select-sm{
+#i2b2QueryHistoryBar .form-select-sm{
     font-size: 0.84em;
 }
 
-#i2b2QueryHistoryFinder .btn-sm{
+#i2b2QueryHistoryBar .btn-sm{
     font-size: 0.89em;
 }
 
-#i2b2QueryHistoryFinder .form-control-sm{
+#i2b2QueryHistoryBar .form-control-sm{
     font-size: 1em;
     padding-left: 0.1em;
 }
 
-#i2b2QueryHistoryFinder .form-check-input {
+#i2b2QueryHistoryBar .form-check-input {
     border: 1px solid black;
     margin-top: 2px;
 }
 
-#i2b2QueryHistoryFinder .form-check-inline {
+#i2b2QueryHistoryBar .form-check-inline {
     margin-top: 5px;
 }
 
-#i2b2QueryHistoryFinder .navbar-nav{
+#i2b2QueryHistoryBar .navbar-nav{
     border: 1px solid #ced4da;
     border-radius: 5px 5px 5px 5px;
     font-size: 0.9em;
     background-color: #FFFFFF;
 }
 
-#i2b2QueryHistoryFinder .nav-link{
+#i2b2QueryHistoryBar .nav-link{
     color: #212529;
     margin-right: 0.2em;
 }
 
-#i2b2QueryHistoryFinder .dropdown-menu{
+#i2b2QueryHistoryBar .dropdown-menu{
     font-size: 1em;
     position: fixed !important;
 }
@@ -178,7 +178,7 @@ button.invert:hover{
     overflow-y: auto;
 }
 
-#i2b2QueryHistoryFinder .search{
+#i2b2QueryHistoryBar .search{
     margin-right: 0.5em;
 }
 
@@ -212,11 +212,11 @@ button.invert:hover{
 }
 /* ============ small devices .end// ============ */
 
-#i2b2QueryHistoryFinder .highlight-menu-item {
+#i2b2QueryHistoryBar .highlight-menu-item {
     background-color: #f1f1f1;
 }
 
-#i2b2QueryHistoryFinder .centerText{
+#i2b2QueryHistoryBar .centerText{
     text-align: center;
 }
 
@@ -226,47 +226,47 @@ button.invert:hover{
     width: 22.4em;
 }
 
-#i2b2QueryHistoryFinder .searchBtn{
+#i2b2QueryHistoryBar .searchBtn{
     font-size: 1.4em !important;
     margin-left: 0;
     border-radius: 3px;
     border-width: 0.10em !important;
 }
 
-#i2b2QueryHistoryFinder .searchBtn:hover:enabled{
+#i2b2QueryHistoryBar .searchBtn:hover:enabled{
     background-color: #6c757d;
     border-color: #797a7c !important;
 }
 
-#i2b2QueryHistoryFinder .searchBtn:enabled{
+#i2b2QueryHistoryBar .searchBtn:enabled{
     opacity: 0.65;
 }
 
-#i2b2QueryHistoryFinder .searchActions {
+#i2b2QueryHistoryBar .searchActions {
     border-color: #797a7c !important;
 }
 
-#i2b2QueryHistoryFinder .searchActions .btn {
+#i2b2QueryHistoryBar .searchActions .btn {
     padding: 0.05em 0.55em;
     margin-top: 0.7em;
 }
 
-#i2b2QueryHistoryFinder .searchActions .btn:hover {
+#i2b2QueryHistoryBar .searchActions .btn:hover {
     padding: 0.05em 0.55em;
     margin-top: 0.7em;
 }
 
-#i2b2QueryHistoryFinder .clearIcon {
+#i2b2QueryHistoryBar .clearIcon {
     margin-right: 0;
     margin-left: 0;
     border-color: #797a7c !important;
 }
 
-#i2b2QueryHistoryFinder .invisible {
+#i2b2QueryHistoryBar .invisible {
     visibility: hidden;
 }
 
-#i2b2QueryHistoryFinder .searchTermMain .input-group{
+#i2b2QueryHistoryBar .searchTermMain .input-group{
     border-color: rgba(71, 72, 73, 0.63);
     border-style: solid;
     border-width: 0 0 2px 0 !important;
@@ -279,4 +279,27 @@ button.invert:hover{
 #queryHistoryOptionsFields #HISTMaxQryDisp-error {
     font-size: 0.9em;
     color: red;
+}
+
+
+/* date listing bar */
+#i2b2QueryHistoryBar .dateListing .text {
+    margin: auto;
+    padding-left: 0;
+}
+
+#i2b2QueryHistoryBar .dateListing .dateError {
+    text-align: center;
+    color: red;
+}
+
+#i2b2QueryHistoryBar .dateListing .input-group-append .button {
+    border-radius: 0;
+}
+
+#i2b2QueryHistoryBar .dateListing .input-group-append .dateListingCancel {
+    position: relative;
+    left: -1px;
+    border-bottom-right-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
 }
