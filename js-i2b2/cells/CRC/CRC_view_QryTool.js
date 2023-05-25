@@ -23,6 +23,23 @@ i2b2.CRC.view.QT.resetToCRCHistoryView = function() {
     $("#i2b2TreeviewQueryHistory").show();
 }
 // ================================================================================================== //
+
+i2b2.CRC.view.QT.handleConceptValidation = function(){
+    let validQuery = true;
+    $(".QueryGroup.when .event").each((index, elem) => {
+        let termList = $(elem).find(".TermList .concept");
+        if (termList.length === 0) {
+            $(elem).find(".required").removeClass("hidden");
+            validQuery = false;
+        } else {
+            $(elem).find(".required").addClass("hidden");
+            validQuery= true;
+        }
+    });
+    return validQuery;
+}
+
+// ================================================================================================== //
 i2b2.CRC.view.QT.validateQuery = function() {
     let validQuery = true;
     $(".SequenceBar .timeSpan").each((index, elem) => {
@@ -33,22 +50,15 @@ i2b2.CRC.view.QT.validateQuery = function() {
                 timeSpanValueElem.parent().find(".timeSpanError").removeClass("vhidden");
                 $(timeSpanValueElem.closest('.DateRelationship')).collapse('show');
                 validQuery = false;
+                i2b2.CRC.view.QT.handleConceptValidation();
             }else{
                 timeSpanValueElem.removeClass("required");
                 timeSpanValueElem.parent().find(".timeSpanError").addClass("vhidden");
             }
         }
     });
-
-    $(".QueryGroup.when .event").each((index, elem) => {
-        let termList = $(elem).find(".TermList .concept");
-        if (termList.length === 0) {
-            $(elem).find(".required").removeClass("hidden");
-            validQuery = false;
-        } else {
-            $(elem).find(".required").addClass("hidden");
-        }
-    });
+    //show or hide validation messages
+    validQuery = validQuery && i2b2.CRC.view.QT.handleConceptValidation();
 
     return validQuery;
 }
@@ -270,7 +280,18 @@ i2b2.CRC.view.QT.toggleTimeSpan = function(elem) {
         parent.find(".timeSpanOp").val("GREATEREQUAL");
         parent.find(".timeSpanUnit").val("DAY");
         parent.find(".timeSpanValue").val("");
+        parent.find(".timeSpanValue").removeClass("required");
+        parent.find(".timeSpanError").addClass("vhidden");
     }
+    
+    $(timeSpanElem).on('focus', function() {
+        let $this = $(this);
+        $this.removeClass("required");
+        $this.siblings(".timeSpanError").addClass("vhidden");
+        
+    });
+    
+
     i2b2.CRC.view.QT.generateSequenceBarText(elem); 
     i2b2.CRC.view.QS.clearStatus();
 };
@@ -641,7 +662,12 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     let qgIndex = $(evt.target).closest(".QueryGroup").data("queryGroup");
     let eventIdx = $(evt.target).closest(".event").data('eventidx');
 
+   
+
     i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, true);
+
+    //show or hide validation messages
+    i2b2.CRC.view.QT.handleConceptValidation();
 };
 
 // ================================================================================================== //
