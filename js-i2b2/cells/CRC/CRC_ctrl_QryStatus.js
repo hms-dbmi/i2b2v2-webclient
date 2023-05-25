@@ -117,7 +117,6 @@ i2b2.CRC.ctrlr.QS = {
                     }
                 }
 
-                //alert(sCompiledResultsTest); //snm0
                 //only create graphs if there is breakdown data
                 if(sCompiledResultsTest.length > 0) {
                     $("#infoQueryStatusGraph").hide();
@@ -134,7 +133,6 @@ i2b2.CRC.ctrlr.QS = {
                     //$(window).trigger('resize');
                     //window.dispatchEvent(new Event('resize'));
                 }
-                //self.dispDIV.innerHTML += this.dispMsg;
             }
 
             i2b2.CRC.ctrlr.QS.breakdowns.isRunning = i2b2.CRC.ctrlr.QS.isRunning;
@@ -148,27 +146,9 @@ i2b2.CRC.ctrlr.QS = {
         if (s.indexOf('.') < 0) {
             s += '.0';
         }
-
         i2b2.CRC.ctrlr.QS.breakdowns.runDuration = s;
         i2b2.CRC.ctrlr.QS.breakdowns.name = i2b2.CRC.ctrlr.QS.QM.name;
         i2b2.CRC.ctrlr.QS.breakdowns.isRunning = i2b2.CRC.ctrlr.QS.isRunning;
-
-        /*if (!i2b2.CRC.ctrlr.QueryStatus.isRunning) {
-            //Query Report BG
-            if((!Object.isUndefined(self.QI.start_date)) && (!Object.isUndefined(self.QI.end_date)))
-            {
-                var startDateElem = "<input type=\"hidden\" id=\"startDateElem\" value=\"" + self.QI.start_date + "\">";
-                var startDateMillsecElem = "<input type=\"hidden\" id=\"startDateMillsecElem\" value=\"" + moment(self.QI.start_date) + "\">";
-                var endDateElem = "<input type=\"hidden\" id=\"endDateElem\" value=\"" + self.QI.end_date + "\">";
-                var endDateMillisecElem = "<input type=\"hidden\" id=\"endDateMillsecElem\" value=\"" + moment(self.QI.end_date) + "\">";
-                self.dispDIV.innerHTML += startDateElem + startDateMillsecElem + endDateElem + endDateMillisecElem;
-            }
-            //End Query Report BG
-            //		self.dispDIV.innerHTML += '<div style="margin-left:20px; clear:both; height:16px; line-height:16px; "><div height:16px; line-height:16px; ">Compute Time: ' + (Math.floor((self.QI.end_date - self.QI.start_date)/100))/10 + ' secs</div></div>';
-            //		self.dispDIV.innerHTML += '</div>';
-            $('runBoxText').innerHTML = "Run Query";
-
-        }*/
 
         if ((!i2b2.CRC.ctrlr.QS.isRunning) && (undefined !== i2b2.CRC.ctrlr.QS.QI.end_date)) {
             i2b2.CRC.ctrlr.QS.breakdowns.computeTime = (Math.floor((i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date) / 100)) / 10;
@@ -176,48 +156,49 @@ i2b2.CRC.ctrlr.QS = {
 
         let foundError = false;
 
-        for (let i in i2b2.CRC.ctrlr.QS.QRS) {
-            let rec = i2b2.CRC.ctrlr.QS.QRS[i];
-            let breakdown = {
-                title: null,
-                statusMessage: null
-            };
+        if (!i2b2.CRC.model.runner.deleteCurrentQuery) {
+            for (let i in i2b2.CRC.ctrlr.QS.QRS) {
+                let rec = i2b2.CRC.ctrlr.QS.QRS[i];
+                let breakdown = {
+                    title: null,
+                    statusMessage: null
+                };
 
-            if (rec.QRS_time) {
-                // display status of query in box
-                switch (rec.QRS_Status) {
-                    case "ERROR":
-                        breakdown.title = rec.title;
-                        breakdown.statusMessage =  "ERROR";
-                        i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
-                        foundError = true;
-                        break;
-                    case "COMPLETED":
-                    case "FINISHED":
-                        foundError = false;
-                        break;
-                    case "INCOMPLETE":
-                    case "WAITTOPROCESS":
-                    case "PROCESSING":
-                        breakdown.title = rec.title;
-                        breakdown.statusMessage = "PROCESSING";
-                        i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
-                        alert('Your query has timed out and has been rescheduled to run in the background.  The results will appear in "Previous Queries"');
-                        foundError = true;
-                        break;
+                if (rec.QRS_time) {
+                    // display status of query in box
+                    switch (rec.QRS_Status) {
+                        case "ERROR":
+                            breakdown.title = rec.title;
+                            breakdown.statusMessage = "ERROR";
+                            i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
+                            foundError = true;
+                            break;
+                        case "COMPLETED":
+                        case "FINISHED":
+                            foundError = false;
+                            break;
+                        case "INCOMPLETE":
+                        case "WAITTOPROCESS":
+                        case "PROCESSING":
+                            breakdown.title = rec.title;
+                            breakdown.statusMessage = "PROCESSING";
+                            i2b2.CRC.ctrlr.QS.breakdowns.resultTable.push(breakdown);
+                            alert('Your query has timed out and has been rescheduled to run in the background.  The results will appear in "Previous Queries"');
+                            foundError = true;
+                            break;
+                    }
+                }
+
+                if (foundError === false) {
+                    if (rec.QRS_DisplayType === "CATNUM") {
+                        i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
+                    } else if ((rec.QRS_DisplayType === "LIST")) {
+                        i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
+                    }
                 }
             }
-
-            if (foundError === false) {
-                if (rec.QRS_DisplayType === "CATNUM") {
-                    i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
-                } else if ((rec.QRS_DisplayType === "LIST")) {
-                    i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
-                }
-            }
+            i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QS.breakdowns});
         }
-
-        i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QS.breakdowns});
 
         let func_trim = function(sString) {
             while (sString.substring(0,1) === '\n')
@@ -264,17 +245,23 @@ i2b2.CRC.ctrlr.QS = {
             }
         }
 
-        if (!i2b2.CRC.ctrlr.QS.isRunning && i2b2.CRC.ctrlr.QS.refreshInterrupt) {
-            // make sure our refresh interrupt is turned off
-            try {
-                clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
-                i2b2.CRC.ctrlr.QS.refreshInterrupt = false;
-            } catch (e) {
+        if (!i2b2.CRC.ctrlr.QS.isRunning) {
+            // switch the display of query cancel button and the query report button
+            $("#infoQueryStatusText .statusButtons").removeClass("running");
+            if (i2b2.CRC.model.runner.deleteCurrentQuery) {
+                $("#infoQueryStatusText .statusButtons").addClass("cancelled");
+            } else {
+                $("#infoQueryStatusText .statusButtons").addClass("done");
+            }
+
+            if (i2b2.CRC.ctrlr.QS.refreshInterrupt) {
+                // make sure our refresh interrupt is turned off
+                try {
+                    clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
+                    i2b2.CRC.ctrlr.QS.refreshInterrupt = false;
+                } catch (e) {}
             }
         }
-    },
-    pollStatus: function () {
-        i2b2.CRC.ctrlr.QS.loadQueryStatus();
     }
 };
 
@@ -420,7 +407,7 @@ i2b2.CRC.ctrlr.QS.updateStatus = function(results) {
         i2b2.CRC.ctrlr.QS.QI.statusID = i2b2.h.XPath(queryInstance, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;
     }
 
-    setTimeout("i2b2.CRC.ctrlr.QS.pollStatus()", i2b2.CRC.ctrlr.QS.polling_interval);
+    setTimeout("i2b2.CRC.ctrlr.QS.loadQueryStatus();", i2b2.CRC.ctrlr.QS.polling_interval);
 };
 // ================================================================================================== //
 
