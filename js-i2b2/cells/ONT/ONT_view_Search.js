@@ -145,15 +145,17 @@ i2b2.ONT.view.search.showModifiers = function(node){
 
             //get existing children
             let getAllChildren = function (childNode, allChildren) {
-                childNode.nodes.forEach((n) => {
-                    let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
-                    n.parentKey = parentNode.key;
-                    n.parentText = parentNode.text;
-                    allChildren.push(n);
-                    if (n.nodes !== undefined && n.nodes.length >= 0) {
-                        return getAllChildren(n, allChildren);
-                    }
-                });
+                if (childNode.nodes) {
+                    childNode.nodes.forEach((n) => {
+                        let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
+                        n.parentKey = parentNode.key;
+                        n.parentText = parentNode.text;
+                        allChildren.push(n);
+                        if (n.nodes !== undefined && n.nodes.length >= 0) {
+                            return getAllChildren(n, allChildren);
+                        }
+                    });
+                }
             }
 
             let temp_childrenAll = [];
