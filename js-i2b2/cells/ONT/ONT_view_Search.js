@@ -136,18 +136,26 @@ i2b2.ONT.view.search.showModifiers = function(node){
                 alertMsg: "No modifiers found for " + node.text + "."
             });
             node.hasModifier = false;
-        }
-        else{
+        } else {
+            // add data for proper matching of parent nodes
+            newNodes.forEach((newNode) => {
+                newNode.parentKey = node.key;
+                newNode.parentText = node.text;
+            })
+
             //get existing children
             let getAllChildren = function (childNode, allChildren) {
-                childNode.nodes.forEach((n) => {
-                    let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
-                    n.parentKey = parentNode.key;
-                    allChildren.push(n);
-                    if (n.nodes !== undefined && n.nodes.length >= 0) {
-                        return getAllChildren(n, allChildren);
-                    }
-                });
+                if (childNode.nodes) {
+                    childNode.nodes.forEach((n) => {
+                        let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
+                        n.parentKey = parentNode.key;
+                        n.parentText = parentNode.text;
+                        allChildren.push(n);
+                        if (n.nodes !== undefined && n.nodes.length >= 0) {
+                            return getAllChildren(n, allChildren);
+                        }
+                    });
+                }
             }
 
             let temp_childrenAll = [];
@@ -160,7 +168,7 @@ i2b2.ONT.view.search.showModifiers = function(node){
             node.state.expanded = true;
             i2b2.ONT.view.search.treeview.treeview('addNodes', [
                 newNodes,
-                function (parent, child) { return parent.key === child.parentKey},
+                function(parent, child) { return (parent.key === child.parentKey) && (parent.text === child.parentText) },
                 false
             ]);
 
