@@ -231,18 +231,10 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
         if (results.error) {
             let t;
             // process the specific error
-            switch (cl_node.tree) {
-                case "ontNavResults":
+            switch (cl_node.refTreeview.elementId) {
+                case "i2b2TreeviewOntNav":
+                case "i2b2TreeviewOntSearch":
                     t = i2b2.ONT.view.nav.params;
-                    break;
-                case "ontSearchCodesResults":
-                    t = i2b2.ONT.view.find.params;
-                    break;
-                case "ontSearchModifiersResults":
-                    t = i2b2.ONT.view.find.params;
-                    break;
-                case "ontSearchNamesResults":
-                    t = i2b2.ONT.view.find.params;
                     break;
                 default:
                     t = i2b2.ONT.params;
@@ -251,22 +243,17 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
             var eaction = false;
             if (errorCode === "MAX_EXCEEDED") {
                 var eaction = confirm("The number of terms that were returned exceeds the maximum number currently set as " + t.max + ". Would you like to increase it to " + (t.max * 5) + " so you can try again?");
-                if (eaction === true) i2b2.ONT.view.find.params.max = t.max * 5;
+                if (eaction === true) {
+                    // re-fire the call with no max limit if the user requested so
+                    i2b2.ONT.view.nav.params.max = t.max * 5;
+                    i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cl_onCompleteCB);
+                } else {
+                    // return empty result
+                    cl_onCompleteCB([], []);
+                }
             } else {
                 alert("The following error has occurred:\n" + errorCode);
             }
-            // re-fire the call with no max limit if the user requested so
-            if (eaction) {
-                // TODO: Implement param routing from node's container
-                t.max = t.max * 5;
-                // TODO: code rerun of last action
-                //var mod_options = Object.clone(cl_options);
-                //delete mod_options.ont_max_records;
-                //i2b2.ONT.ajax.GetChildConcepts("ONT:SDX:Concept", mod_options, scopedCallback );
-                //   return true;
-            }
-            // ROLLBACK the tree changes
-            cl_onCompleteCB();
             return false;
         }
         let c, renderOptions;
