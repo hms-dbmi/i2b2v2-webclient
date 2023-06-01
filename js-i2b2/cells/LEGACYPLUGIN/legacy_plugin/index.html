@@ -158,6 +158,8 @@
 <script type="text/javascript" src="js-i2b2/i2b2_ui_config.js"></script>
 <link type="text/css" href="assets/i2b2.css" rel="stylesheet" />
 <link type="text/css" href="assets/i2b2-NEW.css" rel="stylesheet" />
+<link type="text/css" href="js-i2b2/cells/CRC/assets/modLabValues.css" rel="stylesheet" />
+
 
 <!-- other auxiliary javascript source files -->
 <script type="text/javascript" src="js-i2b2/hive/hive.ui.js"></script>
@@ -415,7 +417,115 @@ YAHOO.util.Event.addListener(window, "load", init);
       <div style="height:15px;"></div>
     </div>
   </div>
-  <!-- ############### </Timeout Dialog> ############### --> 
+  <!-- ############### </Timeout Dialog> ############### -->
+
+  <!-- ############### <LabRange> ############### -->
+  <div id="itemLabRangeDynamic" style="display:none;"></div>
+  <div id="itemLabRange" style="display:none;">
+    <div class="hd" style="background:#6677AA;">Lab Range Constraint</div>
+    <div class="bd modLabValues">
+      <div style="margin: 0px 5% 12px; text-align: center;" id="valueContraintText"></div>
+      <div class="mlvBody">
+        <div class="mlvtop">
+          <div class="mlvModesGroup">
+            <div class="mlvMode">
+              <input name="mlvfrmType" id="mlvfrmTypeNONE" value="NO_VALUE" type="radio" checked="checked">
+              No value</div>
+            <div class="mlvMode">
+              <input name="mlvfrmType" id="mlvfrmTypeFLAG" value="BY_FLAG" type="radio">
+              By flag</div>
+            <div class="mlvMode">
+              <input name="mlvfrmType" id="mlvfrmTypeVALUE" value="BY_VALUE" type="radio">
+              By value</div>
+          </div>
+          <div class="mlvInputGroup">
+            <div id="mlvfrmFLAG" style="display:none"> Please select a range:<br>
+              <select id="mlvfrmFlagValue">
+                <option value="">Loading...</option>
+              </select>
+            </div>
+            <div id="mlvfrmVALUE" style="display:none">
+              <p id="mlvfrmEnterOperator"> Please select operator:<br>
+                <select id="mlvfrmOperator">
+                  <option value="LT">LESS THAN (&lt;)</option>
+                  <option value="LE">LESS THAN OR EQUAL TO (&lt;=)</option>
+                  <option value="EQ">EQUAL (=)</option>
+                  <option value="BETWEEN">BETWEEN</option>
+                  <option value="GT">GREATER THAN (&gt;)</option>
+                  <option value="GE">GREATER THAN OR EQUAL (&gt;=)</option>
+                </select>
+              </p>
+              <p id="mlvfrmEnterStringOperator"> Please select operator:<br>
+                <select id="mlvfrmStringOperator">
+                  <option value="LIKE[contains]">Contains</option>
+                  <option value="LIKE[exact]">Exact</option>
+                  <option value="LIKE[begin]">Starts With</option>
+                  <option value="LIKE[end]">Ends With</option>
+                </select>
+              </p>
+              <p id="mlvfrmEnterVal"> Please enter a value:<br>
+                <input id="mlvfrmNumericValue" class="numInput">
+              </p>
+              <p id="mlvfrmEnterVals" style="display:none">Please enter values:<br>
+                <input id="mlvfrmNumericValueLow" class="numInput">
+                &nbsp;-&nbsp;
+                <input id="mlvfrmNumericValueHigh" class="numInput">
+              </p>
+              <p id="mlvfrmEnterStr">Enter Search Text:<br>
+                <input id="mlvfrmStrValue" class="strInput">
+              </p>
+              <p id="mlvfrmEnterDbOperator">
+                <input id="mlvfrmDbOperator" type="checkbox">
+                Use Database Operators <i>(Advanced Searching)</i><br>
+              </p>
+              <p id="mlvfrmEnterEnum">Please select a value:<br>
+                <select id="mlvfrmEnumValue" class="enumInput" multiple="multiple" size="5" style="overflow: scroll; width: 562px;">
+                  <option value="">Loading...</option>
+                </select>
+              </p>
+            </div>
+          </div>
+          <div style="clear:both;height:1px;overflow:hidden;"></div>
+          <!-- BEGIN snm0 -->
+          <!-- Lab value bars display section -->
+          <div id="mlvfrmBarContainer" style="margin: 10px; padding: 10px; text-align: center; border: 1px solid #000080; height: auto; display:none">
+            <!-- <div id="mlvfrmBarContainer" class="barContainer" style="white-space:nowrap; display:none"> -->
+            <div style="height: 55px">
+              <!-- top text -->
+              <div>Click on a bar segment to help specify a value or range:</div>
+              <div>Range in <span id="mlvfrmLblUnits" style="font-decoration:italic bold">(not specified)</span></div>
+              <!-- bars are drawn -->
+              <div id="barToxL" style="float:left; background: none repeat scroll 0% 0% rgb(0, 0, 0); height: 15px; width: 72px;"> <a href="#lblToxL" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Toxic low value" class="barlink">&nbsp;</a></div>
+              <div id="barLofL" style="float:left; background: none repeat scroll 0% 0% rgb(255, 0, 0); height: 15px; width: 72px;"> <a href="#lblLofL" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Abnormal low value" class="barlink">&nbsp;</a></div>
+              <div id="barHofL" style="float:left; background: none repeat scroll 0% 0% rgb(255, 255, 0); height: 15px; width: 72px;"> <a href="#lblHofL" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Indeterminant low value" class="barlink">&nbsp;</a></div>
+              <div id="barNorm" style="float:left; background: none repeat scroll 0% 0% rgb(0, 255, 0); height: 15px; width: 72px;"> <a href="#" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Normal" class="barlink">&nbsp;</a></div>
+              <div id="barLofH" style="float:left; background: none repeat scroll 0% 0% rgb(255, 255, 0); height: 15px; width: 72px;"> <a href="#lblLofH" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Indeterminant high value" class="barlink">&nbsp;</a></div>
+              <div id="barHofH" style="float:left; background: none repeat scroll 0% 0% rgb(255, 0, 0); height: 15px; width: 72px;"> <a href="#lblHofH" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Abnormal high value" class="barlink">&nbsp;</a></div>
+              <div id="barToxH" style="float:left; background: none repeat scroll 0% 0% rgb(0, 0, 0); height: 15px; width: 72px;"> <a href="#lblToxH" onclick="i2b2.CRC.view.modalLabValues.updateValue(event)" title="Toxic high value" class="barlink">&nbsp;</a></div>
+              <!-- labels are drawn -->
+              <div id="lblToxL" style="float: left; text-align: right; width: 72px;">&nbsp;</div>
+              <div id="lblLofL" style="float: left; text-align: right; width: 72px;">&nbsp;</div>
+              <div id="lblHofL" style="float: left; text-align: right; width: 72px;">&nbsp;</div>
+              <div id="lblNorm" style="float: left; text-align: left; width: 72px;">&nbsp;</div>
+              <div id="lblLofH" style="float: left; text-align: left; width: 72px;">&nbsp;</div>
+              <div id="lblHofH" style="float: left; text-align: left; width: 72px;">&nbsp;</div>
+              <div id="lblToxH" style="float: left; text-align: left; width: 72px;">&nbsp;</div>
+            </div>
+          </div>
+          <!-- Units display section -->
+          <div id="mlvfrmUnitsContainer" style="margin: 10px 0px 0px 15px; display:none">
+            <div style="float:left; text-align:left; bottom: 0">Units = &nbsp;</div>
+            <span>
+                                        <select id="mlvfrmUnits" class="units" style="width: 500px; float:left;">
+                                            <option value="0">Loading...</option>
+                                        </select>
+                                    </span> <span id="mlvUnitExcluded" style="color:#900; margin-left: 20px">A value cannot be specified for these units.</span> </div>
+          <!-- END snm0 -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ############### </>LabRange> ############### -->
 </div>
 </body>
 </html>
