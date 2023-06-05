@@ -193,6 +193,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     $("body #ontOptionsModal button.options-save").click(function () {
                         i2b2.ONT.view.nav.params.modifiers = $('#ONTNAVdisableModifiers').is(":checked");
                         i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);
+                        if (i2b2.ONT.view.nav.params.max === undefined || isNaN(i2b2.ONT.view.nav.params.max) || i2b2.ONT.view.nav.params.max < 1) i2b2.ONT.view.nav.params.max = 200;
                         i2b2.ONT.view.nav.params.synonyms = $('#ONTNAVshowSynonyms').is(":checked");
                         i2b2.ONT.view.nav.params.hiddens = $('#ONTNAVshowHiddens').is(":checked");
                         i2b2.ONT.view.nav.params.patientCounts = $('#ONTNAVshowPatientCounts').is(":checked");
