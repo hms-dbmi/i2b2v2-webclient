@@ -32,7 +32,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
     let sdxCode = false;
     let subclassData = {};
     let sdxDataNode;
-    let newOptions = options;
+    let newOptions = options ? options : {};
 
     if (newOptions.title === undefined) newOptions.title = "";
     if (newOptions.showchildren === undefined) newOptions.showchildren = false;
