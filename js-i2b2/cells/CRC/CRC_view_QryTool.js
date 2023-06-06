@@ -1837,8 +1837,9 @@ i2b2.CRC.view.QT.showQueryReport = function() {
 
         // function for expanding the panel items
         let func_expandConcept = function(panelItem, panel) {
-            if (panelItem.key.indexOf(':') !== -1) {
-                // panel item is special
+            if (panelItem.key.indexOf(':') !== -1 && panelItem.key.substr(0,2) !== "\\\\") {
+                // panel item is special item such as "query_master:123"
+                // ignore keys that start with "\\\\" as some lab values include a ":" in their key path
                 let sdxKey = panelItem.key.substring(panelItem.key.indexOf(':')+1);
                 panelItem.moreInfo = concepts[sdxKey];
             } else {
