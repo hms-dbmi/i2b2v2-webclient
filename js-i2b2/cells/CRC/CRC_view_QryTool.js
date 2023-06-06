@@ -1236,7 +1236,7 @@ i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabV
             modifierInfoText += " " + sdxConcept.LabValues.unitValue;
         }
     }
-    if(modifierInfoText.length > 0){
+    if (modifierInfoText.length > 0) {
         modifierInfoText = " " + modifierInfoText;
     }
 
@@ -1354,6 +1354,12 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                     default:
                         newLabValues.flagValue = null;
                         break;
+                }
+
+                // clear out the range values if we have switch away from using "BETWEEN" filter
+                if (newLabValues.valueOperator !== "BETWEEN") {
+                    newLabValues.numericValueRangeLow = null;
+                    newLabValues.numericValueRangeHigh = null;
                 }
 
                 sdxConcept.LabValues = newLabValues;
