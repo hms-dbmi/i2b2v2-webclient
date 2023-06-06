@@ -196,7 +196,7 @@ function QueryToolController() {
                         } else {
                             if (metadata.startDate !== undefined) sdxDataNode.dateRange.start = metadata.startDate;
                             if (metadata.endDate !== undefined) sdxDataNode.dateRange.end = metadata.endDate;
-                            }
+                        }
 
                         // Lab Values processing
                         let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
@@ -418,16 +418,14 @@ function QueryToolController() {
         // get the query name
         let queryName = $("#crcQtQueryName").val().trim();
 
-        //add (t) prefix  if this is a temporal query
+        // add (t) prefix  if this is a temporal query
         let queryNamePrefix = "";
-        if(i2b2.CRC.model.transformedQuery.subQueries
-            && i2b2.CRC.model.transformedQuery.subQueries.length > 1
-            && !queryName.startsWith("(t) ")){
+        if (i2b2.CRC.model.transformedQuery.subQueries?.length > 1 && !queryName.startsWith("(t) ")) {
             queryNamePrefix = "(t) ";
         }
-        if (queryName.length === 0 ){
+        if (queryName.length === 0 ) {
             queryName =  queryNamePrefix + i2b2.CRC.model.transformedQuery.name;
-        }else{
+        } else {
             queryName = queryNamePrefix  + queryName;
             i2b2.CRC.model.transformedQuery.name = queryName;
         }
@@ -438,7 +436,6 @@ function QueryToolController() {
         // query definition
         params.psm_query_definition = (Handlebars.compile("{{> Query}}"))(i2b2.CRC.model.transformedQuery);
 
-        queryName = i2b2.h.Escape(queryName);
         // hand over execution of query to the QueryRunner component
         i2b2.CRC.ctrlr.QR.doRunQuery(queryName, params);
     };
@@ -521,19 +518,19 @@ function QueryToolController() {
             switch (item.sdxInfo.sdxType) {
                 case "PRS":
                     tempItem.key = "patient_set_coll_id:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
-                    name = i2b2.h.Escape(item.origData.titleCRC);
+                    name = item.origData.titleCRC;
                     let trimPos = name.lastIndexOf(" - ");
                     name = trimPos === -1 ? name : name.substring(0, trimPos);
-                    tempItem.name = name;
-                    tempItem.tooltip = item.origData.title;
+                    tempItem.name = i2b2.h.Escape(name);
+                    tempItem.tooltip = i2b2.h.Escape(item.origData.title);
                     tempItem.isSynonym = "false";
                     tempItem.hlevel = 0;
                     break;
                 case "QM":
                     tempItem.key = "masterid:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
-                    name = i2b2.h.Escape(item.origData.name);
+                    name = item.origData.name;
                     name = name.substring(0, name.indexOf(" ", name.lastIndexOf("@")));
-                    tempItem.name = "(PrevQuery) " + name;
+                    tempItem.name = "(PrevQuery) " + i2b2.h.Escape(name);
                     tempItem.tooltip = item.origData.name;
                     tempItem.isSynonym = "false";
                     tempItem.hlevel = 0;
@@ -556,22 +553,21 @@ function QueryToolController() {
                     }
 
                     if (item.origData.isModifier) {
-                        tempItem.modName = tempItem.name;
-                        tempItem.modKey = tempItem.key;
-                        tempItem.name = (item.origData.conceptModified.origData.name != null ? i2b2.h.Escape(item.origData.conceptModified.origData.name) : tempItem.name);
-                        tempItem.key = item.origData.conceptModified.origData.key;
+                        tempItem.modName = i2b2.h.Escape(tempItem.name);
+                        tempItem.modKey = i2b2.h.Escape(tempItem.key);
+                        tempItem.name = i2b2.h.Escape(item.origData.conceptModified.origData.name != null ? item.origData.conceptModified.origData.name : tempItem.name);
+                        tempItem.key = i2b2.h.Escape(item.origData.conceptModified.origData.key);
                         tempItem.isModifier = true;
-                        tempItem.applied_path = item.origData.applied_path;
-
+                        tempItem.applied_path = i2b2.h.Escape(item.origData.applied_path);
                         let modParent = item.origData.conceptModified.origData;
                         while (modParent != null) {
                             if (modParent.isModifier) {
                                 modParent = modParent.conceptModified;
                             } else {
-                                tempItem.level=modParent.level;
-                                tempItem.key = modParent.key;
-                                tempItem.name = modParent.name;
-                                tempItem.tooltip = modParent.tooltip;
+                                tempItem.level = modParent.level;
+                                tempItem.key = i2b2.h.Escape(modParent.key);
+                                tempItem.name = i2b2.h.Escape(modParent.name);
+                                tempItem.tooltip = i2b2.h.Escape(modParent.tooltip);
                                 tempItem.icon = modParent.hasChildren;
                                 break;
                             }
@@ -587,9 +583,8 @@ function QueryToolController() {
                             tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
                         } else if (tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
                             tempItem.value = item.LabValues.flagValue;
-                        }
-                        else {
-                            tempItem.value = item.LabValues.value;
+                        } else {
+                            tempItem.value = i2b2.h.Escape(item.LabValues.value);
                         }
                         tempItem.isString = item.LabValues.isString;
                         tempItem.isEnum = item.LabValues.isEnum;
@@ -716,7 +711,7 @@ function QueryToolController() {
             let adjuster = 1 / ((names.map((rec) => rec.length ).reduce((acc, val) => acc + val) + names.length - 1) / 120);
             if (adjuster > 1) adjuster = 1;
             names = names.map((rec) => rec.substr(0, Math.floor(rec.length * adjuster)));
-            transformedModel.name  = names.join("-") + "@" + queryDate;
+            transformedModel.name  = i2b2.h.Unescape(names.join("-") + "@" + queryDate);
         } else {
             transformedModel.name  = "";
         }
