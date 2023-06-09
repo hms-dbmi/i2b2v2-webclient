@@ -2228,14 +2228,13 @@ i2b2.events.afterCellInit.add((cell) => {
                 //			errorMsg: string [only with error=true]
                 cell.model.resultTypes = {};
 
-                if(results.error){
+                if (results.error){
                     console.log("ERROR: Unable to retrieve result types from server", results.msgResponse);
-                }
-                else{
+                } else {
                     // extract records from XML msg
                     let ps = results.refXML.getElementsByTagName('query_result_type');
                     cell.model.selectedResultTypes = [];
-                    for(let i1=0; i1<ps.length; i1++) {
+                    for (let i1=0; i1<ps.length; i1++) {
                         let name = i2b2.h.getXNodeVal(ps[i1],'name');
                         let visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
                         if (visual_attribute_type === "LA") {
@@ -2243,7 +2242,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 cell.model.resultTypes[name] = [];
                             }
                             cell.model.resultTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
-                            if(name === "PATIENT_COUNT_XML"){
+                            if (name === "PATIENT_COUNT_XML") {
                                 cell.model.selectedResultTypes.push(name);
                             }
                         }
