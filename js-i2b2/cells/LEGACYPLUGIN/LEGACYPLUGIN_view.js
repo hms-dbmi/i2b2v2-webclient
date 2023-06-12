@@ -24,14 +24,12 @@ i2b2.events.afterCellInit.add((cell) => {
             (function (container, scope) {
                 // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE LEGACY PLUGIN CELL'S MAIN VIEW
                 let pluginCode = container._config.componentPluginCode;
+                let timelinePluginData = container._config.componentPlugin.timelineData;
 
-                let pluginSetupData = container._config.componentPlugin.setUpData;
-
-                let timelinePluginData = JSON.stringify(pluginSetupData);
-                timelinePluginData = encodeURI(timelinePluginData);
-                console.log("PLUGIN SETUP " + JSON.stringify(pluginSetupData));
+                let timelineData = JSON.stringify(timelinePluginData);
+                timelineData = encodeURI(timelineData);
                 let iframe = $("<iframe id='pluginframe' onload='i2b2.LEGACYPLUGIN.view.main.onPluginFrameLoad()' src='' class='pluginCell' " +
-                    "data-plugin-code='" + pluginCode +  "' data-timeline-data='" + timelinePluginData + "'></iframe>");
+                    "data-plugin-code='" + pluginCode +  "' data-timeline-data='" + timelineData + "'></iframe>");
 
                 iframe.attr("src", "js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
 

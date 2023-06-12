@@ -8,7 +8,7 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, timelinePluginData) {
         console.error("Plugin does not exist: " + pluginId);
         return false;
     }
-    pluginData.setUpData = timelinePluginData;
+    pluginData.timelineData = timelinePluginData;
 
     let componentName = 'i2b2.PLUGIN.view';
     let pluginTitle = pluginData.title;
