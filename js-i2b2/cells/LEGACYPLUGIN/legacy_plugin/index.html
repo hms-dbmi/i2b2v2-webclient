@@ -267,8 +267,25 @@ function initI2B2()
             // in the parent iframe
             try {
                 let pluginCode = window.frameElement.dataset.pluginCode;
+                let timelineData = decodeURI(window.frameElement.dataset.timelineData);
                 if (pluginCode !== undefined) {
                     i2b2.PLUGINMGR.ctrlr.main.selectPlugin(pluginCode);
+
+                  if(pluginCode === 'Timeline' && timelineData !== undefined){
+                      //Process PatientSet
+                      let data = JSON.parse(timelineData);
+                      i2b2.Timeline.prsDropped(data.patientSet);
+                      i2b2.Timeline.setShowMetadataDialog(false);
+
+                      for (let i=0; i < data.concepts.length; i++) {
+                        let sdxData = data.concepts[i];
+                        if (sdxData.sdxInfo.sdxType === "CONCPT")
+                         i2b2.Timeline.conceptDropped([sdxData], false); // nw096 - turn off dialogs when auto-generating timeline
+                      }
+                      i2b2.Timeline.yuiTabs.set('activeIndex', 1);
+
+                      i2b2.Timeline.setShowMetadataDialog(true);
+                    }
                     // remove plugin listing functionality
                     jQuery('#pluginsMenu').remove();
                     jQuery('#anaPluginViewBox .TopTabs').remove();

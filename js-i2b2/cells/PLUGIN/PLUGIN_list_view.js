@@ -155,8 +155,8 @@ i2b2.PLUGIN.view.list.renderList = function(listMode, category, searchString){
 };
 
 // ================================================================================================== //
-i2b2.PLUGIN.view.list.loadPlugin= function(pluginId, isLegacy){
-    i2b2.PLUGIN.view.newInstance(pluginId, isLegacy === 'true');
+i2b2.PLUGIN.view.list.loadPlugin= function(pluginId, timelineData){
+    i2b2.PLUGIN.view.newInstance(pluginId,  timelineData);
 };
 
 // ================================================================================================== //
