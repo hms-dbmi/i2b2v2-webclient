@@ -156,7 +156,7 @@ i2b2.CRC.ctrlr.QS = {
 
         let foundError = false;
 
-        if (!i2b2.CRC.model.runner.deleteCurrentQuery) {
+        if (i2b2.CRC.model.runner?.deleteCurrentQuery !== true) {
             for (let i in i2b2.CRC.ctrlr.QS.QRS) {
                 let rec = i2b2.CRC.ctrlr.QS.QRS[i];
                 let breakdown = {

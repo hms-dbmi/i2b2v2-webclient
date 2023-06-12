@@ -24,7 +24,7 @@ function QueryRunner() {
     this.doRunQuery = function(queryName, queryDefinition) {
 
         i2b2.CRC.model.runner = {
-            name: queryName,
+            name: i2b2.h.Escape(queryName),
             definition: queryDefinition,
             elapsedTime: "0",
             startTime: new Date(),
@@ -144,6 +144,10 @@ function QueryRunner() {
 
     this.doQueryFinished = function() {
         // TODO: query is done running
+
+        // clear the query timer's interval
+        clearInterval(i2b2.CRC.view.QS.timerID);
+        clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
 
     };
 }
