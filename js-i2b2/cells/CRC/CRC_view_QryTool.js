@@ -682,9 +682,6 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
 // ================================================================================================== //
 i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
 
-    // handle labs processing
-    i2b2.CRC.view.QT.isLabs(sdx);
-
     // mark if dates can be applied to this item
     sdx.withDates = false;
     if (["CONCPT"].includes(sdx.sdxInfo.sdxType)) sdx.withDates = true;
@@ -736,14 +733,13 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
                 }
             }
         }
+    }else{
+        i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx, !showLabValues);
     }
 
     // rerender the query event and add to the DOM
     const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
     i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
-
-    // handle the lab values
-    if (sdx.isLab) i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx);
 
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
@@ -1729,10 +1725,12 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
     }
 };
 // ==================================================================================================
-i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, eventIdx) {
+i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, eventIdx, doNotShowLabValues) {
 
     i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, function(extractedDataModel){
-        i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedDataModel, groupIdx, eventIdx);
+        if(doNotShowLabValues === undefined || !doNotShowLabValues) {
+            i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedDataModel, groupIdx, eventIdx);
+        }
     });
 };
 // ================================================================================================== //
