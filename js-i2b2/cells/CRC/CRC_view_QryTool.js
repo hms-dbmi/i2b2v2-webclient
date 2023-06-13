@@ -705,7 +705,7 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
                 const valueMetaDataArr = i2b2.h.XPath(sdx.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
                 if (valueMetaDataArr.length > 0) {
                     let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
-                    i2b2.CRC.view.QT.updateModifierDisplayValue(sdx, extractedLabModel, groupIdx, eventIdx);
+                    i2b2.CRC.view.QT.updateModifierAndLabDisplayValue(sdx, extractedLabModel, groupIdx, eventIdx);
                 }
             }
         }
@@ -1169,7 +1169,7 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
 };
 
 // ==================================================================================================
-i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabValues, groupIdx, eventIdx){
+i2b2.CRC.view.QT.updateModifierAndLabDisplayValue = function(sdxConcept, extractedLabValues, groupIdx, eventIdx){
     // update the concept title if this is a modifier
     let modifierInfoText = "";
     if (sdxConcept.LabValues !== undefined) {
@@ -1336,7 +1336,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
 
                 sdxConcept.LabValues = newLabValues;
 
-                i2b2.CRC.view.QT.updateModifierDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
+                i2b2.CRC.view.QT.updateModifierAndLabDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
                 i2b2.CRC.view.QS.clearStatus();
             });
 
@@ -1706,6 +1706,10 @@ i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, e
     i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, function(extractedDataModel){
         if(doNotShowLabValues === undefined || !doNotShowLabValues) {
             i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedDataModel, groupIdx, eventIdx);
+        }else{
+            if(extractedDataModel !== undefined) {
+                i2b2.CRC.view.QT.updateModifierAndLabDisplayValue(sdxConcept, extractedDataModel, groupIdx, eventIdx);
+            }
         }
     });
 };
