@@ -561,19 +561,6 @@ i2b2.CRC.view.QT.eventActionDelete = function(evt) {
         i2b2.CRC.view.QS.clearStatus();
     }
 }
-
-
-// ================================================================================================== //
-i2b2.CRC.view.QT.isLabs = function(sdx) {
-    // see if the concept is a lab, prompt for value if it is
-    sdx.isLab = false;
-    if (sdx.origData.basecode !== undefined) {
-        if (sdx.origData.basecode.startsWith("LOINC") || sdx.origData.basecode.startsWith("LCS-I2B2")) sdx.isLab = true;
-    }
-    return sdx.isLab;
-};
-
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.HoverOver = function(el) { $(el).closest(".i2b2DropTarget").addClass("DropHover"); };
 i2b2.CRC.view.QT.HoverOut = function(el) { $(el).closest(".i2b2DropTarget").removeClass("DropHover"); };
@@ -642,17 +629,6 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
 
     return qgIdx;
 }
-// ================================================================================================== //
-i2b2.CRC.view.QT.handleLabValues = function(sdx){
-    // see if it is a lab
-    let isLab = i2b2.CRC.view.QT.isLabs(sdx);
-
-    if(isLab){
-        i2b2.CRC.view.QT.current  = {"conceptSdx": sdx};
-        i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx);
-    }
-}
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     // remove the hover and drop target fix classes
