@@ -13,7 +13,7 @@ function QueryRunner() {
     this._tick = function() {
         if (!i2b2.CRC.ctrlr.QS.isRunning) clearInterval(i2b2.CRC.model.runner.intervalTimer);
 
-        if (i2b2.CRC.model.runner.deleteCurrentQuery) {
+        if (i2b2.CRC.model.runner?.deleteCurrentQuery) {
             // delete the query master
             let qmId = i2b2.CRC.ctrlr.QS?.QM.id;
             if (qmId !== undefined) i2b2.CRC.ctrlr.history.queryDeleteNoPrompt(qmId);

@@ -248,8 +248,9 @@ i2b2.CRC.ctrlr.QS = {
         if (!i2b2.CRC.ctrlr.QS.isRunning) {
             // switch the display of query cancel button and the query report button
             $("#infoQueryStatusText .statusButtons").removeClass("running");
-            if (i2b2.CRC.model.runner.deleteCurrentQuery) {
+            if (i2b2.CRC.model.runner?.deleteCurrentQuery) {
                 $("#infoQueryStatusText .statusButtons").addClass("cancelled");
+                i2b2.CRC.model.runner.deleteCurrentQuery = false;
             } else {
                 $("#infoQueryStatusText .statusButtons").addClass("done");
             }
