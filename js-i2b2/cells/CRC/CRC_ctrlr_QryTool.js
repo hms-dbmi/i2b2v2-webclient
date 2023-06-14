@@ -58,6 +58,7 @@ function QueryToolController() {
                     let modifier_applied_path = i2b2.h.getXNodeVal(modifierConstraints[m], 'constrain_by_modifier/applied_path');
                     let modifier_key_value = i2b2.h.getXNodeVal(modifierConstraints[m], 'constrain_by_modifier/modifier_key');
                     allModRequest.push(new Promise((resolve, reject) => {
+                        // TODO: We may have a synonym rehydration bug in this location, see bug I2B2UI-381
                         i2b2.ONT.ajax.GetModifierInfo("CRC:QueryTool", {
                             modifier_applied_path: modifier_applied_path,
                             modifier_key_value: modifier_key_value,
@@ -242,7 +243,7 @@ function QueryToolController() {
                             if (o.LabValues) sdxDataNode.LabValues = o.LabValues;
                         } else {
                             i2b2.ONT.ajax.GetTermInfo("ONT", {
-                                ont_max_records: 'max="1"',
+                                ont_max_records: 'max="100"',
                                 ont_synonym_records: o.synonym_cd,
                                 ont_hidden_records: 'false',
                                 concept_key_value: o.key
