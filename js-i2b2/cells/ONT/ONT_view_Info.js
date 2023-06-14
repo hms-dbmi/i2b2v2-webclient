@@ -4,7 +4,7 @@ i2b2.ONT.view.info = {
     showLabWindow: function() {
         // display's the lab value entry modal
         let d = i2b2.ONT.view.info.model.sdxData.origData.basecode;
-        if (d && d.startsWith("LOINC") || d.startsWith("LCS-I2B2")) i2b2.CRC.view.QT.labValue.getAndShowLabValues(i2b2.ONT.view.info.model.sdxData);
+        i2b2.CRC.view.QT.labValue.getAndShowLabValues(i2b2.ONT.view.info.model.sdxData);
     },
     loadParent: function() {
         // generate the parent's key
