@@ -243,17 +243,21 @@ function QueryToolController() {
                         } else {
                             i2b2.ONT.ajax.GetTermInfo("ONT", {
                                 ont_max_records: 'max="1"',
-                                ont_synonym_records: 'false',
+                                ont_synonym_records: o.synonym_cd,
                                 ont_hidden_records: 'false',
                                 concept_key_value: o.key
                             }, function (results) {
                                 results.parse();
-                                if (results.model.length > 0) {
-                                    let data = results.model[0];
-                                    sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
-                                    sdxDataNode.origData = data.origData;
-                                    if (String(sdxDataNode.origData.table_name).toLowerCase() === "patient_dimension") sdxDataNode.withDates = false;
-                                    i2b2.CRC.view.QT.render();
+                                // loop through records and find the one with the matching name
+                                for (rec of results.model) {
+                                    if (rec.origData.name = o.name) {
+                                        let data = results.model[0];
+                                        sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
+                                        sdxDataNode.origData = data.origData;
+                                        if (String(sdxDataNode.origData.table_name).toLowerCase() === "patient_dimension") sdxDataNode.withDates = false;
+                                        i2b2.CRC.view.QT.render();
+                                        break;
+                                    }
                                 }
                             });
                         }
