@@ -250,6 +250,7 @@ i2b2.CRC.ctrlr.QS = {
             $("#infoQueryStatusText .statusButtons").removeClass("running");
             if (i2b2.CRC.model.runner?.deleteCurrentQuery) {
                 $("#infoQueryStatusText .statusButtons").addClass("cancelled");
+                i2b2.CRC.model.runner.deleteCurrentQuery = false;
             } else {
                 $("#infoQueryStatusText .statusButtons").addClass("done");
             }
