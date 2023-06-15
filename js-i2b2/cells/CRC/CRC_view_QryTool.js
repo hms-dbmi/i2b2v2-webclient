@@ -40,10 +40,10 @@ i2b2.CRC.view.QT.handleConceptValidation = function(){
     if(validQuery){
         //handle non-temporal case
         let whenElemsConcepts = whenElems.find(".TermList .concept");
-        let withElemsConcepts = $(".QueryGroup.with .event").filter(function(elem) {
+        let withElemsConcepts = $(".QueryGroup.with .event").filter(function() {
             return $(this).find(".TermList .concept").length > 0;
         });
-        let withoutElemsConcepts = $(".QueryGroup.without .event").filter(function(elem) {
+        let withoutElemsConcepts = $(".QueryGroup.without .event").filter(function() {
             return $(this).find(".TermList .concept").length > 0;
         });
 
