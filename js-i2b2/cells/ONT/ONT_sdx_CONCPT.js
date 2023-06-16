@@ -205,13 +205,17 @@ i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview = function(node, onComp
         i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(node, onCompleteCallback, false);
     } else {
         let cb_concepts = (function (modifierNodes, modifiersParents) {
-            let cl_node = node;
-            let cb_final = (function (conceptNodes, conceptParents) {
-                let allNodes = modifierNodes.concat(conceptNodes);
-                let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
-                onCompleteCallback(allNodes, allParents);
-            });
-            i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cb_final, false);
+            if (node.i2b2.origData.conceptModified) {
+                onCompleteCallback(modifierNodes, modifiersParents);
+            } else {
+                let cl_node = node;
+                let cb_final = (function (conceptNodes, conceptParents) {
+                    let allNodes = modifierNodes.concat(conceptNodes);
+                    let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
+                    onCompleteCallback(allNodes, allParents);
+                });
+                i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cb_final, false);
+            }
         });
 
         i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, cb_concepts, true);
@@ -495,12 +499,9 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
             options.modifier_key_value = node.i2b2.origData.key;
             options.modifier_applied_path = node.i2b2.origData.applied_path;
 
-            let realdata = node.i2b2.origData;
-            while ((realdata.hasChildren !== "FA") &&
-            (realdata.hasChildren !== "CA") &&
-            (realdata.hasChildren !== "FAE") &&
-            (realdata.hasChildren !== "CAE")) {
-                realdata  = realdata.parent;
+            let realdata = node;
+            while (!["FA","CA","FAE","CAE"].includes(realdata.i2b2.origData.hasChildren)) {
+                realdata  = realdata.refTreeview.nodes.get(realdata.parentId);
             }
             options.modifier_applied_concept = realdata.key; //node.data.i2b2_SDX.origData.parent.key;
             i2b2.ONT.ajax.GetChildModifiers("ONT:SDX:Modifiers", options, scopedCallback );
