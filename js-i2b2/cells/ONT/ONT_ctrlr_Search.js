@@ -275,11 +275,10 @@ i2b2.ONT.ctrlr.Search = {
             loadCount = loadCount - 1;
             if (loadCount === 0) {
                 // render the results tree
-                console.warn("Render Search Results Treeview!");
                 let treeStruct = [];
                 let func_crawl_builder = (node, parent) => {
                     let ret = [];
-                    let bypass = ((node._$$_ === undefined && node._$R$_ === undefined) || (node._$$_ !== undefined && parent === null)) && !(Object.keys(node).length === 2 && node._$$_ !== undefined && node._$R$_ !== undefined);
+                    let bypass = ((node._$$_ === undefined && node._$R$_ === undefined) || (node._$$_ !== undefined && parent === null)) && !((Object.keys(node).length === 2 || parent === null) && node._$$_ !== undefined && node._$R$_ !== undefined);
                     if (bypass) {
                         // passes back only a collection of child nodes (which should be built)
                         // this bubbles up navigatable nodes through non-navigatable nodes
