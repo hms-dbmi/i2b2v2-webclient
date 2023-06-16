@@ -213,10 +213,10 @@ i2b2.CRC.ctrlr.QS = {
                                     concepts = concepts.concat(event.concepts);
                                 });
                             });
-                            let timelineData = {};
-                            timelineData.patientSet = sdxData;
-                            timelineData.concepts = concepts;
-                            i2b2.PLUGIN.view.list.loadPlugin("Timeline", timelineData);
+                            let initializationData = {};
+                            initializationData.patientSet = sdxData;
+                            initializationData.concepts = concepts;
+                            i2b2.PLUGIN.view.list.loadPlugin("Timeline", initializationData);
                         }
                     }
                 }

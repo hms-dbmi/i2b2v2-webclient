@@ -1,14 +1,14 @@
 if (i2b2.PLUGIN.view === undefined) i2b2.PLUGIN.view = {};
 
 i2b2.PLUGIN.view.windows = [];
-i2b2.PLUGIN.view.newInstance = function(pluginId, timelinePluginData) {
+i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
     // get the plugin info from the model
     const pluginData = i2b2.PLUGIN.model.plugins[pluginId];
     if (pluginData === undefined) {
         console.error("Plugin does not exist: " + pluginId);
         return false;
     }
-    pluginData.timelineData = timelinePluginData;
+    pluginData.initializationData = initializationData;
 
     let componentName = 'i2b2.PLUGIN.view';
     let pluginTitle = pluginData.title;

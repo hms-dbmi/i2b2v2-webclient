@@ -267,13 +267,13 @@ function initI2B2()
             // in the parent iframe
             try {
                 let pluginCode = window.frameElement.dataset.pluginCode;
-                let timelineData = decodeURI(window.frameElement.dataset.timelineData);
+                let initializationData = decodeURI(window.frameElement.dataset.initializationData);
                 if (pluginCode !== undefined) {
                     i2b2.PLUGINMGR.ctrlr.main.selectPlugin(pluginCode);
 
-                  if(pluginCode === 'Timeline' && timelineData !== undefined){
+                  if(pluginCode === 'Timeline' && initializationData !== undefined){
                       //Process PatientSet
-                      let data = JSON.parse(timelineData);
+                      let data = JSON.parse(initializationData);
                       i2b2.Timeline.prsDropped(data.patientSet);
                       i2b2.Timeline.setShowMetadataDialog(false);
 
