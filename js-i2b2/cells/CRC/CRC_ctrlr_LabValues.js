@@ -19,16 +19,16 @@ i2b2.CRC.ctrlr.labValues = {
 // ================================================================================================== //
     loadData: function(sdxConcept, callBack) {
         let labResponseCallback = function(response) {
+            let isActiveXSupported = true;
             try {
                 new ActiveXObject("MSXML2.DOMDocument.6.0");
-                isActiveXSupported = true;
             } catch (e) {
                 isActiveXSupported = false;
             }
             let c;
             if (isActiveXSupported) {
                 //Internet Explorer
-                xmlDocRet = new ActiveXObject("Microsoft.XMLDOM");
+                let xmlDocRet = new ActiveXObject("Microsoft.XMLDOM");
                 xmlDocRet.async = "false";
                 xmlDocRet.loadXML(response.msgResponse);
                 xmlDocRet.setProperty("SelectionLanguage", "XPath");
@@ -41,6 +41,7 @@ i2b2.CRC.ctrlr.labValues = {
             const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
             let extractedModel = {};
             if (valueMetaDataArr.length > 0) {
+                sdxConcept.isLab = true;
                 extractedModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
                 callBack(extractedModel);
             }
