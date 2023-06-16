@@ -105,7 +105,13 @@ i2b2.ONT.ctrlr.Search = {
                 if (i2b2.ONT.model.searchResultCount === 0) {
                     status[0].innerHTML = "No Records Found.";
                 } else {
-                    status[0].innerHTML = "Found " + i2b2.ONT.model.searchResultCount + " Records...";
+                    let disp = "Found " + i2b2.ONT.model.searchResultCount + " Records...";
+                    if (i2b2.ONT.model.searchResultsExceeded) {
+                        disp = disp + "<p class='warn'>Max Results Exceeded<br>Not all results are shown</p>";
+                        $('i.srTooltip').addClass("warn");
+                        $('i.srTooltip').attr('data-bs-original-title', "Not all results are displayed! A maximum of " + i2b2.ONT.view.nav.params.max + " records per category were returned.");
+                    }
+                    status[0].innerHTML = disp;
                     i2b2.ONT.ctrlr.Search.backfillResultNodes();
                 }
             }
@@ -168,7 +174,13 @@ i2b2.ONT.ctrlr.Search = {
                 if (c.length === 0) {
                     status[0].innerHTML = "No Records Found.";
                 } else {
-                    status[0].innerHTML = "Found " + c.length + " Records...";
+                    let disp = "Found " + c.length + " Records...";
+                    if (i2b2.ONT.model.searchResultsExceeded) {
+                        disp = disp + "<p class='warn'>Max Results Exceeded<br>Not all results are shown</p>";
+                        $('i.srTooltip').addClass("warn");
+                        $('i.srTooltip').attr('data-bs-original-title', "Not all results are displayed! A maximum of " + i2b2.ONT.view.nav.params.max + " records per category were returned.");
+                    }
+                    status[0].innerHTML = disp;
                 }
                 status.show();
 

@@ -63,6 +63,10 @@ i2b2.ONT.view.search.clearSearchInput = function(){
     $("#searchFilterText").text("Any Category");
     $("#searchFilter").data("selectedFilterValue", "ALL CATEGORIES").data("selectedFilterType", "category");
 
+    // reset the info icon
+    $('i.srTooltip').attr('data-bs-original-title', "A maximum of " + i2b2.ONT.view.nav.params.max + " records per category will be returned.");
+    $('i.srTooltip').removeClass("warn");
+
     // hide and clear the search results
     i2b2.ONT.view.search.treeview.hide();
     i2b2.ONT.view.search.treeview.data('treeview').clear();

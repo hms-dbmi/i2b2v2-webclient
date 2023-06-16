@@ -191,9 +191,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     //enable patient counts by default
                     i2b2.ONT.view.nav.params.patientCounts = true;
                     $("body #ontOptionsModal button.options-save").click(function () {
-                        i2b2.ONT.view.nav.params.modifiers = $('#ONTNAVdisableModifiers').is(":checked");
+                        // deal with limiting max records
                         i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);
                         if (i2b2.ONT.view.nav.params.max === undefined || isNaN(i2b2.ONT.view.nav.params.max) || i2b2.ONT.view.nav.params.max < 1) i2b2.ONT.view.nav.params.max = 200;
+                        let temp = "A maximum of " + i2b2.ONT.view.nav.params.max + " records per category will be returned.";
+                        if (i2b2.ONT.model.searchResultsExceeded) temp = "Not all results are displayed! " + temp;
+                        $('i.srTooltip').attr('data-bs-original-title', temp);
+                        // deal with the rest
+                        i2b2.ONT.view.nav.params.modifiers = $('#ONTNAVdisableModifiers').is(":checked");
                         i2b2.ONT.view.nav.params.synonyms = $('#ONTNAVshowSynonyms').is(":checked");
                         i2b2.ONT.view.nav.params.hiddens = $('#ONTNAVshowHiddens').is(":checked");
                         i2b2.ONT.view.nav.params.patientCounts = $('#ONTNAVshowPatientCounts').is(":checked");
