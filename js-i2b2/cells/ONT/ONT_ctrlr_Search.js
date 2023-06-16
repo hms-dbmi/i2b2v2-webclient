@@ -114,7 +114,7 @@ i2b2.ONT.ctrlr.Search = {
 
         // add AJAX options
         let searchOptions = {};
-        searchOptions.ont_max_records = "max='200'";
+        searchOptions.ont_max_records = "max='"+i2b2.ONT.view.nav.params.max+"'";
         searchOptions.ont_synonym_records = i2b2.ONT.view.nav.params.synonyms;
         searchOptions.ont_hidden_records = i2b2.ONT.view.nav.params.hiddens;
         searchOptions.ont_reduce_results = false;
@@ -184,7 +184,7 @@ i2b2.ONT.ctrlr.Search = {
 
         // add options
         let searchOptions = {};
-        searchOptions.ont_max_records = "max='200'";
+        searchOptions.ont_max_records = "max='"+i2b2.ONT.view.nav.params.max+"'";
         searchOptions.ont_synonym_records = i2b2.ONT.view.nav.params.synonyms;
         searchOptions.ont_hidden_records = i2b2.ONT.view.nav.params.hiddens;
         searchOptions.ont_search_strategy = "exact";
