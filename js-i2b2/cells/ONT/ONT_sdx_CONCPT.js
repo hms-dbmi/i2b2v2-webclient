@@ -424,26 +424,27 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = node;
     scopedCallback.callback = function(results){
-        let cl_node = node;
-        let cl_onCompleteCB = onCompleteCallback;
-        let cl_options = options;
         let retNodes = [];
         let retParents = new Set();
         // handle any errors in the message
         if (results.error) {
             // process the specific error
-            cl_onCompleteCB([],[]);
+            onCompleteCallback([],[]);
             return false;
         }
         let renderOptions = { icon: i2b2.ONT.model.icons.modifier };
         let c = results.refXML.getElementsByTagName('modifier');
         for (let i=0; i<1*c.length; i++) {
             renderOptions.title = i2b2.h.getXNodeVal(c[i],'name');
-            let sdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(c[i], modifier, cl_options, cl_node.i2b2);
+            let sdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(c[i], modifier, options, node.i2b2);
             sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
             sdxDataNode.renderData.cssClassMain = "sdxStyleONT-MODIFIER";
             sdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
-            sdxDataNode.origData.conceptModified = cl_node.i2b2;
+            if (node.i2b2.origData.conceptModified) {
+                sdxDataNode.origData.conceptModified = node.i2b2.origData.conceptModified;
+            } else {
+                sdxDataNode.origData.conceptModified = node.i2b2;
+            }
             delete sdxDataNode.origData.conceptModified.origData.parent;
             let temp = {
                 title: sdxDataNode.renderData.moreDescriptMinor,
@@ -456,20 +457,20 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
             };
             temp.state = sdxDataNode.renderData.tvNodeState;
             if (sdxDataNode.renderData.cssClassMinor !== undefined) temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
-            if (typeof cl_node === 'undefined' || (typeof cl_node === 'string' && String(cl_node).trim() === '')) {
+            if (typeof node === 'undefined' || (typeof node === 'string' && String(node).trim() === '')) {
                 temp.parentKey = undefined;
-            } else if(typeof cl_node === 'object') {
-                temp.parentKey = cl_node.i2b2.sdxInfo.sdxKeyValue;
+            } else if(typeof node === 'object') {
+                temp.parentKey = node.i2b2.sdxInfo.sdxKeyValue;
                 retParents.add(temp.parentKey);
             } else {
-                temp.parentKey = cl_node;
-                retParents.add(cl_node.i2b2.sdxInfo.sdxKeyValue);
+                temp.parentKey = node;
+                retParents.add(node.i2b2.sdxInfo.sdxKeyValue);
             }
             // get full details of the modifier
             i2b2.ONT.ctrlr.gen.getModifierDetails(temp.i2b2);
             retNodes.push(temp);
         }
-        cl_onCompleteCB(retNodes, Array.from(retParents));
+        onCompleteCallback(retNodes, Array.from(retParents));
     };
     // TODO: Implement param routing from node's container
     let options = {};
