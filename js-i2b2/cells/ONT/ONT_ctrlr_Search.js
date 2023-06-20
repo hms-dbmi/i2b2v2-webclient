@@ -290,7 +290,10 @@ i2b2.ONT.ctrlr.Search = {
                     } else {
                         // passes back current node fully built with its "nodes" attribute populated
                         ret = node._$$_ !== undefined ? node._$$_ : node._$R$_;
-                        if (node._$R$_) ret = node._$R$_;
+                        if (node._$R$_) {
+                            ret = node._$R$_;
+                            if (node._$$_) ret.icon = node._$$_.icon; 
+                        }
                         ret.state = {
                             loaded: true,
                             expanded: true
