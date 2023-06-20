@@ -27,9 +27,10 @@ i2b2.events.afterCellInit.add((cell) => {
                 let initializationDataRaw = container._config.componentPlugin.initializationData;
 
                 let initializationData = JSON.stringify(initializationDataRaw);
-                initializationData = encodeURI(initializationData);
+                initializationData = btoa(initializationData);
+
                 let iframe = $("<iframe id='pluginframe' onload='i2b2.LEGACYPLUGIN.view.main.onPluginFrameLoad()' src='' class='pluginCell' " +
-                    "data-plugin-code='" + pluginCode +  "' data-initialization-data='" + initializationData+ "'></iframe>");
+                    "data-plugin-code='" + pluginCode +  "' data-initialization-data='" + initializationData + "'></iframe>");
 
                 iframe.attr("src", "js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
 

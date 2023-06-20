@@ -267,7 +267,7 @@ function initI2B2()
             // in the parent iframe
             try {
                 let pluginCode = window.frameElement.dataset.pluginCode;
-                let initializationData = decodeURI(window.frameElement.dataset.initializationData);
+                let initializationData = atob(window.frameElement.dataset.initializationData);
                 if (pluginCode !== undefined) {
                     i2b2.PLUGINMGR.ctrlr.main.selectPlugin(pluginCode);
 

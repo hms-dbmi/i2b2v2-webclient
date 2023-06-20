@@ -197,7 +197,18 @@ i2b2.CRC.ctrlr.QS = {
                     }
 
                     if (rec.QRS_Type === "PATIENTSET") {
-                        let selectedResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return $(rec).parent().text().trim(); }).toArray();
+                        let selectedResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => {
+
+                            //uncheck the timeline result type option after
+                            let resultType = $(rec).parent().text().trim();
+
+                            // uncheck the timeline result type option
+                            // so timeline will not be loaded on query reload
+                            if(resultType === 'Timeline'){
+                                $(rec).prop( "checked", false );
+                            }
+                            return resultType;
+                        }).toArray();
                         if (rec.size > 0 && selectedResultTypes.includes('Timeline')
                         ) {
                             rec.QM_id = i2b2.CRC.ctrlr.QS.QM.id;
@@ -272,7 +283,7 @@ i2b2.CRC.ctrlr.QS = {
         if (!i2b2.CRC.ctrlr.QS.isRunning) {
             // switch the display of query cancel button and the query report button
             $("#infoQueryStatusText .statusButtons").removeClass("running");
-            if (i2b2.CRC.model.runner.deleteCurrentQuery) {
+            if (i2b2.CRC.model.runner?.deleteCurrentQuery) {
                 $("#infoQueryStatusText .statusButtons").addClass("cancelled");
             } else {
                 $("#infoQueryStatusText .statusButtons").addClass("done");
