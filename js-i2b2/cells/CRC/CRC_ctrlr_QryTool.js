@@ -222,6 +222,12 @@ function QueryToolController() {
                             renderOptions.title = i2b2.h.getXNodeVal(modifierXmlInfo[modifier_key_value],'name');
                             modSdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             modSdxDataNode.renderData.cssClassMain = "sdxStyleONT-MODIFIER";
+                            let iconAttribs = i2b2.h.getXNodeVal(modifierXmlInfo[modifier_key_value],'visualattributes');
+                            if (iconAttribs.substring(0,2) === "RA") {
+                                modSdxDataNode.renderData.cssClassMinor = " tvLeaf"
+                                modSdxDataNode.renderData.iconImg = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/' + renderOptions.icon['leaf'];
+                                modSdxDataNode.renderData.iconImgExp = modSdxDataNode.renderData.iconImg;
+                            }
                             modSdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
 
                             const valueMetaDataArr = i2b2.h.XPath(modifierXmlInfo[modifier_key_value], "metadataxml/ValueMetadata[string-length(Version)>0]");
