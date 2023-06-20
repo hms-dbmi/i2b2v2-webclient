@@ -195,6 +195,40 @@ i2b2.CRC.ctrlr.QS = {
                     } else if ((rec.QRS_DisplayType === "LIST")) {
                         i2b2.CRC.ctrlr.QS.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
                     }
+
+                    if (rec.QRS_Type === "PATIENTSET") {
+                        let selectedResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => {
+
+                            let resultType = $(rec).parent().text().trim();
+
+                            // uncheck the timeline result type option
+                            // so timeline will not be loaded on query reload
+                            if(resultType === 'Timeline'){
+                                $(rec).prop( "checked", false );
+                            }
+                            return resultType;
+                        }).toArray();
+                        if (rec.size > 0 && selectedResultTypes.includes('Timeline')
+                        ) {
+                            rec.QM_id = i2b2.CRC.ctrlr.QS.QM.id;
+                            rec.QI_id = i2b2.CRC.ctrlr.QS.QI.id;
+                            rec.PRS_id = rec.QRS_ID;
+                            rec.result_instance_id = rec.PRS_id;
+                            let sdxData = {};
+                            sdxData[0] = i2b2.sdx.Master.EncapsulateData('PRS', rec);
+
+                            let concepts = [];
+                            i2b2.CRC.model.query.groups.forEach(group => {
+                                group.events.forEach(event => {
+                                    concepts = concepts.concat(event.concepts);
+                                });
+                            });
+                            let initializationData = {};
+                            initializationData.patientSet = sdxData;
+                            initializationData.concepts = concepts;
+                            i2b2.PLUGIN.view.list.loadPlugin("Timeline", initializationData);
+                        }
+                    }
                 }
             }
             i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QS.breakdowns});
