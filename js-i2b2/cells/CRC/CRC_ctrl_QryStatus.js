@@ -199,7 +199,6 @@ i2b2.CRC.ctrlr.QS = {
                     if (rec.QRS_Type === "PATIENTSET") {
                         let selectedResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => {
 
-                            //uncheck the timeline result type option after
                             let resultType = $(rec).parent().text().trim();
 
                             // uncheck the timeline result type option
