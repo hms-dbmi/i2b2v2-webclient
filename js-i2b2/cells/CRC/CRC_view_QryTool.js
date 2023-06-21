@@ -1214,10 +1214,11 @@ i2b2.CRC.view.QT.updateModifierAndLabDisplayValue = function(sdxConcept, extract
 
     if (sdxConcept.origData.isModifier) {
         // modifier
-        sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.conceptModified.renderData.title + " {" + sdxConcept.origData.name + modifierInfoText + "}");
+        sdxConcept.renderData.title = sdxConcept.origData.conceptModified.renderData.title
+            + " {" + sdxConcept.origData.name + modifierInfoText + "}";
     } else {
         // lab value
-        sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.name + modifierInfoText);
+        sdxConcept.renderData.title = sdxConcept.origData.name + modifierInfoText;
     }
 
     if (eventIdx !== undefined && groupIdx !== undefined) {
