@@ -23,45 +23,7 @@ The search was completed in {{runDuration}} seconds.
   <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
     {{#each this.items}}
       <div class="item-container">
-        <div class="item-title"><img src="{{this.moreInfo.renderData.iconImg}}"/> {{{this.moreInfo.renderData.title}}}
-          {{#if this.moreInfo.isLab}}
-            <span class="item-value">
-              {{#ifCond this.moreInfo.LabValues.valueOperator "===" "GT"}}
-                 > {{this.moreInfo.LabValues.value}} {{this.moreInfo.LabValues.unitValue}}
-              {{/ifCond}}
-              {{#ifCond this.moreInfo.LabValues.valueOperator "===" "LT"}}
-                 < {{this.moreInfo.LabValues.value}} {{this.moreInfo.LabValues.unitValue}}
-              {{/ifCond}}
-              {{#ifCond this.moreInfo.LabValues.valueOperator "===" "EQ"}}
-                =
-                {{#ifCond this.moreInfo.LabValues.valueType "===" "FLAG"}}
-                   {{this.moreInfo.LabValues.flagValue}}
-                {{/ifCond}}
-                {{#ifCond this.moreInfo.LabValues.valueType "===" "NUMBER"}}
-                  {{this.moreInfo.LabValues.value}}  {{this.moreInfo.LabValues.unitValue}}
-                {{/ifCond}}
-              {{/ifCond}}
-              {{#ifCond this.moreInfo.LabValues.valueOperator "===" "GE"}}
-                 >= {{this.moreInfo.LabValues.value}} {{this.moreInfo.LabValues.unitValue}}
-              {{/ifCond}}
-              {{#ifCond this.moreInfo.LabValues.valueOperator "===" "LE"}}
-                 <= {{this.moreInfo.LabValues.value}} {{this.moreInfo.LabValues.unitValue}}
-              {{/ifCond}}
-              {{#ifCond this.moreInfo.LabValues.valueOperator "===" "BETWEEN"}}
-                 {{this.moreInfo.LabValues.numericValueRangeLow}} - {{this.moreInfo.LabValues.numericValueRangeHigh}} {{this.moreInfo.LabValues.unitValue}}
-              {{/ifCond}}
-              {{#ifCond this.moreInfo.LabValues.valueOperator "===" "CONTAINS[database]"}}
-                 [contains "{{this.moreInfo.LabValues.value}}" ]
-              {{/ifCond}}
-              {{#ifCond this.moreInfo.LabValues.valueOperator "===" "CONTAINS"}}
-                 = ( "{{this.moreInfo.LabValues.value}}" )
-              {{/ifCond}}
-              {{#ifCond this.moreInfo.LabValues.valueOperator "===" "IN"}}
-                  = ( "{{this.moreInfo.LabValues.value}}" )
-              {{/ifCond}}
-            </span>
-          {{/if}}
-        </div>
+        <div class="item-title"><img src="{{this.moreInfo.renderData.iconImg}}"/> {{{this.moreInfo.renderData.title}}}</div>
         <div class="item-discript">{{this.moreInfo.renderData.moreDescriptMinor}}</div>
         {{#if this.timing}}
         <div class="item-timing">
