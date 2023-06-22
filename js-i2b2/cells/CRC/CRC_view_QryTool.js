@@ -1671,9 +1671,11 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                         const ro = new ResizeObserver(() => {
                             if (labEnumValueSelection.is(':visible')) {
                                 let selectedOption = labEnumValueSelection.find(":selected");
-                                let optionTop = selectedOption.offset().top;
-                                let selectTop = labEnumValueSelection.offset().top;
-                                labEnumValueSelection.scrollTop(labEnumValueSelection.scrollTop() + (optionTop - selectTop));
+                                if(selectedOption.offset() !== undefined){
+                                    let optionTop = selectedOption.offset().top;
+                                    let selectTop = labEnumValueSelection.offset().top;
+                                    labEnumValueSelection.scrollTop(labEnumValueSelection.scrollTop() + (optionTop - selectTop));
+                                }
                             }
                         });
                         ro.observe(labEnumValueSelection[0]);
