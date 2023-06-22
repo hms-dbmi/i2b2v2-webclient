@@ -542,7 +542,7 @@ function QueryToolController() {
                     name = item.origData.name;
                     name = name.substring(0, name.indexOf(" ", name.lastIndexOf("@")));
                     tempItem.name = "(PrevQuery) " + i2b2.h.Escape(name);
-                    tempItem.tooltip = item.origData.name;
+                    tempItem.tooltip = i2b2.h.Escape(item.origData.name);
                     tempItem.isSynonym = "false";
                     tempItem.hlevel = 0;
                     break;
