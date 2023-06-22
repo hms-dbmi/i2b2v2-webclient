@@ -26,16 +26,35 @@ i2b2.CRC.view.QT.resetToCRCHistoryView = function() {
 
 i2b2.CRC.view.QT.handleConceptValidation = function(){
     let validQuery = true;
-    $(".QueryGroup.when .event").each((index, elem) => {
+    let whenElems = $(".QueryGroup.when .event");
+    whenElems.each((index, elem) => {
         let termList = $(elem).find(".TermList .concept");
         if (termList.length === 0) {
             $(elem).find(".required").removeClass("hidden");
             validQuery = false;
         } else {
             $(elem).find(".required").addClass("hidden");
-            validQuery= true;
         }
     });
+
+    if(validQuery){
+        //handle non-temporal case
+        let whenElemsConcepts = whenElems.find(".TermList .concept");
+        let withElemsConcepts = $(".QueryGroup.with .event").filter(function() {
+            return $(this).find(".TermList .concept").length > 0;
+        });
+        let withoutElemsConcepts = $(".QueryGroup.without .event").filter(function() {
+            return $(this).find(".TermList .concept").length > 0;
+        });
+
+        if (whenElemsConcepts.length === 0 && withElemsConcepts.length === 0 && withoutElemsConcepts.length === 0) {
+            $(".QueryGroup .event").first().find(".required").removeClass("hidden");
+            validQuery = false;
+        }else{
+            $(".QueryGroup .event").first().find(".required").addClass("hidden");
+        }
+    }
+
     return validQuery;
 }
 
@@ -543,7 +562,7 @@ i2b2.CRC.view.QT.eventActionDelete = function(evt) {
     let qgEl = $(elem).parents('.QueryGroup').first();
     let queryGroupIdx = qgEl.data("queryGroup");
 
-    if (i2b2.CRC.model.query.groups[queryGroupIdx].events.length > 2) {
+    if (i2b2.CRC.model.query.groups.length > 0 && i2b2.CRC.model.query.groups[queryGroupIdx]?.events.length > 2) {
         let eventIdxNum = eventIdx+1
         //if this is the last event remove the eventLink that appears before it the UI
         if(eventIdxNum !== i2b2.CRC.model.query.groups[queryGroupIdx].events.length) {
