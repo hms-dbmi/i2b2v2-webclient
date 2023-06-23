@@ -227,7 +227,12 @@ i2b2.CRC.view.history.searchByDate = function(startDate) {
     i2b2.CRC.view.history.treeviewFinder.treeview('clear');
 
     // reformat date
-    startDate = moment(Date.parse(startDate)).format('YYYY-MM-DD');
+    startDate = moment(Date.parse(startDate));
+    startDate.hour(23);
+    startDate.minute(59);
+    startDate.second(59);
+    startDate.millisecond(999);
+    startDate = startDate.format();
 
 
     // create a scoped callback message
