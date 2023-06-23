@@ -166,7 +166,7 @@ i2b2.ONT.view.search.showModifiers = function(node){
 
             let temp_childrenAll = [];
             getAllChildren(node, temp_childrenAll);
-            if(node.nodes !== undefined) {
+            if(Array.isArray(node.nodes)) {
                 let temp_childrenId = node.nodes.map(function (node) {
                     return node.nodeId;
                 });
