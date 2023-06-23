@@ -155,18 +155,23 @@ i2b2.ONT.view.search.showModifiers = function(node){
                         n.parentKey = parentNode.key;
                         n.parentText = parentNode.text;
                         allChildren.push(n);
+
                         if (n.nodes !== undefined && n.nodes.length >= 0) {
                             return getAllChildren(n, allChildren);
                         }
+
                     });
                 }
             }
 
             let temp_childrenAll = [];
             getAllChildren(node, temp_childrenAll);
-            let temp_childrenId = node.nodes.map(function (node) { return node.nodeId; });
-            i2b2.ONT.view.search.treeview.treeview('deleteNodes', [temp_childrenId]);
-
+            if(node.nodes !== undefined) {
+                let temp_childrenId = node.nodes.map(function (node) {
+                    return node.nodeId;
+                });
+                i2b2.ONT.view.search.treeview.treeview('deleteNodes', [temp_childrenId]);
+            }
             //append existing children so that the modifiers appear first in the tree
             newNodes = newNodes.concat(temp_childrenAll);
             node.state.expanded = true;
