@@ -13,6 +13,21 @@
     height: auto;
 }
 
+#i2b2QueryHistoryBar .dateSearchBtn {
+    position:absolute;
+    top: 0.15rem;
+    right: 6rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 1.4em !important;
+    z-index: 1000;
+}
+
+#i2b2QueryHistoryBar .gj-icon {
+    top: 9px !important;
+}
+
+
 #i2b2TreeviewQueryHistory .history-container {
     position: absolute;
 }
