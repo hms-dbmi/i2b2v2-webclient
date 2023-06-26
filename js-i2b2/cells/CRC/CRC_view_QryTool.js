@@ -1848,12 +1848,12 @@ i2b2.CRC.view.QT.showQueryReport = function() {
                     panelItem.moreInfo = concepts[panelItem.key];
                 }
                 // deal with dates
-                if (panelItem.moreInfo.dateRange.start == undefined || panelItem.moreInfo.dateRange.start == "") {
+                if (panelItem.moreInfo.dateRange?.start === undefined || panelItem.moreInfo.dateRange?.start === "") {
                     panelItem.timingFrom = "earliest date available";
                 } else {
                     panelItem.timingFrom = (new Date(Date.parse(panelItem.moreInfo.dateRange.start))).toLocaleDateString();
                 }
-                if (panelItem.moreInfo.dateRange.end == undefined || panelItem.moreInfo.dateRange.end == "") {
+                if (panelItem.moreInfo.dateRange?.end === undefined || panelItem.moreInfo.dateRange?.end === "") {
                     panelItem.timingTo = "latest date available";
                 } else {
                     panelItem.timingTo = (new Date(Date.parse(panelItem.moreInfo.dateRange.end))).toLocaleDateString();
