@@ -252,6 +252,11 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                     i2b2.ONT.view.nav.params.max = t.max * 5;
                     i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cl_onCompleteCB);
                 } else {
+                    //Reset the loading and requested state for the expanded node
+                    let curNode = i2b2.ONT.view.nav.treeview.treeview('getNode', cl_node.nodeId);
+                    curNode.state.loaded = false;
+                    curNode.state.requested = false;
+                    curNode.state.expanded = false;
                     // return empty result
                     cl_onCompleteCB([], []);
                 }
