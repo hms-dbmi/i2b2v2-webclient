@@ -12,10 +12,11 @@ DIV#anaPluginViewBox DIV.PluginViewBox {
 	clear: both;
 	display: flex;
 	overflow: hidden;
-	padding: 11px 5px 5px 5px;
+	padding: 11px 5px 2px 5px;
 	position: relative;
 	width: auto;
 	z-index: 0;
+	height: 100%;
 }
 
 
@@ -26,6 +27,11 @@ DIV#anaPluginViewBox DIV#anaPluginViewFrame {
 	padding: 0px;
 	margin: 0px;
 	overflow:auto;
+	height: 100%;
+}
+
+DIV#anaPluginViewFrame  > div:first-of-type{
+	height: 95%;
 }
 
 
@@ -43,8 +49,6 @@ DIV#anaPluginViewBox DIV#anaPluginViewFrame.USETABS {
 	margin: 0px;
 	overflow:hidden;
 }
-
-
 
 /***************** YUI Tabs Override *****************/
 
