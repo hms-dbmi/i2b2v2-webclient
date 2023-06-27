@@ -595,7 +595,13 @@ function QueryToolController() {
                         } else if (tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
                             tempItem.value = item.LabValues.flagValue;
                         } else {
-                            tempItem.value = i2b2.h.Escape(item.LabValues.value);
+                            if(Array.isArray(item.LabValues.value)){
+                                item.LabValues.value.forEach(element => i2b2.h.Escape(element));
+                                tempItem.value = item.LabValues.value;
+                            }
+                            else{
+                                tempItem.value = i2b2.h.Escape(item.LabValues.value);
+                            }
                         }
                         tempItem.isString = item.LabValues.isString;
                         tempItem.isEnum = item.LabValues.isEnum;
