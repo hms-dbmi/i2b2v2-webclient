@@ -259,7 +259,6 @@ function QueryToolController() {
                                 for (rec of results.model) {
                                     if (rec.origData.name = o.name) {
                                         let data = results.model[0];
-                                        sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
                                         sdxDataNode.origData = data.origData;
                                         if (String(sdxDataNode.origData.table_name).toLowerCase() === "patient_dimension") sdxDataNode.withDates = false;
                                         i2b2.CRC.view.QT.render();
