@@ -259,7 +259,6 @@ function QueryToolController() {
                                 for (rec of results.model) {
                                     if (rec.origData.name = o.name) {
                                         let data = results.model[0];
-                                        sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
                                         sdxDataNode.origData = data.origData;
                                         if (String(sdxDataNode.origData.table_name).toLowerCase() === "patient_dimension") sdxDataNode.withDates = false;
                                         i2b2.CRC.view.QT.render();
@@ -595,7 +594,13 @@ function QueryToolController() {
                         } else if (tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
                             tempItem.value = item.LabValues.flagValue;
                         } else {
-                            tempItem.value = i2b2.h.Escape(item.LabValues.value);
+                            if(Array.isArray(item.LabValues.value)){
+                                item.LabValues.value.forEach(element => i2b2.h.Escape(element));
+                                tempItem.value = item.LabValues.value;
+                            }
+                            else{
+                                tempItem.value = i2b2.h.Escape(item.LabValues.value);
+                            }
                         }
                         tempItem.isString = item.LabValues.isString;
                         tempItem.isEnum = item.LabValues.isEnum;

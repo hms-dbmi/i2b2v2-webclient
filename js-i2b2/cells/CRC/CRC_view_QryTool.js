@@ -1691,9 +1691,11 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                         const ro = new ResizeObserver(() => {
                             if (labEnumValueSelection.is(':visible')) {
                                 let selectedOption = labEnumValueSelection.find(":selected");
-                                let optionTop = selectedOption.offset().top;
-                                let selectTop = labEnumValueSelection.offset().top;
-                                labEnumValueSelection.scrollTop(labEnumValueSelection.scrollTop() + (optionTop - selectTop));
+                                if(selectedOption.offset() !== undefined){
+                                    let optionTop = selectedOption.offset().top;
+                                    let selectTop = labEnumValueSelection.offset().top;
+                                    labEnumValueSelection.scrollTop(labEnumValueSelection.scrollTop() + (optionTop - selectTop));
+                                }
                             }
                         });
                         ro.observe(labEnumValueSelection[0]);
@@ -1848,12 +1850,12 @@ i2b2.CRC.view.QT.showQueryReport = function() {
                     panelItem.moreInfo = concepts[panelItem.key];
                 }
                 // deal with dates
-                if (panelItem.moreInfo.dateRange.start == undefined || panelItem.moreInfo.dateRange.start == "") {
+                if (panelItem.moreInfo.dateRange?.start === undefined || panelItem.moreInfo.dateRange?.start === "") {
                     panelItem.timingFrom = "earliest date available";
                 } else {
                     panelItem.timingFrom = (new Date(Date.parse(panelItem.moreInfo.dateRange.start))).toLocaleDateString();
                 }
-                if (panelItem.moreInfo.dateRange.end == undefined || panelItem.moreInfo.dateRange.end == "") {
+                if (panelItem.moreInfo.dateRange?.end === undefined || panelItem.moreInfo.dateRange?.end === "") {
                     panelItem.timingTo = "latest date available";
                 } else {
                     panelItem.timingTo = (new Date(Date.parse(panelItem.moreInfo.dateRange.end))).toLocaleDateString();
