@@ -204,6 +204,9 @@ i2b2.PLUGIN.view.list.onPluginFrameLoad = function(){
         delete i2b2.PM.model.data.refXML;
     }
 
+    i2b2.PM.model.data.login_project = i2b2.PM.model.login_project;
+    i2b2.PM.model.data.login_projectname = i2b2.PM.model.login_projectname;
+
     let loginData = JSON.stringify(i2b2.PM.model.data);
     document.getElementById("pluginframe").contentWindow.postMessage(loginData, window.location.origin);
 };
