@@ -27,9 +27,6 @@ DIV#anaPluginViewBox DIV#anaPluginViewFrame {
 	padding: 0px;
 	margin: 0px;
 	overflow:auto;
-	flex-direction: column;
-	display: flex;
-	height: 100%;
 }
 
 DIV#anaPluginViewFrame  > div:first-of-type{
