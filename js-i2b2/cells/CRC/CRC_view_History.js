@@ -677,11 +677,13 @@ i2b2.events.afterCellInit.add((cell) => {
 
                                     let refreshValue = parseInt($('#HISTAuto').val(), 10);
                                     if(refreshValue > 0){
+                                        i2b2.CRC.view.history.params.refreshValue = refreshValue;
                                         clearInterval(i2b2.CRC.view.history.autorefresh);
                                         i2b2.CRC.view.history.autorefresh = setInterval(function(){
                                             i2b2.CRC.view.history.doRefreshAll();
                                         }, refreshValue*1000);
                                     } else {
+                                        i2b2.CRC.view.history.params.refreshValue=0;
                                         clearInterval(i2b2.CRC.view.history.autorefresh);
                                     }
 
