@@ -253,17 +253,9 @@ i2b2.PM._processUserConfig = function (data) {
 		}
 		try { i2b2.PM.view.modal.login.show(); } catch(e) {}
 		return true;
-	} else if (!i2b2.PM.model.isAdmin) {
-		// default to the only project the user has access to
+	} else  {
 		i2b2.PM.model.login_project = data.login_project;
 		i2b2.PM.model.login_projectname = data.login_projectname;
-		try {
-			var announcement = i2b2.PM.model.projects[i2b2.PM.model.login_project].details.announcement;
-			if (announcement) {
-				i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcement);
-				return;
-			}
-		} catch(e) {}
 		i2b2.PM._processLaunchFramework();
 	}
 
