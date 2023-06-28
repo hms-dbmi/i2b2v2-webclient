@@ -209,10 +209,14 @@ i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview = function(node, onComp
                 onCompleteCallback(modifierNodes, modifiersParents);
             } else {
                 let cl_node = node;
-                let cb_final = (function (conceptNodes, conceptParents) {
-                    let allNodes = modifierNodes.concat(conceptNodes);
-                    let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
-                    onCompleteCallback(allNodes, allParents);
+                let cb_final = (function (conceptNodes, conceptParents, isCancelled) {
+                    if(!isCancelled) {
+                        let allNodes = modifierNodes.concat(conceptNodes);
+                        let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
+                        onCompleteCallback(allNodes, allParents);
+                    }else{
+                        onCompleteCallback([],[]);
+                    }
                 });
                 i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cb_final, false);
             }
@@ -253,12 +257,13 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                     i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cl_onCompleteCB);
                 } else {
                     //Reset the loading and requested state for the expanded node
+
                     let curNode = i2b2.ONT.view.nav.treeview.treeview('getNode', cl_node.nodeId);
                     curNode.state.loaded = false;
                     curNode.state.requested = false;
                     curNode.state.expanded = false;
                     // return empty result
-                    cl_onCompleteCB([], []);
+                    cl_onCompleteCB([], [], true);
                 }
             } else {
                 alert("The following error has occurred:\n" + errorCode);
