@@ -1845,9 +1845,9 @@ i2b2.CRC.view.QT.showQueryReport = function() {
                 panelItem.moreInfo = concepts[sdxKey];
             } else {
                 if (panelItem.modKey) {
-                    panelItem.moreInfo = modifiers[panelItem.key][panelItem.modKey];
+                    panelItem.moreInfo = modifiers[i2b2.h.Unescape(panelItem.key)][panelItem.modKey];
                 } else {
-                    panelItem.moreInfo = concepts[panelItem.key];
+                    panelItem.moreInfo = concepts[i2b2.h.Unescape(panelItem.key)];
                 }
                 // deal with dates
                 if (panelItem.moreInfo.dateRange?.start === undefined || panelItem.moreInfo.dateRange?.start === "") {
