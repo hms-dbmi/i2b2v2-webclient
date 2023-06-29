@@ -270,6 +270,9 @@ function initI2B2()
                 let initializationData = atob(window.frameElement.dataset.initializationData);
                 if (pluginCode !== undefined) {
                     i2b2.PLUGINMGR.ctrlr.main.selectPlugin(pluginCode);
+                    // remove plugin listing functionality
+                    jQuery('#pluginsMenu').remove();
+                    jQuery('#anaPluginViewBox .TopTabs').remove();
 
                     if(pluginCode === 'Timeline'){
                       $('anaPluginViewFrame').style.height = jQuery('#anaPluginViewFrame').height() + "px";
@@ -291,12 +294,7 @@ function initI2B2()
 
                         i2b2.Timeline.setShowMetadataDialog(true);
                     }
-                    // remove plugin listing functionality
-                    jQuery('#pluginsMenu').remove();
-                    jQuery('#anaPluginViewBox .TopTabs').remove();
 
-                    $('anaPluginViewFrame').style.height = jQuery('#anaPluginViewFrame').height() + "px";
-                    i2b2.Timeline.Resize();
                 }
             } catch(e) {
                 // failed to autoload plugin, populate plugin list
