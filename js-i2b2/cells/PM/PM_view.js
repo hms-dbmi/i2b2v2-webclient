@@ -17,7 +17,6 @@ i2b2.PM.setUserAccountInfo = function(){
     userInfo.find(".project").text(i2b2.PM.model.login_projectname);
     userInfo.find(".userRole").text(i2b2.PM.model.userRoles.join(", "));
     userInfo.find(".versionNum").text(i2b2.ClientVersion);
-    userInfo.find(".versionDate").text(i2b2.ClientVersionDate);
 };
 
 // login screen
