@@ -17,8 +17,8 @@ if (undefined==i2b2.hive.cfg) { i2b2.hive.cfg = {}; }
 if (undefined==i2b2.h) { i2b2.h = {}; }
 if (undefined==i2b2.hive.base_classes) { i2b2.hive.base_classes = {}; }
 
-i2b2.ClientVersion = "2.0";
-i2b2.ClientVersionDate = "4/1/2022";
+i2b2.ClientVersion = "1.8.0";
+i2b2.ClientVersionDate = "6/29/2023";
 
 
 // ================================================================================================== //
