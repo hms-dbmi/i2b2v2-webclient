@@ -383,8 +383,8 @@ function QueryToolController() {
                 loadAllModifierInfo(qd[0], function(modifierXmlInfo){
                     reloadQuery(modifierXmlInfo);
                     $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
+                    i2b2.CRC.ctrlr.QT.loadQueryStatus(qm_id, queryName);
                 });
-                i2b2.CRC.ctrlr.QT.loadQueryStatus(qm_id, queryName);
             }
         }
         // AJAX CALL
