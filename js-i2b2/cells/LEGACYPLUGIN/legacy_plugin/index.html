@@ -271,20 +271,25 @@ function initI2B2()
                 if (pluginCode !== undefined) {
                     i2b2.PLUGINMGR.ctrlr.main.selectPlugin(pluginCode);
 
-                  if(pluginCode === 'Timeline' && initializationData !== undefined){
-                      //Process PatientSet
-                      let data = JSON.parse(initializationData);
-                      i2b2.Timeline.prsDropped(data.patientSet);
-                      i2b2.Timeline.setShowMetadataDialog(false);
+                    if(pluginCode === 'Timeline'){
+                      $('anaPluginViewFrame').style.height = jQuery('#anaPluginViewFrame').height() + "px";
+                      i2b2.Timeline.Resize();
+                    }
 
-                      for (let i=0; i < data.concepts.length; i++) {
-                        let sdxData = data.concepts[i];
-                        if (sdxData.sdxInfo.sdxType === "CONCPT")
-                         i2b2.Timeline.conceptDropped([sdxData], false); // nw096 - turn off dialogs when auto-generating timeline
-                      }
-                      i2b2.Timeline.yuiTabs.set('activeIndex', 1);
+                    if(pluginCode === 'Timeline' && initializationData !== undefined){
+                        //Process PatientSet
+                        let data = JSON.parse(initializationData);
+                        i2b2.Timeline.prsDropped(data.patientSet);
+                        i2b2.Timeline.setShowMetadataDialog(false);
 
-                      i2b2.Timeline.setShowMetadataDialog(true);
+                        for (let i=0; i < data.concepts.length; i++) {
+                          let sdxData = data.concepts[i];
+                          if (sdxData.sdxInfo.sdxType === "CONCPT")
+                           i2b2.Timeline.conceptDropped([sdxData], false); // nw096 - turn off dialogs when auto-generating timeline
+                        }
+                        i2b2.Timeline.yuiTabs.set('activeIndex', 1);
+
+                        i2b2.Timeline.setShowMetadataDialog(true);
                     }
                     // remove plugin listing functionality
                     jQuery('#pluginsMenu').remove();
