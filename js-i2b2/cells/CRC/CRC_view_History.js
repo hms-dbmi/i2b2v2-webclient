@@ -143,17 +143,17 @@ i2b2.CRC.view.history.clickSearchName = function() {
 
         // display the tree results
         let newNodes = {};
-        if(i2b2.CRC.view.history.params.sortBy === 'NAME') {
+        if (i2b2.CRC.view.history.params.sortBy === 'NAME') {
             cellResult.model.sort(i2b2.CRC.view.history.sortResultsByName);
-        }else{
+        } else {
             cellResult.model.sort(i2b2.CRC.view.history.sortResultsByDate);
         }
 
         let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
-        if(!isAscending){
+        if (!isAscending) {
             cellResult.model.reverse();
         }
-        for ( let i1=0; i1 < cellResult.model.length; i1++) {
+        for (let i1=0; i1 < cellResult.model.length; i1++) {
             let sdxDataNode = cellResult.model[i1];
             let renderOptions = {
                 title: sdxDataNode.sdxDisplayName ,
@@ -173,10 +173,10 @@ i2b2.CRC.view.history.clickSearchName = function() {
             };
 
             temp.state = sdxDataNode.renderData.tvNodeState;
-            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
+            if (sdxDataNode.renderData.cssClassMinor !== undefined) {
                 temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             }
-            if(!newNodes[temp.key]) {
+            if (!newNodes[temp.key]) {
                 newNodes[temp.key] = temp;
             }
         }
@@ -244,7 +244,7 @@ i2b2.CRC.view.history.searchByDate = function(startDate) {
 
         // display the tree results
         let newNodes = {};
-        for ( let i1=0; i1 < cellResult.model.length; i1++) {
+        for (let i1=0; i1 < cellResult.model.length; i1++) {
             let sdxDataNode = cellResult.model[i1];
             let renderOptions = {
                 title: sdxDataNode.sdxDisplayName ,
@@ -264,10 +264,10 @@ i2b2.CRC.view.history.searchByDate = function(startDate) {
             };
 
             temp.state = sdxDataNode.renderData.tvNodeState;
-            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
+            if (sdxDataNode.renderData.cssClassMinor !== undefined) {
                 temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             }
-            if(!newNodes[temp.key]) {
+            if (!newNodes[temp.key]) {
                 newNodes[temp.key] = temp;
             }
         }
@@ -313,21 +313,21 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         cellResult.parse();
 
         //sort the results
-        if(i2b2.CRC.view.history.params.sortBy === 'NAME') {
+        if (i2b2.CRC.view.history.params.sortBy === 'NAME') {
             cellResult.model.sort(i2b2.CRC.view.history.sortResultsByName);
-        }else{
+        } else {
             cellResult.model.sort(i2b2.CRC.view.history.sortResultsByDate);
         }
 
         let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
-        if(!isAscending){
+        if (!isAscending){
             cellResult.model.reverse();
         }
 
         // display the tree results
         let newNodes = [];
         let newNodeCount = cellResult.model.length < max ? cellResult.model.length : max;
-        for ( let i1=0; i1 < newNodeCount; i1++) {
+        for (let i1=0; i1 < newNodeCount; i1++) {
             let sdxDataNode = cellResult.model[i1];
             let renderOptions = {
                 title: sdxDataNode.sdxDisplayName ,
@@ -445,7 +445,7 @@ i2b2.CRC.view.history.showDateListingView = function() {
 
 i2b2.CRC.view.history._loadUsersInOptions =  function() {
     // check if manager
-    if(i2b2.PM.model.userRoles.indexOf("MANAGER") > -1){
+    if (i2b2.PM.model.userRoles.indexOf("MANAGER") > -1){
         // get all user roles call
         // parse thru the list and add them to the drop down
         let loadUsers = function(){
@@ -460,18 +460,16 @@ i2b2.CRC.view.history._loadUsersInOptions =  function() {
                 $('#HISTUser').append($('<option>', {value:idx, text:idx}));
             });
 
-            if(i2b2.CRC.view.history.params.userBy !== undefined) {
+            if (i2b2.CRC.view.history.params.userBy !== undefined) {
                 $('#HISTUser').val(i2b2.CRC.view.history.params.userBy);
             }
         }
-        if( i2b2.CRC.view.history.allUsers === undefined)
-        {
+        if (i2b2.CRC.view.history.allUsers === undefined) {
              i2b2.PM.ajax.getAllRole("PM:Admin", { id: i2b2.PM.model.login_project }, function(results) {
                  i2b2.CRC.view.history.allUsers = results.parse();
                  loadUsers();
              });
-        }
-        else{
+        } else {
             loadUsers();
         }
 
