@@ -253,21 +253,10 @@ i2b2.PM._processUserConfig = function (data) {
 		}
 		try { i2b2.PM.view.modal.login.show(); } catch(e) {}
 		return true;
-	} else if ((projs.length == 1)  && (!i2b2.PM.model.isAdmin)) {
-		// default to the only project the user has access to
-		i2b2.PM.model.login_project = i2b2.h.XPath(projs[0], 'attribute::id')[0].nodeValue;
-		i2b2.PM.model.login_projectname = i2b2.h.getXNodeVal(projs[0], "name");
-		try {
-			var announcement = i2b2.PM.model.projects[i2b2.PM.model.login_project].details.announcement;
-			if (announcement) {
-				i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcement);
-				return;
-			}
-		} catch(e) {}
+	} else  {
+		i2b2.PM.model.login_project = data.login_project;
+		i2b2.PM.model.login_projectname = data.login_projectname;
 		i2b2.PM._processLaunchFramework();
-	} else {
-		// display list of possible projects for the user to select
-		i2b2.PM.view.modal.projectDialog.showProjects();
 	}
 
 }
