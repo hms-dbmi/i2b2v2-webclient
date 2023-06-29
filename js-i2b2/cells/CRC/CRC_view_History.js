@@ -425,9 +425,9 @@ i2b2.CRC.view.history.showBrowseView = function() {
     $('#i2b2QueryHistoryBar .dateListing').hide();
     $('#i2b2QueryHistoryBar .searchOptions').show();
 
-    // refresh display
-    i2b2.CRC.view.history.treeview.treeview('clear');
-    i2b2.CRC.view.history.LoadQueryMasters();
+    // show browse treeview
+    $("#i2b2TreeviewQueryHistory").show();
+    $('#i2b2TreeviewQueryHistoryFinder').hide();
 };
 // ================================================================================================== //
 i2b2.CRC.view.history.showDateListingView = function() {
