@@ -267,11 +267,34 @@ function initI2B2()
             // in the parent iframe
             try {
                 let pluginCode = window.frameElement.dataset.pluginCode;
+                let initializationData = atob(window.frameElement.dataset.initializationData);
                 if (pluginCode !== undefined) {
                     i2b2.PLUGINMGR.ctrlr.main.selectPlugin(pluginCode);
                     // remove plugin listing functionality
                     jQuery('#pluginsMenu').remove();
                     jQuery('#anaPluginViewBox .TopTabs').remove();
+
+                    if(pluginCode === 'Timeline'){
+                      $('anaPluginViewFrame').style.height = jQuery('#anaPluginViewFrame').height() + "px";
+                      i2b2.Timeline.Resize();
+                    }
+
+                    if(pluginCode === 'Timeline' && initializationData !== undefined){
+                        //Process PatientSet
+                        let data = JSON.parse(initializationData);
+                        i2b2.Timeline.prsDropped(data.patientSet);
+                        i2b2.Timeline.setShowMetadataDialog(false);
+
+                        for (let i=0; i < data.concepts.length; i++) {
+                          let sdxData = data.concepts[i];
+                          if (sdxData.sdxInfo.sdxType === "CONCPT")
+                           i2b2.Timeline.conceptDropped([sdxData], false); // nw096 - turn off dialogs when auto-generating timeline
+                        }
+                        i2b2.Timeline.yuiTabs.set('activeIndex', 1);
+
+                        i2b2.Timeline.setShowMetadataDialog(true);
+                    }
+
                 }
             } catch(e) {
                 // failed to autoload plugin, populate plugin list

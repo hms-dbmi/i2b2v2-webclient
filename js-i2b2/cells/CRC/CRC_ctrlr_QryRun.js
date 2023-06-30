@@ -13,7 +13,7 @@ function QueryRunner() {
     this._tick = function() {
         if (!i2b2.CRC.ctrlr.QS.isRunning) clearInterval(i2b2.CRC.model.runner.intervalTimer);
 
-        if (i2b2.CRC.model.runner.deleteCurrentQuery) {
+        if (i2b2.CRC.model.runner?.deleteCurrentQuery) {
             // delete the query master
             let qmId = i2b2.CRC.ctrlr.QS?.QM.id;
             if (qmId !== undefined) i2b2.CRC.ctrlr.history.queryDeleteNoPrompt(qmId);
@@ -24,7 +24,7 @@ function QueryRunner() {
     this.doRunQuery = function(queryName, queryDefinition) {
 
         i2b2.CRC.model.runner = {
-            name: queryName,
+            name: i2b2.h.Escape(queryName),
             definition: queryDefinition,
             elapsedTime: "0",
             startTime: new Date(),
@@ -144,6 +144,10 @@ function QueryRunner() {
 
     this.doQueryFinished = function() {
         // TODO: query is done running
+
+        // clear the query timer's interval
+        clearInterval(i2b2.CRC.view.QS.timerID);
+        clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
 
     };
 }

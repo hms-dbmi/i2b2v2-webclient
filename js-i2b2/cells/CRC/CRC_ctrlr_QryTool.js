@@ -58,6 +58,7 @@ function QueryToolController() {
                     let modifier_applied_path = i2b2.h.getXNodeVal(modifierConstraints[m], 'constrain_by_modifier/applied_path');
                     let modifier_key_value = i2b2.h.getXNodeVal(modifierConstraints[m], 'constrain_by_modifier/modifier_key');
                     allModRequest.push(new Promise((resolve, reject) => {
+                        // TODO: We may have a synonym rehydration bug in this location, see bug I2B2UI-381
                         i2b2.ONT.ajax.GetModifierInfo("CRC:QueryTool", {
                             modifier_applied_path: modifier_applied_path,
                             modifier_key_value: modifier_key_value,
@@ -128,14 +129,14 @@ function QueryToolController() {
                         sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                         sdxDataNode.renderData.title = sdxDataNode.renderData.title.replace("(PrevQuery)","<span class='prevquery'>(PrevQuery)</span>");
-                    } else 	if (ckey.toLowerCase().startsWith("masterid")) {
+                    } else if (ckey.toLowerCase().startsWith("masterid")) {
                         let o = {};
                         o.name =i2b2.h.getXNodeVal(pi[i2],'item_name');
                         o.id = ckey.substring(9);
                         sdxDataNode = i2b2.sdx.Master.EncapsulateData('QM',o);
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                         sdxDataNode.renderData.title = sdxDataNode.renderData.title.replace("(PrevQuery)","<span class='prevquery'>(PrevQuery)</span>");
-                    } else  if (ckey.toLowerCase().startsWith("folder")) {
+                    } else if (ckey.toLowerCase().startsWith("folder")) {
                         let o = {};
                         o.titleCRC =  i2b2.h.getXNodeVal(pi[i2],'item_name');
                         o.PRS_id = ckey.substring(19);
@@ -167,9 +168,9 @@ function QueryToolController() {
                         o.tooltip = i2b2.h.getXNodeVal(pi[i2],'tooltip');
 
                         // nw096 - If string starts with path \\, lookup path in Ontology cell
-                        if(o.name.slice(0, 2) === '\\\\'){
+                        if (o.name.slice(0, 2) === '\\\\') {
                             let results = i2b2.ONT.ajax.GetTermInfo("ONT", {ont_max_records:'max="1"', ont_synonym_records:'false', ont_hidden_records: 'false', concept_key_value: o.name}).parse();
-                            if(results.model.length > 0){
+                            if (results.model.length > 0) {
                                 o.name = results.model[0].origData.name;
                                 o.tooltip = results.model[0].origData.tooltip;
                             }
@@ -184,32 +185,25 @@ function QueryToolController() {
                         // Date constraint processing
                         sdxDataNode.dateRange = {};
                         let dateConstraint = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date');
-                        if(dateConstraint.length >0)
-                        {
+                        if (dateConstraint.length > 0) {
                             let dateStart = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_from");
-                            if(dateStart !== undefined){
+                            if (dateStart !== undefined) {
                                 sdxDataNode.dateRange.start = reformatDate(dateStart);
                             }
                             let dateEnd = i2b2.h.getXNodeVal(i2b2.h.XPath(pi[i2], 'descendant::constrain_by_date')[0], "date_to");
-                            if(dateEnd !== undefined){
+                            if (dateEnd !== undefined) {
                                 sdxDataNode.dateRange.end = reformatDate(dateEnd);
                             }
-                        }
-                        else{
-                            if(metadata.startDate !== undefined){
-                                sdxDataNode.dateRange.start = metadata.startDate;
-                            }
-                            if(metadata.endDate !== undefined){
-                                sdxDataNode.dateRange.end = metadata.endDate;
-                            }
+                        } else {
+                            if (metadata.startDate !== undefined) sdxDataNode.dateRange.start = metadata.startDate;
+                            if (metadata.endDate !== undefined) sdxDataNode.dateRange.end = metadata.endDate;
                         }
 
                         // Lab Values processing
                         let lvd = i2b2.h.XPath(pi[i2], 'descendant::constrain_by_value');
 
                         //Check whether this is a lab term
-                        if ((lvd.length > 0) && (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length === 0))
-                        {
+                        if ((lvd.length > 0) && (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length === 0)) {
                             sdxDataNode.isLab = true;
                             sdxDataNode.LabValues = i2b2.CRC.ctrlr.QT.parseValueConstraint( lvd );
                         }
@@ -217,8 +211,7 @@ function QueryToolController() {
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
 
                         // parse for modifier
-                        if (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length > 0)
-                        {
+                        if (i2b2.h.XPath(pi[i2], 'descendant::constrain_by_modifier').length > 0) {
                             // nw096 - If string starts with path \\, lookup path in Ontology cell
                             let modifier_key_value = i2b2.h.getXNodeVal(pi[i2], 'constrain_by_modifier/modifier_key');
 
@@ -230,6 +223,12 @@ function QueryToolController() {
                             renderOptions.title = i2b2.h.getXNodeVal(modifierXmlInfo[modifier_key_value],'name');
                             modSdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                             modSdxDataNode.renderData.cssClassMain = "sdxStyleONT-MODIFIER";
+                            let iconAttribs = i2b2.h.getXNodeVal(modifierXmlInfo[modifier_key_value],'visualattributes');
+                            if (iconAttribs.substring(0,2) === "RA") {
+                                modSdxDataNode.renderData.cssClassMinor = " tvLeaf"
+                                modSdxDataNode.renderData.iconImg = i2b2.hive.cfg.urlFramework + 'cells/ONT/assets/' + renderOptions.icon['leaf'];
+                                modSdxDataNode.renderData.iconImgExp = modSdxDataNode.renderData.iconImg;
+                            }
                             modSdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
 
                             const valueMetaDataArr = i2b2.h.XPath(modifierXmlInfo[modifier_key_value], "metadataxml/ValueMetadata[string-length(Version)>0]");
@@ -248,21 +247,23 @@ function QueryToolController() {
                             }
 
                             if (o.LabValues) sdxDataNode.LabValues = o.LabValues;
-                        }
-                        else {
+                        } else {
                             i2b2.ONT.ajax.GetTermInfo("ONT", {
-                                ont_max_records: 'max="1"',
-                                ont_synonym_records: 'false',
+                                ont_max_records: 'max="100"',
+                                ont_synonym_records: o.synonym_cd,
                                 ont_hidden_records: 'false',
                                 concept_key_value: o.key
                             }, function (results) {
                                 results.parse();
-                                if (results.model.length > 0) {
-                                    let data = results.model[0];
-                                    sdxDataNode.isLab = i2b2.CRC.view.QT.isLabs(data);
-                                    sdxDataNode.origData = data.origData;
-                                    if (String(sdxDataNode.origData.table_name).toLowerCase() === "patient_dimension") sdxDataNode.withDates = false;
-                                    i2b2.CRC.view.QT.render();
+                                // loop through records and find the one with the matching name
+                                for (rec of results.model) {
+                                    if (rec.origData.name = o.name) {
+                                        let data = results.model[0];
+                                        sdxDataNode.origData = data.origData;
+                                        if (String(sdxDataNode.origData.table_name).toLowerCase() === "patient_dimension") sdxDataNode.withDates = false;
+                                        i2b2.CRC.view.QT.render();
+                                        break;
+                                    }
                                 }
                             });
                         }
@@ -270,16 +271,16 @@ function QueryToolController() {
                     sdxDataNodeList.push(sdxDataNode);
                 }
 
-                if(sdxDataNodeList.length > 1){
+                if (sdxDataNodeList.length > 1) {
                     let startDate;
                     let endDate;
-                    if(sdxDataNodeList[0].dateRange !== undefined){
+                    if (sdxDataNodeList[0].dateRange !== undefined) {
                         startDate = sdxDataNodeList[0].dateRange.start;
                         endDate = sdxDataNodeList[0].dateRange.end;
                     }
 
                     let matchingSdxNodeDates = sdxDataNodeList.filter(function(sdx) {
-                        if(sdx.dateRange !== undefined &&
+                        if (sdx.dateRange !== undefined &&
                             sdx.dateRange.start === startDate
                             && sdx.dateRange.end === endDate) {
                             return true;
@@ -288,7 +289,7 @@ function QueryToolController() {
                         return false;
                     });
 
-                    if(matchingSdxNodeDates.length === sdxDataNodeList.length){
+                    if (matchingSdxNodeDates.length === sdxDataNodeList.length) {
                         metadata.startDate = sdxDataNodeList[0].dateRange.start;
                         metadata.endDate = sdxDataNodeList[0].dateRange.end;
                     }
@@ -382,8 +383,8 @@ function QueryToolController() {
                 loadAllModifierInfo(qd[0], function(modifierXmlInfo){
                     reloadQuery(modifierXmlInfo);
                     $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
+                    i2b2.CRC.ctrlr.QT.loadQueryStatus(qm_id, queryName);
                 });
-                i2b2.CRC.ctrlr.QT.loadQueryStatus(qm_id, queryName);
             }
         }
         // AJAX CALL
@@ -427,16 +428,14 @@ function QueryToolController() {
         // get the query name
         let queryName = $("#crcQtQueryName").val().trim();
 
-        //add (t) prefix  if this is a temporal query
+        // add (t) prefix  if this is a temporal query
         let queryNamePrefix = "";
-        if(i2b2.CRC.model.transformedQuery.subQueries
-            && i2b2.CRC.model.transformedQuery.subQueries.length > 1
-            && !queryName.startsWith("(t) ")){
+        if (i2b2.CRC.model.transformedQuery.subQueries?.length > 1 && !queryName.startsWith("(t) ")) {
             queryNamePrefix = "(t) ";
         }
-        if (queryName.length === 0 ){
+        if (queryName.length === 0 ) {
             queryName =  queryNamePrefix + i2b2.CRC.model.transformedQuery.name;
-        }else{
+        } else {
             queryName = queryNamePrefix  + queryName;
             i2b2.CRC.model.transformedQuery.name = queryName;
         }
@@ -447,7 +446,6 @@ function QueryToolController() {
         // query definition
         params.psm_query_definition = (Handlebars.compile("{{> Query}}"))(i2b2.CRC.model.transformedQuery);
 
-        queryName = i2b2.h.Escape(queryName);
         // hand over execution of query to the QueryRunner component
         i2b2.CRC.ctrlr.QR.doRunQuery(queryName, params);
     };
@@ -469,11 +467,9 @@ function QueryToolController() {
         let valueConstraint = i2b2.h.getXNodeVal(lvd, "value_constraint");
         labValues.valueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
         let rawValueType = i2b2.h.getXNodeVal(lvd, "value_type");
-        switch (rawValueType)
-        {
+        switch (rawValueType) {
             case "NUMBER":
-                if (valueConstraint.indexOf(' and ') !== -1)
-                {
+                if (valueConstraint.indexOf(' and ') !== -1) {
                     // extract high and low labValues
                     valueConstraint = valueConstraint.split(' and ');
                     labValues.numericValueRangeLow = valueConstraint[0];
@@ -497,13 +493,10 @@ function QueryToolController() {
             case "TEXT":
                 // This is an ENUM
                 labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT;
-                try
-                {
+                try {
                     labValues.value = eval("(Array" + valueConstraint + ")");
                     labValues.isEnum = true;
-                }
-                catch (e)
-                {
+                } catch (e) {
                     //This is a string
                     labValues.valueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
                     labValues.value = valueConstraint;
@@ -535,20 +528,20 @@ function QueryToolController() {
             switch (item.sdxInfo.sdxType) {
                 case "PRS":
                     tempItem.key = "patient_set_coll_id:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
-                    name = i2b2.h.Escape(item.origData.titleCRC);
+                    name = item.origData.titleCRC;
                     let trimPos = name.lastIndexOf(" - ");
                     name = trimPos === -1 ? name : name.substring(0, trimPos);
-                    tempItem.name = name;
-                    tempItem.tooltip = item.origData.title;
+                    tempItem.name = i2b2.h.Escape(name);
+                    tempItem.tooltip = i2b2.h.Escape(item.origData.title);
                     tempItem.isSynonym = "false";
                     tempItem.hlevel = 0;
                     break;
                 case "QM":
                     tempItem.key = "masterid:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
-                    name = i2b2.h.Escape(item.origData.name);
+                    name = item.origData.name;
                     name = name.substring(0, name.indexOf(" ", name.lastIndexOf("@")));
-                    tempItem.name = "(PrevQuery) " + name;
-                    tempItem.tooltip = item.origData.name;
+                    tempItem.name = "(PrevQuery) " + i2b2.h.Escape(name);
+                    tempItem.tooltip = i2b2.h.Escape(item.origData.name);
                     tempItem.isSynonym = "false";
                     tempItem.hlevel = 0;
                     break;
@@ -569,23 +562,22 @@ function QueryToolController() {
                         tempItem.isSynonym = "false";
                     }
 
-                    if(item.origData.isModifier){
-                        tempItem.modName = tempItem.name;
-                        tempItem.modKey = tempItem.key;
-                        tempItem.name = (item.origData.conceptModified.origData.name != null ? i2b2.h.Escape(item.origData.conceptModified.origData.name) : tempItem.name);
-                        tempItem.key = item.origData.conceptModified.origData.key;
+                    if (item.origData.isModifier) {
+                        tempItem.modName = i2b2.h.Escape(tempItem.name);
+                        tempItem.modKey = i2b2.h.Escape(tempItem.key);
+                        tempItem.name = i2b2.h.Escape(item.origData.conceptModified.origData.name != null ? item.origData.conceptModified.origData.name : tempItem.name);
+                        tempItem.key = i2b2.h.Escape(item.origData.conceptModified.origData.key);
                         tempItem.isModifier = true;
-                        tempItem.applied_path = item.origData.applied_path;
-
+                        tempItem.applied_path = i2b2.h.Escape(item.origData.applied_path);
                         let modParent = item.origData.conceptModified.origData;
                         while (modParent != null) {
                             if (modParent.isModifier) {
                                 modParent = modParent.conceptModified;
                             } else {
-                                tempItem.level=modParent.level;
-                                tempItem.key = modParent.key;
-                                tempItem.name = modParent.name;
-                                tempItem.tooltip = modParent.tooltip;
+                                tempItem.level = modParent.level;
+                                tempItem.key = i2b2.h.Escape(modParent.key);
+                                tempItem.name = i2b2.h.Escape(modParent.name);
+                                tempItem.tooltip = i2b2.h.Escape(modParent.tooltip);
                                 tempItem.icon = modParent.hasChildren;
                                 break;
                             }
@@ -597,26 +589,29 @@ function QueryToolController() {
                         tempItem.valueOperator = item.LabValues.valueOperator;
                         tempItem.unitValue= item.LabValues.unitValue;
 
-                        if (item.LabValues.numericValueRangeLow){
+                        if (item.LabValues.numericValueRangeLow) {
                             tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
-                        }
-                        else if(tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
+                        } else if (tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
                             tempItem.value = item.LabValues.flagValue;
-                        }
-                        else {
-                            tempItem.value = item.LabValues.value;
+                        } else {
+                            if(Array.isArray(item.LabValues.value)){
+                                item.LabValues.value.forEach(element => i2b2.h.Escape(element));
+                                tempItem.value = item.LabValues.value;
+                            }
+                            else{
+                                tempItem.value = i2b2.h.Escape(item.LabValues.value);
+                            }
                         }
                         tempItem.isString = item.LabValues.isString;
                         tempItem.isEnum = item.LabValues.isEnum;
                     }
 
                     if (item.dateRange !== undefined) {
-                        if (item.dateRange.start !== undefined && item.dateRange.start !== "")
-                        {
+                        if (item.dateRange.start !== undefined && item.dateRange.start !== "") {
                             tempItem.dateFrom = funcTranslateDate(new Date(item.dateRange.start));
                             tempItem.hasDate = true;
                         }
-                        if (item.dateRange.end !== undefined && item.dateRange.end !== ""){
+                        if (item.dateRange.end !== undefined && item.dateRange.end !== "") {
                             tempItem.dateTo = funcTranslateDate(new Date(item.dateRange.end));
                             tempItem.hasDate = true;
                         }
@@ -732,7 +727,7 @@ function QueryToolController() {
             let adjuster = 1 / ((names.map((rec) => rec.length ).reduce((acc, val) => acc + val) + names.length - 1) / 120);
             if (adjuster > 1) adjuster = 1;
             names = names.map((rec) => rec.substr(0, Math.floor(rec.length * adjuster)));
-            transformedModel.name  = names.join("-") + "@" + queryDate;
+            transformedModel.name  = i2b2.h.Unescape(names.join("-") + "@" + queryDate);
         } else {
             transformedModel.name  = "";
         }

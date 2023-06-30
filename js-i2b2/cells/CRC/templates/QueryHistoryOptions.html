@@ -84,10 +84,12 @@
         <div class="col-sm-4">
             <div >
                 <select id="HISTAuto" class="form-select form-select-sm">
-                    <option value="0" selected="selected">Off</option>
-                    <option value="10">10 seconds</option>
-                    <option value="30">30 seconds</option>
-                    <option value="60">60 seconds</option>
+                    {{#select refreshValue}}
+                        <option value="0" selected="selected">Off</option>
+                        <option value="10">10 seconds</option>
+                        <option value="30">30 seconds</option>
+                        <option value="60">60 seconds</option>
+                    {{/select}}
                 </select>
 
             </div>

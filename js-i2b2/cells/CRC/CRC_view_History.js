@@ -227,7 +227,12 @@ i2b2.CRC.view.history.searchByDate = function(startDate) {
     i2b2.CRC.view.history.treeviewFinder.treeview('clear');
 
     // reformat date
-    startDate = moment(Date.parse(startDate)).format('YYYY-MM-DD');
+    startDate = moment(Date.parse(startDate));
+    startDate.hour(23);
+    startDate.minute(59);
+    startDate.second(59);
+    startDate.millisecond(999);
+    startDate = startDate.format();
 
 
     // create a scoped callback message
@@ -321,7 +326,8 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
 
         // display the tree results
         let newNodes = [];
-        for ( let i1=0; i1 < cellResult.model.length; i1++) {
+        let newNodeCount = cellResult.model.length < max ? cellResult.model.length : max;
+        for ( let i1=0; i1 < newNodeCount; i1++) {
             let sdxDataNode = cellResult.model[i1];
             let renderOptions = {
                 title: sdxDataNode.sdxDisplayName ,
@@ -347,7 +353,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         }
 
         // hide "Load More" link if we have all the records
-        if (newNodes.length < max) {
+        if (cellResult.model.length < max + 1) {
             $('.history-more-bar').addClass("d-none");
         } else {
             $('.history-more-bar').removeClass("d-none");
@@ -375,7 +381,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
 
     let max = maxRecords ? maxRecords : i2b2.CRC.view.history.params.maxQueriesDisp;
     let options = {
-        crc_max_records: max,
+        crc_max_records: max + 1,
         crc_user_type: request_type,
         crc_user_by: user_type
     };
@@ -671,11 +677,13 @@ i2b2.events.afterCellInit.add((cell) => {
 
                                     let refreshValue = parseInt($('#HISTAuto').val(), 10);
                                     if(refreshValue > 0){
+                                        i2b2.CRC.view.history.params.refreshValue = refreshValue;
                                         clearInterval(i2b2.CRC.view.history.autorefresh);
                                         i2b2.CRC.view.history.autorefresh = setInterval(function(){
                                             i2b2.CRC.view.history.doRefreshAll();
                                         }, refreshValue*1000);
                                     } else {
+                                        i2b2.CRC.view.history.params.refreshValue=0;
                                         clearInterval(i2b2.CRC.view.history.autorefresh);
                                     }
 

@@ -105,7 +105,13 @@ i2b2.ONT.ctrlr.Search = {
                 if (i2b2.ONT.model.searchResultCount === 0) {
                     status[0].innerHTML = "No Records Found.";
                 } else {
-                    status[0].innerHTML = "Found " + i2b2.ONT.model.searchResultCount + " Records...";
+                    let disp = "Found " + i2b2.ONT.model.searchResultCount + " Records...";
+                    if (i2b2.ONT.model.searchResultsExceeded) {
+                        disp = disp + "<p class='warn'>Max Results Exceeded<br>Not all results are shown</p>";
+                        $('i.srTooltip').addClass("warn");
+                        $('i.srTooltip').attr('data-bs-original-title', "Not all results are displayed! A maximum of " + i2b2.ONT.view.nav.params.max + " records per category were returned.");
+                    }
+                    status[0].innerHTML = disp;
                     i2b2.ONT.ctrlr.Search.backfillResultNodes();
                 }
             }
@@ -114,7 +120,7 @@ i2b2.ONT.ctrlr.Search = {
 
         // add AJAX options
         let searchOptions = {};
-        searchOptions.ont_max_records = "max='200'";
+        searchOptions.ont_max_records = "max='"+i2b2.ONT.view.nav.params.max+"'";
         searchOptions.ont_synonym_records = i2b2.ONT.view.nav.params.synonyms;
         searchOptions.ont_hidden_records = i2b2.ONT.view.nav.params.hiddens;
         searchOptions.ont_reduce_results = false;
@@ -168,7 +174,13 @@ i2b2.ONT.ctrlr.Search = {
                 if (c.length === 0) {
                     status[0].innerHTML = "No Records Found.";
                 } else {
-                    status[0].innerHTML = "Found " + c.length + " Records...";
+                    let disp = "Found " + c.length + " Records...";
+                    if (i2b2.ONT.model.searchResultsExceeded) {
+                        disp = disp + "<p class='warn'>Max Results Exceeded<br>Not all results are shown</p>";
+                        $('i.srTooltip').addClass("warn");
+                        $('i.srTooltip').attr('data-bs-original-title', "Not all results are displayed! A maximum of " + i2b2.ONT.view.nav.params.max + " records per category were returned.");
+                    }
+                    status[0].innerHTML = disp;
                 }
                 status.show();
 
@@ -184,7 +196,7 @@ i2b2.ONT.ctrlr.Search = {
 
         // add options
         let searchOptions = {};
-        searchOptions.ont_max_records = "max='200'";
+        searchOptions.ont_max_records = "max='"+i2b2.ONT.view.nav.params.max+"'";
         searchOptions.ont_synonym_records = i2b2.ONT.view.nav.params.synonyms;
         searchOptions.ont_hidden_records = i2b2.ONT.view.nav.params.hiddens;
         searchOptions.ont_search_strategy = "exact";
@@ -275,11 +287,10 @@ i2b2.ONT.ctrlr.Search = {
             loadCount = loadCount - 1;
             if (loadCount === 0) {
                 // render the results tree
-                console.warn("Render Search Results Treeview!");
                 let treeStruct = [];
                 let func_crawl_builder = (node, parent) => {
                     let ret = [];
-                    let bypass = ((node._$$_ === undefined && node._$R$_ === undefined) || (node._$$_ !== undefined && parent === null)) && !(Object.keys(node).length === 2 && node._$$_ !== undefined && node._$R$_ !== undefined);
+                    let bypass = ((node._$$_ === undefined && node._$R$_ === undefined) || (node._$$_ !== undefined && parent === null)) && !((Object.keys(node).length === 2 || parent === null) && node._$$_ !== undefined && node._$R$_ !== undefined);
                     if (bypass) {
                         // passes back only a collection of child nodes (which should be built)
                         // this bubbles up navigatable nodes through non-navigatable nodes
@@ -291,7 +302,10 @@ i2b2.ONT.ctrlr.Search = {
                     } else {
                         // passes back current node fully built with its "nodes" attribute populated
                         ret = node._$$_ !== undefined ? node._$$_ : node._$R$_;
-                        if (node._$R$_) ret = node._$R$_;
+                        if (node._$R$_) {
+                            ret = node._$R$_;
+                            if (node._$$_) ret.icon = node._$$_.icon; 
+                        }
                         ret.state = {
                             loaded: true,
                             expanded: true

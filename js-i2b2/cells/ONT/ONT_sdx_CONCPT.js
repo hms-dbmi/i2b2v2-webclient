@@ -205,13 +205,21 @@ i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview = function(node, onComp
         i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(node, onCompleteCallback, false);
     } else {
         let cb_concepts = (function (modifierNodes, modifiersParents) {
-            let cl_node = node;
-            let cb_final = (function (conceptNodes, conceptParents) {
-                let allNodes = modifierNodes.concat(conceptNodes);
-                let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
-                onCompleteCallback(allNodes, allParents);
-            });
-            i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cb_final, false);
+            if (node.i2b2.origData.conceptModified) {
+                onCompleteCallback(modifierNodes, modifiersParents);
+            } else {
+                let cl_node = node;
+                let cb_final = (function (conceptNodes, conceptParents, isCancelled) {
+                    if(!isCancelled) {
+                        let allNodes = modifierNodes.concat(conceptNodes);
+                        let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
+                        onCompleteCallback(allNodes, allParents);
+                    }else{
+                        onCompleteCallback([],[]);
+                    }
+                });
+                i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cb_final, false);
+            }
         });
 
         i2b2.sdx.TypeControllers.CONCPT.LoadModifiers(node, cb_concepts, true);
@@ -248,8 +256,14 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                     i2b2.ONT.view.nav.params.max = t.max * 5;
                     i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cl_onCompleteCB);
                 } else {
+                    //Reset the loading and requested state for the expanded node
+
+                    let curNode = i2b2.ONT.view.nav.treeview.treeview('getNode', cl_node.nodeId);
+                    curNode.state.loaded = false;
+                    curNode.state.requested = false;
+                    curNode.state.expanded = false;
                     // return empty result
-                    cl_onCompleteCB([], []);
+                    cl_onCompleteCB([], [], true);
                 }
             } else {
                 alert("The following error has occurred:\n" + errorCode);
@@ -420,26 +434,27 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
     let scopedCallback = new i2b2_scopedCallback();
     scopedCallback.scope = node;
     scopedCallback.callback = function(results){
-        let cl_node = node;
-        let cl_onCompleteCB = onCompleteCallback;
-        let cl_options = options;
         let retNodes = [];
         let retParents = new Set();
         // handle any errors in the message
         if (results.error) {
             // process the specific error
-            cl_onCompleteCB([],[]);
+            onCompleteCallback([],[]);
             return false;
         }
         let renderOptions = { icon: i2b2.ONT.model.icons.modifier };
         let c = results.refXML.getElementsByTagName('modifier');
         for (let i=0; i<1*c.length; i++) {
             renderOptions.title = i2b2.h.getXNodeVal(c[i],'name');
-            let sdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(c[i], modifier, cl_options, cl_node.i2b2);
+            let sdxDataNode = i2b2.sdx.TypeControllers.CONCPT.MakeObject(c[i], modifier, options, node.i2b2);
             sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
             sdxDataNode.renderData.cssClassMain = "sdxStyleONT-MODIFIER";
             sdxDataNode.renderData.idDOM = "ONT_TV-" + i2b2.GUID();
-            sdxDataNode.origData.conceptModified = cl_node.i2b2;
+            if (node.i2b2.origData.conceptModified) {
+                sdxDataNode.origData.conceptModified = node.i2b2.origData.conceptModified;
+            } else {
+                sdxDataNode.origData.conceptModified = node.i2b2;
+            }
             delete sdxDataNode.origData.conceptModified.origData.parent;
             let temp = {
                 title: sdxDataNode.renderData.moreDescriptMinor,
@@ -452,20 +467,20 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
             };
             temp.state = sdxDataNode.renderData.tvNodeState;
             if (sdxDataNode.renderData.cssClassMinor !== undefined) temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
-            if (typeof cl_node === 'undefined' || (typeof cl_node === 'string' && String(cl_node).trim() === '')) {
+            if (typeof node === 'undefined' || (typeof node === 'string' && String(node).trim() === '')) {
                 temp.parentKey = undefined;
-            } else if(typeof cl_node === 'object') {
-                temp.parentKey = cl_node.i2b2.sdxInfo.sdxKeyValue;
+            } else if(typeof node === 'object') {
+                temp.parentKey = node.i2b2.sdxInfo.sdxKeyValue;
                 retParents.add(temp.parentKey);
             } else {
-                temp.parentKey = cl_node;
-                retParents.add(cl_node.i2b2.sdxInfo.sdxKeyValue);
+                temp.parentKey = node;
+                retParents.add(node.i2b2.sdxInfo.sdxKeyValue);
             }
             // get full details of the modifier
             i2b2.ONT.ctrlr.gen.getModifierDetails(temp.i2b2);
             retNodes.push(temp);
         }
-        cl_onCompleteCB(retNodes, Array.from(retParents));
+        onCompleteCallback(retNodes, Array.from(retParents));
     };
     // TODO: Implement param routing from node's container
     let options = {};
@@ -495,12 +510,9 @@ i2b2.sdx.TypeControllers.CONCPT.LoadModifiers = function(node, onCompleteCallbac
             options.modifier_key_value = node.i2b2.origData.key;
             options.modifier_applied_path = node.i2b2.origData.applied_path;
 
-            let realdata = node.i2b2.origData;
-            while ((realdata.hasChildren !== "FA") &&
-            (realdata.hasChildren !== "CA") &&
-            (realdata.hasChildren !== "FAE") &&
-            (realdata.hasChildren !== "CAE")) {
-                realdata  = realdata.parent;
+            let realdata = node;
+            while (!["FA","CA","FAE","CAE"].includes(realdata.i2b2.origData.hasChildren)) {
+                realdata  = realdata.refTreeview.nodes.get(realdata.parentId);
             }
             options.modifier_applied_concept = realdata.key; //node.data.i2b2_SDX.origData.parent.key;
             i2b2.ONT.ajax.GetChildModifiers("ONT:SDX:Modifiers", options, scopedCallback );

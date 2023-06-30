@@ -26,16 +26,35 @@ i2b2.CRC.view.QT.resetToCRCHistoryView = function() {
 
 i2b2.CRC.view.QT.handleConceptValidation = function(){
     let validQuery = true;
-    $(".QueryGroup.when .event").each((index, elem) => {
+    let whenElems = $(".QueryGroup.when .event");
+    whenElems.each((index, elem) => {
         let termList = $(elem).find(".TermList .concept");
         if (termList.length === 0) {
             $(elem).find(".required").removeClass("hidden");
             validQuery = false;
         } else {
             $(elem).find(".required").addClass("hidden");
-            validQuery= true;
         }
     });
+
+    if(validQuery){
+        //handle non-temporal case
+        let whenElemsConcepts = whenElems.find(".TermList .concept");
+        let withElemsConcepts = $(".QueryGroup.with .event").filter(function() {
+            return $(this).find(".TermList .concept").length > 0;
+        });
+        let withoutElemsConcepts = $(".QueryGroup.without .event").filter(function() {
+            return $(this).find(".TermList .concept").length > 0;
+        });
+
+        if (whenElemsConcepts.length === 0 && withElemsConcepts.length === 0 && withoutElemsConcepts.length === 0) {
+            $(".QueryGroup .event").first().find(".required").removeClass("hidden");
+            validQuery = false;
+        }else{
+            $(".QueryGroup .event").first().find(".required").addClass("hidden");
+        }
+    }
+
     return validQuery;
 }
 
@@ -107,6 +126,7 @@ i2b2.CRC.view.QT.showRun = function() {
             i2b2.CRC.view.QT.resetToCRCHistoryView();
             // build list of selected result types
             let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
+            reqResultTypes = [...new Set(reqResultTypes)];
             let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
 
             i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes, reqExecutionMethod);
@@ -542,7 +562,7 @@ i2b2.CRC.view.QT.eventActionDelete = function(evt) {
     let qgEl = $(elem).parents('.QueryGroup').first();
     let queryGroupIdx = qgEl.data("queryGroup");
 
-    if (i2b2.CRC.model.query.groups[queryGroupIdx].events.length > 2) {
+    if (i2b2.CRC.model.query.groups.length > 0 && i2b2.CRC.model.query.groups[queryGroupIdx]?.events.length > 2) {
         let eventIdxNum = eventIdx+1
         //if this is the last event remove the eventLink that appears before it the UI
         if(eventIdxNum !== i2b2.CRC.model.query.groups[queryGroupIdx].events.length) {
@@ -561,19 +581,6 @@ i2b2.CRC.view.QT.eventActionDelete = function(evt) {
         i2b2.CRC.view.QS.clearStatus();
     }
 }
-
-
-// ================================================================================================== //
-i2b2.CRC.view.QT.isLabs = function(sdx) {
-    // see if the concept is a lab, prompt for value if it is
-    sdx.isLab = false;
-    if (sdx.origData.basecode !== undefined) {
-        if (sdx.origData.basecode.startsWith("LOINC") || sdx.origData.basecode.startsWith("LCS-I2B2")) sdx.isLab = true;
-    }
-    return sdx.isLab;
-};
-
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.HoverOver = function(el) { $(el).closest(".i2b2DropTarget").addClass("DropHover"); };
 i2b2.CRC.view.QT.HoverOut = function(el) { $(el).closest(".i2b2DropTarget").removeClass("DropHover"); };
@@ -643,17 +650,6 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
     return qgIdx;
 }
 // ================================================================================================== //
-i2b2.CRC.view.QT.handleLabValues = function(sdx){
-    // see if it is a lab
-    let isLab = i2b2.CRC.view.QT.isLabs(sdx);
-
-    if(isLab){
-        i2b2.CRC.view.QT.current  = {"conceptSdx": sdx};
-        i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx);
-    }
-}
-
-// ================================================================================================== //
 i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     // remove the hover and drop target fix classes
     $(evt.target).closest(".i2b2DropTarget").removeClass("DropHover");
@@ -681,9 +677,6 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
-
-    // handle labs processing
-    i2b2.CRC.view.QT.isLabs(sdx);
 
     // mark if dates can be applied to this item
     sdx.withDates = false;
@@ -732,18 +725,17 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
                 const valueMetaDataArr = i2b2.h.XPath(sdx.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
                 if (valueMetaDataArr.length > 0) {
                     let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
-                    i2b2.CRC.view.QT.updateModifierDisplayValue(sdx, extractedLabModel, groupIdx, eventIdx);
+                    i2b2.CRC.view.QT.updateModifierAndLabDisplayValue(sdx, extractedLabModel, groupIdx, eventIdx);
                 }
             }
         }
+    }else{
+        i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx, !showLabValues);
     }
 
     // rerender the query event and add to the DOM
     const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
     i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
-
-    // handle the lab values
-    if (sdx.isLab) i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx);
 
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
@@ -1197,7 +1189,7 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
 };
 
 // ==================================================================================================
-i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabValues, groupIdx, eventIdx){
+i2b2.CRC.view.QT.updateModifierAndLabDisplayValue = function(sdxConcept, extractedLabValues, groupIdx, eventIdx){
     // update the concept title if this is a modifier
     let modifierInfoText = "";
     if (sdxConcept.LabValues !== undefined) {
@@ -1242,10 +1234,11 @@ i2b2.CRC.view.QT.updateModifierDisplayValue = function(sdxConcept, extractedLabV
 
     if (sdxConcept.origData.isModifier) {
         // modifier
-        sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.conceptModified.renderData.title + " {" + sdxConcept.origData.name + modifierInfoText + "}");
+        sdxConcept.renderData.title = sdxConcept.origData.conceptModified.renderData.title
+            + " {" + sdxConcept.origData.name + modifierInfoText + "}";
     } else {
         // lab value
-        sdxConcept.renderData.title = i2b2.h.Escape(sdxConcept.origData.name + modifierInfoText);
+        sdxConcept.renderData.title = sdxConcept.origData.name + modifierInfoText;
     }
 
     if (eventIdx !== undefined && groupIdx !== undefined) {
@@ -1364,7 +1357,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
 
                 sdxConcept.LabValues = newLabValues;
 
-                i2b2.CRC.view.QT.updateModifierDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
+                i2b2.CRC.view.QT.updateModifierAndLabDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
                 i2b2.CRC.view.QS.clearStatus();
             });
 
@@ -1698,9 +1691,11 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                         const ro = new ResizeObserver(() => {
                             if (labEnumValueSelection.is(':visible')) {
                                 let selectedOption = labEnumValueSelection.find(":selected");
-                                let optionTop = selectedOption.offset().top;
-                                let selectTop = labEnumValueSelection.offset().top;
-                                labEnumValueSelection.scrollTop(labEnumValueSelection.scrollTop() + (optionTop - selectTop));
+                                if(selectedOption.offset() !== undefined){
+                                    let optionTop = selectedOption.offset().top;
+                                    let selectTop = labEnumValueSelection.offset().top;
+                                    labEnumValueSelection.scrollTop(labEnumValueSelection.scrollTop() + (optionTop - selectTop));
+                                }
                             }
                         });
                         ro.observe(labEnumValueSelection[0]);
@@ -1729,10 +1724,16 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
     }
 };
 // ==================================================================================================
-i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, eventIdx) {
+i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, eventIdx, doNotShowLabValues) {
 
     i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, function(extractedDataModel){
-        i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedDataModel, groupIdx, eventIdx);
+        if(doNotShowLabValues === undefined || !doNotShowLabValues) {
+            i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedDataModel, groupIdx, eventIdx);
+        }else{
+            if(extractedDataModel !== undefined) {
+                i2b2.CRC.view.QT.updateModifierAndLabDisplayValue(sdxConcept, extractedDataModel, groupIdx, eventIdx);
+            }
+        }
     });
 };
 // ================================================================================================== //
@@ -1837,23 +1838,24 @@ i2b2.CRC.view.QT.showQueryReport = function() {
 
         // function for expanding the panel items
         let func_expandConcept = function(panelItem, panel) {
-            if (panelItem.key.indexOf(':') !== -1) {
-                // panel item is special
+            if (panelItem.key.indexOf(':') !== -1 && panelItem.key.substr(0,2) !== "\\\\") {
+                // panel item is special item such as "query_master:123"
+                // ignore keys that start with "\\\\" as some lab values include a ":" in their key path
                 let sdxKey = panelItem.key.substring(panelItem.key.indexOf(':')+1);
                 panelItem.moreInfo = concepts[sdxKey];
             } else {
                 if (panelItem.modKey) {
-                    panelItem.moreInfo = modifiers[panelItem.key][panelItem.modKey];
+                    panelItem.moreInfo = modifiers[i2b2.h.Unescape(panelItem.key)][panelItem.modKey];
                 } else {
-                    panelItem.moreInfo = concepts[panelItem.key];
+                    panelItem.moreInfo = concepts[i2b2.h.Unescape(panelItem.key)];
                 }
                 // deal with dates
-                if (panelItem.moreInfo.dateRange.start == undefined || panelItem.moreInfo.dateRange.start == "") {
+                if (panelItem.moreInfo.dateRange?.start === undefined || panelItem.moreInfo.dateRange?.start === "") {
                     panelItem.timingFrom = "earliest date available";
                 } else {
                     panelItem.timingFrom = (new Date(Date.parse(panelItem.moreInfo.dateRange.start))).toLocaleDateString();
                 }
-                if (panelItem.moreInfo.dateRange.end == undefined || panelItem.moreInfo.dateRange.end == "") {
+                if (panelItem.moreInfo.dateRange?.end === undefined || panelItem.moreInfo.dateRange?.end === "") {
                     panelItem.timingTo = "latest date available";
                 } else {
                     panelItem.timingTo = (new Date(Date.parse(panelItem.moreInfo.dateRange.end))).toLocaleDateString();
@@ -2227,14 +2229,13 @@ i2b2.events.afterCellInit.add((cell) => {
                 //			errorMsg: string [only with error=true]
                 cell.model.resultTypes = {};
 
-                if(results.error){
+                if (results.error){
                     console.log("ERROR: Unable to retrieve result types from server", results.msgResponse);
-                }
-                else{
+                } else {
                     // extract records from XML msg
                     let ps = results.refXML.getElementsByTagName('query_result_type');
                     cell.model.selectedResultTypes = [];
-                    for(let i1=0; i1<ps.length; i1++) {
+                    for (let i1=0; i1<ps.length; i1++) {
                         let name = i2b2.h.getXNodeVal(ps[i1],'name');
                         let visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
                         if (visual_attribute_type === "LA") {
@@ -2242,7 +2243,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 cell.model.resultTypes[name] = [];
                             }
                             cell.model.resultTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
-                            if(name === "PATIENT_COUNT_XML"){
+                            if (name === "PATIENT_COUNT_XML") {
                                 cell.model.selectedResultTypes.push(name);
                             }
                         }
