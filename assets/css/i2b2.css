@@ -120,6 +120,13 @@ body, td, p {
 
 #userInfo {
 	padding-bottom: 0;
+	width: 12em;
+	max-width: 12em;
+}
+
+.userRole {
+	word-wrap: normal;
+	white-space: normal;
 }
 
 #userInfo .static:hover {
