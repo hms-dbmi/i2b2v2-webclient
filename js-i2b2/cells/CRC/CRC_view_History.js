@@ -84,6 +84,18 @@ i2b2.CRC.view.history.loadMore = function() {
     i2b2.CRC.view.history.LoadQueryMasters(newcount);
 }
 
+//================================================================================================== //
+i2b2.CRC.view.history.loadMoreDates = function() {
+    $('.datelist-more-bar i.bi').removeClass("d-none");
+    let nodes = i2b2.CRC.view.history.treeviewFinder.data('treeview').getNodes(()=>true);
+    if (nodes.length > 0) {
+        let lastdate = nodes[nodes.length - 1].i2b2.origData.created;
+        i2b2.CRC.view.history.searchByDate(lastdate, false, 1);
+    } else {
+        $("#i2b2TreeviewQueryHistoryFinder").hide();
+        $("#i2b2QueryHistoryFinderStatus").text("No queries found.").show();
+    }
+}
 // ================================================================================================== //
 
 i2b2.CRC.view.history.sortResultsByName = function(resultNode1, resultNode2){
@@ -216,24 +228,14 @@ i2b2.CRC.view.history.clickSearchName = function() {
 };
 
 // ================================================================================================== //
-i2b2.CRC.view.history.searchByDate = function(startDate) {
-    // Hide Navigate treeview and search results message and display search status message
-    $("#i2b2TreeviewQueryHistoryFinder").hide();
-    $("#i2b2TreeviewQueryHistory").hide();
-    $("#i2b2QueryHistoryFinderMessage").hide();
-    $("#i2b2QueryHistoryFinderStatus").text("Searching...").show();
-
-    // clear treeview
-    i2b2.CRC.view.history.treeviewFinder.treeview('clear');
-
-    // reformat date
-    startDate = moment(Date.parse(startDate));
-    startDate.hour(23);
-    startDate.minute(59);
-    startDate.second(59);
-    startDate.millisecond(999);
-    startDate = startDate.format();
-
+i2b2.CRC.view.history.searchByDate = function(startDate, showLoadingMsg = true, dropNodeCount = 0) {
+    // Hide Navigate treeview and search results message and display search status message if requested
+    if (showLoadingMsg) {
+        $("#i2b2TreeviewQueryHistoryFinder").hide();
+        $("#i2b2TreeviewQueryHistory").hide();
+        $("#i2b2QueryHistoryFinderMessage").hide();
+        $("#i2b2QueryHistoryFinderStatus").text("Searching...").show();
+    }
 
     // create a scoped callback message
     var scopeCB = new i2b2_scopedCallback();
@@ -245,30 +247,32 @@ i2b2.CRC.view.history.searchByDate = function(startDate) {
         // display the tree results
         let newNodes = {};
         for (let i1=0; i1 < cellResult.model.length; i1++) {
-            let sdxDataNode = cellResult.model[i1];
-            let renderOptions = {
-                title: sdxDataNode.sdxDisplayName ,
-                icon: "sdx_CRC_QM.gif",
-                showchildren: true
-            };
-            sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
-            sdxDataNode.renderData.idDOM = "CRC_H_TV-" + i2b2.GUID();
-            let temp = {
-                title: sdxDataNode.renderData.moreDescriptMinor,
-                text: sdxDataNode.renderData.title,
-                icon: sdxDataNode.renderData.cssClassMain,
-                key: sdxDataNode.sdxInfo.sdxType + "-" + sdxDataNode.sdxInfo.sdxKeyValue,
-                iconImg: sdxDataNode.renderData.iconImg,
-                iconImgExp: sdxDataNode.renderData.iconImgExp,
-                i2b2: sdxDataNode
-            };
+            if (i1 > dropNodeCount - 1) {
+                let sdxDataNode = cellResult.model[i1];
+                let renderOptions = {
+                    title: sdxDataNode.sdxDisplayName ,
+                    icon: "sdx_CRC_QM.gif",
+                    showchildren: true
+                };
+                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                sdxDataNode.renderData.idDOM = "CRC_H_TV-" + i2b2.GUID();
+                let temp = {
+                    title: sdxDataNode.renderData.moreDescriptMinor,
+                    text: sdxDataNode.renderData.title,
+                    icon: sdxDataNode.renderData.cssClassMain,
+                    key: sdxDataNode.sdxInfo.sdxType + "-" + sdxDataNode.sdxInfo.sdxKeyValue,
+                    iconImg: sdxDataNode.renderData.iconImg,
+                    iconImgExp: sdxDataNode.renderData.iconImgExp,
+                    i2b2: sdxDataNode
+                };
 
-            temp.state = sdxDataNode.renderData.tvNodeState;
-            if (sdxDataNode.renderData.cssClassMinor !== undefined) {
-                temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
-            }
-            if (!newNodes[temp.key]) {
-                newNodes[temp.key] = temp;
+                temp.state = sdxDataNode.renderData.tvNodeState;
+                if (sdxDataNode.renderData.cssClassMinor !== undefined) {
+                    temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
+                }
+                if (!newNodes[temp.key]) {
+                    newNodes[temp.key] = temp;
+                }
             }
         }
         // push new nodes into the treeview
@@ -277,6 +281,9 @@ i2b2.CRC.view.history.searchByDate = function(startDate) {
         // render tree
         i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);
         $("#i2b2QueryHistoryFinderStatus").hide();
+
+        // hide loading icon
+        $('.datelist-more-bar i.bi').addClass("d-none");
 
         // Display search results treeview
         let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
@@ -290,7 +297,7 @@ i2b2.CRC.view.history.searchByDate = function(startDate) {
     // fire the AJAX call
     let options = {
         result_wait_time: 180,
-        crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp,
+        crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp + dropNodeCount,
         crc_sort_by: i2b2.CRC.view['history'].params.sortBy,
         crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") === -1 ? "CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
         crc_sort_order: (i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1?"true": "false"),
@@ -320,7 +327,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         }
 
         let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
-        if (!isAscending){
+        if (!isAscending) {
             cellResult.model.reverse();
         }
 
@@ -346,7 +353,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
                 i2b2: sdxDataNode
             };
             temp.state = sdxDataNode.renderData.tvNodeState;
-            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
+            if (sdxDataNode.renderData.cssClassMinor !== undefined) {
                 temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             }
             newNodes.push(temp);
@@ -436,10 +443,20 @@ i2b2.CRC.view.history.showDateListingView = function() {
     $('#i2b2QueryHistoryBar .dateListing .dateError').hide();
     $('#i2b2QueryHistoryBar .dateListing').show();
 
+    // clear the treeview
+    i2b2.CRC.view.history.treeviewFinder.treeview('clear');
+
     // set the initial date to today
-    let today = moment().format("MM/DD/YYYY");
-    i2b2.CRC.view.history.viewDate = today;
-    $('#historyDateStart').val(today);
+    let today = moment();
+    i2b2.CRC.view.history.viewDate = today.format("MM/DD/YYYY");
+    $('#historyDateStart').val(i2b2.CRC.view.history.viewDate);
+    // reformat date
+    today.hour(23);
+    today.minute(59);
+    today.second(59);
+    today.millisecond(999);
+    today = today.format();
+
     i2b2.CRC.view.history.searchByDate(today);
 };
 
@@ -517,7 +534,17 @@ i2b2.events.afterCellInit.add((cell) => {
                                         let newDate = $('#historyDateStart').val().trim();
                                         if (newDate !== i2b2.CRC.view.history.viewDate) {
                                             i2b2.CRC.view.history.viewDate = newDate;
-                                            i2b2.CRC.view.history.searchByDate(newDate);
+                                            // reformat date
+                                            let startDate = moment(Date.parse(newDate));
+                                            startDate.hour(23);
+                                            startDate.minute(59);
+                                            startDate.second(59);
+                                            startDate.millisecond(999);
+                                            startDate = startDate.format();
+
+                                            // refresh the treeview
+                                            i2b2.CRC.view.history.treeviewFinder.treeview('clear');
+                                            i2b2.CRC.view.history.searchByDate(startDate);
                                         }
                                     } else {
                                         $("#i2b2QueryHistoryBar .dateError").show();
@@ -564,9 +591,17 @@ i2b2.events.afterCellInit.add((cell) => {
                     i2b2.CRC.view.history.treeview.on('onDrag', i2b2.sdx.Master.onDragStart);
 
                     // create an empty Finder treeview
-                    let treeTargetFinder = $('<div id="i2b2TreeviewQueryHistoryFinder"></div>').appendTo(container._contentElement);
+                    let treeTargetFinder = $(`
+                        <div id="i2b2TreeviewQueryHistoryFinder">
+                            <div class="datelist-container">
+                                <div class="datelist-tv"></div>
+                                <div class="datelist-more-bar">Load more...<i class="bi bi-arrow-repeat d-none"></i></div>
+                            </div>
+                        </div>
+                    `).appendTo(container._contentElement);
                     treeTargetFinder.hide();
-                    i2b2.CRC.view.history.treeviewFinder = $(treeTargetFinder).treeview({
+                    $('.datelist-more-bar', treeTargetFinder).on('click', i2b2.CRC.view.history.loadMoreDates);
+                    i2b2.CRC.view.history.treeviewFinder = $(".datelist-tv", treeTargetFinder).treeview({
                         showBorder: false,
                         onhoverColor: "rgba(205, 208, 208, 0.56)",
                         highlightSelected: false,

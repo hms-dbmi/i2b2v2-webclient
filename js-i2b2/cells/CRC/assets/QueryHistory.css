@@ -13,6 +13,11 @@
     height: auto;
 }
 
+#i2b2TreeviewQueryHistoryFinder .datelist-tv {
+    overflow: visible;
+}
+
+
 #i2b2QueryHistoryBar .dateSearchBtn {
     position:absolute;
     top: 0.15rem;
@@ -36,7 +41,7 @@
     overflow: visible;
 }
 
-#i2b2TreeviewQueryHistory .history-more-bar {
+#i2b2TreeviewQueryHistory .history-more-bar, #i2b2TreeviewQueryHistoryFinder .datelist-more-bar {
     margin-left: 1.55rem;
     margin-top: 0.2rem;
     color: var(--bs-blue);
@@ -44,10 +49,10 @@
     display: inline-block;
     font-size: 1rem;
 }
-#i2b2TreeviewQueryHistory .history-more-bar:hover {
+#i2b2TreeviewQueryHistory .history-more-bar:hover, #i2b2TreeviewQueryHistoryFinder .datelist-more-bar:hover {
     text-decoration: underline;
 }
-#i2b2TreeviewQueryHistory .history-more-bar i.bi {
+#i2b2TreeviewQueryHistory .history-more-bar i.bi, #i2b2TreeviewQueryHistoryFinder .datelist-more-bar i.bi {
     color: #000;
     animation: spin-animation 1s infinite;
     display: inline-block;
