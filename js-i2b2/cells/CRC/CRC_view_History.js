@@ -292,6 +292,11 @@ i2b2.CRC.view.history.searchByDate = function(startDate, showLoadingMsg = true, 
             $("#i2b2QueryHistoryFinderMessage").text("No records found.").show();
             historyFinderTreeview.hide();
         }
+
+        //Hide Load more link since there are no more new nodes to load
+        if (Object.keys(newNodes).length === 0) {
+            $('.datelist-more-bar').addClass("d-none");
+        }
     };
 
     // fire the AJAX call
