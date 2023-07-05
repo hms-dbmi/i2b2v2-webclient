@@ -162,7 +162,7 @@ function init(){
     });
 
     $(".MessageLog .clearLog").on("click", function(){ 
-        if (confirm('Are you sure you want to delete ALL messsages in the log?')) {
+        if (confirm('Are you sure you want to delete ALL messages in the log?')) {
             window.dispatchEvent(events.clear);
             handleClearButtonState();
         }   
