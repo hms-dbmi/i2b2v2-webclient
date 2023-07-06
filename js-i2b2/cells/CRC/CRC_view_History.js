@@ -300,6 +300,9 @@ i2b2.CRC.view.history.searchByDate = function(startDate, showLoadingMsg = true, 
         if (existingNodes.length > 0 && Object.keys(newNodes).length === 0) {
             $('.datelist-more-bar').addClass("d-none");
         }
+        else if (Object.keys(newNodes).length > 0) {
+            $('.datelist-more-bar').removeClass("d-none");
+        }
     };
 
     // fire the AJAX call
