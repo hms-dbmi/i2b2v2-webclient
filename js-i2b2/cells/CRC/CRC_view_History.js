@@ -299,8 +299,7 @@ i2b2.CRC.view.history.searchByDate = function(startDate, showLoadingMsg = true, 
         //Hide Load more link since there are no more new nodes to load
         if (existingNodes.length > 0 && Object.keys(newNodes).length === 0) {
             $('.datelist-more-bar').addClass("d-none");
-        }
-        else if (Object.keys(newNodes).length > 0) {
+        } else if (Object.keys(newNodes).length > 0) {
             $('.datelist-more-bar').removeClass("d-none");
         }
     };
