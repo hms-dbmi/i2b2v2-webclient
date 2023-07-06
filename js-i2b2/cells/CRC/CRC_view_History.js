@@ -244,6 +244,8 @@ i2b2.CRC.view.history.searchByDate = function(startDate, showLoadingMsg = true, 
         // auto-extract SDX objects from returned XML
         cellResult.parse();
 
+        let existingNodes = i2b2.CRC.view.history.treeviewFinder.data('treeview').getNodes(()=>true);
+
         // display the tree results
         let newNodes = {};
         for (let i1=0; i1 < cellResult.model.length; i1++) {
@@ -288,13 +290,14 @@ i2b2.CRC.view.history.searchByDate = function(startDate, showLoadingMsg = true, 
         // Display search results treeview
         let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
 
-        if (cellResult.model.length === 0){
+
+        if (cellResult.model.length === 0 && existingNodes.length === 0){
             $("#i2b2QueryHistoryFinderMessage").text("No records found.").show();
-            historyFinderTreeview.hide();
+                historyFinderTreeview.hide();
         }
 
         //Hide Load more link since there are no more new nodes to load
-        if (Object.keys(newNodes).length === 0) {
+        if (existingNodes.length > 0 && Object.keys(newNodes).length === 0) {
             $('.datelist-more-bar').addClass("d-none");
         }
     };
