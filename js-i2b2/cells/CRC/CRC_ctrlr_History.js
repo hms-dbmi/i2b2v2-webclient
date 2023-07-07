@@ -84,7 +84,7 @@ i2b2.CRC.ctrlr.history = {
         i2b2.CRC.ajax.renameQueryMaster("CRC:History", options, scopeCB);
     },
 // ================================================================================================== //
-    queryPromptName: function(sdxPackage) {
+    queryRenamePromptName: function(sdxPackage) {
 
         let origName = sdxPackage.origData.name;
 
