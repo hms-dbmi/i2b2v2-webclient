@@ -407,7 +407,7 @@ i2b2.CRC.view.history.doDisplay = function(node) {
 // ================================================================================================== //
 i2b2.CRC.view.history.doRename = function(node) {
     let op = node.i2b2;
-    i2b2.CRC.ctrlr.history.queryPromptName(op);
+    i2b2.CRC.ctrlr.history.queryRenamePromptName(op);
 };
 
 // ================================================================================================== //
