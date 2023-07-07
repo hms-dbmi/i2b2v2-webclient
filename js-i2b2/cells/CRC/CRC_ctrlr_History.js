@@ -19,30 +19,45 @@ i2b2.CRC.ctrlr.history = {
     },
 
 // ================================================================================================== //
-    queryDelete: function(sdxPackage, tvNode) {
+    queryDelete: function(sdxPackage) {
         // function requires a Query Master ID
-        var QueryName = sdxPackage.origData.name;
-        if (confirm('Delete Query "' + QueryName + '"?')) {
-            // create a scoped callback message
-            var scopeCB = new i2b2_scopedCallback();
-            scopeCB.scope = i2b2.CRC.model.QueryMasters;
-            scopeCB.callback = function(i2b2CellMsg) {
-                // define the XML processing function
-                console.group("CALLBACK Processing AJAX i2b2CellMsg");
-                if (i2b2CellMsg.error) {
-                    alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
-                }
-                // refresh the Query History data
-                i2b2.CRC.ctrlr.history.Refresh();
-            };
+        //var QueryName = sdxPackage.origData.name;
+        // create a scoped callback message
+        let scopeCB = new i2b2_scopedCallback();
+        scopeCB.scope = i2b2.CRC.model.QueryMasters;
+        scopeCB.callback = function(i2b2CellMsg) {
+            // define the XML processing function
+            console.group("CALLBACK Processing AJAX i2b2CellMsg");
+            if (i2b2CellMsg.error) {
+                alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
+            }
+            // refresh the Query History data
+            i2b2.CRC.view.history.doRefreshAll();
+        };
 
-            // fire the AJAX call
-            var options = {
-                result_wait_time: 180,
-                qm_key_value: sdxPackage.sdxInfo.sdxKeyValue
-            };
-            i2b2.CRC.ajax.deleteQueryMaster("CRC:History", options, scopeCB);
-        }
+        // fire the AJAX call
+        let options = {
+            result_wait_time: 180,
+            qm_key_value: sdxPackage.sdxInfo.sdxKeyValue
+        };
+        i2b2.CRC.ajax.deleteQueryMaster("CRC:History", options, scopeCB);
+    },
+
+    // ================================================================================================== //
+    queryDeletePrompt: function(sdxPackage) {
+
+        let okCallback = function(){
+                i2b2.CRC.ctrlr.history.queryDelete(sdxPackage);
+        };
+
+        let realQueryName = i2b2.h.getXNodeVal(sdxPackage.origData.xmlOrig,'name');
+
+        let data = {
+            "title": "Delete Query",
+            "confirmMsg": 'Delete Query "' + realQueryName + '"?',
+            "onOk": okCallback,
+        };
+        i2b2.CRC.view.history.displayContextDialog(data);
     },
 
 // ================================================================================================== //

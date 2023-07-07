@@ -413,7 +413,7 @@ i2b2.CRC.view.history.doRename = function(node) {
 // ================================================================================================== //
 i2b2.CRC.view.history.doDelete = function(node) {
     let op = node.i2b2;
-    i2b2.CRC.ctrlr.history.queryDelete(op, node);
+    i2b2.CRC.ctrlr.history.queryDeletePrompt(op);
 };
 
 // ================================================================================================== //
