@@ -355,9 +355,11 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
         options.ont_show_concept_code = t.showConceptCode;
     }
     if (t.modifiers === undefined || t.modifiers === false) {
-        options.version = i2b2.ClientVersion;
+        let temp = i2b2.ClientVersion.split(".");
+        let simpleVersion = [temp[0], temp[1]].join(".");
+        options.version = simpleVersion;
     } else {
-        options.version = "1.5";
+        options.version = i2b2.ClientVersion;
     }
 
     switch (typeof node) {
