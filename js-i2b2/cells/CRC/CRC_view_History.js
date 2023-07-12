@@ -800,8 +800,11 @@ i2b2.events.afterCellInit.add((cell) => {
                         error: (error) => { console.error("Could not retrieve template: CRCContextMenuDialog.html"); }
                     });
                     container.on( 'tab', function( tab ){
-                        if(tab.element.text() === 'Queries') {
-                            //add unique id to the term tab
+                        if (tab.element.text() === 'Queries') {
+                            // attach the right-click mouseover icon (and hide the title tooltip)
+                            $(tab.element).addClass("rightClick");
+                            $(tab.element).attr("title", "");
+                            // add unique id to the term tab
                             let elemId = "queryHistoryTab";
                             $(tab.element).attr("id", elemId);
                             i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
