@@ -3,7 +3,9 @@
  * communications with the i2b2 cells.
  **/
 
+if (i2b2 === undefined) i2b2 = {};
 // ----- Magic Strings -----
+if (i2b2.MSG_TYPES === undefined) i2b2.MSG_TYPES = {};
 i2b2.MSG_TYPES.AJAX = {};
 i2b2.MSG_TYPES.AJAX.LIB_INIT = "I2B2_INIT_AJAX";
 i2b2.MSG_TYPES.AJAX.LIB_READY = "I2B2_AJAX_READY";

@@ -1,0 +1,58 @@
+<div class="form-group row">
+    <div class="input-group input-group-sm mb-2">
+        <div class="input-group-prepend">
+            <label for="ONTNAVMaxQryDisp" class="input-group-text" style="font-size:0.84rem">Maximum Number of Children to Display:</label>
+        </div>
+        <input id="ONTNAVMaxQryDisp"  type="text"  value="{{max}}" class="form-control" placeholder="200" aria-label="Max Number of Children to Display">
+    </div>
+    <div class="ontOptionSection">
+        {{#if hiddens}}
+        <input type="checkbox" id="ONTNAVshowHiddens" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+        <input type="checkbox" id="ONTNAVshowHiddens" />
+        {{/if}}
+        <label for="ONTNAVshowHiddens"> Show Hidden Terms </label>
+    </div>
+
+    <div class="ontOptionSection">
+        {{#if synonyms}}
+            <input type="checkbox" id="ONTNAVshowSynonyms" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+            <input type="checkbox" id="ONTNAVshowSynonyms" />
+        {{/if}}
+        <label for="ONTNAVshowSynonyms"> Show Synonymous Terms </label>
+    </div>
+    <div class="ontOptionSection">
+        {{#if patientCounts}}
+        <input type="checkbox" id="ONTNAVshowPatientCounts" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+        <input type="checkbox" id="ONTNAVshowPatientCounts" />
+        {{/if}}
+        <label for="ONTNAVshowPatientCounts"> Enable Patient Counts </label>
+    </div>
+    <div class="ontOptionSection">
+        {{#if showShortTooltips}}
+        <input type="checkbox" id="ONTNAVshowShortTooltips" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+        <input type="checkbox" id="ONTNAVshowShortTooltips" />
+        {{/if}}
+        <label for="ONTNAVshowShortTooltips"> Use Short Tooltips </label>
+    </div>
+    <div class="ontOptionSection">
+        {{#if showConceptCode}}
+        <input type="checkbox" id="ONTNAVshowCodeTooltips" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+        <input type="checkbox" id="ONTNAVshowCodeTooltips" />
+        {{/if}}
+        <label for="ONTNAVshowCodeTooltips"> Show Concept Codes in Tooltips </label>
+    </div>
+    <div class="ontOptionSection">
+        {{#if modifiers}}
+            <input type="checkbox" id="ONTNAVdisableModifiers" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+            <input type="checkbox" id="ONTNAVdisableModifiers" />
+        {{/if}}
+        <label for="ONTNAVdisableModifiers"> Disable Modifiers </label>
+    </div>
+
+</div>

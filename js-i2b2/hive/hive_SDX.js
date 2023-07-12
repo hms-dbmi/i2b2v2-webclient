@@ -69,18 +69,32 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
     switch(e.type) {
         case "drop":
             // forward the event to the drop handler passing the object being dropped
+            let alreadyFired = [];
+            let sdxFromJSON = JSON.parse(e.originalEvent.dataTransfer.getData("application/i2b2+json"));
+
+            // we need to fire the WORK binding first!
+            if (sdxTypeList.includes("WRK") && typeof eventHandlers.WRK?.DropHandler === 'function') {
+                sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON);
+                alreadyFired.push(eventHandlers.WRK.DropHandler);
+                eventHandlers.WRK.DropHandler(sdxFromJSON, e, "WRK");
+            }
+
+            // fire the rest of the bindings
             while (sdxTypeList.length) {
                 let sdxType = sdxTypeList.pop();
-                if (typeof eventHandlers[sdxType] === "object" && typeof eventHandlers[sdxType].DropHandler === "function") {
-                    // TODO: Finish this to pass the data
-                    let sdxFromJSON = JSON.parse(e.originalEvent.dataTransfer.getData("application/i2b2+json"));
-                    if(sdxFromJSON.sdxInfo.sdxType !== sdxType && sdxFromJSON.sdxInfo.sdxType === "WRK"){
-                        //send the underlying sdx data instead
-                        sdxFromJSON.origData = sdxFromJSON.sdxUnderlyingPackage.origData;
-                        sdxFromJSON.sdxInfo = sdxFromJSON.sdxUnderlyingPackage.sdxInfo;
-                        sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON);
+                if (sdxType !== "WRK") {
+                    // make sure function exists and only fire it if we have not yet done so
+                    if (typeof eventHandlers[sdxType]?.DropHandler === "function" && !alreadyFired.includes(eventHandlers[sdxType]?.DropHandler)) {
+                        if (sdxFromJSON.sdxInfo.sdxType !== sdxType && sdxFromJSON.sdxInfo.sdxType === "WRK") {
+                            // send the underlying sdx data instead
+                            sdxFromJSON.origData = sdxFromJSON.sdxUnderlyingPackage.origData;
+                            sdxFromJSON.sdxInfo = sdxFromJSON.sdxUnderlyingPackage.sdxInfo;
+                            sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON);
+                        }
+                        // fire the function and add it to the list of functions already called
+                        eventHandlers[sdxType].DropHandler(sdxFromJSON, e, sdxType);
+                        alreadyFired.push(eventHandlers[sdxType].DropHandler);
                     }
-                    eventHandlers[sdxType].DropHandler(sdxFromJSON, e, sdxType);
                 }
             }
             e.stopImmediatePropagation();
@@ -345,6 +359,7 @@ i2b2.sdx.Master.RenderData = function(sdxDataPackage, options) {
         if (ret.cssClassMinor === undefined) ret.cssClassMinor = '';
         if (ret.moreDescriptMain === undefined) ret.moreDescriptMain = '';
         if (ret.moreDescriptMinor === undefined) ret.moreDescriptMinor = '';
+        if (ret.color === undefined) ret.color = '';
         if (ret.tvNodeState === undefined) ret.tvNodeState = {};
     }
 

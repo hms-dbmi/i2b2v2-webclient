@@ -1,0 +1,28 @@
+<div class="modal fade" id="PMAnnouncementDialog" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">{{title}}</h5>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="modal-form">
+                    <div class="form-group row">
+                        <div >
+                            <div>
+                                <span id="confirm-msg" class="prompt">{{msg}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="i2b2.PM.view.modal.announcementDialog.clickOK()" data-bs-dismiss="modal">Yes, I agree</button>
+                <button type="button" class="btn btn-primary" onclick="i2b2.PM.view.modal.announcementDialog.clickCancel();" data-bs-dismiss="modal">No, I disagree</button>
+            </div>
+        </div>
+    </div>
+</div>

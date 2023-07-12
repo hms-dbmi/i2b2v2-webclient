@@ -1,0 +1,98 @@
+<div class="form-group row">
+    <div class="input-group input-group-sm">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="HISTMaxQryDisp-text">Maximum number of queries to display </span>
+        </div>
+        <input type="text" id="HISTMaxQryDisp" class="form-control form-control-sm" value={{maxQueriesDisp}} aria-label="Max queries to display" aria-describedby="HISTMaxQryDisp-text">
+    </div>
+    <div id="HISTMaxQryDisp-error" class="errorMsg hidden"></div>
+</div>
+<fieldset class="form-group">
+    <div class="row">
+        <legend class="col-form-label col-sm-6 pt-0">Sort Queries</legend>
+        <div class="col-sm-4">
+            <div class="form-check">
+                {{#ifCond sortBy '===' 'NAME'}}
+                    <input class="form-check-input" type="radio" name="HISTsortBy" id="HISTsortByNAME" value="NAME" checked>
+                {{/ifCond}}
+                {{#ifCond sortBy '!==' 'NAME'}}
+                    <input class="form-check-input" type="radio" name="HISTsortBy" id="HISTsortByNAME" value="NAME">
+                {{/ifCond}}
+                <label class="form-check-label" for="HISTsortByNAME">
+                    By Name
+                </label>
+            </div>
+            <div class="form-check">
+                {{#ifCond sortBy '===' 'DATE'}}
+                    <input class="form-check-input" type="radio" name="HISTsortBy" id="HISTsortByDATE" value="DATE" checked>
+                {{/ifCond}}
+                {{#ifCond sortBy '!==' 'DATE'}}
+                    <input class="form-check-input" type="radio" name="HISTsortBy" id="HISTsortByDATE" value="DATE">
+                {{/ifCond}}
+                <label class="form-check-label" for="HISTsortByDATE">
+                    By Create Date
+                </label>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<fieldset class="form-group">
+    <div class="row">
+        <legend class="col-form-label col-sm-6 pt-0">Display Order</legend>
+        <div class="col-sm-4">
+            <div class="form-check">
+                {{#ifCond sortOrder '===' 'ASC'}}
+                    <input class="form-check-input" type="radio" name="HISTsortOrder" id="HISTsortOrderASC" value="ASC" checked>
+                {{/ifCond}}
+                {{#ifCond sortOrder '!==' 'ASC'}}
+                    <input class="form-check-input" type="radio" name="HISTsortOrder" id="HISTsortOrderASC" value="ASC" >
+                {{/ifCond}}
+                <label class="form-check-label" for="HISTsortOrderASC">
+                    Ascending
+                </label>
+            </div>
+            <div class="form-check">
+                {{#ifCond sortOrder '===' 'DESC'}}
+                    <input class="form-check-input" type="radio" name="HISTsortOrder" id="HISTsortOrderDESC" value="DESC" checked>
+                {{/ifCond}}
+                {{#ifCond sortOrder '!==' 'DESC'}}
+                    <input class="form-check-input" type="radio" name="HISTsortOrder" id="HISTsortOrderDESC" value="DESC">
+                {{/ifCond}}
+                <label class="form-check-label" for="HISTsortOrderDESC">
+                    Descending
+                </label>
+            </div>
+        </div>
+    </div>
+</fieldset>
+
+<fieldset class="form-group">
+    <div class="row">
+        <legend id="HISTUserLabel" class="col-form-label col-sm-6 pt-0">Get previous queries for: </legend>
+        <div class="col-sm-4">
+                <select id="HISTUser" class="form-select form-select-sm">
+                    <option value="@" selected="selected">All Users</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</fieldset>
+
+<fieldset class="form-group">
+    <div class="row">
+        <legend class="col-form-label col-sm-6 pt-0">Auto refresh previous queries</legend>
+        <div class="col-sm-4">
+            <div >
+                <select id="HISTAuto" class="form-select form-select-sm">
+                    {{#select refreshValue}}
+                        <option value="0" selected="selected">Off</option>
+                        <option value="10">10 seconds</option>
+                        <option value="30">30 seconds</option>
+                        <option value="60">60 seconds</option>
+                    {{/select}}
+                </select>
+
+            </div>
+        </div>
+    </div>
+</fieldset>

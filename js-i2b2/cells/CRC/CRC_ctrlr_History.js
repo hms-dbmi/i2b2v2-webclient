@@ -19,30 +19,45 @@ i2b2.CRC.ctrlr.history = {
     },
 
 // ================================================================================================== //
-    queryDelete: function(sdxPackage, tvNode) {
+    queryDelete: function(sdxPackage) {
         // function requires a Query Master ID
-        var QueryName = sdxPackage.origData.name;
-        if (confirm('Delete Query "' + QueryName + '"?')) {
-            // create a scoped callback message
-            var scopeCB = new i2b2_scopedCallback();
-            scopeCB.scope = i2b2.CRC.model.QueryMasters;
-            scopeCB.callback = function(i2b2CellMsg) {
-                // define the XML processing function
-                console.group("CALLBACK Processing AJAX i2b2CellMsg");
-                if (i2b2CellMsg.error) {
-                    alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
-                }
-                // refresh the Query History data
-                i2b2.CRC.ctrlr.history.Refresh();
-            };
+        //var QueryName = sdxPackage.origData.name;
+        // create a scoped callback message
+        let scopeCB = new i2b2_scopedCallback();
+        scopeCB.scope = i2b2.CRC.model.QueryMasters;
+        scopeCB.callback = function(i2b2CellMsg) {
+            // define the XML processing function
+            console.group("CALLBACK Processing AJAX i2b2CellMsg");
+            if (i2b2CellMsg.error) {
+                alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
+            }
+            // refresh the Query History data
+            i2b2.CRC.view.history.doRefreshAll();
+        };
 
-            // fire the AJAX call
-            var options = {
-                result_wait_time: 180,
-                qm_key_value: sdxPackage.sdxInfo.sdxKeyValue
-            };
-            i2b2.CRC.ajax.deleteQueryMaster("CRC:History", options, scopeCB);
-        }
+        // fire the AJAX call
+        let options = {
+            result_wait_time: 180,
+            qm_key_value: sdxPackage.sdxInfo.sdxKeyValue
+        };
+        i2b2.CRC.ajax.deleteQueryMaster("CRC:History", options, scopeCB);
+    },
+
+    // ================================================================================================== //
+    queryDeletePrompt: function(sdxPackage) {
+
+        let okCallback = function(){
+                i2b2.CRC.ctrlr.history.queryDelete(sdxPackage);
+        };
+
+        let realQueryName = i2b2.h.getXNodeVal(sdxPackage.origData.xmlOrig,'name');
+
+        let data = {
+            "title": "Delete Query",
+            "confirmMsg": 'Delete Query "' + realQueryName + '"?',
+            "onOk": okCallback,
+        };
+        i2b2.CRC.view.history.displayContextDialog(data);
     },
 
 // ================================================================================================== //
@@ -51,15 +66,7 @@ i2b2.CRC.ctrlr.history = {
             // create a scoped callback message
             var scopeCB = new i2b2_scopedCallback();
             scopeCB.scope = i2b2.CRC.model.QueryMasters;
-            scopeCB.callback = function(i2b2CellMsg) {
-                // define the XML processing function
-                console.group("CALLBACK Processing AJAX i2b2CellMsg");
-                //if (i2b2CellMsg.error) {
-                //	alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
-                //}
-                // refresh the Query History data
-                i2b2.CRC.ctrlr.history.Refresh();
-            };
+            scopeCB.callback = i2b2.CRC.view.history.showBrowseView;
 
             // fire the AJAX call
             var options = {
@@ -70,27 +77,9 @@ i2b2.CRC.ctrlr.history = {
     },
 
 // ================================================================================================== //
-    queryRename: function(sdxPackage, newQueryName, tvNode) {
-        this.queryNewName = newQueryName || false;
-        if (!this.queryNewName) {
-            // callback for dialog submission
-            var handleSubmit = function() {
-                // submit value(s)
-                var closure_sdx = sdxPackage;
-                if(this.submit()) {
-                    // run the query
-                    i2b2.CRC.ctrlr.history.queryRename(sdxPackage.sdxInfo.sdxKeyValue, $('inputQueryName').value);
-                }
-            }
-            // display the query name input dialog
-            this._queryPromptName(handleSubmit);
-            // get the old name (and trim whitespace)
-            $('inputQueryName').value = sdxPackage.origData.name;
-            return;
-        }
-
+    queryRename: function(sdxPackage, newQueryName) {
         // create a scoped callback message
-        var scopeCB = new i2b2_scopedCallback();
+        let scopeCB = new i2b2_scopedCallback();
         scopeCB.scope = this;
         scopeCB.callback = function(i2b2CellMsg) {
             // define the XML processing function
@@ -99,17 +88,37 @@ i2b2.CRC.ctrlr.history = {
                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }
             // refresh the Query History data
-            i2b2.CRC.ctrlr.history.Refresh();
+            i2b2.CRC.view.history.doRefreshAll();
             console.groupEnd();
         };
         // fire the AJAX call
-        var options = {
+        let options = {
             qm_key_value: sdxPackage.sdxInfo.sdxKeyValue,
             qm_name: newQueryName
         };
         i2b2.CRC.ajax.renameQueryMaster("CRC:History", options, scopeCB);
-    }
+    },
+// ================================================================================================== //
+    queryRenamePromptName: function(sdxPackage) {
 
+        let origName = sdxPackage.origData.name;
+
+        let okCallback = function(newValue){
+            if(newValue && newValue.length > 0) {
+                i2b2.CRC.ctrlr.history.queryRename(sdxPackage, newValue);
+            }
+        };
+
+        let realName = i2b2.h.getXNodeVal(sdxPackage.origData.xmlOrig,'name');
+        let data = {
+            "title": "Rename Query",
+            "prompt": "Please type a name for the query:",
+            "placeHolder": realName,
+            "inputValue": realName,
+            "onOk": okCallback,
+        };
+        i2b2.CRC.view.history.displayContextDialog(data);
+    }
 };
 
 

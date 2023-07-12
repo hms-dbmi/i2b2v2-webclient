@@ -1,79 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-</head>
-<body>
-<div class="modal fade optionsModal" id="ontOptionsModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <div class="modal fade optionsModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title">Options for Previous Queries</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-                <form style="margin: 0px 40px">
-                    <div class="form-group row">
-                        <div class="input-group input-group-sm mb-2">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="HISTMaxQryDisp-text">Maximum number of queries to display </span>
-                            </div>
-                            <input type="text" id="HISTMaxQryDisp" class="form-control" placeholder="20" aria-label="Max queries to display" aria-describedby="HISTMaxQryDisp-text">
-                        </div>
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title">Options for Previous Queries</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <fieldset class="form-group">
-                        <div class="row">
-                            <legend class="col-form-label col-sm-4 pt-0">Sort Queries</legend>
-                            <div class="col-sm-5">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="HISTsortBy" id="HISTsortByNAME" value="NAME" checked>
-                                    <label class="form-check-label" for="HISTsortByNAME">
-                                        By Name
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="HISTsortBy" id="HISTsortByDATE" value="DATE">
-                                    <label class="form-check-label" for="HISTsortByDATE">
-                                        By Create Date
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <div class="row">
-                            <legend class="col-form-label col-sm-4 pt-0">Display Order</legend>
-                            <div class="col-sm-5">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="HISTsortOrder" id="HISTsortOrderASC" value="ASC" checked>
-                                    <label class="form-check-label" for="HISTsortOrderASC">
-                                        Ascending
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="HISTsortOrder" id="HISTsortOrderDESC" value="DESC">
-                                    <label class="form-check-label" for="HISTsortOrderDESC">
-                                        Descending
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
 
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary i2b2-save">Save</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form style="margin: 0px 40px" id="queryHistoryOptionsFields"></form>
+                    </div>
 
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary options-save">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>

@@ -33,12 +33,22 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         data.key = i2b2.h.getXNodeVal(xmlData, 'key');
         data.tooltip = i2b2.h.getXNodeVal(xmlData, 'tooltip');
         data.icd9 = '';
+        data.synonym_cd = i2b2.h.getXNodeVal(xmlData,'synonym_cd');
         data.table_name = i2b2.h.getXNodeVal(xmlData, 'tablename');
         data.column_name = i2b2.h.getXNodeVal(xmlData, 'columnname');
         data.operator = i2b2.h.getXNodeVal(xmlData, 'operator');
         data.dim_code = i2b2.h.getXNodeVal(xmlData, 'dimcode');
         data.basecode = i2b2.h.getXNodeVal(xmlData, 'basecode');
         data.total_num = i2b2.h.getXNodeVal(xmlData, 'totalnum');
+
+        let protected = i2b2.h.getXNodeVal(xmlData, 'protected_access');
+        if (protected === undefined || String(protected).toUpperCase() === "N") {
+            data.protected = false;
+        } else {
+            data.protected = true;
+            data.protected_permissions = i2b2.h.getXNodeVal(xmlData, 'ontology_protection');
+        }
+
     } else {
         data = sdxData;
     }
@@ -62,6 +72,7 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         icon: sdxDataNode.renderData.cssClassMain,
         key: sdxDataNode.sdxInfo.sdxKeyValue,
         iconImg: sdxDataNode.renderData.iconImg,
+        color: sdxDataNode.renderData.color,
         iconImgExp: sdxDataNode.renderData.iconImgExp,
         i2b2: sdxDataNode
     };
@@ -70,9 +81,18 @@ i2b2.ONT.ctrlr.gen.generateNodeData = function(xmlData, sdxData) {
         tvDataNode.icon += " " + sdxDataNode.renderData.cssClassMinor;
     }
     // add number counts
-    let enablePatientCounts = $("#ONTNAVshowPatientCounts").is(":checked");
+    let enablePatientCounts = i2b2.ONT.view.nav.params.patientCounts;
     if (enablePatientCounts !== false && sdxDataNode.origData.total_num !== undefined){
-        tvDataNode.text += ' - (' + sdxDataNode.origData.total_num + ')';
+        tvDataNode.text += ' - ';
+        tvDataNode.tags = [];
+        let totalnum = parseInt(sdxDataNode.origData.total_num, 10);
+        //parse as integer or leave totalnum as is
+        if( !isNaN(totalnum)){
+            tvDataNode.tags.push(totalnum.toLocaleString());
+        }
+        else{
+            tvDataNode.tags.push(node.i2b2.origData.total_num);
+        }
     }
     return {sdx: sdxDataNode, tv: tvDataNode};
 };

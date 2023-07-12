@@ -1,23 +1,175 @@
-<div class="modal fade" data-bs-backdrop="false">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Query Report</title>
+  <link rel="stylesheet" href="js-i2b2/cells/CRC/assets/QueryReport.css">
+  <link rel="stylesheet" href="js-ext/c3/0.7.20/css/c3.min.css">
+</head>
+<body>
+<h1 class="title">i2b2 Query Report</h1>
+The query entitled "{{name}}" submitted on <span class="no-break">{{submittedAt}}</span>, was successfully completed on <span class="no-break">{{completedAt}}</span>.
+This query was performed by <span class="no-break">"{{submittedBy}}"</span>.
+The search was completed in {{runDuration}} seconds.
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <span class="modal-title">i2b2 Query Report</span>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
 
-            <!-- Modal body -->
-            <div class="modal-body">
-                <iframe id="queryReportWindow"></iframe>
-            </div>
+<h2 class="sub-title">Query Definition</h2>
+<p class="temporal-constraint">Temporal Constraint: {{temporalMode}}</p>
 
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success print">Print Report</button>
-            </div>
+{{#if panels}}
+<div class="groups-container">
+  <h3>All Groups</h3>
+  {{#each panels}}
+  <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
+    {{#each this.items}}
+      <div class="item-container">
+        <div class="item-title"><img src="{{this.moreInfo.renderData.iconImg}}"/> {{{this.moreInfo.renderData.title}}}</div>
+        <div class="item-discript">{{this.moreInfo.renderData.moreDescriptMinor}}</div>
+        {{#if this.timing}}
+        <div class="item-timing">
+          {{#ifCond this.timing "==" "ANY"}}
+          Independent of Visit
+          {{/ifCond}}
+          {{#ifCond this.timing "==" "SAMEVISIT"}}
+          Occurs in Same Encounter
+          {{/ifCond}}
+          {{#ifCond this.timing "==" "SAMEINSTANCENUM"}}
+          Items' Instance will be the same
+          {{/ifCond}}
         </div>
-    </div>
+        {{/if}}
+        <div class="item-dates">{{#if this.timingFrom}}From {{this.timingFrom}}{{/if}}{{#if this.timingTo}} to {{this.timingTo}}{{/if}}</div>
+        {{#if this.occurs}}
+        <div class="item-occurs"># of times an item is recorded is >= {{this.occurs}}</div>
+        {{/if}}
+      </div>
+      {{#unless @last}}<div class="joiner or">OR</div>{{/unless}}
+    {{/each}}
+  </div>
+  {{#unless @last}}<div class="joiner and">AND {{#if this.next_is_not}}NOT{{/if}}</div>{{/unless}}
+  {{/each}}
 </div>
+{{/if}}
+
+{{#if events}}
+<div class="events-container">
+  <h3>All Events</h3>
+  {{#each events}}
+  <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
+    <div class="event-title">{{this.name}}</div>
+    {{#each this.panels}}
+    <div class="event-panel">
+      {{#each this.items}}
+      <div class="item-container">
+        <div class="item-title"><img src="{{this.moreInfo.renderData.iconImg}}"/> {{this.moreInfo.renderData.title}}</div>
+        <div class="item-discript">{{this.moreInfo.renderData.moreDescriptMinor}}</div>
+        <div class="item-timing">
+          {{#ifCond this.timing "==" "ANY"}}
+          Independent of Visit
+          {{/ifCond}}
+          {{#ifCond this.timing "==" "SAMEVISIT"}}
+          Occurs in Same Encounter
+          {{/ifCond}}
+          {{#ifCond this.timing "==" "SAMEINSTANCENUM"}}
+          Items' Instance will be the same
+          {{/ifCond}}
+        </div>
+        <div class="item-dates">From {{this.timingFrom}} to {{this.timingTo}}</div>
+        <div class="item-occurs"># of times an item is recorded is >= {{this.occurs}}</div>
+      </div>
+      {{#unless @last}}<div class="joiner or">OR</div>{{/unless}}
+      {{/each}}
+    </div>
+    {{#unless @last}}<div class="joiner and">AND {{#if this.next_is_not}}NOT{{/if}}</div>{{/unless}}
+    {{/each}}
+  </div>
+  {{/each}}
+</div>
+
+<h3 class="eventlinks-title">Order of Events</h3>
+<div class="eventlinks-container">
+  {{#each eventLinks}}
+  <div class="line
+    {{#if @first}}first{{/if}}
+    {{#if @last}}last{{/if}}
+  ">
+    {{#ifCond joinColumn1 "==" "STARTDATE"}}Start{{/ifCond}}
+    {{#ifCond joinColumn1 "==" "ENDDATE"}}End{{/ifCond}}
+
+    of
+
+    {{#ifCond aggregateOp1 "==" "FIRST"}}the first{{/ifCond}}
+    {{#ifCond aggregateOp1 "==" "LAST"}}the last{{/ifCond}}
+    {{#ifCond aggregateOp1 "==" "ANY"}}any{{/ifCond}}
+
+    ever occurrence for Event {{prevNum}} occurs
+
+    {{#ifCond operator "==" "GREATER"}}after{{/ifCond}}
+    {{#ifCond operator "==" "GREATEREQUAL"}}on or after{{/ifCond}}
+    {{#ifCond operator "==" "EQUAL"}}simultaneously with{{/ifCond}}
+    {{#ifCond operator "==" "LESSEQUAL"}} on or before{{/ifCond}}
+    {{#ifCond operator "==" "LESS"}}before{{/ifCond}}
+
+    the <br/>
+
+    {{#ifCond joinColumn2 "==" "STARTDATE"}}start{{/ifCond}}
+    {{#ifCond joinColumn2 "==" "ENDDATE"}}end{{/ifCond}}
+
+    of
+
+    {{#ifCond aggregateOp2 "==" "FIRST"}} the first{{/ifCond}}
+    {{#ifCond aggregateOp2 "==" "LAST"}}the last{{/ifCond}}
+    {{#ifCond aggregateOp2 "==" "ANY"}}any{{/ifCond}}
+
+    ever occurrence for Event {{nextNum}}
+
+    {{#ifCond timeSpans.0.value "||" timeSpans.1.value}}
+      by
+      {{#if timeSpans.0.value}}
+        {{#ifCond timeSpans.0.operator "==" "GREATER"}}>{{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "GREATEREQUAL"}}>={{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "EQUAL"}}={{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "LESSEQUAL"}}<=>{{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "LESS"}}<{{/ifCond}}
+        {{timeSpans.0.value}}
+        {{#ifCond timeSpans.0.unit "==" "DAY"}}day(s){{/ifCond}}
+        {{#ifCond timeSpans.0.unit "==" "WEEK"}}week(s){{/ifCond}}
+        {{#ifCond timeSpans.0.unit "==" "MONTH"}}month(s){{/ifCond}}
+        {{#ifCond timeSpans.0.unit "==" "YEAR"}}year(s){{/ifCond}}
+
+        {{#if timeSpans.1.value}}and{{/if}}
+      {{/if}}
+      {{#if timeSpans.1.value}}
+        {{#ifCond timeSpans.1.operator "==" "GREATER"}}>{{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "GREATEREQUAL"}}>={{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "EQUAL"}}={{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "LESSEQUAL"}}<={{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "LESS"}}<{{/ifCond}}
+        {{timeSpans.1.value}}
+        {{#ifCond timeSpans.1.unit "==" "DAY"}}day(s){{/ifCond}}
+        {{#ifCond timeSpans.1.unit "==" "WEEK"}}week(s){{/ifCond}}
+        {{#ifCond timeSpans.1.unit "==" "MONTH"}}month(s){{/ifCond}}
+        {{#ifCond timeSpans.1.unit "==" "YEAR"}}year(s){{/ifCond}}
+      {{/if}}
+    {{/ifCond}}
+
+  </div>
+  {{/each}}
+</div>
+{{/if}}
+
+<h2 class="sub-title">Query Results</h2>
+
+{{#each reports}}
+<div class="results-group">
+  <div class="results-chart">
+    {{{this.chart}}}
+  </div>
+  <div class="results-graph">
+    {{{this.graph}}}
+  </div>
+</div>
+{{/each}}
+
+</body>
+</html>

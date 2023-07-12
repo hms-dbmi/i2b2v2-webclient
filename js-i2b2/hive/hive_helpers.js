@@ -301,6 +301,10 @@ Handlebars.registerHelper('increment', function(number, options) {
     return number + (options.hash.inc || 1);
 });
 // ================================================================================================== //
+Handlebars.registerHelper("objLen", function(obj) {
+    return Object.keys(obj).length;
+});
+// ================================================================================================== //
 // helper function to build a sniffer package for Cell Communications events
 i2b2.h.BuildSniffPack = function(cellName, cellFuncName, results, signalOrigin) {
     function i2b2_CellCommPackage() {}

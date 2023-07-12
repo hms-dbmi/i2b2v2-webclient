@@ -19,14 +19,15 @@
     align-items: center;
 }
 
+p.warn,
+i.srTooltip.warn {
+    color: red;
+}
 /* right-click mouse cursor */
 #i2b2TreeviewOntNav .node-icon.sdxStyleONT-CONCPT,
 #i2b2TreeviewOntNav .node-icon.sdxStyleONT-MODIFIER {
     cursor: alias;
 }
-
-
-
 
 /* TECHNICAL DEBT: Change this when CSS selector :has() is implemented
 #i2b2TreeviewOntSearch li:has(.sdxStyleONT-CONCPT.highlight) span.indent {
@@ -249,7 +250,7 @@ button.invert:hover{
     border: 1px solid #c8cdce;
 }
 
-.srTooltip {
+.srTooltip, .dcTooltip {
     color: #87898a;
 }
 
@@ -263,7 +264,6 @@ button.invert:hover{
     width: fit-content !important;
 }
 
-
 #ontOptionsModal .ontologyCheckboxOptions{
     vertical-align: -2px;
 }
@@ -271,4 +271,23 @@ button.invert:hover{
 #ontOptionsModal .ontOptionSection {
     margin-bottom: 0.7em;
 }
+
+#i2b2TreeviewOntNav .inactiveTerm,
+#i2b2TreeviewOntSearch .inactiveTerm {
+    color: #c0c0c0;
+}
+
+#i2b2TreeviewOntNav .viewInTreeNode {
+    font-weight: bold;
+}
+
+#i2b2TreeviewOntNav .badge,
+#i2b2TreeviewOntSearch .badge{
+    color: #900;
+    font-weight: 400;
+    font-size: 0.91em;
+    margin-left: -0.7em;
+    padding: 0 0.5rem 0;
+}
+
 

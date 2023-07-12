@@ -19,16 +19,16 @@ i2b2.CRC.ctrlr.labValues = {
 // ================================================================================================== //
     loadData: function(sdxConcept, callBack) {
         let labResponseCallback = function(response) {
+            let isActiveXSupported = true;
             try {
                 new ActiveXObject("MSXML2.DOMDocument.6.0");
-                isActiveXSupported = true;
             } catch (e) {
                 isActiveXSupported = false;
             }
             let c;
             if (isActiveXSupported) {
                 //Internet Explorer
-                xmlDocRet = new ActiveXObject("Microsoft.XMLDOM");
+                let xmlDocRet = new ActiveXObject("Microsoft.XMLDOM");
                 xmlDocRet.async = "false";
                 xmlDocRet.loadXML(response.msgResponse);
                 xmlDocRet.setProperty("SelectionLanguage", "XPath");
@@ -41,6 +41,7 @@ i2b2.CRC.ctrlr.labValues = {
             const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
             let extractedModel = {};
             if (valueMetaDataArr.length > 0) {
+                sdxConcept.isLab = true;
                 extractedModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
                 callBack(extractedModel);
             }
@@ -71,15 +72,21 @@ i2b2.CRC.ctrlr.labValues = {
 
         extractedModel.flagType = false;
         if (flagsToUse) {
-            if (flagsToUse === "A") {
-                extractedModel.flagType = "NA";
-                extractedModel.flags = [{name: "Normal", value: "@"}, {name: "Abnormal", value: "A"}];
-            } else if (flagsToUse === "HL") {
-                extractedModel.flagType = "HL";
-                extractedModel.flags = [{name: "Normal", value: "@"}, {name: "High", value: "H"}, {
-                    name: "Low",
-                    value: "L"
-                }];
+            if(!i2b2.UI.cfg.useExpandedLabFlags) {
+                if (flagsToUse === "A") {
+                    extractedModel.flagType = "NA";
+                    extractedModel.flags = [{name: "Normal", value: "@"}, {name: "Abnormal", value: "A"}];
+                } else if (flagsToUse === "HL") {
+                    extractedModel.flagType = "HL";
+                    extractedModel.flags = [{name: "Normal", value: "@"}, {name: "High", value: "H"}, {
+                        name: "Low",
+                        value: "L"
+                    }];
+                }
+            }else{
+                let t_flags = i2b2.CRC.ctrlr.labValues.ExpandedFlags.process(flagsToUse);
+                extractedModel.flagType = t_flags.flagType;
+                extractedModel.flags = t_flags.flags;
             }
         }
 
@@ -322,5 +329,40 @@ i2b2.CRC.ctrlr.labValues = {
         extractedModel.rangeInfo.total = nSituation;
 
         return extractedModel;
-    }
+    },
 };
+
+i2b2.CRC.ctrlr.labValues.ExpandedFlags = {};
+i2b2.CRC.ctrlr.labValues.ExpandedFlags.type = {
+    /*  A,H,L are included below to show how to set up the expanded lab flags with the default flag values.
+        Note however that it is not possible to use these and the two-character flags at the same time, because indexOf will return false positives, e.g. H and CH */
+    //abnormal_default: {name:'Abnormal' , value:'A'},
+    //high_default: {name:'High' , value:'H'},
+    //low_default: {name:'Low' , value:'L'}, */
+    abnormal: {name:'Abnormal' , value:'[A]'},
+    high: {name:'High' , value:'[H]'},
+    low: {name:'Low' , value:'[L]'},
+    crithigh: {name:'Critical High' , value:'[CH]'},
+    critlow: {name:'Critical Low' , value:'[CL]'}
+};
+
+i2b2.CRC.ctrlr.labValues.ExpandedFlags.process = function(flagstouse) {
+    let flagList = {};
+    flagList.flagType = '[N]';
+    flagList.flags = [{name:'Normal', value:'@'}];
+
+    // incompatible with IE11 - for (const[flag, flagInfo] of Object.entries(i2b2.LabExpandedFlags.type)) {
+    Object.entries(i2b2.CRC.ctrlr.labValues.ExpandedFlags.type).forEach(function(x) { flag=x[0]; flagInfo=x[1];
+        if(flagstouse.indexOf(flagInfo.value) >=0 ) {
+            flagList.flagType += flagInfo.value;
+            flagList.flags.push(flagInfo);
+        }
+    });
+    /* If we only have the normal flag, we don't need a flag list */
+    if(flagList.flags.length === 1) {
+        flagList.flagType = false;
+        delete flagList.flags;
+    }
+
+    return flagList;
+}

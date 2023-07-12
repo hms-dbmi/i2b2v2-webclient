@@ -81,7 +81,7 @@ i2b2.PM.model.IdleTimer = (function() {
             window.addEventListener('scroll', resetTimer);
             window.addEventListener('keydown', resetTimer);
             window.addEventListener('mousedown', resetTimer);
-            window.addEventListener('mousemove', resetTimer);
+            // window.addEventListener('mousemove', resetTimer);
         }
     }
 
@@ -133,7 +133,3 @@ i2b2.PM.model.IdleTimer.add(function(eventName){
             break;
     }
 });
-
-               
-// TODO: Reimplement project selection
-// TODO: Reimplement announcement modal on login

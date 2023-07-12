@@ -265,16 +265,19 @@ i2b2.WORK.view.main.DropHandler = function(sdx, evt, handlerSelector){
     $(evt.target).closest(".i2b2DropTarget").removeClass("i2b2DropPrep");
 
     let dropTarget = treeview.getNode($(evt.originalEvent.target).data("nodeid"));
-    let droppedNodeKey = sdx.sdxInfo.sdxKeyValue;
+    let droppedNodeKey = sdx.sdxInfo.sdxKeyValue;   
 
     // ignore the tricky double triggering by the SDX subsystem
     if (handlerSelector !== sdx.sdxInfo.sdxType) return false;
+
+    // ignore modifiers
+    if (sdx.origData.conceptModified !== undefined) return false;
 
     // ignore if a node is dropped on itself
     if (dropTarget.i2b2.sdxInfo.sdxKeyValue === droppedNodeKey) return false;
 
     // see if we are moving a node within the workspace
-    if (dropTarget.i2b2.sdxInfo.sdxType === "WRK") {
+    if (dropTarget.i2b2.sdxInfo.sdxType === "WRK") {        
         // we can only drop things into a workspace folder
         if (sdx.sdxInfo.sdxType === "WRK") {
             // Drag and drop within the Workspace

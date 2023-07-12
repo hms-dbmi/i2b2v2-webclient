@@ -5,21 +5,12 @@
  * @version 	2.0
  **/
 
-// display the modal login form after the PM cell is fully loaded
-// ================================================================================================== //
-i2b2.events.afterCellInit.add((cell) => {
-        if (cell.cellCode === "PM") {
-            console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
-            i2b2.PM.doLoginDialog();
-        }
-    }
-);
-
 // ================================================================================================== //
 i2b2.PM.doSamlLogin = function(service) {
 
     let domain = i2b2.PM.model.Domains[$("#PM-login-modal #logindomain").val()];
     if (domain) {
+	i2b2.PM.model.currentDomain = domain;
         // copy information from the domain record
         var login_url = domain.urlCellPM;
         i2b2.PM.model.url = login_url;
@@ -45,6 +36,15 @@ i2b2.PM.doSamlLogin = function(service) {
         }
     } else {
         e += "\n  No login channel was selected";
+    }
+
+    // save the SAML login method if it was used
+    if (domain.saml) {
+        let samlConfig = domain?.saml[service];
+        if (!samlConfig) samlConfig = {};
+        i2b2.PM.model.samlConfig = samlConfig;
+    } else {
+        i2b2.PM.model.samlConfig = false;
     }
 
     // save PM cell's URL and login domain to cookies for later use by proxy server
@@ -80,16 +80,23 @@ i2b2.PM.doSamlLogin = function(service) {
         return newWindow;
     };
 
-    i2b2.PM.model.samlWindow = popupCenter({url: 'saml/redirect/'+service, title: 'SSO Login', w: 500, h: 650});
+    let url = i2b2.PM.model?.samlConfig.redirect;
+    if (url === undefined) url = 'saml/redirect/'+service;
+
+    i2b2.PM.model.samlWindow = popupCenter({url: url, title: 'SSO Login', w: 500, h: 650});
 };
 
 // ================================================================================================== //
-i2b2.PM.ctrlr.SamlLogin = function(username, session) {
+i2b2.PM.ctrlr.SamlLogin = function(username, session, isPassword) {
     console.log(`Logged in ${username} with ${session}`);
 
     i2b2.PM.model.login_username = username;
     i2b2.PM.model.samlWindow.close();
-    i2b2.PM.model.login_password = `<password is_token="true" token_ms_timeout="1800000">${session}</password>`;
+    if (isPassword) {
+        i2b2.PM.model.login_password = `<password>${session}</password>`;
+    } else {
+        i2b2.PM.model.login_password = `<password is_token="true" token_ms_timeout="1800000">${session}</password>`;
+    }
     i2b2.PM.model.login_project = '';
 
     // call the PM Cell's communicator Object
@@ -331,13 +338,13 @@ i2b2.PM._processUserConfig = function (data) {
         i2b2.PM._processLaunchFramework();
     } else {
         // display list of possible projects for the user to select
-        i2b2.PM.view.modal.projectDialog.showProjects();
+        i2b2.PM.view.showProjectSelectionModal();
     }
 };
 
 // ================================================================================================== //
 i2b2.PM.extendUserSession = function() {
-    let login_password = i2b2.PM.model.login_password.substring(i2b2.PM.model.login_password.indexOf(">")+1,i2b2.PM.model.login_password.lastIndexOf("<") );
+    let login_password = i2b2.PM.model.login_password;
 
     // call the PM Cell's communicator Object
     let callback = new i2b2_scopedCallback(i2b2.PM._processUserConfig, i2b2.PM);
@@ -356,13 +363,19 @@ i2b2.PM.extendUserSession = function() {
         project: i2b2.PM.model.login_project
     };
 
+    i2b2.PM.model.reLogin = true;
     i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
 };
 
 // ================================================================================================== //
 i2b2.PM.doLogout = function() {
-    // bug fix - must reload page to avoid dirty data from lingering
-    window.location.reload();
+    // must reload page to avoid dirty data from lingering
+    const logoutUri = i2b2.PM.model?.samlConfig?.logout;
+    if (logoutUri === undefined) {
+        window.location.reload();
+    } else {
+        window.location.href = logoutUri;
+    }
 };
 
 i2b2.PM.showUserInfo = function() {
@@ -483,7 +496,7 @@ i2b2.PM._processLaunchFramework = function() {
                 let x = i2b2.h.XPath(oXML, "//cell_data[@id='"+cellKey+"']/param[@name]");
                 for (let i = 0; i < x.length; i++) {
                     let n = i2b2.h.XPath(x[i], "attribute::name")[0].nodeValue;
-                    cellRef.params[n] = x[i].firstChild.nodeValue;
+                    cellRef.params[n] = x[i].innerHTML;
                 }
                 // do not save cell info unless the URL attribute has been set (exception is PM cell)
                 if (cellRef.url === "" && cellKey !== "PM") {
