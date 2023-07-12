@@ -407,13 +407,13 @@ i2b2.CRC.view.history.doDisplay = function(node) {
 // ================================================================================================== //
 i2b2.CRC.view.history.doRename = function(node) {
     let op = node.i2b2;
-    i2b2.CRC.ctrlr.history.queryRename(op, false, node);
+    i2b2.CRC.ctrlr.history.queryRenamePromptName(op);
 };
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doDelete = function(node) {
     let op = node.i2b2;
-    i2b2.CRC.ctrlr.history.queryDelete(op, node);
+    i2b2.CRC.ctrlr.history.queryDeletePrompt(op);
 };
 
 // ================================================================================================== //
@@ -436,6 +436,46 @@ i2b2.CRC.view.history.showBrowseView = function() {
     $("#i2b2TreeviewQueryHistory").show();
     $('#i2b2TreeviewQueryHistoryFinder').hide();
 };
+
+// ================================================================================================== //
+i2b2.CRC.view.history.displayContextDialog = function(inputData){
+    let contextDialogModal = $("#crcContextDialog");
+    if (contextDialogModal.length === 0) {
+        $("body").append("<div id='crcContextDialog'/>");
+        contextDialogModal = $("#crcContextDialog");
+    }
+    contextDialogModal.empty();
+
+    i2b2.CRC.view.history.dialogCallbackWrapper = function(event) {
+        if (inputData.confirmMsg) {
+            inputData.onOk();
+        }
+        else {
+            let newValue = $("#CRCContextMenuInput").val();
+            inputData.onOk(newValue);
+        }
+        $("#CRCContextMenuDialog").modal('hide');
+    }
+
+    i2b2.CRC.view.history.dialogKeyupCallbackWrapper = function(event) {
+        if(event.keyCode === 13){
+            $("#crcContextMenuDialog .context-menu-save").click();
+        }
+    }
+
+    let data = {
+        "title": inputData.title,
+        "inputLabel": inputData.prompt,
+        "placeHolder": inputData.placeHolder,
+        "confirmMsg": inputData.confirmMsg,
+        "onOk": " i2b2.CRC.view.history.dialogCallbackWrapper(event)",
+        "onKeyup": " i2b2.CRC.view.history.dialogKeyupCallbackWrapper(event)",
+        "inputValue" : inputData.inputValue,
+        "onCancel": inputData.onCancel
+    };
+    $(i2b2.CRC.view.history.template.contextDialog(data)).appendTo(contextDialogModal);
+    $("#CRCContextMenuDialog").modal('show');
+}
 // ================================================================================================== //
 i2b2.CRC.view.history.showDateListingView = function() {
     // this function is used to display the query list using the newer list-by-date design
@@ -741,6 +781,12 @@ i2b2.events.afterCellInit.add((cell) => {
                         error: (error) => { console.error("Could not retrieve template: QueryHistoryOptions.html"); }
                     });
 
+                    $.ajax("js-i2b2/cells/CRC/templates/CRCContextMenuDialog.html", {
+                        success: (template) => {
+                            cell.view.history.template.contextDialog = Handlebars.compile(template);
+                        },
+                        error: (error) => { console.error("Could not retrieve template: CRCContextMenuDialog.html"); }
+                    });
                     container.on( 'tab', function( tab ){
                         if(tab.element.text() === 'Queries') {
                             //add unique id to the term tab
