@@ -242,19 +242,22 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
                     return snode.key === currentNode.key;
                 });
 
-                let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
-                //scroll to selected node
-                selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
-
-                if (nodesToExpand.length >= 1) {
-                    i2b2.ONT.view.nav.loadChildren(topLevelNode[0], onLoadChildrenComplete);
+                if (topLevelNode.length === 0) {
+                    console.error("A searched/found ONT node [" + currentNode.key + "] cannot be access via ontology browsing method");
                 } else {
-                    //highlight the node the user selected
-                    $(".viewInTreeNode").removeClass("viewInTreeNode");
-                    selectNodeElem.addClass("viewInTreeNode");
+                    let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
+                    //scroll to selected node
+                    selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+
+                    if (nodesToExpand.length >= 1) {
+                        i2b2.ONT.view.nav.loadChildren(topLevelNode[0], onLoadChildrenComplete);
+                    } else {
+                        //highlight the node the user selected
+                        $(".viewInTreeNode").removeClass("viewInTreeNode");
+                        selectNodeElem.addClass("viewInTreeNode");
+                    }
                 }
             };
-
             i2b2.ONT.view.nav.loadChildren(topLevelNode, onLoadChildrenComplete);
         }
     } else {
