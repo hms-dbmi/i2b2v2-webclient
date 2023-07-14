@@ -205,12 +205,13 @@ i2b2.CRC.view.history.clickSearchName = function() {
             historyFinderTreeview.hide();
         }
 
-        // hide the "load more" option
-        if (cellResult.model.length < i2b2.CRC.view['history'].params.maxQueriesDisp) {
+        // TODO: load more is not implemented correctly for name search
+        // if (cellResult.model.length < i2b2.CRC.view['history'].params.maxQueriesDisp) {
+            // hide the "load more" option
             $('.datelist-more-bar').addClass("d-none");
-        } else {
-            $('.datelist-more-bar').removeClass("d-none");
-        }
+        // } else {
+        //    $('.datelist-more-bar').removeClass("d-none");
+        // }
 
     };
 
