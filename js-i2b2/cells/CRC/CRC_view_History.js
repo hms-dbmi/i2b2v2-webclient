@@ -162,9 +162,7 @@ i2b2.CRC.view.history.clickSearchName = function() {
         }
 
         let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
-        if (!isAscending) {
-            cellResult.model.reverse();
-        }
+        if (!isAscending) cellResult.model.reverse();
         for (let i1=0; i1 < cellResult.model.length; i1++) {
             let sdxDataNode = cellResult.model[i1];
             let renderOptions = {
@@ -202,15 +200,23 @@ i2b2.CRC.view.history.clickSearchName = function() {
         // Display search results treeview
         let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
 
-        if(cellResult.model.length === 0){
+        if (cellResult.model.length === 0){
             $("#i2b2QueryHistoryFinderMessage").text("No records found.").show();
             historyFinderTreeview.hide();
         }
+
+        // hide the "load more" option
+        if (cellResult.model.length < i2b2.CRC.view['history'].params.maxQueriesDisp) {
+            $('.datelist-more-bar').addClass("d-none");
+        } else {
+            $('.datelist-more-bar').removeClass("d-none");
+        }
+
     };
 
     let crc_find_strategy = "contains"
     let crc_find_category = $("#querySearchFilter").data("selectedFilterValue");
-    if(crc_find_category === "pdo") crc_find_strategy = "exact"
+    if (crc_find_category === "pdo") crc_find_strategy = "exact"
 
     // fire the AJAX call
     let options = {
