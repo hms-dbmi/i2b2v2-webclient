@@ -550,4 +550,6 @@ iframe.pluginCell {
 }
 /* === End BOOTSTRAP MENU === */
 
-
+.goldenLayout .lm_splitter.lm_dragging {
+	z-index: 1000;
+}
