@@ -194,15 +194,24 @@ i2b2.CRC.view.history.clickSearchName = function() {
         // Display search results treeview
         let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
 
-        if(cellResult.model.length === 0){
+        if (cellResult.model.length === 0){
             $("#i2b2QueryHistoryFinderMessage").text("No records found.").show();
             historyFinderTreeview.hide();
         }
+
+        // TODO: load more is not implemented correctly for name search
+        // if (cellResult.model.length < i2b2.CRC.view['history'].params.maxQueriesDisp) {
+            // hide the "load more" option
+            $('.datelist-more-bar').addClass("d-none");
+        // } else {
+        //    $('.datelist-more-bar').removeClass("d-none");
+        // }
+
     };
 
     let crc_find_strategy = "contains"
     let crc_find_category = $("#querySearchFilter").data("selectedFilterValue");
-    if(crc_find_category === "pdo") crc_find_strategy = "exact"
+    if (crc_find_category === "pdo") crc_find_strategy = "exact"
 
     // fire the AJAX call
     let options = {
