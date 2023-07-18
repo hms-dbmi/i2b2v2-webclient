@@ -129,7 +129,7 @@ The search was completed in {{runDuration}} seconds.
         {{#ifCond timeSpans.0.operator "==" "GREATER"}}>{{/ifCond}}
         {{#ifCond timeSpans.0.operator "==" "GREATEREQUAL"}}>={{/ifCond}}
         {{#ifCond timeSpans.0.operator "==" "EQUAL"}}={{/ifCond}}
-        {{#ifCond timeSpans.0.operator "==" "LESSEQUAL"}}<=>{{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "LESSEQUAL"}}<={{/ifCond}}
         {{#ifCond timeSpans.0.operator "==" "LESS"}}<{{/ifCond}}
         {{timeSpans.0.value}}
         {{#ifCond timeSpans.0.unit "==" "DAY"}}day(s){{/ifCond}}
