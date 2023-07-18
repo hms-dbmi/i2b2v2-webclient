@@ -2,10 +2,20 @@
     margin-top: 10px;
 }
 
-.WK-prompt {
+#WKContextMenuDialog .WK-prompt {
     font-size: 1.1em;
 }
 
-.modal-form {
+#WKContextMenuDialog .modal-form {
     margin: 0px 40px;
+}
+
+#WKContextMenuDialog .required-input {
+    margin-top: 4px;
+    color: #f44336;
+    visibility: hidden;
+}
+
+#WKContextMenuDialog .required-input .visible{
+    visibility: visible;
 }
