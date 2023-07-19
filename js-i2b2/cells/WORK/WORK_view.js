@@ -314,9 +314,12 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
             $("#WKContextMenuDialog").modal('hide');
         }
         else {
-            let newValue = $("#WKContextMenuInput").val();
+            let newValueInput = $("#WKContextMenuInput");
+            let newValue = newValueInput.val().trim();
+            newValueInput.val(newValue);
             if(inputData.required && newValue.length === 0){
                 $("#workContextDialog .required-input").addClass("visible");
+
             }
             else{
                 inputData.onOk(newValue);
