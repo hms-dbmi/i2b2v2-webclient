@@ -20,6 +20,8 @@ The search was completed in {{runDuration}} seconds.
 <div class="groups-container">
   <h3>All Groups</h3>
   {{#each panels}}
+  {{#unless @first}}<span class="joiner and">AND </span>{{/unless}}
+  {{#if this.invert}}<span class="joiner and">NOT</span>{{/if}}
   <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
     {{#each this.items}}
       <div class="item-container">
@@ -46,7 +48,6 @@ The search was completed in {{runDuration}} seconds.
       {{#unless @last}}<div class="joiner or">OR</div>{{/unless}}
     {{/each}}
   </div>
-  {{#unless @last}}<div class="joiner and">AND {{#if this.next_is_not}}NOT{{/if}}</div>{{/unless}}
   {{/each}}
 </div>
 {{/if}}
