@@ -102,8 +102,8 @@ i2b2.CRC.view.history.sortNodes = function(nodeList) {
     if (i2b2.CRC.view.history.params.sortBy === 'NAME') {
         // sort list by name
         nodeList.sort((nodeA, nodeB) => {
-            let nameStrA = nodeA.i2b2.origData["name"];
-            let nameStrB = nodeB.i2b2.origData["name"];
+            let nameStrA = nodeA.i2b2.origData["name"].toLowerCase();
+            let nameStrB = nodeB.i2b2.origData["name"].toLowerCase();
             if (nameStrA < nameStrB){
                 return -1;
             } else if (nameStrA > nameStrB) {
