@@ -101,6 +101,7 @@ i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
         ]);
 
         // change the treeview icon to show it is no longer loading
+        loadedParents.push({key: nodeData.key, text: nodeData.text}); // make sure we have the orignal node that the load request was fired on
         i2b2.ONT.view.nav.treeview.treeview('setNodeLoaded', [
             function(node, parentNodes){ return (parentNodes.filter((d) => (node.key === d.key && node.text === d.text)).length > 0) },
             loadedParents
