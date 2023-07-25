@@ -21,7 +21,7 @@ The search was completed in {{runDuration}} seconds.
   <h3>All Groups</h3>
   {{#each panels}}
   {{#unless @first}}<span class="joiner and">AND </span>{{/unless}}
-  {{#if this.invert}}<span class="joiner and">NOT</span>{{/if}}
+  {{#ifCond this.invert "==" "1"}}<span class="joiner and">NOT</span>{{/ifCond}}
   <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
     {{#each this.items}}
       <div class="item-container">
