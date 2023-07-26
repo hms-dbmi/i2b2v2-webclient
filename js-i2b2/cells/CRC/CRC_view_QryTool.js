@@ -2030,7 +2030,10 @@ i2b2.events.afterCellInit.add((cell) => {
                                 '<label>Name:</label>' +
                             '</div>' +
                         '</div>');
-                    let queryName = $('<input id="queryName" class="name" disabled>');
+                    let queryName = $('<input id="queryName" class="name">');
+                    queryName.on("focus", function(event){
+                        $(this).blur();
+                    })
                     $('<div class="center"></div>').append(queryName).appendTo(runBar);
                     runBar.append('<div class="right">' +
                         '<button type="button" class="btn btn-primary btn-sm button-run">Find Patients</button>' +
