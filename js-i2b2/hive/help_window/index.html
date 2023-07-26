@@ -1,0 +1,2430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Message Log</title>
+</head>
+<body>
+<script type="text/javascript" src="../../../js-ext/jquery/3.6.0/jquery.min.js" ></script>
+<!-- LOAD Bootstrap FROM local server -->
+<script type="text/javascript" src="../../../js-ext/bootstrap/5.0.2/js/bootstrap.bundle.min.js" ></script>
+<link rel="stylesheet" href="../../../js-ext/bootstrap/5.0.2/css/bootstrap.min.css">
+
+<script type="text/javascript" src="../../../js-ext/handlebars/4.7.7/handlebars.min.js"></script>
+
+<script type="text/javascript" src="../../i2b2_loader.js" ></script>
+<script type="text/javascript" src="../hive_helpers.js" ></script>
+
+<link type="text/css" href="index.css" rel="stylesheet" />
+<script type="text/javascript" src="index.js" ></script>
+
+</body>
+<div class="container">
+    <div id= "layout" class=WordSection1>
+
+        <p>The i2b2 Webclient has five main panels, laid out in the
+        following manner.</p> 
+
+        <img width=624 height=347
+        id="Picture 601781111" src="i2b2%20help%20documents_layout_files/image001.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"> 
+
+        <h2>Top Right.<span><a href="https://www.i2b2.org/webclient/help/3.-Query-Tool_9995021.html">Find Patients</a></span></h2>    
+        
+        <p>The <span class="fw-bold">Find Patients</span> panel is where queries are constructed and run. Users can specify query criteria in the group panels.  Query criteria can be any terms contained in the vocabularies (also called ontologies) in the <span class="fw-bold">Terms</span> section, as well as past queries or query results.</p>    
+               
+        <h2>Top Left.</span><a href="https://www.i2b2.org/webclient/help/4.-Navigate-Terms_9995027.html"><span>Terms</span></a></h2>
+        
+        <p>The <span class="fw-bold">Terms</span> panel contains hierarchical vocabularies of terms for constructing queries. Users can navigate through the vocabularies using the default Terms view, or can search by text or codes using the search input field.</p>      
+                
+        <h2><span style='font-family:"Times",serif; color:#333333'>Bottom Right.&nbsp;</span><a href="https://www.i2b2.org/webclient/help/5.-Query-Status_9995032.html"><span style='font-family:"Times",serif;color:#4A7FA7'>Query Status</span></a></h2>
+
+        <p><span style='font-size:13.5pt; font-family:"Times",serif;color:black'>The&nbsp;<strong><span style='font-family:"Times",serif'>Query Status&nbsp;</span></strong>panel&nbsp;shows&nbsp;information about the state of a query, such as&nbsp;if it&nbsp;is currently running, or, when it completes, the results. It can also display various graphical representations of the results. The&nbsp;<strong><span style='font-family:"Times",serif'>Query Report&nbsp;</span></strong>button provides a textual representation of the query</span></p>
+
+        <h2><span style='font-family:"Times",serif;color:#333333'>Bottom Left.&nbsp;</span><a href="https://www.i2b2.org/webclient/help/6.-Previous-Queries_9995034.html"><span style='font-family:"Times",serif;color:#4A7FA7'>Queries</span></a></h2>
+
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:13.5pt;margin-left:0in'><span style='font-size:13.5pt;font-family:"Times",serif;color:black'>The&nbsp;<strong><span style='font-family:"Times",serif'>Workplace&nbsp;</span></strong>panel stores information, such as prior queries, that can be referred to or used later. Users may store previously-run queries, patient sets, individual patients, and terms in this panel. Users can&nbsp;create folders to organize&nbsp;the workplace. The workplace is private by default, but there is a SHARED folder&nbsp;that everyone has access to. Users can&nbsp;use the SHARED folder to share terms and queries with other colleagues.</span></p>
+
+        <p><span style='font-size:13.5pt;font-family:"Times",serif;color:black'>&nbsp;</span></p>
+        <p><span style='font-size:13.5pt;font-family:"Times",serif;color:black'>&nbsp;</span></p>
+        <p><span style='font-size:13.5pt;font-family:"Times",serif;color:black'>&nbsp;</span></p>
+        <p><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        <p><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+
+        
+    </div><!--layout-->
+    <div id="quickstart" class=WordSection1>
+
+        <p><span style='font-size:15.0pt;font-family:"Times New Roman",serif;color:black;letter-spacing:-.1pt'>1.1 Basic Query</span></p>
+        
+        <p><span style='font-size:10.5pt;font-family:"Times New Roman",serif;color:black'>Basic
+        queries are constructed by dragging and dropping terms from the 'Terms' panel
+        into a 'Find Patients' group panel. </span></p>
+        
+        <p><b><span style='font-family:"Times New Roman",serif;color:black;letter-spacing:-.05pt'>[How
+        to]</span></b></p>
+        
+        <p  style='margin-left:63.0pt;text-indent:-.25in;background:white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;color:black'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Find a term</span></p>
+        
+        <p  style='margin-left:99.0pt;text-indent:-.25in;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>a.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Go to 'Terms' tab</span></p>
+        
+        <p  style='margin-left:99.0pt;text-indent:-.25in;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>b.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Click folders to expand the lists of terms</span></p>
+        
+        <p  style='margin-left:99.0pt;text-indent:-.25in;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>c.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Select a term</span></p>
+        
+        <p  style='margin-left:63.0pt;text-indent:-.25in;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Drag and drop&nbsp;to �Find Patients� group panel</span></p>
+        
+        <p  style='margin-left:99.0pt;text-indent:-.25in;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>a.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Drag the selected term&nbsp;into 'Find Patients&gt; Find Patients'
+        group panel</span></p>
+        
+        <p  style='margin-left:63.0pt;text-indent:-.25in;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Run Query</span></p>
+        
+        <p  style='margin-left:99.0pt;text-indent:-.25in;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>a.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Click 'Find Patients&gt; Run Query Options'&nbsp;&#8594;&nbsp;'Run
+        Query'</span></p>
+        
+        <p  style='margin-left:63.0pt;text-indent:-.25in;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Get Result</span></p>
+        
+        <p  style='margin-left:99.0pt;text-indent:-.25in;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>a.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Query running status will be displayed in 'Query Status' section,
+        which is located below 'Find Patients'. </span></p>
+        
+        <p  style='margin-left:99.0pt;text-indent:-.25in;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>b.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Query result will be displayed in 'Query Status' </span></p>
+        
+        <p  style='margin-left:135.0pt;text-indent:-135.0pt;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span>i.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Number of patients</span></p>
+        
+        <p  style='margin-left:135.0pt;text-indent:-135.0pt;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'><span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span>ii.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>Query name</span></p>
+        
+        <p  style='margin-left:63.0pt;text-indent:-.25in;background:
+        white'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>The query and its result will be stored and displayed in 'Queries'
+        tab</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <h3 style='margin-top:0in;background:white'><b><span style='font-family:"Times New Roman",serif;
+        color:#333333;letter-spacing:-.05pt'>[Example]&nbsp;</span></b></h3>
+        
+        <table Table border=0 cellspacing=0 cellpadding=0
+         style='margin-left:22.5pt;border-collapse:collapse'>
+         <tr>
+          <td valign=top style='border:solid #C1C7D0 1.0pt;background:#F4F5F7;
+          padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p style='margin:0in;margin-bottom:.0001pt;background:#F4F5F7'><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#333333'>Find
+          all patients who have</span></b></code></p>
+          <p style='margin-top:7.5pt;margin-right:0in;margin-bottom:0in;margin-left:
+          22.5pt;margin-bottom:.0001pt;background:#F4F5F7'><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#333333'>at
+          least one diagnosis of&nbsp;</span></b></code><em><b><span style='color:#333333'>Acute
+          respiratory infections</span></b></em><code><b><span style='font-size:10.0pt;
+          font-family:"Times New Roman",serif;color:#333333'>.</span></b></code></p>
+          </td>
+         </tr>
+        </table>
+        
+        <ol start=1 type=1>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find&nbsp;<em>Acute
+             respiratory infections</em></span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Go to
+              'Terms' tab</span></li>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Select&nbsp;<em>Diagnosis&nbsp;</em>&#8594;<em>&nbsp;Respiratory
+              system</em>&nbsp;&#8594;&nbsp;<em>Acute respiratory infections</em></span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag and drop</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag
+              the&nbsp;<em>Acute respiratory infections&nbsp;</em>term into </span><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>'Find
+              Patients&gt; Find Patients' group panel</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Run Query</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Click </span><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>'Find
+              Patients&gt; Run Query Options'&nbsp;&#8594;&nbsp;'Run Query'</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Get Results</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>See
+              the&nbsp;</span><span style='font-size:10.5pt;font-family:"Times New Roman",serif'>'Query
+              Status' </span><span style='font-size:10.5pt;font-family:"Times New Roman",serif'>section
+              for the query result.���� </span></li>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>The query is
+              now stored in the 'Queries' tab</span></li>
+         </ol>
+        </ol>
+        
+        <p  style='margin-left:1.0in;background:white'><span
+        style='font-family:"Times New Roman",serif'><img width=489 height=268
+        src="i2b2%20help%20documents_quick%20start_files/image001.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;background:white'><span
+        style='font-size:15.0pt;color:black;letter-spacing:-.1pt;font-weight:normal'>1.2
+        Adding an AND term</span></h2>
+        
+        <p style='margin-top:7.5pt;margin-right:0in;margin-bottom:0in;margin-left:0in;
+        margin-bottom:.0001pt;background:white'><span style='font-size:10.5pt;
+        color:black'>Terms in different groups have a logical&nbsp;</span><strong><span
+        style='font-size:10.5pt;color:black'>AND</span></strong><span style='font-size:
+        10.5pt;color:black'>&nbsp;relationship.&nbsp;When terms are combined with
+        the&nbsp;</span><strong><span style='font-size:10.5pt;color:black'>AND&nbsp;</span></strong><span
+        style='font-size:10.5pt;color:black'>operator, retrieved records must contain
+        all the terms.&nbsp;<br>
+        <b><br>
+        </b></span><b><span style='color:black;letter-spacing:-.05pt'>[How to]</span></b></p>
+        
+        <ol start=1 type=1>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find a Term</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Go to
+              'Terms' tab</span></li>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Click term
+              folders to narrow down the concept</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag and
+             drop&nbsp;to �Find Patients� group panel</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag the
+              selected term&nbsp;into 'Find Patients&gt; Find Patients' group panel</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find another
+             Term</span></li>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag and drop
+             to �and� group panel</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag the
+              selected term&nbsp;into �</span><span style='font-size:10.5pt;font-family:
+              "Times New Roman",serif'>Find Patients&gt; </span><span style='font-size:
+              10.5pt;font-family:"Times New Roman",serif'>and' group panel�</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Run Query</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Click 'Find
+              Patients&gt; Run Query Options'&nbsp;&#8594;&nbsp;'Run Query'</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Get Result</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>See
+              the&nbsp;'Query Status' tab for the query result</span></li>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>The query is
+              now stored in the 'Queries' tab</span></li>
+         </ol>
+        </ol>
+        
+        <h3 style='margin-top:0in;background:white'><b><span style='font-family:"Times New Roman",serif;
+        color:#333333;letter-spacing:-.05pt'>[Example]</span></b></h3>
+        
+        <table Table border=0 cellspacing=0 cellpadding=0
+         style='margin-left:22.5pt;border-collapse:collapse'>
+         <tr>
+          <td valign=top style='border:solid #C1C7D0 1.0pt;background:#F4F5F7;
+          padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p style='margin:0in;margin-bottom:.0001pt;background:#F4F5F7'><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#333333'>Find
+          all patients who have</span></b></code></p>
+          <p style='margin-top:7.5pt;margin-right:0in;margin-bottom:0in;margin-left:
+          22.5pt;margin-bottom:.0001pt;background:#F4F5F7'><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#333333'>at
+          least one diagnosis of&nbsp;</span></b></code><em><b><span style='color:#333333'>Acute
+          respiratory infections</span></b></em></p>
+          <p style='margin-top:7.5pt;margin-right:0in;margin-bottom:0in;margin-left:
+          22.5pt;margin-bottom:.0001pt;background:#F4F5F7'><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#993300'>AND</span></b></code></p>
+          <p style='margin-top:7.5pt;margin-right:0in;margin-bottom:0in;margin-left:
+          22.5pt;margin-bottom:.0001pt;background:#F4F5F7'><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#333333'>at
+          least one prescription of</span></b></code><em><b><span style='color:#333333'>&nbsp;Bronchodilators</span></b></em><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#333333'>.</span></b></code></p>
+          </td>
+         </tr>
+        </table>
+        
+        <ol start=1 type=1>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find&nbsp;<em>Acute
+             respiratory infections</em></span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Go to
+              'Navigate Terms' tab</span></li>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Select&nbsp;<em>Diagnosis&nbsp;</em>&#8594;<em>&nbsp;Respiratory
+              system</em>&nbsp;&#8594;&nbsp;<em>Acute respiratory infections</em></span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag and drop</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag
+              the&nbsp;<em>Acute respiratory infections&nbsp;</em>term into </span><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>'Find
+              Patients&gt; Find Patients' group panel</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find&nbsp;<em>Bronchodilators</em></span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Go to 'Navigate
+              Terms' panel</span></li>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Select&nbsp;<em>Medications&nbsp;&nbsp;</em>&#8594;<em>&nbsp;Respiratory
+              agents&nbsp;</em>&nbsp;&#8594;&nbsp;<em>Bronchodilators</em></span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag and drop</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag
+              the&nbsp;<em>Acute respiratory infections&nbsp;</em>term into �</span><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find
+              Patients&gt; </span><span style='font-size:10.5pt;font-family:"Times New Roman",serif'>and'
+              group panel�</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Run Query</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Click </span><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>'Find
+              Patients&gt; Run Query Options'&nbsp;&#8594;&nbsp;'Run Query'</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Get Results</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>See
+              the&nbsp;'Query Status' tab for the query result</span></li>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>The query is
+              now stored in the 'Queries' tab</span></li>
+         </ol>
+        </ol>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'><img
+        width=509 height=203 id="Picture 3"
+        src="i2b2%20help%20documents_quick%20start_files/image002.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'><img
+        width=508 height=203 id="Picture 1"
+        src="i2b2%20help%20documents_quick%20start_files/image003.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;background:white'><span
+        style='font-size:15.0pt;color:black;letter-spacing:-.1pt;font-weight:normal'>1.3
+        Adding an OR term</span></h2>
+        
+        <p style='margin-top:7.5pt;margin-right:0in;margin-bottom:0in;margin-left:0in;
+        margin-bottom:.0001pt;background:white'><span style='font-size:10.5pt;
+        color:black'>Terms in the same group have a logical&nbsp;</span><strong><span
+        style='font-size:10.5pt;color:black'>OR</span></strong><span style='font-size:
+        10.5pt;color:black'>&nbsp;relationship.&nbsp; When terms are combined with the</span><strong><span
+        style='font-size:10.5pt;color:black'>&nbsp;OR&nbsp;</span></strong><span
+        style='font-size:10.5pt;color:black'>operator, retrieved records will contain&nbsp;either
+        or both terms.</span></p>
+        
+        <h3 ><b><span style='font-family:
+        "Times New Roman",serif;color:black;letter-spacing:-.05pt'>[How to]</span></b></h3>
+        
+        <ol start=1 type=1>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find a Term</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Go to
+              'Terms' tab</span></li>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Click term
+              folders to narrow down the concept</span></li>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Select a
+              term</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag and drop
+             to </span><span style='font-size:10.5pt;font-family:"Times New Roman",serif'>�Find
+             Patients� group panel</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag the
+              selected term&nbsp;into </span><span style='font-size:10.5pt;font-family:
+              "Times New Roman",serif'>'Find Patients&gt; Find Patients' group panel</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find another
+             Term</span></li>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag and drop
+             to </span><span style='font-size:10.5pt;font-family:"Times New Roman",serif'>�Find
+             Patients� group panel</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag the
+              selected term&nbsp;into </span><span style='font-size:10.5pt;font-family:
+              "Times New Roman",serif'>'Find Patients&gt; Find Patients' group panel</span><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>, again.</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Run Query</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Click 'Find
+              Patients&gt; Run Query Options'&nbsp;&#8594;&nbsp;'Run Query'</span></li>
+         </ol>
+         <li  style='color:black;background:white'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Get Result</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>See
+              the&nbsp;'Query Status' tab for the query result</span></li>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>The query is
+              now stored in the 'Queries' tab</span></li>
+         </ol>
+        </ol>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <h3 style='margin-top:0in;background:white;vertical-align:top'><b><span
+        style='font-family:"Times New Roman",serif;color:#333333;letter-spacing:-.05pt'>[Example]</span></b></h3>
+        
+        <table Table border=0 cellspacing=0 cellpadding=0
+         style='margin-left:22.5pt;border-collapse:collapse'>
+         <tr>
+          <td valign=top style='border:solid #C1C7D0 1.0pt;background:#F4F5F7;
+          padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p style='margin:0in;margin-bottom:.0001pt;background:#F4F5F7'><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#333333'>Find
+          all patients who have</span></b></code></p>
+          <p style='margin-top:7.5pt;margin-right:0in;margin-bottom:0in;margin-left:
+          22.5pt;margin-bottom:.0001pt;background:#F4F5F7'><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#333333'>at
+          least one diagnosis of&nbsp;</span></b></code><em><b><span style='color:#333333'>Acute
+          respiratory infections&nbsp;</span></b></em><code><b><span style='font-size:
+          10.0pt;font-family:"Times New Roman",serif;color:#993300'>OR</span></b></code><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#333333'>&nbsp;at
+          least one diagnosis of</span></b></code><em><b><span style='color:#333333'>&nbsp;Asthma&nbsp;</span></b></em></p>
+          <p style='margin-top:7.5pt;margin-right:0in;margin-bottom:0in;margin-left:
+          22.5pt;margin-bottom:.0001pt;background:#F4F5F7'><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#993300'>AND</span></b></code></p>
+          <p style='margin-top:7.5pt;margin-right:0in;margin-bottom:0in;margin-left:
+          22.5pt;margin-bottom:.0001pt;background:#F4F5F7'><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#333333'>at
+          least one prescription of</span></b></code><em><b><span style='color:#333333'>&nbsp;Bronchodilators</span></b></em><code><b><span
+          style='font-size:10.0pt;font-family:"Times New Roman",serif;color:#333333'>.</span></b></code></p>
+          </td>
+         </tr>
+        </table>
+        
+        <ol start=1 type=1>
+         <li  style='color:black;background:white;vertical-align:top'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find&nbsp;<em>Acute
+             respiratory infections</em></span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white;vertical-align:top'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Go to
+              'Terms' tab</span></li>
+          <li  style='color:black;background:white;vertical-align:top'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Select&nbsp;<em>Diagnosis&nbsp;</em>&#8594;<em>&nbsp;Respiratory
+              system</em>&nbsp;&#8594;&nbsp;<em>Acute respiratory infections</em></span></li>
+         </ol>
+         <li  style='color:black;background:white;vertical-align:top'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag and drop</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white;vertical-align:top'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag
+              the&nbsp;<em>Acute respiratory infections&nbsp;</em>term into </span><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>'Find
+              Patients&gt; Find Patients' group panel</span></li>
+         </ol>
+         <li  style='color:black;background:white;vertical-align:top'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find&nbsp;<em>Asthma</em></span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white;vertical-align:top'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Go to
+              'Terms' tab</span></li>
+          <li  style='color:black;background:white;vertical-align:top'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Select&nbsp;<em>Diagnosis</em>&nbsp;&#8594;&nbsp;<em>Respiratory
+              system</em>&nbsp;&#8594;<em>&nbsp;Chronic obstructive diseases</em>&nbsp;&#8594;&nbsp;<em>Asthma</em></span></li>
+         </ol>
+         <li  style='color:black;background:white;vertical-align:top'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag and drop</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white;vertical-align:top'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag
+              the&nbsp;<em>Acute respiratory infections&nbsp;</em>term into </span><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>'Find
+              Patients&gt; Find Patients' group panel</span><span style='font-size:
+              10.5pt;font-family:"Times New Roman",serif'>, again</span></li>
+         </ol>
+         <li  style='color:black;background:white;vertical-align:top'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find&nbsp;<em>Bronchodilators</em></span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white;vertical-align:top'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Go to
+              'Terms' tab</span></li>
+          <li  style='color:black;background:white;vertical-align:top'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Select&nbsp;<em>Medications&nbsp;&nbsp;</em>&#8594;<em>&nbsp;Respiratory
+              agents&nbsp;</em>&nbsp;&#8594;&nbsp;<em>Bronchodilators</em></span></li>
+         </ol>
+         <li  style='color:black;background:white;vertical-align:top'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag and drop</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white;vertical-align:top'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Drag
+              the&nbsp;<em>Acute respiratory infections&nbsp;</em>term into �</span><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Find
+              Patients&gt; </span><span style='font-size:10.5pt;font-family:"Times New Roman",serif'>and'
+              group panel�</span></li>
+         </ol>
+         <li  style='color:black;background:white;vertical-align:top'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Run Query</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white;vertical-align:top'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>Click </span><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>'Find
+              Patients&gt; Run Query Options'&nbsp;&#8594;&nbsp;'Run Query'</span></li>
+         </ol>
+         <li  style='color:black;background:white;vertical-align:top'><span
+             style='font-size:10.5pt;font-family:"Times New Roman",serif'>Get Results</span></li>
+         <ol start=1 type=a>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>See
+              the&nbsp;'Query Status' tab for the query result</span></li>
+          <li  style='color:black;background:white'><span
+              style='font-size:10.5pt;font-family:"Times New Roman",serif'>The query is
+              now stored in the 'Queries' tab</span></li>
+         </ol>
+        </ol>
+        
+        <p  style='margin-left:1.0in;background:white;vertical-align:
+        top'><span style='font-size:10.5pt;font-family:"Times New Roman",serif;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;background:white;vertical-align:
+        top'><span style='font-size:10.5pt;color:#172B4D'>&nbsp;</span></p>
+        
+        <p  style='background:white;vertical-align:middle'><span
+        style='font-size:9.0pt;font-family:"Times New Roman",serif;color:#172B4D'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'><img
+        width=721 height=286 id="Picture 6"
+        src="i2b2%20help%20documents_quick%20start_files/image004.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'><img
+        width=720 height=287 id="Picture 5"
+        src="i2b2%20help%20documents_quick%20start_files/image005.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'><img
+        width=720 height=283 id="Picture 4"
+        src="i2b2%20help%20documents_quick%20start_files/image006.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+    </div> <!--quickstart-->
+    <div id="querytool" class=WordSection1>
+
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>The&nbsp;<strong>Query Tool&nbsp;</strong>panel
+        is where queries are constructed and run.</span></p>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='color:#333333'>3.1 Layout</span></h2>
+        
+        <p ><span style='font-size:13.5pt;font-family:"Times",serif;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><span style='font-size:15.0pt;font-family:"Times New Roman",serif;
+        color:#333333;letter-spacing:-.1pt'><img width=624 height=347
+        id="Picture 601781111"
+        src="i2b2%20help%20documents_query%20tool_files/image001.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p ><span style='font-size:13.5pt;font-family:"Times",serif;
+        color:black'>&nbsp;</span></p>
+        
+        <p  style='margin-left:.5in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><strong><span style='font-size:13.5pt;color:black'>Query Run Options&nbsp;</span></strong><span
+        class=confluence-embedded-file-wrapper><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:black'>&nbsp;</span></span><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>allow
+        users to (1) set options for the panel, and (2) resize the panel.</span></p>
+        
+        <p  style='margin-left:.5in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><strong><span style='font-size:13.5pt;color:black'>Query
+        Name&nbsp;</span></strong><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>shows the name of the current query. Users can also drop a
+        previous query here to load it.</span></p>
+        
+        <p  style='margin-left:.5in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><strong><span style='font-size:13.5pt;color:black'>Query Timing
+        Selector&nbsp;</span></strong><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>enables users to select the appropriate timings for their query,
+        including temporal queries.</span></p>
+        
+        <p  style='margin-left:.5in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><strong><span style='font-size:13.5pt;color:black'>Query
+        Groups&nbsp;</span></strong><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>are where users can drag and drop terms to build queries. There
+        are initially one Group, but more are automatically added.</span></p>
+        
+        <ol start=5 type=1>
+         <li  style='vertical-align:top'><strong><span style='font-size:
+             13.5pt;color:black'>Tool Bar&nbsp;</span></strong><span style='font-size:
+             13.5pt;font-family:"Times New Roman",serif;color:black'>contains buttons
+             to run queries, clear all the panels, and name the query </span></li>
+        </ol>
+        
+        <p  style='vertical-align:top'><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p  style='vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:black'>&nbsp;</span></p>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='color:#333333'>3.2 Creating a Query</span></h2>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><span style='font-family:"Times New Roman",serif;
+        color:#333333'>&nbsp;</span></h3>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><span style='font-size:15.0pt;
+        font-family:"Times New Roman",serif;color:#333333'>3.2.1 i2b2 Items for
+        Querying</span></h3>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>These items may be dragged into Query
+        Groups to construct queries.</span></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <table Table border=0 cellspacing=0 cellpadding=0 align=left
+         width=807 style='width:604.95pt;border-collapse:collapse;margin-left:6.75pt;
+         margin-right:6.75pt'>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  align=center style='margin-left:67.5pt;text-align:center'><b><span
+          style='font-family:"Times New Roman",serif;color:#333333'>Icons</span></b></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  align=center style='margin-left:45.0pt;text-align:center'><b><span
+          style='font-family:"Times New Roman",serif;color:#333333'>Names</span></b></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  align=center style='margin-left:45.0pt;text-align:center'><b><span
+          style='font-family:"Times New Roman",serif;color:#333333'>Description</span></b></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:22.5pt;
+          margin-bottom:.0001pt'><img width=21 height=23
+          src="i2b2%20help%20documents_query%20tool_files/image002.jpg" alt=leaf></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Terms</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Terms
+          (also called concepts) are the words or phrases that make up vocabularies.
+          Terms are the basic query items.</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:22.5pt;
+          margin-bottom:.0001pt'><img width=21 height=24 id="Picture 40"
+          src="i2b2%20help%20documents_query%20tool_files/image003.jpg" alt=folder></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Term
+          Groups</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Related
+          terms are grouped into hierarchies. When a term group is used in a query, all
+          terms in the group are searched for.</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:22.5pt;
+          margin-bottom:.0001pt'><span style='font-size:13.5pt;color:black'><img
+          width=20 height=26 id="Picture 11"
+          src="i2b2%20help%20documents_query%20tool_files/image004.png"
+          alt="A blue tag with a white dot&#10;&#10;Description automatically generated"></span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Modifiers</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Modifiers
+          are descriptors that can be attached to terms to make small changes to them.
+          For example, a Diagnosis concept may be additionally described by Modifiers
+          &quot;Principal Diagnosis&quot; or &quot;Secondary diagnosis.&quot;</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:22.5pt;
+          margin-bottom:.0001pt'><img width=19 height=19
+          src="i2b2%20help%20documents_query%20tool_files/image005.jpg" alt=folder></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Modifier
+          Groups</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Groups
+          of Modifiers, similar to Term Groups.</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:22.5pt;
+          margin-bottom:.0001pt'><img width=21 height=21
+          src="i2b2%20help%20documents_query%20tool_files/image006.jpg" alt=prevQuery><span
+          class=confluence-embedded-file-wrapper>&nbsp;</span>/&nbsp;<img width=21
+          height=21 src="i2b2%20help%20documents_query%20tool_files/image007.png"></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Previous
+          Queries</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Previous
+          Queries are queries that have been run before and are stored in the 'Previous
+          Queries' panel.</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:22.5pt;
+          margin-bottom:.0001pt'><img width=26 height=23
+          src="i2b2%20help%20documents_query%20tool_files/image008.jpg"></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Individual
+          Patients</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>If
+          selected when running a query, a query can return a Patient Set,&nbsp;which
+          is a set of patient numbers that satisfy the query criteria&nbsp;. The Patient
+          Set is stored with the query in the Previous Queries panel. The Patient Set
+          can be expanded, and individual subjects dragged into query groups to be used
+          in a new query.</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:22.5pt;
+          margin-bottom:.0001pt'><img width=21 height=21
+          src="i2b2%20help%20documents_query%20tool_files/image009.jpg"></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Patient
+          Sets</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>If
+          selected when running a query, a query can return a Patient Set, which is a
+          set of patient numbers that satisfy the query criteria.&nbsp;The Patient Set
+          is stored with the query in the Previous Queries panel and can be dragged
+          into query groups to be used in a new query.</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:22.5pt;
+          margin-bottom:.0001pt'><img width=21 height=21
+          src="i2b2%20help%20documents_query%20tool_files/image009.jpg"></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>Encounter
+          Sets</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p  style='margin-left:22.5pt'><span style='font-family:"Times New Roman",serif'>If
+          selected when running a query, a query can return an Encounter Set, which is
+          a set of encounter numbers that satisfy the query criteria. The Encounter Set
+          is stored with the query in the Previous Queries panel&nbsp;and can be
+          dragged into query groups to be used in a new query&nbsp;.</span></p>
+          </td>
+         </tr>
+        </table>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:22.5pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><b><span style='font-size:15.0pt;
+        font-family:"Times New Roman",serif;color:#333333'>&nbsp;</span></b></h3>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><span style='font-size:15.0pt;
+        font-family:"Times New Roman",serif;color:#333333'>3.2.1 Operators and Order of
+        Precedence</span></h3>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:22.5pt;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>i2b2 items are combined using Boolean
+        operators&nbsp;<strong>AND&nbsp;</strong>and&nbsp;<strong>OR.� </strong>Items
+        within each Group are first&nbsp;<strong>OR&nbsp;</strong>ed together. The
+        Groups are then&nbsp;<strong>AND&nbsp;</strong>ed together.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>Example 1 (AND):&nbsp;</span></i></strong><span
+        style='font-size:13.5pt;color:black'>This query finds patients with&nbsp;<em>Acute
+        Myocardial Infarction&nbsp;</em>AND&nbsp;<em>Angina Pectoris.</em></span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'><img width=574 height=359 id="Picture 5"
+        src="i2b2%20help%20documents_query%20tool_files/image010.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></i></strong></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><strong><i><span
+        style='font-size:13.5pt;color:black'>Example 2 (OR):&nbsp;</span></i></strong><em><span
+        style='font-size:13.5pt;color:black'>This query finds patients with&nbsp;Acute
+        Myocardial Infarction&nbsp;OR Angina Pectoris.</span></em></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:45.0pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><b><span
+        style='font-size:13.5pt;color:black'><img width=720 height=285 id="Picture 14"
+        src="i2b2%20help%20documents_query%20tool_files/image011.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></b></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><strong><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></strong></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><strong><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></strong></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><strong><span
+        style='font-size:13.5pt;color:black'>Example 3 (AND of ORs)</span></strong><b><span
+        style='font-size:13.5pt;color:black'>:</span></b><span style='font-size:13.5pt;
+        color:black'> This query finds patients with (<em>Acute Myocardial
+        Infarction&nbsp;OR Angina Pectoris) AND&nbsp;</em>who are&nbsp;<em>male.</em></span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>*Note that the OR expression in the
+        parentheses is evaluated first.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'><img width=721 height=284 id="Picture 15"
+        src="i2b2%20help%20documents_query%20tool_files/image012.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p align=center style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:45.0pt;margin-bottom:.0001pt;text-align:center;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><b><span style='font-size:15.0pt;
+        font-family:"Times New Roman",serif;color:#333333'>3.2.2 Constraints</span></b></h3>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><strong><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></strong></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><strong><span
+        style='font-size:13.5pt;color:black'>Constraints&nbsp;</span></strong><span
+        style='font-size:13.5pt;color:black'>are used to narrow down the search
+        criteria to a particular time frame, number of occurrences or a specific value
+        or range of values. In i2b2, there are several types of constraints that can be
+        defined in the Find Patients view.</span></p>
+        
+        <p  style='margin-left:.5in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Group Constraints</span></p>
+        
+        <p  style='margin-left:1.0in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><strong><span style='font-size:13.5pt;color:black'>Date Constraint</span></strong></p>
+        
+        <p  style='margin-bottom:13.5pt;margin-left:1.5in;text-indent:
+        -.25in;vertical-align:top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Setting Date Constraint for the entire Group<br>
+        <img width=544 height=195 id="Picture 16"
+        src="i2b2%20help%20documents_query%20tool_files/image013.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"><br>
+        <br>
+        </span></p>
+        
+        <p  style='margin-bottom:13.5pt;margin-left:1.5in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Clicking on 'Set date range and/or occurrence for this entire
+        panel' will expand and display controls to set a date range that can be
+        selected to restrict the occurrences of the items in the Group to within that
+        range. Check one or both of the check boxes to indicate whether there is a
+        begin date (From) or an end date (To) or both. <img width=567 height=202
+        id="Picture 18" src="i2b2%20help%20documents_query%20tool_files/image014.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"><br>
+        <br>
+        Then type the date directly in the text box or click on the drop-down arrow to
+        open the calendar below to select a date.&nbsp;This will set the date range for
+        all items in this Group.<br>
+        <br>
+        </span></p>
+        
+        <p  style='margin-bottom:13.5pt;margin-left:1.5in;text-indent:
+        -.25in;vertical-align:top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Setting Date Constraint on individual items<br>
+        <br>
+        Sometimes only some items in the Group need date constraints or different items
+        in one group require different date constraints. In this case, hover over the
+        item and select&nbsp;<strong>Set Date Constraint calendar icon&nbsp;</strong>to
+        set the date constraint for that item specifically.<br>
+        <img width=465 height=239 id="Picture 21"
+        src="i2b2%20help%20documents_query%20tool_files/image015.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='margin-bottom:13.5pt;vertical-align:top'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>��������������������������������
+        <img width=261 height=192 id="Picture 20"
+        src="i2b2%20help%20documents_query%20tool_files/image016.png"
+        alt="A screenshot of a calendar&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='margin-bottom:13.5pt;vertical-align:top'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>&nbsp;</span></p>
+        
+        <p  style='margin-bottom:13.5pt;margin-left:1.5in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Once a date constraint is applied,&nbsp;<strong>Dates&nbsp;</strong>will
+        now be underlined to indicate a date constraint has been set.</span></p>
+        
+        <p  style='margin-bottom:13.5pt;margin-left:.5in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>��������������������� <img width=559 height=280 id="Picture 19"
+        src="i2b2%20help%20documents_query%20tool_files/image017.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='margin-left:1.0in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><strong><span style='font-size:13.5pt;color:black'>Occurrence
+        Constraint</span></strong></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>Users can define the number of times an item must occur for each
+        subject.</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:13.5pt;margin-left:
+        1.0in;vertical-align:top'><span style='font-size:13.5pt;color:black'>Clicking
+        on 'Set date range and/or occurrence for this entire panel' will expand and display
+        controls to select to restrict the occurrences of the items in the Group to
+        within that range. Enter a value in the field</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:13.5pt;margin-left:
+        1.0in;vertical-align:top'><span style='font-size:13.5pt;color:black'><img
+        width=473 height=169 id="Picture 719948040"
+        src="i2b2%20help%20documents_query%20tool_files/image018.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;vertical-align:top'><strong><span style='font-size:13.5pt;
+        color:black'>Occurs </span></strong><span style='font-size:13.5pt;color:black'>has
+        been set and the 1 will be replaced with the selected number.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'><img width=540 height=184 id="Picture 23"
+        src="i2b2%20help%20documents_query%20tool_files/image019.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='margin-left:1.0in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><b><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Exclusion&nbsp;</span></b><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:black'><br>
+        Constraint will not include patients with the concepts listed in the panel.</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>Click on the&nbsp;�without� radio button&nbsp;located in the
+        selection criteria section of the panel. The background color will change to a
+        red hue.</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'><img width=617 height=264 id="Picture 24"
+        src="i2b2%20help%20documents_query%20tool_files/image020.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p  style='margin-left:1.0in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><b><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Value Constraints (eg. labs)</span></b></p>
+        
+        <p  style='margin-left:1.0in;vertical-align:top'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Constraint
+        is by the value associated to a concept or modifier. Not all items have
+        values.&nbsp;The value constraint window will open automatically when you drop
+        a concept into a panel in the Find Patients view. To set the constraint at a
+        later time, hove over the term and select the corresponding icon to select Set
+        Value.</span></p>
+        
+        <p  style='margin-left:1.0in;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'><img width=612 height=116 id="Picture 25"
+        src="i2b2%20help%20documents_query%20tool_files/image021.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='margin-left:1.0in;vertical-align:top'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'><img
+        width=425 height=234 id="Picture 28"
+        src="i2b2%20help%20documents_query%20tool_files/image022.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='margin-left:1.0in;vertical-align:top'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>&nbsp;</span></p>
+        
+        <p  style='margin-left:1.5in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Numeric</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>The&nbsp;numeric value&nbsp;is defined in the source system when
+        the result is entered.&nbsp;Enter a numerical value at the&nbsp;Please enter a
+        value&nbsp;field.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>Unlike flag and text values, numeric values use operators, such as
+        greater than or less than when setting the constraints.</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:153.0pt;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>The&nbsp;Units&nbsp;will default to the normal units defined for
+        the item.&nbsp;Click on the&nbsp;drop-down arrow&nbsp;to change the units.</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'><br>
+        (In order for unit conversion to work a parameter called
+        CRC_ENABLE_UNITCD_CONVERSION must be defined for the project. If this is not
+        defined you need to contact your system administrator.)</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'><img width=422 height=386 id="Picture 26"
+        src="i2b2%20help%20documents_query%20tool_files/image023.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p  style='margin-bottom:13.5pt;margin-left:1.5in;text-indent:
+        -.25in;vertical-align:top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Categorical</span></p>
+        
+        <p  style='margin-bottom:13.5pt;margin-left:1.5in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'><img width=370 height=283 id="Picture 29"
+        src="i2b2%20help%20documents_query%20tool_files/image024.png"
+        alt="A screenshot of a test&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='margin-left:1.5in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Text</span></p>
+        
+        <p  style='vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:black'>��������������������������������
+        <img width=386 height=209 id="Picture 30"
+        src="i2b2%20help%20documents_query%20tool_files/image025.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:black'>&nbsp;</span></p>
+        
+        <p  style='margin-bottom:13.5pt;margin-left:1.5in;text-indent:
+        -.25in;vertical-align:top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Flags (high, low, etc.)</span></p>
+        
+        <p  style='margin-bottom:13.5pt;vertical-align:top'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>�������������������������������
+        </span><span style='font-size:13.5pt;color:black'><img width=379 height=208
+        id="Picture 27" src="i2b2%20help%20documents_query%20tool_files/image026.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='margin-bottom:13.5pt;vertical-align:top'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>&nbsp;</span></p>
+        
+        <p  style='margin-bottom:13.5pt;vertical-align:top'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>&nbsp;</span></p>
+        
+        <p  style='margin-left:1.5in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Modifier Value Constraints</span></p>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><span style='font-family:"Times New Roman",serif;
+        color:#333333'>��������������������������������� <img width=412 height=316
+        id="Picture 31" src="i2b2%20help%20documents_query%20tool_files/image027.png"
+        alt="A screenshot of a test&#10;&#10;Description automatically generated"></span></h3>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><span style='font-family:"Times New Roman",serif;
+        color:#333333'>&nbsp;</span></h3>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><span style='font-family:"Times New Roman",serif;
+        color:#333333'>&nbsp;</span></h3>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><span style='font-family:"Times New Roman",serif;
+        color:#333333'>&nbsp;</span></h3>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><b><span style='font-size:15.0pt;
+        font-family:"Times New Roman",serif;color:#333333'>3.2.3 Query Timing</span></b></h3>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>Choose the relationship between the query
+        panels. The default timing is independent.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <h4 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.5in;
+        margin-bottom:.0001pt;text-indent:-.25in;vertical-align:top'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'>1.<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'>Independent</span></h4>
+        
+        <p class=auto-cursor-target style='margin-top:0in;margin-right:0in;margin-bottom:
+        0in;margin-left:1.0in;margin-bottom:.0001pt;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:10.0pt;font-family:"Courier New";color:black'>o<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp; </span></span><span
+        style='font-size:13.5pt;color:black'>The items (facts) can occur at&nbsp;any time&nbsp;in
+        the patient's history.</span></p>
+        
+        <p class=Title1 style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:1.0in;margin-bottom:.0001pt;vertical-align:top'><b><span
+        style='font-size:13.5pt;color:black'><br>
+        [Example]</span></b><span style='font-size:13.5pt;color:black'><br>
+        Patient has a medication with a dose greater than 500 mg&nbsp;and&nbsp;a
+        medication that is taken once a day documented at&nbsp;any time&nbsp;in their
+        history.</span></p>
+        
+        <p class=Title1 style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:1.0in;margin-bottom:.0001pt;vertical-align:top'><b><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></b></p>
+        
+        <p class=Title1 style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:1.0in;margin-bottom:.0001pt;vertical-align:top'><b><span
+        style='font-size:13.5pt;color:black'><img width=516 height=252 id="Picture 32"
+        src="i2b2%20help%20documents_query%20tool_files/image028.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></b></p>
+        
+        <p class=Title1 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><b><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></b></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <h4 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.5in;
+        margin-bottom:.0001pt;text-indent:-.25in;vertical-align:top'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'>2.<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'>Same
+        Financial Encounter</span></h4>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;text-indent:-.25in;vertical-align:top'><span
+        style='font-size:10.0pt;font-family:"Courier New";color:black'>o<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp; </span></span><span
+        style='font-size:13.5pt;color:black'>The items (facts) occur during
+        the&nbsp;same visit&nbsp;(financial encounter).</span></p>
+        
+        <p  style='margin-left:1.0in;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:10.0pt;font-family:"Courier New";color:black'>o<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp; </span></span><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>When
+        this is selected, individual panels can be included in the &quot;same
+        encounter&quot; query, or they can be treated independently<br>
+        </span><b><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'><br>
+        [Example]<br>
+        </span></b><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Patient has a diagnosis of Acute MI documented at&nbsp;any
+        time&nbsp;in their history and they have a medication with a dose greater than
+        500 mg&nbsp;and&nbsp;a medication that is taken once a day documented during
+        the&nbsp;same visit.</span></p>
+        
+        <p  style='vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:black'>������������������������������������
+        <img width=430 height=310 id="Picture 33"
+        src="i2b2%20help%20documents_query%20tool_files/image029.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:black'>�����������������������������������
+        <img width=506 height=363 id="Picture 34"
+        src="i2b2%20help%20documents_query%20tool_files/image030.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:black'>&nbsp;</span></p>
+        
+        <p  style='vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:black'>&nbsp;</span></p>
+        
+        <h4 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.5in;
+        margin-bottom:.0001pt;text-indent:-.25in;vertical-align:top'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'>3.<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'>Temporal
+        Query</span></h4>
+        
+        <p class=auto-cursor-target style='margin-top:0in;margin-right:0in;margin-bottom:
+        0in;margin-left:1.0in;margin-bottom:.0001pt;text-indent:-.25in;vertical-align:
+        top'><span style='font-size:10.0pt;font-family:"Courier New";color:black'>o<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp; </span></span><span
+        style='font-size:13.5pt;color:black'>In this mode, a sequence of events are
+        defined that are anchored by a constraining population. The constraining
+        population is defined exactly like other query types. To build a sequence of
+        events, select the �when� radio button located in the selection criteria
+        section of the panel. The background color will change to a yellow hue.</span></p>
+        
+        <p class=auto-cursor-target style='margin-top:0in;margin-right:0in;margin-bottom:
+        0in;margin-left:1.0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>���������� <img width=439 height=268
+        id="Picture 35" src="i2b2%20help%20documents_query%20tool_files/image031.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p class=auto-cursor-target style='margin-top:0in;margin-right:0in;margin-bottom:
+        0in;margin-left:.5in;margin-bottom:.0001pt;text-indent:.5in;vertical-align:
+        top'><b><span style='font-size:13.5pt;color:black'>[Example]</span></b></p>
+        
+        <p class=auto-cursor-target style='margin-top:0in;margin-right:0in;margin-bottom:
+        0in;margin-left:1.0in;margin-bottom:.0001pt;text-indent:-.25in;vertical-align:
+        top'><em><span style='font-size:10.0pt;font-family:"Courier New";color:black;
+        font-style:normal'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+        </span></span></em><span style='font-size:13.5pt;color:black'>Finds patients
+        who were diagnosed with diabetes (<i>Event 1</i>) prior to the first
+        observation of an antidiabetic medication&nbsp;<em>(Event 2)</em>. The
+        population is constrained to patients over 64 years of age&nbsp;<em>(bottom
+        panel).</em></span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><em><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></em></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:45.0pt;
+        margin-bottom:.0001pt;vertical-align:top'><em><span style='font-size:13.5pt;
+        color:black'>������������ </span></em><i><span style='font-size:13.5pt;
+        color:black'><img width=545 height=443 id="Picture 36"
+        src="i2b2%20help%20documents_query%20tool_files/image032.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></i></p>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><b><span style='font-size:15.0pt;
+        font-family:"Times New Roman",serif;color:#333333'>3.2.4 Reloading a Previous
+        Query</span></b></h3>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'><br>
+        Saved queries (either from Queries panel or the Workplace) can be reloaded by
+        dragging them to the Name bar at the bottom of the Find Patients panel. They
+        can be used within a query by dragging them into a query panel. See the&nbsp;</span><a
+        href="https://community.i2b2.org/wiki/display/IWDD/6.+Previous+Queries"><span
+        style='font-size:13.5pt;color:#4A7FA7'>Query section&nbsp;</span></a><span
+        style='font-size:13.5pt;color:black'>.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        class=confluence-embedded-file-wrapper><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></span></p>
+        
+        <p class=auto-cursor-target style='margin-top:0in;margin-right:0in;margin-bottom:
+        0in;margin-left:1.0in;margin-bottom:.0001pt;text-indent:-.25in;vertical-align:
+        top'><em><span style='font-size:10.0pt;font-family:"Courier New";color:black;
+        font-style:normal'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+        </span></span></em><span style='font-size:13.5pt;color:black'>Reload a previous
+        query.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;text-indent:.5in;vertical-align:
+        top'><span style='font-size:13.5pt;color:black'>���������� <img border=0
+        width=447 height=280 id="Picture 38"
+        src="i2b2%20help%20documents_query%20tool_files/image033.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p class=auto-cursor-target style='margin-top:0in;margin-right:0in;margin-bottom:
+        0in;margin-left:1.0in;margin-bottom:.0001pt;text-indent:-.25in;vertical-align:
+        top'><em><span style='font-size:10.0pt;font-family:"Courier New";color:black;
+        font-style:normal'>o<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;
+        </span></span></em><span style='font-size:13.5pt;color:black'>Use a previous
+        query within a new query.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>�������������������� <img border=0
+        width=451 height=282 id="Picture 37"
+        src="i2b2%20help%20documents_query%20tool_files/image034.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><b><span style='font-size:15.0pt;
+        font-family:"Times New Roman",serif;color:#333333'>3.2.5 Resetting the Query
+        Tool<br>
+        </span></b><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'><br>
+        There are three options for resetting the&nbsp;<strong>Find Patient panel</strong>.
+        Users can (1) reset all the groups, (2) clear all items in a panel, or (3)
+        delete an individual item from the group.</span></h3>
+        
+        <table Table border=0 cellspacing=0 cellpadding=0
+         style='border-collapse:collapse'>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><strong><span style='font-size:
+          13.5pt;color:#333333'>1. Reset All Groups:&nbsp;</span></strong><span
+          style='font-size:13.5pt'>Click on the&nbsp;<strong>Clear All button&nbsp;</strong>located
+          on the toolbar at the bottom of the&nbsp;<i>Find Patients panel.</i></span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><strong><span style='font-size:
+          13.5pt'>2. Clear Items in a Panel / Group&nbsp;</span></strong><span
+          style='font-size:13.5pt'>: Click on the&nbsp;<strong>Delete �X� button<span
+          style='color:#CCCCCC'>&nbsp;</span></strong>located in the top right corner
+          of the panel (next to the panel controls).</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><b><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+          color:#333333'>3</span></b><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+          color:#333333'>. <b>Delete Single Item:</b>&nbsp;Hover over a concept, and
+          click on the X icon to remove from the panel</span></p>
+          </td>
+         </tr>
+        </table>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:15.0pt;color:#333333;letter-spacing:-.1pt'>&nbsp;</span></h2>
+        
+        <h2 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.5in;
+        margin-bottom:.0001pt;text-indent:.5in;vertical-align:top'><span
+        style='font-size:15.0pt;color:#333333;letter-spacing:-.1pt'><img border=0
+        width=528 height=334 id="Picture 39"
+        src="i2b2%20help%20documents_query%20tool_files/image035.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></h2>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:15.0pt;color:#333333;letter-spacing:-.1pt'>&nbsp;</span></h2>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:15.0pt;color:#333333;letter-spacing:-.1pt'>&nbsp;</span></h2>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='color:#333333'>3.3 Running a Query</span></h2>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='color:#333333'>&nbsp;</span></h2>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><b><span style='font-size:15.0pt;
+        font-family:"Times New Roman",serif;color:#333333'>3.3.1 Run Query</span></b></h3>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>Once the query criterion has been defined,
+        the final steps are to click on the&nbsp;<b>Find Patient</b> <b>button</b>,
+        select the result type(s), and click on the&nbsp;�Run Query� button&nbsp;to run
+        the query.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>Once you have defined the search criteria,
+        click on the&nbsp;<b>�Find Patients� </b>button&nbsp;located on the toolbar at
+        the bottom of the&nbsp;Find Patients panel.&nbsp;A new �Run Query Options� window
+        will open.</span></p>
+        
+        <ul type=disc>
+         <ul type=circle>
+          <li  style='color:black;vertical-align:top'><span
+              style='font-size:13.5pt;font-family:"Times New Roman",serif'>A name for
+              the query will default at the �Name for query� field.&nbsp;Either change
+              the name of the query or accept the default.</span></li>
+          <li  style='color:black;vertical-align:top'><span
+              style='font-size:13.5pt;font-family:"Times New Roman",serif'>In the query
+              result type section, click on the&nbsp;checkboxes&nbsp;for
+              those&nbsp;result types&nbsp;you want to include when the query is run.</span></li>
+          <li  style='color:black;vertical-align:top'><span
+              style='font-size:13.5pt;font-family:"Times New Roman",serif'>Click on
+              the&nbsp;�Run Query� button.</span></li>
+          <li  style='color:black;vertical-align:top'><span
+              style='font-size:13.5pt;font-family:"Times New Roman",serif'>The Run
+              Query Options window will close and the querying process will begin.</span></li>
+         </ul>
+        </ul>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>Once you begin the process of running the
+        query the&nbsp;Query Status view&nbsp;will display &quot;Running Query&quot;,
+        the name of the query, and the time that has elapsed.</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:45.0pt;
+        margin-bottom:.0001pt;vertical-align:top'><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><span style='font-family:"Times New Roman",serif;
+        color:#333333'>&nbsp;</span></h3>
+        
+        <p >����������� </p>
+        
+        <p  style='margin-left:1.5in;text-indent:.5in'>&nbsp;</p>
+        
+        <p  style='margin-left:1.0in;text-indent:.5in'><img border=0
+        width=353 height=351 id="Picture 41"
+        src="i2b2%20help%20documents_query%20tool_files/image036.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></p>
+        
+        <p >&nbsp;</p>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><span style='font-family:"Times New Roman",serif;
+        color:#333333'>&nbsp;</span></h3>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><span style='font-family:"Times New Roman",serif;
+        color:#333333'>&nbsp;</span></h3>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><b><span style='font-size:15.0pt;
+        font-family:"Times New Roman",serif;color:#333333'>3.3.2 Query Result Options<br>
+        <br>
+        </span></b></h3>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>There are three categories of query type:
+        counts, sets, and breakdowns.<br>
+        Note: The Timeline type is not used in the Web Client. If selected it will work
+        the same as patient set.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <h4 style='margin-top:0in;vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:#333333'>1) Number of Patients</span></h4>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>This option will return a total count for
+        those patients who meet the defined criteria. This is the most common and
+        fastest query type.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>��������� </span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>���� ���� �����</span><img border=0
+        width=508 height=156 id="Picture 3"
+        src="i2b2%20help%20documents_query%20tool_files/image037.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <h4 style='margin-top:0in;vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:#333333'>2) Patient/Encounter Set</span></h4>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>These options return a set of patients or
+        encounters&nbsp;that meet the defined criteria. The set is visible in the Queries
+        panel and can be used in future queries, the workspace, and by plugins.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>Only information on the query's completion
+        is shown in the Query Status panel.</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'><img border=0 width=451 height=279
+        id="Picture 42" src="i2b2%20help%20documents_query%20tool_files/image038.png"></span></p>
+        
+        <h4 style='margin-top:0in;vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:#333333'>&nbsp;</span></h4>
+        
+        <h4 style='margin-top:0in;vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:#333333'>3) Patient Breakdowns</span></h4>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>The following query types will return
+        patient counts stratified by the selected breakdown category (e.g., Gender or
+        Age).</span></p>
+        
+        <table Table border=0 cellspacing=0 cellpadding=0
+         style='border-collapse:collapse'>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><b><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+          color:#333333'>Breakdown type</span></b></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>Gender
+          patient breakdown</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>Vital
+          Status patient breakdown</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>Race
+          patient breakdown</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>Age
+          patient breakdown</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>Length
+          of Stay breakdown</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt'>Top
+          20 Medications Breakdown</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt'>Top
+          20 diagnoses Breakdown</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt'>Inpatient
+          and Outpatient Breakdown</span></p>
+          </td>
+         </tr>
+        </table>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <h3 style='margin-top:0in;vertical-align:top'><b><span style='font-size:15.0pt;
+        font-family:"Times New Roman",serif;color:#333333'>3.3.3. Query Status</span></b></h3>
+        
+        <p >&nbsp;</p>
+        
+        <h4 style='margin-top:0in;vertical-align:top'><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:#333333'>When a query is running, the
+        query status panel will show its status.</span></h4>
+        
+        <p >&nbsp;</p>
+        
+        <table Table border=0 cellspacing=0 cellpadding=0
+         style='border-collapse:collapse'>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><b><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+          color:#333333'>Status</span></b></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><b><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+          color:#333333'>Meaning</span></b></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>Running</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>The
+          query is currently running on the server and the client is waiting for
+          results.</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>Finished</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>The
+          query has completed. Results will be shown below this message.</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>Queued</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>The
+          query took longer than the configured timeout. (Defaults to 180 seconds.) It
+          is still running in the background and the results will appear in Previous
+          Queries when it completes.</span></p>
+          </td>
+         </tr>
+         <tr>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>Error</span></p>
+          </td>
+          <td valign=top style='padding:5.25pt 7.5pt 5.25pt 7.5pt'>
+          <p ><span style='font-size:13.5pt;font-family:"Times New Roman",serif'>An
+          error occurred running the query. More information might be available in the
+          XML Message Log.</span></p>
+          </td>
+         </tr>
+        </table>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+    </div><!--querytool-->
+    <div id="querystatus" class=WordSection1>
+
+        <p ><span style='font-size:13.5pt;
+        color:black'>The&nbsp;<strong>Query Status&nbsp;</strong>panel&nbsp;contains
+        information regarding the state of a query.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>&nbsp;</span></p>
+        
+        <h1 style='margin-top:0in'><strong><span style='font-size:14.0pt;font-family:
+        "Times",serif;color:black;font-weight:normal'>Show Query Status</span></strong></h1>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>While a query is running, the name of
+        the query and how long it has been running will appear.<br>
+        <br>
+        </span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>Additional information that shows up in
+        this&nbsp;tab depends on which options are selected in the 'Run Query Options'
+        popup box when the query is run.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>&nbsp;</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>Once the query has finished, the number
+        of patients meeting the search criteria, and the time it took to run the query,&nbsp;will
+        appear.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>&nbsp;</span></p>
+        
+        <p style='margin:0in;margin-bottom:.0001pt;text-indent:.5in'><img width=589
+        height=182 id="Picture 3"
+        src="i2b2%20help%20documents_query%20status_files/image001.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></p>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>&nbsp;</span></p>
+        
+        <h1 style='margin-top:0in'><strong><span style='font-size:14.0pt;font-family:
+        "Times",serif;color:black;font-weight:normal'>Graph Results</span></strong></h1>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>If any of the breakdown categories (Age,
+        Race, Gender, Vital Status, Length of Stay, Top 20 diagnoses, Top 20
+        medications, Inpatient and Outpatient)&nbsp;are selected in 'Run Query Options',
+        a&nbsp;bar graph&nbsp;will display for each category selected.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>&nbsp;</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>This is the Run Query Options showing
+        default breakdown types:</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>&nbsp;</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;text-indent:.5in'><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'><img width=361 height=361 id="Picture 61"
+        src="i2b2%20help%20documents_query%20status_files/image002.png"
+        alt="A screenshot of a computer screen&#10;&#10;Description automatically generated"></span></p>
+        
+        <h1 style='margin-top:0in'><strong><span style='font-family:"Times",serif;
+        color:#333333;font-weight:normal'>&nbsp;</span></strong></h1>
+        
+        <h1 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt'><span style='font-family:"Times",serif;color:#333333'><img
+        width=458 height=368 id="Picture 60"
+        src="i2b2%20help%20documents_query%20status_files/image003.png"></span></h1>
+        
+        <h1 style='margin-top:0in'><strong><span style='font-family:"Times",serif;
+        color:#333333;font-weight:normal'>&nbsp;</span></strong></h1>
+        
+        <h1 style='margin-top:0in'><strong><span style='font-size:14.0pt;font-family:
+        "Times",serif;color:black;font-weight:normal'>Query Report<br>
+        <br>
+        </span></strong></h1>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>The 'Query Report' button displays a
+        textual representation of the query.� It can be printed by clicking on the 'View
+        Report' button in the upper right hand corner.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>������������������ </span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.5in;
+        margin-bottom:.0001pt'><span style='font-size:13.5pt;font-family:"Times",serif;
+        color:black'><img width=562 height=291 id="Picture 62"
+        src="i2b2%20help%20documents_query%20status_files/image004.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        font-family:"Times",serif;color:black'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p class=paragraph ><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+        <p ><span style='font-family:"Times New Roman",serif'>&nbsp;</span></p>
+        
+    </div> <!--querystatus-->
+    <div id="navigateterms" class=WordSection1>
+
+        <p ><span style='font-size:13.5pt;
+        color:black'>Terms, (also called concepts), make up vocabularies (or
+        ontologies) in i2b2 and are the building blocks of i2b2 queries.&nbsp; The
+        Terms Panel&nbsp;is used to find terms for constructing queries. It has two modes,
+        <strong>Term </strong><strong><span style='font-weight:normal'>view</span></strong>
+        and the&nbsp;<b>Search </b>view.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>The&nbsp;<strong>Terms&nbsp;</strong>tab is used to drill into a
+        hierarchy of terms and find terms of interest to query.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>The&nbsp;<strong>Search input&nbsp;</strong> is used to search for
+        terms or codes to be used in queries.</span></p>
+        
+        <h1 style='margin-top:0in'><strong><span style='color:#333333;font-weight:normal'>&nbsp;</span></strong></h1>
+        
+        <h2 style='margin:0in;margin-bottom:.0001pt;vertical-align:top'><span
+        style='font-size:20.0pt'>Navigate Terms Tab</span></h2>
+        
+        <p >&nbsp;</p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>The&nbsp;<strong>Navigate Terms&nbsp;</strong>tab is used to find
+        ontology items to be used in a query.&nbsp;<span class=normaltextrun>This panel
+        displays the i2b2 query terms or concepts. Terms&nbsp;</span></span><span
+        class=normaltextrun><span style='font-size:13.5pt;color:#172B4D'>are grouped
+        with similar items and displayed in a hierarchical tree structure that can be
+        expanded to view all items in the category.</span></span></p>
+        
+        <p ><span class=normaltextrun><span
+        style='font-size:13.5pt;color:#172B4D'>F</span></span><span
+        class=normaltextrun><span style='font-size:13.5pt;color:black'>olders are
+        expanded by clicking on the '+' sign. The '+' changes to a '-' and the next
+        level of detail is displayed.&nbsp;</span></span><span class=normaltextrun><span
+        style='font-size:13.5pt;color:#172B4D'>The hierarchical structure consists
+        of&nbsp;</span></span><span class=normaltextrun><u><span style='font-size:13.5pt;
+        color:red'>containers&nbsp;</span></u></span><span class=normaltextrun><span
+        style='font-size:13.5pt;color:black'>,&nbsp;</span></span><span
+        class=normaltextrun><u><span style='font-size:13.5pt;color:#00B050'>folders&nbsp;</span></u></span><span
+        class=normaltextrun><span style='font-size:13.5pt;color:black'>and&nbsp;</span></span><span
+        class=normaltextrun><u><span style='font-size:13.5pt;color:#0070C0'>leaves&nbsp;</span></u></span><span
+        class=normaltextrun><span style='font-size:13.5pt;color:#0070C0'>.</span></span></p>
+        
+        <p ><span class=normaltextrun><span
+        style='font-size:13.5pt;color:#0070C0'>&nbsp;</span></span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.5in;
+        margin-bottom:.0001pt'><span style='font-size:13.5pt;color:black'><img
+        width=357 height=529 id="Picture 43"
+        src="i2b2%20help%20documents_navigate%20terms_files/image001.png"
+        alt="A screenshot of a medical survey&#10;&#10;Description automatically generated"></span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><b><span style='font-size:13.5pt;
+        color:black'><img width=67 height=30 id="Picture 73"
+        src="i2b2%20help%20documents_navigate%20terms_files/image002.png"></span></b><span
+        class=confluence-embedded-file-wrapper><b><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></b></span><strong><span style='font-size:13.5pt;
+        color:red'>Containers&nbsp;</span></strong><span style='font-size:13.5pt;
+        color:black'>are the highest level of the hierarchy. They can be expanded&nbsp;
+        by clicking on the&nbsp;</span><em><span style='font-size:13.5pt;color:black'>plus
+        sign&nbsp;</span></em><span style='font-size:13.5pt;color:black'>(+) or
+        collapsed by clicking on the&nbsp;</span><em><span style='font-size:13.5pt;
+        color:black'>minus sign&nbsp;</span></em><span style='font-size:13.5pt;
+        color:black'>(-). Containers cannot be dragged to other panels.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'><img width=67 height=29 id="Picture 72"
+        src="i2b2%20help%20documents_navigate%20terms_files/image003.png"></span><span
+        class=confluence-embedded-file-wrapper><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></span><strong><span style='font-size:13.5pt;
+        color:#339966'>Folders&nbsp;</span></strong><span style='font-size:13.5pt;
+        color:black'>Like containers, folders can be expanded using the + and collapsed
+        using the -.&nbsp; Unlike containers, folders can be dragged to other
+        panels.&nbsp; When a folder is dragged into a query group, the resulting query
+        will return results for everything in the folder.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'><img width=53 height=44 id="Picture 71"
+        src="i2b2%20help%20documents_navigate%20terms_files/image004.png"></span><span
+        class=confluence-embedded-file-wrapper><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></span><strong><span style='font-size:13.5pt;
+        color:blue'>Leaves&nbsp;</span></strong><span style='font-size:13.5pt;
+        color:black'>are the lowest level of the hierarchy.&nbsp; They cannot be
+        expanded or collapsed.&nbsp; They can be dragged into query groups as query
+        criteria.</span></p>
+        
+        <h1 style='margin-top:0in'><span style='font-size:24.0pt;font-family:"Times New Roman",serif;
+        color:#333333'>&nbsp;</span></h1>
+        
+        <h1 style='margin-top:0in'><strong><span style='color:#333333;font-weight:normal'>Find
+        Mode</span></strong></h1>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>The&nbsp;<strong>Find&nbsp;</strong>mode&nbsp;provides a way to
+        search for a query items.&nbsp;</span><span class=normaltextrun><span
+        style='font-size:13.5pt;color:#333333'>Query terms can be located using
+        the&nbsp;Find&nbsp;input field.</span></span></p>
+        
+        <h2 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;text-indent:.5in'><span style='color:#333333'><img
+        width=347 height=289 id="Picture 44"
+        src="i2b2%20help%20documents_navigate%20terms_files/image005.png"
+        alt="A screenshot of a search bar&#10;&#10;Description automatically generated"></span></h2>
+        
+        <h2 ><span class=normaltextrun><span
+        style='color:#333333'>&nbsp;</span></span></h2>
+        
+        <h2 ><span class=normaltextrun><span
+        style='font-size:16.0pt;color:#333333'>A. The&nbsp;</span></span><strong><span
+        style='font-size:16.0pt;color:#333333'>Search by Names&nbsp;</span></strong><span
+        class=normaltextrun><span style='font-size:16.0pt;color:#333333'>mode&nbsp;is
+        used to&nbsp;find&nbsp;all query items containing particular text.</span></span></h2>
+        
+        <p  style='margin-left:.5in;text-indent:-.25in'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>1.<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+        class=normaltextrun><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Enter search string. All results returned will be those terms
+        whose name or code CONTAINS the text entered in the search input field.&nbsp;</span></span></p>
+        
+        <p  style='margin-left:.5in;text-indent:-.25in'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>2.<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+        class=normaltextrun><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Choose a category from the drop-down menu&nbsp;or leave it as the
+        default of �Any Category�, which will search all categories.</span></span></p>
+        
+        <p  style='margin-left:.5in;text-indent:-.25in'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>3.<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+        class=normaltextrun><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>Click Enter on the keyboard or click the search icon to run the
+        search</span></span></p>
+        
+        <p  style='margin-left:.5in;text-indent:-.25in'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>4.<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Select
+        any terms returned by the search and drag them into a query group to use as
+        query criteria.</span></p>
+        
+        <p ><b><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:#333333'>&nbsp;</span></b></p>
+        
+        <p ><span class=normaltextrun><b><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:#333333'>[Example]</span></b></span><span
+        class=normaltextrun><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:#333333'> Find all terms containing the text �rheumatic fever�.</span></span></p>
+        
+        <p  style='margin-left:1.5in;text-indent:.5in'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'><img
+        width=359 height=304 id="Picture 47"
+        src="i2b2%20help%20documents_navigate%20terms_files/image006.png"
+        alt="A screenshot of a medical information&#10;&#10;Description automatically generated"></span></p>
+        
+        <p class=Title1 ><span
+        style='font-size:13.5pt;color:#333333'>Note: </span><span style='font-size:
+        13.5pt;color:black'>New in v1.7.12</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>The Find Terms view has changed. The same query now shows many
+        fewer results and it shows their placement in the hierarchy. Search results are
+        highlighted in bold emphasis, and parent results can also be dragged into other
+        panels. Results which are hierarchically within another result are omitted to
+        save space (e.g., many of the results in the graphic above are within the Acute
+        Rheumatic fever folder). </span></p>
+        
+        <p ><span style='position:absolute;z-index:251658240;margin-left:
+        371px;margin-top:58px;width:315px;height:264px'><img width=315 height=264
+        src="i2b2%20help%20documents_navigate%20terms_files/image007.png"
+        alt="A screenshot of a medical information&#10;&#10;Description automatically generated"></span><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'>Right
+        click on a term to view a menu. Click �View in Tree� to restore the navigate mode.
+        </span></p>
+        
+        <p ><span style='position:absolute;z-index:251659264;margin-left:
+        313px;margin-top:121px;width:56px;height:19px'><img width=56 height=19
+        src="i2b2%20help%20documents_navigate%20terms_files/image008.png"></span><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'><img
+        width=309 height=264 id="Picture 46"
+        src="i2b2%20help%20documents_navigate%20terms_files/image009.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></p>
+        
+        <p  style='margin-left:.25in'><span class=normaltextrun><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'>&nbsp;</span></span></p>
+        
+        <p  style='margin-left:.25in'><span class=normaltextrun><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'>&nbsp;</span></span></p>
+        
+        <p  style='margin-left:.25in'><span class=normaltextrun><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:#333333'>&nbsp;</span></span></p>
+        
+        <h2 ><span class=normaltextrun><span
+        style='font-size:16.0pt'>B. The&nbsp;Search by Codes&nbsp;<span
+        style='color:#333333'>tab is used to find coded variables.</span></span></span></h2>
+        
+        <h2 ><span class=normaltextrun><span
+        style='font-size:16.0pt;color:#333333'>&nbsp;</span></span></h2>
+        
+        <p class=paragraph ><span
+        class=normaltextrun><span style='font-size:13.5pt;color:black'>To use this
+        option, a code must be entered and a coding system selected.</span></span></p>
+        
+        <p class=paragraph ><span
+        class=normaltextrun><b><span style='font-size:13.5pt;color:black'>&nbsp;</span></b></span></p>
+        
+        <p class=paragraph ><span
+        class=normaltextrun><b><span style='font-size:13.5pt;color:black'>[Example]</span></b></span><span
+        class=normaltextrun><span style='font-size:13.5pt;color:black'> Find LOINC code
+        32673-6</span></span></p>
+        
+        <p class=paragraph style='margin-left:.5in;text-indent:-.25in'><span
+        style='font-size:13.5pt;color:black'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:13.5pt;color:black'>Enter the code in the
+        search input field </span></p>
+        
+        <p class=paragraph style='margin-left:.5in;text-indent:-.25in'><span
+        style='font-size:13.5pt;color:black'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span><span style='font-size:13.5pt;color:black'>2.&nbsp;Click on
+        the&nbsp;<strong>drop-down arrow, </strong>select <b>Coding System,</b> and
+        select&nbsp;<strong>LOINC&nbsp;</strong>from the drop down list.</span></p>
+        
+        <p  style='margin-left:.5in;text-indent:-.25in'><span
+        class=normaltextrun><span style='font-size:13.5pt;font-family:"Times New Roman",serif;
+        color:black'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+        </span></span></span><span class=normaltextrun><span style='font-size:13.5pt;
+        font-family:"Times New Roman",serif;color:black'>Click Enter on the keyboard or
+        click the search icon to run the search</span></span></p>
+        
+        <p  style='margin-left:.5in;text-indent:-.25in'><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>4.<span
+        style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+        style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>The
+        results will be displayed in the results section.</span></p>
+        
+        <h2 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.5in;
+        margin-bottom:.0001pt;text-indent:.5in'><span style='color:#333333'><img
+        width=455 height=292 id="Picture 49"
+        src="i2b2%20help%20documents_navigate%20terms_files/image010.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></h2>
+        
+        <h2 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.5in;
+        margin-bottom:.0001pt;text-indent:.5in'><span style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.5in;
+        margin-bottom:.0001pt;text-indent:.5in'><span style='color:#333333'><img
+        width=364 height=153 id="Picture 50"
+        src="i2b2%20help%20documents_navigate%20terms_files/image011.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></h2>
+        
+        <h2 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;text-indent:.5in'><span style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;text-indent:.5in'><span style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;text-indent:.5in'><span style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;text-indent:.5in'><span style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;text-indent:.5in'><span style='color:#333333'>&nbsp;</span></h2>
+        
+        <h2 ><strong><span style='color:#333333'>&nbsp;</span></strong></h2>
+        
+        <h2 ><strong><span style='color:#333333'>&nbsp;</span></strong></h2>
+        
+        <h2 ><strong><span style='color:#333333'>&nbsp;</span></strong></h2>
+        
+        <h2 ><strong><span style='color:#333333'>Options
+        for Finding Terms</span></strong></h2>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>Right clicking on Terms opens an the Options for
+        Navigating/Searching Terms that provides additional options for finding terms.</span></p>
+        
+        <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:1.0in;
+        margin-bottom:.0001pt;text-indent:.5in'><span style='font-size:13.5pt;
+        color:black'><img width=355 height=61 id="Picture 53"
+        src="i2b2%20help%20documents_navigate%20terms_files/image012.png"
+        alt="A white and orange rectangle&#10;&#10;Description automatically generated"></span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p class=paragraph style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+        margin-left:1.0in;margin-bottom:.0001pt;text-indent:.5in'><b><span
+        style='font-size:13.5pt;color:black'><img width=355 height=275 id="Picture 51"
+        src="i2b2%20help%20documents_navigate%20terms_files/image013.png"
+        alt="A screenshot of a computer&#10;&#10;Description automatically generated"></span></b></p>
+        
+        <p class=paragraph ><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p class=paragraph ><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p class=paragraph ><span
+        style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+        
+        <p ><strong><span style='font-size:
+        13.5pt;color:black'>Maximum Number of Children to Display</span></strong></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>The default value for&nbsp;<strong>Maximum number of children to
+        display&nbsp;</strong>for a search of terms or codes&nbsp;is&nbsp;usually 200.&nbsp;
+        However, this number can be changed to retrieve either more or fewer results.
+        When a search is run, once the maximum number of terms is reached a message
+        will appear to say that the query has reached the maximum number of terms and
+        suggest&nbsp;searching again with a more specific query. Running a search with
+        a more specific query will narrow results as the selection criteria will not be
+        as broadly defined.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><strong><span style='font-size:
+        13.5pt;color:black'>Show Hidden Terms</span></strong></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>In the metadata table, an attribute is set to determine whether a
+        term is active, inactive or hidden. If an item is marked as hidden it will not
+        appear in the list of terms. Selecting&nbsp;<strong>Show Hidden Terms&nbsp;</strong>will
+        display those items marked to be hidden. For easy identification, hidden terms
+        will be </span><b><span style='font-size:13.5pt;color:red'>red</span></b><span
+        style='font-size:13.5pt;color:black'> when displayed in the results list.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><strong><span style='font-size:
+        13.5pt;color:black'>Show Synonymous Terms</span></strong></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>Some terms may be flagged in the metadata table as a synonym of
+        another term. Selecting&nbsp;<strong>Show Synonymous Terms&nbsp;</strong>will
+        display both the original term and the synonym in the&nbsp;</span><em><span
+        style='font-size:13.5pt;color:black;font-style:normal'>Terms view</span></em><span
+        style='font-size:13.5pt;color:black'>. For easy identification, synonymous
+        terms will be </span><b><span style='font-size:13.5pt;color:#0070C0'>blue</span></b><span
+        style='font-size:13.5pt;color:black'> when displayed in the results list.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><strong><span style='font-size:
+        13.5pt;color:black'>&nbsp;</span></strong></p>
+        
+        <p ><strong><span style='font-size:
+        13.5pt;color:black'>&nbsp;</span></strong></p>
+        
+        <p ><strong><span style='font-size:
+        13.5pt;color:black'>Enable Patient Counts</span></strong></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>The&nbsp;<strong>Enable patient counts&nbsp;</strong>option will
+        display the total number of patients that have a fact entered for that item.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><strong><span style='font-size:
+        13.5pt;color:black'>Use Short Tooltips</span></strong></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>In the i2b2 webclient, a tooltip displays when the cursor hovers
+        over an item. By default, the tooltip that displays contains the entire path
+        name and the tooltip that is specific to that item. Enabling the&nbsp;<strong>Use
+        short tooltips&nbsp;</strong>option will only display the tooltip information;
+        the path will not be included.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><strong><span style='font-size:
+        13.5pt;color:black'>Show Concept Codes in Tooltips</span></strong></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>In addition to showing the tooltip, this option will also display
+        the concept code associated with the item.</span></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>&nbsp;</span></p>
+        
+        <p ><strong><span style='font-size:
+        13.5pt;color:black'>Disable Modifiers</span></strong></p>
+        
+        <p ><span style='font-size:13.5pt;
+        color:black'>The ability to search for modifiers will not be available if
+        the&nbsp;<strong>Disable modifiers&nbsp;</strong>option is checked off.</span></p>
+        
+    </div> <!--navigateterms-->
+</div><!-- /.container -->
+
+</body>
+</html>

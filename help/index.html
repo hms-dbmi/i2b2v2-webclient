@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>i2b2 Web Client Help</title>
+    <style>
+      #tree-nav {
+        width:30%;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+      .main-help {
+        margin-left:30%;
+      }
+      a { font-weight: bold; }
+    </style>
+
+    <!-- Required Stylesheets -->
+    <link href="../js-ext/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../js-ext/bootstrap/shim/glyphicon.css" rel="stylesheet">
+
+    <!-- Required Javascript -->
+    <script src="../js-ext/jquery/3.6.0/jquery.js"></script>
+    <script src="../js-ext/bootstrap-treeview/bootstrap-treeview.js"></script>
+</head>
+<body>
+<div class="container">
+  <h1>Bootstrap Tree View</h1>
+  <br>
+  <div class="row">
+    <div class="col-sm-4">
+      <div id="tree-nav"></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="main-help">
+  <a id="parent1">Parent1</a>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <a id="child1">Child1</a>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+  <p>This</p>
+  <p>is</p>
+  <p>some</p>
+  <p>content</p>
+  <hr>
+</div>
+
+
+
+
+
+
+
+  <script>
+
+    let treedata = [
+      {
+        text: 'Parent 1',
+        href: '#parent1',
+        tags: ['4'],
+        nodes: [
+          {
+            text: 'Child 1',
+            href: '#child1',
+            tags: ['2'],
+            nodes: [
+              {
+                text: 'Grandchild 1',
+                href: '#grandchild1',
+                tags: ['0']
+              },
+              {
+                text: 'Grandchild 2',
+                href: '#grandchild2',
+                tags: ['0']
+              }
+            ]
+          },
+          {
+            text: 'Child 2',
+            href: '#child2',
+            tags: ['0']
+          }
+        ]
+      },
+      {
+        text: 'Parent 2',
+        href: '#parent2',
+        tags: ['0']
+      },
+      {
+        text: 'Parent 3',
+        href: '#parent3',
+        tags: ['0']
+      },
+      {
+        text: 'Parent 4',
+        href: '#parent4',
+        tags: ['0']
+      },
+      {
+        text: 'Parent 5',
+        href: '#parent5'  ,
+        tags: ['0']
+      }
+    ];
+
+    $("#tree-nav").treeview({
+      data: treedata,
+      enableLinks: true
+    });
+  </script>
+</body>
+</html>
