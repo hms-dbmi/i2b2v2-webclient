@@ -97,6 +97,7 @@
     height: 2.1em;
     border-radius: 0.2rem;
     padding-left: 0.4em;
+    background-color: rgba(239, 239, 239, 0.3);
 }
 
 .CRC_QT_view .CRC_QT_runbar label {
