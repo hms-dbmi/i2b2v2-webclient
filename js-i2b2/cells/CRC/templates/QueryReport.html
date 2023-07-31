@@ -20,6 +20,8 @@ The search was completed in {{runDuration}} seconds.
 <div class="groups-container">
   <h3>All Groups</h3>
   {{#each panels}}
+  {{#unless @first}}<span class="joiner and">AND </span>{{/unless}}
+  {{#ifCond this.invert "==" "1"}}<span class="joiner and">NOT</span>{{/ifCond}}
   <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
     {{#each this.items}}
       <div class="item-container">
@@ -46,7 +48,6 @@ The search was completed in {{runDuration}} seconds.
       {{#unless @last}}<div class="joiner or">OR</div>{{/unless}}
     {{/each}}
   </div>
-  {{#unless @last}}<div class="joiner and">AND {{#if this.next_is_not}}NOT{{/if}}</div>{{/unless}}
   {{/each}}
 </div>
 {{/if}}
@@ -129,7 +130,7 @@ The search was completed in {{runDuration}} seconds.
         {{#ifCond timeSpans.0.operator "==" "GREATER"}}>{{/ifCond}}
         {{#ifCond timeSpans.0.operator "==" "GREATEREQUAL"}}>={{/ifCond}}
         {{#ifCond timeSpans.0.operator "==" "EQUAL"}}={{/ifCond}}
-        {{#ifCond timeSpans.0.operator "==" "LESSEQUAL"}}<=>{{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "LESSEQUAL"}}<={{/ifCond}}
         {{#ifCond timeSpans.0.operator "==" "LESS"}}<{{/ifCond}}
         {{timeSpans.0.value}}
         {{#ifCond timeSpans.0.unit "==" "DAY"}}day(s){{/ifCond}}

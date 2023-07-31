@@ -47,7 +47,8 @@ DIV#PluginListBox A.pluginRecordBox:hover {
 DIV#PluginListBox A.pluginRecordBox DIV.Icon {
     float: left;
     background: #ffffff;
-    border: solid 1px #678;
+    /* border: solid 1px #678; */
+    margin: 0 0.3rem;
 }
 
 DIV#PluginListBox A.pluginRecordBox DIV.Name {

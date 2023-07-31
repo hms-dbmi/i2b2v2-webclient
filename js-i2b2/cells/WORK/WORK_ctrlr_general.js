@@ -56,6 +56,7 @@ i2b2.WORK.ctrlr.main.NewFolder = function(parent_node) {
         "title": "Create New Folder",
         "prompt": "What name should be used for the new folder?",
         "inputValue": "New Folder",
+        "required": true,
         "onOk": okCallback
     };
 

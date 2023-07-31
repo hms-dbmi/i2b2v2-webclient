@@ -1,0 +1,9 @@
+.top-bar-replica{
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    height:45px;
+    background-color: #2782a3;
+}
+
+.app-name{
+    padding-top:.5rem;
+}
