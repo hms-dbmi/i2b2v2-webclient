@@ -13,10 +13,10 @@ i2b2.CRC.view.QueryReport = {
         i2b2.CRC.view.QueryReport.disDiv = div;
         let view = this.disDiv;
         $(view).empty();
-        let tableData = $('<div id="infoQueryStatusTable"></div>').empty().hide();
-        $(view).append(tableData);
         let graphData = $('<div id="infoQueryStatusGraph"></div>').empty().hide();
         $(view).append(graphData);
+        let tableData = $('<div id="infoQueryStatusTable"></div>').empty().hide();
+        $(view).append(tableData);
 
         i2b2.CRC.view.QueryReport.QRS = {};
 
