@@ -75,6 +75,13 @@ i2b2.events.afterCellInit.add((cell) => {
 
             // load the templates (TODO: Refactor this to loop using a varname/filename list)
             // ---------------------------------------------------------
+            $.ajax("js-i2b2/cells/CRC/templates/QueryResult.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("QueryResult", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResult.html"); }
+            });
+
             $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownTable.html", {
                 success: (template, status, req) => {
                     Handlebars.registerPartial("QueryResultBreakdownTable", req.responseText);
