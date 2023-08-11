@@ -1,0 +1,56 @@
+<div style="clear:both;">
+    {{#if breakdowns.patientCount.title}}
+    <table style="width: 400px; margin-left: auto; margin-right: auto;">
+        <tr style="background-color: #ed9b40">
+            <td style="color: black; text-align: center; vertical-align: middle;">
+                {{breakdowns.patientCount.title}}
+            </td>
+        </tr>
+        <tr style="background-color: #ed9b40">
+            <td style="color: black; text-align: center; vertical-align: middle; font-size: 45px">
+                {{breakdowns.patientCount.value}}
+            </td>
+        </tr>
+        <tr style="background-color: white">
+            <td style="color: red; text-align: center; vertical-align: middle;">&nbsp</td>
+        </tr>
+    </table>
+    {{/if}}
+</div>
+{{#if breakdowns.resultTable}}
+<div class="accordion">
+    <div class="accordion-item">
+        <div class="accordion-header">
+            <button class="accordion-button breakDownHeader" type="button" data-bs-toggle="collapse" data-bs-target="#breakdownDetails" aria-expanded="true" aria-controls="breakdownCharts">
+                Demographic Details
+            </button>
+        </div>
+
+        <div id="breakdownDetails" data-bs-toggle="collapse" class="accordion-collapse collapse show">
+            {{#each breakdowns.resultTable}}
+            <div>
+                <label class="breakdownLabel" id="resultStatus{{@index}}"> {{this.title}} </label>
+                {{#if this.statusMessage}}
+                <div style="float: right">
+                    <span class="breakdownStatus">{{this.statusMessage}}</span>
+                </div>
+                {{/if}}
+                <div id="collapse{{@index}}" class="breakdownResultList" aria-labelledby="resultStatus{{@index}}">
+                    <div>
+                        <table>
+                            {{#each this.result}}
+                            <tr>
+                                <td>{{this.name}}</td>
+                                <td class="breakdownValue">{{this.value}}</td>
+                            </tr>
+                            {{/each}}
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+{{/if}}
+

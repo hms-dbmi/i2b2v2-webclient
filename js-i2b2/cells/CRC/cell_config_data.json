@@ -17,6 +17,7 @@
     "CRC_view_QryMgr.js",
     "CRC_ctrl_QryStatus.js",
     "CRC_view_QryStatus.js",
+    "CRC_view_QryReport.js",
     "i2b2_msgs.js",
     "CRC_ctrlr_LabValues.js",
     "CRC_view_graphs.js",
