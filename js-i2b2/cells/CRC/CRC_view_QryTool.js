@@ -11,19 +11,11 @@ i2b2.CRC.view.QT = new i2b2Base_cellViewController(i2b2.CRC, 'QT');
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateQueryName = function() {
     // update the transformed model and set the title
-    i2b2.CRC.ctrlr.QT._processModel();
-    $('.CRC_QT_runbar input.name').attr("placeholder", i2b2.CRC.model.transformedQuery.name);
+    $('.CRC_QT_runbar input.name').attr("placeholder", i2b2.CRC.ctrlr.QueryMgr.generateQueryName());
 };
 
 
 // ================================================================================================== //
-i2b2.CRC.view.QT.resetToCRCHistoryView = function() {
-    i2b2.CRC.view.search.reset();
-    $("#i2b2TreeviewQueryHistoryFinder").hide();
-    $("#i2b2TreeviewQueryHistory").show();
-}
-// ================================================================================================== //
-
 i2b2.CRC.view.QT.handleConceptValidation = function(){
     let validQuery = true;
     let whenElems = $(".QueryGroup.when .event");
@@ -120,22 +112,40 @@ i2b2.CRC.view.QT.showRun = function() {
             }
         }
 
-        //add the current generated query name
-        $("#crcQtQueryName").val(i2b2.CRC.model.transformedQuery.name)
-            .attr("placeholder", i2b2.CRC.model.transformedQuery.name);
+        // add the current generated query name
+        const queryName = i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
+        $("#crcQtQueryName").val(queryName)
+            .attr("placeholder", queryName);
 
         // now show the modal form
         $('body #crcModal div:eq(0)').modal('show');
 
         // run the query on button press
         $('body #crcModal button.i2b2-save').on('click', (evt) => {
-            i2b2.CRC.view.QT.resetToCRCHistoryView();
+            // get the query name
+            let queryName = $("#crcQtQueryName").val().trim();
+            // add (t) prefix  if this is a temporal query
+            let queryNamePrefix = "";
+            if (i2b2.CRC.model.transformedQuery.subQueries?.length > 1 && !queryName.startsWith("(t) ")) {
+                queryNamePrefix = "(t) ";
+            }
+            if (queryName.length === 0 ) {
+                queryName =  queryNamePrefix + i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
+            } else {
+                queryName = queryNamePrefix  + queryName;
+            }
+
+            // update the query name field
+            $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
+
             // build list of selected result types
             let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
             reqResultTypes = [...new Set(reqResultTypes)];
             let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
 
-            i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes, reqExecutionMethod);
+            // start the query run
+            i2b2.CRC.ctrlr.QueryMgr.startQuery(queryName, reqResultTypes, reqExecutionMethod);
+
             // close the modal
             $('body #crcModal div:eq(0)').modal('hide');
         });
