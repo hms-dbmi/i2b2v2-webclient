@@ -63,6 +63,10 @@ i2b2.ONT.view.search.clearSearchInput = function(){
     $("#searchFilterText").text("Any Category");
     $("#searchFilter").data("selectedFilterValue", "ALL CATEGORIES").data("selectedFilterType", "category");
 
+    // reset the info icon
+    $('i.srTooltip').attr('data-bs-original-title', "A maximum of " + i2b2.ONT.view.nav.params.max + " records per category will be returned.");
+    $('i.srTooltip').removeClass("warn");
+
     // hide and clear the search results
     i2b2.ONT.view.search.treeview.hide();
     i2b2.ONT.view.search.treeview.data('treeview').clear();
@@ -136,31 +140,44 @@ i2b2.ONT.view.search.showModifiers = function(node){
                 alertMsg: "No modifiers found for " + node.text + "."
             });
             node.hasModifier = false;
-        }
-        else{
+        } else {
+            // add data for proper matching of parent nodes
+            newNodes.forEach((newNode) => {
+                newNode.parentKey = node.key;
+                newNode.parentText = node.text;
+            })
+
             //get existing children
             let getAllChildren = function (childNode, allChildren) {
-                childNode.nodes.forEach((n) => {
-                    let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
-                    n.parentKey = parentNode.key;
-                    allChildren.push(n);
-                    if (n.nodes !== undefined && n.nodes.length >= 0) {
-                        return getAllChildren(n, allChildren);
-                    }
-                });
+                if (childNode.nodes) {
+                    childNode.nodes.forEach((n) => {
+                        let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', [n]);
+                        n.parentKey = parentNode.key;
+                        n.parentText = parentNode.text;
+                        allChildren.push(n);
+
+                        if (n.nodes !== undefined && n.nodes.length >= 0) {
+                            return getAllChildren(n, allChildren);
+                        }
+
+                    });
+                }
             }
 
             let temp_childrenAll = [];
             getAllChildren(node, temp_childrenAll);
-            let temp_childrenId = node.nodes.map(function (node) { return node.nodeId; });
-            i2b2.ONT.view.search.treeview.treeview('deleteNodes', [temp_childrenId]);
-
+            if(Array.isArray(node.nodes)) {
+                let temp_childrenId = node.nodes.map(function (node) {
+                    return node.nodeId;
+                });
+                i2b2.ONT.view.search.treeview.treeview('deleteNodes', [temp_childrenId]);
+            }
             //append existing children so that the modifiers appear first in the tree
             newNodes = newNodes.concat(temp_childrenAll);
             node.state.expanded = true;
             i2b2.ONT.view.search.treeview.treeview('addNodes', [
                 newNodes,
-                function (parent, child) { return parent.key === child.parentKey},
+                function(parent, child) { return (parent.key === child.parentKey) && (parent.text === child.parentText) },
                 false
             ]);
 
@@ -175,10 +192,10 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
     let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', node.nodeId);
 
     //if this is a root node
-    if(parentNode.nodeId === undefined && nodeSubList === undefined){
+    if (parentNode.nodeId === undefined && nodeSubList === undefined) {
         nodeSubList = [node];
     }
-    if(parentNode.nodeId === undefined && (nodeSubList !== undefined  && nodeSubList.length >= 0)){
+    if (parentNode.nodeId === undefined && (nodeSubList !== undefined  && nodeSubList.length >= 0)) {
         let nodesToExpand = [];
         nodesToExpand = nodesToExpand.concat(nodeSubList);
 
@@ -186,20 +203,19 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
 
         let currentNode = nodesToExpand.shift();
         //look up node in search tree in the nav tree using the key
-        let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode){
+        let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
             return snode.key === currentNode.key;
         });
         //skip over any nodes that are already loaded in the nav tree
-        while(nodesToExpand.length >= 1 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true)){
+        while (nodesToExpand.length >= 1 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true)) {
             //expand any collapsed nodes that were already loaded
-            if(topLevelNode[0].state.loaded === true
-                && topLevelNode[0].state.expanded === false){
-                i2b2.ONT.view.nav.treeview.treeview('expandNode',topLevelNode[0].nodeId );
+            if (topLevelNode[0].state.loaded === true && topLevelNode[0].state.expanded === false) {
+                i2b2.ONT.view.nav.treeview.treeview('expandNode',topLevelNode[0].nodeId);
             }
 
             currentNode = nodesToExpand.shift();
             //look up node in search tree in the nav tree using the key
-            topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode){
+            topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
                 return snode.key === currentNode.key;
             });
         }
@@ -215,35 +231,37 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
             }
         }
 
-        if(topLevelNode.length === 1 && nodesToExpand.length >= 1) {
+        if (topLevelNode.length === 1 && nodesToExpand.length >= 1) {
             topLevelNode = topLevelNode[0];
-            let onLoadChildrenComplete = function(nodeData){
+            let onLoadChildrenComplete = function(nodeData) {
                 i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
 
                 let currentNode = nodesToExpand.shift();
                 //look up node in search tree in the nav tree using the key
-                let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
+                let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
                     return snode.key === currentNode.key;
                 });
 
-                let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
-                //scroll to selected node
-                selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+                if (topLevelNode.length === 0) {
+                    console.error("A searched/found ONT node [" + currentNode.key + "] cannot be access via ontology browsing method");
+                } else {
+                    let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
+                    //scroll to selected node
+                    selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
 
-                if(nodesToExpand.length >= 1) {
-                    i2b2.ONT.view.nav.loadChildren(topLevelNode[0], onLoadChildrenComplete);
-                }else{
-                    //highlight the node the user selected
-                    $(".viewInTreeNode").removeClass("viewInTreeNode");
-                    selectNodeElem.addClass("viewInTreeNode");
+                    if (nodesToExpand.length >= 1) {
+                        i2b2.ONT.view.nav.loadChildren(topLevelNode[0], onLoadChildrenComplete);
+                    } else {
+                        //highlight the node the user selected
+                        $(".viewInTreeNode").removeClass("viewInTreeNode");
+                        selectNodeElem.addClass("viewInTreeNode");
+                    }
                 }
             };
-
             i2b2.ONT.view.nav.loadChildren(topLevelNode, onLoadChildrenComplete);
         }
-    }
-    else{
-        if(nodeSubList === undefined){
+    } else {
+        if (nodeSubList === undefined) {
             nodeSubList = [node];
         }
         nodeSubList.unshift(parentNode);

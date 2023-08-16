@@ -77,6 +77,25 @@
 }
 
 
+
+#infoQueryStatusText .statusButtons {
+    float:right;
+    margin-left:10px;
+}
+#infoQueryStatusText .statusButtons button {
+    display: none;
+}
+#infoQueryStatusText .statusButtons.running .cancel {
+    display: block;
+}
+#infoQueryStatusText .statusButtons.done .report {
+    display: block;
+}
+#infoQueryStatusText .statusButtons.cancelled .cancelled {
+    display: block;
+}
+
+
 /* query report container styling (outside of the iframe) */
 
 #queryReportModal .modal-dialog {

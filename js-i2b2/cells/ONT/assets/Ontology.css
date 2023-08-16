@@ -19,6 +19,11 @@
     align-items: center;
 }
 
+p.warn,
+i.srTooltip.warn {
+    color: red;
+}
+
 
 /* TECHNICAL DEBT: Change this when CSS selector :has() is implemented
 #i2b2TreeviewOntSearch li:has(.sdxStyleONT-CONCPT.highlight) span.indent {

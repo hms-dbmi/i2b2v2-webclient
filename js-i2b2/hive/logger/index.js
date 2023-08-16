@@ -33,6 +33,7 @@ window.addEventListener("dump-response", (e) => {
         }
     });
 
+    handleClearButtonState();
     updateLogItems();
 });
 
@@ -68,7 +69,10 @@ function updateLogItems(){
         && (action === "ALL" || msgItem.function === action)
     );
 
+    handleClearButtonState();
+
     filteredMsgLog.forEach((item, index) => appendLogItem(item, item.pk));
+ 
 }
 
 function displayLogItem(logItem, sent, rcvd){
@@ -112,7 +116,9 @@ function appendLogItem(msg, index){
     logItem.append(msgData)
     logItem.data("index", msg.pk);
     $(".logItems").append(logItem);
-
+    
+    handleClearButtonState();
+    
     logItem.on("click", function(event){
         displayLogItem($(this), true, true);
     });
@@ -121,9 +127,10 @@ function appendLogItem(msg, index){
 function init(){
     console.log("initializing...");
     window.dispatchEvent(events.dump);
+    
 
     $("#filterOrigin").on("change", function() {
-        updateLogItems();
+        updateLogItems();       
     });
 
     $("#filterCell").on("change", function() {
@@ -136,12 +143,15 @@ function init(){
             sourceItem[0].channelActions.forEach(item => {
                 let actionOption = $("<option>" + item + "</option>").val(item);
                 $("#filterAction").append(actionOption);
+                handleClearButtonState();
             })
-        }
-        updateLogItems();
+        }        
+        updateLogItems();       
     });
 
-    $("#filterAction").on("change", function() {
+     
+
+    $("#filterAction").on("change", function() {        
         updateLogItems();
     });
 
@@ -151,7 +161,18 @@ function init(){
         window.dispatchEvent(events.dump);
     });
 
-    $(".MessageLog .clearLog").on("click", function(){
-        window.dispatchEvent(events.clear);
+    $(".MessageLog .clearLog").on("click", function(){ 
+        if (confirm('Are you sure you want to delete ALL messages in the log?')) {
+            window.dispatchEvent(events.clear);
+            handleClearButtonState();
+        }   
     });
+}
+
+function handleClearButtonState(){
+    if (msgLog.length===0){
+        $('.clearLog').prop("disabled", true);
+    } else{
+        $('.clearLog').prop("disabled", false);
+    }
 }

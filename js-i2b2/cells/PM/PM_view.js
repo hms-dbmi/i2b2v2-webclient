@@ -15,8 +15,8 @@ i2b2.PM.setUserAccountInfo = function(){
     let userInfo = $("#userInfo");
     userInfo.find(".user").text(i2b2.PM.model.login_username);
     userInfo.find(".project").text(i2b2.PM.model.login_projectname);
+    userInfo.find(".userRole").text(i2b2.PM.model.userRoles.join(", "));
     userInfo.find(".versionNum").text(i2b2.ClientVersion);
-    userInfo.find(".versionDate").text(i2b2.ClientVersionDate);
 };
 
 // login screen
@@ -149,7 +149,34 @@ i2b2.PM.doChangeDomain = function() {
         $(".sso-button").hide();
     }
 };
+// ================================================================================================== //
+i2b2.PM.view.modal.announcementDialog = {
+    showAnnouncement: function(msg) {
+        let pmAnnouncementMsgDialogModal = $("#pmAnnouncementMsgDialogModal");
+        if (pmAnnouncementMsgDialogModal.length === 0) {
+            $("body").append("<div id='pmAnnouncementMsgDialogModal'/>");
+            pmAnnouncementMsgDialogModal = $("#pmAnnouncementMsgDialogModal");
+        }
+        pmAnnouncementMsgDialogModal.empty();
 
+        let data = {
+            "title": i2b2.PM.model.login_project + " Announcements",
+            "msg": msg,
+        };
+        $(i2b2.PM.view.template.announcementMsgDialog(data)).appendTo(pmAnnouncementMsgDialogModal);
+        $("#pmAnnouncementMsgDialogModal div:eq(0)").modal('show');
+    },
+    clickOK: function() {
+        $("#pmAnnouncementMsgDialogModal").modal('hide');
+        if (!i2b2.hive.isLoaded) {
+            i2b2.PM._processLaunchFramework();
+        }
+    },
+    clickCancel: function(){
+        $("#pmAnnouncementMsgDialogModal").modal('hide');
+        i2b2.PM.doLogout();
+    }
+}
 // display the modal login form after the PM cell is fully loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((cell) => {
@@ -170,6 +197,13 @@ i2b2.events.afterCellInit.add((cell) => {
                 Handlebars.registerPartial("ProjectSelectionDetail", req.responseText);
             },
             error: (error) => { console.error("Could not retrieve template: ProjectSelectionDetail.html"); }
+        });
+
+        $.ajax("js-i2b2/cells/PM/templates/AnnouncementMsg.html", {
+            success: (template) => {
+                cell.view.template.announcementMsgDialog = Handlebars.compile(template);
+            },
+            error: (error) => { console.error("Could not retrieve template: AnnouncementMsg.html"); }
         });
     }
 });

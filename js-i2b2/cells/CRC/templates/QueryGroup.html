@@ -24,16 +24,27 @@
                 {{/ifCond}}
             </div>
             <div class="linkOptionsDropdownMenu dropdown-menu"  aria-labelledby="linkOptions">
-                <button class="dropdown-item linkOptionsItem sameEnc" type="button" onclick="i2b2.CRC.view.QT.linkAsSameEncounter(this);">same encounter</button>
-                <button class="dropdown-item linkOptionsItem sameInst" type="button" onclick="i2b2.CRC.view.QT.linkAsSameInstance(this);">same instance</button>
-                {{#ifCond timing '!==' 'ANY'}}
-                    <button class="dropdown-item linkOptionsItem unLink" type="button" onclick="i2b2.CRC.view.QT.unLinkQueryGroup(this);" style="display:none">unlink</button>
+                {{#ifCond timing '===' 'SAMEVISIT'}}
+                    <button class="dropdown-item linkOptionsItem sameEnc active" type="button" onclick="i2b2.CRC.view.QT.linkAsSameEncounter(this);">same encounter</button>
+                {{/ifCond}}
+                {{#ifCond timing '!==' 'SAMEVISIT'}}
+                    <button class="dropdown-item linkOptionsItem sameEnc" type="button" onclick="i2b2.CRC.view.QT.linkAsSameEncounter(this);">same encounter</button>
+                {{/ifCond}}
+                {{#ifCond timing '===' 'SAMEINSTANCENUM'}}
+                    <button class="dropdown-item linkOptionsItem sameInst active" type="button" onclick="i2b2.CRC.view.QT.linkAsSameInstance(this);">same instance</button>
+                {{/ifCond}}
+                {{#ifCond timing '!==' 'SAMEINSTANCENUM'}}
+                    <button class="dropdown-item linkOptionsItem sameInst" type="button" onclick="i2b2.CRC.view.QT.linkAsSameInstance(this);">same instance</button>
                 {{/ifCond}}
                 {{#ifCond timing '===' 'ANY'}}
+                    <button class="dropdown-item linkOptionsItem unLink" type="button" onclick="i2b2.CRC.view.QT.unLinkQueryGroup(this);" style="display:none">unlink</button>
+                {{/ifCond}}
+                {{#ifCond timing '!==' 'ANY'}}
                     <button class="dropdown-item linkOptionsItem unLink" type="button" onclick="i2b2.CRC.view.QT.unLinkQueryGroup(this);">unlink</button>
                 {{/ifCond}}
             </div>
         {{/unless}}
+        <div class="when-clock"><i class="bi bi-clock" title="panel timing: temporal"></i></div>
     </div>
     <div class="body">
         <div class="leftbar"></div>

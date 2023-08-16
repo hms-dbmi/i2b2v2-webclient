@@ -83,6 +83,13 @@ body, td, p {
 
 #userInfo {
 	padding-bottom: 0;
+	width: 12em;
+	max-width: 12em;
+}
+
+.userRole {
+	word-wrap: normal;
+	white-space: normal;
 }
 
 #userInfo .static:hover {
@@ -507,3 +514,11 @@ iframe.pluginCell {
 /* === End BOOTSTRAP MENU === */
 
 
+/* main splitter */
+.goldenLayout .lm_splitter.lm_dragging {
+	z-index: 1000;
+}
+
+#goldenLayoutId1 > .lm_root > .lm_row > .lm_splitter {
+	margin-left: -2px;
+}

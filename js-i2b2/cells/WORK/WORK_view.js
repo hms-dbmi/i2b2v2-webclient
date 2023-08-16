@@ -265,16 +265,19 @@ i2b2.WORK.view.main.DropHandler = function(sdx, evt, handlerSelector){
     $(evt.target).closest(".i2b2DropTarget").removeClass("i2b2DropPrep");
 
     let dropTarget = treeview.getNode($(evt.originalEvent.target).data("nodeid"));
-    let droppedNodeKey = sdx.sdxInfo.sdxKeyValue;
+    let droppedNodeKey = sdx.sdxInfo.sdxKeyValue;   
 
     // ignore the tricky double triggering by the SDX subsystem
     if (handlerSelector !== sdx.sdxInfo.sdxType) return false;
+
+    // ignore modifiers
+    if (sdx.origData.conceptModified !== undefined) return false;
 
     // ignore if a node is dropped on itself
     if (dropTarget.i2b2.sdxInfo.sdxKeyValue === droppedNodeKey) return false;
 
     // see if we are moving a node within the workspace
-    if (dropTarget.i2b2.sdxInfo.sdxType === "WRK") {
+    if (dropTarget.i2b2.sdxInfo.sdxType === "WRK") {        
         // we can only drop things into a workspace folder
         if (sdx.sdxInfo.sdxType === "WRK") {
             // Drag and drop within the Workspace
@@ -308,17 +311,29 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
     i2b2.WORK.view.main.dialogCallbackWrapper = function(event) {
         if (inputData.confirmMsg) {
             inputData.onOk();
+            $("#WKContextMenuDialog").modal('hide');
         }
         else {
-            let newValue = $("#WKContextMenuInput").val();
-            inputData.onOk(newValue);
+            let newValueInput = $("#WKContextMenuInput");
+            let newValue = newValueInput.val().trim();
+            newValueInput.val(newValue);
+            if(inputData.required && newValue.length === 0){
+                $("#workContextDialog .required-input").addClass("visible");
+
+            }
+            else{
+                inputData.onOk(newValue);
+                $("#WKContextMenuDialog").modal('hide');
+            }
         }
-        $("#WKContextMenuDialog").modal('hide');
     }
 
     i2b2.WORK.view.main.dialogKeyupCallbackWrapper = function(event) {
         if(event.keyCode === 13){
             $("#WKContextMenuDialog .context-menu-save").click();
+        }
+        else if(inputData.required){
+            $("#workContextDialog .required-input").removeClass("visible");
         }
     }
 

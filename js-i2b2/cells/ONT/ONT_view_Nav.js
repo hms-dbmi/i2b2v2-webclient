@@ -66,7 +66,7 @@ i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
         return;
     }
 
-    i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview(nodeData, function(newNodes, parentNodes) {
+    i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview(nodeData, function(newNodes, parentNodes, wasCancelled) {
         // change the tiles to contain the counts
         newNodes.forEach((node) => {
             let enablePatientCounts = i2b2.ONT.view.nav.params.patientCounts;
@@ -77,25 +77,37 @@ i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
                 //parse as integer or leave totalnum as is
                 if( !isNaN(totalnum)){
                     node.tags.push(totalnum.toLocaleString());
-                }
-                else{
+                } else {
                     node.tags.push(node.i2b2.origData.total_num);
                 }
             }
+            node.parentText = nodeData.text;
+        });
+
+        // save a list of the parents
+        let loadedParents = newNodes.map((d)=> { return {key: d.parentKey, text:d.parentText} } );
+        loadedParents = loadedParents.filter((val, idx, self) => {
+            for (let i=0; i < idx; i++) {
+                if (self[i].key === val.key && self[i].text === val.text) return false;
+            }
+            return true;
         });
 
         // push new nodes into the treeview
         i2b2.ONT.view.nav.treeview.treeview('addNodes', [
             newNodes,
-            function(parent, child){ return parent.key === child.parentKey },
+            function(parent, child){ return (parent.key === child.parentKey) && (parent.text === child.parentText) },
             false
         ]);
 
         // change the treeview icon to show it is no longer loading
-        i2b2.ONT.view.nav.treeview.treeview('setNodeLoaded', [
-            function(node, parentKeys){ return !(parentKeys.indexOf(node.key)) },
-            parentNodes
-        ]);
+        if (!wasCancelled) {
+            loadedParents.push({key: nodeData.key, text: nodeData.text}); // make sure we have the orignal node that the load request was fired on
+            i2b2.ONT.view.nav.treeview.treeview('setNodeLoaded', [
+                function(node, parentNodes){ return (parentNodes.filter((d) => (node.key === d.key && node.text === d.text)).length > 0) },
+                loadedParents
+            ]);
+        }
 
         // render tree
         i2b2.ONT.view.nav.treeview.treeview('redraw', []);
@@ -182,8 +194,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     //enable patient counts by default
                     i2b2.ONT.view.nav.params.patientCounts = true;
                     $("body #ontOptionsModal button.options-save").click(function () {
-                        i2b2.ONT.view.nav.params.modifiers = $('#ONTNAVdisableModifiers').is(":checked");
+                        // deal with limiting max records
                         i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);
+                        if (i2b2.ONT.view.nav.params.max === undefined || isNaN(i2b2.ONT.view.nav.params.max) || i2b2.ONT.view.nav.params.max < 1) i2b2.ONT.view.nav.params.max = 200;
+                        let temp = "A maximum of " + i2b2.ONT.view.nav.params.max + " records per category will be returned.";
+                        if (i2b2.ONT.model.searchResultsExceeded) temp = "Not all results are displayed! " + temp;
+                        $('i.srTooltip').attr('data-bs-original-title', temp);
+                        // deal with the rest
+                        i2b2.ONT.view.nav.params.modifiers = $('#ONTNAVdisableModifiers').is(":checked");
                         i2b2.ONT.view.nav.params.synonyms = $('#ONTNAVshowSynonyms').is(":checked");
                         i2b2.ONT.view.nav.params.hiddens = $('#ONTNAVshowHiddens').is(":checked");
                         i2b2.ONT.view.nav.params.patientCounts = $('#ONTNAVshowPatientCounts').is(":checked");
@@ -261,7 +279,8 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
         actions.nodeModifier =  {
             name: 'Show Modifiers',
             isShown: function(node) {
-                let modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
+                let modifiersDisplayed = [];
+                if (node.nodes) modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
                 return modifiersDisplayed.length === 0 && (node.hasModifier === undefined || node.hasModifier !== false);
             },
             onClick: function(node) {

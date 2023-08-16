@@ -363,6 +363,7 @@ i2b2.PM.extendUserSession = function() {
         project: i2b2.PM.model.login_project
     };
 
+    i2b2.PM.model.reLogin = true;
     i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
 };
 

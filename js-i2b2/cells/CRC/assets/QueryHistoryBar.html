@@ -7,6 +7,10 @@
             </div>
             <div class="col-md">
                 <input id="historyDateStart" class="historyDate form-control" placeholder="MM/DD/YYYY" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="{{this.dateStart}}"/>
+                <button class="btn border-0 dateSearchBtn" type="button" id="submitQueryHistoryDate" onclick="this.blur();">
+                    <!-- search is started automatically when focus is taken off the date input field, just give them something else to click to start the process -->
+                    <i class="bi bi-search"></i>
+                </button>
             </div>
         </div>
     </div>

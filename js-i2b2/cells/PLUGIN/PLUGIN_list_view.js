@@ -155,8 +155,8 @@ i2b2.PLUGIN.view.list.renderList = function(listMode, category, searchString){
 };
 
 // ================================================================================================== //
-i2b2.PLUGIN.view.list.loadPlugin= function(pluginId, isLegacy){
-    i2b2.PLUGIN.view.newInstance(pluginId, isLegacy === 'true');
+i2b2.PLUGIN.view.list.loadPlugin= function(pluginId, initializationData){
+    i2b2.PLUGIN.view.newInstance(pluginId,  initializationData);
 };
 
 // ================================================================================================== //
@@ -203,6 +203,9 @@ i2b2.PLUGIN.view.list.onPluginFrameLoad = function(){
         i2b2.PM.model.data.loginXMLStr = i2b2.h.Xml2String(i2b2.PM.model.data.refXML);
         delete i2b2.PM.model.data.refXML;
     }
+
+    i2b2.PM.model.data.login_project = i2b2.PM.model.login_project;
+    i2b2.PM.model.data.login_projectname = i2b2.PM.model.login_projectname;
 
     let loginData = JSON.stringify(i2b2.PM.model.data);
     document.getElementById("pluginframe").contentWindow.postMessage(loginData, window.location.origin);

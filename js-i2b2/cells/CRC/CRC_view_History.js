@@ -82,47 +82,56 @@ i2b2.CRC.view.history.loadMore = function() {
     let newcount = i2b2.CRC.view.history.treeview.data('treeview').getNodes(()=>true).length;
     newcount = newcount + i2b2.CRC.view.history.params.maxQueriesDisp;
     i2b2.CRC.view.history.LoadQueryMasters(newcount);
-}
+};
+
+//================================================================================================== //
+i2b2.CRC.view.history.loadMoreDates = function() {
+    $('.datelist-more-bar i.bi').removeClass("d-none");
+    let nodes = i2b2.CRC.view.history.treeviewFinder.data('treeview').getNodes(()=>true);
+    if (nodes.length > 0) {
+        let lastdate = nodes[nodes.length - 1].i2b2.origData.created;
+        i2b2.CRC.view.history.searchByDate(lastdate, false, 1);
+    } else {
+        $("#i2b2TreeviewQueryHistoryFinder").hide();
+        $("#i2b2QueryHistoryFinderStatus").text("No queries found.").show();
+    }
+};
 
 // ================================================================================================== //
-
-i2b2.CRC.view.history.sortResultsByName = function(resultNode1, resultNode2){
-    // proper date handling (w/improper handling for latest changes to output format)
-    let nameStr1 = resultNode1.origData["name"];
-    let nameStr2 = resultNode2.origData["name"];
-
-    let result;
-    if(nameStr1 < nameStr2){
-        result = -1;
-    } else if(nameStr1 > nameStr2){
-        result = 1;
+i2b2.CRC.view.history.sortNodes = function(nodeList) {
+    if (i2b2.CRC.view.history.params.sortBy === 'NAME') {
+        // sort list by name
+        nodeList.sort((nodeA, nodeB) => {
+            let nameStrA = nodeA.i2b2.origData["name"].toLowerCase();
+            let nameStrB = nodeB.i2b2.origData["name"].toLowerCase();
+            if (nameStrA < nameStrB){
+                return -1;
+            } else if (nameStrA > nameStrB) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
     } else {
-        result = 0;
+        // sort list by create date
+        nodeList.sort((nodeA, nodeB) => {
+            // proper date handling (w/improper handling for latest changes to output format)
+            let dateTimeA = Date.parse(nodeA.i2b2.origData["created"]);
+            let dateTimeB = Date.parse(nodeB.i2b2.origData["created"]);
+            if (dateTimeA < dateTimeB) {
+                return -1;
+            } else if (dateTimeA > dateTimeB) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
     }
+    // reverse the list
+    let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
+    if (!isAscending) nodeList.reverse();
+};
 
-    return result;
-}
-// ================================================================================================== //
-
-i2b2.CRC.view.history.sortResultsByDate = function(resultNode1, resultNode2){
-    // proper date handling (w/improper handling for latest changes to output format)
-    let dateStr1 = resultNode1.origData["created"];
-    let dateStr2 = resultNode2.origData["created"];
-
-    let dateTime1 = Date.parse(dateStr1);
-    let dateTime2 = Date.parse(dateStr2);
-
-    let result;
-    if(dateTime1 < dateTime2){
-        result = -1;
-    } else if(dateTime1 > dateTime2){
-        result = 1;
-    } else {
-        result = 0;
-    }
-
-    return result;
-}
 // ================================================================================================== //
 i2b2.CRC.view.history.clickSearchName = function() {
     // Hide Navigate treeview and search results message and display search status message
@@ -143,17 +152,7 @@ i2b2.CRC.view.history.clickSearchName = function() {
 
         // display the tree results
         let newNodes = {};
-        if(i2b2.CRC.view.history.params.sortBy === 'NAME') {
-            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByName);
-        }else{
-            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByDate);
-        }
-
-        let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
-        if(!isAscending){
-            cellResult.model.reverse();
-        }
-        for ( let i1=0; i1 < cellResult.model.length; i1++) {
+        for (let i1=0; i1 < cellResult.model.length; i1++) {
             let sdxDataNode = cellResult.model[i1];
             let renderOptions = {
                 title: sdxDataNode.sdxDisplayName ,
@@ -173,15 +172,20 @@ i2b2.CRC.view.history.clickSearchName = function() {
             };
 
             temp.state = sdxDataNode.renderData.tvNodeState;
-            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
+            if (sdxDataNode.renderData.cssClassMinor !== undefined) {
                 temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             }
-            if(!newNodes[temp.key]) {
+            if (!newNodes[temp.key]) {
                 newNodes[temp.key] = temp;
             }
         }
+
+        // sort the nodes we are displaying
+        newNodes = Object.values(newNodes);
+        i2b2.CRC.view.history.sortNodes(newNodes);
+
         // push new nodes into the treeview
-        i2b2.CRC.view.history.treeviewFinder.treeview('addNodes', [Object.values(newNodes), true]);
+        i2b2.CRC.view.history.treeviewFinder.treeview('addNodes', [newNodes, true]);
 
         // render tree
         i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);
@@ -190,15 +194,24 @@ i2b2.CRC.view.history.clickSearchName = function() {
         // Display search results treeview
         let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
 
-        if(cellResult.model.length === 0){
+        if (cellResult.model.length === 0){
             $("#i2b2QueryHistoryFinderMessage").text("No records found.").show();
             historyFinderTreeview.hide();
         }
+
+        // TODO: load more is not implemented correctly for name search
+        // if (cellResult.model.length < i2b2.CRC.view['history'].params.maxQueriesDisp) {
+            // hide the "load more" option
+            $('.datelist-more-bar').addClass("d-none");
+        // } else {
+        //    $('.datelist-more-bar').removeClass("d-none");
+        // }
+
     };
 
     let crc_find_strategy = "contains"
     let crc_find_category = $("#querySearchFilter").data("selectedFilterValue");
-    if(crc_find_category === "pdo") crc_find_strategy = "exact"
+    if (crc_find_category === "pdo") crc_find_strategy = "exact"
 
     // fire the AJAX call
     let options = {
@@ -216,19 +229,14 @@ i2b2.CRC.view.history.clickSearchName = function() {
 };
 
 // ================================================================================================== //
-i2b2.CRC.view.history.searchByDate = function(startDate) {
-    // Hide Navigate treeview and search results message and display search status message
-    $("#i2b2TreeviewQueryHistoryFinder").hide();
-    $("#i2b2TreeviewQueryHistory").hide();
-    $("#i2b2QueryHistoryFinderMessage").hide();
-    $("#i2b2QueryHistoryFinderStatus").text("Searching...").show();
-
-    // clear treeview
-    i2b2.CRC.view.history.treeviewFinder.treeview('clear');
-
-    // reformat date
-    startDate = moment(Date.parse(startDate)).format('YYYY-MM-DD');
-
+i2b2.CRC.view.history.searchByDate = function(startDate, showLoadingMsg = true, dropNodeCount = 0) {
+    // Hide Navigate treeview and search results message and display search status message if requested
+    if (showLoadingMsg) {
+        $("#i2b2TreeviewQueryHistoryFinder").hide();
+        $("#i2b2TreeviewQueryHistory").hide();
+        $("#i2b2QueryHistoryFinderMessage").hide();
+        $("#i2b2QueryHistoryFinderStatus").text("Searching...").show();
+    }
 
     // create a scoped callback message
     var scopeCB = new i2b2_scopedCallback();
@@ -237,33 +245,37 @@ i2b2.CRC.view.history.searchByDate = function(startDate) {
         // auto-extract SDX objects from returned XML
         cellResult.parse();
 
+        let existingNodes = i2b2.CRC.view.history.treeviewFinder.data('treeview').getNodes(()=>true);
+
         // display the tree results
         let newNodes = {};
-        for ( let i1=0; i1 < cellResult.model.length; i1++) {
-            let sdxDataNode = cellResult.model[i1];
-            let renderOptions = {
-                title: sdxDataNode.sdxDisplayName ,
-                icon: "sdx_CRC_QM.gif",
-                showchildren: true
-            };
-            sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
-            sdxDataNode.renderData.idDOM = "CRC_H_TV-" + i2b2.GUID();
-            let temp = {
-                title: sdxDataNode.renderData.moreDescriptMinor,
-                text: sdxDataNode.renderData.title,
-                icon: sdxDataNode.renderData.cssClassMain,
-                key: sdxDataNode.sdxInfo.sdxType + "-" + sdxDataNode.sdxInfo.sdxKeyValue,
-                iconImg: sdxDataNode.renderData.iconImg,
-                iconImgExp: sdxDataNode.renderData.iconImgExp,
-                i2b2: sdxDataNode
-            };
+        for (let i1=0; i1 < cellResult.model.length; i1++) {
+            if (i1 > dropNodeCount - 1) {
+                let sdxDataNode = cellResult.model[i1];
+                let renderOptions = {
+                    title: sdxDataNode.sdxDisplayName ,
+                    icon: "sdx_CRC_QM.gif",
+                    showchildren: true
+                };
+                sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                sdxDataNode.renderData.idDOM = "CRC_H_TV-" + i2b2.GUID();
+                let temp = {
+                    title: sdxDataNode.renderData.moreDescriptMinor,
+                    text: sdxDataNode.renderData.title,
+                    icon: sdxDataNode.renderData.cssClassMain,
+                    key: sdxDataNode.sdxInfo.sdxType + "-" + sdxDataNode.sdxInfo.sdxKeyValue,
+                    iconImg: sdxDataNode.renderData.iconImg,
+                    iconImgExp: sdxDataNode.renderData.iconImgExp,
+                    i2b2: sdxDataNode
+                };
 
-            temp.state = sdxDataNode.renderData.tvNodeState;
-            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
-                temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
-            }
-            if(!newNodes[temp.key]) {
-                newNodes[temp.key] = temp;
+                temp.state = sdxDataNode.renderData.tvNodeState;
+                if (sdxDataNode.renderData.cssClassMinor !== undefined) {
+                    temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
+                }
+                if (!newNodes[temp.key]) {
+                    newNodes[temp.key] = temp;
+                }
             }
         }
         // push new nodes into the treeview
@@ -273,19 +285,30 @@ i2b2.CRC.view.history.searchByDate = function(startDate) {
         i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);
         $("#i2b2QueryHistoryFinderStatus").hide();
 
+        // hide loading icon
+        $('.datelist-more-bar i.bi').addClass("d-none");
+
         // Display search results treeview
         let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
 
-        if (cellResult.model.length === 0){
+
+        if (cellResult.model.length === 0 && existingNodes.length === 0){
             $("#i2b2QueryHistoryFinderMessage").text("No records found.").show();
-            historyFinderTreeview.hide();
+                historyFinderTreeview.hide();
+        }
+
+        //Hide Load more link since there are no more new nodes to load
+        if (existingNodes.length > 0 && Object.keys(newNodes).length === 0) {
+            $('.datelist-more-bar').addClass("d-none");
+        } else if (Object.keys(newNodes).length > 0) {
+            $('.datelist-more-bar').removeClass("d-none");
         }
     };
 
     // fire the AJAX call
     let options = {
         result_wait_time: 180,
-        crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp,
+        crc_max_records: i2b2.CRC.view['history'].params.maxQueriesDisp + dropNodeCount,
         crc_sort_by: i2b2.CRC.view['history'].params.sortBy,
         crc_user_type: 	(i2b2.PM.model.userRoles.indexOf("MANAGER") === -1 ? "CRC_QRY_getQueryMasterList_fromUserId" : "CRC_QRY_getQueryMasterList_fromGroupId"),
         crc_sort_order: (i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1?"true": "false"),
@@ -307,21 +330,10 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         // auto-extract SDX objects from returned XML
         cellResult.parse();
 
-        //sort the results
-        if(i2b2.CRC.view.history.params.sortBy === 'NAME') {
-            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByName);
-        }else{
-            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByDate);
-        }
-
-        let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
-        if(!isAscending){
-            cellResult.model.reverse();
-        }
-
         // display the tree results
         let newNodes = [];
-        for ( let i1=0; i1 < cellResult.model.length; i1++) {
+        let newNodeCount = cellResult.model.length < max ? cellResult.model.length : max;
+        for (let i1=0; i1 < newNodeCount; i1++) {
             let sdxDataNode = cellResult.model[i1];
             let renderOptions = {
                 title: sdxDataNode.sdxDisplayName ,
@@ -340,18 +352,21 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
                 i2b2: sdxDataNode
             };
             temp.state = sdxDataNode.renderData.tvNodeState;
-            if(sdxDataNode.renderData.cssClassMinor !== undefined) {
+            if (sdxDataNode.renderData.cssClassMinor !== undefined) {
                 temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
             }
             newNodes.push(temp);
         }
 
         // hide "Load More" link if we have all the records
-        if (newNodes.length < max) {
+        if (cellResult.model.length < max + 1) {
             $('.history-more-bar').addClass("d-none");
         } else {
             $('.history-more-bar').removeClass("d-none");
         }
+
+        // sort the nodes we are displaying
+        i2b2.CRC.view.history.sortNodes(newNodes);
 
         // push new nodes into the treeview
         i2b2.CRC.view.history.treeview.treeview('addNodes', [newNodes, true]);
@@ -375,7 +390,7 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
 
     let max = maxRecords ? maxRecords : i2b2.CRC.view.history.params.maxQueriesDisp;
     let options = {
-        crc_max_records: max,
+        crc_max_records: max + 1,
         crc_user_type: request_type,
         crc_user_by: user_type
     };
@@ -394,13 +409,13 @@ i2b2.CRC.view.history.doDisplay = function(node) {
 // ================================================================================================== //
 i2b2.CRC.view.history.doRename = function(node) {
     let op = node.i2b2;
-    i2b2.CRC.ctrlr.history.queryRename(op, false, node);
+    i2b2.CRC.ctrlr.history.queryRenamePromptName(op);
 };
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doDelete = function(node) {
     let op = node.i2b2;
-    i2b2.CRC.ctrlr.history.queryDelete(op, node);
+    i2b2.CRC.ctrlr.history.queryDeletePrompt(op);
 };
 
 // ================================================================================================== //
@@ -419,10 +434,50 @@ i2b2.CRC.view.history.showBrowseView = function() {
     $('#i2b2QueryHistoryBar .dateListing').hide();
     $('#i2b2QueryHistoryBar .searchOptions').show();
 
-    // refresh display
-    i2b2.CRC.view.history.treeview.treeview('clear');
-    i2b2.CRC.view.history.LoadQueryMasters();
+    // show browse treeview
+    $("#i2b2TreeviewQueryHistory").show();
+    $('#i2b2TreeviewQueryHistoryFinder').hide();
 };
+
+// ================================================================================================== //
+i2b2.CRC.view.history.displayContextDialog = function(inputData){
+    let contextDialogModal = $("#crcContextDialog");
+    if (contextDialogModal.length === 0) {
+        $("body").append("<div id='crcContextDialog'/>");
+        contextDialogModal = $("#crcContextDialog");
+    }
+    contextDialogModal.empty();
+
+    i2b2.CRC.view.history.dialogCallbackWrapper = function(event) {
+        if (inputData.confirmMsg) {
+            inputData.onOk();
+        }
+        else {
+            let newValue = $("#CRCContextMenuInput").val();
+            inputData.onOk(newValue);
+        }
+        $("#CRCContextMenuDialog").modal('hide');
+    }
+
+    i2b2.CRC.view.history.dialogKeyupCallbackWrapper = function(event) {
+        if(event.keyCode === 13){
+            $("#crcContextMenuDialog .context-menu-save").click();
+        }
+    }
+
+    let data = {
+        "title": inputData.title,
+        "inputLabel": inputData.prompt,
+        "placeHolder": inputData.placeHolder,
+        "confirmMsg": inputData.confirmMsg,
+        "onOk": " i2b2.CRC.view.history.dialogCallbackWrapper(event)",
+        "onKeyup": " i2b2.CRC.view.history.dialogKeyupCallbackWrapper(event)",
+        "inputValue" : inputData.inputValue,
+        "onCancel": inputData.onCancel
+    };
+    $(i2b2.CRC.view.history.template.contextDialog(data)).appendTo(contextDialogModal);
+    $("#CRCContextMenuDialog").modal('show');
+}
 // ================================================================================================== //
 i2b2.CRC.view.history.showDateListingView = function() {
     // this function is used to display the query list using the newer list-by-date design
@@ -430,16 +485,26 @@ i2b2.CRC.view.history.showDateListingView = function() {
     $('#i2b2QueryHistoryBar .dateListing .dateError').hide();
     $('#i2b2QueryHistoryBar .dateListing').show();
 
+    // clear the treeview
+    i2b2.CRC.view.history.treeviewFinder.treeview('clear');
+
     // set the initial date to today
-    let today = moment().format("MM/DD/YYYY");
-    i2b2.CRC.view.history.viewDate = today;
-    $('#historyDateStart').val(today);
+    let today = moment();
+    i2b2.CRC.view.history.viewDate = today.format("MM/DD/YYYY");
+    $('#historyDateStart').val(i2b2.CRC.view.history.viewDate);
+    // reformat date
+    today.hour(23);
+    today.minute(59);
+    today.second(59);
+    today.millisecond(999);
+    today = today.format();
+
     i2b2.CRC.view.history.searchByDate(today);
 };
 
 i2b2.CRC.view.history._loadUsersInOptions =  function() {
     // check if manager
-    if(i2b2.PM.model.userRoles.indexOf("MANAGER") > -1){
+    if (i2b2.PM.model.userRoles.indexOf("MANAGER") > -1){
         // get all user roles call
         // parse thru the list and add them to the drop down
         let loadUsers = function(){
@@ -454,18 +519,16 @@ i2b2.CRC.view.history._loadUsersInOptions =  function() {
                 $('#HISTUser').append($('<option>', {value:idx, text:idx}));
             });
 
-            if(i2b2.CRC.view.history.params.userBy !== undefined) {
+            if (i2b2.CRC.view.history.params.userBy !== undefined) {
                 $('#HISTUser').val(i2b2.CRC.view.history.params.userBy);
             }
         }
-        if( i2b2.CRC.view.history.allUsers === undefined)
-        {
+        if (i2b2.CRC.view.history.allUsers === undefined) {
              i2b2.PM.ajax.getAllRole("PM:Admin", { id: i2b2.PM.model.login_project }, function(results) {
                  i2b2.CRC.view.history.allUsers = results.parse();
                  loadUsers();
              });
-        }
-        else{
+        } else {
             loadUsers();
         }
 
@@ -513,7 +576,17 @@ i2b2.events.afterCellInit.add((cell) => {
                                         let newDate = $('#historyDateStart').val().trim();
                                         if (newDate !== i2b2.CRC.view.history.viewDate) {
                                             i2b2.CRC.view.history.viewDate = newDate;
-                                            i2b2.CRC.view.history.searchByDate(newDate);
+                                            // reformat date
+                                            let startDate = moment(Date.parse(newDate));
+                                            startDate.hour(23);
+                                            startDate.minute(59);
+                                            startDate.second(59);
+                                            startDate.millisecond(999);
+                                            startDate = startDate.format();
+
+                                            // refresh the treeview
+                                            i2b2.CRC.view.history.treeviewFinder.treeview('clear');
+                                            i2b2.CRC.view.history.searchByDate(startDate);
                                         }
                                     } else {
                                         $("#i2b2QueryHistoryBar .dateError").show();
@@ -560,9 +633,17 @@ i2b2.events.afterCellInit.add((cell) => {
                     i2b2.CRC.view.history.treeview.on('onDrag', i2b2.sdx.Master.onDragStart);
 
                     // create an empty Finder treeview
-                    let treeTargetFinder = $('<div id="i2b2TreeviewQueryHistoryFinder"></div>').appendTo(container._contentElement);
+                    let treeTargetFinder = $(`
+                        <div id="i2b2TreeviewQueryHistoryFinder">
+                            <div class="datelist-container">
+                                <div class="datelist-tv"></div>
+                                <div class="datelist-more-bar">Load more...<i class="bi bi-arrow-repeat d-none"></i></div>
+                            </div>
+                        </div>
+                    `).appendTo(container._contentElement);
                     treeTargetFinder.hide();
-                    i2b2.CRC.view.history.treeviewFinder = $(treeTargetFinder).treeview({
+                    $('.datelist-more-bar', treeTargetFinder).on('click', i2b2.CRC.view.history.loadMoreDates);
+                    i2b2.CRC.view.history.treeviewFinder = $(".datelist-tv", treeTargetFinder).treeview({
                         showBorder: false,
                         onhoverColor: "rgba(205, 208, 208, 0.56)",
                         highlightSelected: false,
@@ -671,11 +752,13 @@ i2b2.events.afterCellInit.add((cell) => {
 
                                     let refreshValue = parseInt($('#HISTAuto').val(), 10);
                                     if(refreshValue > 0){
+                                        i2b2.CRC.view.history.params.refreshValue = refreshValue;
                                         clearInterval(i2b2.CRC.view.history.autorefresh);
                                         i2b2.CRC.view.history.autorefresh = setInterval(function(){
                                             i2b2.CRC.view.history.doRefreshAll();
                                         }, refreshValue*1000);
                                     } else {
+                                        i2b2.CRC.view.history.params.refreshValue=0;
                                         clearInterval(i2b2.CRC.view.history.autorefresh);
                                     }
 
@@ -700,6 +783,12 @@ i2b2.events.afterCellInit.add((cell) => {
                         error: (error) => { console.error("Could not retrieve template: QueryHistoryOptions.html"); }
                     });
 
+                    $.ajax("js-i2b2/cells/CRC/templates/CRCContextMenuDialog.html", {
+                        success: (template) => {
+                            cell.view.history.template.contextDialog = Handlebars.compile(template);
+                        },
+                        error: (error) => { console.error("Could not retrieve template: CRCContextMenuDialog.html"); }
+                    });
                     container.on( 'tab', function( tab ){
                         if(tab.element.text() === 'Queries') {
                             //add unique id to the term tab
