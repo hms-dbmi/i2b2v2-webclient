@@ -118,7 +118,7 @@ i2b2.CRC.ctrlr.QS = {
                 }
 
                 //only create graphs if there is breakdown data
-                if(sCompiledResultsTest.length > 0) {
+                if (sCompiledResultsTest.length > 0) {
                     $("#infoQueryStatusGraph").hide();
                     i2b2.CRC.view.graphs.createGraphs("breakdownChartsBody", sCompiledResultsTest, i2b2.CRC.view.graphs.bIsSHRINE);
                     $("#infoQueryStatusGraph").show();

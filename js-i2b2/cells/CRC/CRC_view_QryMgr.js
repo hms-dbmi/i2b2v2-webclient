@@ -11,6 +11,14 @@
 i2b2.CRC.view.QryMgr = new i2b2Base_cellViewController(i2b2.CRC, 'QryMgr');
 
 
+
+i2b2.CRC.view.QryMgr.updateStatus = function() {
+    // this function does the initial render of the query run status
+    let statusDiv = $("#infoQueryStatus", i2b2.CRC.view.QryMgr.containerDiv).empty();
+    $((Handlebars.compile("{{> QueryResultStatus}}"))(i2b2.CRC.model.runner)).appendTo(statusDiv);
+};
+
+
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((cell) => {
@@ -32,7 +40,6 @@ i2b2.events.afterCellInit.add((cell) => {
                             //Handlebars.registerPartial("QueryResultBreakdownGraph", req.responseText);
                             let breakdownGraph = $("#infoQueryStatusGraph").hide();
                             $((Handlebars.compile(template))()).appendTo(breakdownGraph);
-                            i2b2.CRC.view.QryMgr.render();
                         },
                         error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultBreakdownGraph.html"); }
                     });
@@ -54,6 +61,13 @@ i2b2.events.afterCellInit.add((cell) => {
                     Handlebars.registerPartial("QueryResultStatus", req.responseText);
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultStatus.html"); }
+            });
+
+            $.ajax("js-i2b2/cells/CRC/templates/QueryResult.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("QueryResult", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResult.html"); }
             });
         }
     }

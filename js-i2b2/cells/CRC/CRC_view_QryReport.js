@@ -184,7 +184,7 @@ i2b2.CRC.view.QueryReport = {
 
         i2b2.CRC.view.QueryReport.render({breakdowns: i2b2.CRC.view.QueryReport.breakdowns});
     },
-    _handleQueryResultSet: function(results){
+    _handleQueryResultSet: function(results) {
         // callback processor to check the Query Result Set
             if (results.error) {
                 alert(results.errorMsg);
