@@ -170,8 +170,7 @@ i2b2.CRC.ctrlr.QueryMgr.clearQuery = function() {
 
     // clear the display window
     $("#infoQueryStatus", cell.view.QryMgr.lm_view).empty();
-    $("#infoQueryStatusTable", cell.view.QryMgr.lm_view).empty();
-    $("#infoQueryStatusGraph", cell.view.QryMgr.lm_view).hide();
+    $("#infoQueryReport", cell.view.QryMgr.lm_view).empty();
 };
 
 
@@ -285,6 +284,8 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     } else {
         // refresh the query history window if it was not deleted
         i2b2.CRC.view.history.doRefreshAll();
+        // render the results tables/graphs
+        i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport"))
     }
 
     // re-render status

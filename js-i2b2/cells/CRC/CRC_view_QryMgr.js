@@ -11,7 +11,6 @@
 i2b2.CRC.view.QryMgr = new i2b2Base_cellViewController(i2b2.CRC, 'QryMgr');
 
 
-
 i2b2.CRC.view.QryMgr.updateStatus = function() {
     // this function does the initial render of the query run status
     let statusDiv = $("#infoQueryStatus", i2b2.CRC.view.QryMgr.containerDiv).empty();
@@ -21,6 +20,7 @@ i2b2.CRC.view.QryMgr.updateStatus = function() {
 
 i2b2.CRC.view.QryMgr.clearStatus = function() {
     $("#infoQueryStatus", i2b2.CRC.view.QryMgr.containerDiv).empty();
+    $("#infoQueryReport", i2b2.CRC.view.QryMgr.containerDiv).empty();
 }
 
 
@@ -38,8 +38,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     // add the cellWhite flare
                     cell.view.QryMgr.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(container._contentElement);
                     cell.view.QryMgr.containerDiv.append('<div id="infoQueryStatus"></div>');
-                    cell.view.QryMgr.containerDiv.append('<div id="infoQueryStatusGraph"></div>');
-                    cell.view.QryMgr.containerDiv.append('<div id="infoQueryStatusTable"></div>');
+                    cell.view.QryMgr.containerDiv.append('<div id="infoQueryReport"></div>');
 
                     // Show initial screen
                 }).bind(this)
