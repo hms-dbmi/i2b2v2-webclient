@@ -272,6 +272,7 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     i2b2.CRC.model.runner.abortable = false;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.isPolling = false;
+    i2b2.CRC.model.runner.endTime = new Date();
 
     // stop the run timer
     clearInterval(i2b2.CRC.model.runner.intervalTimer);

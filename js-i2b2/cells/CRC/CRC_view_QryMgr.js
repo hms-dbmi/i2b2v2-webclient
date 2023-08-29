@@ -19,6 +19,12 @@ i2b2.CRC.view.QryMgr.updateStatus = function() {
 };
 
 
+i2b2.CRC.view.QryMgr.clearStatus = function() {
+    $("#infoQueryStatus", i2b2.CRC.view.QryMgr.containerDiv).empty();
+}
+
+
+
 // This is done once the entire cell has been loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((cell) => {
@@ -35,14 +41,6 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QryMgr.containerDiv.append('<div id="infoQueryStatusGraph"></div>');
                     cell.view.QryMgr.containerDiv.append('<div id="infoQueryStatusTable"></div>');
 
-                    $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownGraph.html", {
-                        success: (template, status, req) => {
-                            //Handlebars.registerPartial("QueryResultBreakdownGraph", req.responseText);
-                            let breakdownGraph = $("#infoQueryStatusGraph").hide();
-                            $((Handlebars.compile(template))()).appendTo(breakdownGraph);
-                        },
-                        error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultBreakdownGraph.html"); }
-                    });
                     // Show initial screen
                 }).bind(this)
             );
@@ -68,6 +66,13 @@ i2b2.events.afterCellInit.add((cell) => {
                     Handlebars.registerPartial("QueryResult", req.responseText);
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryResult.html"); }
+            });
+
+            $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownGraph.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("QueryResultBreakdownGraph", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultBreakdownGraph.html"); }
             });
         }
     }

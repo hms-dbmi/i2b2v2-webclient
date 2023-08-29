@@ -747,7 +747,7 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
 
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
-    i2b2.CRC.view.QS.clearStatus();
+    i2b2.CRC.view.QryMgr.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.showModifierValues = function(sdxConcept, groupIdx, eventIdx){
@@ -1891,11 +1891,11 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         });
 
         let reportData = {
-            name: i2b2.CRC.ctrlr.QS.QM.name,
-            submittedAt: i2b2.CRC.ctrlr.QS.QI.start_date.toLocaleString().replace(", "," @ "),
-            completedAt: i2b2.CRC.ctrlr.QS.QI.end_date.toLocaleString().replace(", "," @ "),
+            name: i2b2.CRC.model.runner.name,
+            submittedAt: i2b2.CRC.model.runner.startTime.toLocaleString().replace(", "," @ "),
+            completedAt: i2b2.CRC.model.runner.endTime.toLocaleString().replace(", "," @ "),
             submittedBy: "USERNAME(" + submittedByUsername + ")",
-            runDuration: Number((i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date) / 1000).toLocaleString(),
+            runDuration: Number((i2b2.CRC.model.runner.endTime - i2b2.CRC.model.runner.startTime) / 1000).toLocaleString(),
             panels: panels
         };
 
