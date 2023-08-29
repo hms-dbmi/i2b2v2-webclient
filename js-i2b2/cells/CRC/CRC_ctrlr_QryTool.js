@@ -386,7 +386,8 @@ function QueryToolController() {
     };
 
 // ================================================================================================== //
-    this.loadQueryStatus = function( queryMasterId, queryName) {
+    this.loadQueryStatus = function(queryMasterId, queryName) {
+        // TODO: Rebuild this
         i2b2.CRC.ctrlr.QS.QRS = {};
         i2b2.CRC.ctrlr.QS.QI = {};
         i2b2.CRC.ctrlr.QS.QM = {name: queryName, id: queryMasterId};
