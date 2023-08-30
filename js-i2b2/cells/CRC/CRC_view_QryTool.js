@@ -87,6 +87,12 @@ i2b2.CRC.view.QT.showRun = function() {
     // show the options modal screen
     if ($('body #crcModal').length === 0) {
         $('body').append("<div id='crcModal'/>");
+        //if the user presses enter in one of the input fields on the crcModal form
+        //then run the query
+        $("#crcModal").submit(function(evt) {
+            $('body #crcModal button.i2b2-save').click();
+            evt.preventDefault();
+        });
     }
 
     $('body #crcModal').load('js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
@@ -133,14 +139,6 @@ i2b2.CRC.view.QT.showRun = function() {
             // close the modal
             $('body #crcModal div:eq(0)').modal('hide');
         });
-
-        //if the user presses enter in one of the input fields on the crcModal form
-        //then run the query
-        $("#crcModal").submit(function(evt) {
-            $('body #crcModal button.i2b2-save').click();
-            evt.preventDefault();
-        });
-
     });
 };
 // ================================================================================================== //
@@ -2032,7 +2030,10 @@ i2b2.events.afterCellInit.add((cell) => {
                                 '<label>Name:</label>' +
                             '</div>' +
                         '</div>');
-                    let queryName = $('<input id="queryName" class="name" disabled>');
+                    let queryName = $('<input id="queryName" class="name">');
+                    queryName.on("focus", function(event){
+                        $(this).blur();
+                    })
                     $('<div class="center"></div>').append(queryName).appendTo(runBar);
                     runBar.append('<div class="right">' +
                         '<button type="button" class="btn btn-primary btn-sm button-run">Find Patients</button>' +

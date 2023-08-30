@@ -46,7 +46,6 @@ window.addEventListener(i2b2.MSG_TYPES.AJAX.LIB_INIT, function(evt) {
     // USING CLOSURE FUNCTION FOR RECEIVING MSGS
     // ----------------------------------------------------------------------
     const cl_func_receiveMsg = function(eventData) {
-        console.dir(eventData);
         // check to see if the message is in the DB
         const msgId = eventData.msgId;
         if (msgId === undefined || cl_messageDB[eventData.msgId] === undefined) return false;

@@ -210,12 +210,12 @@ i2b2.sdx.TypeControllers.CONCPT.LoadChildrenFromTreeview = function(node, onComp
             } else {
                 let cl_node = node;
                 let cb_final = (function (conceptNodes, conceptParents, isCancelled) {
-                    if(!isCancelled) {
+                    if (!isCancelled) {
                         let allNodes = modifierNodes.concat(conceptNodes);
                         let allParents = Array.from(new Set(modifiersParents.concat(conceptParents))); // send only unique values
                         onCompleteCallback(allNodes, allParents);
-                    }else{
-                        onCompleteCallback([],[]);
+                    } else {
+                        onCompleteCallback([],[], true);
                     }
                 });
                 i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cb_final, false);
@@ -354,13 +354,8 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
     if (t.showConceptCode !== undefined) {
         options.ont_show_concept_code = t.showConceptCode;
     }
-    if (t.modifiers === undefined || t.modifiers === false) {
-        let temp = i2b2.ClientVersion.split(".");
-        let simpleVersion = [temp[0], temp[1]].join(".");
-        options.version = simpleVersion;
-    } else {
-        options.version = i2b2.ClientVersion;
-    }
+    // ISSUE: Always use version 1.5 in order to get nice/correct icons
+    options.version = "1.5";
 
     switch (typeof node) {
         case 'string':
@@ -373,7 +368,6 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
             options.concept_key_value = '';
             break;
     }
-    if (options.version === undefined) options.version = "1.5";
     i2b2.ONT.ajax.GetChildConcepts("ONT:SDX:Concept", options, scopedCallback );
 };
 

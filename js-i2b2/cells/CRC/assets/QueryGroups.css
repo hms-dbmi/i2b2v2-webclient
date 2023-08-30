@@ -97,6 +97,7 @@
     height: 2.1em;
     border-radius: 0.2rem;
     padding-left: 0.4em;
+    background-color: rgba(239, 239, 239, 0.3);
 }
 
 .CRC_QT_view .CRC_QT_runbar label {
@@ -1092,4 +1093,15 @@
 
 #queryOptionsModal #queryOptions .input-group-text{
     font-size: 0.85em;
+}
+
+
+.when-clock {
+    display: none;
+}
+.QueryGroup.when .when-clock {
+    font-size: 1.2rem;
+    padding: 0.4rem 0.8rem;
+    display: inline-block;
+    margin-left: auto;
 }

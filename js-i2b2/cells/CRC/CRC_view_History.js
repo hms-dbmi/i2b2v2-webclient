@@ -84,7 +84,7 @@ i2b2.CRC.view.history.loadMore = function() {
     let newcount = i2b2.CRC.view.history.treeview.data('treeview').getNodes(()=>true).length;
     newcount = newcount + i2b2.CRC.view.history.params.maxQueriesDisp;
     i2b2.CRC.view.history.LoadQueryMasters(newcount);
-}
+};
 
 //================================================================================================== //
 i2b2.CRC.view.history.loadMoreDates = function() {
@@ -97,46 +97,43 @@ i2b2.CRC.view.history.loadMoreDates = function() {
         $("#i2b2TreeviewQueryHistoryFinder").hide();
         $("#i2b2QueryHistoryFinderStatus").text("No queries found.").show();
     }
-}
+};
+
 // ================================================================================================== //
-
-i2b2.CRC.view.history.sortResultsByName = function(resultNode1, resultNode2){
-    // proper date handling (w/improper handling for latest changes to output format)
-    let nameStr1 = resultNode1.origData["name"];
-    let nameStr2 = resultNode2.origData["name"];
-
-    let result;
-    if(nameStr1 < nameStr2){
-        result = -1;
-    } else if(nameStr1 > nameStr2){
-        result = 1;
+i2b2.CRC.view.history.sortNodes = function(nodeList) {
+    if (i2b2.CRC.view.history.params.sortBy === 'NAME') {
+        // sort list by name
+        nodeList.sort((nodeA, nodeB) => {
+            let nameStrA = nodeA.i2b2.origData["name"].toLowerCase();
+            let nameStrB = nodeB.i2b2.origData["name"].toLowerCase();
+            if (nameStrA < nameStrB){
+                return -1;
+            } else if (nameStrA > nameStrB) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
     } else {
-        result = 0;
+        // sort list by create date
+        nodeList.sort((nodeA, nodeB) => {
+            // proper date handling (w/improper handling for latest changes to output format)
+            let dateTimeA = Date.parse(nodeA.i2b2.origData["created"]);
+            let dateTimeB = Date.parse(nodeB.i2b2.origData["created"]);
+            if (dateTimeA < dateTimeB) {
+                return -1;
+            } else if (dateTimeA > dateTimeB) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
     }
+    // reverse the list
+    let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
+    if (!isAscending) nodeList.reverse();
+};
 
-    return result;
-}
-// ================================================================================================== //
-
-i2b2.CRC.view.history.sortResultsByDate = function(resultNode1, resultNode2){
-    // proper date handling (w/improper handling for latest changes to output format)
-    let dateStr1 = resultNode1.origData["created"];
-    let dateStr2 = resultNode2.origData["created"];
-
-    let dateTime1 = Date.parse(dateStr1);
-    let dateTime2 = Date.parse(dateStr2);
-
-    let result;
-    if(dateTime1 < dateTime2){
-        result = -1;
-    } else if(dateTime1 > dateTime2){
-        result = 1;
-    } else {
-        result = 0;
-    }
-
-    return result;
-}
 // ================================================================================================== //
 i2b2.CRC.view.history.clickSearchName = function() {
     // Hide Navigate treeview and search results message and display search status message
@@ -157,16 +154,6 @@ i2b2.CRC.view.history.clickSearchName = function() {
 
         // display the tree results
         let newNodes = {};
-        if (i2b2.CRC.view.history.params.sortBy === 'NAME') {
-            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByName);
-        } else {
-            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByDate);
-        }
-
-        let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
-        if (!isAscending) {
-            cellResult.model.reverse();
-        }
         for (let i1=0; i1 < cellResult.model.length; i1++) {
             let sdxDataNode = cellResult.model[i1];
             let renderOptions = {
@@ -194,8 +181,13 @@ i2b2.CRC.view.history.clickSearchName = function() {
                 newNodes[temp.key] = temp;
             }
         }
+
+        // sort the nodes we are displaying
+        newNodes = Object.values(newNodes);
+        i2b2.CRC.view.history.sortNodes(newNodes);
+
         // push new nodes into the treeview
-        i2b2.CRC.view.history.treeviewFinder.treeview('addNodes', [Object.values(newNodes), true]);
+        i2b2.CRC.view.history.treeviewFinder.treeview('addNodes', [newNodes, true]);
 
         // render tree
         i2b2.CRC.view.history.treeviewFinder.treeview('redraw', []);
@@ -204,15 +196,24 @@ i2b2.CRC.view.history.clickSearchName = function() {
         // Display search results treeview
         let historyFinderTreeview = $("#i2b2TreeviewQueryHistoryFinder").show();
 
-        if(cellResult.model.length === 0){
+        if (cellResult.model.length === 0){
             $("#i2b2QueryHistoryFinderMessage").text("No records found.").show();
             historyFinderTreeview.hide();
         }
+
+        // TODO: load more is not implemented correctly for name search
+        // if (cellResult.model.length < i2b2.CRC.view['history'].params.maxQueriesDisp) {
+            // hide the "load more" option
+            $('.datelist-more-bar').addClass("d-none");
+        // } else {
+        //    $('.datelist-more-bar').removeClass("d-none");
+        // }
+
     };
 
     let crc_find_strategy = "contains"
     let crc_find_category = $("#querySearchFilter").data("selectedFilterValue");
-    if(crc_find_category === "pdo") crc_find_strategy = "exact"
+    if (crc_find_category === "pdo") crc_find_strategy = "exact"
 
     // fire the AJAX call
     let options = {
@@ -331,18 +332,6 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         // auto-extract SDX objects from returned XML
         cellResult.parse();
 
-        //sort the results
-        if (i2b2.CRC.view.history.params.sortBy === 'NAME') {
-            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByName);
-        } else {
-            cellResult.model.sort(i2b2.CRC.view.history.sortResultsByDate);
-        }
-
-        let isAscending = i2b2.CRC.view['history'].params.sortOrder.indexOf("DESC") === -1;
-        if (!isAscending) {
-            cellResult.model.reverse();
-        }
-
         // display the tree results
         let newNodes = [];
         let newNodeCount = cellResult.model.length < max ? cellResult.model.length : max;
@@ -377,6 +366,9 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         } else {
             $('.history-more-bar').removeClass("d-none");
         }
+
+        // sort the nodes we are displaying
+        i2b2.CRC.view.history.sortNodes(newNodes);
 
         // push new nodes into the treeview
         i2b2.CRC.view.history.treeview.treeview('addNodes', [newNodes, true]);

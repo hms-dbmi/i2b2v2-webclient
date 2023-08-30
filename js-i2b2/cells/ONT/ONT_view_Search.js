@@ -195,10 +195,10 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
     let parentNode = i2b2.ONT.view.search.treeview.treeview('getParent', node.nodeId);
 
     //if this is a root node
-    if(parentNode.nodeId === undefined && nodeSubList === undefined){
+    if (parentNode.nodeId === undefined && nodeSubList === undefined) {
         nodeSubList = [node];
     }
-    if(parentNode.nodeId === undefined && (nodeSubList !== undefined  && nodeSubList.length >= 0)){
+    if (parentNode.nodeId === undefined && (nodeSubList !== undefined  && nodeSubList.length >= 0)) {
         let nodesToExpand = [];
         nodesToExpand = nodesToExpand.concat(nodeSubList);
 
@@ -206,20 +206,19 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
 
         let currentNode = nodesToExpand.shift();
         //look up node in search tree in the nav tree using the key
-        let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode){
+        let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
             return snode.key === currentNode.key;
         });
         //skip over any nodes that are already loaded in the nav tree
-        while(nodesToExpand.length >= 1 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true)){
+        while (nodesToExpand.length >= 1 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true)) {
             //expand any collapsed nodes that were already loaded
-            if(topLevelNode[0].state.loaded === true
-                && topLevelNode[0].state.expanded === false){
-                i2b2.ONT.view.nav.treeview.treeview('expandNode',topLevelNode[0].nodeId );
+            if (topLevelNode[0].state.loaded === true && topLevelNode[0].state.expanded === false) {
+                i2b2.ONT.view.nav.treeview.treeview('expandNode',topLevelNode[0].nodeId);
             }
 
             currentNode = nodesToExpand.shift();
             //look up node in search tree in the nav tree using the key
-            topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode){
+            topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
                 return snode.key === currentNode.key;
             });
         }
@@ -235,35 +234,37 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
             }
         }
 
-        if(topLevelNode.length === 1 && nodesToExpand.length >= 1) {
+        if (topLevelNode.length === 1 && nodesToExpand.length >= 1) {
             topLevelNode = topLevelNode[0];
-            let onLoadChildrenComplete = function(nodeData){
+            let onLoadChildrenComplete = function(nodeData) {
                 i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
 
                 let currentNode = nodesToExpand.shift();
                 //look up node in search tree in the nav tree using the key
-                let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function (snode) {
+                let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
                     return snode.key === currentNode.key;
                 });
 
-                let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
-                //scroll to selected node
-                selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+                if (topLevelNode.length === 0) {
+                    console.error("A searched/found ONT node [" + currentNode.key + "] cannot be access via ontology browsing method");
+                } else {
+                    let selectNodeElem = $('[data-nodeid="' + topLevelNode[0].nodeId + '"]');
+                    //scroll to selected node
+                    selectNodeElem.get(0).scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
 
-                if(nodesToExpand.length >= 1) {
-                    i2b2.ONT.view.nav.loadChildren(topLevelNode[0], onLoadChildrenComplete);
-                }else{
-                    //highlight the node the user selected
-                    $(".viewInTreeNode").removeClass("viewInTreeNode");
-                    selectNodeElem.addClass("viewInTreeNode");
+                    if (nodesToExpand.length >= 1) {
+                        i2b2.ONT.view.nav.loadChildren(topLevelNode[0], onLoadChildrenComplete);
+                    } else {
+                        //highlight the node the user selected
+                        $(".viewInTreeNode").removeClass("viewInTreeNode");
+                        selectNodeElem.addClass("viewInTreeNode");
+                    }
                 }
             };
-
             i2b2.ONT.view.nav.loadChildren(topLevelNode, onLoadChildrenComplete);
         }
-    }
-    else{
-        if(nodeSubList === undefined){
+    } else {
+        if (nodeSubList === undefined) {
             nodeSubList = [node];
         }
         nodeSubList.unshift(parentNode);

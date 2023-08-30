@@ -528,7 +528,7 @@ function QueryToolController() {
             switch (item.sdxInfo.sdxType) {
                 case "PRS":
                     tempItem.key = "patient_set_coll_id:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
-                    name = item.origData.titleCRC;
+                    name = item.origData.titleCRC ? item.origData.titleCRC : item.origData.title;
                     let trimPos = name.lastIndexOf(" - ");
                     name = trimPos === -1 ? name : name.substring(0, trimPos);
                     tempItem.name = i2b2.h.Escape(name);
