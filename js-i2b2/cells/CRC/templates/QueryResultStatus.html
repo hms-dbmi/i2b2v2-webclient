@@ -5,6 +5,8 @@
                 <div style="clear:both;"></div><div style="float:left; font-weight:bold; line-height: 2rem;">Processing Query: {{name}} </div>
             {{else if isRunning}}
                 <div style="clear:both;"></div><div style="float:left; font-weight:bold; line-height: 2rem;">Running Query: {{name}} </div>
+            {{else if deleteCurrentQuery}}
+                <div style="clear:both;"></div><div style="float:left; font-weight:bold; line-height: 2rem;">Cancelled Query: {{name}} </div>
             {{else}}
                 <div style="clear:both;"></div><div style="float:left; font-weight:bold; line-height: 2rem;">Finished Query: {{name}} </div>
             {{/if}}
