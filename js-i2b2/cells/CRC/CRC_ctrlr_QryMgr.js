@@ -62,7 +62,7 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
     if (!stillRunning || i2b2.CRC.model.runner.finished) i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
 
     // update the progress display
-    i2b2.CRC.view.QryMgr.updateStatus();
+    i2b2.CRC.view.QueryMgr.updateStatus();
 }
 
 
@@ -139,7 +139,7 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
     i2b2.CRC.model.runner.intervalTimer = setInterval(i2b2.CRC.ctrlr.QueryMgr.tick, 100);
 
     // show run status HTML
-    i2b2.CRC.view.QryMgr.updateStatus();
+    i2b2.CRC.view.QueryMgr.updateStatus();
 
     // run query and get back the query master ID
     i2b2.CRC.ajax.runQueryInstance_fromQueryDefinition("CRC:QueryManager", params, i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster);
@@ -170,8 +170,8 @@ i2b2.CRC.ctrlr.QueryMgr.clearQuery = function() {
     i2b2.CRC.ctrlr.QT.clearQuery();
 
     // clear the display window
-    $("#infoQueryStatus", cell.view.QryMgr.lm_view).empty();
-    $("#infoQueryReport", cell.view.QryMgr.lm_view).empty();
+    $("#infoQueryStatus", cell.view.QueryMgr.lm_view).empty();
+    $("#infoQueryReport", cell.view.QueryMgr.lm_view).empty();
 };
 
 
@@ -233,7 +233,7 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
     }
 // TODO: This should fire after all results returned?
         // load the query results
-//        i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryStatusGraph", i2b2.CRC.view.QryMgr.containerDiv)[0]);
+//        i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryStatusGraph", i2b2.CRC.view.QueryMgr.containerDiv)[0]);
 
         // // process the results to get the query resultInstance
         // // ==========================================================
@@ -290,7 +290,7 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     }
 
     // re-render status
-    i2b2.CRC.view.QryMgr.updateStatus();
+    i2b2.CRC.view.QueryMgr.updateStatus();
 };
 
 

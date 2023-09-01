@@ -743,7 +743,7 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
 
     // update the query name
     i2b2.CRC.view.QT.updateQueryName();
-    i2b2.CRC.view.QryMgr.clearStatus();
+    i2b2.CRC.view.QueryMgr.clearStatus();
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.showModifierValues = function(sdxConcept, groupIdx, eventIdx){

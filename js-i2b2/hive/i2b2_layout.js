@@ -174,7 +174,7 @@ i2b2.layout.init = function () {
                         type:'component',
                         id:'QR',
                         isClosable:false,
-                        componentName: 'i2b2.CRC.view.QryMgr',
+                        componentName: 'i2b2.CRC.view.QueryMgr',
                         title:'Query Status'
                     }
                 ]

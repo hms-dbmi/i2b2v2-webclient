@@ -8,19 +8,19 @@
  */
 
 // create and save the view objects
-i2b2.CRC.view.QryMgr = new i2b2Base_cellViewController(i2b2.CRC, 'QryMgr');
+i2b2.CRC.view.QueryMgr = new i2b2Base_cellViewController(i2b2.CRC, 'QueryMgr');
 
 
-i2b2.CRC.view.QryMgr.updateStatus = function() {
+i2b2.CRC.view.QueryMgr.updateStatus = function() {
     // this function does the initial render of the query run status
-    let statusDiv = $("#infoQueryStatus", i2b2.CRC.view.QryMgr.containerDiv).empty();
+    let statusDiv = $("#infoQueryStatus", i2b2.CRC.view.QueryMgr.containerDiv).empty();
     $((Handlebars.compile("{{> QueryResultStatus}}"))(i2b2.CRC.model.runner)).appendTo(statusDiv);
 };
 
 
-i2b2.CRC.view.QryMgr.clearStatus = function() {
-    $("#infoQueryStatus", i2b2.CRC.view.QryMgr.containerDiv).empty();
-    $("#infoQueryReport", i2b2.CRC.view.QryMgr.containerDiv).empty();
+i2b2.CRC.view.QueryMgr.clearStatus = function() {
+    $("#infoQueryStatus", i2b2.CRC.view.QueryMgr.containerDiv).empty();
+    $("#infoQueryReport", i2b2.CRC.view.QueryMgr.containerDiv).empty();
 }
 
 
@@ -30,15 +30,15 @@ i2b2.CRC.view.QryMgr.clearStatus = function() {
 i2b2.events.afterCellInit.add((cell) => {
         if (cell.cellCode === 'CRC') {
             // ___ Register this view with the layout manager ____________________
-            i2b2.layout.registerWindowHandler("i2b2.CRC.view.QryMgr",
+            i2b2.layout.registerWindowHandler("i2b2.CRC.view.QueryMgr",
                 (function (container, scope) {
                     // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
-                    cell.view.QryMgr.lm_view = container;
+                    cell.view.QueryMgr.lm_view = container;
 
                     // add the cellWhite flare
-                    cell.view.QryMgr.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(container._contentElement);
-                    cell.view.QryMgr.containerDiv.append('<div id="infoQueryStatus"></div>');
-                    cell.view.QryMgr.containerDiv.append('<div id="infoQueryReport"></div>');
+                    cell.view.QueryMgr.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(container._contentElement);
+                    cell.view.QueryMgr.containerDiv.append('<div id="infoQueryStatus"></div>');
+                    cell.view.QueryMgr.containerDiv.append('<div id="infoQueryReport"></div>');
 
                     // Show initial screen
                 }).bind(this)
