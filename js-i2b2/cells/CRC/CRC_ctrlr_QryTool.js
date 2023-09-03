@@ -365,8 +365,7 @@ function QueryToolController() {
                         }
                     }
                     // update the transformed model
-                    i2b2.CRC.ctrlr.QT._processModel();
-
+                    i2b2.CRC.ctrlr.QueryMgr._processModel();
                     i2b2.CRC.view.QT.render();
                 }
             };
@@ -386,7 +385,8 @@ function QueryToolController() {
     };
 
 // ================================================================================================== //
-    this.loadQueryStatus = function( queryMasterId, queryName) {
+    this.loadQueryStatus = function(queryMasterId, queryName) {
+        // TODO: Rebuild this
         i2b2.CRC.ctrlr.QS.QRS = {};
         i2b2.CRC.ctrlr.QS.QI = {};
         i2b2.CRC.ctrlr.QS.QM = {name: queryName, id: queryMasterId};

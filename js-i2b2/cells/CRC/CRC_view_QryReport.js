@@ -1,4 +1,5 @@
 i2b2.CRC.view.QueryReport = {
+    sCompiledResultsTest: "",
     queryData: {
         queryInstanceId: null,
         queryResultSet: []
@@ -6,6 +7,7 @@ i2b2.CRC.view.QueryReport = {
     disDiv: null,
     breakdowns: null,
     displayQueryResults: function(queryInstanceId, div) {
+        i2b2.CRC.view.QueryReport.sCompiledResultsTest = "";
         this.breakdowns  = {
             resultTable: [],
             patientCount: {}
@@ -17,7 +19,7 @@ i2b2.CRC.view.QueryReport = {
         $(view).append(graphData);
         let tableData = $('<div id="infoQueryStatusTable"></div>').empty().hide();
         $(view).append(tableData);
-
+        $((Handlebars.compile("{{> QueryResultBreakdownGraph}}"))()).appendTo(graphData);
         i2b2.CRC.view.QueryReport.QRS = {};
 
         let scopedCallbackQRS = new i2b2_scopedCallback(this._handleQueryResultSet);
@@ -73,7 +75,6 @@ i2b2.CRC.view.QueryReport = {
 
     },
     _handleQueryResultInstance: function(results){
-        let sCompiledResultsTest = "";
         if (results.error) {
             alert(results.errorMsg);
             return;
@@ -146,8 +147,8 @@ i2b2.CRC.view.QueryReport = {
                         });
                         isPatientCount = true;
                     } else {
-                        sCompiledResultsTest += descriptionLong + '\n';
-                        sCompiledResultsTest += params[i2].getAttribute("column").substring(0,20) + " : " + value + "\n"; //snm0
+                        i2b2.CRC.view.QueryReport.sCompiledResultsTest += descriptionLong + '\n';
+                        i2b2.CRC.view.QueryReport.sCompiledResultsTest += params[i2].getAttribute("column").substring(0,20) + " : " + value + "\n"; //snm0
                         breakdown.title = descriptionShort;
                         breakdown.result.push({
                             name: params[i2].getAttribute("column"),
@@ -165,14 +166,14 @@ i2b2.CRC.view.QueryReport = {
             }
 
             //only create graphs if there is breakdown data
-            if(sCompiledResultsTest.length > 0) {
+            if(i2b2.CRC.view.QueryReport.sCompiledResultsTest.length > 0) {
                 $("#infoQueryStatusGraph").hide();
-                i2b2.CRC.view.graphs.createGraphs("breakdownChartsBody", sCompiledResultsTest, i2b2.CRC.view.graphs.bIsSHRINE);
+                i2b2.CRC.view.graphs.createGraphs("breakdownChartsBody", i2b2.CRC.view.QueryReport.sCompiledResultsTest, i2b2.CRC.view.graphs.bIsSHRINE);
                 $("#infoQueryStatusGraph").show();
             }
             if (i2b2.CRC.view.graphs.bisGTIE8) {
                 // Resize the query status box depending on whether breakdowns are included
-                if (sCompiledResultsTest.includes("breakdown")) {
+                if (i2b2.CRC.view.QueryReport.sCompiledResultsTest.includes("breakdown")) {
                     // i2b2.CRC.cfg.config.ui.statusBox = i2b2.CRC.cfg.config.ui.largeStatusBox;
                 }else {
                     //i2b2.CRC.cfg.config.ui.statusBox = i2b2.CRC.cfg.config.ui.defaultStatusBox;
@@ -184,7 +185,7 @@ i2b2.CRC.view.QueryReport = {
 
         i2b2.CRC.view.QueryReport.render({breakdowns: i2b2.CRC.view.QueryReport.breakdowns});
     },
-    _handleQueryResultSet: function(results){
+    _handleQueryResultSet: function(results) {
         // callback processor to check the Query Result Set
             if (results.error) {
                 alert(results.errorMsg);
@@ -231,11 +232,8 @@ i2b2.CRC.view.QueryReport = {
     },
     render: function(breakdowns) {
         let view = this.disDiv;
-        let tableData = $("#infoQueryStatusTable").empty();
+        let tableData = $("#infoQueryStatusTable").show().empty();
         $((Handlebars.compile("{{> QueryResult}}"))(breakdowns)).appendTo(tableData);
-
-        let graphData = $("#infoQueryStatusGraph").empty();
-        $((Handlebars.compile("{{> QueryResultBreakdownGraph}}"))(breakdowns)).appendTo(graphData);
     },
     _getTitle:  function(resultType, oRecord, oXML) {
         let title = "";

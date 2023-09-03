@@ -95,8 +95,40 @@
     display: block;
 }
 
+#infoQueryStatusText .status-bar {
+    width: 60%;
+    border: solid 1px;
+    height: 12px;
+    background: lightgrey;
+    margin: 1rem auto;
+}
 
-/* query report container styling (outside of the iframe) */
+#infoQueryStatusText .status-bar .status-error {
+    background: red;
+    height: 100%;
+    float: left;
+}
+
+#infoQueryStatusText .status-bar .status-finished {
+    background: lightgreen;
+    height: 100%;
+    float: left;
+}
+
+
+#infoQueryStatusText table {
+    width: 400px;
+    margin: 2rem auto;
+    background-color: #ed9b40;
+    color: black;
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+
+
+    /* query report container styling (outside of the iframe) */
 
 #queryReportModal .modal-dialog {
     max-width: 90%;
