@@ -409,24 +409,15 @@
         if (!node || node.state.disabled) return;
 
         var classList = target.attr('class') ? target.attr('class').split(' ') : [];
-        if ((classList.indexOf('expand-icon') !== -1)) {
-
-            this.toggleExpandedState(node, _default.options);
-            this.render();
+        if ((classList.indexOf('indent') !== -1)) {
+            return;
         }
         else if ((classList.indexOf('check-icon') !== -1)) {
-
             this.toggleCheckedState(node, _default.options);
             this.render();
         }
         else {
-
-            if (node.selectable) {
-                this.toggleSelectedState(node, _default.options);
-            } else {
-                this.toggleExpandedState(node, _default.options);
-            }
-
+            this.toggleExpandedState(node, _default.options);
             this.render();
         }
     };
