@@ -226,6 +226,12 @@ i2b2.events.afterCellInit.add((cell) => {
                                         $((Handlebars.compile("{{> OntologyOptions}}"))(i2b2.ONT.view.nav.params)).appendTo("#ontOptionsFields");
                                         $("#ontOptionsModal div").eq(0).modal("show");
                                     }
+                                },
+                                nodeRefresh: {
+                                    name: 'Refresh All',
+                                    onClick: function (node) {
+                                        i2b2.ONT.view.nav.doRefreshAll();
+                                    }
                                 }
                             }
                         });
