@@ -273,6 +273,13 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
                 onClick: function(node) {
                 i2b2.ONT.view.info.load(node.i2b2, true);
             }
+        },
+        nodeRefreshAll: {
+            name: 'Refresh All',
+            onClick: function (node) {
+                i2b2.ONT.view.search.clearSearchInput();
+                i2b2.ONT.view.nav.doRefreshAll();
+            }
         }
     };
 
