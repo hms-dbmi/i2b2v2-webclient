@@ -733,8 +733,8 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
                 }
             }
         }
-    }else{
-        i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx, !showLabValues);
+    } else {
+        if (sdx.sdxInfo.sdxControlCell === "ONT") i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx, !showLabValues);
     }
 
     // rerender the query event and add to the DOM
