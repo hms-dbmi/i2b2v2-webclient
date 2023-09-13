@@ -227,7 +227,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                         $("#ontOptionsModal div").eq(0).modal("show");
                                     }
                                 },
-                                nodeRefresh: {
+                                nodeRefreshAll: {
                                     name: 'Refresh All',
                                     onClick: function (node) {
                                         i2b2.ONT.view.search.clearSearchInput();
