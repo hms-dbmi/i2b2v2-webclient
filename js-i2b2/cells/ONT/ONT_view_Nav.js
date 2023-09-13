@@ -230,6 +230,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 nodeRefresh: {
                                     name: 'Refresh All',
                                     onClick: function (node) {
+                                        i2b2.ONT.view.search.clearSearchInput();
                                         i2b2.ONT.view.nav.doRefreshAll();
                                     }
                                 }
