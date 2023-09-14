@@ -1,0 +1,40 @@
+<div class="modal fade optionsModal" id="PMContextMenuDialog" data-backdrop="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">{{title}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="modal-form">
+                    <div class="form-group row">
+                        <div >
+                            {{#if confirmMsg}}
+                            <div>
+                                <span id="PM-confirm-msg" class="PM-prompt">{{confirmMsg}}</span>
+                            </div>
+                            {{else}}
+                            <div>
+                                <span id="PM-input-label" class="PM-prompt">{{inputLabel}} </span>
+                            </div>
+                            <input type="text" id="PMContextMenuInput" class="form-control" placeholder="{{placeHolder}}" value="{{inputValue}}" aria-label="PM input label" aria-describedby="PM-input-label" onkeyup="{{onKeyup}}">
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary context-menu-save" onclick={{onOk}}>Ok</button>
+                {{#if onCancel}}
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick={{onCancel}}> Cancel </button>
+                {{else}}
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel </button>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
