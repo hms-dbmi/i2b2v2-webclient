@@ -253,10 +253,44 @@ i2b2.events.afterCellInit.add((cell) => {
                 i2b2.ONT.view.nav.params.synonyms = false;
                 i2b2.ONT.view.nav.params.hiddens = false;
                 i2b2.ONT.view.nav.params.max = 200;
+                i2b2.ONT.model.searchResults = {};
             }).bind(this)
         );
     }
 });
+//================================================================================================== //
+i2b2.ONT.view.nav.viewInTreeFromId = function(sdxKey) {
+    let onLoadChildrenComplete = function(nodeData) {
+        i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
+        const loadedNodeEl = nodeData.el_Node[0];
+        loadedNodeEl.scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+        for (let child of nodeData.nodes) {
+            if (sdxKey.startsWith(child.key)) {
+                console.log(sdxKey + " >>> " + child.key);
+                if (sdxKey === child.key) {
+                    // found the node, hightlight it
+                    $(".viewInTreeNode").removeClass("viewInTreeNode");
+                    const targetEl = child.el_Node[0];
+                    targetEl.classList.add("viewInTreeNode");
+                    targetEl.scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+                } else {
+                    // need to dig deeper
+                    i2b2.ONT.view.nav.loadChildren(child, onLoadChildrenComplete);
+                }
+                break;
+            }
+        }
+    };
+
+    let rootNodes = i2b2.ONT.view.nav.treeview.treeview("getNodes", (n)=> (n.depth === 1));
+    for (let n of rootNodes) {
+        if (sdxKey.startsWith(n.key)) {
+            i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
+            break;
+        }
+    }
+};
+
 //================================================================================================== //
 i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, includeSearchOptions) {
 

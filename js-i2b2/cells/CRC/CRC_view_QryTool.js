@@ -393,6 +393,18 @@ i2b2.CRC.view.QT.termActionModifier = function(evt) {
     let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
     i2b2.CRC.view.QT.labValue.showLabValues(sdx, extractedLabModel, queryGroupIdx, eventIdx);
 };
+// ================================================================================================== //
+i2b2.CRC.view.QT.termActionTree = function(evt) {
+    let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
+    let eventIdx = $(evt.target).closest('.event').data('eventidx');
+    let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
+    let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
+
+    // load the node into the ONT search system
+    i2b2.ONT.view.nav.viewInTreeFromId(sdx.sdxInfo.sdxKeyValue);
+};
+
+
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
@@ -520,6 +532,7 @@ i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
     // add event listeners for term options functionality
     $('.concept .actions .editLabValue', targetEl).on('click', i2b2.CRC.view.QT.labValue.editLabValue);
     $('.concept .actions .info', targetEl).on('click', i2b2.CRC.view.QT.termActionInfo);
+    $('.concept .actions .tree', targetEl).on('click', i2b2.CRC.view.QT.termActionTree);
     $('.concept .actions .delete', targetEl).on('click', i2b2.CRC.view.QT.termActionDelete);
     $('.concept .actions .dateConstraint', targetEl).on('click', i2b2.CRC.view.QT.termActionDateConstraint);
     $('.concept .actions .modifier', targetEl).on('click', i2b2.CRC.view.QT.termActionModifier);
