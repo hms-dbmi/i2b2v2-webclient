@@ -262,8 +262,6 @@ i2b2.events.afterCellInit.add((cell) => {
 i2b2.ONT.view.nav.viewInTreeFromId = function(sdxKey) {
     let onLoadChildrenComplete = function(nodeData) {
         i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
-        const loadedNodeEl = nodeData.el_Node[0];
-        loadedNodeEl.scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
         for (let child of nodeData.nodes) {
             if (sdxKey.startsWith(child.key)) {
                 console.log(sdxKey + " >>> " + child.key);
