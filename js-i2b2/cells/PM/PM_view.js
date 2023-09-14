@@ -179,7 +179,7 @@ i2b2.PM.view.modal.announcementDialog = {
 };
 // ================================================================================================== //
 i2b2.PM.view.displayContextDialog = function(inputData){
-    let contextDialogModal = $("#PMContextDialog");
+    let contextDialogModal = $("#pmContextDialog");
     if (contextDialogModal.length === 0) {
         $("body").append("<div id='pmContextDialog'/>");
         contextDialogModal = $("#pmContextDialog");
@@ -208,11 +208,16 @@ i2b2.PM.view.displayContextDialog = function(inputData){
         "inputLabel": inputData.prompt,
         "placeHolder": inputData.placeHolder,
         "confirmMsg": inputData.confirmMsg,
-        "onOk": " i2b2.PM.view.history.dialogCallbackWrapper(event)",
-        "onKeyup": " i2b2.PM.view.history.dialogKeyupCallbackWrapper(event)",
+        "onOk": " i2b2.PM.view.dialogCallbackWrapper(event)",
+        "onKeyup": " i2b2.PM.view.dialogKeyupCallbackWrapper(event)",
         "inputValue" : inputData.inputValue,
-        "onCancel": inputData.onCancel
+        "hideCancel": inputData.hideCancel
     };
+
+    if(typeof inputData.onCancel === 'function' ){
+        data.onCancel = inputData.onCancel;
+    }
+
     $(i2b2.PM.view.template.contextDialog(data)).appendTo(contextDialogModal);
     $("#PMContextMenuDialog").modal('show');
 };
@@ -257,7 +262,10 @@ i2b2.PM.view.changePassword = {
                     i2b2.PM.view.displayContextDialog({
                         title: "i2b2 Change Password",
                         confirmMsg: "Password successfully changed",
-                        onOk: function(){}
+                        hideCancel: true,
+                        onOk: function(){
+                            $("#pmContextDialog div:eq(0)").modal('hide');
+                        }
                     });
                     $("#changePasswordModal div:eq(0)").modal('hide');
                 });

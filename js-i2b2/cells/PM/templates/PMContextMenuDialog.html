@@ -1,4 +1,4 @@
-<div class="modal fade optionsModal" id="PMContextMenuDialog" data-backdrop="false">
+<div class="modal fade pmContextModal" id="PMContextMenuDialog" data-backdrop="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
@@ -30,9 +30,11 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary context-menu-save" onclick={{onOk}}>Ok</button>
                 {{#if onCancel}}
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick={{onCancel}}> Cancel </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick={{onCancel}}> Cancel </button>
                 {{else}}
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel </button>
+                    {{#unless hideCancel}}
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Cancel </button>
+                    {{/unless}}
                 {{/if}}
             </div>
         </div>
