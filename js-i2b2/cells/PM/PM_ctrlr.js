@@ -655,12 +655,35 @@ i2b2.PM.changePassword = function (curpass, newpass, completeCallback) {
                 if (s.length > 0) {
                     // we have a proper error msg
                     try {
-                        if (s[0].firstChild.nodeValue === "Password Validation Failed")
-                            alert("Password Requirements\n\t- Be at least 8 characters\n\n- Must contain\n\t- upper case letters (A-Z)\n\t- lower case letters (a-z)\n\t- numbers (0-9)\n\t- special character (,.!@()}{#$%^&+=)\n\n- Must NOT contain\n\t- spaces\n\t- start or end with a special characters");
-                        else
-                            alert(s[0].firstChild.nodeValue);
+                        if (s[0].firstChild.nodeValue === "Password Validation Failed") {
+                            i2b2.PM.view.displayContextDialog({
+                                title: "i2b2 Change Password",
+                                confirmMsg: "Password requirements not met.",
+                                hideCancel: true,
+                                onOk: function(){
+                                    $("#pmContextDialog div:eq(0)").modal('hide');
+                                }
+                            });
+                        }
+                        else {
+                            i2b2.PM.view.displayContextDialog({
+                                title: "i2b2 Change Password",
+                                confirmMsg: s[0].firstChild.nodeValue,
+                                hideCancel: true,
+                                onOk: function(){
+                                    $("#pmContextDialog div:eq(0)").modal('hide');
+                                }
+                            });
+                        }
                     } catch (e) {
-                        alert("Error in PM Response");
+                        i2b2.PM.view.displayContextDialog({
+                            title: "i2b2 Change Password",
+                            confirmMsg: "Error in PM Response",
+                            hideCancel: true,
+                            onOk: function(){
+                                $("#pmContextDialog div:eq(0)").modal('hide');
+                            }
+                        });
                     }
                 }
 
