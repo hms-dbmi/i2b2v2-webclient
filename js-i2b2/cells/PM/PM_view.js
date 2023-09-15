@@ -18,10 +18,9 @@ i2b2.PM.setUserAccountInfo = function(){
     userInfo.find(".userRole").text(i2b2.PM.model.userRoles.join(", "));
     userInfo.find(".versionNum").text(i2b2.ClientVersion);
 
-    if (i2b2.PM.model.otherAuthMethod) {
-        $('#changePasswordLink').hide().prev().hide();
+    if (!i2b2.PM.model.otherAuthMethod) {
+        $('#changePasswordLink').removeClass("hidden").prev().removeClass("hidden");
     }
-
 };
 
 // login screen
