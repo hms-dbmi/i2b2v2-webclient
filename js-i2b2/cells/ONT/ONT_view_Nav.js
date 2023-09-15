@@ -226,6 +226,13 @@ i2b2.events.afterCellInit.add((cell) => {
                                         $((Handlebars.compile("{{> OntologyOptions}}"))(i2b2.ONT.view.nav.params)).appendTo("#ontOptionsFields");
                                         $("#ontOptionsModal div").eq(0).modal("show");
                                     }
+                                },
+                                nodeRefreshAll: {
+                                    name: 'Refresh All',
+                                    onClick: function (node) {
+                                        i2b2.ONT.view.search.clearSearchInput();
+                                        i2b2.ONT.view.nav.doRefreshAll();
+                                    }
                                 }
                             }
                         });
@@ -265,6 +272,13 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
             name: 'Show More Info',
                 onClick: function(node) {
                 i2b2.ONT.view.info.load(node.i2b2, true);
+            }
+        },
+        nodeRefreshAll: {
+            name: 'Refresh All',
+            onClick: function (node) {
+                i2b2.ONT.view.search.clearSearchInput();
+                i2b2.ONT.view.nav.doRefreshAll();
             }
         }
     };
