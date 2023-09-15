@@ -811,6 +811,12 @@ i2b2.events.afterCellInit.add((cell) => {
                                             i2b2.CRC.view.history._loadUsersInOptions();
                                             $("#crcHistoryOptionsModal div").eq(0).modal("show");
                                         }
+                                    },
+                                    RefreshAll: {
+                                        name: 'Refresh All',
+                                        onClick: function (node) {
+                                            i2b2.CRC.view.history.doRefreshAll(node);
+                                        }
                                     }
                                 }
                             });
