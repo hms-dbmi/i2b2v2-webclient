@@ -961,7 +961,8 @@
 
 #labNumericValue.error,
 #labNumericValueRangeLow.error,
-#labNumericValueRangeHigh.error {
+#labNumericValueRangeHigh.error,
+#labEnumValue.error{
     border: 2px solid red;
 }
 
