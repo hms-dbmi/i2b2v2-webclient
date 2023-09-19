@@ -46,6 +46,21 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
         if(sdxDataNode.renderData.cssClassMinor !== undefined) {
             temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
         }
+
+        // handle display of patient counts on the root nodes
+        let enablePatientCounts = i2b2.ONT.view.nav.params.patientCounts;
+        if (enablePatientCounts !== false && temp.i2b2.origData.total_num !== undefined) {
+            temp.text += ' - ';
+            temp.tags = [];
+            let totalnum = parseInt(temp.i2b2.origData.total_num, 10);
+            //parse as integer or leave totalnum as is
+            if( !isNaN(totalnum)){
+                temp.tags.push(totalnum.toLocaleString());
+            } else {
+                temp.tags.push(temp.i2b2.origData.total_num);
+            }
+        }
+
         newNodes.push(temp);
     }
 
