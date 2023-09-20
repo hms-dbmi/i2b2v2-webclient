@@ -1286,6 +1286,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
             // Save button handler
             $("body #labValuesModal button.lab-save").click(function () {
                 // check for bad characters in number inputs
+                let isValid = true;
+
                 if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER) {
                     const func_validateType = function(value, dataType) {
                         const val = String(value).trim();
@@ -1307,7 +1309,6 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                     }
 
                     const dataType = extractedLabValues.dataType;
-                    let isValid = true;
                     if (newLabValues.valueOperator === "BETWEEN") {
                         // multi-value input
                         if (!func_validateType(newLabValues.numericValueRangeLow, dataType)) {
@@ -1332,8 +1333,15 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                             $("#labNumericValue").removeClass("error");
                         }
                     }
-                    if (!isValid) return;
+
                 }
+
+                if (newLabValues.isEnum && newLabValues.value && newLabValues.value.length === 0) {
+                    $("#labEnumValue").addClass("error");
+                    isValid = false;
+                }
+
+                if (!isValid) return;
 
                 $("#labValuesModal div").eq(0).modal("hide");
                 switch (newLabValues.valueType) {
@@ -1678,12 +1686,15 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 case "ENUM":
                     if (Object.keys(extractedLabValues.enumInfo).length > 0) {
                         let labEnumValueSelection = $("#labEnumValue");
-                        Object.entries(extractedLabValues.enumInfo).forEach(([key, value]) => {
+                        let extractedLabValueEntries = Object.entries(extractedLabValues.enumInfo);
+                        extractedLabValueEntries.forEach(([key, value]) => {
                             let enumOption = $("<option></option");
                             enumOption.text(value);
                             enumOption.val(key);
                             labEnumValueSelection.append(enumOption);
                         });
+
+                        labEnumValueSelection.val(extractedLabValueEntries[0][0]);
 
                         labEnumValueSelection.change(function () {
                             newLabValues.value = $(this).val();
