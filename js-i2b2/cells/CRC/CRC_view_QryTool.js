@@ -401,7 +401,7 @@ i2b2.CRC.view.QT.termActionTree = function(evt) {
     let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
 
     // load the node into the ONT search system
-    i2b2.ONT.view.nav.viewInTreeFromId(sdx.sdxInfo.sdxKeyValue);
+    i2b2.ONT.view.nav.viewInTreeFromId(sdx);
 };
 
 

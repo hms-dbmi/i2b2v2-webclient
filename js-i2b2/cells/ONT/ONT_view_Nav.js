@@ -259,7 +259,8 @@ i2b2.events.afterCellInit.add((cell) => {
     }
 });
 //================================================================================================== //
-i2b2.ONT.view.nav.viewInTreeFromId = function(sdxKey) {
+i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
+    let sdxKey = sdx.sdxInfo.sdxKeyValue;
     let onLoadChildrenComplete = function(nodeData) {
         i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
         for (let child of nodeData.nodes) {
@@ -273,7 +274,13 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdxKey) {
                     targetEl.scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
                 } else {
                     // need to dig deeper
-                    i2b2.ONT.view.nav.loadChildren(child, onLoadChildrenComplete);
+                    if (!child.nodes || child.nodes.length === 0) {
+                        // load child nodes
+                        i2b2.ONT.view.nav.loadChildren(child, onLoadChildrenComplete);
+                    } else {
+                        // child nodes are already loaded
+                        onLoadChildrenComplete(child);
+                    }
                 }
                 break;
             }
