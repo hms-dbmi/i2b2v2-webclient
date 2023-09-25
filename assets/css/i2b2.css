@@ -190,6 +190,11 @@ body, td, p {
 #userInfo .dropdown-divider{
 	margin: 0;
 }
+
+#userInfo .hidden{
+	display: none;
+}
+
 /* === End Page Header === */
 
 .xmlMsg {

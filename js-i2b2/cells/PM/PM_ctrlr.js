@@ -632,3 +632,70 @@ i2b2.PM.trigger_WDT = function() {
         i2b2.hive.loadMonitor();
     }
 };
+
+i2b2.PM.changePassword = function (curpass, newpass, completeCallback) {
+    try {
+        // callback processor
+        let scopedCallback = new i2b2_scopedCallback();
+        scopedCallback.scope = this;
+        scopedCallback.callback = function (results) {
+            // THIS function is used to process the AJAX results of the getChild call
+            //		results data object contains the following attributes:
+            //			refXML: xmlDomObject <--- for data processing
+            //			msgRequest: xml (string)
+            //			msgResponse: xml (string)
+            //			error: boolean
+            //			errorStatus: string [only with error=true]
+            //			errorMsg: string [only with error=true]
+
+            // check for errors
+            if (results.error) {
+
+                var s = i2b2.h.XPath(results.refXML, 'descendant::result_status/status[@type="ERROR"]');
+                if (s.length > 0) {
+                    // we have a proper error msg
+                    try {
+                        if (s[0].firstChild.nodeValue === "Password Validation Failed") {
+                            i2b2.PM.view.displayContextDialog({
+                                title: "i2b2 Change Password",
+                                confirmMsg: "Password requirements not met.",
+                                hideCancel: true,
+                                onOk: function(){
+                                    $("#pmContextDialog div:eq(0)").modal('hide');
+                                }
+                            });
+                        }
+                        else {
+                            i2b2.PM.view.displayContextDialog({
+                                title: "i2b2 Change Password",
+                                confirmMsg: s[0].firstChild.nodeValue,
+                                hideCancel: true,
+                                onOk: function(){
+                                    $("#pmContextDialog div:eq(0)").modal('hide');
+                                }
+                            });
+                        }
+                    } catch (e) {
+                        i2b2.PM.view.displayContextDialog({
+                            title: "i2b2 Change Password",
+                            confirmMsg: "Error in PM Response",
+                            hideCancel: true,
+                            onOk: function(){
+                                $("#pmContextDialog div:eq(0)").modal('hide');
+                            }
+                        });
+                    }
+                }
+
+                console.error("Bad Results from Cell Communicator: ", results);
+                return false;
+            }
+            completeCallback();
+        }
+
+        // AJAX CALL USING THE EXISTING CRC CELL COMMUNICATOR
+        //i2b2.CRC.ajax.getPDO_fromInputList
+        i2b2.PM.ajax.setPassword("Plugin:PM", {sec_oldpassword: curpass, sec_newpassword: newpass}, scopedCallback);
+    } catch (e) {
+    }
+};

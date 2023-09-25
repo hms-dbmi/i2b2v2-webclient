@@ -17,6 +17,10 @@ i2b2.PM.setUserAccountInfo = function(){
     userInfo.find(".project").text(i2b2.PM.model.login_projectname);
     userInfo.find(".userRole").text(i2b2.PM.model.userRoles.join(", "));
     userInfo.find(".versionNum").text(i2b2.ClientVersion);
+
+    if (!i2b2.PM.model.otherAuthMethod) {
+        $('#changePasswordLink').removeClass("hidden").prev().removeClass("hidden");
+    }
 };
 
 // login screen
@@ -176,7 +180,104 @@ i2b2.PM.view.modal.announcementDialog = {
         $("#pmAnnouncementMsgDialogModal").modal('hide');
         i2b2.PM.doLogout();
     }
-}
+};
+// ================================================================================================== //
+i2b2.PM.view.displayContextDialog = function(inputData){
+    let contextDialogModal = $("#pmContextDialog");
+    if (contextDialogModal.length === 0) {
+        $("body").append("<div id='pmContextDialog'/>");
+        contextDialogModal = $("#pmContextDialog");
+    }
+    contextDialogModal.empty();
+
+    i2b2.PM.view.dialogCallbackWrapper = function(event) {
+        if (inputData.confirmMsg) {
+            inputData.onOk();
+        }
+        else {
+            let newValue = $("#PMContextMenuInput").val();
+            inputData.onOk(newValue);
+        }
+        $("#PMContextMenuDialog").modal('hide');
+    }
+
+    i2b2.PM.view.dialogKeyupCallbackWrapper = function(event) {
+        if(event.keyCode === 13){
+            $("#PMContextMenuDialog .context-menu-save").click();
+        }
+    }
+
+    let data = {
+        "title": inputData.title,
+        "inputLabel": inputData.prompt,
+        "placeHolder": inputData.placeHolder,
+        "confirmMsg": inputData.confirmMsg,
+        "onOk": " i2b2.PM.view.dialogCallbackWrapper(event)",
+        "onKeyup": " i2b2.PM.view.dialogKeyupCallbackWrapper(event)",
+        "inputValue" : inputData.inputValue,
+        "hideCancel": inputData.hideCancel
+    };
+
+    if(typeof inputData.onCancel === 'function' ){
+        data.onCancel = inputData.onCancel;
+    }
+
+    $(i2b2.PM.view.template.contextDialog(data)).appendTo(contextDialogModal);
+    $("#PMContextMenuDialog").modal('show');
+};
+// ================================================================================================== //
+
+i2b2.PM.view.changePassword = {
+    show: function () {
+        let changePasswordModal = $("#changePasswordModal");
+        if (changePasswordModal.length === 0) {
+            $("body").append("<div id='changePasswordModal'></div");
+            changePasswordModal = $("#changePasswordModal");
+        }
+        changePasswordModal.load('js-i2b2/cells/PM/assets/modalChangePassword.html', function(){
+            $("#changePasswordModal div:eq(0)").modal('show');
+        });
+    },
+    togglePassword: function(element) {
+        let curType =  $(element).prev().prop("type");
+
+        if(curType.toLowerCase() === "text" ){
+            $(element).prev().prop("type", "password");
+            $(element).find(".showPassword").hide();
+            $(element).find(".hidePassword").show();
+        }
+        else{
+            $(element).prev().prop("type", "text");
+            $(element).find(".showPassword").show();
+            $(element).find(".hidePassword").hide();
+        }
+    },
+    run: function () {
+        try {
+            var curpass = $('#curpass').val();
+            var newpass = $('#newpass').val();
+            var retypepass = $('#retypepass').val();
+
+            if (newpass !== retypepass) {
+                $(".changePasswordModal .errorMsg").text("New password doesn't match the confirm password");
+                $(".changePasswordModal .newpass").addClass("error");
+            } else {
+                i2b2.PM.changePassword(curpass, newpass, function(){
+                    i2b2.PM.view.displayContextDialog({
+                        title: "i2b2 Change Password",
+                        confirmMsg: "Password successfully changed",
+                        hideCancel: true,
+                        onOk: function(){
+                            $("#pmContextDialog div:eq(0)").modal('hide');
+                        }
+                    });
+                    $("#changePasswordModal div:eq(0)").modal('hide');
+                });
+            }
+        } catch (e) {
+        }
+    }
+};
 // display the modal login form after the PM cell is fully loaded
 // ================================================================================================== //
 i2b2.events.afterCellInit.add((cell) => {
@@ -204,6 +305,13 @@ i2b2.events.afterCellInit.add((cell) => {
                 cell.view.template.announcementMsgDialog = Handlebars.compile(template);
             },
             error: (error) => { console.error("Could not retrieve template: AnnouncementMsg.html"); }
+        });
+
+        $.ajax("js-i2b2/cells/PM/templates/pmContextMenuDialog.html", {
+            success: (template) => {
+                cell.view.template.contextDialog = Handlebars.compile(template);
+            },
+            error: (error) => { console.error("Could not retrieve template: PMContextMenuDialog.html"); }
         });
     }
 });
