@@ -82,6 +82,7 @@ i2b2.WORK.ctrlr.main.Rename = function(target_node) {
         "title": "Rename Work Item",
         "prompt": "Rename this work item to:",
         "inputValue": origName,
+        "placeHolder": origName,
         "onOk": okCallback,
     };
     i2b2.WORK.view.main.displayContextDialog(data);
@@ -148,6 +149,7 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
         "title": "Edit Work Item Annotation",
         "prompt": "Change this work item\'s annotation to:",
         "inputValue": origAnno,
+        "placeHolder": origAnno,
         "onOk": okCallback,
     };
 
