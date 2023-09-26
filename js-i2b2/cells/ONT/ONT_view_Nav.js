@@ -275,10 +275,58 @@ i2b2.events.afterCellInit.add((cell) => {
                 i2b2.ONT.view.nav.params.synonyms = false;
                 i2b2.ONT.view.nav.params.hiddens = false;
                 i2b2.ONT.view.nav.params.max = 200;
+                i2b2.ONT.model.searchResults = {};
             }).bind(this)
         );
     }
 });
+//================================================================================================== //
+i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
+    // do not do modifiers (for now)
+    if (sdx.origData.conceptModified) return;
+
+    const sdxKey = sdx.sdxInfo.sdxKeyValue;
+    let func_HighlightNode = function(node) {
+        // found the node, hightlight it
+        $(".viewInTreeNode").removeClass("viewInTreeNode");
+        const targetEl = node.el_Node[0];
+        targetEl.classList.add("viewInTreeNode");
+        targetEl.scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+    };
+    let onLoadChildrenComplete = function(nodeData) {
+        i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
+        for (let child of nodeData.nodes) {
+            if (sdxKey.startsWith(child.key)) {
+                if (sdxKey === child.key) {
+                    func_HighlightNode(child);
+                } else {
+                    // need to dig deeper
+                    if (!child.nodes || child.nodes.length === 0) {
+                        // load child nodes
+                        i2b2.ONT.view.nav.loadChildren(child, onLoadChildrenComplete);
+                    } else {
+                        // child nodes are already loaded
+                        onLoadChildrenComplete(child);
+                    }
+                }
+                break;
+            }
+        }
+    };
+
+    let rootNodes = i2b2.ONT.view.nav.treeview.treeview("getNodes", (n)=> (n.depth === 1));
+    for (let n of rootNodes) {
+        if (sdxKey.startsWith(n.key)) {
+            if (sdxKey === n.key) {
+                func_HighlightNode(n);
+            } else {
+                i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
+            }
+            break;
+        }
+    }
+};
+
 //================================================================================================== //
 i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, includeSearchOptions) {
 
