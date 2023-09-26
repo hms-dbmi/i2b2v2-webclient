@@ -260,18 +260,23 @@ i2b2.events.afterCellInit.add((cell) => {
 });
 //================================================================================================== //
 i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
-    let sdxKey = sdx.sdxInfo.sdxKeyValue;
+    // do not do modifiers (for now)
+    if (sdx.origData.conceptModified) return;
+
+    const sdxKey = sdx.sdxInfo.sdxKeyValue;
+    let func_HighlightNode = function(node) {
+        // found the node, hightlight it
+        $(".viewInTreeNode").removeClass("viewInTreeNode");
+        const targetEl = node.el_Node[0];
+        targetEl.classList.add("viewInTreeNode");
+        targetEl.scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+    };
     let onLoadChildrenComplete = function(nodeData) {
         i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
         for (let child of nodeData.nodes) {
             if (sdxKey.startsWith(child.key)) {
-                console.log(sdxKey + " >>> " + child.key);
                 if (sdxKey === child.key) {
-                    // found the node, hightlight it
-                    $(".viewInTreeNode").removeClass("viewInTreeNode");
-                    const targetEl = child.el_Node[0];
-                    targetEl.classList.add("viewInTreeNode");
-                    targetEl.scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+                    func_HighlightNode(child);
                 } else {
                     // need to dig deeper
                     if (!child.nodes || child.nodes.length === 0) {
@@ -290,7 +295,11 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
     let rootNodes = i2b2.ONT.view.nav.treeview.treeview("getNodes", (n)=> (n.depth === 1));
     for (let n of rootNodes) {
         if (sdxKey.startsWith(n.key)) {
-            i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
+            if (sdxKey === n.key) {
+                func_HighlightNode(n);
+            } else {
+                i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
+            }
             break;
         }
     }
