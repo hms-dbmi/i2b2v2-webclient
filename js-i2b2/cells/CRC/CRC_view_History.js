@@ -420,9 +420,11 @@ i2b2.CRC.view.history.doDelete = function(node) {
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doRefreshAll = function() {
-    // TODO: this should work different based on Browse vs. DateList mode
+    // TODO: should this work different based on Browse vs. DateList mode?
     i2b2.CRC.view.history.treeview.treeview('clear');
     i2b2.CRC.view.history.LoadQueryMasters();
+    i2b2.CRC.view.history.showBrowseView(); // switch if we are viewing by date
+    i2b2.CRC.view.search.reset(); // clear the search entry box
 };
 
 
