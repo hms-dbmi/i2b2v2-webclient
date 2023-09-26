@@ -348,7 +348,9 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
         "onCancel": inputData.onCancel
     };
     $(i2b2.WORK.view.main.templates.contextDialog(data)).appendTo(contextDialogModal);
-    $("#WKContextMenuDialog").modal('show');
+    $("#WKContextMenuDialog").modal('show').on('shown.bs.modal', function() {
+        $(this).find('[autofocus]').focus();
+    });
 }
 // =========================================================
 i2b2.events.afterCellInit.add((cell) => {
