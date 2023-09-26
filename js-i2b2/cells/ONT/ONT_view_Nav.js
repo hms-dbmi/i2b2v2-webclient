@@ -302,11 +302,14 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
 
     let func_HandleModifier = function(node) {
         i2b2.ONT.view.nav.treeview.treeview('expandNode', node.nodeId);
+        node.el_Node[0].scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
         for (let n of node.nodes) {
             if (modifierKey.startsWith(n.key)) {
                 if (modifierKey === n.key) {
                     func_HighlightNode(n);
                 } else {
+                    n.state.requested = true;
+                    i2b2.ONT.view.nav.treeview.treeview('redraw', []);
                     i2b2.ONT.view.nav.loadChildren(n, func_HandleModifier);
                 }
                 break;
@@ -316,14 +319,17 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
 
     let onLoadChildrenComplete = function(nodeData) {
         i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
+        nodeData.el_Node[0].scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
         for (let child of nodeData.nodes) {
             if (sdxKey.startsWith(child.key)) {
                 if (sdxKey === child.key) {
                     if (!modifierKey) {
-                    func_HighlightNode(child);
+                        func_HighlightNode(child);
                     } else {
                         if (!child.nodes || child.nodes.length === 0) {
                             // load child nodes
+                            child.state.requested = true;
+                            i2b2.ONT.view.nav.treeview.treeview('redraw', []);
                             i2b2.ONT.view.nav.loadChildren(child, func_HandleModifier);
                         } else {
                             func_HandleModifier(child);
@@ -333,6 +339,8 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
                     // need to dig deeper
                     if (!child.nodes || child.nodes.length === 0) {
                         // load child nodes
+                        child.state.requested = true;
+                        i2b2.ONT.view.nav.treeview.treeview('redraw', []);
                         i2b2.ONT.view.nav.loadChildren(child, onLoadChildrenComplete);
                     } else {
                         // child nodes are already loaded
@@ -350,6 +358,8 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
             if (sdxKey === n.key) {
                 func_HighlightNode(n);
             } else {
+                n.state.requested = true;
+                i2b2.ONT.view.nav.treeview.treeview('redraw', []);
                 i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
             }
             break;
