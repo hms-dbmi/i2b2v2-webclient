@@ -451,6 +451,21 @@ i2b2.events.afterCellInit.add((cell) => {
                                         return false;
                                 }
                             }
+                        },
+                        refreshAll: {
+                            name: 'Refresh All',
+                            onClick: function (node) {
+                                i2b2.WORK.ctrlr.refreshAll();
+                            },
+                            isShown: function (node) {
+                                switch (node.i2b2.origData.visual) {
+                                    case "CA":
+                                    case "FA":
+                                        return true;
+                                    default:
+                                        return false;
+                                }
+                            }
                         }
                     }
                 });
@@ -461,6 +476,24 @@ i2b2.events.afterCellInit.add((cell) => {
                         cell.view.main.templates.contextDialog = Handlebars.compile(template);
                     },
                     error: (error) => { console.error("Could not retrieve template: ContextMenuDialog.html"); }
+                });
+
+                container.on( 'tab', function( tab ){
+                    if(tab.element.text() === 'Workplace') {
+                        //add unique id to the term tab
+                        let elemId = "workplaceTab";
+                        $(tab.element).attr("id", elemId);
+                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+                            actions: {
+                                RefreshAll: {
+                                    name: 'Refresh All',
+                                    onClick: function (node) {
+                                        i2b2.WORK.ctrlr.refreshAll();
+                                    }
+                                }
+                            }
+                        });
+                    }
                 });
             }).bind(this)
         );
