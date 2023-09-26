@@ -80,7 +80,7 @@ i2b2.WORK.ctrlr.main.Rename = function(target_node) {
     };
     let data = {
         "title": "Rename Work Item",
-        "prompt": "Rename this work item to:",
+        "prompt": "Name",
         "inputValue": origName,
         "placeHolder": origName,
         "onOk": okCallback,
@@ -147,9 +147,10 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
     };
     let data = {
         "title": "Edit Work Item Annotation",
-        "prompt": "Change this work item\'s annotation to:",
+        "prompt": "Annotation",
         "inputValue": origAnno,
         "placeHolder": origAnno,
+        "largeInput": true,
         "onOk": okCallback,
     };
 

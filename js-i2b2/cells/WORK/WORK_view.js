@@ -345,7 +345,8 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
         "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper(event)",
         "onKeyup": "i2b2.WORK.view.main.dialogKeyupCallbackWrapper(event)",
         "inputValue" : inputData.inputValue,
-        "onCancel": inputData.onCancel
+        "onCancel": inputData.onCancel,
+        "largeInput": inputData.largeInput
     };
     $(i2b2.WORK.view.main.templates.contextDialog(data)).appendTo(contextDialogModal);
     $("#WKContextMenuDialog").modal('show').on('shown.bs.modal', function() {
