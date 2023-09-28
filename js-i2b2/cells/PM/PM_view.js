@@ -307,7 +307,7 @@ i2b2.events.afterCellInit.add((cell) => {
             error: (error) => { console.error("Could not retrieve template: AnnouncementMsg.html"); }
         });
 
-        $.ajax("js-i2b2/cells/PM/templates/pmContextMenuDialog.html", {
+        $.ajax("js-i2b2/cells/PM/templates/PMContextMenuDialog.html", {
             success: (template) => {
                 cell.view.template.contextDialog = Handlebars.compile(template);
             },
