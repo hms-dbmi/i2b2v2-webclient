@@ -932,7 +932,7 @@ i2b2.CRC.view.QT.render = function() {
         });
 
         // attach the i2b2 SDX handlers for each code... on both event1 and event2 containers
-        ["CONCPT","QM","PRS"].forEach((sdxCode) => {
+        ["CONCPT","QM","PRS", "PR"].forEach((sdxCode) => {
             $(".event", newQG).toArray().forEach((dropTarget) => {
                 i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
                 i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
@@ -1181,7 +1181,7 @@ i2b2.CRC.view.QT.render = function() {
 
     // wire drop handler to the final query group
     let dropTarget = $(".event .i2b2DropTarget", newQG);
-    ["CONCPT","QM","PRS"].forEach((sdxType) => {
+    ["CONCPT","QM","PRS", "PR"].forEach((sdxType) => {
         i2b2.sdx.Master.AttachType(dropTarget, sdxType);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "onHoverOver", i2b2.CRC.view.QT.HoverOver);
