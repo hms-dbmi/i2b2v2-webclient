@@ -19,7 +19,7 @@
         {{#if hasSQL}}
 
         <div class="dataline sql">
-            <span>SELECT * FROM {{table}} WHERE {{column}} {{operator}} "{{{path}}}%";</span>
+            <span>SELECT * FROM {{table}} WHERE {{column}} {{operator}} '{{{path}}}%';</span>
             <a href="#"><i class="bi bi-clipboard" title="copy to clipboard" data-clip-contents="SELECT * FROM {{{table}}} WHERE {{{column}}} {{{operator}}} '{{{escPath}}}%';"></i></a>
         </div>
         {{else}}
