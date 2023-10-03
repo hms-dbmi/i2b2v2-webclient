@@ -74,7 +74,8 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
 
             // we need to fire the WORK binding first!
             if (sdxTypeList.includes("WRK") && typeof eventHandlers.WRK?.DropHandler === 'function') {
-                sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON);
+                let renderOptions = {};
+                sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON, renderOptions);
                 alreadyFired.push(eventHandlers.WRK.DropHandler);
                 eventHandlers.WRK.DropHandler(sdxFromJSON, e, "WRK");
             }

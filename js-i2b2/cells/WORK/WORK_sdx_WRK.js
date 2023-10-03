@@ -193,19 +193,21 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             console.warn("No SDX Object exists to represent data-type "+sdxData.origData.encapType);
             // encapsulate as a Generic XML object
             sdxCode = "XML";
-            let t = i2b2.h.XPath(sdxData.origData.xmlOrig, "descendant::work_xml")[0].childNodes;
-            for (i=0; i<t.length; i++) {
-                if (t[i].nodeType === 1) {
-                    o.xmlOrig = t[i].outerHTML;
-                    break;
+            if(i2b2.h.XPath(sdxData.origData.xmlOrig, "descendant::work_xml").length > 0) {
+                let t = i2b2.h.XPath(sdxData.origData.xmlOrig, "descendant::work_xml")[0].childNodes;
+                for (i = 0; i < t.length; i++) {
+                    if (t[i].nodeType === 1) {
+                        o.xmlOrig = t[i].outerHTML;
+                        break;
+                    }
                 }
+                o.result_type = "UNKNOWN";
+                o.name = sdxData.origData.name; // inherit name from Workplace Node
+                o.key = false;
+                newOptions.showchildren = false;
+                newOptions.cssClass = "sdxStyleWORK-XML";
+                newOptions.icon = "sdx_WORK_XML.gif";
             }
-            o.result_type = "UNKNOWN";
-            o.name = sdxData.origData.name; // inherit name from Workplace Node
-            o.key = false;
-            newOptions.showchildren = false;
-            newOptions.cssClass = "sdxStyleWORK-XML";
-            newOptions.icon = "sdx_WORK_XML.gif";
             break;
     }
 
