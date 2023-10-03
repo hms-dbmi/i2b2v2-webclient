@@ -91,17 +91,6 @@ i2b2.sdx.Master.onDragDropEvents = function(e,a) {
                             sdxFromJSON.sdxInfo = sdxFromJSON.sdxUnderlyingPackage.sdxInfo;
                             sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON);
                         }
-
-                        if (sdxFromJSON.sdxInfo.sdxType === "PR") {
-                            let renderOptions = {};
-                            let title = sdxFromJSON.sdxInfo.sdxDisplayName;
-                            let subsetPos = title.indexOf(" [");
-                            title = subsetPos === -1 ? sdxDisplayName : "PATIENT:HIVE:" + title.substring(0, subsetPos);
-                            title = i2b2.h.Escape(title);
-                            renderOptions.title = title;
-                            sdxFromJSON.sdxInfo.sdxDisplayName = title;
-                            sdxFromJSON.renderData = i2b2.sdx.Master.RenderData(sdxFromJSON, renderOptions);
-                        }
                         // fire the function and add it to the list of functions already called
                         eventHandlers[sdxType].DropHandler(sdxFromJSON, e, sdxType);
                         alreadyFired.push(eventHandlers[sdxType].DropHandler);
