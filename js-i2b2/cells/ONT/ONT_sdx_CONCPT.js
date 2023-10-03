@@ -355,7 +355,11 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
         options.ont_show_concept_code = t.showConceptCode;
     }
     // ISSUE: Always use version 1.5 in order to get nice/correct icons
-    options.version = "1.5";
+    if (t.modifiers === undefined || t.modifiers === false) {
+        options.version = "1.6";
+    } else {
+        options.version = "1.5";
+    }
 
     switch (typeof node) {
         case 'string':

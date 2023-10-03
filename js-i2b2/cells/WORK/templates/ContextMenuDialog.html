@@ -21,7 +21,16 @@
                                 <div>
                                     <span id="WK-ann-label" class="WK-prompt">{{inputLabel}} </span>
                                 </div>
-                                <input type="text" id="WKContextMenuInput" class="form-control" placeholder="{{placeHolder}}" value="{{inputValue}}" aria-label="Work item annotation input" aria-describedby="WK-ann-label" onkeyup="{{onKeyup}}">
+
+                                {{#if largeInput}}
+                                    <textarea type="text" id="WKContextMenuInput" class="form-control" placeholder="{{placeHolder}}"
+                                      aria-label="Work item annotation input" aria-describedby="WK-ann-label" onkeyup="{{onKeyup}}" autofocus>{{inputValue}}</textarea>
+
+                                {{else}}
+                                    <input type="text" id="WKContextMenuInput" class="form-control" placeholder="{{placeHolder}}" value="{{inputValue}}"
+                                       aria-label="Work item annotation input" aria-describedby="WK-ann-label" onkeyup="{{onKeyup}}" autofocus>
+                                {{/if}}
+
                                 <div class="required-input">Please enter a value</div>
                             {{/if}}
                         </div>
