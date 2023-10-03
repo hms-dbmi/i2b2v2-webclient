@@ -283,9 +283,15 @@ i2b2.events.afterCellInit.add((cell) => {
 //================================================================================================== //
 i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
     // do not do modifiers (for now)
-    if (sdx.origData.conceptModified) return;
+    let modifierKey;
+    let sdxKey;
+    if (sdx.origData.conceptModified) {
+        modifierKey = sdx.sdxInfo.sdxKeyValue;
+        sdxKey = sdx.origData.conceptModified.sdxInfo.sdxKeyValue;
+    } else {
+        sdxKey = sdx.sdxInfo.sdxKeyValue;
+    }
 
-    const sdxKey = sdx.sdxInfo.sdxKeyValue;
     let func_HighlightNode = function(node) {
         // found the node, hightlight it
         $(".viewInTreeNode").removeClass("viewInTreeNode");
@@ -293,16 +299,48 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
         targetEl.classList.add("viewInTreeNode");
         targetEl.scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
     };
+
+    let func_HandleModifier = function(node) {
+        i2b2.ONT.view.nav.treeview.treeview('expandNode', node.nodeId);
+        node.el_Node[0].scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+        for (let n of node.nodes) {
+            if (modifierKey.startsWith(n.key)) {
+                if (modifierKey === n.key) {
+                    func_HighlightNode(n);
+                } else {
+                    n.state.requested = true;
+                    i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+                    i2b2.ONT.view.nav.loadChildren(n, func_HandleModifier);
+                }
+                break;
+            }
+        }
+    };
+
     let onLoadChildrenComplete = function(nodeData) {
         i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
+        nodeData.el_Node[0].scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
         for (let child of nodeData.nodes) {
             if (sdxKey.startsWith(child.key)) {
                 if (sdxKey === child.key) {
-                    func_HighlightNode(child);
+                    if (!modifierKey) {
+                        func_HighlightNode(child);
+                    } else {
+                        if (!child.nodes || child.nodes.length === 0) {
+                            // load child nodes
+                            child.state.requested = true;
+                            i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+                            i2b2.ONT.view.nav.loadChildren(child, func_HandleModifier);
+                        } else {
+                            func_HandleModifier(child);
+                        }
+                    }
                 } else {
                     // need to dig deeper
                     if (!child.nodes || child.nodes.length === 0) {
                         // load child nodes
+                        child.state.requested = true;
+                        i2b2.ONT.view.nav.treeview.treeview('redraw', []);
                         i2b2.ONT.view.nav.loadChildren(child, onLoadChildrenComplete);
                     } else {
                         // child nodes are already loaded
@@ -320,6 +358,8 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
             if (sdxKey === n.key) {
                 func_HighlightNode(n);
             } else {
+                n.state.requested = true;
+                i2b2.ONT.view.nav.treeview.treeview('redraw', []);
                 i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
             }
             break;
