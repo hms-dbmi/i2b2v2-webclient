@@ -161,7 +161,20 @@ function QueryToolController() {
                         o.result_instance_id = o.PRS_id ;
                         sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
-                    } else {
+                    }else  if (ckey.toLowerCase().startsWith("patient")) {
+                        let o = {};
+                        o.titleCRC = i2b2.h.getXNodeVal(pi[i2],'item_key');
+                        o.patient_id = ckey.substring(13);
+                        o.result_instance_id = o.PRS_id ;
+                        o.id = ckey;
+                        sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
+                        sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
+                        let subsetPos = sdxDataNode.sdxInfo.sdxDisplayName.indexOf(" [");
+                        sdxDataNode.sdxInfo.sdxDisplayName = subsetPos === -1
+                            ?  sdxDataNode.sdxInfo.sdxDisplayName : "PATIENT:HIVE:" +  sdxDataNode.sdxInfo.sdxDisplayName.substring(0, subsetPos);
+                        sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                    }
+                    else {
                         let o = {};
                         o.level = i2b2.h.getXNodeVal(pi[i2],'hlevel');
                         o.name = i2b2.h.getXNodeVal(pi[i2],'item_name');
@@ -531,6 +544,16 @@ function QueryToolController() {
                     name = item.origData.titleCRC ? item.origData.titleCRC : item.origData.title;
                     let trimPos = name.lastIndexOf(" - ");
                     name = trimPos === -1 ? name : name.substring(0, trimPos);
+                    tempItem.name = i2b2.h.Escape(name);
+                    tempItem.tooltip = i2b2.h.Escape(item.origData.title);
+                    tempItem.isSynonym = "false";
+                    tempItem.hlevel = 0;
+                    break;
+                case "PR":
+                    tempItem.key = "PATIENT:HIVE:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                    name = item.origData.titleCRC ? item.origData.titleCRC : item.origData.title;
+                    let subsetPos = name.indexOf(" [");
+                    name = subsetPos === -1 ? name : "PATIENT:HIVE:" + name.substring(0, subsetPos);
                     tempItem.name = i2b2.h.Escape(name);
                     tempItem.tooltip = i2b2.h.Escape(item.origData.title);
                     tempItem.isSynonym = "false";

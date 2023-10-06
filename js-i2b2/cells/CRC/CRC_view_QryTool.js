@@ -669,18 +669,33 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     let qgIndex = $(evt.target).closest(".QueryGroup").data("queryGroup");
     let eventIdx = $(evt.target).closest(".event").data('eventidx');
 
-   
+    //do any changes needed on the render of the item
+    i2b2.CRC.view.QT.adjustRenderData(sdx);
 
     i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, true);
 
     //show or hide validation messages
     i2b2.CRC.view.QT.handleConceptValidation();
 };
-
+// ================================================================================================== //
+i2b2.CRC.view.QT.adjustRenderData = function(sdx){
+    if (sdx.sdxInfo.sdxType === "PR") {
+       let renderOptions = {};
+       let title = sdx.sdxInfo.sdxDisplayName;
+       let subsetPos = title.indexOf(" [");
+       title = subsetPos === -1 ? title : "PATIENT:HIVE:" + title.substring(0, subsetPos);
+       title = i2b2.h.Escape(title);
+       renderOptions.title = title;
+       sdx.renderData = i2b2.sdx.Master.RenderData(sdx, renderOptions);
+   }
+};
 // ================================================================================================== //
 i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
     // add the item to the query
     i2b2.CRC.view.QT.addNewQueryGroup([sdx], {showLabValues: true});
+
+    //do any changes needed on the render of the item
+    i2b2.CRC.view.QT.adjustRenderData(sdx);
 
     // render the new query group (by re-rendering all the query groups)
     i2b2.CRC.view.QT.render();
@@ -932,7 +947,7 @@ i2b2.CRC.view.QT.render = function() {
         });
 
         // attach the i2b2 SDX handlers for each code... on both event1 and event2 containers
-        ["CONCPT","QM","PRS"].forEach((sdxCode) => {
+        ["CONCPT","QM","PRS", "PR"].forEach((sdxCode) => {
             $(".event", newQG).toArray().forEach((dropTarget) => {
                 i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
                 i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
@@ -1181,7 +1196,7 @@ i2b2.CRC.view.QT.render = function() {
 
     // wire drop handler to the final query group
     let dropTarget = $(".event .i2b2DropTarget", newQG);
-    ["CONCPT","QM","PRS"].forEach((sdxType) => {
+    ["CONCPT","QM","PRS", "PR"].forEach((sdxType) => {
         i2b2.sdx.Master.AttachType(dropTarget, sdxType);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "onHoverOver", i2b2.CRC.view.QT.HoverOver);
@@ -1801,7 +1816,7 @@ i2b2.CRC.view.QT.addEvent = function(){
     $('.EventLbl .actions .delete', qgRoot).on('click', deleteFunc);
 
     //add drag and drop handling
-    ["CONCPT","QM","PRS"].forEach((sdxCode) => {
+    ["CONCPT","QM","PRS", "PR"].forEach((sdxCode) => {
         $(".event", templateQueryGroup).last().toArray().forEach((dropTarget) => {
             i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
             i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
