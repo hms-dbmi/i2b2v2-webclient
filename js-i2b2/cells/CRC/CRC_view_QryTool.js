@@ -740,7 +740,6 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
     //check if this is a WRK folder
     if(sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage === undefined){
         i2b2.CRC.view.QT.handleWRKFolderDrop(sdx, function(sdx) {
-            // render the query group (by re-rendering all the query groups)
             i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, false);
             i2b2.CRC.view.QT.handleConceptValidation();
         });
