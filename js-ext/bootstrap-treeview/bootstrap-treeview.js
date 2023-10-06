@@ -409,10 +409,7 @@
         if (!node || node.state.disabled) return;
 
         var classList = target.attr('class') ? target.attr('class').split(' ') : [];
-        if ((classList.indexOf('indent') !== -1)) {
-            return;
-        }
-        else if ((classList.indexOf('check-icon') !== -1)) {
+        if ((classList.indexOf('check-icon') !== -1)) {
             this.toggleCheckedState(node, _default.options);
             this.render();
         }
@@ -622,9 +619,8 @@
             if (node.title !== undefined) treeItem.attr('title', node.title);
 
             // Add indent/spacer to mimic tree structure
-            for (var i = 0; i < (level - 1); i++) {
-                treeItem.append(_this.template.indent);
-            }
+            treeItem.addClass("indent-"+(level - 1));
+
 
             // Add expand, collapse, loading or empty spacer icons
             var classList = [];
@@ -803,13 +799,12 @@
     Tree.prototype.template = {
         list: '<ul class="list-group"></ul>',
         item: '<li class="list-group-item"></li>',
-        indent: '<span class="indent"></span>',
         icon: '<span class="icon"></span>',
         link: '<a href="#" style="color:inherit;"></a>',
         badge: '<span class="badge"></span>'
     };
 
-    Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
+    Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
 
 
     /**
