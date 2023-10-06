@@ -1816,7 +1816,7 @@ i2b2.CRC.view.QT.addEvent = function(){
     $('.EventLbl .actions .delete', qgRoot).on('click', deleteFunc);
 
     //add drag and drop handling
-    ["CONCPT","QM","PRS"].forEach((sdxCode) => {
+    ["CONCPT","QM","PRS", "PR"].forEach((sdxCode) => {
         $(".event", templateQueryGroup).last().toArray().forEach((dropTarget) => {
             i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
             i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
