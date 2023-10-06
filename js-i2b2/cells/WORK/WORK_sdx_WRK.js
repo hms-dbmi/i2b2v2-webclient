@@ -189,6 +189,9 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             newOptions.cssClass = "sdxStyleCRC-QDEF";
             newOptions.icon = "sdx_CRC_QDEF.jpg";
             break;
+        case "FOLDER":
+            console.error("TO BE COMPLETED");
+            break;
         default:
             console.warn("No SDX Object exists to represent data-type "+sdxData.origData.encapType);
             // encapsulate as a Generic XML object
