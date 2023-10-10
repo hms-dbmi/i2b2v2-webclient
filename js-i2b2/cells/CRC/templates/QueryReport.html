@@ -161,16 +161,19 @@ The search was completed in {{runDuration}} seconds.
 
 <h2 class="sub-title">Query Results</h2>
 
-{{#each reports}}
-<div class="results-group">
-  <div class="results-chart">
-    {{{this.chart}}}
+{{#if reports}}
+  {{#each reports}}
+  <div class="results-group">
+    <div class="results-chart">
+      {{{this.chart}}}
+    </div>
+    <div class="results-graph">
+      {{{this.graph}}}
+    </div>
   </div>
-  <div class="results-graph">
-    {{{this.graph}}}
-  </div>
-</div>
-{{/each}}
-
+  {{/each}}
+{{else}}
+  <div>Not Complete</div>
+{{/if}}
 </body>
 </html>
