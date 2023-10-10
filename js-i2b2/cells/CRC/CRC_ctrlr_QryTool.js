@@ -155,7 +155,20 @@ function QueryToolController() {
                         o.result_instance_id = o.PRS_id ;
                         sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
-                    } else {
+                    }else  if (ckey.toLowerCase().startsWith("patient")) {
+                        let o = {};
+                        o.titleCRC = i2b2.h.getXNodeVal(pi[i2],'item_key');
+                        o.patient_id = ckey.substring(13);
+                        o.result_instance_id = o.PRS_id ;
+                        o.id = ckey;
+                        sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
+                        sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
+                        let subsetPos = sdxDataNode.sdxInfo.sdxDisplayName.indexOf(" [");
+                        sdxDataNode.sdxInfo.sdxDisplayName = subsetPos === -1
+                            ?  sdxDataNode.sdxInfo.sdxDisplayName : "PATIENT:HIVE:" +  sdxDataNode.sdxInfo.sdxDisplayName.substring(0, subsetPos);
+                        sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                    }
+                    else {
                         let o = {};
                         o.level = i2b2.h.getXNodeVal(pi[i2],'hlevel');
                         o.name = i2b2.h.getXNodeVal(pi[i2],'item_name');

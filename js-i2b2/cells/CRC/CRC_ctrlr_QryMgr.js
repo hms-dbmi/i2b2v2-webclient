@@ -364,6 +364,16 @@ i2b2.CRC.ctrlr.QueryMgr._processModel = function() {
                 tempItem.isSynonym = "false";
                 tempItem.hlevel = 0;
                 break;
+            case "PR":
+                tempItem.key = "PATIENT:HIVE:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                name = item.origData.titleCRC ? item.origData.titleCRC : item.origData.title;
+                let subsetPos = name.indexOf(" [");
+                name = subsetPos === -1 ? name : "PATIENT:HIVE:" + name.substring(0, subsetPos);
+                tempItem.name = i2b2.h.Escape(name);
+                tempItem.tooltip = i2b2.h.Escape(item.origData.title);
+                tempItem.isSynonym = "false";
+                tempItem.hlevel = 0;
+                break;
             case "QM":
                 tempItem.key = "masterid:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
                 name = item.origData.name;
