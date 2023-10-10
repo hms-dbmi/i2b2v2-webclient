@@ -791,6 +791,8 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
 
         i2b2.CRC.view.QT.handleWRKFolderDrop(sdx, function(sdx) {
             if (typeof eventHandlers[sdx.sdxInfo.sdxType]?.DropHandler === "function") {
+                //do any changes needed on the render of the item
+                i2b2.CRC.view.QT.adjustRenderData(sdx);
                 i2b2.CRC.view.QT.addConcept(sdx, qgIdx, 0, false);
                 i2b2.CRC.view.QT.handleConceptValidation();
             }
@@ -806,9 +808,9 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
         i2b2.CRC.view.QT.addNewQueryGroup([sdx], {showLabValues: true});
 
         //do any changes needed on the render of the item
-    i2b2.CRC.view.QT.adjustRenderData(sdx);
+        i2b2.CRC.view.QT.adjustRenderData(sdx);
 
-    // render the new query group (by re-rendering all the query groups)
+        // render the new query group (by re-rendering all the query groups)
         i2b2.CRC.view.QT.render();
     }
 };
