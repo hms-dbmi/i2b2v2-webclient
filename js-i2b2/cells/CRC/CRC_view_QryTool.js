@@ -688,8 +688,39 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
     // add the item to the query
     i2b2.CRC.view.QT.addNewQueryGroup([sdx], {showLabValues: true});
 
-    // render the new query group (by re-rendering all the query groups)
-    i2b2.CRC.view.QT.render();
+    //check if this is a WRK folder
+    if(sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage === undefined){
+        let eventHandlers = {};
+        eventHandlers = $(evt.target).data("i2b2DragdropEvents");
+
+        //create and render a new query group first then add all WRK folder items
+        let qgIdx = i2b2.CRC.view.QT.addNewQueryGroup([]);
+        i2b2.CRC.view.QT.render();
+
+        i2b2.CRC.view.QT.handleWRKFolderDrop(sdx, function(sdx) {
+            if (typeof eventHandlers[sdx.sdxInfo.sdxType]?.DropHandler === "function") {
+                //do any changes needed on the render of the item
+                i2b2.CRC.view.QT.adjustRenderData(sdx);
+                i2b2.CRC.view.QT.addConcept(sdx, qgIdx, 0, false);
+                i2b2.CRC.view.QT.handleConceptValidation();
+            }
+        });
+    }
+    else{
+        //use the underlying package info for workplace items
+        if(sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage !== undefined){
+            sdx.origData = sdx.sdxUnderlyingPackage.origData;
+            sdx.sdxInfo = sdx.sdxUnderlyingPackage.sdxInfo;
+        }
+        // add the item to the query
+        i2b2.CRC.view.QT.addNewQueryGroup([sdx], {showLabValues: true});
+
+        //do any changes needed on the render of the item
+        i2b2.CRC.view.QT.adjustRenderData(sdx);
+
+        // render the new query group (by re-rendering all the query groups)
+        i2b2.CRC.view.QT.render();
+    }
 };
 
 // ================================================================================================== //
