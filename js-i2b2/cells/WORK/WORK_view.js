@@ -487,7 +487,7 @@ i2b2.events.afterCellInit.add((cell) => {
                         let elemId = "workplaceTab";
                         $(tab.element).attr("id", elemId);
 
-                        let optionsBtn = $('<div id="workplaceOptions"><i class="bi bi-chevron-down" title="Worplace Options"></i></div>');
+                        let optionsBtn = $('<div id="workplaceOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Worplace Options"></i></div>');
                         $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 
                         i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#workplaceOptions", {

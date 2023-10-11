@@ -234,7 +234,7 @@ i2b2.events.afterCellInit.add((cell) => {
 
                         $(tab.element).attr("id", elemId);
 
-                        let optionsBtn = $('<div id="termOptions" class="userOptions"><i class="bi bi-chevron-down" title="Set Terms Options"></i></div>');
+                        let optionsBtn = $('<div id="termOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Set Terms Options"></i></div>');
                         $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 
                         i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#termOptions", {

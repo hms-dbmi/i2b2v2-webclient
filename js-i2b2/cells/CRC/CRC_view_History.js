@@ -797,8 +797,7 @@ i2b2.events.afterCellInit.add((cell) => {
                             let elemId = "queryHistoryTab";
                             $(tab.element).attr("id", elemId);
 
-                            let optionsBtn = $('<div id="queryHistoryOptions"><i class="bi bi-chevron-down" title="Query History Options"></i></div>');
-
+                            let optionsBtn = $('<div id="queryHistoryOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Query History Options"></i></div>');
                             $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 
                             i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#queryHistoryOptions", {

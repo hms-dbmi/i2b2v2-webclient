@@ -28,15 +28,6 @@
     z-index: 1000;
 }
 
-#queryHistoryOptions {
-    font-size: 1.25em;
-    width: 1.1em;
-    height: 1.1em;
-    margin-top: -0.4em;
-    display: inline-block;
-    color: #000000FF;
-}
-
 #i2b2QueryHistoryBar .gj-icon {
     top: 9px !important;
 }
@@ -331,4 +322,13 @@ button.invert:hover{
     left: -1px;
     border-bottom-right-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
+}
+
+
+#queryHistoryOptions {
+    font-size: 1.25em;
+    width: 1.1em;
+    height: 1.1em;
+    margin-top: -0.4em;
+    display: inline-block;
 }
