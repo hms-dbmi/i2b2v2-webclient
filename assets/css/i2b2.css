@@ -564,3 +564,7 @@ iframe.pluginCell {
 #goldenLayoutId1 > .lm_root > .lm_row > .lm_splitter {
 	margin-left: -2px;
 }
+
+.goldenLayoutCol .lm_tab .lm_title {
+	padding: 1px 4px;
+}

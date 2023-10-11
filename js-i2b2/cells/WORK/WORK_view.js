@@ -486,7 +486,12 @@ i2b2.events.afterCellInit.add((cell) => {
                         //add unique id to the term tab
                         let elemId = "workplaceTab";
                         $(tab.element).attr("id", elemId);
-                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+
+                        let optionsBtn = $('<div id="workplaceOptions"><i class="bi bi-chevron-down" title="Worplace Options"></i></div>');
+                        $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
+
+                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#workplaceOptions", {
+                            menuEvent: "click",
                             actions: {
                                 RefreshAll: {
                                     name: 'Refresh All',
