@@ -496,7 +496,7 @@ i2b2.events.afterCellInit.add((cell) => {
                             }
                         });
 
-                        let optionsBtn = $('<li id="workplaceOptions" class="customHeaderOptions"><i class="bi bi-gear-fill" title="Worplace Options"></i></li>');
+                        let optionsBtn = $('<li id="workplaceOptions" class="customHeaderOptions"><i class="bi bi-gear-fill" title="Workplace Options"></i></li>');
                         $("#workplaceOptions").remove();
                         $(tab.header.element).find(".customHeaderOptions").hide();
                         $(tab.header.element).find(".lm_controls").prepend(optionsBtn);
