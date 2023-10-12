@@ -231,26 +231,57 @@ i2b2.events.afterCellInit.add((cell) => {
                     if(tab.element.text() === 'Terms') {
                         //add unique id to the term tab
                         let elemId = "ontologyTermTab";
+
                         $(tab.element).attr("id", elemId);
-                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
-                            actions: {
-                                nodeAnnotate: {
-                                    name: 'Show Options',
-                                    onClick: function (node) {
-                                        $("#ontOptionsFields").empty();
-                                        $((Handlebars.compile("{{> OntologyOptions}}"))(i2b2.ONT.view.nav.params)).appendTo("#ontOptionsFields");
-                                        $("#ontOptionsModal div").eq(0).modal("show");
-                                    }
-                                },
-                                nodeRefreshAll: {
-                                    name: 'Refresh All',
-                                    onClick: function (node) {
-                                        i2b2.ONT.view.search.clearSearchInput();
-                                        i2b2.ONT.view.nav.doRefreshAll();
-                                    }
-                                }
+                        $(tab.element).addClass("ontologyTermTab");
+
+                        let parent = $(tab.header.element);
+                        $(".lm_active").each(function(){
+                            let optid = $(this).data("optid");
+                            let thisParent = $(this).parent();
+                            if(optid !== undefined && thisParent !== parent){
+                                $("#" + optid).show();
                             }
                         });
+
+                        let optionsBtn = $('<li id="termOptions" class="customHeaderOptions"><i class="bi bi-gear-fill" title="Set Terms Options"></i></li>');
+
+                        $("#termOptions").remove();
+                        $(tab.header.element).find(".customHeaderOptions").hide();
+                        $(tab.header.element).find(".lm_controls").prepend(optionsBtn);
+                        optionsBtn.show();
+
+                        $(tab.element).data("optid", "termOptions");
+
+
+                        $(tab.element).on("click mousedown touchstart", function(){
+                            let isActive = $(this).hasClass("lm_active");
+                            if(isActive){
+                                $(this).parents(".lm_header").find(".customHeaderOptions").hide();
+                                $("#termOptions").show();
+                            }
+                        });
+
+                         i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#termOptions", {
+                             menuEvent: "click",
+                             actions: {
+                                 nodeAnnotate: {
+                                     name: 'Show Options',
+                                     onClick: function (node) {
+                                         $("#ontOptionsFields").empty();
+                                         $((Handlebars.compile("{{> OntologyOptions}}"))(i2b2.ONT.view.nav.params)).appendTo("#ontOptionsFields");
+                                         $("#ontOptionsModal div").eq(0).modal("show");
+                                     }
+                                 },
+                                 nodeRefreshAll: {
+                                     name: 'Refresh All',
+                                     onClick: function (node) {
+                                         i2b2.ONT.view.search.clearSearchInput();
+                                         i2b2.ONT.view.nav.doRefreshAll();
+                                     }
+                                 }
+                             }
+                         });
                     }
                 });
 

@@ -486,7 +486,35 @@ i2b2.events.afterCellInit.add((cell) => {
                         //add unique id to the term tab
                         let elemId = "workplaceTab";
                         $(tab.element).attr("id", elemId);
-                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+
+                        let parent = $(tab.header.element);
+                        $(".lm_active").each(function(item){
+                            let optid = $(this).data("optid");
+                            let thisParent = $(this).parents(".lm_header");
+                            if(optid !== undefined && thisParent !== parent){
+                                $("#" + optid).show();
+                            }
+                        });
+
+                        let optionsBtn = $('<li id="workplaceOptions" class="customHeaderOptions"><i class="bi bi-gear-fill" title="Worplace Options"></i></li>');
+                        $("#workplaceOptions").remove();
+                        $(tab.header.element).find(".customHeaderOptions").hide();
+                        $(tab.header.element).find(".lm_controls").prepend(optionsBtn);
+                        optionsBtn.show();
+
+                        $(tab.element).data("optid", "workplaceOptions");
+
+
+                        $(tab.element).on("click mousedown touchstart", function(){
+                            let isActive = $(this).hasClass("lm_active");
+                            if(isActive){
+                                $(this).parents(".lm_header").find(".customHeaderOptions").hide();
+                                $("#workplaceOptions").show();
+                            }
+                        });
+
+                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#workplaceOptions", {
+                            menuEvent: "click",
                             actions: {
                                 RefreshAll: {
                                     name: 'Refresh All',

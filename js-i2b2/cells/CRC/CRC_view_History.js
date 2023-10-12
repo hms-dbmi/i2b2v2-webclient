@@ -796,7 +796,35 @@ i2b2.events.afterCellInit.add((cell) => {
                             //add unique id to the term tab
                             let elemId = "queryHistoryTab";
                             $(tab.element).attr("id", elemId);
-                            i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+                            $(tab.element).addClass("queryHistoryTab");
+
+                            let parent = $(tab.header.element);
+                            $(".lm_active").each(function(){
+                                let optid = $(this).data("optid");
+                                let thisParent = $(this).parents(".lm_header");
+                                if(optid !== undefined && thisParent !== parent){
+                                    $("#" + optid).show();
+                                }
+                            });
+
+                            let optionsBtn = $('<li id="queryHistoryOptions" class="customHeaderOptions"><i class="bi bi-gear-fill" title="Query History Options"></i></li>');
+                            $("#queryHistoryOptions").remove();
+                            $(tab.header.element).find(".customHeaderOptions").hide();
+                            $(tab.header.element).find(".lm_controls").prepend(optionsBtn);
+                            optionsBtn.show();
+
+                            $(tab.element).on("click mousedown touchstart", function(){
+                                let isActive = $(this).hasClass("lm_active");
+                                if(isActive){
+                                    $(this).parents(".lm_header").find(".customHeaderOptions").hide();
+                                    $("#queryHistoryOptions").show();
+                                }
+                            });
+
+                            $(tab.element).data("optid", "queryHistoryOptions");
+
+                            i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#queryHistoryOptions", {
+                                menuEvent: "click",
                                 actions: {
                                     ListByDate: {
                                         name: 'List By Date',

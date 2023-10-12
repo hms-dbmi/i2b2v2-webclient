@@ -178,6 +178,26 @@ i2b2.events.afterCellInit.add((cell) => {
                 container.on("titleChanged", funcRetitle);
                 container.on("tab", funcRetitle);
 
+                container.on( 'tab', function( tab ) {
+                    if (tab.element.text() === 'Info') {
+
+                        let parent = $(tab.header.element);
+                        $(".lm_active").each(function(){
+                            let optid = $(this).data("optid");
+                            let thisParent = $(this).parent();
+                            if(optid !== undefined && thisParent !== parent){
+                                $(thisParent).find(".customHeaderOptions").hide();
+                                $("#" + optid).show();
+                            }
+                        });
+
+                        $(tab.header.element).find(".customHeaderOptions").hide();
+
+                        $(tab.element).on("click mousedown touchstart", function () {
+                            $(this).parents(".lm_header").find(".customHeaderOptions").hide();
+                        });
+                    }
+                });
 
                 $.ajax("js-i2b2/cells/ONT/templates/OntologyTermInfo.html", {
                     success: (template) => {
