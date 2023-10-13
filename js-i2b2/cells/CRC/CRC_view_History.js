@@ -806,7 +806,12 @@ i2b2.events.afterCellInit.add((cell) => {
                             //add unique id to the term tab
                             let elemId = "queryHistoryTab";
                             $(tab.element).attr("id", elemId);
-                            i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+
+                            let optionsBtn = $('<div id="queryHistoryOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Query History Options"></i></div>');
+                            $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
+
+                            i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#queryHistoryOptions", {
+                                menuEvent: "click",
                                 actions: {
                                     ListByDate: {
                                         name: 'List By Date',

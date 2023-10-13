@@ -286,4 +286,12 @@ button.invert:hover{
     padding: 0 0.5rem 0;
 }
 
+#termOptions {
+    font-size: 1.25em;
+    width: 1.1em;
+    height: 1.1em;
+    margin-top: -0.4em;
+    display: inline-block;
+}
+
 
