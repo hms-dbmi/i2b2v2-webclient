@@ -570,8 +570,10 @@ i2b2.events.afterCellInit.add((cell) => {
                             });
 
                             // init date picker for Date Listing view
-                            $("#historyDateStart").datepicker({
+                            let el = $("#historyDateStart");
+                            $(el).datepicker({
                                 uiLibrary: 'bootstrap4',
+                                keyboardNavigation: false,
                                 change: function() {
                                     if (i2b2.CRC.view.QT.isValidDate($("#historyDateStart").val())) {
                                         $("#i2b2QueryHistoryBar .dateError").hide();
@@ -595,6 +597,14 @@ i2b2.events.afterCellInit.add((cell) => {
                                     }
                                 }
                             });
+                            $(el).on("keyup", function(evt){
+                                if(evt.keyCode === 13){
+                                    $(this).datepicker().close();
+                                }else{
+                                    $(this).datepicker().open();
+                                }
+                            });
+
                             // inject the cancel date listing button
                             $(`<button class="btn border-left-0 dateListingCancel">
                                     <i class="bi bi-x-lg" title="Cancel Listing by Date"></i></button>`).appendTo($("#i2b2QueryHistoryBar .dateListing .gj-datepicker"));
