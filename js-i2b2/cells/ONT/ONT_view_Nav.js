@@ -231,8 +231,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     if(tab.element.text() === 'Terms') {
                         //add unique id to the term tab
                         let elemId = "ontologyTermTab";
+
                         $(tab.element).attr("id", elemId);
-                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+
+                        let optionsBtn = $('<div id="termOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Set Terms Options"></i></div>');
+                        $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
+
+                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#termOptions", {
+                            menuEvent:"click",
                             actions: {
                                 nodeAnnotate: {
                                     name: 'Show Options',
