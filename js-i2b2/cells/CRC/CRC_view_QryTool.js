@@ -1059,10 +1059,18 @@ i2b2.CRC.view.QT.render = function() {
         $('.datepicker', newQG).toArray().forEach((el) => {
             $(el).datepicker({
                 uiLibrary: 'bootstrap4',
+                keyboardNavigation: false,
                 change: function (event) {
                     i2b2.CRC.view.QT.handleUpdateDateRangeEvent(event);
                 }
             });
+            $(el).on("keyup", function(evt){
+                if(evt.keyCode === 13){
+                    $(this).datepicker().close();
+                }else{
+                    $(this).datepicker().open();
+                }
+            })
         });
 
         // attach the i2b2 SDX handlers for each code... on both event1 and event2 containers
