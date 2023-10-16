@@ -288,6 +288,9 @@ i2b2.events.afterCellInit.add((cell) => {
 });
 //================================================================================================== //
 i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
+    //clear any search results
+    i2b2.ONT.view.search.clearSearchInput();
+
     // do not do modifiers (for now)
     let modifierKey;
     let sdxKey;
