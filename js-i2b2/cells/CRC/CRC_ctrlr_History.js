@@ -66,7 +66,11 @@ i2b2.CRC.ctrlr.history = {
             // create a scoped callback message
             var scopeCB = new i2b2_scopedCallback();
             scopeCB.scope = i2b2.CRC.model.QueryMasters;
-            scopeCB.callback = i2b2.CRC.view.history.showBrowseView;
+            scopeCB.callback = function(){
+                //switch to the browse view and refresh the query history
+                i2b2.CRC.view.history.showBrowseView();
+                i2b2.CRC.view.history.doRefreshAll();
+            }
 
             // fire the AJAX call
             var options = {
