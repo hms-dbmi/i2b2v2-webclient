@@ -601,7 +601,16 @@ i2b2.events.afterCellInit.add((cell) => {
                                 if(evt.keyCode === 13){
                                     $(this).datepicker().close();
                                 }else{
-                                    $(this).datepicker().open();
+                                    let date = $(this).val().trim();
+                                    let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+
+                                    if(isValidDate){
+                                        $(this).datepicker().open();
+                                        $("#i2b2QueryHistoryBar .dateError").hide();
+                                    }else{
+                                        $("#i2b2QueryHistoryBar .dateError").show();
+                                        $(this).datepicker().close();
+                                    }
                                 }
                             });
 
