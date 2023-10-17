@@ -1067,8 +1067,18 @@ i2b2.CRC.view.QT.render = function() {
             $(el).on("keyup", function(evt){
                 if(evt.keyCode === 13){
                     $(this).datepicker().close();
-                }else{
-                    $(this).datepicker().open();
+                }else {
+                    let date = $(this).val().trim();
+                    let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+                    let errorFrameEl = $(this)[0].parentNode;
+
+                    if(isValidDate){
+                        $(this).datepicker().open();
+                        $(errorFrameEl).css('border', '');
+                    }else{
+                        $(errorFrameEl).css('border', 'solid');
+                        $(this).datepicker().close();
+                    }
                 }
             })
         });
