@@ -568,6 +568,13 @@ function QueryToolController() {
                     tempItem.isSynonym = "false";
                     tempItem.hlevel = 0;
                     break;
+                case "ENS":
+                    tempItem.key= "patient_set_enc_id:" +  i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                    tempItem.name = i2b2.h.Escape(item.sdxInfo.sdxDisplayName);
+                    tempItem.tooltip = i2b2.h.Escape(item.sdxInfo.sdxDisplayName);
+                    tempItem.isSynonym = "false";
+                    tempItem.hlevel = 0;
+                    break;
                 case "CONCPT":
                     tempItem.key = i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
                     tempItem.name = i2b2.h.Escape(item.origData.name);
