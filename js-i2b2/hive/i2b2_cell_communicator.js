@@ -14,6 +14,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
 
     if (!cellURL) console.warn("communicatorFactory: '"+cellCode+"' does not have a cellURL specified");
 
+    let pendingAsyncRequestCount = 0;
     function i2b2Base_communicator(){}
     var retCommObj = new i2b2Base_communicator;
     retCommObj.ParentCell = cellCode;
@@ -205,6 +206,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
 
         var myCallback = {
                   success: function(o, status, xhr) {
+                      pendingAsyncRequestCount = pendingAsyncRequestCount-1;
                       // Message logging for debug purposes
                       snifferPackage.status = xhr.status;
                       snifferPackage.msgRecv = {
@@ -224,6 +226,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
                       retCommObj._defaultCallbackOK(o);
                   },
                   failure: function(o, status, xhr) {
+                      pendingAsyncRequestCount = pendingAsyncRequestCount-1;
                       // Message logging for debug purposes
                       snifferPackage.status = xhr.status;
                       snifferPackage.msgRecv = {
@@ -241,6 +244,12 @@ i2b2.hive.communicatorFactory = function(cellCode){
         };
 
         if (commOptions.asynchronous) {
+            pendingAsyncRequestCount= pendingAsyncRequestCount+1;
+            if(pendingAsyncRequestCount > 1){
+                $("body").addClass("pendingRequest");
+            }else{
+                $("body").removeClass("pendingRequest");
+            }
             // perform an ASYNC query
             $.ajax({
                 type: "POST",
