@@ -57,6 +57,7 @@ i2b2.ONT.view.search.toggleSearchClearIcon = function(newValue){
 
 i2b2.ONT.view.search.clearSearchInput = function(){
     $("#searchTermText").val("");
+    i2b2.ONT.view.search.enableSearch("");
     $("#searchTermError").empty();
 
     // Reset dropdown menu settings
