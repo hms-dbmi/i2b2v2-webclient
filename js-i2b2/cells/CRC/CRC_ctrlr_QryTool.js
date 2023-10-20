@@ -159,7 +159,7 @@ function QueryToolController() {
                         o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
                         o.PRS_id = ckey.substring(19);
                         o.result_instance_id = o.PRS_id ;
-                        sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
+                        sdxDataNode = i2b2.sdx.Master.EncapsulateData('ENS',o);
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                     }else  if (ckey.toLowerCase().startsWith("patient")) {
                         let o = {};
