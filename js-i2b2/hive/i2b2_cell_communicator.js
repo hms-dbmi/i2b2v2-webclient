@@ -207,6 +207,11 @@ i2b2.hive.communicatorFactory = function(cellCode){
         var myCallback = {
                   success: function(o, status, xhr) {
                       pendingAsyncRequestCount = pendingAsyncRequestCount-1;
+                      if(pendingAsyncRequestCount > 1){
+                          $("body").addClass("pendingRequest");
+                      }else{
+                          $("body").removeClass("pendingRequest");
+                      }
                       // Message logging for debug purposes
                       snifferPackage.status = xhr.status;
                       snifferPackage.msgRecv = {
@@ -227,6 +232,11 @@ i2b2.hive.communicatorFactory = function(cellCode){
                   },
                   failure: function(o, status, xhr) {
                       pendingAsyncRequestCount = pendingAsyncRequestCount-1;
+                      if(pendingAsyncRequestCount > 1){
+                          $("body").addClass("pendingRequest");
+                      }else{
+                          $("body").removeClass("pendingRequest");
+                      }
                       // Message logging for debug purposes
                       snifferPackage.status = xhr.status;
                       snifferPackage.msgRecv = {
