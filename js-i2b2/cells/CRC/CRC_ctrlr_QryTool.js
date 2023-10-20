@@ -153,14 +153,15 @@ function QueryToolController() {
                         sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                         sdxDataNode.renderData.moreDescriptMinor = sdxDataNode.sdxInfo.sdxDisplayName;
-                        sdxDataNode.renderData.title = sdxDataNode.renderData.title.replace("Patient Set for ", "<span class='prevquery'>Patient Set for </span>");
                     } else if (ckey.toLowerCase().startsWith("patient_set_enc_id")) {
                         let o = {};
                         o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
                         o.PRS_id = ckey.substring(19);
                         o.result_instance_id = o.PRS_id ;
                         sdxDataNode = i2b2.sdx.Master.EncapsulateData('ENS',o);
+                        sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                        sdxDataNode.renderData.moreDescriptMinor = sdxDataNode.sdxInfo.sdxDisplayName;
                     }else  if (ckey.toLowerCase().startsWith("patient")) {
                         let o = {};
                         o.titleCRC = i2b2.h.getXNodeVal(pi[i2],'item_key');
