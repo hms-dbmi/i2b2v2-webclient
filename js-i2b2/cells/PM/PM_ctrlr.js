@@ -633,6 +633,8 @@ i2b2.PM.trigger_WDT = function() {
     }
 };
 
+
+// ================================================================================================== //
 i2b2.PM.changePassword = function (curpass, newpass, completeCallback) {
     try {
         // callback processor
@@ -686,7 +688,6 @@ i2b2.PM.changePassword = function (curpass, newpass, completeCallback) {
                         });
                     }
                 }
-
                 console.error("Bad Results from Cell Communicator: ", results);
                 return false;
             }
@@ -697,5 +698,7 @@ i2b2.PM.changePassword = function (curpass, newpass, completeCallback) {
         //i2b2.CRC.ajax.getPDO_fromInputList
         i2b2.PM.ajax.setPassword("Plugin:PM", {sec_oldpassword: curpass, sec_newpassword: newpass}, scopedCallback);
     } catch (e) {
+        console.error("Problem changing password!");
+        console.dir(e);
     }
 };
