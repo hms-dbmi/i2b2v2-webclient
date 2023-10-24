@@ -223,7 +223,9 @@ i2b2.sdx.Master.AttachType = function(container, typeCode, options) {
         $(container).data("i2b2-dragdrop-events", dd_events);
 
         // start listening for DD events
-        $(container).on("drop dragover dragenter dragleave", i2b2.sdx.Master.onDragDropEvents);
+        $(container).unbind("drop dragover dragenter dragleave")
+            .on("drop dragover dragenter dragleave", i2b2.sdx.Master.onDragDropEvents);
+
         return true;
     }
 };
