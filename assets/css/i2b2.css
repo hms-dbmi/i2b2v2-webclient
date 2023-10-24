@@ -576,3 +576,7 @@ iframe.pluginCell {
 .goldenLayoutCol .lm_tab .lm_title {
 	padding: 1px 4px;
 }
+
+body.pendingRequest *{
+	cursor: progress !important;
+}
