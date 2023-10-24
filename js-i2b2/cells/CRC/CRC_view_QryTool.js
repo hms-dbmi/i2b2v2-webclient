@@ -492,6 +492,21 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
                 !isDateValid ? $("#termDateConstraintModal .startDateError").show() : $("#termDateConstraintModal .startDateError").hide();
             }            
         }
+    }).on("keyup", function(evt){
+        if(evt.keyCode === 13){
+            $(this).datepicker().close();
+        }else{
+            let date = $(this).val().trim();
+            let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+
+            if(isValidDate){
+                $(this).datepicker().open();
+                $("#i2b2QueryHistoryBar .dateError").hide();
+            }else{
+                $("#i2b2QueryHistoryBar .dateError").show();
+                $(this).datepicker().close();
+            }
+        }
     });
 
     $("#termDateConstraintModal .DateEnd").datepicker({
@@ -519,6 +534,21 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
                 $("#termDateConstraintModal .endDateError").hide();
             } else{
                 !isDateValid ? $("#termDateConstraintModal .endDateError").show() : $("#termDateConstraintModal .endDateError").hide();
+            }
+        }
+    }).on("keyup", function(evt){
+        if(evt.keyCode === 13){
+            $(this).datepicker().close();
+        }else{
+            let date = $(this).val().trim();
+            let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+
+            if(isValidDate){
+                $(this).datepicker().open();
+                $("#i2b2QueryHistoryBar .dateError").hide();
+            }else{
+                $("#i2b2QueryHistoryBar .dateError").show();
+                $(this).datepicker().close();
             }
         }
     });
