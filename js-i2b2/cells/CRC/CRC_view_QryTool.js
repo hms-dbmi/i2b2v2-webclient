@@ -8,6 +8,8 @@
 // create and save the view objects
 i2b2.CRC.view.QT = new i2b2Base_cellViewController(i2b2.CRC, 'QT');
 
+i2b2.CRC.view.QT.allowedDropTypes = ["CONCPT","QM","PRS", "PR", "WRK", "ENS"];
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateQueryName = function() {
     // update the transformed model and set the title
@@ -483,6 +485,21 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
                 !isDateValid ? $("#termDateConstraintModal .startDateError").show() : $("#termDateConstraintModal .startDateError").hide();
             }            
         }
+    }).on("keyup", function(evt){
+        if(evt.keyCode === 13){
+            $(this).datepicker().close();
+        }else{
+            let date = $(this).val().trim();
+            let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+
+            if(isValidDate){
+                $(this).datepicker().open();
+                $("#i2b2QueryHistoryBar .dateError").hide();
+            }else{
+                $("#i2b2QueryHistoryBar .dateError").show();
+                $(this).datepicker().close();
+            }
+        }
     });
 
     $("#termDateConstraintModal .DateEnd").datepicker({
@@ -510,6 +527,21 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
                 $("#termDateConstraintModal .endDateError").hide();
             } else{
                 !isDateValid ? $("#termDateConstraintModal .endDateError").show() : $("#termDateConstraintModal .endDateError").hide();
+            }
+        }
+    }).on("keyup", function(evt){
+        if(evt.keyCode === 13){
+            $(this).datepicker().close();
+        }else{
+            let date = $(this).val().trim();
+            let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+
+            if(isValidDate){
+                $(this).datepicker().open();
+                $("#i2b2QueryHistoryBar .dateError").hide();
+            }else{
+                $("#i2b2QueryHistoryBar .dateError").show();
+                $(this).datepicker().close();
             }
         }
     });
@@ -661,47 +693,168 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
     return qgIdx;
 }
 // ================================================================================================== //
+//
+i2b2.CRC.view.QT.handleWRKFolderDrop = function(sdxData, dropHandlerCallback) {
+    var scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.callback = function(results) {
+        //var cl_onCompleteCB = onCompleteCallback;
+        // THIS function is used to process the AJAX results of the getChild call
+        //		results data object contains the following attributes:
+        //			refXML: xmlDomObject <--- for data processing
+        //			msgRequest: xml (string)
+        //			msgResponse: xml (string)
+        //			error: boolean
+        //			errorStatus: string [only with error=true]
+        //			errorMsg: string [only with error=true]
+        if (results.error){
+            console.log("ERROR: Unable to retrieve workplace folder contents", results.msgResponse);
+        } else {
+            let nlst = i2b2.h.XPath(results.refXML, "//folder[name and share_id and index and visual_attributes]");
+            for (let i = 0; i < nlst.length; i++) {
+
+                if (i2b2.h.getXNodeVal(nlst[i], "work_xml_i2b2_type") === 'FOLDER') {
+
+                    let wrkFolder = nlst[i];
+                    let nodeData = {};
+                    nodeData.xmlOrig = wrkFolder.outerHTML;
+                    nodeData.index = i2b2.h.getXNodeVal(wrkFolder, "index");
+                    nodeData.key = nodeData.index;
+                    nodeData.name = i2b2.h.getXNodeVal(wrkFolder, "folder/name");
+                    nodeData.annotation = i2b2.h.getXNodeVal(wrkFolder, "tooltip");
+                    nodeData.share_id = i2b2.h.getXNodeVal(wrkFolder, "share_id");
+                    nodeData.visual = String(i2b2.h.getXNodeVal(wrkFolder, "visual_attributes")).trim();
+                    nodeData.encapType = i2b2.h.getXNodeVal(wrkFolder, "work_xml_i2b2_type");
+                    nodeData.isRoot = false;
+
+                    let newSdxData = i2b2.WORK.view.main._generateTvNode(nodeData.name, nodeData);
+                    newSdxData = newSdxData.i2b2;
+                    i2b2.CRC.view.QT.handleWRKFolderDrop(newSdxData, dropHandlerCallback);
+                } else {
+
+                    let work_xml= i2b2.h.XPath(nlst[i], "work_xml");
+                    for (let j=0; j < work_xml.length; j++) {
+                        let folderItem = nlst[i];
+
+                        let nodeData = {};
+                        nodeData.xmlOrig = folderItem.outerHTML;
+                        nodeData.index = i2b2.h.getXNodeVal(folderItem, "index");
+                        nodeData.key = nodeData.index;
+                        nodeData.name = i2b2.h.getXNodeVal(folderItem, "folder/name");
+                        nodeData.annotation = i2b2.h.getXNodeVal(folderItem, "tooltip");
+                        nodeData.share_id = i2b2.h.getXNodeVal(folderItem, "share_id");
+                        nodeData.visual = String(i2b2.h.getXNodeVal(folderItem, "visual_attributes")).trim();
+                        nodeData.encapType = i2b2.h.getXNodeVal(folderItem, "work_xml_i2b2_type");
+                        nodeData.isRoot = false;
+
+                        let newSdxData = i2b2.WORK.view.main._generateTvNode(nodeData.name, nodeData);
+                        newSdxData = newSdxData.i2b2;
+                        newSdxData.origData = newSdxData.sdxUnderlyingPackage.origData;
+                        newSdxData.sdxInfo = newSdxData.sdxUnderlyingPackage.sdxInfo;
+                        newSdxData.renderData = i2b2.sdx.Master.RenderData(newSdxData);
+                        dropHandlerCallback(newSdxData);
+                    }
+                }
+            }
+        }
+    }
+    let varInput = {
+        parent_key_value: sdxData.sdxInfo.sdxKeyValue,
+        result_wait_time: 180
+    };
+
+    i2b2.WORK.ajax.getChildren("WORK:Workplace", varInput, scopedCallback );
+}
+// ================================================================================================== //
+i2b2.CRC.view.QT.adjustRenderData = function(sdx) {
+    if (sdx.sdxInfo.sdxType === "PR") {
+        let renderOptions = {};
+        let title = sdx.sdxInfo.sdxDisplayName ? sdx.sdxInfo.sdxDisplayName : sdx.renderData?.title;
+        if (!title) title = sdx.sdxInfo.sdxKeyValue;
+        let subsetPos = title.indexOf(" [");
+        title = subsetPos === -1 ? title : "PATIENT:HIVE:" + title.substring(0, subsetPos);
+        title = i2b2.h.Escape(title);
+        renderOptions.title = title;
+        sdx.renderData = i2b2.sdx.Master.RenderData(sdx, renderOptions);
+    }
+};
+// ================================================================================================== //
 i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
+    let qgIndex = $(evt.target).closest(".QueryGroup").data("queryGroup");
+    let eventIdx = $(evt.target).closest(".event").data('eventidx');
+
     // remove the hover and drop target fix classes
     $(evt.target).closest(".i2b2DropTarget").removeClass("DropHover");
     $(evt.target).closest(".i2b2DropTarget").removeClass("i2b2DropPrep");
 
-    let qgIndex = $(evt.target).closest(".QueryGroup").data("queryGroup");
-    let eventIdx = $(evt.target).closest(".event").data('eventidx');
+    // check if this is a WRK folder
+    if (sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage === undefined) {
+        i2b2.CRC.view.QT.handleWRKFolderDrop(sdx, function(sdx) {
+            i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, false);
+            i2b2.CRC.view.QT.handleConceptValidation();
+        });
+    } else {
+        // use the underlying package data for workplace items
+        if (sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage !== undefined) {
+            // but only if the underlying package is an acceptable type
+            if (!i2b2.CRC.view.QT.allowedDropTypes.includes(sdx.sdxUnderlyingPackage.sdxInfo.sdxType)) return false;
 
-    //do any changes needed on the render of the item
-    i2b2.CRC.view.QT.adjustRenderData(sdx);
+            sdx.origData = sdx.sdxUnderlyingPackage.origData;
+            sdx.sdxInfo = sdx.sdxUnderlyingPackage.sdxInfo;
+        }
 
-    i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, true);
+        //do any changes needed on the render of the item
+        i2b2.CRC.view.QT.adjustRenderData(sdx);
 
-    //show or hide validation messages
-    i2b2.CRC.view.QT.handleConceptValidation();
-};
-// ================================================================================================== //
-i2b2.CRC.view.QT.adjustRenderData = function(sdx){
-    if (sdx.sdxInfo.sdxType === "PR") {
-       let renderOptions = {};
-       let title = sdx.sdxInfo.sdxDisplayName;
-       let subsetPos = title.indexOf(" [");
-       title = subsetPos === -1 ? title : "PATIENT:HIVE:" + title.substring(0, subsetPos);
-       title = i2b2.h.Escape(title);
-       renderOptions.title = title;
-       sdx.renderData = i2b2.sdx.Master.RenderData(sdx, renderOptions);
-   }
+        i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, true);
+
+        //show or hide validation messages
+        i2b2.CRC.view.QT.handleConceptValidation();
+    }
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
-    // add the item to the query
-    i2b2.CRC.view.QT.addNewQueryGroup([sdx], {showLabValues: true});
+    // remove the hover and drop target fix classes
+    $(evt.target).closest(".i2b2DropTarget").removeClass("DropHover");
+    $(evt.target).closest(".i2b2DropTarget").removeClass("i2b2DropPrep");
 
-    //do any changes needed on the render of the item
-    i2b2.CRC.view.QT.adjustRenderData(sdx);
+    // check if this is a WRK folder
+    if (sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage === undefined) {
+        let eventHandlers = {};
+        eventHandlers = $(evt.target).data("i2b2DragdropEvents");
 
-    // render the new query group (by re-rendering all the query groups)
-    i2b2.CRC.view.QT.render();
+        //create and render a new query group first then add all WRK folder items
+        let qgIdx = i2b2.CRC.view.QT.addNewQueryGroup([]);
+        i2b2.CRC.view.QT.render();
+
+        i2b2.CRC.view.QT.handleWRKFolderDrop(sdx, function(sdx) {
+            if (typeof eventHandlers[sdx.sdxInfo.sdxType]?.DropHandler === "function") {
+                //do any changes needed on the render of the item
+                i2b2.CRC.view.QT.adjustRenderData(sdx);
+                i2b2.CRC.view.QT.addConcept(sdx, qgIdx, 0, false);
+                i2b2.CRC.view.QT.handleConceptValidation();
+            }
+        });
+    } else {
+        //use the underlying package info for workplace items
+        if (sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage !== undefined) {
+            // but only if the underlying package is an acceptable type
+            if (!i2b2.CRC.view.QT.allowedDropTypes.includes(sdx.sdxUnderlyingPackage.sdxInfo.sdxType)) return false;
+
+            sdx.origData = sdx.sdxUnderlyingPackage.origData;
+            sdx.sdxInfo = sdx.sdxUnderlyingPackage.sdxInfo;
+        }
+        // add the item to the query
+        i2b2.CRC.view.QT.addNewQueryGroup([sdx], {showLabValues: true});
+
+        //do any changes needed on the render of the item
+        i2b2.CRC.view.QT.adjustRenderData(sdx);
+
+        // render the new query group (by re-rendering all the query groups)
+        i2b2.CRC.view.QT.render();
+    }
 };
 
-// ================================================================================================== //
+ // ================================================================================================== //
 i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
 
     // mark if dates can be applied to this item
@@ -940,14 +1093,32 @@ i2b2.CRC.view.QT.render = function() {
         $('.datepicker', newQG).toArray().forEach((el) => {
             $(el).datepicker({
                 uiLibrary: 'bootstrap4',
+                keyboardNavigation: false,
                 change: function (event) {
                     i2b2.CRC.view.QT.handleUpdateDateRangeEvent(event);
                 }
             });
+            $(el).on("keyup", function(evt){
+                if(evt.keyCode === 13){
+                    $(this).datepicker().close();
+                }else {
+                    let date = $(this).val().trim();
+                    let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+                    let errorFrameEl = $(this)[0].parentNode;
+
+                    if(isValidDate){
+                        $(this).datepicker().open();
+                        $(errorFrameEl).css('border', '');
+                    }else{
+                        $(errorFrameEl).css('border', 'solid');
+                        $(this).datepicker().close();
+                    }
+                }
+            })
         });
 
         // attach the i2b2 SDX handlers for each code... on both event1 and event2 containers
-        ["CONCPT","QM","PRS", "PR"].forEach((sdxCode) => {
+        i2b2.CRC.view.QT.allowedDropTypes.forEach((sdxCode) => {
             $(".event", newQG).toArray().forEach((dropTarget) => {
                 i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
                 i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
@@ -1196,7 +1367,7 @@ i2b2.CRC.view.QT.render = function() {
 
     // wire drop handler to the final query group
     let dropTarget = $(".event .i2b2DropTarget", newQG);
-    ["CONCPT","QM","PRS", "PR"].forEach((sdxType) => {
+    i2b2.CRC.view.QT.allowedDropTypes.forEach((sdxType) => {
         i2b2.sdx.Master.AttachType(dropTarget, sdxType);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "onHoverOver", i2b2.CRC.view.QT.HoverOver);
@@ -1816,7 +1987,7 @@ i2b2.CRC.view.QT.addEvent = function(){
     $('.EventLbl .actions .delete', qgRoot).on('click', deleteFunc);
 
     //add drag and drop handling
-    ["CONCPT","QM","PRS", "PR"].forEach((sdxCode) => {
+    i2b2.CRC.view.QT.allowedDropTypes.forEach((sdxCode) => {
         $(".event", templateQueryGroup).last().toArray().forEach((dropTarget) => {
             i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
             i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);

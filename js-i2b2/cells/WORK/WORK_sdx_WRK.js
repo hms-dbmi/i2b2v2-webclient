@@ -189,6 +189,18 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             newOptions.cssClass = "sdxStyleCRC-QDEF";
             newOptions.icon = "sdx_CRC_QDEF.jpg";
             break;
+        case "FOLDER":
+            sdxCode = "WRK"
+            newOptions.showchildren = true;
+            newOptions.cssClass = "sdxStyleWORK-WRK";
+            newOptions.icon = "sdx_WORK_folder.gif";
+            o.xmlOrig = sdxData.origData.xmlOrig;
+            o.result_type = "FOLDER";
+            o.index = sdxData.origData.key;
+            o.name = sdxData.origData.name;
+            o.visual = sdxData.origData.visual;
+            o.isRoot = sdxData.origData.isRoot;
+            break;
         default:
             console.warn("No SDX Object exists to represent data-type "+sdxData.origData.encapType);
             // encapsulate as a Generic XML object
@@ -214,8 +226,12 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
     if (sdxCode) {
         //TODO: Is this if condition needed?
         if (sdxDataNode = i2b2.sdx.Master.EncapsulateData(sdxCode, o)) {
-            sdxData.sdxUnderlyingPackage = sdxDataNode;
-            subclassData = i2b2.sdx.Master.RenderData(sdxDataNode, newOptions);
+            if (sdxCode !== "WRK") {
+                sdxData.sdxUnderlyingPackage = sdxDataNode;
+                subclassData = i2b2.sdx.Master.RenderData(sdxDataNode, newOptions);
+            } else {
+                Object.assign(subclassData, newOptions);
+            }
         }
     }
     return subclassData;

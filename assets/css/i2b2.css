@@ -444,9 +444,17 @@ DIV.tabText {}
 	font-size: 16px;
 }
 
+.goldenLayoutCol .lm_tab .menuOptions {
+	color:#fff;
+}
+
 .goldenLayoutCol .lm_tab.lm_active .lm_title {
 	color:#000;
 	padding:1px 4px;
+}
+
+.goldenLayoutCol .lm_tab.lm_active .menuOptions {
+	color:#000;
 }
 
 .goldenLayout div.cellWhite {
@@ -563,4 +571,12 @@ iframe.pluginCell {
 
 #goldenLayoutId1 > .lm_root > .lm_row > .lm_splitter {
 	margin-left: -2px;
+}
+
+.goldenLayoutCol .lm_tab .lm_title {
+	padding: 1px 4px;
+}
+
+body.pendingRequest *{
+	cursor: progress !important;
 }
