@@ -8,9 +8,13 @@
 </head>
 <body>
 <h1 class="title">i2b2 Query Report</h1>
-The query entitled "{{name}}" submitted on <span class="no-break">{{submittedAt}}</span>, was successfully completed on <span class="no-break">{{completedAt}}</span>.
-This query was performed by <span class="no-break">"{{submittedBy}}"</span>.
-The search was completed in {{runDuration}} seconds.
+{{#if completedAt}}
+  The query entitled "{{name}}" submitted on <span class="no-break">{{submittedAt}}</span>, was successfully completed on <span class="no-break">{{completedAt}}</span>.
+  This query was performed by <span class="no-break">"{{submittedBy}}"</span>.
+  The search was completed in {{runDuration}} seconds.
+{{else}}
+  The query entitled "{{name}}" submitted on <span class="no-break">{{submittedAt}}</span>.
+{{/if}}
 
 
 <h2 class="sub-title">Query Definition</h2>
