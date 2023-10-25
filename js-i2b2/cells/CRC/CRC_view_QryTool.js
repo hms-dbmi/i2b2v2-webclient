@@ -1827,8 +1827,6 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                     let largeStringValueOperatorSelection = $("#labLargeStringValueOperator");
                     let stringValueSelection = $("#labStringValue");
 
-                    //$("input[name='labType'][value='BY_VALUE']").trigger("click");
-
                     $("#labLargeStringValueOperatorMain").removeClass("hidden");
                     $("#labStringValueMain").removeClass("hidden");
                     $("label[for='labAnyValueType']").text("No Search Requested");
