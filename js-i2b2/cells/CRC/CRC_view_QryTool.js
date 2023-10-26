@@ -1697,7 +1697,10 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                             numericValueSelection.val(sdxConcept.LabValues.value);
                             newLabValues.value = sdxConcept.LabValues.value;
                         }
+                    }else{
+                        $("input[name='labType'][value='BY_VALUE']").click();
                     }
+
                     numericValueOperatorSelection.trigger("change");
 
                     //Bar segment
@@ -1849,12 +1852,17 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                             stringValueSelection.val(sdxConcept.LabValues.value).trigger("change");
                         }
                     }
+
+                    if(!(sdxConcept.LabValues && sdxConcept.LabValues.value)){
+                        $("input[name='labType'][value='BY_VALUE']").click();
+                    }
                     largeStringValueOperatorSelection.trigger("change");
                     newLabValues.isString = true;
                     break;
                 case "STR":
                     $("#labStringValueOperatorMain").removeClass("hidden");
                     $("#labStringValueMain").removeClass("hidden");
+
                     let stringSelection = $("#labStringValue");
                     let stringValueOperatorSelection = $("#labStringValueOperator");
 
@@ -1866,19 +1874,20 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                         newLabValues.value = $(this).val();
                     });
 
-                    if (sdxConcept.LabValues) {
-                        if (sdxConcept.LabValues.valueOperator) {
-                            stringValueOperatorSelection.val(sdxConcept.LabValues.valueOperator);
-                            if (sdxConcept.LabValues.value) {
-                                stringSelection.val(sdxConcept.LabValues.value).trigger("change");
-                            }
+                    if (sdxConcept.LabValues && sdxConcept.LabValues.valueOperator) {
+                        stringValueOperatorSelection.val(sdxConcept.LabValues.valueOperator);
+                        if (sdxConcept.LabValues.value) {
+                            stringSelection.val(sdxConcept.LabValues.value).trigger("change");
                         }
+                    }else{
+                        $("input[name='labType'][value='BY_VALUE']").click();
                     }
                     stringValueOperatorSelection.trigger("change");
                     newLabValues.isString = true;
                     break;
                 case "ENUM":
                     if (Object.keys(extractedLabValues.enumInfo).length > 0) {
+
                         let labEnumValueSelection = $("#labEnumValue");
                         let extractedLabValueEntries = Object.entries(extractedLabValues.enumInfo);
                         extractedLabValueEntries.forEach(([key, value]) => {
@@ -1910,6 +1919,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
 
                         if (sdxConcept.LabValues && sdxConcept.LabValues.value) {
                             labEnumValueSelection.val(sdxConcept.LabValues.value);
+                        }else{
+                            $("input[name='labType'][value='BY_VALUE']").click();
                         }
                         labEnumValueSelection.trigger("change");
                         newLabValues.isEnum = true;
