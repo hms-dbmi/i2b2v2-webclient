@@ -2093,7 +2093,7 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         let reportData = {
             name: i2b2.CRC.ctrlr.QS.QM.name,
             submittedAt: i2b2.CRC.ctrlr.QS.QI.start_date.toLocaleString().replace(", "," @ "),
-            completedAt: i2b2.CRC.ctrlr.QS.QI.end_date.toLocaleString().replace(", "," @ "),
+            completedAt: i2b2.CRC.ctrlr.QS.QI.end_date ? i2b2.CRC.ctrlr.QS.QI.end_date.toLocaleString().replace(", "," @ ") : "",
             submittedBy: "USERNAME(" + submittedByUsername + ")",
             runDuration: Number((i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date) / 1000).toLocaleString(),
             panels: panels
@@ -2137,19 +2137,20 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         }
 
         // Deal with the reports
-        let reports = [];
-        let graphs = $("#breakdownChartsBody>div");
-        let charts = $("#breakdownDetails>div");
-        let dataRef = i2b2.CRC.ctrlr.QS.breakdowns.resultTable;
-        for (let i=0; i<dataRef.length; i++) {
-            if (i == 0) {
-                reports.push({chart:charts[i].outerHTML, data: dataRef[i]});
-            } else {
-                reports.push({chart:charts[i].outerHTML, graph:graphs[i-1].outerHTML, data: dataRef[i]});
+        if(i2b2.CRC.ctrlr.QS.QI.end_date !== undefined) {
+            let reports = [];
+            let graphs = $("#breakdownChartsBody>div");
+            let charts = $("#breakdownDetails>div");
+            let dataRef = i2b2.CRC.ctrlr.QS.breakdowns.resultTable;
+            for (let i = 0; i < dataRef.length; i++) {
+                if (i == 0) {
+                    reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
+                } else {
+                    reports.push({chart: charts[i].outerHTML, graph: graphs[i - 1].outerHTML, data: dataRef[i]});
+                }
             }
+            reportData.reports = reports;
         }
-        reportData.reports = reports;
-
 
         let func_Display = function() {
             // populate the document in the iframe
