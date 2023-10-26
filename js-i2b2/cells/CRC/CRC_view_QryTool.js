@@ -1137,14 +1137,23 @@ i2b2.CRC.view.QT.render = function() {
     $('.QueryGroup .topbar .with', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // change the CSS styling
         let qgRoot = $(event.target).closest(".QueryGroup");
+        let qgIndex = qgRoot.data("queryGroup");
+
+        if(qgRoot.hasClass("when")){
+            i2b2.CRC.model.query.groups[qgIndex].timing = "ANY";
+            qgRoot.find('.timing').hide();
+            qgRoot.find('.noLink').show();
+        }
+
         qgRoot.removeClass(['without', 'when']);
         qgRoot.addClass("with");
+
         // modify the model
-        let qgIndex = qgRoot.data("queryGroup");
         i2b2.CRC.model.query.groups[qgIndex].display = "with";
         i2b2.CRC.model.query.groups[qgIndex].with = true;
         i2b2.CRC.model.query.groups[qgIndex].without = false;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
+
         // handle purging of eventLinks
         i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         // handle purging of events
@@ -1174,10 +1183,17 @@ i2b2.CRC.view.QT.render = function() {
     $('.QueryGroup .topbar .without', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // change the CSS styling
         let qgRoot = $(event.target).closest(".QueryGroup");
+        let qgIndex = qgRoot.data("queryGroup");
+
+        if(qgRoot.hasClass("when")){
+            i2b2.CRC.model.query.groups[qgIndex].timing = "ANY";
+            qgRoot.find('.timing').hide();
+            qgRoot.find('.noLink').show();
+        }
         qgRoot.removeClass(['with', 'when']);
         qgRoot.addClass("without");
+
         // modify the model
-        let qgIndex = qgRoot.data("queryGroup");
         i2b2.CRC.model.query.groups[qgIndex].display = "without";
         i2b2.CRC.model.query.groups[qgIndex].with = false;
         i2b2.CRC.model.query.groups[qgIndex].without = true;
