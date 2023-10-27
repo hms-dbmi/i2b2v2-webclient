@@ -103,11 +103,11 @@
 
     of
 
-    {{#ifCond aggregateOp1 "==" "FIRST"}}the first{{/ifCond}}
-    {{#ifCond aggregateOp1 "==" "LAST"}}the last{{/ifCond}}
+    {{#ifCond aggregateOp1 "==" "FIRST"}}the first ever{{/ifCond}}
+    {{#ifCond aggregateOp1 "==" "LAST"}}the last ever{{/ifCond}}
     {{#ifCond aggregateOp1 "==" "ANY"}}any{{/ifCond}}
 
-    ever occurrence for Event {{prevNum}} occurs
+    occurrence for Event {{prevNum}} occurs
 
     {{#ifCond operator "==" "GREATER"}}after{{/ifCond}}
     {{#ifCond operator "==" "GREATEREQUAL"}}on or after{{/ifCond}}
@@ -122,11 +122,11 @@
 
     of
 
-    {{#ifCond aggregateOp2 "==" "FIRST"}} the first{{/ifCond}}
-    {{#ifCond aggregateOp2 "==" "LAST"}}the last{{/ifCond}}
+    {{#ifCond aggregateOp2 "==" "FIRST"}} the first ever{{/ifCond}}
+    {{#ifCond aggregateOp2 "==" "LAST"}}the last ever{{/ifCond}}
     {{#ifCond aggregateOp2 "==" "ANY"}}any{{/ifCond}}
 
-    ever occurrence for Event {{nextNum}}
+    occurrence for Event {{nextNum}}
 
     {{#ifCond timeSpans.0.value "||" timeSpans.1.value}}
       by
