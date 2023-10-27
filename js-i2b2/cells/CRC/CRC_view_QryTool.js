@@ -494,9 +494,9 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
 
             if(isValidDate){
                 $(this).datepicker().open();
-                $("#i2b2QueryHistoryBar .dateError").hide();
+                $("#termDateConstraintModal .startDateError").hide();
             }else{
-                $("#i2b2QueryHistoryBar .dateError").show();
+                $("#termDateConstraintModal .startDateError").show();
                 $(this).datepicker().close();
             }
         }
@@ -538,9 +538,9 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
 
             if(isValidDate){
                 $(this).datepicker().open();
-                $("#i2b2QueryHistoryBar .dateError").hide();
+                $("#termDateConstraintModal .endDateError").hide();
             }else{
-                $("#i2b2QueryHistoryBar .dateError").show();
+                $("#termDateConstraintModal .endDateError").show();
                 $(this).datepicker().close();
             }
         }
