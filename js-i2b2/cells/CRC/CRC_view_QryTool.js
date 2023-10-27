@@ -2107,6 +2107,7 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             completedAt: i2b2.CRC.ctrlr.QS.QI.end_date ? i2b2.CRC.ctrlr.QS.QI.end_date.toLocaleString().replace(", "," @ ") : "",
             submittedBy: "USERNAME(" + submittedByUsername + ")",
             runDuration: Number((i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date) / 1000).toLocaleString(),
+            isFinished: i2b2.CRC.ctrlr.QS.QI.status === 'FINISHED' || i2b2.CRC.ctrlr.QS.QI.status === 'COMPLETE',
             panels: panels
         };
 
