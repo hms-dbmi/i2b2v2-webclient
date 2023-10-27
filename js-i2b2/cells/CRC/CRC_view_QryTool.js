@@ -494,9 +494,9 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
 
             if(isValidDate){
                 $(this).datepicker().open();
-                $("#i2b2QueryHistoryBar .dateError").hide();
+                $("#termDateConstraintModal .startDateError").hide();
             }else{
-                $("#i2b2QueryHistoryBar .dateError").show();
+                $("#termDateConstraintModal .startDateError").show();
                 $(this).datepicker().close();
             }
         }
@@ -538,9 +538,9 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
 
             if(isValidDate){
                 $(this).datepicker().open();
-                $("#i2b2QueryHistoryBar .dateError").hide();
+                $("#termDateConstraintModal .endDateError").hide();
             }else{
-                $("#i2b2QueryHistoryBar .dateError").show();
+                $("#termDateConstraintModal .endDateError").show();
                 $(this).datepicker().close();
             }
         }
@@ -788,9 +788,15 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
 
     // check if this is a WRK folder
     if (sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage === undefined) {
+        let eventHandlers = {};
+        eventHandlers = $(evt.target).data("i2b2DragdropEvents");
+
         i2b2.CRC.view.QT.handleWRKFolderDrop(sdx, function(sdx) {
-            i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, false);
-            i2b2.CRC.view.QT.handleConceptValidation();
+            if (typeof eventHandlers[sdx.sdxInfo.sdxType]?.DropHandler === "function") {
+                i2b2.CRC.view.QT.adjustRenderData(sdx);
+                i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, false);
+                i2b2.CRC.view.QT.handleConceptValidation();
+            }
         });
     } else {
         // use the underlying package data for workplace items
@@ -1137,14 +1143,23 @@ i2b2.CRC.view.QT.render = function() {
     $('.QueryGroup .topbar .with', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // change the CSS styling
         let qgRoot = $(event.target).closest(".QueryGroup");
+        let qgIndex = qgRoot.data("queryGroup");
+
+        if(qgRoot.hasClass("when")){
+            i2b2.CRC.model.query.groups[qgIndex].timing = "ANY";
+            qgRoot.find('.timing').hide();
+            qgRoot.find('.noLink').show();
+        }
+
         qgRoot.removeClass(['without', 'when']);
         qgRoot.addClass("with");
+
         // modify the model
-        let qgIndex = qgRoot.data("queryGroup");
         i2b2.CRC.model.query.groups[qgIndex].display = "with";
         i2b2.CRC.model.query.groups[qgIndex].with = true;
         i2b2.CRC.model.query.groups[qgIndex].without = false;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
+
         // handle purging of eventLinks
         i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         // handle purging of events
@@ -1174,10 +1189,17 @@ i2b2.CRC.view.QT.render = function() {
     $('.QueryGroup .topbar .without', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // change the CSS styling
         let qgRoot = $(event.target).closest(".QueryGroup");
+        let qgIndex = qgRoot.data("queryGroup");
+
+        if(qgRoot.hasClass("when")){
+            i2b2.CRC.model.query.groups[qgIndex].timing = "ANY";
+            qgRoot.find('.timing').hide();
+            qgRoot.find('.noLink').show();
+        }
         qgRoot.removeClass(['with', 'when']);
         qgRoot.addClass("without");
+
         // modify the model
-        let qgIndex = qgRoot.data("queryGroup");
         i2b2.CRC.model.query.groups[qgIndex].display = "without";
         i2b2.CRC.model.query.groups[qgIndex].with = false;
         i2b2.CRC.model.query.groups[qgIndex].without = true;

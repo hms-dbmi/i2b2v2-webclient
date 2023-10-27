@@ -553,10 +553,15 @@ function QueryToolController() {
                 case "PR":
                     tempItem.key = "PATIENT:HIVE:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
                     name = item.origData.titleCRC ? item.origData.titleCRC : item.origData.title;
-                    let subsetPos = name.indexOf(" [");
-                    name = subsetPos === -1 ? name : "PATIENT:HIVE:" + name.substring(0, subsetPos);
+                    // perhaps this is an encounter
+                    if (name) {
+                        let subsetPos = name.indexOf(" [");
+                        name = subsetPos === -1 ? name : "PATIENT:HIVE:" + name.substring(0, subsetPos);
+                        tempItem.tooltip = i2b2.h.Escape(item.origData.title);
+                    } else if (item.origData.event_id) {
+                        name = "PATIENT:HIVE:" + item.origData.patient_id;
+                    }
                     tempItem.name = i2b2.h.Escape(name);
-                    tempItem.tooltip = i2b2.h.Escape(item.origData.title);
                     tempItem.isSynonym = "false";
                     tempItem.hlevel = 0;
                     break;

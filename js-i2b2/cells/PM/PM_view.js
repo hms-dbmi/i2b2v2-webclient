@@ -133,6 +133,7 @@ i2b2.PM.view.showProjectSelectionModal = function(){
             $("#projectSelection div:eq(0)").modal('show');
         });
     }else{
+        $("#projectSelectionForm").empty();
         $(i2b2.PM.view.template.projectSelection.projects(projectData)).appendTo("#projectSelectionForm");
         $("#projectSelection div:eq(0)").modal('show');
     }
