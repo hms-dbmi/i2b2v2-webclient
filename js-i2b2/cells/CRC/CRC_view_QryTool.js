@@ -788,9 +788,15 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
 
     // check if this is a WRK folder
     if (sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage === undefined) {
+        let eventHandlers = {};
+        eventHandlers = $(evt.target).data("i2b2DragdropEvents");
+
         i2b2.CRC.view.QT.handleWRKFolderDrop(sdx, function(sdx) {
-            i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, false);
-            i2b2.CRC.view.QT.handleConceptValidation();
+            if (typeof eventHandlers[sdx.sdxInfo.sdxType]?.DropHandler === "function") {
+                i2b2.CRC.view.QT.adjustRenderData(sdx);
+                i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, false);
+                i2b2.CRC.view.QT.handleConceptValidation();
+            }
         });
     } else {
         // use the underlying package data for workplace items
