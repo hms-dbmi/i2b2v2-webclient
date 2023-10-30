@@ -1636,7 +1636,6 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 }
             }
 
-
             $("#labHeader").text(extractedLabValues.name);
 
             // configure the UI display based on type
@@ -1734,10 +1733,10 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                             $("#barNormMain").removeClass("hidden").click(function(){
                                 $("#labNumericValueOperator").val("BETWEEN").trigger("change");
                                 if(normalLowRange !== undefined){
-                                    $("#labNumericValueRangeLow").val(normalLowRange);
+                                    $("#labNumericValueRangeLow").val(normalLowRange).trigger("change");;
                                 }
                                 if(normalHighRange !== undefined){
-                                    $("#labNumericValueRangeHigh").val(normalHighRange);
+                                    $("#labNumericValueRangeHigh").val(normalHighRange).trigger("change");;
                                 }
                             });
                             if (isFinite(extractedLabValues.rangeInfo.LowOfToxic)) {
