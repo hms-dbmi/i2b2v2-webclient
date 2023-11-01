@@ -167,6 +167,8 @@ i2b2.sdx.TypeControllers.PRS.getChildRecords = function(sdxParentNode, onComplet
                 o.race = "NA";
             }
             o.title = o.patient_id+" ["+o.age+" y/o "+ o.sex+" "+o.race+"]";
+            o.prs_name = sdxParentNode.sdxInfo.sdxDisplayName;
+            o.prs_id = sdxParentNode.sdxInfo.sdxKeyValue;
             let sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
             // append the data node to our returned results
             retChildren.push(sdxDataNode);
