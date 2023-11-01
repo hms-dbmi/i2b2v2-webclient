@@ -1505,6 +1505,13 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 $("#labDropDown").text($(this).text());
             });
 
+            //cancel button handler
+            $("body #labValuesModal button.lab-cancel").click(function () {
+                //I2B2UI-639-Edit Lab value icon not displayed if user clicks cancel on initial display of Lab Values modal
+                let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+                const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+                i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+            });
 
             // Save button handler
             $("body #labValuesModal button.lab-save").click(function () {
