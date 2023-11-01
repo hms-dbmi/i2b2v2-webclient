@@ -808,6 +808,9 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
             sdx.sdxInfo = sdx.sdxUnderlyingPackage.sdxInfo;
         }
 
+        // abort if "PR" record is actually an individual encounter record
+        if (sdx.origData.event_id) return;
+
         //do any changes needed on the render of the item
         i2b2.CRC.view.QT.adjustRenderData(sdx);
 
@@ -849,6 +852,10 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
             sdx.origData = sdx.sdxUnderlyingPackage.origData;
             sdx.sdxInfo = sdx.sdxUnderlyingPackage.sdxInfo;
         }
+
+        // abort if "PR" record is actually an individual encounter record
+        if (sdx.origData.event_id) return;
+
         // add the item to the query
         i2b2.CRC.view.QT.addNewQueryGroup([sdx], {showLabValues: true});
 
