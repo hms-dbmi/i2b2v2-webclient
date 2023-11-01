@@ -1154,8 +1154,7 @@ i2b2.CRC.view.QT.render = function() {
 
         if(qgRoot.hasClass("when")){
             i2b2.CRC.model.query.groups[qgIndex].timing = "ANY";
-            qgRoot.find('.timing').hide();
-            qgRoot.find('.noLink').show();
+            qgRoot.find('.unLink').click();
         }
 
         qgRoot.removeClass(['without', 'when']);
@@ -1200,8 +1199,7 @@ i2b2.CRC.view.QT.render = function() {
 
         if(qgRoot.hasClass("when")){
             i2b2.CRC.model.query.groups[qgIndex].timing = "ANY";
-            qgRoot.find('.timing').hide();
-            qgRoot.find('.noLink').show();
+            qgRoot.find('.unLink').click();
         }
         qgRoot.removeClass(['with', 'when']);
         qgRoot.addClass("without");
