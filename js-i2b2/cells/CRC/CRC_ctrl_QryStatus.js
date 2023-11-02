@@ -283,7 +283,6 @@ i2b2.CRC.ctrlr.QS = {
             // switch the display of query cancel button and the query report button
             $("#infoQueryStatusText .statusButtons").removeClass("running");
             if (i2b2.CRC.model.runner?.deleteCurrentQuery) {
-                $("#infoQueryStatusText .statusButtons").addClass("cancelled");
                 i2b2.CRC.model.runner.deleteCurrentQuery = false;
             } else {
                 $("#infoQueryStatusText .statusButtons").addClass("done");
@@ -296,6 +295,9 @@ i2b2.CRC.ctrlr.QS = {
                     i2b2.CRC.ctrlr.QS.refreshInterrupt = false;
                 } catch (e) {}
             }
+
+            $(".CRC_QT_runbar .button-run").show();
+            $(".CRC_QT_runbar .button-cancel").hide();
         }
     }
 };

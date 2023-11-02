@@ -141,9 +141,12 @@ function QueryRunner() {
         clearInterval(i2b2.CRC.view.QS.timerID);
         clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
 
-        // update the screen to show status as cancelled
-        $("#infoQueryStatusText .statusButtons").removeClass("running").addClass("cancelled");
+        $(".CRC_QT_runbar .button-run").show();
+        $(".CRC_QT_runbar .button-cancel").hide();
 
+        // update the screen to show status as cancelled
+        i2b2.CRC.ctrlr.QS.breakdowns.isCancelled = true;
+        i2b2.CRC.view.QS.render({breakdowns: i2b2.CRC.ctrlr.QS.breakdowns});
     };
 
     this.doQueryFinished = function() {
