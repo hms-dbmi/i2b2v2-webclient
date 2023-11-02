@@ -1656,7 +1656,6 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 }
             }
 
-
             $("#labHeader").text(extractedLabValues.name);
 
             // configure the UI display based on type
@@ -1748,7 +1747,18 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                     //Bar segment
                     try {
                         if (extractedLabValues.rangeInfo.total !== 0) {
-                            $("#barNormMain").removeClass("hidden");
+                            let normalLowRange;
+                            let normalHighRange;
+
+                            $("#barNormMain").removeClass("hidden").click(function(){
+                                $("#labNumericValueOperator").val("BETWEEN").trigger("change");
+                                if(normalLowRange !== undefined){
+                                    $("#labNumericValueRangeLow").val(normalLowRange).trigger("change");;
+                                }
+                                if(normalHighRange !== undefined){
+                                    $("#labNumericValueRangeHigh").val(normalHighRange).trigger("change");;
+                                }
+                            });
                             if (isFinite(extractedLabValues.rangeInfo.LowOfToxic)) {
                                 $("#lblToxL").text(extractedLabValues.rangeInfo.LowOfToxic);
                                 $("#barToxL").click(function () {
@@ -1757,6 +1767,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value);
                                 });
                                 $("#barToxLMain").removeClass("hidden");
+                                normalLowRange = extractedLabValues.rangeInfo.LowOfToxic;
                             } else {
                                 $("#lblToxL").text("");
                             }
@@ -1768,6 +1779,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value).trigger("change");
                                 });
                                 $("#barLofLMain").removeClass("hidden");
+                                normalLowRange = extractedLabValues.rangeInfo.LowOfLow;
+
                             } else {
                                 $("#lblLofL").text("");
                             }
@@ -1779,6 +1792,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value).trigger("change");
                                 });
                                 $("#barHofLMain").removeClass("hidden");
+                                normalLowRange = extractedLabValues.rangeInfo.HighOfLow;
                             } else {
                                 $("#lblHofL").text("");
                             }
@@ -1790,6 +1804,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value).trigger("change");
                                 });
                                 $("#barLofHMain").removeClass("hidden");
+                                normalHighRange = extractedLabValues.rangeInfo.LowOfHigh;
                             } else {
                                 $("#lblLofH").text("");
                             }
@@ -1801,6 +1816,10 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value).trigger("change");
                                 });
                                 $("#barHofHMain").removeClass("hidden");
+                                if(normalHighRange === undefined) {
+                                    normalHighRange = extractedLabValues.rangeInfo.HighOfHigh;
+                                }
+
                             } else {
                                 $("#lblHofH").text("");
                             }
@@ -1812,6 +1831,9 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value).trigger("change");
                                 });
                                 $("#barToxHMain").removeClass("hidden");
+                                if(normalHighRange === undefined) {
+                                    normalHighRange = extractedLabValues.rangeInfo.HighOfToxic;
+                                }
                             } else {
                                 $("#lblToxH").text("");
                             }
