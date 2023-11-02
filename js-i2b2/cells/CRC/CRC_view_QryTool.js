@@ -2184,9 +2184,9 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             let charts = $("#breakdownDetails>div");
             let dataRef = i2b2.CRC.ctrlr.QS.breakdowns.resultTable;
             for (let i = 0; i < dataRef.length; i++) {
-                if (i == 0) {
+                if (i === 0) {
                     reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
-                } else {
+                } else if(dataRef[i].result !== undefined) {
                     reports.push({chart: charts[i].outerHTML, graph: graphs[i - 1].outerHTML, data: dataRef[i]});
                 }
             }
