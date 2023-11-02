@@ -85,16 +85,29 @@
 #infoQueryStatusText .statusButtons button {
     display: none;
 }
-#infoQueryStatusText .statusButtons.running .cancel {
-    display: block;
-}
 #infoQueryStatusText .statusButtons.done .report {
     display: block;
 }
-#infoQueryStatusText .statusButtons.cancelled .cancelled {
-    display: block;
+
+#infoQueryStatusText .status-processing {
+    color: #198754;
 }
 
+#infoQueryStatusText .status-running {
+    color: #198754;
+}
+
+#infoQueryStatusText .status-cancelled {
+    color: #dc3545;
+}
+
+#infoQueryStatusText .status-finished {
+    color: #0d6efd;
+}
+
+#infoQueryStatusText .info-text-name {
+   margin-bottom: 0.4em;
+}
 
 /* query report container styling (outside of the iframe) */
 
