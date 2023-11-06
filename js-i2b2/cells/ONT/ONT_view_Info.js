@@ -3,7 +3,6 @@ i2b2.ONT.view.info = {
     model: {},
     showLabWindow: function() {
         // display's the lab value entry modal
-        let d = i2b2.ONT.view.info.model.sdxData.origData.basecode;
         i2b2.CRC.view.QT.labValue.getAndShowLabValues(i2b2.ONT.view.info.model.sdxData);
     },
     loadParent: function() {
@@ -33,7 +32,7 @@ i2b2.ONT.view.info = {
         searchOptions.concept_key_value = parentKey;
         i2b2.ONT.ajax.GetTermInfo("ONT:Info", searchOptions, scopeCB);
     },
-    load: function(data, display) {
+    loadData: function(data, hasMetadataValues, display) {
         i2b2.ONT.view.info.model.sdxData = data;
 
         // create written description
@@ -69,10 +68,6 @@ i2b2.ONT.view.info = {
         }
         termDescript += 'have children below it.';
 
-        // deal with lab values
-        let hasValues = false;
-        if (data.origData.basecode && (data.origData.basecode.startsWith("LOINC") || data.origData.basecode.startsWith("LCS-I2B2"))) hasValues = true;
-
         // create display data for handlebars template
         if (!data.origData.dim_code) data.origData.dim_code = "";
         if (!data.origData.operator) data.origData.operator = "";
@@ -94,7 +89,7 @@ i2b2.ONT.view.info = {
             operator: data.origData.operator,
             patientCnt: data.origData.total_num,
             children: [],
-            hasValues: hasValues
+            hasValues: hasMetadataValues
         };
         i2b2.ONT.view.info.model.displayData = displayData;
 
@@ -139,6 +134,39 @@ i2b2.ONT.view.info = {
         // render what we have and make the tab active if asked to do so
         i2b2.ONT.view.info.render();
         if (display) i2b2.ONT.view.info.model.lm_view.parent.parent.setActiveContentItem(i2b2.ONT.view.info.model.lm_view.parent);
+    },
+    load: function(sdxConcept, display){
+        let termInfoCallback = function(response) {
+            let isActiveXSupported = true;
+            try {
+                new ActiveXObject("MSXML2.DOMDocument.6.0");
+            } catch (e) {
+                isActiveXSupported = false;
+            }
+            let c;
+            if (isActiveXSupported) {
+                //Internet Explorer
+                let xmlDocRet = new ActiveXObject("Microsoft.XMLDOM");
+                xmlDocRet.async = "false";
+                xmlDocRet.loadXML(response.msgResponse);
+                xmlDocRet.setProperty("SelectionLanguage", "XPath");
+                c = i2b2.h.XPath(xmlDocRet, 'descendant::concept');
+            } else {
+                c = i2b2.h.XPath(response.refXML, 'descendant::concept');
+            }
+            if (c.length > 0) sdxConcept.origData.xmlOrig = c[0].outerHTML;
+
+            const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
+            let hasMetadataValue = false;
+            if (valueMetaDataArr.length > 0) {
+                hasMetadataValue = true;
+            }
+
+            i2b2.ONT.view.info.loadData(sdxConcept, hasMetadataValue, display);
+        };
+
+        i2b2.ONT.ajax.GetTermInfo("ONT", {concept_key_value:sdxConcept.origData.key,
+            ont_max_records: 'max="1"', ont_synonym_records: true, ont_hidden_records: true}, termInfoCallback );
     },
     render: function() {
         let view = i2b2.ONT.view.info.model.viewport;
