@@ -683,65 +683,74 @@ i2b2.events.afterCellInit.add((cell) => {
 
 
                     // -------------------- setup context menu --------------------
+                    const contextMenuTreeActions =  {
+                        nodeDisplay: {
+                            name: 'Display',
+                            onClick: function(node) {
+                                i2b2.CRC.view.history.doDisplay(node);
+                            },
+                            isShown: function(node) {
+                                if (node.depth === 1) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        },
+                        nodeRename: {
+                            name: 'Rename',
+                            onClick: function(node) {
+                                i2b2.CRC.view.history.doRename(node);
+                            },
+                            isShown: function(node) {
+                                if (node.depth === 1) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        },
+                        nodeDelete: {
+                            name: 'Delete',
+                            onClick: function(node) {
+                                i2b2.CRC.view.history.doDelete(node);
+                            },
+                            isShown: function(node) {
+                                if (node.depth === 1) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        },
+                        newRefresh: {
+                            name: 'Refresh All',
+                            onClick: function (node) {
+                                i2b2.CRC.view.history.doRefreshAll(node);
+                            },
+                            isShown: function (node) {
+                                if (node.depth === 1) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        }
+                    };
                     i2b2.CRC.view.history.ContextMenu = new BootstrapMenu('#i2b2TreeviewQueryHistory li.list-group-item', {
                         fetchElementData: function($rowElem) {
                             // fetch the data from the treeview
                             return i2b2.CRC.view.history.treeview.treeview('getNode', $rowElem.data('nodeid'));
                         },
-                        actions: {
-                            nodeDisplay: {
-                                name: 'Display',
-                                onClick: function(node) {
-                                    i2b2.CRC.view.history.doDisplay(node);
-                                },
-                                isShown: function(node) {
-                                    if (node.depth === 1) {
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                }
-                            },
-                            nodeRename: {
-                                name: 'Rename',
-                                onClick: function(node) {
-                                    i2b2.CRC.view.history.doRename(node);
-                                },
-                                isShown: function(node) {
-                                    if (node.depth === 1) {
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                }
-                            },
-                            nodeDelete: {
-                                name: 'Delete',
-                                onClick: function(node) {
-                                    i2b2.CRC.view.history.doDelete(node);
-                                },
-                                isShown: function(node) {
-                                    if (node.depth === 1) {
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                }
-                            },
-                            newRefresh: {
-                                name: 'Refresh All',
-                                onClick: function (node) {
-                                    i2b2.CRC.view.history.doRefreshAll(node);
-                                },
-                                isShown: function (node) {
-                                    if (node.depth === 1) {
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
+                        actions: contextMenuTreeActions
+                    });
+
+                    i2b2.CRC.view.history.FinderContextMenu = new BootstrapMenu('#i2b2TreeviewQueryHistoryFinder li.list-group-item', {
+                        fetchElementData: function($rowElem) {
+                            // fetch the data from the treeview
+                            return i2b2.CRC.view.history.treeviewFinder.treeview('getNode', $rowElem.data('nodeid'));
+                        },
+                        actions: contextMenuTreeActions
                     });
 
                     let crcHistoryOptionsModal = $("<div id='crcHistoryOptionsModal'/>");
