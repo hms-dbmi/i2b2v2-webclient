@@ -168,6 +168,7 @@ function QueryToolController() {
                         o.patient_id = ckey.substring(13);
                         o.result_instance_id = o.PRS_id ;
                         o.id = ckey;
+                        o.title = i2b2.h.getXNodeVal(pi[i2],'tooltip');
                         sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
                         sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
                         let subsetPos = sdxDataNode.sdxInfo.sdxDisplayName.indexOf(" [");
