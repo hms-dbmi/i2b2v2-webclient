@@ -254,6 +254,8 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                 if (eaction === true) {
                     // re-fire the call with no max limit if the user requested so
                     i2b2.ONT.view.nav.params.max = t.max * 5;
+                    $('i.srTooltip').attr('data-bs-original-title', "A maximum of " + i2b2.ONT.view.nav.params.max + " records per category will be returned.");
+
                     i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cl_onCompleteCB);
                 } else {
                     //Reset the loading and requested state for the expanded node
