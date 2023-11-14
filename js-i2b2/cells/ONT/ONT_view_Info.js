@@ -69,6 +69,8 @@ i2b2.ONT.view.info = {
         termDescript += 'have children below it.';
 
         // create display data for handlebars template
+        if (!data.origData.dim_code) data.origData.dim_code = "";
+        if (!data.origData.operator) data.origData.operator = "";
         let displayData = {
             icon: data.renderData.iconImg,
             title: data.renderData.title,
