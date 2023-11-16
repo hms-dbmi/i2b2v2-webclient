@@ -95,6 +95,64 @@ i2b2.CRC.view.QT.showRun = function() {
             $('body #crcModal button.i2b2-save').click();
             evt.preventDefault();
         });
+
+        $('body #crcModal').load('js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
+            // populate the results list based on...
+            // ==> i2b2.CRC.model.resultTypes
+            // ==> i2b2.CRC.model.selectedResultTypes
+            let checkContainer = $("#crcModal .ResultTypes");
+            for (let code in i2b2.CRC.model.resultTypes) {
+                let descriptions = i2b2.CRC.model.resultTypes[code];
+                descriptions.forEach(description => {
+                    let checked = '';
+                    if (i2b2.CRC.model.selectedResultTypes.includes(code)) checked = ' checked="checked" ';
+                    $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(checkContainer);
+                });
+            }
+            // populate/delete the query run methods
+            if (!i2b2.CRC.model.queryExecutionOptions) {
+                // no query execution options, remove input from form
+                $("#crcModal .QueryMethodInput").remove();
+            } else {
+                // populate the query execution options
+                let targetSelect = $('#crcModal .QueryMethodInput select');
+                for (const [code, description] of Object.entries(i2b2.CRC.model.queryExecutionOptions)) {
+                    $('<option value="' + code + '">' + description + '</option>').appendTo(targetSelect);
+                }
+            }
+
+            //add the current generated query name
+            $("#crcQtQueryName").val(i2b2.CRC.model.transformedQuery.name)
+                .attr("placeholder", i2b2.CRC.model.transformedQuery.name);
+
+            // now show the modal form
+            $('body #crcModal div:eq(0)').modal('show');
+
+            // run the query on button press
+            $('body #crcModal button.i2b2-save').on('click', (evt) => {
+                i2b2.CRC.view.QT.resetToCRCHistoryView();
+                // build list of selected result types
+                let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
+                reqResultTypes = [...new Set(reqResultTypes)];
+
+                if(reqResultTypes.length > 0) {
+                    let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
+
+                    i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes, reqExecutionMethod);
+                    $(".errorMsg", "#crcModal").addClass("hidden");
+                    // close the modal
+                    $('body #crcModal div:eq(0)').modal('hide');
+                }else{
+                    $(".errorMsg", "#crcModal").removeClass("hidden");
+                }
+            });
+        });
+    } else {
+        //add the current generated query name
+        $("#crcQtQueryName").val(i2b2.CRC.model.transformedQuery.name)
+            .attr("placeholder", i2b2.CRC.model.transformedQuery.name);
+
+        $('body #crcModal div:eq(0)').modal('show');
     }
 
     $('body #crcModal').load('js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
