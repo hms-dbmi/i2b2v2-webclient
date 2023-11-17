@@ -148,6 +148,10 @@ i2b2.CRC.view.QT.showRun = function() {
             });
         });
     }else{
+        //add the current generated query name
+        $("#crcQtQueryName").val(i2b2.CRC.model.transformedQuery.name)
+            .attr("placeholder", i2b2.CRC.model.transformedQuery.name);
+
         $('body #crcModal div:eq(0)').modal('show');
     }
 };
