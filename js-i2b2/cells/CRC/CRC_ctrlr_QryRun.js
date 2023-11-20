@@ -137,6 +137,7 @@ function QueryRunner() {
         i2b2.CRC.ctrlr.QR._tick();
 
         // clear the query timer's interval
+        clearInterval(i2b2.CRC.model.runner.intervalTimer);
         clearInterval(i2b2.CRC.view.QS.timerID);
         clearInterval(i2b2.CRC.ctrlr.QS.refreshInterrupt);
 
