@@ -310,9 +310,16 @@ i2b2.PM._processUserConfig = function (data) {
         if (s.length > 0) {
             // we have a proper error msg
             try {
-                    alert("ERROR: "+s[0].firstChild.nodeValue);
+                if (s[0].firstChild.nodeValue === "Password Expired.") {
+                    i2b2.PM.view.changePassword.show(function(){
+                        i2b2.PM.doLoginDialog();
+                    }, true);
+                    return false;
+                } else {
+                    alert("ERROR: " + s[0].firstChild.nodeValue);
+                }
             } catch (e) {
-                alert("An unknown error has occured during your login attempt!");
+                alert("An unknown error has occurred during your login attempt!");
             }
         } else if (i2b2.PM.model.login_fullname !== "") {
             alert("Your account does not have access to any i2b2 projects.");
