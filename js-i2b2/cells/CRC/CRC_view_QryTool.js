@@ -135,14 +135,14 @@ i2b2.CRC.view.QT.showRun = function() {
                 let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
                 reqResultTypes = [...new Set(reqResultTypes)];
 
-                if(reqResultTypes.length > 0) {
+                if (reqResultTypes.length > 0) {
                     let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
 
                     i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes, reqExecutionMethod);
                     $(".errorMsg", "#crcModal").addClass("hidden");
                     // close the modal
                     $('body #crcModal div:eq(0)').modal('hide');
-                }else{
+                } else {
                     $(".errorMsg", "#crcModal").removeClass("hidden");
                 }
             });
