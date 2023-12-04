@@ -25,10 +25,28 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
     }
 
     i2b2.sdx.Master.getChildRecords(nodeData.i2b2, (function(cellResult) {
-
-        if (cellResult.error !== false) {return false;}
-
         let parentNode = this.key;
+
+        if (cellResult.error !== false) {
+            // change the treeview icon to show it is no longer loading
+            $(ev.currentTarget).treeview('setNodeLoaded', [
+                function(parent, parentKey){ return parent.key === parentKey },
+                parentNode
+            ]);
+
+            let curNode = i2b2.CRC.view.history.treeview.treeview('getNodes', function(snode) {
+                return snode.key === parentNode;
+            });
+
+            curNode[0].state.loaded = false;
+            curNode[0].state.expanded = false;
+            curNode[0].state.requested = false;
+
+            $(ev.currentTarget).treeview('redraw', []);
+
+            return false;
+        }
+
         // add the renderData to the nodes
         let newNodes = [];
         for ( let i1=0; i1 < cellResult.results.length; i1++) {
@@ -475,8 +493,14 @@ i2b2.CRC.view.history.displayContextDialog = function(inputData){
         "onOk": " i2b2.CRC.view.history.dialogCallbackWrapper(event)",
         "onKeyup": " i2b2.CRC.view.history.dialogKeyupCallbackWrapper(event)",
         "inputValue" : inputData.inputValue,
-        "onCancel": inputData.onCancel
+        "onCancel": inputData.onCancel,
+        "hideCancel": inputData.hideCancel
     };
+
+    if(typeof inputData.onCancel === 'function' ){
+        data.onCancel = inputData.onCancel;
+    }
+
     $(i2b2.CRC.view.history.template.contextDialog(data)).appendTo(contextDialogModal);
     $("#CRCContextMenuDialog").modal('show');
 }
