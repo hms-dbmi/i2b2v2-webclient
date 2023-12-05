@@ -117,10 +117,31 @@ i2b2.PLUGIN.view.list.load = function(template){
         success: (template) => {
             i2b2.PLUGIN.view.list.pluginListTemplate = Handlebars.compile(template);
             i2b2.PLUGIN.view.list.changeListMode(i2b2.PLUGIN.view.list.mode.DETAIL);
+
+            // switch to default category if param is set
+            i2b2.PLUGIN.view.list.initialCategory();
         },
         error: (error) => { console.error("Could not retrieve template: PluginListing.html"); }
     });
 };
+
+// ================================================================================================== //
+i2b2.PLUGIN.view.list.initialCategory = function(){
+    // set the default category if set with DEFAULT_PLUGIN_CATEGORY param in global or project level
+    let initialCategory = i2b2.PLUGIN.view.list.category.ALL;
+    if (i2b2.hive.model.globalParams['DEFAULT_PLUGIN_CATEGORY'])  initialCategory = i2b2.hive.model.globalParams['DEFAULT_PLUGIN_CATEGORY'].innerHTML;
+    if (i2b2.PM.model.projects[i2b2.PM.model.login_project].details['DEFAULT_PLUGIN_CATEGORY']) initialCategory = i2b2.PM.model.projects[i2b2.PM.model.login_project].details['DEFAULT_PLUGIN_CATEGORY'];
+    initialCategory = initialCategory.toUpperCase();
+    // make sure the category exists, if so then set it
+    for (let t of $("#pluginCategory")[0].options) {
+        if (t.value.toUpperCase() === initialCategory) {
+            $("#pluginCategory").val(t.value);
+            i2b2.PLUGIN.view.list.renderList(i2b2.PLUGIN.view.list.mode.DETAIL, t.value);
+            break;
+        }
+    }
+};
+
 
 // ================================================================================================== //
 i2b2.PLUGIN.view.list.filterByCategory = function(category){
@@ -260,12 +281,8 @@ window.addEventListener("message", (event) => {
             i2b2.PLUGIN.view.list.updateCategories();
 
             i2b2.PLUGIN.view.list.legacy.plugins = event.data.plugins;
-            // set the default category if set with DEFAULT_PLUGIN_CATEGORY param in global or project level
-            let initialCategory = i2b2.PLUGIN.view.list.category.ALL;
-            if (i2b2.hive.model.globalParams['DEFAULT_PLUGIN_CATEGORY'])  initialCategory = i2b2.hive.model.globalParams['DEFAULT_PLUGIN_CATEGORY'].innerHTML
-            if (i2b2.PM.model.projects[i2b2.PM.model.login_project].details['DEFAULT_PLUGIN_CATEGORY']) initialCategory = i2b2.PM.model.projects[i2b2.PM.model.login_project].details['DEFAULT_PLUGIN_CATEGORY']
-            $("#pluginCategory").val(initialCategory);
-            i2b2.PLUGIN.view.list.renderList(i2b2.PLUGIN.view.list.mode.DETAIL, initialCategory);
+            // switch to default category if param is set
+            i2b2.PLUGIN.view.list.initialCategory();
         }
     }
 });
