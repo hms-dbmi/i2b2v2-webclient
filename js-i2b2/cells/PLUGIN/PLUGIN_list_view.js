@@ -260,7 +260,12 @@ window.addEventListener("message", (event) => {
             i2b2.PLUGIN.view.list.updateCategories();
 
             i2b2.PLUGIN.view.list.legacy.plugins = event.data.plugins;
-            i2b2.PLUGIN.view.list.renderList(i2b2.PLUGIN.view.list.mode.DETAIL, i2b2.PLUGIN.view.list.category.ALL);
+            // set the default category if set with DEFAULT_PLUGIN_CATEGORY param in global or project level
+            let initialCategory = i2b2.PLUGIN.view.list.category.ALL;
+            if (i2b2.hive.model.globalParams['DEFAULT_PLUGIN_CATEGORY'])  initialCategory = i2b2.hive.model.globalParams['DEFAULT_PLUGIN_CATEGORY'].innerHTML
+            if (i2b2.PM.model.projects[i2b2.PM.model.login_project].details['DEFAULT_PLUGIN_CATEGORY']) initialCategory = i2b2.PM.model.projects[i2b2.PM.model.login_project].details['DEFAULT_PLUGIN_CATEGORY']
+            $("#pluginCategory").val(initialCategory);
+            i2b2.PLUGIN.view.list.renderList(i2b2.PLUGIN.view.list.mode.DETAIL, initialCategory);
         }
     }
 });
