@@ -817,6 +817,7 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
             if (!i2b2.CRC.view.QT.allowedDropTypes.includes(sdx.sdxUnderlyingPackage.sdxInfo.sdxType)) return false;
 
             sdx.origData = sdx.sdxUnderlyingPackage.origData;
+            sdx.origData.synonym_cd = i2b2.h.getXNodeVal(sdx.origData.xmlOrig,'synonym_cd');
             sdx.sdxInfo = sdx.sdxUnderlyingPackage.sdxInfo;
         }
 
@@ -862,6 +863,7 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
             if (!i2b2.CRC.view.QT.allowedDropTypes.includes(sdx.sdxUnderlyingPackage.sdxInfo.sdxType)) return false;
 
             sdx.origData = sdx.sdxUnderlyingPackage.origData;
+            sdx.origData.synonym_cd = i2b2.h.getXNodeVal(sdx.origData.xmlOrig,'synonym_cd');
             sdx.sdxInfo = sdx.sdxUnderlyingPackage.sdxInfo;
         }
 

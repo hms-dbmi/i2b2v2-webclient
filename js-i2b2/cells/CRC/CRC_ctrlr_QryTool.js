@@ -191,7 +191,13 @@ function QueryToolController() {
                             }
                         }
                         o.key = i2b2.h.getXNodeVal(pi[i2],'item_key');
-                        o.synonym_cd = i2b2.h.getXNodeVal(pi[i2],'item_is_synonym');
+                        o.synonym_cd = i2b2.h.getXNodeVal(pi[i2], 'item_is_synonym');
+                        if (o.synonym_cd === "true") { // tdw9 bug fix for non-synonym terms showing blue text: HTML rendering checks to see if synonym is "N," not "false"
+                            o.synonym_cd = "Y";
+                        }
+                        else{
+                            o.synonym_cd = "N";
+                        }
                         o.hasChildren = i2b2.h.getXNodeVal(pi[i2],'item_icon');
 
                         // build sdx packet
@@ -271,8 +277,8 @@ function QueryToolController() {
                             }, function (results) {
                                 results.parse();
                                 // loop through records and find the one with the matching name
-                                for (rec of results.model) {
-                                    if (rec.origData.name = o.name) {
+                                for (let rec of results.model) {
+                                    if (rec.origData.name === o.name) {
                                         let data = results.model[0];
                                         sdxDataNode.origData = data.origData;
                                         if (String(sdxDataNode.origData.table_name).toLowerCase() === "patient_dimension") sdxDataNode.withDates = false;

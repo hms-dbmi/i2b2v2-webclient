@@ -1,7 +1,18 @@
 {{#each concepts}}
 <div class="concept" data-concept-index="{{@index}}">
     <span class="termOr">or</span>
-    <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}"><img src="{{this.renderData.iconImg}}"/> {{{this.renderData.title}}}</span>
+    {{#ifCond this.origData.synonym_cd "===" 'Y'}}
+        <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}" style="color: #0000ff">
+            <img src="{{this.renderData.iconImg}}"/>
+            {{{this.renderData.title}}}
+        </span>
+    {{/ifCond}}
+    {{#ifCond this.origData.synonym_cd "===" 'N'}}
+        <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}">
+            <img src="{{this.renderData.iconImg}}"/>
+            {{{this.renderData.title}}}
+        </span>
+    {{/ifCond}}
     <span class="dateRange">
         {{#if this.dateRange}}
             {{#if this.dateRange.start }}
