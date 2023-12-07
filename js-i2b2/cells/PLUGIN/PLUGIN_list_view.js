@@ -127,10 +127,11 @@ i2b2.PLUGIN.view.list.load = function(template){
 
 // ================================================================================================== //
 i2b2.PLUGIN.view.list.initialCategory = function(){
+    const param_config_name = 'DEFAULT_PLUGIN_CATEGORY';
     // set the default category if set with DEFAULT_PLUGIN_CATEGORY param in global or project level
     let initialCategory = i2b2.PLUGIN.view.list.category.ALL;
-    if (i2b2.hive.model.globalParams['DEFAULT_PLUGIN_CATEGORY'])  initialCategory = i2b2.hive.model.globalParams['DEFAULT_PLUGIN_CATEGORY'].innerHTML;
-    if (i2b2.PM.model.projects[i2b2.PM.model.login_project].details['DEFAULT_PLUGIN_CATEGORY']) initialCategory = i2b2.PM.model.projects[i2b2.PM.model.login_project].details['DEFAULT_PLUGIN_CATEGORY'];
+    if (i2b2.hive.model.globalParams[param_config_name])  initialCategory = i2b2.hive.model.globalParams[param_config_name].innerHTML;
+    if (i2b2.PM.model.projects[i2b2.PM.model.login_project].details[param_config_name]) initialCategory = i2b2.PM.model.projects[i2b2.PM.model.login_project].details[param_config_name];
     initialCategory = initialCategory.toUpperCase();
     // make sure the category exists, if so then set it
     for (let t of $("#pluginCategory")[0].options) {
