@@ -259,9 +259,18 @@ i2b2.PM._processUserConfig = function (data) {
     i2b2.PM.removeLoginDialog();
 
     i2b2.PM.cfg.cellURL = i2b2.PM.model.url;  // remember the url
-    // if user has more than one project display a modal dialog box to have them select one
     let xml = data.refXML;
 
+    // copy any global params to i2b2.hive.model.params
+    i2b2.hive.model.globalParams = {}
+    try {
+        let gparams = i2b2.h.XPath(xml, "descendant::global_data/param[@name]");
+        for (let t of gparams) {
+            i2b2.hive.model.globalParams[t.attributes['name'].value] = t;
+        }
+    } catch(e) {}
+
+    // if user has more than one project display a modal dialog box to have them select one
     let projs = i2b2.h.XPath(xml, 'descendant::user/project[@id]');
     console.debug(projs.length+' project(s) discovered for user');
     // populate the Project data into the data model
