@@ -20,11 +20,17 @@
     {{/ifCond}}
 
     {{#if this.renderData.isHidden}}
-        <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}" style="color:#c00000">
-            <img src="{{this.renderData.iconImg}}"/>
+    <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}" style="color:#c00000">
             {{{this.renderData.title}}}
         </span>
     {{/if}}
+
+    {{#if this.origData.total_num}}
+        <span data-toggle="tooltip" data-placement="top" title="{{this.origData.total_num}}">
+            - <span data-placement="top" style="color:#900;top:0"> {{{this.origData.total_num}}} </span>
+        </span>
+    {{/if}}
+
     <span class="dateRange">
         {{#if this.dateRange}}
             {{#if this.dateRange.start }}

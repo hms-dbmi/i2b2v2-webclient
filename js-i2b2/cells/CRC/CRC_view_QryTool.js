@@ -806,6 +806,7 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
         i2b2.CRC.view.QT.handleWRKFolderDrop(sdx, function(sdx) {
             if (typeof eventHandlers[sdx.sdxInfo.sdxType]?.DropHandler === "function") {
                 sdx.origData.synonym_cd = i2b2.h.getXNodeVal(sdx.origData.xmlOrig,'synonym_cd');
+                sdx.origData.total_num= i2b2.h.getXNodeVal(sdx.origData.xmlOrig,'totalnum');
                 //do any changes needed on the render of the item
                 i2b2.CRC.view.QT.adjustRenderData(sdx);
                 i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, false);
@@ -820,6 +821,7 @@ i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
 
             sdx.origData = sdx.sdxUnderlyingPackage.origData;
             sdx.origData.synonym_cd = i2b2.h.getXNodeVal(sdx.origData.xmlOrig,'synonym_cd');
+            sdx.origData.total_num= i2b2.h.getXNodeVal(sdx.origData.xmlOrig,'totalnum');
             sdx.sdxInfo = sdx.sdxUnderlyingPackage.sdxInfo;
         }
 
@@ -853,6 +855,7 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
         i2b2.CRC.view.QT.handleWRKFolderDrop(sdx, function(sdx) {
             if (typeof eventHandlers[sdx.sdxInfo.sdxType]?.DropHandler === "function") {
                 sdx.origData.synonym_cd = i2b2.h.getXNodeVal(sdx.origData.xmlOrig,'synonym_cd');
+                sdx.origData.total_num= i2b2.h.getXNodeVal(sdx.origData.xmlOrig,'totalnum');
 
                 //do any changes needed on the render of the item
                 i2b2.CRC.view.QT.adjustRenderData(sdx);
@@ -868,6 +871,7 @@ i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
 
             sdx.origData = sdx.sdxUnderlyingPackage.origData;
             sdx.origData.synonym_cd = i2b2.h.getXNodeVal(sdx.origData.xmlOrig,'synonym_cd');
+            sdx.origData.total_num= i2b2.h.getXNodeVal(sdx.origData.xmlOrig,'totalnum');
             sdx.sdxInfo = sdx.sdxUnderlyingPackage.sdxInfo;
         }
 
