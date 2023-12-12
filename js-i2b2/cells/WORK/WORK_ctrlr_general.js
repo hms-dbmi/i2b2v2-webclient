@@ -393,8 +393,8 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
             encapWorkType = "PATIENT";
             encapValues.pr_id = sdxChild.sdxInfo.sdxKeyValue;
             encapValues.pr_name = sdxChild.sdxInfo.sdxDisplayName;
-            encapValues.parent_prs_id = sdxChild.parent.sdxInfo.sdxKeyValue;
-            encapValues.parent_prs_name = sdxChild.parent.sdxInfo.sdxDisplayName;
+            encapValues.parent_prs_id = sdxChild.origData.prs_id;
+            encapValues.parent_prs_name = sdxChild.origData.prs_name;
             encapTitle = encapValues.pr_name;
             break;
         case "QDEF":
