@@ -560,6 +560,9 @@ i2b2.events.afterCellInit.add((cell) => {
                             // Render the template into place
                             $(cell.view.history.template.finder({})).prependTo(container._contentElement);
 
+                            //init search result tooltip
+                            $(".qHTooltip").tooltip();
+
                             $("#querySearchTermText").on("keypress",function(e) {
                                 if(e.which === 13) {
                                     // enter key was pressed while in the query history search entry box
