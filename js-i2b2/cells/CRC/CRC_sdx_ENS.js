@@ -121,7 +121,7 @@ i2b2.sdx.TypeControllers.ENS.getChildRecords = function(sdxParentNode, onComplet
         };
         let data = {
             "title": "Permission Denied",
-            "confirmMsg": 'You do not have permission to access this data type',
+            "confirmMsg": 'Your current role does not allow access to this data type.',
             "onOk": okCallback,
             "hideCancel": true
         };
