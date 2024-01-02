@@ -40,8 +40,8 @@ window.addEventListener("add-response", (e) => {
     //add new filter options
     updateFilterOptions(msg);
 
-    if((origin === "ALL" || msg.requester === origin.trim())
-        && (cell === "ALL" || msg.cell === cell.trim())
+    if((origin === "ALL" || msg.requester === origin)
+        && (cell === "ALL" || msg.cell === cell)
         && (action === "ALL" || msg.function === action)) {
         appendLogItem(msg, msg.pk);
     }
