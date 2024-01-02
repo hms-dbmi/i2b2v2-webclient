@@ -10,6 +10,7 @@
         {{/unless}}
 
     {{/ifCond}}
+    <!--If concept is a synonym and hidden then show as hidden concept-->
     {{#ifCond this.origData.synonym_cd "!==" 'Y'}}
         {{#unless this.renderData.isHidden}}
             <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}">
@@ -20,7 +21,8 @@
     {{/ifCond}}
 
     {{#if this.renderData.isHidden}}
-    <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}" style="color:#c00000">
+        <span data-toggle="tooltip" data-placement="top" title="{{this.renderData.moreDescriptMinor}}" style="color:#c00000">
+            <img src="{{this.renderData.iconImg}}"/>
             {{{this.renderData.title}}}
         </span>
     {{/if}}
