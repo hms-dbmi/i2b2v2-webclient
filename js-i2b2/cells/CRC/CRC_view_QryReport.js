@@ -13,9 +13,9 @@ i2b2.CRC.view.QueryReport = {
         i2b2.CRC.view.QueryReport.disDiv = div;
         let view = this.disDiv;
         $(view).empty();
-        let graphData = $('<div id="infoQueryStatusGraph"></div>').empty().hide();
+        let graphData = $('<div id="infoQueryStatusGraph"></div>').empty();
         $(view).append(graphData);
-        let tableData = $('<div id="infoQueryStatusTable"></div>').empty().hide();
+        let tableData = $('<div id="infoQueryStatusTable"></div>').empty();
         $(view).append(tableData);
 
         i2b2.CRC.view.QueryReport.QRS = {};
@@ -230,10 +230,10 @@ i2b2.CRC.view.QueryReport = {
     },
     render: function(breakdowns) {
         let view = this.disDiv;
-        let tableData = $("#infoQueryStatusTable").empty();
+        let tableData = $("#infoQueryStatusTable").empty().show();
         $((Handlebars.compile("{{> QueryResult}}"))(breakdowns)).appendTo(tableData);
 
-        let graphData = $("#infoQueryStatusGraph").empty();
+        let graphData = $("#infoQueryStatusGraph").empty().show();
         $((Handlebars.compile("{{> QueryResultBreakdownGraph}}"))(breakdowns)).appendTo(graphData);
     },
     _getTitle: function(resultType, oRecord, oXML) {
