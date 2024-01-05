@@ -29,7 +29,7 @@ Update: 05-03-17 (nw096):
 
 
 $pmURL = "http://127.0.0.1:8080/i2b2/rest/PMService/getServices";
-$pmCheckAllRequests = false;
+$pmCheckAllRequests = true;
 
 $WHITELIST = array(
     "http" . (($_SERVER['SERVER_PORT'] == '443') ? 's' : '' ) . "://" . $_SERVER['HTTP_HOST'],
@@ -39,11 +39,8 @@ $WHITELIST = array(
     "http://127.0.0.1",
     "http://localhost:8080",
     "http://localhost:9090",
-    "http://localhost",
-    "https://",
-    "http://"
+    "http://localhost"
 );
-
 
 $BLACKLIST = array(
     "http://127.0.0.1:9090/test",
