@@ -8,9 +8,13 @@
 </head>
 <body>
 <h1 class="title">i2b2 Query Report</h1>
-The query entitled "{{name}}" submitted on <span class="no-break">{{submittedAt}}</span>, was successfully completed on <span class="no-break">{{completedAt}}</span>.
-This query was performed by <span class="no-break">"{{submittedBy}}"</span>.
-The search was completed in {{runDuration}} seconds.
+{{#if isFinished}}
+  The query entitled "{{name}}" submitted on <span class="no-break">{{submittedAt}}</span>, was successfully completed on <span class="no-break">{{completedAt}}</span>.
+  This query was performed by <span class="no-break">"{{submittedBy}}"</span>.
+  The search was completed in {{runDuration}} seconds.
+{{else}}
+  The query entitled "{{name}}" submitted on <span class="no-break">{{submittedAt}}</span>.
+{{/if}}
 
 
 <h2 class="sub-title">Query Definition</h2>
@@ -99,11 +103,11 @@ The search was completed in {{runDuration}} seconds.
 
     of
 
-    {{#ifCond aggregateOp1 "==" "FIRST"}}the first{{/ifCond}}
-    {{#ifCond aggregateOp1 "==" "LAST"}}the last{{/ifCond}}
+    {{#ifCond aggregateOp1 "==" "FIRST"}}the first ever{{/ifCond}}
+    {{#ifCond aggregateOp1 "==" "LAST"}}the last ever{{/ifCond}}
     {{#ifCond aggregateOp1 "==" "ANY"}}any{{/ifCond}}
 
-    ever occurrence for Event {{prevNum}} occurs
+    occurrence for Event {{prevNum}} occurs
 
     {{#ifCond operator "==" "GREATER"}}after{{/ifCond}}
     {{#ifCond operator "==" "GREATEREQUAL"}}on or after{{/ifCond}}
@@ -118,11 +122,11 @@ The search was completed in {{runDuration}} seconds.
 
     of
 
-    {{#ifCond aggregateOp2 "==" "FIRST"}} the first{{/ifCond}}
-    {{#ifCond aggregateOp2 "==" "LAST"}}the last{{/ifCond}}
+    {{#ifCond aggregateOp2 "==" "FIRST"}} the first ever{{/ifCond}}
+    {{#ifCond aggregateOp2 "==" "LAST"}}the last ever{{/ifCond}}
     {{#ifCond aggregateOp2 "==" "ANY"}}any{{/ifCond}}
 
-    ever occurrence for Event {{nextNum}}
+    occurrence for Event {{nextNum}}
 
     {{#ifCond timeSpans.0.value "||" timeSpans.1.value}}
       by
@@ -161,16 +165,19 @@ The search was completed in {{runDuration}} seconds.
 
 <h2 class="sub-title">Query Results</h2>
 
-{{#each reports}}
-<div class="results-group">
-  <div class="results-chart">
-    {{{this.chart}}}
+{{#if reports}}
+  {{#each reports}}
+  <div class="results-group">
+    <div class="results-chart">
+      {{{this.chart}}}
+    </div>
+    <div class="results-graph">
+      {{{this.graph}}}
+    </div>
   </div>
-  <div class="results-graph">
-    {{{this.graph}}}
-  </div>
-</div>
-{{/each}}
-
+  {{/each}}
+{{else}}
+  <div>Not Complete</div>
+{{/if}}
 </body>
 </html>

@@ -8,6 +8,8 @@
 // create and save the view objects
 i2b2.CRC.view.QT = new i2b2Base_cellViewController(i2b2.CRC, 'QT');
 
+i2b2.CRC.view.QT.allowedDropTypes = ["CONCPT","QM","PRS", "PR", "WRK", "ENS"];
+
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateQueryName = function() {
     // update the transformed model and set the title
@@ -93,53 +95,65 @@ i2b2.CRC.view.QT.showRun = function() {
             $('body #crcModal button.i2b2-save').click();
             evt.preventDefault();
         });
-    }
 
-    $('body #crcModal').load('js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
-        // populate the results list based on...
-        // ==> i2b2.CRC.model.resultTypes
-        // ==> i2b2.CRC.model.selectedResultTypes
-        let checkContainer = $("#crcModal .ResultTypes");
-        for (let code in i2b2.CRC.model.resultTypes) {
-            let descriptions = i2b2.CRC.model.resultTypes[code];
-            descriptions.forEach(description => {
-                let checked = '';
-                if (i2b2.CRC.model.selectedResultTypes.includes(code)) checked = ' checked="checked" ';
-                $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(checkContainer);
-            });
-        }
-        // populate/delete the query run methods
-        if (!i2b2.CRC.model.queryExecutionOptions) {
-            // no query execution options, remove input from form
-            $("#crcModal .QueryMethodInput").remove();
-        } else {
-            // populate the query execution options
-            let targetSelect = $('#crcModal .QueryMethodInput select');
-            for (const [code, description] of Object.entries(i2b2.CRC.model.queryExecutionOptions)) {
-                $('<option value="' + code + '">' + description + '</option>').appendTo(targetSelect);
+        $('body #crcModal').load('js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
+            // populate the results list based on...
+            // ==> i2b2.CRC.model.resultTypes
+            // ==> i2b2.CRC.model.selectedResultTypes
+            let checkContainer = $("#crcModal .ResultTypes");
+            for (let code in i2b2.CRC.model.resultTypes) {
+                let descriptions = i2b2.CRC.model.resultTypes[code];
+                descriptions.forEach(description => {
+                    let checked = '';
+                    if (i2b2.CRC.model.selectedResultTypes.includes(code)) checked = ' checked="checked" ';
+                    $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(checkContainer);
+                });
             }
-        }
+            // populate/delete the query run methods
+            if (!i2b2.CRC.model.queryExecutionOptions) {
+                // no query execution options, remove input from form
+                $("#crcModal .QueryMethodInput").remove();
+            } else {
+                // populate the query execution options
+                let targetSelect = $('#crcModal .QueryMethodInput select');
+                for (const [code, description] of Object.entries(i2b2.CRC.model.queryExecutionOptions)) {
+                    $('<option value="' + code + '">' + description + '</option>').appendTo(targetSelect);
+                }
+            }
 
+            //add the current generated query name
+            $("#crcQtQueryName").val(i2b2.CRC.model.transformedQuery.name)
+                .attr("placeholder", i2b2.CRC.model.transformedQuery.name);
+
+            // now show the modal form
+            $('body #crcModal div:eq(0)').modal('show');
+
+            // run the query on button press
+            $('body #crcModal button.i2b2-save').on('click', (evt) => {
+                i2b2.CRC.view.QT.resetToCRCHistoryView();
+                // build list of selected result types
+                let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
+                reqResultTypes = [...new Set(reqResultTypes)];
+
+                if (reqResultTypes.length > 0) {
+                    let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
+
+                    i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes, reqExecutionMethod);
+                    $(".errorMsg", "#crcModal").addClass("hidden");
+                    // close the modal
+                    $('body #crcModal div:eq(0)').modal('hide');
+                } else {
+                    $(".errorMsg", "#crcModal").removeClass("hidden");
+                }
+            });
+        });
+    } else {
         //add the current generated query name
         $("#crcQtQueryName").val(i2b2.CRC.model.transformedQuery.name)
             .attr("placeholder", i2b2.CRC.model.transformedQuery.name);
 
-        // now show the modal form
         $('body #crcModal div:eq(0)').modal('show');
-
-        // run the query on button press
-        $('body #crcModal button.i2b2-save').on('click', (evt) => {
-            i2b2.CRC.view.QT.resetToCRCHistoryView();
-            // build list of selected result types
-            let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
-            reqResultTypes = [...new Set(reqResultTypes)];
-            let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
-
-            i2b2.CRC.ctrlr.QT.runQuery(reqResultTypes, reqExecutionMethod);
-            // close the modal
-            $('body #crcModal div:eq(0)').modal('hide');
-        });
-    });
+    }
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT._correctQgTitles = function() {
@@ -393,6 +407,18 @@ i2b2.CRC.view.QT.termActionModifier = function(evt) {
     let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
     i2b2.CRC.view.QT.labValue.showLabValues(sdx, extractedLabModel, queryGroupIdx, eventIdx);
 };
+// ================================================================================================== //
+i2b2.CRC.view.QT.termActionTree = function(evt) {
+    let conceptIdx = $(evt.target).closest('.concept').data('conceptIndex');
+    let eventIdx = $(evt.target).closest('.event').data('eventidx');
+    let queryGroupIdx = $(evt.target).closest('.QueryGroup').data("queryGroup");
+    let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
+
+    // load the node into the ONT search system
+    i2b2.ONT.view.nav.viewInTreeFromId(sdx);
+};
+
+
 
 // ================================================================================================== //
 i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
@@ -471,6 +497,21 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
                 !isDateValid ? $("#termDateConstraintModal .startDateError").show() : $("#termDateConstraintModal .startDateError").hide();
             }            
         }
+    }).on("keyup", function(evt){
+        if(evt.keyCode === 13){
+            $(this).datepicker().close();
+        }else{
+            let date = $(this).val().trim();
+            let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+
+            if(isValidDate){
+                $(this).datepicker().open();
+                $("#termDateConstraintModal .startDateError").hide();
+            }else{
+                $("#termDateConstraintModal .startDateError").show();
+                $(this).datepicker().close();
+            }
+        }
     });
 
     $("#termDateConstraintModal .DateEnd").datepicker({
@@ -500,6 +541,21 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
                 !isDateValid ? $("#termDateConstraintModal .endDateError").show() : $("#termDateConstraintModal .endDateError").hide();
             }
         }
+    }).on("keyup", function(evt){
+        if(evt.keyCode === 13){
+            $(this).datepicker().close();
+        }else{
+            let date = $(this).val().trim();
+            let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+
+            if(isValidDate){
+                $(this).datepicker().open();
+                $("#termDateConstraintModal .endDateError").hide();
+            }else{
+                $("#termDateConstraintModal .endDateError").show();
+                $(this).datepicker().close();
+            }
+        }
     });
 
     $("#termDateConstraintModal div:eq(0)").modal('show');
@@ -520,6 +576,7 @@ i2b2.CRC.view.QT.renderTermList = function(data, targetEl) {
     // add event listeners for term options functionality
     $('.concept .actions .editLabValue', targetEl).on('click', i2b2.CRC.view.QT.labValue.editLabValue);
     $('.concept .actions .info', targetEl).on('click', i2b2.CRC.view.QT.termActionInfo);
+    $('.concept .actions .tree', targetEl).on('click', i2b2.CRC.view.QT.termActionTree);
     $('.concept .actions .delete', targetEl).on('click', i2b2.CRC.view.QT.termActionDelete);
     $('.concept .actions .dateConstraint', targetEl).on('click', i2b2.CRC.view.QT.termActionDateConstraint);
     $('.concept .actions .modifier', targetEl).on('click', i2b2.CRC.view.QT.termActionModifier);
@@ -648,32 +705,181 @@ i2b2.CRC.view.QT.addNewQueryGroup = function(sdxList, metadata){
     return qgIdx;
 }
 // ================================================================================================== //
+//
+i2b2.CRC.view.QT.handleWRKFolderDrop = function(sdxData, dropHandlerCallback) {
+    var scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.callback = function(results) {
+        //var cl_onCompleteCB = onCompleteCallback;
+        // THIS function is used to process the AJAX results of the getChild call
+        //		results data object contains the following attributes:
+        //			refXML: xmlDomObject <--- for data processing
+        //			msgRequest: xml (string)
+        //			msgResponse: xml (string)
+        //			error: boolean
+        //			errorStatus: string [only with error=true]
+        //			errorMsg: string [only with error=true]
+        if (results.error){
+            console.log("ERROR: Unable to retrieve workplace folder contents", results.msgResponse);
+        } else {
+            let nlst = i2b2.h.XPath(results.refXML, "//folder[name and share_id and index and visual_attributes]");
+            for (let i = 0; i < nlst.length; i++) {
+
+                if (i2b2.h.getXNodeVal(nlst[i], "work_xml_i2b2_type") === 'FOLDER') {
+
+                    let wrkFolder = nlst[i];
+                    let nodeData = {};
+                    nodeData.xmlOrig = wrkFolder.outerHTML;
+                    nodeData.index = i2b2.h.getXNodeVal(wrkFolder, "index");
+                    nodeData.key = nodeData.index;
+                    nodeData.name = i2b2.h.getXNodeVal(wrkFolder, "folder/name");
+                    nodeData.annotation = i2b2.h.getXNodeVal(wrkFolder, "tooltip");
+                    nodeData.share_id = i2b2.h.getXNodeVal(wrkFolder, "share_id");
+                    nodeData.visual = String(i2b2.h.getXNodeVal(wrkFolder, "visual_attributes")).trim();
+                    nodeData.encapType = i2b2.h.getXNodeVal(wrkFolder, "work_xml_i2b2_type");
+                    nodeData.isRoot = false;
+
+                    let newSdxData = i2b2.WORK.view.main._generateTvNode(nodeData.name, nodeData);
+                    newSdxData = newSdxData.i2b2;
+                    i2b2.CRC.view.QT.handleWRKFolderDrop(newSdxData, dropHandlerCallback);
+                } else {
+
+                    let work_xml= i2b2.h.XPath(nlst[i], "work_xml");
+                    for (let j=0; j < work_xml.length; j++) {
+                        let folderItem = nlst[i];
+
+                        let nodeData = {};
+                        nodeData.xmlOrig = folderItem.outerHTML;
+                        nodeData.index = i2b2.h.getXNodeVal(folderItem, "index");
+                        nodeData.key = nodeData.index;
+                        nodeData.name = i2b2.h.getXNodeVal(folderItem, "folder/name");
+                        nodeData.annotation = i2b2.h.getXNodeVal(folderItem, "tooltip");
+                        nodeData.share_id = i2b2.h.getXNodeVal(folderItem, "share_id");
+                        nodeData.visual = String(i2b2.h.getXNodeVal(folderItem, "visual_attributes")).trim();
+                        nodeData.encapType = i2b2.h.getXNodeVal(folderItem, "work_xml_i2b2_type");
+                        nodeData.isRoot = false;
+
+                        let newSdxData = i2b2.WORK.view.main._generateTvNode(nodeData.name, nodeData);
+                        newSdxData = newSdxData.i2b2;
+                        newSdxData.origData = newSdxData.sdxUnderlyingPackage.origData;
+                        newSdxData.sdxInfo = newSdxData.sdxUnderlyingPackage.sdxInfo;
+                        newSdxData.renderData = i2b2.sdx.Master.RenderData(newSdxData);
+                        dropHandlerCallback(newSdxData);
+                    }
+                }
+            }
+        }
+    }
+    let varInput = {
+        parent_key_value: sdxData.sdxInfo.sdxKeyValue,
+        result_wait_time: 180
+    };
+
+    i2b2.WORK.ajax.getChildren("WORK:Workplace", varInput, scopedCallback );
+}
+// ================================================================================================== //
+i2b2.CRC.view.QT.adjustRenderData = function(sdx) {
+    if (sdx.sdxInfo.sdxType === "PR") {
+        let renderOptions = {};
+        let title = sdx.sdxInfo.sdxDisplayName ? sdx.sdxInfo.sdxDisplayName : sdx.renderData?.title;
+        if (!title) title = sdx.sdxInfo.sdxKeyValue;
+        let subsetPos = title.indexOf(" [");
+        title = subsetPos === -1 ? title : "PATIENT:HIVE:" + title.substring(0, subsetPos);
+        title = i2b2.h.Escape(title);
+        renderOptions.title = title;
+        sdx.renderData = i2b2.sdx.Master.RenderData(sdx, renderOptions);
+    }
+};
+// ================================================================================================== //
 i2b2.CRC.view.QT.DropHandler = function(sdx, evt){
+    let qgIndex = $(evt.target).closest(".QueryGroup").data("queryGroup");
+    let eventIdx = $(evt.target).closest(".event").data('eventidx');
+
     // remove the hover and drop target fix classes
     $(evt.target).closest(".i2b2DropTarget").removeClass("DropHover");
     $(evt.target).closest(".i2b2DropTarget").removeClass("i2b2DropPrep");
 
-    let qgIndex = $(evt.target).closest(".QueryGroup").data("queryGroup");
-    let eventIdx = $(evt.target).closest(".event").data('eventidx');
+    // check if this is a WRK folder
+    if (sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage === undefined) {
+        let eventHandlers = {};
+        eventHandlers = $(evt.target).data("i2b2DragdropEvents");
 
-   
+        i2b2.CRC.view.QT.handleWRKFolderDrop(sdx, function(sdx) {
+            if (typeof eventHandlers[sdx.sdxInfo.sdxType]?.DropHandler === "function") {
+                i2b2.CRC.view.QT.adjustRenderData(sdx);
+                i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, false);
+                i2b2.CRC.view.QT.handleConceptValidation();
+            }
+        });
+    } else {
+        // use the underlying package data for workplace items
+        if (sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage !== undefined) {
+            // but only if the underlying package is an acceptable type
+            if (!i2b2.CRC.view.QT.allowedDropTypes.includes(sdx.sdxUnderlyingPackage.sdxInfo.sdxType)) return false;
 
-    i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, true);
+            sdx.origData = sdx.sdxUnderlyingPackage.origData;
+            sdx.sdxInfo = sdx.sdxUnderlyingPackage.sdxInfo;
+        }
 
-    //show or hide validation messages
-    i2b2.CRC.view.QT.handleConceptValidation();
+        // abort if "PR" record is actually an individual encounter record
+        if (sdx.origData.event_id) return;
+
+        //do any changes needed on the render of the item
+        i2b2.CRC.view.QT.adjustRenderData(sdx);
+
+        i2b2.CRC.view.QT.addConcept(sdx, qgIndex, eventIdx, true);
+
+        //show or hide validation messages
+        i2b2.CRC.view.QT.handleConceptValidation();
+    }
 };
-
 // ================================================================================================== //
 i2b2.CRC.view.QT.NewDropHandler = function(sdx, evt){
-    // add the item to the query
-    i2b2.CRC.view.QT.addNewQueryGroup([sdx], {showLabValues: true});
+    // remove the hover and drop target fix classes
+    $(evt.target).closest(".i2b2DropTarget").removeClass("DropHover");
+    $(evt.target).closest(".i2b2DropTarget").removeClass("i2b2DropPrep");
 
-    // render the new query group (by re-rendering all the query groups)
-    i2b2.CRC.view.QT.render();
+    // check if this is a WRK folder
+    if (sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage === undefined) {
+        let eventHandlers = {};
+        eventHandlers = $(evt.target).data("i2b2DragdropEvents");
+
+        //create and render a new query group first then add all WRK folder items
+        let qgIdx = i2b2.CRC.view.QT.addNewQueryGroup([]);
+        i2b2.CRC.view.QT.render();
+
+        i2b2.CRC.view.QT.handleWRKFolderDrop(sdx, function(sdx) {
+            if (typeof eventHandlers[sdx.sdxInfo.sdxType]?.DropHandler === "function") {
+                //do any changes needed on the render of the item
+                i2b2.CRC.view.QT.adjustRenderData(sdx);
+                i2b2.CRC.view.QT.addConcept(sdx, qgIdx, 0, false);
+                i2b2.CRC.view.QT.handleConceptValidation();
+            }
+        });
+    } else {
+        //use the underlying package info for workplace items
+        if (sdx.sdxInfo.sdxType === "WRK" && sdx.sdxUnderlyingPackage !== undefined) {
+            // but only if the underlying package is an acceptable type
+            if (!i2b2.CRC.view.QT.allowedDropTypes.includes(sdx.sdxUnderlyingPackage.sdxInfo.sdxType)) return false;
+
+            sdx.origData = sdx.sdxUnderlyingPackage.origData;
+            sdx.sdxInfo = sdx.sdxUnderlyingPackage.sdxInfo;
+        }
+
+        // abort if "PR" record is actually an individual encounter record
+        if (sdx.origData.event_id) return;
+
+        // add the item to the query
+        i2b2.CRC.view.QT.addNewQueryGroup([sdx], {showLabValues: true});
+
+        //do any changes needed on the render of the item
+        i2b2.CRC.view.QT.adjustRenderData(sdx);
+
+        // render the new query group (by re-rendering all the query groups)
+        i2b2.CRC.view.QT.render();
+    }
 };
 
-// ================================================================================================== //
+ // ================================================================================================== //
 i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
 
     // mark if dates can be applied to this item
@@ -727,8 +933,8 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
                 }
             }
         }
-    }else{
-        i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx, !showLabValues);
+    } else {
+        if (sdx.sdxInfo.sdxControlCell === "ONT") i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, groupIdx, eventIdx, !showLabValues);
     }
 
     // rerender the query event and add to the DOM
@@ -912,14 +1118,32 @@ i2b2.CRC.view.QT.render = function() {
         $('.datepicker', newQG).toArray().forEach((el) => {
             $(el).datepicker({
                 uiLibrary: 'bootstrap4',
+                keyboardNavigation: false,
                 change: function (event) {
                     i2b2.CRC.view.QT.handleUpdateDateRangeEvent(event);
                 }
             });
+            $(el).on("keyup", function(evt){
+                if(evt.keyCode === 13){
+                    $(this).datepicker().close();
+                }else {
+                    let date = $(this).val().trim();
+                    let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+                    let errorFrameEl = $(this)[0].parentNode;
+
+                    if(isValidDate){
+                        $(this).datepicker().open();
+                        $(errorFrameEl).css('border', '');
+                    }else{
+                        $(errorFrameEl).css('border', 'solid');
+                        $(this).datepicker().close();
+                    }
+                }
+            })
         });
 
         // attach the i2b2 SDX handlers for each code... on both event1 and event2 containers
-        ["CONCPT","QM","PRS"].forEach((sdxCode) => {
+        i2b2.CRC.view.QT.allowedDropTypes.forEach((sdxCode) => {
             $(".event", newQG).toArray().forEach((dropTarget) => {
                 i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
                 i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
@@ -938,14 +1162,22 @@ i2b2.CRC.view.QT.render = function() {
     $('.QueryGroup .topbar .with', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // change the CSS styling
         let qgRoot = $(event.target).closest(".QueryGroup");
+        let qgIndex = qgRoot.data("queryGroup");
+
+        if(qgRoot.hasClass("when")){
+            i2b2.CRC.model.query.groups[qgIndex].timing = "ANY";
+            qgRoot.find('.unLink').click();
+        }
+
         qgRoot.removeClass(['without', 'when']);
         qgRoot.addClass("with");
+
         // modify the model
-        let qgIndex = qgRoot.data("queryGroup");
         i2b2.CRC.model.query.groups[qgIndex].display = "with";
         i2b2.CRC.model.query.groups[qgIndex].with = true;
         i2b2.CRC.model.query.groups[qgIndex].without = false;
         i2b2.CRC.model.query.groups[qgIndex].when = false;
+
         // handle purging of eventLinks
         i2b2.CRC.model.query.groups[qgIndex].eventLinks = [i2b2.CRC.view.QT.createEventLink()];
         // handle purging of events
@@ -975,10 +1207,16 @@ i2b2.CRC.view.QT.render = function() {
     $('.QueryGroup .topbar .without', i2b2.CRC.view.QT.containerDiv).on('click', (event) => {
         // change the CSS styling
         let qgRoot = $(event.target).closest(".QueryGroup");
+        let qgIndex = qgRoot.data("queryGroup");
+
+        if(qgRoot.hasClass("when")){
+            i2b2.CRC.model.query.groups[qgIndex].timing = "ANY";
+            qgRoot.find('.unLink').click();
+        }
         qgRoot.removeClass(['with', 'when']);
         qgRoot.addClass("without");
+
         // modify the model
-        let qgIndex = qgRoot.data("queryGroup");
         i2b2.CRC.model.query.groups[qgIndex].display = "without";
         i2b2.CRC.model.query.groups[qgIndex].with = false;
         i2b2.CRC.model.query.groups[qgIndex].without = true;
@@ -1168,7 +1406,7 @@ i2b2.CRC.view.QT.render = function() {
 
     // wire drop handler to the final query group
     let dropTarget = $(".event .i2b2DropTarget", newQG);
-    ["CONCPT","QM","PRS"].forEach((sdxType) => {
+    i2b2.CRC.view.QT.allowedDropTypes.forEach((sdxType) => {
         i2b2.sdx.Master.AttachType(dropTarget, sdxType);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "DropHandler", i2b2.CRC.view.QT.NewDropHandler);
         i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxType, "onHoverOver", i2b2.CRC.view.QT.HoverOver);
@@ -1277,10 +1515,19 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                 $("#labDropDown").text($(this).text());
             });
 
+            //cancel button handler
+            $("body #labValuesModal button.lab-cancel").click(function () {
+                //I2B2UI-639-Edit Lab value icon not displayed if user clicks cancel on initial display of Lab Values modal
+                let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+                const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+                i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+            });
 
             // Save button handler
             $("body #labValuesModal button.lab-save").click(function () {
                 // check for bad characters in number inputs
+                let isValid = true;
+
                 if (newLabValues.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER) {
                     const func_validateType = function(value, dataType) {
                         const val = String(value).trim();
@@ -1302,7 +1549,6 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                     }
 
                     const dataType = extractedLabValues.dataType;
-                    let isValid = true;
                     if (newLabValues.valueOperator === "BETWEEN") {
                         // multi-value input
                         if (!func_validateType(newLabValues.numericValueRangeLow, dataType)) {
@@ -1327,8 +1573,15 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                             $("#labNumericValue").removeClass("error");
                         }
                     }
-                    if (!isValid) return;
+
                 }
+
+                if (newLabValues.isEnum && newLabValues.value && newLabValues.value.length === 0) {
+                    $("#labEnumValue").addClass("error");
+                    isValid = false;
+                }
+
+                if (!isValid) return;
 
                 $("#labValuesModal div").eq(0).modal("hide");
                 switch (newLabValues.valueType) {
@@ -1406,7 +1659,6 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                         break;
                 }
             }
-
 
             $("#labHeader").text(extractedLabValues.name);
 
@@ -1490,13 +1742,27 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                             numericValueSelection.val(sdxConcept.LabValues.value);
                             newLabValues.value = sdxConcept.LabValues.value;
                         }
+                    }else{
+                        $("input[name='labType'][value='BY_VALUE']").click();
                     }
+
                     numericValueOperatorSelection.trigger("change");
 
                     //Bar segment
                     try {
                         if (extractedLabValues.rangeInfo.total !== 0) {
-                            $("#barNormMain").removeClass("hidden");
+                            let normalLowRange;
+                            let normalHighRange;
+
+                            $("#barNormMain").removeClass("hidden").click(function(){
+                                $("#labNumericValueOperator").val("BETWEEN").trigger("change");
+                                if(normalLowRange !== undefined){
+                                    $("#labNumericValueRangeLow").val(normalLowRange).trigger("change");;
+                                }
+                                if(normalHighRange !== undefined){
+                                    $("#labNumericValueRangeHigh").val(normalHighRange).trigger("change");;
+                                }
+                            });
                             if (isFinite(extractedLabValues.rangeInfo.LowOfToxic)) {
                                 $("#lblToxL").text(extractedLabValues.rangeInfo.LowOfToxic);
                                 $("#barToxL").click(function () {
@@ -1505,6 +1771,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value);
                                 });
                                 $("#barToxLMain").removeClass("hidden");
+                                normalLowRange = extractedLabValues.rangeInfo.LowOfToxic;
                             } else {
                                 $("#lblToxL").text("");
                             }
@@ -1516,6 +1783,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value).trigger("change");
                                 });
                                 $("#barLofLMain").removeClass("hidden");
+                                normalLowRange = extractedLabValues.rangeInfo.LowOfLow;
+
                             } else {
                                 $("#lblLofL").text("");
                             }
@@ -1527,6 +1796,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value).trigger("change");
                                 });
                                 $("#barHofLMain").removeClass("hidden");
+                                normalLowRange = extractedLabValues.rangeInfo.HighOfLow;
                             } else {
                                 $("#lblHofL").text("");
                             }
@@ -1538,6 +1808,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value).trigger("change");
                                 });
                                 $("#barLofHMain").removeClass("hidden");
+                                normalHighRange = extractedLabValues.rangeInfo.LowOfHigh;
                             } else {
                                 $("#lblLofH").text("");
                             }
@@ -1549,6 +1820,10 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value).trigger("change");
                                 });
                                 $("#barHofHMain").removeClass("hidden");
+                                if(normalHighRange === undefined) {
+                                    normalHighRange = extractedLabValues.rangeInfo.HighOfHigh;
+                                }
+
                             } else {
                                 $("#lblHofH").text("");
                             }
@@ -1560,6 +1835,9 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                                     $("#labNumericValue").val(value).trigger("change");
                                 });
                                 $("#barToxHMain").removeClass("hidden");
+                                if(normalHighRange === undefined) {
+                                    normalHighRange = extractedLabValues.rangeInfo.HighOfToxic;
+                                }
                             } else {
                                 $("#lblToxH").text("");
                             }
@@ -1642,12 +1920,17 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                             stringValueSelection.val(sdxConcept.LabValues.value).trigger("change");
                         }
                     }
+
+                    if(!(sdxConcept.LabValues && sdxConcept.LabValues.value)){
+                        $("input[name='labType'][value='BY_VALUE']").click();
+                    }
                     largeStringValueOperatorSelection.trigger("change");
                     newLabValues.isString = true;
                     break;
                 case "STR":
                     $("#labStringValueOperatorMain").removeClass("hidden");
                     $("#labStringValueMain").removeClass("hidden");
+
                     let stringSelection = $("#labStringValue");
                     let stringValueOperatorSelection = $("#labStringValueOperator");
 
@@ -1659,26 +1942,30 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
                         newLabValues.value = $(this).val();
                     });
 
-                    if (sdxConcept.LabValues) {
-                        if (sdxConcept.LabValues.valueOperator) {
-                            stringValueOperatorSelection.val(sdxConcept.LabValues.valueOperator);
-                            if (sdxConcept.LabValues.value) {
-                                stringSelection.val(sdxConcept.LabValues.value).trigger("change");
-                            }
+                    if (sdxConcept.LabValues && sdxConcept.LabValues.valueOperator) {
+                        stringValueOperatorSelection.val(sdxConcept.LabValues.valueOperator);
+                        if (sdxConcept.LabValues.value) {
+                            stringSelection.val(sdxConcept.LabValues.value).trigger("change");
                         }
+                    }else{
+                        $("input[name='labType'][value='BY_VALUE']").click();
                     }
                     stringValueOperatorSelection.trigger("change");
                     newLabValues.isString = true;
                     break;
                 case "ENUM":
                     if (Object.keys(extractedLabValues.enumInfo).length > 0) {
+
                         let labEnumValueSelection = $("#labEnumValue");
-                        Object.entries(extractedLabValues.enumInfo).forEach(([key, value]) => {
+                        let extractedLabValueEntries = Object.entries(extractedLabValues.enumInfo);
+                        extractedLabValueEntries.forEach(([key, value]) => {
                             let enumOption = $("<option></option");
                             enumOption.text(value);
                             enumOption.val(key);
                             labEnumValueSelection.append(enumOption);
                         });
+
+                        labEnumValueSelection.val(extractedLabValueEntries[0][0]);
 
                         labEnumValueSelection.change(function () {
                             newLabValues.value = $(this).val();
@@ -1700,6 +1987,8 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, extractedLabValue
 
                         if (sdxConcept.LabValues && sdxConcept.LabValues.value) {
                             labEnumValueSelection.val(sdxConcept.LabValues.value);
+                        }else{
+                            $("input[name='labType'][value='BY_VALUE']").click();
                         }
                         labEnumValueSelection.trigger("change");
                         newLabValues.isEnum = true;
@@ -1777,7 +2066,7 @@ i2b2.CRC.view.QT.addEvent = function(){
     $('.EventLbl .actions .delete', qgRoot).on('click', deleteFunc);
 
     //add drag and drop handling
-    ["CONCPT","QM","PRS"].forEach((sdxCode) => {
+    i2b2.CRC.view.QT.allowedDropTypes.forEach((sdxCode) => {
         $(".event", templateQueryGroup).last().toArray().forEach((dropTarget) => {
             i2b2.sdx.Master.AttachType(dropTarget, sdxCode);
             i2b2.sdx.Master.setHandlerCustom(dropTarget, sdxCode, "DropHandler", i2b2.CRC.view.QT.DropHandler);
@@ -1883,9 +2172,10 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         let reportData = {
             name: i2b2.CRC.ctrlr.QS.QM.name,
             submittedAt: i2b2.CRC.ctrlr.QS.QI.start_date.toLocaleString().replace(", "," @ "),
-            completedAt: i2b2.CRC.ctrlr.QS.QI.end_date.toLocaleString().replace(", "," @ "),
+            completedAt: i2b2.CRC.ctrlr.QS.QI.end_date ? i2b2.CRC.ctrlr.QS.QI.end_date.toLocaleString().replace(", "," @ ") : "",
             submittedBy: "USERNAME(" + submittedByUsername + ")",
             runDuration: Number((i2b2.CRC.ctrlr.QS.QI.end_date - i2b2.CRC.ctrlr.QS.QI.start_date) / 1000).toLocaleString(),
+            isFinished: i2b2.CRC.ctrlr.QS.QI.status === 'FINISHED' || i2b2.CRC.ctrlr.QS.QI.status === 'COMPLETE',
             panels: panels
         };
 
@@ -1927,19 +2217,20 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         }
 
         // Deal with the reports
-        let reports = [];
-        let graphs = $("#breakdownChartsBody>div");
-        let charts = $("#breakdownDetails>div");
-        let dataRef = i2b2.CRC.ctrlr.QS.breakdowns.resultTable;
-        for (let i=0; i<dataRef.length; i++) {
-            if (i == 0) {
-                reports.push({chart:charts[i].outerHTML, data: dataRef[i]});
-            } else {
-                reports.push({chart:charts[i].outerHTML, graph:graphs[i-1].outerHTML, data: dataRef[i]});
+        if(i2b2.CRC.ctrlr.QS.QI.end_date !== undefined) {
+            let reports = [];
+            let graphs = $("#breakdownChartsBody>div");
+            let charts = $("#breakdownDetails>div");
+            let dataRef = i2b2.CRC.ctrlr.QS.breakdowns.resultTable;
+            for (let i = 0; i < dataRef.length; i++) {
+                if (i === 0) {
+                    reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
+                } else if(dataRef[i].result !== undefined) {
+                    reports.push({chart: charts[i].outerHTML, graph: graphs[i - 1].outerHTML, data: dataRef[i]});
+                }
             }
+            reportData.reports = reports;
         }
-        reportData.reports = reports;
-
 
         let func_Display = function() {
             // populate the document in the iframe
@@ -2037,6 +2328,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     $('<div class="center"></div>').append(queryName).appendTo(runBar);
                     runBar.append('<div class="right">' +
                         '<button type="button" class="btn btn-primary btn-sm button-run">Find Patients</button>' +
+                        '<button type="button" class="btn btn-danger btn-sm button-cancel" onmousedown="i2b2.CRC.ctrlr.QR.doAbortQuery();">Cancel</button>' +
                         '<button type="button" class="btn btn-primary btn-sm button-clear">Clear All</button>' +
                         '</div>');
 

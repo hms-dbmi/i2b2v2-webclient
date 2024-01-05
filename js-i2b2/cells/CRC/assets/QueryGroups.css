@@ -118,6 +118,14 @@
     background-color: #fff;
 }
 
+.CRC_QT_runbar .button-cancel{
+    padding: 0.22rem 0.4rem;
+    line-height: 1.5em;
+    margin-top: -0.1em;
+    margin-right: 0.8em;
+    display: none;
+}
+
 
 .CRC_QT_runbar .button-clear{
     margin-top: -0.1em;
@@ -961,7 +969,8 @@
 
 #labNumericValue.error,
 #labNumericValueRangeLow.error,
-#labNumericValueRangeHigh.error {
+#labNumericValueRangeHigh.error,
+#labEnumValue.error{
     border: 2px solid red;
 }
 

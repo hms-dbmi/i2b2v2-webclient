@@ -50,6 +50,8 @@ i2b2.CRC.view.search.selectSearchType = function(elem) {
 
 i2b2.CRC.view.search.reset = function(){
     $("#querySearchTermText").val("");
+    i2b2.CRC.view.search.toggleSearchClearIcon("");
+    i2b2.CRC.view.search.enableSearch("");
     $("#querySearchTermError").empty();
     $("#querySearchFilterText").text("Any Category");
     $("#querySearchFilter").data("selectedFilterValue", "@");

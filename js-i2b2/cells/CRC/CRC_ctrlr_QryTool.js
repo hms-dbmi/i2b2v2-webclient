@@ -153,15 +153,29 @@ function QueryToolController() {
                         sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                         sdxDataNode.renderData.moreDescriptMinor = sdxDataNode.sdxInfo.sdxDisplayName;
-                        sdxDataNode.renderData.title = sdxDataNode.renderData.title.replace("Patient Set for ", "<span class='prevquery'>Patient Set for </span>");
                     } else if (ckey.toLowerCase().startsWith("patient_set_enc_id")) {
                         let o = {};
                         o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
                         o.PRS_id = ckey.substring(19);
                         o.result_instance_id = o.PRS_id ;
-                        sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
+                        sdxDataNode = i2b2.sdx.Master.EncapsulateData('ENS',o);
+                        sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
-                    } else {
+                        sdxDataNode.renderData.moreDescriptMinor = sdxDataNode.sdxInfo.sdxDisplayName;
+                    }else  if (ckey.toLowerCase().startsWith("patient")) {
+                        let o = {};
+                        o.titleCRC = i2b2.h.getXNodeVal(pi[i2],'item_key');
+                        o.patient_id = ckey.substring(13);
+                        o.result_instance_id = o.PRS_id ;
+                        o.id = ckey;
+                        sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
+                        sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
+                        let subsetPos = sdxDataNode.sdxInfo.sdxDisplayName.indexOf(" [");
+                        sdxDataNode.sdxInfo.sdxDisplayName = subsetPos === -1
+                            ?  sdxDataNode.sdxInfo.sdxDisplayName : "PATIENT:HIVE:" +  sdxDataNode.sdxInfo.sdxDisplayName.substring(0, subsetPos);
+                        sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
+                    }
+                    else {
                         let o = {};
                         o.level = i2b2.h.getXNodeVal(pi[i2],'hlevel');
                         o.name = i2b2.h.getXNodeVal(pi[i2],'item_name');
@@ -536,12 +550,34 @@ function QueryToolController() {
                     tempItem.isSynonym = "false";
                     tempItem.hlevel = 0;
                     break;
+                case "PR":
+                    tempItem.key = "PATIENT:HIVE:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                    name = item.origData.titleCRC ? item.origData.titleCRC : item.origData.title;
+                    // perhaps this is an encounter
+                    if (name) {
+                        let subsetPos = name.indexOf(" [");
+                        name = subsetPos === -1 ? name : "PATIENT:HIVE:" + name.substring(0, subsetPos);
+                        tempItem.tooltip = i2b2.h.Escape(item.origData.title);
+                    } else if (item.origData.event_id) {
+                        name = "PATIENT:HIVE:" + item.origData.patient_id;
+                    }
+                    tempItem.name = i2b2.h.Escape(name);
+                    tempItem.isSynonym = "false";
+                    tempItem.hlevel = 0;
+                    break;
                 case "QM":
                     tempItem.key = "masterid:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
                     name = item.origData.name;
                     name = name.substring(0, name.indexOf(" ", name.lastIndexOf("@")));
                     tempItem.name = "(PrevQuery) " + i2b2.h.Escape(name);
                     tempItem.tooltip = i2b2.h.Escape(item.origData.name);
+                    tempItem.isSynonym = "false";
+                    tempItem.hlevel = 0;
+                    break;
+                case "ENS":
+                    tempItem.key= "patient_set_enc_id:" +  i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
+                    tempItem.name = i2b2.h.Escape(item.sdxInfo.sdxDisplayName);
+                    tempItem.tooltip = i2b2.h.Escape(item.sdxInfo.sdxDisplayName);
                     tempItem.isSynonym = "false";
                     tempItem.hlevel = 0;
                     break;

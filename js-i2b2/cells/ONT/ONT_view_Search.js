@@ -57,6 +57,7 @@ i2b2.ONT.view.search.toggleSearchClearIcon = function(newValue){
 
 i2b2.ONT.view.search.clearSearchInput = function(){
     $("#searchTermText").val("");
+    i2b2.ONT.view.search.enableSearch("");
     $("#searchTermError").empty();
 
     // Reset dropdown menu settings
@@ -206,7 +207,7 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
         let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
             return snode.key === currentNode.key;
         });
-        //skip over any nodes that are already loaded in the nav tree
+        // skip over any nodes that are already loaded in the nav tree
         while (nodesToExpand.length >= 1 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true)) {
             //expand any collapsed nodes that were already loaded
             if (topLevelNode[0].state.loaded === true && topLevelNode[0].state.expanded === false) {

@@ -26,12 +26,17 @@ i2b2.CRC.view.QS.render = function(breakdowns) {
 
     if (!i2b2.CRC.ctrlr.QS.isRunning) {
         // switch the display of query cancel button and the query report button
-        $("#infoQueryStatusText .statusButtons").removeClass("running");
+        $(".CRC_QT_runbar .button-run").show();
+        $(".CRC_QT_runbar .button-cancel").hide();
+
         if (i2b2.CRC.model.runner?.deleteCurrentQuery) {
             $("#infoQueryStatusText .statusButtons").addClass("cancelled");
         } else {
             $("#infoQueryStatusText .statusButtons").addClass("done");
         }
+    }else{
+        $(".CRC_QT_runbar .button-run").hide();
+        $(".CRC_QT_runbar .button-cancel").show();
     }
 };
 

@@ -420,9 +420,11 @@ i2b2.CRC.view.history.doDelete = function(node) {
 
 // ================================================================================================== //
 i2b2.CRC.view.history.doRefreshAll = function() {
-    // TODO: this should work different based on Browse vs. DateList mode
+    // TODO: should this work different based on Browse vs. DateList mode?
     i2b2.CRC.view.history.treeview.treeview('clear');
     i2b2.CRC.view.history.LoadQueryMasters();
+    i2b2.CRC.view.history.showBrowseView(); // switch if we are viewing by date
+    i2b2.CRC.view.search.reset(); // clear the search entry box
 };
 
 
@@ -568,8 +570,10 @@ i2b2.events.afterCellInit.add((cell) => {
                             });
 
                             // init date picker for Date Listing view
-                            $("#historyDateStart").datepicker({
+                            let el = $("#historyDateStart");
+                            $(el).datepicker({
                                 uiLibrary: 'bootstrap4',
+                                keyboardNavigation: false,
                                 change: function() {
                                     if (i2b2.CRC.view.QT.isValidDate($("#historyDateStart").val())) {
                                         $("#i2b2QueryHistoryBar .dateError").hide();
@@ -593,6 +597,23 @@ i2b2.events.afterCellInit.add((cell) => {
                                     }
                                 }
                             });
+                            $(el).on("keyup", function(evt){
+                                if(evt.keyCode === 13){
+                                    $(this).datepicker().close();
+                                }else{
+                                    let date = $(this).val().trim();
+                                    let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+
+                                    if(isValidDate){
+                                        $(this).datepicker().open();
+                                        $("#i2b2QueryHistoryBar .dateError").hide();
+                                    }else{
+                                        $("#i2b2QueryHistoryBar .dateError").show();
+                                        $(this).datepicker().close();
+                                    }
+                                }
+                            });
+
                             // inject the cancel date listing button
                             $(`<button class="btn border-left-0 dateListingCancel">
                                     <i class="bi bi-x-lg" title="Cancel Listing by Date"></i></button>`).appendTo($("#i2b2QueryHistoryBar .dateListing .gj-datepicker"));
@@ -662,65 +683,74 @@ i2b2.events.afterCellInit.add((cell) => {
 
 
                     // -------------------- setup context menu --------------------
+                    const contextMenuTreeActions =  {
+                        nodeDisplay: {
+                            name: 'Display',
+                            onClick: function(node) {
+                                i2b2.CRC.view.history.doDisplay(node);
+                            },
+                            isShown: function(node) {
+                                if (node.depth === 1) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        },
+                        nodeRename: {
+                            name: 'Rename',
+                            onClick: function(node) {
+                                i2b2.CRC.view.history.doRename(node);
+                            },
+                            isShown: function(node) {
+                                if (node.depth === 1) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        },
+                        nodeDelete: {
+                            name: 'Delete',
+                            onClick: function(node) {
+                                i2b2.CRC.view.history.doDelete(node);
+                            },
+                            isShown: function(node) {
+                                if (node.depth === 1) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        },
+                        newRefresh: {
+                            name: 'Refresh All',
+                            onClick: function (node) {
+                                i2b2.CRC.view.history.doRefreshAll(node);
+                            },
+                            isShown: function (node) {
+                                if (node.depth === 1) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                        }
+                    };
                     i2b2.CRC.view.history.ContextMenu = new BootstrapMenu('#i2b2TreeviewQueryHistory li.list-group-item', {
                         fetchElementData: function($rowElem) {
                             // fetch the data from the treeview
                             return i2b2.CRC.view.history.treeview.treeview('getNode', $rowElem.data('nodeid'));
                         },
-                        actions: {
-                            nodeDisplay: {
-                                name: 'Display',
-                                onClick: function(node) {
-                                    i2b2.CRC.view.history.doDisplay(node);
-                                },
-                                isShown: function(node) {
-                                    if (node.depth === 1) {
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                }
-                            },
-                            nodeRename: {
-                                name: 'Rename',
-                                onClick: function(node) {
-                                    i2b2.CRC.view.history.doRename(node);
-                                },
-                                isShown: function(node) {
-                                    if (node.depth === 1) {
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                }
-                            },
-                            nodeDelete: {
-                                name: 'Delete',
-                                onClick: function(node) {
-                                    i2b2.CRC.view.history.doDelete(node);
-                                },
-                                isShown: function(node) {
-                                    if (node.depth === 1) {
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                }
-                            },
-                            newRefresh: {
-                                name: 'Refresh All',
-                                onClick: function (node) {
-                                    i2b2.CRC.view.history.doRefreshAll(node);
-                                },
-                                isShown: function (node) {
-                                    if (node.depth === 1) {
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
+                        actions: contextMenuTreeActions
+                    });
+
+                    i2b2.CRC.view.history.FinderContextMenu = new BootstrapMenu('#i2b2TreeviewQueryHistoryFinder li.list-group-item', {
+                        fetchElementData: function($rowElem) {
+                            // fetch the data from the treeview
+                            return i2b2.CRC.view.history.treeviewFinder.treeview('getNode', $rowElem.data('nodeid'));
+                        },
+                        actions: contextMenuTreeActions
                     });
 
                     let crcHistoryOptionsModal = $("<div id='crcHistoryOptionsModal'/>");
@@ -794,7 +824,12 @@ i2b2.events.afterCellInit.add((cell) => {
                             //add unique id to the term tab
                             let elemId = "queryHistoryTab";
                             $(tab.element).attr("id", elemId);
-                            i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+
+                            let optionsBtn = $('<div id="queryHistoryOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Query History Options"></i></div>');
+                            $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
+
+                            i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#queryHistoryOptions", {
+                                menuEvent: "click",
                                 actions: {
                                     ListByDate: {
                                         name: 'List By Date',
@@ -810,6 +845,12 @@ i2b2.events.afterCellInit.add((cell) => {
                                             $((Handlebars.compile("{{> QueryHistoryOptions}}"))(i2b2.CRC.view.history.params)).appendTo("#queryHistoryOptionsFields");
                                             i2b2.CRC.view.history._loadUsersInOptions();
                                             $("#crcHistoryOptionsModal div").eq(0).modal("show");
+                                        }
+                                    },
+                                    RefreshAll: {
+                                        name: 'Refresh All',
+                                        onClick: function (node) {
+                                            i2b2.CRC.view.history.doRefreshAll(node);
                                         }
                                     }
                                 }

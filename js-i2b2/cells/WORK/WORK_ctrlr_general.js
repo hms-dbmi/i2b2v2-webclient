@@ -80,7 +80,8 @@ i2b2.WORK.ctrlr.main.Rename = function(target_node) {
     };
     let data = {
         "title": "Rename Work Item",
-        "prompt": "Rename this work item to:",
+        "prompt": "Name",
+        "inputValue": origName,
         "placeHolder": origName,
         "onOk": okCallback,
     };
@@ -146,8 +147,10 @@ i2b2.WORK.ctrlr.main.Annotate = function(target_node) {
     };
     let data = {
         "title": "Edit Work Item Annotation",
-        "prompt": "Change this work item\'s annotation to:",
+        "prompt": "Annotation",
+        "inputValue": origAnno,
         "placeHolder": origAnno,
+        "largeInput": true,
         "onOk": okCallback,
     };
 
@@ -390,8 +393,8 @@ i2b2.WORK.ctrlr.main.AddWorkItem = function(sdxChild, targetTvNode, options) {
             encapWorkType = "PATIENT";
             encapValues.pr_id = sdxChild.sdxInfo.sdxKeyValue;
             encapValues.pr_name = sdxChild.sdxInfo.sdxDisplayName;
-            encapValues.parent_prs_id = sdxChild.parent.sdxInfo.sdxKeyValue;
-            encapValues.parent_prs_name = sdxChild.parent.sdxInfo.sdxDisplayName;
+            encapValues.parent_prs_id = sdxChild.origData.prs_id;
+            encapValues.parent_prs_name = sdxChild.origData.prs_name;
             encapTitle = encapValues.pr_name;
             break;
         case "QDEF":

@@ -46,6 +46,21 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
         if(sdxDataNode.renderData.cssClassMinor !== undefined) {
             temp.icon += " " + sdxDataNode.renderData.cssClassMinor;
         }
+
+        // handle display of patient counts on the root nodes
+        let enablePatientCounts = i2b2.ONT.view.nav.params.patientCounts;
+        if (enablePatientCounts !== false && temp.i2b2.origData.total_num !== undefined) {
+            temp.text += ' - ';
+            temp.tags = [];
+            let totalnum = parseInt(temp.i2b2.origData.total_num, 10);
+            //parse as integer or leave totalnum as is
+            if( !isNaN(totalnum)){
+                temp.tags.push(totalnum.toLocaleString());
+            } else {
+                temp.tags.push(temp.i2b2.origData.total_num);
+            }
+        }
+
         newNodes.push(temp);
     }
 
@@ -216,8 +231,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     if(tab.element.text() === 'Terms') {
                         //add unique id to the term tab
                         let elemId = "ontologyTermTab";
+
                         $(tab.element).attr("id", elemId);
-                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#" + elemId, {
+
+                        let optionsBtn = $('<div id="termOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Set Terms Options"></i></div>');
+                        $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
+
+                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#termOptions", {
+                            menuEvent:"click",
                             actions: {
                                 nodeAnnotate: {
                                     name: 'Show Options',
@@ -225,6 +246,13 @@ i2b2.events.afterCellInit.add((cell) => {
                                         $("#ontOptionsFields").empty();
                                         $((Handlebars.compile("{{> OntologyOptions}}"))(i2b2.ONT.view.nav.params)).appendTo("#ontOptionsFields");
                                         $("#ontOptionsModal div").eq(0).modal("show");
+                                    }
+                                },
+                                nodeRefreshAll: {
+                                    name: 'Refresh All',
+                                    onClick: function (node) {
+                                        i2b2.ONT.view.search.clearSearchInput();
+                                        i2b2.ONT.view.nav.doRefreshAll();
                                     }
                                 }
                             }
@@ -253,10 +281,101 @@ i2b2.events.afterCellInit.add((cell) => {
                 i2b2.ONT.view.nav.params.synonyms = false;
                 i2b2.ONT.view.nav.params.hiddens = false;
                 i2b2.ONT.view.nav.params.max = 200;
+                i2b2.ONT.model.searchResults = {};
             }).bind(this)
         );
     }
 });
+//================================================================================================== //
+i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
+    //clear any search results
+    i2b2.ONT.view.search.clearSearchInput();
+
+    // do not do modifiers (for now)
+    let modifierKey;
+    let sdxKey;
+    if (sdx.origData.conceptModified) {
+        modifierKey = sdx.sdxInfo.sdxKeyValue;
+        sdxKey = sdx.origData.conceptModified.sdxInfo.sdxKeyValue;
+    } else {
+        sdxKey = sdx.sdxInfo.sdxKeyValue;
+    }
+
+    let func_HighlightNode = function(node) {
+        // found the node, hightlight it
+        $(".viewInTreeNode").removeClass("viewInTreeNode");
+        const targetEl = node.el_Node[0];
+        targetEl.classList.add("viewInTreeNode");
+        targetEl.scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+    };
+
+    let func_HandleModifier = function(node) {
+        i2b2.ONT.view.nav.treeview.treeview('expandNode', node.nodeId);
+        node.el_Node[0].scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+        for (let n of node.nodes) {
+            if (modifierKey.startsWith(n.key)) {
+                if (modifierKey === n.key) {
+                    func_HighlightNode(n);
+                } else {
+                    n.state.requested = true;
+                    i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+                    i2b2.ONT.view.nav.loadChildren(n, func_HandleModifier);
+                }
+                break;
+            }
+        }
+    };
+
+    let onLoadChildrenComplete = function(nodeData) {
+        i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
+        nodeData.el_Node[0].scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+        for (let child of nodeData.nodes) {
+            if (sdxKey.startsWith(child.key)) {
+                if (sdxKey === child.key) {
+                    if (!modifierKey) {
+                        func_HighlightNode(child);
+                    } else {
+                        if (!child.nodes || child.nodes.length === 0) {
+                            // load child nodes
+                            child.state.requested = true;
+                            i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+                            i2b2.ONT.view.nav.loadChildren(child, func_HandleModifier);
+                        } else {
+                            func_HandleModifier(child);
+                        }
+                    }
+                } else {
+                    // need to dig deeper
+                    if (!child.nodes || child.nodes.length === 0) {
+                        // load child nodes
+                        child.state.requested = true;
+                        i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+                        i2b2.ONT.view.nav.loadChildren(child, onLoadChildrenComplete);
+                    } else {
+                        // child nodes are already loaded
+                        onLoadChildrenComplete(child);
+                    }
+                }
+                break;
+            }
+        }
+    };
+
+    let rootNodes = i2b2.ONT.view.nav.treeview.treeview("getNodes", (n)=> (n.depth === 1));
+    for (let n of rootNodes) {
+        if (sdxKey.startsWith(n.key)) {
+            if (sdxKey === n.key) {
+                func_HighlightNode(n);
+            } else {
+                n.state.requested = true;
+                i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+                i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
+            }
+            break;
+        }
+    }
+};
+
 //================================================================================================== //
 i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, includeSearchOptions) {
 
@@ -265,6 +384,13 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
             name: 'Show More Info',
                 onClick: function(node) {
                 i2b2.ONT.view.info.load(node.i2b2, true);
+            }
+        },
+        nodeRefreshAll: {
+            name: 'Refresh All',
+            onClick: function (node) {
+                i2b2.ONT.view.search.clearSearchInput();
+                i2b2.ONT.view.nav.doRefreshAll();
             }
         }
     };

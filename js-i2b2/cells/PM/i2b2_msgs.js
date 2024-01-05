@@ -14,6 +14,8 @@ i2b2.PM.cfg.parsers = {};
 // create the communicator Object
 i2b2.PM.ajax = i2b2.hive.communicatorFactory("PM");
 
+
+
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.getUserAuth = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
@@ -66,6 +68,7 @@ i2b2.PM.cfg.msgs.getUserAuth = '<?xml version="1.0" encoding="UTF-8" standalone=
 i2b2.PM.ajax._addFunctionCall("getUserAuth","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getUserAuth);
 
 
+
 //================================================================================================== //
 i2b2.PM.cfg.msgs.setPassword = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
@@ -110,12 +113,12 @@ i2b2.PM.cfg.msgs.setPassword = '<?xml version="1.0" encoding="UTF-8" standalone=
 '        <result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
 '    </request_header>\n'+
 '    <message_body>\n'+
-'        <pm:set_password>\n'+
-'{{{sec_newpassword}}}'+
-'        </pm:set_password>\n'+
+'        <pm:set_password>{{{sec_newpassword}}}</pm:set_password>\n'+
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.ajax._addFunctionCall("setPassword","{{{URL}}}getServices", i2b2.PM.cfg.msgs.setPassword);
+
+
 
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.setProjectRequest = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
@@ -190,7 +193,6 @@ i2b2.PM.cfg.parsers.setProjectRequest = function() {
     return this;
 };
 i2b2.PM.ajax._addFunctionCall("setProjectRequest", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.setProjectRequest, null, i2b2.PM.cfg.parsers.setProjectRequest);
-
 
 
 
@@ -271,6 +273,7 @@ i2b2.PM.cfg.parsers.getAllProjectRequest = function() {
 i2b2.PM.ajax._addFunctionCall("getAllProjectRequest","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllProjectRequest, null, i2b2.PM.cfg.parsers.getAllProjectRequest);
 
 
+
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.getProjectRequest = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
@@ -346,8 +349,6 @@ i2b2.PM.cfg.parsers.getProjectRequest = function() {
     return this;
 };
 i2b2.PM.ajax._addFunctionCall("getProjectRequest","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getProjectRequest, null, i2b2.PM.cfg.parsers.getProjectRequest);
-
-
 
 
 
@@ -431,7 +432,6 @@ i2b2.PM.cfg.parsers.getApproval = function() {
     return this;
 };
 i2b2.PM.ajax._addFunctionCall("getApproval","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getApproval, null, i2b2.PM.cfg.parsers.getApproval);
-
 
 
 
@@ -713,6 +713,7 @@ i2b2.PM.cfg.msgs.deleteDBLookup = '<?xml version="1.0" encoding="UTF-8" standalo
 i2b2.PM.ajax._addFunctionCall("deleteDBLookup","{{{URL}}}getServices", i2b2.PM.cfg.msgs.deleteDBLookup,null);
 
 
+
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.getDBLookup = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 //'<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/{{{sec_cell}}}/1.1/">\n'+
@@ -792,6 +793,7 @@ if (!this.error) {
 i2b2.PM.ajax._addFunctionCall("getDBLookup", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.getDBLookup, ["id_xml"], i2b2.PM.cfg.parsers.getDBLookup);
 
 
+
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.getAllDBLookup = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 //'<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/{{{sec_cell}}}/1.1/">\n'+
@@ -867,6 +869,7 @@ i2b2.PM.cfg.parsers.getAllDBLookup = function() {
 i2b2.PM.ajax._addFunctionCall("getAllDBLookup","{{{URL}}}getDBLookups", i2b2.PM.cfg.msgs.getAllDBLookup, null, i2b2.PM.cfg.parsers.getAllDBLookup);
 
 
+
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.setDBLookup = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 //'<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/{{{sec_cell}}}/1.1/">\n'+
@@ -927,6 +930,7 @@ i2b2.PM.cfg.msgs.setDBLookup = '<?xml version="1.0" encoding="UTF-8" standalone=
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.ajax._addFunctionCall("setDBLookup","{{{URL}}}setDblookup", i2b2.PM.cfg.msgs.setDBLookup,null);
+
 
 
 // ================================================================================================== //
@@ -1003,7 +1007,6 @@ i2b2.PM.ajax._addFunctionCall("getAllProject", "{{{URL}}}getServices", i2b2.PM.c
 
 
 
-
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.getAllRole = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
@@ -1074,6 +1077,7 @@ i2b2.PM.cfg.parsers.getAllRole = function() {
     return this;
 };
 i2b2.PM.ajax._addFunctionCall("getAllRole","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllRole,null,i2b2.PM.cfg.parsers.getAllRole)	;
+
 
 
 // ================================================================================================== //
@@ -1304,7 +1308,6 @@ i2b2.PM.ajax._addFunctionCall("getAllApproval","{{{URL}}}getServices", i2b2.PM.c
 
 
 
-
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.getAllGlobal = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
@@ -1452,6 +1455,8 @@ i2b2.PM.cfg.parsers.getUser = function() {
 i2b2.PM.ajax._addFunctionCall("getUser","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getUser, null, i2b2.PM.cfg.parsers.getUser);
 
 
+
+// ================================================================================================== //
 i2b2.PM.cfg.msgs.getCell = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
 '    <message_header>\n'+
@@ -1525,6 +1530,7 @@ i2b2.PM.cfg.parsers.getCell = function() {
     return this;
 };
 i2b2.PM.ajax._addFunctionCall("getCell","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getCell, null, i2b2.PM.cfg.parsers.getCell);
+
 
 
 // ================================================================================================== //
@@ -1678,7 +1684,6 @@ i2b2.PM.ajax._addFunctionCall("getGlobal", "{{{URL}}}getServices", i2b2.PM.cfg.m
 
 
 
-
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.getProject = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
@@ -1752,24 +1757,6 @@ i2b2.PM.ajax._addFunctionCall("getProject", "{{{URL}}}getServices", i2b2.PM.cfg.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.setRole = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
@@ -1822,7 +1809,6 @@ i2b2.PM.cfg.msgs.setRole = '<?xml version="1.0" encoding="UTF-8" standalone="yes
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.ajax._addFunctionCall("setRole","{{{URL}}}getServices", i2b2.PM.cfg.msgs.setRole,null);
-
 
 
 
@@ -1879,6 +1865,7 @@ i2b2.PM.cfg.msgs.setHive = '<?xml version="1.0" encoding="UTF-8" standalone="yes
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.ajax._addFunctionCall("setHive","{{{URL}}}getServices", i2b2.PM.cfg.msgs.setHive,null);
+
 
 
 // ================================================================================================== //
@@ -2163,7 +2150,6 @@ i2b2.PM.ajax._addFunctionCall("setUser","{{{URL}}}getServices", i2b2.PM.cfg.msgs
 
 
 
-
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.setApproval = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
@@ -2218,7 +2204,6 @@ i2b2.PM.cfg.msgs.setApproval = '<?xml version="1.0" encoding="UTF-8" standalone=
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.ajax._addFunctionCall("setApproval","{{{URL}}}getServices", i2b2.PM.cfg.msgs.setApproval, null);
-
 
 
 
@@ -2374,6 +2359,7 @@ i2b2.PM.cfg.msgs.deleteCell = '<?xml version="1.0" encoding="UTF-8" standalone="
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.ajax._addFunctionCall("deleteCell","{{{URL}}}getServices", i2b2.PM.cfg.msgs.deleteCell,null);
+
 
 
 // ================================================================================================== //
@@ -2532,6 +2518,7 @@ i2b2.PM.cfg.msgs.deleteUser = '<?xml version="1.0" encoding="UTF-8" standalone="
 i2b2.PM.ajax._addFunctionCall("deleteUser","{{{URL}}}getServices", i2b2.PM.cfg.msgs.deleteUser,null);
 
 
+
 // ================================================================================================== //
 i2b2.PM.cfg.msgs.deleteApproval = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
@@ -2580,6 +2567,7 @@ i2b2.PM.cfg.msgs.deleteApproval = '<?xml version="1.0" encoding="UTF-8" standalo
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.ajax._addFunctionCall("deleteApproval","{{{URL}}}getServices", i2b2.PM.cfg.msgs.deleteApproval,null);
+
 
 
 // ================================================================================================== //
@@ -2632,54 +2620,3 @@ i2b2.PM.cfg.msgs.deleteParam = '<?xml version="1.0" encoding="UTF-8" standalone=
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.ajax._addFunctionCall("deleteParam","{{{URL}}}getServices", i2b2.PM.cfg.msgs.deleteParam,["msg_xml"]);
-
-//================================================================================================== //
-i2b2.PM.cfg.msgs.setPassword = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
-'<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
-'    <message_header>\n'+
-'        {{{proxy_info}}}\n'+
-'        <i2b2_version_compatible>1.1</i2b2_version_compatible>\n'+
-'        <hl7_version_compatible>2.4</hl7_version_compatible>\n'+
-'        <sending_application>\n'+
-'            <application_name>i2b2 Project Management</application_name>\n'+
-'            <application_version>' + i2b2.ClientVersion + '</application_version>\n'+
-'        </sending_application>\n'+
-'        <sending_facility>\n'+
-'            <facility_name>i2b2 Hive</facility_name>\n'+
-'        </sending_facility>\n'+
-'        <receiving_application>\n'+
-'            <application_name>Project Management Cell</application_name>\n'+
-'            <application_version>' + i2b2.ClientVersion + '</application_version>\n'+
-'        </receiving_application>\n'+
-'        <receiving_facility>\n'+
-'            <facility_name>i2b2 Hive</facility_name>\n'+
-'        </receiving_facility>\n'+
-'        <datetime_of_message>{{{header_msg_datetime}}}</datetime_of_message>\n'+
-'               <security>\n'+
-'                       <domain>{{{sec_domain}}}</domain>\n'+
-'                       <username>{{{sec_user}}}</username>\n'+
-'                       <password>{{{sec_oldpassword}}}</password>\n'+
-'               </security>\n'+
-'        <message_control_id>\n'+
-'            <message_num>{{{header_msg_id}}}</message_num>\n'+
-'            <instance_num>0</instance_num>\n'+
-'        </message_control_id>\n'+
-'        <processing_id>\n'+
-'            <processing_id>P</processing_id>\n'+
-'            <processing_mode>I</processing_mode>\n'+
-'        </processing_id>\n'+
-'        <accept_acknowledgement_type>AL</accept_acknowledgement_type>\n'+
-'        <application_acknowledgement_type>AL</application_acknowledgement_type>\n'+
-'        <country_code>US</country_code>\n'+
-'        <project_id>{{{sec_project}}}</project_id>\n'+
-'    </message_header>\n'+
-'    <request_header>\n'+
-'        <result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
-'    </request_header>\n'+
-'    <message_body>\n'+
-'        <pm:set_password>\n'+
-'{{{sec_newpassword}}}'+
-'        </pm:set_password>\n'+
-'    </message_body>\n'+
-'</i2b2:request>';
-i2b2.PM.ajax._addFunctionCall("setPassword","{{{URL}}}getServices", i2b2.PM.cfg.msgs.setPassword);
