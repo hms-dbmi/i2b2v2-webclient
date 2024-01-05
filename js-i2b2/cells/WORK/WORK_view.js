@@ -345,10 +345,13 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
         "onOk": "i2b2.WORK.view.main.dialogCallbackWrapper(event)",
         "onKeyup": "i2b2.WORK.view.main.dialogKeyupCallbackWrapper(event)",
         "inputValue" : inputData.inputValue,
-        "onCancel": inputData.onCancel
+        "onCancel": inputData.onCancel,
+        "largeInput": inputData.largeInput
     };
     $(i2b2.WORK.view.main.templates.contextDialog(data)).appendTo(contextDialogModal);
-    $("#WKContextMenuDialog").modal('show');
+    $("#WKContextMenuDialog").modal('show').on('shown.bs.modal', function() {
+        $(this).find('[autofocus]').focus();
+    });
 }
 // =========================================================
 i2b2.events.afterCellInit.add((cell) => {
@@ -451,6 +454,21 @@ i2b2.events.afterCellInit.add((cell) => {
                                         return false;
                                 }
                             }
+                        },
+                        refreshAll: {
+                            name: 'Refresh All',
+                            onClick: function (node) {
+                                i2b2.WORK.ctrlr.refreshAll();
+                            },
+                            isShown: function (node) {
+                                switch (node.i2b2.origData.visual) {
+                                    case "CA":
+                                    case "FA":
+                                        return true;
+                                    default:
+                                        return false;
+                                }
+                            }
                         }
                     }
                 });
@@ -461,6 +479,29 @@ i2b2.events.afterCellInit.add((cell) => {
                         cell.view.main.templates.contextDialog = Handlebars.compile(template);
                     },
                     error: (error) => { console.error("Could not retrieve template: ContextMenuDialog.html"); }
+                });
+
+                container.on( 'tab', function( tab ){
+                    if(tab.element.text() === 'Workplace') {
+                        //add unique id to the term tab
+                        let elemId = "workplaceTab";
+                        $(tab.element).attr("id", elemId);
+
+                        let optionsBtn = $('<div id="workplaceOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Workplace Options"></i></div>');
+                        $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
+
+                        i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#workplaceOptions", {
+                            menuEvent: "click",
+                            actions: {
+                                RefreshAll: {
+                                    name: 'Refresh All',
+                                    onClick: function (node) {
+                                        i2b2.WORK.ctrlr.refreshAll();
+                                    }
+                                }
+                            }
+                        });
+                    }
                 });
             }).bind(this)
         );

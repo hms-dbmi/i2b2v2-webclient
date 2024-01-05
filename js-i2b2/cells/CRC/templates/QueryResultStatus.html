@@ -1,26 +1,31 @@
 <div id="infoQueryStatusText" class="StatusBoxText" oncontextmenu="return false">
     <div style="clear:both;">
         {{#if breakdowns.name}}
-            {{#if breakdowns.isProcessing}}
-                <div style="clear:both;"></div><div style="float:left; font-weight:bold">Processing Query: {{breakdowns.name}} </div>
-            {{else if breakdowns.isRunning}}
-                <div style="clear:both;"></div><div style="float:left; font-weight:bold">Running Query: {{breakdowns.name}} </div>
-            {{else}}
-                <div style="clear:both;"></div><div style="float:left; font-weight:bold">Finished Query: {{breakdowns.name}} </div>
-            {{/if}}
+            <div style="clear:both;"></div>
+            <div style="float:left;">
+                <div class="info-text-name"><span style="font-weight:bold;">Query Name:</span> <span>{{breakdowns.name}}</span></div>
+                <div class="info-text-status"><span style="font-weight:bold;">Query Status:</span>
+                {{#if breakdowns.isCancelled}}
+                    <span class="status-cancelled">Cancelled </span>
+                {{else if breakdowns.isProcessing}}
+                    <span class="status-processing">Processing</span>
+                {{else if breakdowns.isRunning}}
+                  <span class="status-running">Running</span>
+                {{else}}
+                    <span class="status-finished">Finished</span>
+                {{/if}}
+                </div>
+            </div>
 
-        <div class="statusButtons running">
-            <button type="button" class="btn btn-primary btn-sm report" onclick="i2b2.CRC.view.QT.showQueryReport();">View Report</button>
-            <!-- must use "onmousedown" for cancel button because of the rerendering rate of this template during the query run/polling period -->
-            <button type="button" class="btn btn-danger btn-sm cancel" onmousedown="i2b2.CRC.ctrlr.QR.doAbortQuery();">Cancel Query</button>
-            <button type="button" class="btn btn-danger btn-sm cancelled">Query Cancelled</button>
-        </div>
-        {{#if breakdowns.runDuration}}
-                <div style="float:right">[{{breakdowns.runDuration}} &nbsp; secs]</div>
+            <div class="statusButtons running">
+                <button type="button" class="btn btn-primary btn-sm report" onclick="i2b2.CRC.view.QT.showQueryReport();">View Report</button>
+            </div>
+            {{#if breakdowns.runDuration}}
+                    <div style="float:right">[{{breakdowns.runDuration}} &nbsp; secs]</div>
             {{/if}}
-        {{#if breakdowns.computeTime}}
-                <div style="clear:both;"></div>
-                <div class="computeTime">Compute Time: {{breakdowns.computeTime}} &nbsp;secs</div>
+            {{#if breakdowns.computeTime}}
+                    <div style="clear:both;"></div>
+                    <div class="computeTime"><span style="font-weight:bold;">Compute Time: </span>{{breakdowns.computeTime}} &nbsp;secs</div>
             {{/if}}
             <div style="clear:both;"></div>
         {{/if}}

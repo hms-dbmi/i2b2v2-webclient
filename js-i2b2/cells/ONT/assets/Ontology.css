@@ -2,7 +2,7 @@
     background: #FFFFFF;
     border: solid 1px rgba(99, 117, 140, 0.28);
     border-top: none;
-    overflow: auto;
+    overflow-x: hidden;
     border-radius: 0 0 3px 3px;
     flex-direction: column;
     position: absolute;
@@ -12,6 +12,12 @@
     right: 0;
     height: auto;
 }
+
+#i2b2TreeviewOntNav.treeview,
+#i2b2TreeviewOntSearch.treeview {
+    white-space: pre-line;
+}
+
 
 #i2b2OntSearchStatus {
     display: flex;
@@ -284,6 +290,14 @@ button.invert:hover{
     font-size: 0.91em;
     margin-left: -0.7em;
     padding: 0 0.5rem 0;
+}
+
+#termOptions {
+    font-size: 1.25em;
+    width: 1.1em;
+    height: 1.1em;
+    margin-top: -0.4em;
+    display: inline-block;
 }
 
 

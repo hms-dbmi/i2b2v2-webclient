@@ -189,31 +189,49 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             newOptions.cssClass = "sdxStyleCRC-QDEF";
             newOptions.icon = "sdx_CRC_QDEF.jpg";
             break;
+        case "FOLDER":
+            sdxCode = "WRK"
+            newOptions.showchildren = true;
+            newOptions.cssClass = "sdxStyleWORK-WRK";
+            newOptions.icon = "sdx_WORK_folder.gif";
+            o.xmlOrig = sdxData.origData.xmlOrig;
+            o.result_type = "FOLDER";
+            o.index = sdxData.origData.key;
+            o.name = sdxData.origData.name;
+            o.visual = sdxData.origData.visual;
+            o.isRoot = sdxData.origData.isRoot;
+            break;
         default:
             console.warn("No SDX Object exists to represent data-type "+sdxData.origData.encapType);
             // encapsulate as a Generic XML object
             sdxCode = "XML";
-            let t = i2b2.h.XPath(sdxData.origData.xmlOrig, "descendant::work_xml")[0].childNodes;
-            for (i=0; i<t.length; i++) {
-                if (t[i].nodeType === 1) {
-                    o.xmlOrig = t[i].outerHTML;
-                    break;
+            if(i2b2.h.XPath(sdxData.origData.xmlOrig, "descendant::work_xml").length > 0) {
+                let t = i2b2.h.XPath(sdxData.origData.xmlOrig, "descendant::work_xml")[0].childNodes;
+                for (i = 0; i < t.length; i++) {
+                    if (t[i].nodeType === 1) {
+                        o.xmlOrig = t[i].outerHTML;
+                        break;
+                    }
                 }
+                o.result_type = "UNKNOWN";
+                o.name = sdxData.origData.name; // inherit name from Workplace Node
+                o.key = false;
+                newOptions.showchildren = false;
+                newOptions.cssClass = "sdxStyleWORK-XML";
+                newOptions.icon = "sdx_WORK_XML.gif";
             }
-            o.result_type = "UNKNOWN";
-            o.name = sdxData.origData.name; // inherit name from Workplace Node
-            o.key = false;
-            newOptions.showchildren = false;
-            newOptions.cssClass = "sdxStyleWORK-XML";
-            newOptions.icon = "sdx_WORK_XML.gif";
             break;
     }
 
     if (sdxCode) {
         //TODO: Is this if condition needed?
         if (sdxDataNode = i2b2.sdx.Master.EncapsulateData(sdxCode, o)) {
-            sdxData.sdxUnderlyingPackage = sdxDataNode;
-            subclassData = i2b2.sdx.Master.RenderData(sdxDataNode, newOptions);
+            if (sdxCode !== "WRK") {
+                sdxData.sdxUnderlyingPackage = sdxDataNode;
+                subclassData = i2b2.sdx.Master.RenderData(sdxDataNode, newOptions);
+            } else {
+                Object.assign(subclassData, newOptions);
+            }
         }
     }
     return subclassData;
