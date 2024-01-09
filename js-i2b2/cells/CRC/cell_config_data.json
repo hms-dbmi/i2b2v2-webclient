@@ -21,16 +21,16 @@
     "CRC_view_search.js"
   ],
   "preload": [
-    "assets/sdx_CRC_PDO.gif",
-    "assets/sdx_CRC_PR.jpg",
-    "assets/sdx_CRC_PRC.jpg",
-    "assets/sdx_CRC_PRS.gif",
-    "assets/sdx_CRC_PRS.jpg",
-    "assets/sdx_CRC_QDEF.jpg",
-    "assets/sdx_CRC_QGDEF.jpg",
-    "assets/sdx_CRC_QI.gif",
-    "assets/sdx_CRC_QM.gif",
-    "assets/sdx_CRC_QMT.gif"
+    "assets/sdx_CRC_PDO.png",
+    "assets/sdx_CRC_PR.png",
+    "assets/sdx_CRC_PRC.png",
+    "assets/sdx_CRC_PRS.png",
+    "assets/sdx_CRC_PRS.png",
+    "assets/sdx_CRC_QDEF.png",
+    "assets/sdx_CRC_QGDEF.png",
+    "assets/sdx_CRC_QI.png",
+    "assets/sdx_CRC_QM.png",
+    "assets/sdx_CRC_QMT.png"
   ],
   "css": [
     "QueryHistory.css",
