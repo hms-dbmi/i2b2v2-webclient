@@ -59,10 +59,22 @@ i2b2.h.parseXml = function(xmlString){
 	return xmlDocRet;
 };
 
-
+// ================================================================================================== //
 i2b2.h.XPath = function(xmlDoc, xPath) {
 	var retArray = [];
-	if (!xmlDoc) { 
+
+	// do some inline translation of the xmlDoc from string to XMLDocument
+	if (typeof xmlDoc === 'string') {
+		try {
+			let parser = new DOMParser();
+			let test = parser.parseFromString(xmlDoc, "text/xml");
+			xmlDoc = test.documentElement;
+		} catch(e) {
+			return retArray;
+		}
+	}
+
+	if (!xmlDoc) {
 		console.warn("An invalid XMLDoc was passed to i2b2.h.XPath");
 		return retArray;
 	}
@@ -73,20 +85,19 @@ i2b2.h.XPath = function(xmlDoc, xPath) {
 				doc.loadXML(new XMLSerializer().serializeToString(xmlDoc));
 				xmlDoc = doc;
 			}
-			
+
 			// Microsoft's XPath implementation
 			// HACK: setProperty attempts execution when placed in IF statements' test condition, forced to use try-catch
-			try {  
+			try {
 				xmlDoc.setProperty("SelectionLanguage", "XPath");
 			} catch(e) {
 				try {
 					xmlDoc.ownerDocument.setProperty("SelectionLanguage", "XPath");
 				} catch(e) {}
-			} 
+			}
 			retArray = xmlDoc.selectNodes(xPath);
-			
-		}
-		else if (document.implementation && document.implementation.createDocument) {
+
+		} else if (document.implementation && document.implementation.createDocument) {
 			// W3C XPath implementation (Internet standard)
 			var ownerDoc = xmlDoc.ownerDocument;
 			if (!ownerDoc) {ownerDoc = xmlDoc; }
@@ -104,6 +115,7 @@ i2b2.h.XPath = function(xmlDoc, xPath) {
 	return retArray;
 };
 
+// ================================================================================================== //
 i2b2.h.getXNodeVal = function(xmlElement, nodeName, includeChildren) {
 	var gotten = i2b2.h.XPath(xmlElement, "descendant-or-self::"+nodeName+"/text()");
 	var final = "";
@@ -123,6 +135,7 @@ i2b2.h.getXNodeVal = function(xmlElement, nodeName, includeChildren) {
 	return final;
 }
 
+// ================================================================================================== //
 i2b2.h.getXNodeValNoKids = function(xmlElement, nodeName) {
 	var gotten = i2b2.h.XPath(xmlElement, "descendant-or-self::"+nodeName+"/text()");
 	if (gotten.length > 0) {
