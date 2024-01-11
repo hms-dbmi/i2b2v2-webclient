@@ -397,24 +397,13 @@ function QueryToolController() {
                 loadAllModifierInfo(qd[0], function(modifierXmlInfo){
                     reloadQuery(modifierXmlInfo);
                     $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
-                    i2b2.CRC.ctrlr.QT.loadQueryStatus(qm_id, queryName);
+                    i2b2.CRC.ctrlr.QueryMgr.loadQuery(qm_id);
                 });
             }
         }
         // AJAX CALL
         i2b2.CRC.ajax.getRequestXml_fromQueryMasterId("CRC:QueryTool", { qm_key_value: qm_id }, scopedCallback);
     };
-
-// ================================================================================================== //
-    this.loadQueryStatus = function(queryMasterId, queryName) {
-        // TODO: Rebuild this
-        i2b2.CRC.ctrlr.QS.QRS = {};
-        i2b2.CRC.ctrlr.QS.QI = {};
-        i2b2.CRC.ctrlr.QS.QM = {name: queryName, id: queryMasterId};
-        i2b2.CRC.ctrlr.QS.startTime = new Date();
-        i2b2.CRC.view.QS.renderStart();
-        i2b2.CRC.ctrlr.QS.loadQueryStatus();
-    }
 
 // ================================================================================================== //
     // tdw9: parses value constraint in Value Constraints and Modifier Constraints
