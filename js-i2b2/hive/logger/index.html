@@ -6,9 +6,11 @@
 </head>
 <body>
 <script type="text/javascript" src="../../../js-ext/jquery/3.6.0/jquery.min.js" ></script>
+
 <!-- LOAD Bootstrap FROM local server -->
 <script type="text/javascript" src="../../../js-ext/bootstrap/5.0.2/js/bootstrap.bundle.min.js" ></script>
 <link rel="stylesheet" href="../../../js-ext/bootstrap/5.0.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
 <script type="text/javascript" src="../../../js-ext/handlebars/4.7.7/handlebars.min.js"></script>
 
@@ -40,14 +42,13 @@
                 <select id="filterAction" class="form-select form-select-sm">
                     <option value="ALL">All Actions</option>
                 </select>
+
+                <button id="filtersReset" class="btn btn-outline-primary" title="Reset Filters"><i class="bi bi-arrow-clockwise"></i></button>
+                <button id="clearLog" class="btn btn-outline-primary" title="Clear Messages"><i class="bi bi-database-slash"></i></button>
         </div>
     </div>
 
     <div class="logItems"></div>
-    <div class="actions">
-        <button type="button" class="btn btn-primary btn-sm refreshLog">Refresh</button>
-        <button type="button" class="btn btn-secondary  btn-sm clearLog">Clear</button>
-    </div>
     <div class="messageDetail">
     </div>
 </div>

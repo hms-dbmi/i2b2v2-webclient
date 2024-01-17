@@ -164,7 +164,9 @@ function init(){
         updateLogItems();       
     });
 
-     
+     $("#filtersReset").on("click", function() {
+         handleResetFilters();
+     });
 
     $("#filterAction").on("change", function() {        
         updateLogItems();
@@ -176,7 +178,7 @@ function init(){
         window.dispatchEvent(events.dump);
     });
 
-    $(".MessageLog .clearLog").on("click", function(){ 
+    $(".MessageLog #clearLog").on("click", function(){
         if (confirm('Are you sure you want to delete ALL messages in the log?')) {
             window.dispatchEvent(events.clear);
             handleClearButtonState();
@@ -190,4 +192,10 @@ function handleClearButtonState(){
     } else{
         $('.clearLog').prop("disabled", false);
     }
+}
+
+function handleResetFilters() {
+    let ddFilters = document.querySelectorAll(".form-select");
+    ddFilters.forEach((dd) => { dd.selectedIndex = 0 });
+    updateLogItems();
 }
