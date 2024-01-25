@@ -152,7 +152,10 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster) {
     cb.callback = function(results) {
         // TODO: Error checking!!!
         let qi_id = results.refXML.getElementsByTagName('query_instance_id')[0].textContent;
-        i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryMgr:loadQuery",{qi_key_value: qi_id},i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster);
+        cb_hack = new i2b2_scopedCallback();
+        cb_hack.scope = results;
+        cb_hack.callback = i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback;
+        i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryMgr:loadQuery",{qi_key_value: qi_id}, cb_hack);
     };
     i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryMgr:loadQuery", {qm_key_value: idQueryMaster}, cb);
 };
@@ -204,6 +207,7 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
     // get the query instance id
     let qiID = false;
     let qiList = results.refXML.getElementsByTagName('query_instance');
+    if (qiList.length === 0) qiList = this.refXML.getElementsByTagName('query_instance');
     if (qiList.length > 0) {
         qiID = i2b2.h.XPath(qiList[0], 'descendant-or-self::query_instance_id')[0].firstChild.nodeValue;
         i2b2.CRC.model.runner.idQueryMaster = i2b2.h.XPath(qiList[0], 'descendant-or-self::query_master_id')[0].firstChild.nodeValue;
