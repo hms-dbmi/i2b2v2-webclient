@@ -8,7 +8,7 @@
  */
 
 i2b2.CRC.ctrlr.QueryMgr = {};
-
+// ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.tick = function() {
     // this function is the main status update routine that occurs during running of a query
     const secPollInterval = 1;
@@ -145,6 +145,7 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
     i2b2.CRC.ajax.runQueryInstance_fromQueryDefinition("CRC:QueryManager", params, i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster);
 };
 
+
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster) {
     let cb = new i2b2_scopedCallback();
@@ -160,6 +161,7 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster) {
     i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryMgr:loadQuery", {qm_key_value: idQueryMaster}, cb);
 };
 
+
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     // Aborts a running query
@@ -170,6 +172,7 @@ i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     // update the screen to show status as cancelled
     $("#infoQueryStatusText .statusButtons").removeClass("running").addClass("cancelled");
 };
+
 
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.clearQuery = function() {
@@ -187,7 +190,7 @@ i2b2.CRC.ctrlr.QueryMgr.clearQuery = function() {
 };
 
 
-// 1st callback in query execution (submit query XML and get query master ID
+// 1st callback in query execution (submit query XML and get query master ID)
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster = new i2b2_scopedCallback();
 i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.scope = this;
@@ -206,8 +209,17 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
 
     // get the query instance id
     let qiID = false;
+
+    // try loading the query instance elements from the server results
     let qiList = results.refXML.getElementsByTagName('query_instance');
+
+    // if the query instance info is not in the returned results then this callback was called by loading a previously
+    // run query. Since the messages from the i2b2 server differ between a 1st time run and loading a previously run
+    // query we use a hack in which the query_instance list from the 1st call to the server is loaded into the "this"
+    // scope variable.  If this is the case then load the query_instance data from there.
     if (qiList.length === 0) qiList = this.refXML.getElementsByTagName('query_instance');
+
+    // at this point we should have a list of query instances ready for processing
     if (qiList.length > 0) {
         qiID = i2b2.h.XPath(qiList[0], 'descendant-or-self::query_instance_id')[0].firstChild.nodeValue;
         i2b2.CRC.model.runner.idQueryMaster = i2b2.h.XPath(qiList[0], 'descendant-or-self::query_master_id')[0].firstChild.nodeValue;
@@ -244,38 +256,6 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
             i2b2.CRC.model.runner.isPolling = false;
         }
     }
-// TODO: This should fire after all results returned?
-        // load the query results
-//        i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryStatusGraph", i2b2.CRC.view.QueryMgr.containerDiv)[0]);
-
-        // // process the results to get the query resultInstance
-        // // ==========================================================
-        // let callbackQueryResultInstance = new i2b2_scopedCallback();
-        // callbackQueryResultInstance.scope = this;
-        // callbackQueryResultInstance.callback = function(results) {
-        //     // see if error
-        //     if (results.error) {
-        //         i2b2.CRC.model.runner.status = "ERROR RETRIEVING RESULTS";
-        //         // i2b2.CRC.view.QR.render();
-        //         alert(results.errorMsg);
-        //         return;
-        //     }
-        //
-        //     // get the QRS information
-        //     let qrsList = results.refXML.getElementsByTagName('query_result_instance');
-        //     let qrsID = false;
-        //     if (qrsList.length > 0) {
-        //         qrsID = i2b2.h.XPath(qrsList[0], 'descendant-or-self::result_instance_id')[0].firstChild.nodeValue;
-        //         i2b2.CRC.model.runner.idQueryResultSet = qrsID;
-        //         i2b2.CRC.model.runner.patientCount = i2b2.h.getXNodeVal(qrsList[0], 'set_size');
-        //     }
-        //     // TODO: rerender the results
-        //     //i2b2.CRC.view.QR.render();
-        // };
-        //
-        // // run the second request to get the result set
-        // i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryRunner", {qi_key_value: qiID}, callbackQueryResultInstance);
-
 };
 
 
@@ -574,8 +554,8 @@ i2b2.CRC.ctrlr.QueryMgr._processModel = function() {
 };
 
 
-
-
+// set up the model used by the QueryManager subsystem
+// ================================================================================================== //
 i2b2.CRC.model.runner = {
     name: "",
     definition: null,
