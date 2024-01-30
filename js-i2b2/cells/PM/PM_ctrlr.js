@@ -657,15 +657,6 @@ i2b2.PM.changePassword = function (curpass, newpass, completeCallback) {
         let scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = this;
         scopedCallback.callback = function (results) {
-            // THIS function is used to process the AJAX results of the getChild call
-            //		results data object contains the following attributes:
-            //			refXML: xmlDomObject <--- for data processing
-            //			msgRequest: xml (string)
-            //			msgResponse: xml (string)
-            //			error: boolean
-            //			errorStatus: string [only with error=true]
-            //			errorMsg: string [only with error=true]
-
             // check for errors
             if (results.error) {
 
@@ -704,6 +695,7 @@ i2b2.PM.changePassword = function (curpass, newpass, completeCallback) {
                         });
                     }
                 }
+
                 console.error("Bad Results from Cell Communicator: ", results);
                 return false;
             }
