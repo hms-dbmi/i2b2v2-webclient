@@ -46,6 +46,11 @@ i2b2.CRC.view.BASIC = {
 						$("#labDropDown").text($(this).text());
 					});
 
+					/*$("body #labValuesModal button.lab-cancel").click(function () {
+						//I2B2UI-639-Edit Lab value icon not displayed if user clicks cancel on initial display of Lab Values modal
+						i2b2.CRC.ctrlr.labValues.redrawConcept(sdxConcept, groupIdx, eventIdx);
+					});*/
+
 					// Save button handler
 					$("body #labValuesModal button.lab-save").click(function () {
 						// check for bad characters in number inputs

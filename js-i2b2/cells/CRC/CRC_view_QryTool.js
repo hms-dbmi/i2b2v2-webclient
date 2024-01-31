@@ -417,8 +417,7 @@ i2b2.CRC.view.QT.termActionModifier = function(evt) {
     let sdx = i2b2.CRC.model.query.groups[queryGroupIdx].events[eventIdx].concepts[conceptIdx];
 
     const valueMetaDataArr = i2b2.h.XPath(sdx.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
-    let extractedLabModel = i2b2.CRC.ctrlr.labValues.parseLabValues(valueMetaDataArr[0]);
-    i2b2.CRC.view.QT.labValue.showLabValues(sdx, extractedLabModel, queryGroupIdx, eventIdx);
+    i2b2.CRC.view.QT.labValue.showLabValues(sdx, valueMetaDataArr[0], queryGroupIdx, eventIdx);
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.termActionTree = function(evt) {
@@ -963,8 +962,7 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
 i2b2.CRC.view.QT.showModifierValues = function(sdxConcept, groupIdx, eventIdx){
     const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
     if (valueMetaDataArr.length > 0) {
-        let extractedLabModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
-        i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, extractedLabModel, groupIdx, eventIdx);
+        i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, valueMetaDataArr[0], groupIdx, eventIdx);
     }
 }
 // ================================================================================================== //
@@ -1438,6 +1436,8 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
 };
 // ==================================================================================================
 i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, valueMetadataXml, groupIdx, eventIdx) {
+    i2b2.CRC.ctrlr.labValues.redrawConcept(sdxConcept, groupIdx, eventIdx);
+
     //Determine the value type
     try {
         let GeneralValueType = i2b2.CRC.ctrlr.labValues.extractDataType(sdxConcept, valueMetadataXml);
