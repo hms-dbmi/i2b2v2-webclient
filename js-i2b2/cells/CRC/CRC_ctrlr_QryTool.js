@@ -476,60 +476,60 @@ function QueryToolController() {
     {
         lvd = lvd[0];
         let labValues = {
-            valueType: null,
-            valueOperator: null,
-            value: null,
-            flagValue: null,
-            numericValueRangeLow: null,
-            numericValueRangeHigh: null,
-            unitValue: null
+            ValueType: null,
+            ValueOperator: null,
+            Value: null,
+            ValueFlag: null,
+            ValueLow: null,
+            ValueHigh: null,
+            ValueUnit: null
         };
 
         let valueConstraint = i2b2.h.getXNodeVal(lvd, "value_constraint");
-        labValues.valueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
+        labValues.ValueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
         let rawValueType = i2b2.h.getXNodeVal(lvd, "value_type");
         switch (rawValueType) {
             case "NUMBER":
                 if (valueConstraint.indexOf(' and ') !== -1) {
                     // extract high and low labValues
                     valueConstraint = valueConstraint.split(' and ');
-                    labValues.numericValueRangeLow = valueConstraint[0];
-                    labValues.numericValueRangeHigh = valueConstraint[1];
+                    labValues.ValueLow = valueConstraint[0];
+                    labValues.ValueHigh = valueConstraint[1];
                 } else {
-                    labValues.value = valueConstraint;
+                    labValues.Value = valueConstraint;
                 }
-                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER;
-                labValues.unitValue = i2b2.h.getXNodeVal(lvd, "value_unit_of_measure");
+                labValues.ValueType= i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER;
+                labValues.ValueUnit = i2b2.h.getXNodeVal(lvd, "value_unit_of_measure");
                 break;
             case "STRING":
-                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT;
-                labValues.value = valueConstraint;
+                labValues.ValueType= i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT;
+                labValues.Value = valueConstraint;
                 labValues.isString = true;
                 break;
             case "LARGETEXT":
-                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT;
-                labValues.value = valueConstraint;
+                labValues.ValueType= i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.LARGETEXT;
+                labValues.Value = valueConstraint;
                 labValues.isString = true;
                 break;
             case "TEXT":
                 // This is an ENUM
-                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT;
+                labValues.ValueType= i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT;
                 try {
-                    labValues.value = eval("(Array" + valueConstraint + ")");
+                    labValues.Value = eval("(Array" + valueConstraint + ")");
                     labValues.isEnum = true;
                 } catch (e) {
                     //This is a string
-                    labValues.valueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
-                    labValues.value = valueConstraint;
-                    labValues.valueType = i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT; // tdw9: this line is missing for modifiers in current code. Does it make a different to have it here? Also, "TEXT" is changed from "STRING" to make sure TEXT works in modifiers
+                    labValues.ValueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
+                    labValues.Value = valueConstraint;
+                    labValues.ValueType = i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT; // tdw9: this line is missing for modifiers in current code. Does it make a different to have it here? Also, "TEXT" is changed from "STRING" to make sure TEXT works in modifiers
                 }
                 break;
             case "FLAG":
-                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG;
-                labValues.flagValue = valueConstraint;
+                labValues.ValueType= i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.FLAG;
+                labValues.ValueFlag = valueConstraint;
                 break;
             default:
-                labValues.value = valueConstraint;
+                labValues.Value = valueConstraint;
         }
         return labValues;
     };
@@ -628,21 +628,21 @@ function QueryToolController() {
                     }
 
                     if (item.LabValues || item.ModValues) {
-                        tempItem.valueType = item.LabValues.valueType;
-                        tempItem.valueOperator = item.LabValues.valueOperator;
-                        tempItem.unitValue= item.LabValues.unitValue;
+                        tempItem.ValueType = item.LabValues.ValueType;
+                        tempItem.ValueOperator = item.LabValues.ValueOperator;
+                        tempItem.ValueUnit= item.LabValues.ValueUnit;
 
-                        if (item.LabValues.numericValueRangeLow) {
-                            tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
-                        } else if (tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
-                            tempItem.value = item.LabValues.flagValue;
+                        if (item.LabValues.ValueLow) {
+                            tempItem.Value = item.LabValues.ValueLow + " and " + item.LabValues.ValueHigh;
+                        } else if (tempItem.valueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.FLAG){
+                            tempItem.Value = item.LabValues.ValueFlag;
                         } else {
-                            if(Array.isArray(item.LabValues.value)){
-                                item.LabValues.value.forEach(element => i2b2.h.Escape(element));
-                                tempItem.value = item.LabValues.value;
+                            if(Array.isArray(item.LabValues.Value)){
+                                item.LabValues.Value.forEach(element => i2b2.h.Escape(element));
+                                tempItem.Value = item.LabValues.Value;
                             }
                             else{
-                                tempItem.value = i2b2.h.Escape(item.LabValues.value);
+                                tempItem.Value = i2b2.h.Escape(item.LabValues.Value);
                             }
                         }
                         tempItem.isString = item.LabValues.isString;
