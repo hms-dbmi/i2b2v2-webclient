@@ -405,7 +405,7 @@ i2b2.CRC.ctrlr.labValues.redrawConcept = function(sdx, groupIdx, eventIdx) {
         let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
         const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
         i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
-        i2b2.CRC.view.QS.clearStatus();
+        i2b2.CRC.view.QueryMgr.clearStatus();
     }
 };
 

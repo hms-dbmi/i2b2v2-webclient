@@ -31,6 +31,7 @@
       <div class="item-container">
         <div class="item-title"><img src="{{this.moreInfo.renderData.iconImg}}"/> {{{this.moreInfo.renderData.title}}}</div>
         <div class="item-discript">{{this.moreInfo.renderData.moreDescriptMinor}}</div>
+        <div>{{{dataTypeReportHtml this.moreInfo}}}</div>
         {{#if this.timing}}
         <div class="item-timing">
           {{#ifCond this.timing "==" "ANY"}}

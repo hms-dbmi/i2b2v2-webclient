@@ -420,22 +420,22 @@ i2b2.CRC.ctrlr.QueryMgr._processModel = function() {
                     }
                 }
 
-                if (item.LabValues || item.ModValues) {
-                    tempItem.valueType = item.LabValues.valueType;
-                    tempItem.valueOperator = item.LabValues.valueOperator;
-                    tempItem.unitValue= item.LabValues.unitValue;
+                if (item.LabValues) {
+                    tempItem.ValueType = item.LabValues.ValueType;
+                    tempItem.ValueOperator = item.LabValues.ValueOperator;
+                    tempItem.ValueUnit= item.LabValues.ValueUnit;
 
-                    if (item.LabValues.numericValueRangeLow) {
-                        tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
-                    } else if (tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
-                        tempItem.value = item.LabValues.flagValue;
+                    if (item.LabValues.ValueLow) {
+                        tempItem.Value = item.LabValues.ValueLow + " and " + item.LabValues.ValueHigh;
+                    } else if (tempItem.ValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.FLAG){
+                        tempItem.Value = item.LabValues.ValueFlag;
                     } else {
-                        if(Array.isArray(item.LabValues.value)){
-                            item.LabValues.value.forEach(element => i2b2.h.Escape(element));
-                            tempItem.value = item.LabValues.value;
+                        if(Array.isArray(item.LabValues.Value)){
+                            item.LabValues.Value.forEach(element => i2b2.h.Escape(element));
+                            tempItem.Value = item.LabValues.Value;
                         }
                         else{
-                            tempItem.value = i2b2.h.Escape(item.LabValues.value);
+                            tempItem.Value = i2b2.h.Escape(item.LabValues.Value);
                         }
                     }
                     tempItem.isString = item.LabValues.isString;
