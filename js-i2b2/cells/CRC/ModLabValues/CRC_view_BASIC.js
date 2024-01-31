@@ -131,7 +131,6 @@ i2b2.CRC.view.BASIC = {
 						sdxConcept.LabValues = newLabValues;
 
 						i2b2.CRC.ctrlr.labValues.updateDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
-						//i2b2.CRC.ctrlr.labValues.redrawConcept(sdxConcept, groupIdx, eventIdx);
 					});
 
 					// UI event handler
