@@ -38,7 +38,8 @@
     "QueryGroups.css",
     "QueryRunner.css",
     "QueryStatus.css",
-    "sdx_CRC_types.css"
+    "sdx_CRC_types.css",
+    "ModLabValues/CRC_view_BASIC.css"
   ],
   "config": {
     "name": "Data Repository",
