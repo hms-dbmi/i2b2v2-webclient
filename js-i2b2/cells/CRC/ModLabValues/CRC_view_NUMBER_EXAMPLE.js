@@ -16,10 +16,6 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 	parseMetadataXml: function (valueMetadataXml) {
 		let extractedModel = {
 			name: "",
-			valueValidate: {
-				onlyPos: true,
-				onlyInt: true,
-			},
 			valueType: "NUMBER_EXAMPLE",
 			valueUnitsCurrent: 0,
 			valueUnits: {},
@@ -40,8 +36,6 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 		}
 		catch(e) {
 			extractedModel.dataType = false;
-			extractedModel.valueValidate.onlyPos = false;
-			extractedModel.valueValidate.onlyInt = false;
 		}
 
 		extractedModel.name = "Choose value of "+i2b2.h.getXNodeVal(valueMetadataXml, 'TestName')+" (Test:"+i2b2.h.getXNodeVal(valueMetadataXml, 'TestID')+")";
@@ -108,7 +102,7 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 		return "<div style='color: green'>Add custom basic report text for NUMBER EXAMPLE: " + sdxConcept.renderData.title + "</div>";
 	},
 	// ================================================================================================== //
-	showDialog: function (sdxConcept, valueMetadata, queryPanelController, isModifier, groupIdx, eventIdx) {
+	showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx) {
 
 		if (valueMetadata !== undefined) {
 
@@ -153,6 +147,7 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 								validData = false;
 							}
 
+							//input must be a positive integer
 							if (String(parseInt(val)) !== val) validData = false;
 							if (val < 0) validData = false;
 
@@ -202,6 +197,7 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 
 					sdxConcept.LabValues = newLabValues;
 
+					//Update the renderData object and redraw the concept in the query panel UI
 					i2b2.CRC.view.NUMBER_EXAMPLE.updateDisplayValue(sdxConcept, valueMetadata, groupIdx, eventIdx);
 					queryPanelController.redrawConcept(sdxConcept, groupIdx, eventIdx);
 				});
@@ -340,8 +336,8 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 			});
 		}
 	},
+	// ================================================================================================== //
 	updateDisplayValue: function (sdxConcept, valueMetadata) {
-// update the concept title if this is a modifier
 		let conceptDisplayText = "";
 		if (sdxConcept.LabValues !== undefined) {
 			if (sdxConcept.LabValues.ValueLow && sdxConcept.LabValues?.ValueHigh) {

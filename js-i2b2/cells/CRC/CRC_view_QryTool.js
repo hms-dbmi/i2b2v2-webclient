@@ -1457,7 +1457,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, valueMetadataXml,
             && typeof i2b2.CRC.view[GeneralValueType].parseMetadataXml === 'function'
             && typeof i2b2.CRC.view[GeneralValueType].showDialog === 'function') {
             let valueMetadataModel = i2b2.CRC.view[GeneralValueType].parseMetadataXml(valueMetadataXml);
-            i2b2.CRC.view[GeneralValueType].showDialog(sdxConcept, valueMetadataModel, i2b2.CRC.ctrlr.labValues, sdxConcept.isModifier, groupIdx, eventIdx);
+            i2b2.CRC.view[GeneralValueType].showDialog(sdxConcept, valueMetadataModel, i2b2.CRC.ctrlr.labValues, groupIdx, eventIdx);
         } else
             alert('An error has occurred while trying to determine the value type.');
     } catch(e) {
