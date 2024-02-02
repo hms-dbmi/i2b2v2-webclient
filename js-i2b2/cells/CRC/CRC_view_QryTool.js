@@ -941,8 +941,19 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
             }else{
                 const valueMetaDataArr = i2b2.h.XPath(sdx.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
                 if (valueMetaDataArr.length > 0) {
-                    let extractedLabModel = i2b2.CRC.ctrlr.labValues.parseLabValues(valueMetaDataArr[0]);
-                    i2b2.CRC.ctrlr.labValues.updateDisplayValue(sdx, extractedLabModel, groupIdx, eventIdx);
+                    try {
+                        let GeneralValueType = i2b2.CRC.ctrlr.labValues.extractDataType(sdx, valueMetaDataArr[0]);
+
+                        if (GeneralValueType && i2b2.CRC.view[GeneralValueType]
+                            && typeof i2b2.CRC.view[GeneralValueType].parseMetadataXml === 'function'
+                            && typeof i2b2.CRC.view[GeneralValueType].updateDisplayValue === 'function') {
+                            let valueMetadataModel = i2b2.CRC.view[GeneralValueType].parseMetadataXml(valueMetaDataArr[0]);
+                            i2b2.CRC.view[GeneralValueType].updateDisplayValue(sdx, valueMetadataModel);
+                        } else
+                            alert('An error has occurred while trying to determine the value type.');
+                    } catch(e) {
+                        alert('An error has occurred while trying to display the concept.');
+                    }
                 }
             }
         }
