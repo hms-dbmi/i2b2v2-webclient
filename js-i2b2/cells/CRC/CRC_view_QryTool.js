@@ -1466,15 +1466,6 @@ i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, e
     });
 };
 // ================================================================================================== //
-
-i2b2.CRC.view.QT.redrawConcept = function(sdx, groupIdx, eventIdx) {
-    if (eventIdx !== undefined && groupIdx !== undefined) {
-        let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
-        const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
-        i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
-    }
-};
-// ================================================================================================== //
 i2b2.CRC.view.QT.clearAll = function(){
     // only run if the query has entries
     if (i2b2.CRC.model.query.groups.length === 0) return;
