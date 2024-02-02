@@ -1442,7 +1442,7 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, valueMetadataXml,
     try {
         let GeneralValueType = i2b2.CRC.ctrlr.labValues.extractDataType(sdxConcept, valueMetadataXml);
 
-        if (GeneralValueType && i2b2.CRC.view[GeneralValueType]) {
+        if (GeneralValueType && i2b2.CRC.view[GeneralValueType] && typeof i2b2.CRC.view[GeneralValueType].showDialog === 'function') {
             i2b2.CRC.view[GeneralValueType].showDialog(sdxConcept, valueMetadataXml, i2b2.CRC.ctrlr.labValues, sdxConcept.isModifier, groupIdx, eventIdx);
         } else
             alert('An error has occurred while trying to determine the value type.');
