@@ -1,0 +1,82 @@
+<div class="modal fade NumberExample">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<span id="labHeader" class="modal-title"></span>
+				<button type="button" class="btn-close lab-cancel" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+
+			<!-- Modal body -->
+			<div class="modal-body">
+				<form action="javascript:void(0)">
+					<div class="labMain">
+						<div class="labHelpText"></div>
+						<div class="labTypeFlagAndValues">
+							<div class="labTypeGroup">
+								<div class="form-check labAnyValueTypeMain">
+									<input class="form-check-input" name="labType" id="labAnyValueType" value="NO_VALUE" type="radio" checked="checked" />
+									<label class="custom-control-label" for="labAnyValueType">
+										No value
+									</label>
+								</div>
+								<div class="form-check labByValueTypeMain">
+									<input class="form-check-input labAnyValueType" name="labType" id="labByValueType" value="BY_VALUE" type="radio" />
+									<label class="form-check-label labAnyValueType" for="labByValueType">
+										By value
+									</label>
+								</div>
+							</div>
+
+							<div class="labOptions">
+								<div id="labValue" class="labValueSection hidden">
+									<div id="labNumericValueOperatorMain" class="hidden">
+										<label for="labNumericValueOperator"> Please select operator:<br /> </label>
+										<select id="labNumericValueOperator" class="labNumericValueOperator form-select form-select-sm">
+											<option value="LT">LESS THAN (&lt;)</option>
+											<option value="LE">LESS THAN OR EQUAL TO (&lt;=)</option>
+											<option value="EQ">EQUAL (=)</option>
+											<option value="BETWEEN">BETWEEN</option>
+											<option value="GT">GREATER THAN (&gt;)</option>
+											<option value="GE">GREATER THAN OR EQUAL (&gt;=)</option>
+										</select>
+									</div>
+
+									<p id="labNumericValueMain" class="hidden">
+										<label for="labNumericValue"> Please enter a <span class="dateTypeDesc"></span> value:<br /> </label>
+										<input id="labNumericValue" class="form-control form-control-sm labNumericValue" />
+									</p>
+
+									<p id="labNumericValueRangeMain" class="hidden">
+										<label for="labNumericValueRangeLow"> Please enter <span class="dateTypeDesc"></span> values:<br /> </label>
+										<input id="labNumericValueRangeLow" class="form-control form-control-sm labNumericValueRangeLow" />
+										&nbsp;-&nbsp;
+										<input id="labNumericValueRangeHigh" class="form-control form-control-sm labNumericValueRangeHigh" />
+									</p>
+
+								</div>
+							</div>
+						</div>
+
+
+						<!-- Units display section -->
+						<div id="labUnitsMain" class="labGraphUnitSection hidden">
+							<div class="input-group input-group-sm mb-3">
+								<label class="input-group-text">Units =</label>
+								<select id="labUnits" class="form-select form-select-sm"></select>
+							</div>
+							<span id="labUnitExcluded" class="hidden labUnitExcluded">A value cannot be specified for these units.</span>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<!-- Modal footer -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary lab-save">Ok</button>
+				<button type="button" class="btn btn-secondary lab-cancel" data-bs-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
