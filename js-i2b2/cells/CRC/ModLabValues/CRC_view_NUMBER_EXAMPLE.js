@@ -372,7 +372,7 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 		}
 	}
 };
-
+// ================================================================================================== //
 i2b2.CRC.view.NUMBER_EXAMPLE_SUBTYPE = {
 	getGeneralDataType: function () {
 		return "NUMBER_EXAMPLE";
