@@ -8,10 +8,6 @@
  */
 
 i2b2.CRC.view.NUMBER_EXAMPLE = {
-
-	getGeneralDataType: function () {
-		return "NUMBER_EXAMPLE";
-	},
 	// ================================================================================================== //
 	parseMetadataXml: function (valueMetadataXml) {
 		let extractedModel = {
@@ -28,6 +24,10 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 			switch (dataType) {
 				case "NUMBER_EXAMPLE":
 					extractedModel.dataType = "NUMBER_EXAMPLE";
+					extractedModel.valueType = i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER;
+					break;
+				case "NUMBER_EXAMPLE_SUBTYPE":
+					extractedModel.dataType = "NUMBER_EXAMPLE_SUBTYPE";
 					extractedModel.valueType = i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER;
 					break;
 				default:
@@ -230,6 +230,7 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 				}
 
 				switch (valueMetadata.dataType) {
+					case "NUMBER_EXAMPLE_SUBTYPE":
 					case "NUMBER_EXAMPLE":
 						$("#labNumericValueOperatorMain").removeClass("hidden");
 						$("#labNumericValueMain").removeClass("hidden");
@@ -369,6 +370,12 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 			// lab value
 			sdxConcept.renderData.title = sdxConcept.origData.name + conceptDisplayText;
 		}
+	}
+};
+
+i2b2.CRC.view.NUMBER_EXAMPLE_SUBTYPE = {
+	getGeneralDataType: function () {
+		return "NUMBER_EXAMPLE";
 	}
 };
 
