@@ -100,14 +100,13 @@ i2b2.CRC.ctrlr.labValues.ValueTypes.type = {
     "GENOTYPE_RSID_INDEL" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.GENOTYPE,
     "GENOTYPE_RSID_SNP" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.GENOTYPE,
     "Enum" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT,
-    "DEFAULT" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER,
 };
 // ==================================================================================================
 i2b2.CRC.ctrlr.labValues.ValueTypes.getValueType = function(dataType)
 {
     let valueType = i2b2.CRC.ctrlr.labValues.ValueTypes.type[dataType];
     if(!i2b2.CRC.ctrlr.labValues.ValueTypes.type.hasOwnProperty(dataType)) {
-        valueType = i2b2.CRC.ctrlr.labValues.ValueTypes.type["DEFAULT"];
+        valueType = dataType;
     }
 
     return valueType;
