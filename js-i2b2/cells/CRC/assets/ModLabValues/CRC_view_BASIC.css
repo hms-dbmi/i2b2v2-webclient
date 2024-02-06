@@ -2,7 +2,6 @@
     display: none;
 }
 
-/* === Lab Values Modal === */
 #labHelpText{
     margin-bottom: 20px;
     text-align: center;
@@ -14,12 +13,12 @@
     overflow: auto;
 }
 
-.labTypeGroup {
+.BasicValues .labTypeGroup {
     width: 160px;
     margin-right: 15px;
 }
 
-.labTypeFlagAndValues {
+.BasicValues .labTypeFlagAndValues {
     display: flex;
     min-height: 100px;
 }
@@ -46,12 +45,12 @@
     margin-bottom: 20px;
 }
 
-.labMain label {
+.BasicValues .labMain label {
     display: block;
     margin-bottom: 8px;
 }
 
-.labMain .input-group-text {
+.BasicValues .labMain .input-group-text {
     margin-bottom: 0;
 }
 
@@ -69,14 +68,14 @@
     min-width: 590px;
 }
 
-.labBarMain {
+.BasicValues .labBarMain {
     margin: 10px;
     text-align: center;
     border: 1px solid #000080;
     height: auto;
 }
 
-.labBar {
+.BasicValues .labBar {
     height: 55px;
     width: 520px;
     display: flex;
@@ -93,15 +92,15 @@
     font-weight: bold;
 }
 
-.barLink {
+.BasicValues .barLink {
     height: 15px;
     cursor: pointer;
 }
 
-.barLink:hover {
+.BasicValues .barLink:hover {
     opacity: 0.7;
 }
 
-.barLink:active {
+.BasicValues .barLink:active {
     border: 1px solid #000080;
 }
