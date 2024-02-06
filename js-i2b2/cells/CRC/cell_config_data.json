@@ -19,7 +19,8 @@
     "CRC_ctrlr_LabValues.js",
     "CRC_view_graphs.js",
     "CRC_view_search.js",
-    "ModLabValues/CRC_view_BASIC.js"
+    "ModLabValues/CRC_view_BASIC.js",
+    "ModLabValues/CRC_view_NUMBER_EXAMPLE.js"
   ],
   "preload": [
     "assets/sdx_CRC_PDO.gif",
@@ -39,7 +40,8 @@
     "QueryRunner.css",
     "QueryStatus.css",
     "sdx_CRC_types.css",
-    "ModLabValues/CRC_view_BASIC.css"
+    "ModLabValues/CRC_view_BASIC.css",
+    "ModLabValues/CRC_view_NUMBER_EXAMPLE.css"
   ],
   "config": {
     "name": "Data Repository",

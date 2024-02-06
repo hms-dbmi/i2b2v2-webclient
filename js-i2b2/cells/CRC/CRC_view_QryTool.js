@@ -941,8 +941,19 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
             }else{
                 const valueMetaDataArr = i2b2.h.XPath(sdx.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
                 if (valueMetaDataArr.length > 0) {
-                    let extractedLabModel = i2b2.CRC.ctrlr.labValues.parseLabValues(valueMetaDataArr[0]);
-                    i2b2.CRC.ctrlr.labValues.updateDisplayValue(sdx, extractedLabModel, groupIdx, eventIdx);
+                    try {
+                        let GeneralValueType = i2b2.CRC.ctrlr.labValues.extractDataType(sdx, valueMetaDataArr[0]);
+
+                        if (GeneralValueType && i2b2.CRC.view[GeneralValueType]
+                            && typeof i2b2.CRC.view[GeneralValueType].parseMetadataXml === 'function'
+                            && typeof i2b2.CRC.view[GeneralValueType].updateDisplayValue === 'function') {
+                            let valueMetadataModel = i2b2.CRC.view[GeneralValueType].parseMetadataXml(valueMetaDataArr[0]);
+                            i2b2.CRC.view[GeneralValueType].updateDisplayValue(sdx, valueMetadataModel);
+                        } else
+                            alert('An error has occurred while trying to determine the value type.');
+                    } catch(e) {
+                        alert('An error has occurred while trying to display the concept.');
+                    }
                 }
             }
         }
@@ -1442,8 +1453,11 @@ i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, valueMetadataXml,
     try {
         let GeneralValueType = i2b2.CRC.ctrlr.labValues.extractDataType(sdxConcept, valueMetadataXml);
 
-        if (GeneralValueType && i2b2.CRC.view[GeneralValueType] && typeof i2b2.CRC.view[GeneralValueType].showDialog === 'function') {
-            i2b2.CRC.view[GeneralValueType].showDialog(sdxConcept, valueMetadataXml, i2b2.CRC.ctrlr.labValues, sdxConcept.isModifier, groupIdx, eventIdx);
+        if (GeneralValueType && i2b2.CRC.view[GeneralValueType]
+            && typeof i2b2.CRC.view[GeneralValueType].parseMetadataXml === 'function'
+            && typeof i2b2.CRC.view[GeneralValueType].showDialog === 'function') {
+            let valueMetadataModel = i2b2.CRC.view[GeneralValueType].parseMetadataXml(valueMetadataXml);
+            i2b2.CRC.view[GeneralValueType].showDialog(sdxConcept, valueMetadataModel, i2b2.CRC.ctrlr.labValues, groupIdx, eventIdx);
         } else
             alert('An error has occurred while trying to determine the value type.');
     } catch(e) {
@@ -1459,8 +1473,24 @@ i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, e
             i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, valueMetadataXml, groupIdx, eventIdx);
         }else{
             if(valueMetadataXml !== undefined) {
-                let extractedLabModel = i2b2.CRC.ctrlr.labValues.parseLabValues(valueMetadataXml);
-                i2b2.CRC.ctrlr.labValues.updateDisplayValue(sdxConcept, extractedLabModel, groupIdx, eventIdx);
+                //let extractedLabModel = i2b2.CRC.ctrlr.labValues.parseLabValues(valueMetadataXml);
+                //i2b2.CRC.ctrlr.labValues.updateDisplayValue(sdxConcept, extractedLabModel, groupIdx, eventIdx);
+
+                //Determine the value type
+                try {
+                    let GeneralValueType = i2b2.CRC.ctrlr.labValues.extractDataType(sdxConcept, valueMetadataXml);
+
+                    if (GeneralValueType && i2b2.CRC.view[GeneralValueType]
+                        && typeof i2b2.CRC.view[GeneralValueType].parseMetadataXml === 'function'
+                        && typeof i2b2.CRC.view[GeneralValueType].updateDisplayValue === 'function') {
+                        let valueMetadataModel = i2b2.CRC.view[GeneralValueType].parseMetadataXml(valueMetadataXml);
+                        i2b2.CRC.view[GeneralValueType].updateDisplayValue(sdxConcept, valueMetadataModel);
+                        i2b2.CRC.ctrlr.labValues.redrawConcept(sdxConcept, groupIdx, eventIdx);
+                    } else
+                        alert('An error has occurred while trying to determine the value type.');
+                } catch(e) {
+                    alert('An error has occurred while trying to display the concept.');
+                }
             }
         }
     });
