@@ -38,7 +38,7 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 			extractedModel.dataType = false;
 		}
 
-		extractedModel.name = "Choose value of "+i2b2.h.getXNodeVal(valueMetadataXml, 'TestName')+" (Test:"+i2b2.h.getXNodeVal(valueMetadataXml, 'TestID')+")";
+		extractedModel.name = "Select value of "+i2b2.h.getXNodeVal(valueMetadataXml, 'TestName')+" (Test: "+i2b2.h.getXNodeVal(valueMetadataXml, 'TestID')+")";
 
 		//lab units
 		let tProcessing = {};
