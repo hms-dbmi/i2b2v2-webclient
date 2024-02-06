@@ -9,13 +9,6 @@
 
 
 i2b2.CRC.ctrlr.labValues = {
-    VALUE_TYPES: {
-        TEXT: "TEXT",
-        LARGETEXT: "LARGETEXT",
-        NUMBER: "NUMBER",
-        FLAG: "FLAG",
-        MODIFIER: "MODIFIER"
-    },
 // ================================================================================================== //
     loadData: function(sdxConcept, callBack) {
         let labResponseCallback = function(response) {
@@ -39,11 +32,9 @@ i2b2.CRC.ctrlr.labValues = {
             if (c.length > 0) sdxConcept.origData.xmlOrig = c[0].outerHTML;
 
             const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
-            let extractedModel = {};
             if (valueMetaDataArr.length > 0) {
                 sdxConcept.isLab = true;
-                extractedModel = i2b2.CRC.ctrlr.labValues.extractLabValues(valueMetaDataArr[0]);
-                callBack(extractedModel);
+                callBack(valueMetaDataArr[0]);
             }
         };
 
@@ -51,7 +42,7 @@ i2b2.CRC.ctrlr.labValues = {
             ont_max_records: 'max="1"', ont_synonym_records: true, ont_hidden_records: true}, labResponseCallback );
     },
 // ================================================================================================== //
-    extractLabValues: function(valueMetaDataXml) {
+    parseLabValues: function(valueMetaDataXml) {
         let extractedModel = {
             name: "",
             flagType: "NA",
@@ -97,35 +88,35 @@ i2b2.CRC.ctrlr.labValues = {
             switch (dataType) {
                 case "PosFloat":
                     extractedModel.dataType = "POSFLOAT";
-                    extractedModel.valueType = this.VALUE_TYPES.NUMBER;
+                    extractedModel.valueType = this.ValueTypes.GENERAL_VALUE.NUMBER;
                     extractedModel.valueValidate.onlyPos = true;
                     extractedModel.valueValidate.onlyInt = false;
                     extractedModel.valueValidate.maxString = false;
                     break;
                 case "PosInteger":
                     extractedModel.dataType = "POSINT";
-                    extractedModel.valueType = this.VALUE_TYPES.NUMBER;
+                    extractedModel.valueType = this.ValueTypes.GENERAL_VALUE.NUMBER;
                     extractedModel.valueValidate.onlyPos = true;
                     extractedModel.valueValidate.onlyInt = true;
                     extractedModel.valueValidate.maxString = false;
                     break;
                 case "Float":
                     extractedModel.dataType = "FLOAT";
-                    extractedModel.valueType = this.VALUE_TYPES.NUMBER;
+                    extractedModel.valueType = this.ValueTypes.GENERAL_VALUE.NUMBER;
                     extractedModel.valueValidate.onlyPos = false;
                     extractedModel.valueValidate.onlyInt = false;
                     extractedModel.valueValidate.maxString = false;
                     break;
                 case "Integer":
                     extractedModel.dataType = "INT";
-                    extractedModel.valueType = this.VALUE_TYPES.NUMBER;
+                    extractedModel.valueType = this.ValueTypes.GENERAL_VALUE.NUMBER;
                     extractedModel.valueValidate.onlyPos = true;
                     extractedModel.valueValidate.onlyInt = true;
                     extractedModel.valueValidate.maxString = false;
                     break;
                 case "String":
                     extractedModel.dataType = "STR";
-                    extractedModel.valueType = this.VALUE_TYPES.TEXT;
+                    extractedModel.valueType = this.ValueTypes.GENERAL_VALUE.TEXT;
                     extractedModel.valueValidate.onlyPos = false;
                     extractedModel.valueValidate.onlyInt = false;
 
@@ -145,7 +136,7 @@ i2b2.CRC.ctrlr.labValues = {
                     break;
                 case "largestring":
                     extractedModel.dataType = "LRGSTR";
-                    extractedModel.valueType = this.VALUE_TYPES.LARGETEXT;
+                    extractedModel.valueType = this.ValueTypes.GENERAL_VALUE.LARGETEXT;
                     extractedModel.valueValidate.onlyPos = false;
                     extractedModel.valueValidate.onlyInt = false;
                     // extract max string setting
@@ -164,7 +155,7 @@ i2b2.CRC.ctrlr.labValues = {
                     break;
                 case "Enum":
                     extractedModel.dataType = "ENUM";
-                    extractedModel.valueType = this.VALUE_TYPES.TEXT;
+                    extractedModel.valueType = this.ValueTypes.GENERAL_VALUE.TEXT;
                     extractedModel.valueValidate.onlyPos = false;
                     extractedModel.valueValidate.onlyInt = false;
                     extractedModel.valueValidate.maxString = false;
@@ -332,6 +323,132 @@ i2b2.CRC.ctrlr.labValues = {
     },
 };
 
+// ==================================================================================================
+i2b2.CRC.ctrlr.labValues.extractDataType = function(sdxConcept, valueMetadataXml){
+
+    let valueType = "NODATATYPE";
+    let dataType = i2b2.h.getXNodeVal(valueMetadataXml, 'DataType');
+    if(dataType) valueType = i2b2.CRC.ctrlr.labValues.ValueTypes.getValueType(dataType);
+
+    let GeneralValueType = valueType;
+    if (GeneralValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER || GeneralValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT
+        || GeneralValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.LARGETEXT) {
+        GeneralValueType = "BASIC";
+    }
+
+    return GeneralValueType;
+};
+
+// ==================================================================================================
+i2b2.CRC.ctrlr.labValues.updateDisplayValue = function(sdxConcept, extractedLabValues, groupIdx, eventIdx){
+    // update the concept title if this is a modifier
+    let modifierInfoText = "";
+    if (sdxConcept.LabValues !== undefined) {
+        if (sdxConcept.LabValues.ValueLow && sdxConcept.LabValues?.ValueHigh) {
+            modifierInfoText = sdxConcept.LabValues.ValueLow + " - " + sdxConcept.LabValues.ValueHigh;
+        } else if (sdxConcept.LabValues.ValueFlag) {
+            modifierInfoText = "= " + sdxConcept.LabValues.ValueFlag;
+            let name = extractedLabValues.flags.filter(x => x.value === sdxConcept.LabValues.ValueFlag).map(x => x.name);
+            if (name.length > 0) modifierInfoText += " (" + name[0] + ")";
+        } else if (sdxConcept.LabValues.isEnum) {
+            let mappedEnumValues = sdxConcept.LabValues.Value.map(x => '"' + extractedLabValues.enumInfo[x] + '"');
+            modifierInfoText = "= (" + mappedEnumValues.join(", ") + ")";
+        } else if (sdxConcept.LabValues.ValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER) {
+            let numericOperatorMapping = {
+                "LT": "<",
+                "LE": "<=",
+                "EQ": "=",
+                "GT": ">",
+                "GE": ">="
+            }
+            modifierInfoText = numericOperatorMapping[sdxConcept.LabValues.ValueOperator] + " " + sdxConcept.LabValues.Value;
+        } else if (sdxConcept.LabValues.ValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT) {
+            let textOperatorMapping = {
+                "LIKE[exact]": "exact",
+                "LIKE[begin]": "starts with",
+                "LIKE[end]": "ends with",
+                "LIKE[contains]": "contains",
+            }
+            modifierInfoText = textOperatorMapping[sdxConcept.LabValues.ValueOperator] + " ";
+            modifierInfoText += '"' + sdxConcept.LabValues.Value + '"';
+        } else if (sdxConcept.LabValues.ValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.LARGETEXT) {
+            modifierInfoText = "contains " + '"' + sdxConcept.LabValues.Value + '"';
+        }
+
+        if (sdxConcept.LabValues.ValueUnit) {
+            modifierInfoText += " " + sdxConcept.LabValues.ValueUnit;
+        }
+    }
+    if (modifierInfoText.length > 0) {
+        modifierInfoText = " " + modifierInfoText;
+    }
+
+    if (sdxConcept.origData.isModifier) {
+        // modifier
+        sdxConcept.renderData.title = sdxConcept.origData.conceptModified.renderData.title
+            + " {" + sdxConcept.origData.name + modifierInfoText + "}";
+    } else {
+        // lab value
+        sdxConcept.renderData.title = sdxConcept.origData.name + modifierInfoText;
+    }
+
+    if (eventIdx !== undefined && groupIdx !== undefined) {
+        let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+        const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+        i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+    }
+};
+// ================================================================================================== //
+
+i2b2.CRC.ctrlr.labValues.redrawConcept = function(sdx, groupIdx, eventIdx) {
+    if (eventIdx !== undefined && groupIdx !== undefined) {
+        let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+        const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+        i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+        i2b2.CRC.view.QueryMgr.clearStatus();
+    }
+};
+
+// ==================================================================================================
+i2b2.CRC.ctrlr.labValues.ValueTypes = {};
+// ==================================================================================================
+i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE = {
+        TEXT: "TEXT",
+        LARGETEXT: "LARGETEXT",
+        NUMBER: "NUMBER",
+        FLAG: "FLAG",
+        GENOTYPE: "GENOTYPE",
+        MODIFIER: "MODIFIER"
+};
+// ==================================================================================================
+/* Start Configuration. Note: be careful to keep trailing commas after each parameter */
+i2b2.CRC.ctrlr.labValues.ValueTypes.type = {
+    "PosFloat" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER,
+    "PosInteger" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER,
+    "Float" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER,
+    "Integer" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER,
+    "String" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT,
+    "largestring" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.LARGETEXT,
+    "GENOTYPE_GENE" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.GENOTYPE,
+    "GENOTYPE_GENE_INDEL" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.GENOTYPE,
+    "GENOTYPE_GENE_SNP" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.GENOTYPE,
+    "GENOTYPE_RSID" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.GENOTYPE,
+    "GENOTYPE_RSID_INDEL" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.GENOTYPE,
+    "GENOTYPE_RSID_SNP" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.GENOTYPE,
+    "Enum" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT,
+    "DEFAULT" : i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER,
+};
+// ==================================================================================================
+i2b2.CRC.ctrlr.labValues.ValueTypes.getValueType = function(dataType)
+{
+    let valueType = i2b2.CRC.ctrlr.labValues.ValueTypes.type[dataType];
+    if(!i2b2.CRC.ctrlr.labValues.ValueTypes.type.hasOwnProperty(dataType)) {
+        valueType = i2b2.CRC.ctrlr.labValues.ValueTypes.type["DEFAULT"];
+    }
+
+    return valueType;
+};
+// ==================================================================================================
 i2b2.CRC.ctrlr.labValues.ExpandedFlags = {};
 i2b2.CRC.ctrlr.labValues.ExpandedFlags.type = {
     /*  A,H,L are included below to show how to set up the expanded lab flags with the default flag values.

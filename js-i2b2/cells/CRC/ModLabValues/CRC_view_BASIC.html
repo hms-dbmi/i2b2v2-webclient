@@ -1,0 +1,175 @@
+<div class="modal fade">
+	<div class="modal-dialog modal-dialog-centered BasicValues">
+		<div class="modal-content">
+
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<span id="labHeader" class="modal-title"></span>
+				<button type="button" class="btn-close lab-cancel" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+
+			<!-- Modal body -->
+			<div class="modal-body">
+				<form action="javascript:void(0)">
+					<div class="labMain">
+						<div id="labHelpText"></div>
+						<div class="labTypeFlagAndValues">
+							<div id="labTypeGroup" class="labTypeGroup">
+								<div class="form-check" id="labAnyValueTypeMain">
+									<input class="form-check-input" name="labType" id="labAnyValueType" value="NO_VALUE" type="radio" checked="checked" />
+									<label class="custom-control-label" for="labAnyValueType">
+										No value
+									</label>
+								</div>
+								<div class="form-check" id="labFlagTypeMain">
+									<input class="form-check-input" name="labType" id="labFlagType" value="BY_FLAG" type="radio" />
+									<label class="form-check-label" for="labFlagType">
+										By flag
+									</label>
+								</div>
+								<div class="form-check" id="labByValueTypeMain">
+									<input class="form-check-input" name="labType" id="labByValueType" value="BY_VALUE" type="radio" />
+									<label class="form-check-label" for="labByValueType">
+										By value
+									</label>
+								</div>
+							</div>
+
+							<div class="labOptions">
+								<div id="labFlag" class="hidden">
+									<label for="labFlagValue"> Please select a range:<br /> </label>
+									<select id="labFlagValue" class="form-select form-select-sm">
+									</select>
+								</div>
+
+								<div id="labValue" class="labValueSection hidden">
+									<div id="labNumericValueOperatorMain" class="hidden">
+										<label for="labNumericValueOperator"> Please select operator:<br /> </label>
+										<select id="labNumericValueOperator" class="form-select form-select-sm">
+											<option value="LT">LESS THAN (&lt;)</option>
+											<option value="LE">LESS THAN OR EQUAL TO (&lt;=)</option>
+											<option value="EQ">EQUAL (=)</option>
+											<option value="BETWEEN">BETWEEN</option>
+											<option value="GT">GREATER THAN (&gt;)</option>
+											<option value="GE">GREATER THAN OR EQUAL (&gt;=)</option>
+										</select>
+									</div>
+
+									<div id="labStringValueOperatorMain" class="hidden">
+										<label for="labStringValueOperator"> Please select operator:<br /> </label>
+										<select id="labStringValueOperator" class="form-select form-select-sm">
+											<option value="LIKE[contains]">Contains</option>
+											<option value="LIKE[exact]">Exact</option>
+											<option value="LIKE[begin]">Starts With</option>
+											<option value="LIKE[end]">Ends With</option>
+										</select>
+									</div>
+
+									<p id="labNumericValueMain" class="hidden">
+										<label for="labNumericValue"> Please enter a <span class="dateTypeDesc"></span> value:<br /> </label>
+										<input id="labNumericValue" class="form-control form-control-sm" />
+									</p>
+
+									<p id="labNumericValueRangeMain" class="hidden">
+										<label for="labNumericValueRangeLow"> Please enter <span class="dateTypeDesc"></span> values:<br /> </label>
+										<input id="labNumericValueRangeLow" class="form-control form-control-sm" />
+										&nbsp;-&nbsp;
+										<input id="labNumericValueRangeHigh" class="form-control form-control-sm" />
+									</p>
+
+									<p id="labStringValueMain" class="hidden">
+										<label for="labStringValue"> Enter Search Text:<br /> </label>
+										<input id="labStringValue" class="form-control form-control-sm" />
+									</p>
+
+									<p id="labLargeStringValueOperatorMain" class="form-check form-check-inline hidden">
+										<input type="checkbox" class="form-check-input" id="labLargeStringValueOperator">
+										<label class="form-check-label" for="labLargeStringValueOperator">Use Database Operators <i>(Advanced Searching)</i></label>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div id="labEnumValueMain" class="hidden">
+							<label for="labEnumValue"> Please select a value:<br /> </label>
+							<select id="labEnumValue" class="form-select labEnumValue" multiple="multiple" size="5"></select>
+						</div>
+
+						<!-- Bar chart section -->
+
+						<div id="labBarMain" class="labBarMain labGraphUnitSection hidden">
+							<div>Click on a bar segment to help specify a value or range:</div>
+							<div>Range in <span id="labUnitsLabel">(not specified)</span></div>
+							<div class="labBar" >
+								<!-- top text -->
+								<!-- bars are drawn -->
+								<div id="barToxLMain" class="labBarItem hidden">
+									<div id="barToxL" style="background: rgb(0, 0, 0);" class="barLink">
+										<a href="#lblToxL" title="Toxic low value" ></a>
+									</div>
+									<div id="lblToxL" class="textRight"></div>
+								</div>
+
+								<div id="barLofLMain" class="labBarItem hidden">
+									<div id="barLofL" style="background: rgb(255, 0, 0);" class="barLink">
+										<a href="#lblLofL" title="Abnormal low value"></a>
+									</div>
+									<div id="lblLofL" class="textRight"></div>
+								</div>
+
+								<div id="barHofLMain" class="labBarItem hidden">
+									<div id="barHofL" style="background: rgb(255, 255, 0);" class="barLink">
+										<a href="#lblHofL" title="Indeterminant low value"></a>
+									</div>
+									<div id="lblHofL" class="textRight"></div>
+								</div>
+
+								<div id ="barNormMain" class="labBarItem hidden">
+									<div id="barNorm" style="background: rgb(0, 255, 0);" class="barLink">
+										<a href="#" title="Normal"></a>
+									</div>
+									<div id="lblNorm" class="textLeft"></div>
+								</div>
+
+								<div id ="barLofHMain" class="labBarItem hidden">
+									<div id="barLofH" style="background: rgb(255, 255, 0);" class="barLink">
+										<a href="#lblLofH" title="Indeterminant high value"></a>
+									</div>
+
+									<div id="lblLofH" class="textLeft"></div>
+								</div>
+
+								<div id ="barHofHMain" class="labBarItem hidden">
+									<div id="barHofH" style="background: rgb(255, 0, 0);" class="barLink">
+										<a href="#lblHofH" title="Abnormal high value"></a>
+									</div>
+									<div id="lblHofH" class="textLeft"></div>
+								</div>
+								<div id ="barToxHMain" class="labBarItem hidden">
+									<div id="barToxH" style="background: rgb(0, 0, 0);" class="barLink">
+										<a href="#lblToxH"  title="Toxic high value"></a>
+									</div>
+									<div id="lblToxH" class="textLeft"></div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Units display section -->
+						<div id="labUnitsMain" class="labGraphUnitSection hidden">
+							<div class="input-group input-group-sm mb-3">
+								<label class="input-group-text">Units =</label>
+								<select id="labUnits" class="form-select form-select-sm"></select>
+							</div>
+							<span id="labUnitExcluded" class="hidden">A value cannot be specified for these units.</span>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<!-- Modal footer -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary lab-save">Ok</button>
+				<button type="button" class="btn btn-secondary lab-cancel" data-bs-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
