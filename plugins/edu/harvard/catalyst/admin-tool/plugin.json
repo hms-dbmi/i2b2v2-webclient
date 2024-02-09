@@ -1,0 +1,19 @@
+{
+  "title": "Admin Dashboard",
+  "description": "This is a tool for configuring and managing i2b2",
+  "category": ["admin"],
+  "icons": { "size32x32": "exampleplugin_32x32.gif" },
+  "assetDir": "dist/assets/images",
+  "plugin_version" : "1.0",
+  "i2b2_version" : "1.8.1",
+  "base": "dist/index.html",
+  "sandbox": true,
+
+  "authorizedTunnel": {
+    "variables" :{
+      "i2b2.PM.model.isAdmin": "R",
+      "i2b2.ONT.cfg": "RO"
+    },
+    "functions": []
+  }
+}

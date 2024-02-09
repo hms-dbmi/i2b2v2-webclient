@@ -1,0 +1,1 @@
+export { createNamedArgsAction } from "./createAction";
