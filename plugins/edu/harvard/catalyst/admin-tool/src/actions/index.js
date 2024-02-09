@@ -11,11 +11,11 @@ export const getUserSucceeded = createNamedArgsAction(GET_USER_ACTIONS.GET_USER_
 export const getUserFailed = createNamedArgsAction(GET_USER_ACTIONS.GET_USER_FAILED);
 
 
-export const GET_ALL_USERS_ACTIONS = {
+export const GET_ALL_USERS_ACTION = {
     GET_ALL_USERS: "GET_ALL_USERS",
     GET_ALL_USERS_SUCCEEDED:  "GET_ALL_USERS_SUCCEEDED",
     GET_ALL_USERS_FAILED: "GET_ALL_USERS_FAILED"
 };
-export const getAllUsers =  createNamedArgsAction(GET_ALL_USERS_ACTIONS.GET_ALL_USERS);
-export const getAllUsersSucceeded = createNamedArgsAction(GET_ALL_USERS_ACTIONS.GET_ALL_USERS_SUCCEEDED);
-export const getAllUsersFailed = createNamedArgsAction(GET_ALL_USERS_ACTIONS.GET_ALL_USERS_FAILED);
+export const getAllUsers =  createNamedArgsAction(GET_ALL_USERS_ACTION.GET_ALL_USERS);
+export const getAllUsersSucceeded = createNamedArgsAction(GET_ALL_USERS_ACTION.GET_ALL_USERS_SUCCEEDED);
+export const getAllUsersFailed = createNamedArgsAction(GET_ALL_USERS_ACTION.GET_ALL_USERS_FAILED);
