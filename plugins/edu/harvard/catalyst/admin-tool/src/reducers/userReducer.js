@@ -2,29 +2,27 @@ import {
     GET_USER_ACTIONS,
 } from "actions";
 import { defaultState } from "defaultState";
-import { User } from "models";
+/*import { User } from "models";*/
 
 export const userReducer = (state = defaultState.users, action) => {
     switch (action.type) {
         case GET_USER_ACTIONS.GET_USER: {
             const { username } = action.payload;
-            return  User({
-                ...state,
-                username,
-            });
+
+            //TODO: update state to indicate users are being fetched
+            return  state;
         }
         case GET_USER_ACTIONS.GET_USER_SUCCEEDED: {
-            const { fullname, email, isAdmin } = action.payload;
+            const allUsers = action.payload;
 
-            return User({
-                ...state,
-                 fullname,
-                 email,
-                isAdmin
-            });
+            //TODO: extract each user data into Users model and return an array of Users
+            let usersList = [];
+
+            return usersList;
         }
         case GET_USER_ACTIONS.GET_USER_FAILED: {
-            return state
+            //TODO: add error handling
+            return state;
         }
         default: {
             return state;
