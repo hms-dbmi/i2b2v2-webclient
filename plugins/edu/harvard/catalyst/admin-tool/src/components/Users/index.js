@@ -14,16 +14,11 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
 import "./Users.scss";
 
-
 export const Users = () => {
     const users = useSelector((state) => state.users.users );
     //const dispatch = useDispatch();
 
-    const handleTabChange = (event, newValue) => {
-    };
-
     const displayUsersTable = () => {
-        console.log("displaying users " + JSON.stringify(users));
         return (
             <TableContainer className={"Users"}>
                 <Table>
