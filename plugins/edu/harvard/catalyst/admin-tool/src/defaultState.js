@@ -1,13 +1,14 @@
-import {Users} from "models";
+import {AllUsers, AllProjects} from "models";
 import PropTypes from "prop-types";
 
 export const defaultState = {
-    users: Users(),
-    projects: [],
+    allUsers: AllUsers(),
+    allProjects: AllProjects(),
     isI2b2LibLoaded: false
 };
 
 defaultState.propTypes = {
-    users: PropTypes.shape(Users.propTypes),
+    allUsers: PropTypes.shape(AllUsers.propTypes),
+    allProjects: PropTypes.shape(AllProjects.propTypes),
     isI2b2LibLoaded: PropTypes.bool
 };

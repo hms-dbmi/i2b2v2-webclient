@@ -1,4 +1,4 @@
-export const Users = ({
+export const AllUsers = ({
      users = [],
     isFetching= false,
  } = {}) => ({

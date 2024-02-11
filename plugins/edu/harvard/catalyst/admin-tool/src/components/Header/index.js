@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Tabs, Tab } from "@mui/material";
 
-import { Loader, Users } from "components";
-import { getAllUsers, i2b2LibLoaded } from "actions";
+import { Loader, AllUsers, AllProjects } from "components";
+import { getAllUsers, getAllProjects, i2b2LibLoaded } from "actions";
 import "./Header.scss";
 
 //load the i2b2 plugin library
@@ -24,7 +24,13 @@ export const Header = () => {
 
     const handleTabChange = (event, newValue) => {
         setSelectedTab(newValue);
-        dispatch(getAllUsers({}));
+        if(isI2b2LibLoaded) {
+            if (newValue === ViewModeTypes.USERS) {
+                dispatch(getAllUsers({}));
+            } else if (newValue === ViewModeTypes.PROJECTS) {
+                dispatch(getAllProjects({}));
+            }
+        }
     };
 
     const updateI2b2LibLoaded = () => {
@@ -32,7 +38,9 @@ export const Header = () => {
     };
 
     useEffect(() => {
-        window.addEventListener('I2B2_READY', updateI2b2LibLoaded);
+        if(!isI2b2LibLoaded) {
+            window.addEventListener('I2B2_READY', updateI2b2LibLoaded);
+        }
 
         //test get all users call
         if(isI2b2LibLoaded) {
@@ -52,7 +60,8 @@ export const Header = () => {
                 <Tab value={ViewModeTypes.PROJECTS} label="Projects" />
                 <Tab value={ViewModeTypes.HIVE} label="Hive Settings" />
             </Tabs>
-            {selectedTab === ViewModeTypes.USERS && <Users />}
+            {selectedTab === ViewModeTypes.USERS && <AllUsers />}
+            {selectedTab === ViewModeTypes.PROJECTS && <AllProjects />}
             {!isI2b2LibLoaded && <Loader />}
         </div>
     );

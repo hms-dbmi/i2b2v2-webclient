@@ -9,8 +9,8 @@ import {
 //a function that returns a promise
 const getAllUsersActions = () => i2b2.ajax.PM.getAllUser({}).then((xmlString) => new XMLParser().parseFromString(xmlString));
 
-const parseUsersXml = (userXml) => {
-    let users = userXml.getElementsByTagName('user');
+const parseUsersXml = (allUsersXml) => {
+    let users = allUsersXml.getElementsByTagName('user');
     let usersList = [];
     users.map(user => {
         let username = user.getElementsByTagName('user_name');

@@ -1,3 +1,4 @@
 export { Header } from "./Header";
 export { Loader } from './Loader';
-export { Users } from "./Users";
+export { AllUsers } from "./AllUsers";
+export { AllProjects } from "./AllProjects";

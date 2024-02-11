@@ -2,18 +2,20 @@ import {
     GET_ALL_USERS_ACTION,
 } from "actions";
 import { defaultState } from "defaultState";
-import { Users, User } from "models";
+import { AllUsers, User } from "models";
 
-export const userReducer = (state = defaultState.users, action) => {
+export const allUsersReducer = (state = defaultState.allUsers, action) => {
     switch (action.type) {
         case  GET_ALL_USERS_ACTION.GET_ALL_USERS: {
-            //TODO: update state to indicate users are being fetched
-            return  state;
+            return AllUsers({
+                ...state,
+                isFetching: true,
+            });
         }
         case  GET_ALL_USERS_ACTION.GET_ALL_USERS_SUCCEEDED: {
             const  allUsers  = action.payload;
 
-            //Extract each user data into Users model and return an array of Users
+            //Extract each user data into User model and return an array of Users
             let users = [];
             allUsers.map((user) => {
                 users.push(User({
@@ -24,14 +26,10 @@ export const userReducer = (state = defaultState.users, action) => {
                 }));
             })
 
-            let newUsers = Users({
+            return AllUsers({
                 ...state,
-                users
-            });
-
-            return Users({
-                ...state,
-                users
+                users,
+                isFetching: false,
             });
         }
         case  GET_ALL_USERS_ACTION.GET_ALL_USERS_FAILED: {
