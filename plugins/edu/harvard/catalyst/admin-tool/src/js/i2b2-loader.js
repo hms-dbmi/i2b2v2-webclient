@@ -111,7 +111,6 @@ window.addEventListener("message", (event) => {
                 Promise.allSettled(scripts).then((results) => {
                     let passed = true;
                     results.forEach((result, idx) => {
-                        console.log("init i2b2 loaded " + i2b2);
                         if (result.status === "rejected") {
                             passed = false;
                             let code = codes[idx];

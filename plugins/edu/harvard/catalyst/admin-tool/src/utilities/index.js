@@ -1,1 +1,1 @@
-export { createNamedArgsAction } from "./createAction";
+export { createAction, createNamedArgsAction  } from "./createAction";
