@@ -1,14 +1,18 @@
 #Admin Tool
 
-## Bundle the App
+## Setup the App
+```bash
+npm install
+```
 
+## Bundle the App
 ```bash
 npm run build
 ```
 
 ## Available Scripts
 
-Run the app in the development mode:<br>
+Run the app in the development mode:<br> (not completely function yet)
 
 ```bash
 npm start
