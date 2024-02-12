@@ -7,7 +7,7 @@ import {
 } from "actions";
 
 //a function that returns a promise
-const getAllUsersActions = () => i2b2.ajax.PM.getAllProject({}).then((xmlString) => new XMLParser().parseFromString(xmlString));
+const getAllProjectsRequest = () => i2b2.ajax.PM.getAllProject({}).then((xmlString) => new XMLParser().parseFromString(xmlString));
 
 const parseProjectsXml = (projectsXml) => {
     let projects = projectsXml.getElementsByTagName('project');
@@ -15,8 +15,8 @@ const parseProjectsXml = (projectsXml) => {
     projects.map(project => {
         let id = project.attributes['id'];
         let name = project.getElementsByTagName('name');
-        let key = project.getElementsByTagName('description');
-        let description = project.getElementsByTagName('key');
+        let description = project.getElementsByTagName('description');
+        let key = project.getElementsByTagName('key');
         let wiki = project.getElementsByTagName('wiki');
         let path = project.getElementsByTagName('path');
         if(id){
@@ -54,16 +54,16 @@ const parseProjectsXml = (projectsXml) => {
 export function* doGetAllProjects(action) {
     console.log("getting all projects...");
     try {
-        const response = yield call(getAllUsersActions);
+        const response = yield call(getAllProjectsRequest);
 
         if(response) {
-            let usersList = parseProjectsXml(response);
-            yield put(getAllProjectsSucceeded(usersList));
+            let projectsList = parseProjectsXml(response);
+            yield put(getAllProjectsSucceeded(projectsList));
         }else{
             yield put(getAllProjectsFailed(response));
         }
     } finally {
-        const msg = `get all users thread closed`;
+        const msg = `get all projects thread closed`;
         yield msg;
     }
 }

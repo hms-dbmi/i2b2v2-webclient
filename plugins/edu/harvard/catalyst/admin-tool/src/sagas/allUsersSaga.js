@@ -7,7 +7,7 @@ import {
 } from "actions";
 
 //a function that returns a promise
-const getAllUsersActions = () => i2b2.ajax.PM.getAllUser({}).then((xmlString) => new XMLParser().parseFromString(xmlString));
+const getAllUsersRequest = () => i2b2.ajax.PM.getAllUser({}).then((xmlString) => new XMLParser().parseFromString(xmlString));
 
 const parseUsersXml = (allUsersXml) => {
     let users = allUsersXml.getElementsByTagName('user');
@@ -40,7 +40,7 @@ const parseUsersXml = (allUsersXml) => {
 export function* doGetAllUsers(action) {
     console.log("getting all users...");
     try {
-        const response = yield call(getAllUsersActions);
+        const response = yield call(getAllUsersRequest);
 
         if(response) {
             let usersList = parseUsersXml(response);

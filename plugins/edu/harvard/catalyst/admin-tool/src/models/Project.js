@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 export const Project = ({
      id = null,
      name = null,
@@ -13,3 +15,12 @@ export const Project = ({
     wiki,
     path
 });
+
+Project.propTypes = {
+    id: PropTypes.number,
+    name: PropTypes.string,
+    description: PropTypes.string,
+    key: PropTypes.string,
+    wiki: PropTypes.string,
+    path: PropTypes.string,
+};

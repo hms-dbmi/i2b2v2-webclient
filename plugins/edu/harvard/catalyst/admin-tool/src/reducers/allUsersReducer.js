@@ -33,8 +33,11 @@ export const allUsersReducer = (state = defaultState.allUsers, action) => {
             });
         }
         case  GET_ALL_USERS_ACTION.GET_ALL_USERS_FAILED: {
-            //TODO: add error handling
-            return state;
+            //TODO: add error handling somewhere
+            return AllUsers({
+                ...state,
+                isFetching: false,
+            });
         }
         default: {
             return state;

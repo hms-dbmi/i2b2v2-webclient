@@ -34,8 +34,11 @@ export const allProjectsReducer = (state = defaultState.allProjects, action) => 
             });
         }
         case  GET_ALL_PROJECTS_ACTION.GET_ALL_PROJECTS_FAILED: {
-            //TODO: add error handling
-            return state;
+            //TODO: add error handling somewhere
+            return AllProjects({
+                ...state,
+                isFetching: false,
+            });
         }
         default: {
             return state;

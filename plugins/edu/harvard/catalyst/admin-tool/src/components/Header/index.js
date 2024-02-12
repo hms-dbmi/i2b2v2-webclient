@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Tabs, Tab } from "@mui/material";
 
-import { Loader, AllUsers, AllProjects } from "components";
-import { getAllUsers, getAllProjects, i2b2LibLoaded } from "actions";
+import { Loader, AllUsers, AllProjects, AllHives } from "components";
+import { getAllUsers, getAllProjects, getAllHives, i2b2LibLoaded } from "actions";
 import "./Header.scss";
 
 //load the i2b2 plugin library
@@ -18,17 +18,19 @@ export const Header = () => {
     const ViewModeTypes = {
         USERS: "USERS",
         PROJECTS: "PROJECTS",
-        HIVE: "HIVE"
+        HIVES: "HIVE"
     };
     const [selectedTab, setSelectedTab] = useState(ViewModeTypes.USERS);
 
     const handleTabChange = (event, newValue) => {
         setSelectedTab(newValue);
         if(isI2b2LibLoaded) {
-            if (newValue === ViewModeTypes.USERS) {
-                dispatch(getAllUsers({}));
-            } else if (newValue === ViewModeTypes.PROJECTS) {
+            if (newValue === ViewModeTypes.PROJECTS) {
                 dispatch(getAllProjects({}));
+            } else if (newValue === ViewModeTypes.HIVES) {
+                dispatch(getAllHives({}));
+            }else{
+                dispatch(getAllUsers({}));
             }
         }
     };
@@ -58,10 +60,11 @@ export const Header = () => {
             >
                 <Tab value={ViewModeTypes.USERS} label="Users"/>
                 <Tab value={ViewModeTypes.PROJECTS} label="Projects" />
-                <Tab value={ViewModeTypes.HIVE} label="Hive Settings" />
+                <Tab value={ViewModeTypes.HIVES} label="Hive Settings" />
             </Tabs>
             {selectedTab === ViewModeTypes.USERS && <AllUsers />}
             {selectedTab === ViewModeTypes.PROJECTS && <AllProjects />}
+            {selectedTab === ViewModeTypes.HIVES && <AllHives />}
             {!isI2b2LibLoaded && <Loader />}
         </div>
     );
