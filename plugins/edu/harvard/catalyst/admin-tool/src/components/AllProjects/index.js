@@ -10,11 +10,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { Loader } from "components";
 
 import "./AllProjects.scss";
 
 export const AllProjects = () => {
-    const allProjects = useSelector((state) => state.allProjects.projects );
+    const allProjects = useSelector((state) => state.allProjects );
     //const dispatch = useDispatch();
 
     const displayProjectsTable = () => {
@@ -34,7 +35,7 @@ export const AllProjects = () => {
                     </TableHead>
                     <TableBody>
                         {
-                            allProjects.map((user) => (
+                            allProjects.projects.map((user) => (
                                 <TableRow key={user.id}>
                                     <TableCell>{user.id}</TableCell>
                                     <TableCell>{user.name}</TableCell>
@@ -64,8 +65,8 @@ export const AllProjects = () => {
 
     return (
         <div className="AllProjects">
-            { !allProjects && "This is the projects Tabs"}
-            { allProjects && allProjects.length > 0 && displayProjectsTable()}
+            { allProjects.isFetching && <Loader/>}
+            { allProjects.projects.length > 0 && displayProjectsTable()}
         </div>
     );
 };

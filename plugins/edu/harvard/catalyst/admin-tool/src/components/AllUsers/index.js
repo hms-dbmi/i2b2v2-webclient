@@ -10,11 +10,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { Loader } from "components";
 
 import "./AllUsers.scss";
 
 export const AllUsers = () => {
-    const allUsers = useSelector((state) => state.allUsers.users );
+    const allUsers = useSelector((state) => state.allUsers );
     //const dispatch = useDispatch();
 
     const displayUsersTable = () => {
@@ -32,7 +33,7 @@ export const AllUsers = () => {
                     </TableHead>
                     <TableBody>
                         {
-                            allUsers.map((user) => (
+                            allUsers.users.map((user) => (
                             <TableRow key={user.username}>
                                 <TableCell>{user.fullname}</TableCell>
                                 <TableCell>{user.username}</TableCell>
@@ -60,8 +61,8 @@ export const AllUsers = () => {
 
     return (
         <div className="AllUsers">
-            { !allUsers && "This is the users Tabs"}
-            { allUsers && allUsers.length > 0 && displayUsersTable()}
+            { allUsers.isFetching && <Loader/>}
+            { allUsers.users.length > 0 && displayUsersTable()}
         </div>
     );
 };

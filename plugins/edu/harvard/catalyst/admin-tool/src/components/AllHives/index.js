@@ -5,18 +5,20 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
+import { Loader } from "components";
+
 
 import "./AllHives.scss";
 
 export const AllHives = () => {
-    const allHives = useSelector((state) => state.allHives.hives );
+    const allHives = useSelector((state) => state.allHives );
     //const dispatch = useDispatch();
 
     const displayHivesDetail = () => {
         return (
             <Container>
                 {
-                    allHives.map((hive) => (
+                    allHives.hives.map((hive) => (
                         <Grid container spacing={2}>
                             <Grid item xs={2}>
                                 <Box className={"hiveLabel"}>{"Domain Id:"}</Box>
@@ -54,8 +56,8 @@ export const AllHives = () => {
 
     return (
         <div className="AllHives">
-            { !allHives && "This is the hives Tab"}
-            { allHives && allHives.length > 0 && displayHivesDetail()}
+            { allHives.isFetching && <Loader/>}
+            { allHives.hives.length > 0 && displayHivesDetail()}
         </div>
     );
 };
