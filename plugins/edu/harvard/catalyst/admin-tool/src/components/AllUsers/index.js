@@ -1,6 +1,7 @@
 import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,6 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import { Loader } from "components";
 
 import "./AllUsers.scss";
@@ -61,6 +63,9 @@ export const AllUsers = () => {
 
     return (
         <div className="AllUsers">
+            <Button size="small" variant="contained" startIcon={<AddIcon />}>
+                Add New User
+            </Button>
             { allUsers.isFetching && <Loader/>}
             { allUsers.users.length > 0 && displayUsersTable()}
         </div>

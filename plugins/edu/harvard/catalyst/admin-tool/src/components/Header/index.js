@@ -52,7 +52,7 @@ export const Header = () => {
     }, [isI2b2LibLoaded]);
 
     return (
-        <div>
+        <div className={"Header"}>
             <Tabs
                 value={selectedTab}
                 onChange={handleTabChange}
