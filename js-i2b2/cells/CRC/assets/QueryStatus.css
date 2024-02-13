@@ -154,3 +154,33 @@
     height: 100%;
     overflow: scroll;
 }
+
+
+/* ===================================== */
+#breakdownCharts svg text.graphLabel {
+    cursor: default;
+    text-anchor: end;
+}
+
+#breakdownCharts svg text.graphLabel:hover {
+    font-weight: bold;
+}
+
+#breakdownCharts svg rect.graphbar {
+    opacity: 0.60;
+    fill: rgb(39, 130, 163);
+    transition: opacity 100ms;
+}
+#breakdownCharts svg rect.graphbar:hover {
+    opacity: 1;
+    stroke: black;
+}
+
+#breakdownCharts svg text.graph-title {
+    font-weight: bold;
+    font-height: 1.05em;
+}
+
+#breakdownCharts svg text.y-label {
+    font-weight: bold;
+}
