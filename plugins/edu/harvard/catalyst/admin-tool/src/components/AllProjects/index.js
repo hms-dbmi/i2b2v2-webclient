@@ -13,6 +13,8 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { Loader } from "components";
 
 import "./AllProjects.scss";
+import AddIcon from "@mui/icons-material/Add";
+import Button from "@mui/material/Button";
 
 export const AllProjects = () => {
     const allProjects = useSelector((state) => state.allProjects );
@@ -66,6 +68,9 @@ export const AllProjects = () => {
     return (
         <div className="AllProjects">
             { allProjects.isFetching && <Loader/>}
+            <Button className="AddProject" size="small" variant="contained" startIcon={<AddIcon />}>
+                Add New User
+            </Button>
             { allProjects.projects.length > 0 && displayProjectsTable()}
         </div>
     );

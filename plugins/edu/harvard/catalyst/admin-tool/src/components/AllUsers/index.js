@@ -2,71 +2,119 @@ import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+
+import {
+    DataGrid,
+    GridActionsCellItem,
+    gridClasses
+} from '@mui/x-data-grid';
 import { Loader } from "components";
 
 import "./AllUsers.scss";
+
 
 export const AllUsers = () => {
     const allUsers = useSelector((state) => state.allUsers );
     //const dispatch = useDispatch();
 
+    const handleEditClick = (id) => () => {
+        //setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    };
+
+    const handleDeleteClick = (id) => () => {
+        //setRows(rows.filter((row) => row.id !== id));
+    };
+
+    const getRowId = (row) =>{
+        return row.username;
+    }
+    const columns = [
+        { field: 'fullname',
+            headerName: 'Full Name',
+            flex: 2,
+        },
+        {
+            field: 'username',
+            headerName: 'User Name',
+            flex: 2,
+            editable: false,
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            flex: 1,
+            editable: false,
+        },
+        {
+            field: 'isAdmin',
+            headerName: 'Is Admin',
+            flex: 1,
+            editable: false,
+            valueGetter: ({ row }) => {
+                return row.isAdmin ? "Y" : "N";
+            },
+        },
+        {
+            field: 'actions',
+            type: 'actions',
+            headerName: 'Actions',
+            flex: 1,
+            cellClassName: 'actions',
+            getActions: ({id}) => {
+
+                return [
+                    <GridActionsCellItem
+                        icon={<EditIcon/>}
+                        label="Edit"
+                        className="textPrimary"
+                        onClick={handleEditClick(id)}
+                        color="inherit"
+                    />,
+                    <GridActionsCellItem
+                        icon={<DeleteIcon/>}
+                        label="Delete"
+                        onClick={handleDeleteClick(id)}
+                        color="inherit"
+                    />,
+                ];
+            },
+        },
+    ];
+
+
     const displayUsersTable = () => {
         return (
-            <TableContainer className={"Users"}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Full Name</TableCell>
-                            <TableCell>Username</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>isAdmin</TableCell>
-                            <TableCell>Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
+            <DataGrid
+                rows={allUsers.users}
+                columns={columns}
+                getRowId={getRowId}
+                disableRowSelectionOnClick
+                sx={{
+                    [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
+                        outline: 'none',
+                    },
+                    [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
                         {
-                            allUsers.users.map((user) => (
-                            <TableRow key={user.username}>
-                                <TableCell>{user.fullname}</TableCell>
-                                <TableCell>{user.username}</TableCell>
-                                <TableCell>{user.email}</TableCell>
-                                <TableCell>{user.isAdmin ? "Y" : "N"}</TableCell>
-                                <TableCell>
-                                    <IconButton color="secondary" aria-label="edit project">
-                                        <EditOutlinedIcon fontSize="small" />
-                                    </IconButton>
-                                    <IconButton color="secondary" aria-label="delete project">
-                                        <DeleteOutlinedIcon fontSize="small" />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                            ))
-                        }
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                            outline: 'none',
+                        },
+                }}
+            />
         );
     };
 
     useEffect(() => {
     }, []);
 
+
     return (
         <div className="AllUsers">
-            <Button size="small" variant="contained" startIcon={<AddIcon />}>
+            { allUsers.isFetching && <Loader/>}
+            <Button className="AddUser" size="small" variant="contained" startIcon={<AddIcon />}>
                 Add New User
             </Button>
-            { allUsers.isFetching && <Loader/>}
             { allUsers.users.length > 0 && displayUsersTable()}
         </div>
     );
