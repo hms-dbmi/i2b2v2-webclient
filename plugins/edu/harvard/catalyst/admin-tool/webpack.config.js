@@ -11,7 +11,7 @@ module.exports = {
     filename: "bundle.js", // the name of the bundle,
   },
   resolve: {
-    modules: [APP_DIR, VENDOR_DIR],
+    modules: ['node_modules', APP_DIR, VENDOR_DIR],
     extensions: ['.js', '.jsx']
   },
  entry: "index",
