@@ -147,12 +147,35 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
 
 
 // ================================================================================================== //
-i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster) {
+i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
+    i2b2.CRC.model.runner.name = queryName;
+    i2b2.CRC.model.runner.abortable = false;
+    i2b2.CRC.model.runner.isRunning = false;
+    i2b2.CRC.model.runner.finished = true;
+    i2b2.CRC.model.runner.deleteCurrentQuery = false;
+
     let cb = new i2b2_scopedCallback();
     cb.scope = this;
     cb.callback = function(results) {
+        // i2b2.CRC.model.runner = {
+        //     elapsedTime: "0",
+        // i2b2.CRC.model.runner.startTime =
+        //     status: "Running",
+        // };
+        debugger;
         // TODO: Error checking!!!
         let qi_id = results.refXML.getElementsByTagName('query_instance_id')[0].textContent;
+        try {
+            let datestart = Date.parse(results.refXML.getElementsByTagName('start_date')[0].textContent);
+            let dateend = Date.parse(results.refXML.getElementsByTagName('end_date')[0].textContent);
+            i2b2.CRC.model.runner.startTime = datestart;
+            i2b2.CRC.model.runner.endTime = dateend;
+            i2b2.CRC.model.runner.elapsedTime = ((dateend - datestart) / 1000).toFixed(1);
+        } catch(e) {}
+//        ((new Date() - i2b2.CRC.model.runner.startTime) / 1000).toFixed(1);
+
+
+
         cb_hack = new i2b2_scopedCallback();
         cb_hack.scope = results;
         cb_hack.callback = i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback;
@@ -265,7 +288,8 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     i2b2.CRC.model.runner.abortable = false;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.isPolling = false;
-    i2b2.CRC.model.runner.endTime = new Date();
+    if (i2b2.CRC.model.runner.endTime === undefined) i2b2.CRC.model.runner.endTime = new Date();
+
 
     // stop the run timer
     clearInterval(i2b2.CRC.model.runner.intervalTimer);

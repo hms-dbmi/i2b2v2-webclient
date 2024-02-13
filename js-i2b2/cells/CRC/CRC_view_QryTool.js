@@ -1845,7 +1845,6 @@ i2b2.events.afterCellInit.add((cell) => {
 
                     i2b2.CRC.view.QT.render();
 
-
                 }).bind(this)
             );
 
