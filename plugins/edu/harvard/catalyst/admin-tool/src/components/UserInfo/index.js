@@ -1,9 +1,10 @@
 import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
+import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
+
 import { User } from "models";
 
 import "./UserInfo.scss";
@@ -11,14 +12,22 @@ import "./UserInfo.scss";
 export const UserInfo = ({user, updateUser}) => {
     const dispatch = useDispatch();
 
+    const isAdminChange = () => {
+
+    }
     //useEffect(() => {
     //}, []);
 
     return (
-        <Box className="UserInfo">
+        <div className="UserInfo">
             <h3> User Details </h3>
-            <Grid container spacing={2}>
-                <Grid item xs={7}>
+            <Stack
+                direction="column"
+                justifyContent="flex-start"
+                alignItems="flex-start"
+                spacing={2}
+            >
+                <div>
                     <TextField
                         className="inputField"
                         required
@@ -27,9 +36,9 @@ export const UserInfo = ({user, updateUser}) => {
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                     />
-                </Grid>
+                </div>
 
-                <Grid item xs={7}>
+                <div>
                     <TextField
                         className="inputField"
                         required
@@ -38,9 +47,9 @@ export const UserInfo = ({user, updateUser}) => {
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                     />
-                </Grid>
+                </div>
 
-                <Grid item xs={7}>
+                <div>
                     <TextField
                         className="inputField"
                         label="Email"
@@ -48,9 +57,36 @@ export const UserInfo = ({user, updateUser}) => {
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                     />
-                </Grid>
-            </Grid>
-        </Box>
+                </div>
+                <div>
+                    <TextField
+                        className="inputField"
+                        label="Password"
+                        variant="standard"
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </div>
+                <div>
+                    <TextField
+                        className="inputField"
+                        label="Verify Password"
+                        variant="standard"
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </div>
+                <div>
+                    <TextField
+                        select
+                        label="Is Admin"
+                        defaultValue={user.isAdmin}
+                        variant="standard"
+                    >
+                        <MenuItem value={"false"}>No</MenuItem>
+                        <MenuItem value={"true"}>Yes</MenuItem>
+                    </TextField>
+                </div>
+            </Stack>
+        </div>
     );
 };
 

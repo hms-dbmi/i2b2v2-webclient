@@ -2,4 +2,16 @@
   .EditUserContent{
     display: flex;
   }
+  .EditUserActions {
+    display: block;
+  }
+  .EditUserActionPrimary{
+    float: right;
+    margin: 0.7em;
+  }
+
+  .EditUserActionSecondary{
+    float: left;
+    margin: 0.7em;
+  }
 }

@@ -90,6 +90,7 @@ export const EditParameters = ({params, title, updateParams}) => {
     const displayParamsTable = () => {
         return (
             <DataGrid
+                autoHeight
                 rows={params}
                 columns={columns}
                 getRowId={getRowId}

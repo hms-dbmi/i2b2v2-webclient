@@ -5,11 +5,13 @@ export const User = ({
  fullname = "",
  email = "",
  isAdmin = false,
+ password= null
 } = {}) => ({
     username,
     fullname,
     email,
     isAdmin,
+    password
 });
 
 User.propTypes = {
