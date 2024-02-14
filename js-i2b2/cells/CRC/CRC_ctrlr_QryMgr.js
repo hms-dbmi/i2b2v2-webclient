@@ -162,15 +162,13 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
         try {
             let datestart = Date.parse(results.refXML.getElementsByTagName('start_date')[0].textContent);
             let dateend = Date.parse(results.refXML.getElementsByTagName('end_date')[0].textContent);
-            i2b2.CRC.model.runner.startTime = datestart;
-            i2b2.CRC.model.runner.endTime = dateend;
+            i2b2.CRC.model.runner.startTime = new Date(datestart);
+            i2b2.CRC.model.runner.endTime = new Date(dateend);
         } catch(e) {
             i2b2.CRC.model.runner.startTime = 0;
             i2b2.CRC.model.runner.endTime = 0;
         }
         i2b2.CRC.model.runner.elapsedTime = ((i2b2.CRC.model.runner.endTime - i2b2.CRC.model.runner.startTime) / 1000).toFixed(1);
-
-
 
         cb_hack = new i2b2_scopedCallback();
         cb_hack.scope = results;

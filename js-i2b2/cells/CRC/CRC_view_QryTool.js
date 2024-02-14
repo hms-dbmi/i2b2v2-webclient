@@ -1688,21 +1688,21 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         }
 
         // Deal with the reports
-        if(i2b2.CRC.model.runner.endTime !== undefined) {
-            let reports = [];
-            let graphs = $("#breakdownChartsBody>div");
-            let charts = $("#breakdownDetails>div");
-            // TODO: Rebuild this next line
-            let dataRef = i2b2.CRC.ctrlr.QS.breakdowns.resultTable;
-            for (let i = 0; i < dataRef.length; i++) {
-                if (i == 0) {
-                    reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
-                } else {
-                    reports.push({chart: charts[i].outerHTML, graph: graphs[i - 1].outerHTML, data: dataRef[i]});
-                }
-            }
-            reportData.reports = reports;
-        }
+        // if (i2b2.CRC.model.runner.endTime !== undefined) {
+        //     let reports = [];
+        //     let graphs = $("#breakdownChartsBody>div");
+        //     let charts = $("#breakdownDetails>div");
+        //     // TODO: Rebuild this next line
+        //     let dataRef = i2b2.CRC.ctrlr.QS.breakdowns.resultTable;
+        //     for (let i = 0; i < dataRef.length; i++) {
+        //         if (i == 0) {
+        //             reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
+        //         } else {
+        //             reports.push({chart: charts[i].outerHTML, graph: graphs[i - 1].outerHTML, data: dataRef[i]});
+        //         }
+        //     }
+        //     reportData.reports = reports;
+        // }
 
         let func_Display = function() {
             // populate the document in the iframe
