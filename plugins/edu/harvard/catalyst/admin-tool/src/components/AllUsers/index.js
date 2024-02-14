@@ -5,6 +5,8 @@ import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import { getAllUserParams } from "actions";
+import {EditUserDetails} from "components";
 
 import {
     DataGrid,
@@ -18,14 +20,17 @@ import "./AllUsers.scss";
 
 export const AllUsers = () => {
     const allUsers = useSelector((state) => state.allUsers );
-    //const dispatch = useDispatch();
+    const dispatch = useDispatch();
+    const[selectedUser, setSelectedUser] = useState(null);
 
-    const handleEditClick = (id) => () => {
-        //setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    const handleEditClick = (username) => () => {
+        let user = allUsers.users.filter((user) => user.username === username);
+        if(user.length === 1) {
+            setSelectedUser(user[0]);
+        }
     };
 
     const handleDeleteClick = (id) => () => {
-        //setRows(rows.filter((row) => row.id !== id));
     };
 
     const getRowId = (row) =>{
@@ -64,6 +69,10 @@ export const AllUsers = () => {
             flex: 1,
             cellClassName: 'actions',
             getActions: ({id}) => {
+
+                if(id === "AGG_SERVICE_ACCOUNT"){
+                    return [];
+                }
 
                 return [
                     <GridActionsCellItem
@@ -112,10 +121,13 @@ export const AllUsers = () => {
     return (
         <div className="AllUsers">
             { allUsers.isFetching && <Loader/>}
-            <Button className="AddUser" size="small" variant="contained" startIcon={<AddIcon />}>
-                Add New User
-            </Button>
-            { allUsers.users.length > 0 && displayUsersTable()}
+            {!selectedUser &&
+                <Button className="AddUser" size="small" variant="contained" startIcon={<AddIcon/>}>
+                    Add New User
+                </Button>
+            }
+            {!selectedUser && allUsers.users.length > 0 && displayUsersTable()}
+            { selectedUser && <EditUserDetails user={selectedUser} setSelectedUser={setSelectedUser}/>}
         </div>
     );
 };

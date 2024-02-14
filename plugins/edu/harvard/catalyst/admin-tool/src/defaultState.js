@@ -1,10 +1,11 @@
-import {AllUsers, AllProjects, AllHives} from "models";
+import {AllUsers, AllProjects, AllHives, SelectedUser} from "models";
 import PropTypes from "prop-types";
 
 export const defaultState = {
     allUsers: AllUsers(),
     allProjects: AllProjects(),
     allHives: AllHives(),
+    selectedUser: SelectedUser(),
     isI2b2LibLoaded: false
 };
 

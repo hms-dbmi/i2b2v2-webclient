@@ -58,8 +58,8 @@ export const Header = () => {
                 onChange={handleTabChange}
                 aria-label="admin tool navigation"
             >
-                <Tab value={ViewModeTypes.USERS} label="Users"/>
-                <Tab value={ViewModeTypes.PROJECTS} label="Projects" />
+                <Tab value={ViewModeTypes.USERS} label="All Users"/>
+                <Tab value={ViewModeTypes.PROJECTS} label="All Projects" />
                 <Tab value={ViewModeTypes.HIVES} label="Hive Settings" />
             </Tabs>
             {selectedTab === ViewModeTypes.USERS && <AllUsers />}

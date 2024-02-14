@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 
 export const User = ({
- username = null,
- fullname = null,
- email = null,
+ username = "",
+ fullname = "",
+ email = "",
  isAdmin = false,
 } = {}) => ({
     username,

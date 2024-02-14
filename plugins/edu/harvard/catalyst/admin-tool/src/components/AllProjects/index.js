@@ -69,7 +69,7 @@ export const AllProjects = () => {
         <div className="AllProjects">
             { allProjects.isFetching && <Loader/>}
             <Button className="AddProject" size="small" variant="contained" startIcon={<AddIcon />}>
-                Add New User
+                Add New Project
             </Button>
             { allProjects.projects.length > 0 && displayProjectsTable()}
         </div>
