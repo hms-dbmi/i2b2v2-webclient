@@ -1688,31 +1688,23 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         }
 
         // Deal with the reports
-        // if (i2b2.CRC.model.runner.endTime !== undefined) {
-        //     let reports = [];
-        //     let graphs = $("#breakdownChartsBody>div");
-        //     let charts = $("#breakdownDetails>div");
-        //     // TODO: Rebuild this next line
-        //     let dataRef = i2b2.CRC.ctrlr.QS.breakdowns.resultTable;
-        //     for (let i = 0; i < dataRef.length; i++) {
-        //         if (i == 0) {
-        //             reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
-        //         } else {
-        //             reports.push({chart: charts[i].outerHTML, graph: graphs[i - 1].outerHTML, data: dataRef[i]});
-        //         }
-        //     }
-        //     reportData.reports = reports;
-        // }
-
-        let func_Display = function() {
-            // populate the document in the iframe
-            const reportHtml = i2b2.CRC.view.QT.template.queryReport(reportData);
-            const reportDocument = $('#queryReportWindow')[0].contentWindow.document;
-            reportDocument.open();
-            reportDocument.write(reportHtml);
-            reportDocument.close();
-            // show report
-            $("#queryReportModal div:eq(0)").modal('show');
+        if (i2b2.CRC.model.runner.endTime !== undefined) {
+             let reports = [];
+             let graphs = $("#breakdownChartsBody>svg");
+             let charts = $("#breakdownDetails>div");
+             // TODO: Rebuild this next line
+             let dataRef = i2b2.CRC.view.QueryReport.breakdowns.resultTable;
+             for (let i = 0; i < dataRef.length; i++) {
+                 if (i == 0) {
+                     reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
+                 } else {
+                     // fix the graph's width
+                     let w = graphs[i - 1].getBoundingClientRect().width;
+                     graphs[i - 1].attributes.width.value = parseInt(w) + "px";
+                     reports.push({chart: charts[i].outerHTML, graph: graphs[i - 1].outerHTML, data: dataRef[i]});
+                 }
+             }
+             reportData.reports = reports;
         }
 
         // populate the user's real name via AJAX then display the report window
@@ -1722,7 +1714,14 @@ i2b2.CRC.view.QT.showQueryReport = function() {
                 let data = results.model[0];
                 if (data.full_name) reportData.submittedBy = data.full_name;
             } catch (e) {}
-            func_Display();
+            // populate the document in the iframe
+            const reportHtml = i2b2.CRC.view.QT.template.queryReport(reportData);
+            const reportDocument = $('#queryReportWindow')[0].contentWindow.document;
+            reportDocument.open();
+            reportDocument.write(reportHtml);
+            reportDocument.close();
+            // show report
+            $("#queryReportModal div:eq(0)").modal('show');
         });
 
 

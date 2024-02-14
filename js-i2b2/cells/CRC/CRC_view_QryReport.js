@@ -225,7 +225,7 @@ i2b2.CRC.view.QueryReport = {
         let title = "";
         switch (resultType) {
             case "PATIENT_ENCOUNTER_SET":
-                // use given title if it exist otherwise generate a title
+                // use given title if it exists otherwise generate a title
                 let t = null;
                 try {
                     t = i2b2.h.XPath(oXML,'self::query_result_instance/description')[0].firstChild.nodeValue;

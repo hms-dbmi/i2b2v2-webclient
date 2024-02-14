@@ -131,7 +131,6 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
         abortable: true,
         finished: false,
         deleteCurrentQuery: false,
-        breakdowns: {},
         intervalTimer: null,
         lastPoll: new Date(),
         isPolling: true
@@ -157,12 +156,6 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
     let cb = new i2b2_scopedCallback();
     cb.scope = this;
     cb.callback = function(results) {
-        // i2b2.CRC.model.runner = {
-        //     elapsedTime: "0",
-        // i2b2.CRC.model.runner.startTime =
-        //     status: "Running",
-        // };
-        debugger;
         // TODO: Error checking!!!
         let qi_id = results.refXML.getElementsByTagName('query_instance_id')[0].textContent;
         try {
@@ -589,7 +582,6 @@ i2b2.CRC.model.runner = {
     abortable: true,
     finished: false,
     deleteCurrentQuery: false,
-    breakdowns: {},
     intervalTimer: null,
     isRunning: false
 };
