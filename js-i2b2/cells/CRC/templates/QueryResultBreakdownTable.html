@@ -22,7 +22,13 @@
                                 {{#each this.result}}
                                     <tr>
                                         <td>{{this.name}}</td>
-                                        <td class="breakdownValue">{{this.value}}</td>
+                                        <td class="breakdownValue">
+                                            {{#if this.display}}
+                                                {{this.display}}
+                                            {{else}}
+                                                {{this.value}}
+                                            {{/if}}
+                                        </td>
                                     </tr>
                                 {{/each}}
                             </table>

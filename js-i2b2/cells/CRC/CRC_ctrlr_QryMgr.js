@@ -258,7 +258,15 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
 
             // get the patient count
             try {
-                i2b2.CRC.model.runner.patientCount = i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue;
+                let pCount = parseInt(i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue);
+                if (i2b2.PM.model.isObfuscated) {
+                    if (i2b2.UI.cfg.useFloorThreshold && pCount < i2b2.UI.cfg.floorThresholdNumber) {
+                        pCount = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber;
+                    } else {
+                        pCount = pCount.toString() + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                    }
+                }
+                i2b2.CRC.model.runner.patientCount = pCount
             } catch(e) {}
         }
         i2b2.CRC.model.runner.queryResultInstances = idQRI;
@@ -334,7 +342,15 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryStatus.callback = function(results) {
 
         // get the patient count
         try {
-            i2b2.CRC.model.runner.patientCount = i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue;
+            let pCount = parseInt(i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue);
+            if (i2b2.PM.model.isObfuscated) {
+                if (i2b2.UI.cfg.useFloorThreshold && pCount < i2b2.UI.cfg.floorThresholdNumber) {
+                    pCount = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber;
+                } else {
+                    pCount = pCount.toString() + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                }
+            }
+            i2b2.CRC.model.runner.patientCount = pCount
         } catch(e) {}
     }
     i2b2.CRC.model.runner.queryResultInstances = idQRI;

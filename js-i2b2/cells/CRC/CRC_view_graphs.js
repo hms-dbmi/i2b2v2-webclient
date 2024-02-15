@@ -1,8 +1,17 @@
+/**
+ * @projectDescription	D3-based graphs for display of breakdowns
+ * @inherits 	i2b2.CRC.view
+ * @namespace	i2b2.CRC.view.graphs
+ * @author		Nick Benik
+ * @version 	2.0
+ * ----------------------------------------------------------------------------------------
+ */
+
 i2b2.CRC.view.graphs = new i2b2Base_cellViewController(i2b2.CRC, 'graphs');
 i2b2.CRC.view.graphs.visible = false;
 i2b2.CRC.view.graphs.iObfuscatedFloorNumber = i2b2.UI.cfg.obfuscatedDisplayNumber;  // this is the amount reported that the numbers are obfuscated by
-i2b2.CRC.view.graphs.sObfuscatedText = " < "+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();  // this is the text that is replaced for a small number in obfuscated mode so that it can be cleaned up before the next display
-i2b2.CRC.view.graphs.sObfuscatedEnding = "&plusmn;"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();  //this is the text that is added to all numbers in obfuscated mode
+i2b2.CRC.view.graphs.sObfuscatedText = "< "+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();  // this is the text that is replaced for a small number in obfuscated mode so that it can be cleaned up before the next display
+i2b2.CRC.view.graphs.sObfuscatedEnding = "±"+i2b2.UI.cfg.obfuscatedDisplayNumber.toString();  //this is the text that is added to all numbers in obfuscated mode
 
 i2b2.CRC.cfg.params.maxBarLabelLength = 30;
 
@@ -76,7 +85,9 @@ i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData, breakdownIn
         .text((t, i) => {
             // TODO: handle Obfuscation and Sketches
             // i2b2.PM.model.isObfuscated
-            return t + "\n[ "+ parseInt(data[i].value).toLocaleString() + " patients ]";
+            let val = parseInt(data[i].value).toLocaleString();
+            if (data[i].display) val = data[i].display;
+            return t + "\n[ "+ val + " patients ]";
         });
 
     // resize the SGV height depending upon our max X axis label height
@@ -116,7 +127,9 @@ i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData, breakdownIn
         .text((d) => {
             // TODO: handle Obfuscation and Sketches
             // i2b2.PM.model.isObfuscated
-            return "[ " + parseInt(d.value).toLocaleString() + " patients ]\n" + d.name.trim()
+            let val = parseInt(d.value).toLocaleString();
+            if (d.display) val = d.display;
+            return "[ " + val + " patients ]\n" + d.name.trim()
         })
 
     // Graph title
