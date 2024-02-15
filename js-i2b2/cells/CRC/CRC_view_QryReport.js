@@ -68,6 +68,7 @@ i2b2.CRC.view.QueryReport = {
 
     },
     _handleQueryResultInstance: function(results){
+        let showGraphs = false;
         if (results.error) {
             alert(results.errorMsg);
             return;
@@ -152,11 +153,19 @@ i2b2.CRC.view.QueryReport = {
 
             // only create graphs if there is breakdown data
             if (!isPatientCount) {
+                showGraphs = true;
                 i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
         }
         // render the table view of the breakdowns
         i2b2.CRC.view.QueryReport.render({breakdowns: i2b2.CRC.view.QueryReport.breakdowns});
+
+        // hide graph section if there are no graphs
+        if (!showGraphs && i2b2.CRC.view.QueryReport.breakdowns.resultTable.length === 1) {
+            $('#infoQueryStatusGraph').hide();
+        } else {
+            $('#infoQueryStatusGraph').show();
+        }
     },
     _handleQueryResultSet: function(results) {
         // callback processor to check the Query Result Set
