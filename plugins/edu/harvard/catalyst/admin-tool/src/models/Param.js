@@ -4,7 +4,7 @@ export const Param = ({
     id= null,
   name = null,
   value= null,
-  dataType= DataType.TEXT
+  dataType= DataType.T
 } = {}) => ({
     id,
     name,
@@ -19,45 +19,15 @@ Param.propTypes = {
 };
 
 export const DataType = {
-    TEXT: {
-        name: "Text",
-        value: "T"
-    },
-    NUMERIC: {
-        name: "Numeric",
-        value: "N"
-    },
-    INTEGER: {
-        name: "Integer",
-        value: "I"
-    },
-    DATE: {
-        name: "Date",
-        value: "D"
-    },
-   BOOLEAN: {
-        name: "Boolean",
-        value: "B"
-    },
-    REFERENCE_BINARY: {
-        name: "Reference Binary",
-        value: "C"
-    },
-    RTF: {
-        name: "Rtf",
-        value: "RTF"
-    },
-    XLS: {
-        name: "Excel",
-        value: "XLS"
-    },
-    XML: {
-        name: "Xml",
-        value: "XML"
-    },
-    DOC: {
-        name: "Word",
-        value: "DOC"
-    },
+    T : "T", //Text
+    N: "N", //Numeric
+    I: "I", //Integer
+    D: "D", //Date
+    B: "B", //Boolean
+    C: "C", //Reference Binary
+    RTF: "RTF", //Rtf
+    XLS: "XLS", //Excel
+    XML: "XML",  //Xml
+    DOC: "DOC", //Word
 };
 

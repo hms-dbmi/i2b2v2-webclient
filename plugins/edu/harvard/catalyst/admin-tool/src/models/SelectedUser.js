@@ -6,14 +6,16 @@ export const SelectedUser = ({
      user = User(),
      params= [],
      isFetching= false,
+     saveStatus= null,
  } = {}) => ({
     user,
     params,
-    isFetching
+    isFetching,
+    saveStatus
 });
 
 SelectedUser.propTypes = {
     user: PropTypes.shape(User).isRequired,
     parameters: PropTypes.arrayOf(Param).isRequired,
-    isFetching: PropTypes.bool,
+    isFetching: PropTypes.bool.isRequired,
 };

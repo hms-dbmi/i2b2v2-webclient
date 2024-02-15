@@ -12,7 +12,7 @@ const getAllUsersRequest = () => i2b2.ajax.PM.getAllUser({}).then((xmlString) =>
 const parseUsersXml = (allUsersXml) => {
     let users = allUsersXml.getElementsByTagName('user');
     let usersList = [];
-    users.map(user => {
+    users.forEach(user => {
         let username = user.getElementsByTagName('user_name');
         let fullname = user.getElementsByTagName('full_name');
         let email = user.getElementsByTagName('email');

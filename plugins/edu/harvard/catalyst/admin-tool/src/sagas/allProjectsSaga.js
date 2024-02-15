@@ -12,7 +12,7 @@ const getAllProjectsRequest = () => i2b2.ajax.PM.getAllProject({}).then((xmlStri
 const parseProjectsXml = (projectsXml) => {
     let projects = projectsXml.getElementsByTagName('project');
     let projectsList = [];
-    projects.map(project => {
+    projects.forEach(project => {
         let id = project.attributes['id'];
         let name = project.getElementsByTagName('name');
         let description = project.getElementsByTagName('description');

@@ -1,5 +1,6 @@
 import {
     GET_ALL_USER_PARAMS_ACTION,
+    SAVE_USER_DETAILS_ACTION
 } from "actions";
 import { defaultState } from "defaultState";
 import { SelectedUser, Param } from "models";
@@ -18,7 +19,6 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
         case  GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_SUCCEEDED: {
             const  {user, params}  = action.payload;
 
-            console.log("params: " + JSON.stringify(params));
             //Extract each user data into User model and return an array of Users
             let paramsList = [];
             params.map((param) => {
@@ -42,6 +42,27 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
             return SelectedUser({
                 ...state,
                 isFetching: false,
+            });
+        }
+        case  SAVE_USER_DETAILS_ACTION.SAVE_USER_DETAILS_SUCCEEDED: {
+
+            return SelectedUser({
+                ...state,
+                saveStatus: "SUCCESS"
+            });
+        }
+        case  SAVE_USER_DETAILS_ACTION.SAVE_USER_DETAILS_FAILED: {
+
+            return SelectedUser({
+                ...state,
+                saveStatus: "FAIL"
+            });
+        }
+        case  SAVE_USER_DETAILS_ACTION.SAVE_USER_DETAILS_STATUS_CONFIRMED: {
+
+            return SelectedUser({
+                ...state,
+                saveStatus: null
             });
         }
         default: {

@@ -12,11 +12,14 @@ import "./UserInfo.scss";
 export const UserInfo = ({user, updateUser}) => {
     const dispatch = useDispatch();
 
-    const isAdminChange = () => {
-
+    const handleUpdate = (field, value) => {
+        user[field] = value;
+        updateUser(user);
     }
-    //useEffect(() => {
-    //}, []);
+    const handleIsAdminChange = (event) => {
+        user.isAdmin = event.target.value;
+        updateUser(user);
+    }
 
     return (
         <div className="UserInfo">
@@ -25,7 +28,7 @@ export const UserInfo = ({user, updateUser}) => {
                 direction="column"
                 justifyContent="flex-start"
                 alignItems="flex-start"
-                spacing={2}
+                spacing={3}
             >
                 <div>
                     <TextField
@@ -33,6 +36,7 @@ export const UserInfo = ({user, updateUser}) => {
                         required
                         label="User Name"
                         defaultValue={user.username}
+                        onChange={(event) => handleUpdate("username", event.target.value)}
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                     />
@@ -44,6 +48,7 @@ export const UserInfo = ({user, updateUser}) => {
                         required
                         label="Full Name"
                         defaultValue={user.fullname}
+                        onChange={(event) => handleUpdate("fullname", event.target.value)}
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                     />
@@ -54,6 +59,7 @@ export const UserInfo = ({user, updateUser}) => {
                         className="inputField"
                         label="Email"
                         defaultValue={user.email}
+                        onChange={(event) => handleUpdate("email", event.target.value)}
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                     />
@@ -79,6 +85,7 @@ export const UserInfo = ({user, updateUser}) => {
                         select
                         label="Is Admin"
                         defaultValue={user.isAdmin}
+                        onChange={(event) => handleUpdate("email", event.target.value === "true")}
                         variant="standard"
                     >
                         <MenuItem value={"false"}>No</MenuItem>

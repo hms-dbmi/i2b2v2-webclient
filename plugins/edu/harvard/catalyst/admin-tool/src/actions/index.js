@@ -56,5 +56,18 @@ export const GET_ALL_USER_PARAMS_ACTION = {
 export const getAllUserParams =  createAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS);
 export const getAllUserParamsSucceeded = createAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_SUCCEEDED);
 export const getAllUserParamsFailed = createNamedArgsAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_FAILED);
+//================================================================================================== //
+
+export const SAVE_USER_DETAILS_ACTION = {
+    SAVE_USER_DETAILS: "SAVE_USER_DETAILS",
+    SAVE_USER_DETAILS_SUCCEEDED:  "SAVE_USER_DETAILS_SUCCEEDED",
+    SAVE_USER_DETAILS_FAILED: "SAVE_USER_DETAILS_FAILED",
+    SAVE_USER_DETAILS_STATUS_CONFIRMED: "SAVE_USER_DETAILS_STATUS_CONFIRMED"
+};
+export const saveUserDetails =  createAction(SAVE_USER_DETAILS_ACTION.SAVE_USER_DETAILS);
+export const saveUserDetailsSucceeded = createAction(SAVE_USER_DETAILS_ACTION.SAVE_USER_DETAILS_SUCCEEDED);
+export const saveUserDetailsFailed = createNamedArgsAction(SAVE_USER_DETAILS_ACTION.SAVE_USER_DETAILS_FAILED);
+export const saveUserDetailsStatusConfirmed = createAction(SAVE_USER_DETAILS_ACTION.SAVE_USER_DETAILS_STATUS_CONFIRMED);
+
 
 
