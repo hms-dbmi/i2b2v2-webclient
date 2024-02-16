@@ -18,6 +18,8 @@ export const EditParameters = ({params, title, updateParams}) => {
     };
 
     const handleDataTypeChange = (dataType) => () => {
+        let newRows = rows.map((row) => (row.id === newRow.id ? updatedRow : row));
+        setRows(newRows);
     };
     const getRowId = (row) =>{
         return row.id;
@@ -41,28 +43,38 @@ export const EditParameters = ({params, title, updateParams}) => {
             flex: 1,
             editable: true,
             filterable: false,
-            renderCell: (item) => {
-                console.log("item row is: " + JSON.stringify(item.row));
-                return (
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={item.row.dataType}
-                    label="DataType"
-                    onChange={handleDataTypeChange}
-                >
-                    <MenuItem value={DataType.T}>Text</MenuItem>
-                    <MenuItem value={DataType.N}>Numeric</MenuItem>
-                    <MenuItem value={DataType.D}>Date</MenuItem>
-                    <MenuItem value={DataType.I}>Integer</MenuItem>
-                    <MenuItem value={DataType.B}>Boolean</MenuItem>
-                    <MenuItem value={DataType.C}>Reference Binary</MenuItem>
-                    <MenuItem value={DataType.RTF}>RTF</MenuItem>
-                    <MenuItem value={DataType.DOC}>Word</MenuItem>
-                    <MenuItem value={DataType.XLS}>Excel</MenuItem>
-                    <MenuItem value={DataType.XML}>XML</MenuItem>
-                </Select>
-            )}
+            type: 'singleSelect',
+            valueOptions: [{
+                label: 'Text',
+                value: DataType.T
+            }, {
+                label: 'Numeric',
+                value: DataType.N
+            }, {
+                label: 'Date',
+                value: DataType.D
+            }, {
+                label: 'Integer',
+                value: DataType.I
+            }, {
+                label : 'Boolean',
+                value: DataType.B
+            }, {
+                label : 'Reference Binary',
+                value: DataType.C
+            },{
+                label: 'RTF',
+                value: DataType.RTF
+            }, {
+                label: 'Word',
+                value: DataType.DOC
+            }, {
+                label: 'Excel',
+                value: DataType.XLS
+            }, {
+                label : 'XML',
+                value: DataType.XML
+            }]
         },
         {
             field: 'actions',
@@ -93,8 +105,6 @@ export const EditParameters = ({params, title, updateParams}) => {
 
         let newRows = rows.map((row) => (row.id === newRow.id ? updatedRow : row));
         setRows(newRows);
-
-        console.log("final updating my newrows " + JSON.stringify(newRows));
 
         updateParams(newRows);
         return updatedRow;
