@@ -58,16 +58,44 @@ export const getAllUserParamsSucceeded = createAction(GET_ALL_USER_PARAMS_ACTION
 export const getAllUserParamsFailed = createNamedArgsAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_FAILED);
 //================================================================================================== //
 
-export const SAVE_USER_DETAILS_ACTION = {
-    SAVE_USER_DETAILS: "SAVE_USER_DETAILS",
-    SAVE_USER_DETAILS_SUCCEEDED:  "SAVE_USER_DETAILS_SUCCEEDED",
-    SAVE_USER_DETAILS_FAILED: "SAVE_USER_DETAILS_FAILED",
-    SAVE_USER_DETAILS_STATUS_CONFIRMED: "SAVE_USER_DETAILS_STATUS_CONFIRMED"
+export const SAVE_USER_ACTION = {
+    SAVE_USER: "SAVE_USER_DETAILS",
+    SAVE_USER_SUCCEEDED:  "SAVE_USER_SUCCEEDED",
+    SAVE_USER_FAILED: "SAVE_USER_FAILED",
+    SAVE_USER_STATUS_CONFIRMED: "SAVE_USER_STATUS_CONFIRMED"
 };
-export const saveUserDetails =  createAction(SAVE_USER_DETAILS_ACTION.SAVE_USER_DETAILS);
-export const saveUserDetailsSucceeded = createAction(SAVE_USER_DETAILS_ACTION.SAVE_USER_DETAILS_SUCCEEDED);
-export const saveUserDetailsFailed = createNamedArgsAction(SAVE_USER_DETAILS_ACTION.SAVE_USER_DETAILS_FAILED);
-export const saveUserDetailsStatusConfirmed = createAction(SAVE_USER_DETAILS_ACTION.SAVE_USER_DETAILS_STATUS_CONFIRMED);
+export const saveUser =  createAction(SAVE_USER_ACTION.SAVE_USER);
+export const saveUserSucceeded = createAction(SAVE_USER_ACTION.SAVE_USER_SUCCEEDED);
+export const saveUserFailed = createNamedArgsAction(SAVE_USER_ACTION.SAVE_USER_FAILED);
+export const saveUserStatusConfirmed = createAction(SAVE_USER_ACTION.SAVE_USER_STATUS_CONFIRMED);
+
+//================================================================================================== //
+
+export const SAVE_USER_PARAM_ACTION = {
+    SAVE_USER_PARAM: "SAVE_USER_PARAM",
+    SAVE_USER_PARAM_SUCCEEDED:  "SAVE_USER_PARAM_SUCCEEDED",
+    SAVE_USER_PARAM_FAILED: "SAVE_USER_PARAM_FAILED",
+    SAVE_USER_PARAM_STATUS_CONFIRMED: "SAVE_USER_PARAM_STATUS_CONFIRMED"
+};
+export const saveUserParam =  createAction(SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM);
+export const saveUserParamSucceeded = createAction(SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM_SUCCEEDED);
+export const saveUserParamFailed = createNamedArgsAction(SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM_FAILED);
+export const saveUserParamStatusConfirmed = createAction(SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM_STATUS_CONFIRMED);
+//================================================================================================== //
+
+export const DELETE_USER_PARAM_ACTION = {
+    DELETE_USER_PARAM: "DELETE_USER_PARAM",
+    DELETE_USER_PARAM_SUCCEEDED:  "DELETE_USER_PARAM_SUCCEEDED",
+    DELETE_USER_PARAM_FAILED: "DELETE_USER_PARAM_FAILED",
+    DELETE_USER_PARAM_STATUS_CONFIRMED: "DELETE_USER_PARAM_STATUS_CONFIRMED"
+};
+export const deleteUserParam =  createAction(DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM);
+export const deleteUserParamSucceeded = createAction(DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_SUCCEEDED);
+export const deleteUserParamFailed = createNamedArgsAction(DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_FAILED);
+export const deleteUserParamStatusConfirmed = createAction(DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_STATUS_CONFIRMED);
+
+
+
 
 
 

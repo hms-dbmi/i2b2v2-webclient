@@ -10,6 +10,8 @@ import "./Header.scss";
 //load the i2b2 plugin library
 import i2b2Loader from "../../js/i2b2-loader";
 
+import AppBar from '@mui/material/AppBar';
+
 export const Header = () => {
     const isI2b2LibLoaded = useSelector((state) => state.isI2b2LibLoaded );
 
@@ -24,15 +26,6 @@ export const Header = () => {
 
     const handleTabChange = (event, newValue) => {
         setSelectedTab(newValue);
-        if(isI2b2LibLoaded) {
-            if (newValue === ViewModeTypes.PROJECTS) {
-                dispatch(getAllProjects({}));
-            } else if (newValue === ViewModeTypes.HIVES) {
-                dispatch(getAllHives({}));
-            }else{
-                dispatch(getAllUsers({}));
-            }
-        }
     };
 
     const updateI2b2LibLoaded = () => {
@@ -44,24 +37,24 @@ export const Header = () => {
             window.addEventListener('I2B2_READY', updateI2b2LibLoaded);
         }
 
-        //test get all users call
-        if(isI2b2LibLoaded) {
-            dispatch(getAllUsers({}));
-        }
-
     }, [isI2b2LibLoaded]);
 
     return (
         <div className={"Header"}>
-            <Tabs
-                value={selectedTab}
-                onChange={handleTabChange}
-                aria-label="admin tool navigation"
-            >
-                <Tab value={ViewModeTypes.USERS} label="All Users"/>
-                <Tab value={ViewModeTypes.PROJECTS} label="All Projects" />
-                <Tab value={ViewModeTypes.HIVES} label="Hive Settings" />
-            </Tabs>
+            <AppBar className="HeaderNav" position="static">
+                <Tabs
+                    value={selectedTab}
+                    textColor="inherit"
+                    onChange={handleTabChange}
+                    aria-label="admin tool navigation"
+                    variant="fullWidth"
+                >
+                    <Tab value={ViewModeTypes.USERS} label="Users"/>
+                    <Tab value={ViewModeTypes.PROJECTS} label="Projects" />
+                    <Tab value={ViewModeTypes.HIVES} label="Hive" />
+                </Tabs>
+            </AppBar>
+
             {selectedTab === ViewModeTypes.USERS && <AllUsers />}
             {selectedTab === ViewModeTypes.PROJECTS && <AllProjects />}
             {selectedTab === ViewModeTypes.HIVES && <AllHives />}

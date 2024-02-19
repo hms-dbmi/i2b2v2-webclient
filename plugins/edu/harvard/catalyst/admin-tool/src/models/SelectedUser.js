@@ -7,11 +7,13 @@ export const SelectedUser = ({
      params= [],
      isFetching= false,
      saveStatus= null,
+    deleteStatus= null
  } = {}) => ({
     user,
     params,
     isFetching,
-    saveStatus
+    saveStatus,
+    deleteStatus
 });
 
 SelectedUser.propTypes = {

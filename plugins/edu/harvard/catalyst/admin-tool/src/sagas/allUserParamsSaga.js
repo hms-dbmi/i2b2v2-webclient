@@ -22,15 +22,16 @@ const getAllUserParamsRequest = (username) => {
 const parseUserParamsXml = (user, allUserParamsXml) => {
     let params = allUserParamsXml.getElementsByTagName('param');
     let userParamsList = [];
-    params.forEach((param) => {
-        let id = param.attributes['id'];
+    params.forEach((param, index) => {
+        let id = index;
+        let internalId = param.attributes['id'];
         let name = param.attributes['name'];
         let value = param.value;
         let dataType = param.attributes['datatype'];
 
         if(name && value && dataType) {
             dataType = DataType[dataType];
-            userParamsList.push({id, name, value, dataType});
+            userParamsList.push({id, internalId, name, value, dataType});
         }
     });
 

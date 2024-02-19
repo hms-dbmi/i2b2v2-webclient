@@ -10,15 +10,15 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { Loader } from "components";
-
-import "./AllProjects.scss";
 import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
+import { getAllProjects } from "actions";
+import { Loader } from "components";
+import "./AllProjects.scss";
 
 export const AllProjects = () => {
     const allProjects = useSelector((state) => state.allProjects );
-    //const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
     const displayProjectsTable = () => {
         return (
@@ -63,6 +63,7 @@ export const AllProjects = () => {
     };
 
     useEffect(() => {
+        dispatch(getAllProjects({}));
     }, []);
 
     return (

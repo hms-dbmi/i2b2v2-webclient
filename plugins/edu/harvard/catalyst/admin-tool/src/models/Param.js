@@ -2,17 +2,21 @@ import PropTypes from "prop-types";
 
 export const Param = ({
     id= null,
-  name = null,
-  value= null,
-  dataType= DataType.T
+    internalId = null,
+    name = null,
+    value= null,
+    dataType= DataType.T
 } = {}) => ({
     id,
+    internalId,
     name,
     value,
     dataType
 });
 
 Param.propTypes = {
+    id: PropTypes.number.isRequired,
+    internalId: PropTypes.number,
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     dataType: PropTypes.string.isRequired,

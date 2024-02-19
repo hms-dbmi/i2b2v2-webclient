@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
+import {  getAllHives } from "actions";
 import { Loader } from "components";
 
 
@@ -12,7 +13,8 @@ import "./AllHives.scss";
 
 export const AllHives = () => {
     const allHives = useSelector((state) => state.allHives );
-    //const dispatch = useDispatch();
+    const isI2b2LibLoaded = useSelector((state) => state.isI2b2LibLoaded );
+    const dispatch = useDispatch();
 
     const displayHivesDetail = () => {
         return (
@@ -52,6 +54,9 @@ export const AllHives = () => {
     };
 
     useEffect(() => {
+        if(isI2b2LibLoaded) {
+            dispatch(getAllHives({}));
+        }
     }, []);
 
     return (

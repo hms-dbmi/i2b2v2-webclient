@@ -1,9 +1,33 @@
 .UserInfo {
-  margin: 0.2em 0.5em 0.6em 0.5em;
-  width: 40%;
+  margin: 0.2em 0.5em 3.2em 0.5em;
   padding: 0.5em;
-  flex-grow: 1;
-  .inputField{
-    width: 100%
+  .inputField {
+    width: 100%;
+  }
+  .mainStack {
+    margin: 0.7em;
+  }
+  .mainField {
+    width: 30%;
+  }
+
+  .EditUserContent{
+    display: flex;
+  }
+  .EditUserActions {
+    display: block;
+  }
+  .EditUserActionPrimary{
+    float: right;
+    margin: 0.7em;
+  }
+
+  .EditUserActionSecondary{
+    float: left;
+    margin: 0.7em;
+  }
+
+  .ResetEditPage{
+    float: right;
   }
 }

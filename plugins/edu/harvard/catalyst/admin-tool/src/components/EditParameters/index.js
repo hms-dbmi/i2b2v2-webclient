@@ -1,29 +1,34 @@
-import { useDispatch, useSelector} from "react-redux";
+import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import { DataType } from "models";
-import "./EditParameters.scss";
 import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes} from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Close';
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import {
+    saveUserParam, saveUserParamStatusConfirmed,
+    deleteUserParam, deleteUserParamStatusConfirmed
+} from "../../actions";
 
-export const EditParameters = ({params, title, updateParams}) => {
+import "./EditParameters.scss";
+
+export const EditParameters = ({selectedUser, params, title}) => {
     const [rows, setRows] = useState(params);
     const [rowModesModel, setRowModesModel] = useState({});
-
-    const handleDeleteClick = (id) => () => {
-    };
-
-    const handleDataTypeChange = (dataType) => () => {
-        let newRows = rows.map((row) => (row.id === newRow.id ? updatedRow : row));
-        setRows(newRows);
-    };
-    const getRowId = (row) =>{
-        return row.id;
-    }
+    const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
+    const [showSaveStatus, setShowSaveStatus] = useState(false);
+    const [saveStatusMsg, setSaveStatusMsg] = useState("");
+    const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
+    const [saveParamId, setSaveParamId] = useState(null);
+    const dispatch = useDispatch();
 
     const columns = [
         { field: 'name',
@@ -82,15 +87,39 @@ export const EditParameters = ({params, title, updateParams}) => {
             headerName: 'Actions',
             flex: 1,
             cellClassName: 'actions',
-            getActions: ({id}) => {
+            getActions: ({ id }) => {
+                const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
-                if(id === "AGG_SERVICE_ACCOUNT"){
-                    return [];
+                if (isInEditMode) {
+                    return [
+                        <GridActionsCellItem
+                            icon={<SaveIcon />}
+                            label="Save"
+                            sx={{
+                                color: 'primary.main',
+                            }}
+                            onClick={handleSaveClick(id)}
+                        />,
+                        <GridActionsCellItem
+                            icon={<CancelIcon />}
+                            label="Cancel"
+                            className="textPrimary"
+                            onClick={handleCancelClick(id)}
+                            color="inherit"
+                        />,
+                    ];
                 }
 
                 return [
                     <GridActionsCellItem
-                        icon={<DeleteIcon/>}
+                        icon={<EditIcon />}
+                        label="Edit"
+                        className="textPrimary"
+                        onClick={handleEditClick(id)}
+                        color="inherit"
+                    />,
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
                         label="Delete"
                         onClick={handleDeleteClick(id)}
                         color="inherit"
@@ -106,10 +135,17 @@ export const EditParameters = ({params, title, updateParams}) => {
         let newRows = rows.map((row) => (row.id === newRow.id ? updatedRow : row));
         setRows(newRows);
 
-        updateParams(newRows);
+        let param = newRows.filter((row) => row.id === newRow.id).reduce((acc, item) => acc);
+        setSaveParamId(param.id);
+
+        dispatch(saveUserParam({user: selectedUser.user, param}));
+
         return updatedRow;
     };
 
+    const onProcessRowUpdateError = (error) => {
+        console.warn("Process row error: " + error);
+    };
     const handleRowModesModelChange = (newRowModesModel) => {
         setRowModesModel(newRowModesModel);
     };
@@ -123,8 +159,8 @@ export const EditParameters = ({params, title, updateParams}) => {
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 processRowUpdate={processRowUpdate}
+                onProcessRowUpdateError={onProcessRowUpdateError}
                 columns={columns}
-                getRowId={getRowId}
                 disableRowSelectionOnClick
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
@@ -139,22 +175,87 @@ export const EditParameters = ({params, title, updateParams}) => {
         );
     };
 
-    useEffect(() => {
-        //console.log("rows updated " + JSON.stringify(rows));
-    }, [rows]);
+    const handleCloseSaveAlert = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setShowSaveStatus(false);
+    };
+
+    const handleEditClick = (id) => () => {
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    };
+
+    const handleSaveClick = (id) => () => {
+        let savedRow = rows.filter((row) => row.id === id);
+
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    };
+
+    const handleCancelClick = (id) => () => {
+        setRowModesModel({
+            ...rowModesModel,
+            [id]: { mode: GridRowModes.View, ignoreModifications: true },
+        });
+
+        const editedRow = rows.find((row) => row.id === id);
+        if (editedRow.isNew) {
+            setRows(rows.filter((row) => row.id !== id));
+        }
+    };
+
+    const handleDeleteClick = (id) => () => {
+        let param = rows.filter((row) => row.id === id).reduce((acc, item) => acc);
+        setSaveParamId(param.id);
+        dispatch(deleteUserParam({param}));
+    };
 
     const handleAddParam = () => {
-        const id = params.length;
-        setRows((oldRows) => {
-            let id = oldRows.length;
-            let newParams = [...oldRows, { id, name: '', value: '', dataType: DataType.T }];
-            return newParams;
-        });
+        const id = rows.length+1;
+        let newParams = [...params, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
+
+        setRows(newParams);
         setRowModesModel((oldModel) => ({
             ...oldModel,
             [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
         }));
     };
+
+    useEffect(() => {
+        if(selectedUser.saveStatus === "SUCCESS"){
+            dispatch(saveUserParamStatusConfirmed());
+            setSaveStatusMsg("Saved user parameter");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("success");
+            setRowModesModel({ ...rowModesModel, [saveParamId]: { mode: GridRowModes.View } });
+            setSaveParamId(null);
+        }
+        if(selectedUser.saveStatus === "FAIL"){
+            dispatch(saveUserParamStatusConfirmed());
+            setSaveStatusMsg("ERROR: failed to save user param");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("error");
+            setSaveParamId(null);
+        }
+        if(selectedUser.deleteStatus === "SUCCESS"){
+            dispatch(deleteUserParamStatusConfirmed());
+            setSaveStatusMsg("Deleted user parameter");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("success");
+            setRowModesModel({ ...rowModesModel, [saveParamId]: { mode: GridRowModes.View } });
+        }
+        if(selectedUser.deleteStatus === "FAIL"){
+            dispatch(deleteUserParamStatusConfirmed());
+            setSaveStatusMsg("ERROR: failed to delete user param");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("error");
+        }
+
+        setRows(selectedUser.params);
+
+    }, [selectedUser]);
+
 
     return (
         <div className="EditParameters" >
@@ -164,6 +265,23 @@ export const EditParameters = ({params, title, updateParams}) => {
                 <AddIcon />
             </IconButton>
 
+            <Backdrop className={"SaveBackdrop"} open={showSaveBackdrop}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar
+                open={showSaveStatus}
+                autoHideDuration={5000}
+                anchorOrigin={{ vertical: 'top', horizontal : "center" }}
+            >
+                <Alert
+                    onClose={handleCloseSaveAlert}
+                    severity={saveStatusSeverity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {saveStatusMsg}
+                </Alert>
+            </Snackbar>
         </div>
     );
 

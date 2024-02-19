@@ -5,18 +5,20 @@ export const User = ({
  fullname = "",
  email = "",
  isAdmin = false,
- password= null
+ password= "",
+ passwordVerify= "",
 } = {}) => ({
     username,
     fullname,
     email,
     isAdmin,
-    password
+    password,
+    passwordVerify
 });
 
 User.propTypes = {
-    username: PropTypes.string,
-    fullname: PropTypes.string,
+    username: PropTypes.string.isRequired,
+    fullname: PropTypes.string.isRequired,
     email: PropTypes.string,
-    isAdmin: PropTypes.bool,
+    isAdmin: PropTypes.bool.isRequired,
 };
