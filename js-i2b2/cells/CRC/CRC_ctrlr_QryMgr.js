@@ -131,7 +131,6 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
         abortable: true,
         finished: false,
         deleteCurrentQuery: false,
-        breakdowns: {},
         intervalTimer: null,
         lastPoll: new Date(),
         isPolling: true
@@ -147,12 +146,29 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
 
 
 // ================================================================================================== //
-i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster) {
+i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
+    i2b2.CRC.model.runner.name = queryName;
+    i2b2.CRC.model.runner.abortable = false;
+    i2b2.CRC.model.runner.isRunning = false;
+    i2b2.CRC.model.runner.finished = true;
+    i2b2.CRC.model.runner.deleteCurrentQuery = false;
+
     let cb = new i2b2_scopedCallback();
     cb.scope = this;
     cb.callback = function(results) {
         // TODO: Error checking!!!
         let qi_id = results.refXML.getElementsByTagName('query_instance_id')[0].textContent;
+        try {
+            let datestart = Date.parse(results.refXML.getElementsByTagName('start_date')[0].textContent);
+            let dateend = Date.parse(results.refXML.getElementsByTagName('end_date')[0].textContent);
+            i2b2.CRC.model.runner.startTime = new Date(datestart);
+            i2b2.CRC.model.runner.endTime = new Date(dateend);
+        } catch(e) {
+            i2b2.CRC.model.runner.startTime = 0;
+            i2b2.CRC.model.runner.endTime = 0;
+        }
+        i2b2.CRC.model.runner.elapsedTime = ((i2b2.CRC.model.runner.endTime - i2b2.CRC.model.runner.startTime) / 1000).toFixed(1);
+
         cb_hack = new i2b2_scopedCallback();
         cb_hack.scope = results;
         cb_hack.callback = i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback;
@@ -242,7 +258,15 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
 
             // get the patient count
             try {
-                i2b2.CRC.model.runner.patientCount = i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue;
+                let pCount = parseInt(i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue);
+                if (i2b2.PM.model.isObfuscated) {
+                    if (i2b2.UI.cfg.useFloorThreshold && pCount < i2b2.UI.cfg.floorThresholdNumber) {
+                        pCount = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber;
+                    } else {
+                        pCount = pCount.toString() + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                    }
+                }
+                i2b2.CRC.model.runner.patientCount = pCount
             } catch(e) {}
         }
         i2b2.CRC.model.runner.queryResultInstances = idQRI;
@@ -265,7 +289,8 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     i2b2.CRC.model.runner.abortable = false;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.isPolling = false;
-    i2b2.CRC.model.runner.endTime = new Date();
+    if (i2b2.CRC.model.runner.endTime === undefined) i2b2.CRC.model.runner.endTime = new Date();
+
 
     // stop the run timer
     clearInterval(i2b2.CRC.model.runner.intervalTimer);
@@ -317,7 +342,15 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryStatus.callback = function(results) {
 
         // get the patient count
         try {
-            i2b2.CRC.model.runner.patientCount = i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue;
+            let pCount = parseInt(i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue);
+            if (i2b2.PM.model.isObfuscated) {
+                if (i2b2.UI.cfg.useFloorThreshold && pCount < i2b2.UI.cfg.floorThresholdNumber) {
+                    pCount = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber;
+                } else {
+                    pCount = pCount.toString() + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                }
+            }
+            i2b2.CRC.model.runner.patientCount = pCount
         } catch(e) {}
     }
     i2b2.CRC.model.runner.queryResultInstances = idQRI;
@@ -565,7 +598,6 @@ i2b2.CRC.model.runner = {
     abortable: true,
     finished: false,
     deleteCurrentQuery: false,
-    breakdowns: {},
     intervalTimer: null,
     isRunning: false
 };
