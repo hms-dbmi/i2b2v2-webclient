@@ -132,7 +132,7 @@ i2b2.CRC.view.QueryReport = {
 
                     if (params[i2].getAttribute("column") === 'patient_count') {
                         i2b2.CRC.view.QueryReport.breakdowns.patientCount.title = descriptionShort;
-                        i2b2.CRC.view.QueryReport.breakdowns.patientCount.value = entryRecord.display;
+                        i2b2.CRC.view.QueryReport.breakdowns.patientCount.value = entryRecord.display ? entryRecord.display : entryRecord.value;
                         breakdown.title = descriptionShort;
                         breakdown.result.push(entryRecord);
                         isPatientCount = true;

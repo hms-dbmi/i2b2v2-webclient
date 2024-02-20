@@ -33,7 +33,7 @@
             <div style="clear:both;"></div>
         {{/if}}
 
-        {{#if patientCount}}
+        {{#ifCond patientCount '!==' undefined}}
             {{#unless deleteCurrentQuery}}
                 <table style="width: 400px; margin-left: auto; margin-right: auto;">
                     <tr style="background-color: #ed9b40">
@@ -51,6 +51,6 @@
                     </tr>
                 </table>
             {{/unless}}
-        {{/if}}
+        {{/ifCond}}
     </div>
 </div>
