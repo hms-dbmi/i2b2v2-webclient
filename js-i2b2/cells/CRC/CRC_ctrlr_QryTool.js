@@ -397,7 +397,7 @@ function QueryToolController() {
                 loadAllModifierInfo(qd[0], function(modifierXmlInfo){
                     reloadQuery(modifierXmlInfo);
                     $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
-                    i2b2.CRC.ctrlr.QueryMgr.loadQuery(qm_id);
+                    i2b2.CRC.ctrlr.QueryMgr.loadQuery(qm_id, queryName);
                 });
             }
         }

@@ -40,6 +40,13 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QueryMgr.containerDiv.append('<div id="infoQueryStatus"></div>');
                     cell.view.QueryMgr.containerDiv.append('<div id="infoQueryReport"></div>');
 
+                    container.on('resize',function() {
+                        // rerender result graphs if needed
+                        if (i2b2.CRC.view.QueryReport.breakdowns) i2b2.CRC.view.graphs.rerenderGraphs();
+                    });
+
+
+
                     // Show initial screen
                 }).bind(this)
             );
