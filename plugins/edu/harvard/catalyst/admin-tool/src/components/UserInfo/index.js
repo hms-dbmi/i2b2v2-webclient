@@ -90,7 +90,6 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
             setSaveStatusSeverity("error");
         }
 
-        console.log("in user info updated setupdated user " + JSON.stringify(selectedUser));
         setUpdatedUser(selectedUser.user);
     }, [selectedUser]);
 

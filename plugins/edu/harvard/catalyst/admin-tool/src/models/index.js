@@ -6,3 +6,4 @@
  export { Hive } from "./Hive";
  export { Param, DataType } from "./Param";
  export { SelectedUser } from "./SelectedUser";
+ export { DeletedUser } from "./DeletedUser";

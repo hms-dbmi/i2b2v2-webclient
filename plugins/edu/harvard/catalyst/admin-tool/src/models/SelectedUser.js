@@ -7,7 +7,7 @@ export const SelectedUser = ({
      params= [],
      isFetching= false,
      saveStatus= null,
-    deleteStatus= null
+     deleteStatus= null
  } = {}) => ({
     user,
     params,

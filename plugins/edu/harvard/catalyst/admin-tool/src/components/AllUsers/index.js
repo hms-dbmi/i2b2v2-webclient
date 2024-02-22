@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import { getAllUsers } from "actions";
+import { getAllUsers, deleteUser, deleteUserStatusConfirmed } from "actions";
 import {EditUserDetails} from "components";
 import { User} from "../../models";
 import {
@@ -14,31 +14,24 @@ import {
     gridClasses
 } from '@mui/x-data-grid';
 import { Loader } from "components";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import "./AllUsers.scss";
 
 
 export const AllUsers = () => {
     const allUsers = useSelector((state) => state.allUsers );
     const isI2b2LibLoaded = useSelector((state) => state.isI2b2LibLoaded );
-    const dispatch = useDispatch();
+    const [userRows, setUserRows] = useState(allUsers.users);
+    const deletedUser = useSelector((state) => state.deletedUser );
     const[selectedUser, setSelectedUser] = useState(null);
     const[isEditingUser, setIsEditingUser] = useState(false);
+    const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
+    const [showSaveStatus, setShowSaveStatus] = useState(false);
+    const [saveStatusMsg, setSaveStatusMsg] = useState("");
+    const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
+    const dispatch = useDispatch();
 
-    const handleEditClick = (username) => () => {
-        let user = allUsers.users.filter((user) => user.username === username);
-        if(user.length === 1) {
-            setSelectedUser(user[0]);
-            setIsEditingUser(true);
-            console.log("selected user in handle edit user[0]" + user[0]);
-        }
-    };
-
-    const handleDeleteClick = (id) => () => {
-    };
-
-    const getRowId = (row) =>{
-        return row.username;
-    }
     const columns = [
         { field: 'fullname',
             headerName: 'Full Name',
@@ -97,7 +90,7 @@ export const AllUsers = () => {
     const displayUsersTable = () => {
         return (
             <DataGrid
-                rows={allUsers.users}
+                rows={userRows}
                 columns={columns}
                 getRowId={getRowId}
                 disableRowSelectionOnClick
@@ -114,16 +107,87 @@ export const AllUsers = () => {
         );
     };
 
+    const getRowId = (row) =>{
+        return row.username;
+    }
+
+    const handleEditClick = (username) => () => {
+        let user = allUsers.users.filter((user) => user.username === username);
+        if(user.length === 1) {
+            setSelectedUser(user[0]);
+            setIsEditingUser(true);
+        }
+    };
+
+    const handleDeleteClick = (username) => () => {
+        const user = userRows.filter((user) => user.username === username).reduce((acc, item) => acc);
+        dispatch(deleteUser({user}));
+    };
+
     const handleAddNewUser = () => {
         setSelectedUser(User());
         setIsEditingUser(true);
     };
+
+    const handleCloseSaveAlert = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setShowSaveStatus(false);
+    };
+
+    const statusUpdate = () => {
+       return ( <Snackbar
+            open={showSaveStatus}
+            autoHideDuration={5000}
+            anchorOrigin={{ vertical: 'top', horizontal : "center" }}
+        >
+            <Alert
+                onClose={handleCloseSaveAlert}
+                severity={saveStatusSeverity}
+                variant="filled"
+                sx={{ width: '100%' }}
+            >
+                {saveStatusMsg}
+            </Alert>
+        </Snackbar>
+       );
+    }
 
     useEffect(() => {
         if(isI2b2LibLoaded && !isEditingUser) {
             dispatch(getAllUsers({}));
         }
     }, [isI2b2LibLoaded, isEditingUser]);
+
+    useEffect(() => {
+
+        if(allUsers.users) {
+            setUserRows(allUsers.users);
+        }
+    }, [allUsers]);
+
+
+
+    useEffect(() => {
+        if(deletedUser.status === "SUCCESS") {
+            dispatch(deleteUserStatusConfirmed());
+            setSaveStatusMsg("Deleted user " + deletedUser.user.username);
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("success");
+
+            let filteredRows = userRows.filter((row) => row.username !== deletedUser.user.username);
+            setUserRows(filteredRows);
+        }
+
+        if(deletedUser.status === "FAIL") {
+            dispatch(deleteUserStatusConfirmed());
+            setSaveStatusMsg("Error: There was an error deleting user " + deletedUser.user.username);
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("success");
+        }
+    }, [deletedUser]);
 
     return (
         <div className="AllUsers">
@@ -135,6 +199,7 @@ export const AllUsers = () => {
             }
             {!isEditingUser && allUsers.users.length > 0 && displayUsersTable()}
             { isEditingUser && <EditUserDetails user={selectedUser} setIsEditingUser={setIsEditingUser}/>}
+            {!isEditingUser && statusUpdate()}
         </div>
     );
 };

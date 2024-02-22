@@ -23,9 +23,20 @@ export const GET_ALL_USERS_ACTION = {
 export const getAllUsers =  createAction(GET_ALL_USERS_ACTION.GET_ALL_USERS);
 export const getAllUsersSucceeded = createAction(GET_ALL_USERS_ACTION.GET_ALL_USERS_SUCCEEDED);
 export const getAllUsersFailed = createNamedArgsAction(GET_ALL_USERS_ACTION.GET_ALL_USERS_FAILED);
-
 //================================================================================================== //
 
+export const DELETE_USER_ACTION = {
+    DELETE_USER: "DELETE_USER",
+    DELETE_USER_SUCCEEDED:  "DELETE_USER_SUCCEEDED",
+    DELETE_USER_FAILED: "DELETE_USER_FAILED",
+    DELETE_USER_STATUS_CONFIRMED:  "DELETE_USER_STATUS_CONFIRMED",
+};
+export const deleteUser =  createAction(DELETE_USER_ACTION.DELETE_USER);
+export const deleteUserSucceeded = createAction(DELETE_USER_ACTION.DELETE_USER_SUCCEEDED);
+export const deleteUserFailed = createNamedArgsAction(DELETE_USER_ACTION.DELETE_USER_FAILED, "username");
+export const deleteUserStatusConfirmed = createAction(DELETE_USER_ACTION.DELETE_USER_STATUS_CONFIRMED);
+
+//================================================================================================== //
 export const GET_ALL_PROJECTS_ACTION = {
     GET_ALL_PROJECTS: "GET_ALL_PROJECTS",
     GET_ALL_PROJECTS_SUCCEEDED:  "GET_ALL_PROJECTS_SUCCEEDED",
