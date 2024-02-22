@@ -5,6 +5,9 @@ const CopyPlugin = require('copy-webpack-plugin');
 const APP_DIR = path.resolve(__dirname, "./src");
 const VENDOR_DIR = path.resolve(__dirname, "./node_modules");
 
+const isEnvDevelopment = true; //webpackEnv === 'development';
+const isEnvProduction = false;//webpackEnv === 'production';
+
 module.exports = {
   output: {
     path: path.join(__dirname, "/dist"), // the bundle output path
@@ -16,9 +19,33 @@ module.exports = {
   },
  entry: "index",
   plugins: [
-    new HtmlWebpackPlugin({
-      template: "src/index.html", // to import index.html file inside index.js
-    }),
+
+    // Generates an `index.html` file with the <script> injected.
+    new HtmlWebpackPlugin(
+        Object.assign(
+            {},
+            {
+              inject: true,
+              template: "src/index.html",
+            },
+            isEnvProduction
+                ? {
+                  minify: {
+                    removeComments: true,
+                    collapseWhitespace: true,
+                    removeRedundantAttributes: true,
+                    useShortDoctype: true,
+                    removeEmptyAttributes: true,
+                    removeStyleLinkTypeAttributes: true,
+                    keepClosingSlash: true,
+                    minifyJS: true,
+                    minifyCSS: true,
+                    minifyURLs: true,
+                  },
+                }
+                : undefined
+        )
+    ),
     new CopyPlugin({
       patterns: [
         {
