@@ -5,6 +5,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const APP_DIR = path.resolve(__dirname, "./src");
 const VENDOR_DIR = path.resolve(__dirname, "./node_modules");
 
+//TODO: make this configurable
 const isEnvDevelopment = true; //webpackEnv === 'development';
 const isEnvProduction = false;//webpackEnv === 'production';
 
