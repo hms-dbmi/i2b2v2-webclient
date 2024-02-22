@@ -85,6 +85,14 @@
 #infoQueryStatusText .statusButtons button {
     display: none;
 }
+#infoQueryStatusText .statusButtons.running .cancel {
+    display: block;
+}
+#infoQueryStatusText .statusButtons.cancelled .cancelled {
+    display: block;
+    cursor: not-allowed;
+}
+
 #infoQueryStatusText .statusButtons.done .report {
     display: block;
 }
