@@ -137,6 +137,9 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
     };
     i2b2.CRC.model.runner.intervalTimer = setInterval(i2b2.CRC.ctrlr.QueryMgr.tick, 100);
 
+    // clear any old results
+    i2b2.CRC.view.QueryMgr.clearStatus();
+
     // show run status HTML
     i2b2.CRC.view.QueryMgr.updateStatus();
 
