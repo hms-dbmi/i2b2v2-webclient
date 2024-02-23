@@ -123,7 +123,7 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
 
     // start run status Timer
     i2b2.CRC.model.runner = {
-        name: i2b2.h.Escape(queryName),
+        name: queryName,
         definition: params.psm_query_definition,
         elapsedTime: "0",
         startTime: new Date(),
