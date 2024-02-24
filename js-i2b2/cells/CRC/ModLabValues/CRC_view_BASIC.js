@@ -14,7 +14,7 @@ i2b2.CRC.view.BASIC = {
 		return "<div style='color: green'>Add custom basic report text for: " + sdxConcept.renderData.title + "</div>";
 	},
 	// ================================================================================================== //
-	showDialog: function (sdxConcept, valueMetadata, queryPanelController, isModifier, groupIdx, eventIdx) {
+	showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx) {
 		if (valueMetadata) {
 			let extractedLabValues = valueMetadata;
 
