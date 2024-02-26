@@ -15,7 +15,7 @@ import { CELL_ID } from "models";
 
 export const EditProjectDataSources = ({selectedProject, doSave, setSaveCompleted}) => {
     const [updatedDataSources, setUpdatedDataSources] = useState(selectedProject.dataSources);
-    const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
+    const [showSaveBackdrop, setShowProcessingBackdrop] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
     const dispatch = useDispatch();
 
@@ -47,7 +47,22 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
 
 
     useEffect(() => {
+
+        const timeoutId = setTimeout(() => {
+            if(!updatedDataSources) {
+                setShowProcessingBackdrop(true);
+            }
+        }, 2000);
+
+        return () => clearTimeout(timeoutId);
     }, []);
+
+    useEffect(() => {
+        if(updatedDataSources){
+            setShowProcessingBackdrop(false);
+        }
+
+    }, [updatedDataSources]);
 
     const dsForm = (cellId) => {
         return (
@@ -68,7 +83,7 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
                     className="inputField"
                     required
                     label="Database Server"
-                    value={updatedDataSources[cellId] ? updatedDataSources[cellId].dbServerType : "Sql Server"}
+                    value={updatedDataSources[cellId] ? updatedDataSources[cellId].dbServerType : ""}
                     onChange={(event) => handleUpdate(cellId, "dbServerType", event.target.value)}
                     variant="standard"
                     InputLabelProps={{ shrink: true }}
@@ -136,7 +151,8 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
     }
     return (
         <div className="EditProjectDataSources" >
-            <Typography>Project - Data Source Details</Typography>
+            <Typography> {selectedProject.project.name + " - Data Source Details"} </Typography>
+
             <Stack direction="row" spacing={6} useFlexGap>
                 { dsForm(CELL_ID.CRC) }
                 { dsForm(CELL_ID.ONT) }

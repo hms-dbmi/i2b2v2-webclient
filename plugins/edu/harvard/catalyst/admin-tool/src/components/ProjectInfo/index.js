@@ -19,6 +19,7 @@ import Alert from '@mui/material/Alert';
 import {saveProject, saveProjectStatusConfirmed} from "actions";
 import { Project } from "models";
 import "./ProjectInfo.scss";
+import Typography from "@mui/material/Typography";
 
 export const ProjectInfo = ({selectedProject, cancelEdit, doSave, setSaveCompleted}) => {
     const [updatedProject, setUpdatedProject] = useState(selectedProject.project);
@@ -105,6 +106,8 @@ export const ProjectInfo = ({selectedProject, cancelEdit, doSave, setSaveComplet
 
     return (
         <Box  className="UserInfo" sx={{ width: '100%' }}>
+            <Typography> {selectedProject.project.name + " - Details"} </Typography>
+
             <div className={"ResetEditPage"}>
                 <IconButton color="primary" aria-label="add params" onClick={handleResetUserDetails} variant={"outlined"}>
                     <ReplayIcon/>

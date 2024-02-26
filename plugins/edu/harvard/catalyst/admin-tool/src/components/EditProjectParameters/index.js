@@ -6,6 +6,7 @@ import "./EditProjectParameters.scss";
 import {saveProjectStatusConfirmed} from "../../actions";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
+import Typography from "@mui/material/Typography";
 
 export const EditProjectParameters = ({selectedProject, params, title, doSave, setSaveCompleted}) => {
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
@@ -18,7 +19,8 @@ export const EditProjectParameters = ({selectedProject, params, title, doSave, s
 
     return (
         <div className="EditProjectParameters" >
-            Project Parameters
+            <Typography> {selectedProject.project.name + " - Parameters"} </Typography>
+
             <Backdrop className={"SaveBackdrop"} open={showSaveBackdrop}>
                 <CircularProgress color="inherit" />
             </Backdrop>

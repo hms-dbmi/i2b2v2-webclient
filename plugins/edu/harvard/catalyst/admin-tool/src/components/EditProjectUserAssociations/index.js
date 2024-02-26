@@ -272,7 +272,7 @@ import "./EditProjectUserAssociations.scss";
 
     return (
         <div className="EditProjectUserAssociations" >
-            <Typography> {selectedProject.project.name + " Project - User Associations"} </Typography>
+            <Typography> {selectedProject.project.name + " - User Associations"} </Typography>
 
             <Stack
                 direction={"row"}
@@ -281,6 +281,7 @@ import "./EditProjectUserAssociations.scss";
             >
                 <Paper
                     component="form"
+                    variant="outlined"
                 >
                     <InputBase
                         sx={{ ml: 1, flex: 1 }}

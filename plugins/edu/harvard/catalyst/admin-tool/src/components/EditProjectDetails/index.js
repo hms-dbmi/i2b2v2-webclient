@@ -99,7 +99,8 @@ export const EditProjectDetails = ({project, setIsEditingProject}) => {
                         <Button onClick={cancelEdit} variant="outlined"> Cancel </Button>
                     </div>
                     <div className="EditProjectActionPrimary">
-                        <Button  variant="outlined" onClick={handleNext}> Save and Continue </Button>
+                        <Button  variant="outlined" onClick={handleNext}>
+                            {activeStep === 3 ? "Save and Exit" : "Save and Continue"} </Button>
                     </div>
                     <div className="EditProjectActionPrimary">
                         <Button  variant="outlined" onClick={handlePrevious}> Previous </Button>
