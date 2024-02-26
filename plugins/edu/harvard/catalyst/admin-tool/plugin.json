@@ -8,13 +8,5 @@
   "i2b2_version" : "1.8.1",
   "base": "dist/index.html",
   "sandbox": true,
-  "roles": ["MANAGER"],
-
-  "authorizedTunnel": {
-    "variables" :{
-      "i2b2.PM.model.isAdmin": "R",
-      "i2b2.ONT.cfg": "RO"
-    },
-    "functions": []
-  }
+  "roles": ["MANAGER"]
 }
