@@ -3,6 +3,7 @@
 ## Setup the App
 ```bash
 npm install
+export NODE_ENV="development"
 ```
 
 ## Bundle the App
