@@ -3,10 +3,10 @@ import {Param} from "./Param";
 import {User} from "./User";
 
 export const SelectedUser = ({
-     user = User(),
-     params= [],
-     isFetching= false,
-     saveStatus= null,
+    user = User(),
+    params= [],
+    isFetching= false,
+    saveStatus= null,
      deleteStatus= null
  } = {}) => ({
     user,

@@ -35,7 +35,6 @@ export function* doSaveUserParam(action) {
     console.log("saving user param " + param);
     try {
         let response = yield call(saveParamRequest, user.username, param);
-        console.log("response " + JSON.stringify(response));
         response = JSON.stringify(response);
 
         if(!response.includes("AJAX_ERROR")) {

@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { DataType } from "models";
+import { DataType, ADMIN_ROLE, DATA_ROLE } from "models";
 import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes} from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
@@ -13,15 +13,22 @@ import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import InputBase from '@mui/material/InputBase';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+
 import {
     saveUserParam, saveUserParamStatusConfirmed,
-    deleteUserParam, deleteUserParamStatusConfirmed
+    deleteUserParamStatusConfirmed
 } from "../../actions";
 
-import "./EditParameters.scss";
+import "./EditProjectUserAssociations.scss";
 
-export const EditParameters = ({selectedUser, params, title}) => {
-    const [rows, setRows] = useState(params);
+    export const EditProjectUserAssociations = ({selectedProject}) => {
+    const [rows, setRows] = useState(selectedProject.users);
     const [rowModesModel, setRowModesModel] = useState({});
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
@@ -31,54 +38,51 @@ export const EditParameters = ({selectedUser, params, title}) => {
     const dispatch = useDispatch();
 
     const columns = [
-        { field: 'name',
-            headerName: 'Name',
+        { field: 'username',
+            headerName: 'User Name',
             flex: 2,
-            editable: true,
+            editable: false,
         },
         {
-            field: 'value',
-            headerName: 'Value',
-            flex: 2,
-            editable: true,
-        },
-        {
-            field: 'dataType',
-            headerName: 'Data Type',
+            field: 'adminPath',
+            headerName: 'Admin Path',
             flex: 1,
             editable: true,
             filterable: false,
             type: 'singleSelect',
             valueOptions: [{
-                label: 'Text',
-                value: DataType.T
+                label: 'Manager',
+                value: ADMIN_ROLE.MANAGER
             }, {
-                label: 'Numeric',
-                value: DataType.N
+                label: 'User',
+                value: ADMIN_ROLE.USER
+            }]
+        },
+        {
+            field: 'dataPath',
+            headerName: 'Data Path',
+            flex: 1,
+            editable: true,
+            filterable: false,
+            type: 'singleSelect',
+            valueOptions: [{
+                label: 'Protected',
+                value: DATA_ROLE.DATA_PROT
             }, {
-                label: 'Date',
-                value: DataType.D
-            }, {
-                label: 'Integer',
-                value: DataType.I
-            }, {
-                label : 'Boolean',
-                value: DataType.B
-            }, {
-                label : 'Reference Binary',
-                value: DataType.C
-            },{
-                label: 'RTF',
-                value: DataType.RTF
-            }, {
-                label: 'Word',
-                value: DataType.DOC
-            }, {
-                label: 'Excel',
-                value: DataType.XLS
-            }, {
-                label : 'XML',
-                value: DataType.XML
+                label: 'De-identified Data',
+                value: DATA_ROLE.DATA_DEID
+            },
+            {
+                label: 'Limited Data Set',
+                value: DATA_ROLE.DATA_LDS
+            },
+            {
+                label: 'Aggregated',
+                value: DATA_ROLE.DATA_AGG
+            },
+            {
+                label: 'Obfuscated',
+                value: DATA_ROLE.DATA_OBFSC
             }]
         },
         {
@@ -150,11 +154,16 @@ export const EditParameters = ({selectedUser, params, title}) => {
         setRowModesModel(newRowModesModel);
     };
 
+    const getRowId = (row) =>{
+        return row.username;
+    }
+
     const displayParamsTable = () => {
         return (
             <DataGrid
                 autoHeight
                 rows={rows}
+                getRowId={getRowId}
                 editMode="row"
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
@@ -208,7 +217,7 @@ export const EditParameters = ({selectedUser, params, title}) => {
     const handleDeleteClick = (id) => () => {
         let param = rows.filter((row) => row.id === id).reduce((acc, item) => acc);
         setSaveParamId(param.id);
-        dispatch(deleteUserParam({param}));
+        //dispatch(deleteUserParam({param}));
     };
 
     const handleAddParam = () => {
@@ -222,8 +231,12 @@ export const EditParameters = ({selectedUser, params, title}) => {
         }));
     };
 
+    const handleAssociateUser = () => {
+
+    };
+
     useEffect(() => {
-        if(selectedUser.saveStatus === "SUCCESS"){
+        if(selectedProject.saveStatus === "SUCCESS"){
             dispatch(saveUserParamStatusConfirmed());
             setSaveStatusMsg("Saved user parameter");
             setShowSaveStatus(true);
@@ -231,35 +244,58 @@ export const EditParameters = ({selectedUser, params, title}) => {
             setRowModesModel({ ...rowModesModel, [saveParamId]: { mode: GridRowModes.View } });
             setSaveParamId(null);
         }
-        if(selectedUser.saveStatus === "FAIL"){
+        if(selectedProject.saveStatus === "FAIL"){
             dispatch(saveUserParamStatusConfirmed());
             setSaveStatusMsg("ERROR: failed to save user param");
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
             setSaveParamId(null);
         }
-        if(selectedUser.deleteStatus === "SUCCESS"){
+        if(selectedProject.deleteStatus === "SUCCESS"){
             dispatch(deleteUserParamStatusConfirmed());
             setSaveStatusMsg("Deleted user parameter");
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
             setRowModesModel({ ...rowModesModel, [saveParamId]: { mode: GridRowModes.View } });
         }
-        if(selectedUser.deleteStatus === "FAIL"){
+        if(selectedProject.deleteStatus === "FAIL"){
             dispatch(deleteUserParamStatusConfirmed());
             setSaveStatusMsg("ERROR: failed to delete user param");
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
         }
 
-        setRows(selectedUser.params);
+        setRows(selectedProject.users);
 
-    }, [selectedUser]);
+    }, [selectedProject]);
 
 
     return (
-        <div className="EditParameters" >
-            <h3> {title} </h3>
+        <div className="EditProjectUserAssociations" >
+            <Typography> {selectedProject.project.name + " Project - User Associations"} </Typography>
+
+            <Stack
+                direction={"row"}
+                spacing={2}
+                className={"UserSearch"}
+            >
+                <Paper
+                    component="form"
+                >
+                    <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="Search username"
+                        inputProps={{ 'aria-label': 'search google maps' }}
+                    />
+                    <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                        <SearchIcon />
+                    </IconButton>
+                </Paper>
+                <Button className="AddUser" variant="contained" startIcon={<AddIcon />} onClick={handleAssociateUser}>
+                    Associate User to Project
+                </Button>
+            </Stack>
+
             {displayParamsTable()}
 
             <Button className="AddParam" variant="contained" startIcon={<AddIcon />} onClick={handleAddParam}>
@@ -289,4 +325,4 @@ export const EditParameters = ({selectedUser, params, title}) => {
 
 };
 
-EditParameters.propTypes = {};
+EditProjectUserAssociations.propTypes = {};

@@ -111,6 +111,7 @@ export const AllUsers = () => {
         return row.username;
     }
 
+
     const handleEditClick = (username) => () => {
         let user = allUsers.users.filter((user) => user.username === username);
         if(user.length === 1) {

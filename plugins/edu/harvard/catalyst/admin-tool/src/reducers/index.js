@@ -4,3 +4,5 @@ export { allProjectsReducer as allProjects } from "./allProjectsReducer";
 export { allHivesReducer as allHives } from "./allHivesReducer";
 export { editUserReducer as selectedUser } from "./editUserReducer";
 export { deleteUserReducer as deletedUser } from "./deleteUserReducer";
+export { editProjectReducer as selectedProject } from "./editProjectReducer";
+
