@@ -9,7 +9,7 @@ import { UserInfo } from "components";
 
 import "./EditUserDetails.scss";
 import {
-    getAllUserParams,
+    getAllUserParams, saveUserStatusConfirmed,
 } from "actions";
 import {EditParameters} from "../EditParameters";
 import {Tab, Tabs} from "@mui/material";
@@ -17,6 +17,7 @@ import {Tab, Tabs} from "@mui/material";
 
 export const EditUserDetails = ({user, setIsEditingUser}) => {
     const selectedUser = useSelector((state) => state.selectedUser );
+    const [updatedUser, setUpdatedUser] = useState(selectedUser.user);
 
     const dispatch = useDispatch();
     const EditDetails = {
@@ -39,6 +40,11 @@ export const EditUserDetails = ({user, setIsEditingUser}) => {
         }
     }, [user]);
 
+    useEffect(() => {
+        setUpdatedUser(selectedUser.user);
+    }, [selectedUser]);
+
+
     return (
         <div className={"EditUserDetails"}>
             <Link  className="BackToUsers" component="button" onClick={cancelEdit}>back to All Users</Link>
@@ -54,8 +60,13 @@ export const EditUserDetails = ({user, setIsEditingUser}) => {
                 <Tab value={EditDetails.PARAMS} label="Parameters(Optional)"  disabled={!selectedUser.user.username}/>
             </Tabs>
             {
-                selectedTab === EditDetails.USERS &&
-                !selectedUser.isFetching && <UserInfo selectedUser={selectedUser} cancelEdit={cancelEdit}/>
+            selectedTab === EditDetails.USERS &&
+            !selectedUser.isFetching && <UserInfo
+                selectedUser={selectedUser}
+                cancelEdit={cancelEdit}
+                updateUser={setUpdatedUser}
+                updatedUser={updatedUser}
+            />
             }
             {
                 selectedTab === EditDetails.PARAMS &&

@@ -20,8 +20,7 @@ import {saveUser, saveUserStatusConfirmed} from "actions";
 import { User } from "models";
 import "./UserInfo.scss";
 
-export const UserInfo = ({selectedUser, cancelEdit}) => {
-    const [updatedUser, setUpdatedUser] = useState(selectedUser.user);
+export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) => {
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
@@ -29,6 +28,16 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showPasswordVerify, setShowPasswordVerify] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
+    const [isUsernameNotValid, setIsUsernameNotValid] = useState(false);
+    const [usernameNotValidError, setUsernameNotValidError] = useState("");
+    const [isFullnameNotValid, setIsFullnameNotValid] = useState(false);
+    const [fullnameNotValidError, setFullnameNotValidError] = useState("");
+    const [isEmailNotValid, setIsEmailNotValid] = useState(false);
+    const [emailNotValidError, setEmailNotValidError] = useState("");
+    const [isPasswordNotValid, setIsPasswordNotValid] = useState(false);
+    const [passwordNotValidError, setPasswordNotValidError] = useState("");
+    const [doPasswordsNotMatch, setDoPasswordsNotMatch] = useState(false);
+    const [passwordsDoNotMatchError, setPasswordsDoNotMatchError] = useState("");
     const dispatch = useDispatch();
 
     const handleClickShowPassword = () => {
@@ -39,10 +48,67 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
         setShowPasswordVerify(!showPasswordVerify);
     };
 
-    const saveUserAndParams = () => {
-        setShowSaveBackdrop(true);
+    const validateSaveUser = () => {
+        let isValid = true;
+        if(!updatedUser.username || updatedUser.username.length === 0){
+            setIsUsernameNotValid(true);
+            setUsernameNotValidError("User Name is required");
+            isValid = false;
+        }else{
+            setIsUsernameNotValid(false);
+            setUsernameNotValidError("");
+        }
 
-        dispatch(saveUser({user: updatedUser}));
+        if(!updatedUser.fullname || updatedUser.fullname.length === 0){
+            setIsFullnameNotValid(true);
+            setFullnameNotValidError("Full Name is required");
+            isValid = false;
+        }
+        else{
+            setIsFullnameNotValid(false);
+            setFullnameNotValidError("");
+        }
+
+        const emailRegex = /\S+@\S+\.\S+/;
+        if(updatedUser.email && updatedUser.email.length > 0 && !emailRegex.test(updatedUser.email)){
+            setIsEmailNotValid(true);
+            setEmailNotValidError("Enter a valid email");
+            isValid = false;
+        }
+        else{
+            setIsEmailNotValid(false);
+            setEmailNotValidError("");
+        }
+
+        //if this is a new user check the password fields
+        if(selectedUser.user.username.length === 0) {
+            if (updatedUser.password.length === 0) {
+                setIsPasswordNotValid(true);
+                setPasswordNotValidError("Password is required");
+                isValid = false;
+            } else {
+                setIsPasswordNotValid(false);
+                setPasswordNotValidError("");
+            }
+        }
+
+        if (updatedUser.password !== updatedUser.passwordVerify) {
+            setDoPasswordsNotMatch(true);
+            setPasswordsDoNotMatchError("Passwords do not match");
+            isValid = false;
+        } else {
+            setDoPasswordsNotMatch(false);
+            setPasswordsDoNotMatchError("");
+        }
+
+        return isValid;
+    }
+
+    const saveUserInfo = () => {
+        if(validateSaveUser()) {
+            setShowSaveBackdrop(true);
+            dispatch(saveUser({user: updatedUser}));
+        }
     };
 
     const handleUpdate = (field, value) => {
@@ -50,9 +116,8 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
             ...updatedUser
         }
         newUser[field] = value;
-        newUser.isUpdated = true;
 
-        setUpdatedUser(newUser);
+        updateUser(newUser);
 
         if(JSON.stringify(newUser) !== JSON.stringify(selectedUser.user)){
             setIsDirty(true);
@@ -62,7 +127,7 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
     }
 
     const handleResetUserDetails = () => {
-        setUpdatedUser({...selectedUser.user});
+        updateUser({...selectedUser.user});
         setIsDirty(false);
     }
 
@@ -78,20 +143,25 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
         if(selectedUser.saveStatus === "SUCCESS"){
             setShowSaveBackdrop(false);
             dispatch(saveUserStatusConfirmed());
-            setSaveStatusMsg("Saved user");
+            setSaveStatusMsg("Saved user " + selectedUser.user.username);
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
         }
         if(selectedUser.saveStatus === "FAIL"){
             setShowSaveBackdrop(false);
             dispatch(saveUserStatusConfirmed());
-            setSaveStatusMsg("ERROR: failed to save user");
+            setSaveStatusMsg("ERROR: failed to save user " + selectedUser.user.username);
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
         }
-
-        setUpdatedUser(selectedUser.user);
     }, [selectedUser]);
+
+    useEffect(() => {
+        if(JSON.stringify(updatedUser) !== JSON.stringify(selectedUser.user)){
+            setIsDirty(true);
+        }
+
+    }, [updatedUser]);
 
     return (
         <Box  className="UserInfo" sx={{ width: '100%' }}>
@@ -115,6 +185,8 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
                         label="User Name"
                         value={updatedUser.username}
                         onChange={(event) => handleUpdate("username", event.target.value)}
+                        error={isUsernameNotValid}
+                        helperText={usernameNotValidError}
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                     />
@@ -127,6 +199,8 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
                         label="Full Name"
                         value={updatedUser.fullname}
                         onChange={(event) => handleUpdate("fullname", event.target.value)}
+                        error={isFullnameNotValid}
+                        helperText={fullnameNotValidError}
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                     />
@@ -138,6 +212,8 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
                         label="Email"
                         value={updatedUser.email}
                         onChange={(event) => handleUpdate("email", event.target.value)}
+                        error={isEmailNotValid}
+                        helperText={emailNotValidError}
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                     />
@@ -149,6 +225,8 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
                         type={showPassword ? "text" : "password"}
                         value={updatedUser.password}
                         onChange={(event) => handleUpdate("password", event.target.value)}
+                        error={isPasswordNotValid}
+                        helperText={passwordNotValidError}
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                         InputProps={{
@@ -173,6 +251,8 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
                         type={showPasswordVerify ? "text" : "password"}
                         value={updatedUser.passwordVerify}
                         onChange={(event) => handleUpdate("passwordVerify", event.target.value)}
+                        error = {doPasswordsNotMatch}
+                        helperText={passwordsDoNotMatchError}
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                         InputProps={{
@@ -211,7 +291,7 @@ export const UserInfo = ({selectedUser, cancelEdit}) => {
                         <Button onClick={cancelEdit} variant="outlined"> Cancel </Button>
                     </div>
                     <div className="EditUserActionPrimary">
-                        <Button  variant="outlined" onClick={saveUserAndParams} disabled={!isDirty}> Save </Button>
+                        <Button  variant="outlined" onClick={saveUserInfo} disabled={!isDirty}> Save </Button>
                     </div>
                 </BottomNavigation>
                 <Backdrop className={"SaveBackdrop"} open={showSaveBackdrop}>
