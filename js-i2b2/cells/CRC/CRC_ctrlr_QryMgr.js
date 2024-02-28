@@ -133,8 +133,10 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
         deleteCurrentQuery: false,
         intervalTimer: null,
         lastPoll: new Date(),
-        isPolling: true
+        isPolling: true,
+        isRunning: true
     };
+
     i2b2.CRC.model.runner.intervalTimer = setInterval(i2b2.CRC.ctrlr.QueryMgr.tick, 100);
 
     // clear any old results
