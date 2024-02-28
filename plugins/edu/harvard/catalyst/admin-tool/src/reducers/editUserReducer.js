@@ -87,22 +87,13 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                 saveStatus: "SUCCESS"
             });
         }
-
-        case
-            DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_STATUS_CONFIRMED: {
-
-            return SelectedUser({
-                ...state,
-                deleteStatus: null
-            });
-        }
         case  DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_SUCCEEDED: {
             const  { user, param }  = action.payload;
 
             let newParams = [
                 ...state.params
             ];
-            newParams = newParams.filter((pm) => pm.id  === param.id);
+            newParams = newParams.filter((pm) => pm.id  !== param.id);
             return SelectedUser({
                 ...state,
                 params: newParams,
@@ -114,6 +105,14 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
             return SelectedUser({
                 ...state,
                 deleteStatus: "FAIL"
+            });
+        }
+
+        case DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_STATUS_CONFIRMED: {
+
+            return SelectedUser({
+                ...state,
+                deleteStatus: null
             });
         }
         default: {

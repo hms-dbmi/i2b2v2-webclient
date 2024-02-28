@@ -5,3 +5,5 @@ export { AllProjects } from "./AllProjects";
 export { AllHives } from "./AllHives";
 export { EditUserDetails } from "./EditUserDetails";
 export { UserInfo } from "./UserInfo";
+export { EditUserParameters } from "./EditUserParameters";
+export { EditParameters } from "./EditParameters";

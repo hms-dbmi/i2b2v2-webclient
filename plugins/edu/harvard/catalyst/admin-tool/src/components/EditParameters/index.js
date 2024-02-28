@@ -20,8 +20,7 @@ import {
 
 import "./EditParameters.scss";
 
-export const EditParameters = ({selectedUser, params, title}) => {
-    const [rows, setRows] = useState(params);
+export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam, saveStatus, deleteStatus}) => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
@@ -133,12 +132,12 @@ export const EditParameters = ({selectedUser, params, title}) => {
         const updatedRow = { ...newRow, isNew: false };
 
         let newRows = rows.map((row) => (row.id === newRow.id ? updatedRow : row));
-        setRows(newRows);
+        updateParams(newRows);
 
         let param = newRows.filter((row) => row.id === newRow.id).reduce((acc, item) => acc);
         setSaveParamId(param.id);
 
-        dispatch(saveUserParam({user: selectedUser.user, param}));
+        saveParam(param);
 
         return updatedRow;
     };
@@ -146,9 +145,38 @@ export const EditParameters = ({selectedUser, params, title}) => {
     const onProcessRowUpdateError = (error) => {
         console.warn("Process row error: " + error);
     };
+
     const handleRowModesModelChange = (newRowModesModel) => {
         setRowModesModel(newRowModesModel);
     };
+
+    useEffect(() => {
+        if(saveStatus === "SUCCESS"){
+            setSaveStatusMsg("Saved user parameter");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("success");
+            setRowModesModel({ ...rowModesModel, [saveParamId]: { mode: GridRowModes.View } });
+            setSaveParamId(null);
+        }
+        if(saveStatus === "FAIL"){
+            setSaveStatusMsg("ERROR: failed to save user param");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("error");
+            setSaveParamId(null);
+        }
+        if(deleteStatus === "SUCCESS"){
+            setSaveStatusMsg("Deleted user parameter");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("success");
+        }
+        if(deleteStatus === "FAIL"){
+            setSaveStatusMsg("ERROR: failed to delete user param");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("error");
+            setSaveParamId(null);
+        }
+
+    }, [saveStatus, deleteStatus]);
 
     const displayParamsTable = () => {
         return (
@@ -188,8 +216,6 @@ export const EditParameters = ({selectedUser, params, title}) => {
     };
 
     const handleSaveClick = (id) => () => {
-        let savedRow = rows.filter((row) => row.id === id);
-
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
     };
 
@@ -201,60 +227,25 @@ export const EditParameters = ({selectedUser, params, title}) => {
 
         const editedRow = rows.find((row) => row.id === id);
         if (editedRow.isNew) {
-            setRows(rows.filter((row) => row.id !== id));
+            updateParams(rows.filter((row) => row.id !== id));
         }
     };
 
     const handleDeleteClick = (id) => () => {
         let param = rows.filter((row) => row.id === id).reduce((acc, item) => acc);
-        setSaveParamId(param.id);
-        dispatch(deleteUserParam({param}));
+        deleteParam(param);
     };
 
     const handleAddParam = () => {
         const id = rows.length+1;
-        let newParams = [...params, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
+        let newParams = [...rows, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
 
-        setRows(newParams);
+        updateParams(newParams);
         setRowModesModel((oldModel) => ({
             ...oldModel,
             [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
         }));
     };
-
-    useEffect(() => {
-        if(selectedUser.saveStatus === "SUCCESS"){
-            dispatch(saveUserParamStatusConfirmed());
-            setSaveStatusMsg("Saved user parameter");
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("success");
-            setRowModesModel({ ...rowModesModel, [saveParamId]: { mode: GridRowModes.View } });
-            setSaveParamId(null);
-        }
-        if(selectedUser.saveStatus === "FAIL"){
-            dispatch(saveUserParamStatusConfirmed());
-            setSaveStatusMsg("ERROR: failed to save user param");
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("error");
-            setSaveParamId(null);
-        }
-        if(selectedUser.deleteStatus === "SUCCESS"){
-            dispatch(deleteUserParamStatusConfirmed());
-            setSaveStatusMsg("Deleted user parameter");
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("success");
-            setRowModesModel({ ...rowModesModel, [saveParamId]: { mode: GridRowModes.View } });
-        }
-        if(selectedUser.deleteStatus === "FAIL"){
-            dispatch(deleteUserParamStatusConfirmed());
-            setSaveStatusMsg("ERROR: failed to delete user param");
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("error");
-        }
-
-        setRows(selectedUser.params);
-
-    }, [selectedUser]);
 
 
     return (

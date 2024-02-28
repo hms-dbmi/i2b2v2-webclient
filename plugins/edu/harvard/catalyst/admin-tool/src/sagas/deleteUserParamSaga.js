@@ -20,10 +20,10 @@ const deleteParamRequest = (param) => {
 };
 
 export function* doDeleteUserParam(action) {
-    console.log("deleting user param...");
     const { param } = action.payload;
 
-    console.log("deleting user param " + JSON.stringify(param));
+    console.log("deleting user param..." + param.name);
+
     try {
         let response = yield call(deleteParamRequest, param);
         response = JSON.stringify(response);

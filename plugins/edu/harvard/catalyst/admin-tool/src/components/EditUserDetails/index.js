@@ -2,22 +2,20 @@ import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Link from '@mui/material/Link';
-
-
 import { User } from "models";
-import { UserInfo } from "components";
+import { UserInfo, EditUserParameters } from "components";
 
 import "./EditUserDetails.scss";
 import {
     getAllUserParams, saveUserStatusConfirmed,
 } from "actions";
-import {EditParameters} from "../EditParameters";
 import {Tab, Tabs} from "@mui/material";
 
 
 export const EditUserDetails = ({user, setIsEditingUser}) => {
     const selectedUser = useSelector((state) => state.selectedUser );
     const [updatedUser, setUpdatedUser] = useState(selectedUser.user);
+    const [updatedParams, setUpdatedParams] = useState(selectedUser.params);
 
     const dispatch = useDispatch();
     const EditDetails = {
@@ -42,8 +40,8 @@ export const EditUserDetails = ({user, setIsEditingUser}) => {
 
     useEffect(() => {
         setUpdatedUser(selectedUser.user);
+        setUpdatedParams(selectedUser.params);
     }, [selectedUser]);
-
 
     return (
         <div className={"EditUserDetails"}>
@@ -71,7 +69,7 @@ export const EditUserDetails = ({user, setIsEditingUser}) => {
             {
                 selectedTab === EditDetails.PARAMS &&
                 !selectedUser.isFetching
-                && <EditParameters selectedUser={selectedUser} params={selectedUser.params}/>
+                && <EditUserParameters selectedUser={selectedUser} updatedParams={updatedParams} updateParams={setUpdatedParams}/>
             }
        </div>
     );
