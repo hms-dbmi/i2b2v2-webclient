@@ -147,6 +147,9 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
 
     // run query and get back the query master ID
     i2b2.CRC.ajax.runQueryInstance_fromQueryDefinition("CRC:QueryManager", params, i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster);
+
+    // refresh the query history window since we are running a new query
+    setTimeout(i2b2.CRC.view.history.doRefreshAll, 500);
 };
 
 
@@ -305,9 +308,9 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
         // delete the query master
         let qmId = i2b2.CRC.model.runner?.idQueryMaster;
         i2b2.CRC.ctrlr.history.queryDeleteNoPrompt(qmId);
+        // refresh the query history window since it was deleted
+        setTimeout(i2b2.CRC.view.history.doRefreshAll, 250);
     } else {
-        // refresh the query history window if it was not deleted
-        i2b2.CRC.view.history.doRefreshAll();
         // render the results tables/graphs
         i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport"))
     }

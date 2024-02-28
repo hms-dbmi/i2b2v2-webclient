@@ -156,7 +156,7 @@ function QueryToolController() {
                         sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                         sdxDataNode.renderData.moreDescriptMinor = sdxDataNode.sdxInfo.sdxDisplayName;
-                    }else  if (ckey.toLowerCase().startsWith("patient")) {
+                    } else if (ckey.toLowerCase().startsWith("patient")) {
                         let o = {};
                         o.titleCRC = i2b2.h.getXNodeVal(pi[i2],'item_key');
                         o.patient_id = ckey.substring(13);
@@ -169,8 +169,7 @@ function QueryToolController() {
                         sdxDataNode.sdxInfo.sdxDisplayName = subsetPos === -1
                             ?  sdxDataNode.sdxInfo.sdxDisplayName : "PATIENT:HIVE:" +  sdxDataNode.sdxInfo.sdxDisplayName.substring(0, subsetPos);
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
-                    }
-                    else {
+                    } else {
                         let o = {};
                         o.level = i2b2.h.getXNodeVal(pi[i2],'hlevel');
                         o.name = i2b2.h.getXNodeVal(pi[i2],'item_name');
@@ -188,8 +187,7 @@ function QueryToolController() {
                         o.synonym_cd = i2b2.h.getXNodeVal(pi[i2], 'item_is_synonym');
                         if (o.synonym_cd === "true") { // tdw9 bug fix for non-synonym terms showing blue text: HTML rendering checks to see if synonym is "N," not "false"
                             o.synonym_cd = "Y";
-                        }
-                        else{
+                        } else {
                             o.synonym_cd = "N";
                         }
                         o.hasChildren = i2b2.h.getXNodeVal(pi[i2],'item_icon');
