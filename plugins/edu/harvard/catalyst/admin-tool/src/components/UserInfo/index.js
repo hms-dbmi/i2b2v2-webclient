@@ -220,6 +220,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
                 </div>
                 <div className={"mainField"}>
                     <TextField
+                        required={selectedUser.user.username.length === 0}
                         className="inputField"
                         label="Password"
                         type={showPassword ? "text" : "password"}
@@ -246,6 +247,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
                 </div>
                 <div className={"mainField"}>
                     <TextField
+                        required={selectedUser.user.username.length === 0}
                         className="inputField"
                         label="Verify Password"
                         type={showPasswordVerify ? "text" : "password"}
