@@ -105,6 +105,17 @@ export const deleteUserParamSucceeded = createAction(DELETE_USER_PARAM_ACTION.DE
 export const deleteUserParamFailed = createNamedArgsAction(DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_FAILED);
 export const deleteUserParamStatusConfirmed = createAction(DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_STATUS_CONFIRMED);
 
+//================================================================================================== //
+export const DELETE_PROJECT_ACTION = {
+    DELETE_PROJECT: "DELETE_PROJECT",
+    DELETE_PROJECT_SUCCEEDED:  "DELETE_PROJECT_SUCCEEDED",
+    DELETE_PROJECT_FAILED: "DELETE_PROJECT_FAILED",
+    DELETE_PROJECT_STATUS_CONFIRMED:  "DELETE_PROJECT_STATUS_CONFIRMED",
+};
+export const deleteProject =  createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT);
+export const deleteProjectSucceeded = createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_SUCCEEDED);
+export const deleteProjectFailed = createNamedArgsAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_FAILED, "projectName");
+export const deleteProjectStatusConfirmed = createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_STATUS_CONFIRMED);
 
 
 

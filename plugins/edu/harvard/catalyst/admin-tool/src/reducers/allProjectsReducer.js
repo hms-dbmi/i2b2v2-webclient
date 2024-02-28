@@ -1,8 +1,9 @@
 import {
+    DELETE_PROJECT_ACTION,
     GET_ALL_PROJECTS_ACTION,
 } from "actions";
 import { defaultState } from "defaultState";
-import {AllProjects, Project} from "models";
+import {AllProjects, DeletedProject, Project} from "models";
 
 export const allProjectsReducer = (state = defaultState.allProjects, action) => {
     switch (action.type) {
@@ -38,6 +39,17 @@ export const allProjectsReducer = (state = defaultState.allProjects, action) => 
             return AllProjects({
                 ...state,
                 isFetching: false,
+            });
+        }
+
+        case  DELETE_PROJECT_ACTION.DELETE_PROJECT_SUCCEEDED: {
+            const  { project }  = action.payload;
+
+            const filteredProject = state.projects.filter((proj) => proj.id !== project.id);
+
+            return AllProjects({
+                ...state,
+                projects: filteredProject
             });
         }
         default: {

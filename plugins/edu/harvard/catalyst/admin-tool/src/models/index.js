@@ -7,3 +7,4 @@
  export { Param, DataType } from "./Param";
  export { SelectedUser } from "./SelectedUser";
  export { DeletedUser } from "./DeletedUser";
+ export { DeletedProject } from "./DeletedProject";

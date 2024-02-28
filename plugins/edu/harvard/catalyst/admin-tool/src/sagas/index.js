@@ -6,3 +6,4 @@ export { saveUserSaga } from "./saveUserSaga";
 export { saveUserParamSaga } from "./saveUserParamSaga";
 export { deleteUserParamSaga } from "./deleteUserParamSaga"
 export { deleteUserSaga } from "./deleteUserSaga"
+export { deleteProjectSaga } from "./deleteProjectSaga"
