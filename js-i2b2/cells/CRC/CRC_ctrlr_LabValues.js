@@ -55,7 +55,9 @@ i2b2.CRC.ctrlr.labValues.extractDataType = function(sdxConcept, valueMetadataXml
     else {
         if (dataType) GeneralValueType = i2b2.CRC.ctrlr.labValues.ValueTypes.getValueType(dataType);
 
-        if (GeneralValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER || GeneralValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT
+        if (GeneralValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NODATATYPE
+            || GeneralValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER
+            || GeneralValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT
             || GeneralValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.LARGETEXT) {
             GeneralValueType = "BASIC";
         }
@@ -77,6 +79,7 @@ i2b2.CRC.ctrlr.labValues.redrawConcept = function(sdx, groupIdx, eventIdx) {
 i2b2.CRC.ctrlr.labValues.ValueTypes = {};
 // ==================================================================================================
 i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE = {
+        NODATATYPE: "NODATATYPE",
         TEXT: "TEXT",
         LARGETEXT: "LARGETEXT",
         NUMBER: "NUMBER",
