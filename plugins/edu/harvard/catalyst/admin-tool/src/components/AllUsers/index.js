@@ -94,6 +94,10 @@ export const AllUsers = () => {
                 columns={columns}
                 getRowId={getRowId}
                 disableRowSelectionOnClick
+                initialState={{
+                    pagination: { paginationModel: { pageSize: 25 } },
+                }}
+                pageSizeOptions={[25, 50, 100]}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
                         outline: 'none',
@@ -134,6 +138,7 @@ export const AllUsers = () => {
             return;
         }
 
+        setSaveStatusMsg("");
         setShowSaveStatus(false);
     };
 

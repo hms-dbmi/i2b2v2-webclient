@@ -171,7 +171,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
                 </IconButton>
             </div>
             <Stack
-                className={"mainStack"}
+                className={"UserInfoForm"}
                 direction="column"
                 justifyContent="center"
                 alignItems="flex-start"

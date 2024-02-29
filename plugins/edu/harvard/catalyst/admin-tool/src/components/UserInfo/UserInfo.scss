@@ -1,10 +1,14 @@
 .UserInfo {
-  margin: 0.2em 0.5em 4.5em 0.5em;
+  background-color: #f2f4f6;
+
+  margin: 0.2em 0 4.5em 0;
   padding: 0.5em;
+
   .inputField {
     width: 100%;
   }
-  .mainStack {
+
+  .UserInfoForm {
     margin: 0.7em;
   }
   .mainField {
@@ -19,12 +23,12 @@
   }
   .EditUserActionPrimary{
     float: right;
-    margin: 0.7em;
+    margin: 0.7em 1.3em 0.7em 0.7em;
   }
 
   .EditUserActionSecondary{
     float: left;
-    margin: 0.7em;
+    margin: 0.7em 0.7em 0.7em 1.3em;
   }
 
   .ResetEditPage{

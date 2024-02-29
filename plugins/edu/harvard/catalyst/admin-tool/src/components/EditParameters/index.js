@@ -5,7 +5,7 @@ import { DataType } from "models";
 import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes} from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
-import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
@@ -129,17 +129,19 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     ];
 
     const processRowUpdate = (newRow) => {
-        const updatedRow = { ...newRow, isNew: false };
+        if(newRow.name.length > 0) {
+            const updatedRow = {...newRow, isNew: false};
 
-        let newRows = rows.map((row) => (row.id === newRow.id ? updatedRow : row));
-        updateParams(newRows);
+            let newRows = rows.map((row) => (row.id === newRow.id ? updatedRow : row));
+            updateParams(newRows);
 
-        let param = newRows.filter((row) => row.id === newRow.id).reduce((acc, item) => acc);
-        setSaveParamId(param.id);
+            let param = newRows.filter((row) => row.id === newRow.id).reduce((acc, item) => acc);
+            setSaveParamId(param.id);
 
-        saveParam(param);
-
-        return updatedRow;
+            saveParam(param);
+            return updatedRow;
+        }
+        return false;
     };
 
     const onProcessRowUpdateError = (error) => {
@@ -190,6 +192,10 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
                 onProcessRowUpdateError={onProcessRowUpdateError}
                 columns={columns}
                 disableRowSelectionOnClick
+                initialState={{
+                    pagination: { paginationModel: { pageSize: 5 } },
+                }}
+                pageSizeOptions={[5, 10, 25]}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
                         outline: 'none',
@@ -238,12 +244,12 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
 
     const handleAddParam = () => {
         const id = rows.length+1;
-        let newParams = [...rows, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
+        let newParams = [ { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }, ...rows,];
 
         updateParams(newParams);
         setRowModesModel((oldModel) => ({
-            ...oldModel,
             [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+            ...oldModel,
         }));
     };
 
@@ -251,10 +257,11 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     return (
         <div className="EditParameters" >
             <h3> {title} </h3>
+            <Button className="AddParam" variant="contained" startIcon={<AddIcon />} onClick={handleAddParam}>
+                Add
+            </Button>
+
             {displayParamsTable()}
-            <IconButton color="primary" aria-label="add params" onClick={handleAddParam} variant={"outlined"}>
-                <AddIcon />
-            </IconButton>
 
             <Backdrop className={"SaveBackdrop"} open={showSaveBackdrop}>
                 <CircularProgress color="inherit" />

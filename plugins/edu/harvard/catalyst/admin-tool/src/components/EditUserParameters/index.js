@@ -15,7 +15,9 @@ export const EditUserParameters = ({selectedUser, updatedParams, updateParams, t
     const dispatch = useDispatch();
 
     const saveParam = (param) => {
-        dispatch(saveUserParam({user: selectedUser.user, param}));
+        if(param && param.name.length > 0) {
+            dispatch(saveUserParam({user: selectedUser.user, param}));
+        }
     };
 
     const handleDeleteClick = (param)  => {
