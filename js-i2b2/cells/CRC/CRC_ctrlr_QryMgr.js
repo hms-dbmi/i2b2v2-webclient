@@ -48,6 +48,7 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
         statusBar.finished = (statusBar.finished / totalCnt) * 100;
         statusBar.running = (statusBar.running / totalCnt) * 100;
         statusBar.error = (statusBar.error / totalCnt) * 100;
+        if (statusBar.finished < 5) statusBar.finished = 5;
     } else {
         stillRunning = true;
     }
@@ -134,6 +135,7 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
         intervalTimer: null,
         lastPoll: new Date(),
         isPolling: true,
+        queued: false,
         isRunning: true
     };
 
@@ -230,8 +232,7 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
         return;
     }
 
-
-    // get the query instance id
+        // get the query instance id
     let qiID = false;
 
     // try loading the query instance elements from the server results
@@ -286,6 +287,7 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
         } else {
             i2b2.CRC.model.runner.lastPoll = new Date();
             i2b2.CRC.model.runner.isPolling = false;
+            i2b2.CRC.model.runner.queued = true;
         }
     }
 };
@@ -297,6 +299,7 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     i2b2.CRC.model.runner.abortable = false;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.isPolling = false;
+    i2b2.CRC.model.runner.queued = false;
     if (i2b2.CRC.model.runner.endTime === undefined) i2b2.CRC.model.runner.endTime = new Date();
 
 
@@ -605,6 +608,7 @@ i2b2.CRC.model.runner = {
     status: "Running",
     abortable: true,
     finished: false,
+    queued: false,
     deleteCurrentQuery: false,
     intervalTimer: null,
     isRunning: false
