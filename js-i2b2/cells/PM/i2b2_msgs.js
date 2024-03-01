@@ -67,8 +67,6 @@ i2b2.PM.cfg.msgs.getUserAuth = '<?xml version="1.0" encoding="UTF-8" standalone=
 '</i2b2:request>';
 i2b2.PM.ajax._addFunctionCall("getUserAuth","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getUserAuth);
 
-
-
 //================================================================================================== //
 i2b2.PM.cfg.msgs.setPassword = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
 '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+

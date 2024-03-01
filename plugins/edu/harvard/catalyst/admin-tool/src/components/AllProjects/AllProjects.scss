@@ -1,0 +1,20 @@
+.AllProjects {
+
+  margin: 0.8em 0.5em 0.1em 0.5em;
+
+  th {
+    font-weight: bold;
+  }
+
+  th, td {
+    font-size: 0.80em;
+  }
+
+  .AddProject {
+    margin-bottom: 0.7em;
+  }
+
+  .MuiDataGrid-columnHeaders{
+    background-color:   rgba(0, 0, 0, 0.12);
+  }
+}
