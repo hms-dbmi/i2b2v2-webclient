@@ -83,6 +83,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
         }
 
         //if this is a new user check the password fields
+        updatedUser.password = updatedUser.password.trim();
         if(isNewUser && updatedUser.password.length === 0) {
                 setIsPasswordNotValid(true);
                 setPasswordNotValidError("Password is required");
@@ -108,6 +109,11 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
     const saveUserInfo = () => {
         if(validateSaveUser()) {
             setShowSaveBackdrop(true);
+
+            if(updatedUser.username.length > 0 ){
+                updatedUser.username = updatedUser.username.trim();
+            }
+
             dispatch(saveUser({user: updatedUser}));
         }
     };
@@ -126,9 +132,6 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
         let newUser = {
             ...updatedUser
         }
-        if(typeof value === "string"){
-            value = value.trim();
-        }
         newUser[field] = value;
 
         updateUser(newUser);
@@ -145,7 +148,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
         setIsDirty(false);
     }
 
-    const handleCloseSaveAlert = (event, reason) => {
+    const handleCloseAlert = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -321,9 +324,10 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
                 open={showSaveStatus}
                 autoHideDuration={5000}
                 anchorOrigin={{ vertical: 'top', horizontal : "center" }}
+                onClose={handleCloseAlert}
             >
                 <Alert
-                    onClose={handleCloseSaveAlert}
+                    onClose={handleCloseAlert}
                     severity={saveStatusSeverity}
                     variant="filled"
                     sx={{ width: '100%' }}

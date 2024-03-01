@@ -5,7 +5,7 @@ import Alert from "@mui/material/Alert";
 
 export const StatusUpdate = ({isOpen, setIsOpen, severity, message}) => {
 
-    const handleCloseSaveAlert = (event, reason) => {
+    const handleCloseAlert = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -18,9 +18,10 @@ export const StatusUpdate = ({isOpen, setIsOpen, severity, message}) => {
             open={isOpen}
             autoHideDuration={5000}
             anchorOrigin={{ vertical: 'top', horizontal : "center" }}
+            onClose={handleCloseAlert}
         >
             <Alert
-                onClose={handleCloseSaveAlert}
+                onClose={handleCloseAlert}
                 severity={severity}
                 variant="filled"
                 sx={{ width: '100%' }}

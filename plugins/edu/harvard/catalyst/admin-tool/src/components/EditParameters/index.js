@@ -213,7 +213,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
         );
     };
 
-    const handleCloseSaveAlert = (event, reason) => {
+    const handleCloseAlert = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -286,9 +286,10 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
                 open={showSaveStatus}
                 autoHideDuration={5000}
                 anchorOrigin={{ vertical: 'top', horizontal : "center" }}
+                onClose={handleCloseAlert}
             >
                 <Alert
-                    onClose={handleCloseSaveAlert}
+                    onClose={handleCloseAlert}
                     severity={saveStatusSeverity}
                     variant="filled"
                     sx={{ width: '100%' }}

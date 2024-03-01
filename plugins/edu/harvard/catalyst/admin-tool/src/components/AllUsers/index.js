@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { getAllUsers, deleteUser, deleteUserStatusConfirmed } from "actions";
-import {EditUserDetails, Confirmation} from "components";
+import {EditUserDetails, Confirmation, StatusUpdate} from "components";
 import { User} from "../../models";
 import {
     DataGrid,
@@ -26,10 +26,9 @@ export const AllUsers = () => {
     const deletedUser = useSelector((state) => state.deletedUser );
     const[selectedUser, setSelectedUser] = useState(null);
     const[isEditingUser, setIsEditingUser] = useState(false);
-    const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
-    const [showSaveStatus, setShowSaveStatus] = useState(false);
-    const [saveStatusMsg, setSaveStatusMsg] = useState("");
-    const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
+    const [showStatus, setShowStatus] = useState(false);
+    const [statusMsg, setStatusMsg] = useState("");
+    const [statusSeverity, setStatusSeverity] = useState("info");
     const [showDeleteUserConfirm, setShowDeleteUserConfirm] = useState(false);
     const [deleteUserConfirmMsg, setDeleteUserConfirmMsg] = useState("");
     const [deleteUsername, setDeleteUsername] = useState("");
@@ -146,28 +145,29 @@ export const AllUsers = () => {
         setIsEditingUser(true);
     };
 
-    const handleCloseSaveAlert = (event, reason) => {
+    const handleCloseAlert = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
 
-        setSaveStatusMsg("");
-        setShowSaveStatus(false);
+        setStatusMsg("");
+        setShowStatus(false);
     };
 
     const statusUpdate = () => {
        return ( <Snackbar
-            open={showSaveStatus}
+            open={showStatus}
             autoHideDuration={5000}
             anchorOrigin={{ vertical: 'top', horizontal : "center" }}
-        >
+            onClose={handleCloseAlert}
+           >
             <Alert
-                onClose={handleCloseSaveAlert}
-                severity={saveStatusSeverity}
+                onClose={handleCloseAlert}
+                severity={statusSeverity}
                 variant="filled"
                 sx={{ width: '100%' }}
             >
-                {saveStatusMsg}
+                {statusMsg}
             </Alert>
         </Snackbar>
        );
@@ -191,9 +191,9 @@ export const AllUsers = () => {
     useEffect(() => {
         if(deletedUser.status === "SUCCESS") {
             dispatch(deleteUserStatusConfirmed());
-            setSaveStatusMsg("Deleted user " + deletedUser.user.username);
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("success");
+            setStatusMsg("Deleted user " + deletedUser.user.username);
+            setShowStatus(true);
+            setStatusSeverity("success");
 
             let filteredRows = userRows.filter((row) => row.username !== deletedUser.user.username);
             setUserRows(filteredRows);
@@ -201,11 +201,12 @@ export const AllUsers = () => {
 
         if(deletedUser.status === "FAIL") {
             dispatch(deleteUserStatusConfirmed());
-            setSaveStatusMsg("Error: There was an error deleting user " + deletedUser.user.username);
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("success");
+            setStatusMsg("Error: There was an error deleting user " + deletedUser.user.username);
+            setShowStatus(true);
+            setStatusSeverity("success");
         }
     }, [deletedUser]);
+
 
     return (
         <div className="AllUsers">
@@ -217,13 +218,15 @@ export const AllUsers = () => {
             }
             {!isEditingUser && allUsers.users.length > 0 && displayUsersTable()}
             { isEditingUser && <EditUserDetails user={selectedUser} setIsEditingUser={setIsEditingUser}/>}
-            {!isEditingUser && statusUpdate()}
+            {!isEditingUser && <StatusUpdate isOpen={showStatus} setIsOpen={setShowStatus} severity={statusSeverity} message={statusMsg}/>
+            }
 
             { showDeleteUserConfirm && <Confirmation
                 text={deleteUserConfirmMsg}
                 onOk={handleDeleteClick}
                 onCancel={() => setShowDeleteUserConfirm(false)}
             />}
+
         </div>
     );
 };
