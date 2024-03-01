@@ -21,6 +21,7 @@ import { User } from "models";
 import "./UserInfo.scss";
 
 export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) => {
+    const allUsers = useSelector((state) => state.allUsers );
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
@@ -38,6 +39,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
     const [passwordNotValidError, setPasswordNotValidError] = useState("");
     const [doPasswordsNotMatch, setDoPasswordsNotMatch] = useState(false);
     const [passwordsDoNotMatchError, setPasswordsDoNotMatchError] = useState("");
+    const [isNewUser, setIsNewUser] = useState(false);
     const dispatch = useDispatch();
 
     const handleClickShowPassword = () => {
@@ -81,18 +83,17 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
         }
 
         //if this is a new user check the password fields
-        if(selectedUser.user.username.length === 0) {
-            if (updatedUser.password.length === 0) {
+        if(isNewUser && updatedUser.password.length === 0) {
                 setIsPasswordNotValid(true);
                 setPasswordNotValidError("Password is required");
                 isValid = false;
-            } else {
-                setIsPasswordNotValid(false);
-                setPasswordNotValidError("");
-            }
+        } else {
+            setIsPasswordNotValid(false);
+            setPasswordNotValidError("");
         }
 
-        if (updatedUser.password !== updatedUser.passwordVerify) {
+
+        if (isNewUser && updatedUser.password !== updatedUser.passwordVerify) {
             setDoPasswordsNotMatch(true);
             setPasswordsDoNotMatchError("Passwords do not match");
             isValid = false;
@@ -111,9 +112,22 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
         }
     };
 
+    const checkIfNewUser = () => {
+        if(allUsers) {
+            const userFound = allUsers.users.filter((user) => user.username === updatedUser.username);
+            if (userFound.length === 0) {
+                setIsNewUser(true);
+            } else {
+                setIsNewUser(false);
+            }
+        }
+    }
     const handleUpdate = (field, value) => {
         let newUser = {
             ...updatedUser
+        }
+        if(typeof value === "string"){
+            value = value.trim();
         }
         newUser[field] = value;
 
@@ -160,6 +174,8 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
         if(JSON.stringify(updatedUser) !== JSON.stringify(selectedUser.user)){
             setIsDirty(true);
         }
+
+        checkIfNewUser();
 
     }, [updatedUser]);
 
@@ -220,6 +236,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
                 </div>
                 <div className={"mainField"}>
                     <TextField
+                        required={isNewUser}
                         className="inputField"
                         label="Password"
                         type={showPassword ? "text" : "password"}
@@ -246,6 +263,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
                 </div>
                 <div className={"mainField"}>
                     <TextField
+                        required={isNewUser}
                         className="inputField"
                         label="Verify Password"
                         type={showPasswordVerify ? "text" : "password"}
