@@ -27,7 +27,6 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     const [showDeleteParamConfirm, setShowDeleteParamConfirm] = useState(false);
     const [deleteParamConfirmMsg, setDeleteParamConfirmMsg] = useState("");
     const [deleteParamId, setDeleteParamId] = useState(null);
-    const [allParamStatus, setAllParamStatus] = useState(null);
 
     const columns = [
         { field: 'name',
