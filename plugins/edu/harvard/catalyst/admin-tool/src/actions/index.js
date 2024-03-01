@@ -62,11 +62,13 @@ export const getAllHivesFailed = createNamedArgsAction(GET_ALL_HIVES_ACTION.GET_
 export const GET_ALL_USER_PARAMS_ACTION = {
     GET_ALL_USER_PARAMS: "GET_ALL_USER_PARAMS",
     GET_ALL_USER_PARAMS_SUCCEEDED:  "GET_ALL_USER_PARAMS_SUCCEEDED",
-    GET_ALL_USER_PARAMS_FAILED: "GET_ALL_USER_PARAMS_FAILED"
+    GET_ALL_USER_PARAMS_FAILED: "GET_ALL_USER_PARAMS_FAILED",
+    GET_ALL_USER_PARAMS_STATUS_CONFIRMED: "GET_ALL_USER_PARAMS_STATUS_CONFIRMED"
 };
 export const getAllUserParams =  createAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS);
 export const getAllUserParamsSucceeded = createAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_SUCCEEDED);
 export const getAllUserParamsFailed = createNamedArgsAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_FAILED);
+export const getAllUserParamsStatusConfirmed = createAction(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_STATUS_CONFIRMED);
 //================================================================================================== //
 
 export const SAVE_USER_ACTION = {

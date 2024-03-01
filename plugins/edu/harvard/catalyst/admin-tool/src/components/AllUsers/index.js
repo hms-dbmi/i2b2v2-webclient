@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { getAllUsers, deleteUser, deleteUserStatusConfirmed } from "actions";
-import {EditUserDetails} from "components";
+import {EditUserDetails, Confirmation} from "components";
 import { User} from "../../models";
 import {
     DataGrid,
@@ -30,18 +30,22 @@ export const AllUsers = () => {
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
     const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
+    const [showDeleteUserConfirm, setShowDeleteUserConfirm] = useState(false);
+    const [deleteUserConfirmMsg, setDeleteUserConfirmMsg] = useState("");
+    const [deleteUsername, setDeleteUsername] = useState("");
+
     const dispatch = useDispatch();
 
     const columns = [
-        { field: 'fullname',
-            headerName: 'Full Name',
-            flex: 2,
-        },
         {
             field: 'username',
             headerName: 'User Name',
             flex: 2,
             editable: false,
+        },
+        { field: 'fullname',
+            headerName: 'Full Name',
+            flex: 2,
         },
         {
             field: 'email',
@@ -78,7 +82,7 @@ export const AllUsers = () => {
                     <GridActionsCellItem
                         icon={<DeleteIcon/>}
                         label="Delete"
-                        onClick={handleDeleteClick(id)}
+                        onClick={confirmDelete(id)}
                         color="inherit"
                     />,
                 ];
@@ -123,8 +127,17 @@ export const AllUsers = () => {
         }
     };
 
-    const handleDeleteClick = (username) => () => {
-        const user = userRows.filter((user) => user.username === username).reduce((acc, item) => acc);
+    const confirmDelete = (username) => () => {
+        setDeleteUsername(username);
+        setDeleteUserConfirmMsg("Are you sure you want to delete user " + username + "?");
+        setShowDeleteUserConfirm(true);
+    };
+
+    const handleDeleteClick = () => {
+        const user = userRows.filter((user) => user.username === deleteUsername).reduce((acc, item) => acc);
+        setDeleteUsername("");
+        setDeleteUserConfirmMsg("");
+        setShowDeleteUserConfirm(false);
         dispatch(deleteUser({user}));
     };
 
@@ -205,6 +218,12 @@ export const AllUsers = () => {
             {!isEditingUser && allUsers.users.length > 0 && displayUsersTable()}
             { isEditingUser && <EditUserDetails user={selectedUser} setIsEditingUser={setIsEditingUser}/>}
             {!isEditingUser && statusUpdate()}
+
+            { showDeleteUserConfirm && <Confirmation
+                text={deleteUserConfirmMsg}
+                onOk={handleDeleteClick}
+                onCancel={() => setShowDeleteUserConfirm(false)}
+            />}
         </div>
     );
 };

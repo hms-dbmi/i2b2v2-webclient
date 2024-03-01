@@ -13,21 +13,21 @@ import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import {
-    saveUserParam, saveUserParamStatusConfirmed,
-    deleteUserParam, deleteUserParamStatusConfirmed
-} from "../../actions";
+import { Confirmation } from "components";
 
 import "./EditParameters.scss";
 
-export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam, saveStatus, deleteStatus}) => {
+export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam, saveStatus, deleteStatus, allParamStatus}) => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
     const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
     const [saveParamId, setSaveParamId] = useState(null);
-    const dispatch = useDispatch();
+    const [showDeleteParamConfirm, setShowDeleteParamConfirm] = useState(false);
+    const [deleteParamConfirmMsg, setDeleteParamConfirmMsg] = useState("");
+    const [deleteParamId, setDeleteParamId] = useState(null);
+    const [allParamStatus, setAllParamStatus] = useState(null);
 
     const columns = [
         { field: 'name',
@@ -120,7 +120,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
                     <GridActionsCellItem
                         icon={<DeleteIcon />}
                         label="Delete"
-                        onClick={handleDeleteClick(id)}
+                        onClick={confirmDelete(id)}
                         color="inherit"
                     />,
                 ];
@@ -161,7 +161,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             setSaveParamId(null);
         }
         if(saveStatus === "FAIL"){
-            setSaveStatusMsg("ERROR: failed to save user param");
+            setSaveStatusMsg("ERROR: failed to save parameter");
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
             setSaveParamId(null);
@@ -172,12 +172,17 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             setSaveStatusSeverity("success");
         }
         if(deleteStatus === "FAIL"){
-            setSaveStatusMsg("ERROR: failed to delete user param");
+            setSaveStatusMsg("ERROR: failed to delete parameter");
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
             setSaveParamId(null);
         }
 
+        if(allParamStatus === "FAIL"){
+            setSaveStatusMsg("ERROR: failed to reload parameter");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("error");
+        }
     }, [saveStatus, deleteStatus]);
 
     const displayParamsTable = () => {
@@ -237,8 +242,20 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
         }
     };
 
-    const handleDeleteClick = (id) => () => {
+    const confirmDelete = (id) => () => {
+        setDeleteParamId(id);
+
         let param = rows.filter((row) => row.id === id).reduce((acc, item) => acc);
+        setDeleteParamConfirmMsg("Are you sure you want to delete param " + param.name + "?");
+        setShowDeleteParamConfirm(true);
+    };
+
+    const handleDeleteClick = () => {
+        let param = rows.filter((row) => row.id === deleteParamId).reduce((acc, item) => acc);
+        setDeleteParamId(null);
+        setDeleteParamConfirmMsg("");
+        setShowDeleteParamConfirm(false);
+
         deleteParam(param);
     };
 
@@ -280,6 +297,12 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
                     {saveStatusMsg}
                 </Alert>
             </Snackbar>
+
+            { showDeleteParamConfirm && <Confirmation
+                text={deleteParamConfirmMsg}
+                onOk={handleDeleteClick}
+                onCancel={() => setShowDeleteParamConfirm(false)}
+            />}
         </div>
     );
 

@@ -1,5 +1,6 @@
 .UserInfo {
   background-color: #f2f4f6;
+  height: 100%;
 
   margin: 0.2em 0 4.5em 0;
   padding: 0.5em;
@@ -15,9 +16,6 @@
     width: 30%;
   }
 
-  .EditUserContent{
-    display: flex;
-  }
   .EditUserActions {
     display: block;
   }

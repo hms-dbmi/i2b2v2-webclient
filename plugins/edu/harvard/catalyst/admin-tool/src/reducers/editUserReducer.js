@@ -2,7 +2,7 @@ import {
     GET_ALL_USER_PARAMS_ACTION,
     SAVE_USER_ACTION,
     SAVE_USER_PARAM_ACTION,
-    DELETE_USER_PARAM_ACTION
+    DELETE_USER_PARAM_ACTION,
 } from "actions";
 import { defaultState } from "defaultState";
 import { SelectedUser, Param } from "models";
@@ -21,7 +21,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
         case  GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_SUCCEEDED: {
             const  {user, params}  = action.payload;
 
-            //Extract each user data into User model and return an array of Users
+            //Extract each user param data into Param model and return an array of Params
             let paramsList = [];
             params.map((param) => {
                 paramsList.push(Param({
@@ -40,13 +40,22 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                 isFetching: false,
             });
         }
+
         case  GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_FAILED: {
-            //TODO: add error handling somewhere
             return SelectedUser({
                 ...state,
                 isFetching: false,
             });
         }
+
+        case GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_STATUS_CONFIRMED: {
+
+            return SelectedUser({
+                ...state,
+                userParamStatus: null
+            });
+        }
+
         case  SAVE_USER_ACTION.SAVE_USER_SUCCEEDED: {
             const  { user }  = action.payload;
 
@@ -57,7 +66,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
             });
         }
 
-        case  SAVE_USER_ACTION.SAVE_USER_FAILED:
+        case SAVE_USER_ACTION.SAVE_USER_FAILED:
         case SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM_FAILED: {
 
             return SelectedUser({
@@ -76,17 +85,12 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
         case  SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM_SUCCEEDED: {
             const  { user, param }  = action.payload;
 
-            let newParams = [
-                ...state.params
-            ];
-            newParams.push(param);
-
             return SelectedUser({
                 ...state,
-                params: newParams,
                 saveStatus: "SUCCESS"
             });
         }
+
         case  DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM_SUCCEEDED: {
             const  { user, param }  = action.payload;
 

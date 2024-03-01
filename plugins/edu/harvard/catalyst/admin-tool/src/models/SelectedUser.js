@@ -6,12 +6,14 @@ export const SelectedUser = ({
      user = User(),
      params= [],
      isFetching= false,
+     userParamStatus=null,
      saveStatus= null,
      deleteStatus= null
  } = {}) => ({
     user,
     params,
     isFetching,
+    userParamStatus,
     saveStatus,
     deleteStatus
 });

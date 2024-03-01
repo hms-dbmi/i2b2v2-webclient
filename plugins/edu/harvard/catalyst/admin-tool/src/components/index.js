@@ -8,3 +8,4 @@ export { UserInfo } from "./UserInfo";
 export { EditUserParameters } from "./EditUserParameters";
 export { EditParameters } from "./EditParameters";
 export { StatusUpdate } from "./StatusUpdate";
+export { default as Confirmation } from "./Confirmation";

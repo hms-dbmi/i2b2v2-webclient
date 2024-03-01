@@ -15,7 +15,6 @@ export default () => {
             <Provider store={store}>
                 <CssBaseline />
                 <Header />
-                <div />
             </Provider>
         </ThemeProvider>
     );

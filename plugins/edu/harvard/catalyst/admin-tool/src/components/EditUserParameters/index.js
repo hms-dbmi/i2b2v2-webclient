@@ -12,6 +12,8 @@ import {EditParameters} from "../EditParameters";
 export const EditUserParameters = ({selectedUser, updatedParams, updateParams, title}) => {
     const [saveStatus, setSaveStatus] = useState("");
     const [deleteStatus, setDeleteStatus] = useState("");
+    const [userParamStatus, setUserParamStatus] = useState("");
+
     const dispatch = useDispatch();
 
     const saveParam = (param) => {
@@ -21,7 +23,7 @@ export const EditUserParameters = ({selectedUser, updatedParams, updateParams, t
     };
 
     const handleDeleteClick = (param)  => {
-        dispatch(deleteUserParam({param}));
+        dispatch(deleteUserParam({user: selectedUser.user, param}));
     };
 
 
@@ -43,6 +45,11 @@ export const EditUserParameters = ({selectedUser, updatedParams, updateParams, t
             setDeleteStatus("FAIL")
         }
 
+        if(selectedUser.userParamStatus === "FAIL"){
+            dispatch(allUserParamStatusConfirmed());
+            setUserParamStatus("FAIL");
+        }
+
     }, [selectedUser]);
 
 
@@ -56,6 +63,7 @@ export const EditUserParameters = ({selectedUser, updatedParams, updateParams, t
                 deleteParam={handleDeleteClick}
                 saveStatus={saveStatus}
                 deleteStatus={deleteStatus}
+                allParamStatus={userParamStatus}
             />
         </div>
     );

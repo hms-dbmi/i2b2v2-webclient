@@ -38,13 +38,8 @@ export function* doSaveUserParam(action) {
         response = JSON.stringify(response);
 
         if(!response.includes("AJAX_ERROR")) {
-            let allUserResponse = yield call(getAllUserParams, {user});
-            allUserResponse = JSON.stringify(allUserResponse);
-            if(!allUserResponse.includes("AJAX_ERROR")) {
-                yield put(saveUserParamSucceeded({param}));
-            }else{
-                yield put(saveUserParamFailed(response));
-            }
+            yield put(getAllUserParams({user}));
+            yield put(saveUserParamSucceeded({param}));
         }else{
             yield put(saveUserParamFailed(response));
         }

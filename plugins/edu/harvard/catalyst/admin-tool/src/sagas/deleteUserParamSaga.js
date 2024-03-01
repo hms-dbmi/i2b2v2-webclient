@@ -3,7 +3,7 @@ import XMLParser from 'react-xml-parser';
 import {
     DELETE_USER_PARAM_ACTION,
     deleteUserParamFailed,
-    deleteUserParamSucceeded,
+    deleteUserParamSucceeded, getAllUserParams,
 } from "actions";
 
 const deleteParamRequest = (param) => {
@@ -20,7 +20,7 @@ const deleteParamRequest = (param) => {
 };
 
 export function* doDeleteUserParam(action) {
-    const { param } = action.payload;
+    const { user, param } = action.payload;
 
     console.log("deleting user param..." + param.name);
 
@@ -29,6 +29,7 @@ export function* doDeleteUserParam(action) {
         response = JSON.stringify(response);
 
         if(!response.includes("AJAX_ERROR")) {
+            yield put(getAllUserParams({user}));
             yield put(deleteUserParamSucceeded({param}));
         }else{
             yield put(deleteUserParamFailed(response));
