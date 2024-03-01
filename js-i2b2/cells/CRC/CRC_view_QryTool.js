@@ -1799,7 +1799,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     $('<div class="center"></div>').append(queryName).appendTo(runBar);
                     runBar.append('<div class="right">' +
                         '<button type="button" class="btn btn-primary btn-sm button-run">Find Patients</button>' +
-                        '<button type="button" class="btn btn-danger btn-sm button-cancel" onmousedown="i2b2.CRC.ctrlr.QR.doAbortQuery();">Cancel</button>' +
+                        '<button type="button" class="btn btn-danger btn-sm button-cancel" onmousedown="i2b2.CRC.ctrlr.QueryMgr.stopQuery();">Cancel</button>' +
                         '<button type="button" class="btn btn-primary btn-sm button-clear">Clear All</button>' +
                         '</div>');
 

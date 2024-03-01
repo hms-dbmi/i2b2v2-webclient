@@ -33,8 +33,19 @@
             <div style="clear:both;"></div>
         {{/if}}
 
+        {{#if queued}}
+        <div class="status-bar-label">Queued Query Progress</div>
+        {{#if progressBar}}
+        <div class="status-bar">
+            <div class="status-error" style="width:{{progressBar.error}}%"></div>
+            <div class="status-finished" style="width:{{progressBar.finished}}%"></div>
+        </div>
+        {{/if}}
+        {{/if}}
+
         {{#ifCond patientCount '!==' undefined}}
             {{#unless deleteCurrentQuery}}
+            {{#unless queued}}
                 <table style="width: 400px; margin-left: auto; margin-right: auto;">
                     <tr style="background-color: #ed9b40">
                         <td style="color: black; text-align: center; vertical-align: middle;">
@@ -50,6 +61,7 @@
                         <td style="color: red; text-align: center; vertical-align: middle;">&nbsp</td>
                     </tr>
                 </table>
+            {{/unless}}
             {{/unless}}
         {{/ifCond}}
     </div>

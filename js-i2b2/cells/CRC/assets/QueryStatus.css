@@ -78,6 +78,48 @@
 
 
 
+
+#infoQueryStatusText .status-processing {
+    color: #198754;
+}
+
+#infoQueryStatusText .status-running {
+    color: #198754;
+}
+#infoQueryStatusText .status-bar {
+    width: 60%;
+    border: solid 1px;
+    height: 12px;
+    background: lightgrey;
+    margin: 1rem auto;
+}
+
+/* query report container styling (outside of the iframe) */
+#infoQueryStatusText .status-bar .status-error {
+    background: red;
+    height: 100%;
+    float: left;
+}
+
+#infoQueryStatusText .status-bar .status-finished {
+    background: lightgreen;
+    height: 100%;
+    float: left;
+}
+
+#infoQueryStatusText .status-bar-label {
+    width: 100%;
+    text-align: center;
+    padding-top: 2em;
+    font-weight: bold;
+}
+
+
+
+
+
+
+
 #infoQueryStatusText .statusButtons {
     float:right;
     margin-left:10px;
@@ -85,6 +127,14 @@
 #infoQueryStatusText .statusButtons button {
     display: none;
 }
+#infoQueryStatusText .statusButtons.running .cancel {
+    display: none;
+}
+#infoQueryStatusText .statusButtons.cancelled .cancelled {
+    display: block;
+    cursor: not-allowed;
+}
+
 #infoQueryStatusText .statusButtons.done .report {
     display: block;
 }
