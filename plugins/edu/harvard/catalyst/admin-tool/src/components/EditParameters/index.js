@@ -23,10 +23,10 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
     const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
-    const [saveParamId, setSaveParamId] = useState(null);
+    const [saveParamData, setSaveParamData] = useState(null);
     const [showDeleteParamConfirm, setShowDeleteParamConfirm] = useState(false);
     const [deleteParamConfirmMsg, setDeleteParamConfirmMsg] = useState("");
-    const [deleteParamId, setDeleteParamId] = useState(null);
+    const [deleteParamData, setDeleteParamData] = useState(null);
 
     const columns = [
         { field: 'name',
@@ -135,7 +135,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             updateParams(newRows);
 
             let param = newRows.filter((row) => row.id === newRow.id).reduce((acc, item) => acc);
-            setSaveParamId(param.id);
+            setSaveParamData(param);
 
             saveParam(param);
             return updatedRow;
@@ -153,32 +153,32 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
 
     useEffect(() => {
         if(saveStatus === "SUCCESS"){
-            setSaveStatusMsg("Saved user parameter");
+            setSaveStatusMsg("Saved parameter " + saveParamData.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
-            setRowModesModel({ ...rowModesModel, [saveParamId]: { mode: GridRowModes.View } });
-            setSaveParamId(null);
+            setRowModesModel({ ...rowModesModel, [saveParamData]: { mode: GridRowModes.View } });
+            setSaveParamData(null);
         }
         if(saveStatus === "FAIL"){
-            setSaveStatusMsg("ERROR: failed to save parameter");
+            setSaveStatusMsg("ERROR: failed to save parameter " + saveParamData.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
-            setSaveParamId(null);
+            setSaveParamData(null);
         }
         if(deleteStatus === "SUCCESS"){
-            setSaveStatusMsg("Deleted user parameter");
+            setSaveStatusMsg("Deleted parameter " + deleteParamData.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
         }
         if(deleteStatus === "FAIL"){
-            setSaveStatusMsg("ERROR: failed to delete parameter");
+            setSaveStatusMsg("ERROR: failed to delete parameter " + deleteParamData.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
-            setSaveParamId(null);
+            setSaveParamData(null);
         }
 
         if(allParamStatus === "FAIL"){
-            setSaveStatusMsg("ERROR: failed to reload parameter");
+            setSaveStatusMsg("ERROR: failed to reload parameters");
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
         }
@@ -242,16 +242,16 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const confirmDelete = (id) => () => {
-        setDeleteParamId(id);
-
         let param = rows.filter((row) => row.id === id).reduce((acc, item) => acc);
-        setDeleteParamConfirmMsg("Are you sure you want to delete param " + param.name + "?");
+        setDeleteParamData(param);
+
+        setDeleteParamConfirmMsg("Are you sure you want to delete parameter " + param.name + "?");
         setShowDeleteParamConfirm(true);
     };
 
     const handleDeleteClick = () => {
-        let param = rows.filter((row) => row.id === deleteParamId).reduce((acc, item) => acc);
-        setDeleteParamId(null);
+        let param = rows.filter((row) => row.id === deleteParamData.id).reduce((acc, item) => acc);
+        setDeleteParamData(null);
         setDeleteParamConfirmMsg("");
         setShowDeleteParamConfirm(false);
 

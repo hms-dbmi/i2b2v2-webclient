@@ -55,7 +55,7 @@ export const EditUserDetails = ({user, setIsEditingUser}) => {
                 centered
             >
                 <Tab value={EditDetails.USERS} label="User"/>
-                <Tab value={EditDetails.PARAMS} label="Parameters(Optional)"  disabled={!selectedUser.user.username}/>
+                <Tab value={EditDetails.PARAMS} label="Parameters (Optional)"  disabled={!selectedUser.user.username}/>
             </Tabs>
             {
             selectedTab === EditDetails.USERS &&

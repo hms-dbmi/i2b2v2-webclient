@@ -10,8 +10,6 @@ import {
 
 //a function that returns a promise
 const saveDomainSettingsRequest = (hiveDomain) => {
-   // i2b2.PM.ajax.setHive("PM:Admin", {domain_id:updateRow.domain_id, domain_name:updateRow.domain_name, environment:updateRow.environment, helpURL:updateRow.helpURL}, i2b2.PM.view.admin.refreshScreen);
-
     let data = {
         domain_id:hiveDomain.domainId,
         domain_name: hiveDomain.domainName,

@@ -2,14 +2,15 @@ import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {Tab, Tabs} from "@mui/material";
-import {  getAllHives } from "actions";
-import { Loader, DomainSettings } from "components";
+import {getAllGlobalParams, getAllHives} from "actions";
+import {Loader, DomainSettings, EditGlobalParameters} from "components";
 import "./AllHives.scss";
 
 export const AllHives = () => {
     const allHives = useSelector((state) => state.allHives );
     const isI2b2LibLoaded = useSelector((state) => state.isI2b2LibLoaded );
     const [updatedDomainSettings, setUpdatedDomainSettings ] = useState(allHives.hiveDomains);
+    const [updatedParams, setUpdatedParams] = useState(allHives.params);
 
     const AllHives = {
         DOMAIN: "DOMAIN",
@@ -26,11 +27,13 @@ export const AllHives = () => {
     useEffect(() => {
         if(isI2b2LibLoaded) {
             dispatch(getAllHives({}));
+            dispatch(getAllGlobalParams({}));
         }
     }, []);
 
     useEffect(() => {
         setUpdatedDomainSettings(allHives.hiveDomains[0]);
+        setUpdatedParams(allHives.params);
 
     }, [allHives]);
 
@@ -45,7 +48,7 @@ export const AllHives = () => {
                 centered
             >
                 <Tab value={AllHives.DOMAIN} label="Hive Domain Settings"/>
-                <Tab value={AllHives.PARAMS} label="Global Parameters(Optional)" />
+                <Tab value={AllHives.PARAMS} label="Global Parameters (Optional)" />
             </Tabs>
             {  selectedTab === AllHives.DOMAIN &&  updatedDomainSettings &&
                 <DomainSettings
@@ -53,6 +56,10 @@ export const AllHives = () => {
                     updatedDomainSettings={updatedDomainSettings}
                     updateDomainSettings={setUpdatedDomainSettings}
                 />
+            }
+            {  selectedTab === AllHives.PARAMS
+                && <EditGlobalParameters allHives={allHives} updatedParams={updatedParams} updateParams={setUpdatedParams}/>
+
             }
         </div>
     );

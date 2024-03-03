@@ -10,3 +10,5 @@ export { EditParameters } from "./EditParameters";
 export { StatusUpdate } from "./StatusUpdate";
 export { default as Confirmation } from "./Confirmation";
 export { DomainSettings } from "./AllHives/DomainSettings";
+export { EditGlobalParameters } from "./AllHives/EditGlobalParameters";
+

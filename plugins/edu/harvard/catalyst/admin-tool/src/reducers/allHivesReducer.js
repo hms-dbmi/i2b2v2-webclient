@@ -1,8 +1,9 @@
 import {
-    GET_ALL_HIVES_ACTION, SAVE_HIVE_DOMAIN_ACTION,
+    GET_ALL_GLOBAL_PARAMS_ACTION,
+    GET_ALL_HIVES_ACTION, SAVE_HIVE_DOMAIN_ACTION, SAVE_GLOBAL_PARAM_ACTION, DELETE_GLOBAL_PARAM_ACTION,
 } from "actions";
 import { defaultState } from "defaultState";
-import {AllHives, HiveDomain} from "models";
+import {AllHives, HiveDomain, Param, SelectedUser} from "models";
 
 export const allHivesReducer = (state = defaultState.allHives, action) => {
     switch (action.type) {
@@ -60,6 +61,97 @@ export const allHivesReducer = (state = defaultState.allHives, action) => {
                 saveStatus: null
             });
         }
+
+        case  GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS: {
+            const  {user}  = action.payload;
+
+
+            return AllHives({
+                isFetchingParams: true
+            });
+        }
+
+        case  GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_SUCCEEDED: {
+            const  { params }  = action.payload;
+
+            let paramsList = [];
+            params.map((param) => {
+                paramsList.push(Param({
+                    id: param.id,
+                    internalId: param.internalId,
+                    name: param.name,
+                    value:param.value,
+                    dataType: param.dataType,
+                }));
+            })
+
+            return AllHives({
+                ...state,
+                params: paramsList,
+                isFetchingParams: false
+            });
+        }
+
+        case  GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_FAILED: {
+
+            return AllHives({
+                ...state,
+                isFetchingParams: false
+            });
+        }
+
+
+        case  SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_SUCCEEDED: {
+            return AllHives({
+                ...state,
+                saveParamStatus: "SUCCESS"
+            });
+        }
+
+        case  SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_FAILED: {
+            return AllHives({
+                ...state,
+                saveParamStatus: "FAIL"
+            });
+        }
+
+        case SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_STATUS_CONFIRMED: {
+
+            return AllHives({
+                ...state,
+                saveStatus: null
+            });
+        }
+
+        case  DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_SUCCEEDED: {
+            const  { param }  = action.payload;
+
+            let newParams = [
+                ...state.params
+            ];
+            newParams = newParams.filter((pm) => pm.id  !== param.id);
+            return AllHives({
+                ...state,
+                params: newParams,
+                deleteStatus: "SUCCESS"
+            });
+        }
+        case  DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_FAILED: {
+
+            return AllHives({
+                ...state,
+                deleteStatus: "FAIL"
+            });
+        }
+
+        case DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_STATUS_CONFIRMED: {
+
+            return Hives({
+                ...state,
+                deleteStatus: null
+            });
+        }
+
         default: {
             return state;
         }

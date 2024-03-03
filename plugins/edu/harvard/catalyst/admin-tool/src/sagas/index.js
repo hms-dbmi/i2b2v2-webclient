@@ -8,4 +8,8 @@ export { deleteUserParamSaga } from "./deleteUserParamSaga"
 export { deleteUserSaga } from "./deleteUserSaga"
 export { deleteProjectSaga } from "./deleteProjectSaga"
 export { saveHiveDomainSettingsSaga } from "./saveHiveDomainSettingsSaga"
+export { allGlobalParamsSaga } from "./allGlobalParamsSaga"
+export { saveGlobalParamSaga } from "./saveGlobalParamSaga"
+export { deleteGlobalParamSaga } from "./deleteGlobalParamSaga"
+
 

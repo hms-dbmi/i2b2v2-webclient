@@ -6,17 +6,29 @@ export const AllHives = ({
     hiveDomains = [],
     params= [],
     isFetching= false,
-    saveStatus = null
+    isFetchingParams = false,
+    saveStatus = null,
+    saveParamStatus= null,
+    deleteParamStatus = null,
+    allGlobalParamStatus = null
  } = {}) => ({
     hiveDomains,
     params,
     isFetching,
-    saveStatus
+    isFetchingParams,
+    saveStatus,
+    saveParamStatus,
+    deleteParamStatus,
+    allGlobalParamStatus
 });
 
 AllHives.propTypes = {
     hiveDomains: PropTypes.arrayOf(HiveDomain).isRequired,
     params: PropTypes.arrayOf(Param).isRequired,
     isFetching: PropTypes.bool,
-    saveStatus: PropTypes.string
+    isFetchingParams: PropTypes.bool,
+    saveStatus: PropTypes.string,
+    saveParamStatus: PropTypes.string,
+    deleteParamStatus: PropTypes.string,
+    allGlobalParamStatus: PropTypes.string
 };

@@ -120,7 +120,6 @@ export const deleteProjectFailed = createNamedArgsAction(DELETE_PROJECT_ACTION.D
 export const deleteProjectStatusConfirmed = createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_STATUS_CONFIRMED);
 
 //================================================================================================== //
-
 export const SAVE_HIVE_DOMAIN_ACTION = {
     SAVE_HIVE_DOMAIN: "SAVE_HIVE_DOMAIN",
     SAVE_HIVE_DOMAIN_SUCCEEDED:  "SAVE_HIVE_DOMAIN_SUCCEEDED",
@@ -131,6 +130,40 @@ export const saveHiveDomain =  createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DO
 export const saveHiveDomainSucceeded = createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_SUCCEEDED);
 export const saveHiveDomainFailed = createNamedArgsAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_FAILED);
 export const saveHiveDomainStatusConfirmed = createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_STATUS_CONFIRMED);
+
+//================================================================================================== //
+export const GET_ALL_GLOBAL_PARAMS_ACTION = {
+    GET_ALL_GLOBAL_PARAMS: "GET_ALL_GLOBAL_PARAMS",
+    GET_ALL_GLOBAL_PARAMS_SUCCEEDED:  "GET_ALL_GLOBAL_PARAMS_SUCCEEDED",
+    GET_ALL_GLOBAL_PARAMS_FAILED: "GET_ALL_GLOBAL_PARAMS_FAILED",
+    GET_ALL_GLOBAL_PARAMS_STATUS_CONFIRMED: "GET_ALL_GLOBAL_PARAMS_STATUS_CONFIRMED"
+};
+export const getAllGlobalParams =  createAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS);
+export const getAllGlobalParamsSucceeded = createAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_SUCCEEDED);
+export const getAllGlobalParamsFailed = createNamedArgsAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_FAILED);
+export const getAllGlobalParamsStatusConfirmed = createAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_STATUS_CONFIRMED);
+//================================================================================================== //
+export const SAVE_GLOBAL_PARAM_ACTION = {
+    SAVE_GLOBAL_PARAM: "SAVE_GLOBAL_PARAM",
+    SAVE_GLOBAL_PARAM_SUCCEEDED:  "SAVE_GLOBAL_PARAM_SUCCEEDED",
+    SAVE_GLOBAL_PARAM_FAILED: "SAVE_GLOBAL_PARAM_FAILED",
+    SAVE_GLOBAL_PARAM_STATUS_CONFIRMED: "SAVE_GLOBAL_PARAM_STATUS_CONFIRMED"
+};
+export const saveGlobalParam =  createAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM);
+export const saveGlobalParamSucceeded = createAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_SUCCEEDED);
+export const saveGlobalParamFailed = createNamedArgsAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_FAILED);
+export const saveGlobalParamStatusConfirmed = createAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_STATUS_CONFIRMED);
+//================================================================================================== //
+export const DELETE_GLOBAL_PARAM_ACTION = {
+    DELETE_GLOBAL_PARAM: "DELETE_GLOBAL_PARAM",
+    DELETE_GLOBAL_PARAM_SUCCEEDED:  "DELETE_GLOBAL_PARAM_SUCCEEDED",
+    DELETE_GLOBAL_PARAM_FAILED: "DELETE_GLOBAL_PARAM_FAILED",
+    DELETE_GLOBAL_PARAM_STATUS_CONFIRMED: "DELETE_GLOBAL_PARAM_STATUS_CONFIRMED"
+};
+export const deleteGlobalParam =  createAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM);
+export const deleteGlobalParamSucceeded = createAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_SUCCEEDED);
+export const deleteGlobalParamFailed = createNamedArgsAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_FAILED);
+export const deleteGlobalParamStatusConfirmed = createAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_STATUS_CONFIRMED);
 
 
 
