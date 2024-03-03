@@ -5,9 +5,9 @@ import {
     saveUserParam, saveUserParamStatusConfirmed,
     deleteUserParam, deleteUserParamStatusConfirmed,
 } from "../../actions";
+import {EditParameters} from "../EditParameters";
 
 import "./EditUserParameters.scss";
-import {EditParameters} from "../EditParameters";
 
 export const EditUserParameters = ({selectedUser, updatedParams, updateParams, title}) => {
     const [saveStatus, setSaveStatus] = useState("");
