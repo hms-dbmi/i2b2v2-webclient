@@ -3,7 +3,7 @@
  export { Project } from "./Project";
  export { AllProjects } from "./AllProjects";
  export { AllHives } from "./AllHives";
- export { Hive } from "./Hive";
+ export { HiveDomain } from "./HiveDomain";
  export { Param, DataType } from "./Param";
  export { SelectedUser } from "./SelectedUser";
  export { DeletedUser } from "./DeletedUser";

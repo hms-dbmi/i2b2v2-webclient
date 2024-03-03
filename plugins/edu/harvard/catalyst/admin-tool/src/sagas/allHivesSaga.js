@@ -14,7 +14,7 @@ const parseHivesXml = (hivesXml) => {
     let hivesList = [];
     hives.map(hive => {
         let environment = hive.getElementsByTagName('environment');
-        let helpUrl = hive.getElementsByTagName('helpURL');
+        let helpURL = hive.getElementsByTagName('helpURL');
         let domainName = hive.getElementsByTagName('domain_name');
         let domainId = hive.getElementsByTagName('domain_id');
         let active = hive.getElementsByTagName('active');
@@ -22,10 +22,10 @@ const parseHivesXml = (hivesXml) => {
         if(environment.length !== 0){
             environment = environment[0].value;
 
-            if(helpUrl.length !== 0) {
-                helpUrl = helpUrl[0].value;
+            if(helpURL.length !== 0) {
+                helpURL = helpURL[0].value;
             }else{
-                helpUrl = "";
+                helpURL = "";
             }
             if(domainName.length !== 0) {
                 domainName = domainName[0].value;
@@ -34,7 +34,7 @@ const parseHivesXml = (hivesXml) => {
                     domainId = domainId[0].value;
                     if(active.length !== 0) {
                         active = active[0].value === "true";
-                        hivesList.push({environment, helpUrl, domainName, domainId, active});
+                        hivesList.push({environment, helpURL, domainName, domainId, active});
                     }
                 }
             }
@@ -51,7 +51,7 @@ export function* doGetAllHives(action) {
 
         if(response) {
             let hivesList = parseHivesXml(response);
-            yield put(getAllHivesSucceeded(hivesList));
+            yield put(getAllHivesSucceeded({allHives: hivesList}));
         }else{
             yield put(getAllHivesFailed(response));
         }

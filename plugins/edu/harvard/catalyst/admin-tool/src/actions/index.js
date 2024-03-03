@@ -119,6 +119,18 @@ export const deleteProjectSucceeded = createAction(DELETE_PROJECT_ACTION.DELETE_
 export const deleteProjectFailed = createNamedArgsAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_FAILED, "projectName");
 export const deleteProjectStatusConfirmed = createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_STATUS_CONFIRMED);
 
+//================================================================================================== //
+
+export const SAVE_HIVE_DOMAIN_ACTION = {
+    SAVE_HIVE_DOMAIN: "SAVE_HIVE_DOMAIN",
+    SAVE_HIVE_DOMAIN_SUCCEEDED:  "SAVE_HIVE_DOMAIN_SUCCEEDED",
+    SAVE_HIVE_DOMAIN_FAILED: "SAVE_HIVE_DOMAIN_FAILED",
+    SAVE_HIVE_DOMAIN_STATUS_CONFIRMED: "SAVE_HIVE_DOMAIN_STATUS_CONFIRMED"
+};
+export const saveHiveDomain =  createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN);
+export const saveHiveDomainSucceeded = createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_SUCCEEDED);
+export const saveHiveDomainFailed = createNamedArgsAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_FAILED);
+export const saveHiveDomainStatusConfirmed = createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_STATUS_CONFIRMED);
 
 
 

@@ -20,6 +20,6 @@ export const SelectedUser = ({
 
 SelectedUser.propTypes = {
     user: PropTypes.shape(User).isRequired,
-    parameters: PropTypes.arrayOf(Param).isRequired,
+    params: PropTypes.arrayOf(Param).isRequired,
     isFetching: PropTypes.bool.isRequired,
 };

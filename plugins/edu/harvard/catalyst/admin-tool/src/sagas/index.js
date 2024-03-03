@@ -7,3 +7,5 @@ export { saveUserParamSaga } from "./saveUserParamSaga";
 export { deleteUserParamSaga } from "./deleteUserParamSaga"
 export { deleteUserSaga } from "./deleteUserSaga"
 export { deleteProjectSaga } from "./deleteProjectSaga"
+export { saveHiveDomainSettingsSaga } from "./saveHiveDomainSettingsSaga"
+

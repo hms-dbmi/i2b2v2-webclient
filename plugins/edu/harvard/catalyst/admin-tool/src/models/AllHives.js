@@ -1,15 +1,22 @@
 import PropTypes from "prop-types";
-import { Hive } from "./Hive";
+import { HiveDomain } from "./HiveDomain";
+import {Param} from "./Param";
 
 export const AllHives = ({
-     hives = [],
-     isFetching= false,
+    hiveDomains = [],
+    params= [],
+    isFetching= false,
+    saveStatus = null
  } = {}) => ({
-    hives,
-    isFetching
+    hiveDomains,
+    params,
+    isFetching,
+    saveStatus
 });
 
 AllHives.propTypes = {
-    hives: PropTypes.arrayOf(Hive).isRequired,
+    hiveDomains: PropTypes.arrayOf(HiveDomain).isRequired,
+    params: PropTypes.arrayOf(Param).isRequired,
     isFetching: PropTypes.bool,
+    saveStatus: PropTypes.string
 };
