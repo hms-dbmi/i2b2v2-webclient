@@ -308,6 +308,9 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
             </Stack>
             <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
                 <BottomNavigation className={"EditUserActions"}>
+                    <div  className="EditUserActionSecondary">
+                        <Button onClick={cancelEdit} variant="outlined"> Cancel </Button>
+                    </div>
                     <div className="EditUserActionPrimary">
                         <Button  variant="outlined" onClick={saveUserInfo} disabled={!isDirty}> Save </Button>
                     </div>
