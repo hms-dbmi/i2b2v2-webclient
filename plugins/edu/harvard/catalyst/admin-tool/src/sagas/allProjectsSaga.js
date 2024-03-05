@@ -12,14 +12,15 @@ const getAllProjectsRequest = () => i2b2.ajax.PM.getAllProject({}).then((xmlStri
 const parseProjectsXml = (projectsXml) => {
     let projects = projectsXml.getElementsByTagName('project');
     let projectsList = [];
-    projects.forEach(project => {
-        let id = project.attributes['id'];
+    projects.forEach((project,index) => {
+        let id = index;
+        let internalId = project.attributes['id'];
         let name = project.getElementsByTagName('name');
         let description = project.getElementsByTagName('description');
         let key = project.getElementsByTagName('key');
         let wiki = project.getElementsByTagName('wiki');
         let path = project.getElementsByTagName('path');
-        if(id){
+        if(internalId){
             if(name.length !== 0){
                 name = name[0].value;
 
@@ -42,7 +43,7 @@ const parseProjectsXml = (projectsXml) => {
                 }
                 if(path.length !== 0) {
                     path = path[0].value;
-                    projectsList.push({id, name, description, key, wiki, path});
+                    projectsList.push({id, internalId , name, description, key, wiki, path});
                 }
             }
         }

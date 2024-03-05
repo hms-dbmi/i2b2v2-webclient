@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import {DataGrid, GridActionsCellItem, gridClasses} from "@mui/x-data-grid";
-import {Loader, StatusUpdate} from "components";
+import {EditProjectDetails, Loader, StatusUpdate} from "components";
 import {deleteProject, deleteProjectStatusConfirmed, getAllProjects} from "actions";
 import "./AllProjects.scss";
 import Snackbar from "@mui/material/Snackbar";
@@ -84,8 +84,8 @@ export const AllProjects = () => {
     const handleEditClick = (id) => () => {
         let projects = allProjects.projects.filter((project) => project.id === id);
         if(projects.length === 1) {
-            //setSelectedProject(projects[0]);
-            //setIsEditingProject(true);
+            setSelectedProject(projects[0]);
+            setIsEditingProject(true);
         }
     };
 
@@ -151,6 +151,7 @@ export const AllProjects = () => {
                 Add New Project
             </Button>}
             { !isEditingProject && displayProjectsTable()}
+            { isEditingProject && <EditProjectDetails project={selectedProject} setIsEditingProject={setIsEditingProject}/>}
             <StatusUpdate isOpen={showStatus} setIsOpen={setShowStatus} severity={statusSeverity} message={statusMsg}/>
         </div>
     );

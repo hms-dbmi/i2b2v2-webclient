@@ -21,6 +21,7 @@ export const allProjectsReducer = (state = defaultState.allProjects, action) => 
             allProjects.map((project) => {
                 projects.push(Project({
                     id: project.id,
+                    internalId: project.internalId,
                     name: project.name,
                     description: project.description,
                     wiki: project.wiki,

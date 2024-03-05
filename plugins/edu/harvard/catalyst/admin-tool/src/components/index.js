@@ -11,4 +11,9 @@ export { StatusUpdate } from "./StatusUpdate";
 export { default as Confirmation } from "./Confirmation";
 export { DomainSettings } from "./AllHives/DomainSettings";
 export { EditGlobalParameters } from "./AllHives/EditGlobalParameters";
+export { EditProjectParameters } from "./EditProjectParameters";
+export { EditProjectDetails } from "./EditProjectDetails";
+export { ProjectInfo } from "./ProjectInfo";
+export { EditProjectDataSources } from "./EditProjectDataSources";
+export { EditProjectUserAssociations } from "./EditProjectUserAssociations";
 
