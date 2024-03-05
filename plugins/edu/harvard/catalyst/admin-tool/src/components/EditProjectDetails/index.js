@@ -22,6 +22,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 export const EditProjectDetails = ({project, setIsEditingProject}) => {
     const selectedProject = useSelector((state) => state.selectedProject );
+    const [updatedParams, setUpdatedParams] = useState(selectedProject.params);
     const [activeStep, setActiveStep] = useState(0);
     const steps = ['Project Details', 'Parameters', 'Data Sources', "User Associations"];
     const [doSave, setDoSave] = useState(false);
@@ -63,6 +64,10 @@ export const EditProjectDetails = ({project, setIsEditingProject}) => {
         }
     }, [project]);
 
+    useEffect(() => {
+        setUpdatedParams(selectedProject.params);
+    }, [selectedProject]);
+
     return (
         <div className={"EditProjectDetails"}>
             <Link  className="BackToUsers" component="button" onClick={cancelEdit}>back to All Projects</Link>
@@ -87,11 +92,25 @@ export const EditProjectDetails = ({project, setIsEditingProject}) => {
 
             { activeStep===0 && <ProjectInfo selectedProject={selectedProject} cancelEdit={setIsEditingProject}
                                              doSave={doSave} setSaveCompleted={setSaveCompleted}/>}
-            { activeStep===1 && !selectedProject.isFetchingParams && <EditProjectParameters selectedProject={selectedProject} doSave={doSave} setSaveCompleted={setSaveCompleted}/>}
+            { activeStep===1 && !selectedProject.isFetchingParams
+                && <EditProjectParameters
+                    selectedProject={selectedProject}
+                    updatedParams={updatedParams}
+                    updateParams={setUpdatedParams}
+                    doSave={doSave}
+                    setSaveCompleted={setSaveCompleted}
+                />
+            }
 
             { activeStep===2 && !selectedProject.isFetchingDataSources && <EditProjectDataSources selectedProject={selectedProject} doSave={doSave} setSaveCompleted={setSaveCompleted}/>}
 
-            { activeStep===3 && !selectedProject.isFetchingUserRoles && <EditProjectUserAssociations selectedProject={selectedProject} doSave={doSave} setSaveCompleted={setSaveCompleted}/>}
+            { activeStep===3 && !selectedProject.isFetchingUserRoles
+                && <EditProjectUserAssociations
+                    selectedProject={selectedProject}
+                    doSave={doSave}
+                    setSaveCompleted={setSaveCompleted}
+                />
+            }
 
             <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
                 <BottomNavigation className={"EditProjectActions"}>

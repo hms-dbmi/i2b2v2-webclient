@@ -112,6 +112,7 @@ export const ProjectInfo = ({selectedProject, cancelEdit, doSave, setSaveComplet
     useEffect(() => {
         if(selectedProject.saveStatus === "SUCCESS"){
             setShowSaveBackdrop(false);
+            dispatch(saveProjectStatusConfirmed());
             setSaveCompleted(true);
         }
         if(selectedProject.saveStatus === "FAIL"){

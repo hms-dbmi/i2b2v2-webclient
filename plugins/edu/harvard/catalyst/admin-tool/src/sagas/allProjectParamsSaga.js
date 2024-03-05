@@ -16,8 +16,6 @@ const getAllProjectParamsRequest = (projectId) => {
         id_xml:projectId
     };
 
-    //var recList = i2b2.PM.ajax.getAllParam("PM:Admin", {table:'project', id_xml:proj_data.i2b2NodeKey});
-
     return i2b2.ajax.PM.getAllParam(data).then((xmlString) => new XMLParser().parseFromString(xmlString));
 };
 
@@ -46,7 +44,7 @@ export function* doGetAllProjectParameters(action) {
     console.log("getting all parameters for project " + project.name + "...");
 
     try {
-        const response = yield call(getAllProjectParamsRequest, project.name);
+        const response = yield call(getAllProjectParamsRequest, project.internalId);
 
         if(response) {
             let paramsList = parseParamsXml(response);

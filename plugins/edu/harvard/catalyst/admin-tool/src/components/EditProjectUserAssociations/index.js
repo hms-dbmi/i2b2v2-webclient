@@ -297,11 +297,11 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
                 </Button>
             </Stack>
 
-            {displayParamsTable()}
-
             <Button className="AddParam" variant="contained" startIcon={<AddIcon />} onClick={handleAddParam}>
                 Add
             </Button>
+
+            {displayParamsTable()}
 
 
             <Backdrop className={"SaveBackdrop"} open={showSaveBackdrop}>

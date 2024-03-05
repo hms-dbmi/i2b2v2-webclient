@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
     saveUserParam, saveUserParamStatusConfirmed,
-    deleteUserParam, deleteUserParamStatusConfirmed,
+    deleteUserParam, deleteUserParamStatusConfirmed, getAllUserParamsStatusConfirmed,
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 
@@ -46,7 +46,7 @@ export const EditUserParameters = ({selectedUser, updatedParams, updateParams, t
         }
 
         if(selectedUser.userParamStatus === "FAIL"){
-            dispatch(allUserParamStatusConfirmed());
+            dispatch(getAllUserParamsStatusConfirmed());
             setUserParamStatus("FAIL");
         }
 

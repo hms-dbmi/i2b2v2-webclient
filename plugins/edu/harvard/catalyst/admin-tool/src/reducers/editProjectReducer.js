@@ -4,10 +4,10 @@ import {
     SAVE_PROJECT_PARAM_ACTION,
     DELETE_PROJECT_PARAM_ACTION,
     GET_ALL_PROJECT_DATASOURCES_ACTION,
-    GET_ALL_PROJECT_USERS_ACTION, SAVE_USER_ACTION
+    GET_ALL_PROJECT_USERS_ACTION, GET_ALL_USER_PARAMS_ACTION
 } from "actions";
 import { defaultState } from "defaultState";
-import {SelectedProject, Param, ProjectDataSource, ProjectUser} from "models";
+import {SelectedProject, Param, ProjectDataSource, ProjectUser, SelectedUser} from "models";
 
 export const editProjectReducer = (state = defaultState.selectedProject, action) => {
     switch (action.type) {
@@ -42,10 +42,17 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
             });
         }
         case  GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS_FAILED: {
-            //TODO: add error handling somewhere
             return SelectedProject({
                 ...state,
                 isFetchingParams: false,
+            });
+        }
+
+        case GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS_STATUS_CONFIRMED: {
+
+            return SelectedUser({
+                ...state,
+                userParamStatus: null
             });
         }
 

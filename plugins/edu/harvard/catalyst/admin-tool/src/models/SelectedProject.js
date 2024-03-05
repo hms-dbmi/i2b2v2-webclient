@@ -17,7 +17,8 @@ export const SelectedProject = ({
     isFetchingDataSources= false,
     isFetchingUsers= false,
     saveStatus= null,
-    deleteStatus= null
+    deleteStatus= null,
+    allParamStatus=null,
 } = {}) => ({
     project,
     params,
@@ -27,7 +28,8 @@ export const SelectedProject = ({
     isFetchingDataSources,
     isFetchingUsers,
     saveStatus,
-    deleteStatus
+    deleteStatus,
+    allParamStatus
 });
 
 SelectedProject.propTypes = {
@@ -38,5 +40,6 @@ SelectedProject.propTypes = {
     isFetchingParams: PropTypes.bool.isRequired,
     isFetchingDataSources: PropTypes.bool.isRequired,
     saveStatus: PropTypes.string,
-    deleteStatus: PropTypes.string
+    deleteStatus: PropTypes.string,
+    allParamStatus: PropTypes.string
 };

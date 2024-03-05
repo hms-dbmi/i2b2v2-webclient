@@ -19,10 +19,12 @@ const getAllCellRequest = (projectPath) => {
 const getDataSourceRequest = (cellId, cellUrl, projectPath) => {
     const sec_version = cellId === "IM" ? "" : "1.1/";
 
+    const sec_cell = cellId === CELL_ID.CRC ? cellId.toLowerCase() + "/pdo" : cellId.toLowerCase();
+
     projectPath = projectPath.substring(1) + "/";
     let data = {
         sec_url: cellUrl,
-        sec_cell: cellId.toLowerCase(),
+        sec_cell: sec_cell,
         sec_version: sec_version,
         id_xml: projectPath
     };
@@ -107,7 +109,7 @@ const parseDataSourceXml = (cellId, xml) => {
 
 export function* doGetAllProjectDataSources(action) {
     const { project } = action.payload;
-    console.log("getting all data sources for project ..." + JSON.stringify(project));
+    console.log("getting all data sources for project ..." + project.name);
     try {
         const getCellResponse = yield call(getAllCellRequest, project.path);
         if(getCellResponse) {

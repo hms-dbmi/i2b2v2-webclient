@@ -16,6 +16,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Confirmation } from "components";
 
 import "./EditParameters.scss";
+import {Typography} from "@mui/material";
 
 export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam, saveStatus, deleteStatus, allParamStatus}) => {
     const [rowModesModel, setRowModesModel] = useState({});
@@ -272,7 +273,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
 
     return (
         <div className="EditParameters" >
-            <h3> {title} </h3>
+            <Typography> {title} </Typography>
             <Button className="AddParam" variant="contained" startIcon={<AddIcon />} onClick={handleAddParam}>
                 Add
             </Button>

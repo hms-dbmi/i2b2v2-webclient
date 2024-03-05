@@ -15,3 +15,4 @@ export { allProjectParamsSaga } from "./allProjectParamsSaga";
 export { allProjectDataSourcesSaga } from "./allProjectDataSourcesSaga";
 export { allProjectUsersSaga } from "./allProjectUsersSaga";
 export { saveProjectSaga } from "./saveProjectSaga";
+export { saveProjectParamSaga } from "./saveProjectParamSaga";

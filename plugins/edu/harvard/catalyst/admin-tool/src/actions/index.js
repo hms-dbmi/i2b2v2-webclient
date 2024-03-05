@@ -180,10 +180,12 @@ export const GET_ALL_PROJECT_PARAMS_ACTION = {
     GET_ALL_PROJECT_PARAMS: "GET_ALL_PROJECT_PARAMS",
     GET_ALL_PROJECT_PARAMS_SUCCEEDED:  "GET_ALL_PROJECT_PARAMS_SUCCEEDED",
     GET_ALL_PROJECT_PARAMS_FAILED: "GET_ALL_PROJECT_PARAMS_FAILED",
+    GET_ALL_PROJECT_PARAMS_STATUS_CONFIRMED: "GET_ALL_PROJECT_PARAMS_STATUS_CONFIRMED"
 };
 export const getAllProjectParams =  createAction(GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS);
 export const getAllProjectParamsSucceeded = createAction(GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS_SUCCEEDED);
 export const getAllProjectParamsFailed = createNamedArgsAction(GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS_FAILED);
+export const getAllProjectParamsStatusConfirmed = createAction(GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS_STATUS_CONFIRMED);
 //================================================================================================== //
 
 export const SAVE_PROJECT_PARAM_ACTION = {
