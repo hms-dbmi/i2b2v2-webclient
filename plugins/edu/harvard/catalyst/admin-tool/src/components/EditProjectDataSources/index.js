@@ -43,9 +43,8 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
             ...updatedDataSources
         }
 
-        let newDataSource = newDataSources[cellId];
-        newDataSource = {
-            ...newDataSource
+        let newDataSource = {
+            ...newDataSources[cellId]
         };
 
         newDataSource[field] = value;
