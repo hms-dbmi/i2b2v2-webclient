@@ -187,7 +187,6 @@ export const getAllProjectParamsSucceeded = createAction(GET_ALL_PROJECT_PARAMS_
 export const getAllProjectParamsFailed = createNamedArgsAction(GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS_FAILED);
 export const getAllProjectParamsStatusConfirmed = createAction(GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS_STATUS_CONFIRMED);
 //================================================================================================== //
-
 export const SAVE_PROJECT_PARAM_ACTION = {
     SAVE_PROJECT_PARAM: "SAVE_PROJECT_PARAM",
     SAVE_PROJECT_PARAM_SUCCEEDED:  "SAVE_PROJECT_PARAM_SUCCEEDED",
@@ -205,28 +204,39 @@ export const DELETE_PROJECT_PARAM_ACTION = {
     DELETE_PROJECT_PARAM_FAILED: "DELETE_PROJECT_PARAM_FAILED",
     DELETE_PROJECT_PARAM_STATUS_CONFIRMED: "DELETE_PROJECT_PARAM_STATUS_CONFIRMED"
 };
-export const deleteProjectParam =  createAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM);
+export const deleteProjectParam = createAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM);
 export const deleteProjectParamSucceeded = createAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_SUCCEEDED);
 export const deleteProjectParamFailed = createNamedArgsAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_FAILED);
 export const deleteProjectParamStatusConfirmed = createAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_STATUS_CONFIRMED);
 //================================================================================================== //
 export const GET_ALL_PROJECT_DATASOURCES_ACTION = {
     GET_ALL_PROJECT_DATASOURCES: "GET_ALL_PROJECT_DATASOURCES",
-    GET_ALL_PROJECT_DATASOURCES_SUCCEEDED:  "GET_ALL_PROJECT_DATASOURCES_SUCCEEDED",
+    GET_ALL_PROJECT_DATASOURCES_SUCCEEDED: "GET_ALL_PROJECT_DATASOURCES_SUCCEEDED",
     GET_ALL_PROJECT_DATASOURCES_FAILED: "GET_ALL_PROJECT_DATASOURCES_FAILED",
 };
-export const getAllProjectDataSources =  createNamedArgsAction(GET_ALL_PROJECT_DATASOURCES_ACTION.GET_ALL_PROJECT_DATASOURCES, "project");
+export const getAllProjectDataSources = createNamedArgsAction(GET_ALL_PROJECT_DATASOURCES_ACTION.GET_ALL_PROJECT_DATASOURCES, "project");
 export const getAllProjectDataSourcesSucceeded = createAction(GET_ALL_PROJECT_DATASOURCES_ACTION.GET_ALL_PROJECT_DATASOURCES_SUCCEEDED);
 export const getAllProjectDataSourcesFailed = createNamedArgsAction(GET_ALL_PROJECT_DATASOURCES_ACTION.GET_ALL_PROJECT_DATASOURCES_FAILED);
 //================================================================================================== //
 export const GET_ALL_PROJECT_USERS_ACTION = {
     GET_ALL_PROJECT_USERS: "GET_ALL_PROJECT_USERS",
-    GET_ALL_PROJECT_USERS_SUCCEEDED:  "GET_ALL_PROJECT_USERS_SUCCEEDED",
+    GET_ALL_PROJECT_USERS_SUCCEEDED: "GET_ALL_PROJECT_USERS_SUCCEEDED",
     GET_ALL_PROJECT_USERS_FAILED: "GET_ALL_PROJECT_USERS_FAILED",
 };
-export const getAllProjectUsers =  createNamedArgsAction(GET_ALL_PROJECT_USERS_ACTION.GET_ALL_PROJECT_USERS, "project");
+export const getAllProjectUsers = createNamedArgsAction(GET_ALL_PROJECT_USERS_ACTION.GET_ALL_PROJECT_USERS, "project");
 export const getAllProjectUsersSucceeded = createAction(GET_ALL_PROJECT_USERS_ACTION.GET_ALL_PROJECT_USERS_SUCCEEDED);
 export const getAllProjectUsersFailed = createNamedArgsAction(GET_ALL_PROJECT_USERS_ACTION.GET_ALL_PROJECT_USERS_FAILED);
+//================================================================================================== //
+export const SAVE_PROJECT_DATASOURCES_ACTION = {
+    SAVE_PROJECT_DATASOURCES: "SAVE_PROJECT_DATASOURCES",
+    SAVE_PROJECT_DATASOURCES_SUCCEEDED: "SAVE_PROJECT_DATASOURCES_SUCCEEDED",
+    SAVE_PROJECT_DATASOURCES_FAILED: "SAVE_PROJECT_DATASOURCES_FAILED",
+    SAVE_PROJECT_DATASOURCES_STATUS_CONFIRMED: "SAVE_PROJECT_DATASOURCES_STATUS_CONFIRMED"
+};
+export const saveProjectDataSources = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES);
+export const saveProjectDataSourcesSucceeded = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_SUCCEEDED);
+export const saveProjectDataSourcesFailed = createNamedArgsAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_FAILED);
+export const saveProjectDataSourcesStatusConfirmed = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_STATUS_CONFIRMED);
 
 
 

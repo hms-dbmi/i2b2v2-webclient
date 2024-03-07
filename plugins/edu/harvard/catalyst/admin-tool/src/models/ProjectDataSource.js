@@ -7,8 +7,9 @@ export const ProjectDataSource = ({
                                       dbServerType = null,
                                       ownerId = null,
                                       projectPath=null,
+                                      cellURL=null,
                                       tooltip = null,
-                                      comment=null
+                                      comment=null,
                                   } = {}) => ({
     name,
     dbSchema,
@@ -16,6 +17,7 @@ export const ProjectDataSource = ({
     dbServerType,
     ownerId,
     projectPath,
+    cellURL,
     tooltip,
     comment
 });
@@ -27,6 +29,7 @@ ProjectDataSource.propTypes = {
     dbServerType: PropTypes.string.isRequired,
     ownerId: PropTypes.string.isRequired,
     projectPath: PropTypes.string.isRequired,
+    cellURL: PropTypes.string.isRequired,
 };
 
 export const CELL_ID = {

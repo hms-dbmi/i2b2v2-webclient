@@ -2,7 +2,12 @@ import {useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./EditProjectDataSources.scss";
-import {getAllProjectDataSources} from "../../actions";
+import {
+    saveProject,
+    saveProjectDataSources,
+    saveProjectDataSourcesStatusConfirmed,
+    saveProjectStatusConfirmed
+} from "../../actions";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import Stack from "@mui/material/Stack";
@@ -11,12 +16,18 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { CELL_ID } from "models";
+import IconButton from "@mui/material/IconButton";
+import ReplayIcon from "@mui/icons-material/Replay";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 
 
 export const EditProjectDataSources = ({selectedProject, doSave, setSaveCompleted}) => {
     const [updatedDataSources, setUpdatedDataSources] = useState(selectedProject.dataSources);
     const [showSaveBackdrop, setShowProcessingBackdrop] = useState(false);
-    const [isDirty, setIsDirty] = useState(false);
+    const [showSaveStatus, setShowSaveStatus] = useState(false);
+    const [saveStatusMsg, setSaveStatusMsg] = useState("");
+    const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
     const dispatch = useDispatch();
 
     const handleUpdate = (cellId, field, value) => {
@@ -27,16 +38,15 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
         newDataSource[cellId].isUpdated = true;
 
         setUpdatedDataSources(newDataSource);
-
-        if(JSON.stringify(newDataSource) !== JSON.stringify(selectedProject.dataSources)){
-            // setIsDirty(true);
-        }else{
-            //setIsDirty(false);
-        }
     }
 
     const handleSave = () => {
-        setSaveCompleted(true);
+        /*if(validateSaveProject()) {
+            setShowSaveBackdrop(true);
+            dispatch(saveProject({project: updatedProject}));
+        }*/
+        setShowProcessingBackdrop(true);
+        dispatch(saveProjectDataSources({project: selectedProject.project, dataSources: updatedDataSources}));
     };
 
     useEffect(() => {
@@ -45,6 +55,24 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
         }
     }, [doSave]);
 
+
+
+    useEffect(() => {
+        if(selectedProject.saveDSStatus === "SUCCESS"){
+            setShowProcessingBackdrop(false);
+            dispatch(saveProjectDataSourcesStatusConfirmed());
+            setSaveCompleted(true);
+        }
+        if(selectedProject.saveDSStatus === "FAIL"){
+            setShowProcessingBackdrop(false);
+            dispatch(saveProjectDataSourcesStatusConfirmed());
+            setSaveStatusMsg("ERROR: failed to save project data sources");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("error");
+        }
+
+        setUpdatedDataSources(selectedProject.dataSources);
+    }, [selectedProject]);
 
     useEffect(() => {
 
@@ -61,7 +89,6 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
         if(updatedDataSources){
             setShowProcessingBackdrop(false);
         }
-
     }, [updatedDataSources]);
 
     const dsForm = (cellId) => {
@@ -149,10 +176,28 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
             </Card>
         )
     }
+
+    const handleResetDataSources = () => {
+        setUpdatedDataSources({...selectedProject.dataSources});
+    }
+
+    const handleCloseSaveAlert = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setShowSaveStatus(false);
+    };
+
+
     return (
         <div className="EditProjectDataSources" >
             <Typography> {selectedProject.project.name + " - Data Source Details"} </Typography>
-
+            <div className={"ResetEditPage"}>
+                <IconButton color="primary" aria-label="add params" onClick={handleResetDataSources} variant={"outlined"}>
+                    <ReplayIcon/>
+                </IconButton>
+            </div>
             <Stack direction="row" spacing={6} useFlexGap>
                 { dsForm(CELL_ID.CRC) }
                 { dsForm(CELL_ID.ONT) }
@@ -163,6 +208,21 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
             <Backdrop className={"SaveBackdrop"} open={showSaveBackdrop}>
                 <CircularProgress color="inherit" />
             </Backdrop>
+
+            <Snackbar
+                open={showSaveStatus}
+                autoHideDuration={5000}
+                anchorOrigin={{ vertical: 'top', horizontal : "center" }}
+            >
+                <Alert
+                    onClose={handleCloseSaveAlert}
+                    severity={saveStatusSeverity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {saveStatusMsg}
+                </Alert>
+            </Snackbar>
         </div>
     );
 

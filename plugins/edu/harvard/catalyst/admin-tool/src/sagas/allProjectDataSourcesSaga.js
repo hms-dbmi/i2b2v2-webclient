@@ -16,14 +16,14 @@ const getAllCellRequest = (projectPath) => {
 };
 
 //a function that returns a promise
-const getDataSourceRequest = (cellId, cellUrl, projectPath) => {
+const getDataSourceRequest = (cellId, cellURL, projectPath) => {
     const sec_version = cellId === "IM" ? "" : "1.1/";
 
     const sec_cell = cellId === CELL_ID.CRC ? cellId.toLowerCase() + "/pdo" : cellId.toLowerCase();
 
     projectPath = projectPath.substring(1) + "/";
     let data = {
-        sec_url: cellUrl,
+        sec_url: cellURL,
         sec_cell: sec_cell,
         sec_version: sec_version,
         id_xml: projectPath
@@ -32,6 +32,7 @@ const getDataSourceRequest = (cellId, cellUrl, projectPath) => {
     return i2b2.ajax.PM.getDBLookup(data).then((xmlString) => {
         return {
             cellId: cellId,
+            cellURL: cellURL,
             response: new XMLParser().parseFromString(xmlString)
         }
     }).catch((err) => err);
@@ -66,7 +67,7 @@ const parseCellXml = (xml) => {
     return cellList;
 }
 
-const parseDataSourceXml = (cellId, xml) => {
+const parseDataSourceXml = (cellId, cellURL, xml) => {
     let dblookups = xml.getElementsByTagName('dblookup');
     let dataSource = {};
     dblookups.forEach((dblookup) => {
@@ -89,6 +90,7 @@ const parseDataSourceXml = (cellId, xml) => {
                                 ownerId = ownerId[0].value;
                                 dataSource = {
                                     cellId: cellId,
+                                    cellURL: cellURL,
                                     name: name,
                                     dbSchema: dbSchema,
                                     jndiDataSource: jndiDataSource,
@@ -122,7 +124,7 @@ export function* doGetAllProjectDataSources(action) {
             const dataSourcesResults = dataSourcesResponse.filter(result => result.msgType !== "AJAX_ERROR");
             if(dataSourcesResults.length > 0) {
                 const dataSourceList = dataSourcesResults.map((dataSource) => {
-                    return parseDataSourceXml(dataSource.cellId, dataSource.response);
+                    return parseDataSourceXml(dataSource.cellId, dataSource.cellURL, dataSource.response);
                 });
                 yield put(getAllProjectDataSourcesSucceeded({dataSources: dataSourceList}));
             }

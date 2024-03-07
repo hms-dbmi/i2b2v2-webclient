@@ -4,7 +4,7 @@ import {
     SAVE_PROJECT_PARAM_ACTION,
     DELETE_PROJECT_PARAM_ACTION,
     GET_ALL_PROJECT_DATASOURCES_ACTION,
-    GET_ALL_PROJECT_USERS_ACTION, GET_ALL_USER_PARAMS_ACTION
+    GET_ALL_PROJECT_USERS_ACTION, GET_ALL_USER_PARAMS_ACTION, SAVE_PROJECT_DATASOURCES_ACTION
 } from "actions";
 import { defaultState } from "defaultState";
 import {SelectedProject, Param, ProjectDataSource, ProjectUser, SelectedUser} from "models";
@@ -79,7 +79,8 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
                     jndiDataSource: ds.jndiDataSource,
                     dbServerType: ds.dbServerType,
                     ownerId: ds.ownerId,
-                    projectPath: ds.projectPath
+                    projectPath: ds.projectPath,
+                    cellURL: ds.cellURL
                 });
             });
 
@@ -152,6 +153,30 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
             });
         }
 
+        case  SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_SUCCEEDED: {
+
+            console.log("save project datasource succeeded");
+            return SelectedProject({
+                ...state,
+                saveDSStatus: "SUCCESS"
+            });
+        }
+
+        case  SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_FAILED: {
+
+            return SelectedProject({
+                ...state,
+                saveDSStatus: "FAIL"
+            });
+        }
+
+        case  SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_STATUS_CONFIRMED: {
+
+            return SelectedProject({
+                ...state,
+                saveDSStatus: null
+            });
+        }
         default: {
             return state;
         }
