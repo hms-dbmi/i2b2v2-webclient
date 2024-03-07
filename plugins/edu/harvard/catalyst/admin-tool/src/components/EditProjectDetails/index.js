@@ -26,7 +26,7 @@ export const EditProjectDetails = ({project, setIsEditingProject}) => {
     const [activeStep, setActiveStep] = useState(0);
     const steps = ['Project Details', 'Parameters', 'Data Sources', "User Associations"];
     const [doSave, setDoSave] = useState(false);
-    const [saveCompleted, setSaveCompleted] = useState(false);
+    const [saveCompleted, setSaveCompleted] = useState(null);
 
     const dispatch = useDispatch();
 
@@ -52,6 +52,9 @@ export const EditProjectDetails = ({project, setIsEditingProject}) => {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
             setDoSave(false);
             setSaveCompleted(false);
+        }else{
+            setSaveCompleted(null);
+            setDoSave(null);
         }
     }, [saveCompleted]);
 
@@ -90,8 +93,13 @@ export const EditProjectDetails = ({project, setIsEditingProject}) => {
                 })}
             </Stepper>
 
-            { activeStep===0 && <ProjectInfo selectedProject={selectedProject} cancelEdit={setIsEditingProject}
-                                             doSave={doSave} setSaveCompleted={setSaveCompleted}/>}
+            { activeStep===0 && <ProjectInfo
+                selectedProject={selectedProject}
+                cancelEdit={setIsEditingProject}
+                doSave={doSave}
+                setSaveCompleted={setSaveCompleted}
+            />
+            }
             { activeStep===1 && !selectedProject.isFetchingParams
                 && <EditProjectParameters
                     selectedProject={selectedProject}
@@ -102,7 +110,9 @@ export const EditProjectDetails = ({project, setIsEditingProject}) => {
                 />
             }
 
-            { activeStep===2 && !selectedProject.isFetchingDataSources && <EditProjectDataSources selectedProject={selectedProject} doSave={doSave} setSaveCompleted={setSaveCompleted}/>}
+            { activeStep===2 && !selectedProject.isFetchingDataSources && <EditProjectDataSources
+                selectedProject={selectedProject} doSave={doSave} setSaveCompleted={setSaveCompleted}
+            />}
 
             { activeStep===3 && !selectedProject.isFetchingUserRoles
                 && <EditProjectUserAssociations

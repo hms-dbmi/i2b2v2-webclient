@@ -23,73 +23,123 @@ import Snackbar from "@mui/material/Snackbar";
 
 
 export const EditProjectDataSources = ({selectedProject, doSave, setSaveCompleted}) => {
-    const [updatedDataSources, setUpdatedDataSources] = useState(selectedProject.dataSources);
+    const [updatedDataSources, setUpdatedDataSources] = useState({...selectedProject.dataSources});
     const [showSaveBackdrop, setShowProcessingBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
     const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
+    const [isNameNotValid, setIsNameNotValid] = useState({});
+    const [nameNotValidError, setNameNotValidError] = useState({});
+    const [isDBSchemaNotValid, setIsDBSchemaNotValid] = useState({});
+    const [dbSchemaNotValidError, setDBSchemaNotValidError] = useState({});
+    const [isJndiDataSourceNotValid, setIsJndiDataSourceNotValid] = useState({});
+    const [jndiDataSourceNotValidError, setJndiDataSourceNotValidError] = useState({});
+    const [isDBServerTypeNotValid, setIsDBServerTypeNotValid] = useState({});
+    const [dbServerTypeNotValidError, setDBServerTypeNotValidError] = useState({});
     const dispatch = useDispatch();
 
     const handleUpdate = (cellId, field, value) => {
-        let newDataSource = {
+        let newDataSources = {
             ...updatedDataSources
         }
-        newDataSource[cellId][field] = value;
-        newDataSource[cellId].isUpdated = true;
 
-        setUpdatedDataSources(newDataSource);
+        let newDataSource = newDataSources[cellId];
+        newDataSource = {
+            ...newDataSource
+        };
+
+        newDataSource[field] = value;
+
+        newDataSources[cellId] = newDataSource;
+        setUpdatedDataSources(newDataSources);
     }
 
     const handleSave = () => {
-        /*if(validateSaveProject()) {
-            setShowSaveBackdrop(true);
-            dispatch(saveProject({project: updatedProject}));
-        }*/
-        setShowProcessingBackdrop(true);
-        dispatch(saveProjectDataSources({project: selectedProject.project, dataSources: updatedDataSources}));
+        if(validateSaveProjectDataSource()) {
+           setShowProcessingBackdrop(true);
+            dispatch(saveProjectDataSources({project: selectedProject.project, dataSources: updatedDataSources}));
+        }else{
+            setSaveCompleted(false);
+        }
     };
 
-    useEffect(() => {
-        if(doSave){
-            handleSave();
-        }
-    }, [doSave]);
+    const validateSaveProjectDataSource = () => {
+        let isValid = true;
+        const cellIds = [CELL_ID.CRC, CELL_ID.ONT, CELL_ID.WORK];
+        let newIsNameNotValid = {...isNameNotValid};
+        let newNameNotValidError = {...nameNotValidError};
+        let newIsDBServerTypeNotValid = {...isDBServerTypeNotValid};
+        let newDBServerTypeNotValidError = {...dbServerTypeNotValidError};
+        let newIsDBSchemaNotValid = {...isDBSchemaNotValid};
+        let newDBSchemaNotValidError = {...dbSchemaNotValidError};
+        let newIsJndiDataSourceNotValid = {...isJndiDataSourceNotValid};
+        let newJndiDataSourceNotValidError = {...jndiDataSourceNotValidError};
 
+        cellIds.map((cellId) => {
+            const dataSource = updatedDataSources[cellId];
+            if (!dataSource.name || dataSource.name.length === 0) {
+                newIsNameNotValid[cellId] = true;
+                setIsNameNotValid(newIsNameNotValid);
+                newNameNotValidError[cellId] = "Name is required";
+                setNameNotValidError(newNameNotValidError);
+                isValid = false;
+            } else {
+                newIsNameNotValid[cellId] = false;
+                setIsNameNotValid(newIsNameNotValid);
 
-
-    useEffect(() => {
-        if(selectedProject.saveDSStatus === "SUCCESS"){
-            setShowProcessingBackdrop(false);
-            dispatch(saveProjectDataSourcesStatusConfirmed());
-            setSaveCompleted(true);
-        }
-        if(selectedProject.saveDSStatus === "FAIL"){
-            setShowProcessingBackdrop(false);
-            dispatch(saveProjectDataSourcesStatusConfirmed());
-            setSaveStatusMsg("ERROR: failed to save project data sources");
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("error");
-        }
-
-        setUpdatedDataSources(selectedProject.dataSources);
-    }, [selectedProject]);
-
-    useEffect(() => {
-
-        const timeoutId = setTimeout(() => {
-            if(!updatedDataSources) {
-                setShowProcessingBackdrop(true);
+                newNameNotValidError[cellId] = "";
+                setNameNotValidError(newNameNotValidError);
             }
-        }, 2000);
 
-        return () => clearTimeout(timeoutId);
-    }, []);
+            if (!dataSource.dbServerType || dataSource.dbServerType.length === 0) {
+                newIsDBServerTypeNotValid[cellId] = true;
+                setIsDBServerTypeNotValid(newIsDBServerTypeNotValid);
 
-    useEffect(() => {
-        if(updatedDataSources){
-            setShowProcessingBackdrop(false);
-        }
-    }, [updatedDataSources]);
+                newDBServerTypeNotValidError[cellId] = "Database Server is required";
+                setDBServerTypeNotValidError(newDBServerTypeNotValidError);
+                isValid = false;
+            } else {
+                newIsDBServerTypeNotValid[cellId] = false;
+                setIsDBServerTypeNotValid(newIsDBServerTypeNotValid);
+
+                newDBServerTypeNotValidError[cellId] = "";
+                setDBServerTypeNotValidError(newDBServerTypeNotValidError);
+            }
+
+            if (!dataSource.dbSchema|| dataSource.dbSchema.length === 0) {
+                newIsDBSchemaNotValid[cellId] = true;
+                setIsDBSchemaNotValid(newIsDBSchemaNotValid);
+
+                newDBSchemaNotValidError[cellId] = "Database Schema is required";
+                setDBSchemaNotValidError(newDBSchemaNotValidError);
+                isValid = false;
+            } else {
+                newIsDBSchemaNotValid[cellId] = false;
+                setIsDBSchemaNotValid(newIsDBSchemaNotValid);
+
+                newDBSchemaNotValidError[cellId] = "";
+                setDBSchemaNotValidError(newDBSchemaNotValidError);
+            }
+
+            if (!dataSource.jndiDataSource || dataSource.jndiDataSource.length === 0) {
+                newIsJndiDataSourceNotValid[cellId] = true;
+                setIsJndiDataSourceNotValid(newIsJndiDataSourceNotValid);
+
+                newJndiDataSourceNotValidError[cellId] = "JNDI Data Source is required";
+                setJndiDataSourceNotValidError(newJndiDataSourceNotValidError);
+                isValid = false;
+
+            } else {
+                newIsJndiDataSourceNotValid[cellId] = false;
+                setIsJndiDataSourceNotValid(newIsJndiDataSourceNotValid);
+
+                newJndiDataSourceNotValidError[cellId] = "";
+                setJndiDataSourceNotValidError(newJndiDataSourceNotValidError);
+            }
+        });
+
+        return isValid;
+    }
 
     const dsForm = (cellId) => {
         return (
@@ -112,6 +162,8 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
                             label="Database Server"
                             value={updatedDataSources[cellId] ? updatedDataSources[cellId].dbServerType : ""}
                             onChange={(event) => handleUpdate(cellId, "dbServerType", event.target.value)}
+                            error={isDBServerTypeNotValid[cellId]}
+                            helperText={dbServerTypeNotValidError[cellId]}
                             variant="standard"
                             InputLabelProps={{ shrink: true }}
                         >
@@ -133,6 +185,8 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
                             label="Name"
                             value={updatedDataSources[cellId] ? updatedDataSources[cellId].name: ""}
                             onChange={(event) => handleUpdate(cellId, "name", event.target.value)}
+                            error={isNameNotValid[cellId]}
+                            helperText={nameNotValidError[cellId]}
                             variant="standard"
                             InputLabelProps={{ shrink: true }}
                         />
@@ -157,6 +211,8 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
                             label="JNDI Data Source"
                             value={updatedDataSources[cellId] ? updatedDataSources[cellId].jndiDataSource : ""}
                             onChange={(event) => handleUpdate(cellId, "jndiDataSource", event.target.value)}
+                            error={isJndiDataSourceNotValid[cellId]}
+                            helperText={jndiDataSourceNotValidError[cellId]}
                             variant="standard"
                             InputLabelProps={{ shrink: true }}
                         />
@@ -168,6 +224,8 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
                             label="Database Schema"
                             value={updatedDataSources[cellId] ? updatedDataSources[cellId].dbSchema : ""}
                             onChange={(event) => handleUpdate(cellId, "dbSchema", event.target.value)}
+                            error={isDBSchemaNotValid[cellId]}
+                            helperText={dbSchemaNotValidError[cellId]}
                             variant="standard"
                             InputLabelProps={{ shrink: true }}
                         />
@@ -178,6 +236,7 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
     }
 
     const handleResetDataSources = () => {
+        console.log("resetting data sources" + JSON.stringify(selectedProject.dataSources));
         setUpdatedDataSources({...selectedProject.dataSources});
     }
 
@@ -189,12 +248,51 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
         setShowSaveStatus(false);
     };
 
+    useEffect(() => {
+        if(doSave){
+            handleSave();
+        }
+    }, [doSave]);
+
+    useEffect(() => {
+        if(selectedProject.saveDSStatus === "SUCCESS"){
+            setShowProcessingBackdrop(false);
+            dispatch(saveProjectDataSourcesStatusConfirmed());
+            setSaveCompleted(true);
+        }
+        if(selectedProject.saveDSStatus === "FAIL"){
+            setShowProcessingBackdrop(false);
+            dispatch(saveProjectDataSourcesStatusConfirmed());
+            setSaveStatusMsg("ERROR: failed to save project data sources");
+            setShowSaveStatus(true);
+            setSaveStatusSeverity("error");
+        }
+
+        setUpdatedDataSources({...selectedProject.dataSources});
+    }, [selectedProject]);
+
+    useEffect(() => {
+
+        const timeoutId = setTimeout(() => {
+            if(!updatedDataSources) {
+                setShowProcessingBackdrop(true);
+            }
+        }, 2000);
+
+        return () => clearTimeout(timeoutId);
+    }, []);
+
+    useEffect(() => {
+        if(updatedDataSources){
+            setShowProcessingBackdrop(false);
+        }
+    }, [updatedDataSources]);
 
     return (
         <div className="EditProjectDataSources" >
             <Typography> {selectedProject.project.name + " - Data Source Details"} </Typography>
             <div className={"ResetEditPage"}>
-                <IconButton color="primary" aria-label="add params" onClick={handleResetDataSources} variant={"outlined"}>
+                <IconButton color="primary" aria-label="reset data sources" onClick={handleResetDataSources} variant={"outlined"}>
                     <ReplayIcon/>
                 </IconButton>
             </div>

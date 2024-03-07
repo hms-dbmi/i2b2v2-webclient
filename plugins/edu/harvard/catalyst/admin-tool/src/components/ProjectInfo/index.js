@@ -76,6 +76,8 @@ export const ProjectInfo = ({selectedProject, cancelEdit, doSave, setSaveComplet
         if(validateSaveProject()) {
             setShowSaveBackdrop(true);
             dispatch(saveProject({project: updatedProject}));
+        }else{
+            //setSaveFailed(true);
         }
     };
 
