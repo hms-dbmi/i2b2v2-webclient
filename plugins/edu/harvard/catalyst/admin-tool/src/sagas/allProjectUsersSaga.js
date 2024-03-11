@@ -6,7 +6,7 @@ import {
     getAllProjectUsersSucceeded,
 } from "actions";
 
-import {ADMIN_ROLE, DATA_ROLE} from "models";
+import {ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE} from "models";
 
 //a function that returns a promise
 const getAllProjectUsersRequest = (projectId) => {
@@ -27,36 +27,43 @@ const parseUserRolesXml = (xml) => {
         if(username.length !== 0 ) {
             username = username[0].value;
             if (userRolesMap[username] === undefined){
-                userRolesMap[username] = {} ;
+                userRolesMap[username] = {
+                    editorRole: false
+                };
             }
             if (role.length > 1) {
                 role = role[1].value;
-                if(role === ADMIN_ROLE.USER.name || role === ADMIN_ROLE.MANAGER.name) {
+                if(role === EDITOR_ROLE){
+                    userRolesMap[username].editorRole = "true";
+                }
+
+                if(role === ADMIN_ROLES.USER.name || role === ADMIN_ROLES.MANAGER.name) {
                     if (userRolesMap[username].adminRole ===  undefined
-                        ||(userRolesMap[username].adminRole.order > ADMIN_ROLE[role].order)) {
-                        userRolesMap[username].adminRole = ADMIN_ROLE[role];
+                        ||(userRolesMap[username].adminRole.order > ADMIN_ROLES[role].order)) {
+                        userRolesMap[username].adminRole = ADMIN_ROLES[role];
                     }
                 }
 
-                if(role === DATA_ROLE.DATA_PROT.name
-                    ||  role === DATA_ROLE.DATA_DEID.name
-                    ||  role === DATA_ROLE.DATA_LDS.name
-                    ||  role === DATA_ROLE.DATA_AGG.name
-                    ||  role === DATA_ROLE.DATA_OBFSC.name) {
+                if(role === DATA_ROLES.DATA_PROT.name
+                    ||  role === DATA_ROLES.DATA_DEID.name
+                    ||  role === DATA_ROLES.DATA_LDS.name
+                    ||  role === DATA_ROLES.DATA_AGG.name
+                    ||  role === DATA_ROLES.DATA_OBFSC.name) {
                     if (!userRolesMap[username].dataRole
-                        || userRolesMap[username].dataRole.order > DATA_ROLE[role].order) {
-                        userRolesMap[username].dataRole = DATA_ROLE[role];
+                        || userRolesMap[username].dataRole.order > DATA_ROLES[role].order) {
+                        userRolesMap[username].dataRole = DATA_ROLES[role];
                     }
                 }
             }
         }
     });
 
-    let userRolesList = Object.entries(userRolesMap).map(([username, roles]) => {
+    const userRolesList = Object.entries(userRolesMap).map(([username, roles]) => {
         return {
             username: username,
             adminPath: roles.adminRole,
-            dataPath: roles.dataRole
+            dataPath: roles.dataRole,
+            editorPath: roles.editorRole
         }
     });
 

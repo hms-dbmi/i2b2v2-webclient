@@ -10,4 +10,4 @@
  export { DeletedProject } from "./DeletedProject";
  export { SelectedProject } from "./SelectedProject";
  export { ProjectDataSource, CELL_ID } from "./ProjectDataSource";
- export { ProjectUser, ADMIN_ROLE, DATA_ROLE } from "./ProjectUser";
+ export { ProjectUser, ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE } from "./ProjectUser";

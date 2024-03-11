@@ -17,7 +17,7 @@ import { InputAdornment} from "@mui/material";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import {saveUser, saveUserStatusConfirmed} from "actions";
-import { User } from "models";
+import { SelectedUser } from "models";
 import "./UserInfo.scss";
 
 export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) => {
@@ -340,6 +340,6 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
 };
 
 UserInfo.propTypes = {
-    user: PropTypes.shape(User).isRequired,
+    selectedUser: PropTypes.shape(SelectedUser).isRequired,
 };
 

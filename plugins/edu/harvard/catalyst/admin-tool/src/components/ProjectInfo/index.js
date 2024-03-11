@@ -77,7 +77,7 @@ export const ProjectInfo = ({selectedProject, cancelEdit, doSave, setSaveComplet
             setShowSaveBackdrop(true);
             dispatch(saveProject({project: updatedProject}));
         }else{
-            //setSaveFailed(true);
+            setSaveCompleted(false);
         }
     };
 
@@ -212,6 +212,17 @@ export const ProjectInfo = ({selectedProject, cancelEdit, doSave, setSaveComplet
                         InputLabelProps={{ shrink: true }}
                     />
                 </div>
+                <div className={"mainField"}>
+                    <TextField
+                        className="inputField"
+                        label="Description"
+                        value={updatedProject.description}
+                        onChange={(event) => handleUpdate("description", event.target.value)}
+                        variant="standard"
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </div>
+
                 <div className={"mainField"}>
                     <TextField
                         className="inputField"

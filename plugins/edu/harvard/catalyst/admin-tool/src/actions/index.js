@@ -237,6 +237,41 @@ export const saveProjectDataSources = createAction(SAVE_PROJECT_DATASOURCES_ACTI
 export const saveProjectDataSourcesSucceeded = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_SUCCEEDED);
 export const saveProjectDataSourcesFailed = createNamedArgsAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_FAILED);
 export const saveProjectDataSourcesStatusConfirmed = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_STATUS_CONFIRMED);
+//================================================================================================== //
+export const GET_ALL_PROJECT_USER_PARAMS_ACTION = {
+    GET_ALL_PROJECT_USER_PARAMS: "GET_ALL_PROJECT_USER_PARAMS",
+    GET_ALL_PROJECT_USER_PARAMS_SUCCEEDED:  "GET_ALL_PROJECT_USER_PARAMS_SUCCEEDED",
+    GET_ALL_PROJECT_USER_PARAMS_FAILED: "GET_ALL_PROJECT_USER_PARAMS_FAILED",
+    GET_ALL_PROJECT_USER_PARAMS_STATUS_CONFIRMED: "GET_ALL_PROJECT_USER_PARAMS_STATUS_CONFIRMED"
+};
+export const getAllProjectUserParams =  createAction(GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS);
+export const getAllProjectUserParamsSucceeded = createAction(GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS_SUCCEEDED);
+export const getAllProjectUserParamsFailed = createNamedArgsAction(GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS_FAILED);
+export const getAllProjectUserParamsStatusConfirmed = createAction(GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS_STATUS_CONFIRMED);
+//================================================================================================== //
+export const SAVE_PROJECT_USER_ACTION = {
+    SAVE_PROJECT_USER: "SAVE_PROJECT_USER",
+    SAVE_PROJECT_USER_SUCCEEDED:  "SAVE_PROJECT_USER_SUCCEEDED",
+    SAVE_PROJECT_USER_FAILED: "SAVE_PROJECT_USER_FAILED",
+    SAVE_PROJECT_USER_STATUS_CONFIRMED: "SAVE_PROJECT_USER_STATUS_CONFIRMED"
+};
+export const saveProjectUser =  createAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER);
+export const saveProjectUserSucceeded = createAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_SUCCEEDED);
+export const saveProjectUserFailed = createNamedArgsAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_FAILED);
+export const saveProjectUserStatusConfirmed = createAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_STATUS_CONFIRMED);
+//================================================================================================== //
+export const ASSOCIATE_USER_TO_PROJECT_ACTION = {
+    ASSOCIATE_USER_TO_PROJECT: "ASSOCIATE_USER_TO_PROJECT",
+    ASSOCIATE_USER_TO_PROJECT_SUCCEEDED:  "ASSOCIATE_USER_TO_PROJECT_SUCCEEDED",
+    ASSOCIATE_USER_TO_PROJECT_FAILED: "ASSOCIATE_USER_TO_PROJECT_FAILED",
+    ASSOCIATE_USER_TO_PROJECT_STATUS_CONFIRMED: "ASSOCIATE_USER_TO_PROJECT_STATUS_CONFIRMED"
+};
+export const associateUserToProject =  createAction(ASSOCIATE_USER_TO_PROJECT_ACTION.ASSOCIATE_USER_TO_PROJECT);
+export const associateUserToProjectSucceeded = createAction(ASSOCIATE_USER_TO_PROJECT_ACTION.ASSOCIATE_USER_TO_PROJECT_SUCCEEDED);
+export const associateUserToProjectFailed = createNamedArgsAction(ASSOCIATE_USER_TO_PROJECT_ACTION.ASSOCIATE_USER_TO_PROJECT_FAILED);
+export const associateUserToProjectStatusConfirmed = createAction(ASSOCIATE_USER_TO_PROJECT_ACTION.ASSOCIATE_USER_TO_PROJECT_STATUS_CONFIRMED);
+
+
 
 
 

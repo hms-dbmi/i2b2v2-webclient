@@ -1,8 +1,9 @@
 import {
     GET_ALL_USER_PARAMS_ACTION,
+    GET_ALL_PROJECT_USER_PARAMS_ACTION,
     SAVE_USER_ACTION,
     SAVE_USER_PARAM_ACTION,
-    DELETE_USER_PARAM_ACTION,
+    DELETE_USER_PARAM_ACTION, SAVE_PROJECT_USER_ACTION,
 } from "actions";
 import { defaultState } from "defaultState";
 import { SelectedUser, Param } from "models";
@@ -117,6 +118,59 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                 deleteStatus: null
             });
         }
+
+        case  GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS: {
+            const  {user}  = action.payload;
+
+            return SelectedUser({
+                ...state,
+                user,
+                isFetching: true,
+                userParamStatus: null
+            });
+        }
+
+        case  GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS_SUCCEEDED: {
+            const  {user, params}  = action.payload;
+
+            //Extract each user param data into Param model and return an array of Params
+            let paramsList = [];
+            params.map((param) => {
+                paramsList.push(Param({
+                    id: param.id,
+                    internalId: param.internalId,
+                    name: param.name,
+                    value:param.value,
+                    dataType: param.dataType,
+                }));
+            })
+
+            return SelectedUser({
+                ...state,
+                user,
+                params: paramsList,
+                isFetching: false,
+                userParamStatus: "SUCCESS"
+            });
+        }
+
+
+        case  GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS_FAILED: {
+            return SelectedUser({
+                ...state,
+                isFetching: false,
+                userParamStatus: "FAIL"
+            });
+        }
+
+        case GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS_STATUS_CONFIRMED: {
+
+            return SelectedUser({
+                ...state,
+                userParamStatus: null
+            });
+        }
+
         default: {
             return state;
         }

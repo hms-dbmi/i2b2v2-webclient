@@ -4,7 +4,10 @@ import {
     SAVE_PROJECT_PARAM_ACTION,
     DELETE_PROJECT_PARAM_ACTION,
     GET_ALL_PROJECT_DATASOURCES_ACTION,
-    GET_ALL_PROJECT_USERS_ACTION, GET_ALL_USER_PARAMS_ACTION, SAVE_PROJECT_DATASOURCES_ACTION
+    GET_ALL_PROJECT_USERS_ACTION,
+    GET_ALL_USER_PARAMS_ACTION,
+    SAVE_PROJECT_DATASOURCES_ACTION,
+    SAVE_PROJECT_USER_ACTION
 } from "actions";
 import { defaultState } from "defaultState";
 import {SelectedProject, Param, ProjectDataSource, ProjectUser, SelectedUser} from "models";
@@ -109,6 +112,7 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
                     username: user.username,
                     adminPath: user.adminPath,
                     dataPath: user.dataPath,
+                    editorPath: user.editorPath
                 });
             });
 
@@ -154,8 +158,6 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
         }
 
         case  SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_SUCCEEDED: {
-
-            console.log("save project datasource succeeded");
             return SelectedProject({
                 ...state,
                 saveDSStatus: "SUCCESS"
@@ -175,6 +177,33 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
             return SelectedProject({
                 ...state,
                 saveDSStatus: null
+            });
+        }
+
+        case  SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_SUCCEEDED: {
+            const  { selectedProject, projectUser }  = action.payload;
+
+            const users = selectedProject.users.map((user) => (user.username === projectUser.username ? projectUser : user));
+
+            return SelectedProject({
+                ...state,
+                users,
+                isFetching: false,
+                saveUserStatus: "SUCCESS"
+            });
+        }
+        case  SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_FAILED: {
+            return SelectedProject({
+                ...state,
+                isFetching: false,
+                saveUserStatus: "FAIL"
+            });
+        }
+
+        case  SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_STATUS_CONFIRMED: {
+            return SelectedProject({
+                ...state,
+                saveUserStatus: null
             });
         }
         default: {

@@ -235,7 +235,6 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
     }
 
     const handleResetDataSources = () => {
-        console.log("resetting data sources" + JSON.stringify(selectedProject.dataSources));
         setUpdatedDataSources({...selectedProject.dataSources});
     }
 

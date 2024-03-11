@@ -17,4 +17,6 @@ export { allProjectUsersSaga } from "./allProjectUsersSaga";
 export { saveProjectSaga } from "./saveProjectSaga";
 export { saveProjectParamSaga } from "./saveProjectParamSaga";
 export { saveProjectDataSourcesSaga } from "./saveProjectDataSourcesSaga";
+export { allProjectUserParamsSaga } from "./allProjectUserParamsSaga";
+export { saveProjectUserSaga } from "./saveProjectUserSaga";
 

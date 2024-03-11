@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { DataType, ADMIN_ROLE, DATA_ROLE } from "models";
+import { DataType, ADMIN_ROLES, DATA_ROLES } from "models";
 import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes} from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
@@ -26,6 +26,7 @@ import {
 } from "../../actions";
 
 import "./EditProjectUserAssociations.scss";
+import {EditProjectUser} from "../EditProjectUser";
 
 export const EditProjectUserAssociations = ({selectedProject}) => {
     const [rows, setRows] = useState(selectedProject.users);
@@ -35,6 +36,9 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
     const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
     const [saveParamId, setSaveParamId] = useState(null);
+    const[isEditingUser, setIsEditingUser] = useState(false);
+    const[selectedUser, setSelectedUser] = useState(null);
+
     const dispatch = useDispatch();
 
     const columns = [
@@ -52,10 +56,10 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
             type: 'singleSelect',
             valueOptions: [{
                 label: 'Manager',
-                value: ADMIN_ROLE.MANAGER
+                value: ADMIN_ROLES.MANAGER
             }, {
                 label: 'User',
-                value: ADMIN_ROLE.USER
+                value: ADMIN_ROLES.USER
             }]
         },
         {
@@ -67,22 +71,22 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
             type: 'singleSelect',
             valueOptions: [{
                 label: 'Protected',
-                value: DATA_ROLE.DATA_PROT
+                value: DATA_ROLES.DATA_PROT
             }, {
                 label: 'De-identified Data',
-                value: DATA_ROLE.DATA_DEID
+                value: DATA_ROLES.DATA_DEID
             },
                 {
                     label: 'Limited Data Set',
-                    value: DATA_ROLE.DATA_LDS
+                    value: DATA_ROLES.DATA_LDS
                 },
                 {
                     label: 'Aggregated',
-                    value: DATA_ROLE.DATA_AGG
+                    value: DATA_ROLES.DATA_AGG
                 },
                 {
                     label: 'Obfuscated',
-                    value: DATA_ROLE.DATA_OBFSC
+                    value: DATA_ROLES.DATA_OBFSC
                 }]
         },
         {
@@ -93,6 +97,9 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
             cellClassName: 'actions',
             getActions: ({ id }) => {
                 const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+                if(id === "AGG_SERVICE_ACCOUNT"){
+                    return [];
+                }
 
                 if (isInEditMode) {
                     return [
@@ -192,8 +199,14 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
         setShowSaveStatus(false);
     };
 
-    const handleEditClick = (id) => () => {
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    const handleEditClick = (username) => () => {
+        let user = selectedProject.users.filter((user) => user.username === username);
+        if(user.length === 1) {
+            setSelectedUser(user[0]);
+            setIsEditingUser(true);
+        }
+
+       // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
     };
 
     const handleSaveClick = (id) => () => {
@@ -265,9 +278,15 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
             setSaveStatusSeverity("error");
         }
 
+        if(selectedUser) {
+            let updatedSelectedUser = selectedProject.users.filter((user) => user.username === selectedUser.username).reduce((acc, item) => acc);
+            setSelectedUser(updatedSelectedUser);
+        }
+
         setRows(selectedProject.users);
 
     }, [selectedProject]);
+
 
 
     return (
@@ -303,6 +322,7 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
 
             {displayParamsTable()}
 
+            {isEditingUser && <EditProjectUser project={selectedProject} user={selectedUser} setIsEditingUser={setIsEditingUser}/>}
 
             <Backdrop className={"SaveBackdrop"} open={showSaveBackdrop}>
                 <CircularProgress color="inherit" />

@@ -1,17 +1,18 @@
 import PropTypes from "prop-types";
 
 export const ProjectUser = ({
-                                username = null,
-                                adminPath = ADMIN_ROLE.USER,
-                                dataPath = DATA_ROLE.DATA_OBFSC,
-
-                            } = {}) => ({
+    username = null,
+    adminPath = ADMIN_ROLES.USER,
+    dataPath = DATA_ROLES.DATA_OBFSC,
+    editorPath = false
+} = {}) => ({
     username,
     adminPath,
     dataPath,
+    editorPath,
 });
 
-export const ADMIN_ROLE = {
+export const ADMIN_ROLES = {
     MANAGER: {
         name: "MANAGER",
         order: 1
@@ -22,7 +23,7 @@ export const ADMIN_ROLE = {
     }
 };
 
-export const DATA_ROLE = {
+export const DATA_ROLES = {
     DATA_PROT: {
         name: "DATA_PROT",
         order: 1
@@ -45,9 +46,12 @@ export const DATA_ROLE = {
     }
 };
 
+export const EDITOR_ROLE = "EDITOR";
+
 ProjectUser.propTypes = {
     username: PropTypes.string.isRequired,
-    adminPath: PropTypes.shape(ADMIN_ROLE).isRequired,
-    dataOath: PropTypes.shape(DATA_ROLE).isRequired,
+    adminPath: PropTypes.shape(ADMIN_ROLES).isRequired,
+    dataPath: PropTypes.shape(DATA_ROLES).isRequired,
+    editorPath: PropTypes.bool.isRequired,
 };
 
