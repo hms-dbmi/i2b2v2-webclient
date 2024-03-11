@@ -39,7 +39,6 @@ export function* doSaveProjectUser(action) {
         if(user.editorPath){
             rolesToSave.push(EDITOR_ROLE);
         }
-        console.log("saga previousRoles: " + JSON.stringify(previousRoles));
 
         const filterRolesToSave = rolesToSave.filter((role) => !previousRoles.includes(role));
 

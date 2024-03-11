@@ -18,5 +18,6 @@ export { EditProjectDataSources } from "./EditProjectDataSources";
 export { EditProjectUserAssociations } from "./EditProjectUserAssociations";
 export { EditProjectUser } from "./EditProjectUser";
 export { ProjectUserInfo } from "./ProjectUserInfo";
+export { EditProjectUserParameters } from "./EditProjectUserParameters";
 
 

@@ -2,9 +2,9 @@ import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { User } from "models";
-import { ProjectUserInfo, EditUserParameters } from "components";
+import { ProjectUserInfo, EditProjectUserParameters } from "components";
 import {
-    getAllProjectUserParams, saveProjectUserStatusConfirmed,
+    getAllProjectUserParams, saveProjectUserStatusConfirmed, saveProjectUserParam,
 } from "actions";
 import {Tab, Tabs} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
@@ -14,6 +14,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from "@mui/material/Button";
 import "./EditProjectUser.scss";
+import {selectedProject} from "../../reducers";
 
 
 export const EditProjectUser = ({project, user,  setIsEditingUser}) => {
@@ -97,7 +98,12 @@ export const EditProjectUser = ({project, user,  setIsEditingUser}) => {
                     {
                         selectedTab === EditDetails.PARAMS &&
                         !selectedUser.isFetching
-                        && <EditUserParameters selectedUser={selectedUser} updatedParams={updatedParams} updateParams={setUpdatedParams}/>
+                        && <EditProjectUserParameters
+                            selectedProject={project}
+                            projectUser={selectedUser.user}
+                            updatedParams={updatedParams}
+                            updateParams={setUpdatedParams}
+                        />
                     }
                 </div>
             </DialogContent>

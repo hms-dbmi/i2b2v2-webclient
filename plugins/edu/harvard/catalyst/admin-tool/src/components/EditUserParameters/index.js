@@ -26,9 +26,14 @@ export const EditUserParameters = ({selectedUser, updatedParams, updateParams, t
         dispatch(deleteUserParam({user: selectedUser.user, param}));
     };
 
+    const saveParameter = (param) => {
+        if(param && param.name.length > 0) {
+            doSaveParam(selectedUser.user, param);
+        }
+    };
 
     useEffect(() => {
-        if(selectedUser.saveStatus === "SUCCESS"){
+        if(saveStatus === "SUCCESS"){
             dispatch(saveUserParamStatusConfirmed());
             setSaveStatus("SUCCESS");
         }
@@ -59,7 +64,7 @@ export const EditUserParameters = ({selectedUser, updatedParams, updateParams, t
                 rows={updatedParams}
                 updateParams={updateParams}
                 title={title}
-                saveParam={saveParam}
+                saveParam={saveParameter}
                 deleteParam={handleDeleteClick}
                 saveStatus={saveStatus}
                 deleteStatus={deleteStatus}

@@ -7,7 +7,7 @@ import { UserInfo, EditUserParameters } from "components";
 
 import "./EditUserDetails.scss";
 import {
-    getAllUserParams, saveUserStatusConfirmed,
+    getAllUserParams, saveUserParam, saveUserStatusConfirmed,
 } from "actions";
 import {Tab, Tabs} from "@mui/material";
 

@@ -29,7 +29,7 @@ const saveProjectRequest = (project) => {
 
 export function* doSaveProject(action) {
     const { project } = action.payload;
-    console.log("saving project..." + project.name);
+    console.log("saving project " + project.name + "...");
 
     try {
         let response = yield call(saveProjectRequest, project);

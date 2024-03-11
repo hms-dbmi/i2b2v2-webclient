@@ -22,7 +22,7 @@ const deleteParamRequest = (param) => {
 export function* doDeleteUserParam(action) {
     const { user, param } = action.payload;
 
-    console.log("deleting user param..." + param.name);
+    console.log("deleting user param" + param.name + "..." );
 
     try {
         let response = yield call(deleteParamRequest, param);

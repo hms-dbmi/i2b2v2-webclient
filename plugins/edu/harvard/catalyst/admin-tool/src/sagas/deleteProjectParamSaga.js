@@ -22,7 +22,7 @@ const deleteParamRequest = (param) => {
 export function* doDeleteProjectParam(action) {
     const { project, param } = action.payload;
 
-    console.log("deleting project param..." + param.name);
+    console.log("deleting project param "+ param.name + "..." );
 
     try {
         let response = yield call(deleteParamRequest, param);

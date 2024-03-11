@@ -8,13 +8,11 @@ import {
 
 import {Param, DataType} from "models";
 
-//a function that returns a promise
 const getAllProjectUserParamsRequest = (projectId, user) => {
-    //	var recList = i2b2.PM.ajax.getAllParam("PM:Admin", {table:"project_user", param_xml:' id="'+project+'"', id_xml:"<user_name>"+username+"</user_name>"});
     let data = {
         table:"project_user_param",
-        param_xml:"",
-        id_xml:"<path>"+projectId+"</path><user_name>"+user.username+"</user_name>"
+        param_xml:' id="'+projectId+'"',
+        id_xml:"<user_name>"+user.username+"</user_name>"
     };
 
 
@@ -46,7 +44,7 @@ export function* doGetAllProjectUserParameters(action) {
     console.log("getting all parameters for user " + user.username + " in project " + project.project.name + "...");
 
     try {
-        const response = yield call(getAllProjectUserParamsRequest, project.internalId, user);
+        const response = yield call(getAllProjectUserParamsRequest, project.project.internalId, user);
 
         if(response) {
             let paramsList = parseParamsXml(response);
