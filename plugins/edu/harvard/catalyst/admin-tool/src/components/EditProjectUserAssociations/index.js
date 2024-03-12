@@ -1,7 +1,7 @@
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { DataType, ADMIN_ROLES, DATA_ROLES } from "models";
+import {DataType, ADMIN_ROLES, DATA_ROLES, ProjectUser} from "models";
 import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes} from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
@@ -19,16 +19,18 @@ import SearchIcon from '@mui/icons-material/Search';
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import { createFilterOptions } from '@mui/material/Autocomplete';
 import {
     saveUserParam, saveUserParamStatusConfirmed,
-    deleteUserParamStatusConfirmed
+    deleteUserParamStatusConfirmed, saveProjectUser
 } from "../../actions";
-
-import "./EditProjectUserAssociations.scss";
 import {EditProjectUser} from "../EditProjectUser";
+import "./EditProjectUserAssociations.scss";
 
 export const EditProjectUserAssociations = ({selectedProject}) => {
+    const allUsers = useSelector((state) => state.allUsers );
     const [rows, setRows] = useState(selectedProject.users);
     const [rowModesModel, setRowModesModel] = useState({});
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
@@ -38,6 +40,9 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
     const [saveParamId, setSaveParamId] = useState(null);
     const[isEditingUser, setIsEditingUser] = useState(false);
     const[selectedUser, setSelectedUser] = useState(null);
+    const[userFound, setUserFound] = useState(false);
+    const[searchedUsername, setSearchedUsername] = useState({username:""});
+    const [usernameInputValue, setUsernameInputValue] = useState({username:""});
 
     const dispatch = useDispatch();
 
@@ -205,12 +210,10 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
             setSelectedUser(user[0]);
             setIsEditingUser(true);
         }
-
-       // setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
     };
 
     const handleSaveClick = (id) => () => {
-        let savedRow = rows.filter((row) => row.id === id);
+        //let savedRow = rows.filter((row) => row.id === id);
 
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
     };
@@ -245,7 +248,14 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
     };
 
     const handleAssociateUser = () => {
+        const newUser = ProjectUser({
+            username: searchedUsername.username,
+            adminPath: ADMIN_ROLES.USER,
+            dataPath: DATA_ROLES.DATA_OBFSC
+        });
 
+        console.log("new user is for associate " + JSON.stringify(newUser));
+        dispatch(saveProjectUser({user: newUser, selectedProject, previousRoles: []}));
     };
 
     useEffect(() => {
@@ -278,7 +288,7 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
             setSaveStatusSeverity("error");
         }
 
-        if(selectedUser) {
+       if(selectedUser) {
             let updatedSelectedUser = selectedProject.users.filter((user) => user.username === selectedUser.username).reduce((acc, item) => acc);
             setSelectedUser(updatedSelectedUser);
         }
@@ -287,31 +297,57 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
 
     }, [selectedProject]);
 
+    const defaultProps = {
+        options: allUsers.users,
+        getOptionLabel: (option) => option.username,
+    };
 
+    const filterOptions = createFilterOptions({
+        matchFrom: 'start',
+        limit: 100
+    });
+
+    const handleUserInput = (event, newValue) => {
+        setUsernameInputValue(newValue);
+
+        const filteredUsers = allUsers.users.filter((user) => user.username === newValue);
+        if(filteredUsers.length > 0){
+            setUserFound(true);
+        }else{
+            setUserFound(false);
+        }
+    }
 
     return (
         <div className="EditProjectUserAssociations" >
             <Typography> {selectedProject.project.name + " - User Associations"} </Typography>
-
             <Stack
                 direction={"row"}
                 spacing={2}
                 className={"UserSearch"}
             >
-                <Paper
-                    component="form"
-                    variant="outlined"
-                >
-                    <InputBase
-                        sx={{ ml: 1, flex: 1 }}
-                        placeholder="Search username"
-                        inputProps={{ 'aria-label': 'search google maps' }}
-                    />
-                    <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                        <SearchIcon />
-                    </IconButton>
-                </Paper>
-                <Button className="AddUser" variant="contained" startIcon={<AddIcon />} onClick={handleAssociateUser}>
+                <Autocomplete
+                    value={searchedUsername}
+                    onChange={(event, newValue) => {
+                        console.log("onchange searchedusername is " + searchedUsername);
+                        console.log("onchange searchedusername newvalue is " + JSON.stringify(newValue));
+                        setSearchedUsername(newValue);
+                    }}
+                    inputValue={usernameInputValue}
+                    onInputChange={handleUserInput}
+                    className={"UserInput"}
+                    {...defaultProps}
+                    filterOptions={filterOptions}
+                    freeSolo
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            label="Search username"
+                            variant="standard"
+                        />
+                    )}
+                />
+                <Button className="AddUser" variant="contained" startIcon={<AddIcon />} onClick={handleAssociateUser} disabled={!userFound}>
                     Associate User to Project
                 </Button>
             </Stack>
@@ -319,7 +355,6 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
             <Button className="AddParam" variant="contained" startIcon={<AddIcon />} onClick={handleAddParam}>
                 Add
             </Button>
-
             {displayParamsTable()}
 
             {isEditingUser && <EditProjectUser project={selectedProject} user={selectedUser} setIsEditingUser={setIsEditingUser}/>}

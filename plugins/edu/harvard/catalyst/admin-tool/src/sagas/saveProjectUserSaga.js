@@ -1,7 +1,7 @@
 import {call, takeLatest, put, all} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
-    getAllProjectParams, getAllProjectUsers,
+    getAllProjectUsers,
     SAVE_PROJECT_USER_ACTION, saveProjectDataSourcesFailed, saveProjectDataSourcesSucceeded,
     saveProjectUserFailed,
     saveProjectUserSucceeded,
@@ -39,7 +39,6 @@ export function* doSaveProjectUser(action) {
         if(user.editorPath){
             rolesToSave.push(EDITOR_ROLE);
         }
-
         const filterRolesToSave = rolesToSave.filter((role) => !previousRoles.includes(role));
 
         const filteredPreviousRoles = previousRoles.filter((role) => !rolesToSave.includes(role));
@@ -59,6 +58,7 @@ export function* doSaveProjectUser(action) {
 
             const projectUserRolesResults = projectUserRoleResponse.filter(result => result.msgType === "AJAX_ERROR");
             if(projectUserRolesResults.length === 0) {
+                yield put(getAllProjectUsers({project: selectedProject.project}));
                 yield put(saveProjectUserSucceeded({projectUser: user, selectedProject}));
             }
             else{
