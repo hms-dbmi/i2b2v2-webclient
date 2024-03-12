@@ -26,29 +26,33 @@ export const EditProjectUserParameters = ({selectedProject, projectUser, updated
         }
     };
 
+    const saveStatusConfirm = () =>{
+        dispatch(saveProjectUserParamStatusConfirmed());
+    }
+
+    const deleteStatusConfirm = () =>{
+        dispatch(deleteProjectUserParamStatusConfirmed());
+    }
+
     useEffect(() => {
+         console.log("save user param status is " + JSON.stringify(selectedProject.saveUserParamStatus));
         if(selectedProject.saveUserParamStatus.status === "SUCCESS"){
-            dispatch(saveProjectUserParamStatusConfirmed());
-            setSaveStatus("SUCCESS");
+            setSaveStatus(selectedProject.saveUserParamStatus);
         }
 
         if(selectedProject.saveUserParamStatus.status === "FAIL"){
-            dispatch(saveProjectUserParamStatusConfirmed());
-            setSaveStatus("FAIL");
+            setSaveStatus(selectedProject.saveUserParamStatus);
         }
 
         if(selectedProject.deleteUserParamStatus.status === "SUCCESS"){
-            dispatch(deleteProjectUserParamStatusConfirmed());
-            setDeleteStatus("SUCCESS")
+            setDeleteStatus(selectedProject.deleteUserParamStatus);
         }
 
         if(selectedProject.deleteUserParamStatus.status === "FAIL"){
-            dispatch(deleteProjectUserParamStatusConfirmed());
-            setDeleteStatus("FAIL")
+            setDeleteStatus(selectedProject.deleteUserParamStatus);
         }
 
         if(selectedProject.userParamStatus === "FAIL"){
-            dispatch(getAllProjectUserParamsStatusConfirmed());
             setUserParamStatus("FAIL");
         }
 
@@ -66,6 +70,8 @@ export const EditProjectUserParameters = ({selectedProject, projectUser, updated
                 saveStatus={saveStatus}
                 deleteStatus={deleteStatus}
                 allParamStatus={userParamStatus}
+                saveStatusConfirm={saveStatusConfirm}
+                deleteStatusConfirm={deleteStatusConfirm}
             />
         </div>
     );

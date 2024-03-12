@@ -33,7 +33,7 @@ export const EditUserParameters = ({selectedUser, updatedParams, updateParams, t
     };
 
     useEffect(() => {
-        if(saveStatus === "SUCCESS"){
+        if(selectedUser.saveStatus === "SUCCESS"){
             dispatch(saveUserParamStatusConfirmed());
             setSaveStatus("SUCCESS");
         }

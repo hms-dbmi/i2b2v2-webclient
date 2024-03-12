@@ -18,7 +18,8 @@ import { Confirmation } from "components";
 import "./EditParameters.scss";
 import {Typography} from "@mui/material";
 
-export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam, saveStatus, deleteStatus, allParamStatus}) => {
+export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam,
+                                   saveStatus, deleteStatus, allParamStatus, saveStatusConfirm, deleteStatusConfirm}) => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
@@ -27,6 +28,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     const [showDeleteParamConfirm, setShowDeleteParamConfirm] = useState(false);
     const [deleteParamConfirmMsg, setDeleteParamConfirmMsg] = useState("");
     const [deleteParamData, setDeleteParamData] = useState(null);
+    const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
 
     const columns = [
         { field: 'name',
@@ -127,6 +129,10 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
         },
     ];
 
+    const getRowId = (row) =>{
+        return row.id;
+    }
+
     const processRowUpdate = (newRow) => {
         if(newRow.name.length > 0) {
             const updatedRow = {...newRow, isNew: false};
@@ -144,6 +150,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
 
     const onProcessRowUpdateError = (error) => {
         console.warn("Process row error: " + error);
+        console.log("error rows is " + JSON.stringify(rows));
     };
 
     const handleRowModesModelChange = (newRowModesModel) => {
@@ -185,6 +192,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             <DataGrid
                 autoHeight
                 rows={rows}
+                getRowId={getRowId}
                 editMode="row"
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
@@ -192,10 +200,8 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
                 onProcessRowUpdateError={onProcessRowUpdateError}
                 columns={columns}
                 disableRowSelectionOnClick
-                initialState={{
-                    pagination: { paginationModel: { pageSize: 5 } },
-                }}
-                pageSizeOptions={[5, 10, 25]}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
                         outline: 'none',
@@ -215,6 +221,13 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
         }
 
         setShowSaveStatus(false);
+
+        if(saveStatus.status === "SUCCESS" || saveStatus.status === "FAIL") {
+            saveStatusConfirm();
+        }
+        if(deleteStatus.status === "SUCCESS" || deleteStatus.status === "FAIL") {
+            deleteStatusConfirm();
+        }
     };
 
     const handleEditClick = (id) => () => {
@@ -255,14 +268,19 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const handleAddParam = () => {
-        const id = rows.length+1;
-        let newParams = [ { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }, ...rows,];
+        const id = rows.length+1 + 2304;
+        let newParams = [ ...rows, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
 
         updateParams(newParams);
         setRowModesModel((oldModel) => ({
             [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
             ...oldModel,
         }));
+
+        console.log("rows is " + JSON.stringify(rows));
+        const lastPage = Math.ceil((rows.length+1) / paginationModel.pageSize);
+        setPaginationModel({ pageSize: 5, page: lastPage});
+        console.log("last page is " + lastPage + " rows length is " + (rows.length+1) + " page size: " + paginationModel.pageSize);
     };
 
 

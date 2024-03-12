@@ -274,8 +274,9 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
                 })
             });
         }
-
         case  DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM_FAILED: {
+            const  { param }  = action.payload;
+
             return SelectedProject({
                 ...state,
                 isFetching: false,

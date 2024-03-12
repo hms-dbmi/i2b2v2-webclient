@@ -44,7 +44,7 @@ export function* doSaveProjectUserParam(action) {
             yield put(getAllProjectUserParams({user: projectUser, project}));
             yield put(saveProjectUserParamSucceeded({param}));
         }else{
-            yield put(saveProjectUserParamFailed(response));
+            yield put(saveProjectUserParamFailed({param}));
         }
     } finally {
         const msg = `save project user param thread closed`;
