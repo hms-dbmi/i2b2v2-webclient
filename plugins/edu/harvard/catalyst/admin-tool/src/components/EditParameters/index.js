@@ -277,7 +277,6 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             ...oldModel,
         }));
 
-        console.log("rows is " + JSON.stringify(rows));
         const lastPage = Math.ceil((rows.length+1) / paginationModel.pageSize);
         setPaginationModel({ pageSize: 5, page: lastPage});
         console.log("last page is " + lastPage + " rows length is " + (rows.length+1) + " page size: " + paginationModel.pageSize);

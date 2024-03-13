@@ -24,10 +24,14 @@ import TextField from '@mui/material/TextField';
 import { createFilterOptions } from '@mui/material/Autocomplete';
 import {
     saveUserParam, saveUserParamStatusConfirmed,
-    deleteUserParamStatusConfirmed, saveProjectUser
+    deleteUserParamStatusConfirmed, saveProjectUser,
+    saveProjectUserStatusConfirmed,
+    deleteProjectUser,
+    deleteProjectUserStatusConfirmed, deleteUser
 } from "../../actions";
 import {EditProjectUser} from "../EditProjectUser";
 import "./EditProjectUserAssociations.scss";
+import {Confirmation} from "../index";
 
 export const EditProjectUserAssociations = ({selectedProject}) => {
     const allUsers = useSelector((state) => state.allUsers );
@@ -37,12 +41,14 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
     const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
-    const [saveParamId, setSaveParamId] = useState(null);
     const[isEditingUser, setIsEditingUser] = useState(false);
     const[selectedUser, setSelectedUser] = useState(null);
     const[userFound, setUserFound] = useState(false);
     const[searchedUsername, setSearchedUsername] = useState({username:""});
     const [usernameInputValue, setUsernameInputValue] = useState({username:""});
+    const [showDeleteUserConfirm, setShowDeleteUserConfirm] = useState(false);
+    const [deleteUserConfirmMsg, setDeleteUserConfirmMsg] = useState("");
+    const [deleteUsername, setDeleteUsername] = useState("");
 
     const dispatch = useDispatch();
 
@@ -106,26 +112,6 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
                     return [];
                 }
 
-                if (isInEditMode) {
-                    return [
-                        <GridActionsCellItem
-                            icon={<SaveIcon />}
-                            label="Save"
-                            sx={{
-                                color: 'primary.main',
-                            }}
-                            onClick={handleSaveClick(id)}
-                        />,
-                        <GridActionsCellItem
-                            icon={<CancelIcon />}
-                            label="Cancel"
-                            className="textPrimary"
-                            onClick={handleCancelClick(id)}
-                            color="inherit"
-                        />,
-                    ];
-                }
-
                 return [
                     <GridActionsCellItem
                         icon={<EditIcon />}
@@ -137,7 +123,7 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
                     <GridActionsCellItem
                         icon={<DeleteIcon />}
                         label="Delete"
-                        onClick={handleDeleteClick(id)}
+                        onClick={confirmDelete(id)}
                         color="inherit"
                     />,
                 ];
@@ -196,7 +182,7 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
         );
     };
 
-    const handleCloseSaveAlert = (event, reason) => {
+    const handleCloseAlert = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -212,29 +198,22 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
         }
     };
 
-    const handleSaveClick = (id) => () => {
-        //let savedRow = rows.filter((row) => row.id === id);
-
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    const confirmDelete = (username) => () => {
+        let param = rows.filter((row) => row.username === username).reduce((acc, item) => acc);
+        setDeleteUsername(username);
+        setDeleteUserConfirmMsg("Are you sure you want to remove user " + username + "?");
+        setShowDeleteUserConfirm(true);
     };
 
-    const handleCancelClick = (id) => () => {
-        setRowModesModel({
-            ...rowModesModel,
-            [id]: { mode: GridRowModes.View, ignoreModifications: true },
-        });
+    const handleDeleteClick = () => {
+        setDeleteUsername("");
+        setDeleteUserConfirmMsg("");
+        setShowDeleteUserConfirm(false);
 
-        const editedRow = rows.find((row) => row.id === id);
-        if (editedRow.isNew) {
-            setRows(rows.filter((row) => row.id !== id));
-        }
+        let user = rows.filter((row) => row.username === deleteUsername).reduce((acc, item) => acc);
+        dispatch(deleteProjectUser({selectedProject, user}));
     };
 
-    const handleDeleteClick = (id) => () => {
-        let param = rows.filter((row) => row.id === id).reduce((acc, item) => acc);
-        setSaveParamId(param.id);
-        //dispatch(deleteUserParam({param}));
-    };
 
     const handleAddParam = () => {
         const id = rows.length+1;
@@ -254,36 +233,34 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
             dataPath: DATA_ROLES.DATA_OBFSC
         });
 
-        console.log("new user is for associate " + JSON.stringify(newUser));
         dispatch(saveProjectUser({user: newUser, selectedProject, previousRoles: []}));
     };
 
     useEffect(() => {
-        if(selectedProject.saveStatus === "SUCCESS"){
-            dispatch(saveUserParamStatusConfirmed());
-            setSaveStatusMsg("Saved user parameter");
+        if(selectedProject.userStatus.status === "SAVE_SUCCESS"){
+            dispatch(saveProjectUserStatusConfirmed());
+            setSaveStatusMsg("Saved user " + selectedProject.userStatus.username + " to project");
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
-            setRowModesModel({ ...rowModesModel, [saveParamId]: { mode: GridRowModes.View } });
-            setSaveParamId(null);
+            dispatch(saveProjectUserStatusConfirmed());
         }
-        if(selectedProject.saveStatus === "FAIL"){
-            dispatch(saveUserParamStatusConfirmed());
-            setSaveStatusMsg("ERROR: failed to save user param");
+        if(selectedProject.userStatus.status === "SAVE_FAIL"){
+            dispatch(saveProjectUserStatusConfirmed());
+            setSaveStatusMsg("ERROR: failed to save user " + selectedProject.userStatus.username + " to project");
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
-            setSaveParamId(null);
         }
-        if(selectedProject.deleteStatus === "SUCCESS"){
-            dispatch(deleteUserParamStatusConfirmed());
-            setSaveStatusMsg("Deleted user parameter");
+
+        if(selectedProject.userStatus.status === "DELETE_SUCCESS"){
+            dispatch(deleteProjectUserStatusConfirmed());
+            setSaveStatusMsg("Removed user " + selectedProject.userStatus.username + " from project");
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
-            setRowModesModel({ ...rowModesModel, [saveParamId]: { mode: GridRowModes.View } });
         }
-        if(selectedProject.deleteStatus === "FAIL"){
-            dispatch(deleteUserParamStatusConfirmed());
-            setSaveStatusMsg("ERROR: failed to delete user param");
+
+        if(selectedProject.userStatus.status === "DELETE_FAIL"){
+            dispatch(deleteProjectUserStatusConfirmed());
+            setSaveStatusMsg("ERROR: failed to remove user " + selectedProject.userStatus.username + " from project");
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
         }
@@ -329,8 +306,6 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
                 <Autocomplete
                     value={searchedUsername}
                     onChange={(event, newValue) => {
-                        console.log("onchange searchedusername is " + searchedUsername);
-                        console.log("onchange searchedusername newvalue is " + JSON.stringify(newValue));
                         setSearchedUsername(newValue);
                     }}
                     inputValue={usernameInputValue}
@@ -366,9 +341,10 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
                 open={showSaveStatus}
                 autoHideDuration={5000}
                 anchorOrigin={{ vertical: 'top', horizontal : "center" }}
+                onClose={handleCloseAlert}
             >
                 <Alert
-                    onClose={handleCloseSaveAlert}
+                    onClose={handleCloseAlert}
                     severity={saveStatusSeverity}
                     variant="filled"
                     sx={{ width: '100%' }}
@@ -376,6 +352,12 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
                     {saveStatusMsg}
                 </Alert>
             </Snackbar>
+
+            { showDeleteUserConfirm && <Confirmation
+                text={deleteUserConfirmMsg}
+                onOk={handleDeleteClick}
+                onCancel={() => setShowDeleteUserConfirm(false)}
+            />}
         </div>
     );
 

@@ -2,7 +2,7 @@ import {call, takeLatest, put, all} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
     getAllProjectUsers,
-    SAVE_PROJECT_USER_ACTION, saveProjectDataSourcesFailed, saveProjectDataSourcesSucceeded,
+    SAVE_PROJECT_USER_ACTION,
     saveProjectUserFailed,
     saveProjectUserSucceeded,
 } from "actions";
@@ -62,7 +62,7 @@ export function* doSaveProjectUser(action) {
                 yield put(saveProjectUserSucceeded({projectUser: user, selectedProject}));
             }
             else{
-                yield put(saveProjectUserFailed(projectUserRoleResponse));
+                yield put(saveProjectUserFailed({projectUser: user, selectedProject}));
             }
         }else{
             yield put(saveProjectUserFailed(deletedProjectUserRoleResponse));

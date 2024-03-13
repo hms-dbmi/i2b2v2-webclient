@@ -76,17 +76,17 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
     };
 
     useEffect(() => {
-        if(selectedProject.saveUserStatus === "SUCCESS"){
+        if(selectedProject.userStatus.status === "SAVE_SUCCESS"){
             setShowSaveBackdrop(false);
             dispatch(saveProjectUserStatusConfirmed());
-            setSaveStatusMsg("Saved roles for user " + selectedUser.user.username);
+            setSaveStatusMsg("Saved roles for user " + selectedProject.userStatus.username);
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
         }
-        if(selectedProject.saveUserStatus === "FAIL"){
+        if(selectedProject.userStatus === "SAVE_FAIL"){
             setShowSaveBackdrop(false);
             dispatch(saveProjectUserStatusConfirmed());
-            setSaveStatusMsg("ERROR: failed to save roles for user " + selectedUser.user.username);
+            setSaveStatusMsg("ERROR: failed to save roles for user " + selectedProject.userStatus.username);
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
         }

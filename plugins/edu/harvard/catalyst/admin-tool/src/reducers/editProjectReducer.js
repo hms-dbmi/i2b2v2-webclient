@@ -8,12 +8,21 @@ import {
     GET_ALL_USER_PARAMS_ACTION,
     SAVE_PROJECT_DATASOURCES_ACTION,
     SAVE_PROJECT_USER_ACTION,
+    DELETE_PROJECT_USER_ACTION,
     SAVE_PROJECT_USER_PARAM_ACTION,
     DELETE_PROJECT_USER_PARAM_ACTION,
 
 } from "actions";
 import { defaultState } from "defaultState";
-import {SelectedProject, Param, ProjectDataSource, ProjectUser, SelectedUser, ParamStatusInfo} from "models";
+import {
+    SelectedProject,
+    Param,
+    ProjectDataSource,
+    ProjectUser,
+    SelectedUser,
+    ParamStatusInfo,
+    UserStatusInfo
+} from "models";
 
 export const editProjectReducer = (state = defaultState.selectedProject, action) => {
     switch (action.type) {
@@ -199,21 +208,64 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
                 ...state,
                 users,
                 isFetching: false,
-                saveUserStatus: "SUCCESS"
+                userStatus: UserStatusInfo({
+                    status: "SAVE_SUCCESS",
+                    username: projectUser.username
+                })
             });
         }
         case  SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_FAILED: {
+            const  {  projectUser }  = action.payload;
+
             return SelectedProject({
                 ...state,
                 isFetching: false,
-                saveUserStatus: "FAIL"
+                userStatus: UserStatusInfo({
+                    status: "SAVE_FAIL",
+                    username: projectUser.username
+                })
+            });
+        }
+
+        case  DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER_STATUS_CONFIRMED: {
+            return SelectedProject({
+                ...state,
+                userStatus: UserStatusInfo()
+            });
+        }
+
+        case  DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER_SUCCEEDED: {
+            const  { selectedProject, projectUser }  = action.payload;
+
+            const users = selectedProject.users.map((user) => (user.username === projectUser.username ? projectUser : user));
+
+            return SelectedProject({
+                ...state,
+                users,
+                isFetching: false,
+                userStatus: UserStatusInfo({
+                    status: "DELETE_SUCCESS",
+                    username: projectUser.username
+                })
+            });
+        }
+        case  DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER_FAILED: {
+            const  {  projectUser }  = action.payload;
+
+            return SelectedProject({
+                ...state,
+                isFetching: false,
+                userStatus: UserStatusInfo({
+                    status: "DELETE_FAIL",
+                    username: projectUser.username
+                })
             });
         }
 
         case  SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_STATUS_CONFIRMED: {
             return SelectedProject({
                 ...state,
-                saveUserStatus: null
+                userStatus: UserStatusInfo()
             });
         }
 

@@ -8,6 +8,7 @@ import {
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 import "./EditProjectUserParameters.scss";
+import {GridRowModes} from "@mui/x-data-grid";
 
 export const EditProjectUserParameters = ({selectedProject, projectUser, updatedParams, updateParams, title}) => {
     const [saveStatus, setSaveStatus] = useState("");
@@ -35,7 +36,6 @@ export const EditProjectUserParameters = ({selectedProject, projectUser, updated
     }
 
     useEffect(() => {
-         console.log("save user param status is " + JSON.stringify(selectedProject.saveUserParamStatus));
         if(selectedProject.saveUserParamStatus.status === "SUCCESS"){
             setSaveStatus(selectedProject.saveUserParamStatus);
         }
@@ -55,7 +55,6 @@ export const EditProjectUserParameters = ({selectedProject, projectUser, updated
         if(selectedProject.userParamStatus === "FAIL"){
             setUserParamStatus("FAIL");
         }
-
     }, [selectedProject]);
 
 

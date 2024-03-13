@@ -259,6 +259,17 @@ export const saveProjectUser =  createAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJE
 export const saveProjectUserSucceeded = createAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_SUCCEEDED);
 export const saveProjectUserFailed = createNamedArgsAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_FAILED);
 export const saveProjectUserStatusConfirmed = createAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_STATUS_CONFIRMED);
+//================================================================================================== //
+export const DELETE_PROJECT_USER_ACTION = {
+    DELETE_PROJECT_USER: "DELETE_PROJECT_USER",
+    DELETE_PROJECT_USER_SUCCEEDED:  "DELETE_PROJECT_USER_SUCCEEDED",
+    DELETE_PROJECT_USER_FAILED: "DELETE_PROJECT_USER_FAILED",
+    DELETE_PROJECT_USER_STATUS_CONFIRMED: "DELETE_PROJECT_USER_STATUS_CONFIRMED"
+};
+export const deleteProjectUser =  createAction(DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER);
+export const deleteProjectUserSucceeded = createAction(DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER_SUCCEEDED);
+export const deleteProjectUserFailed = createNamedArgsAction(DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER_FAILED);
+export const deleteProjectUserStatusConfirmed = createAction(DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER_STATUS_CONFIRMED);
 
 //================================================================================================== //
 export const SAVE_PROJECT_USER_PARAM_ACTION = {

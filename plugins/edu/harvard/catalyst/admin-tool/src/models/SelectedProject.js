@@ -4,6 +4,7 @@ import {Project} from "./Project";
 import {ProjectDataSource} from "./ProjectDataSource";
 import {ProjectUser} from "./ProjectUser";
 import {ParamStatusInfo} from "./ParamStatusInfo";
+import {UserStatusInfo} from "./UserStatusInfo";
 
 export const SelectedProject = ({
     project = Project(),
@@ -24,6 +25,7 @@ export const SelectedProject = ({
     saveUserStatus=null,
     saveUserParamStatus = ParamStatusInfo(),
     deleteUserParamStatus= ParamStatusInfo(),
+    userStatus = UserStatusInfo()
 } = {}) => ({
     project,
     params,
@@ -38,7 +40,8 @@ export const SelectedProject = ({
     saveDSStatus,
     saveUserStatus,
     saveUserParamStatus,
-    deleteUserParamStatus
+    deleteUserParamStatus,
+    userStatus
 });
 
 SelectedProject.propTypes = {
@@ -54,5 +57,6 @@ SelectedProject.propTypes = {
     saveDSStatus: PropTypes.string,
     saveUserStatus: PropTypes.string,
     saveUserParamStatus: PropTypes.shape(ParamStatusInfo),
-    deleteUserParamStatus: PropTypes.shape(ParamStatusInfo)
+    deleteUserParamStatus: PropTypes.shape(ParamStatusInfo),
+    userStatus: PropTypes.shape(UserStatusInfo)
 };

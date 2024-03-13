@@ -12,3 +12,4 @@
  export { ProjectDataSource, CELL_ID } from "./ProjectDataSource";
  export { ProjectUser, ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE } from "./ProjectUser";
  export { ParamStatusInfo } from "./ParamStatusInfo";
+ export { UserStatusInfo } from "./UserStatusInfo";
