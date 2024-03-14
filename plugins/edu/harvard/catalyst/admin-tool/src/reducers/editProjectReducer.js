@@ -178,6 +178,7 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
 
         case  SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_FAILED: {
 
+            console.log("reducer datasources failed");
             return SelectedProject({
                 ...state,
                 saveDSStatus: "FAIL"
@@ -269,80 +270,83 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
             });
         }
 
+        case  SAVE_PROJECT_PARAM_ACTION.SAVE_PROJECT_PARAM:
         case  SAVE_PROJECT_USER_PARAM_ACTION.SAVE_PROJECT_USER_PARAM: {
             return SelectedProject({
                 ...state,
-                isFetching: true,
             });
         }
 
+        case  SAVE_PROJECT_PARAM_ACTION.SAVE_PROJECT_PARAM_SUCCEEDED:
         case  SAVE_PROJECT_USER_PARAM_ACTION.SAVE_PROJECT_USER_PARAM_SUCCEEDED: {
             const  { param }  = action.payload;
 
             return SelectedProject({
                 ...state,
-                isFetching: false,
-                saveUserParamStatus: ParamStatusInfo({
+                paramStatus: ParamStatusInfo({
                     param,
-                    status: "SUCCESS"
+                    status: "SAVE_SUCCESS"
                 })
             });
         }
 
+        case  SAVE_PROJECT_PARAM_ACTION.SAVE_PROJECT_PARAM_FAILED:
         case  SAVE_PROJECT_USER_PARAM_ACTION.SAVE_PROJECT_USER_PARAM_FAILED: {
             return SelectedProject({
                 ...state,
-                isFetching: false,
-                saveUserParamStatus: ParamStatusInfo({
+                paramStatus: ParamStatusInfo({
                     param,
-                    status: "FAIL"
+                    status: "SAVE_FAIL"
                 })
             });
         }
 
+        case  SAVE_PROJECT_PARAM_ACTION.SAVE_PROJECT_PARAM_STATUS_CONFIRMED:
         case  SAVE_PROJECT_USER_PARAM_ACTION.SAVE_PROJECT_USER_PARAM_STATUS_CONFIRMED: {
             return SelectedProject({
                 ...state,
-                saveUserParamStatus: ParamStatusInfo()
+                paramStatus: ParamStatusInfo()
             });
         }
 
+        case  DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM:
         case  DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM: {
             return SelectedProject({
                 ...state,
-                isFetching: true,
             });
         }
 
+        case  DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_SUCCEEDED:
         case  DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM_SUCCEEDED: {
             const  { param }  = action.payload;
 
             return SelectedProject({
                 ...state,
-                isFetching: false,
-                deleteUserParamStatus: ParamStatusInfo({
-                    status: "SUCCESS",
+                paramStatus: ParamStatusInfo({
+                    status: "DELETE_SUCCESS",
                     param
                 })
             });
         }
+
+        case  DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_FAILED:
         case  DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM_FAILED: {
             const  { param }  = action.payload;
 
             return SelectedProject({
                 ...state,
-                isFetching: false,
-                deleteUserParamStatus: ParamStatusInfo({
-                    status: "FAIL",
+                paramStatus: ParamStatusInfo({
+                    status: "DELETE_FAIL",
                     param
                 })
             });
         }
 
+        case  DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_STATUS_CONFIRMED:
         case  DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM_STATUS_CONFIRMED: {
             return SelectedProject({
                 ...state,
-                deleteUserParamStatus: ParamStatusInfo()
+                paramStatus: ParamStatusInfo()
             });
         }
         default: {

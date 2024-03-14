@@ -2,7 +2,12 @@ import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {Tab, Tabs} from "@mui/material";
-import {getAllGlobalParams, getAllHives} from "actions";
+import {
+    deleteProjectUserParamStatusConfirmed,
+    getAllGlobalParams,
+    getAllHives,
+    saveProjectUserParamStatusConfirmed
+} from "actions";
 import {Loader, DomainSettings, EditGlobalParameters} from "components";
 import "./AllHives.scss";
 
@@ -58,7 +63,11 @@ export const AllHives = () => {
                 />
             }
             {  selectedTab === AllHives.PARAMS
-                && <EditGlobalParameters allHives={allHives} updatedParams={updatedParams} updateParams={setUpdatedParams}/>
+                && <EditGlobalParameters
+                    allHives={allHives}
+                    updatedParams={updatedParams}
+                    updateParams={setUpdatedParams}
+                />
 
             }
         </div>

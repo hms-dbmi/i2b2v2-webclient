@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { HiveDomain } from "./HiveDomain";
 import {Param} from "./Param";
+import {ParamStatusInfo} from "./ParamStatusInfo";
 
 export const AllHives = ({
     hiveDomains = [],
@@ -8,8 +9,7 @@ export const AllHives = ({
     isFetching= false,
     isFetchingParams = false,
     saveStatus = null,
-    saveParamStatus= null,
-    deleteParamStatus = null,
+    paramStatus = ParamStatusInfo(),
     allGlobalParamStatus = null
  } = {}) => ({
     hiveDomains,
@@ -17,8 +17,7 @@ export const AllHives = ({
     isFetching,
     isFetchingParams,
     saveStatus,
-    saveParamStatus,
-    deleteParamStatus,
+    paramStatus,
     allGlobalParamStatus
 });
 
@@ -28,7 +27,6 @@ AllHives.propTypes = {
     isFetching: PropTypes.bool,
     isFetchingParams: PropTypes.bool,
     saveStatus: PropTypes.string,
-    saveParamStatus: PropTypes.string,
-    deleteParamStatus: PropTypes.string,
+    paramStatus: PropTypes.shape(ParamStatusInfo),
     allGlobalParamStatus: PropTypes.string
 };

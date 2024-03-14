@@ -22,3 +22,4 @@ export { saveProjectUserSaga } from "./saveProjectUserSaga";
 export { saveProjectUserParamSaga } from "./saveProjectUserParamSaga";
 export { deleteProjectUserParamSaga } from "./deleteProjectUserParamSaga";
 export { deleteProjectUserSaga } from "./deleteProjectUserSaga";
+export { deleteProjectParamSaga } from "./deleteProjectParamSaga";

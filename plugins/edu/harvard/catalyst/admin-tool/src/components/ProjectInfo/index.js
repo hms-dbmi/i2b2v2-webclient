@@ -110,6 +110,14 @@ export const ProjectInfo = ({selectedProject, cancelEdit, doSave, setSaveComplet
         setShowSaveStatus(false);
     };
 
+    const getTitle = () => {
+        let title = "New Project - Details"
+
+        if(selectedProject){
+            title = selectedProject.project.name + " - Details";
+        }
+        return title;
+    }
 
     useEffect(() => {
         if(selectedProject.saveStatus === "SUCCESS"){
@@ -136,7 +144,7 @@ export const ProjectInfo = ({selectedProject, cancelEdit, doSave, setSaveComplet
 
     return (
         <Box  className="ProjectInfo" sx={{ width: '100%' }}>
-            <Typography> {selectedProject.project.name + " - Details"} </Typography>
+            <Typography> {getTitle()} </Typography>
 
             <div className={"ResetEditPage"}>
                 <IconButton color="primary" aria-label="add params" onClick={handleResetUserProjectDetails} variant={"outlined"}>

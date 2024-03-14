@@ -8,7 +8,6 @@ import {
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 import "./EditProjectUserParameters.scss";
-import {GridRowModes} from "@mui/x-data-grid";
 
 export const EditProjectUserParameters = ({selectedProject, projectUser, updatedParams, updateParams, title}) => {
     const [saveStatus, setSaveStatus] = useState("");
@@ -36,20 +35,20 @@ export const EditProjectUserParameters = ({selectedProject, projectUser, updated
     }
 
     useEffect(() => {
-        if(selectedProject.saveUserParamStatus.status === "SUCCESS"){
-            setSaveStatus(selectedProject.saveUserParamStatus);
+        if(selectedProject.paramStatus.status === "SAVE_SUCCESS"){
+            setSaveStatus(selectedProject.paramStatus);
         }
 
-        if(selectedProject.saveUserParamStatus.status === "FAIL"){
-            setSaveStatus(selectedProject.saveUserParamStatus);
+        if(selectedProject.paramStatus.status === "SAVE_FAIL"){
+            setSaveStatus(selectedProject.paramStatus);
         }
 
-        if(selectedProject.deleteUserParamStatus.status === "SUCCESS"){
-            setDeleteStatus(selectedProject.deleteUserParamStatus);
+        if(selectedProject.paramStatus.status === "DELETE_SUCCESS"){
+            setDeleteStatus(selectedProject.paramStatus);
         }
 
-        if(selectedProject.deleteUserParamStatus.status === "FAIL"){
-            setDeleteStatus(selectedProject.deleteUserParamStatus);
+        if(selectedProject.paramStatus.status === "DELETE_FAIL"){
+            setDeleteStatus(selectedProject.paramStatus);
         }
 
         if(selectedProject.userParamStatus === "FAIL"){

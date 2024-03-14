@@ -8,6 +8,7 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import {DataGrid, GridActionsCellItem, gridClasses} from "@mui/x-data-grid";
 import {EditProjectDetails, Loader, StatusUpdate} from "components";
 import {deleteProject, deleteProjectStatusConfirmed, getAllProjects} from "actions";
+import {SelectedProject} from "models";
 import "./AllProjects.scss";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
@@ -81,6 +82,11 @@ export const AllProjects = () => {
         },
     ];
 
+    const handleNewProject = () => {
+        //setSelectedProject(SelectedProject());
+        setIsEditingProject(true);
+    };
+
     const handleEditClick = (id) => () => {
         let projects = allProjects.projects.filter((project) => project.id === id);
         if(projects.length === 1) {
@@ -147,7 +153,8 @@ export const AllProjects = () => {
     return (
         <div className="AllProjects">
             { allProjects.isFetching && <Loader/>}
-            {!isEditingProject && <Button className="AddProject" size="small" variant="contained" startIcon={<AddIcon />}>
+            {!isEditingProject && <Button className="AddProject" size="small"
+                variant="contained" onClick={handleNewProject} startIcon={<AddIcon />}>
                 Add New Project
             </Button>}
             { !isEditingProject && displayProjectsTable()}

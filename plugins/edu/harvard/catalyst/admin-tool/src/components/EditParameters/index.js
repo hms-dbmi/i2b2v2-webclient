@@ -29,6 +29,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     const [deleteParamConfirmMsg, setDeleteParamConfirmMsg] = useState("");
     const [deleteParamData, setDeleteParamData] = useState(null);
     const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
+    const [startPage, setStartPage] = useState(null);
 
     const columns = [
         { field: 'name',
@@ -149,7 +150,6 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const onProcessRowUpdateError = (error) => {
-        console.warn("Process row error: " + error);
         console.log("error rows is " + JSON.stringify(rows));
     };
 
@@ -158,23 +158,23 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     useEffect(() => {
-        if(saveStatus.status === "SUCCESS"){
+        if(saveStatus.status === "SAVE_SUCCESS"){
             setSaveStatusMsg("Saved parameter " + saveStatus.param.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
             setRowModesModel({ ...rowModesModel, [saveStatus.param]: { mode: GridRowModes.View } });
         }
-        if(saveStatus.status === "FAIL"){
+        if(saveStatus.status === "SAVE_FAIL"){
             setSaveStatusMsg("ERROR: failed to save parameter " + saveStatus.param.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
         }
-        if(deleteStatus.status === "SUCCESS"){
+        if(deleteStatus.status === "DELETE_SUCCESS"){
             setSaveStatusMsg("Deleted parameter " + deleteStatus.param.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
         }
-        if(deleteStatus.status === "FAIL"){
+        if(deleteStatus.status === "DELETE_FAIL"){
             setSaveStatusMsg("ERROR: failed to delete parameter " + deleteStatus.param.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
@@ -187,6 +187,13 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
         }
     }, [saveStatus, deleteStatus]);
 
+    const handlePaginationModelChange = (value) => {
+        if(startPage !== null){
+            value.page=startPage;
+            setStartPage(null);
+        }
+        setPaginationModel(value);
+    }
     const displayParamsTable = () => {
         return (
             <DataGrid
@@ -201,7 +208,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
                 columns={columns}
                 disableRowSelectionOnClick
                 paginationModel={paginationModel}
-                onPaginationModelChange={setPaginationModel}
+                onPaginationModelChange={handlePaginationModelChange}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
                         outline: 'none',
@@ -222,10 +229,10 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
 
         setShowSaveStatus(false);
 
-        if(saveStatus.status === "SUCCESS" || saveStatus.status === "FAIL") {
+        if(saveStatus.status === "SAVE_SUCCESS" || saveStatus.status === "SAVE_FAIL") {
             saveStatusConfirm();
         }
-        if(deleteStatus.status === "SUCCESS" || deleteStatus.status === "FAIL") {
+        if(deleteStatus.status === "DELETE_SUCCESS" || deleteStatus.status === "DELETE_FAIL") {
             deleteStatusConfirm();
         }
     };
@@ -268,7 +275,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const handleAddParam = () => {
-        const id = rows.length+1 + 2304;
+        const id = rows.length+1;
         let newParams = [ ...rows, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
 
         updateParams(newParams);
@@ -277,9 +284,10 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             ...oldModel,
         }));
 
-        const lastPage = Math.ceil((rows.length+1) / paginationModel.pageSize);
+        //workaround for moving to new page if needed
+        const lastPage = Math.floor((rows.length+1) / paginationModel.pageSize);
         setPaginationModel({ pageSize: 5, page: lastPage});
-        console.log("last page is " + lastPage + " rows length is " + (rows.length+1) + " page size: " + paginationModel.pageSize);
+        setStartPage(lastPage);
     };
 
 
@@ -297,7 +305,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             </Backdrop>
             <Snackbar
                 open={showSaveStatus}
-                autoHideDuration={5000}
+                autoHideDuration={4000}
                 anchorOrigin={{ vertical: 'top', horizontal : "center" }}
                 onClose={handleCloseAlert}
             >

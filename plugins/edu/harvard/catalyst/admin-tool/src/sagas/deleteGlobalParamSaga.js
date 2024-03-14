@@ -20,7 +20,7 @@ const deleteParamRequest = (param) => {
 };
 
 export function* doDeleteGlobalParam(action) {
-    const { user, param } = action.payload;
+    const { param } = action.payload;
 
     console.log("deleting global param..." + param.name);
 
@@ -29,10 +29,10 @@ export function* doDeleteGlobalParam(action) {
         response = JSON.stringify(response);
 
         if(!response.includes("AJAX_ERROR")) {
-            yield put(getAllGlobalParams({user}));
+            yield put(getAllGlobalParams());
             yield put(deleteGlobalParamSucceeded({param}));
         }else{
-            yield put(deleteGlobalParamFailed(response));
+            yield put(deleteGlobalParamFailed({param}));
         }
     } finally {
         const msg = `delete global param thread closed`;

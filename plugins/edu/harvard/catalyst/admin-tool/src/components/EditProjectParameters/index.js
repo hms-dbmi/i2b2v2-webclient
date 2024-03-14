@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
-import {saveProjectStatusConfirmed} from "../../actions";
-import CircularProgress from "@mui/material/CircularProgress";
-import Backdrop from "@mui/material/Backdrop";
-import Typography from "@mui/material/Typography";
 import {
     saveProjectParam, saveProjectParamStatusConfirmed,
     deleteProjectParam, deleteProjectParamStatusConfirmed,
@@ -18,7 +14,6 @@ export const EditProjectParameters = ({selectedProject, updatedParams, updatePar
     const [saveStatus, setSaveStatus] = useState("");
     const [deleteStatus, setDeleteStatus] = useState("");
     const [projectParamStatus, setProjectParamStatus] = useState("");
-
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -37,23 +32,26 @@ export const EditProjectParameters = ({selectedProject, updatedParams, updatePar
         dispatch(deleteProjectParam({project: selectedProject.project, param}));
     };
 
+    const saveStatusConfirm = () =>{
+        dispatch(saveProjectParamStatusConfirmed());
+    }
+
+    const deleteStatusConfirm = () =>{
+        dispatch(deleteProjectParamStatusConfirmed());
+    }
 
     useEffect(() => {
-        if(selectedProject.saveStatus === "SUCCESS"){
-            dispatch(saveProjectParamStatusConfirmed());
-            setSaveStatus("SUCCESS");
+        if(selectedProject.paramStatus.status === "SAVE_SUCCESS"){
+            setSaveStatus(selectedProject.paramStatus);
         }
-        if(selectedProject.saveStatus === "FAIL"){
-            dispatch(saveProjectParamStatusConfirmed());
-            setSaveStatus("FAIL");
+        if(selectedProject.paramStatus.status === "SAVE_FAIL"){
+            setSaveStatus(selectedProject.paramStatus);
         }
-        if(selectedProject.deleteStatus === "SUCCESS"){
-            dispatch(deleteProjectParamStatusConfirmed());
-            setDeleteStatus("SUCCESS")
+        if(selectedProject.paramStatus.status === "DELETE_SUCCESS"){
+            setDeleteStatus(selectedProject.paramStatus)
         }
-        if(selectedProject.deleteStatus === "FAIL"){
-            dispatch(deleteProjectParamStatusConfirmed());
-            setDeleteStatus("FAIL")
+        if(selectedProject.paramStatus.status === "DELETE_FAIL"){
+            setDeleteStatus(selectedProject.paramStatus)
         }
 
         if(selectedProject.allParamStatus === "FAIL"){
@@ -75,6 +73,8 @@ export const EditProjectParameters = ({selectedProject, updatedParams, updatePar
                 saveStatus={saveStatus}
                 deleteStatus={deleteStatus}
                 allParamStatus={projectParamStatus}
+                saveStatusConfirm={saveStatusConfirm}
+                deleteStatusConfirm={deleteStatusConfirm}
             />
         </div>
     );

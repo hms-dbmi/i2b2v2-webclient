@@ -23,8 +23,7 @@ export const SelectedProject = ({
     allParamStatus=null,
     saveDSStatus = null,
     saveUserStatus=null,
-    saveUserParamStatus = ParamStatusInfo(),
-    deleteUserParamStatus= ParamStatusInfo(),
+    paramStatus = ParamStatusInfo(),
     userStatus = UserStatusInfo()
 } = {}) => ({
     project,
@@ -39,8 +38,7 @@ export const SelectedProject = ({
     allParamStatus,
     saveDSStatus,
     saveUserStatus,
-    saveUserParamStatus,
-    deleteUserParamStatus,
+    paramStatus,
     userStatus
 });
 
@@ -56,7 +54,6 @@ SelectedProject.propTypes = {
     allParamStatus: PropTypes.string,
     saveDSStatus: PropTypes.string,
     saveUserStatus: PropTypes.string,
-    saveUserParamStatus: PropTypes.shape(ParamStatusInfo),
-    deleteUserParamStatus: PropTypes.shape(ParamStatusInfo),
+    paramStatus: PropTypes.shape(ParamStatusInfo),
     userStatus: PropTypes.shape(UserStatusInfo)
 };

@@ -3,7 +3,7 @@ import {
     GET_ALL_HIVES_ACTION, SAVE_HIVE_DOMAIN_ACTION, SAVE_GLOBAL_PARAM_ACTION, DELETE_GLOBAL_PARAM_ACTION,
 } from "actions";
 import { defaultState } from "defaultState";
-import {AllHives, HiveDomain, Param, SelectedUser} from "models";
+import {AllHives, HiveDomain, Param, ParamStatusInfo, SelectedUser} from "models";
 
 export const allHivesReducer = (state = defaultState.allHives, action) => {
     switch (action.type) {
@@ -102,16 +102,26 @@ export const allHivesReducer = (state = defaultState.allHives, action) => {
 
 
         case  SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_SUCCEEDED: {
+            const  { param }  = action.payload;
+
             return AllHives({
                 ...state,
-                saveParamStatus: "SUCCESS"
+                paramStatus: ParamStatusInfo({
+                    status: "SAVE_SUCCESS",
+                    param
+                })
             });
         }
 
         case  SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_FAILED: {
+            const  { param }  = action.payload;
+
             return AllHives({
                 ...state,
-                saveParamStatus: "FAIL"
+                paramStatus: ParamStatusInfo({
+                    status: "SAVE_FAIL",
+                    param
+                })
             });
         }
 
@@ -119,36 +129,37 @@ export const allHivesReducer = (state = defaultState.allHives, action) => {
 
             return AllHives({
                 ...state,
-                saveStatus: null
+                paramStatus: ParamStatusInfo()
             });
         }
 
         case  DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_SUCCEEDED: {
             const  { param }  = action.payload;
 
-            let newParams = [
-                ...state.params
-            ];
-            newParams = newParams.filter((pm) => pm.id  !== param.id);
             return AllHives({
                 ...state,
-                params: newParams,
-                deleteStatus: "SUCCESS"
+                paramStatus: ParamStatusInfo({
+                    status: "DELETE_SUCCESS",
+                    param
+                })
             });
         }
         case  DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_FAILED: {
 
             return AllHives({
                 ...state,
-                deleteStatus: "FAIL"
+                paramStatus: ParamStatusInfo({
+                    status: "DELETE_FAIL",
+                    param
+                })
             });
         }
 
         case DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_STATUS_CONFIRMED: {
 
-            return Hives({
+            return AllHives({
                 ...state,
-                deleteStatus: null
+                deleteStatus: ParamStatusInfo()
             });
         }
 

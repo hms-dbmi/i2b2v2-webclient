@@ -37,7 +37,7 @@ export function* doSaveGlobalParam(action) {
             yield put(getAllGlobalParams({}));
             yield put(saveGlobalParamSucceeded({param}));
         }else{
-            yield put(saveGlobalParamFailed(response));
+            yield put(saveGlobalParamFailed({param}));
         }
     } finally {
         const msg = `save global param thread closed`;

@@ -45,7 +45,7 @@ export function* doSaveProjectDataSources(action) {
             yield put(saveProjectDataSourcesFailed(dataSourcesResponse));
         }
 
-    } finally {
+    } finally{
         const msg = `save project data sources thread closed`;
         yield msg;
     }

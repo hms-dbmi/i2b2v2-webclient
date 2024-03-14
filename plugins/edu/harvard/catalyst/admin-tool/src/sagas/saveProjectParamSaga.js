@@ -34,7 +34,7 @@ const saveParamRequest = (project, param) => {
 export function* doSaveProjectParam(action) {
     const { project, param } = action.payload;
 
-    console.log("saving project param " + param + "...");
+    console.log("saving project param " + param.name + "...");
     try {
         let response = yield call(saveParamRequest, project, param);
         response = JSON.stringify(response);

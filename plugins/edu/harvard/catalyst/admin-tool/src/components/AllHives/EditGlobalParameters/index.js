@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {
     saveGlobalParam, saveGlobalParamStatusConfirmed,
     deleteGlobalParam, deleteGlobalParamStatusConfirmed,
-    getAllGlobalParamsStatusConfirmed
+    getAllGlobalParamsStatusConfirmed, saveProjectUserParamStatusConfirmed, deleteProjectUserParamStatusConfirmed
 } from "actions";
 import {EditParameters} from "../../EditParameters";
 import "./EditGlobalParameters.scss";
@@ -26,24 +26,26 @@ export const EditGlobalParameters = ({allHives, updatedParams, updateParams, tit
         dispatch(deleteGlobalParam({param}));
     };
 
+    const saveStatusConfirm = () =>{
+        dispatch(deleteGlobalParamStatusConfirmed());
+    }
 
+    const deleteStatusConfirm = () =>{
+        dispatch(deleteGlobalParamStatusConfirmed());
+    }
     useEffect(() => {
-        if(allHives.saveParamStatus === "SUCCESS"){
-            dispatch(saveGlobalParamStatusConfirmed());
-            setSaveStatus("SUCCESS");
+        if(allHives.paramStatus.status === "SAVE_SUCCESS"){
+            setSaveStatus(allHives.paramStatus);
         }
-        if(allHives.saveParamStatus === "FAIL"){
-            dispatch(saveGlobalParamStatusConfirmed());
-            setSaveStatus("FAIL");
+        if(allHives.paramStatus.status === "SAVE_FAIL"){
+            setSaveStatus(allHives.paramStatus);
         }
 
-        if(allHives.deleteParamStatus === "SUCCESS"){
-            dispatch(deleteGlobalParamStatusConfirmed());
-            setDeleteStatus("SUCCESS")
+        if(allHives.paramStatus.status === "DELETE_SUCCESS"){
+            setDeleteStatus(allHives.paramStatus);
         }
-        if(allHives.deleteParamStatus === "FAIL"){
-            dispatch(deleteGlobalParamStatusConfirmed());
-            setDeleteStatus("FAIL")
+        if(allHives.paramStatus.status === "DELETE_FAIL"){
+            setDeleteStatus(allHives.paramStatus);
         }
 
         if(allHives.allGlobalParamStatus === "FAIL"){
@@ -65,6 +67,8 @@ export const EditGlobalParameters = ({allHives, updatedParams, updateParams, tit
                 saveStatus={saveStatus}
                 deleteStatus={deleteStatus}
                 allParamStatus={allParamStatus}
+                saveStatusConfirm={saveStatusConfirm}
+                deleteStatusConfirm={deleteStatusConfirm}
             />
         </div>
     );
