@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { DataType } from "models";
-import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes} from "@mui/x-data-grid";
+import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes, useGridApiRef} from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import Button from '@mui/material/Button';
@@ -30,6 +30,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     const [deleteParamData, setDeleteParamData] = useState(null);
     const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
     const [startPage, setStartPage] = useState(null);
+    const apiRef = useGridApiRef();
 
     const columns = [
         { field: 'name',
@@ -201,14 +202,6 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
         setRowModesModel(modesModel);
     },[rows]);
 
-
-    const handlePaginationModelChange = (value) => {
-        if(startPage !== null){
-            value.page=startPage;
-            setStartPage(null);
-        }
-        setPaginationModel(value);
-    }
     const displayParamsTable = () => {
         return (
             <DataGrid
@@ -217,13 +210,15 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
                 getRowId={getRowId}
                 editMode="row"
                 rowModesModel={rowModesModel}
+                apiRef={apiRef}
                 onRowModesModelChange={handleRowModesModelChange}
                 processRowUpdate={processRowUpdate}
                 onProcessRowUpdateError={onProcessRowUpdateError}
                 columns={columns}
                 disableRowSelectionOnClick
                 paginationModel={paginationModel}
-                onPaginationModelChange={handlePaginationModelChange}
+                onPaginationModelChange={setPaginationModel}
+                pageSizeOptions={[5, 10, 25]}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
                         outline: 'none',
@@ -301,8 +296,9 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
 
         //workaround for moving to next page if needed
         const lastPage = Math.floor((rows.length+1) / paginationModel.pageSize);
-        setPaginationModel({ pageSize: 5, page: lastPage});
-        setStartPage(lastPage);
+        apiRef.current.setPage(lastPage);
+        //setPaginationModel({ pageSize: 5, page: lastPage});
+        //setStartPage(lastPage);
     };
 
 
