@@ -135,6 +135,9 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     }
 
     const processRowUpdate = (newRow) => {
+        console.log("process row update " + JSON.stringify(newRow));
+        console.log("process row update newRow.name.length " + newRow.name.length );
+
         if(newRow.name.length > 0) {
             const updatedRow = {...newRow, isNew: false};
 
@@ -186,6 +189,18 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             setSaveStatusSeverity("error");
         }
     }, [saveStatus, deleteStatus]);
+
+    useEffect(() => {
+        let modesModel = rowModesModel;
+        rows.forEach((row) =>{
+            if(!row.internalId) {
+                modesModel = { ...modesModel, [row.id]: { mode: GridRowModes.Edit } };
+            }
+        })
+
+        setRowModesModel(modesModel);
+    },[rows]);
+
 
     const handlePaginationModelChange = (value) => {
         if(startPage !== null){
@@ -284,7 +299,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             ...oldModel,
         }));
 
-        //workaround for moving to new page if needed
+        //workaround for moving to next page if needed
         const lastPage = Math.floor((rows.length+1) / paginationModel.pageSize);
         setPaginationModel({ pageSize: 5, page: lastPage});
         setStartPage(lastPage);

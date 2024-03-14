@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
     saveUserParam, saveUserParamStatusConfirmed,
-    deleteUserParam, deleteUserParamStatusConfirmed, getAllUserParamsStatusConfirmed,
+    deleteUserParam, deleteUserParamStatusConfirmed, getAllUserParamsStatusConfirmed, deleteGlobalParamStatusConfirmed,
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 
@@ -26,31 +26,29 @@ export const EditUserParameters = ({selectedUser, updatedParams, updateParams, t
         dispatch(deleteUserParam({user: selectedUser.user, param}));
     };
 
-    const saveParameter = (param) => {
-        if(param && param.name.length > 0) {
-            doSaveParam(selectedUser.user, param);
-        }
-    };
+    const saveStatusConfirm = () =>{
+        dispatch(saveUserParamStatusConfirmed());
+    }
+
+    const deleteStatusConfirm = () =>{
+        dispatch(deleteUserParamStatusConfirmed());
+    }
 
     useEffect(() => {
-        if(selectedUser.saveStatus === "SUCCESS"){
-            dispatch(saveUserParamStatusConfirmed());
-            setSaveStatus("SUCCESS");
+        if(selectedUser.paramStatus.status === "SAVE_SUCCESS"){
+            setSaveStatus(selectedUser.paramStatus);
         }
-        if(selectedUser.saveStatus === "FAIL"){
-            dispatch(saveUserParamStatusConfirmed());
-            setSaveStatus("FAIL");
+        if(selectedUser.paramStatus.status === "SAVE_FAIL"){
+            setSaveStatus(selectedUser.paramStatus);
         }
-        if(selectedUser.deleteStatus === "SUCCESS"){
-            dispatch(deleteUserParamStatusConfirmed());
-            setDeleteStatus("SUCCESS")
+        if(selectedUser.paramStatus.status === "DELETE_SUCCESS"){
+            setDeleteStatus(selectedUser.paramStatus);
         }
-        if(selectedUser.deleteStatus === "FAIL"){
-            dispatch(deleteUserParamStatusConfirmed());
-            setDeleteStatus("FAIL")
+        if(selectedUser.paramStatus.status === "DELETE_FAIL"){
+            setDeleteStatus(selectedUser.paramStatus);
         }
 
-        if(selectedUser.userParamStatus === "FAIL"){
+        if(selectedUser.allUserParamStatus === "FAIL"){
             dispatch(getAllUserParamsStatusConfirmed());
             setUserParamStatus("FAIL");
         }
@@ -64,11 +62,13 @@ export const EditUserParameters = ({selectedUser, updatedParams, updateParams, t
                 rows={updatedParams}
                 updateParams={updateParams}
                 title={title}
-                saveParam={saveParameter}
+                saveParam={saveParam}
                 deleteParam={handleDeleteClick}
                 saveStatus={saveStatus}
                 deleteStatus={deleteStatus}
                 allParamStatus={userParamStatus}
+                saveStatusConfirm={saveStatusConfirm}
+                deleteStatusConfirm={deleteStatusConfirm}
             />
         </div>
     );

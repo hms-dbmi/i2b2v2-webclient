@@ -41,7 +41,7 @@ export function* doSaveUserParam(action) {
             yield put(getAllUserParams({user}));
             yield put(saveUserParamSucceeded({param}));
         }else{
-            yield put(saveUserParamFailed(response));
+            yield put(saveUserParamFailed({param}));
         }
     } finally {
         const msg = `save user param thread closed`;

@@ -29,10 +29,10 @@ export function* doDeleteUserParam(action) {
         response = JSON.stringify(response);
 
         if(!response.includes("AJAX_ERROR")) {
-            yield put(getAllUserParams({user}));
+            //yield put(getAllUserParams({user}));
             yield put(deleteUserParamSucceeded({param}));
         }else{
-            yield put(deleteUserParamFailed(response));
+            yield put(deleteUserParamFailed({param}));
         }
     } finally {
         const msg = `delete user param thread closed`;

@@ -113,7 +113,7 @@ export const ProjectInfo = ({selectedProject, cancelEdit, doSave, setSaveComplet
     const getTitle = () => {
         let title = "New Project - Details"
 
-        if(selectedProject){
+        if(selectedProject.project.name){
             title = selectedProject.project.name + " - Details";
         }
         return title;
@@ -220,17 +220,6 @@ export const ProjectInfo = ({selectedProject, cancelEdit, doSave, setSaveComplet
                         InputLabelProps={{ shrink: true }}
                     />
                 </div>
-                <div className={"mainField"}>
-                    <TextField
-                        className="inputField"
-                        label="Description"
-                        value={updatedProject.description}
-                        onChange={(event) => handleUpdate("description", event.target.value)}
-                        variant="standard"
-                        InputLabelProps={{ shrink: true }}
-                    />
-                </div>
-
                 <div className={"mainField"}>
                     <TextField
                         className="inputField"

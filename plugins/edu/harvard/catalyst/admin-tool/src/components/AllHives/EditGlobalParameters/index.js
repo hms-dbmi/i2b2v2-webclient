@@ -27,7 +27,7 @@ export const EditGlobalParameters = ({allHives, updatedParams, updateParams, tit
     };
 
     const saveStatusConfirm = () =>{
-        dispatch(deleteGlobalParamStatusConfirmed());
+        dispatch(saveGlobalParamStatusConfirmed());
     }
 
     const deleteStatusConfirm = () =>{

@@ -125,7 +125,7 @@ export const EditProjectDetails = ({project, setIsEditingProject}) => {
             <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
                 <BottomNavigation className={"EditProjectActions"}>
                     <div  className="EditProjectActionSecondary">
-                        <Button onClick={cancelEdit} variant="outlined"> Cancel </Button>
+                        <Button onClick={cancelEdit} variant="outlined"> Exit </Button>
                     </div>
                     <div className="EditProjectActionPrimary">
                         <Button  variant="outlined" onClick={handleNext}>
