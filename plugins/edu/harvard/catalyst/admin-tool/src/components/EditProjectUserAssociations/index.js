@@ -339,7 +339,7 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
             </Backdrop>
             <Snackbar
                 open={showSaveStatus}
-                autoHideDuration={5000}
+                autoHideDuration={4000}
                 anchorOrigin={{ vertical: 'top', horizontal : "center" }}
                 onClose={handleCloseAlert}
             >

@@ -162,7 +162,7 @@ export const DomainSettings = ({allHives, updatedDomainSettings, updateDomainSet
 
             <Snackbar
                 open={showSaveStatus}
-                autoHideDuration={5000}
+                autoHideDuration={4000}
                 anchorOrigin={{ vertical: 'top', horizontal : "center" }}
                 onClose={handleCloseAlert}
             >

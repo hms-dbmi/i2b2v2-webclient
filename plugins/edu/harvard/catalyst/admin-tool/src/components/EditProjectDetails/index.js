@@ -20,7 +20,7 @@ import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
-export const EditProjectDetails = ({project, setIsEditingProject}) => {
+export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) => {
     const selectedProject = useSelector((state) => state.selectedProject );
     const [updatedParams, setUpdatedParams] = useState(selectedProject.params);
     const [activeStep, setActiveStep] = useState(0);
@@ -47,6 +47,12 @@ export const EditProjectDetails = ({project, setIsEditingProject}) => {
         setIsEditingProject(false);
     }
 
+    useEffect(() => {
+
+        if(isEditUsers){
+            setActiveStep(3);
+        }
+    }, [isEditUsers]);
     useEffect(() => {
         if(saveCompleted){
             setActiveStep((prevActiveStep) => prevActiveStep + 1);

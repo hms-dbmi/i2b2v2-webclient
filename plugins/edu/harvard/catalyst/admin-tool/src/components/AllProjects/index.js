@@ -6,12 +6,12 @@ import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import {DataGrid, GridActionsCellItem, gridClasses} from "@mui/x-data-grid";
-import {EditProjectDetails, Loader, StatusUpdate} from "components";
-import {deleteProject, deleteProjectStatusConfirmed, getAllProjects} from "actions";
-import {SelectedProject} from "models";
-import "./AllProjects.scss";
+import PersonIcon from '@mui/icons-material/Person';
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import {EditProjectDetails, Loader, StatusUpdate} from "components";
+import {deleteProject, deleteProjectStatusConfirmed, getAllProjects} from "actions";
+import "./AllProjects.scss";
 
 export const AllProjects = () => {
     const allProjects = useSelector((state) => state.allProjects );
@@ -19,6 +19,7 @@ export const AllProjects = () => {
     const [projectRows, setProjectRows] = useState(allProjects.projects);
     const[selectedProject, setSelectedProject] = useState(null);
     const[isEditingProject, setIsEditingProject] = useState(false);
+    const[isEditUsers, setIsEditUsers] = useState(false);
     const [showBackdrop, setSaveBackdrop] = useState(false);
     const [showStatus, setShowStatus] = useState(false);
     const [statusMsg, setStatusMsg] = useState("");
@@ -72,6 +73,13 @@ export const AllProjects = () => {
                         color="inherit"
                     />,
                     <GridActionsCellItem
+                        icon={<PersonIcon/>}
+                        label="Edit Users"
+                        className="textPrimary"
+                        onClick={handleEditUsersClick(id)}
+                        color="inherit"
+                    />,
+                    <GridActionsCellItem
                         icon={<DeleteIcon/>}
                         label="Delete"
                         onClick={handleDeleteClick(id)}
@@ -83,7 +91,6 @@ export const AllProjects = () => {
     ];
 
     const handleNewProject = () => {
-        //setSelectedProject(SelectedProject());
         setIsEditingProject(true);
     };
 
@@ -92,6 +99,16 @@ export const AllProjects = () => {
         if(projects.length === 1) {
             setSelectedProject(projects[0]);
             setIsEditingProject(true);
+            setIsEditUsers(false);
+        }
+    };
+
+    const handleEditUsersClick = (id) => () => {
+        let projects = allProjects.projects.filter((project) => project.id === id);
+        if(projects.length === 1) {
+            setSelectedProject(projects[0]);
+            setIsEditingProject(true);
+            setIsEditUsers(true);
         }
     };
 
@@ -158,7 +175,9 @@ export const AllProjects = () => {
                 Add New Project
             </Button>}
             { !isEditingProject && displayProjectsTable()}
-            { isEditingProject && <EditProjectDetails project={selectedProject} setIsEditingProject={setIsEditingProject}/>}
+            { isEditingProject && <EditProjectDetails project={selectedProject} setIsEditingProject={setIsEditingProject}
+                                                      isEditUsers={isEditUsers}
+            />}
             <StatusUpdate isOpen={showStatus} setIsOpen={setShowStatus} severity={statusSeverity} message={statusMsg}/>
         </div>
     );

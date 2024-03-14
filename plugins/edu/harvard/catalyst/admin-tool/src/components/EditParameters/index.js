@@ -294,11 +294,8 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             ...oldModel,
         }));
 
-        //workaround for moving to next page if needed
         const lastPage = Math.floor((rows.length+1) / paginationModel.pageSize);
         apiRef.current.setPage(lastPage);
-        //setPaginationModel({ pageSize: 5, page: lastPage});
-        //setStartPage(lastPage);
     };
 
 

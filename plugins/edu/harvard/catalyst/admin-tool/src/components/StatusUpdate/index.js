@@ -16,7 +16,7 @@ export const StatusUpdate = ({isOpen, setIsOpen, severity, message}) => {
 
     return ( <Snackbar
             open={isOpen}
-            autoHideDuration={5000}
+            autoHideDuration={4000}
             anchorOrigin={{ vertical: 'top', horizontal : "center" }}
             onClose={handleCloseAlert}
         >

@@ -171,7 +171,7 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
 
             <Snackbar
                 open={showSaveStatus}
-                autoHideDuration={5000}
+                autoHideDuration={4000}
                 anchorOrigin={{ vertical: 'top', horizontal : "center" }}
                 onClose={handleCloseAlert}
             >
