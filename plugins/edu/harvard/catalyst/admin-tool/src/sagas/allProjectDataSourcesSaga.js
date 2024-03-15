@@ -123,9 +123,10 @@ export function* doGetAllProjectDataSources(action) {
 
             const dataSourcesResults = dataSourcesResponse.filter(result => result.msgType !== "AJAX_ERROR");
             if(dataSourcesResults.length > 0) {
-                const dataSourceList = dataSourcesResults.map((dataSource) => {
+                let dataSourceList = dataSourcesResults.map((dataSource) => {
                     return parseDataSourceXml(dataSource.cellId, dataSource.cellURL, dataSource.response);
                 });
+                dataSourceList = dataSourceList.filter((ds) => ds.cellId !== undefined);
                 yield put(getAllProjectDataSourcesSucceeded({dataSources: dataSourceList}));
             }
             else{

@@ -197,7 +197,7 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
                             required
                             disabled
                             label="Project Path"
-                            value={updatedDataSources[cellId] && updatedDataSources[cellId].projectPath  ? updatedDataSources[cellId].projectPath : selectedProject.project.path}
+                            value={updatedDataSources[cellId] && updatedDataSources[cellId].projectPath}
                             onChange={(event) => handleUpdate(cellId, "projectPath", event.target.value)}
                             variant="standard"
                             InputLabelProps={{ shrink: true }}
@@ -266,7 +266,22 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
             setSaveStatusSeverity("error");
         }
 
-        setUpdatedDataSources({...selectedProject.dataSources});
+        const newDataSources = {...selectedProject.dataSources};
+        newDataSources[CELL_ID.CRC] = {
+            ...newDataSources[CELL_ID.CRC],
+            projectPath: newDataSources[CELL_ID.CRC].projectPath ? newDataSources[CELL_ID.CRC].projectPath : selectedProject.project.path
+        };
+        newDataSources[CELL_ID.ONT] = {
+            ...newDataSources[CELL_ID.ONT],
+            projectPath: newDataSources[CELL_ID.ONT].projectPath ? newDataSources[CELL_ID.ONT].projectPath : selectedProject.project.path
+        };
+        newDataSources[CELL_ID.WORK] = {
+            ...newDataSources[CELL_ID.WORK],
+            projectPath: newDataSources[CELL_ID.WORK].projectPath ? newDataSources[CELL_ID.WORK].projectPath : selectedProject.project.path
+        };
+
+        setUpdatedDataSources(newDataSources);
+
     }, [selectedProject]);
 
     useEffect(() => {
