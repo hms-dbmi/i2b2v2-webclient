@@ -3,10 +3,11 @@ import {
     GET_ALL_PROJECT_USER_PARAMS_ACTION,
     SAVE_USER_ACTION,
     SAVE_USER_PARAM_ACTION,
-    DELETE_USER_PARAM_ACTION, SAVE_PROJECT_USER_ACTION,
+    DELETE_USER_PARAM_ACTION,
+    CLEAR_SELECTED_USER_ACTION
 } from "actions";
 import { defaultState } from "defaultState";
-import {SelectedUser, Param, ParamStatusInfo} from "models";
+import {SelectedUser, Param, ParamStatusInfo, SelectedProject} from "models";
 
 export const editUserReducer = (state = defaultState.selectedUser, action) => {
     switch (action.type) {
@@ -196,6 +197,10 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                 ...state,
                 userParamStatus: null
             });
+        }
+
+        case  CLEAR_SELECTED_USER_ACTION.CLEAR_SELECTED_USER: {
+            return SelectedUser();
         }
 
         default: {

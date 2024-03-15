@@ -10,6 +10,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import {EditProjectDetails, Loader, StatusUpdate} from "components";
+import {Project} from "models";
+
 import {deleteProject, deleteProjectStatusConfirmed, getAllProjects} from "actions";
 import "./AllProjects.scss";
 
@@ -91,7 +93,9 @@ export const AllProjects = () => {
     ];
 
     const handleNewProject = () => {
+        setSelectedProject(Project());
         setIsEditingProject(true);
+        setIsEditUsers(false);
     };
 
     const handleEditClick = (id) => () => {
@@ -141,8 +145,10 @@ export const AllProjects = () => {
     };
 
     useEffect(() => {
-        dispatch(getAllProjects({}));
-    }, []);
+        if(!isEditingProject) {
+            dispatch(getAllProjects({}));
+        }
+    }, [isEditingProject]);
 
     useEffect(() => {
         if(allProjects.projects) {

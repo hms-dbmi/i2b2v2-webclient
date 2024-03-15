@@ -326,10 +326,7 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
                     Associate User to Project
                 </Button>
             </Stack>
-
-            <Button className="AddParam" variant="contained" startIcon={<AddIcon />} onClick={handleAddParam}>
-                Add
-            </Button>
+            
             {displayParamsTable()}
 
             {isEditingUser && <EditProjectUser project={selectedProject} user={selectedUser} setIsEditingUser={setIsEditingUser}/>}

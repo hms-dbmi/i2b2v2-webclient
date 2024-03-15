@@ -293,5 +293,15 @@ export const deleteProjectUserParam =  createAction(DELETE_PROJECT_USER_PARAM_AC
 export const deleteProjectUserParamSucceeded = createAction(DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM_SUCCEEDED);
 export const deleteProjectUserParamFailed = createNamedArgsAction(DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM_FAILED);
 export const deleteProjectUserParamStatusConfirmed = createAction(DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM_STATUS_CONFIRMED);
+//================================================================================================== //
+export const CLEAR_SELECTED_PROJECT_ACTION = {
+    CLEAR_SELECTED_PROJECT: "CLEAR_SELECTED_PROJECT",
+};
+export const clearSelectedProject =  createAction(CLEAR_SELECTED_PROJECT_ACTION.CLEAR_SELECTED_PROJECT);
+//================================================================================================== //
+export const CLEAR_SELECTED_USER_ACTION = {
+    CLEAR_SELECTED_USER: "CLEAR_SELECTED_USER",
+};
+export const clearSelectedUser =  createAction(CLEAR_SELECTED_USER_ACTION.CLEAR_SELECTED_USER);
 
 

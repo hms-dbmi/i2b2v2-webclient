@@ -137,7 +137,6 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
 
     const processRowUpdate = (newRow) => {
         console.log("process row update " + JSON.stringify(newRow));
-        console.log("process row update newRow.name.length " + newRow.name.length );
 
         if(newRow.name.length > 0) {
             const updatedRow = {...newRow, isNew: false};
@@ -285,7 +284,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const handleAddParam = () => {
-        const id = rows.length+1;
+        const id = rows.length;
         let newParams = [ ...rows, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
 
         updateParams(newParams);

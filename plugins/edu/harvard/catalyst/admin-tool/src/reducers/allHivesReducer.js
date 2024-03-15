@@ -63,10 +63,8 @@ export const allHivesReducer = (state = defaultState.allHives, action) => {
         }
 
         case  GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS: {
-            const  {user}  = action.payload;
-
-
             return AllHives({
+                ...state,
                 isFetchingParams: true
             });
         }
@@ -159,7 +157,7 @@ export const allHivesReducer = (state = defaultState.allHives, action) => {
 
             return AllHives({
                 ...state,
-                deleteStatus: ParamStatusInfo()
+                paramStatus: ParamStatusInfo()
             });
         }
 

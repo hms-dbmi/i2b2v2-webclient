@@ -2,12 +2,12 @@ import PropTypes from "prop-types";
 
 export const Project = ({
     id = null,
-    internalId=null,
-    name = null,
-    description = null,
-    key = null,
-    wiki = null,
-    path = null,
+    internalId= "",
+    name = "",
+    description = "",
+    key = "",
+    wiki = "",
+    path = "",
  } = {}) => ({
     id,
     internalId,
@@ -20,7 +20,7 @@ export const Project = ({
 
 Project.propTypes = {
     id: PropTypes.number.isRequired,
-    internalId: PropTypes.number,
+    internalId: PropTypes.string,
     name: PropTypes.string.isRequired,
     description: PropTypes.string,
     key: PropTypes.string,

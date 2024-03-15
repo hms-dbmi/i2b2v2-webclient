@@ -7,7 +7,8 @@ import { UserInfo, EditUserParameters } from "components";
 
 import "./EditUserDetails.scss";
 import {
-    getAllUserParams, saveUserParam, saveUserStatusConfirmed,
+    clearSelectedUser, getAllUserParams,
+    saveUserParam, saveUserStatusConfirmed,
 } from "actions";
 import {Tab, Tabs} from "@mui/material";
 
@@ -33,8 +34,10 @@ export const EditUserDetails = ({user, setIsEditingUser}) => {
     }
 
     useEffect(() => {
-        if(user) {
+        if(user.username) {
             dispatch(getAllUserParams({user}));
+        }else{
+            dispatch(clearSelectedUser());
         }
     }, [user]);
 

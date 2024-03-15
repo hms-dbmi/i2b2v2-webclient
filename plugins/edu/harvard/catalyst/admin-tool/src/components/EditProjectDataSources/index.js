@@ -55,7 +55,7 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
 
     const handleSave = () => {
         if(validateSaveProjectDataSource()) {
-           setShowProcessingBackdrop(true);
+            setShowProcessingBackdrop(true);
             dispatch(saveProjectDataSources({project: selectedProject.project, dataSources: updatedDataSources}));
         }else{
             setSaveCompleted(false);

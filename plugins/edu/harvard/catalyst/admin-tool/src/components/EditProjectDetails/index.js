@@ -7,11 +7,6 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
-import {
-    getAllProjectDataSources,
-    getAllProjectParams, getAllProjectUsers,
-} from "actions";
-
 import "./EditProjectDetails.scss";
 import {EditProjectDataSources, EditProjectParameters, EditProjectUserAssociations, ProjectInfo} from "components";
 import Paper from "@mui/material/Paper";
@@ -19,6 +14,11 @@ import BottomNavigation from "@mui/material/BottomNavigation";
 import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import {
+    getAllProjectDataSources,
+    getAllProjectParams, getAllProjectUsers,
+    clearSelectedProject
+} from "actions";
 
 export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) => {
     const selectedProject = useSelector((state) => state.selectedProject );
@@ -33,7 +33,6 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
     const isStepOptional = (step) => {
         return step === 1;
     };
-
 
     const handleNext = () => {
         setDoSave(true);
@@ -65,11 +64,13 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
     }, [saveCompleted]);
 
     useEffect(() => {
-        if(project) {
+        if(project.name) {
             dispatch(getAllProjectParams({project}));
             dispatch(getAllProjectDataSources({project}));
             dispatch(getAllProjectUsers({project}));
 
+        }else{
+            dispatch(clearSelectedProject());
         }
     }, [project]);
 

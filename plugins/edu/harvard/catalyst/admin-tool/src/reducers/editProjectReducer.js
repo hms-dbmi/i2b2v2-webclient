@@ -1,4 +1,5 @@
 import {
+    CLEAR_SELECTED_PROJECT_ACTION,
     GET_ALL_PROJECT_PARAMS_ACTION,
     SAVE_PROJECT_ACTION,
     SAVE_PROJECT_PARAM_ACTION,
@@ -349,6 +350,11 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
                 paramStatus: ParamStatusInfo()
             });
         }
+
+        case  CLEAR_SELECTED_PROJECT_ACTION.CLEAR_SELECTED_PROJECT: {
+            return SelectedProject();
+        }
+
         default: {
             return state;
         }

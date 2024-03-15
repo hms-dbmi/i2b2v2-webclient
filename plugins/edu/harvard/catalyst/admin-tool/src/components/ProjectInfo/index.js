@@ -164,7 +164,7 @@ export const ProjectInfo = ({selectedProject, cancelEdit, doSave, setSaveComplet
                         className="inputField"
                         required
                         label="ID"
-                        value={updatedProject.internalId}
+                        value={updatedProject.internalId || ""}
                         onChange={(event) => handleUpdate("internalId", event.target.value)}
                         error={isIdNotValid}
                         helperText={idNotValidError}
