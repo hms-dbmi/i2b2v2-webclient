@@ -136,8 +136,6 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     }
 
     const processRowUpdate = (newRow) => {
-        console.log("process row update " + JSON.stringify(newRow));
-
         if(newRow.name.length > 0) {
             const updatedRow = {...newRow, isNew: false};
 
@@ -153,7 +151,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const onProcessRowUpdateError = (error) => {
-        console.log("error rows is " + JSON.stringify(rows));
+        console.error("Process update error rows is " + JSON.stringify(rows));
     };
 
     const handleRowModesModelChange = (newRowModesModel) => {
@@ -190,17 +188,6 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
         }
     }, [saveStatus, deleteStatus]);
 
-    useEffect(() => {
-        let modesModel = rowModesModel;
-        rows.forEach((row) =>{
-            if(!row.internalId) {
-                modesModel = { ...modesModel, [row.id]: { mode: GridRowModes.Edit } };
-            }
-        })
-
-        setRowModesModel(modesModel);
-    },[rows]);
-
     const displayParamsTable = () => {
         return (
             <DataGrid
@@ -232,10 +219,6 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const handleCloseAlert = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
         setShowSaveStatus(false);
 
         if(saveStatus.status === "SAVE_SUCCESS" || saveStatus.status === "SAVE_FAIL") {

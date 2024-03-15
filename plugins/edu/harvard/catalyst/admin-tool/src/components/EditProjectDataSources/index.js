@@ -235,15 +235,10 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
     }
 
     const handleResetDataSources = () => {
-        console.log("reset ds: " + JSON.stringify(selectedProject.dataSources));
         setUpdatedDataSources({...selectedProject.dataSources});
     }
 
     const handleCloseSaveAlert = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
         setShowSaveStatus(false);
     };
 

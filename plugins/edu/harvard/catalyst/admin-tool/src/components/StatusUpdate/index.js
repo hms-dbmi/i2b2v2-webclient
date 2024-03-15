@@ -6,10 +6,6 @@ import Alert from "@mui/material/Alert";
 export const StatusUpdate = ({isOpen, setIsOpen, severity, message}) => {
 
     const handleCloseAlert = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
         setIsOpen(false);
     };
 
