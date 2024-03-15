@@ -76,7 +76,7 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
 
     useEffect(() => {
         setUpdatedParams(selectedProject.params);
-    }, [selectedProject]);
+    }, [selectedProject.params]);
 
     return (
         <div className={"EditProjectDetails"}>
