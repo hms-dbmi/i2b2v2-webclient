@@ -1,5 +1,4 @@
 i2b2.CRC.view.QueryReport = {
-    sCompiledResultsTest: "",
     queryData: {
         queryInstanceId: null,
         queryResultSet: []
@@ -7,7 +6,6 @@ i2b2.CRC.view.QueryReport = {
     disDiv: null,
     breakdowns: null,
     displayQueryResults: function(queryInstanceId, div) {
-        i2b2.CRC.view.QueryReport.sCompiledResultsTest = "";
         this.breakdowns  = {
             resultTable: [],
             patientCount: {}
@@ -15,9 +13,9 @@ i2b2.CRC.view.QueryReport = {
         i2b2.CRC.view.QueryReport.disDiv = div;
         let view = this.disDiv;
         $(view).empty();
-        let graphData = $('<div id="infoQueryStatusGraph"></div>').empty().hide();
+        let graphData = $('<div id="infoQueryStatusGraph"></div>').empty();
         $(view).append(graphData);
-        let tableData = $('<div id="infoQueryStatusTable"></div>').empty().hide();
+        let tableData = $('<div id="infoQueryStatusTable"></div>').empty();
         $(view).append(tableData);
         $((Handlebars.compile("{{> QueryResultBreakdownGraph}}"))()).appendTo(graphData);
         i2b2.CRC.view.QueryReport.QRS = {};
@@ -25,7 +23,7 @@ i2b2.CRC.view.QueryReport = {
         let scopedCallbackQRS = new i2b2_scopedCallback(this._handleQueryResultSet);
         i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryReport", {qi_key_value: queryInstanceId}, scopedCallbackQRS);
     },
-    loadQueryResultSetInstance: function(){
+    loadQueryResultSetInstance: function() {
         for (let i in i2b2.CRC.view.QueryReport.QRS) {
             let rec = i2b2.CRC.view.QueryReport.QRS[i];
 
@@ -38,18 +36,13 @@ i2b2.CRC.view.QueryReport = {
 
                 if (rec.QRS_Type === "PATIENTSET") {
                     let selectedResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => {
-
                         let resultType = $(rec).parent().text().trim();
-
                         // uncheck the timeline result type option
                         // so timeline will not be loaded on query reload
-                        if(resultType === 'Timeline'){
-                            $(rec).prop( "checked", false );
-                        }
+                        if (resultType === 'Timeline') $(rec).prop( "checked", false );
                         return resultType;
                     }).toArray();
-                    if (rec.size > 0 && selectedResultTypes.includes('Timeline')
-                    ) {
+                    if (rec.size > 0 && selectedResultTypes.includes('Timeline') ) {
                         //rec.QM_id = i2b2.CRC.ctrlr.QS.QM.id;
                         rec.QI_id = this.queryData.queryInstanceId;
                         rec.PRS_id = rec.QRS_ID;
@@ -75,12 +68,12 @@ i2b2.CRC.view.QueryReport = {
 
     },
     _handleQueryResultInstance: function(results){
+        let showGraphs = false;
         if (results.error) {
             alert(results.errorMsg);
             return;
         } else {
             // find our query instance
-
             let ri_list = results.refXML.getElementsByTagName('query_result_instance');
             let l = ri_list.length;
             let description = "";  // Query Report BG
@@ -102,88 +95,77 @@ i2b2.CRC.view.QueryReport = {
 
             let crc_xml = results.refXML.getElementsByTagName('crc_xml_result');
             l = crc_xml.length;
+            let isPatientCount = false;
             for (let i = 0; i < l; i++) {
                 let temp = crc_xml[i];
                 let xml_value = i2b2.h.XPath(temp, 'descendant-or-self::xml_value')[0].firstChild.nodeValue;
                 let xml_v = i2b2.h.parseXml(xml_value);
 
-                let isPatientCount = false;
                 let params = i2b2.h.XPath(xml_v, 'descendant::data[@column]/text()/..');
                 for (let i2 = 0; i2 < params.length; i2++) {
-                    let name = params[i2].getAttribute("name");
-                    let value = params[i2].firstChild.nodeValue;
+                    let entryRecord = {}
+                    entryRecord.name = params[i2].getAttribute("column");
+                    entryRecord.value = params[i2].firstChild.nodeValue;
 
                     if (i2b2.PM.model.isObfuscated) {
                         if (params[i2].firstChild.nodeValue < 4) {
-                            value = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                            entryRecord.display = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                         } else {
-                            value = params[i2].firstChild.nodeValue + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                            entryRecord.display = params[i2].firstChild.nodeValue + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                         }
                     }
                     if (i2b2.UI.cfg.useFloorThreshold) {
                         if (params[i2].firstChild.nodeValue < i2b2.UI.cfg.floorThresholdNumber) {
-                            value = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber.toString();
+                            entryRecord.display = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber.toString();
                         }
                     }
                     // N.Benik - Override the display value if specified by server setting the "display" attribute
-                    let displayValue = i2b2.h.Unescape(value);
                     if (typeof params[i2].attributes.display !== 'undefined') {
-                        displayValue = params[i2].attributes.display.textContent;
+                        entryRecord.value = i2b2.h.Unescape(entryRecord.value);
+                        entryRecord.display = params[i2].attributes.display.textContent;
                     }
 
-                    let graphValue = displayValue;
+                    // TODO: What is this next block for? Remove this or refactor it?
                     if (typeof params[i2].attributes.comment !== 'undefined') {
-                        displayValue += ' &nbsp; <span style="color:#090;">[' + params[i2].attributes.comment.textContent + ']<span>';
-                        graphValue += '|' + params[i2].attributes.comment.textContent;
+                        entryRecord.display += ' &nbsp; <span style="color:#090;">[' + params[i2].attributes.comment.textContent + ']<span>';
                     }
 
                     if (params[i2].getAttribute("column") === 'patient_count') {
                         i2b2.CRC.view.QueryReport.breakdowns.patientCount.title = descriptionShort;
-                        i2b2.CRC.view.QueryReport.breakdowns.patientCount.value = graphValue;
+                        i2b2.CRC.view.QueryReport.breakdowns.patientCount.value = entryRecord.display ? entryRecord.display : entryRecord.value;
                         breakdown.title = descriptionShort;
-                        breakdown.result.push({
-                            name: params[i2].getAttribute("column"),
-                            value: displayValue
-                        });
+                        breakdown.result.push(entryRecord);
                         isPatientCount = true;
                     } else {
-                        i2b2.CRC.view.QueryReport.sCompiledResultsTest += descriptionLong + '\n';
-                        i2b2.CRC.view.QueryReport.sCompiledResultsTest += params[i2].getAttribute("column").substring(0,20) + " : " + value + "\n"; //snm0
                         breakdown.title = descriptionShort;
-                        breakdown.result.push({
-                            name: params[i2].getAttribute("column"),
-                            value: displayValue
-                        });
+                        breakdown.result.push(entryRecord);
                     }
                 }
 
-                if(breakdown.title) {
-                    if(isPatientCount) {
+                if (breakdown.title) {
+                    if (isPatientCount) {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.unshift(breakdown);
+                    } else {
+                        i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
                     }
-                    else i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
                 }
             }
 
-            //only create graphs if there is breakdown data
-            if(i2b2.CRC.view.QueryReport.sCompiledResultsTest.length > 0) {
-                $("#infoQueryStatusGraph").hide();
-                i2b2.CRC.view.graphs.createGraphs("breakdownChartsBody", i2b2.CRC.view.QueryReport.sCompiledResultsTest, i2b2.CRC.view.graphs.bIsSHRINE);
-                $("#infoQueryStatusGraph").show();
-            }
-            if (i2b2.CRC.view.graphs.bisGTIE8) {
-                // Resize the query status box depending on whether breakdowns are included
-                if (i2b2.CRC.view.QueryReport.sCompiledResultsTest.includes("breakdown")) {
-                    // i2b2.CRC.cfg.config.ui.statusBox = i2b2.CRC.cfg.config.ui.largeStatusBox;
-                }else {
-                    //i2b2.CRC.cfg.config.ui.statusBox = i2b2.CRC.cfg.config.ui.defaultStatusBox;
-                }
-                //$(window).trigger('resize');
-                //window.dispatchEvent(new Event('resize'));
+            // only create graphs if there is breakdown data
+            if (!isPatientCount) {
+                showGraphs = true;
+                i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
         }
-
+        // render the table view of the breakdowns
         i2b2.CRC.view.QueryReport.render({breakdowns: i2b2.CRC.view.QueryReport.breakdowns});
+
+        // hide graph section if there are no graphs
+        if (!showGraphs && i2b2.CRC.view.QueryReport.breakdowns.resultTable.length === 1) {
+            $('#infoQueryStatusGraph').hide();
+        } else {
+            $('#infoQueryStatusGraph').show();
+        }
     },
     _handleQueryResultSet: function(results) {
         // callback processor to check the Query Result Set
@@ -227,7 +209,7 @@ i2b2.CRC.view.QueryReport = {
                     i2b2.CRC.view.QueryReport.QRS[qrs_id] = rec;
                 }
             }
-            // force a redraw
+            // force redraw
             i2b2.CRC.view.QueryReport.loadQueryResultSetInstance();
     },
     render: function(breakdowns) {
@@ -239,7 +221,7 @@ i2b2.CRC.view.QueryReport = {
         let title = "";
         switch (resultType) {
             case "PATIENT_ENCOUNTER_SET":
-                // use given title if it exist otherwise generate a title
+                // use given title if it exists otherwise generate a title
                 let t = null;
                 try {
                     t = i2b2.h.XPath(oXML,'self::query_result_instance/description')[0].firstChild.nodeValue;
@@ -248,7 +230,7 @@ i2b2.CRC.view.QueryReport = {
                 // create the title using shrine setting
                 if (oRecord.size >= 10) {
                     if (i2b2.PM.model.isObfuscated) {
-                        title = t+" - "+oRecord.size + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" encounters";
+                        title = t+" - "+oRecord.size + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" encounters";
                     } else {
                         title = t;
                     }
@@ -270,7 +252,7 @@ i2b2.CRC.view.QueryReport = {
                 // create the title using shrine setting
                 if (oRecord.size >= 10) {
                     if (i2b2.PM.model.isObfuscated) {
-                        title = p+" - "+oRecord.size + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
+                        title = p+" - "+oRecord.size + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
                     } else {
                         title = p;
                     }
@@ -293,7 +275,7 @@ i2b2.CRC.view.QueryReport = {
                 // create the title using shrine setting
                 if (oRecord.size >= 10) {
                     if (i2b2.PM.model.isObfuscated) {
-                        title = x+" - "+oRecord.size + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
+                        title = x+" - "+oRecord.size + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
                     } else {
                         title = x+" - "+oRecord.size+" patients";
                     }

@@ -8,7 +8,7 @@
  */
 
 i2b2.CRC.ctrlr.QueryMgr = {};
-
+// ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.tick = function() {
     // this function is the main status update routine that occurs during running of a query
     const secPollInterval = 1;
@@ -48,6 +48,7 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
         statusBar.finished = (statusBar.finished / totalCnt) * 100;
         statusBar.running = (statusBar.running / totalCnt) * 100;
         statusBar.error = (statusBar.error / totalCnt) * 100;
+        if (statusBar.finished < 5) statusBar.finished = 5;
     } else {
         stillRunning = true;
     }
@@ -123,7 +124,7 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
 
     // start run status Timer
     i2b2.CRC.model.runner = {
-        name: i2b2.h.Escape(queryName),
+        name: queryName,
         definition: params.psm_query_definition,
         elapsedTime: "0",
         startTime: new Date(),
@@ -131,22 +132,61 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
         abortable: true,
         finished: false,
         deleteCurrentQuery: false,
-        breakdowns: {},
         intervalTimer: null,
         lastPoll: new Date(),
-        isPolling: true
+        isPolling: true,
+        queued: false,
+        isRunning: true
     };
+
     i2b2.CRC.model.runner.intervalTimer = setInterval(i2b2.CRC.ctrlr.QueryMgr.tick, 100);
+
+    // clear any old results
+    i2b2.CRC.view.QueryMgr.clearStatus();
 
     // show run status HTML
     i2b2.CRC.view.QueryMgr.updateStatus();
 
     // run query and get back the query master ID
     i2b2.CRC.ajax.runQueryInstance_fromQueryDefinition("CRC:QueryManager", params, i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster);
+
+    // refresh the query history window since we are running a new query
+    setTimeout(i2b2.CRC.view.history.doRefreshAll, 500);
 };
 
+
 // ================================================================================================== //
-i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster) {};
+i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
+    i2b2.CRC.model.runner.name = queryName;
+    i2b2.CRC.model.runner.abortable = false;
+    i2b2.CRC.model.runner.isRunning = false;
+    i2b2.CRC.model.runner.finished = true;
+    i2b2.CRC.model.runner.deleteCurrentQuery = false;
+
+    let cb = new i2b2_scopedCallback();
+    cb.scope = this;
+    cb.callback = function(results) {
+        // TODO: Error checking!!!
+        let qi_id = results.refXML.getElementsByTagName('query_instance_id')[0].textContent;
+        try {
+            let datestart = Date.parse(results.refXML.getElementsByTagName('start_date')[0].textContent);
+            let dateend = Date.parse(results.refXML.getElementsByTagName('end_date')[0].textContent);
+            i2b2.CRC.model.runner.startTime = new Date(datestart);
+            i2b2.CRC.model.runner.endTime = new Date(dateend);
+        } catch(e) {
+            i2b2.CRC.model.runner.startTime = 0;
+            i2b2.CRC.model.runner.endTime = 0;
+        }
+        i2b2.CRC.model.runner.elapsedTime = ((i2b2.CRC.model.runner.endTime - i2b2.CRC.model.runner.startTime) / 1000).toFixed(1);
+
+        cb_hack = new i2b2_scopedCallback();
+        cb_hack.scope = results;
+        cb_hack.callback = i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback;
+        i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryMgr:loadQuery",{qi_key_value: qi_id}, cb_hack);
+    };
+    i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryMgr:loadQuery", {qm_key_value: idQueryMaster}, cb);
+};
+
 
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
@@ -158,6 +198,7 @@ i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     // update the screen to show status as cancelled
     $("#infoQueryStatusText .statusButtons").removeClass("running").addClass("cancelled");
 };
+
 
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.clearQuery = function() {
@@ -175,7 +216,7 @@ i2b2.CRC.ctrlr.QueryMgr.clearQuery = function() {
 };
 
 
-// 1st callback in query execution (submit query XML and get query master ID
+// 1st callback in query execution (submit query XML and get query master ID)
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster = new i2b2_scopedCallback();
 i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.scope = this;
@@ -191,10 +232,19 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
         return;
     }
 
-
-    // get the query instance id
+        // get the query instance id
     let qiID = false;
+
+    // try loading the query instance elements from the server results
     let qiList = results.refXML.getElementsByTagName('query_instance');
+
+    // if the query instance info is not in the returned results then this callback was called by loading a previously
+    // run query. Since the messages from the i2b2 server differ between a 1st time run and loading a previously run
+    // query we use a hack in which the query_instance list from the 1st call to the server is loaded into the "this"
+    // scope variable.  If this is the case then load the query_instance data from there.
+    if (qiList.length === 0) qiList = this.refXML.getElementsByTagName('query_instance');
+
+    // at this point we should have a list of query instances ready for processing
     if (qiList.length > 0) {
         qiID = i2b2.h.XPath(qiList[0], 'descendant-or-self::query_instance_id')[0].firstChild.nodeValue;
         i2b2.CRC.model.runner.idQueryMaster = i2b2.h.XPath(qiList[0], 'descendant-or-self::query_master_id')[0].firstChild.nodeValue;
@@ -217,7 +267,15 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
 
             // get the patient count
             try {
-                i2b2.CRC.model.runner.patientCount = i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue;
+                let pCount = parseInt(i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue);
+                if (i2b2.PM.model.isObfuscated) {
+                    if (i2b2.UI.cfg.useFloorThreshold && pCount < i2b2.UI.cfg.floorThresholdNumber) {
+                        pCount = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber;
+                    } else {
+                        pCount = pCount.toString() + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                    }
+                }
+                i2b2.CRC.model.runner.patientCount = pCount
             } catch(e) {}
         }
         i2b2.CRC.model.runner.queryResultInstances = idQRI;
@@ -229,40 +287,9 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
         } else {
             i2b2.CRC.model.runner.lastPoll = new Date();
             i2b2.CRC.model.runner.isPolling = false;
+            i2b2.CRC.model.runner.queued = true;
         }
     }
-// TODO: This should fire after all results returned?
-        // load the query results
-//        i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryStatusGraph", i2b2.CRC.view.QueryMgr.containerDiv)[0]);
-
-        // // process the results to get the query resultInstance
-        // // ==========================================================
-        // let callbackQueryResultInstance = new i2b2_scopedCallback();
-        // callbackQueryResultInstance.scope = this;
-        // callbackQueryResultInstance.callback = function(results) {
-        //     // see if error
-        //     if (results.error) {
-        //         i2b2.CRC.model.runner.status = "ERROR RETRIEVING RESULTS";
-        //         // i2b2.CRC.view.QR.render();
-        //         alert(results.errorMsg);
-        //         return;
-        //     }
-        //
-        //     // get the QRS information
-        //     let qrsList = results.refXML.getElementsByTagName('query_result_instance');
-        //     let qrsID = false;
-        //     if (qrsList.length > 0) {
-        //         qrsID = i2b2.h.XPath(qrsList[0], 'descendant-or-self::result_instance_id')[0].firstChild.nodeValue;
-        //         i2b2.CRC.model.runner.idQueryResultSet = qrsID;
-        //         i2b2.CRC.model.runner.patientCount = i2b2.h.getXNodeVal(qrsList[0], 'set_size');
-        //     }
-        //     // TODO: rerender the results
-        //     //i2b2.CRC.view.QR.render();
-        // };
-        //
-        // // run the second request to get the result set
-        // i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryRunner", {qi_key_value: qiID}, callbackQueryResultInstance);
-
 };
 
 
@@ -272,7 +299,9 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     i2b2.CRC.model.runner.abortable = false;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.isPolling = false;
-    i2b2.CRC.model.runner.endTime = new Date();
+    i2b2.CRC.model.runner.queued = false;
+    if (i2b2.CRC.model.runner.endTime === undefined) i2b2.CRC.model.runner.endTime = new Date();
+
 
     // stop the run timer
     clearInterval(i2b2.CRC.model.runner.intervalTimer);
@@ -282,9 +311,9 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
         // delete the query master
         let qmId = i2b2.CRC.model.runner?.idQueryMaster;
         i2b2.CRC.ctrlr.history.queryDeleteNoPrompt(qmId);
+        // refresh the query history window since it was deleted
+        setTimeout(i2b2.CRC.view.history.doRefreshAll, 250);
     } else {
-        // refresh the query history window if it was not deleted
-        i2b2.CRC.view.history.doRefreshAll();
         // render the results tables/graphs
         i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport"))
     }
@@ -324,7 +353,15 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryStatus.callback = function(results) {
 
         // get the patient count
         try {
-            i2b2.CRC.model.runner.patientCount = i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue;
+            let pCount = parseInt(i2b2.h.XPath(qriList[0], 'descendant-or-self::set_size')[0].firstChild.nodeValue);
+            if (i2b2.PM.model.isObfuscated) {
+                if (i2b2.UI.cfg.useFloorThreshold && pCount < i2b2.UI.cfg.floorThresholdNumber) {
+                    pCount = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber;
+                } else {
+                    pCount = pCount.toString() + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+                }
+            }
+            i2b2.CRC.model.runner.patientCount = pCount
         } catch(e) {}
     }
     i2b2.CRC.model.runner.queryResultInstances = idQRI;
@@ -336,8 +373,6 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryStatus.callback = function(results) {
     } else {
         i2b2.CRC.model.runner.isPolling = false;
     }
-
-
 };
 
 
@@ -429,22 +464,22 @@ i2b2.CRC.ctrlr.QueryMgr._processModel = function() {
                     }
                 }
 
-                if (item.LabValues || item.ModValues) {
-                    tempItem.valueType = item.LabValues.valueType;
-                    tempItem.valueOperator = item.LabValues.valueOperator;
-                    tempItem.unitValue= item.LabValues.unitValue;
+                if (item.LabValues) {
+                    tempItem.ValueType = item.LabValues.ValueType;
+                    tempItem.ValueOperator = item.LabValues.ValueOperator;
+                    tempItem.ValueUnit= item.LabValues.ValueUnit;
 
-                    if (item.LabValues.numericValueRangeLow) {
-                        tempItem.value = item.LabValues.numericValueRangeLow + " and " + item.LabValues.numericValueRangeHigh;
-                    } else if (tempItem.valueType === i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG){
-                        tempItem.value = item.LabValues.flagValue;
+                    if (item.LabValues.ValueLow) {
+                        tempItem.Value = item.LabValues.ValueLow + " and " + item.LabValues.ValueHigh;
+                    } else if (tempItem.ValueType === i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.FLAG){
+                        tempItem.Value = item.LabValues.ValueFlag;
                     } else {
-                        if(Array.isArray(item.LabValues.value)){
-                            item.LabValues.value.forEach(element => i2b2.h.Escape(element));
-                            tempItem.value = item.LabValues.value;
+                        if(Array.isArray(item.LabValues.Value)){
+                            item.LabValues.Value.forEach(element => i2b2.h.Escape(element));
+                            tempItem.Value = item.LabValues.Value;
                         }
                         else{
-                            tempItem.value = i2b2.h.Escape(item.LabValues.value);
+                            tempItem.Value = i2b2.h.Escape(item.LabValues.Value);
                         }
                     }
                     tempItem.isString = item.LabValues.isString;
@@ -563,8 +598,8 @@ i2b2.CRC.ctrlr.QueryMgr._processModel = function() {
 };
 
 
-
-
+// set up the model used by the QueryManager subsystem
+// ================================================================================================== //
 i2b2.CRC.model.runner = {
     name: "",
     definition: null,
@@ -573,8 +608,8 @@ i2b2.CRC.model.runner = {
     status: "Running",
     abortable: true,
     finished: false,
+    queued: false,
     deleteCurrentQuery: false,
-    breakdowns: {},
     intervalTimer: null,
     isRunning: false
 };

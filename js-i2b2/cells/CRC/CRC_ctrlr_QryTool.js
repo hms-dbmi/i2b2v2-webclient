@@ -147,28 +147,29 @@ function QueryToolController() {
                         sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
                         sdxDataNode.renderData.moreDescriptMinor = sdxDataNode.sdxInfo.sdxDisplayName;
-                        sdxDataNode.renderData.title = sdxDataNode.renderData.title.replace("Patient Set for ", "<span class='prevquery'>Patient Set for </span>");
                     } else if (ckey.toLowerCase().startsWith("patient_set_enc_id")) {
                         let o = {};
                         o.titleCRC =i2b2.h.getXNodeVal(pi[i2],'item_name');
                         o.PRS_id = ckey.substring(19);
                         o.result_instance_id = o.PRS_id ;
-                        sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
+                        sdxDataNode = i2b2.sdx.Master.EncapsulateData('ENS',o);
+                        sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
-                    }else  if (ckey.toLowerCase().startsWith("patient")) {
+                        sdxDataNode.renderData.moreDescriptMinor = sdxDataNode.sdxInfo.sdxDisplayName;
+                    } else if (ckey.toLowerCase().startsWith("patient")) {
                         let o = {};
                         o.titleCRC = i2b2.h.getXNodeVal(pi[i2],'item_key');
                         o.patient_id = ckey.substring(13);
                         o.result_instance_id = o.PRS_id ;
                         o.id = ckey;
+                        o.title = i2b2.h.getXNodeVal(pi[i2],'tooltip');
                         sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
                         sdxDataNode.sdxInfo.sdxDisplayName = i2b2.h.getXNodeVal(pi[i2],"tooltip");
                         let subsetPos = sdxDataNode.sdxInfo.sdxDisplayName.indexOf(" [");
                         sdxDataNode.sdxInfo.sdxDisplayName = subsetPos === -1
                             ?  sdxDataNode.sdxInfo.sdxDisplayName : "PATIENT:HIVE:" +  sdxDataNode.sdxInfo.sdxDisplayName.substring(0, subsetPos);
                         sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
-                    }
-                    else {
+                    } else {
                         let o = {};
                         o.level = i2b2.h.getXNodeVal(pi[i2],'hlevel');
                         o.name = i2b2.h.getXNodeVal(pi[i2],'item_name');
@@ -183,7 +184,12 @@ function QueryToolController() {
                             }
                         }
                         o.key = i2b2.h.getXNodeVal(pi[i2],'item_key');
-                        o.synonym_cd = i2b2.h.getXNodeVal(pi[i2],'item_is_synonym');
+                        o.synonym_cd = i2b2.h.getXNodeVal(pi[i2], 'item_is_synonym');
+                        if (o.synonym_cd === "true") { // tdw9 bug fix for non-synonym terms showing blue text: HTML rendering checks to see if synonym is "N," not "false"
+                            o.synonym_cd = "Y";
+                        } else {
+                            o.synonym_cd = "N";
+                        }
                         o.hasChildren = i2b2.h.getXNodeVal(pi[i2],'item_icon');
 
                         // build sdx packet
@@ -263,8 +269,8 @@ function QueryToolController() {
                             }, function (results) {
                                 results.parse();
                                 // loop through records and find the one with the matching name
-                                for (rec of results.model) {
-                                    if (rec.origData.name = o.name) {
+                                for (let rec of results.model) {
+                                    if (rec.origData.name === o.name) {
                                         let data = results.model[0];
                                         sdxDataNode.origData = data.origData;
                                         if (String(sdxDataNode.origData.table_name).toLowerCase() === "patient_dimension") sdxDataNode.withDates = false;
@@ -389,7 +395,7 @@ function QueryToolController() {
                 loadAllModifierInfo(qd[0], function(modifierXmlInfo){
                     reloadQuery(modifierXmlInfo);
                     $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
-                    i2b2.CRC.ctrlr.QT.loadQueryStatus(qm_id, queryName);
+                    i2b2.CRC.ctrlr.QueryMgr.loadQuery(qm_id, queryName);
                 });
             }
         }
@@ -398,76 +404,65 @@ function QueryToolController() {
     };
 
 // ================================================================================================== //
-    this.loadQueryStatus = function(queryMasterId, queryName) {
-        // TODO: Rebuild this
-        i2b2.CRC.ctrlr.QS.QRS = {};
-        i2b2.CRC.ctrlr.QS.QI = {};
-        i2b2.CRC.ctrlr.QS.QM = {name: queryName, id: queryMasterId};
-        i2b2.CRC.ctrlr.QS.startTime = new Date();
-        i2b2.CRC.view.QS.renderStart();
-        i2b2.CRC.ctrlr.QS.loadQueryStatus();
-    }
-
-// ================================================================================================== //
     // tdw9: parses value constraint in Value Constraints and Modifier Constraints
     this.parseValueConstraint = function( lvd )
     {
         lvd = lvd[0];
         let labValues = {
-            valueType: null,
-            valueOperator: null,
-            value: null,
-            flagValue: null,
-            numericValueRangeLow: null,
-            numericValueRangeHigh: null,
-            unitValue: null
+            ValueType: null,
+            ValueOperator: null,
+            Value: null,
+            ValueFlag: null,
+            ValueLow: null,
+            ValueHigh: null,
+            ValueUnit: null
         };
 
         let valueConstraint = i2b2.h.getXNodeVal(lvd, "value_constraint");
-        labValues.valueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
+        labValues.ValueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
         let rawValueType = i2b2.h.getXNodeVal(lvd, "value_type");
         switch (rawValueType) {
             case "NUMBER":
                 if (valueConstraint.indexOf(' and ') !== -1) {
                     // extract high and low labValues
                     valueConstraint = valueConstraint.split(' and ');
-                    labValues.numericValueRangeLow = valueConstraint[0];
-                    labValues.numericValueRangeHigh = valueConstraint[1];
+                    labValues.ValueLow = valueConstraint[0];
+                    labValues.ValueHigh = valueConstraint[1];
                 } else {
-                    labValues.value = valueConstraint;
+                    labValues.Value = valueConstraint;
                 }
-                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.NUMBER;
-                labValues.unitValue = i2b2.h.getXNodeVal(lvd, "value_unit_of_measure");
+                labValues.ValueType= i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.NUMBER;
+                labValues.ValueUnit = i2b2.h.getXNodeVal(lvd, "value_unit_of_measure");
                 break;
             case "STRING":
-                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT;
-                labValues.value = valueConstraint;
+                labValues.ValueType= i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT;
+                labValues.Value = valueConstraint;
                 labValues.isString = true;
                 break;
             case "LARGETEXT":
-                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.LARGETEXT;
-                labValues.value = valueConstraint;
+                labValues.ValueType= i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.LARGETEXT;
+                labValues.Value = valueConstraint;
                 labValues.isString = true;
                 break;
             case "TEXT":
                 // This is an ENUM
-                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT;
+                labValues.ValueType= i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT;
                 try {
-                    labValues.value = eval("(Array" + valueConstraint + ")");
+                    labValues.Value = eval("(Array" + valueConstraint + ")");
                     labValues.isEnum = true;
                 } catch (e) {
                     //This is a string
-                    labValues.valueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
-                    labValues.value = valueConstraint;
-                    labValues.valueType = i2b2.CRC.ctrlr.labValues.VALUE_TYPES.TEXT; // tdw9: this line is missing for modifiers in current code. Does it make a different to have it here? Also, "TEXT" is changed from "STRING" to make sure TEXT works in modifiers
+                    labValues.ValueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
+                    labValues.Value = valueConstraint;
+                    labValues.ValueType = i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.TEXT; // tdw9: this line is missing for modifiers in current code. Does it make a different to have it here? Also, "TEXT" is changed from "STRING" to make sure TEXT works in modifiers
                 }
                 break;
             case "FLAG":
-                labValues.valueType= i2b2.CRC.ctrlr.labValues.VALUE_TYPES.FLAG;
-                labValues.flagValue = valueConstraint;
+                labValues.ValueType= i2b2.CRC.ctrlr.labValues.ValueTypes.GENERAL_VALUE.FLAG;
+                labValues.ValueFlag = valueConstraint;
                 break;
             default:
-                labValues.value = valueConstraint;
+                labValues.Value = valueConstraint;
         }
         return labValues;
     };

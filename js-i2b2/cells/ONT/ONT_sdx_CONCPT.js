@@ -129,8 +129,11 @@ i2b2.sdx.TypeControllers.CONCPT.RenderData= function(sdxData, options) {
 
     if (sdxData.origData.hasChildren.substring(2,1) === "I") {
         nodeInfo.cssClassMinor += " inactiveTerm";
-    } else if (i2b2.ONT.view.nav.params.hiddens !== false && sdxData.origData.hasChildren.substring(2,1) === "H") {
-        nodeInfo.color = "#c00000";
+    } else if (sdxData.origData.hasChildren.substring(2,1) === "H") {
+        nodeInfo.isHidden = true;
+        if (i2b2.ONT.view.nav.params.hiddens !== false) {
+            nodeInfo.color = "#c00000";
+        }
     } else if (i2b2.ONT.view.nav.params.synonyms !== false && (sdxData.origData.synonym_cd !== 'N')) {
         nodeInfo.color = "#0000ff";
     }
@@ -254,6 +257,8 @@ i2b2.sdx.TypeControllers.CONCPT.LoadConcepts = function(node, onCompleteCallback
                 if (eaction === true) {
                     // re-fire the call with no max limit if the user requested so
                     i2b2.ONT.view.nav.params.max = t.max * 5;
+                    $('i.srTooltip').attr('data-bs-original-title', "A maximum of " + i2b2.ONT.view.nav.params.max + " records per category will be returned.");
+
                     i2b2.sdx.TypeControllers.CONCPT.LoadConcepts(cl_node, cl_onCompleteCB);
                 } else {
                     //Reset the loading and requested state for the expanded node

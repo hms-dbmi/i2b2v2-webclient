@@ -259,9 +259,18 @@ i2b2.PM._processUserConfig = function (data) {
     i2b2.PM.removeLoginDialog();
 
     i2b2.PM.cfg.cellURL = i2b2.PM.model.url;  // remember the url
-    // if user has more than one project display a modal dialog box to have them select one
     let xml = data.refXML;
 
+    // copy any global params to i2b2.hive.model.params
+    i2b2.hive.model.globalParams = {}
+    try {
+        let gparams = i2b2.h.XPath(xml, "descendant::global_data/param[@name]");
+        for (let t of gparams) {
+            i2b2.hive.model.globalParams[t.attributes['name'].value] = t;
+        }
+    } catch(e) {}
+
+    // if user has more than one project display a modal dialog box to have them select one
     let projs = i2b2.h.XPath(xml, 'descendant::user/project[@id]');
     console.debug(projs.length+' project(s) discovered for user');
     // populate the Project data into the data model
@@ -310,9 +319,16 @@ i2b2.PM._processUserConfig = function (data) {
         if (s.length > 0) {
             // we have a proper error msg
             try {
-                    alert("ERROR: "+s[0].firstChild.nodeValue);
+                if (s[0].firstChild.nodeValue === "Password Expired.") {
+                    i2b2.PM.view.changePassword.show(function(){
+                        i2b2.PM.doLoginDialog();
+                    }, true);
+                    return false;
+                } else {
+                    alert("ERROR: " + s[0].firstChild.nodeValue);
+                }
             } catch (e) {
-                alert("An unknown error has occured during your login attempt!");
+                alert("An unknown error has occurred during your login attempt!");
             }
         } else if (i2b2.PM.model.login_fullname !== "") {
             alert("Your account does not have access to any i2b2 projects.");
@@ -633,21 +649,14 @@ i2b2.PM.trigger_WDT = function() {
     }
 };
 
+
+// ================================================================================================== //
 i2b2.PM.changePassword = function (curpass, newpass, completeCallback) {
     try {
         // callback processor
         let scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = this;
         scopedCallback.callback = function (results) {
-            // THIS function is used to process the AJAX results of the getChild call
-            //		results data object contains the following attributes:
-            //			refXML: xmlDomObject <--- for data processing
-            //			msgRequest: xml (string)
-            //			msgResponse: xml (string)
-            //			error: boolean
-            //			errorStatus: string [only with error=true]
-            //			errorMsg: string [only with error=true]
-
             // check for errors
             if (results.error) {
 
@@ -697,5 +706,7 @@ i2b2.PM.changePassword = function (curpass, newpass, completeCallback) {
         //i2b2.CRC.ajax.getPDO_fromInputList
         i2b2.PM.ajax.setPassword("Plugin:PM", {sec_oldpassword: curpass, sec_newpassword: newpass}, scopedCallback);
     } catch (e) {
+        console.error("Problem changing password!");
+        console.dir(e);
     }
 };

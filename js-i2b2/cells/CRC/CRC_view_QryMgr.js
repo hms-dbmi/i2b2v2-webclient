@@ -15,6 +15,18 @@ i2b2.CRC.view.QueryMgr.updateStatus = function() {
     // this function does the initial render of the query run status
     let statusDiv = $("#infoQueryStatus", i2b2.CRC.view.QueryMgr.containerDiv).empty();
     $((Handlebars.compile("{{> QueryResultStatus}}"))(i2b2.CRC.model.runner)).appendTo(statusDiv);
+
+
+    // in the Query Tool: hide/show run and cancel buttons
+    if (i2b2.CRC.model.runner.finished) {
+        $(".CRC_QT_runbar .button-run").show();
+        $(".CRC_QT_runbar .button-cancel").hide();
+    } else if (i2b2.CRC.model.runner.isRunning) {
+        $(".CRC_QT_runbar .button-run").hide();
+        $(".CRC_QT_runbar .button-cancel").show();
+    }
+
+
 };
 
 
@@ -39,6 +51,13 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QueryMgr.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(container._contentElement);
                     cell.view.QueryMgr.containerDiv.append('<div id="infoQueryStatus"></div>');
                     cell.view.QueryMgr.containerDiv.append('<div id="infoQueryReport"></div>');
+
+                    container.on('resize',function() {
+                        // rerender result graphs if needed
+                        if (i2b2.CRC.view.QueryReport.breakdowns) i2b2.CRC.view.graphs.rerenderGraphs();
+                    });
+
+
 
                     // Show initial screen
                 }).bind(this)

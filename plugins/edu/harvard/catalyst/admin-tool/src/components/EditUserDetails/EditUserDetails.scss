@@ -1,0 +1,17 @@
+.EditUserDetails {
+  height: 100%;
+
+  .EditUserActions {
+    display: block;
+  }
+
+  .EditUserActionPrimary{
+    float: right;
+    margin: 0.7em;
+  }
+
+  .EditUserActionSecondary{
+    float: left;
+    margin: 0.7em;
+  }
+}

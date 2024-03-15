@@ -34,3 +34,19 @@
 .form-group {
     margin-bottom: 20px;
 }
+
+#crcModal .form-group {
+    margin-bottom: 0.5em;
+}
+
+#crcModal .modal-footer {
+    margin-top: 1em;
+}
+
+#crcModal .errorMsg{
+    color: #f44336;
+}
+
+#crcModal .errorMsg.hidden{
+    visibility: hidden;
+}
