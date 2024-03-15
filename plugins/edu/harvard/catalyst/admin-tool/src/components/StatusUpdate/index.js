@@ -6,17 +6,13 @@ import Alert from "@mui/material/Alert";
 export const StatusUpdate = ({isOpen, setIsOpen, severity, message}) => {
 
     const handleCloseAlert = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
         setIsOpen(false);
     };
 
 
     return ( <Snackbar
             open={isOpen}
-            autoHideDuration={5000}
+            autoHideDuration={4000}
             anchorOrigin={{ vertical: 'top', horizontal : "center" }}
             onClose={handleCloseAlert}
         >

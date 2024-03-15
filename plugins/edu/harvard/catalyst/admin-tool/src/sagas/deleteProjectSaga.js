@@ -9,7 +9,7 @@ import {
 const deleteProjectRequest = (project) => {
 
     const data = {
-        project_id: project.id,
+        project_id: project.internalId,
         project_path: project.path
     };
 

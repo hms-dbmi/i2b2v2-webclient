@@ -157,7 +157,7 @@ export const AllUsers = () => {
     const statusUpdate = () => {
        return ( <Snackbar
             open={showStatus}
-            autoHideDuration={5000}
+            autoHideDuration={4000}
             anchorOrigin={{ vertical: 'top', horizontal : "center" }}
             onClose={handleCloseAlert}
            >

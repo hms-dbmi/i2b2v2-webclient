@@ -17,7 +17,7 @@ import { InputAdornment} from "@mui/material";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import {saveUser, saveUserStatusConfirmed} from "actions";
-import { User } from "models";
+import { SelectedUser } from "models";
 import "./UserInfo.scss";
 
 export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) => {
@@ -294,7 +294,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
                 <div className={"mainField"}>
                     <TextField
                         select
-                        className={"mainField"}
+                        className={"inputField"}
                         label="Is Admin"
                         value={updatedUser.isAdmin}
                         onChange={(event) => handleUpdate("isAdmin", event.target.value)}
@@ -322,7 +322,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
 
             <Snackbar
                 open={showSaveStatus}
-                autoHideDuration={5000}
+                autoHideDuration={4000}
                 anchorOrigin={{ vertical: 'top', horizontal : "center" }}
                 onClose={handleCloseAlert}
             >
@@ -340,6 +340,6 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
 };
 
 UserInfo.propTypes = {
-    user: PropTypes.shape(User).isRequired,
+    selectedUser: PropTypes.shape(SelectedUser).isRequired,
 };
 

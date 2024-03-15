@@ -6,7 +6,7 @@ import {
     getAllUserParamsSucceeded,
 } from "actions";
 
-import {Param, DataType} from "models";
+import { DataType } from "models";
 
 //a function that returns a promise
 const getAllUserParamsRequest = (username) => {
