@@ -1,15 +1,15 @@
 import PropTypes from "prop-types";
 
 export const ProjectDataSource = ({
-                                      name = null,
-                                      dbSchema = null,
-                                      jndiDataSource = null,
-                                      dbServerType = null,
-                                      ownerId = null,
-                                      projectPath=null,
-                                      cellURL=null,
-                                      tooltip = null,
-                                      comment=null,
+                                      name = "",
+                                      dbSchema = "",
+                                      jndiDataSource = "",
+                                      dbServerType = "",
+                                      ownerId = "",
+                                      projectPath="",
+                                      cellURL="",
+                                      tooltip = "",
+                                      comment="",
                                   } = {}) => ({
     name,
     dbSchema,
