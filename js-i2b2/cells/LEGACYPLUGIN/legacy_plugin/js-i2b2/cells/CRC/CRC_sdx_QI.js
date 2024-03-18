@@ -347,7 +347,7 @@ i2b2.sdx.TypeControllers.QI.LoadChildrenFromTreeview = function(node, onComplete
 					 if (i2b2.PM.model.userRoles.indexOf("DATA_LDS") == -1) {
 						var renderOptions = {
 							dragdrop: "i2b2.sdx.TypeControllers.PRS.AttachDrag2Data",
-							icon: "sdx_CRC_PRS.jpg",
+							icon: "sdx_CRC_PRS.svg",
 							title: o.origData.titleCRC, 
 							showchildren: false
 						};
@@ -355,7 +355,7 @@ i2b2.sdx.TypeControllers.QI.LoadChildrenFromTreeview = function(node, onComplete
 					{
 						var renderOptions = {
 							dragdrop: "i2b2.sdx.TypeControllers.PRS.AttachDrag2Data",
-							icon: "sdx_CRC_PRS.jpg",
+							icon: "sdx_CRC_PRS.svg",
 							title: o.origData.titleCRC, 
 							showchildren: true
 						};					
@@ -366,14 +366,14 @@ i2b2.sdx.TypeControllers.QI.LoadChildrenFromTreeview = function(node, onComplete
 					 if (i2b2.PM.model.userRoles.indexOf("DATA_LDS") == -1) {
 						var renderOptions = {
 							dragdrop: "i2b2.sdx.TypeControllers.ENS.AttachDrag2Data",
-							icon: "sdx_CRC_PRS.jpg",
+							icon: "sdx_CRC_PRS.svg",
 							title: o.origData.titleCRC, 
 							showchildren: false
 						};
 					} else {
 						var renderOptions = {
 							dragdrop: "i2b2.sdx.TypeControllers.ENS.AttachDrag2Data",
-							icon: "sdx_CRC_PRS.jpg",
+							icon: "sdx_CRC_PRS.svg",
 							title: o.origData.titleCRC, 
 							showchildren: true						
 						};

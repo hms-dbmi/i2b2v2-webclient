@@ -79,7 +79,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.title = sdxData.sdxInfo.sdxDisplayName;
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PRS";
-            newOptions.icon = "sdx_CRC_PRS.jpg";
+            newOptions.icon = "sdx_CRC_PRS.svg";
             newOptions.title = o.title;
             break;
         case "ENCOUNTER_COLL":
@@ -100,7 +100,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.title = sdxData.sdxInfo.sdxDisplayName
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PRS";
-            newOptions.icon = "sdx_CRC_PRS.jpg";
+            newOptions.icon = "sdx_CRC_PRS.svg";
             newOptions.title = o.title;
             break;
         case "PATIENT":

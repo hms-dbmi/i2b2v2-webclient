@@ -81,7 +81,7 @@ i2b2.sdx.TypeControllers.WRK.RenderHTML= function(sdxData, options, targetDiv) {
 			o.end_date = i2b2.h.getXNodeVal(x, "end_date");
 			o.description = i2b2.h.getXNodeVal(x, "description");
 			o.title = sdxData.sdxInfo.sdxDisplayName
-			newOptions.icon = "sdx_CRC_PRS.jpg";
+			newOptions.icon = "sdx_CRC_PRS.svg";
 			newOptions.showchildren = false;
 			newOptions.title = o.title;
 			break;
@@ -102,7 +102,7 @@ i2b2.sdx.TypeControllers.WRK.RenderHTML= function(sdxData, options, targetDiv) {
 			o.start_date = i2b2.h.getXNodeVal(x, "start_date");
 			o.end_date = i2b2.h.getXNodeVal(x, "end_date");
 			o.title = sdxData.sdxInfo.sdxDisplayName
-			newOptions.icon = "sdx_CRC_PRS.jpg";
+			newOptions.icon = "sdx_CRC_PRS.svg";
 			newOptions.showchildren = false;
 			newOptions.title = o.title;
 			break;			
