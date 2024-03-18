@@ -17,21 +17,21 @@ span.sdxStyleCRC-QMT::before {
 
 /* ========================================== */
 span.sdxStyleCRC-PDO::before {
-	background-image: url(sdx_CRC_PDO.gif);
+	background-image: url(sdx_CRC_PDO.svg);
 }
 
 /* TODO: Change this image from JPG to GIF */
 span.sdxStyleCRC-PR::before {
-	background-image: url(sdx_CRC_PR.jpg);
+	background-image: url(sdx_CRC_PR.svg);
 }
 
 /* TODO: Change this image from JPG to GIF */
 span.sdxStyleCRC-PRC::before {
-	background-image: url(sdx_CRC_PRC.jpg);
+	background-image: url(sdx_CRC_PRC.svg);
 }
 
 span.sdxStyleCRC-PRS::before {
-	background-image: url(sdx_CRC_PRS.gif);
+	background-image: url(sdx_CRC_PRS.svg);
 }
 
 /* TODO: Change this image from JPG to GIF */
@@ -40,13 +40,13 @@ span.sdxStyleCRC-QDEF::before {
 }
 
 span.sdxStyleCRC-QI::before {
-	background-image: url(sdx_CRC_QI.gif);
+	background-image: url(sdx_CRC_QI.svg);
 }
 
 span.sdxStyleCRC-QM::before {
-	background-image: url(sdx_CRC_QM.gif);
+	background-image: url(sdx_CRC_QM.svg);
 }
 
 span.sdxStyleCRC-QMT::before {
-	background-image: url(sdx_CRC_QMT.gif);
+	background-image: url(sdx_CRC_QM.svg);
 }

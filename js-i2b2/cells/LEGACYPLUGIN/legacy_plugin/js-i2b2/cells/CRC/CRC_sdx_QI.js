@@ -382,7 +382,7 @@ i2b2.sdx.TypeControllers.QI.LoadChildrenFromTreeview = function(node, onComplete
 				case "PRC":	// patient record count
 					var renderOptions = {
 						dragdrop: "i2b2.sdx.TypeControllers.PRC.AttachDrag2Data",
-						icon: "sdx_CRC_PRC.jpg",
+						icon: "sdx_CRC_PRC.svg",
 						title: o.origData.titleCRC, 
 						showchildren: false
 					};

@@ -404,22 +404,22 @@ i2b2.WISEsearcher.climbBranches = function(branches) {
 // -------------------------------------------------------------------------------------------------------------------
 i2b2.WISEsearcher.translateType = function(code, i) {
     if ("PREV_QUERY" == code) {
-        i2b2.WISEsearcher.model.WIicons[i] = "<img src='js-i2b2/cells/CRC/assets/sdx_CRC_QM.gif' alt=''>";
+        i2b2.WISEsearcher.model.WIicons[i] = "<img src='js-i2b2/cells/CRC/assets/sdx_CRC_QM.svg' alt=''>";
         return "query";
     } else if ("PATIENT_COLL" == code) {
-        i2b2.WISEsearcher.model.WIicons[i] = "<img src='js-i2b2/cells/CRC/assets/sdx_CRC_PRS.gif' alt=''>";
+        i2b2.WISEsearcher.model.WIicons[i] = "<img src='js-i2b2/cells/CRC/assets/sdx_CRC_PRS.svg' alt=''>";
         return "patient set";
     } else if ("FOLDER" == code) {
         i2b2.WISEsearcher.model.WIicons[i] = "<img src='js-i2b2/cells/WORK/assets/WORK_folder.gif' alt=''>";
         return "folder";
     } else if ("PATIENT" == code) {
-        i2b2.WISEsearcher.model.WIicons[i] = "<img src='js-i2b2/cells/CRC/assets/sdx_CRC_PR.jpg' alt=''>";
+        i2b2.WISEsearcher.model.WIicons[i] = "<img src='js-i2b2/cells/CRC/assets/sdx_CRC_PR.svg' alt=''>";
         return "patient";
     } else if ("CONCEPT" == code) {
         i2b2.WISEsearcher.model.WIicons[i] = "<img src='js-i2b2/cells/ONT/assets/sdx_ONT_CONCPT_leaf.gif' alt=''>";
         return "concept";
     } else if ("PATIENT_COUNT_XML" == code) {
-        i2b2.WISEsearcher.model.WIicons[i] = "<img src='js-i2b2/cells/CRC/assets/sdx_CRC_PRC.jpg' alt=''>";
+        i2b2.WISEsearcher.model.WIicons[i] = "<img src='js-i2b2/cells/CRC/assets/sdx_CRC_PRC.svg' alt=''>";
         return "patient count";
     } else if ("QUERY_DEFINITION" == code) {
         i2b2.WISEsearcher.model.WIicons[i] = "<img src='js-i2b2/cells/CRC/assets/sdx_CRC_QDEF.jpg' alt=''>";
@@ -837,7 +837,8 @@ i2b2.WISEsearcher.tabulateResult = function(style) {
     	resultShow.select('.results-export-csv-IE')[0].hide();
     	resultShow.select('.results-export-csv')[0].show();
     }
-    resultShow.select('.results-export-csv2')[0].show();    //alert("exiting .tabulateResult('"+style+"')--\n\nt="+t);
+    resultShow.select('.results-export-csv2')[0].show();
+    //alert("exiting .tabulateResult('"+style+"')--\n\nt="+t);
 };
 
 

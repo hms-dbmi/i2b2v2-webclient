@@ -58,7 +58,7 @@ i2b2.sdx.TypeControllers.WRK.RenderHTML= function(sdxData, options, targetDiv) {
 			o.userid = i2b2.h.getXNodeVal(x, "user_id");
 			o.created = null;
 			if(o.name.indexOf("(t)") == 0) // BUG FIX - WEBCLIENT-125
-				newOptions.icon = "sdx_CRC_QMT.gif";
+				newOptions.icon = "sdx_CRC_QM.svg";
 			else
 				newOptions.icon = "sdx_CRC_QM_workplace.jpg";
 			newOptions.showchildren = false;
@@ -118,7 +118,7 @@ i2b2.sdx.TypeControllers.WRK.RenderHTML= function(sdxData, options, targetDiv) {
 			o.PRS_id = i2b2.h.XPath(x, "@patient_set_id")[0].nodeValue;
 			o.PRS_name = i2b2.h.XPath(x, "@patient_set_name")[0].nodeValue;
 			o.title = sdxData.origData.name;
-			newOptions.icon = "sdx_CRC_PR.jpg";
+			newOptions.icon = "sdx_CRC_PR.svg";
 			newOptions.showchildren = false;
 			newOptions.title = o.title;
 			break;
@@ -134,7 +134,7 @@ i2b2.sdx.TypeControllers.WRK.RenderHTML= function(sdxData, options, targetDiv) {
                        // o.PRS_id = i2b2.h.XPath(x, "@patient_set_id")[0].nodeValue;
                        // o.PRS_name = i2b2.h.XPath(x, "@patient_set_name")[0].nodeValue;
                         o.title = sdxData.origData.name;
-                        newOptions.icon = "sdx_CRC_PR.jpg";
+                        newOptions.icon = "sdx_CRC_PR.svg";
                         newOptions.showchildren = false;
                         newOptions.title = o.title;
                         break;
@@ -216,7 +216,7 @@ i2b2.sdx.TypeControllers.WRK.RenderHTML= function(sdxData, options, targetDiv) {
 				}
 			}				
 			newOptions.showchildren = false;
-			newOptions.icon = "sdx_CRC_PRC.jpg"
+			newOptions.icon = "sdx_CRC_PRC.svg"
 			newOptions.title = o.title;
 			break;
 		case "GROUP_TEMPLATE":
@@ -260,7 +260,7 @@ i2b2.sdx.TypeControllers.WRK.RenderHTML= function(sdxData, options, targetDiv) {
 			o.name = sdxData.origData.name; // inherit name from Workplace Node
 			o.key = false;
 			newOptions.showchildren = false;
-			newOptions.icon = "sdx_WORK_XML.gif";
+			newOptions.icon = "sdx_WORK_XML.svg";
 			break;
 	}
 
