@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import {User} from "./User";
 
 export const AllUsers = ({
-     users = [],
+    users = [],
     isFetching= false,
  } = {}) => ({
     users,

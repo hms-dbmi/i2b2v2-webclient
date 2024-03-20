@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { DataType } from "models";
-import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes} from "@mui/x-data-grid";
+import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes, useGridApiRef} from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import Button from '@mui/material/Button';
@@ -16,17 +16,21 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Confirmation } from "components";
 
 import "./EditParameters.scss";
+import {Typography} from "@mui/material";
 
-export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam, saveStatus, deleteStatus, allParamStatus}) => {
+export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam,
+                                   saveStatus, deleteStatus, allParamStatus, saveStatusConfirm, deleteStatusConfirm}) => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
     const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
-    const [saveParamId, setSaveParamId] = useState(null);
     const [showDeleteParamConfirm, setShowDeleteParamConfirm] = useState(false);
     const [deleteParamConfirmMsg, setDeleteParamConfirmMsg] = useState("");
-    const [deleteParamId, setDeleteParamId] = useState(null);
+    const [deleteParamData, setDeleteParamData] = useState(null);
+    const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
+    const [startPage, setStartPage] = useState(null);
+    const apiRef = useGridApiRef();
 
     const columns = [
         { field: 'name',
@@ -127,6 +131,10 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
         },
     ];
 
+    const getRowId = (row) =>{
+        return row.id;
+    }
+
     const processRowUpdate = (newRow) => {
         if(newRow.name.length > 0) {
             const updatedRow = {...newRow, isNew: false};
@@ -135,7 +143,6 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             updateParams(newRows);
 
             let param = newRows.filter((row) => row.id === newRow.id).reduce((acc, item) => acc);
-            setSaveParamId(param.id);
 
             saveParam(param);
             return updatedRow;
@@ -144,7 +151,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const onProcessRowUpdateError = (error) => {
-        console.warn("Process row error: " + error);
+        console.error("Process update error rows is " + JSON.stringify(rows));
     };
 
     const handleRowModesModelChange = (newRowModesModel) => {
@@ -152,33 +159,30 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     useEffect(() => {
-        if(saveStatus === "SUCCESS"){
-            setSaveStatusMsg("Saved user parameter");
+        if(saveStatus.status === "SAVE_SUCCESS"){
+            setSaveStatusMsg("Saved parameter " + saveStatus.param.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
-            setRowModesModel({ ...rowModesModel, [saveParamId]: { mode: GridRowModes.View } });
-            setSaveParamId(null);
+            setRowModesModel({ ...rowModesModel, [saveStatus.param]: { mode: GridRowModes.View } });
         }
-        if(saveStatus === "FAIL"){
-            setSaveStatusMsg("ERROR: failed to save parameter");
+        if(saveStatus.status === "SAVE_FAIL"){
+            setSaveStatusMsg("ERROR: failed to save parameter " + saveStatus.param.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
-            setSaveParamId(null);
         }
-        if(deleteStatus === "SUCCESS"){
-            setSaveStatusMsg("Deleted user parameter");
+        if(deleteStatus.status === "DELETE_SUCCESS"){
+            setSaveStatusMsg("Deleted parameter " + deleteStatus.param.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
         }
-        if(deleteStatus === "FAIL"){
-            setSaveStatusMsg("ERROR: failed to delete parameter");
+        if(deleteStatus.status === "DELETE_FAIL"){
+            setSaveStatusMsg("ERROR: failed to delete parameter " + deleteStatus.param.name);
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
-            setSaveParamId(null);
         }
 
         if(allParamStatus === "FAIL"){
-            setSaveStatusMsg("ERROR: failed to reload parameter");
+            setSaveStatusMsg("ERROR: failed to reload parameters");
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
         }
@@ -189,16 +193,17 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             <DataGrid
                 autoHeight
                 rows={rows}
+                getRowId={getRowId}
                 editMode="row"
                 rowModesModel={rowModesModel}
+                apiRef={apiRef}
                 onRowModesModelChange={handleRowModesModelChange}
                 processRowUpdate={processRowUpdate}
                 onProcessRowUpdateError={onProcessRowUpdateError}
                 columns={columns}
                 disableRowSelectionOnClick
-                initialState={{
-                    pagination: { paginationModel: { pageSize: 5 } },
-                }}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
                 pageSizeOptions={[5, 10, 25]}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
@@ -214,11 +219,14 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const handleCloseAlert = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
         setShowSaveStatus(false);
+
+        if(saveStatus.status === "SAVE_SUCCESS" || saveStatus.status === "SAVE_FAIL") {
+            saveStatusConfirm();
+        }
+        if(deleteStatus.status === "DELETE_SUCCESS" || deleteStatus.status === "DELETE_FAIL") {
+            deleteStatusConfirm();
+        }
     };
 
     const handleEditClick = (id) => () => {
@@ -242,16 +250,16 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const confirmDelete = (id) => () => {
-        setDeleteParamId(id);
-
         let param = rows.filter((row) => row.id === id).reduce((acc, item) => acc);
-        setDeleteParamConfirmMsg("Are you sure you want to delete param " + param.name + "?");
+        setDeleteParamData(param);
+
+        setDeleteParamConfirmMsg("Are you sure you want to delete parameter " + param.name + "?");
         setShowDeleteParamConfirm(true);
     };
 
     const handleDeleteClick = () => {
-        let param = rows.filter((row) => row.id === deleteParamId).reduce((acc, item) => acc);
-        setDeleteParamId(null);
+        let param = rows.filter((row) => row.id === deleteParamData.id).reduce((acc, item) => acc);
+        setDeleteParamData(null);
         setDeleteParamConfirmMsg("");
         setShowDeleteParamConfirm(false);
 
@@ -259,20 +267,23 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const handleAddParam = () => {
-        const id = rows.length+1;
-        let newParams = [ { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }, ...rows,];
+        const id = rows.length;
+        let newParams = [ ...rows, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
 
         updateParams(newParams);
         setRowModesModel((oldModel) => ({
             [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
             ...oldModel,
         }));
+
+        const lastPage = Math.floor((rows.length+1) / paginationModel.pageSize);
+        apiRef.current.setPage(lastPage);
     };
 
 
     return (
         <div className="EditParameters" >
-            <h3> {title} </h3>
+            <Typography> {title} </Typography>
             <Button className="AddParam" variant="contained" startIcon={<AddIcon />} onClick={handleAddParam}>
                 Add
             </Button>
@@ -284,7 +295,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
             </Backdrop>
             <Snackbar
                 open={showSaveStatus}
-                autoHideDuration={5000}
+                autoHideDuration={4000}
                 anchorOrigin={{ vertical: 'top', horizontal : "center" }}
                 onClose={handleCloseAlert}
             >

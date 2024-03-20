@@ -3,8 +3,13 @@
  export { Project } from "./Project";
  export { AllProjects } from "./AllProjects";
  export { AllHives } from "./AllHives";
- export { Hive } from "./Hive";
+ export { HiveDomain } from "./HiveDomain";
  export { Param, DataType } from "./Param";
  export { SelectedUser } from "./SelectedUser";
  export { DeletedUser } from "./DeletedUser";
  export { DeletedProject } from "./DeletedProject";
+ export { SelectedProject } from "./SelectedProject";
+ export { ProjectDataSource, CELL_ID } from "./ProjectDataSource";
+ export { ProjectUser, ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE } from "./ProjectUser";
+ export { ParamStatusInfo } from "./ParamStatusInfo";
+ export { UserStatusInfo } from "./UserStatusInfo";

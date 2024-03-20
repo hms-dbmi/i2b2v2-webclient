@@ -1,17 +1,18 @@
 .UserInfo {
-  background-color: #f2f4f6;
+  background-color: rgba(224, 227, 231, 0.27);
   height: 100%;
 
   margin: 0.2em 0 4.5em 0;
   padding: 0.5em;
 
+  .UserInfoForm {
+    margin: 0.7em;
+  }
+
   .inputField {
     width: 100%;
   }
 
-  .UserInfoForm {
-    margin: 0.7em;
-  }
   .mainField {
     width: 30%;
   }

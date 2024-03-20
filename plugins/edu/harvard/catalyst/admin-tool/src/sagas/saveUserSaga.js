@@ -24,7 +24,7 @@ const saveUserRequest = (user) => {
 
 export function* doSaveUser(action) {
     const { user } = action.payload;
-    console.log("saving user..." + user.username);
+    console.log("saving user "+ user.username + "...");
 
     try {
         let response = yield call(saveUserRequest, user);
