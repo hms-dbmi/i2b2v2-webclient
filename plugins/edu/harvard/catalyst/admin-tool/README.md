@@ -1,5 +1,9 @@
 #Admin Tool
 
+## To Get Started
+
+This development environment requires [Node version 20.11.0.]
+
 ## Setup the App
 ```bash
 npm install

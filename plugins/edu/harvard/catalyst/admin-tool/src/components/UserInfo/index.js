@@ -257,7 +257,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
                                         onClick={handleClickShowPassword}
                                         edge="end"
                                     >
-                                        {showPasswordVerify ? <Visibility /> : <VisibilityOff />}
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
                                     </IconButton>
                                 </InputAdornment>
                             ),
