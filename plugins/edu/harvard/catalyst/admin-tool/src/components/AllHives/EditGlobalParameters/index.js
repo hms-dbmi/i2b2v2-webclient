@@ -4,12 +4,18 @@ import PropTypes from "prop-types";
 import {
     saveGlobalParam, saveGlobalParamStatusConfirmed,
     deleteGlobalParam, deleteGlobalParamStatusConfirmed,
-    getAllGlobalParamsStatusConfirmed, saveProjectUserParamStatusConfirmed, deleteProjectUserParamStatusConfirmed
+    getAllGlobalParamsStatusConfirmed,
 } from "actions";
 import {EditParameters} from "../../EditParameters";
 import "./EditGlobalParameters.scss";
 
-export const EditGlobalParameters = ({allHives, updatedParams, updateParams, title}) => {
+export const EditGlobalParameters = ({allHives,
+                                     updatedParams,
+                                     updateParams,
+                                     title,
+                                     paginationModel,
+                                     setPaginationModel
+}) => {
     const [saveStatus, setSaveStatus] = useState("");
     const [deleteStatus, setDeleteStatus] = useState("");
     const [allParamStatus, setAllParamStatus] = useState("");
@@ -69,6 +75,8 @@ export const EditGlobalParameters = ({allHives, updatedParams, updateParams, tit
                 allParamStatus={allParamStatus}
                 saveStatusConfirm={saveStatusConfirm}
                 deleteStatusConfirm={deleteStatusConfirm}
+                paginationModel={paginationModel}
+                setPaginationModel={setPaginationModel}
             />
         </div>
     );

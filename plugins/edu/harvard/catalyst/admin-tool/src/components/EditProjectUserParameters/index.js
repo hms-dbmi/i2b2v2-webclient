@@ -9,7 +9,14 @@ import {
 import {EditParameters} from "../EditParameters";
 import "./EditProjectUserParameters.scss";
 
-export const EditProjectUserParameters = ({selectedProject, projectUser, updatedParams, updateParams, title}) => {
+export const EditProjectUserParameters = ({selectedProject,
+                                          projectUser,
+                                          updatedParams,
+                                          updateParams,
+                                          title,
+                                          paginationModel,
+                                          setPaginationModel
+}) => {
     const [saveStatus, setSaveStatus] = useState("");
     const [deleteStatus, setDeleteStatus] = useState("");
     const [userParamStatus, setUserParamStatus] = useState("");
@@ -70,6 +77,8 @@ export const EditProjectUserParameters = ({selectedProject, projectUser, updated
                 allParamStatus={userParamStatus}
                 saveStatusConfirm={saveStatusConfirm}
                 deleteStatusConfirm={deleteStatusConfirm}
+                paginationModel={paginationModel}
+                setPaginationModel={setPaginationModel}
             />
         </div>
     );

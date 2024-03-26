@@ -27,6 +27,7 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
     const steps = ['Project Details', 'Parameters', 'Data Sources', "User Associations"];
     const [doSave, setDoSave] = useState(false);
     const [saveCompleted, setSaveCompleted] = useState(null);
+    const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
 
     const dispatch = useDispatch();
 
@@ -52,6 +53,8 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
             setActiveStep(3);
         }
     }, [isEditUsers]);
+
+
     useEffect(() => {
         if(saveCompleted){
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -114,6 +117,8 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                     updateParams={setUpdatedParams}
                     doSave={doSave}
                     setSaveCompleted={setSaveCompleted}
+                    paginationModel={paginationModel}
+                    setPaginationModel={setPaginationModel}
                 />
             }
 

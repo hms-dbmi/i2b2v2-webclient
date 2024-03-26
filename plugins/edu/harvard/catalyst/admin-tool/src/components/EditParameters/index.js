@@ -19,7 +19,13 @@ import "./EditParameters.scss";
 import {Typography} from "@mui/material";
 
 export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam,
-                                   saveStatus, deleteStatus, allParamStatus, saveStatusConfirm, deleteStatusConfirm}) => {
+                                   saveStatus, deleteStatus,
+                                   allParamStatus,
+                                   saveStatusConfirm,
+                                   deleteStatusConfirm,
+                                   paginationModel,
+                                   setPaginationModel
+}) => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
@@ -28,8 +34,6 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     const [showDeleteParamConfirm, setShowDeleteParamConfirm] = useState(false);
     const [deleteParamConfirmMsg, setDeleteParamConfirmMsg] = useState("");
     const [deleteParamData, setDeleteParamData] = useState(null);
-    const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
-    const [startPage, setStartPage] = useState(null);
     const apiRef = useGridApiRef();
 
     const columns = [

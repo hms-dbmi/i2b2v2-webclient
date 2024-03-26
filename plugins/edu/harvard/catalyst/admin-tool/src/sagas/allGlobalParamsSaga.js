@@ -20,16 +20,17 @@ const getAllGlobalParamsRequest = () => {
 const parseParamsXml = (allGlobalParamsXml) => {
     let params = allGlobalParamsXml.getElementsByTagName('param');
     let globalParamsList = [];
-    params.forEach((param, index) => {
-        let id = index;
+    let id=0;
+    params.forEach((param) => {
         let internalId = param.attributes['id'];
         let name = param.attributes['name'];
         let value = param.value;
         let dataType = param.attributes['datatype'];
 
-        if(name && value && dataType) {
+        if(name && dataType) {
             dataType = DataType[dataType];
             globalParamsList.push({id, internalId, name, value, dataType});
+            id = id + 1;
         }
     });
 
