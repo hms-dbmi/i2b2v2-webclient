@@ -13,7 +13,7 @@ const saveParamRequest = (param) => {
         paramIdStr = 'id="'+param.internalId+'"';
     }
     const msg_xml = '<project_path>/</project_path><can_override>Y</can_override>' +
-            '<param datatype="'+param.dataType+ paramIdStr +'" name="'+param.name+'">'+param.value+"</param>";
+            '<param datatype="'+param.dataType+ '" ' + paramIdStr + ' name="'+param.name+'">'+param.value+"</param>";
 
 
     let data = {
@@ -28,7 +28,7 @@ const saveParamRequest = (param) => {
 export function* doSaveGlobalParam(action) {
     const { param } = action.payload;
 
-    console.log("saving global param " + param + "...");
+    console.log("saving global param " + param.name + "...");
     try {
         let response = yield call(saveParamRequest, param);
         response = JSON.stringify(response);
