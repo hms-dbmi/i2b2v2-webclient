@@ -33,7 +33,7 @@ import {EditProjectUser} from "../EditProjectUser";
 import "./EditProjectUserAssociations.scss";
 import {Confirmation} from "../index";
 
-export const EditProjectUserAssociations = ({selectedProject}) => {
+export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCompleted}) => {
     const allUsers = useSelector((state) => state.allUsers );
     const [rows, setRows] = useState(selectedProject.users);
     const [rowModesModel, setRowModesModel] = useState({});
@@ -225,6 +225,28 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
         dispatch(saveProjectUser({user: newUser, selectedProject, previousRoles: []}));
     };
 
+    const defaultProps = {
+        options: allUsers.users,
+        getOptionLabel: (option) => option.username,
+    };
+
+    const filterOptions = createFilterOptions({
+        matchFrom: 'start',
+        limit: 100
+    });
+
+    const handleUserInput = (event, newValue) => {
+        setUsernameInputValue(newValue);
+
+        const filteredUsers = allUsers.users.filter((user) => user.username === newValue);
+        if(filteredUsers.length > 0){
+            setUserFound(true);
+            setSearchedUsername({username:newValue});
+        }else{
+            setUserFound(false);
+        }
+    }
+
     useEffect(() => {
         if(selectedProject.userStatus.status === "SAVE_SUCCESS"){
             dispatch(saveProjectUserStatusConfirmed());
@@ -263,27 +285,12 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
 
     }, [selectedProject]);
 
-    const defaultProps = {
-        options: allUsers.users,
-        getOptionLabel: (option) => option.username,
-    };
-
-    const filterOptions = createFilterOptions({
-        matchFrom: 'start',
-        limit: 100
-    });
-
-    const handleUserInput = (event, newValue) => {
-        setUsernameInputValue(newValue);
-
-        const filteredUsers = allUsers.users.filter((user) => user.username === newValue);
-        if(filteredUsers.length > 0){
-            setUserFound(true);
-            setSearchedUsername({username:newValue});
-        }else{
-            setUserFound(false);
+    useEffect(() => {
+        if(doSave){
+            setSaveCompleted(true);
         }
-    }
+    }, [doSave]);
+
 
     return (
         <div className="EditProjectUserAssociations" >
