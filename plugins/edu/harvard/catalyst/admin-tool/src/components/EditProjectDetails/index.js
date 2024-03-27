@@ -56,6 +56,9 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
 
 
     useEffect(() => {
+        if(saveCompleted && activeStep===3){ //last step so exit edit project
+            setIsEditingProject(false);
+        }
         if(saveCompleted){
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
             setDoSave(false);
