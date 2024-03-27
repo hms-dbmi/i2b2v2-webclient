@@ -3,7 +3,7 @@ import {
     GET_ALL_HIVES_ACTION, SAVE_HIVE_DOMAIN_ACTION, SAVE_GLOBAL_PARAM_ACTION, DELETE_GLOBAL_PARAM_ACTION,
 } from "actions";
 import { defaultState } from "defaultState";
-import {AllHives, HiveDomain, Param, ParamStatusInfo, SelectedUser} from "models";
+import {AllHives, HiveDomain, Param, ParamStatusInfo} from "models";
 
 export const allHivesReducer = (state = defaultState.allHives, action) => {
     switch (action.type) {
