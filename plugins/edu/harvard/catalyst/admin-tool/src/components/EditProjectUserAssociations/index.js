@@ -215,17 +215,6 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
     };
 
 
-    const handleAddParam = () => {
-        const id = rows.length+1;
-        let newParams = [...params, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
-
-        setRows(newParams);
-        setRowModesModel((oldModel) => ({
-            ...oldModel,
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-        }));
-    };
-
     const handleAssociateUser = () => {
         const newUser = ProjectUser({
             username: searchedUsername.username,
@@ -290,6 +279,7 @@ export const EditProjectUserAssociations = ({selectedProject}) => {
         const filteredUsers = allUsers.users.filter((user) => user.username === newValue);
         if(filteredUsers.length > 0){
             setUserFound(true);
+            setSearchedUsername({username:newValue});
         }else{
             setUserFound(false);
         }
