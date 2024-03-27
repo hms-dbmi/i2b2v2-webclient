@@ -1,4 +1,3 @@
-import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { DataType } from "models";
@@ -192,6 +191,9 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
         }
     }, [saveStatus, deleteStatus]);
 
+    const isCellEditable = (params) => {
+        return  (params.field !== "name" || (params.field === "name" && !params.row.internalId));
+    }
     const displayParamsTable = () => {
         return (
             <DataGrid
@@ -200,6 +202,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
                 getRowId={getRowId}
                 editMode="row"
                 rowModesModel={rowModesModel}
+                isCellEditable={isCellEditable}
                 apiRef={apiRef}
                 onRowModesModelChange={handleRowModesModelChange}
                 processRowUpdate={processRowUpdate}
