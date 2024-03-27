@@ -10,7 +10,14 @@ import {EditParameters} from "../EditParameters";
 import "./EditProjectParameters.scss";
 
 
-export const EditProjectParameters = ({selectedProject, updatedParams, updateParams, doSave, setSaveCompleted}) => {
+export const EditProjectParameters = ({selectedProject,
+                                          updatedParams,
+                                          updateParams,
+                                          doSave,
+                                          setSaveCompleted,
+                                          paginationModel,
+                                          setPaginationModel
+                                         }) => {
     const [saveStatus, setSaveStatus] = useState("");
     const [deleteStatus, setDeleteStatus] = useState("");
     const [projectParamStatus, setProjectParamStatus] = useState("");
@@ -75,6 +82,8 @@ export const EditProjectParameters = ({selectedProject, updatedParams, updatePar
                 allParamStatus={projectParamStatus}
                 saveStatusConfirm={saveStatusConfirm}
                 deleteStatusConfirm={deleteStatusConfirm}
+                paginationModel={paginationModel}
+                setPaginationModel={setPaginationModel}
             />
         </div>
     );

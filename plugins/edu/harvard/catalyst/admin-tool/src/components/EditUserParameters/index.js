@@ -9,7 +9,13 @@ import {EditParameters} from "../EditParameters";
 
 import "./EditUserParameters.scss";
 
-export const EditUserParameters = ({selectedUser, updatedParams, updateParams, title}) => {
+export const EditUserParameters = ({selectedUser,
+                                   updatedParams,
+                                   updateParams,
+                                   title,
+                                   paginationModel,
+                                   setPaginationModel
+}) => {
     const [saveStatus, setSaveStatus] = useState("");
     const [deleteStatus, setDeleteStatus] = useState("");
     const [userParamStatus, setUserParamStatus] = useState("");
@@ -69,6 +75,8 @@ export const EditUserParameters = ({selectedUser, updatedParams, updateParams, t
                 allParamStatus={userParamStatus}
                 saveStatusConfirm={saveStatusConfirm}
                 deleteStatusConfirm={deleteStatusConfirm}
+                paginationModel={paginationModel}
+                setPaginationModel={setPaginationModel}
             />
         </div>
     );

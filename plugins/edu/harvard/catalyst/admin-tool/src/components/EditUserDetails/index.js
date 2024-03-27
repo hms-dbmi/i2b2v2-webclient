@@ -17,6 +17,7 @@ export const EditUserDetails = ({user, setIsEditingUser}) => {
     const selectedUser = useSelector((state) => state.selectedUser );
     const [updatedUser, setUpdatedUser] = useState(selectedUser.user);
     const [updatedParams, setUpdatedParams] = useState(selectedUser.params);
+    const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
 
     const dispatch = useDispatch();
     const EditDetails = {
@@ -72,7 +73,13 @@ export const EditUserDetails = ({user, setIsEditingUser}) => {
             {
                 selectedTab === EditDetails.PARAMS &&
                 !selectedUser.isFetching
-                && <EditUserParameters selectedUser={selectedUser} updatedParams={updatedParams} updateParams={setUpdatedParams}/>
+                && <EditUserParameters
+                    selectedUser={selectedUser}
+                    updatedParams={updatedParams}
+                    updateParams={setUpdatedParams}
+                    paginationModel={paginationModel}
+                    setPaginationModel={setPaginationModel}
+                />
             }
        </div>
     );
