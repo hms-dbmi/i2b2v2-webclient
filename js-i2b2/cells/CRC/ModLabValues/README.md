@@ -10,6 +10,15 @@
          1. `redrawConcept(sdxData, groupIdx, eventIdx)` - This will re-render the concept in the query panel 
             1. sdxData.renderData(iconImg, title) can be modified to change the icon and text displayed in the UI 
             2. sdxData.dateRange can be modified to apply date ranges
+      2. On close of showDialog sdxData.LabValues object should be updated with values for the following available properties set
+         1. ValueFlag
+         2. Value 
+         3. ValueLow 
+         4. ValueHigh 
+         5. ValueString 
+         6. ValueOperator
+         7. isEnum 
+         8. isString
    3. `updateDisplayValue(sdxData, valueMetadata)`
       1. This function should update the sdxData.renderData.title based on the LabValues
 4. The following optional function can also be implemented:
