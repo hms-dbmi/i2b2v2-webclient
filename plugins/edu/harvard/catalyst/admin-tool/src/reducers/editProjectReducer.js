@@ -75,9 +75,16 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
         case  GET_ALL_PROJECT_DATASOURCES_ACTION.GET_ALL_PROJECT_DATASOURCES: {
             const  {project}  = action.payload;
 
+            let dsList = {
+                CRC: ProjectDataSource(),
+                ONT: ProjectDataSource(),
+                WORK: ProjectDataSource(),
+            };
+
             return SelectedProject({
                 ...state,
                 project,
+                dataSources: dsList,
                 isFetchingDataSources: true,
             });
         }
@@ -99,6 +106,18 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
                     cellURL: ds.cellURL
                 });
             });
+
+            return SelectedProject({
+                ...state,
+                dataSources: dsList,
+                isFetchingDataSources: false,
+            });
+        }
+
+        case  GET_ALL_PROJECT_DATASOURCES_ACTION.GET_ALL_PROJECT_DATASOURCES_FAILED: {
+            let dsList = {
+                ...state.dataSources
+            };
 
             return SelectedProject({
                 ...state,

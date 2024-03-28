@@ -125,7 +125,7 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                 />
             }
 
-            { activeStep===2 && !selectedProject.isFetchingDataSources && <EditProjectDataSources
+            { activeStep===2  && <EditProjectDataSources
                 selectedProject={selectedProject} doSave={doSave} setSaveCompleted={setSaveCompleted}
             />}
 
