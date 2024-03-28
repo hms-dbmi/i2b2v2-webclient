@@ -20,12 +20,10 @@ span.sdxStyleCRC-PDO::before {
 	background-image: url(sdx_CRC_PDO.svg);
 }
 
-/* TODO: Change this image from JPG to GIF */
 span.sdxStyleCRC-PR::before {
 	background-image: url(sdx_CRC_PR.svg);
 }
 
-/* TODO: Change this image from JPG to GIF */
 span.sdxStyleCRC-PRC::before {
 	background-image: url(sdx_CRC_PRC.svg);
 }
@@ -34,7 +32,6 @@ span.sdxStyleCRC-PRS::before {
 	background-image: url(sdx_CRC_PRS.svg);
 }
 
-/* TODO: Change this image from JPG to GIF */
 span.sdxStyleCRC-QDEF::before {
 	background-image: url(sdx_CRC_QDEF.jpg);
 }
