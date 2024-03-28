@@ -235,7 +235,17 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
     }
 
     const handleResetDataSources = () => {
-        setUpdatedDataSources({...selectedProject.dataSources});
+        //preserve the projectPath
+        const crcProjectPath = updatedDataSources[CELL_ID.CRC].projectPath;
+        const ontProjectPath = updatedDataSources[CELL_ID.ONT].projectPath;
+        const workProjectPath = updatedDataSources[CELL_ID.WORK].projectPath;
+
+        let newDataSources = {...selectedProject.dataSources};
+        newDataSources[CELL_ID.CRC].projectPath = crcProjectPath;
+        newDataSources[CELL_ID.ONT].projectPath = ontProjectPath;
+        newDataSources[CELL_ID.WORK].projectPath = workProjectPath;
+
+        setUpdatedDataSources(newDataSources);
     }
 
     const handleCloseSaveAlert = (event, reason) => {
@@ -283,19 +293,19 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
     useEffect(() => {
 
         const timeoutId = setTimeout(() => {
-            if(!updatedDataSources) {
+            if(selectedProject.isFetchingDataSources) {
                 setShowProcessingBackdrop(true);
             }
-        }, 2000);
+        }, 1000);
 
         return () => clearTimeout(timeoutId);
     }, []);
 
     useEffect(() => {
-        if(updatedDataSources){
+        if(!selectedProject.isFetchingDataSources){
             setShowProcessingBackdrop(false);
         }
-    }, [updatedDataSources]);
+    }, [selectedProject.isFetchingDataSources]);
 
     return (
         <div className="EditProjectDataSources" >
