@@ -57,7 +57,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             newOptions.showchildren = false;
             if(o.name.indexOf("(t)") === 0) { // BUG FIX - WEBCLIENT-125
                 newOptions.cssClass = "sdxStyleCRC-QMT";
-                newOptions.icon = "sdx_CRC_QMT.gif";
+                newOptions.icon = "sdx_CRC_QM.svg";
             }
             if (newOptions.title === "") newOptions.title = o.name;
             break;
@@ -79,7 +79,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.title = sdxData.sdxInfo.sdxDisplayName;
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PRS";
-            newOptions.icon = "sdx_CRC_PRS.jpg";
+            newOptions.icon = "sdx_CRC_PRS.svg";
             newOptions.title = o.title;
             break;
         case "ENCOUNTER_COLL":
@@ -100,7 +100,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.title = sdxData.sdxInfo.sdxDisplayName
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PRS";
-            newOptions.icon = "sdx_CRC_PRS.jpg";
+            newOptions.icon = "sdx_CRC_PRS.svg";
             newOptions.title = o.title;
             break;
         case "PATIENT":
@@ -116,7 +116,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.title = sdxData.origData.name;
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PR";
-            newOptions.icon = "sdx_CRC_PR.jpg";
+            newOptions.icon = "sdx_CRC_PR.svg";
             newOptions.title = o.title;
             break;
         case "CONCEPT":
@@ -162,7 +162,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             }
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PRC";
-            newOptions.icon = "sdx_CRC_PRC.jpg";
+            newOptions.icon = "sdx_CRC_PRC.svg";
             newOptions.title = o.title;
             break;
         case "GROUP_TEMPLATE":
@@ -193,7 +193,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             sdxCode = "WRK"
             newOptions.showchildren = true;
             newOptions.cssClass = "sdxStyleWORK-WRK";
-            newOptions.icon = "sdx_WORK_folder.gif";
+            newOptions.icon = "sdx_WORK_folder.svg";
             o.xmlOrig = sdxData.origData.xmlOrig;
             o.result_type = "FOLDER";
             o.index = sdxData.origData.key;
@@ -218,7 +218,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
                 o.key = false;
                 newOptions.showchildren = false;
                 newOptions.cssClass = "sdxStyleWORK-XML";
-                newOptions.icon = "sdx_WORK_XML.gif";
+                newOptions.icon = "sdx_WORK_XML.svg";
             }
             break;
     }

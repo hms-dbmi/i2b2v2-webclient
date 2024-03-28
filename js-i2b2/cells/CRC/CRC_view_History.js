@@ -174,7 +174,7 @@ i2b2.CRC.view.history.clickSearchName = function() {
             let sdxDataNode = cellResult.model[i1];
             let renderOptions = {
                 title: sdxDataNode.sdxDisplayName ,
-                icon: "sdx_CRC_QM.gif",
+                icon: "sdx_CRC_QM.svg",
                 showchildren: true
             };
             sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
@@ -272,7 +272,7 @@ i2b2.CRC.view.history.searchByDate = function(startDate, showLoadingMsg = true, 
                 let sdxDataNode = cellResult.model[i1];
                 let renderOptions = {
                     title: sdxDataNode.sdxDisplayName ,
-                    icon: "sdx_CRC_QM.gif",
+                    icon: "sdx_CRC_QM.svg",
                     showchildren: true
                 };
                 sdxDataNode.renderData = i2b2.sdx.Master.RenderData(sdxDataNode, renderOptions);
