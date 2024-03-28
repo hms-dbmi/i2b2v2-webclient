@@ -29,7 +29,7 @@ i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
             render.cssClass = "sdxStyleWORK-WRK";
             render.canExpand = true;
             render.iconType = "wrkRoot";
-            render.icon = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/sdx_WORK_root.gif';
+            render.icon = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/sdx_WORK_root.svg';
             render.iconExp = render.icon;
             renderObj = funcAddWrkNode(render);
 
@@ -42,7 +42,7 @@ i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
             render.cssClass = "sdxStyleWORK-WRK";
             render.canExpand = true;
             render.iconType = "wrkFolder";
-            render.icon = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/sdx_WORK_folder.gif';
+            render.icon = i2b2.hive.cfg.urlFramework + 'cells/WORK/assets/sdx_WORK_folder.svg';
             render.iconExp = render.icon;
             renderObj = funcAddWrkNode(render);
 

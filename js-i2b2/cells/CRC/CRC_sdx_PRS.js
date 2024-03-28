@@ -30,7 +30,7 @@ i2b2.sdx.TypeControllers.PRS.RenderData = function(sdxData, options) {
     if (options === undefined) { options = {}; }
     // default ENS icons
     if (!$.isArray(options.icon)) {
-        let t = 'sdx_CRC_PRS.jpg';
+        let t = 'sdx_CRC_PRS.svg';
         if (typeof options.icon === 'string') t = options.icon;
         options.icon = {
             root: t,

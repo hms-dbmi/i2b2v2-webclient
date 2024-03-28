@@ -20,18 +20,18 @@ i2b2.sdx.TypeControllers.CONCPT.getEncapsulateInfo = function() {
 if (i2b2.ONT.model === undefined) i2b2.ONT.model = {};
 i2b2.ONT.model.icons = {
     term: {
-        root: "sdx_ONT_CONCPT_root.png",
+        root: "sdx_ONT_CONCPT_root.svg",
         rootExp: "sdx_ONT_CONCPT_root-exp.png",
-        branch: "sdx_ONT_CONCPT_branch.png",
+        branch: "sdx_ONT_CONCPT_branch.svg",
         branchExp: "sdx_ONT_CONCPT_branch-exp.png",
-        leaf: "sdx_ONT_CONCPT_leaf.png"
+        leaf: "sdx_ONT_CONCPT_leaf.svg"
     },
     modifier: {
-        root: "sdx_ONT_MODIFIER_root.png",
+        root: "sdx_ONT_CONCPT_root.svg",
         rootExp: "sdx_ONT_MODIFIER_root-exp.png",
-        branch: "sdx_ONT_MODIFIER_branch.png",
+        branch: "sdx_ONT_MODIFIER_branch.svg",
         branchExp: "sdx_ONT_MODIFIER_branch-exp.png",
-        leaf: "sdx_ONT_MODIFIER_leaf.png"
+        leaf: "sdx_ONT_MODIFIER_leaf.svg"
     }
 };
 // ================================================================================================== //

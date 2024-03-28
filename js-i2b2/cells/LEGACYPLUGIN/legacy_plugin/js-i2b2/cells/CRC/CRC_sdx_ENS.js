@@ -283,7 +283,7 @@ i2b2.sdx.TypeControllers.ENS.LoadChildrenFromTreeview = function(node, onComplet
 			var o = results[i1];
 			var renderOptions = {
 				dragdrop: "i2b2.sdx.TypeControllers.PRC.AttachDrag2Data",
-				icon: "sdx_CRC_PR.jpg",
+				icon: "sdx_CRC_PR.svg",
 				title: o.sdxInfo.sdxDisplayName, 
 				showchildren: false
 			};

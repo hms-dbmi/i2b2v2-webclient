@@ -9,12 +9,12 @@
     "i2b2_msgs.js"
   ],
   "preload": [
-    "assets/sdx_ONT_CONCPT_root.png",
-    "assets/sdx_ONT_CONCPT_branch.png",
-    "assets/sdx_ONT_CONCPT_leaf.png",
-    "assets/sdx_ONT_MODIFIER_root.png",
-    "assets/sdx_ONT_MODIFIER_branch.png",
-    "assets/sdx_ONT_MODIFIER_leaf.png"
+    "assets/sdx_ONT_CONCPT_root.svg",
+    "assets/sdx_ONT_CONCPT_branch.svg",
+    "assets/sdx_ONT_CONCPT_leaf.svg",
+    "assets/sdx_ONT_CONCPT_root.svg",
+    "assets/sdx_ONT_MODIFIER_branch.svg",
+    "assets/sdx_ONT_MODIFIER_leaf.svg"
   ],
   "css": [
     "Ontology.css",

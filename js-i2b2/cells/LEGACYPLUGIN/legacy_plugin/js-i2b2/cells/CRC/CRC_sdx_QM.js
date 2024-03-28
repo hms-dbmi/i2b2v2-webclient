@@ -270,7 +270,7 @@ i2b2.sdx.TypeControllers.QM.LoadChildrenFromTreeview = function(node, onComplete
 				title: o.origData.title,
 				dragdrop: "i2b2.sdx.TypeControllers.QI.AttachDrag2Data",
 				dblclick: "i2b2.CRC.view.history.ToggleNode(this,'"+cl_node.tree.id+"')",
-				icon: "sdx_CRC_QI.gif",
+				icon: "sdx_CRC_QI.svg",
 				iconExp: "sdx_CRC_QI_exp.gif"
 			};
 			var sdxRenderData = i2b2.sdx.Master.RenderHTML(cl_node.tree.id, o, renderOptions);
