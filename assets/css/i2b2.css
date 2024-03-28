@@ -223,7 +223,7 @@ DIV.opXML {
 
 /* <standarized main tab style> */
 DIV.TopTabs {
-	height:26px;
+	height:30px;
 	position:relative;
 	z-index:100 !important;
 	overflow:hidden;
@@ -368,7 +368,7 @@ DIV.tabText {}
 }
 
 .goldenLayout .lm_header {
-	height:26px;
+	height:30px;
 	background-color: #ed9b40;
 	border-radius: 3px 3px 0 0;
 }
@@ -410,8 +410,10 @@ DIV.tabText {}
 }
 
 .goldenLayout .lm_header .lm_tab.lm_active{
-	box-shadow:none;
-	padding-bottom: 0;
+	color: #000;
+	text-decoration: underline;
+	text-decoration-thickness: 3px;
+	text-underline-offset: 3px;
 }
 
 .goldenLayoutCol .lm_header .lm_tab {
@@ -433,22 +435,23 @@ DIV.tabText {}
 .goldenLayoutCol .lm_tab .lm_title:hover {	
 	color:#000;
 	text-decoration: underline;
-	text-decoration-thickness: 3px;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
 }
 
 .goldenLayoutCol .lm_tab.lm_active {
 	background: none;
-}
-.goldenLayoutCol .lm_tab.lm_active:hover .lm_title {	
 	color: #000;
 	text-decoration: underline;
-	text-decoration-thickness: 3px;
+	text-decoration-thickness: 1px;
 	text-underline-offset: 3px;
+}
+.goldenLayoutCol .lm_tab.lm_active:hover .lm_title {	
+	color: #404040;	
 }
 
 .goldenLayoutCol .lm_tab.lm_active .menuOptions {
-	color:#000;
-	
+	color:#000;	
 }
 
 .goldenLayoutCol .lm_tab .menuOptions {
@@ -460,8 +463,8 @@ DIV.tabText {}
 	padding:1px 4px;	
 	cursor: default;
 	text-decoration: underline;
-	text-decoration-thickness: 3px;
-	text-underline-offset: 8px;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
 }
 
 
