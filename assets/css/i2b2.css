@@ -373,6 +373,10 @@ DIV.tabText {}
 	border-radius: 3px 3px 0 0;
 }
 
+.goldenLayoutCol .lm_header .lm_tab .lm_title{
+	overflow: visible;
+}
+
 .goldenLayout .lm_maximised .lm_header {
 	background-color: #ed9b40;
 }
@@ -412,7 +416,7 @@ DIV.tabText {}
 .goldenLayout .lm_header .lm_tab.lm_active{
 	color: #000;
 	text-decoration: underline;
-	text-decoration-thickness: 3px;
+	text-decoration-thickness: 1px;
 	text-underline-offset: 3px;
 }
 
