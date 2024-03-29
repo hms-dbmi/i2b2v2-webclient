@@ -9,6 +9,11 @@
     padding: .4rem;
 }
 
+.i2b2OntInfo > h2 {
+    font-size: .9rem;
+    font-weight: bold;
+}
+
 .i2b2OntInfo > ul{
     list-style-type: none;  
 }
