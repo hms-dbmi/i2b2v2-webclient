@@ -9,8 +9,16 @@
     padding: .4rem;
 }
 
-.i2b2OntInfo > h2 {
-    font-size: .9rem;
+.i2b2OntInfo > ul{
+    list-style-type: none;
+    padding-left:.75rem!important;
+}
+
+
+.i2b2OntInfo > ul > li:before {
+    content: '\2013';
+    position: absolute;
+    margin-left: -10px;
 }
 
 .i2b2OntInfo > h2 img {
