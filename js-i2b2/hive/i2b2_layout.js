@@ -84,26 +84,26 @@ i2b2.layout.init = function () {
                 type: 'column',
                 content:[
                     {
-                        type:'stack',
+                        type:'component',
                         height:40,
+                        isClosable:false,
+                        componentName: "i2b2.ONT.view.nav",
+                        title:'Terms'
+                    },{
+                        type:'stack',                        
                         content:[
                             {
                                 type:'component',
                                 isClosable:false,
-                                componentName: "i2b2.ONT.view.nav",
-                                title:'Terms'
+                                componentName: "i2b2.ONT.view.info",
+                                title:'Info'
                             }, {
                                 type:'component',
                                 isClosable:false,
-                                componentName: "i2b2.ONT.view.info",
-                                title:'Info'
+                                componentName: 'i2b2.WORK.view.main',
+                                title:'Workplace' 
                             }
-                        ]
-                    },{
-                        type:'component',
-                        isClosable:false,
-                        componentName: 'i2b2.WORK.view.main',
-                        title:'Workplace'
+                        ]                        
                     },{
                         type:'stack',
                         content:[
