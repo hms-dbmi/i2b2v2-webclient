@@ -10,15 +10,14 @@
 }
 
 .i2b2OntInfo > ul{
-    list-style-type: none;
-    padding-left:.75rem!important;
+    list-style-type: none;  
 }
 
 
 .i2b2OntInfo > ul > li:before {
     content: '\2013';
     position: absolute;
-    margin-left: -10px;
+    margin-left: -20px;
 }
 
 .i2b2OntInfo > h2 img {
