@@ -76,7 +76,7 @@ i2b2.layout.init = function () {
         },
         dimensions: {
             borderWidth:10,
-            headerHeight:26,
+            headerHeight:30,
             minItemHeight:36
         },
         content: [
@@ -130,7 +130,7 @@ i2b2.layout.init = function () {
         },
         dimensions: {
             borderWidth:10,
-            headerHeight:26,
+            headerHeight:30,
             minItemHeight:36
         },
         content:[

@@ -339,4 +339,6 @@ button.invert:hover{
     height: 1.1em;
     margin-top: -0.4em;
     display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
 }
