@@ -114,9 +114,9 @@
     font-weight: bold;
 }
 
-
-
-
+#infoQueryStatusText .status-bar-text {
+    text-align: center;
+}
 
 
 

@@ -1,46 +1,49 @@
 <div id="infoQueryStatusText" class="StatusBoxText" oncontextmenu="return false">
     <div style="clear:both;">
         {{#if name}}
-            {{#if isProcessing}}
-                <div style="clear:both;"></div><div style="float:left; font-weight:bold; line-height: 2rem;">Processing Query: {{name}} </div>
-            {{else if isRunning}}
-                <div style="clear:both;"></div><div style="float:left; font-weight:bold; line-height: 2rem;">Running Query: {{name}} </div>
-            {{else if deleteCurrentQuery}}
-                <div style="clear:both;"></div><div style="float:left; font-weight:bold; line-height: 2rem;">Cancelled Query: {{name}} </div>
-            {{else}}
-                <div style="clear:both;"></div><div style="float:left; font-weight:bold; line-height: 2rem;">Finished Query: {{name}} </div>
-            {{/if}}
+            <div style="float:left;">
+                <div class="info-text-name"><span style="font-weight:bold;">Query Name:</span> <span>{{name}}</span></div>
+                <div class="info-text-status"><span style="font-weight:bold;">Query Status:</span>
+                    {{#if isProcessing}}
+                        <span class="status-processing">Processing</span>
+                    {{else if isRunning}}
+                        <span class="status-running">Running</span>
+                    {{else if deleteCurrentQuery}}
+                        <span class="status-cancelled">Cancelled </span>
+                    {{else}}
+                        <span class="status-finished">Finished</span>
+                    {{/if}}
+                </div>
+            </div>
 
             <div class="statusButtons
-                {{#if deleteCurrentQuery}}
-                    cancelled
-                {{else if finished}}
-                    done
-                {{else}}
-                    running
-                {{/if}}
-                ">
+                    {{#if deleteCurrentQuery}}
+                        cancelled
+                    {{else if finished}}
+                        done
+                    {{else if queued}}
+                        queued
+                    {{else}}
+                        running
+                    {{/if}}
+                    ">
                 <button type="button" class="btn btn-primary btn-sm report" onclick="i2b2.CRC.view.QT.showQueryReport();">View Report</button>
                 <!-- must use "onmousedown" for cancel button because of the rerendering rate of this template during the query run/polling period -->
                 <button type="button" class="btn btn-danger btn-sm cancel" onmousedown="i2b2.CRC.ctrlr.QueryMgr.stopQuery();">Cancel Query</button>
                 <button type="button" class="btn btn-danger btn-sm cancelled">Query Cancelled</button>
             </div>
+
             <div style="float:right; padding: 0.4rem">[{{elapsedTime}} &nbsp; secs]</div>
             {{#if computeTime}}
                 <div style="clear:both;"></div>
-                <div class="computeTime">Compute Time: {{computeTime}} &nbsp;secs</div>
+                <div class="computeTime"><span style="font-weight:bold;">Compute Time: </span> {{computeTime}} &nbsp;secs</div>
             {{/if}}
             <div style="clear:both;"></div>
         {{/if}}
 
         {{#if queued}}
-        <div class="status-bar-label">Queued Query Progress</div>
-        {{#if progressBar}}
-        <div class="status-bar">
-            <div class="status-error" style="width:{{progressBar.error}}%"></div>
-            <div class="status-finished" style="width:{{progressBar.finished}}%"></div>
-        </div>
-        {{/if}}
+            <div class="status-bar-label">Queued Query Progress</div>
+            <div class="status-bar-text">Your query has been queued to run in the background. You are free to continue working with the application or wait until the query finishes to get its results. </div>
         {{/if}}
 
         {{#ifCond patientCount '!==' undefined}}
