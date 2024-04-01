@@ -12,12 +12,11 @@ import {EditProjectDataSources, EditProjectParameters, EditProjectUserAssociatio
 import Paper from "@mui/material/Paper";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import Button from "@mui/material/Button";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
 import {
-    getAllProjectDataSources,
-    getAllProjectParams, getAllProjectUsers,
-    clearSelectedProject
+    getAllProjectParams,
+    getAllProjectUsers,
+    clearSelectedProject,
+    getAllProjectDataSources
 } from "actions";
 
 export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) => {
@@ -72,13 +71,17 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
     useEffect(() => {
         if(project.name) {
             dispatch(getAllProjectParams({project}));
-            dispatch(getAllProjectDataSources({project}));
             dispatch(getAllProjectUsers({project}));
-
         }else{
             dispatch(clearSelectedProject());
         }
     }, [project]);
+
+    useEffect(() => {
+        if(activeStep === 2 && selectedProject.project.name) {
+            dispatch(getAllProjectDataSources({project: selectedProject.project}));
+        }
+    }, [activeStep]);
 
     useEffect(() => {
         setUpdatedParams(selectedProject.params);
