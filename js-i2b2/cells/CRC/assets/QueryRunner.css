@@ -50,3 +50,13 @@
 #crcModal .errorMsg.hidden{
     visibility: hidden;
 }
+
+#crcModal .modal-dialog,
+#crcModal .modal-content,
+#crcModal .modal-body{
+    height: 49em;
+}
+
+#crcModal .modal-body {
+    overflow-y: auto;
+}
