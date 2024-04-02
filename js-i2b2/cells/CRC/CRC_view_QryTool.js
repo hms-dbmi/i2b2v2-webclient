@@ -191,6 +191,8 @@ i2b2.CRC.view.QT.showRun = function() {
         // add the current generated query name
         const queryName = i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
         $("#crcQtQueryName").val(queryName).attr("placeholder", queryName);
+        $("#crcModal .RequestTypes").find(".chkQueryType").prop( "checked", false );
+        $("#crcModal .DataExportTypes").find(".chkQueryType").prop( "checked", false );
         $('body #crcModal div:eq(0)').modal('show');
     }
 };
