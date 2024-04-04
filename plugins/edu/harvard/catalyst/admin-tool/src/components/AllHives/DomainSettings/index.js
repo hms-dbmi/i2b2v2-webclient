@@ -105,17 +105,6 @@ export const DomainSettings = ({allHives, updatedDomainSettings, updateDomainSet
                     <TextField
                         className="inputField"
                         disabled
-                        label="Domain ID"
-                        value={updatedDomainSettings.domainId}
-                        onChange={(event) => handleUpdate("domainId", event.target.value)}
-                        variant="standard"
-                        InputLabelProps={{ shrink: true }}
-                    />
-                </div>
-                <div className={"mainField"}>
-                    <TextField
-                        className="inputField"
-                        disabled
                         label="Domain Name"
                         value={updatedDomainSettings.domainName}
                         onChange={(event) => handleUpdate("domainName", event.target.value)}
