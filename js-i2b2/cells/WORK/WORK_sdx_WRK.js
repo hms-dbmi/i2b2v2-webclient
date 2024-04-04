@@ -163,7 +163,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PRC";
             newOptions.icon = "sdx_CRC_PRC.svg";
-            newOptions.title = o.title;
+           // newOptions.title = o.title;
             break;
         case "GROUP_TEMPLATE":
             // Query Group Definition (Query Panel)
