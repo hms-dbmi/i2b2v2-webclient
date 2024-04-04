@@ -151,6 +151,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.end_date = i2b2.h.getXNodeVal(x, "end_date");
             o.result_type = "PATIENT_COUNT_XML";
             o.size = i2b2.h.getXNodeVal(x, "set_size");
+            /* Do not change title for now - revisit later
             if (o.size > 10) {
                 o.title = "Patient Count - "+o.size+" patients";
             } else {
@@ -160,10 +161,11 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
                     o.title = "Patient Count - "+o.size+" patients";
                 }
             }
+               newOptions.title = o.title;
+            */
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PRC";
             newOptions.icon = "sdx_CRC_PRC.svg";
-           // newOptions.title = o.title;
             break;
         case "GROUP_TEMPLATE":
             // Query Group Definition (Query Panel)
