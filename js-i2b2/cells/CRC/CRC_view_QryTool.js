@@ -96,6 +96,9 @@ i2b2.CRC.view.QT.showRun = function() {
         });
 
         $('body #crcModal').load('js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
+            document.getElementById("DataRequestDiv").style.display = "none";
+            document.getElementById("DataExportDiv").style.display = "none";
+
             // populate the results list based on...
             // ==> i2b2.CRC.model.resultTypes
             // ==> i2b2.CRC.model.selectedResultTypes
@@ -106,6 +109,26 @@ i2b2.CRC.view.QT.showRun = function() {
                     let checked = '';
                     if (i2b2.CRC.model.selectedResultTypes.includes(code)) checked = ' checked="checked" ';
                     $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(checkContainer);
+                });
+            }
+
+            let requestContainer = $("#crcModal .RequestTypes");
+            for (let code in i2b2.CRC.model.requestTypes) {
+                document.getElementById("DataRequestDiv").style.display = "";
+                let descriptions = i2b2.CRC.model.requestTypes[code];
+                descriptions.forEach(description => {
+                    let checked = '';
+                    $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(requestContainer);
+                });
+            }
+
+            let dataExportContainer = $("#crcModal .DataExportTypes");
+            for (let code in i2b2.CRC.model.dataExportTypes) {
+                document.getElementById("DataExportDiv").style.display = "";
+                let descriptions = i2b2.CRC.model.dataExportTypes[code];
+                descriptions.forEach(description => {
+                    let checked = '';
+                    $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(dataExportContainer);
                 });
             }
 
@@ -168,6 +191,8 @@ i2b2.CRC.view.QT.showRun = function() {
         // add the current generated query name
         const queryName = i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
         $("#crcQtQueryName").val(queryName).attr("placeholder", queryName);
+        $("#crcModal .RequestTypes").find(".chkQueryType").prop( "checked", false );
+        $("#crcModal .DataExportTypes").find(".chkQueryType").prop( "checked", false );
         $('body #crcModal div:eq(0)').modal('show');
     }
 };
@@ -1991,6 +2016,8 @@ i2b2.events.afterCellInit.add((cell) => {
                 //			errorStatus: string [only with error=true]
                 //			errorMsg: string [only with error=true]
                 cell.model.resultTypes = {};
+                cell.model.requestTypes = {};
+                cell.model.dataExportTypes = {};
 
                 if (results.error){
                     console.log("ERROR: Unable to retrieve result types from server", results.msgResponse);
@@ -2009,6 +2036,16 @@ i2b2.events.afterCellInit.add((cell) => {
                             if (name === "PATIENT_COUNT_XML") {
                                 cell.model.selectedResultTypes.push(name);
                             }
+                        } else if (visual_attribute_type === "LR") {
+                            if(cell.model.requestTypes[name] === undefined){
+                                cell.model.requestTypes[name] = [];
+                            }
+                            cell.model.requestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
+                        } else if (visual_attribute_type === "LX") {
+                            if(cell.model.dataExportTypes[name] === undefined){
+                                cell.model.dataExportTypes[name] = [];
+                            }
+                            cell.model.dataExportTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
                         }
                     }
                 }

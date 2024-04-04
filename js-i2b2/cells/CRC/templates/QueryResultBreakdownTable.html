@@ -38,5 +38,31 @@
                 {{/each}}
             </div>
         </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header">
+                <button class="accordion-button breakDownHeader" type="button" data-bs-toggle="collapse" data-bs-target="#breakdownDetails" aria-expanded="true" aria-controls="breakdownCharts">
+                    Request Details
+                </button>
+            </div>
+
+            <div id="breakdownDetails1" data-bs-toggle="collapse" class="accordion-body">
+                <div>
+                    <label class="breakdownLabel" id="requestStatus0"> Request Medications </label>
+                    <div style="float: right">
+                        <span class="breakdownStatus"></span>
+                    </div>
+                    <div id="collapse0" class="breakdownResultList" aria-labelledby="resultStatus0">
+                        <div>
+                            <table>
+                                <tr>
+                                    <td>This request was sent to the data manager.</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {{/if}}
