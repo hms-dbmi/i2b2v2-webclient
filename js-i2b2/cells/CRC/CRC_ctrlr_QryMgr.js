@@ -301,7 +301,6 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     i2b2.CRC.model.runner.isPolling = false;
     i2b2.CRC.model.runner.queued = false;
     i2b2.CRC.model.runner.isRunning = false;
-    i2b2.CRC.model.runner.deleteCurrentQuery = false;
     if (i2b2.CRC.model.runner.endTime === undefined) i2b2.CRC.model.runner.endTime = new Date();
 
 

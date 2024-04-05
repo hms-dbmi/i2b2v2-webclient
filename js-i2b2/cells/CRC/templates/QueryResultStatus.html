@@ -6,10 +6,10 @@
                 <div class="info-text-status"><span style="font-weight:bold;">Query Status:</span>
                     {{#if isProcessing}}
                         <span class="status-processing">Processing</span>
+                    {{else if deleteCurrentQuery}}
+                        <span class="status-cancelled">Cancelled</span>
                     {{else if isRunning}}
                         <span class="status-running">Running</span>
-                    {{else if deleteCurrentQuery}}
-                        <span class="status-cancelled">Cancelled </span>
                     {{else}}
                         <span class="status-finished">Finished</span>
                     {{/if}}
