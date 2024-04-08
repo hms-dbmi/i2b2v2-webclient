@@ -18,7 +18,7 @@ i2b2.CRC.view.QueryMgr.updateStatus = function() {
 
 
     // in the Query Tool: hide/show run and cancel buttons
-    if (i2b2.CRC.model.runner.finished) {
+    if (i2b2.CRC.model.runner.finished || i2b2.CRC.model.runner.queued) {
         $(".CRC_QT_runbar .button-run").show();
         $(".CRC_QT_runbar .button-cancel").hide();
     } else if (i2b2.CRC.model.runner.isRunning) {
