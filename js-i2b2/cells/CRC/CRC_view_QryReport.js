@@ -5,14 +5,20 @@ i2b2.CRC.view.QueryReport = {
     },
     disDiv: null,
     breakdowns: null,
+    dataExport: null,
     displayQueryResults: function(queryInstanceId, div) {
         this.breakdowns  = {
             resultTable: [],
             patientCount: {}
         };
+        this.dataExport  = {
+            resultTable: [],
+        };
         i2b2.CRC.view.QueryReport.disDiv = div;
         let view = this.disDiv;
         $(view).empty();
+        let dataExportResultData = $('<div id="infoQueryDataExportTable"></div>').empty();
+        $(view).append(dataExportResultData);
         let graphData = $('<div id="infoQueryStatusGraph"></div>').empty();
         $(view).append(graphData);
         let tableData = $('<div id="infoQueryStatusTable"></div>').empty();
@@ -64,7 +70,10 @@ i2b2.CRC.view.QueryReport = {
                 }
             }
 
-        i2b2.CRC.view.QueryReport.render({breakdowns: i2b2.CRC.view.QueryReport.breakdowns});
+        i2b2.CRC.view.QueryReport.render({
+            breakdowns: i2b2.CRC.view.QueryReport.breakdowns,
+            dataExport: i2b2.CRC.view.QueryReport.dataExport
+        });
 
     },
     _handleQueryResultInstance: function(results){
@@ -85,9 +94,11 @@ i2b2.CRC.view.QueryReport = {
             let resultType = "";
             let descriptionShort;
             let descriptionLong;
+            let visualAttr="";
             for (let i = 0; i < l; i++) {
                 let temp = ri_list[i];
                 resultType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
+                visualAttr = i2b2.h.XPath(ri_list[0], 'descendant-or-self::query_result_type/visual_attribute_type')[0].firstChild.nodeValue;
                 // get the query name for display in the box
                 descriptionShort = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/description')[0].firstChild.nodeValue;
                 descriptionLong = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
@@ -108,9 +119,12 @@ i2b2.CRC.view.QueryReport = {
                     entryRecord.value = params[i2].firstChild.nodeValue;
 
                     if (i2b2.PM.model.isObfuscated) {
-                        if (params[i2].firstChild.nodeValue < 4) {
+                        const nodeValue = parseInt(params[i2].firstChild.nodeValue);
+                        if (!isNaN(nodeValue) && nodeValue< 4) {
                             entryRecord.display = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-                        } else {
+                        }  if (isNaN(nodeValue)) {
+                            entryRecord.display = params[i2].firstChild.nodeValue;
+                        } else{
                             entryRecord.display = params[i2].firstChild.nodeValue + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                         }
                     }
@@ -130,7 +144,7 @@ i2b2.CRC.view.QueryReport = {
                         entryRecord.display += ' &nbsp; <span style="color:#090;">[' + params[i2].attributes.comment.textContent + ']<span>';
                     }
 
-                    if (params[i2].getAttribute("column") === 'patient_count') {
+                    if (params[i2].getAttribute("column") === 'patient_count' && !(visualAttr === 'LR' || visualAttr === 'LX')) {
                         i2b2.CRC.view.QueryReport.breakdowns.patientCount.title = descriptionShort;
                         i2b2.CRC.view.QueryReport.breakdowns.patientCount.value = entryRecord.display ? entryRecord.display : entryRecord.value;
                         breakdown.title = descriptionShort;
@@ -139,26 +153,32 @@ i2b2.CRC.view.QueryReport = {
                     } else {
                         breakdown.title = descriptionShort;
                         breakdown.result.push(entryRecord);
+                        breakdown.visualAttr = visualAttr;
                     }
                 }
 
                 if (breakdown.title) {
                     if (isPatientCount) {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.unshift(breakdown);
-                    } else {
+                    } else if(visualAttr === 'LR' || visualAttr === 'LX') {
+                        i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
+                    } else{
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
                     }
                 }
             }
 
             // only create graphs if there is breakdown data
-            if (!isPatientCount) {
+            if (!isPatientCount && !(visualAttr === 'LR' || visualAttr === 'LX')) {
                 showGraphs = true;
                 i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
         }
         // render the table view of the breakdowns
-        i2b2.CRC.view.QueryReport.render({breakdowns: i2b2.CRC.view.QueryReport.breakdowns});
+        i2b2.CRC.view.QueryReport.render({
+            breakdowns: i2b2.CRC.view.QueryReport.breakdowns,
+            dataExport: i2b2.CRC.view.QueryReport.dataExport
+        });
 
         // hide graph section if there are no graphs
         if (!showGraphs && i2b2.CRC.view.QueryReport.breakdowns.resultTable.length === 1) {
@@ -212,10 +232,13 @@ i2b2.CRC.view.QueryReport = {
             // force redraw
             i2b2.CRC.view.QueryReport.loadQueryResultSetInstance();
     },
-    render: function(breakdowns) {
+    render: function(allBreakdowns) {
         let view = this.disDiv;
         let tableData = $("#infoQueryStatusTable").show().empty();
-        $((Handlebars.compile("{{> QueryResult}}"))(breakdowns)).appendTo(tableData);
+        $((Handlebars.compile("{{> QueryResult}}"))(allBreakdowns)).appendTo(tableData);
+
+        let dataExportResult = $("#infoQueryDataExportTable").show().empty();
+        $((Handlebars.compile("{{> QueryDataExportResult}}"))(allBreakdowns)).appendTo(dataExportResult);
     },
     _getTitle:  function(resultType, oRecord, oXML) {
         let title = "";

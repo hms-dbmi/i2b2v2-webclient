@@ -86,6 +86,13 @@ i2b2.events.afterCellInit.add((cell) => {
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryResult.html"); }
             });
 
+            $.ajax("js-i2b2/cells/CRC/templates/QueryDataExportResult.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("QueryDataExportResult", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template:QueryDataExportResult.html"); }
+            });
+
             $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownGraph.html", {
                 success: (template, status, req) => {
                     Handlebars.registerPartial("QueryResultBreakdownGraph", req.responseText);
