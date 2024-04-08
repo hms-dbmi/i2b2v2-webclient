@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./EditProjectDataSources.scss";
 import {
-    saveProject,
     saveProjectDataSources,
     saveProjectDataSourcesStatusConfirmed,
     saveProjectStatusConfirmed
 } from "../../actions";
+
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import Stack from "@mui/material/Stack";

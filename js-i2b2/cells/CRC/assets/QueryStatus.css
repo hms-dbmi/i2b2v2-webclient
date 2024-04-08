@@ -78,6 +78,23 @@
 
 
 
+.info-text-status .status-finished {
+    color: #0d6efd;
+}
+.info-text-status .status-cancelled {
+    color: #fd0d6e
+}
+.info-text-status .status-running,
+.info-text-status .status-processing {
+    color: #198754;
+}
+
+.info-text-status {
+    margin-bottom: 1rem;
+}
+
+
+
 
 #infoQueryStatusText .status-processing {
     color: #198754;
@@ -114,9 +131,9 @@
     font-weight: bold;
 }
 
-
-
-
+#infoQueryStatusText .status-bar-text {
+    text-align: center;
+}
 
 
 
