@@ -1858,7 +1858,7 @@ i2b2.PM.cfg.msgs.setHive = '<?xml version="1.0" encoding="UTF-8" standalone="yes
 '			<environment>{{{environment}}}</environment>\n'+
 '			<domain_name>{{{domain_name}}}</domain_name>\n'+
 '			<helpURL>{{{helpURL}}}</helpURL>\n'+
-'                    <active>true</active>\n'+
+'                    <active>1/active>\n'+
 '        </pm:set_hive>\n'+
 '    </message_body>\n'+
 '</i2b2:request>';
