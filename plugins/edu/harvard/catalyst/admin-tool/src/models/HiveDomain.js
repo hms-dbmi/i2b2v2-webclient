@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
 
 export const HiveDomain = ({
-    domainId= null,
-    domainName = null,
-    environment = null,
-    helpURL = null,
+    domainId= "",
+    domainName = "",
+    environment = "",
+    helpURL = "",
 
  } = {}) => ({
     environment,
