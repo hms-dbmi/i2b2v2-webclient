@@ -266,6 +266,8 @@ Handlebars.registerHelper('eachProperty', function(context, options) {
 
 // ================= handlebars helper to manage SELECT option selection ==================
 Handlebars.registerHelper('dataTypeReportHtml', function(sdxConcept, options) {
+    if (sdxConcept === undefined) return "";
+
     // Create a select element
     let result = "";
 
