@@ -40,7 +40,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
     const[selectedUser, setSelectedUser] = useState(null);
     const[userFound, setUserFound] = useState(false);
     const[searchedUsername, setSearchedUsername] = useState({username:""});
-    const [usernameInputValue, setUsernameInputValue] = useState("");
     const [showDeleteUserConfirm, setShowDeleteUserConfirm] = useState(false);
     const [deleteUserConfirmMsg, setDeleteUserConfirmMsg] = useState("");
     const [deleteUsername, setDeleteUsername] = useState("");
@@ -231,8 +230,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
     });
 
     const handleUserInput = (event, newValue) => {
-        setUsernameInputValue(newValue);
-
         const filteredUsers = allUsers.users.filter((user) => user.username === newValue);
 
         if(filteredUsers.length > 0){
