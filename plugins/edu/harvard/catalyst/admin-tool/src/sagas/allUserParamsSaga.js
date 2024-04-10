@@ -29,7 +29,7 @@ const parseUserParamsXml = (user, allUserParamsXml) => {
         let value = param.value;
         let dataType = param.attributes['datatype'];
 
-        if(name && value && dataType) {
+        if(name && dataType) {
             dataType = DataType[dataType];
             userParamsList.push({id, internalId, name, value, dataType});
         }
