@@ -62,13 +62,14 @@
     font-size: 1em;
 }
 
-.CRC_QS_view #breakdownDetails {
+.CRC_QS_view #breakdownDetails, .CRC_QS_view #dataExportDetails {
     padding-left: 0.99em;
     margin-bottom: 0.3em;
 }
 
 .CRC_QS_view .breakDownHeader{
     font-size: 1.1em;
+    margin-top: 0.7em;
 }
 
 .CRC_QS_view .breakdownResultList {
