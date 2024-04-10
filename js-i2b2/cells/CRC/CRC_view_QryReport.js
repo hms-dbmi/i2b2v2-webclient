@@ -120,7 +120,6 @@ i2b2.CRC.view.QueryReport = {
                     let entryRecord = {}
                     entryRecord.name = params[i2].getAttribute("column");
                     entryRecord.value = params[i2].firstChild.nodeValue;
-                    entryRecord.status = status;
 
                     if (i2b2.PM.model.isObfuscated) {
                         const nodeValue = parseInt(params[i2].firstChild.nodeValue);
@@ -148,6 +147,10 @@ i2b2.CRC.view.QueryReport = {
                         entryRecord.display += ' &nbsp; <span style="color:#090;">[' + params[i2].attributes.comment.textContent + ']<span>';
                     }
 
+                    // handle errors
+                    breakdown.status = status;
+                    if (status === "ERROR") breakdown.statusMessage = "ERROR";
+
                     if (params[i2].getAttribute("column") === 'patient_count' && !(visualAttr === 'LR' || visualAttr === 'LX')) {
                         i2b2.CRC.view.QueryReport.breakdowns.patientCount.title = descriptionShort;
                         i2b2.CRC.view.QueryReport.breakdowns.patientCount.value = entryRecord.display ? entryRecord.display : entryRecord.value;
@@ -156,8 +159,8 @@ i2b2.CRC.view.QueryReport = {
                         isPatientCount = true;
                     } else {
                         breakdown.title = descriptionShort;
-                        breakdown.result.push(entryRecord);
                         breakdown.visualAttr = visualAttr;
+                        breakdown.result.push(entryRecord);
                     }
                 }
 
@@ -166,14 +169,14 @@ i2b2.CRC.view.QueryReport = {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.unshift(breakdown);
                     } else if(visualAttr === 'LR' || visualAttr === 'LX') {
                         i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
-                    } else{
+                    } else {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
                     }
                 }
             }
 
             // only create graphs if there is breakdown data
-            if (!isPatientCount && !(visualAttr === 'LR' || visualAttr === 'LX')) {
+            if (!isPatientCount && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR") {
                 showGraphs = true;
                 i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
