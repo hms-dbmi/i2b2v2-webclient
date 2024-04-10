@@ -40,7 +40,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
     const[selectedUser, setSelectedUser] = useState(null);
     const[userFound, setUserFound] = useState(false);
     const[searchedUsername, setSearchedUsername] = useState({username:""});
-    const [usernameInputValue, setUsernameInputValue] = useState({username:""});
     const [showDeleteUserConfirm, setShowDeleteUserConfirm] = useState(false);
     const [deleteUserConfirmMsg, setDeleteUserConfirmMsg] = useState("");
     const [deleteUsername, setDeleteUsername] = useState("");
@@ -231,12 +230,12 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
     });
 
     const handleUserInput = (event, newValue) => {
-        setUsernameInputValue(newValue);
-
         const filteredUsers = allUsers.users.filter((user) => user.username === newValue);
+
         if(filteredUsers.length > 0){
             setUserFound(true);
-            setSearchedUsername({username:newValue});
+            setSearchedUsername(filteredUsers[0]);
+
         }else{
             setUserFound(false);
         }
@@ -296,23 +295,14 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
                 className={"UserSearch"}
             >
                 <Autocomplete
-                    value={searchedUsername}
-                    onChange={(event, newValue) => {
-                        setSearchedUsername(newValue);
-                    }}
-                    inputValue={usernameInputValue}
-                    onInputChange={handleUserInput}
+                    id="free-solo-demo"
                     className={"UserInput"}
-                    {...defaultProps}
-                    filterOptions={filterOptions}
                     freeSolo
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Search username"
-                            variant="standard"
-                        />
-                    )}
+                    {...defaultProps}
+                    onInputChange={handleUserInput}
+                    filterOptions={filterOptions}
+                    renderInput={(params) =>
+                        <TextField {...params} label="Search username"  variant="standard"/>}
                 />
                 <Button className="AddUser" variant="contained" startIcon={<AddIcon />} onClick={handleAssociateUser} disabled={!userFound}>
                     Associate User to Project
