@@ -10,6 +10,8 @@
                         <span class="status-cancelled">Cancelled</span>
                     {{else if isRunning}}
                         <span class="status-running">Running</span>
+                    {{else if hasError}}
+                        <span class="status-error">Error(s)</span>
                     {{else}}
                         <span class="status-finished">Finished</span>
                     {{/if}}
@@ -47,6 +49,7 @@
         {{/if}}
 
         {{#ifCond patientCount '!==' undefined}}
+            {{#unless hasError}}
             {{#unless deleteCurrentQuery}}
             {{#unless queued}}
                 <table style="width: 400px; margin-left: auto; margin-right: auto;">
@@ -64,6 +67,7 @@
                         <td style="color: red; text-align: center; vertical-align: middle;">&nbsp</td>
                     </tr>
                 </table>
+            {{/unless}}
             {{/unless}}
             {{/unless}}
         {{/ifCond}}

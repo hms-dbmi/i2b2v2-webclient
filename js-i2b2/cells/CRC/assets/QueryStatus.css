@@ -82,6 +82,7 @@
 .info-text-status .status-finished {
     color: #0d6efd;
 }
+.info-text-status .status-error,
 .info-text-status .status-cancelled {
     color: #fd0d6e
 }

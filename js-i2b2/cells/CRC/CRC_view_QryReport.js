@@ -94,7 +94,8 @@ i2b2.CRC.view.QueryReport = {
             let resultType = "";
             let descriptionShort;
             let descriptionLong;
-            let visualAttr="";
+            let visualAttr = "";
+            let status = "";
             for (let i = 0; i < l; i++) {
                 let temp = ri_list[i];
                 resultType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
@@ -102,6 +103,8 @@ i2b2.CRC.view.QueryReport = {
                 // get the query name for display in the box
                 descriptionShort = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/description')[0].firstChild.nodeValue;
                 descriptionLong = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
+                // get the error status
+                status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
             }
 
             let crc_xml = results.refXML.getElementsByTagName('crc_xml_result');
@@ -117,6 +120,7 @@ i2b2.CRC.view.QueryReport = {
                     let entryRecord = {}
                     entryRecord.name = params[i2].getAttribute("column");
                     entryRecord.value = params[i2].firstChild.nodeValue;
+                    entryRecord.status = status;
 
                     if (i2b2.PM.model.isObfuscated) {
                         const nodeValue = parseInt(params[i2].firstChild.nodeValue);

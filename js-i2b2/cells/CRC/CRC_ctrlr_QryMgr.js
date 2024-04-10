@@ -223,6 +223,8 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.scope = this;
 i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
     i2b2.CRC.model.QueryResults = results;
 
+    i2b2.CRC.model.runner.hasError = false;
+
     // see if error
     if (results.error) {
         i2b2.CRC.model.runner.status = "ERROR";
@@ -260,6 +262,9 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
             rec.desc = i2b2.h.XPath(qri, 'descendant-or-self::query_result_type/description')[0].firstChild.nodeValue;
             rec.status = i2b2.h.XPath(qri, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
             idQRI[rec.id] = rec;
+
+            // check for errors
+            if (rec.status === "ERROR") i2b2.CRC.model.runner.hasError = true;
 
             // update counter
             if (stats[rec.status] === undefined) stats[rec.status] = 0;
