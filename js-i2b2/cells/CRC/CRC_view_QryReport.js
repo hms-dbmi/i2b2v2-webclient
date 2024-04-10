@@ -187,8 +187,11 @@ i2b2.CRC.view.QueryReport = {
             dataExport: i2b2.CRC.view.QueryReport.dataExport
         });
 
+
+        // See how many non-errored graphs we have (minus the patient count)
+        showGraphs = i2b2.CRC.view.QueryReport.breakdowns.resultTable.map(a => a.status !== 'ERROR' && a.title !== "Number of patients").reduce((b,c) => b ? b : b || c);
         // hide graph section if there are no graphs
-        if (!showGraphs && i2b2.CRC.view.QueryReport.breakdowns.resultTable.length === 1) {
+        if (!showGraphs) {
             $('#infoQueryStatusGraph').hide();
         } else {
             $('#infoQueryStatusGraph').show();
