@@ -62,6 +62,10 @@
     font-size: 1em;
 }
 
+.CRC_QS_view #breakdownDetails > div {
+    padding: 0.16rem;
+}
+
 .CRC_QS_view #breakdownDetails, .CRC_QS_view #dataExportDetails {
     padding-left: 0.99em;
     margin-bottom: 0.3em;
