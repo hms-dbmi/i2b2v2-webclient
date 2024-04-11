@@ -250,6 +250,20 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
         i2b2.CRC.model.runner.idQueryMaster = i2b2.h.XPath(qiList[0], 'descendant-or-self::query_master_id')[0].firstChild.nodeValue;
         i2b2.CRC.model.runner.idQueryInstance = qiID;
 
+        //check if query name changed
+        let queryName = results.refXML.getElementsByTagName('query_master')[0];
+        queryName = i2b2.h.XPath(queryName, 'descendant-or-self::name');
+        if(queryName.length !==0 && queryName[0].firstChild.nodeValue !==  i2b2.CRC.model.runner.name){
+            //query name changed so refresh the name in query history
+            i2b2.CRC.model.runner.name = queryName[0].firstChild.nodeValue;
+
+            let qmNode = i2b2.CRC.view.history.treeview.treeview("getNodes", (snode)=> (snode.i2b2.origData.id === i2b2.CRC.model.runner.idQueryMaster));
+            if(qmNode.length > 0){
+                qmNode[0].text =  i2b2.CRC.model.runner.name;
+                i2b2.CRC.view.history.treeview.treeview('redraw', []);
+            }
+        }
+
         let idQRI = {};
         let stats = {};
         let qriList = results.refXML.getElementsByTagName('query_result_instance');
