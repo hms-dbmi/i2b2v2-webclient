@@ -94,7 +94,8 @@ i2b2.CRC.view.QueryReport = {
             let resultType = "";
             let descriptionShort;
             let descriptionLong;
-            let visualAttr="";
+            let visualAttr = "";
+            let status = "";
             for (let i = 0; i < l; i++) {
                 let temp = ri_list[i];
                 resultType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
@@ -102,6 +103,8 @@ i2b2.CRC.view.QueryReport = {
                 // get the query name for display in the box
                 descriptionShort = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/description')[0].firstChild.nodeValue;
                 descriptionLong = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
+                // get the error status
+                status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
             }
 
             let crc_xml = results.refXML.getElementsByTagName('crc_xml_result');
@@ -144,6 +147,10 @@ i2b2.CRC.view.QueryReport = {
                         entryRecord.display += ' &nbsp; <span style="color:#090;">[' + params[i2].attributes.comment.textContent + ']<span>';
                     }
 
+                    // handle errors
+                    breakdown.status = status;
+                    if (status === "ERROR") breakdown.statusMessage = "ERROR";
+
                     if (params[i2].getAttribute("column") === 'patient_count' && !(visualAttr === 'LR' || visualAttr === 'LX')) {
                         i2b2.CRC.view.QueryReport.breakdowns.patientCount.title = descriptionShort;
                         i2b2.CRC.view.QueryReport.breakdowns.patientCount.value = entryRecord.display ? entryRecord.display : entryRecord.value;
@@ -152,8 +159,8 @@ i2b2.CRC.view.QueryReport = {
                         isPatientCount = true;
                     } else {
                         breakdown.title = descriptionShort;
-                        breakdown.result.push(entryRecord);
                         breakdown.visualAttr = visualAttr;
+                        breakdown.result.push(entryRecord);
                     }
                 }
 
@@ -162,14 +169,14 @@ i2b2.CRC.view.QueryReport = {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.unshift(breakdown);
                     } else if(visualAttr === 'LR' || visualAttr === 'LX') {
                         i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
-                    } else{
+                    } else {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
                     }
                 }
             }
 
             // only create graphs if there is breakdown data
-            if (!isPatientCount && !(visualAttr === 'LR' || visualAttr === 'LX')) {
+            if (!isPatientCount && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR") {
                 showGraphs = true;
                 i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
@@ -180,8 +187,11 @@ i2b2.CRC.view.QueryReport = {
             dataExport: i2b2.CRC.view.QueryReport.dataExport
         });
 
+
+        // See how many non-errored graphs we have (minus the patient count)
+        showGraphs = i2b2.CRC.view.QueryReport.breakdowns.resultTable.map(a => a.status !== 'ERROR' && a.title !== "Number of patients").reduce((b,c) => b ? b : b || c);
         // hide graph section if there are no graphs
-        if (!showGraphs && i2b2.CRC.view.QueryReport.breakdowns.resultTable.length === 1) {
+        if (!showGraphs) {
             $('#infoQueryStatusGraph').hide();
         } else {
             $('#infoQueryStatusGraph').show();

@@ -16,6 +16,7 @@
                     <span class="breakdownStatus">{{this.statusMessage}}</span>
                 </div>
                 {{/if}}
+                {{#ifCond this.status '!==' 'ERROR'}}
                 <div id="collapse{{@index}}" class="breakdownResultList" aria-labelledby="resultStatus{{@index}}">
                     <div>
                         <table>
@@ -34,6 +35,7 @@
                         </table>
                     </div>
                 </div>
+                {{/ifCond}}
             </div>
             {{/each}}
         </div>
