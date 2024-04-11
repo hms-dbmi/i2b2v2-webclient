@@ -47,10 +47,6 @@ export const DomainSettings = ({allHives, updatedDomainSettings, updateDomainSet
     }
 
     const handleCloseAlert = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
         setShowSaveStatus(false);
     };
 
