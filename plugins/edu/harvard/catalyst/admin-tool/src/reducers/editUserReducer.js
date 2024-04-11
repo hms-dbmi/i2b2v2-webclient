@@ -119,6 +119,10 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                 ...state.params
             ];
             newParams = newParams.filter((pm) => pm.id  !== param.id);
+            //reset the row ids which are based on index
+            newParams.forEach((pm, index) => {
+                pm.id = index;
+            });
             return SelectedUser({
                 ...state,
                 params: newParams,
