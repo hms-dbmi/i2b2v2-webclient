@@ -64,13 +64,6 @@ i2b2.events.afterCellInit.add((cell) => {
             );
 
             // load the templates (TODO: Refactor this to loop using a varname/filename list)
-            // ---------------------------------------------------------
-            $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownTable.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryResultBreakdownTable", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultBreakdownTable.html"); }
-            });
 
             $.ajax("js-i2b2/cells/CRC/templates/QueryResultStatus.html", {
                 success: (template, status, req) => {
@@ -84,6 +77,13 @@ i2b2.events.afterCellInit.add((cell) => {
                     Handlebars.registerPartial("QueryResult", req.responseText);
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryResult.html"); }
+            });
+
+            $.ajax("js-i2b2/cells/CRC/templates/QueryDataExportResult.html", {
+                success: (template, status, req) => {
+                    Handlebars.registerPartial("QueryDataExportResult", req.responseText);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template:QueryDataExportResult.html"); }
             });
 
             $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownGraph.html", {

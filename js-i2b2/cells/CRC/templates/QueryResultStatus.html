@@ -4,17 +4,22 @@
             <div style="float:left;">
                 <div class="info-text-name"><span style="font-weight:bold;">Query Name:</span> <span>{{name}}</span></div>
                 <div class="info-text-status"><span style="font-weight:bold;">Query Status:</span>
+                
                     {{#if isProcessing}}
                         <span class="status-processing">Processing</span>
                     {{else if deleteCurrentQuery}}
                         <span class="status-cancelled">Cancelled</span>
                     {{else if isRunning}}
                         <span class="status-running">Running</span>
+                    {{else if hasError}}
+                        <span class="status-error">Error(s)</span>
                     {{else}}
                         <span class="status-finished">Finished</span>
                     {{/if}}
                 </div>
+                <div><span style="font-weight:bold;">Run Time: </span>[{{elapsedTime}} &nbsp; secs]</div>
             </div>
+            
 
             <div class="statusButtons
                     {{#if deleteCurrentQuery}}
@@ -33,7 +38,7 @@
                 <button type="button" class="btn btn-danger btn-sm cancelled">Query Cancelled</button>
             </div>
 
-            <div style="float:right; padding: 0.4rem">[{{elapsedTime}} &nbsp; secs]</div>
+            
             {{#if computeTime}}
                 <div style="clear:both;"></div>
                 <div class="computeTime"><span style="font-weight:bold;">Compute Time: </span> {{computeTime}} &nbsp;secs</div>
@@ -47,6 +52,7 @@
         {{/if}}
 
         {{#ifCond patientCount '!==' undefined}}
+            {{#unless hasError}}
             {{#unless deleteCurrentQuery}}
             {{#unless queued}}
                 <table style="width: 400px; margin-left: auto; margin-right: auto;">
@@ -64,6 +70,7 @@
                         <td style="color: red; text-align: center; vertical-align: middle;">&nbsp</td>
                     </tr>
                 </table>
+            {{/unless}}
             {{/unless}}
             {{/unless}}
         {{/ifCond}}

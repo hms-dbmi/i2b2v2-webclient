@@ -223,6 +223,8 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.scope = this;
 i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
     i2b2.CRC.model.QueryResults = results;
 
+    i2b2.CRC.model.runner.hasError = false;
+
     // see if error
     if (results.error) {
         i2b2.CRC.model.runner.status = "ERROR";
@@ -261,6 +263,9 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
             rec.status = i2b2.h.XPath(qri, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
             idQRI[rec.id] = rec;
 
+            // check for errors
+            if (rec.status === "ERROR") i2b2.CRC.model.runner.hasError = true;
+
             // update counter
             if (stats[rec.status] === undefined) stats[rec.status] = 0;
             stats[rec.status]++;
@@ -282,7 +287,7 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
         i2b2.CRC.model.runner.progress = stats;
 
         // see if all processing is done
-        if (Object.keys(stats).length === 1 && stats["FINISHED"]) {
+        if (Object.keys(stats).length === 1 && (stats["FINISHED"] || stats["ERROR"])) {
             i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
         } else {
             i2b2.CRC.model.runner.lastPoll = new Date();
@@ -403,10 +408,15 @@ i2b2.CRC.ctrlr.QueryMgr._processModel = function() {
             case "PR":
                 tempItem.key = "PATIENT:HIVE:" + i2b2.h.Escape(item.sdxInfo.sdxKeyValue);
                 name = item.origData.titleCRC ? item.origData.titleCRC : item.origData.title;
-                let subsetPos = name.indexOf(" [");
-                name = subsetPos === -1 ? name : "PATIENT:HIVE:" + name.substring(0, subsetPos);
+                // perhaps this is an encounter
+                if (name) {
+                    let subsetPos = name.indexOf(" [");
+                    name = subsetPos === -1 ? name : "PATIENT:HIVE:" + name.substring(0, subsetPos);
+                    tempItem.tooltip = i2b2.h.Escape(item.origData.title);
+                } else if (item.origData.event_id) {
+                    name = "PATIENT:HIVE:" + item.origData.patient_id;
+                }
                 tempItem.name = i2b2.h.Escape(name);
-                tempItem.tooltip = i2b2.h.Escape(item.origData.title);
                 tempItem.isSynonym = "false";
                 tempItem.hlevel = 0;
                 break;

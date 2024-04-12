@@ -1,23 +1,22 @@
-{{#if breakdowns.resultTable}}
+{{#if dataExport.resultTable}}
 <div class="accordion">
     <div class="accordion-item">
         <div class="accordion-header">
-            <button class="accordion-button breakDownHeader" type="button" data-bs-toggle="collapse" data-bs-target="#breakdownDetails" aria-expanded="true" aria-controls="breakdownCharts">
-                Results Details
+            <button class="accordion-button breakDownHeader" type="button" data-bs-toggle="collapse" data-bs-target="#dataExportDetails" aria-expanded="true">
+                Data Export Details
             </button>
         </div>
 
-        <div id="breakdownDetails" data-bs-toggle="collapse" class="accordion-collapse collapse show">
-            {{#each breakdowns.resultTable}}
+        <div id="dataExportDetails" data-bs-toggle="collapse" class="accordion-collapse collapse show">
+            {{#each dataExport.resultTable}}
             <div>
-                <label class="breakdownLabel" id="resultStatus{{@index}}"> {{this.title}} </label>
+                <label class="breakdownLabel" id="dataExportResultStatus{{@index}}"> {{this.title}} </label>
                 {{#if this.statusMessage}}
                 <div style="float: right">
-                    <span class="breakdownStatus">{{this.statusMessage}}</span>
+                    <span class="dataExportStatus">{{this.statusMessage}}</span>
                 </div>
                 {{/if}}
-                {{#ifCond this.status '!==' 'ERROR'}}
-                <div id="collapse{{@index}}" class="breakdownResultList" aria-labelledby="resultStatus{{@index}}">
+                <div id="dataExportCollapse{{@index}}" class="breakdownResultList" aria-labelledby="dataExportResultStatus{{@index}}">
                     <div>
                         <table>
                             {{#each this.result}}
@@ -35,10 +34,11 @@
                         </table>
                     </div>
                 </div>
-                {{/ifCond}}
             </div>
             {{/each}}
         </div>
     </div>
 </div>
 {{/if}}
+
+
