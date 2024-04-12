@@ -95,6 +95,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
         }
 
         case SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM_FAILED: {
+            const  { param }  = action.payload;
 
             return SelectedUser({
                 ...state,
