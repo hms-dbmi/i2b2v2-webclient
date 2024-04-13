@@ -6,6 +6,7 @@ import {
     getAllGlobalParamsSucceeded,
 } from "actions";
 import {DataType} from "models";
+import {decodeHTML} from "../utilities";
 
 //a function that returns a promise
 const getAllGlobalParamsRequest = () => {
@@ -29,6 +30,9 @@ const parseParamsXml = (allGlobalParamsXml) => {
 
         if(name && dataType) {
             dataType = DataType[dataType];
+            if(value.length > 0){
+                value = decodeHTML(value);
+            }
             globalParamsList.push({id, internalId, name, value, dataType});
             id = id + 1;
         }

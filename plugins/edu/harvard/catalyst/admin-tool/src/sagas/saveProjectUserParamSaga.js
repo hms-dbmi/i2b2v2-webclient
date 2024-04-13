@@ -6,6 +6,7 @@ import {
     saveProjectUserParamFailed,
     saveProjectUserParamSucceeded,
 } from "actions";
+import {encodeHTML} from "../utilities";
 
 const saveParamRequest = (project, user, param) => {
 
@@ -16,11 +17,13 @@ const saveParamRequest = (project, user, param) => {
         paramIdStr = 'id="'+param.internalId+'"';
     }
 
+    let dataValue = encodeHTML(param.value);
+
     const userXml = '<user_name>'+user.username+'</user_name>';
     const msg_xml = userXml + '<param '
         + paramIdStr +' datatype="'+ param.dataType
         +'" name="'+param.name+'">'
-        +param.value
+        + dataValue
         +'</param>';
 
     let data = {

@@ -5,6 +5,7 @@ import {
     getAllUserParamsFailed,
     getAllUserParamsSucceeded,
 } from "actions";
+import {decodeHTML} from "../utilities";
 
 import { DataType } from "models";
 
@@ -31,6 +32,9 @@ const parseUserParamsXml = (user, allUserParamsXml) => {
 
         if(name && dataType) {
             dataType = DataType[dataType];
+            if(value.length > 0){
+                value = decodeHTML(value);
+            }
             userParamsList.push({id, internalId, name, value, dataType});
         }
     });

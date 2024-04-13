@@ -6,15 +6,19 @@ import {
     saveGlobalParamFailed,
     saveGlobalParamSucceeded,
 } from "actions";
+import {encodeHTML} from "../utilities";
 
 const saveParamRequest = (param) => {
     let paramIdStr="";
     if (param.internalId) {
         paramIdStr = 'id="'+param.internalId+'"';
     }
-    const msg_xml = '<project_path>/</project_path><can_override>Y</can_override>' +
-            '<param datatype="'+param.dataType+ '" ' + paramIdStr + ' name="'+param.name+'">'+param.value+"</param>";
 
+    let dataValue = encodeHTML(param.value);
+
+    const msg_xml = '<project_path>/</project_path><can_override>Y</can_override>' +
+            '<param datatype="'+param.dataType+ '" ' + paramIdStr
+        + ' name="'+param.name+'">'+ dataValue +"</param>";
 
     let data = {
         table: "global",

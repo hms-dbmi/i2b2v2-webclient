@@ -7,6 +7,7 @@ import {
 } from "actions";
 
 import {DataType} from "models";
+import {decodeHTML} from "../utilities";
 
 const getAllProjectUserParamsRequest = (projectId, user) => {
     let data = {
@@ -31,6 +32,9 @@ const parseParamsXml = (allParamsXml) => {
 
         if(name && dataType) {
             dataType = DataType[dataType];
+            if(value.length > 0){
+                value = decodeHTML(value);
+            }
             paramsParamsList.push({id, internalId, name, value, dataType});
             id = id + 1;
         }
