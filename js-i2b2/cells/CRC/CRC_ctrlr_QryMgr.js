@@ -300,6 +300,10 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
 
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
+    // don't show status if query has been cancelled
+    let showStatus = true;
+    if ((!i2b2.CRC.model.runner.finished && i2b2.CRC.model.runner.isRunning) || i2b2.CRC.model.runner.deleteCurrentQuery) showStatus = false;
+
     i2b2.CRC.model.runner.status = "Finished";
     i2b2.CRC.model.runner.abortable = false;
     i2b2.CRC.model.runner.finished = true;
@@ -325,7 +329,7 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     }
 
     // re-render status
-    i2b2.CRC.view.QueryMgr.updateStatus();
+    if (showStatus) i2b2.CRC.view.QueryMgr.updateStatus();
 };
 
 
