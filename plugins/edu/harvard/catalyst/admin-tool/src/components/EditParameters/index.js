@@ -8,11 +8,7 @@ import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import { Confirmation } from "components";
+import { Confirmation,  StatusUpdate } from "components";
 
 import "./EditParameters.scss";
 import {Typography} from "@mui/material";
@@ -26,10 +22,9 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
                                    setPaginationModel
 }) => {
     const [rowModesModel, setRowModesModel] = useState({});
-    const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
-    const [showSaveStatus, setShowSaveStatus] = useState(false);
-    const [saveStatusMsg, setSaveStatusMsg] = useState("");
-    const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
+    const [showStatus, setShowStatus] = useState(false);
+    const [statusMsg, setStatusMsg] = useState("");
+    const [statusSeverity, setStatusSeverity] = useState("info");
     const [showDeleteParamConfirm, setShowDeleteParamConfirm] = useState(false);
     const [deleteParamConfirmMsg, setDeleteParamConfirmMsg] = useState("");
     const [deleteParamData, setDeleteParamData] = useState(null);
@@ -163,33 +158,38 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
 
     useEffect(() => {
         if(saveStatus.status === "SAVE_SUCCESS"){
-            setSaveStatusMsg("Saved parameter " + saveStatus.param.name);
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("success");
+            setStatusMsg("Saved parameter " + saveStatus.param.name);
+            setShowStatus(true);
+            setStatusSeverity("success");
             setRowModesModel({ ...rowModesModel, [saveStatus.param]: { mode: GridRowModes.View } });
         }
         if(saveStatus.status === "SAVE_FAIL"){
-            setSaveStatusMsg("ERROR: failed to save parameter " + saveStatus.param.name);
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("error");
+            setStatusMsg("ERROR: failed to save parameter " + saveStatus.param.name);
+            setShowStatus(true);
+            setStatusSeverity("error");
         }
         if(deleteStatus.status === "DELETE_SUCCESS"){
-            setSaveStatusMsg("Deleted parameter " + deleteStatus.param.name);
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("success");
+            setStatusMsg("Deleted parameter " + deleteStatus.param.name);
+            setShowStatus(true);
+            setStatusSeverity("success");
         }
         if(deleteStatus.status === "DELETE_FAIL"){
-            setSaveStatusMsg("ERROR: failed to delete parameter " + deleteStatus.param.name);
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("error");
+            setStatusMsg("ERROR: failed to delete parameter " + deleteStatus.param.name);
+            setShowStatus(true);
+            setStatusSeverity("error");
         }
 
         if(allParamStatus === "FAIL"){
-            setSaveStatusMsg("ERROR: failed to reload parameters");
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("error");
+            setStatusMsg("ERROR: failed to reload parameters");
+            setShowStatus(true);
+            setStatusSeverity("error");
         }
     }, [saveStatus, deleteStatus]);
+
+    useEffect(() => {
+        saveStatusConfirm();
+        deleteStatusConfirm();
+    }, []);
 
     const isCellEditable = (params) => {
         return  (params.field !== "name" || (params.field === "name" && !params.row.internalId));
@@ -223,17 +223,6 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
                 }}
             />
         );
-    };
-
-    const handleCloseAlert = (event, reason) => {
-        setShowSaveStatus(false);
-
-        if(saveStatus.status === "SAVE_SUCCESS" || saveStatus.status === "SAVE_FAIL") {
-            saveStatusConfirm();
-        }
-        if(deleteStatus.status === "DELETE_SUCCESS" || deleteStatus.status === "DELETE_FAIL") {
-            deleteStatusConfirm();
-        }
     };
 
     const handleEditClick = (id) => () => {
@@ -288,6 +277,12 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
 
+    const handleStatusClose = () => {
+        saveStatusConfirm();
+        deleteStatusConfirm();
+        setShowStatus(false);
+    };
+
     return (
         <div className="EditParameters" >
             <Typography> {title} </Typography>
@@ -297,24 +292,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
 
             {displayParamsTable()}
 
-            <Backdrop className={"SaveBackdrop"} open={showSaveBackdrop}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
-            <Snackbar
-                open={showSaveStatus}
-                autoHideDuration={4000}
-                anchorOrigin={{ vertical: 'top', horizontal : "center" }}
-                onClose={handleCloseAlert}
-            >
-                <Alert
-                    onClose={handleCloseAlert}
-                    severity={saveStatusSeverity}
-                    variant="filled"
-                    sx={{ width: '100%' }}
-                >
-                    {saveStatusMsg}
-                </Alert>
-            </Snackbar>
+            <StatusUpdate isOpen={showStatus} setIsOpen={handleStatusClose} severity={statusSeverity} message={statusMsg}/>
 
             { showDeleteParamConfirm && <Confirmation
                 text={deleteParamConfirmMsg}

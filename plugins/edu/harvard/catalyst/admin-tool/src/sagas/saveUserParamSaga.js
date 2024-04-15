@@ -6,6 +6,7 @@ import {
     saveUserParamFailed,
     saveUserParamSucceeded,
 } from "actions";
+import {encodeHTML} from "../utilities";
 
 const saveParamRequest = (username, param) => {
 
@@ -14,10 +15,12 @@ const saveParamRequest = (username, param) => {
         paramIdStr = 'id="'+param.internalId+'"';
     }
 
+    let dataValue = encodeHTML(param.value);
+
     const msg_xml = '<user_name>'+username +'</user_name><param '
         + paramIdStr +' datatype="'+ param.dataType
         +'" name="'+param.name+'">'
-        +param.value
+        + dataValue
         +'</param>';
 
     let data = {
