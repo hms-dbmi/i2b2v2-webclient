@@ -136,7 +136,8 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
         lastPoll: new Date(),
         isPolling: true,
         queued: false,
-        isRunning: true
+        isRunning: true,
+        isLoading: false
     };
 
     i2b2.CRC.model.runner.intervalTimer = setInterval(i2b2.CRC.ctrlr.QueryMgr.tick, 100);
@@ -161,6 +162,7 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
     i2b2.CRC.model.runner.abortable = false;
     i2b2.CRC.model.runner.isRunning = false;
     i2b2.CRC.model.runner.finished = true;
+    i2b2.CRC.model.runner.isLoading = true;
     i2b2.CRC.model.runner.deleteCurrentQuery = false;
 
     let cb = new i2b2_scopedCallback();
@@ -194,6 +196,7 @@ i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     i2b2.CRC.model.runner.isRunning = false;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.deleteCurrentQuery = true;
+    i2b2.CRC.model.runner.isLoading = false;
 
     // update the screen to show status as cancelled
     $("#infoQueryStatusText .statusButtons").removeClass("running").addClass("cancelled");
@@ -221,8 +224,10 @@ i2b2.CRC.ctrlr.QueryMgr.clearQuery = function() {
 i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster = new i2b2_scopedCallback();
 i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.scope = this;
 i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
-    i2b2.CRC.model.QueryResults = results;
 
+    if (i2b2.CRC.model.runner.finished && !i2b2.CRC.model.runner.isRunning && !i2b2.CRC.model.runner.isLoading) return false;
+
+    i2b2.CRC.model.QueryResults = results;
     i2b2.CRC.model.runner.hasError = false;
 
     // see if error
@@ -302,7 +307,8 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
 i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     // don't show status if query has been cancelled
     let showStatus = true;
-    if ((!i2b2.CRC.model.runner.finished && i2b2.CRC.model.runner.isRunning) || i2b2.CRC.model.runner.deleteCurrentQuery) showStatus = false;
+
+    if (i2b2.CRC.model.runner.deleteCurrentQuery) showStatus = false;
 
     i2b2.CRC.model.runner.status = "Finished";
     i2b2.CRC.model.runner.abortable = false;
@@ -626,5 +632,6 @@ i2b2.CRC.model.runner = {
     queued: false,
     deleteCurrentQuery: false,
     intervalTimer: null,
-    isRunning: false
+    isRunning: false,
+    isLoading: false
 };
