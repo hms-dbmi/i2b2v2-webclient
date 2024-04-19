@@ -47,8 +47,8 @@
         {{/if}}
 
         {{#if queued}}
-            <div class="status-bar-label">Queued Query Progress</div>
-            <div class="status-bar-text">Your query has been queued to run in the background. You are free to continue working with the application or wait until the query finishes to get its results. </div>
+            <div class="status-bar-label">Query Progress</div>
+            <div class="status-bar-text">Your query is now running in the background. The results will appear here and in the Queries panel when available. Click "Refresh All" in the Queries panel to view the status.</div>
         {{/if}}
 
         {{#ifCond patientCount '!==' undefined}}
