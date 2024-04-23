@@ -96,6 +96,9 @@ i2b2.CRC.ctrlr.QueryMgr.generateQueryName = function() {
 
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, queryExecutionMethod) {
+    // clear any old results
+    i2b2.CRC.view.QueryMgr.clearStatus();
+
     i2b2.CRC.ctrlr.QueryMgr._processModel();
     i2b2.CRC.model.transformedQuery.name = queryName; // i2b2.h.Escape(queryName);
 
@@ -129,21 +132,22 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
         elapsedTime: "0",
         startTime: new Date(),
         status: "Running",
+        intervalTimer: null,
+        lastPoll: new Date(),
         abortable: true,
         finished: false,
         deleteCurrentQuery: false,
-        intervalTimer: null,
-        lastPoll: new Date(),
-        isPolling: true,
         queued: false,
+        isPolling: true,
         isRunning: true,
-        isLoading: false
+        isLoading: false,
+        isCancelled: false,
+        hasError: false
     };
 
-    i2b2.CRC.model.runner.intervalTimer = setInterval(i2b2.CRC.ctrlr.QueryMgr.tick, 100);
+    delete i2b2.CRC.model.runner.progress;
 
-    // clear any old results
-    i2b2.CRC.view.QueryMgr.clearStatus();
+    i2b2.CRC.model.runner.intervalTimer = setInterval(i2b2.CRC.ctrlr.QueryMgr.tick, 100);
 
     // show run status HTML
     i2b2.CRC.view.QueryMgr.updateStatus();
@@ -160,10 +164,16 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
 i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
     i2b2.CRC.model.runner.name = queryName;
     i2b2.CRC.model.runner.abortable = false;
-    i2b2.CRC.model.runner.isRunning = false;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.isLoading = true;
+    i2b2.CRC.model.runner.isRunning = false;
+    i2b2.CRC.model.runner.isPolling = false;
+    i2b2.CRC.model.runner.isCancelled = false;
     i2b2.CRC.model.runner.deleteCurrentQuery = false;
+    i2b2.CRC.model.runner.hasError = false;
+    i2b2.CRC.model.runner.queued = false;
+    delete i2b2.CRC.model.runner.progress;
+
 
     let cb = new i2b2_scopedCallback();
     cb.scope = this;
@@ -194,7 +204,9 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
 i2b2.CRC.ctrlr.QueryMgr.cancelQuery = function() {
     // Aborts a running query
     i2b2.CRC.model.runner.deleteCurrentQuery = true;
+    i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.ctrlr.QueryMgr.stopQuery();
+    i2b2.CRC.model.runner.queued = false;
 
     // update the screen to show status as cancelled
     $("#infoQueryStatusText .statusButtons").removeClass("running").addClass("cancelled");
@@ -204,8 +216,10 @@ i2b2.CRC.ctrlr.QueryMgr.cancelQuery = function() {
 i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     // Stops a running query
     i2b2.CRC.model.runner.isRunning = false;
-    i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.isLoading = false;
+    i2b2.CRC.model.runner.isCancelled = true;
+    i2b2.CRC.model.runner.finished = true;
+    i2b2.CRC.model.runner.queued = true;
 };
 
 
@@ -369,6 +383,7 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryStatus.callback = function(results) {
         i2b2.CRC.model.runner.status = "ERROR";
         i2b2.CRC.model.runner.abortable = false;
         i2b2.CRC.model.runner.finished = true;
+        i2b2.CRC.model.runner.hasError = true;
         alert(results.errorMsg);
         return;
     }
@@ -647,11 +662,14 @@ i2b2.CRC.model.runner = {
     elapsedTime: "0",
     startTime: new Date(),
     status: "Running",
+    intervalTimer: null,
     abortable: true,
     finished: false,
-    queued: false,
     deleteCurrentQuery: false,
-    intervalTimer: null,
-    isRunning: false,
-    isLoading: false
+    queued: false,
+    isPolling: true,
+    isRunning: true,
+    isLoading: false,
+    isCancelled: false,
+    hasError: false
 };

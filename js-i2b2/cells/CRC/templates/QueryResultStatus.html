@@ -7,7 +7,7 @@
                 
                     {{#if isProcessing}}
                         <span class="status-processing">Processing</span>
-                    {{else if deleteCurrentQuery}}
+                    {{else if isCancelled}}
                         <span class="status-cancelled">Cancelled</span>
                     {{else if isRunning}}
                         <span class="status-running">Running</span>
@@ -22,7 +22,7 @@
             
 
             <div class="statusButtons
-                    {{#if deleteCurrentQuery}}
+                    {{#if isCancelled}}
                         cancelled
                     {{else if finished}}
                         done
@@ -53,7 +53,7 @@
 
         {{#ifCond patientCount '!==' undefined}}
             {{#unless hasError}}
-            {{#unless deleteCurrentQuery}}
+            {{#unless isCancelled}}
             {{#unless queued}}
                 <table style="width: 400px; margin-left: auto; margin-right: auto;">
                     <tr style="background-color: #ed9b40">

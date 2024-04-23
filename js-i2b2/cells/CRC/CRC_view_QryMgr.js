@@ -32,6 +32,7 @@ i2b2.CRC.view.QueryMgr.updateStatus = function() {
 
 i2b2.CRC.view.QueryMgr.clearStatus = function() {
     i2b2.CRC.ctrlr.QueryMgr.stopQuery();
+    i2b2.CRC.ctrlr.QueryMgr.tick();
     $("#infoQueryStatus", i2b2.CRC.view.QueryMgr.containerDiv).empty();
     $("#infoQueryReport", i2b2.CRC.view.QueryMgr.containerDiv).empty();
 }
