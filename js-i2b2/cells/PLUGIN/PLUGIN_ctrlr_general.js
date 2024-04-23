@@ -292,6 +292,10 @@ i2b2.events.afterCellInit.add((cell) => {
                             pluginAllowed = pluginJson.roles.some((role) => i2b2.PM.model.userRoles.indexOf(role) !== -1);
                         }
 
+                        if (pluginJson.admin_only && !i2b2.PM.model.isAdmin){
+                            pluginAllowed = false;
+                        }
+
                         if (pluginAllowed) {
                             i2b2.PLUGIN.model.plugins[id] = pluginJson;
                             i2b2.PLUGIN.model.plugins[id].url = "plugins/" + loc + '/' + pluginJson.base;

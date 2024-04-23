@@ -8,5 +8,5 @@
   "i2b2_version" : "1.8.1",
   "base": "dist/index.html",
   "sandbox": true,
-  "roles": ["MANAGER"]
+  "admin_only": true
 }
