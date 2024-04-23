@@ -191,15 +191,21 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
 
 
 // ================================================================================================== //
-i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
+i2b2.CRC.ctrlr.QueryMgr.cancelQuery = function() {
     // Aborts a running query
-    i2b2.CRC.model.runner.isRunning = false;
-    i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.deleteCurrentQuery = true;
-    i2b2.CRC.model.runner.isLoading = false;
+    i2b2.CRC.ctrlr.QueryMgr.stopQuery();
 
     // update the screen to show status as cancelled
     $("#infoQueryStatusText .statusButtons").removeClass("running").addClass("cancelled");
+}
+
+// ================================================================================================== //
+i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
+    // Stops a running query
+    i2b2.CRC.model.runner.isRunning = false;
+    i2b2.CRC.model.runner.finished = true;
+    i2b2.CRC.model.runner.isLoading = false;
 };
 
 
