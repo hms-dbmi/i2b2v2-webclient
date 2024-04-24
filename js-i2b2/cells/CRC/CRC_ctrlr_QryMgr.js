@@ -60,14 +60,10 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
         i2b2.CRC.model.runner.lastPoll = new Date();
         i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryRunner:polling", {qi_key_value: i2b2.CRC.model.runner.idQueryInstance}, i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryStatus);
     }
+    if (!stillRunning || i2b2.CRC.model.runner.finished) i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
 
-    if (!stillRunning || i2b2.CRC.model.runner.finished) {
-        i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
-    } else {
-        // update the progress display
-        i2b2.CRC.view.QueryMgr.updateStatus();
-    }
-
+    // update the progress display
+    i2b2.CRC.view.QueryMgr.updateStatus();
 }
 
 

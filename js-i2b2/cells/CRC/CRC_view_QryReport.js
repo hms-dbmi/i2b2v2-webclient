@@ -170,16 +170,15 @@ i2b2.CRC.view.QueryReport = {
                     } else if(visualAttr === 'LR' || visualAttr === 'LX') {
                         i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
                     } else {
-                        if (i2b2.CRC.view.QueryReport.breakdowns.resultTable.filter(x => x.title === breakdown.title).length === 0) {
-                            i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
-                            if (status !== "ERROR") {
-                                i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown);
-                            }
-                        } else {
-                            console.warn("duplicate call");
-                        }
+                        i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
                     }
                 }
+            }
+
+            // only create graphs if there is breakdown data
+            if (!isPatientCount && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR") {
+                showGraphs = true;
+                i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
         }
         // render the table view of the breakdowns

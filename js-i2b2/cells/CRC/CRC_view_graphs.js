@@ -16,7 +16,7 @@ i2b2.CRC.view.graphs.sObfuscatedEnding = "±"+i2b2.UI.cfg.obfuscatedDisplayNumbe
 i2b2.CRC.cfg.params.maxBarLabelLength = 30;
 
 // ======================================================================================================
-i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData) {
+i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData, breakdownIndex) {
     // function to shorten long labels on the graph X axis
     const shortenLabel = function(inText, maxLen) {
         if (inText.length > maxLen) {
