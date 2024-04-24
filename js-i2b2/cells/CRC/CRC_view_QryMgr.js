@@ -25,14 +25,11 @@ i2b2.CRC.view.QueryMgr.updateStatus = function() {
         $(".CRC_QT_runbar .button-run").hide();
         $(".CRC_QT_runbar .button-cancel").show();
     }
-
-
 };
 
 
 i2b2.CRC.view.QueryMgr.clearStatus = function() {
     i2b2.CRC.ctrlr.QueryMgr.stopQuery();
-    i2b2.CRC.ctrlr.QueryMgr.tick();
     $("#infoQueryStatus", i2b2.CRC.view.QueryMgr.containerDiv).empty();
     $("#infoQueryReport", i2b2.CRC.view.QueryMgr.containerDiv).empty();
 }

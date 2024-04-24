@@ -16,7 +16,7 @@ i2b2.CRC.view.graphs.sObfuscatedEnding = "±"+i2b2.UI.cfg.obfuscatedDisplayNumbe
 i2b2.CRC.cfg.params.maxBarLabelLength = 30;
 
 // ======================================================================================================
-i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData, breakdownIndex) {
+i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData) {
     // function to shorten long labels on the graph X axis
     const shortenLabel = function(inText, maxLen) {
         if (inText.length > maxLen) {
@@ -153,7 +153,7 @@ i2b2.CRC.view.graphs.rerenderGraphs = function() {
 
     chartContainer.empty();
     i2b2.CRC.view.QueryReport.breakdowns.resultTable.forEach((breakdown,i) => {
-        if (breakdown.title !== "Number of patients") i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i);
+        if (breakdown.title !== "Number of patients") i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown);
     })
 };
 
