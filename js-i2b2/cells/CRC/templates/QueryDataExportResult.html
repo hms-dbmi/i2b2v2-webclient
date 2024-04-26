@@ -13,7 +13,12 @@
                 <label class="breakdownLabel" id="dataExportResultStatus{{@index}}"> {{this.title}} </label>
                 {{#if this.statusMessage}}
                 <div style="float: right">
-                    <span class="dataExportStatus">{{this.statusMessage}}</span>
+                    {{#ifCond this.statusMessage '===' "ERROR"}}
+                        <span class="dataExportStatus status-error">{{this.statusMessage}}</span>
+                    {{/ifCond}}
+                    {{#ifCond this.statusMessage '!==' "ERROR"}}
+                        <span class="dataExportStatus">{{this.statusMessage}}</span>
+                    {{/ifCond}}
                 </div>
                 {{/if}}
                 <div id="dataExportCollapse{{@index}}" class="breakdownResultList" aria-labelledby="dataExportResultStatus{{@index}}">

@@ -13,7 +13,12 @@
                 <label class="breakdownLabel" id="resultStatus{{@index}}"> {{this.title}} </label>
                 {{#if this.statusMessage}}
                 <div style="float: right">
-                    <span class="breakdownStatus">{{this.statusMessage}}</span>
+                    {{#ifCond this.statusMessage '===' "ERROR"}}
+                        <span class="breakdownStatus status-error">{{this.statusMessage}}</span>
+                    {{/ifCond}}
+                    {{#ifCond this.statusMessage '!==' "ERROR"}}
+                        <span class="breakdownStatus">{{this.statusMessage}}</span>
+                    {{/ifCond}}
                 </div>
                 {{/if}}
                 {{#ifCond this.status '!==' 'ERROR'}}
