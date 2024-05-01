@@ -87,7 +87,10 @@
     color: #0d6efd;
 }
 .info-text-status .status-error,
-.info-text-status .status-cancelled {
+.info-text-status .status-cancelled,
+#dataExportDetails .status-error,
+#dataExportDetails .status-error,
+#breakdownDetails .status-error {
     color: #fd0d6e
 }
 .info-text-status .status-running,
