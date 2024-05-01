@@ -286,6 +286,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     filterType: "category"
                 });
             }
+            $("#categorySubmenu").empty();
             $(submenuOptions({"option": categories})).appendTo("#categorySubmenu");
 
             // generate a list of coding systems options
@@ -298,6 +299,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     filterType: "coding"
                 });
             }
+            $("#codingSubmenu").empty();
             $(submenuOptions({"option": codingSystems})).appendTo("#codingSubmenu");
 
             $("#liCat").hover(function(){
