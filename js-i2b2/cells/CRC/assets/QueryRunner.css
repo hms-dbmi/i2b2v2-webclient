@@ -54,7 +54,7 @@
 #crcModal .modal-dialog,
 #crcModal .modal-content,
 #crcModal .modal-body{
-    height: 47em;
+    max-height: 40em;
 }
 
 #crcModal .modal-body {
