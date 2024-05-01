@@ -8,11 +8,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { getAllUsers, deleteUser, deleteUserStatusConfirmed } from "actions";
 import {EditUserDetails, Confirmation, StatusUpdate} from "components";
 import { User} from "../../models";
-import {
-    DataGrid,
-    GridActionsCellItem,
-    gridClasses
-} from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem, gridClasses, useGridApiRef} from '@mui/x-data-grid';
 import { Loader } from "components";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
@@ -34,6 +30,7 @@ export const AllUsersTable = ({paginationModel,
     const [showDeleteUserConfirm, setShowDeleteUserConfirm] = useState(false);
     const [deleteUserConfirmMsg, setDeleteUserConfirmMsg] = useState("");
     const [deleteUsername, setDeleteUsername] = useState("");
+    const apiRef = useGridApiRef();
 
     const dispatch = useDispatch();
 
@@ -97,10 +94,14 @@ export const AllUsersTable = ({paginationModel,
             <DataGrid
                 rows={userRows}
                 columns={columns}
+                apiRef={apiRef}
                 getRowId={getRowId}
                 disableRowSelectionOnClick
                 paginationModel={paginationModel}
                 onPaginationModelChange={setPaginationModel}
+                onSortModelChange={(model) => {
+                    apiRef.current.setPage(0);
+                }}
                 pageSizeOptions={[25, 50, 100]}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {

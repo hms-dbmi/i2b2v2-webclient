@@ -5,7 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import {DataGrid, GridActionsCellItem, gridClasses} from "@mui/x-data-grid";
+import {DataGrid, GridActionsCellItem, gridClasses, useGridApiRef} from "@mui/x-data-grid";
 import PersonIcon from '@mui/icons-material/Person';
 import {EditProjectDetails, Loader, StatusUpdate} from "components";
 import {Project} from "models";
@@ -25,6 +25,8 @@ export const AllProjectsTable = ({paginationModel,
     const [showStatus, setShowStatus] = useState(false);
     const [statusMsg, setStatusMsg] = useState("");
     const [statusSeverity, setStatusSeverity] = useState("info");
+    const apiRef = useGridApiRef();
+
 
     const dispatch = useDispatch();
 
@@ -125,9 +127,13 @@ export const AllProjectsTable = ({paginationModel,
             <DataGrid
                 rows={projectRows}
                 columns={columns}
+                apiRef={apiRef}
                 disableRowSelectionOnClick
                 paginationModel={paginationModel}
                 onPaginationModelChange={setPaginationModel}
+                onSortModelChange={(model) => {
+                    apiRef.current.setPage(0);
+                }}
                 pageSizeOptions={[5, 10, 25]}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
