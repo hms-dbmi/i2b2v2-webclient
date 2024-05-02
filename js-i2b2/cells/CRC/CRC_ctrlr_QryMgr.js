@@ -214,6 +214,7 @@ i2b2.CRC.ctrlr.QueryMgr.cancelQuery = function() {
 
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
+    if (i2b2.CRC.model.runner.isLoading) return;
     // Stops a running query
     i2b2.CRC.model.runner.isRunning = false;
     i2b2.CRC.model.runner.isLoading = false;
