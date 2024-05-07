@@ -153,7 +153,7 @@ i2b2.CRC.view.graphs.rerenderGraphs = function() {
 
     chartContainer.empty();
     i2b2.CRC.view.QueryReport.breakdowns.resultTable.forEach((breakdown,i) => {
-        if (breakdown.title !== "Number of patients") i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i);
+        if (breakdown.title !== "Number of patients") i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown);
     })
 };
 
