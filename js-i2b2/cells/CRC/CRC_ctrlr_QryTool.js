@@ -24,10 +24,10 @@ function QueryToolController() {
 
 // ================================================================================================== //
     this.doQueryLoad = function(qm_id) {  // function to reload query from Query History or Workspace
+        i2b2.CRC.model.runner.isLoading = true;
+
         // clear existing query
         i2b2.CRC.view.QT.clearAll();
-        // show on GUI that work is being done
-        //i2b2.h.LoadingMask.show();
 
         // callback processor
         let scopedCallback = new i2b2_scopedCallback();
