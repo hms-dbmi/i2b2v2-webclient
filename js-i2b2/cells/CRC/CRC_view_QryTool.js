@@ -1775,14 +1775,16 @@ i2b2.CRC.view.QT.showQueryReport = function() {
                     // print the document
                     reportWindow.print();
                 });
-                generateReport();
+                $("#breakdownCharts").collapse('show');
+                queueMicrotask(generateReport);
             },
             error: () => {
                 alert("Error: cannot load report template!");
             }
         });
     } else {
-        generateReport();
+        $("#breakdownCharts").collapse('show');
+        queueMicrotask(generateReport);
     }
 };
 
