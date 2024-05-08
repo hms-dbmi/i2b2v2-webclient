@@ -203,6 +203,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
                         required
                         label="User Name"
                         value={updatedUser.username}
+                        disabled={!isNewUser}
                         onChange={(event) => handleUpdate("username", event.target.value)}
                         error={isUsernameNotValid}
                         helperText={usernameNotValidError}
