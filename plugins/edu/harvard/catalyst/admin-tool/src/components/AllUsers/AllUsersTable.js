@@ -24,6 +24,7 @@ export const AllUsersTable = ({paginationModel,
     const deletedUser = useSelector((state) => state.deletedUser );
     const[selectedUser, setSelectedUser] = useState(null);
     const[isEditingUser, setIsEditingUser] = useState(false);
+    const[isCreatingUser, setIsCreatingUser] = useState(false);
     const [showStatus, setShowStatus] = useState(false);
     const [statusMsg, setStatusMsg] = useState("");
     const [statusSeverity, setStatusSeverity] = useState("info");
@@ -144,7 +145,7 @@ export const AllUsersTable = ({paginationModel,
 
     const handleAddNewUser = () => {
         setSelectedUser(User());
-        setIsEditingUser(true);
+        setIsCreatingUser(true);
     };
 
     const handleCloseAlert = (event, reason) => {
@@ -218,8 +219,8 @@ export const AllUsersTable = ({paginationModel,
                     Add New User
                 </Button>
             }
-            {!isEditingUser && allUsers.users.length > 0 && displayUsersTable()}
-            { isEditingUser && <EditUserDetails user={selectedUser} setIsEditingUser={setIsEditingUser}/>}
+            {!isEditingUser && !isCreatingUser && allUsers.users.length > 0 && displayUsersTable()}
+            { (isEditingUser || isCreatingUser) && <EditUserDetails user={selectedUser} setIsEditingUser={setIsEditingUser}  setIsCreatingUser={setIsCreatingUser} isCreatingUser={isCreatingUser}/>}
             {!isEditingUser && <StatusUpdate isOpen={showStatus} setIsOpen={setShowStatus} severity={statusSeverity} message={statusMsg}/>
             }
 
