@@ -14,7 +14,10 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
     const secPollInterval = 1;
 
     // stop running this function
-    if (i2b2.CRC.model.runner.finished) clearInterval(i2b2.CRC.model.runner.intervalTimer);
+    if (i2b2.CRC.model.runner.finished && i2b2.CRC.model.runner.intervalTimer !== undefined) {
+        clearInterval(i2b2.CRC.model.runner.intervalTimer);
+        delete i2b2.CRC.model.runner.intervalTimer;
+    }
 
     // update the run duration string
     i2b2.CRC.model.runner.elapsedTime = ((new Date() - i2b2.CRC.model.runner.startTime) / 1000).toFixed(1);
@@ -101,6 +104,8 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
     i2b2.CRC.view.QueryMgr.clearStatus();
     i2b2.CRC.model.runner.isLoading = false;
 
+    if (i2b2.CRC.model.runner.intervalTimer) clearInterval(i2b2.CRC.model.runner.intervalTimer);
+
     i2b2.CRC.ctrlr.QueryMgr._processModel();
     i2b2.CRC.model.transformedQuery.name = queryName; // i2b2.h.Escape(queryName);
 
@@ -148,7 +153,6 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
     };
 
     delete i2b2.CRC.model.runner.progress;
-
     i2b2.CRC.model.runner.intervalTimer = setInterval(i2b2.CRC.ctrlr.QueryMgr.tick, 100);
 
     // show run status HTML
@@ -164,6 +168,10 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
 
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
+    if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
+        clearInterval(i2b2.CRC.model.runner.intervalTimer);
+        delete i2b2.CRC.model.runner.intervalTimer;
+    }
     i2b2.CRC.model.runner.name = queryName;
     i2b2.CRC.model.runner.abortable = false;
     i2b2.CRC.model.runner.finished = true;
@@ -223,6 +231,10 @@ i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     i2b2.CRC.model.runner.isCancelled = true;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.queued = true;
+    if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
+        clearInterval(i2b2.CRC.model.runner.intervalTimer);
+        delete i2b2.CRC.model.runner.intervalTimer;
+    }
 };
 
 
@@ -357,7 +369,10 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
 
 
     // stop the run timer
-    clearInterval(i2b2.CRC.model.runner.intervalTimer);
+    if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
+        clearInterval(i2b2.CRC.model.runner.intervalTimer);
+        delete i2b2.CRC.model.runner.intervalTimer;
+    }
 
     // deleted the query if it was requested
     if (i2b2.CRC.model.runner.deleteCurrentQuery === true) {
