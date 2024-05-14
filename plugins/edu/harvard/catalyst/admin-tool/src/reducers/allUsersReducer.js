@@ -1,5 +1,6 @@
 import {
     GET_ALL_USERS_ACTION,
+    SAVE_USER_ACTION,
 } from "actions";
 import { defaultState } from "defaultState";
 import { AllUsers, User } from "models";
@@ -39,6 +40,24 @@ export const allUsersReducer = (state = defaultState.allUsers, action) => {
                 isFetching: false,
             });
         }
+
+        case  SAVE_USER_ACTION.SAVE_USER_SUCCEEDED: {
+            const  { user }  = action.payload;
+
+            let updatedUsers = state.users;
+
+            //check if new user
+            let existingUser = updatedUsers.filter((u) => u.username === user.username);
+            if(existingUser.length === 0){
+                updatedUsers.push(user);
+            }
+            return AllUsers({
+                ...state,
+                users: updatedUsers,
+                isFetching: false,
+            });
+        }
+
         default: {
             return state;
         }
