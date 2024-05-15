@@ -35,7 +35,7 @@ i2b2.CRC.view.QueryReport = {
 
                 if (rec.QRS_DisplayType === "CATNUM") {
                     let scopedCallbackQRSI = new i2b2_scopedCallback(this._handleQueryResultInstance);
-                    i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryReport", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
+                    i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryReport", {qr_key_vGalue: rec.QRS_ID}, scopedCallbackQRSI);
                 } else if ((rec.QRS_DisplayType === "LIST")) {
                     //----i2b2.CRC.view.QS.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
                 }
@@ -125,7 +125,7 @@ i2b2.CRC.view.QueryReport = {
                         const nodeValue = parseInt(params[i2].firstChild.nodeValue);
                         if (!isNaN(nodeValue) && nodeValue< 4) {
                             entryRecord.display = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-                        }  if (isNaN(nodeValue)) {
+                        }  if (isNaN(nodeValue) || entryRecord.name ==='QueryMasterID') {
                             entryRecord.display = params[i2].firstChild.nodeValue;
                         } else{
                             entryRecord.display = params[i2].firstChild.nodeValue + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
