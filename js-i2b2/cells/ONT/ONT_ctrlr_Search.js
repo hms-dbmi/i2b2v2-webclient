@@ -359,7 +359,7 @@ i2b2.ONT.ctrlr.Search = {
             for (let node in targetNode) {
                 if (node === '_$$_' || node === '_$R$_') {
                     loaded = true;
-                    if (node === '_$$_') {
+                    if (node === '_$$_' && targetNode[node].i2b2 !== undefined) {
                         // build the parents of this node
                         titles = targetNode[node].i2b2.origData.key_name.split("\\");
                         titles.pop();
@@ -371,30 +371,33 @@ i2b2.ONT.ctrlr.Search = {
                         let buildActive = false;
                         let buildNode = model;
 
-                        let idx = 0;
-                        for (let keyPart of keys) {
-                            buildNode = buildNode[keyPart];
-                            if (!buildActive) {
-                                if (buildNode["_$R$_"] !== undefined) buildActive = true;
-                            } else {
-                                idx++;
-                                if (buildNode["_$$_"] === undefined) {
-                                    buildNode["_$$_"] = {
-                                        color: "",
-                                        icon: "sdxStyleONT-CONCPT tvBranch noDrag",
-                                        text: titles[idx],
-                                        title: titles.filter((a,b) => (b <= idx)).join(" \\ "),
-                                        key: "\\\\" + keys.filter((a,b) => (b <= idx)).join("\\"),
-                                        state: {loaded:false, expanded:true}
-                                    };
-                                }
-                            }
-                        }
+                        // pass back the info to the parent node
+                        keys.pop();
+                        titles.pop();
+                        return {keys: keys, titles: titles};
                     }
                 } else {
-                    func_recurseWalk(targetNode[node], path + node + "\\", depth + 1);
+                    let {keys, titles} = func_recurseWalk(targetNode[node], path + node + "\\", depth + 1);
+                    if (keys.length === 0) return {keys: [], titles: []};
+
+                    let key = "\\\\" + keys.join("\\");
+                    keys.pop();
+                    let title = titles.pop();
+
+                    if (targetNode["_$$_"] === undefined && targetNode["_$R$_"] === undefined) {
+                        targetNode["_$$_"] = {
+                            color: "",
+                            icon: "sdxStyleONT-CONCPT tvBranch noDrag",
+                            text: title,
+                            title: titles.join(" \\ ") + " \\ " + title,
+                            key: key,
+                            state: {loaded:false, expanded:true}
+                        };
+                    }
                 }
             }
+            if (targetNode["_$R$_"] !== undefined) return {keys: [], titles: []};
+            return {keys: keys, titles: titles};
         };
         // start recursion at the roots
         for (let initial in model) {
