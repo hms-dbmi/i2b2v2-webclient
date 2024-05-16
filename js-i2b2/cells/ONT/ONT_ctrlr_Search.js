@@ -352,13 +352,9 @@ i2b2.ONT.ctrlr.Search = {
     // ================================================================================================== //
     backfillResultNodes_fast: function() {
         let model = i2b2.ONT.model.searchResults;
-        let nodesToLoad = [];
-        let loadCount = 0;
         let func_recurseWalk = (targetNode, path, depth= 0) =>  {
-            let loaded = false;
             for (let node in targetNode) {
                 if (node === '_$$_' || node === '_$R$_') {
-                    loaded = true;
                     if (node === '_$$_' && targetNode[node].i2b2 !== undefined) {
                         // build the parents of this node
                         titles = targetNode[node].i2b2.origData.key_name.split("\\");
@@ -368,8 +364,6 @@ i2b2.ONT.ctrlr.Search = {
                         keys.pop();
                         keys.shift();
                         keys.shift();
-                        let buildActive = false;
-                        let buildNode = model;
 
                         // pass back the info to the parent node
                         keys.pop();
@@ -378,7 +372,7 @@ i2b2.ONT.ctrlr.Search = {
                     }
                 } else {
                     let {keys, titles} = func_recurseWalk(targetNode[node], path + node + "\\", depth + 1);
-                    if (keys.length === 0) return {keys: [], titles: []};
+                    if (titles.length === 0) return {keys: [], titles: []};
 
                     let key = "\\\\" + keys.join("\\");
                     keys.pop();
