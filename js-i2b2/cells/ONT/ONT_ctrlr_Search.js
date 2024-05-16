@@ -116,7 +116,8 @@ i2b2.ONT.ctrlr.Search = {
                         $('i.srTooltip').attr('data-bs-original-title', "Not all results are displayed! A maximum of " + i2b2.ONT.view.nav.params.max + " records per category were returned.");
                     }
                     status[0].innerHTML = disp;
-                    i2b2.ONT.ctrlr.Search.backfillResultNodes();
+//                i2b2.ONT.ctrlr.Search.backfillResultNodes();
+                    i2b2.ONT.ctrlr.Search.backfillResultNodes_fast();
                 }
             }
         };
@@ -192,7 +193,8 @@ i2b2.ONT.ctrlr.Search = {
                     i2b2.ONT.model.searchResultCount++;
                     i2b2.ONT.ctrlr.Search.addResultNode(c[i], true);
                 }
-                i2b2.ONT.ctrlr.Search.backfillResultNodes();
+//                i2b2.ONT.ctrlr.Search.backfillResultNodes();
+                i2b2.ONT.ctrlr.Search.backfillResultNodes_fast();
             } else {
                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }
@@ -344,5 +346,105 @@ i2b2.ONT.ctrlr.Search = {
             searchOptions.concept_key_value = nodesToLoad.pop();
             if (searchOptions.concept_key_value !== undefined) i2b2.ONT.ajax.GetTermInfo("ONT:Search", searchOptions, scopedCallback);
         } while (nodesToLoad.length > 0);
+    },
+
+
+    // ================================================================================================== //
+    backfillResultNodes_fast: function() {
+        let model = i2b2.ONT.model.searchResults;
+        let nodesToLoad = [];
+        let loadCount = 0;
+        let func_recurseWalk = (targetNode, path, depth= 0) =>  {
+            let loaded = false;
+            for (let node in targetNode) {
+                if (node === '_$$_' || node === '_$R$_') {
+                    loaded = true;
+                    if (node === '_$$_') {
+                        // build the parents of this node
+                        titles = targetNode[node].i2b2.origData.key_name.split("\\");
+                        titles.pop();
+                        titles.shift();
+                        keys = targetNode[node].i2b2.origData.key.split("\\");
+                        keys.pop();
+                        keys.shift();
+                        keys.shift();
+                        let buildActive = false;
+                        let buildNode = model;
+
+                        let idx = 0;
+                        for (let keyPart of keys) {
+                            buildNode = buildNode[keyPart];
+                            if (!buildActive) {
+                                if (buildNode["_$R$_"] !== undefined) buildActive = true;
+                            } else {
+                                idx++;
+                                if (buildNode["_$$_"] === undefined) {
+                                    buildNode["_$$_"] = {
+                                        color: "",
+                                        icon: "sdxStyleONT-CONCPT tvBranch noDrag",
+                                        text: titles[idx],
+                                        title: titles.filter((a,b) => (b <= idx)).join(" \\ "),
+                                        key: "\\\\" + keys.filter((a,b) => (b <= idx)).join("\\"),
+                                        state: {loaded:false, expanded:true}
+                                    };
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    func_recurseWalk(targetNode[node], path + node + "\\", depth + 1);
+                }
+            }
+        };
+        // start recursion at the roots
+        for (let initial in model) {
+            func_recurseWalk(model[initial], "\\\\" + initial + "\\");
+        }
+
+        // render the results tree
+        let treeStruct = [];
+        let func_crawl_builder = (node, parent) => {
+            let ret = [];
+            let bypass = ((node._$$_ === undefined && node._$R$_ === undefined) || (node._$$_ !== undefined && parent === null)) && !((Object.keys(node).length === 2 || parent === null) && node._$$_ !== undefined && node._$R$_ !== undefined);
+            if (bypass) {
+                // passes back only a collection of child nodes (which should be built)
+                // this bubbles up navigatable nodes through non-navigatable nodes
+                for (let subpath in node) {
+                    if (!["_$$_", "_$R$_"].includes(subpath)) {
+                        ret = ret.concat(func_crawl_builder(node[subpath], parent));
+                    }
+                }
+            } else {
+                // passes back current node fully built with its "nodes" attribute populated
+                ret = node._$$_ !== undefined ? node._$$_ : node._$R$_;
+                if (node._$R$_) {
+                    ret = node._$R$_;
+                    if (node._$$_) ret.icon = node._$$_.icon;
+                }
+                ret.state = {
+                    loaded: true,
+                    expanded: true
+                };
+                let children = [];
+                for (let subpath in node) {
+                    if (!["_$$_", "_$R$_"].includes(subpath)) {
+                        children = children.concat(func_crawl_builder(node[subpath], node));
+                    }
+                }
+                ret.nodes = children
+            }
+            return ret;
+        };
+
+        for (let subpath in i2b2.ONT.model.searchResults) {
+            let subtree = func_crawl_builder(i2b2.ONT.model.searchResults[subpath], null);
+            treeStruct = treeStruct.concat(subtree);
+        }
+
+        // display the tree
+        i2b2.ONT.view.search.displayResults(treeStruct);
     }
+
+
 };
+
