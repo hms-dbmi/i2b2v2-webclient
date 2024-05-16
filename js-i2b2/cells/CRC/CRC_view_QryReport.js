@@ -125,7 +125,7 @@ i2b2.CRC.view.QueryReport = {
                         const nodeValue = parseInt(params[i2].firstChild.nodeValue);
                         if (!isNaN(nodeValue) && nodeValue< 4) {
                             entryRecord.display = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-                        }  if (isNaN(nodeValue)) {
+                        }  if (isNaN(nodeValue) || entryRecord.name ==='QueryMasterID') {
                             entryRecord.display = params[i2].firstChild.nodeValue;
                         } else{
                             entryRecord.display = params[i2].firstChild.nodeValue + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
