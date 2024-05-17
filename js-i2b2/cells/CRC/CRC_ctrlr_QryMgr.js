@@ -14,7 +14,7 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
     const secPollInterval = 1;
 
     // stop running this function
-    if (i2b2.CRC.model.runner.finished && i2b2.CRC.model.runner.intervalTimer !== undefined) {
+    if (i2b2.CRC.model.runner.finished && i2b2.CRC.model.runner.intervalTimer !== undefined && !i2b2.CRC.model.runner.deleteCurrentQuery) {
         clearInterval(i2b2.CRC.model.runner.intervalTimer);
         delete i2b2.CRC.model.runner.intervalTimer;
     }
@@ -59,11 +59,16 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
 
 
     // see if wee need to run another poll to get the progress from the server
-    if (stillRunning && (((new Date()) - i2b2.CRC.model.runner.lastPoll) / 1000) > secPollInterval && i2b2.CRC.model.runner.idQueryInstance !== undefined && !i2b2.CRC.model.runner.isPolling) {
+    if (stillRunning
+        && (((new Date()) - i2b2.CRC.model.runner.lastPoll) / 1000) > secPollInterval
+        && i2b2.CRC.model.runner.idQueryInstance !== undefined
+        && !i2b2.CRC.model.runner.isPolling
+        && !i2b2.CRC.model.runner.deleteCurrentQuery
+    ) {
         i2b2.CRC.model.runner.lastPoll = new Date();
         i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryRunner:polling", {qi_key_value: i2b2.CRC.model.runner.idQueryInstance}, i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryStatus);
     }
-    if (!stillRunning || i2b2.CRC.model.runner.finished) i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
+    if (!stillRunning || (i2b2.CRC.model.runner.finished && (!i2b2.CRC.model.runner.deleteCurrentQuery || (i2b2.CRC.model.runner.deleteCurrentQuery && i2b2.CRC.model.runner.idQueryMaster !== undefined)))) i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
 
     // update the progress display
     i2b2.CRC.view.QueryMgr.updateStatus();
@@ -214,7 +219,6 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
 i2b2.CRC.ctrlr.QueryMgr.cancelQuery = function() {
     // Aborts a running query
     i2b2.CRC.model.runner.deleteCurrentQuery = true;
-    i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.ctrlr.QueryMgr.stopQuery();
     i2b2.CRC.model.runner.queued = false;
 
@@ -231,10 +235,10 @@ i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     i2b2.CRC.model.runner.isCancelled = true;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.queued = true;
-    if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
-        clearInterval(i2b2.CRC.model.runner.intervalTimer);
-        delete i2b2.CRC.model.runner.intervalTimer;
-    }
+    // if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
+    //     clearInterval(i2b2.CRC.model.runner.intervalTimer);
+    //     delete i2b2.CRC.model.runner.intervalTimer;
+    // }
 };
 
 
@@ -260,7 +264,7 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster = new i2b2_scopedCallback();
 i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.scope = this;
 i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
 
-    if (i2b2.CRC.model.runner.finished && !i2b2.CRC.model.runner.isRunning && !i2b2.CRC.model.runner.isLoading) return false;
+    if (i2b2.CRC.model.runner.finished && !i2b2.CRC.model.runner.isRunning && !i2b2.CRC.model.runner.isLoading && !i2b2.CRC.model.runner.deleteCurrentQuery) return false;
 
     i2b2.CRC.model.QueryResults = results;
     i2b2.CRC.model.runner.hasError = false;
@@ -376,12 +380,11 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     }
 
     // deleted the query if it was requested
-    if (i2b2.CRC.model.runner.deleteCurrentQuery === true) {
+    if (i2b2.CRC.model.runner.deleteCurrentQuery) {
         // delete the query master
         let qmId = i2b2.CRC.model.runner?.idQueryMaster;
+        // query history window is refreshed by this call
         i2b2.CRC.ctrlr.history.queryDeleteNoPrompt(qmId);
-        // refresh the query history window since it was deleted
-        setTimeout(i2b2.CRC.view.history.doRefreshAll, 250);
     } else {
         // render the results tables/graphs
         i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport"))
