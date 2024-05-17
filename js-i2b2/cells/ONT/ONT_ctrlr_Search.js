@@ -193,8 +193,7 @@ i2b2.ONT.ctrlr.Search = {
                     i2b2.ONT.model.searchResultCount++;
                     i2b2.ONT.ctrlr.Search.addResultNode(c[i], true);
                 }
-//                i2b2.ONT.ctrlr.Search.backfillResultNodes();
-                i2b2.ONT.ctrlr.Search.backfillResultNodes_fast();
+                i2b2.ONT.ctrlr.Search.backfillResultNodes();
             } else {
                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }
