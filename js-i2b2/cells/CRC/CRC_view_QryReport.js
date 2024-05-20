@@ -175,8 +175,9 @@ i2b2.CRC.view.QueryReport = {
                 }
             }
 
+            let isZeroPatients =  parseInt(i2b2.CRC.view.QueryReport.breakdowns.patientCount.value || -1) === 0;
             // only create graphs if there is breakdown data
-            if (!isPatientCount && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR") {
+            if (!isPatientCount && !isZeroPatients  && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR") {
                 showGraphs = true;
                 i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
@@ -189,7 +190,7 @@ i2b2.CRC.view.QueryReport = {
 
 
         // See how many non-errored graphs we have (minus the patient count)
-        showGraphs = i2b2.CRC.view.QueryReport.breakdowns.resultTable.map(a => a.status !== 'ERROR' && a.title !== "Number of patients").reduce((b,c) => b ? b : b || c);
+        showGraphs = showGraphs && i2b2.CRC.view.QueryReport.breakdowns.resultTable.map(a => a.status !== 'ERROR' && a.title !== "Number of patients").reduce((b,c) => b ? b : b || c);
         // hide graph section if there are no graphs
         if (!showGraphs) {
             $('#infoQueryStatusGraph').hide();

@@ -1721,29 +1721,31 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         }
 
         // Deal with the reports
-         let reports = [];
-         let graphs = $("#breakdownChartsBody>svg");
-         let charts = $("#breakdownDetails>div");
-         // TODO: Rebuild this next line
-         let dataRef = i2b2.CRC.view.QueryReport.breakdowns.resultTable;
-         for (let i = 0; i < dataRef.length; i++) {
-             if (i === 0) {
-                 reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
-             } else {
-                 // fix the graph's width
-                 if(graphs[i - 1] !== undefined) {
-                     let w = graphs[i - 1].getBoundingClientRect().width;
-                     graphs[i - 1].attributes.width.value = parseInt(w) + "px";
-                 }
+        let reports = [];
+        let graphs = $("#breakdownChartsBody>svg");
+        let charts = $("#breakdownDetails>div");
+        // TODO: Rebuild this next line
+        let dataRef = i2b2.CRC.view.QueryReport.breakdowns.resultTable;
+        for (let i = 0; i < dataRef.length; i++) {
+            if (i === 0) {
+                reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
+            } else {
+                let isZeroPatients = parseInt(i2b2.CRC.view.QueryReport.breakdowns.patientCount.value || -1) === 0;
 
-                 if(!i2b2.CRC.model.runner.hasError) {
-                     reports.push({chart: charts[i].outerHTML, graph: graphs[i - 1].outerHTML, data: dataRef[i]});
-                 }else{
-                     reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
-                 }
-             }
-         }
-         reportData.reports = reports;
+                // fix the graph's width
+                if (graphs[i - 1] !== undefined  && !isZeroPatients) {
+                    let w = graphs[i - 1].getBoundingClientRect().width;
+                    graphs[i - 1].attributes.width.value = parseInt(w) + "px";
+                }
+
+                if (!i2b2.CRC.model.runner.hasError && !isZeroPatients) {
+                    reports.push({chart: charts[i].outerHTML, graph: graphs[i - 1].outerHTML, data: dataRef[i]});
+                } else {
+                    reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
+                }
+            }
+        }
+        reportData.reports = reports;
 
 
         // populate the user's real name via AJAX then display the report window
