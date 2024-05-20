@@ -229,13 +229,17 @@ i2b2.PM.view.displayContextDialog = function(inputData){
 // ================================================================================================== //
 
 i2b2.PM.view.changePassword = {
-    show: function () {
+    show: function (successCallback, disableCancel) {
         let changePasswordModal = $("#changePasswordModal");
         if (changePasswordModal.length === 0) {
             $("body").append("<div id='changePasswordModal'></div");
             changePasswordModal = $("#changePasswordModal");
         }
+        i2b2.PM.view.changePassword.onSuccess = successCallback;
         changePasswordModal.load('js-i2b2/cells/PM/assets/modalChangePassword.html', function(){
+            if(disableCancel){
+                $(".changePasswordModal .btn-cancel").hide();
+            }
             $("#changePasswordModal div:eq(0)").modal('show');
         });
     },
@@ -255,11 +259,15 @@ i2b2.PM.view.changePassword = {
     },
     run: function () {
         try {
-            var curpass = $('#curpass').val();
-            var newpass = $('#newpass').val();
-            var retypepass = $('#retypepass').val();
+            let curpass = $('#curpass').val();
+            let newpass = $('#newpass').val();
+            let retypepass = $('#retypepass').val();
 
-            if (newpass !== retypepass) {
+            if(!newpass){
+                $(".changePasswordModal .errorMsg").text("New password cannot be blank");
+                $(".changePasswordModal .newpass").addClass("error");
+            }
+            else if (newpass !== retypepass) {
                 $(".changePasswordModal .errorMsg").text("New password doesn't match the confirm password");
                 $(".changePasswordModal .newpass").addClass("error");
             } else {
@@ -270,6 +278,9 @@ i2b2.PM.view.changePassword = {
                         hideCancel: true,
                         onOk: function(){
                             $("#pmContextDialog div:eq(0)").modal('hide');
+                            if(i2b2.PM.view.changePassword.onSuccess) {
+                                i2b2.PM.view.changePassword.onSuccess();
+                            }
                         }
                     });
                     $("#changePasswordModal div:eq(0)").modal('hide');

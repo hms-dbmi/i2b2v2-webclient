@@ -1,4 +1,5 @@
 [
   "edu.harvard.catalyst.example",
-  "edu.harvard.catalyst.multiset-breakdowns"
+  "edu.harvard.catalyst.multiset-breakdowns",
+  "edu.harvard.catalyst.admin-tool"
 ]

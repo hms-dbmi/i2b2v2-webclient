@@ -19,25 +19,66 @@
                 <form style="margin: 0 2.5rem -20px" action="javascript:void(0)">
                     <div class="form-group row">
                         <div class="input-group input-group-sm mb-2">
-                            <label class="input-group-text" id="crcQtQueryName-text" style="width: 7.5rem">Name for Query</label>
-                            <input type="text" id="crcQtQueryName" class="form-control" maxlength="164" aria-label="Name for Query" aria-describedby="crcQtQueryName-text">
+                            <label class="input-group-text" id="crcQtQueryName-text"
+                                   style="width: 7.5rem">Name for Query</label>
+                            <input type="text" id="crcQtQueryName" class="form-control" maxlength="164"
+                               aria-label="Name for Query"
+                               aria-describedby="crcQtQueryName-text">
                         </div>
                     </div>
                     <div class="form-group row QueryMethodInput">
-                        <div class="input-group input-group-sm mb-2" style="height:2rem">
-                            <label class="input-group-text" id="crcQtQueryMethod-text" style="width: 7.5rem; height:1.95rem">Query Method</label>
-                            <select id="crcQtQueryMethod" name="queryMethod" class="form-select" aria-label="Query Method" aria-describedby="crcQtQueryMethod-text"></select>
+                        <div class="input-group input-group-sm mb-2" style="height: 2rem">
+                            <label class="input-group-text" id="crcQtQueryMethod-text"
+                                   style="width: 7.5rem; height: 1.95rem">Query Method</label> <select
+                                id="crcQtQueryMethod" name="queryMethod" class="form-select"
+                                aria-label="Query Method"
+                                aria-describedby="crcQtQueryMethod-text"></select>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <div class="input-group input-group-sm mb-2">
-                            <label class="input-group-text" style="width: 7.5rem">Query Result(s)</label>
-                            <div style="float:left; width:40%; height:100%;" class="form-control">
-                                <div class="ResultTypes"></div>
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <button class="accordion-button qtResultTypeHeader" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#runQuery1"
+                                        aria-expanded="true" aria-controls="runQuery1">
+                                    Query Result(s)</button>
+                            </div>
+                            <div id="runQuery1" class="accordion-collapse collapse show">
+                                <div data-bs-toggle="collapse" class="accordion-body" >
+                                    <div class="ResultTypes"></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="errorMsg hidden">You must select one query result type to run.</div>
+                        <div class="accordion-item" id="DataRequestDiv">
+                            <div class="accordion-header">
+                                <button class="accordion-button qtResultTypeHeader" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#runQuery2"
+                                        aria-expanded="true" aria-controls="breakdownCharts">
+                                    Data Request(s)</button>
+                                <div id="runQuery2" class="accordion-collapse collapse show">
+                                    <div data-bs-toggle="collapse" class="accordion-body">
+                                        <div class="RequestTypes"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item" id="DataExportDiv">
+                                <div class="accordion-header">
+                                    <button class="accordion-button qtResultTypeHeader" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#runQuery3"
+                                            aria-expanded="true" aria-controls="breakdownCharts">
+                                        Data Export(s)</button>
+                                </div>
+                                <div id="runQuery3" class="accordion-collapse collapse show">
+                                    <div data-bs-toggle="collapse" class="accordion-body">
+                                        <div class="DataExportTypes"></div>
+                                    </div>
+                                </div>
+                        </div>
+                        </div>
+                        <div class="errorMsg hidden">
+                            You must select one query result type to run.
+                        </div>
                 </form>
             </div>
 

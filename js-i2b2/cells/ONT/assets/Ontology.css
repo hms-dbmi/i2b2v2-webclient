@@ -38,6 +38,10 @@ i.srTooltip.warn {
     font-weight: bold;
 }
 
+#i2b2TreeviewOntSearch .node-i2b2TreeviewOntSearch:has(.noDrag) {
+    cursor: not-allowed;
+}
+
 #i2b2FinderOnt {
     position: absolute;
     top: 0;
@@ -298,6 +302,8 @@ button.invert:hover{
     height: 1.1em;
     margin-top: -0.4em;
     display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
 }
 
 

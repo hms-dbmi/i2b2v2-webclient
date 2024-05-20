@@ -93,6 +93,7 @@ body {
     margin-bottom: 1rem;
 }
 
+
 .results-chart {
     margin-bottom: 1rem;
 }
@@ -111,6 +112,8 @@ body {
     padding: 0.3rem;
 }
 
+
+
 .results-graph {
     border-bottom: 1px solid #999999;
 }
@@ -118,4 +121,26 @@ body {
     margin-left: 2rem;
     display: block;
     margin: auto;
+}
+
+
+
+.results-graph svg text.graphLabel {
+    cursor: default;
+    text-anchor: end;
+}
+
+.results-graph svg rect.graphbar {
+    opacity: 1;
+    stroke: black;
+    fill: rgb(39, 130, 163);
+    transition: opacity 100ms;
+}
+
+.results-graph svg text.graph-title {
+    display: none;
+}
+
+.results-graph svg text.y-label {
+    font-weight: bold;
 }

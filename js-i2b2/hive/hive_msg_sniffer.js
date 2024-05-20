@@ -20,7 +20,7 @@ i2b2.hive.msgSniffer = {
         if (i2b2.hive.model.loggingWindow === null || i2b2.hive.model.loggingWindow.closed) {
             try {
                 // spawn new
-                i2b2.hive.model.loggingWindow = window.open('js-i2b2/hive/logger/index.html', 'i2b2_msgsniffer', 'toolbar=no,resizable=yes,scrollbars=yes,height=490,width=750', false);
+                i2b2.hive.model.loggingWindow = window.open('js-i2b2/hive/logger/index.html', 'i2b2_msgsniffer', 'toolbar=no,resizable=yes,scrollbars=yes,height=490,width=840', false);
                 i2b2.hive.model.loggingWindow.focus();
             } catch(e) {
                 alert('Could not display the Message Log.\n Please disable any popup blockers and try again.');

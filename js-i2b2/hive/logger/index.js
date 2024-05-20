@@ -17,20 +17,7 @@ window.addEventListener("dump-response", (e) => {
 
     msgLog.forEach((item, index) => {
         item.pk = index;
-        let itemRequestor = item.requester.trim();
-        let originOption = $("<option>" + itemRequestor  + "</option>").val(itemRequestor);
-        let filterOrigin = $('#filterOrigin');
-
-        if(filterOrigin.find('option[value="' + itemRequestor + '"]').length === 0){
-            filterOrigin.append(originOption);
-        }
-
-        let itemCell = item.cell.trim();
-        let filterCell= $("#filterCell");
-        let cellOption = $("<option>" + itemCell + "</option>").val(itemCell);
-        if(filterCell.find('option[value="' + itemCell  + '"]').length === 0){
-            filterCell.append(cellOption);
-        }
+        updateFilterOptions(item);
     });
 
     handleClearButtonState();
@@ -45,7 +32,19 @@ window.addEventListener("add-response", (e) => {
     let msg = e.detail;
     msg.pk = msgLog.length;
     msgLog.push(msg);
-    appendLogItem(msg, msg.pk);
+
+    let origin = $("#filterOrigin").val().trim();
+    let cell = $("#filterCell").val().trim();
+    let action = $("#filterAction").val().trim();
+
+    //add new filter options
+    updateFilterOptions(msg);
+
+    if((origin === "ALL" || msg.requester === origin)
+        && (cell === "ALL" || msg.cell === cell)
+        && (action === "ALL" || msg.function === action)) {
+        appendLogItem(msg, msg.pk);
+    }
 });
 
 // handle event for when the messageLog is cleared
@@ -55,6 +54,23 @@ window.addEventListener("clear-response", (e) => {
     $(".logItems").empty();
     $(".messageDetail").empty();
 });
+
+function updateFilterOptions(item){
+    let itemRequestor = item.requester.trim();
+    let originOption = $("<option>" + itemRequestor  + "</option>").val(itemRequestor);
+    let filterOrigin = $('#filterOrigin');
+
+    if(filterOrigin.find('option[value="' + itemRequestor + '"]').length === 0){
+        filterOrigin.append(originOption);
+    }
+
+    let itemCell = item.cell.trim();
+    let filterCell= $("#filterCell");
+    let cellOption = $("<option>" + itemCell + "</option>").val(itemCell);
+    if(filterCell.find('option[value="' + itemCell  + '"]').length === 0){
+        filterCell.append(cellOption);
+    }
+}
 
 function updateLogItems(){
     $(".logItems").empty();
@@ -72,7 +88,6 @@ function updateLogItems(){
     handleClearButtonState();
 
     filteredMsgLog.forEach((item, index) => appendLogItem(item, item.pk));
- 
 }
 
 function displayLogItem(logItem, sent, rcvd){
@@ -149,7 +164,9 @@ function init(){
         updateLogItems();       
     });
 
-     
+     $("#filtersReset").on("click", function() {
+         handleResetFilters();
+     });
 
     $("#filterAction").on("change", function() {        
         updateLogItems();
@@ -161,7 +178,7 @@ function init(){
         window.dispatchEvent(events.dump);
     });
 
-    $(".MessageLog .clearLog").on("click", function(){ 
+    $(".MessageLog #clearLog").on("click", function(){
         if (confirm('Are you sure you want to delete ALL messages in the log?')) {
             window.dispatchEvent(events.clear);
             handleClearButtonState();
@@ -175,4 +192,10 @@ function handleClearButtonState(){
     } else{
         $('.clearLog').prop("disabled", false);
     }
+}
+
+function handleResetFilters() {
+    let ddFilters = document.querySelectorAll(".form-select");
+    ddFilters.forEach((dd) => { dd.selectedIndex = 0 });
+    updateLogItems();
 }

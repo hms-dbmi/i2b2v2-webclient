@@ -263,3 +263,23 @@ Handlebars.registerHelper('eachProperty', function(context, options) {
     }
     return ret;
 });
+
+// ================= handlebars helper to manage SELECT option selection ==================
+Handlebars.registerHelper('dataTypeReportHtml', function(sdxConcept, options) {
+    if (sdxConcept === undefined) return "";
+
+    // Create a select element
+    let result = "";
+
+    const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
+
+    if (valueMetaDataArr.length > 0) {
+        let GeneralValueType = i2b2.CRC.ctrlr.labValues.extractDataType(sdxConcept, valueMetaDataArr[0]);
+
+        if(GeneralValueType && i2b2.CRC.view[GeneralValueType] && typeof i2b2.CRC.view[GeneralValueType].reportHtml === 'function'){
+            result = i2b2.CRC.view[GeneralValueType].reportHtml(sdxConcept);
+        }
+    }
+
+    return result;
+});

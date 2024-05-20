@@ -1,2 +1,5 @@
 .idea
 js-i2b2/cells/plugins/*
+
+# Ignore React Build Artifacts
+node_modules/

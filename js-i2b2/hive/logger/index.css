@@ -42,7 +42,7 @@ body {
     position: absolute;
     top: 4.85em;
     left: 0;
-    bottom: 3.5em;
+    bottom: 0;
     font-size: 0.7em;
     padding-bottom: 5em;
 }
@@ -58,7 +58,7 @@ body {
     background: #FFD
 }
 
-.MessageLog .msgTypes{
+.MessageLog .msgTypes {
     width: 2.9em;
     display: flex;
     flex-direction: column;
@@ -108,22 +108,6 @@ body {
     background: #FFFF90;
 }
 
-.MessageLog .actions {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    border-top: 1px solid rgb(102, 119, 136);
-    width: 280px;
-    height: 2.5em;
-    display: flex;
-    justify-content: center;
-    background: rgba(232, 228, 222, 0.6);
-}
-
-.MessageLog .actions .btn{
-    margin: auto;
-}
-
 .MessageLog .msgSentXml{
     border-left: 8px solid #E99;
     padding: 0.4em;
@@ -147,4 +131,17 @@ body {
 .MessageLog #filterAction {
     width: 18.5em;
     margin-right: 0.7em;
+}
+
+
+.MessageLog #filtersReset,
+.MessageLog #clearLog {
+    border-color: #ffffff;
+    color: #ffffff;
+    padding: 0.1em 0.6em;
+    margin-top: -1px;
+}
+
+.MessageLog #clearLog {
+    margin-left: 0.5em;
 }

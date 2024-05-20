@@ -1,0 +1,16 @@
+.EditParameters{
+  flex-grow: 1;
+  width: 100%;
+  .AddParam {
+    margin-top: 0.7em;
+    margin-bottom: 0.7em;
+  }
+
+  .MuiDataGrid-columnHeaders{
+    background-color:   rgba(0, 0, 0, 0.12);
+  }
+
+  .MuiDataGrid-cell--editing {
+    border: 1px solid  rgba(85, 108, 214) !important;
+  }
+}

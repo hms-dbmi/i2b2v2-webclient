@@ -976,8 +976,9 @@ lm.utils.copy( lm.LayoutManager.prototype, {
 		this._maximisedItem = contentItem;
 		this._maximisedItem.addId( '__glMaximised' );
 		contentItem.element.addClass( 'lm_maximised' );
-		contentItem.element.after( this._maximisePlaceholder );
-		this.root.element.prepend( contentItem.element );
+		// these next 2 lines cause iframes to reload their contents
+//		contentItem.element.after( this._maximisePlaceholder );
+//		this.root.element.prepend( contentItem.element );
 		contentItem.element.width( this.container.width() );
 		contentItem.element.height( this.container.height() );
 		contentItem.callDownwards( 'setSize' );
@@ -988,8 +989,9 @@ lm.utils.copy( lm.LayoutManager.prototype, {
 	_$minimiseItem: function( contentItem ) {
 		contentItem.element.removeClass( 'lm_maximised' );
 		contentItem.removeId( '__glMaximised' );
-		this._maximisePlaceholder.after( contentItem.element );
-		this._maximisePlaceholder.remove();
+		// these next 2 lines cause iframes to reload their contents
+// 		this._maximisePlaceholder.after( contentItem.element );
+//		this._maximisePlaceholder.remove();
 		contentItem.parent.callDownwards( 'setSize' );
 		this._maximisedItem = null;
 		contentItem.emit( 'minimised' );

@@ -223,7 +223,7 @@ DIV.opXML {
 
 /* <standarized main tab style> */
 DIV.TopTabs {
-	height:26px;
+	height:30px;
 	position:relative;
 	z-index:100 !important;
 	overflow:hidden;
@@ -368,9 +368,13 @@ DIV.tabText {}
 }
 
 .goldenLayout .lm_header {
-	height:26px;
+	height:30px;
 	background-color: #ed9b40;
 	border-radius: 3px 3px 0 0;
+}
+
+.goldenLayoutCol .lm_header .lm_tab .lm_title{
+	overflow: visible;
 }
 
 .goldenLayout .lm_maximised .lm_header {
@@ -410,8 +414,10 @@ DIV.tabText {}
 }
 
 .goldenLayout .lm_header .lm_tab.lm_active{
-	box-shadow:none;
-	padding-bottom: 0;
+	color: #000;
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
 }
 
 .goldenLayoutCol .lm_header .lm_tab {
@@ -424,38 +430,47 @@ DIV.tabText {}
 	background: none;
 }
 
-.goldenLayoutCol .lm_tab .lm_title:hover {
-	opacity: 0.4 !important;
-	background: #ed9b40;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+.goldenLayoutCol .lm_tab .lm_title {	
+	font-weight: 400;
+	color:#000;
+	font-size: 16px;
 }
 
-#goldenLayoutColId2 .lm_tab .lm_title:hover {
-	background-color: #b6b4b4;
+.goldenLayoutCol .lm_tab .lm_title:hover {	
+	color:#000;
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
 }
 
 .goldenLayoutCol .lm_tab.lm_active {
 	background: none;
+	color: #000;
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+}
+.goldenLayoutCol .lm_tab.lm_active:hover .lm_title {	
+	color: #404040;	
 }
 
-.goldenLayoutCol .lm_tab .lm_title {
-	font-weight: 400;
-	color:#fff;
-	font-size: 16px;
+.goldenLayoutCol .lm_tab.lm_active .menuOptions {
+	color:#000;	
 }
 
 .goldenLayoutCol .lm_tab .menuOptions {
-	color:#fff;
+	color:#000;
 }
 
 .goldenLayoutCol .lm_tab.lm_active .lm_title {
 	color:#000;
-	padding:1px 4px;
+	padding:1px 4px;	
+	cursor: default;
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
 }
 
-.goldenLayoutCol .lm_tab.lm_active .menuOptions {
-	color:#000;
-}
 
 .goldenLayout div.cellWhite {
 	background:#FFF;

@@ -109,6 +109,8 @@ i2b2.ONT.view.search.initSearch = function(container){
     i2b2.ONT.view.search.treeview.on('onRedraw', () =>{
         // attach drag drop attribute after the tree has been redrawn
         i2b2.ONT.view.search.treeview.find('li:not(:has(span.tvRoot))').attr("draggable", true);
+        // disable dragging for some nodes in the search tree
+        i2b2.ONT.view.search.treeview.find('li:has(span.noDrag)').attr("draggable", false);
 
         // TECHNICAL DEBT: Change this when CSS selector :has() is implemented
         // applies the highlighting CSS style to indicated nodes
