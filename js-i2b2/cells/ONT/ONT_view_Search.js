@@ -205,10 +205,12 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
         i2b2.ONT.view.search.clearSearchInput();
 
         let currentNode = nodesToExpand.shift();
-        //look up node in search tree in the nav tree using the key
+        // look up node in search tree in the nav tree using the key
+        if (!currentNode.key.endsWith("\\")) currentNode.key = currentNode.key + "\\";
         let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
             return snode.key === currentNode.key;
         });
+
         // skip over any nodes that are already loaded in the nav tree
         while (nodesToExpand.length >= 1 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true)) {
             //expand any collapsed nodes that were already loaded
@@ -217,7 +219,8 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
             }
 
             currentNode = nodesToExpand.shift();
-            //look up node in search tree in the nav tree using the key
+            // look up node in search tree in the nav tree using the key
+            if (!currentNode.key.endsWith("\\")) currentNode.key = currentNode.key + "\\";
             topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
                 return snode.key === currentNode.key;
             });
@@ -240,7 +243,8 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
                 i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
 
                 let currentNode = nodesToExpand.shift();
-                //look up node in search tree in the nav tree using the key
+                // look up node in search tree in the nav tree using the key
+                if (!currentNode.key.endsWith("\\")) currentNode.key = currentNode.key + "\\";
                 let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
                     return snode.key === currentNode.key;
                 });
