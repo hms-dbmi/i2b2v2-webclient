@@ -1680,6 +1680,7 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             submittedAt: i2b2.CRC.model.runner.startTime.toLocaleString().replace(", "," @ "),
             completedAt: i2b2.CRC.model.runner.endTime ? i2b2.CRC.model.runner.endTime.toLocaleString().replace(", "," @ ") : "",
             submittedBy: "USERNAME(" + submittedByUsername + ")",
+            hasError: i2b2.CRC.model.runner.hasError,
             runDuration: Number((i2b2.CRC.model.runner.endTime - i2b2.CRC.model.runner.startTime) / 1000).toLocaleString(),
             panels: panels
         };
