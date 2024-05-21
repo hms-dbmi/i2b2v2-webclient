@@ -1619,11 +1619,15 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             group.events.forEach((event) => {
                 event.concepts.forEach((concept) => {
                     if (concept.origData.conceptModified) {
-                        let sdxKey = concept.origData.conceptModified.sdxInfo.sdxKeyValue;
-                        if (!modifiers[sdxKey]) modifiers[sdxKey] = {};
-                        modifiers[sdxKey][concept.origData.key] = concept;
+                        let conceptKey = concept.origData.conceptModified.sdxInfo.sdxKeyValue + "-" + concept.origData.conceptModified.sdxInfo.sdxDisplayName;
+                        if (!modifiers[conceptKey]) modifiers[conceptKey] = {};
+                        modifiers[conceptKey][concept.origData.key] = concept;
                     } else {
-                        concepts[concept.sdxInfo.sdxKeyValue] = concept;
+                        let conceptKey = concept.sdxInfo.sdxKeyValue;
+                        if(concept.origData.synonym_cd === "Y") {
+                            conceptKey = concept.sdxInfo.sdxKeyValue + "-" + concept.sdxInfo.sdxDisplayName;
+                        }
+                        concepts[conceptKey] = concept;
                     }
                 });
             });
@@ -1637,10 +1641,17 @@ i2b2.CRC.view.QT.showQueryReport = function() {
                 let sdxKey = panelItem.key.substring(panelItem.key.indexOf(':')+1);
                 panelItem.moreInfo = concepts[sdxKey];
             } else {
+                let sdxKey =i2b2.h.Unescape(panelItem.key);
+                let conceptKey = sdxKey;
+
+                if(panelItem.isSynonym === "true" || panelItem.modKey){
+                    let sdxName = panelItem.name;
+                    conceptKey = sdxKey + "-" + sdxName;
+                }
                 if (panelItem.modKey) {
-                    panelItem.moreInfo = modifiers[i2b2.h.Unescape(panelItem.key)][panelItem.modKey];
+                    panelItem.moreInfo = modifiers[conceptKey][panelItem.modKey];
                 } else {
-                    panelItem.moreInfo = concepts[i2b2.h.Unescape(panelItem.key)];
+                    panelItem.moreInfo = concepts[conceptKey];
                 }
                 // deal with dates
                 if (panelItem.moreInfo.dateRange?.start === undefined || panelItem.moreInfo.dateRange?.start === "") {
