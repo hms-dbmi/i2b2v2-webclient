@@ -124,7 +124,15 @@ i2b2.ONT.view.search.initSearch = function(container){
     // -------------------- setup context menu --------------------
     i2b2.ONT.view.search.ContextMenu = i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntSearch',i2b2.ONT.view.search.treeview, true);
 };
-
+// ================================================================================================== //
+i2b2.ONT.view.search.nodeClickedAction =  function(event) {
+    let target = $(event.target);
+    let nodeId = parseInt(target.closest('li.list-group-item').attr('data-nodeid'));
+    let nodeData = i2b2.ONT.view.search.treeview.treeview("getNodes", (snode)=> (snode.nodeId === nodeId));
+    if(nodeData.length > 0) {
+        i2b2.ONT.view.info.load(nodeData[0].i2b2, true);
+    }
+};
 //================================================================================================== //
 
 i2b2.ONT.view.search.displayResults = function(treeData) {
@@ -132,6 +140,7 @@ i2b2.ONT.view.search.displayResults = function(treeData) {
     let treeview = i2b2.ONT.view.search.treeview.data('treeview');
     treeview.clear();
     treeview.init({data: treeData, showTags: true});
+    i2b2.ONT.view.search.treeview.on('click', i2b2.ONT.view.search.nodeClickedAction);
 };
 //================================================================================================== //
 
