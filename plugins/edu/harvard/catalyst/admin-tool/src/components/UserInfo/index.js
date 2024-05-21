@@ -49,6 +49,11 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
         setShowPasswordVerify(!showPasswordVerify);
     };
 
+    const userExists = (username) => {
+        const userFound = allUsers.users.filter((user) => user.username === username);
+        return userFound.length !== 0;
+    }
+
     const validateSaveUser = () => {
         let isValid = true;
 
@@ -57,8 +62,15 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
             setUsernameNotValidError("User Name is required");
             isValid = false;
         }else{
-            setIsUsernameNotValid(false);
-            setUsernameNotValidError("");
+            if(isNewUser && userExists(updatedUser.username)){
+                setIsUsernameNotValid(true);
+                setUsernameNotValidError("User already exists");
+                isValid = false;
+            }
+            else {
+                setIsUsernameNotValid(false);
+                setUsernameNotValidError("");
+            }
         }
 
         if(!updatedUser.fullname || updatedUser.fullname.length === 0){
