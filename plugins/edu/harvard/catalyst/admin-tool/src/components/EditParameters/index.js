@@ -13,8 +13,14 @@ import { Confirmation,  StatusUpdate } from "components";
 import "./EditParameters.scss";
 import {Typography} from "@mui/material";
 
-export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam,
-                                   saveStatus, deleteStatus,
+export const EditParameters = ({
+                                   rows,
+                                   title,
+                                   updateParams,
+                                   saveParam,
+                                   deleteParam,
+                                   saveStatus,
+                                   deleteStatus,
                                    allParamStatus,
                                    saveStatusConfirm,
                                    deleteStatusConfirm,
@@ -266,6 +272,7 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
     };
 
     const handleAddParam = () => {
+        console.log("adding paraM");
         const id = rows.length;
         let newParams = [ ...rows, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
 
@@ -277,6 +284,8 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
 
         const lastPage = Math.floor((rows.length+1) / paginationModel.pageSize);
         apiRef.current.setPage(lastPage);
+        console.log("done adding paraM");
+
     };
 
 
