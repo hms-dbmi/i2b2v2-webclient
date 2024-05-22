@@ -152,8 +152,12 @@ i2b2.CRC.view.graphs.rerenderGraphs = function() {
     if (chartContainer.length === 0) return;
 
     chartContainer.empty();
-    i2b2.CRC.view.QueryReport.breakdowns.resultTable.forEach((breakdown,i) => {
-        if (breakdown.title !== "Number of patients") i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown);
-    })
+
+    let isZeroPatients = parseInt(i2b2.CRC.view.QueryReport.breakdowns.patientCount.value || -1) === 0;
+    if(!isZeroPatients) {
+        i2b2.CRC.view.QueryReport.breakdowns.resultTable.forEach((breakdown, i) => {
+            if (breakdown.title !== "Number of patients") i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown);
+        })
+    }
 };
 
