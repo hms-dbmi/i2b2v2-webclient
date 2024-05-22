@@ -7,8 +7,8 @@ import { UserInfo, EditUserParameters } from "components";
 
 import "./EditUserDetails.scss";
 import {
-    clearSelectedUser, getAllUserParams,
-    saveUserParam, saveUserStatusConfirmed,
+    clearSelectedUser,
+    getAllUserParams,
 } from "actions";
 import {Tab, Tabs} from "@mui/material";
 
@@ -46,7 +46,7 @@ export const EditUserDetails = ({user, setIsEditingUser, setIsCreatingUser, isCr
     useEffect(() => {
         setUpdatedUser(selectedUser.user);
         setUpdatedParams(selectedUser.params);
-    }, [selectedUser]);
+    }, [selectedUser.user, selectedUser.params]);
 
     return (
         <div className={"EditUserDetails"}>

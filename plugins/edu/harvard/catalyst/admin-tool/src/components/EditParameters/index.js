@@ -13,8 +13,14 @@ import { Confirmation,  StatusUpdate } from "components";
 import "./EditParameters.scss";
 import {Typography} from "@mui/material";
 
-export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam,
-                                   saveStatus, deleteStatus,
+export const EditParameters = ({
+                                   rows,
+                                   title,
+                                   updateParams,
+                                   saveParam,
+                                   deleteParam,
+                                   saveStatus,
+                                   deleteStatus,
                                    allParamStatus,
                                    saveStatusConfirm,
                                    deleteStatusConfirm,

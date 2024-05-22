@@ -312,6 +312,8 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
 
         case  SAVE_PROJECT_PARAM_ACTION.SAVE_PROJECT_PARAM_FAILED:
         case  SAVE_PROJECT_USER_PARAM_ACTION.SAVE_PROJECT_USER_PARAM_FAILED: {
+            const  { param }  = action.payload;
+
             return SelectedProject({
                 ...state,
                 paramStatus: ParamStatusInfo({
