@@ -272,7 +272,6 @@ export const EditParameters = ({
     };
 
     const handleAddParam = () => {
-        console.log("adding paraM");
         const id = rows.length;
         let newParams = [ ...rows, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
 
@@ -284,8 +283,6 @@ export const EditParameters = ({
 
         const lastPage = Math.floor((rows.length+1) / paginationModel.pageSize);
         apiRef.current.setPage(lastPage);
-        console.log("done adding paraM");
-
     };
 
 
