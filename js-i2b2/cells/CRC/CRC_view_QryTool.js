@@ -998,8 +998,10 @@ i2b2.CRC.view.QT.addConcept = function(sdx, groupIdx, eventIdx, showLabValues) {
     i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
 
     // update the query name
-    i2b2.CRC.view.QT.updateQueryName();
-    i2b2.CRC.view.QueryMgr.clearStatus();
+    if (!i2b2.CRC.model.runner.isLoading) {
+        i2b2.CRC.view.QT.updateQueryName();
+        i2b2.CRC.view.QueryMgr.clearStatus();
+    }
 };
 // ================================================================================================== //
 i2b2.CRC.view.QT.showModifierValues = function(sdxConcept, groupIdx, eventIdx){
