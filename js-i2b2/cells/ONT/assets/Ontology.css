@@ -38,6 +38,10 @@ i.srTooltip.warn {
     font-weight: bold;
 }
 
+#i2b2TreeviewOntSearch .node-i2b2TreeviewOntSearch:has(.noDrag) {
+    cursor: not-allowed;
+}
+
 #i2b2FinderOnt {
     position: absolute;
     top: 0;

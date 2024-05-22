@@ -392,7 +392,8 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
     let actions = {
         nodeAnnotate: {
             name: 'Show More Info',
-                onClick: function(node) {
+            isShown: (node) => (node.i2b2 !== undefined),
+            onClick: function(node) {
                 i2b2.ONT.view.info.load(node.i2b2, true);
             }
         },
@@ -405,9 +406,10 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
         }
     };
 
-    if(includeSearchOptions){
+    if (includeSearchOptions) {
         actions.nodeInTree = {
             name: 'View in Tree',
+            isShown: (node) => (node.i2b2 !== undefined),
             onClick: function(node){
                 i2b2.ONT.view.search.viewInNavTree(node);
             }
@@ -415,6 +417,7 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
         actions.nodeModifier =  {
             name: 'Show Modifiers',
             isShown: function(node) {
+                if (node.i2b2 === undefined) return false;
                 let modifiersDisplayed = [];
                 if (node.nodes) modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
                 return modifiersDisplayed.length === 0 && (node.hasModifier === undefined || node.hasModifier !== false);
