@@ -12,7 +12,6 @@ import "./EditGlobalParameters.scss";
 export const EditGlobalParameters = ({allHives,
                                      updatedParams,
                                      updateParams,
-                                     title,
                                      paginationModel,
                                      setPaginationModel
 }) => {
@@ -67,7 +66,6 @@ export const EditGlobalParameters = ({allHives,
             <EditParameters
                 rows={updatedParams}
                 updateParams={updateParams}
-                title={title}
                 saveParam={saveParam}
                 deleteParam={handleDeleteClick}
                 saveStatus={saveStatus}

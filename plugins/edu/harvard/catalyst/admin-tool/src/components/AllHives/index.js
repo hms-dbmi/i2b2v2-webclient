@@ -41,7 +41,7 @@ export const AllHives = () => {
         setUpdatedDomainSettings(allHives.hiveDomains[0]);
         setUpdatedParams(allHives.params);
 
-    }, [allHives]);
+    }, [allHives.params, allHives.hiveDomains]);
 
     return (
         <div className="AllHives">
