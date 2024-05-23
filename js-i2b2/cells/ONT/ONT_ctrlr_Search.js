@@ -116,8 +116,12 @@ i2b2.ONT.ctrlr.Search = {
                         $('i.srTooltip').attr('data-bs-original-title', "Not all results are displayed! A maximum of " + i2b2.ONT.view.nav.params.max + " records per category were returned.");
                     }
                     status[0].innerHTML = disp;
-//                i2b2.ONT.ctrlr.Search.backfillResultNodes();
-                    i2b2.ONT.ctrlr.Search.backfillResultNodes_fast();
+                    if(i2b2.ONT.view.nav.params.fullSearch) {
+                        i2b2.ONT.ctrlr.Search.backfillResultNodes();
+                    }
+                    else{
+                        i2b2.ONT.ctrlr.Search.backfillResultNodes_fast();
+                    }
                 }
             }
         };
