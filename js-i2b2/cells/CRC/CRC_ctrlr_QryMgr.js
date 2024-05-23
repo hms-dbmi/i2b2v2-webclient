@@ -14,7 +14,7 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
     const secPollInterval = 1;
 
     // stop running this function
-    if (i2b2.CRC.model.runner.finished && i2b2.CRC.model.runner.intervalTimer !== undefined) {
+    if (i2b2.CRC.model.runner.finished && i2b2.CRC.model.runner.intervalTimer !== undefined && !i2b2.CRC.model.runner.deleteCurrentQuery) {
         clearInterval(i2b2.CRC.model.runner.intervalTimer);
         delete i2b2.CRC.model.runner.intervalTimer;
     }
@@ -219,7 +219,6 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
 i2b2.CRC.ctrlr.QueryMgr.cancelQuery = function() {
     // Aborts a running query
     i2b2.CRC.model.runner.deleteCurrentQuery = true;
-    i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.ctrlr.QueryMgr.stopQuery();
     i2b2.CRC.model.runner.queued = false;
 
