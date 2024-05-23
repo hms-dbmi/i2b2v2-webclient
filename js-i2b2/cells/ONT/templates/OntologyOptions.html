@@ -54,5 +54,13 @@
         {{/if}}
         <label for="ONTNAVdisableModifiers"> Disable Modifiers </label>
     </div>
+    <div class="ontOptionSection">
+        {{#if fullSearch}}
+        <input type="checkbox" id="ONTNAVdisableOptSearch" class="ontologyCheckboxOptions" checked/>
+        {{else}}
+        <input type="checkbox" id="ONTNAVdisableOptSearch" />
+        {{/if}}
+        <label for="ONTNAVdisableOptSearch"> Disable Optimized Search </label>
+    </div>
 
 </div>
