@@ -167,6 +167,21 @@ i2b2.ONT.view.nav.displayAlertDialog = function(inputData){
     $(i2b2.ONT.view.nav.templates.alertDialog(data)).appendTo(ontMsgDialogModal);
     $("#ONTAlertDialog").modal('show');
 }
+// ======================================================================================
+i2b2.ONT.view.nav.toggleSearchTree = function(){
+    i2b2.ONT.view.nav.treeview.hide();
+    i2b2.ONT.view.search.treeview.show();
+    $("#ontNavTreeToggle").removeClass("hidden");
+    $("#ontSearchTreeToggle").addClass("hidden");
+}
+// ======================================================================================
+i2b2.ONT.view.nav.toggleNavTree = function(){
+    i2b2.ONT.view.nav.treeview.show();
+    i2b2.ONT.view.search.treeview.hide();
+    $("#ontNavTreeToggle").addClass("hidden");
+    $("#ontSearchTreeToggle").removeClass("hidden");
+}
+// ======================================================================================
 
 // Below code is executed once the entire cell has been loaded
 //================================================================================================== //
@@ -301,7 +316,10 @@ i2b2.events.afterCellInit.add((cell) => {
 //================================================================================================== //
 i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
     //clear any search results
-    i2b2.ONT.view.search.clearSearchInput();
+    if($("#ontNavTreeToggle").is(":visible")) {
+        $("#ontNavTreeToggle").click();
+    }
+
 
     // do not do modifiers (for now)
     let modifierKey;
@@ -410,7 +428,7 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
 
     if (includeSearchOptions) {
         actions.nodeInTree = {
-            name: 'View in Tree',
+            name: 'Browse in Tree',
             isShown: (node) => (node.i2b2 !== undefined),
             onClick: function(node){
                 i2b2.ONT.view.search.viewInNavTree(node);
