@@ -428,7 +428,7 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
 
     if (includeSearchOptions) {
         actions.nodeInTree = {
-            name: 'Browse in Tree',
+            name: 'Browse in tree',
             isShown: (node) => (node.i2b2 !== undefined),
             onClick: function(node){
                 i2b2.ONT.view.search.viewInNavTree(node);
