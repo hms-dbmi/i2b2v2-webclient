@@ -16,6 +16,9 @@ i2b2.ONT.ctrlr.Search = {
         i2b2.ONT.view.nav.treeview.hide();
         i2b2.ONT.view.search.treeview.show();
 
+        $("#ontNavTreeToggle").removeClass("hidden");
+        $("#ontSearchTreeToggle").addClass("hidden");
+
         // clear any previous warning for "more than X number of results"
         $('i.srTooltip').attr('data-bs-original-title', "A maximum of " + i2b2.ONT.view.nav.params.max + " records per category will be returned.");
         $('i.srTooltip').removeClass("warn");
@@ -447,4 +450,3 @@ i2b2.ONT.ctrlr.Search = {
 
 
 };
-
