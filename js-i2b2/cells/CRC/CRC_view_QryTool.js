@@ -1481,7 +1481,12 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
 };
 // ==================================================================================================
 i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, valueMetadataXml, groupIdx, eventIdx) {
-    i2b2.CRC.ctrlr.labValues.redrawConcept(sdxConcept, groupIdx, eventIdx);
+
+    if (eventIdx !== undefined && groupIdx !== undefined) {
+        let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+        const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+        i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+    }
 
     //Determine the value type
     try {
