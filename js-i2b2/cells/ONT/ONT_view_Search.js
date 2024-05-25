@@ -75,6 +75,9 @@ i2b2.ONT.view.search.clearSearchInput = function(){
     // show the navigation treeview
     i2b2.ONT.view.nav.treeview.show();
     i2b2.ONT.view.search.toggleSearchClearIcon();
+
+    $("#ontNavTreeToggle").addClass("hidden");
+    $("#ontSearchTreeToggle").addClass("hidden");
 };
 
 //================================================================================================== //
@@ -211,7 +214,7 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
         let nodesToExpand = [];
         nodesToExpand = nodesToExpand.concat(nodeSubList);
 
-        i2b2.ONT.view.search.clearSearchInput();
+        $("#ontNavTreeToggle").click();
 
         let currentNode = nodesToExpand.shift();
         // look up node in search tree in the nav tree using the key
