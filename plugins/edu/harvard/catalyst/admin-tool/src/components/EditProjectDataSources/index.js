@@ -15,11 +15,12 @@ import Card from "@mui/material/Card";
 import MenuItem from '@mui/material/MenuItem';
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { CELL_ID } from "models";
 import IconButton from "@mui/material/IconButton";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import InputAdornment from '@mui/material/InputAdornment';
+import { CELL_ID } from "models";
 
 
 export const EditProjectDataSources = ({selectedProject, doSave, setSaveCompleted}) => {
@@ -36,6 +37,7 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
     const [jndiDataSourceNotValidError, setJndiDataSourceNotValidError] = useState({});
     const [isDBServerTypeNotValid, setIsDBServerTypeNotValid] = useState({});
     const [dbServerTypeNotValidError, setDBServerTypeNotValidError] = useState({});
+
     const dispatch = useDispatch();
 
     const handleUpdate = (cellId, field, value) => {
@@ -56,7 +58,15 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
     const handleSave = () => {
         if(validateSaveProjectDataSource()) {
             setShowProcessingBackdrop(true);
-            dispatch(saveProjectDataSources({project: selectedProject.project, dataSources: updatedDataSources}));
+            let modDataSources = {
+                ...updatedDataSources
+            }
+
+            modDataSources[CELL_ID.CRC].jndiDataSource = "java:/" + modDataSources[CELL_ID.CRC].jndiDataSource;
+            modDataSources[CELL_ID.ONT].jndiDataSource = "java:/" + modDataSources[CELL_ID.ONT].jndiDataSource;
+            modDataSources[CELL_ID.WORK].jndiDataSource = "java:/" + modDataSources[CELL_ID.WORK].jndiDataSource;
+
+            dispatch(saveProjectDataSources({project: selectedProject.project, dataSources: modDataSources}));
         }else{
             setSaveCompleted(false);
         }
@@ -213,7 +223,12 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
                             error={isJndiDataSourceNotValid[cellId]}
                             helperText={jndiDataSourceNotValidError[cellId]}
                             variant="standard"
-                            InputLabelProps={{ shrink: true }}
+                            InputLabelProps={{
+                                shrink: true
+                            }}
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">java:/</InputAdornment>
+                            }}
                         />
                     </div>
                     <div className={"mainField"}>
@@ -275,15 +290,20 @@ export const EditProjectDataSources = ({selectedProject, doSave, setSaveComplete
         const newDataSources = {...selectedProject.dataSources};
         newDataSources[CELL_ID.CRC] = {
             ...newDataSources[CELL_ID.CRC],
-            projectPath: newDataSources[CELL_ID.CRC].projectPath ? newDataSources[CELL_ID.CRC].projectPath : selectedProject.project.path
+            projectPath: newDataSources[CELL_ID.CRC].projectPath ? newDataSources[CELL_ID.CRC].projectPath : selectedProject.project.path,
+            jndiDataSource:  newDataSources[CELL_ID.CRC].jndiDataSource.replace(/^java\:\//g, "")
+
         };
         newDataSources[CELL_ID.ONT] = {
             ...newDataSources[CELL_ID.ONT],
-            projectPath: newDataSources[CELL_ID.ONT].projectPath ? newDataSources[CELL_ID.ONT].projectPath : selectedProject.project.path
+            projectPath: newDataSources[CELL_ID.ONT].projectPath ? newDataSources[CELL_ID.ONT].projectPath : selectedProject.project.path,
+            jndiDataSource:  newDataSources[CELL_ID.ONT].jndiDataSource.replace(/^java\:\//g, "")
+
         };
         newDataSources[CELL_ID.WORK] = {
             ...newDataSources[CELL_ID.WORK],
-            projectPath: newDataSources[CELL_ID.WORK].projectPath ? newDataSources[CELL_ID.WORK].projectPath : selectedProject.project.path
+            projectPath: newDataSources[CELL_ID.WORK].projectPath ? newDataSources[CELL_ID.WORK].projectPath : selectedProject.project.path,
+            jndiDataSource:  newDataSources[CELL_ID.WORK].jndiDataSource.replace(/^java\:\//g, "")
         };
 
         setUpdatedDataSources(newDataSources);
