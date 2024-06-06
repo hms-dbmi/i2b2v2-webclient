@@ -80,7 +80,7 @@ i2b2.PLUGIN.ctrlr._handleRawAjaxMsg = function(msgEvent, instanceRef) {
         sec_domain: i2b2.h.getDomain(),
         sec_project: i2b2.h.getProject(),
         header_msg_id: i2b2.h.GenerateAlphaNumId(20),
-        header_msg_datetime: moment().toISOString(true),
+        header_msg_datetime: luxon.DateTime.now().toISO({includeOffset: true}),
         result_wait_time: "180"
     };
     // populate the raw Msg's template tags

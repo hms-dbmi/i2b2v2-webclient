@@ -136,7 +136,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         if (commOptions.msg_datetime !== undefined) {
             sMsgValues.header_msg_datetime = commOptions.msg_datetime;
         } else {
-            sMsgValues.header_msg_datetime = moment().toISOString(true);
+            sMsgValues.header_msg_datetime = luxon.DateTime.now().toISO({includeOffset: true});
         }
 
         if (parameters == undefined) { parameters = {}; }

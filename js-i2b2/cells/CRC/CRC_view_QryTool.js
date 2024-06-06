@@ -533,8 +533,6 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
                 endDateElem.datepicker().value("");
             }
 
-            let date = moment(startDate, 'MM-DD-YYYY');
-            //let isDateValid = date.isValid();
             if(!startDate){
                 $("#termDateConstraintModal .startDateError").hide();
             } else{
@@ -575,9 +573,6 @@ i2b2.CRC.view.QT.addConceptDateConstraint = function(sdx, callbackFunc) {
                 startDateElem.datepicker().value("");
                 $("#termDateConstraintModal .startDateError").hide();
             }
-
-            let date = moment(endDate, 'MM-DD-YYYY');
-            //let isDateValid = date.isValid();
 
             if(!endDate){
                 $("#termDateConstraintModal .endDateError").hide();
