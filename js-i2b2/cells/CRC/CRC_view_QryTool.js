@@ -13,7 +13,7 @@ i2b2.CRC.view.QT.allowedDropTypes = ["CONCPT","QM","PRS", "PR", "WRK", "ENS"];
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateQueryName = function() {
     // update the transformed model and set the title
-    $('.CRC_QT_runbar input.name').attr("placeholder", i2b2.CRC.ctrlr.QueryMgr.generateQueryName());
+    $('.CRC_QT_runbar input.name').attr({placeholder : i2b2.CRC.ctrlr.QueryMgr.generateQueryName(), value : i2b2.CRC.ctrlr.QueryMgr.generateQueryName()});
 };
 
 
@@ -197,7 +197,7 @@ i2b2.CRC.view.QT.showRun = function() {
     } else {
         // add the current generated query name
         const queryName = i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
-        $("#crcQtQueryName").val(queryName).attr("placeholder", queryName);
+        $("#crcQtQueryName").val(queryName).attr({placeholder: queryName, value: queryName });
         $("#crcModal .RequestTypes").find(".chkQueryType").prop( "checked", false );
         $("#crcModal .DataExportTypes").find(".chkQueryType").prop( "checked", false );
         $('body #crcModal div:eq(0)').modal('show');
