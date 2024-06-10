@@ -15,7 +15,7 @@ i2b2.CRC.view.QueryReport = {
         this.dataExport  = {
             resultTable: [],
         };
-        this.showGraphs = false;
+        this.hasZeroPatients = false;
 
         i2b2.CRC.view.QueryReport.disDiv = div;
         let view = this.disDiv;
