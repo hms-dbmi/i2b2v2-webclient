@@ -4,6 +4,7 @@ i2b2.CRC.view.QueryReport = {
         queryResultSet: []
     },
     disDiv: null,
+    hasZeroPatients: null,
     breakdowns: null,
     dataExport: null,
     displayQueryResults: function(queryInstanceId, div) {
@@ -14,6 +15,8 @@ i2b2.CRC.view.QueryReport = {
         this.dataExport  = {
             resultTable: [],
         };
+        this.showGraphs = false;
+
         i2b2.CRC.view.QueryReport.disDiv = div;
         let view = this.disDiv;
         $(view).empty();
@@ -77,7 +80,6 @@ i2b2.CRC.view.QueryReport = {
 
     },
     _handleQueryResultInstance: function(results){
-        let showGraphs = false;
         if (results.error) {
             alert(results.errorMsg);
             return;
@@ -176,9 +178,11 @@ i2b2.CRC.view.QueryReport = {
             }
 
             let isZeroPatients =  parseInt(i2b2.CRC.view.QueryReport.breakdowns.patientCount.value || -1) === 0;
+            if (isZeroPatients){
+                i2b2.CRC.view.QueryReport.hasZeroPatients = isZeroPatients;
+            }
             // only create graphs if there is breakdown data
             if (!isPatientCount && !isZeroPatients  && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR") {
-                showGraphs = true;
                 i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
         }
@@ -190,7 +194,9 @@ i2b2.CRC.view.QueryReport = {
 
 
         // See how many non-errored graphs we have (minus the patient count)
-        showGraphs = showGraphs && i2b2.CRC.view.QueryReport.breakdowns.resultTable.map(a => a.status !== 'ERROR' && a.title !== "Number of patients").reduce((b,c) => b ? b : b || c);
+        let showGraphs = !i2b2.CRC.view.QueryReport.hasZeroPatients
+            && i2b2.CRC.view.QueryReport.breakdowns.resultTable.length > 1
+            && i2b2.CRC.view.QueryReport.breakdowns.resultTable.map(a => a.status !== 'ERROR' && a.title !== "Number of patients").reduce((b,c) => b ? b : b || c);
         // hide graph section if there are no graphs
         if (!showGraphs) {
             $('#infoQueryStatusGraph').hide();
