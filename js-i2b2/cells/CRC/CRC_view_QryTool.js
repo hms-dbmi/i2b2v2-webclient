@@ -13,7 +13,7 @@ i2b2.CRC.view.QT.allowedDropTypes = ["CONCPT","QM","PRS", "PR", "WRK", "ENS"];
 // ================================================================================================== //
 i2b2.CRC.view.QT.updateQueryName = function() {
     // update the transformed model and set the title
-    $('.CRC_QT_runbar input.name').attr({placeholder : i2b2.CRC.ctrlr.QueryMgr.generateQueryName(), value : i2b2.CRC.ctrlr.QueryMgr.generateQueryName()});
+    $('.CRC_QT_runbar input.name').attr({placeholder : i2b2.CRC.ctrlr.QueryMgr.generateQueryName(), value : ''});
 };
 
 
@@ -151,10 +151,14 @@ i2b2.CRC.view.QT.showRun = function() {
                 }
             }
 
-            // add the current generated query name
-            const queryName = i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
-            $("#crcQtQueryName").val(queryName)
-                        .attr("placeholder", queryName);
+            let runBox = $('#queryName').val();
+            let queryName;
+            if (runBox.length ==0) {
+                queryName = i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
+            } else {
+                queryName = runBox;
+            } 
+            $("#crcQtQueryName").val(queryName).attr({placeholder: queryName, value: queryName });
 
             // now show the modal form
             $('body #crcModal div:eq(0)').modal('show');
@@ -175,7 +179,7 @@ i2b2.CRC.view.QT.showRun = function() {
                 }
 
                 // update the query name field
-                $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
+                $('.CRC_QT_runbar input.name').attr({placeholder: queryName, value: queryName });
 
                 // build list of selected result types
                 let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
@@ -195,8 +199,13 @@ i2b2.CRC.view.QT.showRun = function() {
             });
         });
     } else {
-        // add the current generated query name
-        const queryName = i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
+        let runBox = $('#queryName').val();
+        let queryName;
+        if (runBox.length ==0) {
+            queryName = i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
+        } else {
+            queryName = runBox;
+        } 
         $("#crcQtQueryName").val(queryName).attr({placeholder: queryName, value: queryName });
         $("#crcModal .RequestTypes").find(".chkQueryType").prop( "checked", false );
         $("#crcModal .DataExportTypes").find(".chkQueryType").prop( "checked", false );
