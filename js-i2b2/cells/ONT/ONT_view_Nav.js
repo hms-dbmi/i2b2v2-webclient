@@ -357,8 +357,9 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
     };
 
     let onLoadChildrenComplete = function(nodeData) {
-        i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
         nodeData.el_Node[0].scrollIntoView({alignToTop:false, behavior: 'smooth', block: 'center' });
+        if (nodeData.nodes === undefined) return;
+        if (nodeData.nodes.length > 0) i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
         for (let child of nodeData.nodes) {
             if (sdxKey.startsWith(child.key)) {
                 if (sdxKey === child.key) {
