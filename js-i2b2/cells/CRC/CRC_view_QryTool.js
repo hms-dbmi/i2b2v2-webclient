@@ -1646,7 +1646,7 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             if (panelItem.key.indexOf(':') !== -1 && panelItem.key.substr(0,2) !== "\\\\") {
                 // panel item is special item such as "query_master:123"
                 // ignore keys that start with "\\\\" as some lab values include a ":" in their key path
-                let sdxKey = panelItem.key.substring(panelItem.key.indexOf(':')+1);
+                let sdxKey = panelItem.key.substring(panelItem.key.lastIndexOf(':')+1);
                 panelItem.moreInfo = concepts[sdxKey];
             } else {
                 let sdxKey =i2b2.h.Unescape(panelItem.key);
