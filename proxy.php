@@ -92,34 +92,42 @@ if ($PostBody=="") {
     }
 } else {
 	// Process the POST for proxy redirection
-
 	// Validate that POST data is XML and extract <proxy> tag
+	// SECURITY FIX: Prevent processing of any prepended user/pass when extracting the proxy URL
 	$startPos = strpos($PostBody,"<redirect_url>") + 14;
 	$endPos = strpos($PostBody,"</redirect_url>", $startPos);
 	$proxyURL = substr($PostBody, $startPos, ($endPos - $startPos));
-	$newXML = $PostBody;
-
-	// Do not allow DOCTYPE declarations
-	$replace_match = '/^.*(?:!DOCTYPE).*$(?:\r\n|\n)?/m';
-	if (preg_match($replace_match, $newXML)) {
-        exit('DOCTYPE not allowed to be proxied');
+	$sec_fix = parse_url($proxyURL);
+	$sec_invalid_url = false;
+	if ($sec_fix == false) {
+	    // a *very* badly formed URL
+	    $sec_invalid_url = true;
+	} else {
+	    if ($sec_fix['scheme'] != null) {
+	        $proxyURL = $sec_fix['scheme'];
+	        // we are silently dropping any PHP_URL_USER and/or PHP_URL_PASS
+	        if ($sec_fix['host'] != null) {
+	            $proxyURL = $proxyURL . "://" . $sec_fix['host'];
+	            if ($sec_fix['port'] != null) {
+	                $proxyURL = $proxyURL . ":" . $sec_fix['port'];
+	            }
+	            if ($sec_fix['path'] != null) {
+	                $proxyURL = $proxyURL . $sec_fix['path'];
+	            }
+	            if ($sec_fix['query'] != null) {
+	                $proxyURL = $proxyURL . "?" . $sec_fix['query'];
+	            }
+	        } else {
+	            $sec_invalid_url = true;
+	        }
+	    } else {
+	        $sec_invalid_url = true;
+	    }
 	}
-
-	if ($pmCheckAllRequests) {
-        error_log("Searhing for Security in " . $PostBody);
-        //Validate that user is valid against known PM
-        preg_match("/<security(.*)?>(.*)?<\/security>/", $PostBody, $proxySecurity);
-    	error_log("My Security is " .  $proxySecurity[1]);
-        preg_match("/<domain(.*)?>(.*)?<\/domain>/", $proxySecurity[0], $proxyDomain);
-        preg_match("/<username(.*)?>(.*)?<\/username>/", $proxySecurity[0], $proxyUsername);
-        preg_match("/<password(.*)?>(.*)?<\/password>/", $proxySecurity[0], $proxyPassword);
-
-        $checkPMXML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><i2b2:request xmlns:i2b2=\"http://www.i2b2.org/xsd/hive/msg/1.1/\" xmlns:pm=\"http://www.i2b2.org/xsd/cell/pm/1.1/\"> <message_header> <i2b2_version_compatible>1.1</i2b2_version_compatible> <hl7_version_compatible>2.4</hl7_version_compatible> <sending_application> <application_name>i2b2 Project Management</application_name> <application_version>1.1</application_version> </sending_application> <sending_facility> <facility_name>i2b2 Hive</facility_name> </sending_facility> <receiving_application> <application_name>Project Management Cell</application_name> <application_version>1.1</application_version> </receiving_application> <receiving_facility> <facility_name>i2b2 Hive</facility_name> </receiving_facility> <datetime_of_message>2007-04-09T15:19:18.906-04:00</datetime_of_message> <security> " . $proxyDomain[0] .  $proxyUsername[0] .  $proxyPassword[0] . " </security> <message_control_id> <message_num>0qazI4rX6SDlQlk46wqQ3</message_num> <instance_num>0</instance_num> </message_control_id> <processing_id> <processing_id>P</processing_id> <processing_mode>I</processing_mode> </processing_id> <accept_acknowledgement_type>AL</accept_acknowledgement_type> <application_acknowledgement_type>AL</application_acknowledgement_type> <country_code>US</country_code> <project_id>undefined</project_id> </message_header> <request_header> <result_waittime_ms>180000</result_waittime_ms> </request_header> <message_body> <pm:get_user_configuration> <project>undefined</project> </pm:get_user_configuration> </message_body></i2b2:request>";
-        // Process the POST for proxy redirection
-        error_log($checkPMXML,0 );
-        error_log("My proxy: " . $proxyURL, 0);
-	}
-
+    if ($sec_invalid_url) {
+        // security has failed - exit here as the proxy URL is malformed
+        die("The proxy URL is malformed!");
+    }
     // ---------------------------------------------------
 	//   white-list processing on the URL
 	// ---------------------------------------------------
@@ -145,6 +153,29 @@ if ($PostBody=="") {
 			// security as failed - exit here and don't allow one more line of execution the opportunity to reverse this
 			die("The proxy has refused to relay your request.");
 		}
+	}
+
+
+	$newXML = $PostBody;
+	// Do not allow DOCTYPE declarations
+	$replace_match = '/^.*(?:!DOCTYPE).*$(?:\r\n|\n)?/m';
+	if (preg_match($replace_match, $newXML)) {
+        exit('DOCTYPE not allowed to be proxied');
+	}
+
+	if ($pmCheckAllRequests) {
+        error_log("Searhing for Security in " . $PostBody);
+        //Validate that user is valid against known PM
+        preg_match("/<security(.*)?>(.*)?<\/security>/", $PostBody, $proxySecurity);
+    	error_log("My Security is " .  $proxySecurity[1]);
+        preg_match("/<domain(.*)?>(.*)?<\/domain>/", $proxySecurity[0], $proxyDomain);
+        preg_match("/<username(.*)?>(.*)?<\/username>/", $proxySecurity[0], $proxyUsername);
+        preg_match("/<password(.*)?>(.*)?<\/password>/", $proxySecurity[0], $proxyPassword);
+
+        $checkPMXML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><i2b2:request xmlns:i2b2=\"http://www.i2b2.org/xsd/hive/msg/1.1/\" xmlns:pm=\"http://www.i2b2.org/xsd/cell/pm/1.1/\"> <message_header> <i2b2_version_compatible>1.1</i2b2_version_compatible> <hl7_version_compatible>2.4</hl7_version_compatible> <sending_application> <application_name>i2b2 Project Management</application_name> <application_version>1.1</application_version> </sending_application> <sending_facility> <facility_name>i2b2 Hive</facility_name> </sending_facility> <receiving_application> <application_name>Project Management Cell</application_name> <application_version>1.1</application_version> </receiving_application> <receiving_facility> <facility_name>i2b2 Hive</facility_name> </receiving_facility> <datetime_of_message>2007-04-09T15:19:18.906-04:00</datetime_of_message> <security> " . $proxyDomain[0] .  $proxyUsername[0] .  $proxyPassword[0] . " </security> <message_control_id> <message_num>0qazI4rX6SDlQlk46wqQ3</message_num> <instance_num>0</instance_num> </message_control_id> <processing_id> <processing_id>P</processing_id> <processing_mode>I</processing_mode> </processing_id> <accept_acknowledgement_type>AL</accept_acknowledgement_type> <application_acknowledgement_type>AL</application_acknowledgement_type> <country_code>US</country_code> <project_id>undefined</project_id> </message_header> <request_header> <result_waittime_ms>180000</result_waittime_ms> </request_header> <message_body> <pm:get_user_configuration> <project>undefined</project> </pm:get_user_configuration> </message_body></i2b2:request>";
+        // Process the POST for proxy redirection
+        error_log($checkPMXML,0 );
+        error_log("My proxy: " . $proxyURL, 0);
 	}
 
 	if ($pmCheckAllRequests) {
