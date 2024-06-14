@@ -541,7 +541,7 @@ i2b2.CRC.view.history._loadUsersInOptions =  function() {
                 }
             }
 
-            Object.entries(users).forEach(
+            Object.entries(users).sort().forEach(
                 ([key, value]) => $('#HISTUser').append($('<option>', {value:key, text:key}))
             );
 
