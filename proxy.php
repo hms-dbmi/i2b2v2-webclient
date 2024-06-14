@@ -39,9 +39,7 @@ $WHITELIST = array(
     "http://127.0.0.1",
     "http://localhost:8080",
     "http://localhost:9090",
-    "http://localhost",
-    "https://",
-    "http://"
+    "http://localhost"
 );
 
 
