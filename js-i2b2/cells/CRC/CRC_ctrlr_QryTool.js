@@ -394,7 +394,7 @@ function QueryToolController() {
                 let queryName = i2b2.h.getXNodeVal(results.refXML, 'name');
                 loadAllModifierInfo(qd[0], function(modifierXmlInfo){
                     reloadQuery(modifierXmlInfo);
-                    $('.CRC_QT_runbar input.name').attr("placeholder", queryName);
+                    $('.CRC_QT_runbar input.name').attr({placeholder: queryName, value: queryName });                   
                     i2b2.CRC.ctrlr.QueryMgr.loadQuery(qm_id, queryName);
                 });
             }
