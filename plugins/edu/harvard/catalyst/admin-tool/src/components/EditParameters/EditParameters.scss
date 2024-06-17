@@ -13,4 +13,17 @@
   .MuiDataGrid-cell--editing {
     border: 1px solid  rgba(85, 108, 214) !important;
   }
+
+  .MuiDataGrid-cell.MuiDataGrid-cell--editing:focus-within.missing {
+    border: 1px solid  red !important;
+    outline: 1px solid  red;
+  }
+
+  .MuiDataGrid-cell--editing.missing {
+    border: 1px solid  red !important;
+  }
+
+  .missing {
+    border: 1px solid  red !important;
+  }
 }
