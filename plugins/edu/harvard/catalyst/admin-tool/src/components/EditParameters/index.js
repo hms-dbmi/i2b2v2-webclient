@@ -34,6 +34,8 @@ export const EditParameters = ({
     const [showDeleteParamConfirm, setShowDeleteParamConfirm] = useState(false);
     const [deleteParamConfirmMsg, setDeleteParamConfirmMsg] = useState("");
     const [deleteParamData, setDeleteParamData] = useState(null);
+    const [inValidCells, setInValidCells] = useState({});
+
     const apiRef = useGridApiRef();
 
     const columns = [
@@ -140,7 +142,7 @@ export const EditParameters = ({
     }
 
     const processRowUpdate = (newRow) => {
-        if(newRow.name.length > 0) {
+        if(newRow.name.length > 0 && newRow.value.length > 0){
             const updatedRow = {...newRow, isNew: false};
 
             let newRows = rows.map((row) => (row.id === newRow.id ? updatedRow : row));
@@ -149,7 +151,22 @@ export const EditParameters = ({
             let param = newRows.filter((row) => row.id === newRow.id).reduce((acc, item) => acc);
 
             saveParam(param);
+
+            let updatedInValidCells = Object.keys(inValidCells).filter(i => inValidCells[i] === newRow.id)
+            setInValidCells(updatedInValidCells);
+
             return updatedRow;
+        }
+        else{
+            let updatedInValidCells = {
+                ...inValidCells
+            };
+            updatedInValidCells[newRow.id] = {
+                name: newRow.name,
+                value: newRow.value
+            }
+
+            setInValidCells(updatedInValidCells);
         }
         return false;
     };
@@ -205,6 +222,7 @@ export const EditParameters = ({
             <DataGrid
                 autoHeight
                 rows={rows}
+                columns={columns}
                 getRowId={getRowId}
                 editMode="row"
                 rowModesModel={rowModesModel}
@@ -213,8 +231,19 @@ export const EditParameters = ({
                 onRowModesModelChange={handleRowModesModelChange}
                 processRowUpdate={processRowUpdate}
                 onProcessRowUpdateError={onProcessRowUpdateError}
-                columns={columns}
-                disableRowSelectionOnClick
+                getCellClassName={(params) => {
+                    let paramId = params.id;
+
+                    if(params.field ==="name"){
+                        return (inValidCells[paramId] !== undefined && inValidCells[paramId].name.length < 1) ? 'missing' : '';
+                    }
+                    else if(params.field ==="value"){
+                        return (inValidCells[paramId] !== undefined && inValidCells[paramId].value.length < 1) ? 'missing' : '';
+                    }else{
+                        return '';
+                    }
+                }}
+                disableRowSelectionOnClicks
                 paginationModel={paginationModel}
                 onPaginationModelChange={setPaginationModel}
                 onSortModelChange={(model) => {
@@ -247,6 +276,9 @@ export const EditParameters = ({
             ...rowModesModel,
             [id]: { mode: GridRowModes.View, ignoreModifications: true },
         });
+
+        let updatedInValidCells = Object.keys(inValidCells).filter(i => inValidCells[i] === id)
+        setInValidCells(updatedInValidCells);
 
         const editedRow = rows.find((row) => row.id === id);
         if (editedRow.isNew) {
