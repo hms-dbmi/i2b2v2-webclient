@@ -194,6 +194,8 @@ button.invert:hover{
 #i2b2QueryHistoryBar .nav-link{
     color: #212529;
     margin-right: 0.2em;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
 }
 
 #i2b2QueryHistoryBar .dropdown-menu{
