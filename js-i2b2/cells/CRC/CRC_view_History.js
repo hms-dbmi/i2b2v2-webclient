@@ -534,16 +534,16 @@ i2b2.CRC.view.history._loadUsersInOptions =  function() {
         // get all user roles call
         // parse thru the list and add them to the drop down
         let loadUsers = function(){
-            let tmp = {};
+            let users = {};
             for (let i=0; i<i2b2.CRC.view.history.allUsers.model.length; i++) {
                 if(typeof i2b2.CRC.view.history.allUsers.model[i].username !== 'undefined'){
-                    tmp[i2b2.CRC.view.history.allUsers.model[i].username] = i2b2.CRC.view.history.allUsers.model[i];
+                    users[i2b2.CRC.view.history.allUsers.model[i].username] = i2b2.CRC.view.history.allUsers.model[i];
                 }
             }
 
-            $.each(tmp, function (idx, obj) {
-                $('#HISTUser').append($('<option>', {value:idx, text:idx}));
-            });
+            Object.entries(users).sort().forEach(
+                ([key, value]) => $('#HISTUser').append($('<option>', {value:key, text:key}))
+            );
 
             if (i2b2.CRC.view.history.params.userBy !== undefined) {
                 $('#HISTUser').val(i2b2.CRC.view.history.params.userBy);
