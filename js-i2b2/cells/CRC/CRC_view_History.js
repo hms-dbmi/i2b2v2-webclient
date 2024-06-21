@@ -515,15 +515,12 @@ i2b2.CRC.view.history.showDateListingView = function() {
     i2b2.CRC.view.history.treeviewFinder.treeview('clear');
 
     // set the initial date to today
-    let today = moment();
-    i2b2.CRC.view.history.viewDate = today.format("MM/DD/YYYY");
+    let today = luxon.DateTime.now();
+    i2b2.CRC.view.history.viewDate = today.toFormat("MM/dd/yyyy");
     $('#historyDateStart').val(i2b2.CRC.view.history.viewDate);
     // reformat date
-    today.hour(23);
-    today.minute(59);
-    today.second(59);
-    today.millisecond(999);
-    today = today.format();
+    today = today.set({hour:23, minute: 59, second: 59, millisecond: 999});
+    today = today.toISO();
 
     i2b2.CRC.view.history.searchByDate(today);
 };
@@ -608,12 +605,13 @@ i2b2.events.afterCellInit.add((cell) => {
                                         if (newDate !== i2b2.CRC.view.history.viewDate) {
                                             i2b2.CRC.view.history.viewDate = newDate;
                                             // reformat date
-                                            let startDate = moment(Date.parse(newDate));
-                                            startDate.hour(23);
+                                            let startDate = luxon.DateTime.fromMillis(Date.parse(newDate));
+                                            startDate = startDate.set({hour: 23, minute: 59, second: 59, millisecond:999});
+                                            /*startDate.hour(23);
                                             startDate.minute(59);
                                             startDate.second(59);
-                                            startDate.millisecond(999);
-                                            startDate = startDate.format();
+                                            startDate.millisecond(999);*/
+                                            startDate = startDate.toISO();
 
                                             // refresh the treeview
                                             i2b2.CRC.view.history.treeviewFinder.treeview('clear');
