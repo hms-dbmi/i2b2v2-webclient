@@ -1,5 +1,5 @@
 if (i2b2.PLUGIN.view === undefined) i2b2.PLUGIN.view = {};
-
+i2b2.PLUGIN.view.options ={};
 i2b2.PLUGIN.view.windows = [];
 i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
     // get the plugin info from the model
@@ -16,7 +16,7 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
         componentName = 'i2b2.LEGACYPLUGIN.view.main';
         pluginTitle = pluginData.name;
     }
-
+    
     // create the new tab configuration
     let newPluginWindow = {
         type:'component',
@@ -53,14 +53,45 @@ i2b2.events.afterCellInit.add((cell) => {
                 // i2b2.ONT.view.info.newInstance()
                 i2b2.PLUGIN.view.windows.push(windowEntry);
 
-                // change the tab's hover over to be the name of the plugin
+                // change the tab's hover over to be the name of the plugin and add an id of activePlugin
                 let funcRetitle = (function(title) {
                     // this can only be run after a bit when the tab has been created in the DOM
                     this.tab.element[0].title = title;
+                    this.tab.element[0].id = "activePlugin";
+                         
+                    
                 }).bind(container, windowEntry.title);
+
+                let funcAddOptionsButton = (function(tab) {
+                    
+                }).bind(container, windowEntry.tab);
+                
 
                 container.on("titleChanged", funcRetitle);
                 container.on("tab", funcRetitle);
+
+                container.on( 'tab', function( tab ){
+                    if($(tab.element).attr('id') === 'activePlugin') {
+                        //add unique id to the term tab                       
+
+                        let optionsBtn = $('<div id="activePluginOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Plugin Options"></i></div>');
+                        $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));   
+                        
+                        i2b2.PLUGIN.view.options.ContextMenu = new BootstrapMenu("#activePluginOptions", {
+                            menuEvent: "click",
+                            actions: {
+                                ClosePlugin: {
+                                    name: 'Close Plugin',
+                                    onClick: function (node) {
+                                        alert("hieee");
+                                    }
+                                }
+                            }
+                        });
+
+                        
+                    }
+                });
 
                 // create the iframe and load the plugin into it
                 let iframeTarget = $('<iframe class="i2b2PluginIFrame" src="'+windowEntry.data.url+'" title="'+windowEntry.data.title+'"></iframe>').appendTo(container._contentElement)[0];

@@ -117,4 +117,14 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
     margin:auto;
 }
 
+#activePluginOptions{
+    font-size: 1.25em;
+    width: 1.1em;
+    height: 1.1em;
+    margin-top: -0.4em;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
+
 /* === Plugin List Viewer === */
