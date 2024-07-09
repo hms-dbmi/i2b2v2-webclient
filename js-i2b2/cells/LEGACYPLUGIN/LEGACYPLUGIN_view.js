@@ -1,6 +1,9 @@
 // create and save the view object
 i2b2.LEGACYPLUGIN.view.main = new i2b2Base_cellViewController(i2b2.LEGACYPLUGIN, 'main');
 
+
+i2b2.LEGACYPLUGIN.view.options ={};
+
 // ==================================================================================================
 
 i2b2.LEGACYPLUGIN.view.main.onPluginFrameLoad = function(){
@@ -84,7 +87,38 @@ i2b2.events.afterCellInit.add((cell) => {
                     tab.header.parent.on("maximised", () => {
                         maximizeComponent();
                     });
+
+                   
                 });
+                 let funcRetitle = (function(title) {
+                        // this can only be run after a bit when the tab has been created in the DOM
+                        this.tab.element[0].id = "activePlugin";  
+                    }).bind(container);
+
+                    container.on("tab", funcRetitle);
+
+                    container.on( 'tab', function( tab ){
+                        if($(tab.element).attr('id') === 'activePlugin') {
+                            //add unique id to the term tab                       
+    
+                            let optionsBtn = $('<div id="activePluginOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Plugin Options"></i></div>');
+                            $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));   
+                            
+                            i2b2.LEGACYPLUGIN.view.options.ContextMenu = new BootstrapMenu("#activePluginOptions", {
+                                menuEvent: "click",
+                                actions: {
+                                    ClosePlugin: {
+                                        name: 'Close Plugin',
+                                        onClick: function (node) {
+                                            alert("hieee");
+                                        }
+                                    }
+                                }
+                            });
+    
+                            
+                        }
+                    });
             }).bind(this)
         );
     }

@@ -62,10 +62,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     
                 }).bind(container, windowEntry.title);
 
-                let funcAddOptionsButton = (function(tab) {
-                    
-                }).bind(container, windowEntry.tab);
-                
+                           
 
                 container.on("titleChanged", funcRetitle);
                 container.on("tab", funcRetitle);
