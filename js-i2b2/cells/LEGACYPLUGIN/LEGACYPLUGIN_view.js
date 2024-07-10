@@ -58,8 +58,8 @@ i2b2.events.afterCellInit.add((cell) => {
                 </div>
             </div>`;
 
-// Append the modal immediately after the iframe
-frameDiv.after(exitLegacyPluginModalHTML);
+            // Append the modal immediately after the iframe
+            frameDiv.after(exitLegacyPluginModalHTML);
 
 
 
