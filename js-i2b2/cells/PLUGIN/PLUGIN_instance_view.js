@@ -80,7 +80,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 ClosePlugin: {
                                     name: 'Close Plugin',
                                     onClick: function (node) {
-                                        alert("hieee");
+                                       i2b2.PLUGIN.view.exitInstance();
                                     }
                                 }
                             }
@@ -92,7 +92,36 @@ i2b2.events.afterCellInit.add((cell) => {
 
                 // create the iframe and load the plugin into it
                 let iframeTarget = $('<iframe class="i2b2PluginIFrame" src="'+windowEntry.data.url+'" title="'+windowEntry.data.title+'"></iframe>').appendTo(container._contentElement)[0];
+                let exitPluginModalHTML = `<div class="modal fade" id="exitPluginModal" tabindex="-1" aria-labelledby="exitPluginModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exitPluginModalLabel">Close this Plugin? </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Closing this plugin will stop all processes in the plugin and return you to the Analysis Tools Tab. Do you want to proceed?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary">Yes</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>                                                   
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>`;
+
+                // Append the modal to the same container as the iframe
+                $(container._contentElement).append(exitPluginModalHTML);
+
+
             }).bind(this)
         );
     }
 });
+
+i2b2.PLUGIN.view.exitInstance = function(){
+    let exitPluginModal = new bootstrap.Modal(document.getElementById('exitPluginModal'), {
+        keyboard: false
+      });
+      exitPluginModal.show();
+};

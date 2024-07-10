@@ -40,6 +40,28 @@ i2b2.events.afterCellInit.add((cell) => {
                 let frameDiv = $("<div class='cellWhite pluginCellMain'></div>");
                 frameDiv.append(iframe);
                 container.getElement().append(frameDiv);
+                let exitLegacyPluginModalHTML = `<div class="modal fade" id="exitLegacyPluginModal" tabindex="-1" aria-labelledby="exitLegacyPluginModalLabel" aria-hidden="true" data-bs-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exitPluginModalLabel">Close this Plugin? </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Closing this plugin will stop all processes in the plugin and return you to the Analysis Tools Tab. Do you want to proceed?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Yes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>                                                   
+                    </div>
+                    </div>
+                </div>
+            </div>`;
+
+// Append the modal immediately after the iframe
+frameDiv.after(exitLegacyPluginModalHTML);
+
+
 
                 container.on('tab', (tab) => {
 
@@ -110,7 +132,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                     ClosePlugin: {
                                         name: 'Close Plugin',
                                         onClick: function (node) {
-                                            alert("hieee");
+                                            i2b2.LEGACYPLUGIN.view.exitInstance();
                                         }
                                     }
                                 }
@@ -123,3 +145,11 @@ i2b2.events.afterCellInit.add((cell) => {
         );
     }
 });
+i2b2.LEGACYPLUGIN.view.exitInstance = function(){
+    let exitLegacyPluginModal = new bootstrap.Modal(document.getElementById('exitLegacyPluginModal'), {
+        keyboard: false
+      });
+      exitLegacyPluginModal.show();
+    
+      
+};
