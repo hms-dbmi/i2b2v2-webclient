@@ -57,7 +57,7 @@ i2b2.events.afterCellInit.add((cell) => {
                 let funcRetitle = (function(title) {
                     // this can only be run after a bit when the tab has been created in the DOM
                     this.tab.element[0].title = title;
-                    this.tab.element[0].id = "activePlugin";
+                    this.tab.element[0].classList.add('active-plugin');
                          
                     
                 }).bind(container, windowEntry.title);
@@ -68,7 +68,7 @@ i2b2.events.afterCellInit.add((cell) => {
                 container.on("tab", funcRetitle);
 
                 container.on( 'tab', function( tab ){
-                    if($(tab.element).attr('id') === 'activePlugin') {
+                    if($(tab.element).hasClass('active-plugin')) {
                         //add unique id to the term tab                       
 
                         let optionsBtn = $('<div id="activePluginOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Plugin Options"></i></div>');
@@ -103,7 +103,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                                     Closing this plugin will stop all processes in the plugin and return you to the Analysis Tools Tab. Do you want to proceed?
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-primary">Yes</button>
+                                                    <button type="button" class="btn btn-primary" id="triggerClose">Yes</button>
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>                                                   
                                                 </div>
                                                 </div>
@@ -124,4 +124,22 @@ i2b2.PLUGIN.view.exitInstance = function(){
         keyboard: false
       });
       exitPluginModal.show();
+      document.getElementById('triggerClose').addEventListener('click', function() {       
+        let iframes = document.querySelectorAll('.i2b2PluginIFrame');
+        iframes.forEach(function(iframe) {
+            iframe.remove();
+        });        
+        let activePluginTabs = document.querySelectorAll('.active-plugin');
+        activePluginTabs.forEach(function(tab) {
+            tab.classList.remove('active-plugin');
+            tab.classList.remove('lm_active');            
+            tab.remove(); 
+        });
+        let pluginListingTabs = document.querySelectorAll('.plugin-listing');
+        pluginListingTabs.forEach(function(tab) {
+            tab.classList.add('lm_active');
+        });
+        exitPluginModal.hide();
+       
+    });
 };
