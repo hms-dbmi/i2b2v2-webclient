@@ -127,4 +127,7 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
     line-height: normal;
 }
 
+.active-plugin .lm_close_tab {
+    display: none !important;
+}
 /* === Plugin List Viewer === */

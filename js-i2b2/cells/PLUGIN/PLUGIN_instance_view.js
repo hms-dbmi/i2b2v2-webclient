@@ -20,7 +20,7 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
     // create the new tab configuration
     let newPluginWindow = {
         type:'component',
-        isClosable:false,
+        isClosable:true,
         componentName: componentName,
         componentPlugin: pluginData,
         componentPluginCode: pluginId,
@@ -73,14 +73,14 @@ i2b2.events.afterCellInit.add((cell) => {
 
                         let optionsBtn = $('<div id="activePluginOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Plugin Options"></i></div>');
                         $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));   
-                        
+
                         i2b2.PLUGIN.view.options.ContextMenu = new BootstrapMenu("#activePluginOptions", {
                             menuEvent: "click",
                             actions: {
                                 ClosePlugin: {
                                     name: 'Close Plugin',
                                     onClick: function (node) {
-                                       i2b2.PLUGIN.view.exitInstance();
+                                       i2b2.PLUGIN.view.exitInstance(container);
                                     }
                                 }
                             }
@@ -118,28 +118,35 @@ i2b2.events.afterCellInit.add((cell) => {
         );
     }
 });
+//.container is the reference to the golden layout
 
-i2b2.PLUGIN.view.exitInstance = function(){
+//container.close
+i2b2.PLUGIN.view.exitInstance = function(container){
     let exitPluginModal = new bootstrap.Modal(document.getElementById('exitPluginModal'), {
         keyboard: false
-      });
-      exitPluginModal.show();
-      document.getElementById('triggerClose').addEventListener('click', function() {       
-        let iframes = document.querySelectorAll('.i2b2PluginIFrame');
-        iframes.forEach(function(iframe) {
-            iframe.remove();
-        });        
-        let activePluginTabs = document.querySelectorAll('.active-plugin');
-        activePluginTabs.forEach(function(tab) {
-            tab.classList.remove('active-plugin');
-            tab.classList.remove('lm_active');            
-            tab.remove(); 
-        });
-        let pluginListingTabs = document.querySelectorAll('.plugin-listing');
-        pluginListingTabs.forEach(function(tab) {
-            tab.classList.add('lm_active');
-        });
-        exitPluginModal.hide();
-       
     });
+    console.log(container);
+    exitPluginModal.show();
+    let modalDiv = document.getElementById('exitPluginModal');
+    let modalBtns = modalDiv.getElementsByTagName('button');
+    for (let i = 0; i < modalBtns.length; i++) {
+        modalBtns[i].addEventListener('click', handleClick);
+      }
+      
+      function handleClick(event) {
+        let btn = event.currentTarget;
+      
+        let btnResult = btn.textContent;
+      
+        if(btnResult === 'Yes') {
+           console.log("yes clicked")
+           console.log("container inside yes condition:", {...container});
+           container.close();
+           exitPluginModal.hide();
+        } else {
+           
+        }
+      
+        exitPluginModal.hide();
+      }
 };
