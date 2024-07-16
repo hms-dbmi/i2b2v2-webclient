@@ -145,6 +145,8 @@ i2b2.events.afterCellInit.add((cell) => {
         );
     }
 });
+
+// ==================================================================================================
 i2b2.LEGACYPLUGIN.view.exitInstance = function(container){
     let exitLegacyPluginModal = new bootstrap.Modal(document.getElementById('exitLegacyPluginModal'), {
         keyboard: false
