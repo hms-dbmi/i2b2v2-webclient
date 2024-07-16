@@ -114,13 +114,13 @@ i2b2.events.afterCellInit.add((cell) => {
                 });
                  let funcRetitle = (function(title) {
                         // this can only be run after a bit when the tab has been created in the DOM
-                        this.tab.element[0].id = "activePlugin";  
+                        this.tab.element[0].classList.add('active-plugin'); 
                     }).bind(container);
 
                     container.on("tab", funcRetitle);
 
                     container.on( 'tab', function( tab ){
-                        if($(tab.element).attr('id') === 'activePlugin') {
+                        if($(tab.element).hasClass('active-plugin')) {
                             //add unique id to the term tab                       
     
                             let optionsBtn = $('<div id="activePluginOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Plugin Options"></i></div>');
@@ -132,7 +132,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                     ClosePlugin: {
                                         name: 'Close Plugin',
                                         onClick: function (node) {
-                                            i2b2.LEGACYPLUGIN.view.exitInstance();
+                                            i2b2.LEGACYPLUGIN.view.exitInstance(container);
                                         }
                                     }
                                 }
@@ -145,11 +145,27 @@ i2b2.events.afterCellInit.add((cell) => {
         );
     }
 });
-i2b2.LEGACYPLUGIN.view.exitInstance = function(){
+i2b2.LEGACYPLUGIN.view.exitInstance = function(container){
     let exitLegacyPluginModal = new bootstrap.Modal(document.getElementById('exitLegacyPluginModal'), {
         keyboard: false
       });
       exitLegacyPluginModal.show();
-    
+      let modalDiv = document.getElementById('exitLegacyPluginModal');
+      let modalBtns = modalDiv.getElementsByTagName('button');
+      for (let i = 0; i < modalBtns.length; i++) {
+          modalBtns[i].addEventListener('click', handleClick);
+        }
+        
+        function handleClick(event) {
+          let btn = event.currentTarget;
+        
+          let btnResult = btn.textContent;
+        
+          if(btnResult === 'Yes') {           
+             container.close();          
+          } 
+          exitLegacyPluginModal.hide();
+        
+        }
       
 };

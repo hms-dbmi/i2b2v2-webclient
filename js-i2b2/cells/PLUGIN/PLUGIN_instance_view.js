@@ -92,7 +92,7 @@ i2b2.events.afterCellInit.add((cell) => {
 
                 // create the iframe and load the plugin into it
                 let iframeTarget = $('<iframe class="i2b2PluginIFrame" src="'+windowEntry.data.url+'" title="'+windowEntry.data.title+'"></iframe>').appendTo(container._contentElement)[0];
-                let exitPluginModalHTML = `<div class="modal fade" id="exitPluginModal" tabindex="-1" aria-labelledby="exitPluginModalLabel" aria-hidden="true">
+                let exitPluginModalHTML = `<div class="modal fade" id="exitPluginModal" tabindex="-1" aria-labelledby="exitPluginModalLabel" aria-hidden="true" data-bs-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                 <div class="modal-header">
@@ -138,15 +138,10 @@ i2b2.PLUGIN.view.exitInstance = function(container){
       
         let btnResult = btn.textContent;
       
-        if(btnResult === 'Yes') {
-           console.log("yes clicked")
-           console.log("container inside yes condition:", {...container});
-           container.close();
-           exitPluginModal.hide();
-        } else {
-           
-        }
-      
+        if(btnResult === 'Yes') {           
+           container.close();          
+        } 
         exitPluginModal.hide();
+      
       }
 };
