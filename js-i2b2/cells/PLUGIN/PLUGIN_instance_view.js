@@ -68,8 +68,7 @@ i2b2.events.afterCellInit.add((cell) => {
                 container.on("tab", funcRetitle);
 
                 container.on( 'tab', function( tab ){
-                    if($(tab.element).hasClass('active-plugin')) {
-                        //add unique id to the term tab                       
+                    if($(tab.element).hasClass('active-plugin')) {                                          
 
                         let optionsBtn = $('<div id="activePluginOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Plugin Options"></i></div>');
                         $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));   
@@ -92,6 +91,7 @@ i2b2.events.afterCellInit.add((cell) => {
 
                 // create the iframe and load the plugin into it
                 let iframeTarget = $('<iframe class="i2b2PluginIFrame" src="'+windowEntry.data.url+'" title="'+windowEntry.data.title+'"></iframe>').appendTo(container._contentElement)[0];
+                
                 let exitPluginModalHTML = `<div class="modal fade" id="exitPluginModal" tabindex="-1" aria-labelledby="exitPluginModalLabel" aria-hidden="true" data-bs-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -110,7 +110,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                             </div>
                                         </div>`;
 
-                // Append the modal to the same container as the iframe
+              
                 $(container._contentElement).append(exitPluginModalHTML);
 
 
@@ -118,29 +118,30 @@ i2b2.events.afterCellInit.add((cell) => {
         );
     }
 });
-//.container is the reference to the golden layout
 
-//container.close
+//================================================================================================== //
 i2b2.PLUGIN.view.exitInstance = function(container){
     let exitPluginModal = new bootstrap.Modal(document.getElementById('exitPluginModal'), {
         keyboard: false
     });
-    console.log(container);
+   
     exitPluginModal.show();
+    
     let modalDiv = document.getElementById('exitPluginModal');
     let modalBtns = modalDiv.getElementsByTagName('button');
+    
     for (let i = 0; i < modalBtns.length; i++) {
         modalBtns[i].addEventListener('click', handleClick);
       }
       
       function handleClick(event) {
-        let btn = event.currentTarget;
-      
+        let btn = event.currentTarget;      
         let btnResult = btn.textContent;
       
         if(btnResult === 'Yes') {           
            container.close();          
         } 
+        
         exitPluginModal.hide();
       
       }

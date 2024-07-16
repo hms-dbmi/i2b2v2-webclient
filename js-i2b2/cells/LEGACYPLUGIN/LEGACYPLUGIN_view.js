@@ -150,15 +150,16 @@ i2b2.LEGACYPLUGIN.view.exitInstance = function(container){
         keyboard: false
       });
       exitLegacyPluginModal.show();
+
       let modalDiv = document.getElementById('exitLegacyPluginModal');
       let modalBtns = modalDiv.getElementsByTagName('button');
+      
       for (let i = 0; i < modalBtns.length; i++) {
           modalBtns[i].addEventListener('click', handleClick);
         }
         
         function handleClick(event) {
-          let btn = event.currentTarget;
-        
+          let btn = event.currentTarget;        
           let btnResult = btn.textContent;
         
           if(btnResult === 'Yes') {           
