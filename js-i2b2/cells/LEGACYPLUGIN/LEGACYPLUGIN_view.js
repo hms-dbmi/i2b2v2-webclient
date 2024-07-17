@@ -51,7 +51,7 @@ i2b2.events.afterCellInit.add((cell) => {
                         Closing this plugin will stop all processes in the plugin and return you to the Analysis Tools Tab. Do you want to proceed?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">Yes</button>
+                        <button type="button" class="btn btn-primary trigger-close">Yes</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>                                                   
                     </div>
                     </div>
@@ -154,20 +154,14 @@ i2b2.LEGACYPLUGIN.view.exitInstance = function(container){
       exitLegacyPluginModal.show();
 
       let modalDiv = document.getElementById('exitLegacyPluginModal');
-      let modalBtns = modalDiv.getElementsByTagName('button');
+      let triggerClose = modalDiv.getElementsByClassName('trigger-close');      
       
-      for (let i = 0; i < modalBtns.length; i++) {
-          modalBtns[i].addEventListener('click', handleClick);
-        }
+      triggerClose[0].addEventListener('click', handleClick);
         
-        function handleClick(event) {
-          let btn = event.currentTarget;        
-          let btnResult = btn.textContent;
-        
-          if(btnResult === 'Yes') {           
-             container.close();          
-          } 
-          exitLegacyPluginModal.hide();
+      function handleClick(event) {       
+        container.close();          
+    
+        exitLegacyPluginModal.hide();
         
         }
       

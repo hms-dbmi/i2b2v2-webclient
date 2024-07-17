@@ -91,7 +91,7 @@ i2b2.events.afterCellInit.add((cell) => {
 
                 // create the iframe and load the plugin into it
                 let iframeTarget = $('<iframe class="i2b2PluginIFrame" src="'+windowEntry.data.url+'" title="'+windowEntry.data.title+'"></iframe>').appendTo(container._contentElement)[0];
-                
+                console.log(windowEntry.title);
                 let exitPluginModalHTML = `<div class="modal fade" id="exitPluginModal" tabindex="-1" aria-labelledby="exitPluginModalLabel" aria-hidden="true" data-bs-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -103,7 +103,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                                     Closing this plugin will stop all processes in the plugin and return you to the Analysis Tools Tab. Do you want to proceed?
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-primary" id="triggerClose">Yes</button>
+                                                    <button type="button" class="btn btn-primary trigger-close">Yes</button>
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>                                                   
                                                 </div>
                                                 </div>
@@ -126,23 +126,31 @@ i2b2.PLUGIN.view.exitInstance = function(container){
     });
    
     exitPluginModal.show();
-    
+
+    console.log(container);
+   
     let modalDiv = document.getElementById('exitPluginModal');
-    let modalBtns = modalDiv.getElementsByTagName('button');
+    let triggerClose = modalDiv.getElementsByClassName('trigger-close');
     
-    for (let i = 0; i < modalBtns.length; i++) {
-        modalBtns[i].addEventListener('click', handleClick);
-      }
+    triggerClose[0].addEventListener('click', handleClick);
+    
       
       function handleClick(event) {
-        let btn = event.currentTarget;      
-        let btnResult = btn.textContent;
-      
-        if(btnResult === 'Yes') {           
-           container.close();          
-        } 
+        container.close(); 
+        let currentRefs = i2b2.PLUGIN.view.windows;
+        console.log(container)
+        console.dir(currentRefs)   
+        //    for (let i = 0; currentRefs; ++i){
+        //         if(currentRefs.includes(container)){
+        //             console.log("yes it's")
+        //         }
+        //    }       
+
         
         exitPluginModal.hide();
       
       }
+
+      //see if that lm container is the same as the one you're on when you're closing.
+      //for loop to i2b2.PLUGIN.view.windows[0].lm_view === i2b2.PLUGIN.view.windows[1].lm_view 
 };
