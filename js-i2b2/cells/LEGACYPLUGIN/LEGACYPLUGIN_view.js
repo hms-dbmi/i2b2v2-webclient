@@ -3,6 +3,7 @@ i2b2.LEGACYPLUGIN.view.main = new i2b2Base_cellViewController(i2b2.LEGACYPLUGIN,
 
 
 i2b2.LEGACYPLUGIN.view.options ={};
+i2b2.LEGACYPLUGIN.view.windows = [];
 
 // ==================================================================================================
 
@@ -26,6 +27,15 @@ i2b2.events.afterCellInit.add((cell) => {
         i2b2.layout.registerWindowHandler("i2b2.LEGACYPLUGIN.view.main",
             (function (container, scope) {
                 // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE LEGACY PLUGIN CELL'S MAIN VIEW
+                let windowEntry = {
+                    lm_view: container,
+                    data: container._config.componentPlugin,
+                    title: container._config.title,
+                    state: {}
+                };
+                windowEntry.data.code = container._config.componentPluginCode;
+                i2b2.LEGACYPLUGIN.view.windows.push(windowEntry);
+
                 let pluginCode = container._config.componentPluginCode;
                 let initializationDataRaw = container._config.componentPlugin.initializationData;
 
@@ -159,7 +169,15 @@ i2b2.LEGACYPLUGIN.view.exitInstance = function(container){
       triggerClose[0].addEventListener('click', handleClick);
         
       function handleClick(event) {       
-        container.close();          
+        container.close();
+        
+        for (let i in i2b2.LEGACYPLUGIN.view.windows) {
+            let windowRef = i2b2.LEGACYPLUGIN.view.windows[i].lm_view;
+            if (windowRef === container) {
+                i2b2.LEGACYPLUGIN.view.windows.splice(i, 1); 
+                break; 
+            } 
+        }           
     
         exitLegacyPluginModal.hide();
         

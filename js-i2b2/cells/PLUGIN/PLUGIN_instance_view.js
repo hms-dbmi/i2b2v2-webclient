@@ -126,9 +126,7 @@ i2b2.PLUGIN.view.exitInstance = function(container){
     });
    
     exitPluginModal.show();
-
-    console.log(container);
-   
+       
     let modalDiv = document.getElementById('exitPluginModal');
     let triggerClose = modalDiv.getElementsByClassName('trigger-close');
     
@@ -136,21 +134,16 @@ i2b2.PLUGIN.view.exitInstance = function(container){
     
       
       function handleClick(event) {
-        container.close(); 
-        let currentRefs = i2b2.PLUGIN.view.windows;
-        console.log(container)
-        console.dir(currentRefs)   
-        //    for (let i = 0; currentRefs; ++i){
-        //         if(currentRefs.includes(container)){
-        //             console.log("yes it's")
-        //         }
-        //    }       
-
-        
+        container.close();    
+           
+        for (let i in i2b2.PLUGIN.view.windows) {
+            let windowRef = i2b2.PLUGIN.view.windows[i].lm_view;
+            if (windowRef === container) {
+                i2b2.PLUGIN.view.windows.splice(i, 1); 
+                break; 
+            } 
+        }        
         exitPluginModal.hide();
       
-      }
-
-      //see if that lm container is the same as the one you're on when you're closing.
-      //for loop to i2b2.PLUGIN.view.windows[0].lm_view === i2b2.PLUGIN.view.windows[1].lm_view 
+      }     
 };
