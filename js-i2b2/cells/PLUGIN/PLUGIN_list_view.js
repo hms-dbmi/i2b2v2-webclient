@@ -123,6 +123,13 @@ i2b2.PLUGIN.view.list.load = function(template){
         },
         error: (error) => { console.error("Could not retrieve template: PluginListing.html"); }
     });
+    // Add a class to the Analysis Tools Tab
+    let panelTabs = document.querySelectorAll('.lm_tab');
+    panelTabs.forEach(function(tab) {
+        if (tab.textContent === 'Analysis Tools') {
+            tab.classList.add('plugin-listing');
+        }
+    });
 };
 
 // ================================================================================================== //

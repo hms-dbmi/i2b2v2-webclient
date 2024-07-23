@@ -1,6 +1,9 @@
 // create and save the view object
 i2b2.LEGACYPLUGIN.view.main = new i2b2Base_cellViewController(i2b2.LEGACYPLUGIN, 'main');
 
+
+i2b2.LEGACYPLUGIN.view.options ={};
+
 // ==================================================================================================
 
 i2b2.LEGACYPLUGIN.view.main.onPluginFrameLoad = function(){
@@ -23,6 +26,7 @@ i2b2.events.afterCellInit.add((cell) => {
         i2b2.layout.registerWindowHandler("i2b2.LEGACYPLUGIN.view.main",
             (function (container, scope) {
                 // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE LEGACY PLUGIN CELL'S MAIN VIEW
+                
                 let pluginCode = container._config.componentPluginCode;
                 let initializationDataRaw = container._config.componentPlugin.initializationData;
 
@@ -37,6 +41,28 @@ i2b2.events.afterCellInit.add((cell) => {
                 let frameDiv = $("<div class='cellWhite pluginCellMain'></div>");
                 frameDiv.append(iframe);
                 container.getElement().append(frameDiv);
+                let exitLegacyPluginModalHTML = `<div class="modal fade" id="exitLegacyPluginModal" tabindex="-1" aria-labelledby="exitLegacyPluginModalLabel" aria-hidden="true" data-bs-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exitPluginModalLabel">Close this Plugin? </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Closing this plugin will stop all processes in the plugin and return you to the Analysis Tools Tab. Do you want to proceed?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary trigger-close">Yes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>                                                   
+                    </div>
+                    </div>
+                </div>
+            </div>`;
+
+            // Append the modal immediately after the iframe
+            frameDiv.after(exitLegacyPluginModalHTML);
+
+
 
                 container.on('tab', (tab) => {
 
@@ -84,8 +110,60 @@ i2b2.events.afterCellInit.add((cell) => {
                     tab.header.parent.on("maximised", () => {
                         maximizeComponent();
                     });
+
+                   
                 });
+                 let funcRetitle = (function(title) {
+                        // this can only be run after a bit when the tab has been created in the DOM
+                        this.tab.element[0].classList.add('active-plugin'); 
+                    }).bind(container);
+
+                    container.on("tab", funcRetitle);
+
+                    container.on( 'tab', function( tab ){
+                        if($(tab.element).hasClass('active-plugin')) {
+                            //add unique id to the term tab                       
+    
+                            let optionsBtn = $('<div id="activePluginOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Plugin Options"></i></div>');
+                            $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));   
+                            
+                            i2b2.LEGACYPLUGIN.view.options.ContextMenu = new BootstrapMenu("#activePluginOptions", {
+                                menuEvent: "click",
+                                actions: {
+                                    ClosePlugin: {
+                                        name: 'Close Plugin',
+                                        onClick: function (node) {
+                                            i2b2.LEGACYPLUGIN.view.exitInstance(container);
+                                        }
+                                    }
+                                }
+                            });
+    
+                            
+                        }
+                    });
             }).bind(this)
         );
     }
 });
+
+// ==================================================================================================
+i2b2.LEGACYPLUGIN.view.exitInstance = function(container){
+    let exitLegacyPluginModal = new bootstrap.Modal(document.getElementById('exitLegacyPluginModal'), {
+        keyboard: false
+      });
+      exitLegacyPluginModal.show();
+
+      let modalDiv = document.getElementById('exitLegacyPluginModal');
+      let triggerClose = modalDiv.getElementsByClassName('trigger-close');      
+      
+      triggerClose[0].addEventListener('click', handleClick);
+        
+      function handleClick(event) {       
+        container.close();                 
+    
+        exitLegacyPluginModal.hide();
+        
+        }
+      
+};
