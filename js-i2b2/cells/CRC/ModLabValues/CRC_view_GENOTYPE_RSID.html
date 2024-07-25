@@ -1,0 +1,174 @@
+<style>
+
+    #labHelpText {
+        padding: 0 .8rem;
+    }
+
+    .labZygosityGroup,
+    .labRsGroup,
+    .labAlleleGroup {
+        margin: 1rem 3rem;
+    }
+
+    .labZygosity.grouplabel,
+    .labRsId.grouplabel,
+    .labAllele.grouplabel {
+        font-weight: bold;
+        line-height: 2rem;
+    }
+    .labZygosity.form-check,
+    .labAllele.form-check {
+        margin-left: 1rem;
+    }
+    .labZygosity.errorlabel,
+    .labRs.errorlabel,
+    .labAllele.errorlabel {
+        color: red;
+        margin-left: 1rem;
+    }
+    .labZygosity .form-check-input,
+    .labAllele .form-check-input
+    {
+        margin-top: .1rem;
+        border: 1px solid grey;
+    }
+
+    .labAlleleGroup .labAllele i {
+        position: relative;
+        top: 1px;
+    }
+
+
+    .labRsGroup .input-group.mb-3 {
+        margin-bottom: .5rem !important;
+    }
+    .labRsGroup .input-group-prepend .input-group-text {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        padding-right: 4px;
+        background: none;
+    }
+    .labRsGroup .input-group-append,
+    .labRsGroup .input-group-append .input-group-text {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        cursor: pointer;
+    }
+    .labRsGroup #rsId {
+        border-left: 0;
+        padding-left: 0;
+    }
+
+    .labRsGroup .search.searching i {
+        animation-name: searching-ani;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        transition-timing-function: linear;
+    }
+    @keyframes searching-ani {
+        0% {
+            transform: rotate(0deg) translate(0, 5px);
+        }
+        25% {
+            transform: rotate(90deg) translate(-8px, -5px);
+        }
+        50% {
+            transform: rotate(90deg) translate(5px);
+        }
+        75% {
+            transform: rotate(0deg) translate(-8px, -5px);
+        }
+        100% {
+            transform: rotate(0deg) translate(0, 5px);
+        }
+    }
+
+    .labRsGroup .input-group:focus-within {
+        Xbox-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+    }
+    .labRsGroup .input-group:focus-within .input-group-prepend .input-group-text {
+        border-color: #86b7fe;
+        border-width: 2px 0px 2px 2px;
+    }
+    .labRsGroup .input-group:focus-within input {
+        box-shadow: none !important;
+        border-width: 2px;
+    }
+
+
+
+</style>
+
+<div class="modal fade genotype">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <span id="labHeader" class="modal-title"></span>
+                <button type="button" class="btn-close lab-cancel" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form action="javascript:void(0)">
+                    <div class="labMain">
+                        <div id="labHelpText">Use the "rs Identifier" box to specify the variant to search for. Alleles will be show once a valid identifier is found. To find patients with without a mutation specify Homozygous with the non-mutant allele.</div>
+                        <div class="labOptions">
+
+                            <!-- rs Identifier section -->
+                            <div class="labRsGroup">
+                                <div class="labRsId grouplabel">rs Identifier</div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">rs</span>
+                                    </div>
+                                    <input type="text" id="rsId" class="form-control" placeholder="1060583" aria-label="rs Identifier" aria-describedby="basic-addon1">
+                                    <div class="input-group-append search">
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    </div>
+                                </div>
+                                <div class="labRs errorlabel" style="display:none">Enter a valid "rs" identifier.</div>
+                            </div>
+
+
+                            <!-- Zygosity section -->
+                            <div class="labZygosityGroup">
+                                <div class="labZygosity grouplabel">Zygosity</div>
+                                <div class="form-check labZygosity">
+                                    <input class="form-check-input" name="labZygosityHetero" id="labZygosityHetero" value="Heterozygous" type="checkbox"/>
+                                    <label class="custom-control-label" for="labZygosityHetero">Heterozygous (reference/alternate allele)</label>
+                                </div>
+                                <div class="form-check labZygosity">
+                                    <input class="form-check-input" name="labZygosityHomo" id="labZygosityHomo" value="Homozygous" type="checkbox"/>
+                                    <label class="custom-control-label" for="labZygosityHomo">Homozygous (reference/alternate allele)</label>
+                                </div>
+                                <div class="form-check labZygosity">
+                                    <input class="form-check-input" name="labZygosityMissing" id="labZygosityMissing" value="missing_zygosity" type="checkbox" />
+                                    <label class="custom-control-label" for="labZygosityMissing">Missing (failed genotype clustering)</label>
+                                </div>
+                                <div class="labZygosity errorlabel" style="display:none">At least one Zygosity option must be selected.</div>
+                            </div>
+
+                            <!-- Allele section -->
+                            <div class="labAlleleGroup">
+                                <div class="labAllele grouplabel">Allele(s)</div>
+                                <div class="alleleList"></div>
+                                <div class="labAllele errorlabel" style="Xdisplay:none">At least one Allele option must be selected.</div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary lab-save">Ok</button>
+                <button type="button" class="btn btn-secondary lab-cancel" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
