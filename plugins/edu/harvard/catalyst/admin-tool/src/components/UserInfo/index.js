@@ -20,7 +20,7 @@ import {saveUser, saveUserStatusConfirmed} from "actions";
 import { SelectedUser } from "models";
 import "./UserInfo.scss";
 
-export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) => {
+export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isNewUser}) => {
     const allUsers = useSelector((state) => state.allUsers );
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
@@ -39,7 +39,6 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
     const [passwordNotValidError, setPasswordNotValidError] = useState("");
     const [doPasswordsNotMatch, setDoPasswordsNotMatch] = useState(false);
     const [passwordsDoNotMatchError, setPasswordsDoNotMatchError] = useState("");
-    const [isNewUser, setIsNewUser] = useState(false);
     const dispatch = useDispatch();
 
     const handleClickShowPassword = () => {
@@ -50,15 +49,28 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
         setShowPasswordVerify(!showPasswordVerify);
     };
 
+    const userExists = (username) => {
+        const userFound = allUsers.users.filter((user) => user.username === username);
+        return userFound.length !== 0;
+    }
+
     const validateSaveUser = () => {
         let isValid = true;
+
         if(!updatedUser.username || updatedUser.username.length === 0){
             setIsUsernameNotValid(true);
             setUsernameNotValidError("User Name is required");
             isValid = false;
         }else{
-            setIsUsernameNotValid(false);
-            setUsernameNotValidError("");
+            if(isNewUser && userExists(updatedUser.username)){
+                setIsUsernameNotValid(true);
+                setUsernameNotValidError("User already exists");
+                isValid = false;
+            }
+            else {
+                setIsUsernameNotValid(false);
+                setUsernameNotValidError("");
+            }
         }
 
         if(!updatedUser.fullname || updatedUser.fullname.length === 0){
@@ -118,16 +130,6 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
         }
     };
 
-    const checkIfNewUser = () => {
-        if(allUsers) {
-            const userFound = allUsers.users.filter((user) => user.username === updatedUser.username);
-            if (userFound.length === 0) {
-                setIsNewUser(true);
-            } else {
-                setIsNewUser(false);
-            }
-        }
-    }
     const handleUpdate = (field, value) => {
         let newUser = {
             ...updatedUser
@@ -177,9 +179,6 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
         if(JSON.stringify(updatedUser) !== JSON.stringify(selectedUser.user)){
             setIsDirty(true);
         }
-
-        checkIfNewUser();
-
     }, [updatedUser]);
 
     return (
@@ -203,6 +202,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser}) =>
                         required
                         label="User Name"
                         value={updatedUser.username}
+                        disabled={!isNewUser}
                         onChange={(event) => handleUpdate("username", event.target.value)}
                         error={isUsernameNotValid}
                         helperText={usernameNotValidError}

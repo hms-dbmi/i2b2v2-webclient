@@ -1484,7 +1484,12 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
 };
 // ==================================================================================================
 i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, valueMetadataXml, groupIdx, eventIdx) {
-    i2b2.CRC.ctrlr.labValues.redrawConcept(sdxConcept, groupIdx, eventIdx);
+
+    if (eventIdx !== undefined && groupIdx !== undefined) {
+        let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+        const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+        i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+    }
 
     //Determine the value type
     try {
@@ -1522,7 +1527,10 @@ i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, e
                         && typeof i2b2.CRC.view[GeneralValueType].updateDisplayValue === 'function') {
                         let valueMetadataModel = i2b2.CRC.view[GeneralValueType].parseMetadataXml(valueMetadataXml);
                         i2b2.CRC.view[GeneralValueType].updateDisplayValue(sdxConcept, valueMetadataModel);
-                        i2b2.CRC.ctrlr.labValues.redrawConcept(sdxConcept, groupIdx, eventIdx);
+
+                        let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+                        const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+                        i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
                     } else
                         alert('An error has occurred while trying to determine the value type.');
                 } catch(e) {
@@ -1622,11 +1630,15 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             group.events.forEach((event) => {
                 event.concepts.forEach((concept) => {
                     if (concept.origData.conceptModified) {
-                        let sdxKey = concept.origData.conceptModified.sdxInfo.sdxKeyValue;
-                        if (!modifiers[sdxKey]) modifiers[sdxKey] = {};
-                        modifiers[sdxKey][concept.origData.key] = concept;
+                        let conceptKey = concept.origData.conceptModified.sdxInfo.sdxKeyValue + "-" + concept.origData.conceptModified.sdxInfo.sdxDisplayName;
+                        if (!modifiers[conceptKey]) modifiers[conceptKey] = {};
+                        modifiers[conceptKey][concept.origData.key] = concept;
                     } else {
-                        concepts[concept.sdxInfo.sdxKeyValue] = concept;
+                        let conceptKey = concept.sdxInfo.sdxKeyValue;
+                        if(concept.origData.synonym_cd === "Y") {
+                            conceptKey = concept.sdxInfo.sdxKeyValue + "-" + concept.sdxInfo.sdxDisplayName;
+                        }
+                        concepts[conceptKey] = concept;
                     }
                 });
             });
@@ -1640,10 +1652,17 @@ i2b2.CRC.view.QT.showQueryReport = function() {
                 let sdxKey = panelItem.key.substring(panelItem.key.indexOf(':')+1);
                 panelItem.moreInfo = concepts[sdxKey];
             } else {
+                let sdxKey =i2b2.h.Unescape(panelItem.key);
+                let conceptKey = sdxKey;
+
+                if(panelItem.isSynonym === "true" || panelItem.modKey){
+                    let sdxName = panelItem.name;
+                    conceptKey = sdxKey + "-" + sdxName;
+                }
                 if (panelItem.modKey) {
-                    panelItem.moreInfo = modifiers[i2b2.h.Unescape(panelItem.key)][panelItem.modKey];
+                    panelItem.moreInfo = modifiers[conceptKey][panelItem.modKey];
                 } else {
-                    panelItem.moreInfo = concepts[i2b2.h.Unescape(panelItem.key)];
+                    panelItem.moreInfo = concepts[conceptKey];
                 }
                 // deal with dates
                 if (panelItem.moreInfo.dateRange?.start === undefined || panelItem.moreInfo.dateRange?.start === "") {
@@ -1683,6 +1702,7 @@ i2b2.CRC.view.QT.showQueryReport = function() {
             submittedAt: i2b2.CRC.model.runner.startTime.toLocaleString().replace(", "," @ "),
             completedAt: i2b2.CRC.model.runner.endTime ? i2b2.CRC.model.runner.endTime.toLocaleString().replace(", "," @ ") : "",
             submittedBy: "USERNAME(" + submittedByUsername + ")",
+            hasError: i2b2.CRC.model.runner.hasError,
             runDuration: Number((i2b2.CRC.model.runner.endTime - i2b2.CRC.model.runner.startTime) / 1000).toLocaleString(),
             panels: panels
         };
@@ -1725,24 +1745,32 @@ i2b2.CRC.view.QT.showQueryReport = function() {
         }
 
         // Deal with the reports
-        if (i2b2.CRC.model.runner.endTime !== undefined) {
-             let reports = [];
-             let graphs = $("#breakdownChartsBody>svg");
-             let charts = $("#breakdownDetails>div");
-             // TODO: Rebuild this next line
-             let dataRef = i2b2.CRC.view.QueryReport.breakdowns.resultTable;
-             for (let i = 0; i < dataRef.length; i++) {
-                 if (i == 0) {
-                     reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
-                 } else {
-                     // fix the graph's width
-                     let w = graphs[i - 1].getBoundingClientRect().width;
-                     graphs[i - 1].attributes.width.value = parseInt(w) + "px";
-                     reports.push({chart: charts[i].outerHTML, graph: graphs[i - 1].outerHTML, data: dataRef[i]});
-                 }
-             }
-             reportData.reports = reports;
+        let reports = [];
+        let graphs = $("#breakdownChartsBody>svg");
+        let charts = $("#breakdownDetails>div");
+        // TODO: Rebuild this next line
+        let dataRef = i2b2.CRC.view.QueryReport.breakdowns.resultTable;
+        for (let i = 0; i < dataRef.length; i++) {
+            if (i === 0) {
+                reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
+            } else {
+                let isZeroPatients = parseInt(i2b2.CRC.view.QueryReport.breakdowns.patientCount.value || -1) === 0;
+
+                // fix the graph's width
+                if (graphs[i - 1] !== undefined  && !isZeroPatients) {
+                    let w = graphs[i - 1].getBoundingClientRect().width;
+                    graphs[i - 1].attributes.width.value = parseInt(w) + "px";
+                }
+
+                if (!i2b2.CRC.model.runner.hasError && !isZeroPatients) {
+                    reports.push({chart: charts[i].outerHTML, graph: graphs[i - 1].outerHTML, data: dataRef[i]});
+                } else {
+                    reports.push({chart: charts[i].outerHTML, data: dataRef[i]});
+                }
+            }
         }
+        reportData.reports = reports;
+
 
         // populate the user's real name via AJAX then display the report window
         i2b2.PM.ajax.getUser("CRC:PrintQuery", {user_id:submittedByUsername}, (results) => {
@@ -1780,14 +1808,16 @@ i2b2.CRC.view.QT.showQueryReport = function() {
                     // print the document
                     reportWindow.print();
                 });
-                generateReport();
+                $("#breakdownCharts").collapse('show');
+                queueMicrotask(generateReport);
             },
             error: () => {
                 alert("Error: cannot load report template!");
             }
         });
     } else {
-        generateReport();
+        $("#breakdownCharts").collapse('show');
+        queueMicrotask(generateReport);
     }
 };
 

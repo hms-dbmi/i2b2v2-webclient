@@ -13,8 +13,14 @@ import { Confirmation,  StatusUpdate } from "components";
 import "./EditParameters.scss";
 import {Typography} from "@mui/material";
 
-export const EditParameters = ({rows, title, updateParams, saveParam, deleteParam,
-                                   saveStatus, deleteStatus,
+export const EditParameters = ({
+                                   rows,
+                                   title,
+                                   updateParams,
+                                   saveParam,
+                                   deleteParam,
+                                   saveStatus,
+                                   deleteStatus,
                                    allParamStatus,
                                    saveStatusConfirm,
                                    deleteStatusConfirm,
@@ -211,6 +217,9 @@ export const EditParameters = ({rows, title, updateParams, saveParam, deletePara
                 disableRowSelectionOnClick
                 paginationModel={paginationModel}
                 onPaginationModelChange={setPaginationModel}
+                onSortModelChange={(model) => {
+                    apiRef.current.setPage(0);
+                }}
                 pageSizeOptions={[5, 10, 25]}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {

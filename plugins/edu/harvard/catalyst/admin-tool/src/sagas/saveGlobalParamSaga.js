@@ -38,7 +38,7 @@ export function* doSaveGlobalParam(action) {
         response = JSON.stringify(response);
 
         if(!response.includes("AJAX_ERROR")) {
-            yield put(getAllGlobalParams({}));
+            yield put(getAllGlobalParams());
             yield put(saveGlobalParamSucceeded({param}));
         }else{
             yield put(saveGlobalParamFailed({param}));

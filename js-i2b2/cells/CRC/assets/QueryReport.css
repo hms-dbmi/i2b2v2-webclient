@@ -112,6 +112,10 @@ body {
     padding: 0.3rem;
 }
 
+.results-chart .breakdownStatus{
+    /*breakdownStatus*/
+    line-height: 3rem;
+}
 
 
 .results-graph {

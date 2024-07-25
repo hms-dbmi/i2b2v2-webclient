@@ -4,6 +4,7 @@ i2b2.CRC.view.QueryReport = {
         queryResultSet: []
     },
     disDiv: null,
+    hasZeroPatients: null,
     breakdowns: null,
     dataExport: null,
     displayQueryResults: function(queryInstanceId, div) {
@@ -14,6 +15,8 @@ i2b2.CRC.view.QueryReport = {
         this.dataExport  = {
             resultTable: [],
         };
+        this.hasZeroPatients = false;
+
         i2b2.CRC.view.QueryReport.disDiv = div;
         let view = this.disDiv;
         $(view).empty();
@@ -77,7 +80,6 @@ i2b2.CRC.view.QueryReport = {
 
     },
     _handleQueryResultInstance: function(results){
-        let showGraphs = false;
         if (results.error) {
             alert(results.errorMsg);
             return;
@@ -175,9 +177,12 @@ i2b2.CRC.view.QueryReport = {
                 }
             }
 
+            let isZeroPatients =  parseInt(i2b2.CRC.view.QueryReport.breakdowns.patientCount.value || -1) === 0;
+            if (isZeroPatients){
+                i2b2.CRC.view.QueryReport.hasZeroPatients = isZeroPatients;
+            }
             // only create graphs if there is breakdown data
-            if (!isPatientCount && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR") {
-                showGraphs = true;
+            if (!isPatientCount && !isZeroPatients  && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR") {
                 i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
         }
@@ -189,7 +194,9 @@ i2b2.CRC.view.QueryReport = {
 
 
         // See how many non-errored graphs we have (minus the patient count)
-        showGraphs = i2b2.CRC.view.QueryReport.breakdowns.resultTable.map(a => a.status !== 'ERROR' && a.title !== "Number of patients").reduce((b,c) => b ? b : b || c);
+        let showGraphs = !i2b2.CRC.view.QueryReport.hasZeroPatients
+            && i2b2.CRC.view.QueryReport.breakdowns.resultTable.length > 1
+            && i2b2.CRC.view.QueryReport.breakdowns.resultTable.map(a => a.status !== 'ERROR' && a.title !== "Number of patients").reduce((b,c) => b ? b : b || c);
         // hide graph section if there are no graphs
         if (!showGraphs) {
             $('#infoQueryStatusGraph').hide();
@@ -223,11 +230,12 @@ i2b2.CRC.view.QueryReport = {
                         if (rec.end_date !== undefined) {
                             rec.end_date =  new Date(rec.end_date.substring(0,4), rec.end_date.substring(5,7)-1, rec.end_date.substring(8,10), rec.end_date.substring(11,13),rec.end_date.substring(14,16),rec.end_date.substring(17,19),rec.end_date.substring(20,23));
                         }
-
                         rec.QRS_DisplayType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/display_type')[0].firstChild.nodeValue;
                         rec.QRS_Type = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
                         rec.QRS_Description = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
                         rec.QRS_TypeID = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/result_type_id')[0].firstChild.nodeValue;
+                        // I2B2UI-759: Show admins/power-users the amount of time the server worked on running the query
+                        console.log('Compute time on server was ' + ((rec.end_date - rec.start_date) / 1000).toFixed(1) + ' seconds for `' + rec.QRS_Description + '`');
                     }
                     rec.QRS_Status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
                     rec.QRS_Status_ID = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/status_type_id')[0].firstChild.nodeValue;

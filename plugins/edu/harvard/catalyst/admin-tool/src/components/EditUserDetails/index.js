@@ -7,13 +7,13 @@ import { UserInfo, EditUserParameters } from "components";
 
 import "./EditUserDetails.scss";
 import {
-    clearSelectedUser, getAllUserParams,
-    saveUserParam, saveUserStatusConfirmed,
+    clearSelectedUser,
+    getAllUserParams,
 } from "actions";
 import {Tab, Tabs} from "@mui/material";
 
 
-export const EditUserDetails = ({user, setIsEditingUser}) => {
+export const EditUserDetails = ({user, setIsEditingUser, setIsCreatingUser, isCreatingUser}) => {
     const selectedUser = useSelector((state) => state.selectedUser );
     const [updatedUser, setUpdatedUser] = useState(selectedUser.user);
     const [updatedParams, setUpdatedParams] = useState(selectedUser.params);
@@ -32,6 +32,7 @@ export const EditUserDetails = ({user, setIsEditingUser}) => {
 
     const cancelEdit = () => {
         setIsEditingUser(false);
+        setIsCreatingUser(false);
     }
 
     useEffect(() => {
@@ -45,7 +46,7 @@ export const EditUserDetails = ({user, setIsEditingUser}) => {
     useEffect(() => {
         setUpdatedUser(selectedUser.user);
         setUpdatedParams(selectedUser.params);
-    }, [selectedUser]);
+    }, [selectedUser.user, selectedUser.params]);
 
     return (
         <div className={"EditUserDetails"}>
@@ -68,6 +69,7 @@ export const EditUserDetails = ({user, setIsEditingUser}) => {
                 cancelEdit={cancelEdit}
                 updateUser={setUpdatedUser}
                 updatedUser={updatedUser}
+                isNewUser={isCreatingUser}
             />
             }
             {

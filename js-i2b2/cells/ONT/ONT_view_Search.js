@@ -75,6 +75,9 @@ i2b2.ONT.view.search.clearSearchInput = function(){
     // show the navigation treeview
     i2b2.ONT.view.nav.treeview.show();
     i2b2.ONT.view.search.toggleSearchClearIcon();
+
+    $("#ontNavTreeToggle").addClass("hidden");
+    $("#ontSearchTreeToggle").addClass("hidden");
 };
 
 //================================================================================================== //
@@ -124,7 +127,15 @@ i2b2.ONT.view.search.initSearch = function(container){
     // -------------------- setup context menu --------------------
     i2b2.ONT.view.search.ContextMenu = i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntSearch',i2b2.ONT.view.search.treeview, true);
 };
-
+// ================================================================================================== //
+i2b2.ONT.view.search.nodeClickedAction =  function(event) {
+    let target = $(event.target);
+    let nodeId = parseInt(target.closest('li.list-group-item').attr('data-nodeid'));
+    let nodeData = i2b2.ONT.view.search.treeview.treeview("getNodes", (snode)=> (snode.nodeId === nodeId));
+    if(nodeData.length > 0) {
+        i2b2.ONT.view.info.load(nodeData[0].i2b2, true);
+    }
+};
 //================================================================================================== //
 
 i2b2.ONT.view.search.displayResults = function(treeData) {
@@ -132,6 +143,7 @@ i2b2.ONT.view.search.displayResults = function(treeData) {
     let treeview = i2b2.ONT.view.search.treeview.data('treeview');
     treeview.clear();
     treeview.init({data: treeData, showTags: true});
+    i2b2.ONT.view.search.treeview.on('click', i2b2.ONT.view.search.nodeClickedAction);
 };
 //================================================================================================== //
 
@@ -202,13 +214,15 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
         let nodesToExpand = [];
         nodesToExpand = nodesToExpand.concat(nodeSubList);
 
-        i2b2.ONT.view.search.clearSearchInput();
+        $("#ontNavTreeToggle").click();
 
         let currentNode = nodesToExpand.shift();
-        //look up node in search tree in the nav tree using the key
+        // look up node in search tree in the nav tree using the key
+        if (!currentNode.key.endsWith("\\")) currentNode.key = currentNode.key + "\\";
         let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
             return snode.key === currentNode.key;
         });
+
         // skip over any nodes that are already loaded in the nav tree
         while (nodesToExpand.length >= 1 && (topLevelNode.length === 1 && topLevelNode[0].state.loaded === true)) {
             //expand any collapsed nodes that were already loaded
@@ -217,7 +231,8 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
             }
 
             currentNode = nodesToExpand.shift();
-            //look up node in search tree in the nav tree using the key
+            // look up node in search tree in the nav tree using the key
+            if (!currentNode.key.endsWith("\\")) currentNode.key = currentNode.key + "\\";
             topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
                 return snode.key === currentNode.key;
             });
@@ -240,7 +255,8 @@ i2b2.ONT.view.search.viewInNavTree = function(node, nodeSubList){
                 i2b2.ONT.view.nav.treeview.treeview('expandNode', nodeData.nodeId);
 
                 let currentNode = nodesToExpand.shift();
-                //look up node in search tree in the nav tree using the key
+                // look up node in search tree in the nav tree using the key
+                if (!currentNode.key.endsWith("\\")) currentNode.key = currentNode.key + "\\";
                 let topLevelNode = i2b2.ONT.view.nav.treeview.treeview('getNodes', function(snode) {
                     return snode.key === currentNode.key;
                 });
@@ -288,6 +304,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     filterType: "category"
                 });
             }
+            $("#categorySubmenu").empty();
             $(submenuOptions({"option": categories})).appendTo("#categorySubmenu");
 
             // generate a list of coding systems options
@@ -300,6 +317,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     filterType: "coding"
                 });
             }
+            $("#codingSubmenu").empty();
             $(submenuOptions({"option": codingSystems})).appendTo("#codingSubmenu");
 
             $("#liCat").hover(function(){

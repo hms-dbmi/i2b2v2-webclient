@@ -8,11 +8,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { getAllUsers, deleteUser, deleteUserStatusConfirmed } from "actions";
 import {EditUserDetails, Confirmation, StatusUpdate} from "components";
 import { User} from "../../models";
-import {
-    DataGrid,
-    GridActionsCellItem,
-    gridClasses
-} from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem, gridClasses, useGridApiRef} from '@mui/x-data-grid';
 import { Loader } from "components";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
@@ -28,12 +24,14 @@ export const AllUsersTable = ({paginationModel,
     const deletedUser = useSelector((state) => state.deletedUser );
     const[selectedUser, setSelectedUser] = useState(null);
     const[isEditingUser, setIsEditingUser] = useState(false);
+    const[isCreatingUser, setIsCreatingUser] = useState(false);
     const [showStatus, setShowStatus] = useState(false);
     const [statusMsg, setStatusMsg] = useState("");
     const [statusSeverity, setStatusSeverity] = useState("info");
     const [showDeleteUserConfirm, setShowDeleteUserConfirm] = useState(false);
     const [deleteUserConfirmMsg, setDeleteUserConfirmMsg] = useState("");
     const [deleteUsername, setDeleteUsername] = useState("");
+    const apiRef = useGridApiRef();
 
     const dispatch = useDispatch();
 
@@ -97,10 +95,14 @@ export const AllUsersTable = ({paginationModel,
             <DataGrid
                 rows={userRows}
                 columns={columns}
+                apiRef={apiRef}
                 getRowId={getRowId}
                 disableRowSelectionOnClick
                 paginationModel={paginationModel}
                 onPaginationModelChange={setPaginationModel}
+                onSortModelChange={(model) => {
+                    apiRef.current.setPage(0);
+                }}
                 pageSizeOptions={[25, 50, 100]}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
@@ -143,7 +145,7 @@ export const AllUsersTable = ({paginationModel,
 
     const handleAddNewUser = () => {
         setSelectedUser(User());
-        setIsEditingUser(true);
+        setIsCreatingUser(true);
     };
 
     const handleCloseAlert = (event, reason) => {
@@ -217,8 +219,8 @@ export const AllUsersTable = ({paginationModel,
                     Add New User
                 </Button>
             }
-            {!isEditingUser && allUsers.users.length > 0 && displayUsersTable()}
-            { isEditingUser && <EditUserDetails user={selectedUser} setIsEditingUser={setIsEditingUser}/>}
+            {!isEditingUser && !isCreatingUser && allUsers.users.length > 0 && displayUsersTable()}
+            { (isEditingUser || isCreatingUser) && <EditUserDetails user={selectedUser} setIsEditingUser={setIsEditingUser}  setIsCreatingUser={setIsCreatingUser} isCreatingUser={isCreatingUser}/>}
             {!isEditingUser && <StatusUpdate isOpen={showStatus} setIsOpen={setShowStatus} severity={statusSeverity} message={statusMsg}/>
             }
 

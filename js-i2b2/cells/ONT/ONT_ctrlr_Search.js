@@ -16,6 +16,9 @@ i2b2.ONT.ctrlr.Search = {
         i2b2.ONT.view.nav.treeview.hide();
         i2b2.ONT.view.search.treeview.show();
 
+        $("#ontNavTreeToggle").removeClass("hidden");
+        $("#ontSearchTreeToggle").addClass("hidden");
+
         // clear any previous warning for "more than X number of results"
         $('i.srTooltip').attr('data-bs-original-title', "A maximum of " + i2b2.ONT.view.nav.params.max + " records per category will be returned.");
         $('i.srTooltip').removeClass("warn");
@@ -116,8 +119,12 @@ i2b2.ONT.ctrlr.Search = {
                         $('i.srTooltip').attr('data-bs-original-title', "Not all results are displayed! A maximum of " + i2b2.ONT.view.nav.params.max + " records per category were returned.");
                     }
                     status[0].innerHTML = disp;
-//                i2b2.ONT.ctrlr.Search.backfillResultNodes();
-                    i2b2.ONT.ctrlr.Search.backfillResultNodes_fast();
+                    if(i2b2.ONT.view.nav.params.fullSearch) {
+                        i2b2.ONT.ctrlr.Search.backfillResultNodes();
+                    }
+                    else{
+                        i2b2.ONT.ctrlr.Search.backfillResultNodes_fast();
+                    }
                 }
             }
         };
@@ -443,4 +450,3 @@ i2b2.ONT.ctrlr.Search = {
 
 
 };
-
