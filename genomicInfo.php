@@ -9,7 +9,7 @@
 
 
 
-$GENE_DB_FILENAME = '../i2b2_gene_list-FTS3.db3';
+$GENE_DB_FILENAME = './i2b2_gene_list-FTS3.db3';
 
 
 // ini_set('display_errors', 1);
