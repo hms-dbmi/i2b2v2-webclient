@@ -20,6 +20,8 @@
     "CRC_view_graphs.js",
     "CRC_view_search.js",
     "ModLabValues/CRC_view_BASIC.js",
+    "ModLabValues/CRC_view_GENOTYPE_RSID.js",
+    "ModLabValues/CRC_view_GENOTYPE_GENE.js",
     "ModLabValues/CRC_view_NUMBER_EXAMPLE.js"
   ],
   "preload": [
@@ -28,8 +30,6 @@
     "assets/sdx_CRC_PRC.svg",
     "assets/sdx_CRC_PRS.svg",
     "assets/sdx_CRC_PRS.svg",
-    "assets/sdx_CRC_QDEF.jpg",
-    "assets/sdx_CRC_QGDEF.jpg",
     "assets/sdx_CRC_QI.svg",
     "assets/sdx_CRC_QM.svg",
     "assets/sdx_CRC_QM.svg"

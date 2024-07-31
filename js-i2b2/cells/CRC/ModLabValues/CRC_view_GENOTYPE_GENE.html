@@ -1,0 +1,276 @@
+<style>
+
+    #labHelpText {
+        padding: 0 .8rem;
+    }
+
+    .labZygosityGroup,
+    .labGeneGroup,
+    .labEffectGroup {
+        margin: 1rem 3rem;
+    }
+
+    .labZygosity.grouplabel,
+    .labGeneId.grouplabel,
+    .labEffect.grouplabel {
+        font-weight: bold;
+        line-height: 2rem;
+    }
+    .labEffectGroup .labEffect.grouplabel {
+        line-height: 1.2rem !important;
+    }
+
+    .effectList > .form-check {
+        margin-left: 1.6rem;
+    }
+
+    .labZygosity.form-check,
+    .effectList {
+        margin-left: 1rem;
+    }
+    .labZygosity.errorlabel,
+    .labGene.errorlabel,
+    .labEffect.errorlabel {
+        color: red;
+        margin-left: 1rem;
+    }
+    .labZygosity .form-check-input,
+    .labEffectGroup .form-check-input
+    {
+        margin-top: .1rem;
+        border: 1px solid grey;
+    }
+
+    .labGeneGroup .input-group.mb-3 {
+        margin-bottom: .5rem !important;
+    }
+    .labGeneGroup .input-group-append,
+    .labGeneGroup .input-group-append .input-group-text {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        cursor: pointer;
+    }
+
+    .labGeneGroup .search.searching i {
+        animation-name: searching-ani;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        transition-timing-function: linear;
+    }
+    @keyframes searching-ani {
+        0% {
+            transform: rotate(0deg) translate(0, 5px);
+        }
+        25% {
+            transform: rotate(90deg) translate(-8px, -5px);
+        }
+        50% {
+            transform: rotate(90deg) translate(5px);
+        }
+        75% {
+            transform: rotate(0deg) translate(-8px, -5px);
+        }
+        100% {
+            transform: rotate(0deg) translate(0, 5px);
+        }
+    }
+
+    .input-group-append.search button {
+        border: none;
+        background: none;
+    }
+
+
+    #geneId {
+        z-index: 100;
+    }
+    .autocomplete {
+        /*the container must be positioned relative:*/
+        position: relative;
+        display: inline-block;
+    }
+    .labGeneGroup #geneAutocomplete-list {
+        display:none;
+    }
+    .labGeneGroup:focus-within #geneAutocomplete-list {
+        display:block;
+    }
+
+    .autocomplete-items {
+        position: absolute;
+        border: 1px solid #d4d4d4;
+        border-bottom: none;
+        border-top: none;
+        z-index: 99;
+        /*position the autocomplete items to be the same width as the container:*/
+        top: 100%;
+        left: 0;
+        right: 0;
+    }
+    .autocomplete-items div {
+        padding: 10px;
+        cursor: pointer;
+        background-color: #fff;
+        border-bottom: 1px solid #d4d4d4;
+    }
+    .autocomplete-items div:hover {
+        /*when hovering an item:*/
+        background-color: #e9e9e9;
+    }
+    .autocomplete-active {
+        /*when navigating through the items using the arrow keys:*/
+        background-color: DodgerBlue !important;
+        color: #ffffff;
+    }
+
+    .genotype .modal-body {
+        max-height: 40rem;
+        overflow-y: scroll;
+    }
+
+
+</style>
+
+<div class="modal fade genotype">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <span id="labHeader" class="modal-title"></span>
+                <button type="button" class="btn-close lab-cancel" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form action="javascript:void(0)" autocomplete="off">
+                    <div class="labMain">
+                        <div id="labHelpText">Enter a full or partial gene symbol to search for mutations in a gene. Select one or more zygosities and mutation consequences to narrow the search.</div>
+                        <div class="labOptions">
+
+                            <!-- rs Identifier section -->
+                            <div class="labGeneGroup">
+                                <div class="labGeneId grouplabel">Gene Name</div>
+                                <div class="input-group mb-3">
+                                    <input type="text" id="geneId" class="form-control" placeholder="Gene symbol or name" aria-label="Gene symbol or name">
+                                    <div id="geneAutocomplete-list" class="autocomplete-items"></div>
+                                    <div class="input-group-append search">
+                                        <span class="input-group-text"><button class="bi bi-search"></button></span>
+                                    </div>
+                                </div>
+                                <div class="labGene errorlabel" style="display:none">Select a valid Gene.</div>
+                            </div>
+
+
+                            <!-- Zygosity section -->
+                            <div class="labZygosityGroup">
+                                <div class="labZygosity grouplabel">Zygosity</div>
+                                <div class="form-check labZygosity">
+                                    <input class="form-check-input" name="labZygosityHetero" id="labZygosityHetero" value="Heterozygous" type="checkbox"/>
+                                    <label class="custom-control-label" for="labZygosityHetero">Heterozygous (reference/alternate allele)</label>
+                                </div>
+                                <div class="form-check labZygosity">
+                                    <input class="form-check-input" name="labZygosityHomo" id="labZygosityHomo" value="Homozygous" type="checkbox"/>
+                                    <label class="custom-control-label" for="labZygosityHomo">Homozygous (reference/alternate allele)</label>
+                                </div>
+                                <div class="form-check labZygosity">
+                                    <input class="form-check-input" name="labZygosityMissing" id="labZygosityMissing" value="missing_zygosity" type="checkbox" />
+                                    <label class="custom-control-label" for="labZygosityMissing">Missing (failed genotype clustering)</label>
+                                </div>
+                                <div class="labZygosity errorlabel" style="display:none">At least one Zygosity option must be selected.</div>
+                            </div>
+
+                            <!-- Allele section -->
+                            <div class="labEffectGroup">
+                                <div class="labEffect grouplabel" style="line-height: 2rem !important;">Consequence</div>
+                                <div class="effectList">
+                                    <div class="labEffect grouplabel">
+                                        <div class="form-check">
+                                            <input class="form-check-input" name="labEffectGroupAltering" id="labEffectGroupAltering" value="GroupAltering" type="checkbox" />
+                                            <label class="custom-control-label" for="labEffectGroupAltering">Protein-Altering</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectFrameshift" id="labEffectFrameshift" value="Frameshift" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectFrameshift">Frameshift</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectMissense" id="labEffectMissense" value="missense" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectMissense">Missense</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectNonsense" id="labEffectNonsense" value="nonsense" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectNonsense">Nonsense</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectStartLoss" id="labEffectStartLoss" value="start_loss" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectStartLoss">Start Loss</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectStopLoss" id="labEffectStopLoss" value="stop_loss" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectStopLoss">Stop Loss</label>
+                                    </div>
+                                </div>
+                                <div class="effectList">
+                                    <div class="labEffect grouplabel">
+                                        <div class="form-check">
+                                            <input class="form-check-input" name="labEffectGroupOther" id="labEffectGroupOther" value="GroupOther" type="checkbox" />
+                                            <label class="custom-control-label" for="labEffectGroupOther">Other</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffect3UTR" id="labEffect3UTR" value="3'UTR" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffect3UTR">3'UTR</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffect5UTR" id="labEffect5UTR" value="5'UTR" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffect5UTR">5'UTR</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectDownstream" id="labEffectDownstream" value="downstream" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectDownstream">Downstream (500 bases)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectUpstream" id="labEffectUpstream" value="upstream" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectUpstream">Upstream (2 kilobases)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectExon" id="labEffectExon" value="exon" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectExon">Exon (coding)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectIntron" id="labEffectIntron" value="intron" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectIntron">Intron (non-coding)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectInframe" id="labEffectInframe" value="In_frame" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectInframe">In-frame</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectSynonymous" id="labEffectSynonymous" value="synonymous" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectSynonymous">Synonymous</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="labEffectMissing" id="labEffectMissing" value="missing_consequence" type="checkbox" />
+                                        <label class="custom-control-label" for="labEffectMissing">Missing</label>
+                                    </div>
+                                </div>
+
+                                <div class="labEffect errorlabel" style="display:none">At least one Consequence option must be selected.</div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary lab-save">Ok</button>
+                <button type="button" class="btn btn-secondary lab-cancel" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
