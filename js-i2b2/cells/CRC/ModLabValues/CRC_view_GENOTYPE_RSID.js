@@ -364,35 +364,12 @@ let rsidProxyMsg = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r'+
     '			<application_name>i2b2_QueryTool</application_name>\n'+
     '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
     '		</sending_application>\n'+
-    '		<sending_facility>\n'+
-    '			<facility_name>PHS</facility_name>\n'+
-    '		</sending_facility>\n'+
-    '		<receiving_application>\n'+
-    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
-    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
-    '		</receiving_application>\n'+
-    '		<receiving_facility>\n'+
-    '			<facility_name>PHS</facility_name>\n'+
-    '		</receiving_facility>\n'+
-    '		<message_type>\n'+
-    '			<message_code>Q04</message_code>\n'+
-    '			<event_type>EQQ</event_type>\n'+
-    '		</message_type>\n'+
-    '		<security>\n'+
-    '			<domain>{{{sec_domain}}}</domain>\n'+
-    '			<username>{{{sec_user}}}</username>\n'+
-    '			{{{sec_pass_node}}}\n'+
-    '		</security>\n'+
+    '		<security><domain></domain><username></username><password></password></security>\n'+
     '		<message_control_id>\n'+
     '			<message_num>{{{header_msg_id}}}</message_num>\n'+
     '			<instance_num>0</instance_num>\n'+
     '		</message_control_id>\n'+
-    '		<processing_id>\n'+
-    '			<processing_id>P</processing_id>\n'+
-    '			<processing_mode>I</processing_mode>\n'+
-    '		</processing_id>\n'+
-    '		<accept_acknowledgement_type>messageId</accept_acknowledgement_type>\n'+
-    '		<project_id>{{{sec_project}}}</project_id>\n'+
+    '		<project_id></project_id>\n'+
     '	</message_header>\n'+
     '	<request_header>\n'+
     '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
