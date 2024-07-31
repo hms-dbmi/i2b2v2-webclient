@@ -98,12 +98,13 @@ i2b2.CRC.view.GENOTYPE_GENE = {
                     Value: null
                 };
 
-                // default
+                // default settings
                 $("#labZygosityHetero, #labZygosityHomo").prop("checked", true);
+                $('.labEffectGroup .effectList:first .form-check input').prop("checked", true);
                 $('.modal-footer .lab-save').addClass("disabled");
+                $("#labHeader").text(valueMetadata.name);
 
                 $("#labValuesModal div").eq(0).modal("show");
-                $("#labHeader").text(valueMetadata.name);
 
                 // handle zygosity clicks
                 let func_validate_zygosity = function() {
