@@ -8,7 +8,7 @@
  */
 
 i2b2.CRC.view.GENOTYPE_GENE = {
-    serviceURL: 'genomicInfo.php',
+    serviceURL: 'https://i2b2ui-test-i2b2.catalyst.harvard.edu/genomicInfo.php',
     // ================================================================================================== //
     getGeneralDataType: function () {
         return "GENOTYPE_GENE";
