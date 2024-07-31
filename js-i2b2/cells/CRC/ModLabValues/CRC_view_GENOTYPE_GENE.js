@@ -8,7 +8,7 @@
  */
 
 i2b2.CRC.view.GENOTYPE_GENE = {
-    useAPI: true,
+    useAPI: false,
     resultsLimit: 10,
     serviceURL: 'https://i2b2ui-test-i2b2.catalyst.harvard.edu/genomicInfo.php',
     // ================================================================================================== //
@@ -109,6 +109,23 @@ i2b2.CRC.view.GENOTYPE_GENE = {
             }
         };
         i2b2.CRC.ajax._doSendMsg("proxyGeneSearch","test",{symbol:term},funcCB_symbol,{});
+    },
+    // ================================================================================================== //
+    lookupLocalAPI: function(term, cbSuccess, cbError) {
+        $.ajax({
+            url: i2b2.CRC.view.GENOTYPE_GENE.serviceURL,
+            method: 'GET',
+            data: {
+                op: 'gene',
+                term: term
+            },
+            success: (result) => {
+                cbSuccess(JSON.parse(result));
+            },
+            error: (result) => {
+                cbError();
+            }
+        });
     },
     // ================================================================================================== //
     reportHtml: function (sdxConcept) {
@@ -259,41 +276,18 @@ i2b2.CRC.view.GENOTYPE_GENE = {
                         $('#geneAutocomplete-list div').on('mousedown', func_click_gene);
                         func_validate_gene();
                     };
+                    let funct_display_autoerror = function() {
+                        $(".labGeneGroup .search").removeClass("searching");
+                        console.error('An error occured while looking up the gene');
+                        func_validate_gene();
+                    };
 
+                    let geneEntry = geneId.val().trim();
                     if (i2b2.CRC.view.GENOTYPE_GENE.useAPI === true) {
-                        i2b2.CRC.view.GENOTYPE_GENE.lookupGenenamesAPI(geneId.val().trim(), func_display_autocomplete);
+                        i2b2.CRC.view.GENOTYPE_GENE.lookupGenenamesAPI(geneEntry, func_display_autocomplete, funct_display_autoerror);
                     } else {
-                        alert("USE LOCAL DB LOOKUP");
+                        i2b2.CRC.view.GENOTYPE_GENE.lookupLocalAPI(geneEntry, func_display_autocomplete, funct_display_autoerror);
                     }
-
-                    // $.ajax({
-                    //     url: i2b2.CRC.view.GENOTYPE_GENE.serviceURL,
-                    //     method: 'GET',
-                    //     data: {
-                    //         op: 'gene',
-                    //         term: geneId.val().trim()
-                    //     },
-                    //     success: (result) => {
-                    //         $(".labGeneGroup .search").removeClass("searching");
-                    //         let autocompleteTrgt = $('#geneAutocomplete-list');
-                    //         autocompleteTrgt.empty();
-                    //         let genes = JSON.parse(result);
-                    //         for (let gene of genes) {
-                    //             let entry = $('<div><strong>'+gene.symbol+'</strong> - '+gene.name+'<input type="hidden" value="'+gene.symbol+'"></div>');
-                    //             entry.data("geneSymbol", gene.symbol);
-                    //             entry.data("geneName", gene.name);
-                    //             autocompleteTrgt.append(entry);
-                    //         }
-                    //         $('#geneAutocomplete-list div').on('mousedown', func_click_gene);
-                    //         func_validate_gene();
-                    //     },
-                    //     error: (result) => {
-                    //         $(".labGeneGroup .search").removeClass("searching");
-                    //         console.error('An error occured while looking up the gene');
-                    //         func_validate_gene();
-                    //     }
-                    // });
-
                 };
                 $('.labGeneGroup .input-group-append.search').click(func_find_gene);
                 $('.labMain').closest('form').submit(func_find_gene);
