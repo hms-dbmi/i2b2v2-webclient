@@ -488,12 +488,7 @@ i2b2.CRC.view.GENOTYPE_GENE_INDEL = {
 
 // inject a new "hidden" message type to allow getting rsid data from SNPdb
 let geneProxyMsgSearch = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r'+
-    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/"\r'+
-    '  xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/"\r'+
-    '  xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/"\r'+
-    '  xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/"\r'+
-    '  xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/"\r'+
-    '  xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\r'+
+    '<ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\r'+
     '	<message_header>\n'+
     '		<proxy><redirect_url>https://rest.genenames.org/search/symbol/{{{symbol}}}*</redirect_url></proxy>'+
     '		<sending_application>\n'+
@@ -511,12 +506,7 @@ let geneProxyMsgSearch = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?
     '</ns6:request>';
 // inject a new "hidden" message type to allow getting rsid data from SNPdb
 let geneProxyMsgInfo = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r'+
-    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/"\r'+
-    '  xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/"\r'+
-    '  xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/"\r'+
-    '  xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/"\r'+
-    '  xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/"\r'+
-    '  xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\r'+
+    '<ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\r'+
     '	<message_header>\n'+
     '		<proxy><redirect_url>https://rest.genenames.org/fetch/symbol/{{{symbol}}}</redirect_url></proxy>'+
     '		<sending_application>\n'+
