@@ -8,6 +8,8 @@
  */
 
 i2b2.CRC.view.GENOTYPE_GENE = {
+    useAPI: true,
+    resultsLimit: 10,
     serviceURL: 'https://i2b2ui-test-i2b2.catalyst.harvard.edu/genomicInfo.php',
     // ================================================================================================== //
     getGeneralDataType: function () {
@@ -69,6 +71,44 @@ i2b2.CRC.view.GENOTYPE_GENE = {
         }
 
         return ret;
+    },
+    // ================================================================================================== //
+    lookupGenenamesAPI: function(term, cbSuccess, cbError) {
+        let funcCB_symbol = function(data) {
+            // TODO: Check for errors
+            // extract the matching symbols
+            let results = {};
+            let cnt = 0;
+            let symbols = i2b2.h.XPath(data.msgResponse, "//str[@name='symbol']/text()");
+            for (let symbol of symbols) {
+                let sym = symbol.nodeValue;
+                results[sym] = {symbol:sym};
+                cnt++;
+                if (cnt >= i2b2.CRC.view.GENOTYPE_GENE.resultsLimit) break;
+            }
+            // lookup the names of each symbol in the list
+            let funcCB_name = function(data) {
+                this.name = i2b2.h.XPath(data.msgResponse, "//doc/str[@name='name']/text()");
+                if (this.name.length > 0) {
+                    this.name = this.name[0].nodeValue;
+                } else {
+                    this.name = "[SERVER ERROR]";
+                }
+                this.gene_id = i2b2.h.XPath(data.msgResponse, "//doc/str[@name='entrez_id']/text()");
+                if (this.gene_id.length > 0) {
+                    this.gene_id = this.gene_id[0].nodeValue;
+                } else {
+                    this.gene_id = null;
+                }
+                // check to see if we have any entries left and callback if done
+                let remaining = Object.values(results).filter((x) => x.name === undefined);
+                if (remaining.length === 0) cbSuccess(Object.values(results));
+            };
+            for (let symbol of Object.keys(results)) {
+                i2b2.CRC.ajax._doSendMsg("proxyGeneInfo","test",{symbol:symbol},funcCB_name.bind(results[symbol]),{});
+            }
+        };
+        i2b2.CRC.ajax._doSendMsg("proxyGeneSearch","test",{symbol:term},funcCB_symbol,{});
     },
     // ================================================================================================== //
     reportHtml: function (sdxConcept) {
@@ -205,33 +245,55 @@ i2b2.CRC.view.GENOTYPE_GENE = {
                     geneId.removeData("geneName");
                     $('.modal-footer .lab-save').addClass("disabled");
                     $(".labGeneGroup .search").addClass("searching");
-                    $.ajax({
-                        url: i2b2.CRC.view.GENOTYPE_GENE.serviceURL,
-                        method: 'GET',
-                        data: {
-                            op: 'gene',
-                            term: geneId.val().trim()
-                        },
-                        success: (result) => {
-                            $(".labGeneGroup .search").removeClass("searching");
-                            let autocompleteTrgt = $('#geneAutocomplete-list');
-                            autocompleteTrgt.empty();
-                            let genes = JSON.parse(result);
-                            for (let gene of genes) {
-                                let entry = $('<div><strong>'+gene.symbol+'</strong> - '+gene.name+'<input type="hidden" value="'+gene.symbol+'"></div>');
-                                entry.data("geneSymbol", gene.symbol);
-                                entry.data("geneName", gene.name);
-                                autocompleteTrgt.append(entry);
-                            }
-                            $('#geneAutocomplete-list div').on('mousedown', func_click_gene);
-                            func_validate_gene();
-                        },
-                        error: (result) => {
-                            $(".labGeneGroup .search").removeClass("searching");
-                            console.error('An error occured while looking up the gene');
-                            func_validate_gene();
+
+                    let func_display_autocomplete = function(genes) {
+                        $(".labGeneGroup .search").removeClass("searching");
+                        let autocompleteTrgt = $('#geneAutocomplete-list');
+                        autocompleteTrgt.empty();
+                        for (let gene of genes) {
+                            let entry = $('<div><strong>'+gene.symbol+'</strong> - '+gene.name+'<input type="hidden" value="'+gene.symbol+'"></div>');
+                            entry.data("geneSymbol", gene.symbol);
+                            entry.data("geneName", gene.name);
+                            autocompleteTrgt.append(entry);
                         }
-                    });
+                        $('#geneAutocomplete-list div').on('mousedown', func_click_gene);
+                        func_validate_gene();
+                    };
+
+                    if (i2b2.CRC.view.GENOTYPE_GENE.useAPI === true) {
+                        i2b2.CRC.view.GENOTYPE_GENE.lookupGenenamesAPI(geneId.val().trim(), func_display_autocomplete);
+                    } else {
+                        alert("USE LOCAL DB LOOKUP");
+                    }
+
+                    // $.ajax({
+                    //     url: i2b2.CRC.view.GENOTYPE_GENE.serviceURL,
+                    //     method: 'GET',
+                    //     data: {
+                    //         op: 'gene',
+                    //         term: geneId.val().trim()
+                    //     },
+                    //     success: (result) => {
+                    //         $(".labGeneGroup .search").removeClass("searching");
+                    //         let autocompleteTrgt = $('#geneAutocomplete-list');
+                    //         autocompleteTrgt.empty();
+                    //         let genes = JSON.parse(result);
+                    //         for (let gene of genes) {
+                    //             let entry = $('<div><strong>'+gene.symbol+'</strong> - '+gene.name+'<input type="hidden" value="'+gene.symbol+'"></div>');
+                    //             entry.data("geneSymbol", gene.symbol);
+                    //             entry.data("geneName", gene.name);
+                    //             autocompleteTrgt.append(entry);
+                    //         }
+                    //         $('#geneAutocomplete-list div').on('mousedown', func_click_gene);
+                    //         func_validate_gene();
+                    //     },
+                    //     error: (result) => {
+                    //         $(".labGeneGroup .search").removeClass("searching");
+                    //         console.error('An error occured while looking up the gene');
+                    //         func_validate_gene();
+                    //     }
+                    // });
+
                 };
                 $('.labGeneGroup .input-group-append.search').click(func_find_gene);
                 $('.labMain').closest('form').submit(func_find_gene);
@@ -422,3 +484,63 @@ i2b2.CRC.view.GENOTYPE_GENE_INDEL = {
         return "GENOTYPE_GENE";
     }
 };
+
+
+// inject a new "hidden" message type to allow getting rsid data from SNPdb
+let geneProxyMsgSearch = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/"\r'+
+    '  xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/"\r'+
+    '  xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/"\r'+
+    '  xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/"\r'+
+    '  xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/"\r'+
+    '  xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\r'+
+    '	<message_header>\n'+
+    '		<proxy><redirect_url>https://rest.genenames.org/search/symbol/{{{symbol}}}*</redirect_url></proxy>'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<security>\n'+
+    '			<domain></domain><username></username><password></password>\n'+
+    '		</security>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body></message_body>\n'+
+    '</ns6:request>';
+// inject a new "hidden" message type to allow getting rsid data from SNPdb
+let geneProxyMsgInfo = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/"\r'+
+    '  xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/"\r'+
+    '  xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/"\r'+
+    '  xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/"\r'+
+    '  xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/"\r'+
+    '  xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\r'+
+    '	<message_header>\n'+
+    '		<proxy><redirect_url>https://rest.genenames.org/fetch/symbol/{{{symbol}}}</redirect_url></proxy>'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<security>\n'+
+    '			<domain></domain><username></username><password></password>\n'+
+    '		</security>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body></message_body>\n'+
+    '</ns6:request>';
+setTimeout(()=>{
+    i2b2.CRC.ajax._commData["proxyGeneSearch"] = {
+        msg: geneProxyMsgSearch,
+        dont_escape_params: ['proxy_info','sec_pass_node'],
+        url: "https://rest.genenames.org/search/symbol/"
+    };
+    i2b2.CRC.ajax._commData["proxyGeneInfo"] = {
+        msg: geneProxyMsgInfo,
+        dont_escape_params: ['proxy_info','sec_pass_node'],
+        url: "https://rest.genenames.org/fetch/symbol/"
+    };
+}, 1000);
