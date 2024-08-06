@@ -141,6 +141,14 @@
     background: transparent;
 }
 
+#i2b2QueryHistoryBar .qHTooltipMain {
+    margin-right: 1em;
+    margin-top: 0.7em;
+}
+
+#i2b2QueryHistoryBar .qHTooltip {
+  color:   #87898a
+}
 button.invert{
     color: #0d6efd;
     background: #FFFFFF;
@@ -331,4 +339,6 @@ button.invert:hover{
     height: 1.1em;
     margin-top: -0.4em;
     display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
 }

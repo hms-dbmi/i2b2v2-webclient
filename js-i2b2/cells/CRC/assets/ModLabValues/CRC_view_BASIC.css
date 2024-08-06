@@ -1,0 +1,106 @@
+.BasicValues .hidden {
+    display: none;
+}
+
+#labHelpText{
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#labFlagValue {
+    width: auto;
+    max-height: 100px;
+    overflow: auto;
+}
+
+.BasicValues .labTypeGroup {
+    width: 160px;
+    margin-right: 15px;
+}
+
+.BasicValues .labTypeFlagAndValues {
+    display: flex;
+    min-height: 100px;
+}
+
+#labNumericValue.error,
+#labNumericValueRangeLow.error,
+#labNumericValueRangeHigh.error,
+#labEnumValue.error{
+    border: 2px solid red;
+}
+
+#labNumericValueRangeLow, #labNumericValueRangeHigh {
+    display: inline;
+    width: 31%;
+}
+
+#labNumericValueOperator{
+    width: 260px;
+    margin-bottom: 20px;
+}
+
+#labStringValueOperator{
+    width: 170px;
+    margin-bottom: 20px;
+}
+
+.BasicValues .labMain label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.BasicValues .labMain .input-group-text {
+    margin-bottom: 0;
+}
+
+
+#labUnitExcluded{
+    color:#900;
+    margin-left: 20px
+}
+
+#labHeader {
+    font-size: 1.0rem;
+}
+
+#labValuesModal .modal-dialog {
+    min-width: 590px;
+}
+
+.BasicValues .labBarMain {
+    margin: 10px;
+    text-align: center;
+    border: 1px solid #000080;
+    height: auto;
+}
+
+.BasicValues .labBar {
+    height: 55px;
+    width: 520px;
+    display: flex;
+    margin: 10px 5px 10px 5px;
+}
+
+.labBarItem {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+#labUnitsLabel {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.BasicValues .barLink {
+    height: 15px;
+    cursor: pointer;
+}
+
+.BasicValues .barLink:hover {
+    opacity: 0.7;
+}
+
+.BasicValues .barLink:active {
+    border: 1px solid #000080;
+}

@@ -7,7 +7,7 @@
     flex-direction: column;
     position: absolute;
     bottom: 0;
-    top: 3.5em;
+    top: 5.5em;
     left: 0;
     right: 0;
     height: auto;
@@ -18,6 +18,14 @@
     white-space: pre-line;
 }
 
+#i2b2TreeviewOntSearch {
+    background-color: #e4eff3;
+
+}
+
+#i2b2TreeviewOntSearch .list-group-item {
+    background-color: #e4eff3;
+}
 
 #i2b2OntSearchStatus {
     display: flex;
@@ -38,10 +46,14 @@ i.srTooltip.warn {
     font-weight: bold;
 }
 
+#i2b2TreeviewOntSearch .node-i2b2TreeviewOntSearch:has(.noDrag) {
+    cursor: not-allowed;
+}
+
 #i2b2FinderOnt {
     position: absolute;
     top: 0;
-    height: 3.1rem;
+    height: 4.8rem;
     border: solid 1px rgba(99, 117, 140, 0.28);
     border-bottom: 0px;
     border-top: none;
@@ -56,8 +68,9 @@ i.srTooltip.warn {
     position: relative;
     align-items: center;
     display: flex;
-    height: 100%;
+    height: 80%;
     min-width: 22rem;
+    margin-bottom: 0.35em;
 }
 
 #i2b2FinderOnt .searchTermMain{
@@ -298,6 +311,20 @@ button.invert:hover{
     height: 1.1em;
     margin-top: -0.4em;
     display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
+#ontSearchTreeToggle,
+#ontNavTreeToggle {
+    margin-bottom: 1em;
+    margin-top: 0.6em;
+    text-decoration: none;
+    color: #2782a3;
+}
+
+#i2b2FinderOnt .searchToggle {
+    float: right;
+    padding-right: 0.6em;
 }
 
 

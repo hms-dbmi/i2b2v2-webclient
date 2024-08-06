@@ -76,7 +76,7 @@ i2b2.layout.init = function () {
         },
         dimensions: {
             borderWidth:10,
-            headerHeight:26,
+            headerHeight:30,
             minItemHeight:36
         },
         content: [
@@ -84,26 +84,26 @@ i2b2.layout.init = function () {
                 type: 'column',
                 content:[
                     {
-                        type:'stack',
+                        type:'component',
                         height:40,
+                        isClosable:false,
+                        componentName: "i2b2.ONT.view.nav",
+                        title:'Terms'
+                    },{
+                        type:'stack',                        
                         content:[
                             {
                                 type:'component',
                                 isClosable:false,
-                                componentName: "i2b2.ONT.view.nav",
-                                title:'Terms'
+                                componentName: "i2b2.ONT.view.info",
+                                title:'Info'
                             }, {
                                 type:'component',
                                 isClosable:false,
-                                componentName: "i2b2.ONT.view.info",
-                                title:'Info'
+                                componentName: 'i2b2.WORK.view.main',
+                                title:'Workplace' 
                             }
-                        ]
-                    },{
-                        type:'component',
-                        isClosable:false,
-                        componentName: 'i2b2.WORK.view.main',
-                        title:'Workplace'
+                        ]                        
                     },{
                         type:'stack',
                         content:[
@@ -130,7 +130,7 @@ i2b2.layout.init = function () {
         },
         dimensions: {
             borderWidth:10,
-            headerHeight:26,
+            headerHeight:30,
             minItemHeight:36
         },
         content:[
@@ -174,7 +174,7 @@ i2b2.layout.init = function () {
                         type:'component',
                         id:'QR',
                         isClosable:false,
-                        componentName: 'i2b2.CRC.view.QS',
+                        componentName: 'i2b2.CRC.view.QueryMgr',
                         title:'Query Status'
                     }
                 ]

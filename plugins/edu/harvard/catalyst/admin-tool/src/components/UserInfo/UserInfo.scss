@@ -1,0 +1,37 @@
+.UserInfo {
+  background-color: rgba(224, 227, 231, 0.27);
+  height: 100%;
+
+  margin: 0.2em 0 4.5em 0;
+  padding: 0.5em;
+
+  .UserInfoForm {
+    margin: 0.7em;
+  }
+
+  .inputField {
+    width: 100%;
+  }
+
+  .mainField {
+    width: 30%;
+  }
+
+  .EditUserActions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 4em;
+  }
+  .EditUserActionPrimary{
+    margin: 0.7em 20.5em 0.7em 0.7em;
+  }
+
+  .EditUserActionSecondary{
+    margin: 0.7em 0.7em 0.7em 20.5em;
+  }
+
+  .ResetEditPage{
+    float: right;
+  }
+}

@@ -1,0 +1,70 @@
+.NumberExample .form-check  {
+    display:inline-block;
+}
+
+.NumberExample .hidden {
+    display: none;
+}
+
+/* === Lab Values Modal === */
+.NumberExample .labHelpText {
+    margin-bottom: 20px;
+}
+
+.NumberExample .labTypeGroup {
+    width: 160px;
+    margin-right: 15px;
+    margin-bottom: 12px;
+}
+
+.NumberExample .labTypeFlagAndValues {
+    display: flex;
+    flex-direction: column;
+    min-height: 100px;
+}
+
+.NumberExample .labNumericValue.error,
+.NumberExample .labNumericValueRangeLow.error,
+.NumberExample .labNumericValueRangeHigh.error,
+.NumberExample .labEnumValue.error{
+    border: 2px solid red;
+}
+
+.NumberExample .labNumericValueRangeLow,
+.NumberExample .labNumericValueRangeHigh {
+    display: inline;
+    width: 31%;
+}
+
+.NumberExample .labNumericValueOperator{
+    width: 260px;
+    margin-bottom: 20px;
+}
+
+.NumberExample .labMain label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.NumberExample .labMain .input-group-text {
+    margin-bottom: 0;
+}
+
+
+.NumberExample .labUnitExcluded{
+    color:#900;
+    margin-left: 20px
+}
+
+.NumberExample .labHeader {
+    font-size: 1.0rem;
+}
+
+.NumberExample .modal-dialog {
+    min-width: 590px;
+}
+
+.NumberExample .input-group-text
+{
+    background-color:  #bcd3ea;
+}

@@ -32,7 +32,7 @@ i2b2.sdx.TypeControllers.ENS.RenderData = function(sdxData, options) {
     if (options === undefined) { options = {}; }
     // default ENS icons
     if (!$.isArray(options.icon)) {
-        let t = 'sdx_CRC_PRS.png';
+        let t = 'sdx_CRC_PRS.svg';
         if (typeof options.icon === 'string') t = options.icon;
         options.icon = {
             root: t,
@@ -112,67 +112,84 @@ i2b2.sdx.TypeControllers.ENS.RenderData = function(sdxData, options) {
 // ==========================================================================
 i2b2.sdx.TypeControllers.ENS.getChildRecords = function(sdxParentNode, onCompleteCallback, options) {
     console.warn('i2b2.sdx.TypeControllers.ENS.getChildRecords() called');
-    // TODO: Make sure this function works
-    let scopedCallback = new i2b2_scopedCallback();
-    scopedCallback.scope = sdxParentNode;
-    scopedCallback.callback = function(results) {
-        // THIS function is used to process the AJAX results of the getChild call
-        //		results data object contains the following attributes:
-        //			refXML: xmlDomObject <--- for data processing
-        //			msgRequest: xml (string)
-        //			msgResponse: xml (string)
-        //			error: boolean
-        //			errorStatus: string [only with error=true]
-        //			errorMsg: string [only with error=true]
 
-        let retMsg = {
-            error: results.error,
-            msgRequest: results.msgRequest,
-            msgResponse: results.msgResponse,
-            msgUrl: results.msgUrl,
-            results: null
+    //check if user has permissions
+    if (i2b2.PM.model.userRoles.indexOf("DATA_LDS") === -1) {
+
+        let okCallback = function(){
+            onCompleteCallback({});
         };
-        let retChildren = [];
+        let data = {
+            "title": "Permission Denied",
+            "confirmMsg": 'Your current role does not allow access to this data type.',
+            "onOk": okCallback,
+            "hideCancel": true
+        };
+        i2b2.CRC.view.history.displayContextDialog(data);
+    }
+    else {
+        // TODO: Make sure this function works
+        let scopedCallback = new i2b2_scopedCallback();
+        scopedCallback.scope = sdxParentNode;
+        scopedCallback.callback = function (results) {
+            // THIS function is used to process the AJAX results of the getChild call
+            //		results data object contains the following attributes:
+            //			refXML: xmlDomObject <--- for data processing
+            //			msgRequest: xml (string)
+            //			msgResponse: xml (string)
+            //			error: boolean
+            //			errorStatus: string [only with error=true]
+            //			errorMsg: string [only with error=true]
 
-        // extract records from XML msg
-        let ps = results.refXML.getElementsByTagName('event');
-        let dm = i2b2.CRC.model.QueryMasters;
-        for(let i1=0; i1<ps.length; i1++) {
-            let o = {};
-            o.xmlOrig = ps[i1].outerHTML;
-            o.patient_id = i2b2.h.getXNodeVal(ps[i1],'patient_id');
-            o.event_id = i2b2.h.getXNodeVal(ps[i1],'event_id');
-            let sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR',o);
-            // append the data node to our returned results
-            retChildren.push(sdxDataNode);
-        }
-        //cl_node.children.loaded = true;
-        // TODO: broadcast a data update event of the CRC data model
-        retMsg.results = retChildren;
-        if (i2b2.h.getObjectClass(onCompleteCallback)==='i2b2_scopedCallback') {
-            onCompleteCallback.callback.call(onCompleteCallback.scope, retMsg);
-        } else {
-            onCompleteCallback(retMsg);
-        }
-    };
+            let retMsg = {
+                error: results.error,
+                msgRequest: results.msgRequest,
+                msgResponse: results.msgResponse,
+                msgUrl: results.msgUrl,
+                results: null
+            };
+            let retChildren = [];
+
+            // extract records from XML msg
+            let ps = results.refXML.getElementsByTagName('event');
+            let dm = i2b2.CRC.model.QueryMasters;
+            for (let i1 = 0; i1 < ps.length; i1++) {
+                let o = {};
+                o.xmlOrig = ps[i1].outerHTML;
+                o.patient_id = i2b2.h.getXNodeVal(ps[i1], 'patient_id');
+                o.event_id = i2b2.h.getXNodeVal(ps[i1], 'event_id');
+                let sdxDataNode = i2b2.sdx.Master.EncapsulateData('PR', o);
+                // append the data node to our returned results
+                retChildren.push(sdxDataNode);
+            }
+            //cl_node.children.loaded = true;
+            // TODO: broadcast a data update event of the CRC data model
+            retMsg.results = retChildren;
+            if (i2b2.h.getObjectClass(onCompleteCallback) === 'i2b2_scopedCallback') {
+                onCompleteCallback.callback.call(onCompleteCallback.scope, retMsg);
+            } else {
+                onCompleteCallback(retMsg);
+            }
+        };
 
 
-    let msg_filter = '<input_list>\n' +
-    '	<event_list max="1000000" min="0">\n'+
-    '		<patient_event_coll_id>'+sdxParentNode.sdxInfo.sdxKeyValue+'</patient_event_coll_id>\n'+
-    '	</event_list>\n'+
-    '</input_list>\n'+
-    '<filter_list/>\n'+
-    '<output_option>\n'+
-    '	<event_set select="using_input_list" onlykeys="true"/>\n'+
-    '</output_option>\n';
+        let msg_filter = '<input_list>\n' +
+            '	<event_list max="1000000" min="0">\n' +
+            '		<patient_event_coll_id>' + sdxParentNode.sdxInfo.sdxKeyValue + '</patient_event_coll_id>\n' +
+            '	</event_list>\n' +
+            '</input_list>\n' +
+            '<filter_list/>\n' +
+            '<output_option>\n' +
+            '	<event_set select="using_input_list" onlykeys="true"/>\n' +
+            '</output_option>\n';
 
-    // AJAX CALL
-    options  = {
-        patient_limit: 0,
-        PDO_Request: msg_filter
-    };
-    i2b2.CRC.ajax.getPDO_fromInputList("CRC:SDX:PatientRecordSet", options, scopedCallback);
+        // AJAX CALL
+        options = {
+            patient_limit: 0,
+            PDO_Request: msg_filter
+        };
+        i2b2.CRC.ajax.getPDO_fromInputList("CRC:SDX:PatientRecordSet", options, scopedCallback);
+    }
 };
 
 

@@ -40,7 +40,7 @@ i2b2.sdx.TypeControllers.QI.RenderData = function(sdxData, options) {
     if (options === undefined) { options = {}; }
     // default QI icons
     if (!$.isPlainObject(options.icon)) {
-        let t = 'sdx_CRC_QI.png';
+        let t = 'sdx_CRC_QI.svg';
         if (typeof options.icon === 'string') t = options.icon;
         options.icon = {
             root: t,

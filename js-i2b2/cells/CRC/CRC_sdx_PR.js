@@ -43,11 +43,11 @@ i2b2.sdx.TypeControllers.PR.RenderData = function(sdxData, options) {
             };
         } else {
             options.icon = {
-                root: 'sdx_CRC_PR.png',
-                rootExp: 'sdx_CRC_PR.png',
-                branch: 'sdx_CRC_PR.png',
-                branchExp: 'sdx_CRC_PR.png',
-                leaf: 'sdx_CRC_PR.png'
+                root: 'sdx_CRC_PR.svg',
+                rootExp: 'sdx_CRC_PR.svg',
+                branch: 'sdx_CRC_PR.svg',
+                branchExp: 'sdx_CRC_PR.svg',
+                leaf: 'sdx_CRC_PR.svg'
             };
         }
     }

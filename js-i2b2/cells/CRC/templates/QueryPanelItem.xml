@@ -9,7 +9,7 @@
                     <modifier_name>{{modName}}</modifier_name>
                     <applied_path>{{applied_path}}</applied_path>
                     <modifier_key>{{modKey}}</modifier_key>
-                    {{#if valueType}}
+                    {{#if ValueType}}
                         {{> QueryPanelItemConstraint }}
                     {{/if}}
             </constrain_by_modifier>
@@ -27,7 +27,7 @@
                 </constrain_by_date>
             {{/if}}
             {{#unless isModifier}}
-            {{#if valueType}}
+            {{#if ValueType}}
                 {{> QueryPanelItemConstraint }}
             {{/if}}
             {{/unless}}

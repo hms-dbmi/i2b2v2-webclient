@@ -1,0 +1,23 @@
+.DomainSettings{
+  margin: 0.2em 0 4.5em 0;
+  padding: 1.5em;
+  height: 100%;
+
+  background-color: #f2f4f6;
+
+  .EditActions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 4em;
+  }
+
+  .EditActionPrimary{
+    margin: 0.7em 0.5em 0.7em 0.7em;
+  }
+
+  .ResetEditPage{
+    float: right;
+  }
+
+}

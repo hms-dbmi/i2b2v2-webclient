@@ -1,4 +1,5 @@
 .idea
 js-i2b2/cells/plugins/*
-js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/
 
+# Ignore React Build Artifacts
+node_modules/

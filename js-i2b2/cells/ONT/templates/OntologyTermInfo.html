@@ -1,5 +1,5 @@
 {{#if title}}
-    <h2 class="title"><img src="{{icon}}" /> {{title}}</h2>
+    <h2 class="title"><img src="{{icon}}" /> {{{title}}}</h2>
 
     <div class="label">Description</div>
     <div>
@@ -39,7 +39,7 @@
     <div class="label">Hierarchy</div>
     <div>
         <div class="dataline">
-            {{heirarchy}}
+            {{{heirarchy}}}
             {{#if canGoUp}}- <a href="#" onclick="i2b2.ONT.view.info.loadParent()">Go Up</a>{{/if}}
         </div>
     </div>
@@ -68,5 +68,9 @@
 
 
 {{else}}
-    <h2><img src="js-i2b2/cells/ONT/assets/ONT_SEARCH.png" /> Please select a term to view its details</h2>
+<div>To view term info:</div>
+<ul>
+<li>Click on a term, or</li>
+<li>Hover over a term in the Find Patients panel, and click the info icon </li>
+</ul>
 {{/if}}

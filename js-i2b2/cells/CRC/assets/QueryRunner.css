@@ -50,3 +50,17 @@
 #crcModal .errorMsg.hidden{
     visibility: hidden;
 }
+
+#crcModal .modal-dialog,
+#crcModal .modal-content,
+#crcModal .modal-body{
+    max-height: 40em;
+}
+
+#crcModal .modal-body {
+    overflow-y: auto;
+}
+
+#crcModal .qtResultTypeHeader {
+    padding: 0.6em 0.9em;
+}

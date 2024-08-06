@@ -17,19 +17,19 @@ span.sdxStyleCRC-QMT::before {
 
 /* ========================================== */
 span.sdxStyleCRC-PDO::before {
-	background-image: url(sdx_CRC_PDO.png);
+	background-image: url(sdx_CRC_PDO.svg);
 }
 
 span.sdxStyleCRC-PR::before {
-	background-image: url(sdx_CRC_PR.png);
+	background-image: url(sdx_CRC_PR.svg);
 }
 
 span.sdxStyleCRC-PRC::before {
-	background-image: url(sdx_CRC_PRC.png);
+	background-image: url(sdx_CRC_PRC.svg);
 }
 
 span.sdxStyleCRC-PRS::before {
-	background-image: url(sdx_CRC_PRS.png);
+	background-image: url(sdx_CRC_PRS.svg);
 }
 
 span.sdxStyleCRC-QDEF::before {
@@ -37,13 +37,13 @@ span.sdxStyleCRC-QDEF::before {
 }
 
 span.sdxStyleCRC-QI::before {
-	background-image: url(sdx_CRC_QI.png);
+	background-image: url(sdx_CRC_QI.svg);
 }
 
 span.sdxStyleCRC-QM::before {
-	background-image: url(sdx_CRC_QM.png);
+	background-image: url(sdx_CRC_QM.svg);
 }
 
 span.sdxStyleCRC-QMT::before {
-	background-image: url(sdx_CRC_QMT.png);
+	background-image: url(sdx_CRC_QM.svg);
 }

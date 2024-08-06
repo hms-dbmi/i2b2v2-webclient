@@ -62,18 +62,81 @@
     font-size: 1em;
 }
 
-.CRC_QS_view #breakdownDetails {
+.CRC_QS_view #breakdownDetails > div {
+    padding: 0.16rem;
+}
+
+.CRC_QS_view #breakdownDetails, .CRC_QS_view #dataExportDetails {
     padding-left: 0.99em;
     margin-bottom: 0.3em;
 }
 
 .CRC_QS_view .breakDownHeader{
     font-size: 1.1em;
+    margin-top: 0.7em;
 }
 
 .CRC_QS_view .breakdownResultList {
     margin-left: 0.6em;
     margin-bottom: 0.5em;
+}
+
+
+
+.info-text-status .status-finished {
+    color: #0d6efd;
+}
+.info-text-status .status-error,
+.info-text-status .status-cancelled,
+#dataExportDetails .status-error,
+#dataExportDetails .status-error,
+#breakdownDetails .status-error {
+    color: #fd0d6e
+}
+.info-text-status .status-running,
+.info-text-status .status-processing {
+    color: #198754;
+}
+
+
+
+#infoQueryStatusText .status-processing {
+    color: #198754;
+}
+
+#infoQueryStatusText .status-running {
+    color: #198754;
+}
+#infoQueryStatusText .status-bar {
+    width: 60%;
+    border: solid 1px;
+    height: 12px;
+    background: lightgrey;
+    margin: 1rem auto;
+}
+
+/* query report container styling (outside of the iframe) */
+#infoQueryStatusText .status-bar .status-error {
+    background: red;
+    height: 100%;
+    float: left;
+}
+
+#infoQueryStatusText .status-bar .status-finished {
+    background: lightgreen;
+    height: 100%;
+    float: left;
+}
+
+#infoQueryStatusText .status-bar-label {
+    width: 100%;
+    text-align: center;
+    padding-top: 2em;
+    font-weight: bold;
+}
+
+#infoQueryStatusText .status-bar-text {
+    text-align: center;
 }
 
 
@@ -85,31 +148,34 @@
 #infoQueryStatusText .statusButtons button {
     display: none;
 }
+#infoQueryStatusText .statusButtons.running .cancel {
+    display: none;
+}
+#infoQueryStatusText .statusButtons.cancelled .cancelled {
+    display: block;
+    cursor: not-allowed;
+}
+
 #infoQueryStatusText .statusButtons.done .report {
     display: block;
 }
 
-#infoQueryStatusText .status-processing {
-    color: #198754;
+#infoQueryStatusText table {
+    width: 400px;
+    margin: 2rem auto;
+    background-color: #ed9b40;
+    color: black;
+    text-align: center;
+    vertical-align: middle;
 }
 
 #infoQueryStatusText .status-running {
     color: #198754;
 }
 
-#infoQueryStatusText .status-cancelled {
-    color: #dc3545;
-}
 
-#infoQueryStatusText .status-finished {
-    color: #0d6efd;
-}
 
-#infoQueryStatusText .info-text-name {
-   margin-bottom: 0.4em;
-}
-
-/* query report container styling (outside of the iframe) */
+    /* query report container styling (outside of the iframe) */
 
 #queryReportModal .modal-dialog {
     max-width: 90%;
@@ -132,4 +198,34 @@
     width: 100%;
     height: 100%;
     overflow: scroll;
+}
+
+
+/* ===================================== */
+#breakdownCharts svg text.graphLabel {
+    cursor: default;
+    text-anchor: end;
+}
+
+#breakdownCharts svg text.graphLabel:hover {
+    font-weight: bold;
+}
+
+#breakdownCharts svg rect.graphbar {
+    opacity: 0.60;
+    fill: rgb(39, 130, 163);
+    transition: opacity 100ms;
+}
+#breakdownCharts svg rect.graphbar:hover {
+    opacity: 1;
+    stroke: black;
+}
+
+#breakdownCharts svg text.graph-title {
+    font-weight: bold;
+    font-height: 1.05em;
+}
+
+#breakdownCharts svg text.y-label {
+    font-weight: bold;
 }

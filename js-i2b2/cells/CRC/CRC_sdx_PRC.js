@@ -32,7 +32,7 @@ i2b2.sdx.TypeControllers.PRC.RenderData = function(sdxData, options) {
     if (options === undefined) { options = {}; }
     // default ENS icons
     if (!$.isArray(options.icon)) {
-        let t = 'sdx_CRC_PRC.png';
+        let t = 'sdx_CRC_PRC.svg';
         if (typeof options.icon === 'string') t = options.icon;
         options.icon = {
             root: t,

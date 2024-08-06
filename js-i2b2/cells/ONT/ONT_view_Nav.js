@@ -70,7 +70,15 @@ i2b2.ONT.view.nav.PopulateCategories = function() {
     i2b2.ONT.view.nav.treeview.treeview('redraw', []);
 };
 // ================================================================================================== //
-
+i2b2.ONT.view.nav.nodeClickedAction =  function(event) {
+    let target = $(event.target);
+    let nodeId = parseInt(target.closest('li.list-group-item').attr('data-nodeid'));
+    let nodeData = i2b2.ONT.view.nav.treeview.treeview("getNodes", (snode)=> (snode.nodeId === nodeId));
+    if(nodeData.length > 0) {
+        i2b2.ONT.view.info.load(nodeData[0].i2b2, true);
+    }
+};
+// ================================================================================================== //
 i2b2.ONT.view.nav.loadChildrenAction =  function(e, nodeData) {
     i2b2.ONT.view.nav.loadChildren(nodeData);
 }
@@ -159,6 +167,21 @@ i2b2.ONT.view.nav.displayAlertDialog = function(inputData){
     $(i2b2.ONT.view.nav.templates.alertDialog(data)).appendTo(ontMsgDialogModal);
     $("#ONTAlertDialog").modal('show');
 }
+// ======================================================================================
+i2b2.ONT.view.nav.toggleSearchTree = function(){
+    i2b2.ONT.view.nav.treeview.hide();
+    i2b2.ONT.view.search.treeview.show();
+    $("#ontNavTreeToggle").removeClass("hidden");
+    $("#ontSearchTreeToggle").addClass("hidden");
+}
+// ======================================================================================
+i2b2.ONT.view.nav.toggleNavTree = function(){
+    i2b2.ONT.view.nav.treeview.show();
+    i2b2.ONT.view.search.treeview.hide();
+    $("#ontNavTreeToggle").addClass("hidden");
+    $("#ontSearchTreeToggle").removeClass("hidden");
+}
+// ======================================================================================
 
 // Below code is executed once the entire cell has been loaded
 //================================================================================================== //
@@ -187,6 +210,8 @@ i2b2.events.afterCellInit.add((cell) => {
                 });
                 i2b2.ONT.view.nav.treeview = treeRef;
                 treeRef.on('nodeLoading', i2b2.ONT.view.nav.loadChildrenAction);
+                treeRef.on('click', i2b2.ONT.view.nav.nodeClickedAction);
+
                 treeRef.on('onDrag', i2b2.sdx.Master.onDragStart);
                 treeRef.on('onRedraw', () => {
                     // attach drag drop attribute after the tree has been redrawn
@@ -222,6 +247,8 @@ i2b2.events.afterCellInit.add((cell) => {
                         i2b2.ONT.view.nav.params.patientCounts = $('#ONTNAVshowPatientCounts').is(":checked");
                         i2b2.ONT.view.nav.params.showConceptCode = $('#ONTNAVshowCodeTooltips').is(":checked");
                         i2b2.ONT.view.nav.params.showShortTooltips = $('#ONTNAVshowShortTooltips').is(":checked");
+                        i2b2.ONT.view.nav.params.fullSearch = $('#ONTNAVdisableOptSearch').is(":checked");
+
                         i2b2.ONT.view.nav.doRefreshAll();
                         $("#ontOptionsModal div").eq(0).modal("hide");
                     });
@@ -289,7 +316,10 @@ i2b2.events.afterCellInit.add((cell) => {
 //================================================================================================== //
 i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
     //clear any search results
-    i2b2.ONT.view.search.clearSearchInput();
+    if($("#ontNavTreeToggle").is(":visible")) {
+        $("#ontNavTreeToggle").click();
+    }
+
 
     // do not do modifiers (for now)
     let modifierKey;
@@ -382,7 +412,8 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
     let actions = {
         nodeAnnotate: {
             name: 'Show More Info',
-                onClick: function(node) {
+            isShown: (node) => (node.i2b2 !== undefined),
+            onClick: function(node) {
                 i2b2.ONT.view.info.load(node.i2b2, true);
             }
         },
@@ -395,9 +426,10 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
         }
     };
 
-    if(includeSearchOptions){
+    if (includeSearchOptions) {
         actions.nodeInTree = {
-            name: 'View in Tree',
+            name: 'Browse in tree',
+            isShown: (node) => (node.i2b2 !== undefined),
             onClick: function(node){
                 i2b2.ONT.view.search.viewInNavTree(node);
             }
@@ -405,6 +437,7 @@ i2b2.ONT.view.nav.createContextMenu = function(treeviewElemId, treeview, include
         actions.nodeModifier =  {
             name: 'Show Modifiers',
             isShown: function(node) {
+                if (node.i2b2 === undefined) return false;
                 let modifiersDisplayed = [];
                 if (node.nodes) modifiersDisplayed = node.nodes.filter((c) => c.icon.includes("sdxStyleONT-MODIFIER"));
                 return modifiersDisplayed.length === 0 && (node.hasModifier === undefined || node.hasModifier !== false);

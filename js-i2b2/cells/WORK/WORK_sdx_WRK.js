@@ -57,7 +57,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             newOptions.showchildren = false;
             if(o.name.indexOf("(t)") === 0) { // BUG FIX - WEBCLIENT-125
                 newOptions.cssClass = "sdxStyleCRC-QMT";
-                newOptions.icon = "sdx_CRC_QMT.png";
+                newOptions.icon = "sdx_CRC_QM.svg";
             }
             if (newOptions.title === "") newOptions.title = o.name;
             break;
@@ -79,7 +79,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.title = sdxData.sdxInfo.sdxDisplayName;
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PRS";
-            newOptions.icon = "sdx_CRC_PRS.png";
+            newOptions.icon = "sdx_CRC_PRS.svg";
             newOptions.title = o.title;
             break;
         case "ENCOUNTER_COLL":
@@ -100,7 +100,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.title = sdxData.sdxInfo.sdxDisplayName
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PRS";
-            newOptions.icon = "sdx_CRC_PRS.png";
+            newOptions.icon = "sdx_CRC_PRS.svg";
             newOptions.title = o.title;
             break;
         case "PATIENT":
@@ -116,7 +116,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.title = sdxData.origData.name;
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PR";
-            newOptions.icon = "sdx_CRC_PR.png";
+            newOptions.icon = "sdx_CRC_PR.svg";
             newOptions.title = o.title;
             break;
         case "CONCEPT":
@@ -151,6 +151,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             o.end_date = i2b2.h.getXNodeVal(x, "end_date");
             o.result_type = "PATIENT_COUNT_XML";
             o.size = i2b2.h.getXNodeVal(x, "set_size");
+            /* Do not change title for now - revisit later
             if (o.size > 10) {
                 o.title = "Patient Count - "+o.size+" patients";
             } else {
@@ -160,10 +161,11 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
                     o.title = "Patient Count - "+o.size+" patients";
                 }
             }
+               newOptions.title = o.title;
+            */
             newOptions.showchildren = false;
             newOptions.cssClass = "sdxStyleCRC-PRC";
-            newOptions.icon = "sdx_CRC_PRC.png";
-            newOptions.title = o.title;
+            newOptions.icon = "sdx_CRC_PRC.svg";
             break;
         case "GROUP_TEMPLATE":
             // Query Group Definition (Query Panel)
@@ -193,7 +195,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
             sdxCode = "WRK"
             newOptions.showchildren = true;
             newOptions.cssClass = "sdxStyleWORK-WRK";
-            newOptions.icon = "sdx_WORK_folder.png";
+            newOptions.icon = "sdx_WORK_folder.svg";
             o.xmlOrig = sdxData.origData.xmlOrig;
             o.result_type = "FOLDER";
             o.index = sdxData.origData.key;
@@ -218,7 +220,7 @@ i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
                 o.key = false;
                 newOptions.showchildren = false;
                 newOptions.cssClass = "sdxStyleWORK-XML";
-                newOptions.icon = "sdx_WORK_XML.png";
+                newOptions.icon = "sdx_WORK_XML.svg";
             }
             break;
     }
