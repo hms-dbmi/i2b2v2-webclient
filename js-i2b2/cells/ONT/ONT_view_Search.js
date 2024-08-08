@@ -336,6 +336,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
             });
             //look at this to get the any category if statement, existing code goes into else of an if search filter value = to any, reseset filter
             $("#i2b2FinderOnt .submenu li").on("click", function(){
+                $("#i2b2FinderOnt .active").removeClass("active");
                 let liItem = $(this).find("button");
                 let newDisplayText = liItem.addClass("active").text();
                 let filterValue = liItem.addClass("active").data("searchFilterValue");
@@ -344,8 +345,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     // Reset dropdown menu settings
                     $("#searchFilterText").text("Any Category");
                     $("#searchFilter").data("selectedFilterValue", "ALL CATEGORIES").data("selectedFilterType", "category");
-               } else{                                
-                    $("#i2b2FinderOnt .active").removeClass("active");                
+               } else{             
                     $("#searchFilterText").text(newDisplayText).prop('title', newDisplayText);
                     $("#searchFilter").data("selectedFilterValue", filterValue).data("selectedFilterType", filterType);
                }
