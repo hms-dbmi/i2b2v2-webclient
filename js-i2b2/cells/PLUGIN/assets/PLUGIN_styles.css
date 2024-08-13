@@ -79,7 +79,7 @@ DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Descript {
     margin-top: 0.14em;
 }
 
-DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon {
+DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon img {
     height: 32px;
     width: 32px;
 }
