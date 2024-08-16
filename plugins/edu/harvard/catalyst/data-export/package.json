@@ -1,0 +1,24 @@
+{
+  "name": "data-export",
+  "version": "1.0.0",
+  "description": "An i2b2 plugin that allows defining and requesting an export of data",
+  "main": "index.js",
+  "scripts": {
+    "start": "node web-server/server.js",
+    "build-start": "npm run build && node web-server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "webpack serve --mode development",
+    "build": "webpack --mode production"
+  },
+  "keywords": [
+    "i2b2",
+    "data",
+    "export"
+  ],
+  "author": "Nick Benik (@hackerceo)",
+  "license": "ISC",
+  "devDependencies": {
+    "sass": "^1.77.8",
+    "webpack-cli": "^5.1.4"
+  }
+}

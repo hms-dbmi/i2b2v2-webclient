@@ -51,6 +51,12 @@ DIV#PluginListBox A.pluginRecordBox DIV.Icon {
     margin: 0 0.3rem;
 }
 
+DIV#PluginListBox A.pluginRecordBox DIV.Icon img {
+    height: 32px;
+    width: 32px;
+}
+
+
 DIV#PluginListBox A.pluginRecordBox DIV.Name {
     font-family: arial,helvetica;
     font-size: 0.51em;
