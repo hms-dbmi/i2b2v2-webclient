@@ -43,13 +43,20 @@ const columns = [
 
 
 
-export default function ExportDefList({id, rows, canRename}) {
+export default function ExportDefList({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hideFooter}) {
 
     columns[0].editable = canRename;
+    function onSelectionModelChangeW(selection, {api} ) {
+        if (onSelectionModelChange === undefined) return;
+        onSelectionModelChange(selection);
+        if (selection.length > 0) onSelect(api.getRow(selection[0]));
+    }
+
 
     return (
-        <div id={id}>
+        <div id={id} style={{height: 400}} >
             <DataGrid
+                height={280}
                 columnHeaderHeight={40}
                 style={{background:"white"}}
                 columns={columns}
@@ -57,13 +64,10 @@ export default function ExportDefList({id, rows, canRename}) {
                 showCellVerticalBorder={true}
                 density={'compact'}
                 disableColumnResize={true}
-                // hideFooter={true}
+                onRowSelectionModelChange = {onSelectionModelChangeW}
+                rowSelectionModel = {selectionModel}
+                hideFooter={hideFooter}
                 // autoHeight={true}
-                initialState={{
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 4 },
-                    },
-                }}
                 pageSizeOptions={[4, 8, 16]}
             ></DataGrid>
         </div>

@@ -14,11 +14,13 @@
     color: black;
 }
 
+#saveModalDefTableLocal .MuiDataGrid-row.Mui-selected,
 #loadModalDefTableLocal .MuiDataGrid-row.Mui-selected,
 #loadModalDefTableGlobal .MuiDataGrid-row.Mui-selected {
     background-color: rgba(25, 118, 210, 0.18) !important;
 }
 
+#saveModalDefTableLocal .MuiDataGrid-row:hover,
 #loadModalDefTableLocal .MuiDataGrid-row:hover,
 #loadModalDefTableGlobal .MuiDataGrid-row:hover {
     background-color: rgba(25, 118, 210, 0.08);
@@ -30,12 +32,14 @@
     padding: 0;
 }
 
+#saveModalDefTableLocal .MuiDataGrid-columnHeaders,
 #loadModalDefTableLocal .MuiDataGrid-columnHeaders,
 #loadModalDefTableGlobal .MuiDataGrid-columnHeaders {
     background-color: #eee;
     font-style: italic;
 }
 
+#saveModalDefTableLocal .MuiDataGrid-row--borderBottom,
 #loadModalDefTableLocal .MuiDataGrid-row--borderBottom,
 #loadModalDefTableGlobal .MuiDataGrid-row--borderBottom {
     background: none;

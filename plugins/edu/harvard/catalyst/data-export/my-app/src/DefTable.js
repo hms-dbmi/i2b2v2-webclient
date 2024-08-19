@@ -12,6 +12,9 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import ArrowUpIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownIcon from '@mui/icons-material/ArrowDownward';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import ModalLoad from "./modalLoad";
 import ModalSave from "./modalSave";
@@ -75,8 +78,44 @@ const columns = [
         disableReorder: true,
         hideSortIcons: true,
         disableColumnSorting: true,
-        headerAlign: "center"
+        headerAlign: "center",
+        renderCell: ({row}) => {
+            let actions = [];
+            if (row.demographic) {
+                if (row.included) {
+                    return (<CheckIcon />);
+                } else {
+                    return (<CloseIcon />);
+                }
+            } else {
+                return (
+                    <GridActionsCellItem
+                        icon={
+                            <Tooltip title="Delete Column">
+                                <DeleteIcon />
+                            </Tooltip>
+                        }
+                        label="Delete Column"
+                        onClick={() => alert("delete") }
+                    />
+                );
+            }
+        }
     },
+    // {
+    //     field: "included",
+    //     headerName: "Include",
+    //     width: 70,
+    //     editable: true,
+    //     sortable: false,
+    //     type: "boolean",
+    //     resizable: false,
+    //     disableColumnMenu: true,
+    //     disableReorder: true,
+    //     hideSortIcons: true,
+    //     disableColumnSorting: true,
+    //     headerAlign: "center"
+    // },
     {
         field: 'name',
         headerName: 'Concept',
