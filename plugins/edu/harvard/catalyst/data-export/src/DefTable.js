@@ -96,7 +96,11 @@ const columns = [
                             </Tooltip>
                         }
                         label="Delete Column"
-                        onClick={() => alert("delete") }
+                        onClick={(e) => {
+                            alert("delete");
+                            console.dir(e);
+                            e.nativeEvent.preventDefault();
+                        }}
                     />
                 );
             }
@@ -189,7 +193,7 @@ const rows = [
     { order: 10, id:125, name: "Hemoglobin A1C (Test:mcsq-a1c)", constraint: "something here", aggregation:"Average Value"}
 ];
 
-export default function DataTable(props) {
+export default function DataTable({props}) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -200,8 +204,6 @@ export default function DataTable(props) {
     const [showSave, setSaveViz] = React.useState(false);
     const handleSaveOpen = () => setSaveViz(true);
     const handleSaveClose = () => setSaveViz(false);
-
-
 
 
     const [cellModesModel, setCellModesModel] = React.useState({});
@@ -215,7 +217,6 @@ export default function DataTable(props) {
                 if (params.field === "aggregation" && params.row.demographic === true) {
                     event.preventDefault();
                     return;
-
                 }
             }
             setCellModesModel((prevModel) => {
@@ -289,9 +290,9 @@ export default function DataTable(props) {
             >
                 <Button variant="contained" onClick={handleLoadOpen}>Load Previous Definition</Button>
                 <Button variant="contained" onClick={handleSaveOpen}>Save Current Definition</Button>
-                <Button variant="contained" onClick={()=>props.props.tabChanger({},1)}>Request Export With This Definition</Button>
+                <Button variant="contained" onClick={()=>props.tabChanger(2)}>Request Export With This Definition</Button>
             </Stack>
-            <div style={{ height:"60%", width: '76%', margin:"auto", background:"#077cf982", padding:"5px", borderRadius:"5px"}}>
+            <div id="dropTrgt" style={{ height:"60%", width: '76%', margin:"auto", background:"#077cf982", padding:"5px", borderRadius:"5px"}}>
                 <p style={{fontStyle:"italic", fontWeight:"bold"}}>Drag a concept onto the grid to add it to the list</p>
                 <DataGrid
                     style={{background:"white"}}
@@ -306,31 +307,13 @@ export default function DataTable(props) {
                     onCellClick={handleCellClick}
                     onCellDoubleClick={handleCellClick}
                     initialState={{
-                        pagination: {
-                            paginationModel: { page: 0, pageSize: 4 },
-                        },
                         sorting: {
                             sortModel: [{field:'order',sort:'asc'}]
                         }
                     }}
-                    pageSizeOptions={[4, 8, 16]}
+                    autoHeight={true}
+                    hideFooter={true}
                 />
-                <Stack
-                    spacing={2}
-                    direction="row"
-                    justifyContent="flex-begin"
-                    alignItems="center"
-                    style={{width:"100%", margin:"auto", marginBottom: "4px"}}
-                >
-                    <Button
-                        sx={{
-                            position:"absolute",
-                            transform: "translate(10px, -75%)"
-                        }}
-                        variant="outlined"
-                        onClick={handleLoadOpen}
-                    >Preview Example Data</Button>
-                </Stack>
             </div>
 
         </div>

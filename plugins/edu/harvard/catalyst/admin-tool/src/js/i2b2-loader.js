@@ -3,7 +3,9 @@
  * and handles the initialization process (and state restoration)
  */
 
-i2b2 = {};
+/* global i2b2  */
+
+let i2b2 = {};
 i2b2.model = {};
 i2b2.h = {};
 i2b2.MSG_TYPES = {};
@@ -123,3 +125,6 @@ window.addEventListener("message", (event) => {
         }
     }
 });
+
+
+export default i2b2;

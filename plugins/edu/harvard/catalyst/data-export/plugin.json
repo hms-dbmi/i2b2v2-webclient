@@ -3,11 +3,11 @@
   "description": "This plugin allows for defining and requesting an export of data",
   "category": ["export"],
   "icons": { "size32x32": "export-icon.png" },
-  "assetDir": "public/assets",
+  "assetDir": "public",
   "plugin_version" : "1.0",
   "i2b2_version" : "1.8.2",
-  "base": "my-app/build/index.html",
+  "base": "build/index.html",
   "sandbox": true,
   "admin_only": false,
-  "roles": ["DATA_LDS", "DATA_PROT"]
+  "roles": ["DATA_LDS","DATA_PROT", "DATA_DEID"]
 }
