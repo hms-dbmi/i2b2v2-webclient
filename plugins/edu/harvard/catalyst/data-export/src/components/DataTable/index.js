@@ -23,7 +23,7 @@ import { ModalSave } from "./ModalSave";
 import {loadTableAction} from "../../reducers/createTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 
-import sdxDropHandler from "./dropHandler"
+import sdxDropHandler from "../../dropHandler"
 
 
 const columns = [
@@ -203,13 +203,13 @@ export const DataTable = (props) => {
     const handleSaveClose = () => setSaveViz(false);
 
 
-    React.useEffect(()=>{
+    /*React.useEffect(()=>{
         // Attach drop handler
-        if (i2b2.sdx !== undefined) {
+        if (i2b2 && i2b2.sdx !== undefined) {
             i2b2.sdx.AttachType("dropTrgt", "CONCPT");
             i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", sdxDropHandler);
         }
-    });
+    });*/
 
 
 
