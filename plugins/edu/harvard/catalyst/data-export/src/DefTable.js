@@ -1,3 +1,5 @@
+/* globals i2b2 */
+
 import './css/tableDef.css';
 import * as React from 'react';
 import {
@@ -18,6 +20,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import ModalLoad from "./modalLoad";
 import ModalSave from "./modalSave";
+
+import sdxDropHandler from "./dropHandler"
+
 
 const columns = [
     {
@@ -206,6 +211,16 @@ export default function DataTable({props}) {
     const handleSaveClose = () => setSaveViz(false);
 
 
+    React.useEffect(()=>{
+        // Attach drop handler
+        if (i2b2.sdx !== undefined) {
+            i2b2.sdx.AttachType("dropTrgt", "CONCPT");
+            i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", sdxDropHandler);
+        }
+    });
+
+
+
     const [cellModesModel, setCellModesModel] = React.useState({});
     const handleCellClick = React.useCallback(
         (params, event) => {
@@ -318,4 +333,6 @@ export default function DataTable({props}) {
 
         </div>
     );
+
+
 }
