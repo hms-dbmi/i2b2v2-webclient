@@ -1,7 +1,7 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import { PayloadAction } from "@reduxjs/toolkit";
 /*import { AxiosResponse } from "axios";*/
-import {loadTableSuccessAction, loadTableErrorAction} from "../reducers/createTableSlice";
+import {loadTableSuccessAction, loadTableErrorAction} from "../reducers/loadTableSlice";
 
 import {
     LOAD_DATA_TABLE

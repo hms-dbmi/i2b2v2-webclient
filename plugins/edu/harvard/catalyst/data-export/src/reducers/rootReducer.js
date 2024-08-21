@@ -1,10 +1,7 @@
-//export { createTableReducer } from "../reducers/createTableReducer";
-/*export { dataTableReducer } from "./createTableReducer";*/
-//export *  from "./createTableReducer";
-import dataTableReducer from './createTableSlice';
+import loadTableReducer from './loadTableSlice';
 
 const rootReducers = {
-    dataTable: dataTableReducer,
+    dataTable: loadTableReducer,
 };
 
 export default rootReducers;

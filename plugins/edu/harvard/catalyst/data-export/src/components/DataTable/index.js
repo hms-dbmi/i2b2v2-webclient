@@ -1,4 +1,3 @@
-//import * as React from 'react';
 import React, { useState, useEffect } from "react";
 
 import '../../css/tableDef.css';
@@ -20,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { ModalLoad } from "./ModalLoad";
 import { ModalSave } from "./ModalSave";
-import {loadTableAction} from "../../reducers/createTableSlice";
+import {loadTableAction} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 
 import sdxDropHandler from "../../dropHandler"

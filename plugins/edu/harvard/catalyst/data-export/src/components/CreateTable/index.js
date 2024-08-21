@@ -4,10 +4,9 @@ import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
 import {DataTable} from "../DataTable";
 import PropTypes from "prop-types";
-import {loadTableAction} from "../../reducers/createTableSlice";
+import {loadTableAction} from "../../reducers/loadTableSlice";
 
 export const CreateTable = () => {
     const [selectedTab, setSelectedTab] = React.useState(0);

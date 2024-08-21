@@ -6,7 +6,7 @@ import theme from "./theme";
 import {CreateTable} from "./components";
 import { Provider } from 'react-redux';
 import {ThemeProvider} from "@mui/material/styles";
-import { getStore } from "./app/getStore";
+import { getStore } from "./store/getStore";
 import sdxDropHandler from "./dropHandler"
 
 const store = getStore();

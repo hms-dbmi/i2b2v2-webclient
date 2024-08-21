@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { DATA_TABLE } from "../actions";
 import { defaultState } from '../defaultState';
 
-export const dataTableSlice = createSlice({
+export const loadTableSlice = createSlice({
     name: DATA_TABLE,
     initialState: defaultState.dataTable,
     reducers: {
@@ -21,11 +21,10 @@ export const dataTableSlice = createSlice({
     }
 })
 
-// Action creators are generated for each case reducer function
 export const {
     loadTableAction,
     loadTableSuccessAction,
     loadTableErrorAction
-} = dataTableSlice.actions
+} = loadTableSlice.actions
 
-export default dataTableSlice.reducer
+export default loadTableSlice.reducer
