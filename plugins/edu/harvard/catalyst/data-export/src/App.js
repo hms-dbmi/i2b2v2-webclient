@@ -30,8 +30,7 @@ window.addEventListener("I2B2_READY", ()=> {
     } else {
         console.log("load previous table state");
     }
-
-    // Attach drop handler
+    // attach the drop handler after initialization
     i2b2.sdx.AttachType("dropTrgt", "CONCPT");
-    i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", ()=>{alert("dropped")});
+    i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", sdxDropHandler);
 });
