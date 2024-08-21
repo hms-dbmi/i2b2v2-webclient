@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import {DataTable} from "../DataTable";
+import {DefineTable} from "../DefineTable";
 import PropTypes from "prop-types";
-import {loadTableAction} from "../../reducers/loadTableSlice";
 
-export const CreateTable = () => {
+export const DataExport = () => {
     const [selectedTab, setSelectedTab] = React.useState(0);
-    //const table = useSelector((state) => state);
-    //const dispatch = useDispatch();
 
     const handleTabChange = (event, newTab) => { setSelectedTab(newTab); };
 
@@ -43,10 +39,6 @@ export const CreateTable = () => {
     }
     // ======================================================
 
-    /*useEffect(() => {
-        dispatch(loadTableAction());
-    }, []);*/
-
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -59,7 +51,7 @@ export const CreateTable = () => {
                 </AppBar>
             </Box>
             <CustomTabPanel value={selectedTab} index={0}>
-                <DataTable props={{tabChanger: setSelectedTab}}/>
+                <DefineTable tabChanger={setSelectedTab}/>
             </CustomTabPanel>
             <CustomTabPanel value={selectedTab} index={1}>
                 Show Example table here

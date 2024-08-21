@@ -27,7 +27,7 @@ export function* doLoadTable(action) {
 
         yield put(loadTableSuccessAction(response.data));
     } catch (error) {
-        yield put(loadTableErrorAction({error: "There was an error getting the data table"}));
+        yield put(loadTableErrorAction({error: "There was an error loading the data table"}));
     }
 }
 

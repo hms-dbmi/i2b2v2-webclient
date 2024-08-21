@@ -24,169 +24,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import sdxDropHandler from "../../dropHandler"
 
-
-const columns = [
-    {
-        field: 'order',
-        headerName: 'order',
-        width: 1,
-        sortable: true,
-        sortingOrder: "ASC",
-        hideSortIcons: true,
-        disableReorder: true
-
-    },
-    {
-        field: 'reorder',
-        headerName: "Ordering",
-        width: "80",
-        resizable: false,
-        type: 'actions',
-        getActions: ({ row }) => {
-            let actions = [];
-            if (row.demographic) return actions;
-            if (row.order > 1) {
-                actions.push(
-                    <GridActionsCellItem
-                        icon={
-                            <Tooltip title="Move row up">
-                                <ArrowUpIcon />
-                            </Tooltip>
-                        }
-                        label="Move row up"
-                        onClick={() => alert("up")}
-                    />
-                );
-            }
-            actions.push(
-                <GridActionsCellItem
-                    icon={
-                        <Tooltip title="Move row down">
-                            <ArrowDownIcon />
-                        </Tooltip>
-                    }
-                    label="Move row down"
-                    onClick={() => alert("down") }
-                />
-            );
-            return actions;
-        }
-    },
-    {
-        field: "included",
-        headerName: "Include",
-        width: 70,
-        editable: true,
-        sortable: false,
-        type: "boolean",
-        resizable: false,
-        disableColumnMenu: true,
-        disableReorder: true,
-        hideSortIcons: true,
-        disableColumnSorting: true,
-        headerAlign: "center",
-        renderCell: ({row}) => {
-            let actions = [];
-            if (row.demographic) {
-                if (row.included) {
-                    return (<CheckIcon />);
-                } else {
-                    return (<CloseIcon />);
-                }
-            } else {
-                return (
-                    <GridActionsCellItem
-                        icon={
-                            <Tooltip title="Delete Column">
-                                <DeleteIcon />
-                            </Tooltip>
-                        }
-                        label="Delete Column"
-                        onClick={(e) => {
-                            alert("delete");
-                            console.dir(e);
-                            e.nativeEvent.preventDefault();
-                        }}
-                    />
-                );
-            }
-        }
-    },
-    // {
-    //     field: "included",
-    //     headerName: "Include",
-    //     width: 70,
-    //     editable: true,
-    //     sortable: false,
-    //     type: "boolean",
-    //     resizable: false,
-    //     disableColumnMenu: true,
-    //     disableReorder: true,
-    //     hideSortIcons: true,
-    //     disableColumnSorting: true,
-    //     headerAlign: "center"
-    // },
-    {
-        field: 'name',
-        headerName: 'Concept',
-        minWidth: 450,
-        flex:1,
-        sortable: false,
-        disableColumnSorting: true,
-        disableColumnMenu: false,
-    },
-    {
-        field: 'constraint',
-        headerName: 'Constraints',
-        width: 130,
-        resizable: false,
-        disableColumnMenu: true,
-        disableReorder: true,
-        disableColumnSorting: true,
-        display: "flex",
-        hideSortIcons: true,
-        sortable: false,
-//        headerAlign: "center"
-    }, {
-        field: 'aggregation',
-        headerName: 'Aggregation',
-        width: 300,
-        resizable: false,
-        disableColumnMenu: true,
-        disableReorder: true,
-        display: "flex",
-        hideSortIcons: true,
-        disableColumnSorting: true,
-        sortable: false,
-//        headerAlign: "center",
-        editable: true,
-        type: "singleSelect",
-        valueOptions: ({ row }) => {
-            if (row.demographic) {
-                return ["Value"];
-            } else {
-                return [
-                    "Existence (Yes/No)",
-                    "Date (First)",
-                    "Date (Most Recent)",
-                    "Count",
-                    "All Concepts (Names/Text)",
-                    "Most Frequent Concept (Names/Text)",
-                    "All Concepts (Codes)",
-                    "Most Frequent Concept (Codes)",
-                    "Minimum Value",
-                    "Maximum Value",
-                    "Median Value",
-                    "Average Value",
-                    "Mode (Most Frequent Value)",
-                    "List of All Values"
-                ];
-            }
-        }
-    }
-];
-
-export const DataTable = (props) => {
+export const DefineTable = (props) => {
     const { table } = useSelector((state) => state.dataTable);
     const dispatch = useDispatch();
 
@@ -201,6 +39,154 @@ export const DataTable = (props) => {
     const handleSaveOpen = () => setSaveViz(true);
     const handleSaveClose = () => setSaveViz(false);
 
+    const columns = [
+        {
+            field: 'order',
+            headerName: 'order',
+            width: 1,
+            sortable: true,
+            sortingOrder: "ASC",
+            hideSortIcons: true,
+            disableReorder: true
+
+        },
+        {
+            field: 'reorder',
+            headerName: "Ordering",
+            width: "80",
+            resizable: false,
+            type: 'actions',
+            getActions: ({ row }) => {
+                let actions = [];
+                if (row.demographic) return actions;
+                if (row.order > 1) {
+                    actions.push(
+                        <GridActionsCellItem
+                            icon={
+                                <Tooltip title="Move row up">
+                                    <ArrowUpIcon />
+                                </Tooltip>
+                            }
+                            label="Move row up"
+                            onClick={() => alert("up")}
+                        />
+                    );
+                }
+                actions.push(
+                    <GridActionsCellItem
+                        icon={
+                            <Tooltip title="Move row down">
+                                <ArrowDownIcon />
+                            </Tooltip>
+                        }
+                        label="Move row down"
+                        onClick={() => alert("down") }
+                    />
+                );
+                return actions;
+            }
+        },
+        // {
+        //     field: "included",
+        //     headerName: "Include",
+        //     width: 70,
+        //     editable: true,
+        //     sortable: false,
+        //     type: "boolean",
+        //     resizable: false,
+        //     disableColumnMenu: true,
+        //     disableReorder: true,
+        //     hideSortIcons: true,
+        //     disableColumnSorting: true,
+        //     headerAlign: "center"
+        // },
+        {
+            field: 'name',
+            headerName: 'Concept',
+            minWidth: 450,
+            flex:1,
+            sortable: false,
+            disableColumnSorting: true,
+            disableColumnMenu: false,
+        },
+        {
+            field: 'aggregation',
+            headerName: 'Aggregation',
+            width: 300,
+            resizable: false,
+            disableColumnMenu: true,
+            disableReorder: true,
+            display: "flex",
+            hideSortIcons: true,
+            disableColumnSorting: true,
+            sortable: false,
+//        headerAlign: "center",
+            editable: true,
+            type: "singleSelect",
+            valueOptions: ({ row }) => {
+                if (row.demographic) {
+                    return ["Value"];
+                } else {
+                    return [
+                        "Existence (Yes/No)",
+                        "Date (First)",
+                        "Date (Most Recent)",
+                        "Count",
+                        "All Concepts (Names/Text)",
+                        "Most Frequent Concept (Names/Text)",
+                        "All Concepts (Codes)",
+                        "Most Frequent Concept (Codes)",
+                        "Minimum Value",
+                        "Maximum Value",
+                        "Median Value",
+                        "Average Value",
+                        "Mode (Most Frequent Value)",
+                        "List of All Values"
+                    ];
+                }
+            }
+        },
+        {
+            field: "included",
+            headerName: "Include",
+            width: 70,
+            editable: true,
+            sortable: false,
+            type: "boolean",
+            resizable: false,
+            disableColumnMenu: true,
+            disableReorder: true,
+            hideSortIcons: true,
+            disableColumnSorting: true,
+            headerAlign: "center",
+            renderCell: ({row}) => {
+                let actions = [];
+                if (row.demographic) {
+                    if (row.included) {
+                        return (<CheckIcon />);
+                    } else {
+                        return (<CloseIcon />);
+                    }
+                } else {
+                    return (
+                        <GridActionsCellItem
+                            icon={
+                                <Tooltip title="Delete Column">
+                                    <DeleteIcon />
+                                </Tooltip>
+                            }
+                            label="Delete Column"
+                            onClick={(e) => {
+                                alert("delete");
+                                console.dir(e);
+                                e.nativeEvent.preventDefault();
+                            }}
+                        />
+                    );
+                }
+            }
+        }
+    ];
 
     /*React.useEffect(()=>{
         // Attach drop handler
@@ -209,8 +195,6 @@ export const DataTable = (props) => {
             i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", sdxDropHandler);
         }
     });*/
-
-
 
     const [cellModesModel, setCellModesModel] = React.useState({});
     const handleCellClick = React.useCallback(

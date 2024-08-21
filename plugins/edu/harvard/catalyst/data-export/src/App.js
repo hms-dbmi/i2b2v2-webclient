@@ -3,7 +3,7 @@
 import * as React from 'react';
 import './App.css';
 import theme from "./theme";
-import {CreateTable} from "./components";
+import {DataExport} from "./components";
 import { Provider } from 'react-redux';
 import {ThemeProvider} from "@mui/material/styles";
 import { getStore } from "./store/getStore";
@@ -15,7 +15,7 @@ export default () => {
     return (
         <ThemeProvider theme={theme}>
             <Provider store={store}>
-                <CreateTable />
+                <DataExport />
             </Provider>
         </ThemeProvider>
     );

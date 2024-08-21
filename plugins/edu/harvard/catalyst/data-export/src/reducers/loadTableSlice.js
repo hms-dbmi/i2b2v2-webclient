@@ -15,7 +15,7 @@ export const loadTableSlice = createSlice({
             state.table = table;
         },
         loadTableErrorAction: (state, { payload: error }) => {
-            state.isFetching = true;
+            state.isFetching = false;
             state.errors = error;
         },
     }
