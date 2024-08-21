@@ -1,5 +1,7 @@
-import './css/tableDef.css';
-import * as React from 'react';
+//import * as React from 'react';
+import React, { useState, useEffect } from "react";
+
+import '../../css/tableDef.css';
 import {
     DataGrid,
     GridActionsCellItem,
@@ -16,8 +18,10 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import ModalLoad from "./modalLoad";
-import ModalSave from "./modalSave";
+import { ModalLoad } from "./ModalLoad";
+import { ModalSave } from "./ModalSave";
+import {loadTableAction} from "../../reducers/createTableSlice";
+import {useDispatch, useSelector} from "react-redux";
 
 const columns = [
     {
@@ -180,20 +184,10 @@ const columns = [
     }
 ];
 
-const rows = [
-    { order: 1, id:123, name: "Patient Number", constraint: "", aggregation:"Value", included:true, demographic: true},
-    { order: 2, id:122, name: "Gender", constraint: "", aggregation:"Value", included:true, demographic: true},
-    { order: 3, id:121, name: "Age", constraint: "", aggregation:"Value", included:true, demographic: true},
-    { order: 4, id:111, name: "Race", constraint: "", aggregation:"Value", included:false, demographic: true},
-    { order: 5, id:58, name: "Ethnicity", constraint: "", aggregation:"Value", included:false, demographic: true},
-    { order: 6, id:35, name: "Vital Status", constraint: "", aggregation:"Value", included:false, demographic: true},
-    { order: 7, id:36, name: "Hemoglobin A1C (Test:mcsq-a1c)", constraint: "something here", aggregation:"Maximum Value"},
-    { order: 8, id:25, name: "Hemoglobin A1C (Test:mcsq-a1c)", constraint: "something here", aggregation:"Mode (Most Frequent Value)"},
-    { order: 9, id:136, name: "Hemoglobin A1C (Test:mcsq-a1c)", constraint: "something here", aggregation:"Date (Most Recent)"},
-    { order: 10, id:125, name: "Hemoglobin A1C (Test:mcsq-a1c)", constraint: "something here", aggregation:"Average Value"}
-];
+export const DataTable = (props) => {
+    const { table } = useSelector((state) => state.dataTable);
+    const dispatch = useDispatch();
 
-export default function DataTable({props}) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -273,7 +267,9 @@ export default function DataTable({props}) {
         [],
     );
 
-
+    useEffect(() => {
+        dispatch(loadTableAction());
+    }, []);
 
 
     return (
@@ -296,7 +292,7 @@ export default function DataTable({props}) {
                 <p style={{fontStyle:"italic", fontWeight:"bold"}}>Drag a concept onto the grid to add it to the list</p>
                 <DataGrid
                     style={{background:"white"}}
-                    rows={rows}
+                    rows={table}
                     columns={columns}
                     showCellVerticalBorder={true}
                     hideFooterSelectedRowCount={true}

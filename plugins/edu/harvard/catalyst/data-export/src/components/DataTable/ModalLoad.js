@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 
 import * as React from "react";
 import { shadows } from '@mui/system';
-import "./css/modals.css";
+import "../../css/modals.css";
 
 import ExportDefList from "./definitionListing";
 import Button from "@mui/material/Button";
@@ -86,12 +86,9 @@ function TabPanel(props) {
 
 
 
-export default function ModalLoad({open, handleClose}) {
+export const ModalLoad = ({open, handleClose}) => {
     const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => { setValue(newValue); };
-
-
-
 
 
     return (

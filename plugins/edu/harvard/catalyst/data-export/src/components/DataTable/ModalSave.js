@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 
 import TextField from '@mui/material/TextField';
 
-import "./css/modals.css";
+import "../../css/modals.css";
 import ExportDefList from "./definitionListing";
 
 
@@ -75,8 +75,7 @@ function TabPanel(props) {
     );
 }
 
-export default function ModalSave({open, handleClose}) {
-
+export const ModalSave = ({open, handleClose}) => {
     const [tableDefName, setTableDefName] = React.useState('');
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [showOverwrite, setShowOverwrite] = React.useState(false);

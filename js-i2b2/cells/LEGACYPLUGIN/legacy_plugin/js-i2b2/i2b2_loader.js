@@ -68,6 +68,13 @@ i2b2.hive.tempCellsList = [
 		   roles: [ "DATA_LDS", "DATA_DEID", "DATA_PROT" ],
 		   forceDir: "cells/plugins/community"
 		},
+		{
+			code:"BiobankDatafile",
+			forceLoading: true,
+			forceConfigMsg: { params: [] },
+			roles: [ "DATA_OBFSC", "DATA_LDS", "DATA_DEID", "DATA_PROT" ],
+			forceDir: "cells/plugins/community"
+		},
 		{ code:	"CAREobsTally",
 		   forceLoading: true,
 		   forceConfigMsg: { params: [] },
