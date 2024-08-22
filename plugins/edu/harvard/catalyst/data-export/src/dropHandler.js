@@ -9,10 +9,10 @@ export default function sdxDropHandler(sdx,ev) {
         row = ev.target.closest(".MuiDataGrid-columnHeaders");
         if (row !== null) {
             // insert the drop at the very top
-            rowNum = Number.POSITIVE_INFINITY;
+            rowNum = Number.NEGATIVE_INFINITY;
         } else {
             // insert to drop at the very bottom
-            rowNum = Number.NEGATIVE_INFINITY;
+            rowNum = Number.POSITIVE_INFINITY;
         }
     } else {
         // insert the drop below the currently set row
