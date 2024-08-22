@@ -18,9 +18,9 @@
     }
 }
 
-#saveModalDefTableLocal .MuiDataGrid-row.Mui-selected,
-#loadModalDefTableLocal .MuiDataGrid-row.Mui-selected,
-#loadModalDefTableGlobal .MuiDataGrid-row.Mui-selected {
+#saveModalDefTableLocal,
+#loadModalDefTableLocal,
+#loadModalDefTableGlobal {
     .MuiDataGrid-row.Mui-selected {
         background-color: rgba(25, 118, 210, 0.18) !important;
     }
