@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 
 import * as React from "react";
 import { shadows } from '@mui/system';
-import "../../css/modals.css";
+import "../../css/modals.scss";
 
 import { TableListing } from "../TableListing";
 import Button from "@mui/material/Button";

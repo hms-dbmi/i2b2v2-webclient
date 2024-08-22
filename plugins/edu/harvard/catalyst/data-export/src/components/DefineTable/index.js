@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import '../../css/tableDef.css';
+import '../../css/tableDef.scss';
 import {
     DataGrid,
     GridActionsCellItem,

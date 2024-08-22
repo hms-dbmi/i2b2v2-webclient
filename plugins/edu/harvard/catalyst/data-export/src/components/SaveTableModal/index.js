@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 
 import TextField from '@mui/material/TextField';
 
-import "../../css/modals.css";
+import "../../css/modals.scss";
 import { TableListing } from "../TableListing";
 
 
