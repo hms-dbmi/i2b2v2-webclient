@@ -1,8 +1,7 @@
-//import PropTypes from "prop-types";
-import {DataTable, SaveTable} from "./models";
+import {TableDefinition, SaveTable} from "./models";
 
 export const defaultState = {
-    dataTable: DataTable(),
+    tableDef: TableDefinition(),
     saveTable: SaveTable(),
     tableListing: []
 };

@@ -26,8 +26,7 @@ import sdxDropHandler from "../../dropHandler"
 
 export const DefineTable = (props) => {
     const dispatch = useDispatch();
-    const { table } = useSelector((state) => state.dataTable);
-    const allState = useSelector((state) => state.tableListing);
+    const { table } = useSelector((state) => state.tableDef);
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);

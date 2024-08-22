@@ -3,7 +3,7 @@ import saveTableReducer from './saveTableSlice';
 import listTablesReducer from './listTablesSlice';
 
 const rootReducers = {
-    dataTable: loadTableReducer,
+    tableDef: loadTableReducer,
     saveTable: saveTableReducer,
     tableListing : listTablesReducer
 };

@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { DATA_TABLE } from "../actions";
+import { TABLE_DEF } from "../actions";
 import { defaultState } from '../defaultState';
 import {StatusInfo} from "../models";
 
 export const loadTableSlice = createSlice({
-    name: DATA_TABLE,
-    initialState: defaultState.dataTable,
+    name: TABLE_DEF,
+    initialState: defaultState.tableDef,
     reducers: {
         loadTableAction: state => {
             state.isFetching = true;
