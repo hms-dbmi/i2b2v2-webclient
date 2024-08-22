@@ -1,4 +1,5 @@
 export { DataExport} from "./DataExport";
 export { DefineTable } from "./DefineTable";
-export { ModalLoad } from "./DefineTable/ModalLoad";
-export { ModalSave } from "./DefineTable/ModalSave";
+export { SaveTableModal } from "./SaveTableModal";
+export { LoadTableModal } from "./LoadTableModal";
+export { TableListing } from "./TableListing";

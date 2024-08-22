@@ -9,76 +9,77 @@ import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 
 import "../../css/modals.css";
-import ExportDefList from "./definitionListing";
+import { TableListing } from "../TableListing";
 
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 
-const modalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '70%',
-    minWidth: 1280,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
 
-
-const rowsLocal = [
-    { id:1, name: "Nick's 1st Demographics run", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-    { id:2, name: "Dummy test", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-    { id:3, name: "Example 1", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-    { id:4, name: "Example 2", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-    { id:5, name: "COVID + GLP-1s", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-    { id:6, name: "COVID + ACE2", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-    { id:7, name: "NegCOVID + GLP-1s", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-    { id:8, name: "NegCOVID + ACE2", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-    { id:9, name: "Diabetes", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-    { id:10, name: "Ashtma", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-    { id:11, name: "COPD", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-    { id:12, name: "opps (delete me)", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-    { id:13, name: "Complex Stats Demo", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-    { id:14, name: "testing 2", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-    { id:15, name: "testing 1", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-    { id:16, name: "test", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-];
-
-
-function a11yProps(index) {
-    return {
-        id: `vertical-tab-${index}`,
-        'aria-controls': `vertical-tabpanel-${index}`,
-    };
-}
-
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`vertical-tabpanel-${index}`}
-            aria-labelledby={`vertical-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
-}
-
-export const ModalSave = ({open, handleClose}) => {
+export const SaveTableModal = ({open, handleClose}) => {
     const [tableDefName, setTableDefName] = React.useState('');
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [showOverwrite, setShowOverwrite] = React.useState(false);
+
+    const modalStyle = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '70%',
+        minWidth: 1280,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
+
+    const rowsLocal = [
+        { id:1, name: "Nick's 1st Demographics run", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
+        { id:2, name: "Dummy test", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
+        { id:3, name: "Example 1", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
+        { id:4, name: "Example 2", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
+        { id:5, name: "COVID + GLP-1s", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
+        { id:6, name: "COVID + ACE2", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
+        { id:7, name: "NegCOVID + GLP-1s", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
+        { id:8, name: "NegCOVID + ACE2", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
+        { id:9, name: "Diabetes", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
+        { id:10, name: "Ashtma", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
+        { id:11, name: "COPD", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
+        { id:12, name: "opps (delete me)", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
+        { id:13, name: "Complex Stats Demo", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
+        { id:14, name: "testing 2", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
+        { id:15, name: "testing 1", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
+        { id:16, name: "test", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
+    ];
+
+
+    function a11yProps(index) {
+        return {
+            id: `vertical-tab-${index}`,
+            'aria-controls': `vertical-tabpanel-${index}`,
+        };
+    }
+
+    function TabPanel(props) {
+        const { children, value, index, ...other } = props;
+        return (
+            <div
+                role="tabpanel"
+                hidden={value !== index}
+                id={`vertical-tabpanel-${index}`}
+                aria-labelledby={`vertical-tab-${index}`}
+                {...other}
+            >
+                {value === index && (
+                    <Box sx={{ p: 3 }}>
+                        <Typography>{children}</Typography>
+                    </Box>
+                )}
+            </div>
+        );
+    }
 
     function onRowSelect(row) {
         setTableDefName(row.name);
@@ -148,7 +149,7 @@ export const ModalSave = ({open, handleClose}) => {
                         className={'modalTabPanel'}
                         height={260}
                     >
-                        <ExportDefList
+                        <TableListing
                             id={"saveModalDefTableLocal"}
                             rows={rowsLocal}
                             canRename={true}

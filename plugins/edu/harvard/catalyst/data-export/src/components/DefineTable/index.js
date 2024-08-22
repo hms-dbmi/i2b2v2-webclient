@@ -17,8 +17,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { ModalLoad } from "./ModalLoad";
-import { ModalSave } from "./ModalSave";
+import { LoadTableModal} from "../LoadTableModal";
+import { SaveTableModal } from "../SaveTableModal";
 import {loadTableAction} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 
@@ -270,8 +270,8 @@ export const DefineTable = (props) => {
 
     return (
         <div>
-            <ModalLoad handleClose={handleLoadClose} open={showLoad}/>
-            <ModalSave handleClose={handleSaveClose} open={showSave}/>
+            <LoadTableModal handleClose={handleLoadClose} open={showLoad}/>
+            <SaveTableModal handleClose={handleSaveClose} open={showSave}/>
 
             <Stack
                 spacing={2}
