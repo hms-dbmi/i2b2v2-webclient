@@ -149,7 +149,7 @@ export const DefineTable = (props) => {
         },
         {
             field: "included",
-            headerName: "Include",
+            headerName: "Actions",
             width: 70,
             editable: true,
             sortable: false,
