@@ -7,18 +7,18 @@ export const loadTableSlice = createSlice({
     name: TABLE_DEF,
     initialState: defaultState.tableDef,
     reducers: {
-        loadTableAction: state => {
+        loadTable: state => {
             state.isFetching = true;
             state.statusInfo = StatusInfo();
         },
-        loadTableSuccessAction: (state, { payload: table }) => {
+        loadTableSuccess: (state, { payload: table }) => {
             state.isFetching = false;
             state.table = table;
             state.statusInfo = {
                 status: "SUCCESS"
             };
         },
-        loadTableErrorAction: (state, { payload: errorMessage }) => {
+        loadTableError: (state, { payload: errorMessage }) => {
             state.isFetching = false;
             state.statusInfo = {
                 status: "FAIL",
@@ -29,9 +29,9 @@ export const loadTableSlice = createSlice({
 })
 
 export const {
-    loadTableAction,
-    loadTableSuccessAction,
-    loadTableErrorAction
+    loadTable,
+    loadTableSuccess,
+    loadTableError
 } = loadTableSlice.actions
 
 export default loadTableSlice.reducer

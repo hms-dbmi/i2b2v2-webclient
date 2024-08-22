@@ -1,6 +1,6 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 /*import { PayloadAction } from "@reduxjs/toolkit";*/
-import {saveTableSuccessAction, saveTableErrorAction} from "../reducers/saveTableSlice";
+import {saveTableSuccess, saveTableError} from "../reducers/saveTableSlice";
 
 import {
     SAVE_DATA_TABLE
@@ -12,9 +12,9 @@ export function* doSaveTable(action) {
         //const response = yield axios.get(`your-server-url:port/api/users/${id}`);
         const response = "";
 
-        yield put(saveTableSuccessAction());
+        yield put(saveTableSuccess());
     } catch (error) {
-        yield put(saveTableErrorAction({errorMessage: "There was an error saving the data table"}));
+        yield put(saveTableError({errorMessage: "There was an error saving the data table"}));
     }
 }
 

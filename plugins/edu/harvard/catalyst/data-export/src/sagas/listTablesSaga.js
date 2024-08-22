@@ -1,6 +1,6 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 /*import { PayloadAction } from "@reduxjs/toolkit";*/
-import {listTablesSuccessAction, listTablesErrorAction} from "../reducers/listTablesSlice";
+import {listTablesSuccess, listTablesError} from "../reducers/listTablesSlice";
 
 import {
     LIST_TABLES
@@ -12,9 +12,9 @@ export function* doListTables(action) {
         //const response = yield axios.get(`your-server-url:port/api/users/${id}`);
         const response = "";
 
-        yield put(listTablesSuccessAction());
+        yield put(listTablesSuccess());
     } catch (error) {
-        yield put(listTablesErrorAction({errorMessage: "There was an error saving the data table"}));
+        yield put(listTablesError({errorMessage: "There was an error saving the data table"}));
     }
 }
 

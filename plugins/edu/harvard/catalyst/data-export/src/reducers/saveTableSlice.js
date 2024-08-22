@@ -7,17 +7,17 @@ export const saveTableSlice = createSlice({
     name: SAVE_TABLE,
     initialState: defaultState.saveTable,
     reducers: {
-        saveTableAction: state => {
+        saveTable: state => {
             state.isSaving = true;
             state.statusInfo = StatusInfo();
         },
-        saveTableSuccessAction: (state, { payload: table }) => {
+        saveTableSuccess: (state, { payload: table }) => {
             state.isSaving = false;
             state.statusInfo = {
                 status: "SUCCESS"
             };
         },
-        saveTableErrorAction: (state, { payload: errorMessage }) => {
+        saveTableError: (state, { payload: errorMessage }) => {
             state.isSaving = false;
             state.statusInfo = {
                 status: "FAIL",
@@ -28,9 +28,9 @@ export const saveTableSlice = createSlice({
 })
 
 export const {
-    saveTableAction,
-    saveTableSuccessAction,
-    saveTableErrorAction
+    saveTable,
+    saveTableSuccess,
+    saveTableError
 } = saveTableSlice.actions
 
 export default saveTableSlice.reducer

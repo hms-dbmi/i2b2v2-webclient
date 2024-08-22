@@ -7,18 +7,18 @@ export const listTablesSlice = createSlice({
     name: TABLE_LISTING,
     initialState: defaultState.tableListing,
     reducers: {
-        listTablesAction: state => {
+        listTables: state => {
             state.isFetching = true;
             state.statusInfo = StatusInfo();
         },
-        listTablesSuccessAction: (state, { payload: table }) => {
+        listTablesSuccess: (state, { payload: table }) => {
             state.tables = table;
             state.isFetching = false;
             state.statusInfo = {
                 status: "SUCCESS"
             };
         },
-        listTablesErrorAction: (state, { payload: errorMessage }) => {
+        listTablesError: (state, { payload: errorMessage }) => {
             state.isFetching = false;
             state.statusInfo = {
                 status: "FAIL",
@@ -29,9 +29,9 @@ export const listTablesSlice = createSlice({
 })
 
 export const {
-    listTablesAction,
-    listTablesSuccessAction,
-    listTablesErrorAction
+    listTables,
+    listTablesSuccess,
+    listTablesError
 } = listTablesSlice.actions
 
 export default listTablesSlice.reducer

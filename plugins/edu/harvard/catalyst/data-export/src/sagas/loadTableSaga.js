@@ -1,7 +1,7 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import { PayloadAction } from "@reduxjs/toolkit";
 /*import { AxiosResponse } from "axios";*/
-import {loadTableSuccessAction, loadTableErrorAction} from "../reducers/loadTableSlice";
+import {loadTableSuccess, loadTableError} from "../reducers/loadTableSlice";
 
 import {
     LOAD_DATA_TABLE
@@ -25,9 +25,9 @@ export function* doLoadTable(action) {
         //const response = yield axios.get(`your-server-url:port/api/users/${id}`);
         const response = {data: rows};
 
-        yield put(loadTableSuccessAction(response.data));
+        yield put(loadTableSuccess(response.data));
     } catch (error) {
-        yield put(loadTableErrorAction({error: "There was an error loading the data table"}));
+        yield put(loadTableError({error: "There was an error loading the data table"}));
     }
 }
 

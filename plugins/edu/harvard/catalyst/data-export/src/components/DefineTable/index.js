@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { LoadTableModal} from "../LoadTableModal";
 import { SaveTableModal } from "../SaveTableModal";
-import {loadTableAction} from "../../reducers/loadTableSlice";
+import {loadTable} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 
 import sdxDropHandler from "../../dropHandler"
@@ -264,7 +264,7 @@ export const DefineTable = (props) => {
     );
 
     useEffect(() => {
-        dispatch(loadTableAction());
+        dispatch(loadTable());
     }, []);
 
 
