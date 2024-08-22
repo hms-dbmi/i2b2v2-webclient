@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { DATA_TABLE } from "../actions";
+import {SAVE_TABLE} from "../actions";
 import { defaultState } from '../defaultState';
 import {StatusInfo} from "../models";
 
 export const saveTableSlice = createSlice({
-    name: DATA_TABLE,
+    name: SAVE_TABLE,
     initialState: defaultState.saveTable,
     reducers: {
         saveTableAction: state => {
