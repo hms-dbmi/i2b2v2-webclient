@@ -13,7 +13,7 @@ export const loadTableSlice = createSlice({
         },
         loadTableSuccess: (state, { payload: table }) => {
             state.isFetching = false;
-            state.table = table;
+            state.rows = table;
             state.statusInfo = {
                 status: "SUCCESS"
             };

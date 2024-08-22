@@ -24,7 +24,6 @@ export function* doLoadTable(action) {
         // You can also export the axios call as a function.
         //const response = yield axios.get(`your-server-url:port/api/users/${id}`);
         const response = {data: rows};
-
         yield put(loadTableSuccess(response.data));
     } catch (error) {
         yield put(loadTableError({error: "There was an error loading the data table"}));

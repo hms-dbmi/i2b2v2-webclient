@@ -26,7 +26,7 @@ import sdxDropHandler from "../../dropHandler"
 
 export const DefineTable = (props) => {
     const dispatch = useDispatch();
-    const { table } = useSelector((state) => state.tableDef);
+    const { rows } = useSelector((state) => state.tableDef);
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -288,7 +288,7 @@ export const DefineTable = (props) => {
                 <p style={{fontStyle:"italic", fontWeight:"bold"}}>Drag a concept onto the grid to add it to the list</p>
                 <DataGrid
                     style={{background:"white"}}
-                    rows={table}
+                    rows={rows}
                     columns={columns}
                     showCellVerticalBorder={true}
                     hideFooterSelectedRowCount={true}

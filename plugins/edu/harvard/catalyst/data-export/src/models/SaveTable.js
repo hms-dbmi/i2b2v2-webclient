@@ -2,9 +2,9 @@ import PropTypes from "prop-types";
 import {StatusInfo} from "./StatusInfo";
 
 export const SaveTable = ({
-  table = {},
-  isSaving= false,
-  statusInfo = StatusInfo(),
+    table = {},
+    isSaving= false,
+    statusInfo = StatusInfo(),
 } = {}) => ({
     table,
     isSaving,

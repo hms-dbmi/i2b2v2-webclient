@@ -1,19 +1,19 @@
 import PropTypes from "prop-types";
 import {StatusInfo} from "./StatusInfo";
-import {Table} from "./Table";
+import {TableDefinitionRow} from "./TableDefinitionRow";
 
 export const TableDefinition = ({
-  table = Table(),
-  isFetching= false,
-  statusInfo = StatusInfo()
+    rows = [],
+    isFetching= false,
+    statusInfo = StatusInfo()
 } = {}) => ({
-    table,
+    rows,
     isFetching,
     statusInfo
 });
 
 TableDefinition.propTypes = {
-    table: PropTypes.shape(Table),
+    rows: PropTypes.arrayOf(TableDefinitionRow),
     isFetching: PropTypes.bool,
     statusInfo: PropTypes.shape(StatusInfo),
 };
