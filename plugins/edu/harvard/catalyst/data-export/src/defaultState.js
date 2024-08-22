@@ -3,5 +3,6 @@ import {DataTable, SaveTable} from "./models";
 
 export const defaultState = {
     dataTable: DataTable(),
-    saveTable: SaveTable()
+    saveTable: SaveTable(),
+    tableListing: []
 };

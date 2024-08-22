@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { DATA_TABLE } from "../actions";
 import { defaultState } from '../defaultState';
+import {StatusInfo} from "../models";
 
 export const saveTableSlice = createSlice({
     name: DATA_TABLE,
@@ -8,7 +9,7 @@ export const saveTableSlice = createSlice({
     reducers: {
         saveTableAction: state => {
             state.isSaving = true;
-            state.errors = '';
+            state.statusInfo = StatusInfo();
         },
         saveTableSuccessAction: (state, { payload: table }) => {
             state.isSaving = false;

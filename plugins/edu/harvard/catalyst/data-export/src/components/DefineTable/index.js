@@ -25,8 +25,9 @@ import {useDispatch, useSelector} from "react-redux";
 import sdxDropHandler from "../../dropHandler"
 
 export const DefineTable = (props) => {
-    const { table } = useSelector((state) => state.dataTable);
     const dispatch = useDispatch();
+    const { table } = useSelector((state) => state.dataTable);
+    const allState = useSelector((state) => state.tableListing);
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -38,6 +39,7 @@ export const DefineTable = (props) => {
     const [showSave, setSaveViz] = React.useState(false);
     const handleSaveOpen = () => setSaveViz(true);
     const handleSaveClose = () => setSaveViz(false);
+    const [cellModesModel, setCellModesModel] = React.useState({});
 
     const columns = [
         {
@@ -196,7 +198,6 @@ export const DefineTable = (props) => {
         }
     });*/
 
-    const [cellModesModel, setCellModesModel] = React.useState({});
     const handleCellClick = React.useCallback(
         (params, event) => {
             if (!params.isEditable) return;

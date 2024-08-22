@@ -1,18 +1,18 @@
 import PropTypes from "prop-types";
 import {StatusInfo} from "./StatusInfo";
 
-export const DataTable = ({
-  table = {},
+export const TableListing = ({
+  tables = [],
   isFetching= false,
-  statusInfo = StatusInfo()
+  statusInfo = StatusInfo(),
 } = {}) => ({
-    table,
+    tables,
     isFetching,
     statusInfo
 });
 
-DataTable.propTypes = {
-    table: PropTypes.object,
+TableListing.propTypes = {
+    tables: PropTypes.array,
     isFetching: PropTypes.bool,
     statusInfo: PropTypes.shape(StatusInfo),
 };

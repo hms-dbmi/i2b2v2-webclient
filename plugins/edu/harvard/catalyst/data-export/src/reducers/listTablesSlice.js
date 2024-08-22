@@ -1,24 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { DATA_TABLE } from "../actions";
+import { TABLE_LISTING } from "../actions";
 import { defaultState } from '../defaultState';
 import {StatusInfo} from "../models";
 
-export const loadTableSlice = createSlice({
-    name: DATA_TABLE,
-    initialState: defaultState.dataTable,
+export const listTablesSlice = createSlice({
+    name: TABLE_LISTING,
+    initialState: defaultState.tableListing,
     reducers: {
-        loadTableAction: state => {
+        listTablesAction: state => {
             state.isFetching = true;
             state.statusInfo = StatusInfo();
         },
-        loadTableSuccessAction: (state, { payload: table }) => {
+        listTablesSuccessAction: (state, { payload: table }) => {
+            state.tables = table;
             state.isFetching = false;
-            state.table = table;
             state.statusInfo = {
                 status: "SUCCESS"
             };
         },
-        loadTableErrorAction: (state, { payload: errorMessage }) => {
+        listTablesErrorAction: (state, { payload: errorMessage }) => {
             state.isFetching = false;
             state.statusInfo = {
                 status: "FAIL",
@@ -29,9 +29,9 @@ export const loadTableSlice = createSlice({
 })
 
 export const {
-    loadTableAction,
-    loadTableSuccessAction,
-    loadTableErrorAction
-} = loadTableSlice.actions
+    listTablesAction,
+    listTablesSuccessAction,
+    listTablesErrorAction
+} = listTablesSlice.actions
 
-export default loadTableSlice.reducer
+export default listTablesSlice.reducer
