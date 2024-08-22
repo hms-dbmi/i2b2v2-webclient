@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import {StatusInfo} from "./StatusInfo";
+import {TableListingRow} from "./TableListingRow";
 
 export const TableListing = ({
     rows = [],
@@ -12,7 +13,7 @@ export const TableListing = ({
 });
 
 TableListing.propTypes = {
-    rows: PropTypes.array,
+    rows: PropTypes.arrayOf(TableListingRow),
     isFetching: PropTypes.bool,
     statusInfo: PropTypes.shape(StatusInfo),
 };
