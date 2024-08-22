@@ -6,21 +6,21 @@ export const saveTableSlice = createSlice({
     name: DATA_TABLE,
     initialState: defaultState.saveTable,
     reducers: {
-        loadTableAction: state => {
+        saveTableAction: state => {
             state.isSaving = true;
             state.errors = '';
         },
-        loadTableSuccessAction: (state, { payload: table }) => {
+        saveTableSuccessAction: (state, { payload: table }) => {
             state.isSaving = false;
             state.statusInfo = {
                 status: "SUCCESS"
             };
         },
-        loadTableErrorAction: (state, { payload: error }) => {
+        saveTableErrorAction: (state, { payload: errorMessage }) => {
             state.isSaving = false;
             state.statusInfo = {
                 status: "FAIL",
-                errorMessage: error
+                errorMessage: errorMessage
             };
         },
     }

@@ -14,7 +14,7 @@ export function* doSaveTable(action) {
 
         yield put(saveTableSuccessAction());
     } catch (error) {
-        yield put(saveTableErrorAction({error: "There was an error saving the data table"}));
+        yield put(saveTableErrorAction({errorMessage: "There was an error saving the data table"}));
     }
 }
 
