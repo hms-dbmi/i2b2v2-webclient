@@ -3,7 +3,7 @@ import {StatusInfo} from "./StatusInfo";
 import {TableDefinitionRow} from "./TableDefinitionRow";
 
 export const TableDefinition = ({
-    rows = [defaultRows],
+    rows = defaultRows,
     isFetching= false,
     statusInfo = StatusInfo()
 } = {}) => ({
