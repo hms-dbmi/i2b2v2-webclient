@@ -7,15 +7,13 @@ import "../../css/modals.scss";
 import { TableListing } from "../TableListing";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-
 import {listTables} from "../../reducers/listTablesSlice";
-
+import {TabPanel} from "./TablePanel";
 
 export const LoadTableModal = ({open, handleClose}) =>
     {const dispatch = useDispatch();
@@ -42,25 +40,6 @@ export const LoadTableModal = ({open, handleClose}) =>
             id: `vertical-tab-${index}`,
             'aria-controls': `vertical-tabpanel-${index}`,
         };
-    }
-
-    function TabPanel(props) {
-        const { children, value, index, ...other } = props;
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`vertical-tabpanel-${index}`}
-                aria-labelledby={`vertical-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box sx={{ p: 3 }}>
-                        <Typography>{children}</Typography>
-                    </Box>
-                )}
-            </div>
-        );
     }
 
     useEffect(() => {
