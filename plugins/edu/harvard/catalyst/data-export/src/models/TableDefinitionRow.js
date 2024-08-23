@@ -1,29 +1,32 @@
 import PropTypes from "prop-types";
 
 export const TableDefinitionRow = ({
-    order=  null,
-    id= null,
-    name= null,
-    aggregation= "Value",
-    included= true,
-    demographic= false,
+    id = 0,
+    order = 0,
+    name = "",
+    display = true,
     locked = false,
+    sdxData = {},
+    dataOptions = null,
+    required = false
 } = {}) => ({
-    order,
     id,
+    order,
     name,
-    aggregation,
-    included,
-    demographic,
-    locked
+    display,
+    locked,
+    sdxData,
+    dataOptions,
+    required
 });
 
 TableDefinitionRow.propTypes = {
-    order: PropTypes.number,
     id: PropTypes.number,
     name: PropTypes.string,
-    aggregation: PropTypes.string,
-    included: PropTypes.bool,
-    demographic: PropTypes.bool,
-    locked: PropTypes.bool
+    order: PropTypes.number,
+    display: PropTypes.bool,
+    locked: PropTypes.bool,
+    sdxData: PropTypes.object,
+    dataOptions: PropTypes.string,
+    required: PropTypes.bool
 };
