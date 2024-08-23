@@ -3,17 +3,20 @@ import {StatusInfo} from "./StatusInfo";
 import {TableListingRow} from "./TableListingRow";
 
 export const TableListing = ({
-    rows = [],
+    sharedRows = [],
+    userRows = [],
     isFetching= false,
     statusInfo = StatusInfo(),
 } = {}) => ({
-    rows,
+    sharedRows,
+    userRows,
     isFetching,
     statusInfo
 });
 
 TableListing.propTypes = {
-    rows: PropTypes.arrayOf(TableListingRow),
+    sharedRows: PropTypes.arrayOf(TableListingRow),
+    userRows: PropTypes.arrayOf(TableListingRow),
     isFetching: PropTypes.bool,
     statusInfo: PropTypes.shape(StatusInfo),
 };

@@ -1,8 +1,6 @@
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import React, { useState, useEffect } from "react";
+import {useDispatch, useSelector} from "react-redux";
 
-import * as React from "react";
 import { shadows } from '@mui/system';
 import "../../css/modals.scss";
 
@@ -12,9 +10,16 @@ import Stack from "@mui/material/Stack";
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+
+import {listTables} from "../../reducers/listTablesSlice";
 
 
-export const LoadTableModal = ({open, handleClose}) => {
+export const LoadTableModal = ({open, handleClose}) =>
+    {const dispatch = useDispatch();
+    const { sharedRows, userRows } = useSelector((state) => state.tableListing);
     const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => { setValue(newValue); };
 
@@ -39,33 +44,6 @@ export const LoadTableModal = ({open, handleClose}) => {
         };
     }
 
-
-    const rowsGlobal = [
-        { id:1, name: "Demographics", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-        { id:2, name: "Covid Use Case", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-        { id:3, name: "Demographics", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-        { id:4, name: "Demographics2", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-    ];
-
-    const rowsLocal = [
-        { id:1, name: "Nick's 1st Demographics run", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-        { id:2, name: "Dummy test", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-        { id:3, name: "Example 1", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-        { id:4, name: "Example 2", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-        { id:5, name: "COVID + GLP-1s", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-        { id:6, name: "COVID + ACE2", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-        { id:7, name: "NegCOVID + GLP-1s", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-        { id:8, name: "NegCOVID + ACE2", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-        { id:9, name: "Diabetes", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-        { id:10, name: "Ashtma", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-        { id:11, name: "COPD", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-        { id:12, name: "opps (delete me)", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-        { id:13, name: "Complex Stats Demo", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-        { id:14, name: "testing 2", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-        { id:15, name: "testing 1", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-        { id:16, name: "test", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-    ];
-
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
         return (
@@ -84,6 +62,12 @@ export const LoadTableModal = ({open, handleClose}) => {
             </div>
         );
     }
+
+    useEffect(() => {
+        if(open) {
+            dispatch(listTables());
+        }
+    }, [open]);
 
     return (
         <Modal
@@ -118,14 +102,14 @@ export const LoadTableModal = ({open, handleClose}) => {
                         index={0}
                         className={'modalTabPanel'}
                     >
-                        <TableListing id={"loadModalDefTableGlobal"} rows={rowsGlobal} canRename={false}/>
+                        <TableListing id={"loadModalDefTableGlobal"} rows={sharedRows} canRename={false}/>
                     </TabPanel>
                     <TabPanel
                         value={value}
                         index={1}
                         className={'modalTabPanel'}
                     >
-                        <TableListing id={"loadModalDefTableLocal"} rows={rowsLocal} canRename={true}/>
+                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={true}/>
                     </TabPanel>
                 </Box>
                 <Stack

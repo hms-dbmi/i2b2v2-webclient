@@ -4,16 +4,16 @@ import {DataGrid} from "@mui/x-data-grid";
 export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hideFooter}) => {
     const columns = [
         {
-            field: 'name',
+            field: 'title',
             headerName: 'Table Definition Name',
             minWidth: 450,
             flex:1,
             sortable: true,
-            editable: true,
+            editable: canRename,
             disableReorder: true,
-            type: 'string'
+            type: 'string',
         }, {
-            field: 'create',
+            field: 'create_date',
             headerName: 'Created',
             width: 100,
             sortable: true,
@@ -22,7 +22,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
             disableReorder: true,
             type: 'date'
         }, {
-            field: 'edit',
+            field: 'edit_date',
             headerName: 'Edited',
             width: 100,
             sortable: true,
@@ -31,7 +31,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
             disableReorder: true,
             type: 'date'
         }, {
-            field: 'columns',
+            field: 'column_count',
             headerName: 'Columns',
             width: 100,
             sortable: true,
@@ -42,7 +42,6 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         }
     ];
 
-    columns[0].editable = canRename;
     function onSelectionModelChangeW(selection, {api} ) {
         if (onSelectionModelChange === undefined) return;
         onSelectionModelChange(selection);
@@ -66,7 +65,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                 hideFooter={hideFooter}
                 // autoHeight={true}
                 pageSizeOptions={[4, 8, 16]}
-            ></DataGrid>
+            />
         </div>
     )
 }
