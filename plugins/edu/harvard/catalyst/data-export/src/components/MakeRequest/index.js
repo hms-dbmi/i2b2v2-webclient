@@ -9,13 +9,22 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {Card, TextField} from "@mui/material";
 import "./MakeRequest.scss";
+import {makeRequest} from "../../reducers/makeRequestSlice";
 
-//import {makeRequest} from "../../reducers/makeRequestSlice";
-
-export const MakeRequest = ({open, handleClose}) =>
+export const MakeRequest = ({}) =>
 {
     const dispatch = useDispatch();
-    //const { sharedRows, userRows } = useSelector((state) => state.tableListing);
+    const [email, setEmail] = React.useState("");
+    const makeRequestDetails = useSelector((state) => state.makeRequestDetails);
+
+    const handleUpdate = (field, value) => {
+
+        setEmail(value);
+    }
+
+    const handleMakeRequest = () => {
+        dispatch(makeRequest());
+    }
 
     useEffect(() => {
 
@@ -44,7 +53,7 @@ export const MakeRequest = ({open, handleClose}) =>
                     disabled={true}
                     className="inputField"
                     label="Table"
-                    defaultValue={"Table specifications on Define Table tab"}
+                    defaultValue={"Table specifications from Define Table tab"}
                     variant="standard"
                     fullWidth
                     InputLabelProps={{ shrink: true }}
@@ -54,6 +63,8 @@ export const MakeRequest = ({open, handleClose}) =>
                     label="Email"
                     variant="standard"
                     fullWidth
+                    value={email}
+                    onChange={(event) => handleUpdate("email", event.target.value)}
                     InputLabelProps={{ shrink: true }}
                 />
                 <TextField
@@ -64,7 +75,7 @@ export const MakeRequest = ({open, handleClose}) =>
                     InputLabelProps={{ shrink: true }}
                 />
                 <div className={"MakeRequestSubmitMain"}>
-                    <Button className={"MakeRequestSubmit"} variant="outlined">Submit</Button>
+                    <Button className={"MakeRequestSubmit"} onClick={handleMakeRequest} variant="outlined">Submit</Button>
                 </div>
             </Stack>
         </Card>
