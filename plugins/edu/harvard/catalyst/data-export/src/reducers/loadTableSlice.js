@@ -14,16 +14,16 @@ export const loadTableSlice = createSlice({
         loadTableSuccess: (state, { payload: table }) => {
             state.isFetching = false;
             state.rows = table;
-            state.statusInfo = {
+            state.statusInfo = StatusInfo({
                 status: "SUCCESS"
-            };
+            });
         },
         loadTableError: (state, { payload: errorMessage }) => {
             state.isFetching = false;
-            state.statusInfo = {
+            state.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage
-            };
+            });
         },
     }
 })
