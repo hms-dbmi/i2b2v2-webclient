@@ -13,16 +13,16 @@ export const saveTableSlice = createSlice({
         },
         saveTableSuccess: (state, { payload: table }) => {
             state.isSaving = false;
-            state.statusInfo = {
+            state.statusInfo = StatusInfo({
                 status: "SUCCESS"
-            };
+            });
         },
         saveTableError: (state, { payload: errorMessage }) => {
             state.isSaving = false;
-            state.statusInfo = {
+            state.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage
-            };
+            });
         },
     }
 })

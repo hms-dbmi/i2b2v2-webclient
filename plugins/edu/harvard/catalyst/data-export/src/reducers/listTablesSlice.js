@@ -17,16 +17,16 @@ export const listTablesSlice = createSlice({
             state.sharedRows = tableDefs.sharedRows;
             state.userRows = tableDefs.userRows;
             state.isFetching = false;
-            state.statusInfo = {
+            state.statusInfo = StatusInfo({
                 status: "SUCCESS"
-            };
+            });
         },
         listTablesError: (state, { payload: errorMessage }) => {
             state.isFetching = false;
-            state.statusInfo = {
+            state.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage
-            };
+            });
         },
     }
 })

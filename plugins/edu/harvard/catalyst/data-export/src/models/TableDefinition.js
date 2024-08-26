@@ -13,7 +13,7 @@ export const TableDefinition = ({
 });
 
 TableDefinition.propTypes = {
-    rows: PropTypes.arrayOf(TableDefinitionRow),
+    rows: PropTypes.arrayOf(TableDefinitionRow).isRequired,
     isFetching: PropTypes.bool,
     statusInfo: PropTypes.shape(StatusInfo),
 };

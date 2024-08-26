@@ -62,7 +62,7 @@ export function* doListTables(action) {
         const response = parseData(exampleResponse);
         yield put(listTablesSuccess(response));
     } catch (error) {
-        yield put(listTablesError({errorMessage: "There was an error saving the data table"}));
+        yield put(listTablesError({errorMessage: "There was an error retrieving the list of tables"}));
     }
 }
 

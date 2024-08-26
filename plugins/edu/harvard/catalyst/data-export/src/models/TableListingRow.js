@@ -17,10 +17,10 @@ export const TableListingRow = ({
 });
 
 TableListingRow.propTypes = {
-    id: PropTypes.number,
-    title: PropTypes.string,
-    create_date: PropTypes.instanceOf(Date),
-    edit_date: PropTypes.instanceOf(Date),
-    column_count: PropTypes.number,
-    user_id: PropTypes.string
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    create_date: PropTypes.instanceOf(Date).isRequired,
+    edit_date: PropTypes.instanceOf(Date).isRequired,
+    column_count: PropTypes.number.isRequired,
+    user_id: PropTypes.string.isRequired
 };
