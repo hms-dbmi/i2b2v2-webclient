@@ -7,9 +7,24 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Card, TextField} from "@mui/material";
+import {
+    Backdrop,
+    Card,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    TextField
+} from "@mui/material";
 import "./MakeRequest.scss";
-import {makeRequest, updateRequestEmail} from "../../reducers/makeRequestSlice";
+import {
+    makeRequest, makeRequestStatusConfirmed,
+    updateRequestComments,
+    updateRequestEmail,
+    updateRequestPatientSet
+} from "../../reducers/makeRequestSlice";
 
 export const MakeRequest = ({}) => {
     const dispatch = useDispatch();
@@ -18,9 +33,18 @@ export const MakeRequest = ({}) => {
     const [emailNotValidError, setEmailNotValidError] = useState("");
     const [isPatientSetNotValid, setIsPatientSetNotValid] = useState(false);
     const [patientSetNotValidError, setPatientSetNotValidError] = useState("");
+    //const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const updatePatientSet = (value) => {
+        dispatch(updateRequestPatientSet(value));
+    }
 
     const updateEmail = (value) => {
         dispatch(updateRequestEmail(value));
+    }
+
+    const updateComments = (value) => {
+        dispatch(updateRequestComments(value));
     }
 
     const handleMakeRequest = () => {
@@ -32,7 +56,7 @@ export const MakeRequest = ({}) => {
     const isValidRequest = () => {
         let isValid = true;
 
-        if(!makeRequestDetails.patientSet || Object.keys(makeRequestDetails.patientSet).length === 0){
+        /*if(!makeRequestDetails.patientSet || Object.keys(makeRequestDetails.patientSet).length === 0){
             setIsPatientSetNotValid(true);
             setPatientSetNotValidError("Patient Set is required");
             isValid = false;
@@ -40,10 +64,10 @@ export const MakeRequest = ({}) => {
         else{
             setIsPatientSetNotValid(false);
             setPatientSetNotValidError("");
-        }
+        }*/
 
         const emailRegex = /\S+@\S+\.\S+/;
-        if(makeRequestDetails.email && makeRequestDetails.email.length > 0 && emailRegex.test(makeRequestDetails.email)){
+        if((makeRequestDetails.email && makeRequestDetails.email.length > 0) && emailRegex.test(makeRequestDetails.email)){
             setIsEmailNotValid(false);
             setEmailNotValidError("");
         }
@@ -55,6 +79,13 @@ export const MakeRequest = ({}) => {
 
         return isValid;
     }
+
+    const handleConfirmStatus = () => {
+        console.log("dispatching status confirmed");
+        dispatch(makeRequestStatusConfirmed());
+    };
+
+
 
     return (
         <Stack
@@ -73,6 +104,7 @@ export const MakeRequest = ({}) => {
                 fullWidth
                 error={isPatientSetNotValid}
                 helperText={patientSetNotValidError}
+                onChange={(event) => updatePatientSet(event.target.value)}
                 InputLabelProps={{ shrink: true }}
             />
             <TextField
@@ -106,6 +138,33 @@ export const MakeRequest = ({}) => {
             <div className={"MakeRequestSubmitMain"}>
                 <Button className={"MakeRequestSubmit"} onClick={handleMakeRequest} variant="outlined">Submit</Button>
             </div>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={makeRequestDetails.isSubmitting}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
+            <Dialog
+                open={makeRequestDetails.statusInfo.status === "SUCCESS"}
+                onClose={handleConfirmStatus}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Data Request"}
+                </DialogTitle>
+                <DialogContent dividers>
+                    <DialogContentText id="alert-dialog-description">
+                       A data export request has been submitted.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus onClick={handleConfirmStatus}>
+                        Ok
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Stack>
     );
 }
