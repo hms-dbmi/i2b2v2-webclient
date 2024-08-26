@@ -7,6 +7,12 @@ export const makeRequestSlice = createSlice({
     name: MAKE_REQUEST_DETAILS,
     initialState: defaultState.makeRequestDetails,
     reducers: {
+        updateRequestComments: (state, { payload: comments }) => {
+            state.comments = comments;
+        },
+        updateRequestEmail: (state, { payload: email }) => {
+            state.email = email;
+        },
         makeRequest: state => {
             state = MakeRequestDetails({
                 isFetching: false
@@ -31,7 +37,9 @@ export const makeRequestSlice = createSlice({
 export const {
     makeRequest,
     makeRequestSuccess,
-    makeRequestError
+    makeRequestError,
+    updateRequestEmail,
+    updateRequestComments
 } = makeRequestSlice.actions
 
 export default makeRequestSlice.reducer

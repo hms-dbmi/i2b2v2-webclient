@@ -9,76 +9,103 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {Card, TextField} from "@mui/material";
 import "./MakeRequest.scss";
-import {makeRequest} from "../../reducers/makeRequestSlice";
+import {makeRequest, updateRequestEmail} from "../../reducers/makeRequestSlice";
 
-export const MakeRequest = ({}) =>
-{
+export const MakeRequest = ({}) => {
     const dispatch = useDispatch();
-    const [email, setEmail] = React.useState("");
     const makeRequestDetails = useSelector((state) => state.makeRequestDetails);
+    const [isEmailNotValid, setIsEmailNotValid] = useState(false);
+    const [emailNotValidError, setEmailNotValidError] = useState("");
+    const [isPatientSetNotValid, setIsPatientSetNotValid] = useState(false);
+    const [patientSetNotValidError, setPatientSetNotValidError] = useState("");
 
-    const handleUpdate = (field, value) => {
-
-        setEmail(value);
+    const updateEmail = (value) => {
+        dispatch(updateRequestEmail(value));
     }
 
     const handleMakeRequest = () => {
-        dispatch(makeRequest());
+        if(isValidRequest()) {
+            dispatch(makeRequest());
+        }
     }
 
-    useEffect(() => {
+    const isValidRequest = () => {
+        let isValid = true;
 
-    }, []);
+        if(!makeRequestDetails.patientSet || Object.keys(makeRequestDetails.patientSet).length === 0){
+            setIsPatientSetNotValid(true);
+            setPatientSetNotValidError("Patient Set is required");
+            isValid = false;
+        }
+        else{
+            setIsPatientSetNotValid(false);
+            setPatientSetNotValidError("");
+        }
+
+        const emailRegex = /\S+@\S+\.\S+/;
+        if(makeRequestDetails.email && makeRequestDetails.email.length > 0 && emailRegex.test(makeRequestDetails.email)){
+            setIsEmailNotValid(false);
+            setEmailNotValidError("");
+        }
+        else{
+            setIsEmailNotValid(true);
+            setEmailNotValidError("Enter a valid email");
+            isValid = false;
+        }
+
+        return isValid;
+    }
 
     return (
-        <Card className={"MakeRequest"} variant="outlined">
-            <Stack
-                className={"mainStack"}
-                direction="column"
-                justifyContent="center"
-                alignItems="flex-start"
-                spacing={3}
-                useFlexGap
-            >
-                <TextField
-                    required
-                    className="inputField"
-                    label="Patient Set"
-                    variant="standard"
-                    fullWidth
-                    InputLabelProps={{ shrink: true }}
-                />
-                <TextField
-                    required
-                    disabled={true}
-                    className="inputField"
-                    label="Table"
-                    defaultValue={"Table specifications from Define Table tab"}
-                    variant="standard"
-                    fullWidth
-                    InputLabelProps={{ shrink: true }}
-                />
-                <TextField
-                    className="inputField"
-                    label="Email"
-                    variant="standard"
-                    fullWidth
-                    value={email}
-                    onChange={(event) => handleUpdate("email", event.target.value)}
-                    InputLabelProps={{ shrink: true }}
-                />
-                <TextField
-                    className="inputField"
-                    label="Comments"
-                    variant="standard"
-                    fullWidth
-                    InputLabelProps={{ shrink: true }}
-                />
-                <div className={"MakeRequestSubmitMain"}>
-                    <Button className={"MakeRequestSubmit"} onClick={handleMakeRequest} variant="outlined">Submit</Button>
-                </div>
-            </Stack>
-        </Card>
-
+        <Stack
+            className={"MakeRequest"}
+            direction="column"
+            justifyContent="center"
+            alignItems="flex-start"
+            spacing={3}
+            useFlexGap
+        >
+            <TextField
+                required
+                className="inputField"
+                label="Patient Set"
+                variant="standard"
+                fullWidth
+                error={isPatientSetNotValid}
+                helperText={patientSetNotValidError}
+                InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+                required
+                disabled={true}
+                className="inputField"
+                label="Table"
+                defaultValue={"Table specifications from Define Table tab"}
+                variant="standard"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+                className="inputField"
+                label="Email"
+                variant="standard"
+                fullWidth
+                value={makeRequestDetails.email}
+                onChange={(event) => updateEmail(event.target.value)}
+                error={isEmailNotValid}
+                helperText={emailNotValidError}
+                InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+                className="inputField"
+                label="Comments"
+                variant="standard"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+            />
+            <div className={"MakeRequestSubmitMain"}>
+                <Button className={"MakeRequestSubmit"} onClick={handleMakeRequest} variant="outlined">Submit</Button>
+            </div>
+        </Stack>
     );
 }

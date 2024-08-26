@@ -18,6 +18,6 @@ export function* doMakeRequest(action) {
 }
 
 
-export function* saveTableSaga() {
+export function* makeRequestSaga() {
     yield takeLatest(MAKE_REQUEST, doMakeRequest);
 }
