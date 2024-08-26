@@ -7,12 +7,20 @@
 
 // ====[ msg handling for the plugin's INIT message ]===================================================================
 i2b2.PLUGIN.ctrlr._handleInitMsg = function(msgEvent, windowInstance) {
+    let state = windowInstance.state;
+    if (windowInstance.data.state) {
+        if (state === undefined) {
+            state = windowInstance.data.state;
+        } else {
+            state = {...windowInstance.state, ...windowInstance.data.state};
+        }
+    }
     msgEvent.source.postMessage({
         "msgType": i2b2.PLUGIN.model.MSG_TYPES.INIT_REPLY,
         "libs": i2b2.PLUGIN.model.libs,
         "sdx": i2b2.PLUGIN.model.config.sdx,
         "ajax": i2b2.PLUGIN.model.config.ajax,
-        "state": windowInstance.state,
+        "state": state,
         "tunnel": windowInstance.data.authorizedTunnel // TODO: Filter this list based on a deployment-level security config
     }, '/');
 };
