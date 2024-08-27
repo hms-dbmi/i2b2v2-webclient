@@ -16,5 +16,8 @@
       "i2b2.PM.model.login_username": "R",
       "i2b2.PM.model.login_project": "R"
     }
+  },
+  "state": {
+    "endpointUrl": "https://recover-i2b2.partners.org/agg/helper.php"
   }
 }
