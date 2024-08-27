@@ -41,4 +41,4 @@ export const DataExport = () => {
             </CustomTabPanel>
         </Box>
     )
-}
+};

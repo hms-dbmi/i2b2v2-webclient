@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useContext} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import "../../css/modals.scss";
@@ -9,7 +9,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {
     Backdrop,
-    Card,
     CircularProgress,
     Dialog,
     DialogActions,
@@ -20,19 +19,21 @@ import {
 } from "@mui/material";
 import "./MakeRequest.scss";
 import {
-    makeRequest, makeRequestStatusConfirmed,
+    makeRequest,
+    makeRequestStatusConfirmed,
     updateRequestComments,
     updateRequestEmail,
     updateRequestPatientSet
 } from "../../reducers/makeRequestSlice";
 
-export const MakeRequest = ({}) => {
+/* global i2b2 */
+export const MakeRequest = () => {
     const dispatch = useDispatch();
     const makeRequestDetails = useSelector((state) => state.makeRequestDetails);
     const [isEmailNotValid, setIsEmailNotValid] = useState(false);
     const [emailNotValidError, setEmailNotValidError] = useState("");
     const [isPatientSetNotValid, setIsPatientSetNotValid] = useState(false);
-    const [patientSetNotValidError, setPatientSetNotValidError] = useState("");
+    const [patientSetNotValidError, setPatientSetNotValidError] = useState("drag and drop a patient set");
     //const [isSubmitting, setIsSubmitting] = useState(false);
 
     const updatePatientSet = (value) => {
@@ -56,7 +57,7 @@ export const MakeRequest = ({}) => {
     const isValidRequest = () => {
         let isValid = true;
 
-        /*if(!makeRequestDetails.patientSet || Object.keys(makeRequestDetails.patientSet).length === 0){
+        if(!makeRequestDetails.patientSet || makeRequestDetails.patientSet.title.length === 0){
             setIsPatientSetNotValid(true);
             setPatientSetNotValidError("Patient Set is required");
             isValid = false;
@@ -64,7 +65,7 @@ export const MakeRequest = ({}) => {
         else{
             setIsPatientSetNotValid(false);
             setPatientSetNotValidError("");
-        }*/
+        }
 
         const emailRegex = /\S+@\S+\.\S+/;
         if((makeRequestDetails.email && makeRequestDetails.email.length > 0) && emailRegex.test(makeRequestDetails.email)){
@@ -81,11 +82,19 @@ export const MakeRequest = ({}) => {
     }
 
     const handleConfirmStatus = () => {
-        console.log("dispatching status confirmed");
         dispatch(makeRequestStatusConfirmed());
     };
 
+    const handlePatientSetDrop = (sdx,ev) => {
+        updatePatientSet(sdx);
+    }
 
+    useEffect(() => {
+        if(i2b2) {
+            i2b2.sdx.AttachType("makeRequestPatientSet", "PRS");
+            i2b2.sdx.setHandlerCustom("makeRequestPatientSet", "PRS", "DropHandler", handlePatientSetDrop);
+        }
+    }, []);
 
     return (
         <Stack
@@ -97,6 +106,7 @@ export const MakeRequest = ({}) => {
             useFlexGap
         >
             <TextField
+                id="makeRequestPatientSet"
                 required
                 className="inputField"
                 label="Patient Set"
@@ -104,6 +114,7 @@ export const MakeRequest = ({}) => {
                 fullWidth
                 error={isPatientSetNotValid}
                 helperText={patientSetNotValidError}
+                value={makeRequestDetails.patientSet.title}
                 onChange={(event) => updatePatientSet(event.target.value)}
                 InputLabelProps={{ shrink: true }}
             />
@@ -118,6 +129,7 @@ export const MakeRequest = ({}) => {
                 InputLabelProps={{ shrink: true }}
             />
             <TextField
+                required
                 className="inputField"
                 label="Email"
                 variant="standard"
@@ -131,8 +143,13 @@ export const MakeRequest = ({}) => {
             <TextField
                 className="inputField"
                 label="Comments"
-                variant="standard"
                 fullWidth
+                maxRows={5}
+                minRows={3}
+                inputProps={{ maxLength: 1000 }}
+                multiline
+                helperText={"Max: 1,000 characters"}
+                onChange={(event) => updateComments(event.target.value)}
                 InputLabelProps={{ shrink: true }}
             />
             <div className={"MakeRequestSubmitMain"}>

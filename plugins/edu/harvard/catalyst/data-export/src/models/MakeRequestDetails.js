@@ -3,7 +3,11 @@ import {StatusInfo} from "./StatusInfo";
 import {TableDefinition} from "./TableDefinition";
 
 export const MakeRequestDetails = ({
-    patientSet = {},
+    patientSet = {
+        title: "",
+        icon: null,
+        sdx: {}
+    },
     table = TableDefinition(),
     email = "",
     comments= "",
