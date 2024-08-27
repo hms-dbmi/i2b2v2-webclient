@@ -1,25 +1,27 @@
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import * as React from "react";
-
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-
-import TextField from '@mui/material/TextField';
-
-import "../../css/modals.scss";
-import { TableListing } from "../TableListing";
-
-
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import TextField from '@mui/material/TextField';
+import "../../css/modals.scss";
+import { TableListing } from "../TableListing";
+import { listTables } from "../../reducers/listTablesSlice";
+import { TabPanel } from "./TabPanel";
+
 
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [tableDefName, setTableDefName] = React.useState('');
+    const { sharedRows, userRows } = useSelector((state) => state.tableListing);
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [showOverwrite, setShowOverwrite] = React.useState(false);
+    const dispatch = useDispatch();
 
     const modalStyle = {
         position: 'absolute',
@@ -34,27 +36,6 @@ export const SaveTableModal = ({open, handleClose}) => {
         p: 4,
     };
 
-
-    const rowsLocal = [
-        { id:1, name: "Nick's 1st Demographics run", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-        { id:2, name: "Dummy test", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-        { id:3, name: "Example 1", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-        { id:4, name: "Example 2", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-        { id:5, name: "COVID + GLP-1s", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-        { id:6, name: "COVID + ACE2", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-        { id:7, name: "NegCOVID + GLP-1s", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-        { id:8, name: "NegCOVID + ACE2", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-        { id:9, name: "Diabetes", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-        { id:10, name: "Ashtma", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-        { id:11, name: "COPD", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-        { id:12, name: "opps (delete me)", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-        { id:13, name: "Complex Stats Demo", create: new Date(Date.parse("01/01/23")), edit: new Date(Date.parse("07/07/24")), columns: 10},
-        { id:14, name: "testing 2", create: new Date(Date.parse("04/05/23")), edit: new Date(Date.parse("07/07/24")), columns: 20},
-        { id:15, name: "testing 1", create: new Date(Date.parse("06/07/23")), edit: new Date(Date.parse("07/07/24")), columns: 25},
-        { id:16, name: "test", create: new Date(Date.parse("11/16/23")), edit: new Date(Date.parse("07/07/24")), columns: 11},
-    ];
-
-
     function a11yProps(index) {
         return {
             id: `vertical-tab-${index}`,
@@ -62,27 +43,8 @@ export const SaveTableModal = ({open, handleClose}) => {
         };
     }
 
-    function TabPanel(props) {
-        const { children, value, index, ...other } = props;
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`vertical-tabpanel-${index}`}
-                aria-labelledby={`vertical-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box sx={{ p: 3 }}>
-                        <Typography>{children}</Typography>
-                    </Box>
-                )}
-            </div>
-        );
-    }
-
     function onRowSelect(row) {
-        setTableDefName(row.name);
+        setTableDefName(row.title);
         setSelectedRows(row.id);
     }
     function onNameChange(e) {
@@ -90,7 +52,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         setSelectedRows([]);
     }
     function onSelectionModelChange(e) {
-        console.warn("tets");
+//        console.warn("tets");
     }
 
     function onSave(selectedRows) {
@@ -107,6 +69,11 @@ export const SaveTableModal = ({open, handleClose}) => {
         handleClose();
     }
 
+    useEffect(() => {
+        if (open) {
+            dispatch(listTables());
+        }
+    }, [open]);
 
 
     return (
@@ -131,14 +98,14 @@ export const SaveTableModal = ({open, handleClose}) => {
                     <Tabs
                         orientation="vertical"
                         value={1}
-                        aria-label="Vertical tabs example"
+                        aria-label="Table Definition Folders"
                         sx={{ borderRight: 1, borderColor: 'divider' }}
                     >
                         <Tab label="Shared Tables" {...a11yProps(0)} sx={{textDecoration:"line-through"}}/>
                         <Tab label="My Tables" {...a11yProps(1)} />
                     </Tabs>
                     <TabPanel
-                        value={0}
+                        value={1}
                         index={0}
                         className={'modalTabPanel'}
                     >
@@ -151,7 +118,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                     >
                         <TableListing
                             id={"saveModalDefTableLocal"}
-                            rows={rowsLocal}
+                            rows={userRows}
                             canRename={true}
                             onSelect={onRowSelect}
                             onSelectionModelChange={onSelectionModelChange}
