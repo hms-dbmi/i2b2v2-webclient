@@ -7,6 +7,8 @@
 
 # testing
 /coverage
+/public/test_credentials.json
+/build/test_credentials.json
 
 # production
 /build/static/css/*.map

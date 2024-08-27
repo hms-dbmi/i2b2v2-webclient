@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { shadows } from '@mui/system';
 import "../../css/modals.scss";
@@ -12,15 +12,14 @@ import Tab from '@mui/material/Tab';
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {listTables} from "../../reducers/listTablesSlice";
-import {TabPanel} from "./TablePanel";
+import { listTables } from "../../reducers/listTablesSlice";
+import { TabPanel } from "./TabPanel";
 
-export const LoadTableModal = ({open, handleClose}) =>
-    {const dispatch = useDispatch();
+export const LoadTableModal = ({open, handleClose}) => {
+    const dispatch = useDispatch();
     const { sharedRows, userRows } = useSelector((state) => state.tableListing);
-    const [value, setValue] = React.useState(0);
-    const handleChange = (event, newValue) => { setValue(newValue); };
-
+    const [tab, setTab] = React.useState(0);
+    const handleChangeTab = (event, newValue) => { setTab(newValue); };
 
     const modalStyle = {
         position: 'absolute',
@@ -43,7 +42,7 @@ export const LoadTableModal = ({open, handleClose}) =>
     }
 
     useEffect(() => {
-        if(open) {
+        if (open) {
             dispatch(listTables());
         }
     }, [open]);
@@ -68,23 +67,23 @@ export const LoadTableModal = ({open, handleClose}) =>
                 >
                     <Tabs
                         orientation="vertical"
-                        value={value}
-                        onChange={handleChange}
-                        aria-label="Vertical tabs example"
+                        value={tab}
+                        onChange={handleChangeTab}
+                        aria-label="Table Definition Folders"
                         sx={{ borderRight: 1, borderColor: 'divider' }}
                     >
                         <Tab label="Shared Tables" {...a11yProps(0)} />
                         <Tab label="My Tables" {...a11yProps(1)} />
                     </Tabs>
                     <TabPanel
-                        value={value}
+                        value={tab}
                         index={0}
                         className={'modalTabPanel'}
                     >
                         <TableListing id={"loadModalDefTableGlobal"} rows={sharedRows} canRename={false}/>
                     </TabPanel>
                     <TabPanel
-                        value={value}
+                        value={tab}
                         index={1}
                         className={'modalTabPanel'}
                     >
