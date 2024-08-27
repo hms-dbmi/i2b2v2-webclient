@@ -1,12 +1,10 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import "../../css/modals.scss";
 
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import {
     Backdrop,
     CircularProgress,
