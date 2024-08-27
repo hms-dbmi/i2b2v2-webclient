@@ -8,7 +8,7 @@ export const makeRequestSlice = createSlice({
     initialState: defaultState.makeRequestDetails,
     reducers: {
         updateRequestPatientSet: (state, { payload: sdx }) => {
-            state.patientSet.title = sdx.sdxInfo.sdxDisplayName;//.renderData.title;
+            state.patientSet.title = sdx.renderData.title;
             state.patientSet.sdx = sdx;
         },
         updateRequestComments: (state, { payload: comments }) => {
