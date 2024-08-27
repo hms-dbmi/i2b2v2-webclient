@@ -141,7 +141,7 @@ export const MakeRequest = () => {
                 InputLabelProps={{ shrink: true }}
             />
             <TextField
-                className="inputField"
+                className="inputField comments"
                 label="Comments"
                 fullWidth
                 maxRows={5}
