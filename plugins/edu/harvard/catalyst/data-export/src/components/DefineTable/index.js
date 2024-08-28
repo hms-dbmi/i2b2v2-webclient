@@ -19,15 +19,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { LoadTableModal} from "../LoadTableModal";
 import { SaveTableModal } from "../SaveTableModal";
-import {loadTable} from "../../reducers/loadTableSlice";
+import {insertConcept, loadTable} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
-
-import sdxDropHandler from "../../dropHandler"
+import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
+/* global i2b2 */
 
 export const DefineTable = (props) => {
     const dispatch = useDispatch();
+    const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { rows } = useSelector((state) => state.tableDef);
-
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -189,13 +189,42 @@ export const DefineTable = (props) => {
         }
     ];
 
-    /*React.useEffect(()=>{
-        // Attach drop handler
-        if (i2b2 && i2b2.sdx !== undefined) {
-            i2b2.sdx.AttachType("dropTrgt", "CONCPT");
-            i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", sdxDropHandler);
+
+    const conceptDropHandler = (sdx,ev)  =>{
+        console.log("running drop handler");
+        let rowNum = null;
+        // see if drop is on a row
+        let row = ev.target.closest(".MuiDataGrid-row");
+        if (row === null) {
+            // see if the drop was on the header
+            row = ev.target.closest(".MuiDataGrid-columnHeaders");
+            if (row !== null) {
+                // insert the drop at the very top
+                rowNum = Number.NEGATIVE_INFINITY;
+            } else {
+                // insert to drop at the very bottom
+                rowNum = Number.POSITIVE_INFINITY;
+            }
+        } else {
+            // insert the drop below the currently set row
+            rowNum = row.dataset.rowindex;
         }
-    });*/
+        console.log("dropped on row: " + rowNum);
+        dispatch(insertConcept({row: rowNum, sdx: sdx}));
+    }
+
+    const i2b2LibLoaded = () => {
+        dispatch(updateI2b2LibLoaded());
+    }
+
+    useEffect(() => {
+        if (isI2b2LibLoaded && i2b2.sdx !== undefined) {
+            i2b2.sdx.AttachType("dropTrgt", "CONCPT");
+            i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", conceptDropHandler);
+        }else{
+            window.addEventListener('I2B2_READY', i2b2LibLoaded);
+        }
+    }, [isI2b2LibLoaded]);
 
     const handleCellClick = React.useCallback(
         (params, event) => {

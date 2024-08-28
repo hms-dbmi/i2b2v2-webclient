@@ -1,8 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { TABLE_LISTING } from "../actions";
 import { defaultState } from '../defaultState';
-import {StatusInfo} from "../models";
-import {TableListing} from "../models";
+import {StatusInfo, TableListing} from "../models";
 
 export const listTablesSlice = createSlice({
     name: TABLE_LISTING,

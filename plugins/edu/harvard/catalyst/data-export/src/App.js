@@ -7,7 +7,6 @@ import {DataExport} from "./components";
 import { Provider } from 'react-redux';
 import {ThemeProvider} from "@mui/material/styles";
 import { getStore } from "./store/getStore";
-import sdxDropHandler from "./dropHandler"
 
 const store = getStore();
 
@@ -30,10 +29,6 @@ window.addEventListener("I2B2_READY", ()=> {
     } else {
         console.log("load previous table state");
     }
-    // attach the drop handler after initialization
-    i2b2.sdx.AttachType("dropTrgt", "CONCPT");
-    i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", sdxDropHandler);
-
     // get the authentication info and save it to our model
     i2b2.authorizedTunnel.variable["i2b2.PM.model.login_username"].then((username) => {
         i2b2.model.user = username;

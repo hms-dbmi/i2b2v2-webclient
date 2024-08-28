@@ -1,3 +1,4 @@
+export const I2B2_LOADED = "isI2b2Loaded";
 export const TABLE_DEF = "tableDef";
 export const SAVE_TABLE = "saveTable";
 export const TABLE_LISTING = "tableListing";
