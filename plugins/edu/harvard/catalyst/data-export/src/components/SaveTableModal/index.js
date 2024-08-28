@@ -12,7 +12,7 @@ import TextField from '@mui/material/TextField';
 import "../../css/modals.scss";
 import { TableListing } from "../TableListing";
 import { listTables } from "../../reducers/listTablesSlice";
-import { TabPanel } from "./TabPanel";
+import { TabPanel } from "../TabPanel";
 
 
 

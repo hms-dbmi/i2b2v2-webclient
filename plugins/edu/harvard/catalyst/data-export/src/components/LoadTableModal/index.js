@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { shadows } from '@mui/system';
 import "../../css/modals.scss";
 
 import { TableListing } from "../TableListing";
@@ -13,7 +12,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { listTables } from "../../reducers/listTablesSlice";
-import { TabPanel } from "./TabPanel";
+import { TabPanel } from "../TabPanel";
 
 export const LoadTableModal = ({open, handleClose}) => {
     const dispatch = useDispatch();
