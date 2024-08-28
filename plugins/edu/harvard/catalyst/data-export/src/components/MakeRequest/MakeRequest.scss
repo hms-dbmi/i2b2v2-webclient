@@ -1,0 +1,20 @@
+.MakeRequest {
+  padding: 1.2em;
+  size: 1.2em;
+  margin-top: 0.8em;
+
+  .MakeRequestSubmitMain{
+    width: 100%;
+  }
+  .MakeRequestSubmit{
+    float: right;
+  }
+
+  .i2b2DropTarget.dragging {
+    background: #d1f0ff;;
+  }
+
+  .comments {
+    margin-top : 0.9em;
+  }
+}

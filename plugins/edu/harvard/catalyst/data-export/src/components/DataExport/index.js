@@ -5,6 +5,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import {DefineTable} from "../DefineTable";
 import {CustomTabPanel} from "./CustomTabPanel";
+import {MakeRequest} from "../MakeRequest";
 
 export const DataExport = () => {
     const [selectedTab, setSelectedTab] = React.useState(0);
@@ -36,8 +37,8 @@ export const DataExport = () => {
                 Show Example table here
             </CustomTabPanel>
             <CustomTabPanel value={selectedTab} index={2}>
-                Anupama's "Make Request" screen goes here...
+                <MakeRequest/>
             </CustomTabPanel>
         </Box>
     )
-}
+};

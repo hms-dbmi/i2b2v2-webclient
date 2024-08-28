@@ -157,7 +157,7 @@ i2b2.sdx.TypeControllers.QI.getChildRecords = function(sdxParentNode, onComplete
             o.end_date = i2b2.h.getXNodeVal(ps[i1], 'end_date');
             try {
                 //o.title = i2b2.h.getXNodeVal(ps[i1],'description'); //[0].nodeValue;
-                o.title = i2b2.h.getXNodeVal(ps[i1], 'query_result_type/description');
+                o.title = i2b2.h.getXNodeVal(ps[i1], 'query_result_instance/description');
             } catch (e) {
                 o.title = i2b2.h.getXNodeVal(ps[i1], 'name');
             }
