@@ -31,7 +31,8 @@ export const MakeRequest = () => {
     const [isEmailNotValid, setIsEmailNotValid] = useState(false);
     const [emailNotValidError, setEmailNotValidError] = useState("");
     const [isPatientSetNotValid, setIsPatientSetNotValid] = useState(false);
-    const [patientSetNotValidError, setPatientSetNotValidError] = useState("drag and drop a patient set");
+    const defaultPatientSetHelperText = "drag and drop a patient set";
+    const [patientSetNotValidError, setPatientSetNotValidError] = useState(defaultPatientSetHelperText);
     //const [isSubmitting, setIsSubmitting] = useState(false);
 
     const updatePatientSet = (value) => {
@@ -62,7 +63,7 @@ export const MakeRequest = () => {
         }
         else{
             setIsPatientSetNotValid(false);
-            setPatientSetNotValidError("");
+            setPatientSetNotValidError(defaultPatientSetHelperText);
         }
 
         const emailRegex = /\S+@\S+\.\S+/;

@@ -6,6 +6,7 @@ import Tab from "@mui/material/Tab";
 import {DefineTable} from "../DefineTable";
 import {CustomTabPanel} from "./CustomTabPanel";
 import {MakeRequest} from "../MakeRequest";
+import {PreviewTable} from "../PreviewTable";
 
 export const DataExport = () => {
     const [selectedTab, setSelectedTab] = React.useState(0);
@@ -34,7 +35,7 @@ export const DataExport = () => {
                 <DefineTable tabChanger={setSelectedTab}/>
             </CustomTabPanel>
             <CustomTabPanel value={selectedTab} index={1}>
-                Show Example table here
+                <PreviewTable/>
             </CustomTabPanel>
             <CustomTabPanel value={selectedTab} index={2}>
                 <MakeRequest/>
