@@ -27,6 +27,8 @@ export const loadTableSlice = createSlice({
         },
         handleRowDelete:(state, { payload: { row } }) => {
             state.rows = state.rows.filter(r => r.id !== row.id);
+            // handle reindexing the order attribute for all items
+            state.rows.sort((a,b) => a.order - b.order).forEach((x,i)=> { x.order = i + 1 });
         },
         handleRowInsert:(state, { payload: {row, sdx} }) => {
             // get the range in which we can correctly place the row
@@ -64,6 +66,8 @@ export const loadTableSlice = createSlice({
                 required: false
             });
             state.rows.push(newRow);
+            // handle reindexing the order attribute for all items (just to make sure our numbering is correct)
+            state.rows.sort((a,b) => a.order - b.order).forEach((x,i)=> { x.order = i + 1 });
         },
         handleRowExported: (state, { payload: {row, exported} }) => {
             state.rows = state.rows.map((data) => (data.id === row.id ? ({...data, display: exported}) : data ));
