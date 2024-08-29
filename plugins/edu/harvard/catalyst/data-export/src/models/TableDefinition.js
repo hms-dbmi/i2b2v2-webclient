@@ -107,7 +107,7 @@ const defaultRows = [
                 "sdxDisplayName": "Ethnicity"
             }
         },
-        "aggregration": "Value",
+        "dataOptions": "Value",
         "required": true
     }),
     TableDefinitionRow({
@@ -125,7 +125,7 @@ const defaultRows = [
                 "sdxDisplayName": "Vital Status"
             }
         },
-        "aggregration": "Value",
+        "dataOptions": "Value",
         "required": true
     })
 ];

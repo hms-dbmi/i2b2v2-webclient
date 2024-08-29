@@ -8,7 +8,9 @@ export const TableDefinitionRow = ({
     locked = false,
     sdxData = {},
     dataOptions = null,
-    required = false
+    required = false,
+    isLoadingDataType = false,
+    demographic= false
 } = {}) => ({
     id,
     order,
@@ -17,6 +19,8 @@ export const TableDefinitionRow = ({
     locked,
     sdxData,
     dataOptions,
+    required,
+    isLoadingDataType,
     required
 });
 
@@ -28,5 +32,7 @@ TableDefinitionRow.propTypes = {
     locked: PropTypes.bool,
     sdxData: PropTypes.object,
     dataOptions: PropTypes.string,
-    required: PropTypes.bool
+    required: PropTypes.bool,
+    required: PropTypes.bool,
+    isLoadingDataType: PropTypes.bool
 };
