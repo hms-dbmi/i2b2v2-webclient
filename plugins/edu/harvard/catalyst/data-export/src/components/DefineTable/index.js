@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { LoadTableModal} from "../LoadTableModal";
 import { SaveTableModal } from "../SaveTableModal";
-import {insertConcept, loadTable} from "../../reducers/loadTableSlice";
+import {deleteRow, insertRow, loadTable} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 /* global i2b2 */
@@ -178,7 +178,8 @@ export const DefineTable = (props) => {
                             }
                             label="Delete Column"
                             onClick={(e) => {
-                                alert("delete");
+                                console.log("row is " + JSON.stringify(row));
+                                dispatch(deleteRow({row: row}));
                                 console.dir(e);
                                 e.nativeEvent.preventDefault();
                             }}
@@ -210,7 +211,7 @@ export const DefineTable = (props) => {
             rowNum = row.dataset.rowindex;
         }
         console.log("dropped on row: " + rowNum);
-        dispatch(insertConcept({row: rowNum, sdx: sdx}));
+        dispatch(insertRow({row: rowNum, sdx: sdx}));
     }
 
     const i2b2LibLoaded = () => {
@@ -323,8 +324,8 @@ export const DefineTable = (props) => {
                     hideFooterSelectedRowCount={true}
                     columnVisibilityModel={{order: false}}
                     disableColumnSelector={true}
-                    cellModesModel={cellModesModel}
-                    onCellModesModelChange={handleCellModesModelChange}
+                    //cellModesModel={cellModesModel}  -- causes errors when deleting a row
+                    //onCellModesModelChange={handleCellModesModelChange} -- causes errors when deleting a row
                     onCellClick={handleCellClick}
                     onCellDoubleClick={handleCellClick}
                     initialState={{

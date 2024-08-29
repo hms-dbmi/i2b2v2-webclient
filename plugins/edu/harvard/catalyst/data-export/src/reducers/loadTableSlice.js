@@ -25,7 +25,10 @@ export const loadTableSlice = createSlice({
                 errorMessage: errorMessage
             });
         },
-        insertConcept:(state, { payload: {row, sdx} }) => {
+        deleteRow:(state, { payload: { row } }) => {
+            state.rows = state.rows.filter(r => r.id !== row.id);
+        },
+        insertRow:(state, { payload: {row, sdx} }) => {
             const newRow = TableDefinitionRow({
                 id: sdx.renderData.title,
                 order : row,
@@ -50,7 +53,8 @@ export const {
     loadTable,
     loadTableSuccess,
     loadTableError,
-    insertConcept
+    deleteRow,
+    insertRow
 } = loadTableSlice.actions
 
 export default loadTableSlice.reducer
