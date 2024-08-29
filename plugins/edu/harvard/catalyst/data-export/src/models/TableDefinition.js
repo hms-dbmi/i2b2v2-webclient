@@ -23,15 +23,15 @@ const defaultRows = [
     TableDefinitionRow({
         "id": "subject_id",
         "order": 1,
-        "name": "Subject ID",
+        "name": "Participant ID",
         "display": true,
-        "locked": false,
+        "locked": true,
         "sdxData": {
             "sdxInfo": {
                 "sdxType": "CONCPT",
                 "sdxKeyName": "key",
                 "sdxControlCell": "ONT",
-                "sdxKeyValue": "\\\\Demographics\\subject_id\\",
+                "sdxKeyValue": "\\\\REQUIRED\\subject_id\\",
                 "sdxDisplayName": "Subject ID"
             }
         },
@@ -43,13 +43,13 @@ const defaultRows = [
         "order": 2,
         "name": "Gender",
         "display": true,
-        "locked": true,
+        "locked": false,
         "sdxData": {
             "sdxInfo": {
                 "sdxType": "CONCPT",
                 "sdxKeyName": "key",
                 "sdxControlCell": "ONT",
-                "sdxKeyValue": "\\\\SubjectID\\gender\\",
+                "sdxKeyValue": "\\\\REQUIRED\\gender\\",
                 "sdxDisplayName": "Gender"
             }
         },
@@ -61,13 +61,13 @@ const defaultRows = [
         "order": 3,
         "name": "Age",
         "display": true,
-        "locked": true,
+        "locked": false,
         "sdxData": {
             "sdxInfo": {
                 "sdxType": "CONCPT",
                 "sdxKeyName": "key",
                 "sdxControlCell": "ONT",
-                "sdxKeyValue": "\\\\Demographics\\age\\",
+                "sdxKeyValue": "\\\\REQUIRED\\age\\",
                 "sdxDisplayName": "Age"
             }
         },
@@ -79,13 +79,13 @@ const defaultRows = [
         "order": 4,
         "name": "Race",
         "display": true,
-        "locked": true,
+        "locked": false,
         "sdxData": {
             "sdxInfo": {
                 "sdxType": "CONCPT",
                 "sdxKeyName": "key",
                 "sdxControlCell": "ONT",
-                "sdxKeyValue": "\\\\Demographics\\race\\",
+                "sdxKeyValue": "\\\\REQUIRED\\race\\",
                 "sdxDisplayName": "Race"
             }
         },
@@ -97,13 +97,13 @@ const defaultRows = [
         "order": 5,
         "name": "Ethnicity",
         "display": true,
-        "locked": true,
+        "locked": false,
         "sdxData": {
             "sdxInfo": {
                 "sdxType": "CONCPT",
                 "sdxKeyName": "key",
                 "sdxControlCell": "ONT",
-                "sdxKeyValue": "\\\\Demographics\\ethnicity\\",
+                "sdxKeyValue": "\\\\REQUIRED\\ethnicity\\",
                 "sdxDisplayName": "Ethnicity"
             }
         },
@@ -115,13 +115,13 @@ const defaultRows = [
         "order": 6,
         "name": "Deceased",
         "display": true,
-        "locked": true,
+        "locked": false,
         "sdxData": {
             "sdxInfo": {
                 "sdxType": "CONCPT",
                 "sdxKeyName": "key",
                 "sdxControlCell": "ONT",
-                "sdxKeyValue": "\\\\Demographics\\vital_status\\",
+                "sdxKeyValue": "\\\\REQUIRED\\vital_status\\",
                 "sdxDisplayName": "Vital Status"
             }
         },
