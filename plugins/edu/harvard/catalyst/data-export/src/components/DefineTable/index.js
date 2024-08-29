@@ -222,7 +222,6 @@ export const DefineTable = (props) => {
         }
     ];
 
-
     const conceptDropHandler = (sdx, ev)  =>{
         let rowNum = null;
         // see if drop is on a row
@@ -362,6 +361,7 @@ export const DefineTable = (props) => {
                     }}
                     autoHeight={true}
                     hideFooter={true}
+                    isCellEditable={({row}) => (!row.locked)}
                 />
             </div>
 
