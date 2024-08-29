@@ -71,6 +71,14 @@ export const loadTableSlice = createSlice({
         },
         handleRowExported: (state, { payload: {row, exported} }) => {
             state.rows = state.rows.map((data) => (data.id === row.id ? ({...data, display: exported}) : data ));
+        },
+        handleRowAggregation: (state, { payload: {row, value} }) => {
+            for (let temp of state.rows) {
+                if (temp.id === row.id) {
+                    temp.dataOptions = value;
+                    break;
+                }
+            }
         }
     }
 })
@@ -81,7 +89,8 @@ export const {
     loadTableError,
     handleRowDelete,
     handleRowInsert,
-    handleRowExported
+    handleRowExported,
+    handleRowAggregation
 } = loadTableSlice.actions
 
 export default loadTableSlice.reducer

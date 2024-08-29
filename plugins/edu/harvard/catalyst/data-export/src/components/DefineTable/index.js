@@ -21,7 +21,7 @@ import LockIcon from '@mui/icons-material/Lock';
 
 import { LoadTableModal} from "../LoadTableModal";
 import { SaveTableModal } from "../SaveTableModal";
-import {handleRowDelete, handleRowInsert, loadTable, handleRowExported} from "../../reducers/loadTableSlice";
+import {loadTable, handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
@@ -138,6 +138,11 @@ export const DefineTable = (props) => {
                         "List of All Values"
                     ];
                 }
+            },
+            preProcessEditCellProps: ({hasChanged, row, props}) => {
+                if (hasChanged) {
+                    dispatch(handleRowAggregation({row:row, value: props.value}));
+                }
             }
         },
         {
@@ -209,7 +214,6 @@ export const DefineTable = (props) => {
                             label="Delete Column"
                             onClick={(e) => {
                                 dispatch(handleRowDelete({row: row}));
-                                e.nativeEvent.preventDefault();
                             }}
                         />
                     );
