@@ -103,7 +103,7 @@ export const DefineTable = (props) => {
             disableColumnMenu: false,
         },
         {
-            field: 'aggregation',
+            field: 'dataOptions',
             headerName: 'Aggregation',
             headerClassName: "header",
             width: 300,
@@ -260,7 +260,7 @@ export const DefineTable = (props) => {
             if (event.target.nodeType === 1 && !event.currentTarget.contains(event.target)) return;
 
             if (params !== undefined) {
-                if (params.field === "aggregation" && params.row.demographic === true) {
+                if (params.field === "dataOptions" && params.row.required === true) {
                     event.preventDefault();
                     return;
                 }
