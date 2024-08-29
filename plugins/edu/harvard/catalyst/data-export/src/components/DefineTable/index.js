@@ -21,7 +21,7 @@ import LockIcon from '@mui/icons-material/Lock';
 
 import { LoadTableModal} from "../LoadTableModal";
 import { SaveTableModal } from "../SaveTableModal";
-import {handleRowDelete, handleRowInsert, loadTable, handleRowExported} from "../../reducers/loadTableSlice";
+import {loadTable, handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
@@ -138,6 +138,11 @@ export const DefineTable = (props) => {
                         "List of All Values"
                     ];
                 }
+            },
+            preProcessEditCellProps: ({hasChanged, row, props}) => {
+                if (hasChanged) {
+                    dispatch(handleRowAggregation({row:row, value: props.value}));
+                }
             }
         },
         {
@@ -208,10 +213,7 @@ export const DefineTable = (props) => {
                             }
                             label="Delete Column"
                             onClick={(e) => {
-                                console.log("row is " + JSON.stringify(row));
                                 dispatch(handleRowDelete({row: row}));
-                                console.dir(e);
-                                e.nativeEvent.preventDefault();
                             }}
                         />
                     );
@@ -219,7 +221,6 @@ export const DefineTable = (props) => {
             }
         }
     ];
-
 
     const conceptDropHandler = (sdx, ev)  =>{
         let rowNum = null;
@@ -237,9 +238,8 @@ export const DefineTable = (props) => {
             }
         } else {
             // insert the drop below the currently set row
-            rowNum = row.dataset.rowindex;
+            rowNum = parseInt(row.dataset.rowindex) + 1;
         }
-        console.log("dropped on row: " + rowNum);
         dispatch(handleRowInsert({row: rowNum, sdx: sdx}));
     }
 
@@ -361,6 +361,7 @@ export const DefineTable = (props) => {
                     }}
                     autoHeight={true}
                     hideFooter={true}
+                    isCellEditable={({row}) => (!row.locked)}
                 />
             </div>
 
