@@ -21,7 +21,7 @@ export const TableDefinitionRow = ({
     dataOptions,
     required,
     isLoadingDataType,
-    required
+    demographic
 });
 
 TableDefinitionRow.propTypes = {
@@ -33,6 +33,6 @@ TableDefinitionRow.propTypes = {
     sdxData: PropTypes.object,
     dataOptions: PropTypes.string,
     required: PropTypes.bool,
-    required: PropTypes.bool,
+    demographic: PropTypes.bool,
     isLoadingDataType: PropTypes.bool
 };

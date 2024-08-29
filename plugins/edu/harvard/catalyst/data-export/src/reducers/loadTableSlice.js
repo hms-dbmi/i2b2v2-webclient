@@ -44,6 +44,12 @@ export const loadTableSlice = createSlice({
         },
         handleRowExported: (state, { payload: {row, exported} }) => {
             state.rows = state.rows.map((data) => (data.id === row.id ? ({...data, display: exported}) : data ));
+        },
+        handleRowInsertSucceeded: (state) => {
+            state.isLoadingDataType = false;
+        },
+        handleRowInsertError: (state) => {
+            state.isLoadingDataType = false;
         }
     }
 })
@@ -54,7 +60,9 @@ export const {
     loadTableError,
     handleRowDelete,
     handleRowInsert,
-    handleRowExported
+    handleRowExported,
+    handleRowInsertSucceeded,
+    handleRowInsertError
 } = loadTableSlice.actions
 
 export default loadTableSlice.reducer

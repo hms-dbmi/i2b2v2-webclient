@@ -25,7 +25,7 @@ const defaultRows = [
         "order": 1,
         "name": "Subject ID",
         "display": true,
-        "locked": false,
+        "locked": true,
         "sdxData": {
             "sdxInfo": {
                 "sdxType": "CONCPT",
