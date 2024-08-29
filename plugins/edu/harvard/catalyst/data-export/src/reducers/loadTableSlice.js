@@ -25,13 +25,14 @@ export const loadTableSlice = createSlice({
                 errorMessage: errorMessage
             });
         },
-        deleteRow:(state, { payload: { row } }) => {
+        handleRowDelete:(state, { payload: { row } }) => {
             state.rows = state.rows.filter(r => r.id !== row.id);
         },
-        insertRow:(state, { payload: {row, sdx} }) => {
+        handleRowInsert:(state, { payload: {row, sdx} }) => {
+            let rowOrder = parseInt(row);
             const newRow = TableDefinitionRow({
                 id: sdx.renderData.title,
-                order : row,
+                order : rowOrder + 1,
                 name: sdx.renderData.title,
                 display: true,
                 locked: false,
@@ -39,12 +40,10 @@ export const loadTableSlice = createSlice({
                 dataOptions: "Value",
                 required: false
             });
-
-            state.rows  = [
-                ...state.rows.slice(0, row),
-                newRow,
-                ...state.rows.slice(row)
-            ];
+            state.rows.push(newRow);
+        },
+        handleRowExported: (state, { payload: {row, exported} }) => {
+            state.rows = state.rows.map((data) => (data.id === row.id ? ({...data, display: exported}) : data ));
         }
     }
 })
@@ -53,8 +52,9 @@ export const {
     loadTable,
     loadTableSuccess,
     loadTableError,
-    deleteRow,
-    insertRow
+    handleRowDelete,
+    handleRowInsert,
+    handleRowExported
 } = loadTableSlice.actions
 
 export default loadTableSlice.reducer

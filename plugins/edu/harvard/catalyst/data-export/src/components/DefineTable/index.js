@@ -14,12 +14,14 @@ import Tooltip from '@mui/material/Tooltip';
 import ArrowUpIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownIcon from '@mui/icons-material/ArrowDownward';
 import CheckIcon from '@mui/icons-material/Check';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LockIcon from '@mui/icons-material/Lock';
 
 import { LoadTableModal} from "../LoadTableModal";
 import { SaveTableModal } from "../SaveTableModal";
-import {deleteRow, insertRow, loadTable} from "../../reducers/loadTableSlice";
+import {handleRowDelete, handleRowInsert, loadTable, handleRowExported} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
@@ -52,7 +54,6 @@ export const DefineTable = (props) => {
             sortingOrder: "ASC",
             hideSortIcons: true,
             disableReorder: true
-
         },
         {
             field: 'reorder',
@@ -63,7 +64,7 @@ export const DefineTable = (props) => {
             type: 'actions',
             getActions: ({ row }) => {
                 let actions = [];
-                if (row.demographic) return actions;
+                if (row.required) return actions;
                 if (row.order > 1) {
                     actions.push(
                         <GridActionsCellItem
@@ -91,20 +92,6 @@ export const DefineTable = (props) => {
                 return actions;
             }
         },
-        // {
-        //     field: "included",
-        //     headerName: "Include",
-        //     width: 70,
-        //     editable: true,
-        //     sortable: false,
-        //     type: "boolean",
-        //     resizable: false,
-        //     disableColumnMenu: true,
-        //     disableReorder: true,
-        //     hideSortIcons: true,
-        //     disableColumnSorting: true,
-        //     headerAlign: "center"
-        // },
         {
             field: 'name',
             headerName: 'Concept',
@@ -131,7 +118,7 @@ export const DefineTable = (props) => {
             editable: true,
             type: "singleSelect",
             valueOptions: ({ row }) => {
-                if (row.demographic) {
+                if (row.required) {
                     return ["Value"];
                 } else {
                     return [
@@ -158,7 +145,7 @@ export const DefineTable = (props) => {
             headerName: "Actions",
             headerClassName: "header",
             width: 70,
-            editable: true,
+            editable: false,
             sortable: false,
             type: "boolean",
             resizable: false,
@@ -169,11 +156,47 @@ export const DefineTable = (props) => {
             headerAlign: "center",
             renderCell: ({row}) => {
                 let actions = [];
-                if (row.demographic) {
-                    if (row.included) {
-                        return (<CheckIcon />);
+                if (row.required) {
+                    if (row.locked) {
+                        return (
+                            <GridActionsCellItem
+                                icon={
+                                    <Tooltip title="Column is Locked">
+                                        <LockIcon />
+                                    </Tooltip>
+                                }
+                                label="Locked Column"
+                            />);
                     } else {
-                        return (<CloseIcon />);
+                        if (row.display) {
+                            return (
+                                <GridActionsCellItem
+                                    icon={
+                                        <Tooltip title="Column is Exported">
+                                            <CheckIcon />
+                                        </Tooltip>
+                                    }
+                                    label="Column is Exported"
+                                    onClick={(e) => {
+                                        dispatch(handleRowExported({row: row, exported:false}));
+                                    }}
+                                />
+                            );
+                        } else {
+                            return (
+                                <GridActionsCellItem
+                                    icon={
+                                        <Tooltip title="Column is not Exported">
+                                            <CheckBoxOutlineBlankIcon />
+                                        </Tooltip>
+                                    }
+                                    label="Column is not Exported"
+                                    onClick={(e) => {
+                                        dispatch(handleRowExported({row: row, exported:true}));
+                                    }}
+                                />
+                            );
+                        }
                     }
                 } else {
                     return (
@@ -186,7 +209,7 @@ export const DefineTable = (props) => {
                             label="Delete Column"
                             onClick={(e) => {
                                 console.log("row is " + JSON.stringify(row));
-                                dispatch(deleteRow({row: row}));
+                                dispatch(handleRowDelete({row: row}));
                                 console.dir(e);
                                 e.nativeEvent.preventDefault();
                             }}
@@ -198,8 +221,7 @@ export const DefineTable = (props) => {
     ];
 
 
-    const conceptDropHandler = (sdx,ev)  =>{
-        console.log("running drop handler");
+    const conceptDropHandler = (sdx, ev)  =>{
         let rowNum = null;
         // see if drop is on a row
         let row = ev.target.closest(".MuiDataGrid-row");
@@ -218,7 +240,7 @@ export const DefineTable = (props) => {
             rowNum = row.dataset.rowindex;
         }
         console.log("dropped on row: " + rowNum);
-        dispatch(insertRow({row: rowNum, sdx: sdx}));
+        dispatch(handleRowInsert({row: rowNum, sdx: sdx}));
     }
 
     const i2b2LibLoaded = () => {
@@ -229,7 +251,7 @@ export const DefineTable = (props) => {
         if (isI2b2LibLoaded && i2b2.sdx !== undefined) {
             i2b2.sdx.AttachType("dropTrgt", "CONCPT");
             i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", conceptDropHandler);
-        }else{
+        } else {
             window.addEventListener('I2B2_READY', i2b2LibLoaded);
         }
     }, [isI2b2LibLoaded]);
