@@ -1,0 +1,31 @@
+.DefineTable {
+  width: 100%;
+
+  .DefineTableActions {
+    width: 100%;
+    margin: auto;
+    margin-bottom: 16px;
+  }
+
+  .header {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .DefineTableGrid {
+    width: 100%
+  }
+
+  #dropTrgt {
+    height: 60%;
+    width: 100%;
+    margin: auto;
+    background-color: #077cf982;
+    padding: 5px;
+    border-radius: 5px;
+     p {
+        font-style: italic;
+        font-weight: bold;
+        text-align: center;
+     }
+  }
+}

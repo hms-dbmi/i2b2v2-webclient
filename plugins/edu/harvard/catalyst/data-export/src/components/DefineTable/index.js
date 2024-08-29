@@ -22,6 +22,8 @@ import { SaveTableModal } from "../SaveTableModal";
 import {deleteRow, insertRow, loadTable} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
+import "./DefineTable.scss";
+
 /* global i2b2 */
 
 export const DefineTable = (props) => {
@@ -44,6 +46,7 @@ export const DefineTable = (props) => {
         {
             field: 'order',
             headerName: 'order',
+            headerClassName: "header",
             width: 1,
             sortable: true,
             sortingOrder: "ASC",
@@ -54,6 +57,7 @@ export const DefineTable = (props) => {
         {
             field: 'reorder',
             headerName: "Ordering",
+            headerClassName: "header",
             width: "80",
             resizable: false,
             type: 'actions',
@@ -104,6 +108,7 @@ export const DefineTable = (props) => {
         {
             field: 'name',
             headerName: 'Concept',
+            headerClassName: "header",
             minWidth: 450,
             flex:1,
             sortable: false,
@@ -113,6 +118,7 @@ export const DefineTable = (props) => {
         {
             field: 'aggregation',
             headerName: 'Aggregation',
+            headerClassName: "header",
             width: 300,
             resizable: false,
             disableColumnMenu: true,
@@ -150,6 +156,7 @@ export const DefineTable = (props) => {
         {
             field: "included",
             headerName: "Actions",
+            headerClassName: "header",
             width: 70,
             editable: true,
             sortable: false,
@@ -295,25 +302,26 @@ export const DefineTable = (props) => {
 
 
     return (
-        <div>
+        <div className={"DefineTable"}>
             <LoadTableModal handleClose={handleLoadClose} open={showLoad}/>
             <SaveTableModal handleClose={handleSaveClose} open={showSave}/>
 
             <Stack
                 spacing={2}
                 direction="row"
-                justifyContent="flex-end"
+                justifyContent="center"
                 alignItems="center"
-                style={{width:"76%", margin:"auto", marginBottom: "16px"}}
+                className={"DefineTableActions"}
             >
                 <Button variant="contained" onClick={handleLoadOpen}>Load Previous Definition</Button>
                 <Button variant="contained" onClick={handleSaveOpen}>Save Current Definition</Button>
                 <Button variant="contained" onClick={()=>props.tabChanger(2)}>Request Export With This Definition</Button>
             </Stack>
-            <div id="dropTrgt" style={{ height:"60%", width: '76%', margin:"auto", background:"#077cf982", padding:"5px", borderRadius:"5px"}}>
-                <p style={{fontStyle:"italic", fontWeight:"bold"}}>Drag a concept onto the grid to add it to the list</p>
+            <div id="dropTrgt">
+                <p>Drag a concept onto the grid to add it to the list</p>
                 <DataGrid
                     style={{background:"white"}}
+                    className={"DefineTableGrid"}
                     rows={rows}
                     columns={columns}
                     showCellVerticalBorder={true}
