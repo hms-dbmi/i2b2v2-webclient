@@ -293,10 +293,6 @@ export const DefineTable = (props) => {
         [],
     );
 
-    useEffect(() => {
-        dispatch(loadTable());
-    }, []);
-
 
     return (
         <div>
