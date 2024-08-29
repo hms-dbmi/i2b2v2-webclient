@@ -29,10 +29,33 @@ export const loadTableSlice = createSlice({
             state.rows = state.rows.filter(r => r.id !== row.id);
         },
         handleRowInsert:(state, { payload: {row, sdx} }) => {
-            let rowOrder = parseInt(row);
+            // get the range in which we can correctly place the row
+            const rowOrdering = state.rows.map((row)=>(row.required ? false : row.order)).filter((a)=>a);
+            const rowMin = (rowOrdering.length ? Math.min(...rowOrdering) : state.rows.length + 1);
+            const rowMax = (rowOrdering.length ? Math.max(...rowOrdering) : state.rows.length + 1);
+            let newRowIndex = 0;
+            switch (row) {
+                case Number.NEGATIVE_INFINITY:
+                    newRowIndex = rowMin;
+                    break;
+                case Number.POSITIVE_INFINITY:
+                    newRowIndex = rowMax + 1;
+                    break;
+                default:
+                    newRowIndex = parseInt(row) + 1;
+                    if (newRowIndex < rowMin) newRowIndex = rowMin;
+            }
+            // change the order attribute of the rows to make space for the current row
+            if (newRowIndex <= rowMax) {
+                for (let row of state.rows) {
+                    if (row.order >= newRowIndex) row.order++;
+                }
+            }
+            // create and insert the row
+            const rowId = sdx.sdxInfo.sdxKeyValue + '[' + Math.floor(Math.random() * 1000 + 999) + ']';
             const newRow = TableDefinitionRow({
-                id: sdx.renderData.title,
-                order : rowOrder + 1,
+                id: rowId,
+                order : newRowIndex,
                 name: sdx.renderData.title,
                 display: true,
                 locked: false,

@@ -208,9 +208,7 @@ export const DefineTable = (props) => {
                             }
                             label="Delete Column"
                             onClick={(e) => {
-                                console.log("row is " + JSON.stringify(row));
                                 dispatch(handleRowDelete({row: row}));
-                                console.dir(e);
                                 e.nativeEvent.preventDefault();
                             }}
                         />
@@ -237,9 +235,8 @@ export const DefineTable = (props) => {
             }
         } else {
             // insert the drop below the currently set row
-            rowNum = row.dataset.rowindex;
+            rowNum = parseInt(row.dataset.rowindex) + 1;
         }
-        console.log("dropped on row: " + rowNum);
         dispatch(handleRowInsert({row: rowNum, sdx: sdx}));
     }
 
