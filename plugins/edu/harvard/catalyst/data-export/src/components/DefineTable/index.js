@@ -21,7 +21,7 @@ import LockIcon from '@mui/icons-material/Lock';
 
 import { LoadTableModal} from "../LoadTableModal";
 import { SaveTableModal } from "../SaveTableModal";
-import {loadTable, handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation} from "../../reducers/loadTableSlice";
+import {loadTable, handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation, handleRowName} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
@@ -99,9 +99,15 @@ export const DefineTable = (props) => {
             headerClassName: "header",
             minWidth: 450,
             flex:1,
+            editable: true,
             sortable: false,
             disableColumnSorting: true,
             disableColumnMenu: false,
+            preProcessEditCellProps: ({hasChanged, row, props}) => {
+                if (hasChanged) {
+                    dispatch(handleRowName({row:row, value: props.value}));
+                }
+            }
         },
         {
             field: 'dataOptions',
