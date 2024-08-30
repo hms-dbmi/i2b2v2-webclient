@@ -257,6 +257,9 @@ export const DefineTable = (props) => {
             // insert the drop below the currently set row
             rowNum = parseInt(row.dataset.rowindex) + 1;
         }
+        // remove some unneeded data from the sdx object
+        if (sdx?.renderData.tvNodeState) delete sdx.renderData.tvNodeState;
+
         dispatch(handleRowInsert({rowIndex: rowNum, sdx: sdx}));
     }
 
