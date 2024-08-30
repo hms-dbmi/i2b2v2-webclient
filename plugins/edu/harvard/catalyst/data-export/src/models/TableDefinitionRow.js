@@ -6,9 +6,7 @@ export const TableDefinitionRow = ({
     name = "",
     display = true,
     locked = false,
-    sdxData = {
-        origData: {}
-    },
+    sdxData = {},
     dataOptions = null,
     required = false,
     dataType= DATATYPE.STRING,
