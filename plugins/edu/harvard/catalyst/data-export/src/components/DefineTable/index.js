@@ -260,7 +260,24 @@ export const DefineTable = (props) => {
         // remove some unneeded data from the sdx object
         if (sdx?.renderData.tvNodeState) delete sdx.renderData.tvNodeState;
 
-        dispatch(handleRowInsert({rowIndex: rowNum, sdx: sdx}));
+        // get the range in which we can correctly place the row
+        const rowOrdering = rows.map((row)=>(row.required ? false : row.order)).filter((a)=>a);
+        const rowMin = (rowOrdering.length ? Math.min(...rowOrdering) : rows.length + 1);
+        const rowMax = (rowOrdering.length ? Math.max(...rowOrdering) : rows.length);
+        let newRowIndex = 0;
+        switch (rowNum) {
+            case Number.NEGATIVE_INFINITY:
+                newRowIndex = rowMin;
+                break;
+            case Number.POSITIVE_INFINITY:
+                newRowIndex = rowMax + 1;
+                break;
+            default:
+                newRowIndex = parseInt(rowNum) + 1;
+                if (newRowIndex < rowMin) newRowIndex = rowMin;
+        }
+
+        dispatch(handleRowInsert({rowIndex: newRowIndex, sdx: sdx}));
     }
 
     const i2b2LibLoaded = () => {

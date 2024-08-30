@@ -35,32 +35,19 @@ export const loadTableSlice = createSlice({
 
             // get the range in which we can correctly place the row
             const rowOrdering = state.rows.map((row)=>(row.required ? false : row.order)).filter((a)=>a);
-            const rowMin = (rowOrdering.length ? Math.min(...rowOrdering) : state.rows.length + 1);
             const rowMax = (rowOrdering.length ? Math.max(...rowOrdering) : state.rows.length + 1);
-            let newRowIndex = 0;
-            switch (rowIndex) {
-                case Number.NEGATIVE_INFINITY:  // this is required, in-band signal sent from drop controller
-                    newRowIndex = rowMin;
-                    break;
-                case Number.POSITIVE_INFINITY:  // this is required, in-band signal sent from drop controller
-                    newRowIndex = rowMax + 1;
-                    break;
-                default:
-                    newRowIndex = parseInt(rowIndex) + 1;
-                    if (newRowIndex < rowMin) newRowIndex = rowMin;
-            }
 
             // change the order attribute of the rows to make space for the current row
-            if (newRowIndex <= rowMax) {
+            if (rowIndex <= rowMax) {
                 for (let row of state.rows) {
-                    if (row.order >= newRowIndex) row.order++;
+                    if (row.order >= rowIndex) row.order++;
                 }
             }
             // create and insert the row
             const rowId = sdx.sdxInfo.sdxKeyValue + '[' + Math.floor(Math.random() * 1000 + 999) + ']';
             const newRow = TableDefinitionRow({
                 id: rowId,
-                order : newRowIndex,
+                order : rowIndex,
                 name: sdx.renderData.title,
                 display: true,
                 locked: false,
@@ -81,6 +68,10 @@ export const loadTableSlice = createSlice({
             state.rows.map((row, index) => {
                 if(index === (rowIndex-1)){
                     row.dataType = dataType;
+
+                    if(row.sdxData.origData === undefined){
+                        row.sdxData.origData = {};
+                    }
                     row.sdxData.origData.xmlOrig = xmlOrig;
                 }
 

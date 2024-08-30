@@ -25,20 +25,20 @@ const parseTermInfoXml = (termXml) => {
     console.log("parsetermxml received " + JSON.stringify(termXml));
 
     let xmlparser = new XMLParser();
-    let valueMetadata = {};
+    let termInfo = {};
     let valueMetadataList = termXml.getElementsByTagName('metadataxml');
     if(valueMetadataList.length !== 0 ) {
         let dataType = valueMetadataList[0].getElementsByTagName('DataType');
         if(dataType.length !== 0) {
-            valueMetadata.dataType = DATATYPE[dataType[0].value.toUpperCase()];
+            termInfo.dataType = DATATYPE[dataType[0].value.toUpperCase()];
         }
         let concepts = termXml.getElementsByTagName('ns6:concepts');
         if(concepts.length !== 0) {
-            valueMetadata.xmlOrig =  xmlparser.toString(concepts[0]);
+            termInfo.xmlOrig =  xmlparser.toString(concepts[0]);
         }
     }
 
-    return valueMetadata;
+    return termInfo;
 }
 
 
