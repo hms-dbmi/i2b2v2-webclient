@@ -247,35 +247,20 @@ export const DefineTable = (props) => {
             // see if the drop was on the header
             row = ev.target.closest(".MuiDataGrid-columnHeaders");
             if (row !== null) {
-                // insert the drop at the very top
+                // insert the drop at the very top (this is in-band signaling)
                 rowNum = Number.NEGATIVE_INFINITY;
             } else {
-                // insert to drop at the very bottom
+                // insert to drop at the very bottom (this is in-band signaling)
                 rowNum = Number.POSITIVE_INFINITY;
             }
         } else {
             // insert the drop below the currently set row
             rowNum = parseInt(row.dataset.rowindex) + 1;
         }
+        // remove some unneeded data from the sdx object
+        if (sdx?.renderData.tvNodeState) delete sdx.renderData.tvNodeState;
 
-        // get the range in which we can correctly place the row
-        const rowOrdering = rows.map((row)=>(row.required ? false : row.order)).filter((a)=>a);
-        const rowMin = (rowOrdering.length ? Math.min(...rowOrdering) : rows.length + 1);
-        const rowMax = (rowOrdering.length ? Math.max(...rowOrdering) : rows.length + 1);
-        let newRowIndex = 0;
-        switch (rowNum) {
-            case Number.NEGATIVE_INFINITY:
-                newRowIndex = rowMin;
-                break;
-            case Number.POSITIVE_INFINITY:
-                newRowIndex = rowMax + 1;
-                break;
-            default:
-                newRowIndex = parseInt(rowNum) + 1;
-                if (newRowIndex < rowMin) newRowIndex = rowMin;
-        }
-
-        dispatch(handleRowInsert({rowIndex: newRowIndex, sdx: sdx}));
+        dispatch(handleRowInsert({rowIndex: rowNum, sdx: sdx}));
     }
 
     const i2b2LibLoaded = () => {
