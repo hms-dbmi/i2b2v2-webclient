@@ -6,11 +6,14 @@ export const TableDefinitionRow = ({
     name = "",
     display = true,
     locked = false,
-    sdxData = {},
+    sdxData = {
+        origData: {}
+    },
     dataOptions = null,
     required = false,
     dataType= DATATYPE.STRING,
     isLoadingDataType = false,
+
 } = {}) => ({
     id,
     order,

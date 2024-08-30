@@ -34,7 +34,7 @@ const parseTermInfoXml = (termXml) => {
         }
         let concepts = termXml.getElementsByTagName('ns6:concepts');
         if(concepts.length !== 0) {
-            valueMetadata.origXml =  xmlparser.toString(concepts[0]);
+            valueMetadata.xmlOrig =  xmlparser.toString(concepts[0]);
         }
     }
 
@@ -54,7 +54,7 @@ export function* doInsertRow(action) {
             yield put(handleRowInsertSucceeded({
                 rowIndex: rowIndex,
                 dataType: parsedResponse.dataType,
-                origXml: parsedResponse.origXml
+                xmlOrig: parsedResponse.xmlOrig
             } ));
         }else{
             yield put(handleRowInsertError({error: "There was an error retrieving concept details"}));

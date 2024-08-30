@@ -62,14 +62,13 @@ export const loadTableSlice = createSlice({
         handleRowExported: (state, { payload: {row, exported} }) => {
             state.rows = state.rows.map((data) => (data.id === row.id ? ({...data, display: exported}) : data ));
         },
-        handleRowInsertSucceeded: (state, { payload: {rowIndex, dataType, origXml} }) => {
+        handleRowInsertSucceeded: (state, { payload: {rowIndex, dataType, xmlOrig} }) => {
             state.isLoadingDataType = false;
 
             state.rows.map((row, index) => {
                 if(index === (rowIndex-1)){
-                    console.log("Updating index " + (rowIndex-1));
                     row.dataType = dataType;
-                    row.sdxData.origXml = origXml;
+                    row.sdxData.origData.xmlOrig = xmlOrig;
                 }
 
                 return row;
