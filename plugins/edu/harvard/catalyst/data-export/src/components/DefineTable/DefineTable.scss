@@ -20,12 +20,22 @@
     width: 100%;
     margin: auto;
     background-color: #077cf982;
+    -webkit-transition: background-color 250ms linear;
+    -ms-transition: background-color 250ms linear;
+    transition: background-color 250ms linear;
     padding: 5px;
     border-radius: 5px;
-     p {
-        font-style: italic;
-        font-weight: bold;
-        text-align: center;
-     }
+    p {
+      font-style: italic;
+      font-weight: bold;
+      text-align: center;
+    }
+  }
+
+  .i2b2DropTarget.dragging {
+    background-color: rgba(0, 200, 0, .35) !important;
+  }
+  .i2b2DropTarget.dragging .MuiDataGrid-row:hover {
+    background-color: rgba(85, 214, 0, 0.08) !important;
   }
 }
