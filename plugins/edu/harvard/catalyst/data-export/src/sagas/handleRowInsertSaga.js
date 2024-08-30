@@ -8,6 +8,7 @@ import {handleRowInsertSucceeded, handleRowInsertError} from "../reducers/loadTa
 import {
     INSERT_DATA_ROW
 } from "../actions";
+import {DATATYPE} from "../models/TableDefinitionRow";
 
 const getTermInfoRequest = (sdx) => {
     let data = {
@@ -23,12 +24,21 @@ const getTermInfoRequest = (sdx) => {
 const parseTermInfoXml = (termXml) => {
     console.log("parsetermxml received " + JSON.stringify(termXml));
 
-    let valueMetadataXml = termXml.getElementsByTagName('metadataxml');
-    let hivesList = [];
-    valueMetadataXml.map(item => {
-    })
+    let xmlparser = new XMLParser();
+    let valueMetadata = {};
+    let valueMetadataList = termXml.getElementsByTagName('metadataxml');
+    if(valueMetadataList.length !== 0 ) {
+        let dataType = valueMetadataList[0].getElementsByTagName('DataType');
+        if(dataType.length !== 0) {
+            valueMetadata.dataType = DATATYPE[dataType[0].value.toUpperCase()];
+        }
+        let concepts = termXml.getElementsByTagName('ns6:concepts');
+        if(concepts.length !== 0) {
+            valueMetadata.origXml =  xmlparser.toString(concepts[0]);
+        }
+    }
 
-    return hivesList;
+    return valueMetadata;
 }
 
 
@@ -36,12 +46,16 @@ export function* doInsertRow(action) {
     try {
         console.log("getting term info...");
 
-        const { row, sdx } = action.payload;
+        const { rowIndex, sdx } = action.payload;
 
         const response = yield call(getTermInfoRequest, sdx);
         if(response) {
             const parsedResponse = parseTermInfoXml(response);
-            yield put(handleRowInsertSucceeded(response.data));
+            yield put(handleRowInsertSucceeded({
+                rowIndex: rowIndex,
+                dataType: parsedResponse.dataType,
+                origXml: parsedResponse.origXml
+            } ));
         }else{
             yield put(handleRowInsertError({error: "There was an error retrieving concept details"}));
         }

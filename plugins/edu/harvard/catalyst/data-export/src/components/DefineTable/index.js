@@ -25,6 +25,7 @@ import {loadTable, handleRowDelete, handleRowInsert, handleRowExported, handleRo
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
+import {DATATYPE} from "../../models/TableDefinitionRow";
 
 /* global i2b2 */
 
@@ -118,10 +119,9 @@ export const DefineTable = (props) => {
             editable: true,
             type: "singleSelect",
             valueOptions: ({ row }) => {
-                if (row.required) {
-                    return ["Value"];
-                } else {
-                    return [
+                let valueOptions = ["Value"];
+                if (!row.required) {
+                    valueOptions.push(
                         "Existence (Yes/No)",
                         "Date (First)",
                         "Date (Most Recent)",
@@ -130,14 +130,31 @@ export const DefineTable = (props) => {
                         "Most Frequent Concept (Names/Text)",
                         "All Concepts (Codes)",
                         "Most Frequent Concept (Codes)",
+                    );
+                }
+
+                if(row.dataType === DATATYPE.INTEGER ||
+                    row.dataType === DATATYPE.FLOAT ||
+                    row.dataType === DATATYPE.POSINTEGER ||
+                    row.dataType === DATATYPE.POSFLOAT){
+                    valueOptions.push(
                         "Minimum Value",
                         "Maximum Value",
                         "Median Value",
                         "Average Value",
                         "Mode (Most Frequent Value)",
                         "List of All Values"
-                    ];
+                    );
                 }
+
+                if(row.dataType === DATATYPE.ENUM){
+                    valueOptions.push(
+                        "Mode (Most Frequent Value)",
+                        "List of All Values"
+                    );
+                }
+
+                return valueOptions;
             },
             preProcessEditCellProps: ({hasChanged, row, props}) => {
                 if (hasChanged) {
@@ -240,7 +257,25 @@ export const DefineTable = (props) => {
             // insert the drop below the currently set row
             rowNum = parseInt(row.dataset.rowindex) + 1;
         }
-        dispatch(handleRowInsert({row: rowNum, sdx: sdx}));
+
+        // get the range in which we can correctly place the row
+        const rowOrdering = rows.map((row)=>(row.required ? false : row.order)).filter((a)=>a);
+        const rowMin = (rowOrdering.length ? Math.min(...rowOrdering) : rows.length + 1);
+        const rowMax = (rowOrdering.length ? Math.max(...rowOrdering) : rows.length + 1);
+        let newRowIndex = 0;
+        switch (rowNum) {
+            case Number.NEGATIVE_INFINITY:
+                newRowIndex = rowMin;
+                break;
+            case Number.POSITIVE_INFINITY:
+                newRowIndex = rowMax + 1;
+                break;
+            default:
+                newRowIndex = parseInt(rowNum) + 1;
+                if (newRowIndex < rowMin) newRowIndex = rowMin;
+        }
+
+        dispatch(handleRowInsert({rowIndex: newRowIndex, sdx: sdx}));
     }
 
     const i2b2LibLoaded = () => {
