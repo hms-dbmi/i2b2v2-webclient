@@ -103,6 +103,11 @@ export const DefineTable = (props) => {
             sortable: false,
             disableColumnSorting: true,
             disableColumnMenu: false,
+            renderCell: ({row}) =>  (
+                <Tooltip title={row.sdxData.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This is a required column called \""+ row.id+"\" in the database"} >
+                    <span className="tabledef-cell-trucate">{row.name}</span>
+                </Tooltip>
+            ),
             preProcessEditCellProps: ({hasChanged, row, props}) => {
                 if (hasChanged) {
                     dispatch(handleRowName({row:row, value: props.value}));
