@@ -1,7 +1,8 @@
-import * as React from 'react';
+import React, { useState } from "react";
+
 import {DataGrid} from "@mui/x-data-grid";
 
-export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hideFooter}) => {
+export const TableListing = ({id, rows, canRename, onSelect}) => {
     const columns = [
         {
             field: 'title',
@@ -41,11 +42,15 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
             type: 'number'
         }
     ];
+    const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
-    function onSelectionModelChangeW(selection, {api} ) {
-        if (onSelectionModelChange === undefined) return;
-        onSelectionModelChange(selection);
-        if (selection.length > 0) onSelect(api.getRow(selection[0]));
+
+    const onSelectionModelChange = (selectionModel, {api} )  =>{
+        setRowSelectionModel(selectionModel);
+
+        if (selectionModel.length > 0){
+            onSelect(api.getRow(selectionModel[0]));
+        }
     }
 
 
@@ -60,10 +65,8 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                 showCellVerticalBorder={true}
                 density={'compact'}
                 disableColumnResize={true}
-                onRowSelectionModelChange = {onSelectionModelChangeW}
-                rowSelectionModel = {selectionModel}
-                hideFooter={hideFooter}
-                // autoHeight={true}
+                onRowSelectionModelChange={onSelectionModelChange}
+                rowSelectionModel={rowSelectionModel}
                 pageSizeOptions={[4, 8, 16]}
             />
         </div>

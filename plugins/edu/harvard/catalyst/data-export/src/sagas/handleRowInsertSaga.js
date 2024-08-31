@@ -1,6 +1,5 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import { PayloadAction } from "@reduxjs/toolkit";
-/*import { AxiosResponse } from "axios";*/
 import XMLParser from 'react-xml-parser';
 import {handleRowInsertSucceeded, handleRowInsertError} from "../reducers/loadTableSlice";
 /* global i2b2 */

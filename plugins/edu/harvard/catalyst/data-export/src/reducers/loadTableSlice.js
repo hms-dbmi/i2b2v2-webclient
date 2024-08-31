@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { TABLE_DEF } from "../actions";
 import { defaultState } from '../defaultState';
-import {StatusInfo, TableDefinitionRow} from "../models";
+import {StatusInfo, TableDefinition, TableDefinitionRow} from "../models";
+import {DATATYPE} from "../models/TableDefinitionRow";
 
 export const loadTableSlice = createSlice({
     name: TABLE_DEF,
@@ -13,7 +14,38 @@ export const loadTableSlice = createSlice({
         },
         loadTableSuccess: (state, { payload: table }) => {
             state.isFetching = false;
-            state.rows = table;
+
+            let tableDefRows = [];
+            let index=0;
+            if(table.required){
+                Object.entries(table.required).forEach(([key, value]) => {
+                    let tableDefRow = TableDefinitionRow({
+                        id: generateTableDefRowId(key),
+                        order: index,
+                        name: value.name,
+                        display: value.display,
+                        locked: value.locked,
+                        dataOption: "Value",
+                        required: true,
+                        dataType: DATATYPE.STRING,
+                    });
+                    tableDefRows.push(tableDefRow);
+                })
+                index++;
+            }
+
+            table.concepts.forEach(concept => {
+                let tableDefRow = TableDefinitionRow({
+                    id: generateTableDefRowId(concept.sdxData.sdxInfo.sdxKeyValue),
+                    order: index,
+                    name: concept.textDisplay,
+                    locked: concept.locked,
+                    dataOption: concept.dataOption,
+                    dataType: DATATYPE.STRING,
+                });
+                tableDefRows.push(tableDefRow);
+            });
+            state.rows = tableDefRows;
             state.statusInfo = StatusInfo({
                 status: "SUCCESS"
             });
@@ -44,7 +76,7 @@ export const loadTableSlice = createSlice({
                 }
             }
             // create and insert the row
-            const rowId = sdx.sdxInfo.sdxKeyValue + '[' + Math.floor(Math.random() * 1000 + 999) + ']';
+            const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
             const newRow = TableDefinitionRow({
                 id: rowId,
                 order : rowIndex,
@@ -52,7 +84,7 @@ export const loadTableSlice = createSlice({
                 display: true,
                 locked: false,
                 sdxData: sdx,
-                dataOptions: "Exists",
+                dataOption: "Exists",
                 required: false
             });
             state.rows.push(newRow);
@@ -84,7 +116,7 @@ export const loadTableSlice = createSlice({
         handleRowAggregation: (state, { payload: {row, value} }) => {
             for (let temp of state.rows) {
                 if (temp.id === row.id) {
-                    temp.dataOptions = value;
+                    temp.dataOption = value;
                     break;
                 }
             }
@@ -92,6 +124,9 @@ export const loadTableSlice = createSlice({
     }
 })
 
+const generateTableDefRowId = (key) => {
+    return key + '[' + Math.floor(Math.random() * 1000 + 999) + ']';
+}
 export const {
     loadTable,
     loadTableSuccess,

@@ -13,11 +13,13 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { listTables } from "../../reducers/listTablesSlice";
 import { TabPanel } from "../TabPanel";
+import {loadTable} from "../../reducers/loadTableSlice";
 
 export const LoadTableModal = ({open, handleClose}) => {
     const dispatch = useDispatch();
     const { sharedRows, userRows } = useSelector((state) => state.tableListing);
     const [tab, setTab] = React.useState(0);
+    const [selectedTable, setSelectedTable] = useState(null);
     const handleChangeTab = (event, newValue) => { setTab(newValue); };
 
     const modalStyle = {
@@ -26,7 +28,7 @@ export const LoadTableModal = ({open, handleClose}) => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: '70%',
-        minWidth: 1280,
+        minWidth: 900,
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
@@ -40,6 +42,10 @@ export const LoadTableModal = ({open, handleClose}) => {
         };
     }
 
+    const handleLoadTable = () =>{
+        handleClose();
+        dispatch(loadTable(selectedTable));
+    }
     useEffect(() => {
         if (open) {
             dispatch(listTables());
@@ -79,14 +85,14 @@ export const LoadTableModal = ({open, handleClose}) => {
                         index={0}
                         className={'modalTabPanel'}
                     >
-                        <TableListing id={"loadModalDefTableGlobal"} rows={sharedRows} canRename={false}/>
+                        <TableListing id={"loadModalDefTableGlobal"} rows={sharedRows} canRename={false} onSelect={setSelectedTable}/>
                     </TabPanel>
                     <TabPanel
                         value={tab}
                         index={1}
                         className={'modalTabPanel'}
                     >
-                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={true}/>
+                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={true} onSelect={setSelectedTable}/>
                     </TabPanel>
                 </Box>
                 <Stack
@@ -97,7 +103,7 @@ export const LoadTableModal = ({open, handleClose}) => {
                     style={{width:"100%", margin:"auto", marginTop: "16px"}}
                 >
                     <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-                    <Button variant="contained" onClick={()=>alert("Load")}>Load</Button>
+                    <Button variant="contained" onClick={handleLoadTable} disable={!selectedTable}>Load</Button>
                 </Stack>
             </Box>
         </Modal>

@@ -33,10 +33,6 @@ export const DefineTable = (props) => {
     const dispatch = useDispatch();
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { rows } = useSelector((state) => state.tableDef);
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
     const [showLoad, setLoadViz] = React.useState(false);
     const handleLoadOpen = () => setLoadViz(true);
     const handleLoadClose = () => setLoadViz(false);
@@ -104,7 +100,7 @@ export const DefineTable = (props) => {
             disableColumnMenu: false,
         },
         {
-            field: 'dataOptions',
+            field: 'dataOption',
             headerName: 'Aggregation',
             headerClassName: "header",
             width: 300,
@@ -303,7 +299,7 @@ export const DefineTable = (props) => {
             if (event.target.nodeType === 1 && !event.currentTarget.contains(event.target)) return;
 
             if (params !== undefined) {
-                if (params.field === "dataOptions" && params.row.required === true) {
+                if (params.field === "dataOption" && params.row.required === true) {
                     event.preventDefault();
                     return;
                 }

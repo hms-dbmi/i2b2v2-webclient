@@ -1,5 +1,4 @@
 import { call, takeLatest, put} from "redux-saga/effects";
-/*import { PayloadAction } from "@reduxjs/toolkit";*/
 import {makeRequestSuccess, makeRequestError} from "../reducers/makeRequestSlice";
 import {
     MAKE_REQUEST
