@@ -52,7 +52,7 @@ export const loadTableSlice = createSlice({
                 display: true,
                 locked: false,
                 sdxData: sdx,
-                dataOptions: "Value",
+                dataOptions: "Exists",
                 required: false
             });
             state.rows.push(newRow);

@@ -44,5 +44,6 @@ export const DATATYPE = {
     INTEGER: "Integer",
     FLOAT: "Float",
     STRING: "String",
+    LARGESTRING: "LargeString",
     ENUM: "Enum"
 }

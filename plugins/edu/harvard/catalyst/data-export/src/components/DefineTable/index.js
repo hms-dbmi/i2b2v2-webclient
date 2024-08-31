@@ -119,18 +119,20 @@ export const DefineTable = (props) => {
             editable: true,
             type: "singleSelect",
             valueOptions: ({ row }) => {
-                let valueOptions = ["Value"];
+                let valueOptions = [];
                 if (!row.required) {
                     valueOptions.push(
-                        "Existence (Yes/No)",
-                        "Date (First)",
-                        "Date (Most Recent)",
-                        "Count",
-                        "All Concepts (Names/Text)",
-                        "Most Frequent Concept (Names/Text)",
-                        "All Concepts (Codes)",
-                        "Most Frequent Concept (Codes)",
+                        { value: "Exists", label: "Existence (Yes/No)" },
+                        { value: "MinDate", label: "Date (First)" },
+                        { value: "MaxDate", label: "Date (Most Recent)" },
+                        { value: "NumFacts", label: "Count" },
+                        { value: "ConceptNames", label: "All Concepts (Names/Text)" },
+                        { value: "ModeConceptName", label: "Most Frequent Concept (Names/Text)"},
+                        { value: "ConceptCodes", label: "All Concepts (Codes)" },
+                        { value: "ModeConceptCode", label:  "Most Frequent Concept (Codes)" },
                     );
+                }else{
+                    valueOptions.push ({ value: "Value", label: "Value" });
                 }
 
                 if(row.dataType === DATATYPE.INTEGER ||
@@ -138,19 +140,20 @@ export const DefineTable = (props) => {
                     row.dataType === DATATYPE.POSINTEGER ||
                     row.dataType === DATATYPE.POSFLOAT){
                     valueOptions.push(
-                        "Minimum Value",
-                        "Maximum Value",
-                        "Median Value",
-                        "Average Value",
-                        "Mode (Most Frequent Value)",
-                        "List of All Values"
+                        { value: "MinValue", label: "Minimum Value" },
+                        { value: "MaxValue", label: "Maximum Value" },
+                        { value: "MedianValue", label: "Median Value" },
+                        { value: "AvgValue", label: "Average Value" },
+                        { value: "ModeValue", label: "Mode (Most Frequent Value)" },
+                       // { value: "", label: "List of All Values"}, -- TODO: need to confirm value for this label
                     );
                 }
 
-                if(row.dataType === DATATYPE.ENUM){
+                if(row.dataType === DATATYPE.ENUM
+                || row.dataType === DATATYPE.LARGESTRING){
                     valueOptions.push(
-                        "Mode (Most Frequent Value)",
-                        "List of All Values"
+                        { value: "ModeValue", label: "Mode (Most Frequent Value)" },
+                        // { value: "", label: "List of All Values"}, -- TODO: need to confirm value for this label
                     );
                 }
 
