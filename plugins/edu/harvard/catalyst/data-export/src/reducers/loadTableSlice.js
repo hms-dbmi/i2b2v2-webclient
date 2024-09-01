@@ -3,6 +3,7 @@ import { TABLE_DEF } from "../actions";
 import { defaultState } from '../defaultState';
 import {StatusInfo, TableDefinition, TableDefinitionRow} from "../models";
 import {DATATYPE} from "../models/TableDefinitionRow";
+import XMLParser from 'react-xml-parser';
 
 export const loadTableSlice = createSlice({
     name: TABLE_DEF,
@@ -43,8 +44,20 @@ export const loadTableSlice = createSlice({
                     dataOption: concept.dataOption,
                     dataType: DATATYPE.STRING,
                 });
+
+                if(table.origData?.xmlOrig?.length > 0){
+                    const parseXmlOrig = new XMLParser().parseFromString(table.oriData.xmlOrig);
+                    if(parseXmlOrig.length !== 0) {
+                        let dataType = parseXmlOrig[0].getElementsByTagName('DataType');
+                        if(dataType.length !== 0 && DATATYPE[dataType[0].toUpperCase]) {
+                            tableDefRow.dataType = DATATYPE[dataType[0].value.toUpperCase()];
+                        }
+                    }
+                }
+
                 tableDefRows.push(tableDefRow);
             });
+
             state.rows = tableDefRows;
             state.statusInfo = StatusInfo({
                 status: "SUCCESS"
