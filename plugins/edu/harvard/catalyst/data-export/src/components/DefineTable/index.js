@@ -95,7 +95,7 @@ export const DefineTable = (props) => {
         },
         {
             field: 'name',
-            headerName: 'Concept',
+            headerName: 'Column Title',
             headerClassName: "header",
             minWidth: 450,
             flex:1,
@@ -116,7 +116,7 @@ export const DefineTable = (props) => {
         },
         {
             field: 'dataOptions',
-            headerName: 'Aggregation',
+            headerName: 'Aggregation Method',
             headerClassName: "header",
             width: 300,
             resizable: false,
@@ -378,8 +378,8 @@ export const DefineTable = (props) => {
                     hideFooterSelectedRowCount={true}
                     columnVisibilityModel={{order: false}}
                     disableColumnSelector={true}
-                    //cellModesModel={cellModesModel}  -- causes errors when deleting a row
-                    //onCellModesModelChange={handleCellModesModelChange} -- causes errors when deleting a row
+                    cellModesModel={cellModesModel}  // causes errors when deleting a row
+                    onCellModesModelChange={handleCellModesModelChange} // causes errors when deleting a row
                     onCellClick={handleCellClick}
                     onCellDoubleClick={handleCellClick}
                     initialState={{
