@@ -1,5 +1,4 @@
 import { call, takeLatest, put} from "redux-saga/effects";
-import { PayloadAction } from "@reduxjs/toolkit";
 import XMLParser from 'react-xml-parser';
 import {handleRowInsertSucceeded, handleRowInsertError} from "../reducers/loadTableSlice";
 /* global i2b2 */
@@ -21,8 +20,6 @@ const getTermInfoRequest = (sdx) => {
 };
 
 const parseTermInfoXml = (termXml) => {
-    console.log("parsetermxml received " + JSON.stringify(termXml));
-
     let xmlparser = new XMLParser();
     let termInfo = {};
     let valueMetadataList = termXml.getElementsByTagName('metadataxml');
