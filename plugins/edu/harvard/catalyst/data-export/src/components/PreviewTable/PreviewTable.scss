@@ -6,6 +6,8 @@
   }
 
   .PreviewTableGrid{
-    width: 100%
+    max-width: 90%;
+    width: 90%;
+    overflow: auto;
   }
 }
