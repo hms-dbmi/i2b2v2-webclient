@@ -11,6 +11,7 @@ export const TableDefinitionRow = ({
     required = false,
     dataType= DATATYPE.STRING,
     isLoadingDataType = false,
+
 } = {}) => ({
     id,
     order,
@@ -43,5 +44,6 @@ export const DATATYPE = {
     INTEGER: "Integer",
     FLOAT: "Float",
     STRING: "String",
+    LARGESTRING: "LargeString",
     ENUM: "Enum"
 }
