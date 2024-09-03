@@ -13,6 +13,11 @@
 # production
 /build/static/css/*.map
 
+# for development temporarily ignore the build directory
+# (cleaner commits but requires rebuild on checkout)
+build/
+
+
 
 # misc
 .DS_Store
