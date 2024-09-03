@@ -390,8 +390,6 @@ export const DefineTable = (props) => {
                     hideFooterSelectedRowCount={true}
                     columnVisibilityModel={{order: false}}
                     disableColumnSelector={true}
-                    //cellModesModel={cellModesModel}  -- causes errors when deleting a row
-                    //onCellModesModelChange={handleCellModesModelChange} -- causes errors when deleting a row
                     onCellClick={handleCellClick}
                     onCellDoubleClick={handleCellClick}
                     initialState={{
