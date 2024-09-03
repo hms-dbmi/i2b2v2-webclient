@@ -3,7 +3,6 @@ import {useSelector} from "react-redux";
 import {DataGrid} from "@mui/x-data-grid";
 import "./PreviewTable.scss";
 import Stack from "@mui/material/Stack";
-import {gridClasses} from "@mui/material";
 
 export const PreviewTable = () => {
     const tableDefRows = useSelector((state) => state.tableDef.rows);
@@ -11,7 +10,6 @@ export const PreviewTable = () => {
     const [rows, setRows] = useState([]);
 
     const updateRows = (columns) => {
-        console.log("column " + JSON.stringify(tableDefRows));
 
         let newRows = [];
         for (let i = 0; i < 5; i++) {
@@ -79,7 +77,7 @@ export const PreviewTable = () => {
                 sortable: false,
                 hideSortIcons: true,
                 disableReorder: true,
-                flex: 2
+                flex: 1
             }
         }));
 
@@ -91,7 +89,7 @@ export const PreviewTable = () => {
             className={"PreviewTable"}
             direction="column"
             justifyContent="center"
-            alignItems="flex-start"
+            alignItems="center"
             spacing={3}
             useFlexGap
         >
