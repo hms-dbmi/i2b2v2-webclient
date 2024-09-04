@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import { listTables } from "../../reducers/listTablesSlice";
 import { TabPanel } from "../TabPanel";
 import {loadTable} from "../../reducers/loadTableSlice";
+import {Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} from "@mui/material";
 
 export const LoadTableModal = ({open, handleClose}) => {
     const dispatch = useDispatch();
@@ -22,20 +23,7 @@ export const LoadTableModal = ({open, handleClose}) => {
     const [selectedTable, setSelectedTable] = useState(null);
     const handleChangeTab = (event, newValue) => { setTab(newValue); };
 
-    const modalStyle = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '70%',
-        minWidth: 900,
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-    };
-
-    function a11yProps(index) {
+    const addtlProps = (index) => {
         return {
             id: `vertical-tab-${index}`,
             'aria-controls': `vertical-tabpanel-${index}`,
@@ -53,19 +41,22 @@ export const LoadTableModal = ({open, handleClose}) => {
     }, [open]);
 
     return (
-        <Modal
+        <Dialog
+            className={"ModalDialog"}
             open={open}
             onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+            fullWidth={true}
+            maxWidth={'xl'}
         >
-            <Box sx={modalStyle}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Load Table Definition
-                </Typography>
-                <Typography id="modal-modal-description" sx={{mt: 2, marginBottom: "1rem"}}>
-                    Load an existing table definition from below. Loading a definition will overwrite any unsaved changes in the definition editor.
-                </Typography>
+            <DialogTitle> Load Table Definition</DialogTitle>
+            <DialogContent className={"ModalDialogContent"}>
+                <DialogContentText className={"ModalDialogContentText"}>
+                    <Typography id="modal-modal-description" sx={{mt: 2, marginBottom: "1rem"}}>
+                        Load an existing table definition from below. Loading a definition will overwrite any unsaved changes in the definition editor.
+                    </Typography>
+                </DialogContentText>
                 <Box
                     className = {"modalDefListBox"}
                     sx={{ flexGrow: 1, display: 'flex', boxShadow: 2 }}
@@ -77,8 +68,8 @@ export const LoadTableModal = ({open, handleClose}) => {
                         aria-label="Table Definition Folders"
                         sx={{ borderRight: 1, borderColor: 'divider' }}
                     >
-                        <Tab label="Shared Tables" {...a11yProps(0)} />
-                        <Tab label="My Tables" {...a11yProps(1)} />
+                        <Tab label="Shared Tables" {...addtlProps(0)} />
+                        <Tab label="My Tables" {...addtlProps(1)} />
                     </Tabs>
                     <TabPanel
                         value={tab}
@@ -95,17 +86,11 @@ export const LoadTableModal = ({open, handleClose}) => {
                         <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={true} onSelect={setSelectedTable}/>
                     </TabPanel>
                 </Box>
-                <Stack
-                    spacing={2}
-                    direction="row"
-                    justifyContent="flex-end"
-                    alignItems="center"
-                    style={{width:"100%", margin:"auto", marginTop: "16px"}}
-                >
-                    <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-                    <Button variant="contained" onClick={handleLoadTable} disable={!selectedTable}>Load</Button>
-                </Stack>
-            </Box>
-        </Modal>
+            </DialogContent>
+            <DialogActions>
+                <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+                <Button variant="contained" onClick={handleLoadTable} disable={!selectedTable}>Load</Button>
+            </DialogActions>
+        </Dialog>
     );
 }

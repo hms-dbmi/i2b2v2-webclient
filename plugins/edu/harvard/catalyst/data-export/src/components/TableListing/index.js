@@ -2,12 +2,12 @@ import React, { useState } from "react";
 
 import {DataGrid} from "@mui/x-data-grid";
 
-export const TableListing = ({id, rows, canRename, onSelect}) => {
+export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hideFooter}) => {
     const columns = [
         {
             field: 'title',
             headerName: 'Table Definition Name',
-            minWidth: 450,
+            minWidth: 440,
             flex:1,
             sortable: true,
             editable: canRename,
@@ -34,7 +34,7 @@ export const TableListing = ({id, rows, canRename, onSelect}) => {
         }, {
             field: 'column_count',
             headerName: 'Columns',
-            width: 100,
+            width: 98,
             sortable: true,
             headerAlign: 'center',
             align: 'center',
@@ -42,14 +42,12 @@ export const TableListing = ({id, rows, canRename, onSelect}) => {
             type: 'number'
         }
     ];
-    const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
+    function handleOnSelectionModelChange(selection, {api} ) {
+        if (selection.length > 0) onSelect(api.getRow(selection[0]));
 
-    const onSelectionModelChange = (selectionModel, {api} )  =>{
-        setRowSelectionModel(selectionModel);
-
-        if (selectionModel.length > 0){
-            onSelect(api.getRow(selectionModel[0]));
+        if (onSelectionModelChange !== undefined) {
+            onSelectionModelChange(selection);
         }
     }
 
@@ -65,8 +63,9 @@ export const TableListing = ({id, rows, canRename, onSelect}) => {
                 showCellVerticalBorder={true}
                 density={'compact'}
                 disableColumnResize={true}
-                onRowSelectionModelChange={onSelectionModelChange}
-                rowSelectionModel={rowSelectionModel}
+                onRowSelectionModelChange = {handleOnSelectionModelChange}
+                rowSelectionModel = {selectionModel}
+                hideFooter={hideFooter}
                 pageSizeOptions={[4, 8, 16]}
             />
         </div>
