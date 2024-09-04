@@ -28,12 +28,12 @@ import {
 export const MakeRequest = () => {
     const dispatch = useDispatch();
     const makeRequestDetails = useSelector((state) => state.makeRequestDetails);
+    const tableDef = useSelector((state) => state.tableDef);
     const [isEmailNotValid, setIsEmailNotValid] = useState(false);
     const [emailNotValidError, setEmailNotValidError] = useState("");
     const [isPatientSetNotValid, setIsPatientSetNotValid] = useState(false);
     const defaultPatientSetHelperText = "drag and drop a patient set";
     const [patientSetNotValidError, setPatientSetNotValidError] = useState(defaultPatientSetHelperText);
-    //const [isSubmitting, setIsSubmitting] = useState(false);
 
     const updatePatientSet = (value) => {
         dispatch(updateRequestPatientSet(value));
@@ -49,7 +49,10 @@ export const MakeRequest = () => {
 
     const handleMakeRequest = () => {
         if(isValidRequest()) {
-            dispatch(makeRequest());
+            dispatch(makeRequest({
+                makeRequestDetails: makeRequestDetails,
+                tableDefRows: tableDef.rows
+            }));
         }
     }
 
