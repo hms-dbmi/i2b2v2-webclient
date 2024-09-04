@@ -52,6 +52,7 @@ export const DefineTable = (props) => {
             headerClassName: "header",
             width: 1,
             sortable: true,
+            resizable: false,
             sortingOrder: "ASC",
             hideSortIcons: true,
             disableReorder: true
@@ -63,6 +64,7 @@ export const DefineTable = (props) => {
             flex:1,
             editable: true,
             sortable: false,
+            resizable: false,
             disableColumnSorting: true,
             disableColumnMenu: false,
             renderCell: ({row}) =>  (
@@ -347,9 +349,9 @@ export const DefineTable = (props) => {
                 alignItems="center"
                 className={"DefineTableActions"}
             >
-                <Button variant="contained" onClick={handleLoadOpen}>Load Previous Definition</Button>
-                <Button variant="contained" onClick={handleSaveOpen}>Save Current Definition</Button>
-                <Button variant="contained" onClick={()=>props.tabChanger(2)}>Request Export With This Definition</Button>
+                <Button variant="contained" onClick={handleLoadOpen}>Load Previous</Button>
+                <Button variant="contained" onClick={handleSaveOpen}>Save Current</Button>
+                <Button variant="contained" onClick={()=>props.tabChanger(2)}>Request Export</Button>
             </Stack>
             <div id="dropTrgt">
                 <p>Drag a concept onto the grid to add it to the list</p>
