@@ -29,7 +29,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: '70%',
-        minWidth: 1280,
+        minWidth: 850,
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
@@ -132,17 +132,8 @@ export const SaveTableModal = ({open, handleClose}) => {
                     spacing={2}
                     direction="row"
                     justifyContent="flex-end"
-                    alignItems="left"
-                    style={{width:"100%", margin:"auto", marginTop: "16px"}}
-                >
-                </Stack>
-
-                <Stack
-                    spacing={2}
-                    direction="row"
-                    justifyContent="flex-end"
                     alignItems="center"
-                    style={{width:"100%", margin:"auto", marginTop: "8px"}}
+                    style={{width:"100%", margin:"auto", marginTop: "24px"}}
                 >
                     <TextField
                         required
