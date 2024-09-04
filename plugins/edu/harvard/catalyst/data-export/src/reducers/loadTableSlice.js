@@ -21,7 +21,7 @@ export const loadTableSlice = createSlice({
             if(table.required){
                 Object.entries(table.required).forEach(([key, value]) => {
                     let tableDefRow = TableDefinitionRow({
-                        id: generateTableDefRowId(key),
+                        id: key,
                         order: index,
                         name: value.name,
                         display: value.display,
@@ -58,6 +58,7 @@ export const loadTableSlice = createSlice({
                 tableDefRows.push(tableDefRow);
             });
 
+            console.log("table defrows: " + JSON.stringify(tableDefRows));
             state.rows = tableDefRows;
             state.statusInfo = StatusInfo({
                 status: "SUCCESS"
