@@ -26,7 +26,7 @@ export const LoadTableModal = ({open, handleClose}) => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: '70%',
-        minWidth: 1280,
+        minWidth: 850,
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
@@ -69,7 +69,7 @@ export const LoadTableModal = ({open, handleClose}) => {
                         value={tab}
                         onChange={handleChangeTab}
                         aria-label="Table Definition Folders"
-                        sx={{ borderRight: 1, borderColor: 'divider' }}
+                        sx={{ borderRight: 1, flexGrow: 0, borderColor: 'divider', minWidth: '90px' }}
                     >
                         <Tab label="Shared Tables" {...a11yProps(0)} />
                         <Tab label="My Tables" {...a11yProps(1)} />

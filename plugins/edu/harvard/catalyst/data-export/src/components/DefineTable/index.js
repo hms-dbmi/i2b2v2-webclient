@@ -52,55 +52,19 @@ export const DefineTable = (props) => {
             headerClassName: "header",
             width: 1,
             sortable: true,
+            resizable: false,
             sortingOrder: "ASC",
             hideSortIcons: true,
             disableReorder: true
         },
         {
-            field: 'reorder',
-            headerName: "Ordering",
-            headerClassName: "header",
-            width: "80",
-            resizable: false,
-            type: 'actions',
-            getActions: ({ row }) => {
-                let actions = [];
-                if (row.required) return actions;
-                if (row.order > 1) {
-                    actions.push(
-                        <GridActionsCellItem
-                            icon={
-                                <Tooltip title="Move row up">
-                                    <ArrowUpIcon />
-                                </Tooltip>
-                            }
-                            label="Move row up"
-                            onClick={() => alert("up")}
-                        />
-                    );
-                }
-                actions.push(
-                    <GridActionsCellItem
-                        icon={
-                            <Tooltip title="Move row down">
-                                <ArrowDownIcon />
-                            </Tooltip>
-                        }
-                        label="Move row down"
-                        onClick={() => alert("down") }
-                    />
-                );
-                return actions;
-            }
-        },
-        {
             field: 'name',
             headerName: 'Column Title',
             headerClassName: "header",
-            minWidth: 450,
             flex:1,
             editable: true,
             sortable: false,
+            resizable: false,
             disableColumnSorting: true,
             disableColumnMenu: false,
             renderCell: ({row}) =>  (
@@ -118,7 +82,7 @@ export const DefineTable = (props) => {
             field: 'dataOptions',
             headerName: 'Aggregation Method',
             headerClassName: "header",
-            width: 300,
+            minWidth: 275,
             resizable: false,
             disableColumnMenu: true,
             disableReorder: true,
@@ -126,7 +90,6 @@ export const DefineTable = (props) => {
             hideSortIcons: true,
             disableColumnSorting: true,
             sortable: false,
-//        headerAlign: "center",
             editable: true,
             type: "singleSelect",
             valueOptions: ({ row }) => {
@@ -386,9 +349,9 @@ export const DefineTable = (props) => {
                 alignItems="center"
                 className={"DefineTableActions"}
             >
-                <Button variant="contained" onClick={handleLoadOpen}>Load Previous Definition</Button>
-                <Button variant="contained" onClick={handleSaveOpen}>Save Current Definition</Button>
-                <Button variant="contained" onClick={()=>props.tabChanger(2)}>Request Export With This Definition</Button>
+                <Button variant="contained" onClick={handleLoadOpen}>Load Previous</Button>
+                <Button variant="contained" onClick={handleSaveOpen}>Save Current</Button>
+                <Button variant="contained" onClick={()=>props.tabChanger(2)}>Request Export</Button>
             </Stack>
             <div id="dropTrgt">
                 <p>Drag a concept onto the grid to add it to the list</p>
