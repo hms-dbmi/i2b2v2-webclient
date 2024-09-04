@@ -21,7 +21,7 @@ import LockIcon from '@mui/icons-material/Lock';
 
 import { LoadTableModal} from "../LoadTableModal";
 import { SaveTableModal } from "../SaveTableModal";
-import {loadTable, handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation} from "../../reducers/loadTableSlice";
+import {loadTable, handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation, handleRowName} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
@@ -95,17 +95,28 @@ export const DefineTable = (props) => {
         },
         {
             field: 'name',
-            headerName: 'Concept',
+            headerName: 'Column Title',
             headerClassName: "header",
             minWidth: 450,
             flex:1,
+            editable: true,
             sortable: false,
             disableColumnSorting: true,
             disableColumnMenu: false,
+            renderCell: ({row}) =>  (
+                <Tooltip title={row.sdxData.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This is a required column called \""+ row.id+"\" in the database"} >
+                    <span className="tabledef-cell-trucate">{row.name}</span>
+                </Tooltip>
+            ),
+            preProcessEditCellProps: ({hasChanged, row, props}) => {
+                if (hasChanged) {
+                    dispatch(handleRowName({row:row, value: props.value}));
+                }
+            }
         },
         {
             field: 'dataOptions',
-            headerName: 'Aggregation',
+            headerName: 'Aggregation Method',
             headerClassName: "header",
             width: 300,
             resizable: false,
@@ -390,8 +401,8 @@ export const DefineTable = (props) => {
                     hideFooterSelectedRowCount={true}
                     columnVisibilityModel={{order: false}}
                     disableColumnSelector={true}
-                    //cellModesModel={cellModesModel}  -- causes errors when deleting a row
-                    //onCellModesModelChange={handleCellModesModelChange} -- causes errors when deleting a row
+                    cellModesModel={cellModesModel}  // causes errors when deleting a row
+                    onCellModesModelChange={handleCellModesModelChange} // causes errors when deleting a row
                     onCellClick={handleCellClick}
                     onCellDoubleClick={handleCellClick}
                     initialState={{

@@ -88,6 +88,14 @@ export const loadTableSlice = createSlice({
                     break;
                 }
             }
+        },
+        handleRowName: (state, { payload: {row, value} }) => {
+            for (let temp of state.rows) {
+                if (temp.id === row.id) {
+                    temp.name = value;
+                    break;
+                }
+            }
         }
     }
 })
@@ -101,7 +109,8 @@ export const {
     handleRowExported,
     handleRowInsertSucceeded,
     handleRowInsertError,
-    handleRowAggregation
+    handleRowAggregation,
+    handleRowName
 } = loadTableSlice.actions
 
 export default loadTableSlice.reducer
