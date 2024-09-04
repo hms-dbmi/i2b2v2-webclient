@@ -13,27 +13,33 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { listTables } from "../../reducers/listTablesSlice";
 import { TabPanel } from "../TabPanel";
-import {loadTable} from "../../reducers/loadTableSlice";
-import {Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} from "@mui/material";
 
 export const LoadTableModal = ({open, handleClose}) => {
     const dispatch = useDispatch();
     const { sharedRows, userRows } = useSelector((state) => state.tableListing);
     const [tab, setTab] = React.useState(0);
-    const [selectedTable, setSelectedTable] = useState(null);
     const handleChangeTab = (event, newValue) => { setTab(newValue); };
 
-    const addtlProps = (index) => {
+    const modalStyle = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '70%',
+        minWidth: 850,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
+    function a11yProps(index) {
         return {
             id: `vertical-tab-${index}`,
             'aria-controls': `vertical-tabpanel-${index}`,
         };
     }
 
-    const handleLoadTable = () =>{
-        handleClose();
-        dispatch(loadTable(selectedTable));
-    }
     useEffect(() => {
         if (open) {
             dispatch(listTables());
@@ -41,22 +47,19 @@ export const LoadTableModal = ({open, handleClose}) => {
     }, [open]);
 
     return (
-        <Dialog
-            className={"ModalDialog"}
+        <Modal
             open={open}
             onClose={handleClose}
-            aria-labelledby="modal-title"
-            aria-describedby="modal-description"
-            fullWidth={true}
-            maxWidth={'xl'}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
         >
-            <DialogTitle> Load Table Definition</DialogTitle>
-            <DialogContent className={"ModalDialogContent"}>
-                <DialogContentText className={"ModalDialogContentText"}>
-                    <Typography id="modal-modal-description" sx={{mt: 2, marginBottom: "1rem"}}>
-                        Load an existing table definition from below. Loading a definition will overwrite any unsaved changes in the definition editor.
-                    </Typography>
-                </DialogContentText>
+            <Box sx={modalStyle}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                    Load Table Definition
+                </Typography>
+                <Typography id="modal-modal-description" sx={{mt: 2, marginBottom: "1rem"}}>
+                    Load an existing table definition from below. Loading a definition will overwrite any unsaved changes in the definition editor.
+                </Typography>
                 <Box
                     className = {"modalDefListBox"}
                     sx={{ flexGrow: 1, display: 'flex', boxShadow: 2 }}
@@ -66,31 +69,37 @@ export const LoadTableModal = ({open, handleClose}) => {
                         value={tab}
                         onChange={handleChangeTab}
                         aria-label="Table Definition Folders"
-                        sx={{ borderRight: 1, borderColor: 'divider' }}
+                        sx={{ borderRight: 1, flexGrow: 0, borderColor: 'divider', minWidth: '90px' }}
                     >
-                        <Tab label="Shared Tables" {...addtlProps(0)} />
-                        <Tab label="My Tables" {...addtlProps(1)} />
+                        <Tab label="Shared Tables" {...a11yProps(0)} />
+                        <Tab label="My Tables" {...a11yProps(1)} />
                     </Tabs>
                     <TabPanel
                         value={tab}
                         index={0}
                         className={'modalTabPanel'}
                     >
-                        <TableListing id={"loadModalDefTableGlobal"} rows={sharedRows} canRename={false} onSelect={setSelectedTable}/>
+                        <TableListing id={"loadModalDefTableGlobal"} rows={sharedRows} canRename={false}/>
                     </TabPanel>
                     <TabPanel
                         value={tab}
                         index={1}
                         className={'modalTabPanel'}
                     >
-                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={true} onSelect={setSelectedTable}/>
+                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={true}/>
                     </TabPanel>
                 </Box>
-            </DialogContent>
-            <DialogActions>
-                <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-                <Button variant="contained" onClick={handleLoadTable} disable={!selectedTable}>Load</Button>
-            </DialogActions>
-        </Dialog>
+                <Stack
+                    spacing={2}
+                    direction="row"
+                    justifyContent="flex-end"
+                    alignItems="center"
+                    style={{width:"100%", margin:"auto", marginTop: "16px"}}
+                >
+                    <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+                    <Button variant="contained" onClick={()=>alert("Load")}>Load</Button>
+                </Stack>
+            </Box>
+        </Modal>
     );
 }

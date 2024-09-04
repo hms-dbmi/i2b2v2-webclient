@@ -21,7 +21,7 @@ import LockIcon from '@mui/icons-material/Lock';
 
 import { LoadTableModal} from "../LoadTableModal";
 import { SaveTableModal } from "../SaveTableModal";
-import {loadTable, handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation} from "../../reducers/loadTableSlice";
+import {loadTable, handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation, handleRowName} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
@@ -33,6 +33,10 @@ export const DefineTable = (props) => {
     const dispatch = useDispatch();
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { rows } = useSelector((state) => state.tableDef);
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     const [showLoad, setLoadViz] = React.useState(false);
     const handleLoadOpen = () => setLoadViz(true);
     const handleLoadClose = () => setLoadViz(false);
@@ -48,62 +52,37 @@ export const DefineTable = (props) => {
             headerClassName: "header",
             width: 1,
             sortable: true,
+            resizable: false,
             sortingOrder: "ASC",
             hideSortIcons: true,
             disableReorder: true
         },
         {
-            field: 'reorder',
-            headerName: "Ordering",
+            field: 'name',
+            headerName: 'Column Title',
             headerClassName: "header",
-            width: "80",
+            flex:1,
+            editable: true,
+            sortable: false,
             resizable: false,
-            type: 'actions',
-            getActions: ({ row }) => {
-                let actions = [];
-                if (row.required) return actions;
-                if (row.order > 1) {
-                    actions.push(
-                        <GridActionsCellItem
-                            icon={
-                                <Tooltip title="Move row up">
-                                    <ArrowUpIcon />
-                                </Tooltip>
-                            }
-                            label="Move row up"
-                            onClick={() => alert("up")}
-                        />
-                    );
+            disableColumnSorting: true,
+            disableColumnMenu: false,
+            renderCell: ({row}) =>  (
+                <Tooltip title={row.sdxData.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This is a required column called \""+ row.id+"\" in the database"} >
+                    <span className="tabledef-cell-trucate">{row.name}</span>
+                </Tooltip>
+            ),
+            preProcessEditCellProps: ({hasChanged, row, props}) => {
+                if (hasChanged) {
+                    dispatch(handleRowName({row:row, value: props.value}));
                 }
-                actions.push(
-                    <GridActionsCellItem
-                        icon={
-                            <Tooltip title="Move row down">
-                                <ArrowDownIcon />
-                            </Tooltip>
-                        }
-                        label="Move row down"
-                        onClick={() => alert("down") }
-                    />
-                );
-                return actions;
             }
         },
         {
-            field: 'name',
-            headerName: 'Concept',
+            field: 'dataOptions',
+            headerName: 'Aggregation Method',
             headerClassName: "header",
-            minWidth: 450,
-            flex:1,
-            sortable: false,
-            disableColumnSorting: true,
-            disableColumnMenu: false,
-        },
-        {
-            field: 'dataOption',
-            headerName: 'Aggregation',
-            headerClassName: "header",
-            width: 300,
+            minWidth: 275,
             resizable: false,
             disableColumnMenu: true,
             disableReorder: true,
@@ -111,7 +90,6 @@ export const DefineTable = (props) => {
             hideSortIcons: true,
             disableColumnSorting: true,
             sortable: false,
-//        headerAlign: "center",
             editable: true,
             type: "singleSelect",
             valueOptions: ({ row }) => {
@@ -299,7 +277,7 @@ export const DefineTable = (props) => {
             if (event.target.nodeType === 1 && !event.currentTarget.contains(event.target)) return;
 
             if (params !== undefined) {
-                if (params.field === "dataOption" && params.row.required === true) {
+                if (params.field === "dataOptions" && params.row.required === true) {
                     event.preventDefault();
                     return;
                 }
@@ -371,9 +349,9 @@ export const DefineTable = (props) => {
                 alignItems="center"
                 className={"DefineTableActions"}
             >
-                <Button variant="contained" onClick={handleLoadOpen}>Load Previous Definition</Button>
-                <Button variant="contained" onClick={handleSaveOpen}>Save Current Definition</Button>
-                <Button variant="contained" onClick={()=>props.tabChanger(2)}>Request Export With This Definition</Button>
+                <Button variant="contained" onClick={handleLoadOpen}>Load Previous</Button>
+                <Button variant="contained" onClick={handleSaveOpen}>Save Current</Button>
+                <Button variant="contained" onClick={()=>props.tabChanger(2)}>Request Export</Button>
             </Stack>
             <div id="dropTrgt">
                 <p>Drag a concept onto the grid to add it to the list</p>
@@ -386,8 +364,8 @@ export const DefineTable = (props) => {
                     hideFooterSelectedRowCount={true}
                     columnVisibilityModel={{order: false}}
                     disableColumnSelector={true}
-                    //cellModesModel={cellModesModel}  -- causes errors when deleting a row
-                    //onCellModesModelChange={handleCellModesModelChange} -- causes errors when deleting a row
+                    cellModesModel={cellModesModel}  // causes errors when deleting a row
+                    onCellModesModelChange={handleCellModesModelChange} // causes errors when deleting a row
                     onCellClick={handleCellClick}
                     onCellDoubleClick={handleCellClick}
                     initialState={{
