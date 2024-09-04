@@ -57,47 +57,9 @@ export const DefineTable = (props) => {
             disableReorder: true
         },
         {
-            field: 'reorder',
-            headerName: "Ordering",
-            headerClassName: "header",
-            width: "80",
-            resizable: false,
-            type: 'actions',
-            getActions: ({ row }) => {
-                let actions = [];
-                if (row.required) return actions;
-                if (row.order > 1) {
-                    actions.push(
-                        <GridActionsCellItem
-                            icon={
-                                <Tooltip title="Move row up">
-                                    <ArrowUpIcon />
-                                </Tooltip>
-                            }
-                            label="Move row up"
-                            onClick={() => alert("up")}
-                        />
-                    );
-                }
-                actions.push(
-                    <GridActionsCellItem
-                        icon={
-                            <Tooltip title="Move row down">
-                                <ArrowDownIcon />
-                            </Tooltip>
-                        }
-                        label="Move row down"
-                        onClick={() => alert("down") }
-                    />
-                );
-                return actions;
-            }
-        },
-        {
             field: 'name',
             headerName: 'Column Title',
             headerClassName: "header",
-            minWidth: 450,
             flex:1,
             editable: true,
             sortable: false,
@@ -118,7 +80,7 @@ export const DefineTable = (props) => {
             field: 'dataOptions',
             headerName: 'Aggregation Method',
             headerClassName: "header",
-            width: 300,
+            minWidth: 275,
             resizable: false,
             disableColumnMenu: true,
             disableReorder: true,
@@ -126,7 +88,6 @@ export const DefineTable = (props) => {
             hideSortIcons: true,
             disableColumnSorting: true,
             sortable: false,
-//        headerAlign: "center",
             editable: true,
             type: "singleSelect",
             valueOptions: ({ row }) => {
