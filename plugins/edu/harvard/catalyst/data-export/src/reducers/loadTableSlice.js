@@ -58,7 +58,6 @@ export const loadTableSlice = createSlice({
                 tableDefRows.push(tableDefRow);
             });
 
-            console.log("table defrows: " + JSON.stringify(tableDefRows));
             state.rows = tableDefRows;
             state.statusInfo = StatusInfo({
                 status: "SUCCESS"
