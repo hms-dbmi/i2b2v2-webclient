@@ -99,7 +99,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                         orientation="vertical"
                         value={1}
                         aria-label="Table Definition Folders"
-                        sx={{ borderRight: 1, borderColor: 'divider' }}
+                        sx={{ borderRight: 1, borderColor: 'divider', minWidth: '90px' }}
                     >
                         <Tab label="Shared Tables" {...a11yProps(0)} sx={{textDecoration:"line-through"}}/>
                         <Tab label="My Tables" {...a11yProps(1)} />
