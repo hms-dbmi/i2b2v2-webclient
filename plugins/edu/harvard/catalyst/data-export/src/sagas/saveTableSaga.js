@@ -1,16 +1,70 @@
-import { call, takeLatest, put} from "redux-saga/effects";
-/*import { PayloadAction } from "@reduxjs/toolkit";*/
+import { takeLatest, put} from "redux-saga/effects";
 import {saveTableSuccess, saveTableError} from "../reducers/saveTableSlice";
 
 import {
     SAVE_DATA_TABLE
 } from "../actions";
+/* global i2b2 */
+
+
+const transformTableDef = (tableDefRows) => {
+    let requiredRows = {};
+    let concepts = [];
+
+    let index=0;
+    tableDefRows.map(row => {
+        if(row.required){
+            requiredRows[row.id] = {
+                name: row.name,
+                display: row.display,
+                locked: row.locked
+            }
+        }
+        else{
+            concepts.push({
+                index: index,
+                dataOption: row.dataOptions,
+                textDisplay: row.name,
+                locked: false,
+                sdxData: row.sdxData
+            });
+            index++;
+        }
+    });
+
+    const newTdef = {
+        required: requiredRows,
+        concepts: concepts,
+    }
+
+    return newTdef;
+}
 
 export function* doSaveTable(action) {
+    let { tableId, tableTitle, tableDefRows } = action.payload;
+
     try {
-        // You can also export the axios call as a function.
-        //const response = yield axios.get(`your-server-url:port/api/users/${id}`);
-        const response = "";
+        let transformedTableDef = transformTableDef(tableDefRows);
+        transformedTableDef.title = tableTitle;
+        let formdata = new FormData();
+
+        formdata.append('uid',i2b2.model.user);
+        formdata.append('pid',i2b2.model.project);
+        formdata.append('sid',i2b2.model.session);
+        formdata.append('tdef', JSON.stringify(transformedTableDef));
+        formdata.append('fid','save_table');
+
+        if(tableId) {
+            formdata.append('tid',tableId);
+        }
+
+        const fetchConfig = {
+            method: "POST",
+            mode: "cors",
+            body: formdata
+        };
+
+        const response = yield fetch(i2b2.model.endpointUrl, fetchConfig);
 
         yield put(saveTableSuccess());
     } catch (error) {

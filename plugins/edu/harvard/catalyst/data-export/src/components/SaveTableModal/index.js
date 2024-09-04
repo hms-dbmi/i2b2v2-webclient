@@ -13,12 +13,14 @@ import "../../css/modals.scss";
 import { TableListing } from "../TableListing";
 import { listTables } from "../../reducers/listTablesSlice";
 import { TabPanel } from "../TabPanel";
+import {saveTable} from "../../reducers/saveTableSlice";
 
 
 
 export const SaveTableModal = ({open, handleClose}) => {
-    const [tableDefName, setTableDefName] = React.useState('');
+    const [selectedTableDef, setSelectedTableDef] = React.useState({});
     const { sharedRows, userRows } = useSelector((state) => state.tableListing);
+    const tableDefRows = useSelector((state) => state.tableDef.rows);
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [showOverwrite, setShowOverwrite] = React.useState(false);
     const dispatch = useDispatch();
@@ -44,11 +46,11 @@ export const SaveTableModal = ({open, handleClose}) => {
     }
 
     function onRowSelect(row) {
-        setTableDefName(row.title);
-        setSelectedRows(row.id);
+        setSelectedTableDef({id: row.id, title: row.title});
+        setSelectedRows([row.id]);
     }
     function onNameChange(e) {
-        setTableDefName(e.target.value);
+        setSelectedTableDef({name: e.target.value});
         setSelectedRows([]);
     }
     function onSelectionModelChange(e) {
@@ -64,7 +66,11 @@ export const SaveTableModal = ({open, handleClose}) => {
     }
 
     function doSave() {
-        alert("Saved!");
+        dispatch(saveTable({
+            tableId: selectedTableDef.is,
+            tableTitle: selectedTableDef.title,
+            tableDefRows: tableDefRows
+        }))
         setShowOverwrite(false);
         handleClose();
     }
@@ -150,7 +156,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                         id="TableDefName"
                         label="Save Table Definition As"
                         defaultValue="My-Table-Definition"
-                        value={tableDefName}
+                        value={selectedTableDef.name}
                         onChange={onNameChange}
                         sx={{float: "left", width:"60%", position:"absolute", left:32}}
                     />
