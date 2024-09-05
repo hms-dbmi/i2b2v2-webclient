@@ -69,7 +69,7 @@ export const PreviewTable = () => {
     useEffect( ()  =>{
         let columnNames = [];
         setColumns(tableDefRows.filter(p => p.display).map(row => {
-            columnNames.push({name: row.name, aggType: row.dataOptions});
+            columnNames.push({name: row.name, aggType: row.dataOption});
             return {
                 field: row.name,
                 headerName: row.name,
