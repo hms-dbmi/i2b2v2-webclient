@@ -53,7 +53,7 @@ export const LoadTableModal = ({open, handleClose}) => {
             <DialogTitle> Load Table Definition</DialogTitle>
             <DialogContent className={"ModalDialogContent"}>
                 <DialogContentText className={"ModalDialogContentText"}>
-                    <Typography id="modal-modal-description" sx={{mt: 2, marginBottom: "1rem"}}>
+                    <Typography id="modal-description">
                         Load an existing table definition from below. Loading a definition will overwrite any unsaved changes in the definition editor.
                     </Typography>
                 </DialogContentText>
