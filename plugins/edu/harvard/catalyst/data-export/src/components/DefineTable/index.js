@@ -79,7 +79,7 @@ export const DefineTable = (props) => {
             }
         },
         {
-            field: 'dataOptions',
+            field: 'dataOption',
             headerName: 'Aggregation Method',
             headerClassName: "header",
             minWidth: 275,
@@ -277,7 +277,7 @@ export const DefineTable = (props) => {
             if (event.target.nodeType === 1 && !event.currentTarget.contains(event.target)) return;
 
             if (params !== undefined) {
-                if (params.field === "dataOptions" && params.row.required === true) {
+                if (params.field === "dataOption" && params.row.required === true) {
                     event.preventDefault();
                     return;
                 }

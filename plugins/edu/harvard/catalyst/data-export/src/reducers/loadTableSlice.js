@@ -45,13 +45,25 @@ export const loadTableSlice = createSlice({
                     dataType: DATATYPE.STRING,
                 });
 
-                if(table.origData?.xmlOrig?.length > 0){
-                    const parseXmlOrig = new XMLParser().parseFromString(table.oriData.xmlOrig);
-                    if(parseXmlOrig.length !== 0) {
-                        let dataType = parseXmlOrig[0].getElementsByTagName('DataType');
-                        if(dataType.length !== 0 && DATATYPE[dataType[0].toUpperCase]) {
-                            tableDefRow.dataType = DATATYPE[dataType[0].value.toUpperCase()];
+                if(concept.sdxData.origData?.xmlOrig?.length > 0){
+                    try{
+                        const xmlParser = new XMLParser();
+                        const parseXmlOrig = xmlParser.parseFromString(concept.sdxData.origData.xmlOrig);
+                        if(parseXmlOrig) {
+                            let conceptXml = parseXmlOrig.getElementsByTagName('concept');
+                            if(conceptXml.length !== 0) {
+                                let metadataXml = conceptXml[0].getElementsByTagName('metadataxml');
+                                if(metadataXml.length !== 0) {
+                                    let dataType = metadataXml[0].getElementsByTagName('DataType');
+                                    if(dataType.length !== 0 && DATATYPE[dataType[0].value.toUpperCase()]) {
+                                        tableDefRow.dataType = DATATYPE[dataType[0].value.toUpperCase()];
+                                    }
+                                }
+                            }
                         }
+                    }
+                    catch(e){
+                        console.log("No value metadata xml found for concept " + concept.textDisplay);
                     }
                 }
 
