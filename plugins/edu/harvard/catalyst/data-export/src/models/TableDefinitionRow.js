@@ -46,4 +46,8 @@ export const DATATYPE = {
     STRING: "String",
     LARGESTRING: "LargeString",
     ENUM: "Enum"
-}
+};
+
+export const generateTableDefRowId = (key) => {
+    return key + '[' + Math.floor(Math.random() * 1000 + 999) + ']';
+};

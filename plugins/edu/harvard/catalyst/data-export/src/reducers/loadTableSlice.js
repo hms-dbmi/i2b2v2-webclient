@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { TABLE_DEF } from "../actions";
 import { defaultState } from '../defaultState';
 import {StatusInfo, TableDefinition, TableDefinitionRow} from "../models";
-import {DATATYPE} from "../models/TableDefinitionRow";
+import {DATATYPE, generateTableDefRowId} from "../models/TableDefinitionRow";
 import XMLParser from 'react-xml-parser';
 
 export const loadTableSlice = createSlice({
@@ -87,21 +87,33 @@ export const loadTableSlice = createSlice({
             // handle reindexing the order attribute for all items
             state.rows.sort((a,b) => a.order - b.order).forEach((x,i)=> { x.order = i + 1 });
         },
-        handleRowInsert:(state, { payload: {rowIndex, sdx} }) => {
+        handleRowInsert:(state, { payload: {rowIndex, rowId, sdx} }) => {
             state.isLoadingDataType = true;
 
             // get the range in which we can correctly place the row
             const rowOrdering = state.rows.map((row)=>(row.required ? false : row.order)).filter((a)=>a);
+            const rowMin = (rowOrdering.length ? Math.min(...rowOrdering) : state.rows.length + 1);
             const rowMax = (rowOrdering.length ? Math.max(...rowOrdering) : state.rows.length + 1);
+            let newRowIndex = 0;
+            switch (rowIndex) {
+                case Number.NEGATIVE_INFINITY:  // this is required, in-band signal sent from drop controller
+                    newRowIndex = rowMin;
+                    break;
+                case Number.POSITIVE_INFINITY:  // this is required, in-band signal sent from drop controller
+                    newRowIndex = rowMax + 1;
+                    break;
+                default:
+                    newRowIndex = parseInt(rowIndex) + 1;
+                    if (newRowIndex < rowMin) newRowIndex = rowMin;
+            }
 
             // change the order attribute of the rows to make space for the current row
-            if (rowIndex <= rowMax) {
+            if (newRowIndex <= rowMax) {
                 for (let row of state.rows) {
-                    if (row.order >= rowIndex) row.order++;
+                    if (row.order >= newRowIndex) row.order++;
                 }
             }
             // create and insert the row
-            const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
             const newRow = TableDefinitionRow({
                 id: rowId,
                 order : rowIndex,
@@ -119,11 +131,11 @@ export const loadTableSlice = createSlice({
         handleRowExported: (state, { payload: {row, exported} }) => {
             state.rows = state.rows.map((data) => (data.id === row.id ? ({...data, display: exported}) : data ));
         },
-        handleRowInsertSucceeded: (state, { payload: {rowIndex, dataType, xmlOrig} }) => {
+        handleRowInsertSucceeded: (state, { payload: {rowIndex, rowId, dataType, xmlOrig} }) => {
             state.isLoadingDataType = false;
 
             state.rows.map((row, index) => {
-                if(index === (rowIndex-1)){
+                if(row.id === rowId){
                     row.dataType = dataType;
 
                     if(row.sdxData.origData === undefined){
@@ -157,9 +169,7 @@ export const loadTableSlice = createSlice({
     }
 })
 
-const generateTableDefRowId = (key) => {
-    return key + '[' + Math.floor(Math.random() * 1000 + 999) + ']';
-}
+
 export const {
     loadTable,
     loadTableSuccess,

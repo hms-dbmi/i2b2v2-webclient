@@ -42,13 +42,14 @@ export function* doInsertRow(action) {
     try {
         console.log("getting term info...");
 
-        const { rowIndex, sdx } = action.payload;
+        const { rowIndex, rowId, sdx } = action.payload;
 
         const response = yield call(getTermInfoRequest, sdx);
         if(response) {
             const parsedResponse = parseTermInfoXml(response);
             yield put(handleRowInsertSucceeded({
                 rowIndex: rowIndex,
+                rowId: rowId,
                 dataType: parsedResponse.dataType,
                 xmlOrig: parsedResponse.xmlOrig
             } ));
