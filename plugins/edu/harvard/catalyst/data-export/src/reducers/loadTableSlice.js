@@ -131,7 +131,7 @@ export const loadTableSlice = createSlice({
         handleRowExported: (state, { payload: {row, exported} }) => {
             state.rows = state.rows.map((data) => (data.id === row.id ? ({...data, display: exported}) : data ));
         },
-        handleRowInsertSucceeded: (state, { payload: {rowIndex, rowId, dataType, xmlOrig} }) => {
+        handleRowInsertSucceeded: (state, { payload: {rowId, dataType, xmlOrig} }) => {
             state.isLoadingDataType = false;
 
             state.rows.map((row, index) => {
