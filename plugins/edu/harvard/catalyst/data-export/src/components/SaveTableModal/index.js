@@ -29,7 +29,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: '70%',
-        minWidth: 1280,
+        minWidth: 850,
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
@@ -99,7 +99,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                         orientation="vertical"
                         value={1}
                         aria-label="Table Definition Folders"
-                        sx={{ borderRight: 1, borderColor: 'divider' }}
+                        sx={{ borderRight: 1, borderColor: 'divider', minWidth: '90px' }}
                     >
                         <Tab label="Shared Tables" {...a11yProps(0)} sx={{textDecoration:"line-through"}}/>
                         <Tab label="My Tables" {...a11yProps(1)} />
@@ -132,17 +132,8 @@ export const SaveTableModal = ({open, handleClose}) => {
                     spacing={2}
                     direction="row"
                     justifyContent="flex-end"
-                    alignItems="left"
-                    style={{width:"100%", margin:"auto", marginTop: "16px"}}
-                >
-                </Stack>
-
-                <Stack
-                    spacing={2}
-                    direction="row"
-                    justifyContent="flex-end"
                     alignItems="center"
-                    style={{width:"100%", margin:"auto", marginTop: "8px"}}
+                    style={{width:"100%", margin:"auto", marginTop: "24px"}}
                 >
                     <TextField
                         required

@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useState } from "react";
+
 import {DataGrid} from "@mui/x-data-grid";
 
 export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hideFooter}) => {
@@ -6,7 +7,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         {
             field: 'title',
             headerName: 'Table Definition Name',
-            minWidth: 450,
+            minWidth: 440,
             flex:1,
             sortable: true,
             editable: canRename,
@@ -33,7 +34,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         }, {
             field: 'column_count',
             headerName: 'Columns',
-            width: 100,
+            width: 98,
             sortable: true,
             headerAlign: 'center',
             align: 'center',
@@ -42,10 +43,12 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         }
     ];
 
-    function onSelectionModelChangeW(selection, {api} ) {
-        if (onSelectionModelChange === undefined) return;
-        onSelectionModelChange(selection);
+    function handleOnSelectionModelChange(selection, {api} ) {
         if (selection.length > 0) onSelect(api.getRow(selection[0]));
+
+        if (onSelectionModelChange !== undefined) {
+            onSelectionModelChange(selection);
+        }
     }
 
 
@@ -60,10 +63,9 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                 showCellVerticalBorder={true}
                 density={'compact'}
                 disableColumnResize={true}
-                onRowSelectionModelChange = {onSelectionModelChangeW}
+                onRowSelectionModelChange = {handleOnSelectionModelChange}
                 rowSelectionModel = {selectionModel}
                 hideFooter={hideFooter}
-                // autoHeight={true}
                 pageSizeOptions={[4, 8, 16]}
             />
         </div>
