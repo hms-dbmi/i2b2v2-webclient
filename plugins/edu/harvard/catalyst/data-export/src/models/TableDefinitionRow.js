@@ -7,7 +7,7 @@ export const TableDefinitionRow = ({
     display = true,
     locked = false,
     sdxData = {},
-    dataOptions = null,
+    dataOption = null,
     required = false,
     dataType= DATATYPE.STRING,
     isLoadingDataType = false,
@@ -19,7 +19,7 @@ export const TableDefinitionRow = ({
     display,
     locked,
     sdxData,
-    dataOptions,
+    dataOption,
     required,
     dataType,
     isLoadingDataType,
@@ -32,7 +32,7 @@ TableDefinitionRow.propTypes = {
     display: PropTypes.bool,
     locked: PropTypes.bool,
     sdxData: PropTypes.object,
-    dataOptions: PropTypes.string,
+    dataOption: PropTypes.string,
     required: PropTypes.bool,
     dataType: PropTypes.string,
     isLoadingDataType: PropTypes.bool
@@ -46,4 +46,8 @@ export const DATATYPE = {
     STRING: "String",
     LARGESTRING: "LargeString",
     ENUM: "Enum"
-}
+};
+
+export const generateTableDefRowId = (key) => {
+    return key + '[' + Math.floor(Math.random() * 1000 + 999) + ']';
+};
