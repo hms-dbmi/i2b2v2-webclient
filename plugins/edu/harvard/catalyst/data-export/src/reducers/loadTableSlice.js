@@ -116,7 +116,7 @@ export const loadTableSlice = createSlice({
             // create and insert the row
             const newRow = TableDefinitionRow({
                 id: rowId,
-                order : rowIndex,
+                order : newRowIndex,
                 name: sdx.renderData.title,
                 display: true,
                 locked: false,
