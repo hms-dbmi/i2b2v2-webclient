@@ -35,7 +35,7 @@ const defaultRows = [
                 "sdxDisplayName": "Subject ID"
             }
         },
-        "dataOptions": "Value",
+        "dataOption": "Value",
         "required": true
     }),
     TableDefinitionRow({
@@ -53,7 +53,7 @@ const defaultRows = [
                 "sdxDisplayName": "Gender"
             }
         },
-        "dataOptions": "Value",
+        "dataOption": "Value",
         "required": true
     }),
     TableDefinitionRow({
@@ -71,7 +71,7 @@ const defaultRows = [
                 "sdxDisplayName": "Age"
             }
         },
-        "dataOptions": "Value",
+        "dataOption": "Value",
         "required": true
     }),
     TableDefinitionRow({
@@ -89,7 +89,7 @@ const defaultRows = [
                 "sdxDisplayName": "Race"
             }
         },
-        "dataOptions": "Value",
+        "dataOption": "Value",
         "required": true
     }),
     TableDefinitionRow({
@@ -107,7 +107,7 @@ const defaultRows = [
                 "sdxDisplayName": "Ethnicity"
             }
         },
-        "dataOptions": "Value",
+        "dataOption": "Value",
         "required": true
     }),
     TableDefinitionRow({
@@ -125,7 +125,7 @@ const defaultRows = [
                 "sdxDisplayName": "Vital Status"
             }
         },
-        "dataOptions": "Value",
+        "dataOption": "Value",
         "required": true
     })
 ];
