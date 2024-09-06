@@ -1,11 +1,13 @@
-.PreviewTable{
+.PreviewTable {
   width: 100%;
+  overflow: auto;
+  margin-top: 3.2rem;
 
-  .header{
+  .header {
     background-color: rgba(0, 0, 0, 0.05);
   }
 
-  .PreviewTableGrid{
+  .PreviewTableGrid {
     width: 100%
   }
 }
