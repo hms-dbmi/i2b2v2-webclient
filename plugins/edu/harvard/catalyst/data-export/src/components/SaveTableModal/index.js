@@ -13,7 +13,7 @@ import "../../css/modals.scss";
 import { TableListing } from "../TableListing";
 import { listTables } from "../../reducers/listTablesSlice";
 import { TabPanel } from "../TabPanel";
-import {saveTable} from "../../reducers/saveTableSlice";
+import {saveStatusConfirmed, saveTable} from "../../reducers/saveTableSlice";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 
 
@@ -21,31 +21,33 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
     const { sharedRows, userRows } = useSelector((state) => state.tableListing);
+    const saveTableInfo = useSelector((state) => state.saveTable);
     const tableDefRows = useSelector((state) => state.tableDef.rows);
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [showOverwrite, setShowOverwrite] = React.useState(false);
     const dispatch = useDispatch();
 
-    function a11yProps(index) {
+    const addtlProps = (index)  =>{
         return {
             id: `vertical-tab-${index}`,
             'aria-controls': `vertical-tabpanel-${index}`,
         };
     }
 
-    function onRowSelect(row) {
+    const onRowSelect = (row) => {
         setSelectedTableDef({id: row.id, title: row.title});
         setSelectedRows(row.id);
     }
-    function onNameChange(e) {
+    const onNameChange = (e) => {
         setSelectedTableDef({title: e.target.value});
         setSelectedRows([]);
     }
-    function onSelectionModelChange(e) {
-        console.warn("onselection model change" + e.target.value);
+
+    const onSelectionModelChange = (e) =>{
+        console.warn("onselection model change" + e);
     }
 
-    function onSave(selectedRows) {
+    const onSave = (selectedRows) =>{
         if (selectedRows.length === 0) {
             doSave();
         } else {
@@ -53,7 +55,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         }
     }
 
-    function doSave() {
+    const doSave = () =>{
         dispatch(saveTable({
             tableId: selectedTableDef.id,
             tableTitle: selectedTableDef.title,
@@ -62,6 +64,10 @@ export const SaveTableModal = ({open, handleClose}) => {
         setShowOverwrite(false);
         handleClose();
     }
+
+    const handleConfirmStatus = () => {
+        dispatch(saveStatusConfirmed());
+    };
 
     useEffect(() => {
         if (open) {
@@ -100,8 +106,8 @@ export const SaveTableModal = ({open, handleClose}) => {
                         aria-label="Table Definition Folders"
                         sx={{ borderRight: 1, borderColor: 'divider'}}
                     >
-                        <Tab label="Shared Tables" {...a11yProps(0)} sx={{textDecoration:"line-through"}}/>
-                        <Tab label="My Tables" {...a11yProps(1)} />
+                        <Tab label="Shared Tables" {...addtlProps(0)} sx={{textDecoration:"line-through"}}/>
+                        <Tab label="My Tables" {...addtlProps(1)} />
                     </Tabs>
                     <TabPanel
                         value={1}
@@ -165,6 +171,27 @@ export const SaveTableModal = ({open, handleClose}) => {
             <DialogActions>
                 <Button variant="outlined" onClick={()=>setShowOverwrite(false)}>No</Button>
                 <Button variant="contained" onClick={()=>doSave()}>Yes</Button>
+            </DialogActions>
+        </Dialog>
+
+        <Dialog
+            open={saveTableInfo.statusInfo.status === "SUCCESS"}
+            onClose={handleConfirmStatus}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">
+                {"Data Request"}
+            </DialogTitle>
+            <DialogContent dividers>
+                <DialogContentText id="alert-dialog-description">
+                    Saved table
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button autoFocus onClick={handleConfirmStatus}>
+                    Ok
+                </Button>
             </DialogActions>
         </Dialog>
     </div>
