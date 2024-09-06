@@ -23,7 +23,7 @@ const transformTableDef = (tableDefRows) => {
         else{
             concepts.push({
                 index: index,
-                dataOption: row.dataOptions,
+                dataOption: row.dataOption,
                 textDisplay: row.name,
                 locked: false,
                 sdxData: row.sdxData
