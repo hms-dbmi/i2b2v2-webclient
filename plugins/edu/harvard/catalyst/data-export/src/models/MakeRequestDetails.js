@@ -8,14 +8,12 @@ export const MakeRequestDetails = ({
         icon: null,
         sdx: {}
     },
-    table = TableDefinition(),
     email = "",
     comments= "",
     isSubmitting= false,
     statusInfo = StatusInfo(),
 } = {}) => ({
     patientSet,
-    table,
     email,
     comments,
     isSubmitting,
@@ -24,7 +22,6 @@ export const MakeRequestDetails = ({
 
 MakeRequestDetails.propTypes = {
     patientSet: PropTypes.object.isRequired,
-    table: PropTypes.shape(TableDefinition).isRequired,
     email: PropTypes.string,
     comments: PropTypes.string,
     isSubmitting: PropTypes.bool,

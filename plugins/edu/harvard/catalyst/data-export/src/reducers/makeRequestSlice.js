@@ -36,7 +36,6 @@ export const makeRequestSlice = createSlice({
         },
         makeRequestStatusConfirmed: (state) => {
             state.statusInfo = StatusInfo();
-            console.log("changed status info to "+ JSON.stringify(state));
         },
     }
 })
