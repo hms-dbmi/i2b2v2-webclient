@@ -43,10 +43,6 @@ export const SaveTableModal = ({open, handleClose}) => {
         setSelectedRows([]);
     }
 
-    const onSelectionModelChange = (e) =>{
-        console.warn("onselection model change" + e);
-    }
-
     const onSave = (selectedRows) =>{
         if (selectedRows.length === 0) {
             doSave();
@@ -126,7 +122,6 @@ export const SaveTableModal = ({open, handleClose}) => {
                             rows={userRows}
                             canRename={true}
                             onSelect={onRowSelect}
-                            onSelectionModelChange={onSelectionModelChange}
                             selectionModel={selectedRows}
                             hideFooter={true}
                         />
@@ -161,7 +156,6 @@ export const SaveTableModal = ({open, handleClose}) => {
             </DialogTitle>
             <DialogContent dividers>
                 <Box>
-
                     <Typography id="modal-modal-description" sx={{mt: 2}} align='center'>
                         <div>You are about to overwrite an existing table with the same name.</div>
                         <div>Are you sure you want to do this?</div>
@@ -189,7 +183,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button autoFocus onClick={handleConfirmStatus}>
+                <Button variant="contained" autoFocus onClick={handleConfirmStatus}>
                     Ok
                 </Button>
             </DialogActions>
