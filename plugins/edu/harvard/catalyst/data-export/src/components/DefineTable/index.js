@@ -99,7 +99,7 @@ export const DefineTable = (props) => {
                         { value: "Exists", label: "Existence (Yes/No)" },
                         { value: "NumConcepts", label: "Count: Number of Concepts"},
                         { value: "NumDates", label: "Count: Number of Dates" },
-                        { value: "NumEncounters", label: "Count: Number of Encounters'" },
+                        { value: "NumEncounters", label: "Count: Number of Encounters" },
                         { value: "NumFacts", label: "Count: Number of Facts" },
                         { value: "NumProviders", label: "Count: Number of Providers" },
                         { value: "MinDate", label: "Date: First Date" },
