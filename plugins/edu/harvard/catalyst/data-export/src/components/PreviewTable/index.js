@@ -77,7 +77,8 @@ export const PreviewTable = () => {
                 sortable: false,
                 hideSortIcons: true,
                 disableReorder: true,
-                flex: 1
+                flex: 1,
+                minWidth: 150
             }
         }));
 
