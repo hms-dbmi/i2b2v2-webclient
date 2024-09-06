@@ -15,7 +15,7 @@
 
 # for development temporarily ignore the build directory
 # (cleaner commits but requires rebuild on checkout)
-#build/
+build/
 
 
 
