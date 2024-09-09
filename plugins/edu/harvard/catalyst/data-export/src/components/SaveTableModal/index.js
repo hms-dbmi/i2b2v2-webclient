@@ -73,7 +73,7 @@ export const SaveTableModal = ({open, handleClose}) => {
 
 
     return (
-        <div>
+    <div>
         <Dialog
             className={"ModalDialog"}
             open={open}
@@ -128,7 +128,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                     </TabPanel>
                 </Box>
             </DialogContent>
-            <DialogActions>
+            <DialogActions  className={"ModalDialogActions"}>
                 <TextField
                     required
                     size='small'
@@ -137,6 +137,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                     defaultValue="My-Table-Definition"
                     value={selectedTableDef.title}
                     onChange={onNameChange}
+                    InputLabelProps={{ shrink: true }}
                     sx={{float: "left", width:"60%", position:"absolute", left:32}}
                 />
                 <Button variant="outlined" onClick={handleClose}>Cancel</Button>
