@@ -123,7 +123,6 @@ export const SaveTableModal = ({open, handleClose}) => {
                             canRename={true}
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
-                            hideFooter={true}
                         />
                     </TabPanel>
                 </Box>

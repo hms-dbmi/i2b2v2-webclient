@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import {DataGrid} from "@mui/x-data-grid";
 
-export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hideFooter}) => {
+export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel}) => {
     const columns = [
         {
             field: 'title',
@@ -65,8 +65,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                 disableColumnResize={true}
                 onRowSelectionModelChange = {handleOnSelectionModelChange}
                 rowSelectionModel = {selectionModel}
-                hideFooter={hideFooter}
-                pageSizeOptions={[4, 8, 16]}
+                autoPageSize
             />
         </div>
     )
