@@ -1,6 +1,4 @@
 import { call, takeLatest, put} from "redux-saga/effects";
-import { PayloadAction } from "@reduxjs/toolkit";
-/*import { AxiosResponse } from "axios";*/
 import XMLParser from 'react-xml-parser';
 import {handleRowInsertSucceeded, handleRowInsertError} from "../reducers/loadTableSlice";
 /* global i2b2 */
@@ -22,8 +20,6 @@ const getTermInfoRequest = (sdx) => {
 };
 
 const parseTermInfoXml = (termXml) => {
-    console.log("parsetermxml received " + JSON.stringify(termXml));
-
     let xmlparser = new XMLParser();
     let termInfo = {};
     let valueMetadataList = termXml.getElementsByTagName('metadataxml');
@@ -46,13 +42,13 @@ export function* doInsertRow(action) {
     try {
         console.log("getting term info...");
 
-        const { rowIndex, sdx } = action.payload;
+        const { rowId, sdx } = action.payload;
 
         const response = yield call(getTermInfoRequest, sdx);
         if(response) {
             const parsedResponse = parseTermInfoXml(response);
             yield put(handleRowInsertSucceeded({
-                rowIndex: rowIndex,
+                rowId: rowId,
                 dataType: parsedResponse.dataType,
                 xmlOrig: parsedResponse.xmlOrig
             } ));

@@ -1,27 +1,39 @@
 import { call, takeLatest, put} from "redux-saga/effects";
-import { PayloadAction } from "@reduxjs/toolkit";
-/*import { AxiosResponse } from "axios";*/
 import {loadTableSuccess, loadTableError} from "../reducers/loadTableSlice";
 
 import {
     LOAD_DATA_TABLE
 } from "../actions";
-import {TableDefinition} from "../models";
-const defaultRows = TableDefinition().rows;
+/* global i2b2 */
 
 export function* doLoadTable(action) {
-    let rows = [];
+    let tableListing  = action.payload;
 
-    // load the basic required columns if this is the startup run
-    if (action.payload === undefined) rows = defaultRows;
-
-   try {
+    try {
         // You can also export the axios call as a function.
-        //const response = yield axios.get(`your-server-url:port/api/users/${id}`);
-        const response = {data: rows};
-        yield put(loadTableSuccess(response.data));
+
+        let formdata = new FormData();
+        formdata.append('uid',i2b2.model.user);
+        formdata.append('pid',i2b2.model.project);
+        formdata.append('sid',i2b2.model.session);
+        formdata.append('tid', tableListing.id);
+        formdata.append('fid','get_table');
+
+        const fetchConfig = {
+            method: "POST",
+            mode: "cors",
+            body: formdata
+        };
+
+       const response = yield fetch(i2b2.model.endpointUrl, fetchConfig);
+        if(response.ok) {
+            let data = yield response.json();
+            yield put(loadTableSuccess(data));
+        }else{
+            yield put(loadTableError({error: "There was an error loading the table definition " + tableListing.title}));
+        }
     } catch (error) {
-        yield put(loadTableError({error: "There was an error loading the data table"}));
+        yield put(loadTableError({error: "There was an error loading the table definition " + tableListing.title}));
     }
 }
 

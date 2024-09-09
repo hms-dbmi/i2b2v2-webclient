@@ -25,7 +25,7 @@ import {loadTable, handleRowDelete, handleRowInsert, handleRowExported, handleRo
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
-import {DATATYPE} from "../../models/TableDefinitionRow";
+import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
 
 /* global i2b2 */
 
@@ -79,7 +79,7 @@ export const DefineTable = (props) => {
             }
         },
         {
-            field: 'dataOptions',
+            field: 'dataOption',
             headerName: 'Aggregation Method',
             headerClassName: "header",
             minWidth: 275,
@@ -97,38 +97,38 @@ export const DefineTable = (props) => {
                 if (!row.required) {
                     valueOptions.push(
                         { value: "Exists", label: "Existence (Yes/No)" },
-                        { value: "MinDate", label: "Date (First)" },
-                        { value: "MaxDate", label: "Date (Most Recent)" },
-                        { value: "NumFacts", label: "Count" },
-                        { value: "ConceptNames", label: "All Concepts (Names/Text)" },
-                        { value: "ModeConceptName", label: "Most Frequent Concept (Names/Text)"},
-                        { value: "ConceptCodes", label: "All Concepts (Codes)" },
-                        { value: "ModeConceptCode", label:  "Most Frequent Concept (Codes)" },
+                        { value: "NumConcepts", label: "Count: Number of Concepts"},
+                        { value: "NumDates", label: "Count: Number of Dates" },
+                        { value: "NumEncounters", label: "Count: Number of Encounters" },
+                        { value: "NumFacts", label: "Count: Number of Facts" },
+                        { value: "NumProviders", label: "Count: Number of Providers" },
+                        { value: "MinDate", label: "Date: First Date" },
+                        { value: "MaxDate", label: "Date: Last Date" },
                     );
                 }else{
                     valueOptions.push ({ value: "Value", label: "Value" });
                 }
 
-                if(row.dataType === DATATYPE.INTEGER ||
-                    row.dataType === DATATYPE.FLOAT ||
-                    row.dataType === DATATYPE.POSINTEGER ||
-                    row.dataType === DATATYPE.POSFLOAT){
-                    valueOptions.push(
-                        { value: "MinValue", label: "Minimum Value" },
-                        { value: "MaxValue", label: "Maximum Value" },
-                        { value: "MedianValue", label: "Median Value" },
-                        { value: "AvgValue", label: "Average Value" },
-                        { value: "ModeValue", label: "Mode (Most Frequent Value)" },
-                       // { value: "", label: "List of All Values"}, -- TODO: need to confirm value for this label
-                    );
-                }
-
-                if(row.dataType === DATATYPE.ENUM
-                || row.dataType === DATATYPE.LARGESTRING){
-                    valueOptions.push(
-                        { value: "ModeValue", label: "Mode (Most Frequent Value)" },
-                        // { value: "", label: "List of All Values"}, -- TODO: need to confirm value for this label
-                    );
+                if(row.dataType) {
+                    if (row.dataType === DATATYPE.INTEGER ||
+                        row.dataType === DATATYPE.FLOAT ||
+                        row.dataType === DATATYPE.POSINTEGER ||
+                        row.dataType === DATATYPE.POSFLOAT) {
+                        valueOptions.push(
+                            { value: "MinValue", label: "Calc: Minimum Value" },
+                            { value: "MaxValue", label: "Calc: Maximum Value" },
+                            { value: "AvgValue", label: "Calc: Average Value" },
+                            { value: "MedianValue", label: "Calc: Median Value" },
+                            {value: "FirstValue", label: "Calc: First Value"},
+                            {value: "LastValue", label: "Calc: Last Value"},
+                            {value: "NumValues", label: "Count: Number of Values"}
+                        );
+                    }else{
+                        valueOptions.push(
+                            { value: "FirstValueEnum", label: "Calc: First Value" },
+                            { value: "LastValueEnum", label: "Calc: Last Value" },
+                        );
+                    }
                 }
 
                 return valueOptions;
@@ -234,27 +234,10 @@ export const DefineTable = (props) => {
             // insert the drop below the currently set row
             rowNum = parseInt(row.dataset.rowindex) + 1;
         }
-        // remove some unneeded data from the sdx object
-        if (sdx?.renderData.tvNodeState) delete sdx.renderData.tvNodeState;
 
-        // get the range in which we can correctly place the row
-        const rowOrdering = rows.map((row)=>(row.required ? false : row.order)).filter((a)=>a);
-        const rowMin = (rowOrdering.length ? Math.min(...rowOrdering) : rows.length + 1);
-        const rowMax = (rowOrdering.length ? Math.max(...rowOrdering) : rows.length);
-        let newRowIndex = 0;
-        switch (rowNum) {
-            case Number.NEGATIVE_INFINITY:
-                newRowIndex = rowMin;
-                break;
-            case Number.POSITIVE_INFINITY:
-                newRowIndex = rowMax + 1;
-                break;
-            default:
-                newRowIndex = parseInt(rowNum) + 1;
-                if (newRowIndex < rowMin) newRowIndex = rowMin;
-        }
+        const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
 
-        dispatch(handleRowInsert({rowIndex: newRowIndex, sdx: sdx}));
+        dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx}));
     }
 
     const i2b2LibLoaded = () => {
@@ -277,7 +260,7 @@ export const DefineTable = (props) => {
             if (event.target.nodeType === 1 && !event.currentTarget.contains(event.target)) return;
 
             if (params !== undefined) {
-                if (params.field === "dataOptions" && params.row.required === true) {
+                if (params.field === "dataOption" && params.row.required === true) {
                     event.preventDefault();
                     return;
                 }
