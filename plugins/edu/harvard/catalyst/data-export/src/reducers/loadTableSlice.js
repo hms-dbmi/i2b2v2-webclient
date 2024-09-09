@@ -28,7 +28,6 @@ export const loadTableSlice = createSlice({
                         locked: value.locked,
                         dataOption: "Value",
                         required: true,
-                        dataType: DATATYPE.STRING,
                     });
                     tableDefRows.push(tableDefRow);
                 })
@@ -42,7 +41,6 @@ export const loadTableSlice = createSlice({
                     name: concept.textDisplay,
                     locked: concept.locked,
                     dataOption: concept.dataOption,
-                    dataType: DATATYPE.STRING,
                 });
 
                 if(concept.sdxData.origData?.xmlOrig?.length > 0){
