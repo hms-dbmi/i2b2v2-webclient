@@ -17,24 +17,25 @@ export const PreviewTable = () => {
                 id: i
             };
             for (const column of columns) {
-                let name = column.name;
+                let name = column.id;
                 let aggType= column.aggType;
 
                 row[name] = "[Value]";
 
                 switch (name) {
-                    case 'Participant ID':
+                    case 'patient_number':
+                    case 'subject_id':
                         row[name] = "RA15432-0000" + i
                         break;
-                    case 'Gender':
+                    case 'gender':
                         row[name] = ['M','F'].map((a) => ({ sort: Math.random(), value: a }))
                         .sort((a, b) => a.sort - b.sort)
                         .map((a) => a.value)[0];
                         break;
-                    case 'Age':
+                    case 'age':
                         row[name] = Math.floor(Math.random() * 81) + 20;
                         break;
-                    case 'Deceased':
+                    case 'vital_status':
                         row[name] = "N";
                         break;
                 }
@@ -69,9 +70,9 @@ export const PreviewTable = () => {
     useEffect( ()  =>{
         let columnNames = [];
         setColumns(tableDefRows.filter(p => p.display).map(row => {
-            columnNames.push({name: row.name, aggType: row.dataOption});
+            columnNames.push({id:row.id, name: row.name, aggType: row.dataOption});
             return {
-                field: row.name,
+                field: row.id,
                 headerName: row.name,
                 headerClassName: "header",
                 sortable: false,
@@ -103,6 +104,7 @@ export const PreviewTable = () => {
                 hideFooterSelectedRowCount={true}
                 columnVisibilityModel={{order: false}}
                 disableColumnSelector={true}
+                disableColumnMenu={true}
                 initialState={{
                     sorting: {
                         sortModel: [{field:'order',sort:'asc'}]
