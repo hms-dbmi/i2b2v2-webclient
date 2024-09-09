@@ -11,11 +11,8 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
 import Tooltip from '@mui/material/Tooltip';
-import ArrowUpIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownIcon from '@mui/icons-material/ArrowDownward';
 import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
 
@@ -36,14 +33,8 @@ export const DefineTable = (props) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
-    const [showLoad, setLoadViz] = React.useState(false);
-    const handleLoadOpen = () => setLoadViz(true);
-    const handleLoadClose = () => setLoadViz(false);
-    const [showSave, setSaveViz] = React.useState(false);
-    const handleSaveOpen = () => setSaveViz(true);
-    const handleSaveClose = () => setSaveViz(false);
     const [cellModesModel, setCellModesModel] = React.useState({});
+
 
     const columns = [
         {
@@ -321,21 +312,8 @@ export const DefineTable = (props) => {
 
 
     return (
-        <div className={"DefineTable"}>
-            <LoadTableModal handleClose={handleLoadClose} open={showLoad}/>
-            <SaveTableModal handleClose={handleSaveClose} open={showSave}/>
+        <div className={"DefineTable"} >
 
-            <Stack
-                spacing={2}
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-                className={"DefineTableActions"}
-            >
-                <Button variant="contained" onClick={handleLoadOpen}>Load Previous</Button>
-                <Button variant="contained" onClick={handleSaveOpen}>Save Current</Button>
-                <Button variant="contained" onClick={()=>props.tabChanger(2)}>Request Export</Button>
-            </Stack>
             <div id="dropTrgt">
                 <p>Drag a concept onto the grid to add it to the list</p>
                 <DataGrid
@@ -362,6 +340,15 @@ export const DefineTable = (props) => {
                 />
             </div>
 
+            <Stack
+                spacing={2}
+                direction="row"
+                justifyContent="right"
+                alignItems="center"
+                className={"DefineTableActions"}
+            >
+                <Button variant="contained" onClick={()=>props.tabChanger(2)}>Export</Button>
+            </Stack>
         </div>
     );
 
