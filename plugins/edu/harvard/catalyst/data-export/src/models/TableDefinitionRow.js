@@ -9,7 +9,7 @@ export const TableDefinitionRow = ({
     sdxData = {},
     dataOption = null,
     required = false,
-    dataType= DATATYPE.STRING,
+    dataType= null,
     isLoadingDataType = false,
 
 } = {}) => ({

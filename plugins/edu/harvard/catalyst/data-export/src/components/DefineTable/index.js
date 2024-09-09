@@ -109,7 +109,7 @@ export const DefineTable = (props) => {
                     valueOptions.push ({ value: "Value", label: "Value" });
                 }
 
-                if(row.dataType !== undefined) {
+                if(row.dataType) {
                     if (row.dataType === DATATYPE.INTEGER ||
                         row.dataType === DATATYPE.FLOAT ||
                         row.dataType === DATATYPE.POSINTEGER ||
