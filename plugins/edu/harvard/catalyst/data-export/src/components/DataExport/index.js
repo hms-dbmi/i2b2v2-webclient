@@ -23,7 +23,7 @@ export const DataExport = () => {
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <AppBar position="static" color="default">
+                <AppBar color="default" sx={{ position:'fixed' }}>
                     <Tabs value={selectedTab} onChange={handleTabChange} aria-label="basic tabs example">
                         <Tab label="Define Table" {...tabProps(0)} />
                         <Tab label="Preview Table" {...tabProps(1)} />
