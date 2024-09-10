@@ -155,7 +155,7 @@ export const MakeRequest = () => {
                 InputLabelProps={{ shrink: true }}
             />
             <div className={"MakeRequestSubmitMain"}>
-                <Button className={"MakeRequestSubmit"} onClick={handleMakeRequest} variant="outlined">Submit</Button>
+                <Button className={"MakeRequestSubmit"} onClick={handleMakeRequest} variant="contained" >Submit</Button>
             </div>
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
