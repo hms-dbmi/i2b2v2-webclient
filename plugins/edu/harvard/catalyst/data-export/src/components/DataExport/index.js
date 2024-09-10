@@ -20,7 +20,14 @@ import {SaveTableModal} from "../SaveTableModal";
 export const DataExport = () => {
     const [selectedTab, setSelectedTab] = React.useState(0);
 
-    const handleTabChange = (event, newTab) => { setSelectedTab(newTab); };
+    const handleTabChange = (event, newTab) => {
+        if (newTab === 0) {
+            document.querySelector("#save-load").style.display = "";
+        } else {
+            document.querySelector("#save-load").style.display = "none";
+        }
+        setSelectedTab(newTab);
+    };
 
     const tabProps= (index) => {
         return {
@@ -48,17 +55,15 @@ export const DataExport = () => {
                         <Tab label="Preview Table" {...tabProps(1)} />
                         <Tab label="Request Export" {...tabProps(2)} />
                     </Tabs>
-                    <Stack direction="row" spacing={0} sx={{position:"fixed", right:"1rem", marginTop:"-4px"}}>
-                        <Tooltip arrow title="Load">
-                            <IconButton aria-label="Load Export Definition" size="large" onClick={handleLoadOpen}  sx={{ "&:hover": {color:'rgb(85, 108, 214)'}, transition:"color" }}>
-                                <CloudDownloadSharpIcon fontSize="inherit" />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip arrow title="Save">
-                            <IconButton aria-label="Save Definition" size="large" onClick={handleSaveOpen} sx={{ "&:hover": {color:'rgb(85, 108, 214)', transition:"color"} }}>
-                                <CloudUploadSharpIcon fontSize="inherit" />
-                            </IconButton>
-                        </Tooltip>
+                    <Stack direction="row" spacing={0} sx={{position:"fixed", right:"1rem", marginTop:"-4px"}} id="save-load">
+                        <IconButton aria-label="Load Export Definition" size="large" onClick={handleLoadOpen}  sx={{ "&:hover": {color:'rgb(85, 108, 214)'}, transition:"color" }}>
+                            <CloudDownloadSharpIcon fontSize="inherit" />
+                            <span className='icon-text'>Load</span>
+                        </IconButton>
+                        <IconButton aria-label="Save Definition" size="large" onClick={handleSaveOpen} sx={{ "&:hover": {color:'rgb(85, 108, 214)', transition:"color"} }}>
+                            <CloudUploadSharpIcon fontSize="inherit" />
+                            <span className='icon-text'>Save</span>
+                        </IconButton>
                     </Stack>
                 </AppBar>
             </Box>
