@@ -24,13 +24,17 @@ export const saveTableSlice = createSlice({
                 errorMessage: errorMessage
             });
         },
+        saveStatusConfirmed: (state) => {
+            state.statusInfo = StatusInfo();
+        },
     }
 })
 
 export const {
     saveTable,
     saveTableSuccess,
-    saveTableError
+    saveTableError,
+    saveStatusConfirmed
 } = saveTableSlice.actions
 
 export default saveTableSlice.reducer

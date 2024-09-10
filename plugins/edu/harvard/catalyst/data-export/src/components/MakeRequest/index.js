@@ -179,7 +179,7 @@ export const MakeRequest = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleConfirmStatus}>
+                    <Button variant="contained" autoFocus onClick={handleConfirmStatus}>
                         Ok
                     </Button>
                 </DialogActions>

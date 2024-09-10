@@ -2,12 +2,12 @@ import React, { useState } from "react";
 
 import {DataGrid} from "@mui/x-data-grid";
 
-export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hideFooter}) => {
+export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel}) => {
     const columns = [
         {
             field: 'title',
             headerName: 'Table Definition Name',
-            minWidth: 440,
+            minWidth: 438,
             flex:1,
             sortable: true,
             editable: canRename,
@@ -16,7 +16,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         }, {
             field: 'create_date',
             headerName: 'Created',
-            width: 100,
+            width: 99,
             sortable: true,
             headerAlign: 'center',
             align: 'center',
@@ -25,7 +25,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         }, {
             field: 'edit_date',
             headerName: 'Edited',
-            width: 100,
+            width: 99,
             sortable: true,
             headerAlign: 'center',
             align: 'center',
@@ -34,7 +34,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         }, {
             field: 'column_count',
             headerName: 'Columns',
-            width: 98,
+            width: 97,
             sortable: true,
             headerAlign: 'center',
             align: 'center',
@@ -65,8 +65,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                 disableColumnResize={true}
                 onRowSelectionModelChange = {handleOnSelectionModelChange}
                 rowSelectionModel = {selectionModel}
-                hideFooter={hideFooter}
-                pageSizeOptions={[4, 8, 16]}
+                autoPageSize
             />
         </div>
     )
