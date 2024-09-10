@@ -41,6 +41,7 @@ export const loadTableSlice = createSlice({
                     name: concept.textDisplay,
                     locked: concept.locked,
                     dataOption: concept.dataOption,
+                    sdxData: concept.sdxData
                 });
 
                 if(concept.sdxData.origData?.xmlOrig?.length > 0){
