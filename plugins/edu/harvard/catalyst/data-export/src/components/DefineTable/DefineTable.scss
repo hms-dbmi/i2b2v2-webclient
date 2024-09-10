@@ -1,3 +1,12 @@
+#save-load span.icon-text {
+  font-size: medium;
+  margin: 0 .3rem;
+  transition: color;
+  transition-duration: 500ms;
+  padding-top: .3rem;
+}
+
+
 .DefineTable {
   width: 100%;
   margin-top: 3.2rem;
@@ -5,7 +14,7 @@
   .DefineTableActions {
     width: 100%;
     margin: auto;
-    margin-bottom: 16px;
+    margin-top: 16px;
   }
 
   .header {

@@ -16,7 +16,7 @@ import { TabPanel } from "../TabPanel";
 import {loadTable} from "../../reducers/loadTableSlice";
 import {Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} from "@mui/material";
 
-export const LoadTableModal = ({open, handleClose}) => {
+export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
     const dispatch = useDispatch();
     const { sharedRows, userRows } = useSelector((state) => state.tableListing);
     const [tab, setTab] = React.useState(0);
@@ -33,6 +33,7 @@ export const LoadTableModal = ({open, handleClose}) => {
     const handleLoadTable = () =>{
         handleClose();
         dispatch(loadTable(selectedTable));
+        handleSetScreen(0);
     }
     useEffect(() => {
         if (open) {

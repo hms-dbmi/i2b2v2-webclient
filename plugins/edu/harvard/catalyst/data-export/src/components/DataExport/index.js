@@ -7,11 +7,27 @@ import {DefineTable} from "../DefineTable";
 import {CustomTabPanel} from "./CustomTabPanel";
 import {MakeRequest} from "../MakeRequest";
 import {PreviewTable} from "../PreviewTable";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import CloudUploadSharpIcon from '@mui/icons-material/CloudUploadSharp';
+import CloudDownloadSharpIcon from '@mui/icons-material/CloudDownloadSharp';
+import {LoadTableModal} from "../LoadTableModal";
+import {SaveTableModal} from "../SaveTableModal";
 
 export const DataExport = () => {
     const [selectedTab, setSelectedTab] = React.useState(0);
 
-    const handleTabChange = (event, newTab) => { setSelectedTab(newTab); };
+    const handleTabChange = (event, newTab) => {
+        if (newTab === 0) {
+            document.querySelector("#save-load").style.display = "";
+        } else {
+            document.querySelector("#save-load").style.display = "none";
+        }
+        setSelectedTab(newTab);
+    };
 
     const tabProps= (index) => {
         return {
@@ -19,6 +35,16 @@ export const DataExport = () => {
             'aria-controls': `simple-tabpanel-${index}`,
         };
     }
+
+
+    const [showLoad, setLoadViz] = React.useState(false);
+    const handleLoadOpen = () => setLoadViz(true);
+    const handleLoadClose = () => setLoadViz(false);
+    const [showSave, setSaveViz] = React.useState(false);
+    const handleSaveOpen = () => setSaveViz(true);
+    const handleSaveClose = () => setSaveViz(false);
+
+
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -29,6 +55,16 @@ export const DataExport = () => {
                         <Tab label="Preview Table" {...tabProps(1)} />
                         <Tab label="Request Export" {...tabProps(2)} />
                     </Tabs>
+                    <Stack direction="row" spacing={0} sx={{position:"fixed", right:"1rem", marginTop:"-4px"}} id="save-load">
+                        <IconButton aria-label="Load Export Definition" size="large" onClick={handleLoadOpen}  sx={{ "&:hover": {color:'rgb(85, 108, 214)'}, transition:"color" }}>
+                            <CloudDownloadSharpIcon fontSize="inherit" />
+                            <span className='icon-text'>Load</span>
+                        </IconButton>
+                        <IconButton aria-label="Save Definition" size="large" onClick={handleSaveOpen} sx={{ "&:hover": {color:'rgb(85, 108, 214)', transition:"color"} }}>
+                            <CloudUploadSharpIcon fontSize="inherit" />
+                            <span className='icon-text'>Save</span>
+                        </IconButton>
+                    </Stack>
                 </AppBar>
             </Box>
             <CustomTabPanel value={selectedTab} index={0}>
@@ -40,6 +76,9 @@ export const DataExport = () => {
             <CustomTabPanel value={selectedTab} index={2}>
                 <MakeRequest/>
             </CustomTabPanel>
+
+            <LoadTableModal handleClose={handleLoadClose} open={showLoad} handleSetScreen={setSelectedTab} />
+            <SaveTableModal handleClose={handleSaveClose} open={showSave} />
         </Box>
     )
 };
