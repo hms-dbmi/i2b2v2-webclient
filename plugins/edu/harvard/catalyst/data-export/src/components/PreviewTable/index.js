@@ -3,6 +3,7 @@ import {useSelector} from "react-redux";
 import {DataGrid} from "@mui/x-data-grid";
 import "./PreviewTable.scss";
 import Stack from "@mui/material/Stack";
+import Typography from '@mui/material/Typography';
 
 export const PreviewTable = () => {
     const tableDefRows = useSelector((state) => state.tableDef.rows);
@@ -95,6 +96,10 @@ export const PreviewTable = () => {
             spacing={3}
             useFlexGap
         >
+            <Typography variant="subtitle2" gutterBottom>
+            This is an example view of fake data in the format of the table you have defined for export.  This is not real data.
+            </Typography>
+
             <DataGrid
                 className={"PreviewTableGrid"}
                 style={{background:"white"}}
