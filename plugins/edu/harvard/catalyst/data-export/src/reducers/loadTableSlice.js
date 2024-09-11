@@ -17,7 +17,7 @@ export const loadTableSlice = createSlice({
             state.isFetching = false;
 
             let tableDefRows = [];
-            let index=0;
+            let index=1;
             if(table.required){
                 Object.entries(table.required).forEach(([key, value]) => {
                     let tableDefRow = TableDefinitionRow({
@@ -30,8 +30,8 @@ export const loadTableSlice = createSlice({
                         required: true,
                     });
                     tableDefRows.push(tableDefRow);
+                    index++;
                 })
-                index++;
             }
 
             table.concepts.forEach(concept => {
@@ -65,8 +65,8 @@ export const loadTableSlice = createSlice({
                         console.log("No value metadata xml found for concept " + concept.textDisplay);
                     }
                 }
-
                 tableDefRows.push(tableDefRow);
+                index++;
             });
 
             state.rows = tableDefRows;
