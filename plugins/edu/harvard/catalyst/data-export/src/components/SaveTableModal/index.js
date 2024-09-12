@@ -137,6 +137,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                     value={selectedTableDef.title}
                     onChange={onNameChange}
                     InputLabelProps={{ shrink: true }}
+                    inputProps={{ maxLength: 255 }}
                     sx={{float: "left", width:"60%", position:"absolute", left:32}}
                 />
                 <Button variant="outlined" onClick={handleClose}>Cancel</Button>
