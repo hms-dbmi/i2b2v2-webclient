@@ -4,7 +4,8 @@ import '../../css/tableDef.scss';
 import {
     DataGrid,
     GridActionsCellItem,
-    GridCellModes
+    GridCellModes,
+    GridEditInputCell
 } from '@mui/x-data-grid';
 
 import Stack from '@mui/material/Stack';
@@ -62,6 +63,12 @@ export const DefineTable = (props) => {
                 <Tooltip title={row.sdxData.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This is a required column called \""+ row.id+"\" in the database"} >
                     <span className="tabledef-cell-trucate">{row.name}</span>
                 </Tooltip>
+            ),
+            renderEditCell: (params) => (
+                <GridEditInputCell
+                    {...params}
+                    inputProps={{ maxLength: 255 }}
+                />
             ),
             preProcessEditCellProps: ({hasChanged, row, props}) => {
                 if (hasChanged) {
