@@ -60,7 +60,7 @@ export const DefineTable = (props) => {
             disableColumnMenu: false,
             renderCell: ({row}) =>  (
                 <Tooltip title={row.sdxData.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This is a required column called \""+ row.id+"\" in the database"} >
-                    <span className="tabledef-cell-trucate">{row.name}</span>
+                    { row.name.length ? <span className="tabledef-cell-trucate">{row.name}</span>  : <div className="tabledef-cell-trucate">&nbsp;</div> }
                 </Tooltip>
             ),
             preProcessEditCellProps: ({hasChanged, row, props}) => {
@@ -310,6 +310,14 @@ export const DefineTable = (props) => {
         [],
     );
 
+    const checkEmptyName = (temp) => {
+        if (temp.field === "name") {
+            if (temp.value.trim().length === 0) {
+                return 'missing';
+            }
+        }
+    }
+
 
     return (
         <div className={"DefineTable"} >
@@ -337,6 +345,7 @@ export const DefineTable = (props) => {
                     autoHeight={true}
                     hideFooter={true}
                     isCellEditable={({row}) => (!row.locked)}
+                    getCellClassName={checkEmptyName}
                 />
             </div>
 
@@ -347,7 +356,7 @@ export const DefineTable = (props) => {
                 alignItems="center"
                 className={"DefineTableActions"}
             >
-                <Button variant="contained" onClick={()=>props.tabChanger(2)}>Export</Button>
+                <Button variant="contained" onClick={()=>props.tabChanger(null,2)}>Export</Button>
             </Stack>
         </div>
     );
