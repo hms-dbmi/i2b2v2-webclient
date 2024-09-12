@@ -343,7 +343,7 @@ export const DefineTable = (props) => {
                     }}
                     autoHeight={true}
                     hideFooter={true}
-                    isCellEditable={({row}) => (!row.locked)}
+                    isCellEditable={({row, colDef}) => (!row.locked && !(row.required && colDef.field === "dataOption"))}
                 />
             </div>
 
