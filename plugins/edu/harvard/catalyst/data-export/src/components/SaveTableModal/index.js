@@ -120,7 +120,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                         <TableListing
                             id={"saveModalDefTableLocal"}
                             rows={userRows}
-                            canRename={true}
+                            canRename={false}
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
                         />

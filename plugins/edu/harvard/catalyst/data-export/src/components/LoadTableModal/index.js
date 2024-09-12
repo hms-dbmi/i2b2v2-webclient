@@ -84,7 +84,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         index={1}
                         className={'modalTabPanel'}
                     >
-                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={true} onSelect={setSelectedTable}/>
+                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={false} onSelect={setSelectedTable}/>
                     </TabPanel>
                 </Box>
             </DialogContent>
