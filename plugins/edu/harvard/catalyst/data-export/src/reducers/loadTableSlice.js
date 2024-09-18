@@ -158,12 +158,7 @@ export const loadTableSlice = createSlice({
             }
         },
         handleRowName: (state, { payload: {row, value} }) => {
-            for (let temp of state.rows) {
-                if (temp.id === row.id) {
-                    temp.name = value;
-                    break;
-                }
-            }
+            state.rows = state.rows.map((data) => (data.id === row.id ? ({...data, name: value}) : data ));
         }
     }
 })

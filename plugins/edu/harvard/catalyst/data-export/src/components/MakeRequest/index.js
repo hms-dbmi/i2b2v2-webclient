@@ -32,12 +32,8 @@ export const MakeRequest = () => {
     const [isEmailNotValid, setIsEmailNotValid] = useState(false);
     const [emailNotValidError, setEmailNotValidError] = useState("");
     const [isPatientSetNotValid, setIsPatientSetNotValid] = useState(false);
-    const defaultPatientSetHelperText = "drag and drop a patient set";
+    const defaultPatientSetHelperText = "Drag and drop a patient set here";
     const [patientSetNotValidError, setPatientSetNotValidError] = useState(defaultPatientSetHelperText);
-
-    const updatePatientSet = (value) => {
-        dispatch(updateRequestPatientSet(value));
-    }
 
     const updateEmail = (value) => {
         dispatch(updateRequestEmail(value));
@@ -59,22 +55,20 @@ export const MakeRequest = () => {
     const isValidRequest = () => {
         let isValid = true;
 
-        if(!makeRequestDetails.patientSet || makeRequestDetails.patientSet.title.length === 0){
+        if (!makeRequestDetails.patientSet || makeRequestDetails.patientSet.title.length === 0) {
             setIsPatientSetNotValid(true);
             setPatientSetNotValidError("Patient Set is required");
             isValid = false;
-        }
-        else{
+        } else {
             setIsPatientSetNotValid(false);
             setPatientSetNotValidError(defaultPatientSetHelperText);
         }
 
         const emailRegex = /\S+@\S+\.\S+/;
-        if((makeRequestDetails.email && makeRequestDetails.email.length > 0) && emailRegex.test(makeRequestDetails.email)){
+        if ((makeRequestDetails.email && makeRequestDetails.email.length > 0) && emailRegex.test(makeRequestDetails.email)) {
             setIsEmailNotValid(false);
             setEmailNotValidError("");
-        }
-        else{
+        } else {
             setIsEmailNotValid(true);
             setEmailNotValidError("Enter a valid email");
             isValid = false;
@@ -88,7 +82,7 @@ export const MakeRequest = () => {
     };
 
     const handlePatientSetDrop = (sdx,ev) => {
-        updatePatientSet(sdx);
+        dispatch(updateRequestPatientSet(sdx));
     }
 
     useEffect(() => {
@@ -114,10 +108,10 @@ export const MakeRequest = () => {
                 label="Patient Set"
                 variant="standard"
                 fullWidth
+                slotProps={{ input: { readOnly: true } }}
                 error={isPatientSetNotValid}
                 helperText={patientSetNotValidError}
                 value={makeRequestDetails.patientSet.title}
-                onChange={(event) => updatePatientSet(event.target.value)}
                 InputLabelProps={{ shrink: true }}
             />
             <TextField
