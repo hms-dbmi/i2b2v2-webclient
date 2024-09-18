@@ -144,6 +144,7 @@ export const MakeRequest = () => {
                 minRows={3}
                 inputProps={{ maxLength: 1000 }}
                 multiline
+                value={makeRequestDetails.comments}
                 helperText={"Max: 1,000 characters"}
                 onChange={(event) => updateComments(event.target.value)}
                 InputLabelProps={{ shrink: true }}
