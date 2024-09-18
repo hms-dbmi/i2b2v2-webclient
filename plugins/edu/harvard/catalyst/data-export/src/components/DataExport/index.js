@@ -10,23 +10,28 @@ import {PreviewTable} from "../PreviewTable";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 
-import Tooltip from '@mui/material/Tooltip';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import CloudUploadSharpIcon from '@mui/icons-material/CloudUploadSharp';
 import CloudDownloadSharpIcon from '@mui/icons-material/CloudDownloadSharp';
 import {LoadTableModal} from "../LoadTableModal";
 import {SaveTableModal} from "../SaveTableModal";
+import {useSelector} from "react-redux";
 
 export const DataExport = () => {
     const [selectedTab, setSelectedTab] = React.useState(0);
-
     const handleTabChange = (event, newTab) => {
-        if (newTab === 0) {
-            document.querySelector("#save-load").style.display = "";
+        if (tableDefRows.filter((x)=> x.name.trim().length === 0).length > 0) {
+            handleSnackbarOpen('Please fix the errors in the table definition.');
         } else {
-            document.querySelector("#save-load").style.display = "none";
+            if (newTab === 0) {
+                document.querySelector("#save-load").style.display = "";
+            } else {
+                document.querySelector("#save-load").style.display = "none";
+            }
+            setSelectedTab(newTab);
         }
-        setSelectedTab(newTab);
     };
 
     const tabProps= (index) => {
@@ -41,13 +46,44 @@ export const DataExport = () => {
     const handleLoadOpen = () => setLoadViz(true);
     const handleLoadClose = () => setLoadViz(false);
     const [showSave, setSaveViz] = React.useState(false);
-    const handleSaveOpen = () => setSaveViz(true);
+    const handleSaveOpen = () => {
+        if (tableDefRows.filter((x)=> x.name.trim().length === 0).length > 0) {
+            handleSnackbarOpen('Please fix the errors in the table definition.');
+        } else {
+            setSaveViz(true);
+        }
+    }
     const handleSaveClose = () => setSaveViz(false);
 
+    const tableDefRows = useSelector((state) => state.tableDef.rows);
+    const [snackbarShown, setSnackbarViz] = React.useState(false);
+    const [snackbarMsg, setSnackbarMsg] = React.useState('');
+    const handleSnackbarOpen = (msg) => {
+        setSnackbarMsg(msg);
+        setSnackbarViz(true);
+    }
+    const handleSnackbarClose = () => { setSnackbarViz(false); }
+    let snackbarMessage = "";
 
 
     return (
         <Box sx={{ width: '100%' }}>
+            <Snackbar
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                open={snackbarShown}
+                onClose={handleSnackbarClose}
+                autoHideDuration={5000}
+                key={'topcenter'}
+            >
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity="error"
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMsg}
+                </Alert>
+            </Snackbar>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <AppBar color="default" sx={{ position:'fixed' }}>
                     <Tabs value={selectedTab} onChange={handleTabChange} aria-label="basic tabs example">
@@ -68,7 +104,7 @@ export const DataExport = () => {
                 </AppBar>
             </Box>
             <CustomTabPanel value={selectedTab} index={0}>
-                <DefineTable tabChanger={setSelectedTab}/>
+                <DefineTable tabChanger={handleTabChange}/>
             </CustomTabPanel>
             <CustomTabPanel value={selectedTab} index={1}>
                 <PreviewTable/>
