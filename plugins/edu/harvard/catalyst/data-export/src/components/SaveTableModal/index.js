@@ -25,6 +25,8 @@ export const SaveTableModal = ({open, handleClose}) => {
     const tableDefRows = useSelector((state) => state.tableDef.rows);
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [showOverwrite, setShowOverwrite] = React.useState(false);
+    const [isNameInvalid, setIsNameInvalid] = React.useState(false);
+
     const dispatch = useDispatch();
 
     const addtlProps = (index)  =>{
@@ -39,8 +41,14 @@ export const SaveTableModal = ({open, handleClose}) => {
         setSelectedRows(row.id);
     }
     const onNameChange = (e) => {
-        setSelectedTableDef({title: e.target.value});
+        const title = e.target.value;
+        setSelectedTableDef({title: title});
         setSelectedRows([]);
+        if(title?.length > 0) {
+            setIsNameInvalid(false);
+        }else{
+            setIsNameInvalid(true);
+        }
     }
 
     const onSave = (selectedRows) =>{
@@ -136,12 +144,13 @@ export const SaveTableModal = ({open, handleClose}) => {
                     defaultValue="My-Table-Definition"
                     value={selectedTableDef.title}
                     onChange={onNameChange}
+                    error={isNameInvalid}
                     InputLabelProps={{ shrink: true }}
                     inputProps={{ maxLength: 255 }}
                     sx={{float: "left", width:"60%", position:"absolute", left:32}}
                 />
                 <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-                <Button variant="contained" onClick={()=>onSave(selectedRows)}>Save</Button>
+                <Button variant="contained" onClick={()=>onSave(selectedRows)} disabled={isNameInvalid}>Save</Button>
             </DialogActions>
         </Dialog>
         <Dialog
