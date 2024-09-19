@@ -42,8 +42,16 @@ export const SaveTableModal = ({open, handleClose}) => {
     }
     const onNameChange = (e) => {
         const title = e.target.value;
-        setSelectedTableDef({title: title});
-        setSelectedRows([]);
+
+        const matchedRows = userRows.filter(srow => srow.title?.toUpperCase() === title.toUpperCase());
+        setSelectedRows(matchedRows.map(srow => srow.id));
+
+        if(matchedRows.length >0) {
+            setSelectedTableDef({title: matchedRows[0].title, id: matchedRows[0].id});
+        }else{
+            setSelectedTableDef({title: title});
+        }
+
         if(title?.length > 0) {
             setIsNameInvalid(false);
         }else{
