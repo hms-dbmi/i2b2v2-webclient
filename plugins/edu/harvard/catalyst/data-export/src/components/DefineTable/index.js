@@ -70,11 +70,10 @@ export const DefineTable = (props) => {
                     inputProps={{ maxLength: 255 }}
                 />
             ),
-            preProcessEditCellProps: ({hasChanged, row, props}) => {
-                if (hasChanged) {
-                    dispatch(handleRowName({row:row, value: props.value}));
-                }
-            }
+            valueSetter: (value, row) => {
+                dispatch(handleRowName({id: row.id, value: value}));
+                return { ...row };
+            },
         },
         {
             field: 'dataOption',
@@ -353,6 +352,12 @@ export const DefineTable = (props) => {
                     hideFooter={true}
                     isCellEditable={({row, colDef}) => (!row.locked && !(row.required && colDef.field === "dataOption"))}
                     getCellClassName={checkEmptyName}
+                    /*processRowUpdate={(updatedRow, originalRow) => {
+                        if(updatedRow.name !== originalRow.name){
+                            dispatch(handleRowName({id: originalRow.id, value: updatedRow.name}));
+                        }
+                    }}*/
+
                 />
             </div>
 
