@@ -17,9 +17,7 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
 
-import { LoadTableModal} from "../LoadTableModal";
-import { SaveTableModal } from "../SaveTableModal";
-import {loadTable, handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation, handleRowName} from "../../reducers/loadTableSlice";
+import { handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation, handleRowName} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
@@ -32,8 +30,6 @@ export const DefineTable = (props) => {
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { rows } = useSelector((state) => state.tableDef);
     const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
     const [cellModesModel, setCellModesModel] = React.useState({});
 
 
@@ -70,11 +66,10 @@ export const DefineTable = (props) => {
                     inputProps={{ maxLength: 255 }}
                 />
             ),
-            preProcessEditCellProps: ({hasChanged, row, props}) => {
-                if (hasChanged) {
-                    dispatch(handleRowName({row:row, value: props.value}));
-                }
-            }
+            valueSetter: (value, row) => {
+                dispatch(handleRowName({id: row.id, value: value}));
+                return { ...row };
+            },
         },
         {
             field: 'dataOption',
@@ -131,10 +126,9 @@ export const DefineTable = (props) => {
 
                 return valueOptions;
             },
-            preProcessEditCellProps: ({hasChanged, row, props}) => {
-                if (hasChanged) {
-                    dispatch(handleRowAggregation({row:row, value: props.value}));
-                }
+            valueSetter: (value, row) => {
+                dispatch(handleRowAggregation({id: row.id, value: value}));
+                return { ...row };
             }
         },
         {

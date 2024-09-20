@@ -149,16 +149,21 @@ export const loadTableSlice = createSlice({
         handleRowInsertError: (state) => {
             state.isLoadingDataType = false;
         },
-        handleRowAggregation: (state, { payload: {row, value} }) => {
+        handleRowAggregation: (state, { payload: {id, value} }) => {
             for (let temp of state.rows) {
-                if (temp.id === row.id) {
+                if (temp.id === id) {
                     temp.dataOption = value;
                     break;
                 }
             }
         },
-        handleRowName: (state, { payload: {row, value} }) => {
-            state.rows = state.rows.map((data) => (data.id === row.id ? ({...data, name: value}) : data ));
+        handleRowName: (state, { payload: {id, value} }) => {
+            for (let temp of state.rows) {
+                if (temp.id === id) {
+                    temp.name = value;
+                    break;
+                }
+            }
         }
     }
 })
