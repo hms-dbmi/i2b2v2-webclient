@@ -149,9 +149,9 @@ export const loadTableSlice = createSlice({
         handleRowInsertError: (state) => {
             state.isLoadingDataType = false;
         },
-        handleRowAggregation: (state, { payload: {row, value} }) => {
+        handleRowAggregation: (state, { payload: {id, value} }) => {
             for (let temp of state.rows) {
-                if (temp.id === row.id) {
+                if (temp.id === id) {
                     temp.dataOption = value;
                     break;
                 }
