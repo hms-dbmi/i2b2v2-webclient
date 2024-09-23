@@ -1,6 +1,6 @@
 /* globals i2b2 */
 
-import { call, takeLatest, put} from "redux-saga/effects";
+import { takeLatest, put} from "redux-saga/effects";
 import {listTablesSuccess, listTablesError} from "../reducers/listTablesSlice";
 import { DateTime } from "luxon";
 
@@ -17,10 +17,9 @@ const parseData = (tableList) => {
     });
     results.userRows = tableList.tables.filter(p => !p.shared).map(p => {
         p.create_date = DateTime.fromISO(p.create_date).toJSDate();
-        p.edit_date = DateTime.fromISO(p.edit_date).toJSDate();;
+        p.edit_date = DateTime.fromISO(p.edit_date).toJSDate();
         return p;
     });
-    const t=1;
     return results;
 }
 

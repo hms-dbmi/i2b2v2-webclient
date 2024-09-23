@@ -10,7 +10,7 @@ const transformTableDef = (tableDefRows) => {
     let concepts = [];
 
     let index=0;
-    tableDefRows.map(row => {
+    tableDefRows.forEach(row => {
        if(row.required){
            requiredRows[row.id] = {
                 name: row.name,

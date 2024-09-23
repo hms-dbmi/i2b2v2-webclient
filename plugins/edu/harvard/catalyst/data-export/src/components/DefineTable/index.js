@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import '../../css/tableDef.scss';
 import {
@@ -29,7 +29,6 @@ export const DefineTable = (props) => {
     const dispatch = useDispatch();
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { rows } = useSelector((state) => state.tableDef);
-    const [open, setOpen] = React.useState(false);
     const [cellModesModel, setCellModesModel] = React.useState({});
 
 
@@ -146,7 +145,6 @@ export const DefineTable = (props) => {
             disableColumnSorting: true,
             headerAlign: "center",
             renderCell: ({row}) => {
-                let actions = [];
                 if (row.required) {
                     if (row.locked) {
                         return (

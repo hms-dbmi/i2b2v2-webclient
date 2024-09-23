@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 import "../../css/modals.scss";
@@ -20,10 +18,11 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
-    const { sharedRows, userRows } = useSelector((state) => state.tableListing);
+    const { userRows } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
     const tableDefRows = useSelector((state) => state.tableDef.rows);
     const [selectedRows, setSelectedRows] = React.useState([]);
+    const [enteredTitle, setEnteredTitle] = React.useState("My-Table-Definition");
     const [showOverwrite, setShowOverwrite] = React.useState(false);
     const [isNameInvalid, setIsNameInvalid] = React.useState(false);
 
@@ -39,18 +38,26 @@ export const SaveTableModal = ({open, handleClose}) => {
     const onRowSelect = (row) => {
         setSelectedTableDef({id: row.id, title: row.title});
         setSelectedRows(row.id);
+        setEnteredTitle(row.title);
     }
-    const onNameChange = (e) => {
-        const title = e.target.value;
 
+    const selectIfNameExists = (title) =>{
         const matchedRows = userRows.filter(srow => srow.title?.toUpperCase() === title.toUpperCase());
+
         setSelectedRows(matchedRows.map(srow => srow.id));
+        setEnteredTitle(title);
 
         if(matchedRows.length >0) {
             setSelectedTableDef({title: matchedRows[0].title, id: matchedRows[0].id});
         }else{
             setSelectedTableDef({title: title});
         }
+    }
+
+    const onNameChange = (e) => {
+        const title = e.target.value;
+
+        selectIfNameExists(title);
 
         if(title?.length > 0) {
             setIsNameInvalid(false);
@@ -83,10 +90,10 @@ export const SaveTableModal = ({open, handleClose}) => {
 
     useEffect(() => {
         if (open) {
+            selectIfNameExists(enteredTitle);
             dispatch(listTables());
         }
     }, [open]);
-
 
     return (
     <div>
@@ -149,8 +156,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                     size='small'
                     id="TableDefName"
                     label="Save Table Definition As"
-                    defaultValue="My-Table-Definition"
-                    value={selectedTableDef.title}
+                    value={enteredTitle}
                     onChange={onNameChange}
                     error={isNameInvalid}
                     InputLabelProps={{ shrink: true }}

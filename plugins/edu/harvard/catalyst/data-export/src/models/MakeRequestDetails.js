@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import {StatusInfo} from "./StatusInfo";
-import {TableDefinition} from "./TableDefinition";
 
 export const MakeRequestDetails = ({
     patientSet = {

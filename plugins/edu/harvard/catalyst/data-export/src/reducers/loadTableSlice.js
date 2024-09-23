@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { TABLE_DEF } from "../actions";
 import { defaultState } from '../defaultState';
-import {StatusInfo, TableDefinition, TableDefinitionRow} from "../models";
+import {StatusInfo, TableDefinitionRow} from "../models";
 import {DATATYPE, generateTableDefRowId} from "../models/TableDefinitionRow";
 import XMLParser from 'react-xml-parser';
 
