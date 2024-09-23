@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
@@ -7,7 +7,6 @@ import {DefineTable} from "../DefineTable";
 import {CustomTabPanel} from "./CustomTabPanel";
 import {MakeRequest} from "../MakeRequest";
 import {PreviewTable} from "../PreviewTable";
-import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 
 import Snackbar from '@mui/material/Snackbar';
@@ -63,8 +62,6 @@ export const DataExport = () => {
         setSnackbarViz(true);
     }
     const handleSnackbarClose = () => { setSnackbarViz(false); }
-    let snackbarMessage = "";
-
 
     return (
         <Box sx={{ width: '100%' }}>

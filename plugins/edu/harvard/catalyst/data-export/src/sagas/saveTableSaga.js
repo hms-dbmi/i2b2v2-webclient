@@ -12,7 +12,7 @@ const transformTableDef = (tableDefRows) => {
     let concepts = [];
 
     let index=0;
-    tableDefRows.map(row => {
+    tableDefRows.forEach(row => {
         if(row.required){
             requiredRows[row.id] = {
                 name: row.name,
@@ -65,8 +65,9 @@ export function* doSaveTable(action) {
         };
 
         const response = yield fetch(i2b2.model.endpointUrl, fetchConfig);
-
-        yield put(saveTableSuccess());
+        if(response) {
+            yield put(saveTableSuccess());
+        }
     } catch (error) {
         yield put(saveTableError({errorMessage: "There was an error saving the data table"}));
     }
