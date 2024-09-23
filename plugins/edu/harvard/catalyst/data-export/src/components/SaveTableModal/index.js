@@ -52,8 +52,6 @@ export const SaveTableModal = ({open, handleClose}) => {
         }else{
             setSelectedTableDef({title: title});
         }
-
-        console.log("running selectnameifexists on " + title);
     }
 
     const onNameChange = (e) => {
