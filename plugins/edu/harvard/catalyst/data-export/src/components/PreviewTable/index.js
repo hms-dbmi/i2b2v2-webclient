@@ -39,6 +39,8 @@ export const PreviewTable = () => {
                     case 'vital_status':
                         row[name] = "N";
                         break;
+                    default:
+                        break;
                 }
 
                 switch (aggType) {
@@ -59,6 +61,8 @@ export const PreviewTable = () => {
                     case "MaxDate":
                         const time = Math.floor(Math.random() * 1577836801) + 1704067200;
                         row[name] = (new Date(time)).toLocaleString();
+                        break;
+                    default:
                         break;
                 }
             }

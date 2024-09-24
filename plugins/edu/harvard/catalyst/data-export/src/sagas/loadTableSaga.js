@@ -1,4 +1,4 @@
-import { call, takeLatest, put} from "redux-saga/effects";
+import { takeLatest, put} from "redux-saga/effects";
 import {loadTableSuccess, loadTableError} from "../reducers/loadTableSlice";
 
 import {

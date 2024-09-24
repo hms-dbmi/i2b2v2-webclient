@@ -5,10 +5,8 @@ import "../../css/modals.scss";
 
 import { TableListing } from "../TableListing";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { listTables } from "../../reducers/listTablesSlice";
