@@ -90,11 +90,13 @@ export const SaveTableModal = ({open, handleClose}) => {
 
     useEffect(() => {
         if (open) {
-            selectIfNameExists(enteredTitle);
             dispatch(listTables());
         }
     }, [open]);
 
+    useEffect(() => {
+            selectIfNameExists(enteredTitle);
+    }, [selectedTableDef]);
     return (
     <div>
         <Dialog
