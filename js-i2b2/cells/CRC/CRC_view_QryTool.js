@@ -1535,13 +1535,16 @@ i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, e
                             let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
                             const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
                             i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
-                        } else
+                        } else {
+                            resolve();
                             alert('An error has occurred while trying to determine the value type.');
+                        }
                     } catch (e) {
+                        resolve();
                         alert('An error has occurred while trying to display the concept.');
                     }
-                    resolve();
                 }
+                resolve(sdxConcept);
             }
         });
     });
