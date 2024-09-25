@@ -15,7 +15,10 @@
       "i2b2.PM.model.login_password": "R",
       "i2b2.PM.model.login_username": "R",
       "i2b2.PM.model.login_project": "R"
-    }
+    },
+    "functions": [
+      "i2b2.CRC.view.QT.labValue.getAndShowLabValues"
+    ]
   },
   "state": {
     "endpointUrl": "https://recover-i2b2.partners.org/agg/helper.php"

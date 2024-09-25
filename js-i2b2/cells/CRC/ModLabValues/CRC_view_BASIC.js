@@ -9,7 +9,7 @@
 
 i2b2.CRC.view.BASIC = {
 	// ================================================================================================== //
-	showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx) {
+	showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
 		if (valueMetadata) {
 			let extractedLabValues = valueMetadata;
 
@@ -125,8 +125,13 @@ i2b2.CRC.view.BASIC = {
 
 						sdxConcept.LabValues = newLabValues;
 
-						i2b2.CRC.view.BASIC.updateDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
-						queryPanelController.redrawConcept(sdxConcept, groupIdx, eventIdx);
+						if(groupIdx !== undefined) {
+							i2b2.CRC.view.BASIC.updateDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
+							queryPanelController.redrawConcept(sdxConcept, groupIdx, eventIdx);
+						}
+						if(pluginCallBack){
+							pluginCallBack(sdxConcept);
+						}
 					});
 
 					// UI event handler

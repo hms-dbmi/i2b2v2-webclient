@@ -17,11 +17,12 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
 
-import { handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation, handleRowName} from "../../reducers/loadTableSlice";
+import { handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation, handleRowName, handleRowSdx} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
 import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
+import {Link} from "@mui/material";
 
 /* global i2b2 */
 
@@ -69,6 +70,14 @@ export const DefineTable = (props) => {
                 dispatch(handleRowName({id: row.id, value: value}));
                 return { ...row };
             },
+        },
+        {
+            field: "Constraints",
+            renderCell: (cellValues) => {
+                return <Link href={`#${cellValues.row.id}`} onClick={(event) => {
+                    handleSetValueClick(event, cellValues);
+                }}>set value</Link>;
+            }
         },
         {
             field: 'dataOption',
@@ -206,6 +215,31 @@ export const DefineTable = (props) => {
         }
     ];
 
+    const displayLabValues = (rowId, sdx) => {
+        i2b2.authorizedTunnel.function["i2b2.CRC.view.QT.labValue.getAndShowLabValues"](sdx).then((res) => {
+            dispatch(handleRowSdx({
+                id: rowId, sdx: res
+            }));
+
+            const labValues = res.LabValues;
+            if(labValues.Value != null) {
+                dispatch(handleRowName({
+                    id: rowId, value: sdx.renderData.title + " --- " + labValues.ValueOperator
+                        + " " + labValues.Value
+                }));
+            }else{
+                dispatch(handleRowName({
+                    id: rowId, value: sdx.renderData.title + " --- " + labValues.ValueOperator
+                        + " " + labValues.ValueLow + " and " + labValues.ValueHigh
+                }));
+            }
+        });
+    }
+    const  handleSetValueClick = (event, cellValues) => {
+        console.log(cellValues.row);
+        displayLabValues(cellValues.row.id, cellValues.row.sdxData);
+    };
+
     const conceptDropHandler = (sdx, ev)  =>{
         let rowNum = null;
         // see if drop is on a row
@@ -228,6 +262,8 @@ export const DefineTable = (props) => {
         const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
 
         dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx}));
+
+        displayLabValues(rowId, sdx);
     }
 
     const i2b2LibLoaded = () => {
