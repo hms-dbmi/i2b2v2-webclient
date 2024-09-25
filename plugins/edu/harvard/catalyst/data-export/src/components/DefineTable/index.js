@@ -76,9 +76,11 @@ export const DefineTable = (props) => {
             headerName: 'Constraints',
             headerClassName: "header",
             renderCell: (cellValues) => {
-                return <Link href={`#${cellValues.row.id}`} onClick={(event) => {
-                    handleSetValueClick(event, cellValues);
-                }}>set value</Link>;
+                if(!cellValues.row.required) {
+                    return <Link href={`#${cellValues.row.id}`} onClick={(event) => {
+                        handleSetValueClick(event, cellValues);
+                    }}>set value</Link>;
+                }
             }
         },
         {
