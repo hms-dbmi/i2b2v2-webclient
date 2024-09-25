@@ -72,7 +72,9 @@ export const DefineTable = (props) => {
             },
         },
         {
-            field: "Constraints",
+            field: "constraints",
+            headerName: 'Constraints',
+            headerClassName: "header",
             renderCell: (cellValues) => {
                 return <Link href={`#${cellValues.row.id}`} onClick={(event) => {
                     handleSetValueClick(event, cellValues);
