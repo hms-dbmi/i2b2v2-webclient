@@ -1519,9 +1519,6 @@ i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, e
 
             } else {
                 if (valueMetadataXml !== undefined) {
-                    //let extractedLabModel = i2b2.CRC.ctrlr.labValues.parseLabValues(valueMetadataXml);
-                    //i2b2.CRC.ctrlr.labValues.updateDisplayValue(sdxConcept, extractedLabModel, groupIdx, eventIdx);
-
                     //Determine the value type
                     try {
                         let GeneralValueType = i2b2.CRC.ctrlr.labValues.extractDataType(sdxConcept, valueMetadataXml);
