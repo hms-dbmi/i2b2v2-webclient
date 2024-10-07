@@ -395,7 +395,8 @@ export const DefineTable = (props) => {
                 alignItems="center"
                 className={"DefineTableActions"}
             >
-                <Button variant="contained" onClick={()=>props.tabChanger(null,2)}>Export</Button>
+                <Button variant="contained" onClick={()=>props.tabChanger(null,1)}>Preview Example Data</Button>
+                <Button variant="contained" onClick={()=>props.tabChanger(null,2)}>Select Participants for Table</Button>
             </Stack>
         </div>
     );

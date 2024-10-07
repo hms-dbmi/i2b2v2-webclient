@@ -4,8 +4,9 @@ import {DataGrid} from "@mui/x-data-grid";
 import "./PreviewTable.scss";
 import Stack from "@mui/material/Stack";
 import Typography from '@mui/material/Typography';
+import Button from "@mui/material/Button";
 
-export const PreviewTable = () => {
+export const PreviewTable = (props) => {
     const tableDefRows = useSelector((state) => state.tableDef.rows);
     const [columns, setColumns] = useState([]);
     const [rows, setRows] = useState([]);
@@ -123,6 +124,16 @@ export const PreviewTable = () => {
                 hideFooter={true}
 
             />
+
+            <Stack
+                spacing={2}
+                direction="row"
+                justifyContent="right"
+                alignItems="center"
+                className={"PreviewTableActions"}
+            >
+                <Button variant="contained" onClick={()=>props.tabChanger(null,2)}>Select Participants for Table</Button>
+            </Stack>
         </Stack>
     )
 }

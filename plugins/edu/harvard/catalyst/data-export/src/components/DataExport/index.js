@@ -84,9 +84,9 @@ export const DataExport = () => {
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <AppBar color="default" sx={{ position:'fixed' }}>
                     <Tabs value={selectedTab} onChange={handleTabChange} aria-label="basic tabs example">
-                        <Tab label="Define Table" {...tabProps(0)} />
+                        <Tab label="Design Table" {...tabProps(0)} />
                         <Tab label="Preview Table" {...tabProps(1)} />
-                        <Tab label="Request Export" {...tabProps(2)} />
+                        <Tab label="Select Participants for Table" {...tabProps(2)} />
                     </Tabs>
                     <Stack direction="row" spacing={0} sx={{position:"fixed", right:"1rem", marginTop:"-4px"}} id="save-load">
                         <IconButton aria-label="Load Export Definition" size="large" onClick={handleLoadOpen}  sx={{ "&:hover": {color:'rgb(85, 108, 214)'}, transition:"color" }}>
@@ -104,7 +104,7 @@ export const DataExport = () => {
                 <DefineTable tabChanger={handleTabChange}/>
             </CustomTabPanel>
             <CustomTabPanel value={selectedTab} index={1}>
-                <PreviewTable/>
+                <PreviewTable tabChanger={handleTabChange}/>
             </CustomTabPanel>
             <CustomTabPanel value={selectedTab} index={2}>
                 <MakeRequest/>
