@@ -124,7 +124,7 @@ i2b2.CRC.view.BASIC = {
 						}
 
 						// clear out the range values if we have switch away from using "BETWEEN" filter
-						if (newLabValues.ValueType !== null && newLabValues.ValueOperator !== "BETWEEN") {
+						if (newLabValues.ValueType !== undefined && newLabValues.ValueOperator !== "BETWEEN") {
 							newLabValues.ValueLow = null;
 							newLabValues.ValueHigh = null;
 						}
