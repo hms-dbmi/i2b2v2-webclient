@@ -55,7 +55,13 @@ i2b2.CRC.view.BASIC = {
 									validData = false;
 								}
 								if (["POSFLOAT", "FLOAT"].includes(dataType)) {
-									if (String(parseFloat(val)) !== val) validData = false;
+									let t = parseFloat(val);
+									if (String(t) !== val) {
+										// see if we have a zero fractional component
+										if (parseFloat(val.substring(String(t).length)) !== 0) {
+											validData = false;
+										}
+									}
 								}
 								if (["POSINT", "INT"].includes(dataType)) {
 									if (String(parseInt(val)) !== val) validData = false;
@@ -118,7 +124,7 @@ i2b2.CRC.view.BASIC = {
 						}
 
 						// clear out the range values if we have switch away from using "BETWEEN" filter
-						if (newLabValues.ValueOperator !== "BETWEEN") {
+						if (newLabValues.ValueType !== null && newLabValues.ValueOperator !== "BETWEEN") {
 							newLabValues.ValueLow = null;
 							newLabValues.ValueHigh = null;
 						}
