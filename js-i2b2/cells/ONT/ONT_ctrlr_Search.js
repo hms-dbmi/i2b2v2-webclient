@@ -237,6 +237,7 @@ i2b2.ONT.ctrlr.Search = {
                 if (root === undefined) {
                     root = i2b2.ONT.model.Categories.filter((node) => {
                         const catStartPath = node.key.split('\\').filter(p => p.length > 0);
+                        //drop the table name from the path
                         catStartPath.shift();
 
                         let catStartPathStr = catStartPath.join("\\");
