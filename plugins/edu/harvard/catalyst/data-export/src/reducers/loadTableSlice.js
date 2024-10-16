@@ -87,8 +87,6 @@ export const loadTableSlice = createSlice({
             state.rows.sort((a,b) => a.order - b.order).forEach((x,i)=> { x.order = i + 1 });
         },
         handleRowInsert:(state, { payload: {rowIndex, rowId, sdx} }) => {
-            state.isLoadingDataType = true;
-
             // get the range in which we can correctly place the row
             const rowOrdering = state.rows.map((row)=>(row.required ? false : row.order)).filter((a)=>a);
             const rowMin = (rowOrdering.length ? Math.min(...rowOrdering) : state.rows.length + 1);
@@ -130,25 +128,6 @@ export const loadTableSlice = createSlice({
         handleRowExported: (state, { payload: {row, exported} }) => {
             state.rows = state.rows.map((data) => (data.id === row.id ? ({...data, display: exported}) : data ));
         },
-        handleRowInsertSucceeded: (state, { payload: {rowId, dataType, xmlOrig} }) => {
-            state.isLoadingDataType = false;
-
-            state.rows.map((row, index) => {
-                if(row.id === rowId){
-                    row.dataType = dataType;
-
-                    if(row.sdxData.origData === undefined){
-                        row.sdxData.origData = {};
-                    }
-                    row.sdxData.origData.xmlOrig = xmlOrig;
-                }
-
-                return row;
-            })
-        },
-        handleRowInsertError: (state) => {
-            state.isLoadingDataType = false;
-        },
         handleRowAggregation: (state, { payload: {id, value} }) => {
             for (let temp of state.rows) {
                 if (temp.id === id) {
@@ -184,8 +163,6 @@ export const {
     handleRowDelete,
     handleRowInsert,
     handleRowExported,
-    handleRowInsertSucceeded,
-    handleRowInsertError,
     handleRowAggregation,
     handleRowName,
     handleRowSdx

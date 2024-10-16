@@ -23,6 +23,7 @@ import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
 import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
 import {Link} from "@mui/material";
+import XMLParser from "react-xml-parser";
 
 /* global i2b2 */
 
@@ -244,7 +245,7 @@ export const DefineTable = (props) => {
         displayLabValues(cellValues.row.id, cellValues.row.sdxData);
     };
 
-    const conceptDropHandler = (sdx, ev)  =>{
+    const conceptDropHandler = (sdx, ev) => {
         let rowNum = null;
         // see if drop is on a row
         let row = ev.target.closest(".MuiDataGrid-row");
@@ -263,12 +264,36 @@ export const DefineTable = (props) => {
             rowNum = parseInt(row.dataset.rowindex) + 1;
         }
 
+        // clean/retrieve sdx info
+        delete sdx.renderData.tvNodeState;
+        let requestData = {
+            ont_max_records: 'max="1"',
+            ont_synonym_records: false,
+            ont_hidden_records: false,
+            concept_key_value: sdx.sdxInfo.sdxKeyValue
+        }
+        i2b2.ajax.ONT.GetTermInfo(requestData)
+            .then((xmlString) => {
+                // get and populate metadata info
+                let xmlparser = new XMLParser();
+                let xmlDoc = xmlparser.parseFromString(xmlString);
+                let concepts = xmlDoc.getElementsByTagName('ns6:concepts');
+                if (concepts.length !== 0) sdx.origData.xmlOrig =  xmlparser.toString(concepts[0]);
+                // metadata
+                let valueMetadataList = xmlDoc.getElementsByTagName('metadataxml');
+                if (valueMetadataList.length !== 0 ) {
+                    let metadata = valueMetadataList[0];
+                    sdx.origData.metadata = xmlparser.toString(metadata);
+                    let dataType = metadata.getElementsByTagName('DataType');
+                    if (dataType.length !== 0) sdx.origData.dataType = DATATYPE[dataType[0].value.toUpperCase()];
+                }
+            }).finally(() => {
+                // insert row
         const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
-
         dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx}));
-
-        displayLabValues(rowId, sdx);
-    }
+                if (sdx.origData.metadata !== undefined) displayLabValues(rowId, sdx);
+        });
+    };
 
     const i2b2LibLoaded = () => {
         dispatch(updateI2b2LibLoaded());
