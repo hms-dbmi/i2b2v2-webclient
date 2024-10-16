@@ -239,10 +239,10 @@ i2b2.ONT.ctrlr.Search = {
                         const catStartPath = node.key.split('\\').filter(p => p.length > 0);
                         catStartPath.shift();
 
-                        let catStartStr = catStartPath.join("\\");
-                        catStartStr = "\\" + catStartStr + "\\";
+                        let catStartPathStr = catStartPath.join("\\");
+                        catStartPathStr = "\\" + catStartPathStr + "\\";
 
-                        return fullPath.indexOf(catStartStr) > 0;
+                        return fullPath.indexOf(catStartPathStr) > 0;
                     });
                     //if there is more than one match take the match with the longest dim_code length
                     if(root.length > 1){
