@@ -9,8 +9,7 @@ export const TableDefinitionRow = ({
     sdxData = {},
     dataOption = null,
     required = false,
-    dataType= null,
-    isLoadingDataType = false,
+    dataType= null
 
 } = {}) => ({
     id,
@@ -21,8 +20,7 @@ export const TableDefinitionRow = ({
     sdxData,
     dataOption,
     required,
-    dataType,
-    isLoadingDataType,
+    dataType
 });
 
 TableDefinitionRow.propTypes = {
@@ -34,8 +32,7 @@ TableDefinitionRow.propTypes = {
     sdxData: PropTypes.object,
     dataOption: PropTypes.string,
     required: PropTypes.bool,
-    dataType: PropTypes.string,
-    isLoadingDataType: PropTypes.bool
+    dataType: PropTypes.string
 };
 
 export const DATATYPE = {

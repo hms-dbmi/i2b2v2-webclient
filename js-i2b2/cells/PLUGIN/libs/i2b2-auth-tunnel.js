@@ -125,7 +125,8 @@ window.addEventListener(i2b2.MSG_TYPES.TUNNEL.LIB_INIT, function(event) {
                         resolve(resultMsg.functionResults);
                     }).catch((resultMsg) => {
                         // TODO: Meaningful error message generated here
-                        console.error(i2b2.h.StripCRLF(resultMsg.errorMsg));
+                        let ret = String(resultMsg.errorMsg).replace(/\r/g, ">");
+                        console.error(ret.replace(/\n/g, ">"));
                         reject();
                     });
                 })

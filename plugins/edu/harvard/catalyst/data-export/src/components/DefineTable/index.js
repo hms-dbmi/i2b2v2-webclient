@@ -17,11 +17,13 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
 
-import { handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation, handleRowName} from "../../reducers/loadTableSlice";
+import { handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation, handleRowName, handleRowSdx} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
 import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
+import {Link} from "@mui/material";
+import XMLParser from "react-xml-parser";
 
 /* global i2b2 */
 
@@ -51,7 +53,7 @@ export const DefineTable = (props) => {
             flex:1,
             editable: true,
             sortable: false,
-            resizable: false,
+            resizable: true,
             disableColumnSorting: true,
             disableColumnMenu: false,
             renderCell: ({row}) =>  (
@@ -69,6 +71,80 @@ export const DefineTable = (props) => {
                 dispatch(handleRowName({id: row.id, value: value}));
                 return { ...row };
             },
+        },
+        {
+            field: "constraints",
+            headerName: 'Constraints',
+            headerClassName: "header",
+            disableColumnSorting: true,
+            disableColumnMenu: true,
+            resizable: true,
+            editable: false,
+            sortable: false,
+            display: "flex",
+            flex:0.5,
+            renderCell: (cellValues) => {
+                if (!cellValues.row.required) {
+                    let ret;
+                    let txtLab;
+                    let txtMouseover;
+                    let labData = cellValues.row.sdxData.LabValues;
+                    if (labData !== undefined && labData.ValueType !== undefined) {
+                        switch (labData.ValueType) {
+                            case undefined:
+                                break;
+                            case "TEXT":
+                                if (labData.Value.length > 1) {
+                                    txtLab = "(" + labData.Value.length + " values)";
+                                    txtMouseover = labData.Value.join('\n');
+                                } else {
+                                    txtLab = labData.Value[0];
+                                    txtMouseover = txtLab;
+                                }
+                                break;
+                            case "FLAG":
+                                txtLab = "Flag = \"" + labData.ValueFlag + "\"";
+                                txtMouseover = txtLab;
+                                break;
+                            default:
+                                switch(labData.ValueOperator) {
+                                    case "BETWEEN":
+                                        txtLab = "Between " + labData.ValueLow + " - " + labData.ValueHigh;
+                                        break;
+                                    case "GT":
+                                        txtLab = ">" + labData.Value;
+                                        break;
+                                    case "GE":
+                                        txtLab = "≥" + labData.Value;
+                                        break;
+                                    case "LE":
+                                        txtLab = "≤" + labData.Value;
+                                        break;
+                                    case "LT":
+                                        txtLab = "<" + labData.Value;
+                                        break;
+                                    case "EQ":
+                                        txtLab = "=" + labData.Value;
+                                        break;
+                                    default:
+                                        txtLab = "UNKNOWN";
+                                }
+                                // add units
+                                if (typeof labData.ValueUnit === "string" && labData.ValueUnit !== "") txtLab = txtLab + " " + labData.ValueUnit;
+                                txtMouseover = txtLab;
+                                break;
+                        }
+
+                        return <Link href={`#${cellValues.row.id}`} title={txtMouseover} onClick={(event) => {
+                            handleSetValueClick(event, cellValues);
+                        }}>{txtLab}</Link>;
+                    } else {
+                        return <Link href={`#${cellValues.row.id}`} onClick={(event) => {
+                            handleSetValueClick(event, cellValues);
+                        }}>Set Value</Link>;
+                    }
+                }
+            }
         },
         {
             field: 'dataOption',
@@ -206,7 +282,18 @@ export const DefineTable = (props) => {
         }
     ];
 
-    const conceptDropHandler = (sdx, ev)  =>{
+    const displayLabValues = (rowId, sdx) => {
+        i2b2.authorizedTunnel.function["i2b2.CRC.view.QT.labValue.getAndShowLabValues"](sdx).then((res) => {
+            dispatch(handleRowSdx({
+                id: rowId, sdx: res
+            }));
+        });
+    }
+    const  handleSetValueClick = (event, cellValues) => {
+        displayLabValues(cellValues.row.id, cellValues.row.sdxData);
+    };
+
+    const conceptDropHandler = (sdx, ev) => {
         let rowNum = null;
         // see if drop is on a row
         let row = ev.target.closest(".MuiDataGrid-row");
@@ -225,10 +312,36 @@ export const DefineTable = (props) => {
             rowNum = parseInt(row.dataset.rowindex) + 1;
         }
 
-        const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
-
-        dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx}));
-    }
+        // clean/retrieve sdx info
+        delete sdx.renderData.tvNodeState;
+        let requestData = {
+            ont_max_records: 'max="1"',
+            ont_synonym_records: false,
+            ont_hidden_records: false,
+            concept_key_value: sdx.sdxInfo.sdxKeyValue
+        }
+        i2b2.ajax.ONT.GetTermInfo(requestData)
+            .then((xmlString) => {
+                // get and populate metadata info
+                let xmlparser = new XMLParser();
+                let xmlDoc = xmlparser.parseFromString(xmlString);
+                let concepts = xmlDoc.getElementsByTagName('ns6:concepts');
+                if (concepts.length !== 0) sdx.origData.xmlOrig =  xmlparser.toString(concepts[0]);
+                // metadata
+                let valueMetadataList = xmlDoc.getElementsByTagName('metadataxml');
+                if (valueMetadataList.length !== 0 ) {
+                    let metadata = valueMetadataList[0];
+                    sdx.origData.metadata = xmlparser.toString(metadata);
+                    let dataType = metadata.getElementsByTagName('DataType');
+                    if (dataType.length !== 0) sdx.origData.dataType = DATATYPE[dataType[0].value.toUpperCase()];
+                }
+            }).finally(() => {
+                // insert row
+                const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
+                dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx}));
+                if (sdx.origData.metadata !== undefined) displayLabValues(rowId, sdx);
+        });
+    };
 
     const i2b2LibLoaded = () => {
         dispatch(updateI2b2LibLoaded());
