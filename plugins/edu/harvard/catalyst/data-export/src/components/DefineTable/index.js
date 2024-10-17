@@ -57,7 +57,7 @@ export const DefineTable = (props) => {
             disableColumnSorting: true,
             disableColumnMenu: false,
             renderCell: ({row}) =>  (
-                <Tooltip title={row.sdxData.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This is a required column called \""+ row.id+"\" in the database"} >
+                <Tooltip title={row.sdxData.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This column was originally called \""+ row.id+"\""} >
                     { row.name.length ? <span className="tabledef-cell-trucate">{row.name}</span>  : <div className="tabledef-cell-trucate">&nbsp;</div> }
                 </Tooltip>
             ),
@@ -468,7 +468,7 @@ export const DefineTable = (props) => {
                 alignItems="center"
                 className={"DefineTableActions"}
             >
-                <Button variant="contained" onClick={()=>props.tabChanger(null,1)}>Preview Example Data</Button>
+                <Button variant="contained" onClick={()=>props.tabChanger(null,1)}>Preview Table</Button>
                 <Button variant="contained" onClick={()=>props.tabChanger(null,2)}>Select Participants for Table</Button>
             </Stack>
         </div>
