@@ -53,7 +53,7 @@ export const DefineTable = (props) => {
             flex:1,
             editable: true,
             sortable: false,
-            resizable: false,
+            resizable: true,
             disableColumnSorting: true,
             disableColumnMenu: false,
             renderCell: ({row}) =>  (
@@ -76,11 +76,73 @@ export const DefineTable = (props) => {
             field: "constraints",
             headerName: 'Constraints',
             headerClassName: "header",
+            disableColumnSorting: true,
+            disableColumnMenu: true,
+            resizable: true,
+            editable: false,
+            sortable: false,
+            display: "flex",
+            flex:0.5,
             renderCell: (cellValues) => {
-                if(!cellValues.row.required) {
-                    return <Link href={`#${cellValues.row.id}`} onClick={(event) => {
-                        handleSetValueClick(event, cellValues);
-                    }}>set value</Link>;
+                if (!cellValues.row.required) {
+                    let ret;
+                    let txtLab;
+                    let txtMouseover;
+                    let labData = cellValues.row.sdxData.LabValues;
+                    if (labData !== undefined && labData.ValueType !== undefined) {
+                        switch (labData.ValueType) {
+                            case undefined:
+                                break;
+                            case "TEXT":
+                                if (labData.Value.length > 1) {
+                                    txtLab = "(" + labData.Value.length + " values)";
+                                    txtMouseover = labData.Value.join('\n');
+                                } else {
+                                    txtLab = labData.Value[0];
+                                    txtMouseover = txtLab;
+                                }
+                                break;
+                            case "FLAG":
+                                txtLab = "Flag = \"" + labData.ValueFlag + "\"";
+                                txtMouseover = txtLab;
+                                break;
+                            default:
+                                switch(labData.ValueOperator) {
+                                    case "BETWEEN":
+                                        txtLab = "Between " + labData.ValueLow + " - " + labData.ValueHigh;
+                                        break;
+                                    case "GT":
+                                        txtLab = ">" + labData.Value;
+                                        break;
+                                    case "GE":
+                                        txtLab = "≥" + labData.Value;
+                                        break;
+                                    case "LE":
+                                        txtLab = "≤" + labData.Value;
+                                        break;
+                                    case "LT":
+                                        txtLab = "<" + labData.Value;
+                                        break;
+                                    case "EQ":
+                                        txtLab = "=" + labData.Value;
+                                        break;
+                                    default:
+                                        txtLab = "UNKNOWN";
+                                }
+                                // add units
+                                if (typeof labData.ValueUnit === "string" && labData.ValueUnit !== "") txtLab = txtLab + " " + labData.ValueUnit;
+                                txtMouseover = txtLab;
+                                break;
+                        }
+
+                        return <Link href={`#${cellValues.row.id}`} title={txtMouseover} onClick={(event) => {
+                            handleSetValueClick(event, cellValues);
+                        }}>{txtLab}</Link>;
+                    } else {
+                        return <Link href={`#${cellValues.row.id}`} onClick={(event) => {
+                            handleSetValueClick(event, cellValues);
+                        }}>Set Value</Link>;
+                    }
                 }
             }
         },
@@ -225,23 +287,9 @@ export const DefineTable = (props) => {
             dispatch(handleRowSdx({
                 id: rowId, sdx: res
             }));
-
-            const labValues = res.LabValues;
-            if(labValues.Value != null) {
-                dispatch(handleRowName({
-                    id: rowId, value: sdx.renderData.title + " --- " + labValues.ValueOperator
-                        + " " + labValues.Value
-                }));
-            }else{
-                dispatch(handleRowName({
-                    id: rowId, value: sdx.renderData.title + " --- " + labValues.ValueOperator
-                        + " " + labValues.ValueLow + " and " + labValues.ValueHigh
-                }));
-            }
         });
     }
     const  handleSetValueClick = (event, cellValues) => {
-        console.log(cellValues.row);
         displayLabValues(cellValues.row.id, cellValues.row.sdxData);
     };
 
@@ -289,8 +337,8 @@ export const DefineTable = (props) => {
                 }
             }).finally(() => {
                 // insert row
-        const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
-        dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx}));
+                const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
+                dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx}));
                 if (sdx.origData.metadata !== undefined) displayLabValues(rowId, sdx);
         });
     };
