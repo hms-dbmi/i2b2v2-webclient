@@ -88,6 +88,30 @@ export const SaveTableModal = ({open, handleClose}) => {
         dispatch(saveStatusConfirmed());
     };
 
+    const displaySaveStatusMsg = (statusMsg) => {
+       return ( <Dialog
+            open={true}
+            onClose={handleConfirmStatus}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">
+                {"Data Request"}
+            </DialogTitle>
+            <DialogContent dividers>
+                <DialogContentText id="alert-dialog-description">
+                    {statusMsg}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button variant="contained" autoFocus onClick={handleConfirmStatus}>
+                    Ok
+                </Button>
+            </DialogActions>
+        </Dialog>
+       )
+    }
+
     useEffect(() => {
         if (open) {
             dispatch(listTables());
@@ -193,27 +217,8 @@ export const SaveTableModal = ({open, handleClose}) => {
                 <Button variant="contained" onClick={()=>doSave()}>Yes</Button>
             </DialogActions>
         </Dialog>
-
-        <Dialog
-            open={saveTableInfo.statusInfo.status === "SUCCESS"}
-            onClose={handleConfirmStatus}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="alert-dialog-title">
-                {"Data Request"}
-            </DialogTitle>
-            <DialogContent dividers>
-                <DialogContentText id="alert-dialog-description">
-                    Saved table
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button variant="contained" autoFocus onClick={handleConfirmStatus}>
-                    Ok
-                </Button>
-            </DialogActions>
-        </Dialog>
+        {saveTableInfo.statusInfo.status === "SUCCESS" && displaySaveStatusMsg("Saved table")}
+        {saveTableInfo.statusInfo.status === "FAIL" && displaySaveStatusMsg(saveTableInfo.statusInfo.errorMessage)}
     </div>
 );
 }
