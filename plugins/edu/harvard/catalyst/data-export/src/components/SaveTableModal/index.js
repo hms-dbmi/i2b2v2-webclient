@@ -12,7 +12,7 @@ import { TableListing } from "../TableListing";
 import { listTables } from "../../reducers/listTablesSlice";
 import { TabPanel } from "../TabPanel";
 import {saveStatusConfirmed, saveTable} from "../../reducers/saveTableSlice";
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 
 
 
@@ -88,7 +88,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         dispatch(saveStatusConfirmed());
     };
 
-    const displaySaveStatusMsg = (statusMsg) => {
+    const displaySaveStatusMsg = (statusMsg, isError) => {
        return ( <Dialog
             open={true}
             onClose={handleConfirmStatus}
@@ -100,7 +100,9 @@ export const SaveTableModal = ({open, handleClose}) => {
             </DialogTitle>
             <DialogContent dividers>
                 <DialogContentText id="alert-dialog-description">
-                    {statusMsg}
+                    <Alert severity={isError ?"error": "success"}>
+                        {statusMsg}
+                    </Alert>
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -218,7 +220,7 @@ export const SaveTableModal = ({open, handleClose}) => {
             </DialogActions>
         </Dialog>
         {saveTableInfo.statusInfo.status === "SUCCESS" && displaySaveStatusMsg("Saved table")}
-        {saveTableInfo.statusInfo.status === "FAIL" && displaySaveStatusMsg(saveTableInfo.statusInfo.errorMessage)}
+        {saveTableInfo.statusInfo.status === "FAIL" && displaySaveStatusMsg(saveTableInfo.statusInfo.errorMessage, true)}
     </div>
 );
 }
