@@ -67,9 +67,6 @@ export function* doSaveTable(action) {
         const response = yield fetch(i2b2.model.endpointUrl, fetchConfig);
         if(response.ok) {
             const data = yield response.json();
-
-            console.log("data: " + JSON.stringify(data));
-
             if(!data.success){
                 let error = data.error;
                 if(error && error.length === 0 ) {
