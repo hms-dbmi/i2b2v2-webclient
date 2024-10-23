@@ -27,7 +27,7 @@ export const makeRequestSlice = createSlice({
                 status: "SUCCESS"
             });
         },
-        makeRequestError: (state, { payload: errorMessage }) => {
+        makeRequestError: (state, { payload: { errorMessage } }) => {
             state.isSubmitting = false;
             state.statusInfo = StatusInfo({
                 status: "FAIL",

@@ -85,6 +85,29 @@ export const MakeRequest = () => {
         dispatch(updateRequestPatientSet(sdx));
     }
 
+    const displayMakeRequestStatusMsg = (statusMsg) => {
+        return ( <Dialog
+                open={true}
+                onClose={handleConfirmStatus}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Data Request"}
+                </DialogTitle>
+                <DialogContent dividers>
+                    <DialogContentText id="alert-dialog-description">
+                        {statusMsg}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" autoFocus onClick={handleConfirmStatus}>
+                        Ok
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
+    }
     useEffect(() => {
         if(i2b2) {
             i2b2.sdx.AttachType("makeRequestPatientSet", "PRS");
@@ -159,26 +182,8 @@ export const MakeRequest = () => {
                 <CircularProgress color="inherit" />
             </Backdrop>
 
-            <Dialog
-                open={makeRequestDetails.statusInfo.status === "SUCCESS"}
-                onClose={handleConfirmStatus}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    {"Data Request"}
-                </DialogTitle>
-                <DialogContent dividers>
-                    <DialogContentText id="alert-dialog-description">
-                       A data export request has been submitted.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="contained" autoFocus onClick={handleConfirmStatus}>
-                        Ok
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            {makeRequestDetails.statusInfo.status === "SUCCESS" && displayMakeRequestStatusMsg("A data export request has been submitted.")}
+            {makeRequestDetails.statusInfo.status === "FAIL" && displayMakeRequestStatusMsg(makeRequestDetails.statusInfo.errorMessage)}
         </Stack>
     );
 }
