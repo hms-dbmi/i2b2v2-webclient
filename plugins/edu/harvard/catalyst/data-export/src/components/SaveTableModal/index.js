@@ -88,7 +88,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         dispatch(saveStatusConfirmed());
     };
 
-    const displaySaveStatusMsg = (statusMsg, isError) => {
+    const displaySaveStatusMsg = (statusMsg) => {
        return ( <Dialog
             open={true}
             onClose={handleConfirmStatus}
@@ -100,9 +100,7 @@ export const SaveTableModal = ({open, handleClose}) => {
             </DialogTitle>
             <DialogContent dividers>
                 <DialogContentText id="alert-dialog-description">
-                    <Alert severity={isError ?"error": "success"}>
-                        {statusMsg}
-                    </Alert>
+                    {statusMsg}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -220,7 +218,7 @@ export const SaveTableModal = ({open, handleClose}) => {
             </DialogActions>
         </Dialog>
         {saveTableInfo.statusInfo.status === "SUCCESS" && displaySaveStatusMsg("Saved table")}
-        {saveTableInfo.statusInfo.status === "FAIL" && displaySaveStatusMsg(saveTableInfo.statusInfo.errorMessage, true)}
+        {saveTableInfo.statusInfo.status === "FAIL" && displaySaveStatusMsg(saveTableInfo.statusInfo.errorMessage)}
     </div>
 );
 }
