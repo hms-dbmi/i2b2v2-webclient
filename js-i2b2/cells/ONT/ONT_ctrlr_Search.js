@@ -235,7 +235,16 @@ i2b2.ONT.ctrlr.Search = {
                 fullPath = fullPath + subpath + "\\";
 //                let root = i2b2.ONT.model.Categories.filter((node) => { return node.key === fullPath });
                 if (root === undefined) {
-                    root = i2b2.ONT.model.Categories.filter((node) => { return fullPath.indexOf(node.dim_code) > 0 });
+                    root = i2b2.ONT.model.Categories.filter((node) => {
+                        const catStartPath = node.key.split('\\').filter(p => p.length > 0);
+                        //drop the table name from the path
+                        catStartPath.shift();
+
+                        let catStartPathStr = catStartPath.join("\\");
+                        catStartPathStr = "\\" + catStartPathStr + "\\";
+
+                        return fullPath.indexOf(catStartPathStr) > 0;
+                    });
                     //if there is more than one match take the match with the longest dim_code length
                     if(root.length > 1){
                         root = [root.reduce((a, b) => a.length <= b.length ? b : a)];
