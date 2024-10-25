@@ -23,6 +23,7 @@ export const DateModal = ({open, handleClose, startDate, endDate, setStartDate, 
 
     let handleDateUpdate = () => {
         saveUpdate();
+        setIsChanged(false);
         handleClose();
     }
 
@@ -57,9 +58,7 @@ export const DateModal = ({open, handleClose, startDate, endDate, setStartDate, 
                         aria-label="reset date"
                         size="large"
                         onClick={()=> handleSetStartValue()}
-                    >
-                        <ReplayIcon fontSize="inherit" label="reset start date" />
-                    </IconButton>
+                    ><ReplayIcon fontSize="inherit" title="reset start date" /></IconButton>
                     </div>
                     <div style={{textAlign: 'center', marginTop: '1rem'}}><DatePicker
                         label="End Date"
@@ -74,13 +73,14 @@ export const DateModal = ({open, handleClose, startDate, endDate, setStartDate, 
                         aria-label="reset date"
                         size="large"
                         onClick={()=> handleSetEndValue()}
-                    >
-                        <ReplayIcon fontSize="inherit" label="reset end date" />
-                    </IconButton>
+                    ><ReplayIcon fontSize="inherit" title="reset end date" /></IconButton>
                     </div>
             </DialogContent>
             <DialogActions>
-                <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+                <Button variant="outlined" onClick={()=>{
+                    setIsChanged(false);
+                    handleClose();
+                }}>Cancel</Button>
                 <Button variant="contained" onClick={handleDateUpdate} disabled={!isChanged}>Save</Button>
             </DialogActions>
         </Dialog>
