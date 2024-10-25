@@ -6,6 +6,20 @@ import Stack from "@mui/material/Stack";
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button";
 
+
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import { styled } from '@mui/material/styles';
+const CustomTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))({
+    [`& .${tooltipClasses.tooltip}`]: {
+        maxWidth: 500,
+        textAlign: 'center',
+        whiteSpace: 'pre-wrap'
+    },
+});
+
+
 export const PreviewTable = (props) => {
     const tableDefRows = useSelector((state) => state.tableDef.rows);
     const [columns, setColumns] = useState([]);
@@ -81,7 +95,7 @@ export const PreviewTable = (props) => {
                 field: row.id,
                 headerName: row.name,
                 description: row.name,
-                headerClassName: "header-preview",
+                headerClassName: "header",
                 sortable: false,
                 hideSortIcons: true,
                 disableReorder: true,
@@ -156,8 +170,10 @@ export const PreviewTable = (props) => {
                                 }
                             }
                         }
+                        let tooltip = ret.join("\n\n");
+                        return (<CustomTooltip title={tooltip}>{row.name}</CustomTooltip>);
                     }
-                    return ret.join("\n");
+                    return row.name;
                 }
             }
         }));
