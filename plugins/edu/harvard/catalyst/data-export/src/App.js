@@ -12,15 +12,20 @@ import { Provider } from 'react-redux';
 import {ThemeProvider} from "@mui/material/styles";
 import { getStore } from "./store/getStore";
 
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+
 const store = getStore();
 
 export default () => {
     return (
-        <ThemeProvider theme={theme}>
-            <Provider store={store}>
-                <DataExport />
-            </Provider>
-        </ThemeProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <DataExport />
+                </Provider>
+            </ThemeProvider>
+        </LocalizationProvider>
     );
 };
 
