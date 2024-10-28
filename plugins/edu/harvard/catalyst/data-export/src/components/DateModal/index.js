@@ -11,19 +11,19 @@ import IconButton from '@mui/material/IconButton';
 
 export const DateModal = ({open, handleClose, startDate, endDate, setStartDate, setEndDate, saveUpdate}) => {
 
-    const [isChanged, setIsChanged] = React.useState(false);
+    const [canSave, setCanSave] = React.useState(true);
     let handleSetStartValue = (val) => {
+        console.log("handleSetStartValue");
+        setCanSave(true);
         setStartDate(val);
-        setIsChanged(true);
     };
     let handleSetEndValue = (val) => {
+        setCanSave(true);
         setEndDate(val);
-        setIsChanged(true);
     };
 
     let handleDateUpdate = () => {
         saveUpdate();
-        setIsChanged(false);
         handleClose();
     }
 
@@ -48,9 +48,16 @@ export const DateModal = ({open, handleClose, startDate, endDate, setStartDate, 
                     <div style={{textAlign: 'center', marginTop: '1rem'}}><DatePicker
                         label="Start Date"
                         views={['year','month','day']}
+                        onError={(a) => {
+                            if (a === null) {
+                                setCanSave(true);
+                            } else {
+                                setCanSave(false);
+                            }
+                        }}
                         value={startDate}
                         maxDate={endDate}
-                        onChange={handleSetStartValue}
+                        onAccept={handleSetStartValue}
                         disableFuture={true}
                         sx={{ minWidth: 250 }}
                     />
@@ -58,14 +65,21 @@ export const DateModal = ({open, handleClose, startDate, endDate, setStartDate, 
                         aria-label="reset date"
                         size="large"
                         onClick={()=> handleSetStartValue()}
-                    ><ReplayIcon fontSize="inherit" title="reset start date" /></IconButton>
+                    ><ReplayIcon fontSize="inherit"/></IconButton>
                     </div>
                     <div style={{textAlign: 'center', marginTop: '1rem'}}><DatePicker
                         label="End Date"
                         views={['year','month','day']}
+                        onError={(a) => {
+                            if (a === null) {
+                                setCanSave(true);
+                            } else {
+                                setCanSave(false);
+                            }
+                        }}
                         value={endDate}
                         minDate={startDate}
-                        onChange={handleSetEndValue}
+                        onAccept={handleSetEndValue}
                         disableFuture={true}
                         sx={{ minWidth: 250 }}
                     />
@@ -73,15 +87,12 @@ export const DateModal = ({open, handleClose, startDate, endDate, setStartDate, 
                         aria-label="reset date"
                         size="large"
                         onClick={()=> handleSetEndValue()}
-                    ><ReplayIcon fontSize="inherit" title="reset end date" /></IconButton>
+                    ><ReplayIcon fontSize="inherit"/></IconButton>
                     </div>
             </DialogContent>
             <DialogActions>
-                <Button variant="outlined" onClick={()=>{
-                    setIsChanged(false);
-                    handleClose();
-                }}>Cancel</Button>
-                <Button variant="contained" onClick={handleDateUpdate} disabled={!isChanged}>Save</Button>
+                <Button variant="outlined" onClick={()=>{handleClose()}}>Cancel</Button>
+                <Button variant="contained" onClick={handleDateUpdate} disabled={!canSave}>Save</Button>
             </DialogActions>
         </Dialog>
     );
