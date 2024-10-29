@@ -93,7 +93,6 @@ export const DefineTable = (props) => {
             flex:0.5,
             renderCell: (cellValues) => {
                 if (!cellValues.row.required) {
-                    let ret;
                     let txtLab;
                     let txtMouseover;
                     let labData = cellValues.row.sdxData.LabValues;
