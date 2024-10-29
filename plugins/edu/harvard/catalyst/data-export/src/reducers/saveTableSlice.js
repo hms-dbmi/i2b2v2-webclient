@@ -17,7 +17,7 @@ export const saveTableSlice = createSlice({
                 status: "SUCCESS"
             });
         },
-        saveTableError: (state, { payload: errorMessage }) => {
+        saveTableError: (state, { payload: { errorMessage } }) => {
             state.isSaving = false;
             state.statusInfo = StatusInfo({
                 status: "FAIL",
