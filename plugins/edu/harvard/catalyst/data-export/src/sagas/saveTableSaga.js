@@ -65,8 +65,22 @@ export function* doSaveTable(action) {
         };
 
         const response = yield fetch(i2b2.model.endpointUrl, fetchConfig);
-        if(response) {
-            yield put(saveTableSuccess());
+        if(response.ok) {
+            const data = yield response.json();
+            if(!data.success){
+                let error = data.error;
+                if(error && error.length === 0 ) {
+                    error = "There was an error saving the table"
+                }
+                console.error("Error saving table! Message: " + error);
+                yield put(saveTableError({errorMessage: error}));
+            }
+            else{
+                yield put(saveTableSuccess());
+            }
+        }else{
+            console.error("Error saving table! Status code: " + response.status + "Message: " + response.statusText);
+            yield put(saveTableError({errorMessage: "There was an error saving the table"}));
         }
     } catch (error) {
         yield put(saveTableError({errorMessage: "There was an error saving the data table"}));
