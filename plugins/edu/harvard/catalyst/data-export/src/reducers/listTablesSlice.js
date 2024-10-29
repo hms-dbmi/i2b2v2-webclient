@@ -27,13 +27,17 @@ export const listTablesSlice = createSlice({
                 errorMessage: errorMessage
             });
         },
+        listTablesErrorStatusConfirmed: (state, { payload: errorMessage }) => {
+            state.statusInfo = StatusInfo();
+        },
     }
 })
 
 export const {
     listTables,
     listTablesSuccess,
-    listTablesError
+    listTablesError,
+    listTablesErrorStatusConfirmed
 } = listTablesSlice.actions
 
 export default listTablesSlice.reducer

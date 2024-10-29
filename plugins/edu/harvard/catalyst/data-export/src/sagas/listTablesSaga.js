@@ -36,14 +36,14 @@ export function* doListTables(action) {
             mode: "cors",
             body: formdata
         });
-        if (response.ok) {
+        /*if (response.ok) {
             const data = parseData(yield response.json());
             i2b2.model.tableList = data;
             i2b2.state.save();
             yield put(listTablesSuccess(data));
-        } else {
+        } else {*/
             yield put(listTablesError({errorMessage: "There was an error retrieving the list of tables"}));
-        }
+       // }
     } catch (error) {
         yield put(listTablesError({errorMessage: "There was an error retrieving the list of tables"}));
     }
