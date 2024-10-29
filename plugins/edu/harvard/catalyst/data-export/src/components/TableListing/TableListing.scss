@@ -1,0 +1,16 @@
+.TableListing{
+  .tableListingOverlay{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .listingStatusMsg {
+    display: flex;
+    justify-content: center;
+    color: green;
+  }
+  .listingStatusErrorMsg {
+    color: red;
+  }
+}

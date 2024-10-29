@@ -18,7 +18,7 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
-    const { userRows } = useSelector((state) => state.tableListing);
+    const { userRows, statusInfo } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
     const tableDefRows = useSelector((state) => state.tableDef.rows);
     const [selectedRows, setSelectedRows] = React.useState([]);
@@ -148,6 +148,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             canRename={false}
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
+                            hasError={statusInfo.status==='FAIL'}
                         />
                     </TabPanel>
                 </Box>
@@ -166,7 +167,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                     sx={{float: "left", width:"60%", position:"absolute", left:32}}
                 />
                 <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-                <Button variant="contained" onClick={()=>onSave(selectedRows)} disabled={isNameInvalid}>Save</Button>
+                <Button variant="contained" onClick={()=>onSave(selectedRows)} disabled={isNameInvalid || statusInfo.status === "FAIL"}>Save</Button>
             </DialogActions>
         </Dialog>
         <Dialog

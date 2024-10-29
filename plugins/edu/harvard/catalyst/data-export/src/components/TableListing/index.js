@@ -1,8 +1,9 @@
 import React from "react";
 
 import {DataGrid} from "@mui/x-data-grid";
+import "./TableListing.scss";
 
-export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel}) => {
+export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hasError}) => {
     const columns = [
         {
             field: 'title',
@@ -51,20 +52,31 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         }
     }
 
+    const CustomNoRowsOverlay = () => {
+        return (
+            <div className={"tableListingOverlay"}>
+                { !hasError && <div className={"listingStatusMsg"} >No results</div> }
+                { hasError && <div className={"listingStatusMsg listingStatusErrorMsg"} >There was an error retrieving existing table definitions</div>}
+            </div>
+        );
+    }
 
     return (
-        <div id={id} style={{height: 400}} >
+        <div className={"TableListing"} id={id} style={{height: 400}} >
             <DataGrid
                 height={280}
                 columnHeaderHeight={40}
                 style={{background:"white"}}
                 columns={columns}
-                rows={rows}
+                rows={[]}
                 showCellVerticalBorder={true}
                 density={'compact'}
                 disableColumnResize={true}
                 onRowSelectionModelChange = {handleOnSelectionModelChange}
                 rowSelectionModel = {selectionModel}
+                slots={{
+                    noRowsOverlay: CustomNoRowsOverlay,
+                }}
                 autoPageSize
             />
         </div>
