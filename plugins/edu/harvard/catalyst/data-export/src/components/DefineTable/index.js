@@ -186,7 +186,7 @@ export const DefineTable = (props) => {
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton aria-label="delete" size="small">
-                                        <Tooltip title="Failed to load all aggregation options.">
+                                        <Tooltip title="Failed to load term info.">
                                             <WarningAmberIcon fontSize={"small"} sx={{ color: "red" }} />
                                         </Tooltip>
                                     </IconButton>
