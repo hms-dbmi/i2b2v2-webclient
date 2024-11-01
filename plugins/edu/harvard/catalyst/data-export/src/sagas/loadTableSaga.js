@@ -25,15 +25,28 @@ export function* doLoadTable(action) {
             body: formdata
         };
 
-       const response = yield fetch(i2b2.model.endpointUrl, fetchConfig);
+        const response = yield fetch(i2b2.model.endpointUrl, fetchConfig);
+
         if(response.ok) {
             let data = yield response.json();
-            yield put(loadTableSuccess(data));
+            if(data.error){
+                let error = data.error;
+                if(error && error.length === 0 ) {
+                    error = "There was an error loading the table"
+                }
+                console.error("Error loading table! Message: " + error);
+                yield put(loadTableError({errorMessage: error}));
+            }
+            else{
+                yield put(loadTableSuccess(data));
+            }
         }else{
-            yield put(loadTableError({error: "There was an error loading the table definition " + tableListing.title}));
+            console.error("Error saving table! Status code: " + response.status + "Message: " + response.statusText);
+            yield put(loadTableError({errorMessage: "There was an error loading the table definition " + tableListing.title}));
         }
     } catch (error) {
-        yield put(loadTableError({error: "There was an error loading the table definition " + tableListing.title}));
+        console.log("Caught load table error " + error);
+        yield put(loadTableError({errorMessage: "There was an error loading the table definition " + tableListing.title}));
     }
 }
 

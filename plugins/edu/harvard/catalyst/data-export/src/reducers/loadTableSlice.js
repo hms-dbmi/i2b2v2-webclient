@@ -74,12 +74,15 @@ export const loadTableSlice = createSlice({
                 status: "SUCCESS"
             });
         },
-        loadTableError: (state, { payload: errorMessage }) => {
+        loadTableError: (state, { payload: { errorMessage } }) => {
             state.isFetching = false;
             state.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage
             });
+        },
+        loadStatusConfirmed: (state) => {
+            state.statusInfo = StatusInfo();
         },
         handleRowDelete:(state, { payload: { row } }) => {
             state.rows = state.rows.filter(r => r.id !== row.id);
@@ -160,6 +163,7 @@ export const {
     loadTable,
     loadTableSuccess,
     loadTableError,
+    loadStatusConfirmed,
     handleRowDelete,
     handleRowInsert,
     handleRowExported,

@@ -17,12 +17,20 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
 
-import { handleRowDelete, handleRowInsert, handleRowExported, handleRowAggregation, handleRowName, handleRowSdx} from "../../reducers/loadTableSlice";
+import {
+    handleRowDelete,
+    handleRowInsert,
+    handleRowExported,
+    handleRowAggregation,
+    handleRowName,
+    handleRowSdx,
+    loadStatusConfirmed
+} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
 import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
-import {Link} from "@mui/material";
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link} from "@mui/material";
 import XMLParser from "react-xml-parser";
 
 import dayjs from 'dayjs';
@@ -35,7 +43,7 @@ let currentDateRow = false;
 export const DefineTable = (props) => {
     const dispatch = useDispatch();
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
-    const { rows } = useSelector((state) => state.tableDef);
+    const { rows, statusInfo } = useSelector((state) => state.tableDef);
     const [cellModesModel, setCellModesModel] = React.useState({});
 
 
@@ -512,6 +520,10 @@ export const DefineTable = (props) => {
         }
     }
 
+    const handleConfirmStatus = () => {
+        dispatch(loadStatusConfirmed());
+    };
+
     return (
         <div className={"DefineTable"} >
             <DateModal
@@ -561,6 +573,28 @@ export const DefineTable = (props) => {
                 <Button variant="contained" onClick={()=>props.tabChanger(null,1)}>Preview Table</Button>
                 <Button variant="contained" onClick={()=>props.tabChanger(null,2)}>Select Participants for Table</Button>
             </Stack>
+
+            {statusInfo.status === "SUCCESS" && handleConfirmStatus()}
+            <Dialog
+                open={statusInfo.status === "FAIL"}
+                onClose={handleConfirmStatus}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Data Request"}
+                </DialogTitle>
+                <DialogContent dividers>
+                    <DialogContentText id="alert-dialog-description">
+                        {statusInfo.errorMessage}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" autoFocus onClick={handleConfirmStatus}>
+                        Ok
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 
