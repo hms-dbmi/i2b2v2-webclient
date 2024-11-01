@@ -33,7 +33,12 @@ import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link} from "@mui/material";
 import XMLParser from "react-xml-parser";
 
+import dayjs from 'dayjs';
+import {DateModal} from "../DateModal";
+
 /* global i2b2 */
+
+let currentDateRow = false;
 
 export const DefineTable = (props) => {
     const dispatch = useDispatch();
@@ -93,7 +98,33 @@ export const DefineTable = (props) => {
             flex:0.5,
             renderCell: (cellValues) => {
                 if (!cellValues.row.required) {
-                    let ret;
+                    let func_getDateTxt = function(sdx) {
+                        let ret = {txt: false, mouse: false };
+                        ret.txt = "Set Date";
+                        ret.mouse = "Click to set a date constraint";
+                        if (sdx.dateRange) {
+                            let start = false;
+                            let end = false;
+                            if (sdx.dateRange.start && sdx.dateRange.start !== "") start = sdx.dateRange.start;
+                            if (sdx.dateRange.end && sdx.dateRange.end !== "") end = sdx.dateRange.end;
+                            if (start && end) {
+                                ret.txt = start + " to " + end;
+                                ret.mouse = "Only find this concept from " + start + " to " + end;
+                            } else {
+                                if (start) {
+                                    ret.txt = ">= " + start;
+                                    ret.mouse = "Only find this concept starting from " + start;
+                                }
+                                if (end) {
+                                    ret.txt = "<= " + end;
+                                    ret.mouse = "Only find this concept until " + end;
+                                }
+                            }
+                        }
+                        return ret;
+                    };
+
+                    // lab value constraint
                     let txtLab;
                     let txtMouseover;
                     let labData = cellValues.row.sdxData.LabValues;
@@ -142,14 +173,25 @@ export const DefineTable = (props) => {
                                 txtMouseover = txtLab;
                                 break;
                         }
-
-                        return <Link href={`#${cellValues.row.id}`} title={txtMouseover} onClick={(event) => {
+                        let dateInfo = func_getDateTxt(cellValues.row.sdxData);
+                        return (<span><Link href={`#${cellValues.row.id}`} title={txtMouseover} onClick={(event) => {
                             handleSetValueClick(event, cellValues);
-                        }}>{txtLab}</Link>;
+                        }}>{txtLab}</Link> | <Link href={`#${cellValues.row.id}`} title={dateInfo.mouse} onClick={(event) => {
+                            handleSetDateClick(event, cellValues);
+                        }}>{dateInfo.txt}</Link></span>);
                     } else {
-                        return <Link href={`#${cellValues.row.id}`} onClick={(event) => {
-                            handleSetValueClick(event, cellValues);
-                        }}>Set Value</Link>;
+                        let dateInfo = func_getDateTxt(cellValues.row.sdxData);
+                        if (labData !== undefined ) {
+                            return (<span><Link href={`#${cellValues.row.id}`} onClick={(event) => {
+                                handleSetValueClick(event, cellValues);
+                            }}>Set Value</Link> | <Link href={`#${cellValues.row.id}`} title={dateInfo.mouse} onClick={(event) => {
+                                handleSetDateClick(event, cellValues);
+                            }}>{dateInfo.txt}</Link></span>);
+                        } else {
+                            return (<span><Link href={`#${cellValues.row.id}`} title={dateInfo.mouse} onClick={(event) => {
+                                handleSetDateClick(event, cellValues);
+                            }}>{dateInfo.txt}</Link></span>);
+                        }
                     }
                 }
             }
@@ -301,6 +343,46 @@ export const DefineTable = (props) => {
         displayLabValues(cellValues.row.id, cellValues.row.sdxData);
     };
 
+    const handleDateSave = () => {
+        let rowId = currentDateRow.id;
+        let newSdx = currentDateRow.sdxData;
+        let newDateRange = {start:"", end:""}
+        if (startDate) newDateRange.start = (startDate.$M + 1) + "/" + startDate.$D + "/" + startDate.$y;
+        if (endDate) newDateRange.end = (endDate.$M + 1) + "/" + endDate.$D + "/" + endDate.$y;
+        newSdx = {...newSdx, dateRange: newDateRange};
+        dispatch(handleRowSdx({
+            id: rowId, sdx: newSdx
+        }));
+    }
+    const  handleSetDateClick = (event, cellValues) => {
+        currentDateRow = cellValues.row;
+        let sdx = cellValues.row.sdxData;
+        if (sdx.dateRange) {
+            if (sdx.dateRange.start === "") {
+                setStartDate(undefined);
+            } else {
+                let temp = sdx.dateRange.start.split('/');
+                setStartDate(dayjs(temp[2] + '-' + temp[0] + '-' + temp[1]));
+            }
+            if (sdx.dateRange.end === "") {
+                setEndDate(undefined);
+            } else {
+                let temp = sdx.dateRange.end.split('/');
+                setEndDate(dayjs(temp[2] + '-' + temp[0] + '-' + temp[1]));
+            }
+        } else {
+            setStartDate(undefined);
+            setEndDate(undefined);
+        }
+        handleDateOpen();
+    };
+    const [showDate, setDateViz] = React.useState(false);
+    const handleDateOpen = () => setDateViz(true);
+    const handleDateClose = () => setDateViz(false);
+    const [startDate, setStartDate] = React.useState(undefined);
+    const [endDate, setEndDate] = React.useState(undefined);
+
+
     const conceptDropHandler = (sdx, ev) => {
         let rowNum = null;
         // see if drop is on a row
@@ -444,6 +526,15 @@ export const DefineTable = (props) => {
 
     return (
         <div className={"DefineTable"} >
+            <DateModal
+                handleClose={handleDateClose}
+                open={showDate}
+                startDate={startDate}
+                setStartDate={setStartDate}
+                endDate={endDate}
+                setEndDate={setEndDate}
+                saveUpdate={handleDateSave}
+            />
 
             <div id="dropTrgt">
                 <p>Drag a concept onto the grid to add it to the list</p>
