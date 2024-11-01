@@ -104,77 +104,74 @@ export const PreviewTable = (props) => {
                 minWidth: 150,
                 renderHeader: (data) => {
                     let ret = [row.name];
-                    if (!row.required) {
-                        ret.push('['+row.dataOption+']');
-                        if (row.sdxData.LabValues) {
-                            let labData = row.sdxData.LabValues;
-                            let txtLab;
-                            if (labData !== undefined && labData.ValueType !== undefined) {
-                                switch (labData.ValueType) {
-                                    case undefined:
-                                        break;
-                                    case "TEXT":
-                                        if (labData.Value.length > 1) {
-                                            txtLab = "(" + labData.Value.length + " values)";
-                                            // txtMouseover = labData.Value.join('\n');
-                                        } else {
-                                            txtLab = labData.Value[0];
-                                        }
-                                        break;
-                                    case "FLAG":
-                                        txtLab = "Flag = \"" + labData.ValueFlag + "\"";
-                                        break;
-                                    default:
-                                        switch(labData.ValueOperator) {
-                                            case "BETWEEN":
-                                                txtLab = "Between " + labData.ValueLow + " - " + labData.ValueHigh;
-                                                break;
-                                            case "GT":
-                                                txtLab = ">" + labData.Value;
-                                                break;
-                                            case "GE":
-                                                txtLab = "≥" + labData.Value;
-                                                break;
-                                            case "LE":
-                                                txtLab = "≤" + labData.Value;
-                                                break;
-                                            case "LT":
-                                                txtLab = "<" + labData.Value;
-                                                break;
-                                            case "EQ":
-                                                txtLab = "=" + labData.Value;
-                                                break;
-                                            default:
-                                                txtLab = "UNKNOWN";
-                                        }
-                                        // add units
-                                        if (typeof labData.ValueUnit === "string" && labData.ValueUnit !== "") txtLab = txtLab + " " + labData.ValueUnit;
-                                        break;
-                                }
-                            }
-                            ret.push('[ ' + txtLab + ' ]');
-                        }
-                        if (row.sdxData.dateRange) {
-                            let sdxDate = row.sdxData.dateRange;
-                            let start = false;
-                            let end = false;
-                            if (sdxDate.start && sdxDate.start !== "") start = sdxDate.start;
-                            if (sdxDate.end && sdxDate.end !== "") end = sdxDate.end;
-                            if (start && end) {
-                                ret.push('[ '+start + " to " + end +' ]');
-                            } else {
-                                if (start) {
-                                    ret.push("[ From " + start + ' ]');
-                                }
-                                if (end) {
-                                    ret.push("[ Until " + end + ' ]');
-                                }
+                    ret.push('['+row.dataOption+']');
+                    if (row.sdxData.LabValues) {
+                        let labData = row.sdxData.LabValues;
+                        let txtLab;
+                        if (labData !== undefined && labData.ValueType !== undefined) {
+                            switch (labData.ValueType) {
+                                case undefined:
+                                    break;
+                                case "TEXT":
+                                    if (labData.Value.length > 1) {
+                                        txtLab = "(" + labData.Value.length + " values)";
+                                        // txtMouseover = labData.Value.join('\n');
+                                    } else {
+                                        txtLab = labData.Value[0];
+                                    }
+                                    break;
+                                case "FLAG":
+                                    txtLab = "Flag = \"" + labData.ValueFlag + "\"";
+                                    break;
+                                default:
+                                    switch(labData.ValueOperator) {
+                                        case "BETWEEN":
+                                            txtLab = "Between " + labData.ValueLow + " - " + labData.ValueHigh;
+                                            break;
+                                        case "GT":
+                                            txtLab = ">" + labData.Value;
+                                            break;
+                                        case "GE":
+                                            txtLab = "≥" + labData.Value;
+                                            break;
+                                        case "LE":
+                                            txtLab = "≤" + labData.Value;
+                                            break;
+                                        case "LT":
+                                            txtLab = "<" + labData.Value;
+                                            break;
+                                        case "EQ":
+                                            txtLab = "=" + labData.Value;
+                                            break;
+                                        default:
+                                            txtLab = "UNKNOWN";
+                                    }
+                                    // add units
+                                    if (typeof labData.ValueUnit === "string" && labData.ValueUnit !== "") txtLab = txtLab + " " + labData.ValueUnit;
+                                    break;
                             }
                         }
-                        let tooltip = ret.join("\n\n");
-                        return (<CustomTooltip title={tooltip}>{row.name}</CustomTooltip>);
+                        ret.push('[ ' + txtLab + ' ]');
                     }
-                    return row.name;
+                    if (row.sdxData.dateRange) {
+                        let sdxDate = row.sdxData.dateRange;
+                        let start = false;
+                        let end = false;
+                        if (sdxDate.start && sdxDate.start !== "") start = sdxDate.start;
+                        if (sdxDate.end && sdxDate.end !== "") end = sdxDate.end;
+                        if (start && end) {
+                            ret.push('[ '+start + " to " + end +' ]');
+                        } else {
+                            if (start) {
+                                ret.push("[ From " + start + ' ]');
+                            }
+                            if (end) {
+                                ret.push("[ Until " + end + ' ]');
+                            }
+                        }
+                    }
+                    let tooltip = ret.join("\n\n");
+                    return (<CustomTooltip title={tooltip}>{row.name}</CustomTooltip>);
                 }
             }
         }));
