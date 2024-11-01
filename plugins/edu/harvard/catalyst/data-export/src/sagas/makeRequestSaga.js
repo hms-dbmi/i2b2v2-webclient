@@ -63,12 +63,24 @@ export function* doMakeRequest(action) {
 
         const response = yield fetch(i2b2.model.endpointUrl, fetchConfig);
         if(response.ok) {
-            yield put(makeRequestSuccess());
+            const data = yield response.json();
+            if(!data.success){
+                let error = data.error;
+                if(error && error.length === 0 ) {
+                    error = "There was an error submitting request"
+                }
+                console.error("Error submitting request! Message: " + error);
+                yield put(makeRequestError({errorMessage: error}));
+            }
+            else{
+                yield put(makeRequestSuccess());
+            }
         }else{
+            console.error("Error submitting request! Status code: " + response.status + "Message: " + response.statusText);
             yield put(makeRequestError({errorMessage: "There was an error making the request"}));
         }
     } catch (error) {
-        yield put(makeRequestError({errorMessage: "There was an error making the request"}));
+        yield put(makeRequestError({errorMessage: "There was an error submitting the request"}));
     }
 }
 
