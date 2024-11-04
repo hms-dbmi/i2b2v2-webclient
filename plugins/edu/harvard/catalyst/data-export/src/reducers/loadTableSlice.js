@@ -123,6 +123,7 @@ export const loadTableSlice = createSlice({
                 sdxData: sdx,
                 dataOption: "Exists",
                 required: false,
+                dataType: sdx.origData?.dataType,
                 dataOptionHasError: hasError
             });
             state.rows.push(newRow);
