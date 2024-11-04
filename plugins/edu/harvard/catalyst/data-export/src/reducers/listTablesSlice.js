@@ -8,8 +8,8 @@ export const listTablesSlice = createSlice({
     initialState: defaultState.tableListing,
     reducers: {
         listTables: state => {
-            state = TableListing({
-                isFetching: false
+            return TableListing({
+                isFetching: true
             })
         },
         listTablesSuccess: (state, { payload: tableDefs }) => {
@@ -20,15 +20,12 @@ export const listTablesSlice = createSlice({
                 status: "SUCCESS"
             });
         },
-        listTablesError: (state, { payload: errorMessage }) => {
+        listTablesError: (state, { payload: { errorMessage} }) => {
             state.isFetching = false;
             state.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage
             });
-        },
-        listTablesErrorStatusConfirmed: (state, { payload: errorMessage }) => {
-            state.statusInfo = StatusInfo();
         },
     }
 })
@@ -37,7 +34,6 @@ export const {
     listTables,
     listTablesSuccess,
     listTablesError,
-    listTablesErrorStatusConfirmed
 } = listTablesSlice.actions
 
 export default listTablesSlice.reducer
