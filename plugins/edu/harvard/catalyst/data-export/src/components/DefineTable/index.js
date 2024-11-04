@@ -16,6 +16,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 import {
     handleRowDelete,
@@ -30,8 +31,18 @@ import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import "./DefineTable.scss";
 import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link} from "@mui/material";
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle, InputAdornment,
+    Link,
+    MenuItem,
+    Select,
+} from "@mui/material";
 import XMLParser from "react-xml-parser";
+import IconButton from "@mui/material/IconButton";
 
 import dayjs from 'dayjs';
 import {DateModal} from "../DateModal";
@@ -45,7 +56,6 @@ export const DefineTable = (props) => {
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { rows, statusInfo } = useSelector((state) => state.tableDef);
     const [cellModesModel, setCellModesModel] = React.useState({});
-
 
     const columns = [
         {
@@ -208,48 +218,38 @@ export const DefineTable = (props) => {
             hideSortIcons: true,
             disableColumnSorting: true,
             sortable: false,
-            editable: true,
-            type: "singleSelect",
-            valueOptions: ({ row }) => {
-                let valueOptions = [];
-                if (!row.required) {
-                    valueOptions.push(
-                        { value: "Exists", label: "Existence (Yes/No)" },
-                        { value: "NumConcepts", label: "Count: Number of Concepts"},
-                        { value: "NumDates", label: "Count: Number of Dates" },
-                        { value: "NumEncounters", label: "Count: Number of Encounters" },
-                        { value: "NumFacts", label: "Count: Number of Facts" },
-                        { value: "NumProviders", label: "Count: Number of Providers" },
-                        { value: "MinDate", label: "Date: First Date" },
-                        { value: "MaxDate", label: "Date: Last Date" },
-                    );
-                }else{
-                    valueOptions.push ({ value: "Value", label: "Value" });
-                }
-
-                if(row.dataType) {
-                    if (row.dataType === DATATYPE.INTEGER ||
-                        row.dataType === DATATYPE.FLOAT ||
-                        row.dataType === DATATYPE.POSINTEGER ||
-                        row.dataType === DATATYPE.POSFLOAT) {
-                        valueOptions.push(
-                            { value: "MinValue", label: "Calc: Minimum Value" },
-                            { value: "MaxValue", label: "Calc: Maximum Value" },
-                            { value: "AvgValue", label: "Calc: Average Value" },
-                            { value: "MedianValue", label: "Calc: Median Value" },
-                            {value: "FirstValue", label: "Calc: First Value"},
-                            {value: "LastValue", label: "Calc: Last Value"},
-                            {value: "NumValues", label: "Count: Number of Values"}
-                        );
-                    }else{
-                        valueOptions.push(
-                            { value: "FirstValueEnum", label: "Calc: First Value" },
-                            { value: "LastValueEnum", label: "Calc: Last Value" },
-                        );
+            editable: false,
+            renderCell: ({row}) => {
+                return (
+                    <div className={"aggregateSelect"}>
+                    { row.dataOptionHasError && <Select
+                            value={row.dataOption}
+                            onChange={(event) => handleUpdateAggregation({id: row.id, value: event.target.value})}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton aria-label="delete" size="small">
+                                        <Tooltip title="Failed to load term info.">
+                                            <WarningAmberIcon fontSize={"small"} sx={{ color: "red" }} />
+                                        </Tooltip>
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        >
+                            { createAggregationSelectOptions(row) }
+                        </Select>
                     }
-                }
-
-                return valueOptions;
+                    {!row.dataOptionHasError &&
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select-adornment"
+                            value={row.dataOption}
+                            onChange={(event) => handleUpdateAggregation({id: row.id, value: event.target.value})}
+                        >
+                            { createAggregationSelectOptions(row) }
+                        </Select>
+                    }
+                    </div>
+                );
             },
             valueSetter: (value, row) => {
                 dispatch(handleRowAggregation({id: row.id, value: value}));
@@ -332,12 +332,52 @@ export const DefineTable = (props) => {
         }
     ];
 
+    const createAggregationSelectOptions = (row) => {
+        let valueOptions = [];
+        if (!row.required) {
+            valueOptions.push( <MenuItem value={"Exists"}>Existence (Yes/No)</MenuItem>);
+            valueOptions.push( <MenuItem value={"NumConcepts"}>Count: Number of Concepts</MenuItem>);
+            valueOptions.push( <MenuItem value={"NumDates"}>Count: Number of Dates</MenuItem>);
+            valueOptions.push( <MenuItem value={"NumEncounters"}>Count: Number of Encounters</MenuItem>);
+            valueOptions.push( <MenuItem value={"NumFacts"}>Count: Number of Facts</MenuItem>);
+            valueOptions.push( <MenuItem value={"NumProviders"}>Count: Number of Providers</MenuItem>);
+            valueOptions.push( <MenuItem value={"MinDate"}>Date: First Date</MenuItem>);
+            valueOptions.push( <MenuItem value={"MaxDate"}>Date: Last Date</MenuItem>);
+        }
+        else{
+            valueOptions.push( <MenuItem value={"Value"}>Value</MenuItem>);
+        }
+
+        if(row.dataType) {
+            if (row.dataType === DATATYPE.INTEGER ||
+                row.dataType === DATATYPE.FLOAT ||
+                row.dataType === DATATYPE.POSINTEGER ||
+                row.dataType === DATATYPE.POSFLOAT) {
+                valueOptions.push( <MenuItem value={"MinValue"}>Calc: Minimum Value</MenuItem>);
+                valueOptions.push( <MenuItem value={"MaxValue"}>Calc: Maximum Value</MenuItem>);
+                valueOptions.push( <MenuItem value={"AvgValue"}>Calc: Average Value</MenuItem>);
+                valueOptions.push( <MenuItem value={"MedianValue"}>Calc: Median Value</MenuItem>);
+                valueOptions.push( <MenuItem value={"FirstValue"}>Calc: First Value</MenuItem>);
+                valueOptions.push( <MenuItem value={"LastValue"}>Calc: Last Value</MenuItem>);
+                valueOptions.push( <MenuItem value={"NumValues"}>Count: Number of Values</MenuItem>);
+            }else{
+                valueOptions.push( <MenuItem value={"FirstValueEnum"}>Calc: First Value</MenuItem>);
+                valueOptions.push( <MenuItem value={"LastValueEnum"}>Calc: Last Value</MenuItem>);
+            }
+        }
+
+        return valueOptions;
+    }
     const displayLabValues = (rowId, sdx) => {
         i2b2.authorizedTunnel.function["i2b2.CRC.view.QT.labValue.getAndShowLabValues"](sdx).then((res) => {
             dispatch(handleRowSdx({
                 id: rowId, sdx: res
             }));
         });
+    }
+
+    const handleUpdateAggregation = (value) => {
+        dispatch(handleRowAggregation(value));
     }
     const  handleSetValueClick = (event, cellValues) => {
         displayLabValues(cellValues.row.id, cellValues.row.sdxData);
@@ -425,12 +465,13 @@ export const DefineTable = (props) => {
                     let dataType = metadata.getElementsByTagName('DataType');
                     if (dataType.length !== 0) sdx.origData.dataType = DATATYPE[dataType[0].value.toUpperCase()];
                 }
-            }).finally(() => {
-                // insert row
                 const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
-                dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx}));
+                dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: false}));
                 if (sdx.origData.metadata !== undefined) displayLabValues(rowId, sdx);
-        });
+            }).catch(() => {
+                const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
+                dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: true}));
+            });
     };
 
     const i2b2LibLoaded = () => {

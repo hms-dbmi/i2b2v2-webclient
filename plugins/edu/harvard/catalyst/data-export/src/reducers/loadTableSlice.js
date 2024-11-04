@@ -89,7 +89,7 @@ export const loadTableSlice = createSlice({
             // handle reindexing the order attribute for all items
             state.rows.sort((a,b) => a.order - b.order).forEach((x,i)=> { x.order = i + 1 });
         },
-        handleRowInsert:(state, { payload: {rowIndex, rowId, sdx} }) => {
+        handleRowInsert:(state, { payload: {rowIndex, rowId, sdx, hasError} }) => {
             // get the range in which we can correctly place the row
             const rowOrdering = state.rows.map((row)=>(row.required ? false : row.order)).filter((a)=>a);
             const rowMin = (rowOrdering.length ? Math.min(...rowOrdering) : state.rows.length + 1);
@@ -122,7 +122,8 @@ export const loadTableSlice = createSlice({
                 locked: false,
                 sdxData: sdx,
                 dataOption: "Exists",
-                required: false
+                required: false,
+                dataOptionHasError: hasError
             });
             state.rows.push(newRow);
             // handle reindexing the order attribute for all items (just to make sure our numbering is correct)

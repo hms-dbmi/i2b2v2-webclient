@@ -8,6 +8,7 @@ export const TableDefinitionRow = ({
     locked = false,
     sdxData = {},
     dataOption = null,
+    dataOptionHasError = false,
     required = false,
     dataType= null
 
@@ -19,6 +20,7 @@ export const TableDefinitionRow = ({
     locked,
     sdxData,
     dataOption,
+    dataOptionHasError,
     required,
     dataType
 });

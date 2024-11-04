@@ -1,0 +1,11 @@
+.TableListing{
+  .tableListingOverlay{
+    padding: 0.6em;
+  }
+  .listingStatusMsg {
+    color: green;
+  }
+  .listingStatusErrorMsg {
+    color: red;
+  }
+}
