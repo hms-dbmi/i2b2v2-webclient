@@ -16,7 +16,7 @@ import {Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} fr
 
 export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
     const dispatch = useDispatch();
-    const { sharedRows, userRows, statusInfo } = useSelector((state) => state.tableListing);
+    const { sharedRows, userRows, statusInfo, isFetching} = useSelector((state) => state.tableListing);
     const [tab, setTab] = React.useState(0);
     const [selectedTable, setSelectedTable] = useState(null);
     const handleChangeTab = (event, newValue) => { setTab(newValue); };
@@ -75,14 +75,20 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         index={0}
                         className={'modalTabPanel'}
                     >
-                        <TableListing id={"loadModalDefTableGlobal"} rows={sharedRows} canRename={false} onSelect={setSelectedTable} hasError={statusInfo.status==='FAIL'}/>
+                        <TableListing id={"loadModalDefTableGlobal"}
+                                      rows={sharedRows}
+                                      canRename={false}
+                                      onSelect={setSelectedTable}
+                                      hasError={statusInfo.status==='FAIL'}
+                                      isLoading={isFetching}
+                        />
                     </TabPanel>
                     <TabPanel
                         value={tab}
                         index={1}
                         className={'modalTabPanel'}
                     >
-                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={false} onSelect={setSelectedTable}/>
+                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={false} onSelect={setSelectedTable}  isLoading={isFetching}/>
                     </TabPanel>
                 </Box>
             </DialogContent>

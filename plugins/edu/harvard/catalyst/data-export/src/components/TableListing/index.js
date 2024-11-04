@@ -3,7 +3,7 @@ import React from "react";
 import {DataGrid} from "@mui/x-data-grid";
 import "./TableListing.scss";
 
-export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hasError}) => {
+export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hasError, isLoading}) => {
     const columns = [
         {
             field: 'title',
@@ -74,8 +74,15 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                 disableColumnResize={true}
                 onRowSelectionModelChange = {handleOnSelectionModelChange}
                 rowSelectionModel = {selectionModel}
+                loading={isLoading}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
+                }}
+                slotProps={{
+                    loadingOverlay: {
+                        variant: 'circular-progress',
+                        noRowsVariant: 'linear-progress',
+                    },
                 }}
                 autoPageSize
             />

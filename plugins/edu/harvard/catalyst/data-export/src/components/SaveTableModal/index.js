@@ -18,7 +18,7 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
-    const { userRows, statusInfo } = useSelector((state) => state.tableListing);
+    const { userRows, statusInfo, isFetching } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
     const tableDefRows = useSelector((state) => state.tableDef.rows);
     const [selectedRows, setSelectedRows] = React.useState([]);
@@ -149,6 +149,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
                             hasError={statusInfo.status==='FAIL'}
+                            isLoading={isFetching}
                         />
                     </TabPanel>
                 </Box>
