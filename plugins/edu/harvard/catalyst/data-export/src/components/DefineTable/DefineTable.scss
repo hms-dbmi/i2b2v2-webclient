@@ -48,4 +48,25 @@
   .i2b2DropTarget.dragging .MuiDataGrid-row:hover {
     background-color: rgba(85, 214, 0, 0.08) !important;
   }
+
+  .MuiSelect-iconOutlined{
+    position: relative;
+  }
+
+  fieldset.MuiOutlinedInput-notchedOutline{
+    border: transparent;
+  }
+
+  .MuiSelect-outlined {
+    padding-right: 0.60em !important;
+    padding-left: 0;
+  }
+
+  .MuiInputAdornment-positionEnd{
+    margin-left: -0.92em;
+  }
+
+  .aggregateSelect {
+    width: 60%;
+  }
 }
