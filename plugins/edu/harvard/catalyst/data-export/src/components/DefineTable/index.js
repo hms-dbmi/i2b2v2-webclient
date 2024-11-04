@@ -45,6 +45,7 @@ export const DefineTable = (props) => {
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { rows, statusInfo } = useSelector((state) => state.tableDef);
     const [cellModesModel, setCellModesModel] = React.useState({});
+    const doDispSnackbar = props.dispSnackbar;
 
 
     const columns = [
@@ -400,6 +401,16 @@ export const DefineTable = (props) => {
         } else {
             // insert the drop below the currently set row
             rowNum = parseInt(row.dataset.rowindex) + 1;
+        }
+
+        // ignore if path starts with configured path
+        if (i2b2.model.noDropPaths?.length) {
+            for (let temp of i2b2.model.noDropPaths) {
+                if (sdx.sdxInfo.sdxKeyValue.startsWith(temp)) {
+                    doDispSnackbar('This term is not allowed here.');
+                    return false;
+                }
+            }
         }
 
         // clean/retrieve sdx info

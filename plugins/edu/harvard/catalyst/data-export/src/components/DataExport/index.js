@@ -101,17 +101,17 @@ export const DataExport = () => {
                 </AppBar>
             </Box>
             <CustomTabPanel value={selectedTab} index={0}>
-                <DefineTable tabChanger={handleTabChange}/>
+                <DefineTable tabChanger={handleTabChange} dispSnackbar={handleSnackbarOpen} />
             </CustomTabPanel>
             <CustomTabPanel value={selectedTab} index={1}>
-                <PreviewTable tabChanger={handleTabChange}/>
+                <PreviewTable tabChanger={handleTabChange} dispSnackbar={handleSnackbarOpen} />
             </CustomTabPanel>
             <CustomTabPanel value={selectedTab} index={2}>
-                <MakeRequest/>
+                <MakeRequest dispSnackbar={handleSnackbarOpen} />
             </CustomTabPanel>
 
-            <LoadTableModal handleClose={handleLoadClose} open={showLoad} handleSetScreen={setSelectedTab} />
-            <SaveTableModal handleClose={handleSaveClose} open={showSave} />
+            <LoadTableModal handleClose={handleLoadClose} open={showLoad} handleSetScreen={setSelectedTab} dispSnackbar={handleSnackbarOpen} />
+            <SaveTableModal handleClose={handleSaveClose} open={showSave} dispSnackbar={handleSnackbarOpen} />
         </Box>
     )
 };
