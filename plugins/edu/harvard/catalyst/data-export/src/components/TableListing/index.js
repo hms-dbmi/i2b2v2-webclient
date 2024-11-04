@@ -1,8 +1,9 @@
 import React from "react";
 
 import {DataGrid} from "@mui/x-data-grid";
+import "./TableListing.scss";
 
-export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel}) => {
+export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hasError, isLoading}) => {
     const columns = [
         {
             field: 'title',
@@ -51,9 +52,17 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         }
     }
 
+    const CustomNoRowsOverlay = () => {
+        return (
+            <div className={"tableListingOverlay"}>
+                { !hasError && <div className={"listingStatusMsg"} >No results</div> }
+                { hasError && <div className={"listingStatusMsg listingStatusErrorMsg"} >There was an error retrieving existing table definitions</div>}
+            </div>
+        );
+    }
 
     return (
-        <div id={id} style={{height: 400}} >
+        <div className={"TableListing"} id={id} style={{height: 400}} >
             <DataGrid
                 height={280}
                 columnHeaderHeight={40}
@@ -65,6 +74,16 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                 disableColumnResize={true}
                 onRowSelectionModelChange = {handleOnSelectionModelChange}
                 rowSelectionModel = {selectionModel}
+                loading={isLoading}
+                slots={{
+                    noRowsOverlay: CustomNoRowsOverlay,
+                }}
+                slotProps={{
+                    loadingOverlay: {
+                        variant: 'circular-progress',
+                        noRowsVariant: 'linear-progress',
+                    },
+                }}
                 autoPageSize
             />
         </div>
