@@ -17,6 +17,7 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import {
     handleRowDelete,
@@ -25,7 +26,8 @@ import {
     handleRowAggregation,
     handleRowName,
     handleRowSdx,
-    loadStatusConfirmed
+    loadStatusConfirmed,
+    loadTermInfo
 } from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
@@ -54,7 +56,7 @@ let currentDateRow = false;
 export const DefineTable = (props) => {
     const dispatch = useDispatch();
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
-    const { rows, statusInfo } = useSelector((state) => state.tableDef);
+    const { rows, statusInfo, labValueToDisplay} = useSelector((state) => state.tableDef);
     const [cellModesModel, setCellModesModel] = React.useState({});
 
     const columns = [
@@ -222,14 +224,14 @@ export const DefineTable = (props) => {
             renderCell: ({row}) => {
                 return (
                     <div className={"aggregateSelect"}>
-                    { row.dataOptionHasError && <Select
+                    { row.dataOptionHasError && !row.isLoadingTermInfo && <Select
                             value={row.dataOption}
                             onChange={(event) => handleUpdateAggregation({id: row.id, value: event.target.value})}
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton aria-label="delete" size="small">
                                         <Tooltip title="Failed to load term info.">
-                                            <WarningAmberIcon fontSize={"small"} sx={{ color: "red" }} />
+                                            <WarningAmberIcon fontSize={"small"} onClick={() => reloadTermInfo(row.id, row.sdxData)} sx={{ color: "red" }} />
                                         </Tooltip>
                                     </IconButton>
                                 </InputAdornment>
@@ -238,12 +240,27 @@ export const DefineTable = (props) => {
                             { createAggregationSelectOptions(row) }
                         </Select>
                     }
-                    {!row.dataOptionHasError &&
+                    {!row.dataOptionHasError && !row.isLoadingTermInfo &&
                         <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select-adornment"
                             value={row.dataOption}
                             onChange={(event) => handleUpdateAggregation({id: row.id, value: event.target.value})}
+                        >
+                            { createAggregationSelectOptions(row) }
+                        </Select>
+                    }
+                    { row.isLoadingTermInfo &&
+                        <Select
+                            value={row.dataOption}
+                            onChange={(event) => handleUpdateAggregation({id: row.id, value: event.target.value})}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton aria-label="delete" size="small">
+                                        <Tooltip title="Loading term info">
+                                            <CircularProgress size="20px"/>
+                                        </Tooltip>
+                                    </IconButton>
+                                </InputAdornment>
+                            }
                         >
                             { createAggregationSelectOptions(row) }
                         </Select>
@@ -368,8 +385,12 @@ export const DefineTable = (props) => {
 
         return valueOptions;
     }
-    const displayLabValues = (rowId, sdx) => {
-        i2b2.authorizedTunnel.function["i2b2.CRC.view.QT.labValue.getAndShowLabValues"](sdx).then((res) => {
+
+    const reloadTermInfo = (rowId, sdx) => {
+        dispatch(loadTermInfo({rowId: rowId, sdx: sdx, displayLabValue: false}));
+    }
+    const displayLabValues = (rowId, sdx, metadataXml) => {
+        i2b2.authorizedTunnel.function["i2b2.CRC.view.QT.labValue.showLabValues"](sdx, metadataXml).then((res) => {
             dispatch(handleRowSdx({
                 id: rowId, sdx: res
             }));
@@ -380,7 +401,7 @@ export const DefineTable = (props) => {
         dispatch(handleRowAggregation(value));
     }
     const  handleSetValueClick = (event, cellValues) => {
-        displayLabValues(cellValues.row.id, cellValues.row.sdxData);
+        dispatch(loadTermInfo({rowId:cellValues.row.id, sdx: cellValues.row.sdxData, displayLabValue: true}));
     };
 
     const handleDateSave = () => {
@@ -444,34 +465,9 @@ export const DefineTable = (props) => {
 
         // clean/retrieve sdx info
         delete sdx.renderData.tvNodeState;
-        let requestData = {
-            ont_max_records: 'max="1"',
-            ont_synonym_records: false,
-            ont_hidden_records: false,
-            concept_key_value: sdx.sdxInfo.sdxKeyValue
-        }
-        i2b2.ajax.ONT.GetTermInfo(requestData)
-            .then((xmlString) => {
-                // get and populate metadata info
-                let xmlparser = new XMLParser();
-                let xmlDoc = xmlparser.parseFromString(xmlString);
-                let concepts = xmlDoc.getElementsByTagName('ns6:concepts');
-                if (concepts.length !== 0) sdx.origData.xmlOrig =  xmlparser.toString(concepts[0]);
-                // metadata
-                let valueMetadataList = xmlDoc.getElementsByTagName('metadataxml');
-                if (valueMetadataList.length !== 0 ) {
-                    let metadata = valueMetadataList[0];
-                    sdx.origData.metadata = xmlparser.toString(metadata);
-                    let dataType = metadata.getElementsByTagName('DataType');
-                    if (dataType.length !== 0) sdx.origData.dataType = DATATYPE[dataType[0].value.toUpperCase()];
-                }
-                const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
-                dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: false}));
-                if (sdx.origData.metadata !== undefined) displayLabValues(rowId, sdx);
-            }).catch(() => {
-                const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
-                dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: true}));
-            });
+
+        const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
+        dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: false, displayLabValue: true}));
     };
 
     const i2b2LibLoaded = () => {
@@ -486,6 +482,12 @@ export const DefineTable = (props) => {
             window.addEventListener('I2B2_READY', i2b2LibLoaded);
         }
     }, [isI2b2LibLoaded]);
+
+    useEffect(() => {
+        if (labValueToDisplay != null) {
+            displayLabValues(labValueToDisplay.rowId, labValueToDisplay.sdx, labValueToDisplay.valueMetadataXml);
+        }
+    }, [labValueToDisplay]);
 
     const handleCellClick = React.useCallback(
         (params, event) => {
@@ -638,6 +640,4 @@ export const DefineTable = (props) => {
             </Dialog>
         </div>
     );
-
-
 }

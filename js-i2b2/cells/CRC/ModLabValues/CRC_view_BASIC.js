@@ -554,6 +554,17 @@ i2b2.CRC.view.BASIC = {
 			enumInfo: {}
 		};
 
+		//allow XML in string format
+		if (typeof valueMetaDataXml === 'string') {
+			try {
+				let parser = new DOMParser();
+				let test = parser.parseFromString(valueMetaDataXml, "text/xml");
+				valueMetaDataXml = test.documentElement;
+			} catch(e) {
+				return extractedModel;
+			}
+		}
+
 		const flagsToUse = i2b2.h.getXNodeVal(valueMetaDataXml, "Flagstouse");
 
 		extractedModel.flagType = false;

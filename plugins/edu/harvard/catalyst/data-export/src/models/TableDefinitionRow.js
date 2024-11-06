@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import {StatusInfo} from "./StatusInfo";
 
 export const TableDefinitionRow = ({
     id = 0,
@@ -10,7 +11,9 @@ export const TableDefinitionRow = ({
     dataOption = null,
     dataOptionHasError = false,
     required = false,
-    dataType= null
+    dataType= null,
+    dataOptionStatus = StatusInfo(),
+    isLoadingTermInfo = false
 
 } = {}) => ({
     id,
@@ -22,7 +25,9 @@ export const TableDefinitionRow = ({
     dataOption,
     dataOptionHasError,
     required,
-    dataType
+    dataType,
+    dataOptionStatus,
+    isLoadingTermInfo
 });
 
 TableDefinitionRow.propTypes = {

@@ -129,6 +129,43 @@ export const loadTableSlice = createSlice({
             // handle reindexing the order attribute for all items (just to make sure our numbering is correct)
             state.rows.sort((a,b) => a.order - b.order).forEach((x,i)=> { x.order = i + 1 });
         },
+        handleRowInsertSucceeded: (state, { payload: {rowId, dataType, xmlOrig, valueMetadataXml, displayLabValue} }) => {
+            state.rows.map((row, index) => {
+                if(row.id === rowId){
+                    row.dataType = dataType;
+                    row.dataOptionHasError = false;
+                    row.isLoadingTermInfo = false;
+
+                    if(row.sdxData.origData === undefined){
+                        row.sdxData.origData = {};
+                    }
+                    row.sdxData.origData.xmlOrig = xmlOrig;
+
+                    if(valueMetadataXml){
+                        row.valueMetadataXml = valueMetadataXml;
+                        if(displayLabValue) {
+                            state.labValueToDisplay = {
+                                rowId: rowId,
+                                sdx: row.sdxData,
+                                valueMetadataXml: valueMetadataXml
+                            }
+                        }
+                    }
+                }
+
+                return row;
+            });
+        },
+        handleRowInsertError: (state,  { payload: {rowId} }) => {
+            state.rows.map((row, index) => {
+                if(row.id === rowId){
+                    row.dataOptionHasError = true;
+                    row.isLoadingTermInfo = false;
+                }
+
+                return row;
+            });
+        },
         handleRowExported: (state, { payload: {row, exported} }) => {
             state.rows = state.rows.map((data) => (data.id === row.id ? ({...data, display: exported}) : data ));
         },
@@ -149,9 +186,18 @@ export const loadTableSlice = createSlice({
             }
         },
         handleRowSdx: (state, { payload: {id, sdx} }) => {
+            state.labValueToDisplay = null;
             for (let temp of state.rows) {
                 if (temp.id === id) {
                     temp.sdxData = sdx;
+                    break;
+                }
+            }
+        },
+        loadTermInfo: (state, { payload: {rowId, sdx} }) => {
+            for (let temp of state.rows) {
+                if (temp.id === rowId) {
+                    temp.isLoadingTermInfo = true;
                     break;
                 }
             }
@@ -167,10 +213,13 @@ export const {
     loadStatusConfirmed,
     handleRowDelete,
     handleRowInsert,
+    handleRowInsertSucceeded,
+    handleRowInsertError,
     handleRowExported,
     handleRowAggregation,
     handleRowName,
-    handleRowSdx
+    handleRowSdx,
+    loadTermInfo
 } = loadTableSlice.actions
 
 export default loadTableSlice.reducer

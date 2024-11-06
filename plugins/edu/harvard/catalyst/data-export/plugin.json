@@ -17,7 +17,7 @@
       "i2b2.PM.model.login_project": "R"
     },
     "functions": [
-      "i2b2.CRC.view.QT.labValue.getAndShowLabValues"
+      "i2b2.CRC.view.QT.labValue.showLabValues"
     ]
   },
   "state": {
