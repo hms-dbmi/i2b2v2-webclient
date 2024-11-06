@@ -10,8 +10,6 @@ export function* doLoadTable(action) {
     let tableListing  = action.payload;
 
     try {
-        // You can also export the axios call as a function.
-
         let formdata = new FormData();
         formdata.append('uid',i2b2.model.user);
         formdata.append('pid',i2b2.model.project);

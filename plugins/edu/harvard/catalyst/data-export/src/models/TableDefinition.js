@@ -5,17 +5,22 @@ import {TableDefinitionRow} from "./TableDefinitionRow";
 export const TableDefinition = ({
     rows = defaultRows,
     isFetching= false,
-    statusInfo = StatusInfo()
+    statusInfo = StatusInfo(),
+    labValueToDisplay= null,
+    isLoadingDataType =false
 } = {}) => ({
     rows,
     isFetching,
-    statusInfo
+    statusInfo,
+    labValueToDisplay,
+    isLoadingDataType
 });
 
 TableDefinition.propTypes = {
     rows: PropTypes.arrayOf(TableDefinitionRow).isRequired,
     isFetching: PropTypes.bool,
     statusInfo: PropTypes.shape(StatusInfo),
+    labValueToDisplay: PropTypes.object
 };
 
 
