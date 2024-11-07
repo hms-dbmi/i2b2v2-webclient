@@ -45,7 +45,6 @@ export const SaveTableModal = ({open, handleClose}) => {
         const matchedRows = userRows.filter(srow => srow.title?.toUpperCase() === title.toUpperCase());
 
         setSelectedRows(matchedRows.map(srow => srow.id));
-        setEnteredTitle(title);
 
         if(matchedRows.length >0) {
             setSelectedTableDef({title: matchedRows[0].title, id: matchedRows[0].id});
@@ -58,6 +57,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         const title = e.target.value;
 
         selectIfNameExists(title);
+        setEnteredTitle(title);
 
         if(title?.length > 0) {
             setIsNameInvalid(false);
@@ -114,13 +114,15 @@ export const SaveTableModal = ({open, handleClose}) => {
 
     useEffect(() => {
         if (open) {
+            selectIfNameExists(enteredTitle);
             dispatch(listTables());
         }
     }, [open]);
 
     useEffect(() => {
-            selectIfNameExists(enteredTitle);
-    }, [selectedTableDef]);
+        selectIfNameExists(enteredTitle);
+    }, [userRows]);
+
     return (
     <div>
         <Dialog
