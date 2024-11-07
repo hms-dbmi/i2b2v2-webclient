@@ -12,7 +12,7 @@ import { TableListing } from "../TableListing";
 import { listTables } from "../../reducers/listTablesSlice";
 import { TabPanel } from "../TabPanel";
 import {saveStatusConfirmed, saveTable} from "../../reducers/saveTableSlice";
-import {Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 
 
 
@@ -45,7 +45,6 @@ export const SaveTableModal = ({open, handleClose}) => {
         const matchedRows = userRows.filter(srow => srow.title?.toUpperCase() === title.toUpperCase());
 
         setSelectedRows(matchedRows.map(srow => srow.id));
-        setEnteredTitle(title);
 
         if(matchedRows.length >0) {
             setSelectedTableDef({title: matchedRows[0].title, id: matchedRows[0].id});
@@ -58,6 +57,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         const title = e.target.value;
 
         selectIfNameExists(title);
+        setEnteredTitle(title);
 
         if(title?.length > 0) {
             setIsNameInvalid(false);
@@ -119,8 +119,9 @@ export const SaveTableModal = ({open, handleClose}) => {
     }, [open]);
 
     useEffect(() => {
-            selectIfNameExists(enteredTitle);
-    }, [selectedTableDef]);
+        selectIfNameExists(enteredTitle);
+    }, [userRows]);
+
     return (
     <div>
         <Dialog
