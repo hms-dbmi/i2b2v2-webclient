@@ -89,7 +89,7 @@ export const DefineTable = (props) => {
             renderEditCell: (params) => (
                 <GridEditInputCell
                     {...params}
-                    inputProps={{ maxLength: 255 }}
+                    inputProps={{ maxLength: 2000 }}
                 />
             ),
             valueSetter: (value, row) => {
