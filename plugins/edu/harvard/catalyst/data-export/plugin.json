@@ -21,6 +21,9 @@
     ]
   },
   "state": {
-    "endpointUrl": "https://recover-i2b2.partners.org/agg/helper.php"
+    "endpointUrl": "https://recover-i2b2.partners.org/agg/helper.php",
+    "noDropPaths": [
+      "\\\\PHI\\PHI\\"
+    ]
   }
 }
