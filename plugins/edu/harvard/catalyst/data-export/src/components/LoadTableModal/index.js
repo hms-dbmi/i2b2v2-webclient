@@ -88,7 +88,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         index={1}
                         className={'modalTabPanel'}
                     >
-                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={false} onSelect={setSelectedTable}  isLoading={isFetching}/>
+                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={false} onSelect={setSelectedTable}  isLoading={isFetching}  hasError={statusInfo.status==='FAIL'}/>
                     </TabPanel>
                 </Box>
             </DialogContent>
