@@ -477,6 +477,13 @@ export const DefineTable = (props) => {
         // clean/retrieve sdx info
         delete sdx.renderData.tvNodeState;
 
+        // Do not allow drop if we have 100 rows in the table already
+        let allRows = document.querySelectorAll(".MuiDataGrid-row");
+        if (allRows.length >= 100) {
+            props.dispSnackbar("Maximum number of items reached!");
+            return false;
+        }
+
         const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
         dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: false, displayLabValue: true}));
     };
