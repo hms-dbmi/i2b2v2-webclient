@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import '../../css/tableDef.scss';
 import {
@@ -10,7 +10,6 @@ import {
 
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-
 import Tooltip from '@mui/material/Tooltip';
 import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
@@ -18,20 +17,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import CircularProgress from '@mui/material/CircularProgress';
-
-import {
-    handleRowDelete,
-    handleRowInsert,
-    handleRowExported,
-    handleRowAggregation,
-    handleRowName,
-    handleRowSdx,
-    loadStatusConfirmed,
-    loadTermInfo
-} from "../../reducers/loadTableSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
-import "./DefineTable.scss";
 import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
 import {
     Dialog,
@@ -43,11 +30,22 @@ import {
     MenuItem,
     Select,
 } from "@mui/material";
-import XMLParser from "react-xml-parser";
 import IconButton from "@mui/material/IconButton";
 
 import dayjs from 'dayjs';
 import {DateModal} from "../DateModal";
+
+import {
+    handleRowDelete,
+    handleRowInsert,
+    handleRowExported,
+    handleRowAggregation,
+    handleRowName,
+    handleRowSdx,
+    loadStatusConfirmed,
+    loadTermInfo
+} from "../../reducers/loadTableSlice";
+import "./DefineTable.scss";
 
 /* global i2b2 */
 
@@ -59,6 +57,7 @@ export const DefineTable = (props) => {
     const { rows, statusInfo, labValueToDisplay} = useSelector((state) => state.tableDef);
     const [cellModesModel, setCellModesModel] = React.useState({});
     const doDispSnackbar = props.dispSnackbar;
+    const totalRows = React.useRef();
 
     const columns = [
         {
@@ -463,7 +462,6 @@ export const DefineTable = (props) => {
             // insert the drop below the currently set row
             rowNum = parseInt(row.dataset.rowindex) + 1;
         }
-
         // ignore if path starts with configured path
         if (i2b2.model.noDropPaths?.length) {
             for (let temp of i2b2.model.noDropPaths) {
@@ -476,6 +474,17 @@ export const DefineTable = (props) => {
 
         // clean/retrieve sdx info
         delete sdx.renderData.tvNodeState;
+
+        // Do not allow drop if we have 100 rows in the table already
+        if (totalRows.current >= 100) {
+            props.dispSnackbar("Maximum number of items reached!");
+            return false;
+        }
+        /*let allRows = document.querySelectorAll(".MuiDataGrid-row");
+        if (allRows.length >= 100) {
+            props.dispSnackbar("Maximum number of items reached!");
+            return false;
+        }*/
 
         const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
         dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: false, displayLabValue: true}));
@@ -595,14 +604,18 @@ export const DefineTable = (props) => {
                 <DataGrid
                     style={{background:"white"}}
                     className={"DefineTableGrid"}
+                    onStateChange={(e) => {
+                        const rowCount = e.pagination.rowCount;
+                        totalRows.current = rowCount;
+                    }}
                     rows={rows}
                     columns={columns}
                     showCellVerticalBorder={true}
                     hideFooterSelectedRowCount={true}
                     columnVisibilityModel={{order: false}}
                     disableColumnSelector={true}
-                    cellModesModel={cellModesModel}  // causes errors when deleting a row
-                    onCellModesModelChange={handleCellModesModelChange} // causes errors when deleting a row
+                    cellModesModel={cellModesModel}
+                    onCellModesModelChange={handleCellModesModelChange}
                     onCellClick={handleCellClick}
                     onCellDoubleClick={handleCellClick}
                     initialState={{
