@@ -605,7 +605,7 @@ export const DefineTable = (props) => {
                     style={{background:"white"}}
                     className={"DefineTableGrid"}
                     onStateChange={(e) => {
-                        const rowCount = e.pagination.rowCount;
+                        const rowCount = e.rows.totalRowCount;
                         totalRows.current = rowCount;
                     }}
                     rows={rows}
