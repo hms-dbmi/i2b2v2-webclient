@@ -477,14 +477,9 @@ export const DefineTable = (props) => {
 
         // Do not allow drop if we have 100 rows in the table already
         if (totalRows.current >= 100) {
-            props.dispSnackbar("Maximum number of items reached!");
+            props.dispSnackbar("Max of 100 rows reached. Remove existing rows to add this concept. If you need more than 100 rows, create a separate table.");
             return false;
         }
-        /*let allRows = document.querySelectorAll(".MuiDataGrid-row");
-        if (allRows.length >= 100) {
-            props.dispSnackbar("Maximum number of items reached!");
-            return false;
-        }*/
 
         const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
         dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: false, displayLabValue: true}));
