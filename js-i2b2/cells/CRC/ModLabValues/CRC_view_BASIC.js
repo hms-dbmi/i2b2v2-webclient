@@ -9,7 +9,7 @@
 
 i2b2.CRC.view.BASIC = {
 	// ================================================================================================== //
-	showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
+	showDialog: function(sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
 		if (valueMetadata) {
 			let extractedLabValues = valueMetadata;
 

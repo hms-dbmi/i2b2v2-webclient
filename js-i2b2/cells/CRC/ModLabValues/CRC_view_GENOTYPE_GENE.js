@@ -80,7 +80,7 @@ i2b2.CRC.view.GENOTYPE_GENE = {
         return ret;
     },
     // ================================================================================================== //
-    showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
+    showDialog: function(sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
 
         if (valueMetadata !== undefined) {
 

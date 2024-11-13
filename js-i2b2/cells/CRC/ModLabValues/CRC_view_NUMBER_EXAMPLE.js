@@ -102,7 +102,7 @@ i2b2.CRC.view.NUMBER_EXAMPLE = {
 		return "<div style='color: green'>Add custom basic report text for NUMBER EXAMPLE: " + sdxConcept.renderData.title + "</div>";
 	},
 	// ================================================================================================== //
-	showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
+	showDialog: function(sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
 
 		if (valueMetadata !== undefined) {
 
