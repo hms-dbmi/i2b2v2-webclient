@@ -80,7 +80,7 @@ i2b2.CRC.view.GENOTYPE_GENE = {
         return ret;
     },
     // ================================================================================================== //
-    showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx) {
+    showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
 
         if (valueMetadata !== undefined) {
 
@@ -97,6 +97,13 @@ i2b2.CRC.view.GENOTYPE_GENE = {
                     ValueOperator: valueMetadata.ValueOperator,
                     Value: null
                 };
+
+                // populate an empty LabValue entry to the callback function on cancel/close of modal
+                $(labValuesModal).off("hidden.bs.modal"); // prevent multiple bindings
+                $(labValuesModal).on("hidden.bs.modal", function () {
+                    if (pluginCallBack) pluginCallBack({...sdxConcept, "LabValues": {}});
+                });
+
 
                 // default settings
                 $("#labZygosityHetero, #labZygosityHomo").prop("checked", true);
