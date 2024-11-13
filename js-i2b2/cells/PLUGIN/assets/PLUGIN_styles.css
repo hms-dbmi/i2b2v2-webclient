@@ -56,7 +56,6 @@ DIV#PluginListBox A.pluginRecordBox DIV.Icon img {
     width: 32px;
 }
 
-
 DIV#PluginListBox A.pluginRecordBox DIV.Name {
     font-family: arial,helvetica;
     font-size: 0.51em;
@@ -85,7 +84,7 @@ DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Descript {
     margin-top: 0.14em;
 }
 
-DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon {
+DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon img {
     height: 32px;
     width: 32px;
 }
