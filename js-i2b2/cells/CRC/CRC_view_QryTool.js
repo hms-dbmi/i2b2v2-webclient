@@ -1525,7 +1525,7 @@ i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, e
         i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, function (valueMetadataXml) {
             if (doNotShowLabValues === undefined || !doNotShowLabValues) {
                 i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, valueMetadataXml, groupIdx, eventIdx, function(result){
-                    resolve(result);
+                      resolve(result);
                 });
             } else {
                 if (valueMetadataXml !== undefined) {
