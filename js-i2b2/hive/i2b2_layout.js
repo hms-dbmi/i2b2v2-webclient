@@ -183,23 +183,6 @@ i2b2.layout.init = function () {
     };
 
     //////////////////////////////////////////
-    // The analysis tool layout config
-    //////////////////////////////////////////
-    i2b2.layout.gl_configs.AnalysisTools = {
-        type: 'column',
-        id:'c2',
-        content:[
-            {
-                type:'component',
-                id:'AT',
-                isClosable:false,
-                componentName: 'whiteComponent',
-                title:'Plugin Viewer'
-            }
-        ]
-    };
-
-    //////////////////////////////////////////
     // The full zoom layout config shell
     //////////////////////////////////////////
     i2b2.layout.gl_configs.fullZoom = {
@@ -294,15 +277,23 @@ i2b2.layout.init = function () {
     i2b2.events.afterHiveInit.fire();
 };
 
-
 // ================================================================================================== //
 i2b2.events.afterLogin.add(
     (function() {
         // load the basic gui and attach the layout manager
-        $("body").load("assets/main_display.html", i2b2.layout.init);
-        // remove debugging functionality from GUI
-        i2b2.h.debugElements(document.documentElement);
-        // remove the analysis link if configuration tells us to
-        // TODO: Manage this setting
+        $("body").load("assets/main_display.html", () => {
+            // remove debugging functionality from GUI
+            i2b2.h.debugElements(document.documentElement);
+
+            // Handle footer bar if configured
+            if (i2b2.UI.cfg.footer && i2b2.UI.cfg.footer?.active !== false) {
+                // deal with adding the bar height style
+                if (i2b2.UI.cfg.footer.height) document.documentElement.style.setProperty("--FooterBarHeight", i2b2.UI.cfg.footer.height);
+                if (i2b2.UI.cfg.footer.file) $("#footer-bar").load(i2b2.UI.cfg.footer.file);
+            }
+
+            // start the application loading process
+            i2b2.layout.init();
+        });
     })
 );

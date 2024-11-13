@@ -5,6 +5,7 @@ body {
 	font-weight: 500;
 	line-height:16px;
 	overflow:hidden;
+	height: 100vh;
 }
 
 body, td, p {
@@ -322,6 +323,15 @@ DIV.tabText {}
 	z-index:500;
 }
 
+
+#footer-bar {
+	height: var(--FooterBarHeight) !important;
+	position: absolute;
+	bottom: 0;
+	width: 100%
+}
+
+
 /* === Start Golden Layout === */
 
 .goldenLayout {
@@ -333,6 +343,7 @@ DIV.tabText {}
 	left:0px;
 	right:0px;
 	bottom:0px;
+	margin-bottom: var(--FooterBarHeight) !important;
 }
 
 .goldenLayout .lm_goldenlayout {
