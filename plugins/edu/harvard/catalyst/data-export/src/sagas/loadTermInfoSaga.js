@@ -1,0 +1,74 @@
+import { call, takeLatest, put} from "redux-saga/effects";
+import XMLParser from 'react-xml-parser';
+import {handleRowInsertSucceeded, handleRowInsertError} from "../reducers/loadTableSlice";
+/* global i2b2 */
+
+import {
+    LOAD_TERM_INFO,
+    INSERT_DATA_ROW
+} from "../actions";
+import {DATATYPE} from "../models/TableDefinitionRow";
+
+const getTermInfoRequest = (sdx) => {
+    let data = {
+        ont_max_records: 'max="1"',
+        ont_synonym_records: false,
+        ont_hidden_records: false,
+        concept_key_value: sdx.sdxInfo.sdxKeyValue
+    }
+
+    return i2b2.ajax.ONT.GetTermInfo(data).then((xmlString) => new XMLParser().parseFromString(xmlString));
+};
+
+const parseTermInfoXml = (termXml) => {
+    let xmlparser = new XMLParser();
+    let termInfo = {};
+    let valueMetadataList = termXml.getElementsByTagName('metadataxml');
+    if(valueMetadataList.length !== 0 ) {
+        let dataType = valueMetadataList[0].getElementsByTagName('DataType');
+        if(dataType.length !== 0) {
+            termInfo.dataType = DATATYPE[dataType[0].value.toUpperCase()];
+        }
+        let concepts = termXml.getElementsByTagName('ns6:concepts');
+        if(concepts.length !== 0) {
+            termInfo.xmlOrig =  xmlparser.toString(concepts[0]);
+        }
+        termInfo.valueMetadataXml = xmlparser.toString(valueMetadataList[0]);
+    }
+
+    return termInfo;
+}
+
+export function* doLoadTermInfo(action) {
+    const { rowId, sdx, displayLabValue } = action.payload;
+
+    try {
+        console.log("getting term info...");
+        let response = yield call(getTermInfoRequest, sdx);
+        if(response) {
+            const parsedResponse = parseTermInfoXml(response);
+            yield put(handleRowInsertSucceeded({
+                rowId: rowId,
+                dataType: parsedResponse.dataType,
+                xmlOrig: parsedResponse.xmlOrig,
+                valueMetadataXml: parsedResponse.valueMetadataXml,
+                displayLabValue: displayLabValue
+            } ));
+        }else{
+            yield put(handleRowInsertError({
+                rowId: rowId,
+                error: "There was an error retrieving concept details"
+            }));
+        }
+    } catch (error) {
+        yield put(handleRowInsertError({
+            rowId: rowId,
+            error: "There was an error retrieving concept details"
+        }));
+    }
+}
+
+export function* loadTermInfoSaga() {
+    yield takeLatest([INSERT_DATA_ROW, LOAD_TERM_INFO], doLoadTermInfo);
+}
+

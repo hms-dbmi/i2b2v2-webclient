@@ -3,14 +3,14 @@
  * and handles the initialization process (and state restoration)
  */
 
-/* global i2b2  */
+/* global i2b2:writable */
 
 let i2b2 = {};
 i2b2.model = {};
 i2b2.h = {};
 i2b2.MSG_TYPES = {};
 
-
+ 
 // send init messages to newly loaded i2b2 support libraries
 // =====================================================================================================================
 i2b2.h.initPlugin = function(initData) {
@@ -125,6 +125,3 @@ window.addEventListener("message", (event) => {
         }
     }
 });
-
-
-export default i2b2;

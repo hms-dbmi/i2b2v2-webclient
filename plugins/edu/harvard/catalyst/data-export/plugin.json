@@ -3,11 +3,28 @@
   "description": "This plugin allows for defining and requesting an export of data",
   "category": ["export"],
   "icons": { "size32x32": "export-icon.png" },
-  "assetDir": "public",
+  "assetDir": "build",
   "plugin_version" : "1.0",
   "i2b2_version" : "1.8.2",
   "base": "build/index.html",
   "sandbox": true,
   "admin_only": false,
-  "roles": ["DATA_LDS","DATA_PROT", "DATA_DEID"]
+  "roles": ["DATA_LDS","DATA_PROT", "DATA_DEID"],
+  "authorizedTunnel": {
+    "variables" :{
+      "i2b2.PM.model.login_password": "R",
+      "i2b2.PM.model.login_username": "R",
+      "i2b2.PM.model.login_project": "R"
+    },
+    "functions": [
+      "i2b2.CRC.view.QT.labValue.showLabValues"
+    ]
+  },
+  "state": {
+    "endpointUrl": "https://recover-i2b2.partners.org/agg/helper.php",
+    "noDropPaths": [
+      "\\\\PHI\\PHI\\",
+      "\\\\metadata_genomics\\"
+    ]
+  }
 }

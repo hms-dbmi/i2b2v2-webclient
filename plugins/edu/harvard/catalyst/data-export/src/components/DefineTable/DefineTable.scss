@@ -1,0 +1,72 @@
+#save-load span.icon-text {
+  font-size: medium;
+  margin: 0 .3rem;
+  transition: color;
+  transition-duration: 500ms;
+  padding-top: .3rem;
+}
+
+
+.DefineTable {
+  width: 100%;
+  margin-top: 3.2rem;
+
+  .DefineTableActions {
+    width: 100%;
+    margin: auto;
+    margin-top: 16px;
+  }
+
+  .header {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .DefineTableGrid {
+    width: 100%
+  }
+
+  #dropTrgt {
+    height: 60%;
+    width: 100%;
+    margin: auto;
+    background-color: #077cf982;
+    -webkit-transition: background-color 250ms linear;
+    -ms-transition: background-color 250ms linear;
+    transition: background-color 250ms linear;
+    padding: 5px;
+    border-radius: 5px;
+    p {
+      font-style: italic;
+      font-weight: bold;
+      text-align: center;
+    }
+  }
+
+  .i2b2DropTarget.dragging {
+    background-color: rgba(0, 200, 0, .35) !important;
+  }
+  .i2b2DropTarget.dragging .MuiDataGrid-row:hover {
+    background-color: rgba(85, 214, 0, 0.08) !important;
+  }
+
+  .MuiSelect-iconOutlined{
+    position: relative;
+  }
+
+  fieldset.MuiOutlinedInput-notchedOutline{
+    border: transparent;
+  }
+
+  .MuiSelect-outlined {
+    padding-right: 0.60em !important;
+    padding-left: 0;
+  }
+
+  .MuiInputAdornment-positionEnd{
+    margin-left: -0.92em;
+  }
+
+  .aggregateSelect {
+    width: 60%;
+  }
+}
