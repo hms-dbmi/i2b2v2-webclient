@@ -112,10 +112,15 @@ export const PreviewTable = (props) => {
                             switch (labData.ValueType) {
                                 case undefined:
                                     break;
+                                case "LARGETEXT":
+                                    txtLab = labData.Value;
+                                    break;
                                 case "TEXT":
-                                    if (labData.Value.length > 1) {
+                                    if(typeof labData.Value === 'string'){
+                                        txtLab = labData.Value;
+                                    }
+                                    else if (labData.Value.length > 1) {
                                         txtLab = "(" + labData.Value.length + " values)";
-                                        // txtMouseover = labData.Value.join('\n');
                                     } else {
                                         txtLab = labData.Value[0];
                                     }
