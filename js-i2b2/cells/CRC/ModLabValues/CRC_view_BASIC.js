@@ -9,7 +9,7 @@
 
 i2b2.CRC.view.BASIC = {
 	// ================================================================================================== //
-	showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
+	showDialog: function(sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
 		if (valueMetadata) {
 			let extractedLabValues = valueMetadata;
 
@@ -34,6 +34,12 @@ i2b2.CRC.view.BASIC = {
 						isEnum: false,
 						isString: false
 					};
+
+					// populate an empty LabValue entry to the callback function on cancel/close of modal
+					$(labValuesModal).off("hidden.bs.modal"); // prevent multiple bindings
+					$(labValuesModal).on("hidden.bs.modal", function () {
+						if (pluginCallBack) pluginCallBack({...sdxConcept, "LabValues": {}});
+					});
 
 					$("#labValuesModal div").eq(0).modal("show");
 
