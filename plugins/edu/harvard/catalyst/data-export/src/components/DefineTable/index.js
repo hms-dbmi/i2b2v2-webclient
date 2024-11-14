@@ -319,7 +319,7 @@ export const DefineTable = (props) => {
                         endAdornment={
                             <InputAdornment position="end">
                                 <IconButton aria-label="delete" size="small">
-                                    <Tooltip title="Failed to load term info.">
+                                    <Tooltip title="Failed to load term info. Click icon to reload.">
                                         <WarningAmberIcon fontSize={"small"}
                                                           onClick={() => reloadTermInfo(row.id, row.sdxData)}
                                                           sx={{color: "red"}}/>
