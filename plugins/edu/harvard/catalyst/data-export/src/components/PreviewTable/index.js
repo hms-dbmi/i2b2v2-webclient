@@ -107,8 +107,8 @@ export const PreviewTable = (props) => {
                     ret.push('['+row.dataOption+']');
                     if (row.sdxData.LabValues) {
                         let labData = row.sdxData.LabValues;
-                        let txtLab;
-                        if (labData !== undefined && labData.ValueType !== undefined) {
+                        let txtLab="";
+                        if (labData !== undefined && labData.ValueType !== undefined && labData.Value && labData.Value.length !== 0) {
                             switch (labData.ValueType) {
                                 case undefined:
                                     break;
@@ -156,7 +156,9 @@ export const PreviewTable = (props) => {
                                     break;
                             }
                         }
-                        ret.push('[ ' + txtLab + ' ]');
+                        if(txtLab.length > 0) {
+                            ret.push('[ ' + txtLab + ' ]');
+                        }
                     }
                     if (row.sdxData.dateRange) {
                         let sdxDate = row.sdxData.dateRange;

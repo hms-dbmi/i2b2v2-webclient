@@ -140,7 +140,7 @@ export const DefineTable = (props) => {
                     let txtLab;
                     let txtMouseover;
                     let labData = cellValues.row.sdxData.LabValues;
-                    if (labData !== undefined && labData.ValueType !== undefined) {
+                    if (labData !== undefined && labData.ValueType !== undefined && labData.Value && labData.Value.length !== 0) {
                         switch (labData.ValueType) {
                             case undefined:
                                 break;
