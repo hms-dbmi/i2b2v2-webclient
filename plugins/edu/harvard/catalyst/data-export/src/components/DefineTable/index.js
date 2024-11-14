@@ -224,47 +224,7 @@ export const DefineTable = (props) => {
             renderCell: ({row}) => {
                 return (
                     <div className={"aggregateSelect"}>
-                    { row.dataOptionHasError && !row.isLoadingTermInfo && <Select
-                            value={row.dataOption}
-                            onChange={(event) => handleUpdateAggregation({id: row.id, value: event.target.value})}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton aria-label="delete" size="small">
-                                        <Tooltip title="Failed to load term info.">
-                                            <WarningAmberIcon fontSize={"small"} onClick={() => reloadTermInfo(row.id, row.sdxData)} sx={{ color: "red" }} />
-                                        </Tooltip>
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                        >
-                            { createAggregationSelectOptions(row) }
-                        </Select>
-                    }
-                    {!row.dataOptionHasError && !row.isLoadingTermInfo &&
-                        <Select
-                            value={row.dataOption}
-                            onChange={(event) => handleUpdateAggregation({id: row.id, value: event.target.value})}
-                        >
-                            { createAggregationSelectOptions(row) }
-                        </Select>
-                    }
-                    { row.isLoadingTermInfo &&
-                        <Select
-                            value={row.dataOption}
-                            onChange={(event) => handleUpdateAggregation({id: row.id, value: event.target.value})}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton aria-label="delete" size="small">
-                                        <Tooltip title="Loading term info">
-                                            <CircularProgress size="20px"/>
-                                        </Tooltip>
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                        >
-                            { createAggregationSelectOptions(row) }
-                        </Select>
-                    }
+                        {createAggregationSelect(row)}
                     </div>
                 );
             },
@@ -349,6 +309,65 @@ export const DefineTable = (props) => {
         }
     ];
 
+    const createAggregationSelect = (row) => {
+        if(!row.required) {
+            if (row.dataOptionHasError && !row.isLoadingTermInfo) {
+                return (
+                    <Select
+                        value={row.dataOption}
+                        onChange={(event) => handleUpdateAggregation({id: row.id, value: event.target.value})}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton aria-label="delete" size="small">
+                                    <Tooltip title="Failed to load term info.">
+                                        <WarningAmberIcon fontSize={"small"}
+                                                          onClick={() => reloadTermInfo(row.id, row.sdxData)}
+                                                          sx={{color: "red"}}/>
+                                    </Tooltip>
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    >
+                        {createAggregationSelectOptions(row)}
+                    </Select>
+                )
+            } else if (row.isLoadingTermInfo) {
+                return (
+                    <Select
+                        value={row.dataOption}
+                        onChange={(event) => handleUpdateAggregation({id: row.id, value: event.target.value})}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton aria-label="delete" size="small">
+                                    <Tooltip title="Loading term info">
+                                        <CircularProgress size="20px"/>
+                                    </Tooltip>
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    >
+                        {createAggregationSelectOptions(row)}
+                    </Select>
+                )
+            }
+            else {
+                return (
+                    <Select
+                        value={row.dataOption}
+                        onChange={(event) => handleUpdateAggregation({id: row.id, value: event.target.value})}
+                    >
+                        {createAggregationSelectOptions(row)}
+                    </Select>
+                )
+            }
+        }else{
+            return (
+                <div>
+                    {row.dataOption}
+                </div>
+            )
+        }
+    }
     const createAggregationSelectOptions = (row) => {
         let valueOptions = [];
         if (!row.required) {
