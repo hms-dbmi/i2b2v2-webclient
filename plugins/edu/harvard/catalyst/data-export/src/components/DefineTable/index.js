@@ -140,7 +140,7 @@ export const DefineTable = (props) => {
                     let txtLab;
                     let txtMouseover;
                     let labData = cellValues.row.sdxData.LabValues;
-                    if (labData !== undefined && labData.ValueType !== undefined && labData.Value && labData.Value.length !== 0) {
+                    if (labData !== undefined && labData.ValueType !== undefined && ((labData.Value && labData.Value.length !== 0) || labData.ValueFlag || labData.ValueHigh || labData.ValueLow) ) {
                         switch (labData.ValueType) {
                             case undefined:
                                 break;
@@ -149,11 +149,10 @@ export const DefineTable = (props) => {
                                 txtMouseover = labData.Value;
                                 break;
                             case "TEXT":
-                                if(typeof labData.Value ===  'string'){
+                                if (typeof labData.Value ===  'string') {
                                     txtLab = labData.Value;
                                     txtMouseover = labData.Value;
-                                }
-                                else if (labData.Value.length > 1) {
+                                } else if (labData.Value.length > 1) {
                                     txtLab = "(" + labData.Value.length + " values)";
                                     txtMouseover = labData.Value.join('\n');
                                 } else {
