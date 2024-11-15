@@ -108,7 +108,7 @@ export const PreviewTable = (props) => {
                     if (row.sdxData.LabValues) {
                         let labData = row.sdxData.LabValues;
                         let txtLab="";
-                        if (labData !== undefined && labData.ValueType !== undefined && labData.Value && labData.Value.length !== 0) {
+                        if (labData !== undefined && labData.ValueType !== undefined && ((labData.Value && labData.Value.length !== 0) || labData.ValueFlag || labData.ValueHigh || labData.ValueLow)) {
                             switch (labData.ValueType) {
                                 case undefined:
                                     break;
