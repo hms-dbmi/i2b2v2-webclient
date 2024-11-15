@@ -38,7 +38,13 @@ i2b2.CRC.view.BASIC = {
 					// populate an empty LabValue entry to the callback function on cancel/close of modal
 					$(labValuesModal).off("hidden.bs.modal"); // prevent multiple bindings
 					$(labValuesModal).on("hidden.bs.modal", function () {
-						if (pluginCallBack) pluginCallBack({...sdxConcept, "LabValues": {}});
+						if (pluginCallBack) {
+							if (sdxConcept.LabValues === undefined) {
+								pluginCallBack({...sdxConcept, "LabValues": {}});
+							} else {
+								pluginCallBack(sdxConcept);
+							}
+						}
 					});
 
 					$("#labValuesModal div").eq(0).modal("show");
