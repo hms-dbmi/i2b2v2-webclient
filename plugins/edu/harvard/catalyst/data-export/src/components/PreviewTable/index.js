@@ -156,7 +156,9 @@ export const PreviewTable = (props) => {
                                     break;
                             }
                         }
-                        ret.push('[ ' + txtLab + ' ]');
+                        if(txtLab.length > 0) {
+                            ret.push('[ ' + txtLab + ' ]');
+                        }
                     }
                     if (row.sdxData.dateRange) {
                         let sdxDate = row.sdxData.dateRange;
