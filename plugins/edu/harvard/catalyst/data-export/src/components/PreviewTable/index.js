@@ -116,11 +116,11 @@ export const PreviewTable = (props) => {
                                     txtLab = labData.Value;
                                     break;
                                 case "TEXT":
-                                    if(typeof labData.Value === 'string'){
+                                    if (typeof labData.Value === "string") {
                                         txtLab = labData.Value;
-                                    }
-                                    else if (labData.Value.length > 1) {
-                                        txtLab = "(" + labData.Value.length + " values)";
+                                    } else if (labData.Value.length > 1) {
+                                        txtLab = labData.Value.join('\n');
+                                        // txtLab = "(" + labData.Value.length + " values)";
                                     } else {
                                         txtLab = labData.Value[0];
                                     }
