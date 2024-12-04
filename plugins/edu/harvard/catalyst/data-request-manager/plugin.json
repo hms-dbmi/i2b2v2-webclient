@@ -1,0 +1,23 @@
+{
+  "title": "Data Request Manager",
+  "description": "This plugin allows for managing data export requests",
+  "category": ["export"],
+  "assetDir": "build",
+  "plugin_version" : "1.0",
+  "i2b2_version" : "1.8.2",
+  "base": "build/index.html",
+  "sandbox": true,
+  "admin_only": false,
+  "roles": ["DATA_LDS","DATA_PROT", "DATA_DEID"],
+  "authorizedTunnel": {
+    "variables" :{
+      "i2b2.PM.model.login_password": "R",
+      "i2b2.PM.model.login_username": "R",
+      "i2b2.PM.model.login_project": "R"
+    },
+    "functions": [
+    ]
+  },
+  "state": {
+  }
+}
