@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import {Typography, Box, Button} from "@mui/material";
@@ -17,6 +17,7 @@ export const ResearcherTableView = () => {
     const dispatch = useDispatch();
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { rows, isFetching } = useSelector((state) => state.researcherTable);
+    const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
 
     const columns = [
         {
@@ -41,28 +42,13 @@ export const ResearcherTableView = () => {
                     <SimpleTreeView defaultExpandedItems={[param.row.description]}>
                         <TreeItem itemId={param.row.description} label={param.row.description}>
                             {
-                                param.row.requests.map((name) => <TreeItem itemId={name} className={"requestLabel"} label={"- " + name}/>)
+                                param.row.requests.map((name, index) => {
+                                    <TreeItem itemId={name} className={"requestLabel"} label={(index +1) + ". " + name}/>
+                                })
                             }
                         </TreeItem>
                     </SimpleTreeView>
                 );
-            }
-        },
-        {
-            field: 'dateSubmitted',
-            headerName: 'Date Submitted',
-            headerClassName: "header",
-            sortable: true,
-            resizable: false,
-            disableReorder: true,
-            flex: 1,
-            valueGetter: (value) => {
-                if (!value) {
-                    return value;
-                }
-
-                // Format the Date object
-                return value.toLocaleDateString();
             }
         },
         {
@@ -82,6 +68,23 @@ export const ResearcherTableView = () => {
             resizable: false,
             disableReorder: true,
             flex: 1,
+        },
+        {
+            field: 'lastUpdated',
+            headerName: 'Last Updated',
+            headerClassName: "header",
+            sortable: true,
+            resizable: false,
+            disableReorder: true,
+            flex: 1,
+            valueGetter: (value) => {
+                if (!value) {
+                    return value;
+                }
+
+                // Format the Date object
+                return value.toLocaleDateString();
+            }
         },
         {
             field: 'actions',
@@ -128,6 +131,9 @@ export const ResearcherTableView = () => {
                         sortModel: [{field:'id',sort:'asc'}]
                     }
                 }}
+                pageSizeOptions={[5, 10, 25]}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
                 loading={isFetching || !isI2b2LibLoaded}
                 slotProps={{
                     loadingOverlay: {
