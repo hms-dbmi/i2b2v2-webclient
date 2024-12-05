@@ -1,0 +1,1 @@
+export { listResearcherTableSaga } from "./listResearcherTableSaga";

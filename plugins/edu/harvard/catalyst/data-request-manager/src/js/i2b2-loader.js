@@ -3,9 +3,7 @@
  * and handles the initialization process (and state restoration)
  */
 
-/* globals i2b2 */
-
-i2b2 = {};
+var i2b2 = {};
 i2b2.model = {};
 i2b2.h = {};
 i2b2.MSG_TYPES = {};

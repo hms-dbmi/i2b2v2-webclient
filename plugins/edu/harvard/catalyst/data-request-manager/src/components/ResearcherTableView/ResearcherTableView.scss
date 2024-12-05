@@ -1,0 +1,18 @@
+.ResearcherTableView {
+  width: 100%;
+  margin-top: 0.5rem;
+
+  padding: 1.5em;
+  .header {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .title {
+    margin-bottom: 0.6em;
+    font-weight: bold;
+  }
+
+  .actions {
+    margin: 0.5em;
+  }
+}
