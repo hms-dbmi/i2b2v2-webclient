@@ -43,7 +43,7 @@ export const ResearcherTableView = () => {
                         <TreeItem itemId={param.row.description} label={param.row.description}>
                             {
                                 param.row.requests.map((name, index) => {
-                                    <TreeItem itemId={name} className={"requestLabel"} label={(index +1) + ". " + name}/>
+                                    return (<TreeItem itemId={name} className={"requestLabel"} label={(index +1) + ". " + name}/>)
                                 })
                             }
                         </TreeItem>
