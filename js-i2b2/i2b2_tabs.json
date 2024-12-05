@@ -1,0 +1,57 @@
+{
+  "left-column": {
+    "content": [
+      {
+        "height":40,
+        "title":"Terms",
+        "componentName": "i2b2.ONT.view.nav"
+      },{
+        "type":"stack",
+        "content":[
+          {
+            "title":"Info",
+            "componentName": "i2b2.ONT.view.info"
+          }, {
+            "title":"Workplace",
+            "componentName": "i2b2.WORK.view.main"
+          }
+        ]
+      },{
+        "type":"stack",
+        "content":[
+          {
+            "title":"Queries",
+            "componentName": "i2b2.CRC.view.history"
+          }
+        ]
+      }
+    ]
+  },
+  "right-column": {
+    "content":[
+      {
+        "type": "stack",
+        "height": 40,
+        "content":[
+          {
+            "height": 80,
+            "title":"Find Patients",
+            "componentName": "i2b2.CRC.view.QT"
+          },{
+            "title": "Analysis Tools",
+            "componentName": "i2b2.PLUGIN.view.list"
+          }]
+      },
+      {
+        "type": "stack",
+        "height": 25,
+        "content":[
+          {
+            "title": "Query Status",
+            "componentName": "i2b2.CRC.view.QueryMgr"
+          }
+        ]
+      }
+    ]
+  }
+}
