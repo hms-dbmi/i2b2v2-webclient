@@ -16,9 +16,11 @@
     margin: 0.5em;
   }
 
-  .requestLabel {
-    .MuiTreeItem-label {
+  .requestLabel .MuiTreeItem-label {
       font-size: 0.92em !important;
-    }
   }
+
+  .MuiTreeItem-content.Mui-selected {
+   background-color: transparent !important;
+ }
 }
