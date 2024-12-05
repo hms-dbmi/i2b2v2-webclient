@@ -18,7 +18,6 @@ export const ResearcherTableView = () => {
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { rows, isFetching } = useSelector((state) => state.researcherTable);
 
-
     const columns = [
         {
             field: 'id',
@@ -42,7 +41,7 @@ export const ResearcherTableView = () => {
                     <SimpleTreeView defaultExpandedItems={[param.row.description]}>
                         <TreeItem itemId={param.row.description} label={param.row.description}>
                             {
-                                param.row.requests.map((name) => <TreeItem itemId={name} label={name}/>)
+                                param.row.requests.map((name) => <TreeItem itemId={name} className={"requestLabel"} label={"- " + name}/>)
                             }
                         </TreeItem>
                     </SimpleTreeView>
