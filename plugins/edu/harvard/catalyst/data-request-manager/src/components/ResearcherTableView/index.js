@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import {useDispatch, useSelector} from "react-redux";
 
-import {Typography, Box, Tooltip, Button} from "@mui/material";
+import {Typography, Box, Button} from "@mui/material";
 import {DataGrid} from "@mui/x-data-grid";
 
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
@@ -17,11 +17,7 @@ export const ResearcherTableView = () => {
     const dispatch = useDispatch();
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { rows, isFetching } = useSelector((state) => state.researcherTable);
-    const [expandedItems, setExpandedItems] = React.useState([]);
 
-    const handleExpandedItemsChange = (event, itemIds) => {
-        setExpandedItems(itemIds);
-    };
 
     const columns = [
         {
@@ -43,7 +39,7 @@ export const ResearcherTableView = () => {
             flex: 2,
             renderCell: (param) => {
                 return (
-                    <SimpleTreeView expandedItems={expandedItems} onExpandedItemsChange={handleExpandedItemsChange}>
+                    <SimpleTreeView defaultExpandedItems={[param.row.description]}>
                         <TreeItem itemId={param.row.description} label={param.row.description}>
                             {
                                 param.row.requests.map((name) => <TreeItem itemId={name} label={name}/>)
@@ -115,13 +111,6 @@ export const ResearcherTableView = () => {
             dispatch(listResearcherTable());
         }
     }, [isI2b2LibLoaded]);
-
-    useEffect(() => {
-        if (rows.length > 0) {
-            const descriptions = rows.map((p) => p.description);
-            setExpandedItems(descriptions);
-        }
-    }, [rows]);
 
     return (
         <Box className={"ResearcherTableView"} style={{ display: 'flex', flexDirection: 'column' }}>
