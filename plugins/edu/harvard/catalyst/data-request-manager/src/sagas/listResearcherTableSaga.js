@@ -7,7 +7,6 @@ import { DateTime } from "luxon";
 import {
     LIST_RESEARCHER_TABLE
 } from "../actions";
-import {RequestStatus} from "../models/RequestStatus";
 
 const parseData = (tableList) => {
     let results = [];
@@ -20,10 +19,10 @@ const getTestData = () => {
         {
             id: 1477,
             description: "Abnormal findings on neonatal screenings",
-            dateSubmitted: DateTime.fromISO("2024-01-02").toJSDate(),
-            lastUpdated: DateTime.fromISO("2024-02-14").toJSDate(),
+            dateSubmitted: "2024-01-02",
+            lastUpdated: "2024-02-14",
             irbNumber: "2024S",
-            status: RequestStatus.SUBMITTED,
+            status: "Submitted",
             requests: [
                 "Request Demographics Data"
             ]
@@ -31,10 +30,10 @@ const getTestData = () => {
         {
             id: 1478,
             description: "Female hypertensive disease",
-            dateSubmitted: DateTime.fromISO("2024-03-18").toJSDate(),
-            lastUpdated: DateTime.fromISO("2024-04-11").toJSDate(),
+            dateSubmitted: "2024-03-18",
+            lastUpdated: "2024-04-11",
             irbNumber: "2024S",
-            status: RequestStatus.APPROVED,
+            status: "Approved",
             requests: [
                 "Request Demographics Data",
                 "Request Diagnosis Data",
@@ -43,10 +42,10 @@ const getTestData = () => {
         {
             id: 1479,
             description: "Diabetes Mellitus@10:32:58",
-            dateSubmitted: DateTime.fromISO("2024-07-11").toJSDate(),
-            lastUpdated: DateTime.fromISO("2024-08-11").toJSDate(),
+            dateSubmitted: "2024-07-11",
+            lastUpdated: "2024-08-11",
             irbNumber: "2024S",
-            status: RequestStatus.DENIED,
+            status: "Denied",
             requests: [
                 "Request Demographics Data",
                 "Request Diagnosis Data",
@@ -56,10 +55,10 @@ const getTestData = () => {
         {
             id: 1450,
             description: "Diabetes Mellitus@10:35:46",
-            dateSubmitted: DateTime.fromISO("2024-07-28").toJSDate(),
-            lastUpdated: DateTime.fromISO("2024-09-29").toJSDate(),
+            dateSubmitted: "2024-07-28",
+            lastUpdated: "2024-09-29",
             irbNumber: "2024S",
-            status: RequestStatus.FILE_AVAILABLE,
+            status: "File Available",
             requests: [
                 "Request Demographics Data",
                 "Request Medication Data",
@@ -71,10 +70,10 @@ const getTestData = () => {
         {
             id: 1451,
             description: "Circulatory system@21:30:14",
-            dateSubmitted: DateTime.fromISO("2024-09-03").toJSDate(),
-            lastUpdated: DateTime.fromISO("2024-09-28").toJSDate(),
+            dateSubmitted: "2024-09-03",
+            lastUpdated: "2024-09-28",
             irbNumber: "2024S1",
-            status: RequestStatus.CANCELLED,
+            status: "Cancelled",
             requests: [
                 "Request Diagnosis Data",
                 "Request Lab Data"
