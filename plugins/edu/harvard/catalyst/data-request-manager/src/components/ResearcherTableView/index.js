@@ -67,7 +67,7 @@ export const ResearcherTableView = () => {
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 1,
+            flex: 1
         },
         {
             field: 'lastUpdated',

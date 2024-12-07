@@ -7,7 +7,7 @@ export const ResearcherTableRow = ({
    requests = [],
    dateSubmitted = null,
    irbNumber= "",
-   status= RequestStatus.SUBMITTED
+   status= RequestStatus()
 } = {}) => ({
     id,
     description,
