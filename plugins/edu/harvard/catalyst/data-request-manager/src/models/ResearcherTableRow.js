@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import {RequestStatus} from "./RequestStatus";
 
+
 export const ResearcherTableRow = ({
    id = null,
    description= "",
