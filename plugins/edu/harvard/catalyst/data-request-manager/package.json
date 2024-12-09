@@ -9,6 +9,7 @@
     "@fontsource/roboto": "^5.1.0",
     "@mui/material": "^6.1.8",
     "@mui/x-data-grid": "^7.22.3",
+    "@mui/x-tree-view": "^7.23.0",
     "@reduxjs/toolkit": "^2.3.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
