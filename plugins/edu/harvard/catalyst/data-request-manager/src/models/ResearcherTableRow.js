@@ -23,6 +23,7 @@ ResearcherTableRow.propTypes = {
     description:  PropTypes.string.isRequired,
     requests: PropTypes.arrayOf(PropTypes.string).isRequired,
     dateSubmitted: PropTypes.instanceOf(Date).isRequired,
-    irbNumber: PropTypes.string.isRequired
+    irbNumber: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired
 }
 

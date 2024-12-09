@@ -1,2 +1,2 @@
 export { DataRequestManager } from "./DataRequestManager";
-export { ResearcherTableView } from "./ResearcherTableView";
+export { ResearcherTableView } from "./Researcher/ResearcherTableView";
