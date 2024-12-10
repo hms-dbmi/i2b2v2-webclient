@@ -3,10 +3,8 @@ import { REQUEST_DETAILS } from "../actions";
 import { defaultState } from '../defaultState';
 import {
     RequestStatus, RequestStatusLog,
-    ResearcherRequest,
     ResearcherRequestDetails,
     ResearcherTable,
-    ResearcherTableRow,
     StatusInfo
 } from "../models";
 import {DateTime} from "luxon";
