@@ -6,12 +6,6 @@ import {
     Breadcrumbs, Button,
     Card,
     Link,
-    Paper,
-    Table,
-    TableBody,
-    TableCell, TableContainer,
-    TableHead,
-    TableRow,
     Typography
 } from "@mui/material";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
