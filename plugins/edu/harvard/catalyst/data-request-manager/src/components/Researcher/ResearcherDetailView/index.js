@@ -17,7 +17,7 @@ import {
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import {getRequestDetails} from "../../../reducers/getRequestDetailsSlice";
 import Grid from '@mui/material/Grid2';
-import {RequestStatus} from "../../../models";
+import {RequestStatusLogView} from "./RequestStatusLogView";
 
 
 export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
@@ -89,33 +89,11 @@ export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
                                 <Card className={"RequestDetailActionContent"}>
                                     <Grid container spacing={2}>
                                         <Grid size={6}>
-                                            <Button variant="contained">Cancel</Button>
+                                            <Button variant="contained">Withdraw Request</Button>
                                         </Grid>
                                         <Grid size={6}>
                                             <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
-                                            <TableContainer component={Paper}>
-                                                <Table sx={{ minWidth: 50 }} size="small" aria-label="simple table">
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell>Date</TableCell>
-                                                            <TableCell align="left">Status</TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        {details.statusLogs.map((row) => (
-                                                            <TableRow
-                                                                key={row.status}
-                                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                            >
-                                                                <TableCell component="th" scope="row">
-                                                                    {row.date.toLocaleDateString()}
-                                                                </TableCell>
-                                                                <TableCell align="left">{RequestStatus.statuses[row.status]}</TableCell>
-                                                            </TableRow>
-                                                        ))}
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
+                                            <RequestStatusLogView statusLogs={details.statusLogs}/>
                                         </Grid>
                                     </Grid>
                                 </Card>

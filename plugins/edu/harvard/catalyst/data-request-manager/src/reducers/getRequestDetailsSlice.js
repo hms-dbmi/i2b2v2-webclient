@@ -27,7 +27,6 @@ export const getRequestDetailsSlice = createSlice({
             }else{
                 status = RequestStatus.statuses.UNKNOWN;
             }
-
             const details = ResearcherRequestDetails({
                     id: researcherRequests.id,
                     name: researcherRequests.name,
@@ -39,7 +38,7 @@ export const getRequestDetailsSlice = createSlice({
                     email: researcherRequests.email,
                     userId: researcherRequests.userId,
                     status:  status,
-                    statusLogs: researcherRequests.statusLogs.map((st) => {
+                    statusLogs: researcherRequests.statusLogs.map((st, index) => {
                         let lstatus = RequestStatus._lookupStatus(st.status);
                         if(lstatus.length > 0){
                             lstatus = lstatus[0];
@@ -48,6 +47,7 @@ export const getRequestDetailsSlice = createSlice({
                         }
 
                         return RequestStatusLog({
+                            id: index,
                             date: DateTime.fromISO(st.date).toJSDate(),
                             status: lstatus
                         })
