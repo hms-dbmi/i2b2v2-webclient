@@ -10,7 +10,6 @@ import {
     TableHead,
     TableRow,
     TableSortLabel,
-    Typography
 } from "@mui/material";
 import { visuallyHidden } from '@mui/utils';
 
@@ -69,7 +68,6 @@ export const RequestStatusLogView = ({statusLogs}) => {
         );
     }
 
-
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -88,7 +86,6 @@ export const RequestStatusLogView = ({statusLogs}) => {
         }
         return 0;
     }
-
 
     const getComparator = (order, orderBy) => {
         return order === 'desc'
