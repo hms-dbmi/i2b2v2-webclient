@@ -18,6 +18,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import {getRequestDetails} from "../../../reducers/getRequestDetailsSlice";
 import Grid from '@mui/material/Grid2';
 import {RequestStatusLogView} from "./RequestStatusLogView";
+import {RequestStatus} from "../../../models";
 
 
 export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
@@ -89,7 +90,7 @@ export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
                                 <Card className={"RequestDetailActionContent"}>
                                     <Grid container spacing={2}>
                                         <Grid size={6}>
-                                            <Button variant="contained">Withdraw Request</Button>
+                                            { details.status === RequestStatus.statuses.SUBMITTED && <Button variant="contained" color="error">Withdraw Request</Button>}
                                         </Grid>
                                         <Grid size={6}>
                                             <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
