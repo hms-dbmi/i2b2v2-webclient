@@ -1,10 +1,10 @@
 import React from "react";
-import {ResearcherTableView} from "../Researcher/ResearcherTableView";
+import {Researcher} from "../Researcher";
 
 export const DataRequestManager = () => {
     return (
         <div>
-            <ResearcherTableView/>
+            <Researcher/>
         </div>
     )
 }
