@@ -4,3 +4,4 @@ export { StatusInfo } from "./StatusInfo";
 export { RequestStatus } from "./RequestStatus";
 export { ResearcherRequest } from "./ResearcherRequest";
 export { ResearcherRequestDetails } from "./ResearcherRequestDetails";
+export { RequestStatusLog } from "./RequestStatusLog";

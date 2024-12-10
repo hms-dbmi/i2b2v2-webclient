@@ -17,7 +17,7 @@ export const listResearcherTableSlice = createSlice({
             const rows = researcherRequests.map((request) => {
                 let status = RequestStatus._lookupStatus(request.status);
                 if(status.length > 0){
-                    status = RequestStatus.statuses[status[0]];
+                    status = status[0];
                 }else{
                     status = RequestStatus.statuses.UNKNOWN;
                 }

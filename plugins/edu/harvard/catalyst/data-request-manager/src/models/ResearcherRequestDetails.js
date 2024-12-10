@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import {RequestStatus} from "./RequestStatus";
+import {RequestStatusLog} from "./RequestStatusLog";
 
 export const ResearcherRequestDetails = ({
     id = null,
@@ -31,5 +32,5 @@ ResearcherRequestDetails.propTypes = {
     irbNumber: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
-    statusLogs: PropTypes.arrayOf(PropTypes.string).isRequired,
+    statusLogs: PropTypes.arrayOf(PropTypes.shape(RequestStatusLog)).isRequired,
 };

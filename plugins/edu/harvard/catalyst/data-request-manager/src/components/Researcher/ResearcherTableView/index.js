@@ -11,6 +11,7 @@ import "./ResearcherTableView.scss";
 
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import {TreeItem} from "@mui/x-tree-view";
+import {RequestStatus} from "../../../models";
 
 
 export const ResearcherTableView = ({displayDetailViewId}) => {
@@ -66,7 +67,14 @@ export const ResearcherTableView = ({displayDetailViewId}) => {
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 1
+            flex: 1,
+            valueGetter: (value) => {
+                if (!value) {
+                    return RequestStatus.statuses.UNKNOWN;
+                }
+
+                return  RequestStatus.statuses[value];
+            }
         },
         {
             field: 'lastUpdated',

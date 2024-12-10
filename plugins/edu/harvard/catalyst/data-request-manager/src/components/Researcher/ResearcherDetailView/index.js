@@ -17,6 +17,7 @@ import {
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import {getRequestDetails} from "../../../reducers/getRequestDetailsSlice";
 import Grid from '@mui/material/Grid2';
+import {RequestStatus} from "../../../models";
 
 
 export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
@@ -109,7 +110,7 @@ export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
                                                                 <TableCell component="th" scope="row">
                                                                     {row.date.toLocaleDateString()}
                                                                 </TableCell>
-                                                                <TableCell align="left">{row.status}</TableCell>
+                                                                <TableCell align="left">{RequestStatus.statuses[row.status]}</TableCell>
                                                             </TableRow>
                                                         ))}
                                                     </TableBody>

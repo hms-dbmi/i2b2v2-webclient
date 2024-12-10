@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { REQUEST_DETAILS } from "../actions";
 import { defaultState } from '../defaultState';
 import {
-    RequestStatus,
+    RequestStatus, RequestStatusLog,
     ResearcherRequest,
     ResearcherRequestDetails,
     ResearcherTable,
@@ -42,15 +42,15 @@ export const getRequestDetailsSlice = createSlice({
                     statusLogs: researcherRequests.statusLogs.map((st) => {
                         let lstatus = RequestStatus._lookupStatus(st.status);
                         if(lstatus.length > 0){
-                            lstatus = RequestStatus.statuses[lstatus[0]];
+                            lstatus = lstatus[0];
                         }else{
                             lstatus = RequestStatus.statuses.UNKNOWN;
                         }
 
-                        return {
+                        return RequestStatusLog({
                             date: DateTime.fromISO(st.date).toJSDate(),
                             status: lstatus
-                        }
+                        })
                     })
                 });
             state.details = details;
