@@ -11,14 +11,14 @@ import "./ResearcherTableView.scss";
 
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import {TreeItem} from "@mui/x-tree-view";
+import {RequestStatus} from "../../../models";
 
 
-export const ResearcherTableView = () => {
+export const ResearcherTableView = ({displayDetailViewId}) => {
     const dispatch = useDispatch();
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { rows, isFetching } = useSelector((state) => state.researcherTable);
     const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
-
     const columns = [
         {
             field: 'id',
@@ -67,7 +67,14 @@ export const ResearcherTableView = () => {
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 1
+            flex: 1,
+            valueGetter: (value) => {
+                if (!value) {
+                    return RequestStatus.statuses.UNKNOWN;
+                }
+
+                return  RequestStatus.statuses[value];
+            }
         },
         {
             field: 'lastUpdated',
@@ -94,13 +101,17 @@ export const ResearcherTableView = () => {
             resizable: false,
             disableReorder: true,
             minWidth: 149,
-            renderCell: (row) => {
+            renderCell: (param) => {
                 return (
-                    <Button variant="contained" size="small" className={"actions"}>View Details</Button>
+                    <Button variant="contained" size="small" className={"actions"} onClick={() => handleDisplayDetailView(param.row.id)}>View Details</Button>
                 );
             },
         }
     ];
+
+    const handleDisplayDetailView = (id) => {
+        displayDetailViewId(id);
+    };
 
     const i2b2LibLoaded = () => {
         dispatch(updateI2b2LibLoaded());

@@ -21,6 +21,10 @@
   }
 
   .MuiTreeItem-content.Mui-selected {
-   background-color: transparent !important;
- }
+    background-color: transparent !important;
+  }
+
+  .ResearcherTableView .MuiTreeItem-content.Mui-selected {
+    background: none !important;
+  }
 }
