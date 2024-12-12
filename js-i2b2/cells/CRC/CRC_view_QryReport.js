@@ -35,7 +35,6 @@ i2b2.CRC.view.QueryReport = {
     loadQueryResultSetInstance: function() {
         for (let i in i2b2.CRC.view.QueryReport.QRS) {
             let rec = i2b2.CRC.view.QueryReport.QRS[i];
-
                 if (rec.QRS_DisplayType === "CATNUM") {
                     let scopedCallbackQRSI = new i2b2_scopedCallback(this._handleQueryResultInstance);
                     i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryReport", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
@@ -98,9 +97,11 @@ i2b2.CRC.view.QueryReport = {
             let descriptionLong;
             let visualAttr = "";
             let status = "";
+            let isShrine = false;
             for (let i = 0; i < l; i++) {
                 let temp = ri_list[i];
                 resultType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
+                if (resultType.indexOf("_SHRINE_") > -1) isShrine = true;
                 visualAttr = i2b2.h.XPath(ri_list[0], 'descendant-or-self::query_result_type/visual_attribute_type')[0].firstChild.nodeValue;
                 // get the query name for display in the box
                 descriptionShort = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/description')[0].firstChild.nodeValue;
@@ -116,7 +117,7 @@ i2b2.CRC.view.QueryReport = {
                 let temp = crc_xml[i];
                 let xml_value = i2b2.h.XPath(temp, 'descendant-or-self::xml_value')[0].firstChild.nodeValue;
                 let xml_v = i2b2.h.parseXml(xml_value);
-
+                // process "normal" data
                 let params = i2b2.h.XPath(xml_v, 'descendant::data[@column]/text()/..');
                 for (let i2 = 0; i2 < params.length; i2++) {
                     let entryRecord = {}
@@ -125,11 +126,12 @@ i2b2.CRC.view.QueryReport = {
 
                     if (i2b2.PM.model.isObfuscated) {
                         const nodeValue = parseInt(params[i2].firstChild.nodeValue);
-                        if (!isNaN(nodeValue) && nodeValue< 4) {
+                        if (!isNaN(nodeValue) && nodeValue < 4) {
                             entryRecord.display = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-                        }  if (isNaN(nodeValue) || entryRecord.name ==='QueryMasterID') {
+                        }
+                        if (isNaN(nodeValue) || entryRecord.name === 'QueryMasterID') {
                             entryRecord.display = params[i2].firstChild.nodeValue;
-                        } else{
+                        } else {
                             entryRecord.display = params[i2].firstChild.nodeValue + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
                         }
                     }
@@ -166,19 +168,56 @@ i2b2.CRC.view.QueryReport = {
                     }
                 }
 
+                // process "SHRINE" data
+                let ShrineNode = i2b2.h.XPath(xml_v, 'descendant::SHRINE');
+                if (ShrineNode.length) {
+                    let ShrineData = {
+                        complete: ShrineNode[0].getAttribute('complete'),
+                        error: ShrineNode[0].getAttribute('error'),
+                        sites: []
+                    };
+                    for (let site of i2b2.h.XPath(ShrineNode[0], "site")) {
+                        let siteData = {};
+                        // deal with attributes
+                        for (let attrib of site.attributes) {
+                            siteData[attrib.name] = attrib.value;
+                        }
+                        // deal with site data
+                        let siteResults = i2b2.h.XPath(site, "siteresult")
+                        if (siteResults.length) {
+                            siteData.results = [];
+                            for (let siteresult of siteResults) {
+                                siteData.results.push({
+                                    name: siteresult.getAttribute('column'),
+                                    value: siteresult.value
+                                });
+                            }
+                        }
+                        ShrineData.sites.push(siteData);
+                    }
+                    breakdown.SHRINE = ShrineData;
+                        }
+
                 if (breakdown.title) {
                     if (isPatientCount) {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.unshift(breakdown);
+                        // update the display with SHRINE info if it is present
+                        if (breakdown.SHRINE) {
+                            let siteCnt = parseInt(breakdown.SHRINE.complete) + parseInt(breakdown.SHRINE.error);
+                            let ptCnt = breakdown.result[0].value;
+                            $('#patientCountLine3').text(siteCnt + " sites reporting up to " + ptCnt + " patients");
+                        }
                     } else if(visualAttr === 'LR' || visualAttr === 'LX') {
                         i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
                     } else {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
                     }
                 }
+
             }
 
             let isZeroPatients =  parseInt(i2b2.CRC.view.QueryReport.breakdowns.patientCount.value || -1) === 0;
-            if (isZeroPatients){
+            if (isZeroPatients) {
                 i2b2.CRC.view.QueryReport.hasZeroPatients = isZeroPatients;
             }
             // only create graphs if there is breakdown data
@@ -231,9 +270,16 @@ i2b2.CRC.view.QueryReport = {
                             rec.end_date =  new Date(rec.end_date.substring(0,4), rec.end_date.substring(5,7)-1, rec.end_date.substring(8,10), rec.end_date.substring(11,13),rec.end_date.substring(14,16),rec.end_date.substring(17,19),rec.end_date.substring(20,23));
                         }
                         rec.QRS_DisplayType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/display_type')[0].firstChild.nodeValue;
-                        rec.QRS_Type = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
                         rec.QRS_Description = i2b2.h.XPath(temp, 'descendant-or-self::description')[0].firstChild.nodeValue;
                         rec.QRS_TypeID = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/result_type_id')[0].firstChild.nodeValue;
+                        rec.QRS_Type = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
+                        if (rec.QRS_Type.indexOf("_SHRINE_") > -1) {
+                            rec.isShrine = true;
+                        } else {
+                            rec.isShrine = false;
+                        }
+// TODO: TESTING FOR SHRINE
+                            rec.isShrine = true;
                         // I2B2UI-759: Show admins/power-users the amount of time the server worked on running the query
                         console.log('Compute time on server was ' + ((rec.end_date - rec.start_date) / 1000).toFixed(1) + ' seconds for `' + rec.QRS_Description + '`');
                     }
@@ -306,7 +352,8 @@ i2b2.CRC.view.QueryReport = {
                 }
                 break;
             case "PATIENT_COUNT_XML":
-                // use given title if it exist otherwise generate a title
+            case "PATIENT_COUNT_SHRINE_XML":
+                // use given title if it exists otherwise generate a title
                 let x = null;
                 try {
                     x = i2b2.h.XPath(oXML,'self::query_result_instance/description')[0].firstChild.nodeValue;

@@ -8,6 +8,12 @@
       "allowAnalysis": true,
       "debug": false
     }, {
+      "domain": "shrine-masscpr-dev-hub",
+      "name": "SHRINE Demo",
+      "urlCellPM": "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/PMService/",
+      "allowAnalysis": true,
+      "debug": false
+    }, {
       "domain": "i2b2demo",
       "name": "Clinical Query 2 Demo",
       "urlCellPM": "http://weberdemo.hms.harvard.edu/i2b2/CQ2ServiceProxy.php/PMService/",

@@ -154,7 +154,8 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
         isRunning: true,
         isLoading: false,
         isCancelled: false,
-        hasError: false
+        hasError: false,
+        isShrine: false
     };
 
     delete i2b2.CRC.model.runner.progress;
@@ -319,6 +320,8 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
             rec.id = i2b2.h.XPath(qri, 'descendant-or-self::result_instance_id')[0].firstChild.nodeValue;
             rec.desc = i2b2.h.XPath(qri, 'descendant-or-self::query_result_type/description')[0].firstChild.nodeValue;
             rec.status = i2b2.h.XPath(qri, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
+            rec.type = i2b2.h.XPath(qri, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
+            if (rec.type.indexOf('_SHRINE_') > -1) i2b2.CRC.model.runner.isShrine = true;
             idQRI[rec.id] = rec;
 
             // check for errors
@@ -693,5 +696,6 @@ i2b2.CRC.model.runner = {
     isRunning: true,
     isLoading: false,
     isCancelled: false,
-    hasError: false
+    hasError: false,
+    isShrine: false
 };
