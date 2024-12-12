@@ -113,14 +113,8 @@ export const ResearcherTableView = ({displayDetailViewId}) => {
         displayDetailViewId(id);
     };
 
-    const i2b2LibLoaded = () => {
-        dispatch(updateI2b2LibLoaded());
-    }
-
     useEffect(() => {
-        if (!isI2b2LibLoaded) {
-            window.addEventListener('I2B2_READY', i2b2LibLoaded);
-        }else{
+        if (isI2b2LibLoaded) {
             dispatch(listResearcherTable());
         }
     }, [isI2b2LibLoaded]);

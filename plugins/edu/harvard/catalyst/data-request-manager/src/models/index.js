@@ -5,3 +5,5 @@ export { RequestStatus } from "./RequestStatus";
 export { ResearcherRequest } from "./ResearcherRequest";
 export { ResearcherRequestDetails } from "./ResearcherRequestDetails";
 export { RequestStatusLog } from "./RequestStatusLog";
+export { ACCESS_LEVEL , UserAccessLevel } from "./UserAccessLevel";
+
