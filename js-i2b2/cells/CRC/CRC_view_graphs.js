@@ -104,7 +104,7 @@ i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData, breakdownIn
         .range([ height, 0]);
     // build the Y axis
     let y_axis = svg.append("g")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y).tickFormat(d3.format(".2~s")));
     y_axis.append("text")
         .attr("fill","currentColor")
         .text("Number of Patients")
