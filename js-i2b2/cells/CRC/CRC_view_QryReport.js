@@ -197,6 +197,36 @@ i2b2.CRC.view.QueryReport = {
                     }
                     breakdown.SHRINE = ShrineData;
                         }
+                // render the site counts if they exist
+                if (breakdown.SHRINE?.sites.length) {
+                    $("#ShrineTitle").show();
+                    let trgt = $("#ShrineSites");
+                    trgt.hide();
+                    trgt.empty();
+                    trgt.append("<thead><th>Site</th><th>Status</th></thead>");
+                    for (let site of breakdown.SHRINE.sites) {
+                        let name = site.name;
+                        switch (site.status) {
+                            case "complete":
+                                let cnt = breakdown.result.filter((r) => r.name === name);
+                                let result = 0;
+                                if (cnt.length > 0) {
+                                    result = cnt[0].value;
+                                    if (cnt[0].display) result = cnt[0].display;
+                                }
+                                trgt.append(`<tr><td>${name}</td><td>${result} patients</td></tr>`);
+                                break;
+                            case "error":
+                                trgt.append(`<tr><td>${name}</td><td class="error" title="Error code 12345">Site Error</td></tr>`);
+                                break;
+                            default:
+                                trgt.append(`<tr><td>${name}</td><td>Processing...</td></tr>`);
+                        }
+                    }
+                    trgt.show();
+                }
+
+
 
                 if (breakdown.title) {
                     if (isPatientCount) {

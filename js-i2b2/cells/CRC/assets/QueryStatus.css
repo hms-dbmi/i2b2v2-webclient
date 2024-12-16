@@ -226,3 +226,38 @@
 #breakdownCharts svg text.y-label {
     font-weight: bold;
 }
+
+
+#ShrineSites {
+    width: 90% !important;
+    text-align: left !important;
+}
+#ShrineSites th {
+    padding: .5rem;
+    background: #eee;
+}
+#ShrineSites tr {
+    border-bottom: 1px solid #eee;
+}
+#ShrineSites td {
+    padding: .4rem .5rem;
+    background: #fff;
+    width: 50%;
+}
+
+#ShrineSites td.error {
+    color: red;
+    cursor: default;
+}
+
+#ShrineTitle {
+    font-weight: 700;
+    margin: 0 .8rem -1.4rem;
+    line-height: 1.5rem;
+}
+#ShrineTitle i {
+    float: right;
+    font-size: 1.2rem;
+    font-size-adjust: from-font;
+    cursor: pointer;
+}
