@@ -1,0 +1,24 @@
+.RequestDetailView {
+  margin-bottom: 0.4em;
+  padding: 0.2em;
+
+  .RequestDetailTitle {
+    margin-bottom: 0.1em;
+    margin-top: 0.2em;
+    font-weight: bold;
+  }
+
+  .RequestDetailContent {
+    margin-top: 0.4em;
+    padding: 0.5em;
+    background-color: rgba(246, 245, 245, 0.8);
+  }
+
+  .DataRequestType{
+    max-height: 6em;
+    overflow-y: auto;
+    border: 1px solid #d0cccc;
+    border-radius: 5px;
+    background-color: #FFF;
+  }
+}
