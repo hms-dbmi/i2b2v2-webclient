@@ -26,11 +26,25 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
         componentPluginCode: pluginId,
         title:pluginTitle
     };
-    // this function creates or replaces the current plugin tab with this new plugin
-    if (i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems.length > 2) {
-        i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems[2].remove();
+    // remove any previously existing instance of a plugin window
+    let tempRef = i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems;
+    if (tempRef.length > 2) {
+        for (let idx in tempRef) {
+            if (["i2b2.LEGACYPLUGIN.view.main","i2b2.PLUGIN.view"].includes(tempRef[idx].componentName)) {
+                tempRef[idx].close();
+                break;
+            }
+        }
     }
-    i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].addChild(newPluginWindow, 2);
+    // insert the plugin tab after the "Analysis Tools" tab
+    let tabidx = tempRef.length;
+    for (let idx in tempRef) {
+        if (tempRef[idx].componentName === "i2b2.PLUGIN.view.list") {
+            tabidx = parseInt(idx) + 1;
+            break;
+        }
+    }
+    i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].addChild(newPluginWindow, tabidx);
 };
 
 //================================================================================================== //
