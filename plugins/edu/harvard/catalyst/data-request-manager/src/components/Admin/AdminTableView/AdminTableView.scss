@@ -1,0 +1,29 @@
+.AdminTableView {
+  width: 100%;
+
+  padding: 1.5em;
+  .header {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .title {
+    margin-bottom: 0.6em;
+    font-weight: bold;
+  }
+
+  .actions {
+    margin: 0.5em;
+  }
+
+  .requestLabel .MuiTreeItem-label {
+    font-size: 1.0em !important;
+  }
+
+  .MuiTreeItem-content.Mui-selected {
+    background-color: transparent !important;
+  }
+
+  .AdminTableView .MuiTreeItem-content.Mui-selected {
+    background: none !important;
+  }
+}

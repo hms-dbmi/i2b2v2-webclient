@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {Box} from "@mui/material";
-import {ResearcherDetailView} from "./ResearcherDetailView";
-import {ResearcherTableView} from "./ResearcherTableView";
-
+import {AdminTableView} from "./AdminTableView";
 
 export const Admin = () => {
     const [detailViewId, setDetailViewId] = useState(null);
@@ -13,10 +11,8 @@ export const Admin = () => {
 
     return (
         <Box>
-            { detailViewId === null && <ResearcherTableView displayDetailViewId={setDetailViewId}/> }
-            { detailViewId !== null && <ResearcherDetailView requestId={detailViewId} setViewRequestTable={setViewRequestTable}/> }
+            { detailViewId === null && <AdminTableView displayDetailViewId={setDetailViewId}/> }
         </Box>
-
 
     );
 }

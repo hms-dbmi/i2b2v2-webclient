@@ -16,7 +16,7 @@ export const UserAccessLevel = ({
 });
 
 UserAccessLevel.propTypes = {
-    role: PropTypes.instanceOf(ACCESS_LEVEL).isRequired,
+    role: PropTypes.string.isRequired,
     isFetching: PropTypes.bool,
     statusInfo: PropTypes.shape(StatusInfo),
 };

@@ -4,6 +4,7 @@ import {Researcher} from "../Researcher";
 import {ACCESS_LEVEL} from "../../models";
 import {retrieveUserAccessLevel} from "../../reducers/retrieveUserAccessLevelSlice";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
+import {Admin} from "../Admin";
 
 export const DataRequestManager = () => {
     const dispatch = useDispatch();
@@ -26,7 +27,7 @@ export const DataRequestManager = () => {
     return (
         <div>
             {accessLevel === ACCESS_LEVEL.RESEARCHER &&  <Researcher/> }
-            {accessLevel === ACCESS_LEVEL.ADMIN &&  <div> Not implemented </div> }
+            {accessLevel === ACCESS_LEVEL.ADMIN &&  <Admin/> }
         </div>
     )
 }

@@ -17,6 +17,5 @@ export const Researcher = () => {
             { detailViewId !== null && <ResearcherDetailView requestId={detailViewId} setViewRequestTable={setViewRequestTable}/> }
         </Box>
 
-
-);
+    );
 }

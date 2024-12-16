@@ -63,7 +63,6 @@ export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
                                             <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Email:</span> {details.email} </Typography>
                                         </Grid>
                                         <Grid size={6}>
-                                            <Typography className={"RequestDetailContentItem"}> <span className={"title"}>IRB #:</span> {details.irbNumber} </Typography>
                                             <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Data Request Type:</span> </Typography>
                                             <ol className={"RequestDetailContentItem DataRequestType"}>
                                                 {

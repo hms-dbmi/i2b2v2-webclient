@@ -4,7 +4,7 @@ import { defaultState } from '../defaultState';
 import {
     RequestStatus, RequestStatusLog,
     ResearcherRequestDetails,
-    ResearcherTable,
+    ResearcherRequest,
     StatusInfo
 } from "../models";
 import {DateTime} from "luxon";
@@ -14,7 +14,7 @@ export const getRequestDetailsSlice = createSlice({
     initialState: defaultState.researcherRequest,
     reducers: {
         getRequestDetails: state => {
-            return ResearcherTable({
+            return ResearcherRequest({
                 isFetching: true
             })
         },
@@ -32,7 +32,6 @@ export const getRequestDetailsSlice = createSlice({
                     requests: researcherRequests.requests,
                     dateSubmitted: DateTime.fromISO(researcherRequests.dateSubmitted).toJSDate(),
                     lastUpdated: DateTime.fromISO(researcherRequests.lastUpdated).toJSDate(),
-                    irbNumber: researcherRequests.irbNumber,
                     email: researcherRequests.email,
                     userId: researcherRequests.userId,
                     status:  status,
