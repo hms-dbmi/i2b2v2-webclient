@@ -27,7 +27,6 @@ export const listRequestTableSlice = createSlice({
                         id: request.id,
                         description: request.description,
                         requests: request.requests,
-                        dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
                         lastUpdated: DateTime.fromISO(request.lastUpdated).toJSDate(),
                         patientSize: request.patientSize,
                         userId: request.userId,
@@ -39,7 +38,6 @@ export const listRequestTableSlice = createSlice({
                         id: request.id,
                         description: request.description,
                         requests: request.requests,
-                        dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
                         lastUpdated: DateTime.fromISO(request.lastUpdated).toJSDate(),
                         status: status
                     })
