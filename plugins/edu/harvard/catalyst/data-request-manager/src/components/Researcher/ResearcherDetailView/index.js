@@ -18,7 +18,7 @@ import {RequestDetailView} from "../../RequestDetailView";
 
 export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
     const dispatch = useDispatch();
-    const { details, isFetching } = useSelector((state) => state.researcherRequest);
+    const { details } = useSelector((state) => state.researcherRequest);
 
     useEffect(() => {
         if(requestId) {
