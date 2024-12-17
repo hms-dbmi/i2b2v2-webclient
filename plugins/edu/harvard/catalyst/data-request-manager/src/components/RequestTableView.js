@@ -30,7 +30,7 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
             flex: 2,
             renderCell: (param) => {
                 return (
-                    <SimpleTreeView defaultExpandedItems={[param.row.description]}>
+                    <SimpleTreeView defaultExpandedItems={isAdmin ? [] : [param.row.description]}>
                         <TreeItem itemId={param.row.description} label={param.row.description}>
                             {
                                 param.row.requests.map((name, index) => {
