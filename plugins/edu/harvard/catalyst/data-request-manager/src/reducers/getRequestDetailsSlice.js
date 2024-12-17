@@ -4,17 +4,17 @@ import { defaultState } from '../defaultState';
 import {
     RequestStatus, RequestStatusLog,
     ResearcherRequestDetails,
-    ResearcherRequest,
+    RequestDetails,
     StatusInfo
 } from "../models";
 import {DateTime} from "luxon";
 
 export const getRequestDetailsSlice = createSlice({
     name: REQUEST_DETAILS,
-    initialState: defaultState.researcherRequest,
+    initialState: defaultState.requestDetails,
     reducers: {
         getRequestDetails: state => {
-            return ResearcherRequest({
+            return RequestDetails({
                 isFetching: true
             })
         },

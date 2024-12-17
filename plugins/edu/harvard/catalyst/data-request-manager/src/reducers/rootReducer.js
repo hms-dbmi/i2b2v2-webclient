@@ -6,7 +6,7 @@ import retrieveUserAccessLevelReducer from "./retrieveUserAccessLevelSlice";
 const rootReducers = {
     requestTable : listRequestTableReducer,
     adminTable : listRequestTableReducer,
-    researcherRequest: getRequestDetailsReducer,
+    requestDetails: getRequestDetailsReducer,
     userAccessLevel: retrieveUserAccessLevelReducer,
     isI2b2LibLoaded: i2b2LibLoadedReducer
 };
