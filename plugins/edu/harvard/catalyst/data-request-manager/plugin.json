@@ -15,10 +15,7 @@
       "i2b2.PM.model.login_username": "R",
       "i2b2.PM.model.login_project": "R",
       "i2b2.PM.model.userRoles": "RO"
-    },
-    "functions": [
-      "i2b2.PM.model.isAdmin"
-    ]
+    }
   },
   "state": {
   }
