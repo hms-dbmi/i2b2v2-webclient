@@ -1,0 +1,58 @@
+.AdminDetailView{
+  padding: 1.1em;
+
+  .AdminDetailViewTitle{
+    margin-top: 0.7em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+  }
+
+  .AdminDetailViewContent {
+    border: 1px solid #d0cccc;
+    border-radius: 5px;
+    padding: 0.4em 0.8em;
+  }
+
+  .RequestDetail, .RequestAction {
+    margin-bottom: 0.4em;
+    padding: 0.2em;
+  }
+
+  .RequestDetailTitle, .RequestActionTitle {
+    margin-bottom: 0.1em;
+    margin-top: 0.2em;
+    font-weight: bold;
+  }
+
+  .RequestDetailContent,.RequestDetailActionContent {
+    margin-top: 0.4em;
+    padding: 0.5em;
+    background-color: rgba(246, 245, 245, 0.8);
+  }
+
+  .RequestDetailActionContent {
+    padding: 1em;
+  }
+
+  .DataRequestType{
+    max-height: 6em;
+    overflow-y: auto;
+    border: 1px solid #d0cccc;
+    border-radius: 5px;
+    background-color: #FFF;
+  }
+
+  .RequestDetailContentItem {
+    margin: 0.5em;
+  }
+
+  .MuiTableRow-root.MuiTableRow-head {
+    background-color: #e7edf3 !important;
+  }
+
+  .RequestDetailActionContent {
+    th, td {
+      border: 1px solid rgba(224, 224, 224, 1);
+    }
+  }
+}

@@ -4,8 +4,7 @@ import { defaultState } from '../defaultState';
 import {
     RequestStatus, RequestStatusLog,
     ResearcherRequestDetails,
-    RequestDetails,
-    StatusInfo
+    StatusInfo, AdminRequestDetails, RequestDetails
 } from "../models";
 import {DateTime} from "luxon";
 
@@ -18,28 +17,32 @@ export const getRequestDetailsSlice = createSlice({
                 isFetching: true
             })
         },
-        getRequestDetailsSuccess: (state, { payload: researcherRequests }) => {
-            let status = RequestStatus._lookupStatus(researcherRequests.status);
+        getRequestDetailsSuccess: (state, { payload: {requestDetails, isAdmin }}) => {
+            let status = RequestStatus._lookupStatus(requestDetails.status);
             if(status.length > 0){
                 status = RequestStatus.statuses[status[0]];
             }else{
                 status = RequestStatus.statuses.UNKNOWN;
             }
-            const details = ResearcherRequestDetails({
-                    id: researcherRequests.id,
-                    name: researcherRequests.name,
-                    description: researcherRequests.description,
-                    requests: researcherRequests.requests,
-                    dateSubmitted: DateTime.fromISO(researcherRequests.dateSubmitted).toJSDate(),
-                    lastUpdated: DateTime.fromISO(researcherRequests.lastUpdated).toJSDate(),
-                    email: researcherRequests.email,
-                    userId: researcherRequests.userId,
-                    status:  status,
-                    statusLogs: researcherRequests.statusLogs.map((st, index) => {
+            let details = null;
+
+            if(isAdmin){
+                details = AdminRequestDetails({
+                    id: requestDetails.id,
+                    name: requestDetails.name,
+                    description: requestDetails.description,
+                    requests: requestDetails.requests,
+                    dateSubmitted: DateTime.fromISO(requestDetails.dateSubmitted).toJSDate(),
+                    lastUpdated: DateTime.fromISO(requestDetails.lastUpdated).toJSDate(),
+                    email: requestDetails.email,
+                    userId: requestDetails.userId,
+                    status: status,
+                    patientCount: requestDetails.patientCount,
+                    statusLogs: requestDetails.statusLogs.map((st, index) => {
                         let lstatus = RequestStatus._lookupStatus(st.status);
-                        if(lstatus.length > 0){
+                        if (lstatus.length > 0) {
                             lstatus = lstatus[0];
-                        }else{
+                        } else {
                             lstatus = RequestStatus.statuses.UNKNOWN;
                         }
 
@@ -50,6 +53,34 @@ export const getRequestDetailsSlice = createSlice({
                         })
                     })
                 });
+            }
+           else {
+                details = ResearcherRequestDetails({
+                    id: requestDetails.id,
+                    name: requestDetails.name,
+                    description: requestDetails.description,
+                    requests: requestDetails.requests,
+                    dateSubmitted: DateTime.fromISO(requestDetails.dateSubmitted).toJSDate(),
+                    lastUpdated: DateTime.fromISO(requestDetails.lastUpdated).toJSDate(),
+                    email: requestDetails.email,
+                    userId: requestDetails.userId,
+                    status: status,
+                    statusLogs: requestDetails.statusLogs.map((st, index) => {
+                        let lstatus = RequestStatus._lookupStatus(st.status);
+                        if (lstatus.length > 0) {
+                            lstatus = lstatus[0];
+                        } else {
+                            lstatus = RequestStatus.statuses.UNKNOWN;
+                        }
+
+                        return RequestStatusLog({
+                            id: index,
+                            date: DateTime.fromISO(st.date).toJSDate(),
+                            status: lstatus
+                        })
+                    })
+                });
+            }
             state.details = details;
             state.isFetching = false;
             state.statusInfo = StatusInfo({

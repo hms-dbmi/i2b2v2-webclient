@@ -22,7 +22,7 @@ export const AdminTableView = ({displayDetailViewId}) => {
 
     return (
         <Box className={"AdminTableView"} style={{ display: 'flex', flexDirection: 'column' }}>
-            <RequestTableView rows={rows} isLoading={isFetching || !isI2b2LibLoaded} isAdmin={true} handleDisplayDetailView={displayDetailViewId}/>
+            <RequestTableView rows={rows} isLoading={isFetching || !isI2b2LibLoaded} isAdmin={true} displayDetailViewId={displayDetailViewId}/>
         </Box>
     )
 };
