@@ -191,7 +191,7 @@ export const adminRequestList = [
         lastUpdated: requestList[0].lastUpdated,
         status: requestList[0].status,
         requests: requestList[0].requests,
-        patientSize: "",
+        patientCount: "",
         userId: "user12",
     },
     {
@@ -201,7 +201,7 @@ export const adminRequestList = [
         lastUpdated: requestList[1].lastUpdated,
         status: requestList[1].status,
         requests: requestList[1].requests,
-        patientSize: "27439",
+        patientCount: "27439",
         userId: "user15",
     },
     {
@@ -212,7 +212,7 @@ export const adminRequestList = [
         status: requestList[2].status,
         requests: requestList[2].requests,
         userId: "user19",
-        patientSize: "5643100",
+        patientCount: "5643100",
     },
     {
         id: requestList[3].id,
@@ -222,7 +222,7 @@ export const adminRequestList = [
         status: requestList[3].status,
         requests: requestList[3].requests,
         userId: "user35",
-        patientSize: "634980",
+        patientCount: "634980",
     },
     {
         id: 1480,
@@ -232,7 +232,7 @@ export const adminRequestList = [
         status: "Submitted",
         requests: requestList[3].requests,
         userId: "user35",
-        patientSize: "",
+        patientCount: "",
     },
     {
         id: requestList[4].id,
@@ -243,6 +243,6 @@ export const adminRequestList = [
         requests: requestList[4].requests,
         email: "user12@i2b2.org",
         userId: "user24",
-        patientSize: "8923",
+        patientCount: "8923",
     }
 ];

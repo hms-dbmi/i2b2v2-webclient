@@ -23,12 +23,13 @@ export const listRequestTableSlice = createSlice({
                 }
 
                 if(isAdmin){
+                    const patientCount = request.patientCount.length > 0 ? request.patientCount.toLocaleString() : request.patientCount;
                     return AdminTableRow({
                         id: request.id,
                         description: request.description,
                         requests: request.requests,
                         lastUpdated: DateTime.fromISO(request.lastUpdated).toJSDate(),
-                        patientSize: request.patientSize,
+                        patientCount: patientCount,
                         userId: request.userId,
                         status: status
                     })

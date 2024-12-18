@@ -107,13 +107,20 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
                 flex: 1,
             });
             columns.splice(3, 0, {
-                field: 'patientSize',
-                headerName: 'Patient Size',
+                field: 'patientCount',
+                headerName: 'Count',
                 headerClassName: "header",
                 sortable: true,
                 resizable: false,
                 disableReorder: true,
                 flex: 1,
+                valueGetter: (value) => {
+                    let formattedValue = value.length > 0 ? parseInt(value): "";
+                    if(isNaN(formattedValue)){
+                        formattedValue = value;
+                    }
+                    return formattedValue.toLocaleString();
+                }
             });
         }
 

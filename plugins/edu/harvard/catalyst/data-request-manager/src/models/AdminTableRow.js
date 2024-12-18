@@ -7,7 +7,7 @@ export const AdminTableRow = ({
    description= "",
    requests = [],
    lastUpdated = null,
-   patientSize = null,
+   patientCount = null,
    userId = null,
    status= RequestStatus.statuses.SUBMITTED
 } = {}) => ({
@@ -15,7 +15,7 @@ export const AdminTableRow = ({
     description,
     requests,
     lastUpdated,
-    patientSize,
+    patientCount,
     userId,
     status
 });
@@ -25,7 +25,7 @@ AdminTableRow.propTypes = {
     description:  PropTypes.string.isRequired,
     requests: PropTypes.arrayOf(PropTypes.string).isRequired,
     lastUpdated: PropTypes.instanceOf(Date).isRequired,
-    patientSize: PropTypes.number.isRequired,
+    patientCount: PropTypes.number.isRequired,
     userId: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired
 }
