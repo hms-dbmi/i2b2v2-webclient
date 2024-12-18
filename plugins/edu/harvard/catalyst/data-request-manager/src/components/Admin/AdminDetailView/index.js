@@ -3,8 +3,10 @@ import {useDispatch, useSelector} from "react-redux";
 import "./AdminDetailView.scss";
 import {
     Box,
-    Button,
-    Card, FormControl, MenuItem, Select,
+    Card,
+    FormControl,
+    MenuItem,
+    Select,
     Typography
 } from "@mui/material";
 import {getRequestDetails} from "../../../reducers/getRequestDetailsSlice";
@@ -68,7 +70,7 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                                                 onChange={onChangeStatusEvent}
                                             >
                                                 {
-                                                    RequestStatus._getStatusesAsList().filter(s => s !== RequestStatus.statuses.UNKNOWN).map((status) => {
+                                                    RequestStatus._getStatusesAsList().filter(s => RequestStatus.statuses[s] !== RequestStatus.statuses.UNKNOWN).map((status) => {
                                                       return (<MenuItem value={RequestStatus.statuses[status]}> {RequestStatus.statuses[status]}</MenuItem>);
                                                     })
                                                 }
