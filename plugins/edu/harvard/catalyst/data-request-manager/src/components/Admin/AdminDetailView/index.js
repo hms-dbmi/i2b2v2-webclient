@@ -4,7 +4,7 @@ import "./AdminDetailView.scss";
 import {
     Box,
     Button,
-    Card,
+    Card, FormControl, MenuItem, Select,
     Typography
 } from "@mui/material";
 import {getRequestDetails} from "../../../reducers/getRequestDetailsSlice";
@@ -18,6 +18,7 @@ import {DetailViewNav} from "../../DetailViewNav";
 export const AdminDetailView = ({requestId, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details, isFetching } = useSelector((state) => state.requestDetails);
+    const [requestStatus, setRequestStatus] = React.useState(null);
 
     useEffect(() => {
         if(requestId) {
@@ -25,9 +26,19 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
         }
     }, [requestId]);
 
+    useEffect(() => {
+        if(details) {
+            setRequestStatus(details.status);
+        }
+    }, [details]);
+
 
     const goToViewRequestTable = () => {
         setViewRequestTable(true);
+    }
+
+    const onChangeStatusEvent = (event) => {
+        setRequestStatus(event.target.value);
     }
     return (
         <Box className={"AdminDetailView"}>
@@ -49,7 +60,20 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                             <Card className={"RequestDetailActionContent"}>
                                 <Grid container spacing={2}>
                                     <Grid size={6}>
-                                        { details.status === RequestStatus.statuses.SUBMITTED && <Button variant="contained" color="error">Withdraw Request</Button>}
+                                        <Typography className={"RequestActionItem"}> <span className={"title"}>Status:</span> </Typography>
+                                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                            <Select
+                                                value={requestStatus}
+                                                label="Status"
+                                                onChange={onChangeStatusEvent}
+                                            >
+                                                {
+                                                    RequestStatus._getStatusesAsList().filter(s => s !== RequestStatus.statuses.UNKNOWN).map((status) => {
+                                                      return (<MenuItem value={RequestStatus.statuses[status]}> {RequestStatus.statuses[status]}</MenuItem>);
+                                                    })
+                                                }
+                                        </Select>
+                                        </FormControl>
                                     </Grid>
                                     <Grid size={6}>
                                         <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
