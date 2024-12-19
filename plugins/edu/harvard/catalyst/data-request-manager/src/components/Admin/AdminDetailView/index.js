@@ -3,13 +3,16 @@ import {useDispatch, useSelector} from "react-redux";
 import "./AdminDetailView.scss";
 import {
     Box,
+    Button,
     Card,
     FormControl,
+    FormControlLabel,
+    Link,
     MenuItem,
     Select,
     Typography
 } from "@mui/material";
-import {getRequestDetails} from "../../../reducers/getRequestDetailsSlice";
+import {generateDataFile, getRequestDetails} from "../../../reducers/getRequestDetailsSlice";
 import Grid from '@mui/material/Grid2';
 import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";
@@ -42,6 +45,10 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
     const onChangeStatusEvent = (event) => {
         setRequestStatus(event.target.value);
     }
+    const handleGenerateFile = () =>{
+        dispatch(generateDataFile({requestId}));
+    }
+
     return (
         <Box className={"AdminDetailView"}>
             {   details.id && (
@@ -62,24 +69,36 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                             <Card className={"RequestDetailActionContent"}>
                                 <Grid container spacing={2}>
                                     <Grid size={6}>
-                                        <Typography className={"RequestActionItem"}> <span className={"title"}>Status:</span> </Typography>
-                                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                            <Select
-                                                value={requestStatus}
-                                                label="Status"
-                                                onChange={onChangeStatusEvent}
-                                            >
-                                                {
-                                                    RequestStatus._getStatusesAsList().filter(s => RequestStatus.statuses[s] !== RequestStatus.statuses.UNKNOWN).map((status) => {
-                                                      return (<MenuItem value={RequestStatus.statuses[status]}> {RequestStatus.statuses[status]}</MenuItem>);
-                                                    })
-                                                }
-                                        </Select>
+                                        <FormControl className={"statusControl"} variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                        <FormControlLabel
+                                            className={"statusLabel"}
+                                            labelPlacement="start"
+                                            control={
+                                                <Select
+                                                    value={requestStatus}
+                                                    label="Status"
+                                                    onChange={onChangeStatusEvent}
+                                                >
+                                                    {
+                                                        RequestStatus._getStatusesAsList().filter(s => RequestStatus.statuses[s] !== RequestStatus.statuses.UNKNOWN).map((status) => {
+                                                            return (<MenuItem value={RequestStatus.statuses[status]}> {RequestStatus.statuses[status]}</MenuItem>);
+                                                        })
+                                                    }
+                                                </Select>
+                                            }
+                                            label="Status:"
+                                        />
                                         </FormControl>
-                                    </Grid>
-                                    <Grid size={6}>
                                         <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
                                         <RequestStatusLogView statusLogs={details.statusLogs}/>
+                                    </Grid>
+                                    <Grid size={6}>
+                                        <Button className={"generateFileBtn"} variant="contained" size="small" onClick={handleGenerateFile}>Generate Data File(s)</Button>
+                                        <div>
+                                            <Link href="#">
+                                                View Request XML
+                                            </Link>
+                                        </div>
                                     </Grid>
                                 </Grid>
                             </Card>

@@ -55,4 +55,19 @@
       border: 1px solid rgba(224, 224, 224, 1);
     }
   }
+
+  .statusLabel {
+    margin-left: 0;
+    .MuiFormControlLabel-label {
+      margin-right: 0.6em;
+    }
+  }
+
+  .statusControl {
+    margin-left: 0;
+  }
+
+  .generateFileBtn {
+      margin-bottom: 3em;
+  }
 }

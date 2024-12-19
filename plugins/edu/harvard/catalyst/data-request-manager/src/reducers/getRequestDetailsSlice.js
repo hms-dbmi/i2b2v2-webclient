@@ -13,9 +13,8 @@ export const getRequestDetailsSlice = createSlice({
     initialState: defaultState.requestDetails,
     reducers: {
         getRequestDetails: state => {
-            return RequestDetails({
-                isFetching: true
-            })
+            state.details.isFetching = true;
+            state.details.statusInfo = StatusInfo();
         },
         getRequestDetailsSuccess: (state, { payload: {requestDetails, isAdmin }}) => {
             let status = RequestStatus._lookupStatus(requestDetails.status);
@@ -82,14 +81,32 @@ export const getRequestDetailsSlice = createSlice({
                 });
             }
             state.details = details;
-            state.isFetching = false;
-            state.statusInfo = StatusInfo({
+            state.details.isFetching = false;
+            state.details.statusInfo = StatusInfo({
                 status: "SUCCESS"
             });
         },
         getRequestDetailsError: (state, { payload: { errorMessage} }) => {
-            state.isFetching = false;
-            state.statusInfo = StatusInfo({
+            state.details.isFetching = false;
+            state.details.statusInfo = StatusInfo({
+                status: "FAIL",
+                errorMessage: errorMessage
+            });
+        },
+        generateDataFile: state => {
+            state.dataFileGeneration.isGeneratingFile = false;
+            state.dataFileGeneration.statusInfo = StatusInfo();
+        },
+        generateDataFileSuccess: (state, { payload: { errorMessage} }) => {
+            state.dataFileGeneration.isGeneratingFile = false;
+            state.dataFileGeneration.statusInfo = StatusInfo({
+                status: "FAIL",
+                errorMessage: errorMessage
+            });
+        },
+        generateDataFileError: (state, { payload: { errorMessage} }) => {
+            state.dataFileGeneration.isGeneratingFile = false;
+            state.dataFileGeneration.statusInfo  = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage
             });
@@ -101,6 +118,9 @@ export const {
     getRequestDetails,
     getRequestDetailsSuccess,
     getRequestDetailsError,
+    generateDataFile,
+    generateDataFileSuccess,
+    generateDataFileError
 } = getRequestDetailsSlice.actions
 
 export default getRequestDetailsSlice.reducer
