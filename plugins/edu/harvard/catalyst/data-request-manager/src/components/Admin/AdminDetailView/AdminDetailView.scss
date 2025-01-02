@@ -26,12 +26,15 @@
 
   .RequestDetailContent,.RequestDetailActionContent {
     margin-top: 0.4em;
-    padding: 0.5em;
     background-color: rgba(246, 245, 245, 0.8);
   }
 
-  .RequestDetailActionContent {
+  .RequestDetailContent {
     padding: 0.7em;
+  }
+
+  .RequestDetailActionContent {
+    padding: 1.1em;
   }
 
   .DataRequestType{
@@ -59,7 +62,11 @@
   }
 
   .generateFileBtn {
-      margin-bottom: 3.5em;
-      margin-top: 2em;
+    margin-bottom: 2.5em;
+    margin-top: 0.3em;
+  }
+
+  .RequestXml {
+    margin-top: 2em;
   }
 }

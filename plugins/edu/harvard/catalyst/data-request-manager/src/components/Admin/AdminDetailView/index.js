@@ -90,18 +90,18 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                                             label="Status:"
                                         />
                                         </FormControl>
-                                        <div>
-                                            <Button className={"generateFileBtn"} variant="contained" size="small"
-                                                    startIcon={<CreateIcon />}  onClick={handleGenerateFile}>Generate Data File(s)
-                                            </Button>
-                                        </div>
-                                        <div>
+                                        <div className={"RequestXml"}>
                                             <Button href="#"  variant="outlined" endIcon={<OpenInNewIcon />}>
                                                 View Request XML
                                             </Button>
                                         </div>
                                     </Grid>
                                     <Grid size={6}>
+                                        <div>
+                                            <Button className={"generateFileBtn"} variant="contained" size="small"
+                                                    startIcon={<CreateIcon />}  onClick={handleGenerateFile}>Generate Data File(s)
+                                            </Button>
+                                        </div>
                                         <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
                                         <RequestStatusLogView statusLogs={details.statusLogs}/>
                                     </Grid>
