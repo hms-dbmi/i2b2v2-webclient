@@ -12,6 +12,7 @@ import {
     TableSortLabel,
 } from "@mui/material";
 import { visuallyHidden } from '@mui/utils';
+import './RequestStatusLogs.scss';
 
 export const RequestStatusLogView = ({statusLogs}) => {
     const [order, setOrder] = React.useState('desc');
@@ -97,8 +98,8 @@ export const RequestStatusLogView = ({statusLogs}) => {
 
     return (
         <Box className={"RequestStatusTable"} style={{display: 'flex', flexDirection: 'column'}}>
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 50 }} size="small" aria-label="simple table">
+            <TableContainer component={Paper} sx={{ maxHeight: 200 }}>
+                <Table stickyHeader sx={{ minWidth: 50 }} size="small" aria-label="simple table">
                     <EnhancedTableHead
                         order={order}
                         orderBy={orderBy}

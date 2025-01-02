@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import {useDispatch, useSelector} from "react-redux";
-import "./AdminDetailView.scss";
 import {
     Box,
     Button,
@@ -18,7 +17,9 @@ import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";
 import {RequestDetailView} from "../../RequestDetailView";
 import {DetailViewNav} from "../../DetailViewNav";
-
+import CreateIcon from '@mui/icons-material/Create';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import "./AdminDetailView.scss";
 
 export const AdminDetailView = ({requestId, setViewRequestTable}) => {
     const dispatch = useDispatch();
@@ -89,16 +90,20 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                                             label="Status:"
                                         />
                                         </FormControl>
-                                        <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
-                                        <RequestStatusLogView statusLogs={details.statusLogs}/>
+                                        <div>
+                                            <Button className={"generateFileBtn"} variant="contained" size="small"
+                                                    startIcon={<CreateIcon />}  onClick={handleGenerateFile}>Generate Data File(s)
+                                            </Button>
+                                        </div>
+                                        <div>
+                                            <Button href="#"  variant="outlined" endIcon={<OpenInNewIcon />}>
+                                                View Request XML
+                                            </Button>
+                                        </div>
                                     </Grid>
                                     <Grid size={6}>
-                                        <Button className={"generateFileBtn"} variant="contained" size="small" onClick={handleGenerateFile}>Generate Data File(s)</Button>
-                                        <div>
-                                            <Link href="#">
-                                                View Request XML
-                                            </Link>
-                                        </div>
+                                        <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
+                                        <RequestStatusLogView statusLogs={details.statusLogs}/>
                                     </Grid>
                                 </Grid>
                             </Card>
