@@ -1,5 +1,5 @@
 export { listRequestTableSaga } from "./listRequestTableSaga";
 export { getRequestDetailsSaga } from "./getRequestDetailsSaga";
-export { retrieveUserAccessLevelSaga } from "./retrieveUserAccessLevelSaga";
+export { getUserAccessLevelSaga } from "./getUserAccessLevelSaga";
 export { generateDataFileSaga } from "./generateDataFileSaga";
 

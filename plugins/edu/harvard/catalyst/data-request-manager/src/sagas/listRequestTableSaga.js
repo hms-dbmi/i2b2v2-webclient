@@ -31,10 +31,10 @@ export function* doListRequestTable(action) {
             const data = getTestData(isAdmin); //parseData(yield response.json());
             yield put(listRequestTableSuccess({researcherRequests: data, isAdmin: isAdmin}));
         } else {
-            yield put(listRequestTableError({errorMessage: "There was an error retrieving the list of researcher data export requests"}));
+            yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));
         }
     } catch (error) {
-        yield put(listRequestTableError({errorMessage: "There was an error retrieving the list of researcher data export requests"}));
+        yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));
     }
 }
 
