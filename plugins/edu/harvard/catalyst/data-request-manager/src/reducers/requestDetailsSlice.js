@@ -4,7 +4,7 @@ import { defaultState } from '../defaultState';
 import {
     RequestStatus, RequestStatusLog,
     ResearcherRequestDetails,
-    StatusInfo, AdminRequestDetails, RequestDetails
+    StatusInfo, AdminRequestDetails
 } from "../models";
 import {DateTime} from "luxon";
 

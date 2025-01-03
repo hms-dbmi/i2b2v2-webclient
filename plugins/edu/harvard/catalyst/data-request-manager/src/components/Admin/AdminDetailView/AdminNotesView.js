@@ -12,7 +12,7 @@ import {getAdminNotes} from "../../../reducers/adminNotesSlice";
 import {visuallyHidden} from "@mui/utils";
 
 
-export const AdminNotesView = ({}) => {
+export const AdminNotesView = () => {
     const dispatch = useDispatch();
     const { notes } = useSelector((state) => state.adminNotes);
     const [order, setOrder] = React.useState('desc');
@@ -138,6 +138,7 @@ export const AdminNotesView = ({}) => {
                     <Grid size={11}>
                         <TextField
                             multiline
+                            label={"Enter note"}
                             rows={3}
                         />
                     </Grid>
