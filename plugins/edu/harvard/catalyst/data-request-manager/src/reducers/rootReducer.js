@@ -1,4 +1,4 @@
-import listRequestTableReducer from './listRequestTableSlice';
+import listRequestTableReducer from './requestTableSlice';
 import i2b2LibLoadedReducer from './i2b2LibLoadedSlice';
 import requestDetailsReducer from './requestDetailsSlice';
 import userAccessLevelReducer from "./userAccessLevelSlice";

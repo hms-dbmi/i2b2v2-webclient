@@ -1,7 +1,7 @@
 /* globals i2b2 */
 
 import { takeLatest, put} from "redux-saga/effects";
-import {listRequestTableSuccess, listRequestTableError} from "../reducers/listRequestTableSlice";
+import {listRequestTableSuccess, listRequestTableError} from "../reducers/requestTableSlice";
 import {requestList, adminRequestList} from "./testData";
 
 import {
