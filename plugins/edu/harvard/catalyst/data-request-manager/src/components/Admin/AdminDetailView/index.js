@@ -90,7 +90,7 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                                             label="Status:"
                                         />
                                         </FormControl>
-                                        <div className={"RequestXml"}>
+                                        <div className={"RequestXmlMain"}>
                                             <Button href="#"  variant="outlined" endIcon={<OpenInNewIcon />}>
                                                 View Request XML
                                             </Button>
