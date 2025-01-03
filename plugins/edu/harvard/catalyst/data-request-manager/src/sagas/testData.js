@@ -366,3 +366,22 @@ export const adminRequestDetails = [
         ]
     }
 ];
+
+export const adminNotes = [
+    {
+        date: "2024-01-02",
+        note: "This is the first note"
+    },
+    {
+        date: "2024-01-05",
+        note: "This is the second note"
+    },
+    {
+        date: "2024-01-11",
+        note: "This is the third note"
+    },
+    {
+        date: "2024-01-27",
+        note: "This is the fourth note"
+    }
+]

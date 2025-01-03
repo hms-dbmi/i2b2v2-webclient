@@ -6,7 +6,6 @@ import {
     Card,
     FormControl,
     FormControlLabel,
-    Link,
     MenuItem,
     Select,
     Typography
@@ -16,6 +15,7 @@ import Grid from '@mui/material/Grid2';
 import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";
 import {RequestDetailView} from "../../RequestDetailView";
+import {AdminNotesView} from "./AdminNotesView";
 import {DetailViewNav} from "../../DetailViewNav";
 import CreateIcon from '@mui/icons-material/Create';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -107,6 +107,9 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                                     </Grid>
                                 </Grid>
                             </Card>
+                        </div>
+                        <div className={"RequestNotes"}>
+                            <AdminNotesView/>
                         </div>
                     </div>
                 </div>
