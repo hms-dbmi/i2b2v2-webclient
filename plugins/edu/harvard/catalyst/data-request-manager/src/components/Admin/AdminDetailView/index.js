@@ -10,7 +10,7 @@ import {
     Select,
     Typography
 } from "@mui/material";
-import {generateDataFile, getRequestDetails} from "../../../reducers/getRequestDetailsSlice";
+import {generateDataFile, getRequestDetails} from "../../../reducers/requestDetailsSlice";
 import Grid from '@mui/material/Grid2';
 import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";

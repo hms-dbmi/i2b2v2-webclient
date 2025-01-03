@@ -2,7 +2,7 @@
 
 import {put, takeLatest} from "redux-saga/effects";
 import {GET_REQUEST_DETAILS} from "../actions";
-import {getRequestDetailsError, getRequestDetailsSuccess} from "../reducers/getRequestDetailsSlice";
+import {getRequestDetailsError, getRequestDetailsSuccess} from "../reducers/requestDetailsSlice";
 import {requestDetails, adminRequestDetails} from "./testData";
 
 
@@ -25,10 +25,10 @@ export function* doGetRequestDetails(action) {
             const data = getTestData(id, isAdmin); //parseData(yield response.json());
             yield put(getRequestDetailsSuccess({requestDetails: data, isAdmin: isAdmin}));
         } else {
-            yield put(getRequestDetailsError({errorMessage: "There was an error retrieving the request details"}));
+            yield put(getRequestDetailsError({errorMessage: "There was an error getting the request details"}));
         }
     } catch (error) {
-        yield put(getRequestDetailsError({errorMessage: "There was an error retrieving the request details"}));
+        yield put(getRequestDetailsError({errorMessage: "There was an error getting the request details"}));
     }
 }
 

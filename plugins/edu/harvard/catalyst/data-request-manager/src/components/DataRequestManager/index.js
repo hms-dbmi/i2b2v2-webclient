@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {Researcher} from "../Researcher";
 import {ACCESS_LEVEL} from "../../models";
-import {retrieveUserAccessLevel} from "../../reducers/retrieveUserAccessLevelSlice";
+import {getUserAccessLevel} from "../../reducers/userAccessLevelSlice";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import {Admin} from "../Admin";
 
@@ -19,7 +19,7 @@ export const DataRequestManager = () => {
         if (!isI2b2LibLoaded) {
             window.addEventListener('I2B2_READY', i2b2LibLoaded);
         }else{
-            dispatch(retrieveUserAccessLevel());
+            dispatch(getUserAccessLevel());
         }
     }, [isI2b2LibLoaded]);
 

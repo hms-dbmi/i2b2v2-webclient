@@ -2,7 +2,7 @@
 
 import {put, takeLatest} from "redux-saga/effects";
 import {GENERATE_DATA_FILE} from "../actions";
-import {generateDataFileError, generateDataFileSuccess} from "../reducers/getRequestDetailsSlice";
+import {generateDataFileError, generateDataFileSuccess} from "../reducers/requestDetailsSlice";
 
 
 export function* doGenerateDataFile(action) {
