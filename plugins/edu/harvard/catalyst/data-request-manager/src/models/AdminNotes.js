@@ -6,14 +6,17 @@ export const AdminNotes = ({
     notes = [],
     isFetching= false,
     statusInfo = StatusInfo(),
+    addStatusInfo = StatusInfo()
 } = {}) => ({
     notes,
     isFetching,
-    statusInfo
+    statusInfo,
+    addStatusInfo
 });
 
 AdminNotes.propTypes = {
     notes: PropTypes.arrayOf(AdminNote).isRequired,
     isFetching: PropTypes.bool,
     statusInfo: PropTypes.shape(StatusInfo),
+    addStatusInfo: PropTypes.shape(StatusInfo),
 };

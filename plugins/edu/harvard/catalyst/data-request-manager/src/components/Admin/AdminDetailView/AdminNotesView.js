@@ -8,15 +8,17 @@ import {
     Typography
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import {getAdminNotes} from "../../../reducers/adminNotesSlice";
+import {addAdminNote, getAdminNotes} from "../../../reducers/adminNotesSlice";
 import {visuallyHidden} from "@mui/utils";
+import {DateTime} from "luxon";
 
 
-export const AdminNotesView = () => {
+export const AdminNotesView = ({requestId}) => {
     const dispatch = useDispatch();
     const { notes } = useSelector((state) => state.adminNotes);
     const [order, setOrder] = React.useState('desc');
     const [orderBy, setOrderBy] = React.useState('date');
+    const [newNote, setNewNote] = React.useState('');
 
     const EnhancedTableHead = (props) => {
         const { order, orderBy, onRequestSort } = props;
@@ -123,8 +125,11 @@ export const AdminNotesView = () => {
        );
     }
 
+    const handleAddNote = (event) => {
+        dispatch(addAdminNote({note: newNote, requestId: requestId, date: DateTime.now().toISODate()}));
+    }
     useEffect(() => {
-        dispatch(getAdminNotes());
+        dispatch(getAdminNotes({requestId}));
 
     }, []);
 
@@ -140,10 +145,14 @@ export const AdminNotesView = () => {
                             multiline
                             label={"Enter note"}
                             rows={3}
+                            value={newNote}
+                            onChange={(event) => {
+                                setNewNote(event.target.value);
+                            }}
                         />
                     </Grid>
                     <Grid size={1}>
-                        <Button variant="contained" className={"AddNote"}>Add</Button>
+                        <Button variant="contained" disabled={newNote.length === 0} className={"AddNote"} onClick={handleAddNote}>Add</Button>
                     </Grid>
                 </Grid>
                 {getNotesTable()}

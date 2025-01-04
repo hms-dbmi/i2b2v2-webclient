@@ -109,7 +109,7 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                             </Card>
                         </div>
                         <div className={"RequestNotes"}>
-                            <AdminNotesView/>
+                            <AdminNotesView requestId={requestId}/>
                         </div>
                     </div>
                 </div>
