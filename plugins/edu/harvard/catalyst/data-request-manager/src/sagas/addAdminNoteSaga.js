@@ -9,6 +9,17 @@ import {
 import {addAdminNoteError, addAdminNoteSuccess} from "../reducers/adminNotesSlice";
 
 
+const updateTestData = (requestId, data) => {
+    const adminRequest = adminRequestDetails.filter((req) => req.id === requestId);
+    if(adminRequest.length > 0) {
+        adminRequest[0].adminNotes.push({
+            id: data.id,
+            date: data.date,
+            note: data.note
+        });
+    }
+
+}
 export function* doAddAdminNote(action) {
     const { note, requestId, date } = action.payload;
 
@@ -22,6 +33,7 @@ export function* doAddAdminNote(action) {
                 date: date.toLocaleString(),
                 note: note
             }; //parseData(yield response.json());
+            updateTestData(requestId, data);
             yield put(addAdminNoteSuccess({note: data}));
         } else {
             yield put(addAdminNoteError({errorMessage: "There was an error adding note"}));

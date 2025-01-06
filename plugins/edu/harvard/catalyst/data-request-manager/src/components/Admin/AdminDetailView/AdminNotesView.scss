@@ -12,11 +12,16 @@
   .AddNotesMain{
     border: 2px solid rgba(224, 224, 224, 1);
     border-radius: 10px;
-    padding: 1.1em 2em 1.1em 1.1em;
+    padding: 1.1em 3em 1.1em 1.1em;
+  }
+
+  .AddNoteActions {
+    margin-top: 0.67em;
+    /*margin-right: 0.9em;*/
   }
 
   .AddNote {
-    margin-top: 4.4em;
+    margin-top: 1.2em;
   }
 
   .AdminNotesTable{

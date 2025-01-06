@@ -128,6 +128,10 @@ export const AdminNotesView = ({requestId}) => {
     const handleAddNote = (event) => {
         dispatch(addAdminNote({note: newNote, requestId: requestId, date: DateTime.now().toISODate()}));
     }
+    const handleClearNote = (event) => {
+        setNewNote("");
+    }
+
     useEffect(() => {
         dispatch(getAdminNotes({requestId}));
 
@@ -151,8 +155,9 @@ export const AdminNotesView = ({requestId}) => {
                             }}
                         />
                     </Grid>
-                    <Grid size={1}>
-                        <Button variant="contained" disabled={newNote.length === 0} className={"AddNote"} onClick={handleAddNote}>Add</Button>
+                    <Grid  className={"AddNoteActions"} size={1}>
+                        <Button variant="outlined" disabled={newNote.length === 0}  onClick={handleClearNote}>Clear</Button>
+                        <Button variant="contained" className={"AddNote"} disabled={newNote.length === 0}  onClick={handleAddNote}>Add</Button>
                     </Grid>
                 </Grid>
                 {getNotesTable()}
