@@ -128,13 +128,13 @@ export const AdminNotesView = ({requestId}) => {
     const handleAddNote = (event) => {
         dispatch(addAdminNote({note: newNote, requestId: requestId, date: DateTime.now().toISODate()}));
     }
+
     const handleClearNote = (event) => {
         setNewNote("");
     }
 
     useEffect(() => {
         dispatch(getAdminNotes({requestId}));
-
     }, []);
 
     return (

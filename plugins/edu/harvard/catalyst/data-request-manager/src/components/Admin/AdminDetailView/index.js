@@ -20,11 +20,13 @@ import {DetailViewNav} from "../../DetailViewNav";
 import CreateIcon from '@mui/icons-material/Create';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import "./AdminDetailView.scss";
+import {ConfirmDialog} from "../../ConfirmDialog";
 
 export const AdminDetailView = ({requestId, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details, isFetching } = useSelector((state) => state.requestDetails);
     const [requestStatus, setRequestStatus] = React.useState(null);
+    const [confirmFileGen, setConfirmFileGen] = React.useState(false);
 
     useEffect(() => {
         if(requestId) {
@@ -46,7 +48,9 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
     const onChangeStatusEvent = (event) => {
         setRequestStatus(event.target.value);
     }
+
     const handleGenerateFile = () =>{
+        setConfirmFileGen(false);
         dispatch(generateDataFile({requestId}));
     }
 
@@ -90,6 +94,11 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                                             label="Status:"
                                         />
                                         </FormControl>
+                                        <div>
+                                            <Button className={"generateFileBtn"} variant="contained" size="small"
+                                                    startIcon={<CreateIcon />}  onClick={() => setConfirmFileGen(true)}>Generate Data File(s)
+                                            </Button>
+                                        </div>
                                         <div className={"RequestXmlMain"}>
                                             <Button href="#"  variant="outlined" endIcon={<OpenInNewIcon />}>
                                                 View Request XML
@@ -97,11 +106,6 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                                         </div>
                                     </Grid>
                                     <Grid size={6}>
-                                        <div>
-                                            <Button className={"generateFileBtn"} variant="contained" size="small"
-                                                    startIcon={<CreateIcon />}  onClick={handleGenerateFile}>Generate Data File(s)
-                                            </Button>
-                                        </div>
                                         <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
                                         <RequestStatusLogView statusLogs={details.statusLogs}/>
                                     </Grid>
@@ -111,6 +115,13 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                         <div className={"RequestNotes"}>
                             <AdminNotesView requestId={requestId}/>
                         </div>
+                        {confirmFileGen && <ConfirmDialog
+                            msg={'Are you sure you want to generate data file(s)?'}
+                            title="Generate Data File(s)"
+                            onOk = {handleGenerateFile}
+                            onCancel = {() => setConfirmFileGen(false)}
+                            />
+                        }
                     </div>
                 </div>
             )
