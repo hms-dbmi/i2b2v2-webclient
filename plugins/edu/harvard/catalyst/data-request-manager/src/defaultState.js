@@ -1,7 +1,8 @@
-import {ResearcherRequest, ResearcherTable} from "./models";
+import { RequestDetails, RequestTable, UserAccessLevel} from "./models";
 
 export const defaultState = {
     isI2b2LibLoaded: false,
-    researcherTable: ResearcherTable(),
-    researcherRequest: ResearcherRequest()
+    requestTable: RequestTable(),
+    requestDetails: RequestDetails(),
+    userAccessLevel: UserAccessLevel(),
 };

@@ -13,11 +13,12 @@ import {getRequestDetails} from "../../../reducers/getRequestDetailsSlice";
 import Grid from '@mui/material/Grid2';
 import {RequestStatusLogView} from "./RequestStatusLogView";
 import {RequestStatus} from "../../../models";
+import {RequestDetailView} from "../../RequestDetailView";
 
 
 export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
     const dispatch = useDispatch();
-    const { details, isFetching } = useSelector((state) => state.researcherRequest);
+    const { details } = useSelector((state) => state.requestDetails);
 
     useEffect(() => {
         if(requestId) {
@@ -49,33 +50,7 @@ export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
                         </Typography>
 
                         <div className={"ResearcherDetailViewContent"}>
-                            <div className={"RequestDetail"}>
-                                <Typography className={"RequestDetailTitle"}>
-                                    Request Details
-                                </Typography>
-                                <Card  className={"RequestDetailContent"}>
-                                    <Grid container spacing={2}>
-                                        <Grid size={6}>
-                                            <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Name:</span> {details.name} </Typography>
-                                            <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Query ID:</span> {details.id} </Typography>
-                                            <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Date Request Submitted:</span> {details.dateSubmitted.toLocaleDateString()} </Typography>
-                                            <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Requested By:</span> {details.userId} </Typography>
-                                            <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Email:</span> {details.email} </Typography>
-                                        </Grid>
-                                        <Grid size={6}>
-                                            <Typography className={"RequestDetailContentItem"}> <span className={"title"}>IRB #:</span> {details.irbNumber} </Typography>
-                                            <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Data Request Type:</span> </Typography>
-                                            <ol className={"RequestDetailContentItem DataRequestType"}>
-                                                {
-                                                    details.requests.map((request)=> {
-                                                        return (<li> {request} </li>)
-                                                    })
-                                                }
-                                            </ol>
-                                        </Grid>
-                                    </Grid>
-                                </Card>
-                            </div>
+                            <RequestDetailView details={details}/>
 
                             <div className={"RequestAction"}>
                                 <Typography className={"RequestActionTitle"}>
