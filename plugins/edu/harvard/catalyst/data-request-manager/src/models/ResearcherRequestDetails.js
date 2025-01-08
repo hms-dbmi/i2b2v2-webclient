@@ -10,8 +10,9 @@ export const ResearcherRequestDetails = ({
     status= RequestStatus.statuses.SUBMITTED,
     userId = "",
     email= "",
-    statusLogs= []
-} = {}) => ({
+    statusLogs= [],
+    isFetching= false,
+ } = {}) => ({
     id,
     name,
     requests,
@@ -19,7 +20,8 @@ export const ResearcherRequestDetails = ({
     status,
     userId,
     email,
-    statusLogs
+    statusLogs,
+    isFetching
 });
 
 ResearcherRequestDetails.propTypes = {
@@ -30,4 +32,5 @@ ResearcherRequestDetails.propTypes = {
     status: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     statusLogs: PropTypes.arrayOf(PropTypes.shape(RequestStatusLog)).isRequired,
+    isFetching: PropTypes.bool.isRequired
 };

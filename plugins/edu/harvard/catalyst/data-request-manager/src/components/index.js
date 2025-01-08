@@ -5,4 +5,7 @@ export { Researcher } from "./Researcher";
 export { RequestTableView } from "./RequestTableView";
 export { Admin } from "./Admin";
 export { AdminTableView } from "./Admin/AdminTableView";
+export { AdminDetailView } from "./Admin/AdminDetailView";
 export { RequestDetailView } from "./RequestDetailView";
+export { DetailViewNav } from "./DetailViewNav";
+export { RequestStatusLogView } from "./RequestStatusLogView";

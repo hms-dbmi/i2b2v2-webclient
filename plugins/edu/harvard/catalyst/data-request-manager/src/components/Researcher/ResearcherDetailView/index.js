@@ -3,17 +3,16 @@ import {useDispatch, useSelector} from "react-redux";
 import "./ResearcherDetailView.scss";
 import {
     Box,
-    Breadcrumbs, Button,
+    Button,
     Card,
-    Link,
     Typography
 } from "@mui/material";
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import {getRequestDetails} from "../../../reducers/getRequestDetailsSlice";
+import {getRequestDetails} from "../../../reducers/requestDetailsSlice";
 import Grid from '@mui/material/Grid2';
-import {RequestStatusLogView} from "./RequestStatusLogView";
+import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";
 import {RequestDetailView} from "../../RequestDetailView";
+import {DetailViewNav} from "../../DetailViewNav";
 
 
 export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
@@ -27,30 +26,21 @@ export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
     }, [requestId]);
 
 
+    const goToViewRequestTable = () => {
+        setViewRequestTable(true);
+    }
     return (
         <Box className={"ResearcherDetailView"}>
             {   details.id && (
                     <div>
-                        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="export requests">
-                            <Link
-                                underline="hover"
-                                color="inherit"
-                                href="#"
-                                onClick={() => setViewRequestTable(true)}
-                            >
-                                List of Export Data Requests
-                            </Link>
-                            <Typography key="3" sx={{ color: 'text.primary' }}>
-                                Request {requestId}, {details.name}
-                            </Typography>
-                        </Breadcrumbs>
+                        <DetailViewNav requestId={requestId} requestName={details.name} goToHome={goToViewRequestTable}/>
 
                         <Typography className={"ResearcherDetailViewTitle"}>
                             Request {requestId}, {details.name}
                         </Typography>
 
                         <div className={"ResearcherDetailViewContent"}>
-                            <RequestDetailView details={details}/>
+                            <RequestDetailView details={details} isAdmin={false}/>
 
                             <div className={"RequestAction"}>
                                 <Typography className={"RequestActionTitle"}>

@@ -1,13 +1,13 @@
 import listRequestTableReducer from './listRequestTableSlice';
 import i2b2LibLoadedReducer from './i2b2LibLoadedSlice';
-import getRequestDetailsReducer from './getRequestDetailsSlice';
-import retrieveUserAccessLevelReducer from "./retrieveUserAccessLevelSlice";
+import requestDetailsReducer from './requestDetailsSlice';
+import userAccessLevelReducer from "./userAccessLevelSlice";
 
 const rootReducers = {
     requestTable : listRequestTableReducer,
     adminTable : listRequestTableReducer,
-    requestDetails: getRequestDetailsReducer,
-    userAccessLevel: retrieveUserAccessLevelReducer,
+    requestDetails: requestDetailsReducer,
+    userAccessLevel: userAccessLevelReducer,
     isI2b2LibLoaded: i2b2LibLoadedReducer
 };
 

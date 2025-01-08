@@ -8,7 +8,15 @@ import {
 import Grid from '@mui/material/Grid2';
 
 
-export const RequestDetailView = ({details}) => {
+export const RequestDetailView = ({details, isAdmin}) => {
+    const formatNumber = (value) => {
+        let formattedValue = value.length > 0 ? parseInt(value): "";
+        if(isNaN(formattedValue)){
+            formattedValue = value;
+        }
+        return formattedValue.toLocaleString();
+    };
+
     return (
         <Box className={"RequestDetailView"}>
             <Typography className={"RequestDetailTitle"}>
@@ -24,6 +32,10 @@ export const RequestDetailView = ({details}) => {
                         <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Email:</span> {details.email} </Typography>
                     </Grid>
                     <Grid size={6}>
+                        {isAdmin &&
+                            <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Count(Patient):</span> { formatNumber(details.patientCount)} </Typography>
+                        }
+
                         <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Data Request Type:</span> </Typography>
                         <ol className={"RequestDetailContentItem DataRequestType"}>
                             {

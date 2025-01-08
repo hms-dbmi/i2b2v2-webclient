@@ -8,9 +8,7 @@ export const requestList = [
         status: "Submitted",
         requests: [
             "Request Demographics Data"
-        ],
-        email: "user12@i2b2.org",
-        userId: "user12",
+        ]
     },
     {
         id: 1478,
@@ -22,9 +20,7 @@ export const requestList = [
         requests: [
             "Request Demographics Data",
             "Request Diagnosis Data",
-        ],
-        email: "user12@i2b2.org",
-        userId: "user12",
+        ]
     },
     {
         id: 1479,
@@ -37,9 +33,7 @@ export const requestList = [
             "Request Demographics Data",
             "Request Diagnosis Data",
             "Request Patient Mapping"
-        ],
-        email: "user12@i2b2.org",
-        userId: "user12",
+        ]
     },
     {
         id: 1450,
@@ -54,9 +48,7 @@ export const requestList = [
             "Request Diagnosis Data",
             "Request Lab Data",
             "Request Patient Mapping"
-        ],
-        email: "user12@i2b2.org",
-        userId: "user12",
+        ]
     },
     {
         id: 1451,
@@ -68,9 +60,7 @@ export const requestList = [
         requests: [
             "Request Diagnosis Data",
             "Request Lab Data"
-        ],
-        email: "user12@i2b2.org",
-        userId: "user12"
+        ]
     }
 ];
 
@@ -241,8 +231,138 @@ export const adminRequestList = [
         lastUpdated: requestList[4].lastUpdated,
         status: requestList[4].status,
         requests: requestList[4].requests,
-        email: "user12@i2b2.org",
         userId: "user24",
         patientCount: "8923",
+    }
+];
+
+export const adminRequestDetails = [
+    {
+        id: requestList[0].id,
+        description: requestList[0].description,
+        dateSubmitted: requestList[0].dateSubmitted,
+        lastUpdated: requestList[0].lastUpdated,
+        status: requestList[0].status,
+        requests: requestList[0].requests,
+        name: requestList[0].description,
+        patientCount: adminRequestList[0].patientCount,
+        userId: "user12",
+        email: "user12@i2b2.org",
+        statusLogs: [
+            {
+                date: requestList[0].dateSubmitted,
+                status: "Submitted"
+            }
+        ]
+    },
+    {
+        id: requestList[1].id,
+        description: requestList[1].description,
+        dateSubmitted: requestList[1].dateSubmitted,
+        lastUpdated: requestList[1].lastUpdated,
+        status: requestList[1].status,
+        requests: requestList[1].requests,
+        name: requestList[1].description,
+        patientCount: adminRequestList[1].patientCount,
+        userId: "user15",
+        email: "user15@i2b2.org",
+        statusLogs: [
+            {
+                date: requestList[1].dateSubmitted,
+                status: "Submitted"
+            },
+            {
+                date: requestList[1].lastUpdated,
+                status: "Approved"
+            }
+        ]
+    },
+    {
+        id: requestList[2].id,
+        description: requestList[2].description,
+        dateSubmitted: requestList[2].dateSubmitted,
+        lastUpdated: requestList[2].lastUpdated,
+        status: requestList[2].status,
+        requests: requestList[2].requests,
+        name: requestList[2].description,
+        userId: "user19",
+        email: "user19@i2b2.org",
+        patientCount: adminRequestList[2].patientCount,
+        statusLogs: [
+            {
+                date: requestList[2].dateSubmitted,
+                status: "Submitted"
+            },
+            {
+                date: requestList[2].lastUpdated,
+                status: "Denied"
+            }
+        ]
+    },
+    {
+        id: requestList[3].id,
+        description: requestList[3].description,
+        dateSubmitted: requestList[3].dateSubmitted,
+        lastUpdated: requestList[3].lastUpdated,
+        status: requestList[3].status,
+        requests: requestList[3].requests,
+        name: requestList[3].description,
+        userId: "user35",
+        email: "user35@i2b2.org",
+        patientCount: adminRequestList[3].patientCount,
+        statusLogs: [
+            {
+                date: requestList[3].dateSubmitted,
+                status: "Submitted"
+            },
+            {
+                date: "2024-09-14",
+                status: "Approved"
+            },
+            {
+                date: requestList[3].lastUpdated,
+                status: "File Available"
+            }
+        ]
+    },
+    {
+        id: 1480,
+        description: adminRequestList[4].description,
+        dateSubmitted: requestList[3].dateSubmitted,
+        lastUpdated: requestList[3].lastUpdated,
+        status: "Submitted",
+        requests: requestList[3].requests,
+        name: adminRequestList[4].description,
+        userId: "user35",
+        email: "user35@i2b2.org",
+        patientCount: adminRequestList[4].patientCount,
+        statusLogs: [
+            {
+                date: requestList[3].dateSubmitted,
+                status: "Submitted"
+            }
+        ]
+    },
+    {
+        id: requestList[4].id,
+        description: requestList[4].description,
+        dateSubmitted: requestList[4].dateSubmitted,
+        lastUpdated: requestList[4].lastUpdated,
+        status: requestList[4].status,
+        requests: requestList[4].requests,
+        name: requestList[4].description,
+        email: "user12@i2b2.org",
+        userId: "user12",
+        patientCount: adminRequestList[5].patientCount,
+        statusLogs: [
+            {
+                date: requestList[4].dateSubmitted,
+                status: "Submitted"
+            },
+            {
+                date: requestList[4].lastUpdated,
+                status: "Cancelled"
+            }
+        ]
     }
 ];
