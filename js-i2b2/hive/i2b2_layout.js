@@ -38,31 +38,23 @@ i2b2.layout.init = function () {
     // The wrapper layout config
     //////////////////////////////////////////
     i2b2.layout.gl_configs.main = {
-        settings: {
-            hasHeaders:false
-        },
-        dimensions: {
-            borderWidth: 6
-        },
-        content: [
-            {
+        settings: { hasHeaders:false },
+        dimensions: { borderWidth: 6 },
+        content: [{
                 type: 'row',
                 content:[
                     {
                         type: 'component',
                         id:'goldenLayoutLeftColFrame',
-                        width:35,
                         componentName: 'goldenLayoutLeftColFrame',
-                        title:'goldenLayoutLeftColFrame'
+                        width:35
                     },{
                         type: 'component',
                         id:'goldenLayoutRightColFrame',
-                        componentName: 'goldenLayoutRightColFrame',
-                        title:'goldenLayoutRightColFrame'
+                        componentName: 'goldenLayoutRightColFrame'
                     }
                 ]
-            }
-        ]
+        }]
     };
 
     //////////////////////////////////////////
@@ -78,47 +70,10 @@ i2b2.layout.init = function () {
             borderWidth:10,
             headerHeight:30,
             minItemHeight:36
-        },
-        content: [
-            {
-                type: 'column',
-                content:[
-                    {
-                        type:'component',
-                        height:40,
-                        isClosable:false,
-                        componentName: "i2b2.ONT.view.nav",
-                        title:'Terms'
-                    },{
-                        type:'stack',                        
-                        content:[
-                            {
-                                type:'component',
-                                isClosable:false,
-                                componentName: "i2b2.ONT.view.info",
-                                title:'Info'
-                            }, {
-                                type:'component',
-                                isClosable:false,
-                                componentName: 'i2b2.WORK.view.main',
-                                title:'Workplace' 
-                            }
-                        ]                        
-                    },{
-                        type:'stack',
-                        content:[
-                            {
-                                type:'component',
-                                isClosable:false,
-                                componentName: 'i2b2.CRC.view.history',
-                                title:'Queries'
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
+        }
     };
+
+
 
     //////////////////////////////////////////
     // The right column layout config shell
@@ -132,55 +87,9 @@ i2b2.layout.init = function () {
             borderWidth:10,
             headerHeight:30,
             minItemHeight:36
-        },
-        content:[
-            {
-                type:'component',
-                componentName: 'whiteComponent'
-            }
-        ]
+        }
     };
 
-    //////////////////////////////////////////
-    // The query tool layout config
-    //////////////////////////////////////////
-    i2b2.layout.gl_configs.FindPatients = {
-        type: 'column',
-        id:'c2',
-        content:[
-            {
-                type:'stack',
-                height:40,
-                content:[
-                    {
-                        type:'component',
-                        height:80,
-                        id:'crcQueryTool',
-                        isClosable:false,
-                        componentName: 'i2b2.CRC.view.QT',
-                            title:'Find Patients'
-                    },{
-                        type:'component',
-                        isClosable:false,
-                        componentName: 'i2b2.PLUGIN.view.list',
-                        title:'Analysis Tools'
-                    }]
-            },
-            {
-                type:'stack',
-                height:25,
-                content:[
-                    {
-                        type:'component',
-                        id:'QR',
-                        isClosable:false,
-                        componentName: 'i2b2.CRC.view.QueryMgr',
-                        title:'Query Status'
-                    }
-                ]
-            },
-        ]
-    };
 
     //////////////////////////////////////////
     // The full zoom layout config shell
@@ -190,91 +99,100 @@ i2b2.layout.init = function () {
             showPopoutIcon:false,
             reorderEnabled:false
         },
-        dimensions: {
-            borderWidth:10
-        },
-        content:[
-            {
+        dimensions: { borderWidth:10 },
+        content:[{
                 type:'component',
-                componentName: 'whiteComponent'
-            }
-        ]
+                componentName: 'emptyComponent'
+        }]
     };
 
-    //////////////////////////////////////////
-    // Define components
-    //////////////////////////////////////////
-    var whiteComponent = function(container,state){
-        container.getElement().html('<div class="cellWhite"><textarea>test content</textarea></div>');
-    };
 
     //////////////////////////////////////////
-    // Construct the layouts
+    // Construct the main layout
     //////////////////////////////////////////
 
     // Wrapper layout
     i2b2.layout.gl_instances.main = new GoldenLayout(i2b2.layout.gl_configs.main, '#goldenLayoutId1' );
-    i2b2.layout.gl_instances.main.registerComponent('goldenLayoutLeftColFrame', function(container,state){
+    i2b2.layout.gl_instances.main.registerComponent('goldenLayoutLeftColFrame', function(container,state) {
         container.getElement().html('<div id="goldenLayoutColId1" class="goldenLayoutCol"></div>');
         container.on('resize',function() {
             $(window).trigger('resize');
         });
     });
-    i2b2.layout.gl_instances.main.registerComponent('goldenLayoutRightColFrame', function(container,state){
+    i2b2.layout.gl_instances.main.registerComponent('goldenLayoutRightColFrame', function(container,state) {
         container.getElement().html('<div id="goldenLayoutColId2" class="goldenLayoutCol" style="left:3px"></div>');
     });
     i2b2.layout.gl_instances.main.init();
-    i2b2.layout.gl_instances.main.on("stateChanged", function(obj){
-        //HACK so that layout renders in Safari on initial load
+    i2b2.layout.gl_instances.main.on("stateChanged", (obj) => {
+        // HACK so that layout renders in Safari on initial load
         i2b2.layout.gl_instances.main.updateSize();
         i2b2.layout.gl_instances.main.off("stateChanged")
     });
 
-
-    // Left column layout
-    i2b2.layout.gl_instances.leftCol = new GoldenLayout( i2b2.layout.gl_configs.leftCol, '#goldenLayoutColId1' );
-    i2b2.layout.gl_instances.leftCol.registerComponent('whiteComponent', whiteComponent);
-    // ========== MAGIC TRICK ==========
-    // delayed calling of all the registration callbacks registered by cells during their initialization
-    for (var k in i2b2.layout.__regCallbacks) {
-        i2b2.layout.gl_instances.leftCol.registerComponent(k,i2b2.layout.__regCallbacks[k]);
-    }
-    i2b2.layout.gl_instances.leftCol.init();
-
-
-    // Right column layout
-    i2b2.layout.gl_instances.rightCol = new GoldenLayout( i2b2.layout.gl_configs.rightCol, '#goldenLayoutColId2' );
-    i2b2.layout.gl_instances.rightCol.registerComponent('whiteComponent', whiteComponent);
-    i2b2.layout.gl_instances.rightCol.on('initialised',function(){
-        i2b2.layout.gl_instances.rightCol.root.contentItems[0].remove();
-        i2b2.layout.gl_instances.rightCol.root.addChild(i2b2.layout.gl_configs.FindPatients);
-        glFindPatientsColumn = i2b2.layout.gl_instances.rightCol.root.contentItems[0];
-    });
-    // ========== MAGIC TRICK ==========
-    // delayed calling of all the registration callbacks registered by cells during their initialization
-    for (let k in i2b2.layout.__regCallbacks) {
-        i2b2.layout.gl_instances.rightCol.registerComponent(k,i2b2.layout.__regCallbacks[k]);
-    }
-    i2b2.layout.gl_instances.rightCol.init();
-
+    // Zoom layout
     i2b2.layout.gl_instances.Zoom = new GoldenLayout( i2b2.layout.gl_configs.fullZoom, '#goldenLayoutId2' );
-    i2b2.layout.gl_instances.Zoom.registerComponent('whiteComponent', function(){});
-    i2b2.layout.gl_instances.Zoom.on('initialised',function(){
+    i2b2.layout.gl_instances.Zoom.registerComponent('emptyComponent', function() {});
+    i2b2.layout.gl_instances.Zoom.on('initialised', () => {
+        // remove the placeholder component
         i2b2.layout.gl_instances.Zoom.root.contentItems[0].remove();
     });
-    // ========== MAGIC TRICK ==========
-    // delayed calling of all the registration callbacks registered by cells during their initialization
-    for (let k in i2b2.layout.__regCallbacks) {
-        i2b2.layout.gl_instances.Zoom.registerComponent(k,i2b2.layout.__regCallbacks[k]);
-    }
     i2b2.layout.gl_instances.Zoom.init();
-
 
     // setup resize handler
     $(window).resize(i2b2.layout.resize);
 
-    // this is the master load signal for all cells to begin operations
-    i2b2.events.afterHiveInit.fire();
+
+    //////////////////////////////////////////
+    // load the layout configuration file
+    //////////////////////////////////////////
+    $.getJSON("js-i2b2/i2b2_tabs.json", (layoutConfig) => {
+        let func_expandContent = function(inContent) {
+            let localContent = inContent.content;
+            for (let entry of localContent) {
+                if (entry.type === undefined || entry.componentName !== undefined) {
+                    // this is a component, add in missing defaults
+                    entry.type = 'component';
+                    if (entry.isClosable === undefined) entry.isClosable = false;
+                } else if (Array.isArray(entry.content)) {
+                    func_expandContent(entry);
+                } else {
+                    console.error("Unrecognized entry in i2b2_tabs.json");
+                }
+            }
+        };
+
+        let func_processCol = function(colBase, colIn) {
+            if (colIn.settings) colBase.settings = {...colBase.settings, ...colIn.settings};
+            if (colIn.dimensions) colBase.dimensions = {...colBase.dimensions, ...colIn.dimensions};
+            let tempExpand = {type:"column", ...colIn};
+            func_expandContent(tempExpand);
+            colBase.content = [tempExpand];
+        }
+
+        // handle importing the column configurations
+        func_processCol(i2b2.layout.gl_configs.leftCol, layoutConfig['left-column']);
+        func_processCol(i2b2.layout.gl_configs.rightCol, layoutConfig['right-column']);
+
+        // Create the column layouts
+        i2b2.layout.gl_instances.leftCol = new GoldenLayout( i2b2.layout.gl_configs.leftCol, '#goldenLayoutColId1' );
+        i2b2.layout.gl_instances.rightCol = new GoldenLayout( i2b2.layout.gl_configs.rightCol, '#goldenLayoutColId2' );
+
+        // ========== MAGIC TRICK ==========
+        // delayed calling of all the registration callbacks registered by cells during their initialization
+        for (var k in i2b2.layout.__regCallbacks) {
+            i2b2.layout.gl_instances.leftCol.registerComponent(k, i2b2.layout.__regCallbacks[k]);
+            i2b2.layout.gl_instances.rightCol.registerComponent(k, i2b2.layout.__regCallbacks[k]);
+        }
+
+        // initialize the main display
+        i2b2.layout.gl_instances.leftCol.init();
+        i2b2.layout.gl_instances.rightCol.init();
+
+        // this is the master load signal for all cells to begin operations
+        i2b2.events.afterHiveInit.fire();
+    });
+
+
 };
 
 // ================================================================================================== //

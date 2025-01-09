@@ -191,6 +191,9 @@ i2b2.CRC.view.QT.showRun = function() {
                     let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
                     // start the query run
                     i2b2.CRC.ctrlr.QueryMgr.startQuery(queryName, reqResultTypes, reqExecutionMethod);
+                    // make sure that the Query Status window is visible
+                    let QueryStatusTab = i2b2.layout.gl_instances.rightCol.root.getItemsByFilter((a) => { return a.componentName === 'i2b2.CRC.view.QueryMgr'; } )[0];
+                    QueryStatusTab.parent.setActiveContentItem(QueryStatusTab)
                     // close the modal
                     $('body #crcModal div:eq(0)').modal('hide');
                 } else {

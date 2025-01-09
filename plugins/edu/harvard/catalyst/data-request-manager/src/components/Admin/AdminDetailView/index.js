@@ -99,6 +99,7 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                                                     startIcon={<CreateIcon />}  onClick={() => setConfirmFileGen(true)}>Generate Data File(s)
                                             </Button>
                                         </div>
+
                                         <div className={"RequestXmlMain"}>
                                             <Button href="#"  variant="outlined" endIcon={<OpenInNewIcon />}>
                                                 View Request XML
