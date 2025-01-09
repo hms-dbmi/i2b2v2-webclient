@@ -553,6 +553,11 @@ textarea {
 	height:50px;
 }
 
+#dataRequestInfoComment {
+	margin-left: 0;
+	min-height: 5.2em;
+}
+
 .goldenLayout div.pluginCellMain
 {
  	border: 1px solid #678;

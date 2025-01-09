@@ -128,6 +128,14 @@ i2b2.CRC.view.QT.showRun = function() {
                     $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(requestContainer);
                 });
             }
+            for (let code in i2b2.CRC.model.userRequestTypes) {
+                document.getElementById("DataRequestDiv").style.display = "";
+                let descriptions = i2b2.CRC.model.requestTypes[code];
+                descriptions.forEach(description => {
+                    let checked = '';
+                    $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> User Created: ' + description + '</div>').appendTo(requestContainer);
+                });
+            }
 
             let dataExportContainer = $("#crcModal .DataExportTypes");
             for (let code in i2b2.CRC.model.dataExportTypes) {
@@ -2063,6 +2071,7 @@ i2b2.events.afterCellInit.add((cell) => {
                 //			errorMsg: string [only with error=true]
                 cell.model.resultTypes = {};
                 cell.model.requestTypes = {};
+                cell.model.userRequestTypes = {};
                 cell.model.dataExportTypes = {};
 
                 if (results.error){
@@ -2085,9 +2094,16 @@ i2b2.events.afterCellInit.add((cell) => {
                         } else if (visual_attribute_type === "LR") {
                             if(cell.model.requestTypes[name] === undefined){
                                 cell.model.requestTypes[name] = [];
+                                cell.model.userRequestTypes[name] = [];
                             }
                             cell.model.requestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
-                        } else if (visual_attribute_type === "LX") {
+                            cell.model.userRequestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
+                        } else if (visual_attribute_type === "LQ") {
+                            if(cell.model.userRequestTypes[name] === undefined){
+                                cell.model.userRequestTypes[name] = [];
+                            }
+                            cell.model.userRequestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
+                        }else if (visual_attribute_type === "LX") {
                             if(cell.model.dataExportTypes[name] === undefined){
                                 cell.model.dataExportTypes[name] = [];
                             }
