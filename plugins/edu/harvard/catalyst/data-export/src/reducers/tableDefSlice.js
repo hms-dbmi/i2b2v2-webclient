@@ -5,7 +5,7 @@ import {StatusInfo, TableDefinitionRow} from "../models";
 import {DATATYPE, generateTableDefRowId} from "../models/TableDefinitionRow";
 import XMLParser from 'react-xml-parser';
 
-export const loadTableSlice = createSlice({
+export const tableDefSlice = createSlice({
     name: TABLE_DEF,
     initialState: defaultState.tableDef,
     reducers: {
@@ -202,7 +202,7 @@ export const loadTableSlice = createSlice({
                     break;
                 }
             }
-        }
+        },
     }
 })
 
@@ -220,7 +220,7 @@ export const {
     handleRowAggregation,
     handleRowName,
     handleRowSdx,
-    loadTermInfo
-} = loadTableSlice.actions
+    loadTermInfo,
+} = tableDefSlice.actions
 
-export default loadTableSlice.reducer
+export default tableDefSlice.reducer

@@ -7,20 +7,21 @@ export const TableDefinition = ({
     isFetching= false,
     statusInfo = StatusInfo(),
     labValueToDisplay= null,
-    isLoadingDataType =false
+    isLoadingDataType =false,
 } = {}) => ({
     rows,
     isFetching,
     statusInfo,
     labValueToDisplay,
-    isLoadingDataType
+    isLoadingDataType,
 });
 
 TableDefinition.propTypes = {
     rows: PropTypes.arrayOf(TableDefinitionRow).isRequired,
     isFetching: PropTypes.bool,
     statusInfo: PropTypes.shape(StatusInfo),
-    labValueToDisplay: PropTypes.object
+    labValueToDisplay: PropTypes.object,
+    isLoadingDataType: PropTypes.bool,
 };
 
 

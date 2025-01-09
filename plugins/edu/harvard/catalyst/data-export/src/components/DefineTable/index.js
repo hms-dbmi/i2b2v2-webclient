@@ -44,7 +44,7 @@ import {
     handleRowSdx,
     loadStatusConfirmed,
     loadTermInfo
-} from "../../reducers/loadTableSlice";
+} from "../../reducers/tableDefSlice";
 import "./DefineTable.scss";
 
 /* global i2b2 */

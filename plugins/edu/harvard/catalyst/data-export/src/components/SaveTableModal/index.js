@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 import "../../css/modals.scss";
 import { TableListing } from "../TableListing";
-import { listTables } from "../../reducers/listTablesSlice";
+import {deleteTable, listTables} from "../../reducers/tableListingSlice";
 import { TabPanel } from "../TabPanel";
 import {saveStatusConfirmed, saveTable} from "../../reducers/saveTableSlice";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
@@ -18,7 +18,7 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
-    const { userRows, statusInfo, isFetching } = useSelector((state) => state.tableListing);
+    const { userRows, statusInfo, isFetching, isDeleting } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
     const tableDefRows = useSelector((state) => state.tableDef.rows);
     const [selectedRows, setSelectedRows] = React.useState([]);
@@ -112,6 +112,10 @@ export const SaveTableModal = ({open, handleClose}) => {
        )
     }
 
+    const onDeleteTable = (tableId, isShared) => {
+        dispatch(deleteTable({tableId, isShared}));
+    }
+
     useEffect(() => {
         if (open) {
             dispatch(listTables());
@@ -174,7 +178,8 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
                             hasError={statusInfo.status==='FAIL'}
-                            isLoading={isFetching}
+                            onDelete={(id) => onDeleteTable(id, false)}
+                            isLoading={isFetching || isDeleting}
                         />
                     </TabPanel>
                 </Box>

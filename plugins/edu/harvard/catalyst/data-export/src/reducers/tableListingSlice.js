@@ -3,7 +3,7 @@ import { TABLE_LISTING } from "../actions";
 import { defaultState } from '../defaultState';
 import {StatusInfo, TableListing} from "../models";
 
-export const listTablesSlice = createSlice({
+export const tableListingSlice = createSlice({
     name: TABLE_LISTING,
     initialState: defaultState.tableListing,
     reducers: {
@@ -27,6 +27,31 @@ export const listTablesSlice = createSlice({
                 errorMessage: errorMessage
             });
         },
+        deleteTable: state => {
+            state.isDeleting = true;
+            state.deleteStatusInfo = StatusInfo();
+        },
+
+        deleteTableSuccess: (state, { payload: { tableId, isShared } }) => {
+            state.isDeleting = false;
+            state.deleteStatusInfo = StatusInfo({
+                status: "SUCCESS"
+            });
+            if(isShared){
+                state.sharedRows = state.sharedRows.filter((row) => row.id !== tableId);
+            }
+            else{
+                state.userRows = state.userRows.filter((row) => row.id !== tableId);
+            }
+
+        },
+        deleteTableError: (state, { payload: { errorMessage } }) => {
+            state.isDeleting= false;
+            state.deleteStatusInfo = StatusInfo({
+                status: "FAIL",
+                errorMessage: errorMessage
+            });
+        },
     }
 })
 
@@ -34,6 +59,9 @@ export const {
     listTables,
     listTablesSuccess,
     listTablesError,
-} = listTablesSlice.actions
+    deleteTable,
+    deleteTableSuccess,
+    deleteTableError,
+} = tableListingSlice.actions
 
-export default listTablesSlice.reducer
+export default tableListingSlice.reducer
