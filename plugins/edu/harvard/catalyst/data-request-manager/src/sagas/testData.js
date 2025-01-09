@@ -253,6 +253,28 @@ export const adminRequestDetails = [
                 date: requestList[0].dateSubmitted,
                 status: "Submitted"
             }
+        ],
+        adminNotes: [
+            {
+                id: 1,
+                date: "2024-01-02",
+                note: "This is the first note for request " + requestList[0].id,
+            },
+            {
+                id: 2,
+                date: "2024-01-05",
+                note: "This is the second note for request " + requestList[0].id,
+            },
+            {
+                id: 3,
+                date: "2024-01-11",
+                note: "This is the third note for request " + requestList[0].id,
+            },
+            {
+                id: 4,
+                date: "2024-01-27",
+                note: "This is the fourth note for request " + requestList[0].id,
+            }
         ]
     },
     {
@@ -275,6 +297,28 @@ export const adminRequestDetails = [
                 date: requestList[1].lastUpdated,
                 status: "Approved"
             }
+        ],
+        adminNotes: [
+            {
+                id: 1,
+                date: "2024-01-02",
+                note: "This is the first note for request " + requestList[1].id,
+            },
+            {
+                id: 2,
+                date: "2024-01-05",
+                note: "This is the second note for request " + requestList[1].id,
+            },
+            {
+                id: 3,
+                date: "2024-01-11",
+                note: "This is the third note for request " + requestList[1].id,
+            },
+            {
+                id: 4,
+                date: "2024-01-27",
+                note: "This is the fourth note for request " + requestList[1].id,
+            }
         ]
     },
     {
@@ -296,6 +340,28 @@ export const adminRequestDetails = [
             {
                 date: requestList[2].lastUpdated,
                 status: "Denied"
+            }
+        ],
+        adminNotes: [
+            {
+                id: 1,
+                date: "2024-01-02",
+                note: "This is the first note for request " + requestList[2].id,
+            },
+            {
+                id: 2,
+                date: "2024-01-05",
+                note: "This is the second note for request " + requestList[2].id,
+            },
+            {
+                id: 3,
+                date: "2024-01-11",
+                note: "This is the third note for request " + requestList[2].id,
+            },
+            {
+                id: 4,
+                date: "2024-01-27",
+                note: "This is the fourth note for request " + requestList[2].id,
             }
         ]
     },
@@ -323,6 +389,28 @@ export const adminRequestDetails = [
                 date: requestList[3].lastUpdated,
                 status: "File Available"
             }
+        ],
+        adminNotes: [
+            {
+                id: 1,
+                date: "2024-01-02",
+                note: "This is the first note for request " + requestList[3].id,
+            },
+            {
+                id: 2,
+                date: "2024-01-05",
+                note: "This is the second note for request " + requestList[3].id,
+            },
+            {
+                id: 3,
+                date: "2024-01-11",
+                note: "This is the third note for request " + requestList[3].id,
+            },
+            {
+                id: 4,
+                date: "2024-01-27",
+                note: "This is the fourth note for request " + requestList[3].id,
+            }
         ]
     },
     {
@@ -340,6 +428,28 @@ export const adminRequestDetails = [
             {
                 date: requestList[3].dateSubmitted,
                 status: "Submitted"
+            }
+        ],
+        adminNotes: [
+            {
+                id: 1,
+                date: "2024-01-02",
+                note: "This is the first note for request " + 1480,
+            },
+            {
+                id: 2,
+                date: "2024-01-05",
+                note: "This is the second note for request " + 1480,
+            },
+            {
+                id: 3,
+                date: "2024-01-11",
+                note: "This is the third note for request " + 1480,
+            },
+            {
+                id: 4,
+                date: "2024-01-27",
+                note: "This is the fourth note for request " + 1480,
             }
         ]
     },
@@ -362,6 +472,28 @@ export const adminRequestDetails = [
             {
                 date: requestList[4].lastUpdated,
                 status: "Cancelled"
+            }
+        ],
+        adminNotes: [
+            {
+                id: 1,
+                date: "2024-01-02",
+                note: "This is the first note for request " + requestList[4].id,
+            },
+            {
+                id: 2,
+                date: "2024-01-05",
+                note: "This is the second note for request " + requestList[4].id,
+            },
+            {
+                id: 3,
+                date: "2024-01-11",
+                note: "This is the third note for request " + requestList[4].id,
+            },
+            {
+                id: 4,
+                date: "2024-01-27",
+                note: "This is the fourth note for request " + requestList[4].id,
             }
         ]
     }

@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {Box} from "@mui/material";
 
-import {listRequestTable} from "../../../reducers/listRequestTableSlice";
+import {listRequestTable} from "../../../reducers/requestTableSlice";
 
 import "./ResearcherTableView.scss";
 import {RequestTableView} from "../../RequestTableView";

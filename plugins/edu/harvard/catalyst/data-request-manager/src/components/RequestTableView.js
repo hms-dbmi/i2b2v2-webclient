@@ -13,6 +13,7 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
     const columns = [
         {
             field: 'id',
+            minWidth: 120,
             headerName: 'Request ID',
             headerClassName: "header",
             sortable: true,

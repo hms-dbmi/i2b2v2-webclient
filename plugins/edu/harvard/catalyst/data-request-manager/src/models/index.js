@@ -8,4 +8,5 @@ export { ACCESS_LEVEL , UserAccessLevel } from "./UserAccessLevel";
 export { RequestTable } from "./RequestTable";
 export { AdminTableRow } from "./AdminTableRow";
 export { AdminRequestDetails } from "./AdminRequestDetails";
-
+export { AdminNotes } from "./AdminNotes";
+export { AdminNote } from "./AdminNote";

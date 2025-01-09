@@ -5,7 +5,7 @@ import {Box} from "@mui/material";
 
 import "./AdminTableView.scss";
 import {RequestTableView} from "../../RequestTableView";
-import {listRequestTable} from "../../../reducers/listRequestTableSlice";
+import {listRequestTable} from "../../../reducers/requestTableSlice";
 
 
 export const AdminTableView = ({displayDetailViewId}) => {

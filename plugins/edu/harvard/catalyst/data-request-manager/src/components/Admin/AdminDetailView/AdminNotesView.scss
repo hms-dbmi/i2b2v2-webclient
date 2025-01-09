@@ -1,0 +1,38 @@
+.AdminNotesView {
+
+  .MuiTextField-root {
+    width : 100%;
+    background-color: #FFFFFF;
+  }
+
+  .RequestDetailNotesTitle {
+    font-weight: bold;
+  }
+
+  .AddNotesMain{
+    border: 2px solid rgba(224, 224, 224, 1);
+    border-radius: 10px;
+    padding: 1.1em 3em 1.1em 1.1em;
+  }
+
+  .AddNoteActions {
+    margin-top: 0.67em;
+    /*margin-right: 0.9em;*/
+  }
+
+  .AddNote {
+    margin-top: 1.2em;
+  }
+
+  .AdminNotesTable{
+    margin-top: 1.4em;
+  }
+
+  th.MuiTableCell-root, td.MuiTableCell-root {
+    border: 1px solid rgba(224, 224, 224, 1) !important;
+  }
+
+  .MuiTableRow-root.MuiTableRow-head, .MuiTableCell-stickyHeader {
+    background-color: #e7edf3 !important;
+  }
+}
