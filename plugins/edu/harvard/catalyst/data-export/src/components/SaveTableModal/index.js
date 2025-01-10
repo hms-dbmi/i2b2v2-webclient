@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 import "../../css/modals.scss";
 import { TableListing } from "../TableListing";
-import {deleteTable, listTables} from "../../reducers/tableListingSlice";
+import {confirmDeleteTableStatus, deleteTable, listTables} from "../../reducers/tableListingSlice";
 import { TabPanel } from "../TabPanel";
 import {saveStatusConfirmed, saveTable} from "../../reducers/saveTableSlice";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
@@ -18,7 +18,7 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
-    const { userRows, statusInfo, isFetching, isDeleting } = useSelector((state) => state.tableListing);
+    const { userRows, statusInfo, isFetching, isDeleting, deleteStatusInfo } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
     const tableDefRows = useSelector((state) => state.tableDef.rows);
     const [selectedRows, setSelectedRows] = React.useState([]);
@@ -116,6 +116,10 @@ export const SaveTableModal = ({open, handleClose}) => {
         dispatch(deleteTable({tableId, isShared}));
     }
 
+    const confirmDeleteStatus = () => {
+        dispatch(confirmDeleteTableStatus());
+    };
+
     useEffect(() => {
         if (open) {
             dispatch(listTables());
@@ -180,6 +184,8 @@ export const SaveTableModal = ({open, handleClose}) => {
                             hasError={statusInfo.status==='FAIL'}
                             onDelete={(id) => onDeleteTable(id, false)}
                             isLoading={isFetching || isDeleting}
+                            deleteFailed={deleteStatusInfo.status === 'FAIL'}
+                            onDeleteAlertClose={confirmDeleteStatus}
                         />
                     </TabPanel>
                 </Box>

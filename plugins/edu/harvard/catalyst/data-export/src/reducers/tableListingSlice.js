@@ -52,6 +52,9 @@ export const tableListingSlice = createSlice({
                 errorMessage: errorMessage
             });
         },
+        confirmDeleteTableStatus: state => {
+            state.deleteStatusInfo = StatusInfo();
+        },
     }
 })
 
@@ -62,6 +65,7 @@ export const {
     deleteTable,
     deleteTableSuccess,
     deleteTableError,
+    confirmDeleteTableStatus
 } = tableListingSlice.actions
 
 export default tableListingSlice.reducer

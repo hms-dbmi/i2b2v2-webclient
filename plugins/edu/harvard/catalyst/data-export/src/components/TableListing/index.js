@@ -1,14 +1,18 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import {DataGrid, GridActionsCellItem} from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import "./TableListing.scss";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import Button from "@mui/material/Button";
+import {AlertDialog} from "../AlertDialog";
 
-export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel, hasError, isLoading, onDelete}) => {
+export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel,
+                                 hasError, isLoading, onDelete, deleteFailed, onDeleteAlertClose}) => {
     const [rowToDelete, setRowToDelete] = useState({});
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+    const [showAlertDialog, setShowAlertDialog] = useState(false);
+    const [alertMsgInfo, setAlertMsgInfo] = useState({});
 
     const handleConfirmDelete = (id, fileName) => {
         setRowToDelete({id, fileName});
@@ -93,6 +97,17 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         );
     }
 
+    useEffect(() => {
+        if(deleteFailed){
+            setShowAlertDialog(true);
+            setAlertMsgInfo({
+                title: "DeleteFile",
+                msg: "An error occurred deleting file \"" + rowToDelete.fileName + "\"",
+                onOk: () => {setShowAlertDialog(false); onDeleteAlertClose();}
+            })
+        }
+    }, [deleteFailed]);
+
     return (
         <div className={"TableListing"} id={id} style={{height: 400}} >
             <DataGrid
@@ -142,6 +157,13 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {showAlertDialog && <AlertDialog
+                msg={alertMsgInfo.msg}
+                title={alertMsgInfo.title}
+                onOk = {alertMsgInfo.onOk}
+            />
+            }
         </div>
     )
 }

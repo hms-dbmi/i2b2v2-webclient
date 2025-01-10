@@ -17,9 +17,7 @@ export function* doDeleteTable(action) {
         }
         if(response.ok) {
             //const data = yield response.json();
-
             yield put(deleteTableSuccess({tableId, isShared}));
-
         }else{
             console.error("Error deleting table! Status code: " + response.status + "Message: " + response.statusText);
             yield put(deleteTableError({errorMessage: "There was an error deleting the table."}));
