@@ -1,6 +1,6 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
-import {handleRowInsertSucceeded, handleRowInsertError} from "../reducers/loadTableSlice";
+import {handleRowInsertSucceeded, handleRowInsertError} from "../reducers/tableDefSlice";
 /* global i2b2 */
 
 import {

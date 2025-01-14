@@ -9,16 +9,18 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { listTables } from "../../reducers/listTablesSlice";
+import {confirmDeleteTableStatus, deleteTable, listTables} from "../../reducers/tableListingSlice";
 import { TabPanel } from "../TabPanel";
-import {loadTable} from "../../reducers/loadTableSlice";
+import {loadTable} from "../../reducers/tableDefSlice";
 import {Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} from "@mui/material";
 
 export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
     const dispatch = useDispatch();
-    const { sharedRows, userRows, statusInfo, isFetching} = useSelector((state) => state.tableListing);
+    const { sharedRows, userRows, statusInfo, isFetching, isDeleting, deleteStatusInfo} = useSelector((state) => state.tableListing);
     const [tab, setTab] = React.useState(0);
     const [selectedTable, setSelectedTable] = useState(null);
+
+
     const handleChangeTab = (event, newValue) => { setTab(newValue); };
 
     const addtlProps = (index) => {
@@ -33,6 +35,15 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
         dispatch(loadTable(selectedTable));
         handleSetScreen(0);
     }
+
+    const onDeleteTable = (tableId, isShared) => {
+        dispatch(deleteTable({tableId, isShared}));
+    }
+
+    const confirmDeleteStatus = () => {
+        dispatch(confirmDeleteTableStatus());
+    };
+
     useEffect(() => {
         if (open) {
             dispatch(listTables());
@@ -80,7 +91,10 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                                       canRename={false}
                                       onSelect={setSelectedTable}
                                       hasError={statusInfo.status==='FAIL'}
-                                      isLoading={isFetching}
+                                      isLoading={isFetching || isDeleting}
+                                      onDelete={(id) => onDeleteTable(id, true)}
+                                      deleteFailed={deleteStatusInfo.status === 'FAIL'}
+                                      onDeleteAlertClose={confirmDeleteStatus}
                         />
                     </TabPanel>
                     <TabPanel
@@ -88,7 +102,14 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         index={1}
                         className={'modalTabPanel'}
                     >
-                        <TableListing id={"loadModalDefTableLocal"} rows={userRows} canRename={false} onSelect={setSelectedTable}  isLoading={isFetching}  hasError={statusInfo.status==='FAIL'}/>
+                        <TableListing id={"loadModalDefTableLocal"}
+                                      rows={userRows} canRename={false}
+                                      onSelect={setSelectedTable}  isLoading={isFetching || isDeleting}
+                                      hasError={statusInfo.status==='FAIL'}
+                                      onDelete={(id) => onDeleteTable(id, false)}
+                                      deleteFailed={deleteStatusInfo.status === 'FAIL'}
+                                      onDeleteAlertClose={confirmDeleteStatus}
+                        />
                     </TabPanel>
                 </Box>
             </DialogContent>
