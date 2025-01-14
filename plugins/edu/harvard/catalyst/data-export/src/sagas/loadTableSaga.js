@@ -1,5 +1,5 @@
 import { takeLatest, put} from "redux-saga/effects";
-import {loadTableSuccess, loadTableError} from "../reducers/loadTableSlice";
+import {loadTableSuccess, loadTableError} from "../reducers/tableDefSlice";
 
 import {
     LOAD_DATA_TABLE

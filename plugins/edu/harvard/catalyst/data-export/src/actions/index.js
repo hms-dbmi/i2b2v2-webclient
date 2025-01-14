@@ -9,4 +9,5 @@ export const LOAD_TERM_INFO = `${TABLE_DEF}/loadTermInfo`;
 export const INSERT_DATA_ROW = `${TABLE_DEF}/handleRowInsert`;
 export const SAVE_DATA_TABLE = `${SAVE_TABLE}/saveTable`;
 export const LIST_TABLES = `${TABLE_LISTING}/listTables`;
+export const DELETE_TABLE = `${TABLE_LISTING}/deleteTable`;
 export const MAKE_REQUEST = `${MAKE_REQUEST_DETAILS}/makeRequest`;

@@ -1,7 +1,7 @@
 /* globals i2b2 */
 
 import { takeLatest, put} from "redux-saga/effects";
-import {listTablesSuccess, listTablesError} from "../reducers/listTablesSlice";
+import {listTablesSuccess, listTablesError} from "../reducers/tableListingSlice";
 import { DateTime } from "luxon";
 
 import {
