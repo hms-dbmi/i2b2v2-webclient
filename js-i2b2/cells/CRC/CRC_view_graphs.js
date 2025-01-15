@@ -38,7 +38,7 @@ i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData, breakdownIn
         return;
     }
     parentContainer = parentContainer[0];
-    let margin = {top: 30, right: 30, bottom: 70, left: 60},
+    let margin = {top: 30, right: 40, bottom: 70, left: 60},
         height = 400 - margin.top - margin.bottom;
 
     // append the svg object to the target div
