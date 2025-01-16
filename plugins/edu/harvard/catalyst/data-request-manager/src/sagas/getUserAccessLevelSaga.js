@@ -12,7 +12,7 @@ export function* doGetUserAccessLevel(action) {
 
         let isAdmin = false;
         if (response && response.length > 0) {
-            isAdmin = response.includes('EDITOR');
+            isAdmin = response.includes('MANAGER');
         }
 
         if (isAdmin) {
