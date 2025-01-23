@@ -119,6 +119,12 @@ i2b2.CRC.view.QT.showRun = function() {
                 });
             }
 
+            if(Object.keys(i2b2.CRC.model.requestTypes).length === 0 && Object.keys(i2b2.CRC.model.userRequestTypes).length === 0 ){
+                $('#DataRequestDiv').hide();
+                $('#CustomDataRequestInfoDiv').hide();
+            }
+
+
             let requestContainer = $("#crcModal .RequestTypes");
             for (let code in i2b2.CRC.model.requestTypes) {
                 document.getElementById("DataRequestDiv").style.display = "";
@@ -130,7 +136,7 @@ i2b2.CRC.view.QT.showRun = function() {
             }
             for (let code in i2b2.CRC.model.userRequestTypes) {
                 document.getElementById("DataRequestDiv").style.display = "";
-                let descriptions = i2b2.CRC.model.requestTypes[code];
+                let descriptions = i2b2.CRC.model.userRequestTypes[code];
                 descriptions.forEach(description => {
                     let checked = '';
                     $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> User Created: ' + description + '</div>').appendTo(requestContainer);
