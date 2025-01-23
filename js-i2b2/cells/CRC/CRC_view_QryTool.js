@@ -2102,7 +2102,6 @@ i2b2.events.afterCellInit.add((cell) => {
                                 cell.model.requestTypes[name] = [];
                             }
                             cell.model.requestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
-                            cell.model.userRequestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
                         } else if (visual_attribute_type === "LU") {
                             if(cell.model.userRequestTypes[name] === undefined){
                                 cell.model.userRequestTypes[name] = [];
