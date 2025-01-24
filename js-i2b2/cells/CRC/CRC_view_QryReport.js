@@ -169,7 +169,7 @@ i2b2.CRC.view.QueryReport = {
                 if (breakdown.title) {
                     if (isPatientCount) {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.unshift(breakdown);
-                    } else if(visualAttr === 'LR' || visualAttr === 'LX') {
+                    } else if(visualAttr === "LR" || visualAttr === "LX" || visualAttr === "LU") {
                         i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
                     } else {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
