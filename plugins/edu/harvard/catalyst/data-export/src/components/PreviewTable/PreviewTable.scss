@@ -1,0 +1,36 @@
+.MuiTooltip-tooltip {
+  white-space: pre-wrap;
+}
+
+.PreviewTable {
+  width: 100%;
+  overflow: auto;
+  margin-top: 3.2rem;
+
+  .header {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .header .MuiDataGrid-columnHeaderTitleContainerContent {
+    font-weight: var(--unstable_DataGrid-headWeight);
+    cursor: default;
+    border-bottom: 1px dotted black;
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .PreviewTableGrid {
+    max-width: 100%;
+    width: 100%;
+    overflow: auto;
+  }
+
+  .PreviewTableActions {
+    width: 100%;
+    margin: auto;
+    margin-top: 16px;
+  }
+}
