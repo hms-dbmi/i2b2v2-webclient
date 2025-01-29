@@ -204,7 +204,7 @@ i2b2.PM._processUserConfig = function (data) {
     if(!(window.ActiveXObject) && "ActiveXObject" in window)
         browserIsIE11 = true;
 
-
+//
     // save the valid data that was passed into the PM cell's data model
     i2b2.PM.model.login_username = data.msgParams.sec_user;
     try {
