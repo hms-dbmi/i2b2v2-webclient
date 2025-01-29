@@ -6,6 +6,13 @@
       "name": "i2b2.org Demo",
       "urlCellPM": "http://services.i2b2.org/i2b2/services/PMService/",
       "allowAnalysis": true,
+      "ignorePasswordMgrs": true,
+      "debug": false
+    }, {
+      "domain": "i2b2demo",
+      "name": "i2b2.org Demo (old)",
+      "urlCellPM": "http://services.i2b2.org/i2b2/services/PMService/",
+      "allowAnalysis": true,
       "debug": false
     }, {
       "domain": "i2b2demo",
