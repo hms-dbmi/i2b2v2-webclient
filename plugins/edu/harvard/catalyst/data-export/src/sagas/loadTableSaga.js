@@ -7,6 +7,9 @@ import {
 } from "../actions";
 /* global i2b2 */
 
+const DEFAULT_TABLE_ID = -1;
+const DEFAULT_TABLE_TITLE = "DEFAULT";
+
 const getTableRequest = (tableId) => {
 
     let data = {
@@ -70,6 +73,10 @@ const parseGetTableXml = (tableXml) => {
 export function* doLoadTable(action) {
     let {title, id}  = action.payload;
 
+    if(!id) {
+        id = DEFAULT_TABLE_ID;
+        title = DEFAULT_TABLE_TITLE;
+    }
     try {
         let response = yield call(getTableRequest, id);
         if(!response.error) {
