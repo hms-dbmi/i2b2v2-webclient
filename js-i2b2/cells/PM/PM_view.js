@@ -7,10 +7,9 @@
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
-
 i2b2.PM.view.template = {};
-// ================================================================================================== //
 
+// ================================================================================================== //
 i2b2.PM.setUserAccountInfo = function(){
     let userInfo = $("#userInfo");
     userInfo.find(".user").text(i2b2.PM.model.login_username);
@@ -129,7 +128,7 @@ i2b2.PM.view.showProjectSelectionModal = function(){
         $("body").append("<div id='projectSelection'/>");
         projectSelModal = $("#projectSelection");
         projectSelModal.load('js-i2b2/cells/PM/assets/modalProjectSelection.html', function(){
-            $(i2b2.PM.view.template.projectSelection.projects(projectData)).appendTo("#projectSelectionForm");
+            $(i2b2.PM.view.template.projectSelection(projectData)).appendTo("#projectSelectionForm");
             $("body #projectSelection button.i2b2-save").click(function () {
                 let selectedI2B2Project =  $("#selectedI2B2Project");
                 let ProjId = selectedI2B2Project.val();
@@ -146,7 +145,7 @@ i2b2.PM.view.showProjectSelectionModal = function(){
         });
     }else{
         $("#projectSelectionForm").empty();
-        $(i2b2.PM.view.template.projectSelection.projects(projectData)).appendTo("#projectSelectionForm");
+        $(i2b2.PM.view.template.projectSelection(projectData)).appendTo("#projectSelectionForm");
         $("#projectSelection div:eq(0)").modal('show');
     }
 }
@@ -320,33 +319,9 @@ i2b2.events.afterCellInit.add((cell) => {
         console.debug('[EVENT CAPTURED i2b2.events.afterCellInit] --> ' + cell.cellCode);
         i2b2.PM.doLoginDialog();
 
-        cell.view.template.projectSelection = {};
-        $.ajax("js-i2b2/cells/PM/templates/ProjectSelection.html", {
-            success: (template) => {
-                cell.view.template.projectSelection.projects = Handlebars.compile(template);
-            },
-            error: (error) => { console.error("Could not retrieve template: ProjectSelection.html"); }
-        });
-
-        $.ajax("js-i2b2/cells/PM/templates/ProjectSelectionDetail.html", {
-            success: (template, status, req) => {
-                Handlebars.registerPartial("ProjectSelectionDetail", req.responseText);
-            },
-            error: (error) => { console.error("Could not retrieve template: ProjectSelectionDetail.html"); }
-        });
-
-        $.ajax("js-i2b2/cells/PM/templates/AnnouncementMsg.html", {
-            success: (template) => {
-                cell.view.template.announcementMsgDialog = Handlebars.compile(template);
-            },
-            error: (error) => { console.error("Could not retrieve template: AnnouncementMsg.html"); }
-        });
-
-        $.ajax("js-i2b2/cells/PM/templates/PMContextMenuDialog.html", {
-            success: (template) => {
-                cell.view.template.contextDialog = Handlebars.compile(template);
-            },
-            error: (error) => { console.error("Could not retrieve template: PMContextMenuDialog.html"); }
-        });
+        i2b2.h.loadTemplateFile("js-i2b2/cells/PM/templates/ProjectSelection.html", "ProjectSelection.html", "i2b2.PM.view.template.projectSelection");
+        i2b2.h.loadTemplateFile("js-i2b2/cells/PM/templates/ProjectSelectionDetail.html", "ProjectSelectionDetail");
+        i2b2.h.loadTemplateFile("js-i2b2/cells/PM/templates/AnnouncementMsg.html", "AnnouncementMsg.html", "i2b2.PM.view.template.announcementMsgDialog");
+        i2b2.h.loadTemplateFile("js-i2b2/cells/PM/templates/PMContextMenuDialog.html", "PMContextMenuDialog.html", "i2b2.PM.view.template.contextDialog");
     }
 });

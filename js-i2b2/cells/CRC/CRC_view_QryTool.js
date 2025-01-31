@@ -7,6 +7,7 @@
 
 // create and save the view objects
 i2b2.CRC.view.QT = new i2b2Base_cellViewController(i2b2.CRC, 'QT');
+i2b2.CRC.view.QT.template = {};
 
 i2b2.CRC.view.QT.allowedDropTypes = ["CONCPT","QM","PRS", "PR", "WRK", "ENS"];
 
@@ -1940,122 +1941,38 @@ i2b2.events.afterCellInit.add((cell) => {
                 i2b2.CRC.model.queryExecutionOptions = queryOptions;
             }
 
-            // load the templates (TODO: Refactor this to loop using a varname/filename list)
-            // TODO: Refactor templates to use Handlebars partals system
-            cell.view.QT.template = {};
-            // ... for query groups
-            $.ajax("js-i2b2/cells/CRC/templates/QueryGroup.html", {
-                success: (template) => {
-                    cell.view.QT.template.qg = Handlebars.compile(template);
-                },
-                error: (error) => { console.error("Could not retrieve template: QueryGroup.html"); }
-            });
-            // ... for query group concepts list
-            $.ajax("js-i2b2/cells/CRC/templates/QueryGroupConceptList.html", {
-                success: (template) => {
-                    cell.view.QT.template.qgcl = Handlebars.compile(template);
-                },
-                error: (error) => { console.error("Could not retrieve template: QueryGroupConceptList.html"); }
-            });
-            // ... for the final query group drop target / run button
-            $.ajax("js-i2b2/cells/CRC/templates/QueryGroupAdder.html", {
-                success: (template) => {
-                    cell.view.QT.template.qgadd = Handlebars.compile(template);
-                },
-                error: (error) => { console.error("Could not retrieve template: QueryGroupAdder.html"); }
-            });
             // ---------------------------------------------------------
+            // ... for query groups
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryGroup.html", "QueryGroup.html", "i2b2.CRC.view.QT.template.qg");
+            // ... for query group concepts list
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryGroupConceptList.html", "QueryGroupConceptList.html", "i2b2.CRC.view.QT.template.qgcl");
+            // ... for the final query group drop target / run button
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryGroupAdder.html", "QueryGroupAdder.html", "i2b2.CRC.view.QT.template.qgadd");
             // ... XML for the query request (main body)
-            $.ajax("js-i2b2/cells/CRC/templates/Query.xml", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("Query", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: Query.xml"); }
-            });
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/Query.xml", "Query");
             // ... XML for the query request (main body)
-            $.ajax("js-i2b2/cells/CRC/templates/QueryPanel.xml", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryPanel", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanel.xml"); }
-            });
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryPanel.xml", "QueryPanel");
             // ... XML for the query request (main body)
-            $.ajax("js-i2b2/cells/CRC/templates/QueryPanelItem.xml", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryPanelItem", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItem.xml"); }
-            });
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryPanelItem.xml", "QueryPanelItem");
             // ... XML for the query request (main body)
-            $.ajax("js-i2b2/cells/CRC/templates/SubQuery.xml", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("SubQuery", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: SubQuery.xml"); }
-            });
-
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/SubQuery.xml", "SubQuery");
             // ... XML for the query request (main body)
-            $.ajax("js-i2b2/cells/CRC/templates/SubQueryConstraint.xml", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("SubQueryConstraint", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: SubQueryConstraint.xml"); }
-            });
-
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/SubQueryConstraint.xml", "SubQueryConstraint");
             // ... XML for the query request (main body)
-            $.ajax("js-i2b2/cells/CRC/templates/QueryPanelItemConstraint.xml", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryPanelItemConstraint", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryPanelItemConstraint.xml"); }
-            });
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryPanelItemConstraint.xml", "QueryPanelItemConstraint");
+            // HTML template for event
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/Event.html", "Event");
+            // HTML template for event relationship
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/EventLink.html", "EventLink");
+            // HTML template for event relationship
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/EventLinkTimeSpan.html", "EventLinkTimeSpan");
+            // template for the setting date constraint on concept
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/ConceptDateConstraint.html", "ConceptDateConstraint.html", "i2b2.CRC.view.QT.template.dateConstraint");
+            // template for the Query Report
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryReport.html", "QueryReport.html", "i2b2.CRC.view.QT.template.queryReport");
+            // template for the setting date constraint on concept
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryOptions.html", "QueryOptions.html", "i2b2.CRC.view.QT.template.queryOptions");
 
-            //HTML template for event
-            $.ajax("js-i2b2/cells/CRC/templates/Event.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("Event", req.responseText);                    
-                },
-                error: (error) => { console.error("Could not retrieve template: Event.html"); }
-            });
-            //HTML template for event relationship
-            $.ajax("js-i2b2/cells/CRC/templates/EventLink.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("EventLink", req.responseText);
-                },
-                error: (error) => { console.error("Could not retrieve template: EventLink.html"); }
-            });
-
-            //HTML template for event relationship
-            $.ajax("js-i2b2/cells/CRC/templates/EventLinkTimeSpan.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("EventLinkTimeSpan", req.responseText);
-                },
-                error: (error) => { console.error("Could not retrieve template: EventLinkTimeSpan.html"); }
-            });
-
-            //template for the setting date constraint on concept
-            $.ajax("js-i2b2/cells/CRC/templates/ConceptDateConstraint.html", {
-                success: (template) => {
-                    cell.view.QT.template.dateConstraint = Handlebars.compile(template);
-                },
-                error: (error) => { console.error("Could not retrieve template: ConceptDateConstraint.html"); }
-            });
-
-            //template for the Query Report
-            $.ajax("js-i2b2/cells/CRC/templates/QueryReport.html", {
-                success: (template) => {
-                    cell.view.QT.template.queryReport = Handlebars.compile(template);
-                },
-                error: (error) => { console.error("Could not retrieve template: QueryReport.html"); }
-            });
-
-            //template for the setting date constraint on concept
-            $.ajax("js-i2b2/cells/CRC/templates/QueryOptions.html", {
-                success: (template) => {
-                    cell.view.QT.template.queryOptions = Handlebars.compile(template);
-                },
-                error: (error) => { console.error("Could not retrieve template: QueryOptions.html"); }
-            });
 
             cell.model.query = {
                 name: 'default query name',

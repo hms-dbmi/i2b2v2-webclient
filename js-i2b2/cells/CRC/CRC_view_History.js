@@ -11,8 +11,8 @@
 
 // create and save the screen objects
 i2b2.CRC.view.history = new i2b2Base_cellViewController(i2b2.CRC, 'history');
-i2b2.CRC.view.history.visible = false;
 i2b2.CRC.view.history.template = {};
+i2b2.CRC.view.history.visible = false;
 
 // ================================================================================================== //
 i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
@@ -574,80 +574,79 @@ i2b2.events.afterCellInit.add((cell) => {
                     // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
                     i2b2.CRC.view.history.lm_view = container;
 
-                    // Load the finder templatee
-                    $.ajax("js-i2b2/cells/CRC/assets/QueryHistoryBar.html", {
-                        success: (template) => {
-                            cell.view.history.template.finder = Handlebars.compile(template);
-                            // Render the template into place
-                            $(cell.view.history.template.finder({})).prependTo(container._contentElement);
+                    // Load the HTML templates
+                    i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryHistoryOptions.html", "QueryHistoryOptions");
+                    i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/CRCContextMenuDialog.html", "CRCContextMenuDialog.html", "i2b2.CRC.view.history.template.contextDialog");
+                    i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/assets/QueryHistoryBar.html", "QueryHistoryBar.html", "i2b2.CRC.view.history.template.finder").then(() => {
+                        // Render the template into place
+                        $(cell.view.history.template.finder({})).prependTo(container._contentElement);
 
-                            //init search result tooltip
-                            $(".qHTooltip").tooltip();
+                        //init search result tooltip
+                        $(".qHTooltip").tooltip();
 
-                            $("#querySearchTermText").on("keypress",function(e) {
-                                if(e.which === 13) {
-                                    // enter key was pressed while in the query history search entry box
-                                    if($("#submitQueryHistorySearch").attr("disabled") === undefined) {
-                                        i2b2.CRC.view.history.clickSearchName();
-                                    }
+                        $("#querySearchTermText").on("keypress",function(e) {
+                            if(e.which === 13) {
+                                // enter key was pressed while in the query history search entry box
+                                if($("#submitQueryHistorySearch").attr("disabled") === undefined) {
+                                    i2b2.CRC.view.history.clickSearchName();
                                 }
-                            });
+                            }
+                        });
 
-                            // init date picker for Date Listing view
-                            let el = $("#historyDateStart");
-                            $(el).datepicker({
-                                uiLibrary: 'bootstrap4',
-                                keyboardNavigation: false,
-                                change: function() {
-                                    if (i2b2.CRC.view.QT.isValidDate($("#historyDateStart").val())) {
-                                        $("#i2b2QueryHistoryBar .dateError").hide();
-                                        let newDate = $('#historyDateStart').val().trim();
-                                        if (newDate !== i2b2.CRC.view.history.viewDate) {
-                                            i2b2.CRC.view.history.viewDate = newDate;
-                                            // reformat date
-                                            let startDate = luxon.DateTime.fromMillis(Date.parse(newDate));
-                                            startDate = startDate.set({hour: 23, minute: 59, second: 59, millisecond:999});
-                                            /*startDate.hour(23);
-                                            startDate.minute(59);
-                                            startDate.second(59);
-                                            startDate.millisecond(999);*/
-                                            startDate = startDate.toISO();
+                        // init date picker for Date Listing view
+                        let el = $("#historyDateStart");
+                        $(el).datepicker({
+                            uiLibrary: 'bootstrap4',
+                            keyboardNavigation: false,
+                            change: function() {
+                                if (i2b2.CRC.view.QT.isValidDate($("#historyDateStart").val())) {
+                                    $("#i2b2QueryHistoryBar .dateError").hide();
+                                    let newDate = $('#historyDateStart').val().trim();
+                                    if (newDate !== i2b2.CRC.view.history.viewDate) {
+                                        i2b2.CRC.view.history.viewDate = newDate;
+                                        // reformat date
+                                        let startDate = luxon.DateTime.fromMillis(Date.parse(newDate));
+                                        startDate = startDate.set({hour: 23, minute: 59, second: 59, millisecond:999});
+                                        /*startDate.hour(23);
+                                        startDate.minute(59);
+                                        startDate.second(59);
+                                        startDate.millisecond(999);*/
+                                        startDate = startDate.toISO();
 
-                                            // refresh the treeview
-                                            i2b2.CRC.view.history.treeviewFinder.treeview('clear');
-                                            i2b2.CRC.view.history.searchByDate(startDate);
-                                        }
-                                    } else {
-                                        $("#i2b2QueryHistoryBar .dateError").show();
+                                        // refresh the treeview
+                                        i2b2.CRC.view.history.treeviewFinder.treeview('clear');
+                                        i2b2.CRC.view.history.searchByDate(startDate);
                                     }
+                                } else {
+                                    $("#i2b2QueryHistoryBar .dateError").show();
                                 }
-                            });
-                            $(el).on("keyup", function(evt){
-                                if(evt.keyCode === 13){
+                            }
+                        });
+                        $(el).on("keyup", function(evt){
+                            if (evt.keyCode === 13){
+                                $(this).datepicker().close();
+                            } else {
+                                let date = $(this).val().trim();
+                                let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
+
+                                if (isValidDate){
+                                    $(this).datepicker().open();
+                                    $("#i2b2QueryHistoryBar .dateError").hide();
+                                } else {
+                                    $("#i2b2QueryHistoryBar .dateError").show();
                                     $(this).datepicker().close();
-                                }else{
-                                    let date = $(this).val().trim();
-                                    let isValidDate = i2b2.CRC.view.QT.isValidDate(date);
-
-                                    if(isValidDate){
-                                        $(this).datepicker().open();
-                                        $("#i2b2QueryHistoryBar .dateError").hide();
-                                    }else{
-                                        $("#i2b2QueryHistoryBar .dateError").show();
-                                        $(this).datepicker().close();
-                                    }
                                 }
-                            });
+                            }
+                        });
 
-                            // inject the cancel date listing button
-                            $(`<button class="btn border-left-0 dateListingCancel">
+                        // inject the cancel date listing button
+                        $(`<button class="btn border-left-0 dateListingCancel">
                                     <i class="bi bi-x-lg" title="Cancel Listing by Date"></i></button>`).appendTo($("#i2b2QueryHistoryBar .dateListing .gj-datepicker"));
-                            // attach the controller
-                            $("#i2b2QueryHistoryBar .dateListingCancel").on('click', i2b2.CRC.view.history.showBrowseView);
+                        // attach the controller
+                        $("#i2b2QueryHistoryBar .dateListingCancel").on('click', i2b2.CRC.view.history.showBrowseView);
 
-                            i2b2.CRC.view.history.showBrowseView();
-                        },
-                        error: (error) => { console.error("Could not retrieve template: QueryHistoryBar.html"); }
+                        i2b2.CRC.view.history.showBrowseView();
+
                     });
 
                     $('<div id="i2b2QueryHistoryFinderMessage"></div>').prependTo(container._contentElement).hide();
@@ -830,20 +829,7 @@ i2b2.events.afterCellInit.add((cell) => {
                         });
                     });
 
-                    //HTML template for ontology options
-                    $.ajax("js-i2b2/cells/CRC/templates/QueryHistoryOptions.html", {
-                        success: (template, status, req) => {
-                            Handlebars.registerPartial("QueryHistoryOptions", req.responseText);
-                        },
-                        error: (error) => { console.error("Could not retrieve template: QueryHistoryOptions.html"); }
-                    });
 
-                    $.ajax("js-i2b2/cells/CRC/templates/CRCContextMenuDialog.html", {
-                        success: (template) => {
-                            cell.view.history.template.contextDialog = Handlebars.compile(template);
-                        },
-                        error: (error) => { console.error("Could not retrieve template: CRCContextMenuDialog.html"); }
-                    });
                     container.on( 'tab', function( tab ){
                         if(tab.element.text() === 'Queries') {
                             //add unique id to the term tab

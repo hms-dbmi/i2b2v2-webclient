@@ -305,6 +305,43 @@ Handlebars.registerHelper("objLen", function(obj) {
     return Object.keys(obj).length;
 });
 // ================================================================================================== //
+i2b2.h.loadTemplateFile = function (url, templateName, templateVarRef) {
+    return new Promise((resolve, reject) => {
+        $.ajax(url, {
+            success: (template, status, req) => {
+                if (templateVarRef !== undefined) {
+                    if (typeof templateVarRef === "string") {
+                        // resolve the global scopped object
+                        let varRef = window;
+                        var parts = templateVarRef.split(".");
+                        for (var i = 0, len = parts.length - 1; i < len; ++i) {
+                            varRef = varRef[parts[i]];
+                        }
+                        varRef[parts.pop()] = Handlebars.compile(req.responseText);
+                    }
+                } else {
+                    Handlebars.registerPartial(templateName, req.responseText);
+                }
+                resolve({
+                    url: url,
+                    name: templateName,
+                    template: template
+                });
+            },
+            error: (error) => {
+                console.error("Could not retrieve template: " + templateName);
+                reject({
+                    url: url,
+                    name: templateName
+                });
+            }
+        });
+    });
+}
+
+
+
+// ================================================================================================== //
 // helper function to build a sniffer package for Cell Communications events
 i2b2.h.BuildSniffPack = function(cellName, cellFuncName, results, signalOrigin) {
     function i2b2_CellCommPackage() {}

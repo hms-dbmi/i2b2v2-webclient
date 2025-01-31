@@ -209,13 +209,9 @@ i2b2.events.afterCellInit.add((cell) => {
                 container.on("tab", funcRetitle);
 
 
-                $.ajax("js-i2b2/cells/ONT/templates/OntologyTermInfo.html", {
-                    success: (template) => {
-                        i2b2.ONT.view.info.model.template = Handlebars.compile(template);
-                        $(container).empty();
-                        $(i2b2.ONT.view.info.model.template({})).appendTo($('.i2b2OntInfo', container._contentElement)[0]);
-                    },
-                    error: (error) => { console.error("Could not retrieve template: OntologyTermInfo.html"); }
+                i2b2.h.loadTemplateFile("js-i2b2/cells/ONT/templates/OntologyTermInfo.html", "OntologyTermInfo.html", "i2b2.ONT.view.info.model.template").then(()=>{
+                    $(container).empty();
+                    $(i2b2.ONT.view.info.model.template({})).appendTo($('.i2b2OntInfo', container._contentElement)[0]);
                 });
                 i2b2.ONT.view.info.model.viewport = $('<div class="i2b2OntInfo"></div>').appendTo(container._contentElement);
             }).bind(this)

@@ -1,5 +1,6 @@
 
 i2b2.WORK.view.main = new i2b2Base_cellViewController(i2b2.WORK, 'main');
+i2b2.WORK.view.main.template = {};
 
 // ================================================================================================== //
 i2b2.WORK.view.main._generateTvNode = function(title, nodeData, parentNode){
@@ -348,7 +349,7 @@ i2b2.WORK.view.main.displayContextDialog = function(inputData){
         "onCancel": inputData.onCancel,
         "largeInput": inputData.largeInput
     };
-    $(i2b2.WORK.view.main.templates.contextDialog(data)).appendTo(contextDialogModal);
+    $(i2b2.WORK.view.main.template.contextDialog(data)).appendTo(contextDialogModal);
     $("#WKContextMenuDialog").modal('show').on('shown.bs.modal', function() {
         $(this).find('[autofocus]').focus();
     });
@@ -473,13 +474,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     }
                 });
 
-                i2b2.WORK.view.main.templates = {};
-                $.ajax("js-i2b2/cells/WORK/templates/ContextMenuDialog.html", {
-                    success: (template) => {
-                        cell.view.main.templates.contextDialog = Handlebars.compile(template);
-                    },
-                    error: (error) => { console.error("Could not retrieve template: ContextMenuDialog.html"); }
-                });
+                i2b2.h.loadTemplateFile("js-i2b2/cells/WORK/templates/ContextMenuDialog.html", "ContextMenuDialog.html", "i2b2.WORK.view.main.template.contextDialog");
 
                 container.on( 'tab', function( tab ){
                     if(tab.element.text() === 'Workplace') {

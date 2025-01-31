@@ -113,15 +113,10 @@ i2b2.PLUGIN.view.list.load = function(template){
 
     $(pluginTemplate(pluginTemplateData)).appendTo(pluginListing);
 
-    $.ajax("js-i2b2/cells/PLUGIN/templates/PluginListing.html", {
-        success: (template) => {
-            i2b2.PLUGIN.view.list.pluginListTemplate = Handlebars.compile(template);
-            i2b2.PLUGIN.view.list.changeListMode(i2b2.PLUGIN.view.list.mode.DETAIL);
-
-            // switch to default category if param is set
-            i2b2.PLUGIN.view.list.initialCategory();
-        },
-        error: (error) => { console.error("Could not retrieve template: PluginListing.html"); }
+    i2b2.h.loadTemplateFile("js-i2b2/cells/PLUGIN/templates/PluginListing.html", "PluginListing.html", "i2b2.PLUGIN.view.list.pluginListTemplate").then(()=>{
+        i2b2.PLUGIN.view.list.changeListMode(i2b2.PLUGIN.view.list.mode.DETAIL);
+        // switch to default category if param is set
+        i2b2.PLUGIN.view.list.initialCategory();
     });
     // Add a class to the Analysis Tools Tab
     let panelTabs = document.querySelectorAll('.lm_tab');
@@ -253,11 +248,8 @@ i2b2.events.afterCellInit.add((cell) => {
                 let mainDiv = $("<div class='cellWhite' id='pluginListView'></div>");
                 container.getElement().append(mainDiv);
 
-                $.ajax("js-i2b2/cells/PLUGIN/templates/PluginListingContainer.html", {
-                    success: (template) => {
-                        i2b2.PLUGIN.view.list.load(template);
-                    },
-                    error: (error) => { console.error("Could not retrieve template: PluginListingContainer.html"); }
+                i2b2.h.loadTemplateFile("js-i2b2/cells/PLUGIN/templates/PluginListingContainer.html", "PluginListingContainer.html", false).then((result)=>{
+                    i2b2.PLUGIN.view.list.load(result.template);
                 });
 
                 // handle listing of legacy plugins

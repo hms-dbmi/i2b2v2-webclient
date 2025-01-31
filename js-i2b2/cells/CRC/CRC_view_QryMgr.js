@@ -67,35 +67,11 @@ i2b2.events.afterCellInit.add((cell) => {
                 }).bind(this)
             );
 
-            // load the templates (TODO: Refactor this to loop using a varname/filename list)
-
-            $.ajax("js-i2b2/cells/CRC/templates/QueryResultStatus.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryResultStatus", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultStatus.html"); }
-            });
-
-            $.ajax("js-i2b2/cells/CRC/templates/QueryResult.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryResult", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResult.html"); }
-            });
-
-            $.ajax("js-i2b2/cells/CRC/templates/QueryDataExportResult.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryDataExportResult", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template:QueryDataExportResult.html"); }
-            });
-
-            $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownGraph.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryResultBreakdownGraph", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultBreakdownGraph.html"); }
-            });
+            // load the templates
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryResultStatus.html", "QueryResultStatus");
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryResult.html", "QueryResult");
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryDataExportResult.html","QueryDataExportResult");
+            i2b2.h.loadTemplateFile("js-i2b2/cells/CRC/templates/QueryResultBreakdownGraph.html", "QueryResultBreakdownGraph");
         }
     }
 );

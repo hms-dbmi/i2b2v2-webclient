@@ -10,8 +10,8 @@
 
 // create and save the view object
 i2b2.ONT.view.nav = new i2b2Base_cellViewController(i2b2.ONT, 'nav');
-i2b2.ONT.view.nav.options = {};
 i2b2.ONT.view.nav.template = {};
+i2b2.ONT.view.nav.options = {};
 
 // ================================================================================================== //
 i2b2.ONT.view.nav.PopulateCategories = function() {		
@@ -164,7 +164,7 @@ i2b2.ONT.view.nav.displayAlertDialog = function(inputData){
         "title": inputData.title,
         "alertMsg": inputData.alertMsg,
     };
-    $(i2b2.ONT.view.nav.templates.alertDialog(data)).appendTo(ontMsgDialogModal);
+    $(i2b2.ONT.view.nav.template.alertDialog(data)).appendTo(ontMsgDialogModal);
     $("#ONTAlertDialog").modal('show');
 }
 // ======================================================================================
@@ -287,21 +287,9 @@ i2b2.events.afterCellInit.add((cell) => {
                     }
                 });
 
-                //HTML template for ontology options
-                $.ajax("js-i2b2/cells/ONT/templates/OntologyOptions.html", {
-                    success: (template, status, req) => {
-                        Handlebars.registerPartial("OntologyOptions", req.responseText);
-                    },
-                    error: (error) => { console.error("Could not retrieve template: OntologyOptions.html"); }
-                });
-
-                cell.view.nav.templates = {};
-                $.ajax("js-i2b2/cells/ONT/templates/AlertDialog.html", {
-                    success: (template) => {
-                        cell.view.nav.templates.alertDialog = Handlebars.compile(template);
-                    },
-                    error: (error) => { console.error("Could not retrieve template: AlertDialog.html"); }
-                });
+                // HTML template for ontology options
+                i2b2.h.loadTemplateFile("js-i2b2/cells/ONT/templates/OntologyOptions.html", "OntologyOptions");
+                i2b2.h.loadTemplateFile("js-i2b2/cells/ONT/templates/AlertDialog.html", "AlertDialog.html", "i2b2.ONT.view.nav.template.alertDialog");
 
                 //set default values
                 i2b2.ONT.view.nav.params.modifiers = false;
