@@ -32,7 +32,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
 
     const handleLoadTable = () =>{
         handleClose();
-        dispatch(loadTable(selectedTable));
+        dispatch(loadTable({id: selectedTable.id, title: selectedTable.title}));
         handleSetScreen(0);
     }
 

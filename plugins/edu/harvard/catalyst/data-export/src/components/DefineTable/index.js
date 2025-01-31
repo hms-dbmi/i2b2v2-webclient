@@ -43,7 +43,7 @@ import {
     handleRowName,
     handleRowSdx,
     loadStatusConfirmed,
-    loadTermInfo
+    loadTermInfo, loadTable
 } from "../../reducers/tableDefSlice";
 import "./DefineTable.scss";
 
@@ -519,6 +519,7 @@ export const DefineTable = (props) => {
         if (isI2b2LibLoaded && i2b2.sdx !== undefined) {
             i2b2.sdx.AttachType("dropTrgt", "CONCPT");
             i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", conceptDropHandler);
+            dispatch(loadTable({id:-1, title:"Default"}));
         } else {
             window.addEventListener('I2B2_READY', i2b2LibLoaded);
         }

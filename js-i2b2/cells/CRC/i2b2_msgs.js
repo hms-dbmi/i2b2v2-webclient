@@ -1076,3 +1076,97 @@ i2b2.CRC.ajax._addFunctionCall(	"getQRY_getResultType",
                                 i2b2.CRC.cfg.msgs.getQRY_getResultType,
                                 ["Request"],
                                 i2b2.CRC.cfg.parsers.getQRY_getResultType);
+
+
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.getTable = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_type>\n'+
+    '			<message_code>Q04</message_code>\n'+
+    '			<event_type>EQQ</event_type>\n'+
+    '		</message_type>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>AL</accept_acknowledgement_type>\n'+
+    '		<project_id>{{{sec_project}}}</project_id>\n'+
+    '		<country_code>US</country_code>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '   	<ns3:rpdos>\n'+
+    '      		<rpdo id="{{{tableId}}}">\n'+
+    '      		</rpdo>\n'+
+    '   	</ns3:rpdos>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>\n';
+i2b2.CRC.cfg.parsers.getTable = function() {
+    if (!this.error) {
+        this.model = {
+            concepts: [],
+            title: null,
+            creator_id: null,
+            shared: null
+        };
+        this.model.title = i2b2.h.getXNodeVal(this.refXML,'title');
+        this.model.creator_id = i2b2.h.getXNodeVal(this.refXML,'creator_id');
+        this.model.shared = i2b2.h.getXNodeVal(this.refXML,'shared');
+
+        let concepts = this.refXML.getElementsByTagName('concept');
+        for(let i=0; i<1*concepts.length; i++) {
+            let o = new Object;
+            o.name = i2b2.h.getXNodeVal(concepts[i],'name');
+            o.display = i2b2.h.getXNodeVal(concepts[i],'display');
+            o.required = i2b2.h.getXNodeVal(concepts[i],'required');
+            o.locked = i2b2.h.getXNodeVal(concepts[i],'locked');
+
+            const dataXml = i2b2.h.getXNodeVal(concepts[i],'data');
+            if(dataXml) {
+                let data = JSON.parse(dataXml);
+                if(data.length > 0) {
+                    data = data[0];
+                    o.dataOption = data.dataOption;
+                    o.sdxData = data.sdxData;
+                }
+            }
+            this.model.concepts.push(o);
+        }
+    } else {
+        this.model = false;
+        console.error("[getTable] Could not parse() data!");
+    }
+    return this;
+}
+i2b2.CRC.ajax._addFunctionCall(	"getTable",
+    "{{{URL}}}getTable",
+    i2b2.CRC.cfg.msgs.getTable,
+    null,
+    i2b2.CRC.cfg.parsers.getTable);

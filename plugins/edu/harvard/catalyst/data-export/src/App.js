@@ -53,16 +53,4 @@ window.addEventListener("I2B2_READY", ()=> {
         i2b2.model.session = password.substr(s+11,e-s-11);
         i2b2.state.save();
     });
-
-    setTimeout(()=>{
-        const testCredentials = new Request("test_credentials.json");
-        fetch(testCredentials)
-            .then((response) => response.json())
-            .then((data) => {
-                i2b2.model.user = data.username;
-                i2b2.model.project = data.project;
-                i2b2.model.session = data.password;
-            })
-            .catch();
-    }, 200);
 });

@@ -18,27 +18,29 @@ export const tableDefSlice = createSlice({
 
             let tableDefRows = [];
             let index=1;
-            if(table.required){
-                Object.entries(table.required).forEach(([key, value]) => {
+
+            const rows = table.rows;
+            if(rows.required.length > 0){
+                rows.required.forEach(requiredConcept => {
                     let tableDefRow = TableDefinitionRow({
-                        id: key,
+                        id: requiredConcept.name + index,
                         order: index,
-                        name: value.name,
-                        display: value.display,
-                        locked: value.locked,
-                        dataOption: "Value",
-                        required: true,
+                        name: requiredConcept.name,
+                        display: requiredConcept.display,
+                        locked: requiredConcept.locked,
+                        dataOption: requiredConcept.dataOption,
+                        required: requiredConcept.required,
                     });
                     tableDefRows.push(tableDefRow);
                     index++;
                 })
             }
 
-            table.concepts.forEach(concept => {
+            rows.concepts.forEach(concept => {
                 let tableDefRow = TableDefinitionRow({
                     id: generateTableDefRowId(concept.sdxData.sdxInfo.sdxKeyValue),
                     order: index,
-                    name: concept.textDisplay,
+                    name: concept.name,
                     locked: concept.locked,
                     dataOption: concept.dataOption,
                     sdxData: concept.sdxData
@@ -69,6 +71,8 @@ export const tableDefSlice = createSlice({
                 index++;
             });
 
+            state.title = table.title;
+            state.shared = table.shared;
             state.rows = tableDefRows;
             state.statusInfo = StatusInfo({
                 status: "SUCCESS"
