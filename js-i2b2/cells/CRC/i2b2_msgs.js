@@ -1102,10 +1102,6 @@ i2b2.CRC.cfg.msgs.getTable = '<?xml version="1.0" encoding="UTF-8" standalone="y
     '			<username>{{{sec_user}}}</username>\n'+
     '			{{{sec_pass_node}}}\n'+
     '		</security>\n'+
-    '		<message_type>\n'+
-    '			<message_code>Q04</message_code>\n'+
-    '			<event_type>EQQ</event_type>\n'+
-    '		</message_type>\n'+
     '		<message_control_id>\n'+
     '			<message_num>{{{header_msg_id}}}</message_num>\n'+
     '			<instance_num>0</instance_num>\n'+
