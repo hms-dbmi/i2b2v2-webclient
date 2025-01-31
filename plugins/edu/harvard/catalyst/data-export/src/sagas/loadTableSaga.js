@@ -83,7 +83,7 @@ export function* doLoadTable(action) {
             let table= yield parseGetTableXml(response);
             yield put(loadTableSuccess(table));
         }else{
-            console.error("Error loading table! Status code: " + response.status + "Message: " + response.statusText);
+            console.error("Error loading table! Message: " + response.errorMsg + ". Error details: " + response.errorData);
             yield put(loadTableError({errorMessage: "There was an error loading the table definition " + title}));
         }
     } catch (error) {
