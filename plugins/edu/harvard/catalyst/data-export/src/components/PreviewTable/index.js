@@ -217,16 +217,6 @@ export const PreviewTable = (props) => {
                 hideFooter={true}
 
             />
-
-            <Stack
-                spacing={2}
-                direction="row"
-                justifyContent="right"
-                alignItems="center"
-                className={"PreviewTableActions"}
-            >
-                <Button variant="contained" onClick={()=>props.tabChanger(null,2)}>Select Participants for Table</Button>
-            </Stack>
         </Stack>
     )
 }

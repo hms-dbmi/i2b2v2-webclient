@@ -5,7 +5,6 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import {DefineTable} from "../DefineTable";
 import {CustomTabPanel} from "./CustomTabPanel";
-import {MakeRequest} from "../MakeRequest";
 import {PreviewTable} from "../PreviewTable";
 import Stack from "@mui/material/Stack";
 
@@ -86,7 +85,6 @@ export const DataExport = () => {
                     <Tabs value={selectedTab} onChange={handleTabChange} aria-label="basic tabs example">
                         <Tab label="Design Table" {...tabProps(0)} />
                         <Tab label="Preview Table" {...tabProps(1)} />
-                        <Tab label="Select Participants for Table" {...tabProps(2)} />
                     </Tabs>
                     <Stack direction="row" spacing={0} sx={{position:"fixed", right:"1rem", marginTop:"-4px"}} id="save-load">
                         <IconButton aria-label="Load Export Definition" size="large" onClick={handleLoadOpen}  sx={{ "&:hover": {color:'rgb(85, 108, 214)'}, transition:"color" }}>
@@ -105,9 +103,6 @@ export const DataExport = () => {
             </CustomTabPanel>
             <CustomTabPanel value={selectedTab} index={1}>
                 <PreviewTable tabChanger={handleTabChange} dispSnackbar={handleSnackbarOpen} />
-            </CustomTabPanel>
-            <CustomTabPanel value={selectedTab} index={2}>
-                <MakeRequest dispSnackbar={handleSnackbarOpen} />
             </CustomTabPanel>
 
             <LoadTableModal handleClose={handleLoadClose} open={showLoad} handleSetScreen={setSelectedTab} dispSnackbar={handleSnackbarOpen} />

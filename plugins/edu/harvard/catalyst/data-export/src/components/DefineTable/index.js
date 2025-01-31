@@ -659,7 +659,6 @@ export const DefineTable = (props) => {
                 className={"DefineTableActions"}
             >
                 <Button variant="contained" onClick={()=>props.tabChanger(null,1)}>Preview Table</Button>
-                <Button variant="contained" onClick={()=>props.tabChanger(null,2)}>Select Participants for Table</Button>
             </Stack>
 
             {statusInfo.status === "SUCCESS" && handleConfirmStatus()}
