@@ -1132,7 +1132,6 @@ i2b2.CRC.cfg.parsers.getTable = function() {
             creator_id: null,
             shared: null
         };
-
         this.model.title = i2b2.h.getXNodeVal(this.refXML,'title');
         this.model.creator_id = i2b2.h.getXNodeVal(this.refXML,'creator_id');
         this.model.shared = i2b2.h.getXNodeVal(this.refXML,'shared');
