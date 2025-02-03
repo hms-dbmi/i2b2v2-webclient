@@ -109,9 +109,17 @@ i2b2.CRC.view.QT.showRun = function() {
                     let checked = '';
                     if (i2b2.CRC.model.selectedResultTypes.includes(code)) checked = ' checked="checked" ';
 
-                    let disabled='';
-                    if(code === 'PATIENT_COUNT_XML'){
-                        disabled = 'disabled';
+                    let disabled = '';
+                    switch (code) {
+                        case 'PATIENT_COUNT_XML':
+                            disabled = 'disabled';
+                            break;
+                        case 'PATIENT_SITE_COUNT_SHRINE_XML':
+                            if (!Object.keys(i2b2.CRC.model.resultTypes).includes('PATIENT_COUNT_XML')) {
+                                checked = ' checked="checked" ';
+                                disabled = 'disabled';
+                            }
+                            break;
                     }
                     $('<div id="crcDlgResultOutput' + code + '">' +
                         '<input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked +  ' '+ disabled +'> '
