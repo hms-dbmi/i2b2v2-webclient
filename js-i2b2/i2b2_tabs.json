@@ -38,17 +38,11 @@
             "title":"Find Patients",
             "componentName": "i2b2.CRC.view.QT"
           },{
-            "title": "Analysis Tools",
-            "componentName": "i2b2.PLUGIN.view.list"
-          }]
-      },
-      {
-        "type": "stack",
-        "height": 25,
-        "content":[
-          {
             "title": "Query Status",
             "componentName": "i2b2.CRC.view.QueryMgr"
+          },{
+            "title": "Analysis Tools",
+            "componentName": "i2b2.PLUGIN.view.list"
           }
         ]
       }
