@@ -3,7 +3,7 @@ import {StatusInfo} from "./StatusInfo";
 import {TableDefinitionRow} from "./TableDefinitionRow";
 
 export const TableDefinition = ({
-    id = [],
+    id = null,
     title= "",
     shared= false,
     rows = [],
