@@ -213,6 +213,10 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
         i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryMgr:loadQuery",{qi_key_value: qi_id}, cb_hack);
     };
     i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryMgr:loadQuery", {qm_key_value: idQueryMaster}, cb);
+
+    // make sure that the Query Status window is visible
+    let QueryStatusTab = i2b2.layout.gl_instances.rightCol.root.getItemsByFilter((a) => { return a.componentName === 'i2b2.CRC.view.QueryMgr'; } )[0];
+    QueryStatusTab.parent.setActiveContentItem(QueryStatusTab)
 };
 
 
