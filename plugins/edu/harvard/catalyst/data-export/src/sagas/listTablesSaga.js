@@ -29,47 +29,39 @@ const parseAllTablesListXml = (tablesListXml) => {
         let create_date = table.getElementsByTagName('create_date');
         let column_count = table.getElementsByTagName('column_count');
         let visible = table.getElementsByTagName('visible');
-        if(id.length !== 0) {
-            if (title.length !== 0) {
-                title = title[0].value;
-                if (creator_id.length !== 0) {
-                    creator_id = creator_id[0].value;
-                    if (shared.length !== 0) {
-                        shared = shared[0].value === "true";
-                        if (create_date.length !== 0) {
-                            create_date = create_date[0].value;
-                            create_date = DateTime.fromISO(create_date).toJSDate();
-                            if (column_count.length !== 0) {
-                                column_count = column_count[0].value;
-                                if (visible.length !== 0) {
-                                    visible = visible[0].value === "true";
-                                } else {
-                                    visible = false;
-                                }
-                                if(shared){
-                                    tablesObj.sharedRows.push({
-                                        id,
-                                        title,
-                                        creator_id,
-                                        create_date,
-                                        column_count,
-                                        visible
-                                    });
-                                }
-                                else {
-                                    tablesObj.userRows.push({
-                                        id,
-                                        title,
-                                        creator_id,
-                                        create_date,
-                                        column_count,
-                                        visible
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
+        if(id.length !== 0 && title.length !== 0 && creator_id.length !== 0 && shared.length !== 0
+            && create_date.length !== 0&& column_count.length !== 0) {
+            title = title[0].value;
+            creator_id = creator_id[0].value;
+            shared = shared[0].value === "true";
+            column_count = column_count[0].value;
+
+            create_date = create_date[0].value;
+            create_date = DateTime.fromISO(create_date).toJSDate();
+            if (visible.length !== 0) {
+                visible = visible[0].value === "true";
+            } else {
+                visible = false;
+            }
+            if(shared){
+                tablesObj.sharedRows.push({
+                    id,
+                    title,
+                    creator_id,
+                    create_date,
+                    column_count,
+                    visible
+                });
+            }
+            else {
+                tablesObj.userRows.push({
+                    id,
+                    title,
+                    creator_id,
+                    create_date,
+                    column_count,
+                    visible
+                });
             }
         }
     });

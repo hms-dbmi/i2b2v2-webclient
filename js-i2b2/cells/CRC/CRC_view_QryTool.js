@@ -2117,16 +2117,6 @@ i2b2.events.afterCellInit.add((cell) => {
                 }
             }
             i2b2.CRC.ajax.getQRY_getResultType("CRC:QueryTool", null, scopedCallback);
-
-            alert("open");
-            let myscopedCallback = new i2b2_scopedCallback();
-            myscopedCallback.scope = this;
-            myscopedCallback.callback = function(cellResult) {
-                cellResult.parse();
-                let g = cellResult.model;
-                let d=0;
-            }
-            i2b2.CRC.ajax.getAllTablesList("CRC:TablesList", {},  myscopedCallback);
         }
     }
 );
