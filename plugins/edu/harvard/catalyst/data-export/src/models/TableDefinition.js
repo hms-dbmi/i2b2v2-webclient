@@ -3,17 +3,19 @@ import {StatusInfo} from "./StatusInfo";
 import {TableDefinitionRow} from "./TableDefinitionRow";
 
 export const TableDefinition = ({
-    rows = [],
+    id = [],
     title= "",
     shared= false,
+    rows = [],
     isFetching= false,
     statusInfo = StatusInfo(),
     labValueToDisplay= null,
     isLoadingDataType =false,
 } = {}) => ({
-    rows,
+    id,
     title,
     shared,
+    rows,
     isFetching,
     statusInfo,
     labValueToDisplay,
@@ -21,6 +23,7 @@ export const TableDefinition = ({
 });
 
 TableDefinition.propTypes = {
+    id: PropTypes.number,
     rows: PropTypes.arrayOf(TableDefinitionRow).isRequired,
     title: PropTypes.string,
     shared: PropTypes.bool,

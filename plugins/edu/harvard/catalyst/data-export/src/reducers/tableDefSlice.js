@@ -71,6 +71,7 @@ export const tableDefSlice = createSlice({
                 index++;
             });
 
+            state.id = table.id;
             state.title = table.title;
             state.shared = table.shared;
             state.rows = tableDefRows;

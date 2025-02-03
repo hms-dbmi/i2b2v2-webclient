@@ -18,18 +18,31 @@ const getTableRequest = (tableId) => {
 
     return i2b2.ajax.CRC.getTable(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
 };
-const parseGetTableXml = (tableXml) => {
-    let concepts = tableXml.getElementsByTagName('concept');
+const parseGetTableXml = (tableXml, id) => {
 
     let table = {
         rows: {},
+        id: id,
+        title: "",
         shared: false,
-        title: ""
     }
+
+    let title = tableXml.getElementsByTagName('title');
+    if(title.length !== 0){
+        table.title = title[0].value;
+    }
+
+    let shared = tableXml.getElementsByTagName('shared');
+    if(shared.length !== 0){
+        table.shared = shared[0].value === "true";
+    }
+
     let allColumns = {
         required: [],
         concepts: [],
     };
+
+    let concepts = tableXml.getElementsByTagName('concept');
     concepts.map(concept => {
         let name = concept.getElementsByTagName('name');
         let required = concept.getElementsByTagName('required');
@@ -80,7 +93,7 @@ export function* doLoadTable(action) {
     try {
         let response = yield call(getTableRequest, id);
         if(!response.error) {
-            let table= yield parseGetTableXml(response);
+            let table= yield parseGetTableXml(response, id);
             yield put(loadTableSuccess(table));
         }else{
             console.error("Error loading table! Message: " + response.errorMsg + ". Error details: " + response.errorData);
