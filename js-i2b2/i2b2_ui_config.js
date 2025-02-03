@@ -21,7 +21,7 @@ i2b2.UI.cfg = {
     floorThresholdText: "Less Than ", // [Default: "Less Than "] Text that is prefixed before floorThresholdNumber (include trailing space)
     useExpandedLabFlags: false,
     footer: {
-        active: false,
+        active: true,
         height: '3rem',
         file: 'assets/footer_bar.html'
     }
