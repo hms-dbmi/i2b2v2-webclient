@@ -413,6 +413,15 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         crc_user_by: user_type
     };
     i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", options,  scopedCallback);
+
+    let myscopedCallback = new i2b2_scopedCallback();
+    myscopedCallback.scope = this;
+    myscopedCallback.callback = function(cellResult) {
+        cellResult.parse();
+        let g = cellResult.model;
+        let d=0;
+    }
+    i2b2.CRC.ajax.getAllTablesList("CRC:TablesList", {},  myscopedCallback);
 };
 
 

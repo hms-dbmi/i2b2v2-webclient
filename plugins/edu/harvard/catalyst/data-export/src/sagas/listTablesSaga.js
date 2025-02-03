@@ -1,46 +1,88 @@
 /* globals i2b2 */
 
-import { takeLatest, put} from "redux-saga/effects";
+import {takeLatest, put, call} from "redux-saga/effects";
 import {listTablesSuccess, listTablesError} from "../reducers/tableListingSlice";
 import { DateTime } from "luxon";
+import XMLParser from "react-xml-parser";
 
 import {
     LIST_TABLES
 } from "../actions";
 
-const parseData = (tableList) => {
-    let results = {};
-    results.sharedRows = tableList.tables.filter(p => p.shared).map(p => {
-        p.create_date = DateTime.fromISO(p.create_date).toJSDate();
-        p.edit_date = DateTime.fromISO(p.edit_date).toJSDate();
-        return p;
+
+const getAllTablesListRequest = () => {
+    return i2b2.ajax.CRC.getAllTablesList().then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
+};
+
+const parseAllTablesListXml = (tablesListXml) => {
+    let tablesObj = {
+        sharedRows: [],
+        userRows: []
+    };
+
+    let tables = tablesListXml.getElementsByTagName('rpdo');
+    tables.map(table => {
+        let id = table.attributes['id'];
+        let title = table.getElementsByTagName('title');
+        let creator_id = table.getElementsByTagName('creator_id');
+        let shared = table.getElementsByTagName('shared');
+        let create_date = table.getElementsByTagName('create_date');
+        let column_count = table.getElementsByTagName('column_count');
+        let visible = table.getElementsByTagName('visible');
+        if(id.length !== 0) {
+            if (title.length !== 0) {
+                title = title[0].value;
+                if (creator_id.length !== 0) {
+                    creator_id = creator_id[0].value;
+                    if (shared.length !== 0) {
+                        shared = shared[0].value === "true";
+                        if (create_date.length !== 0) {
+                            create_date = create_date[0].value;
+                            create_date = DateTime.fromISO(create_date).toJSDate();
+                            if (column_count.length !== 0) {
+                                column_count = column_count[0].value;
+                                if (visible.length !== 0) {
+                                    visible = visible[0].value === "true";
+                                } else {
+                                    visible = false;
+                                }
+                                if(shared){
+                                    tablesObj.sharedRows.push({
+                                        id,
+                                        title,
+                                        creator_id,
+                                        create_date,
+                                        column_count,
+                                        visible
+                                    });
+                                }
+                                else {
+                                    tablesObj.userRows.push({
+                                        id,
+                                        title,
+                                        creator_id,
+                                        create_date,
+                                        column_count,
+                                        visible
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     });
-    results.userRows = tableList.tables.filter(p => !p.shared).map(p => {
-        p.create_date = DateTime.fromISO(p.create_date).toJSDate();
-        p.edit_date = DateTime.fromISO(p.edit_date).toJSDate();
-        return p;
-    });
-    return results;
+
+    return tablesObj;
 }
 
 export function* doListTables(action) {
     try {
-        // You can also export the axios call as a function.
-        let formdata = new FormData();
-        formdata.append('uid',i2b2.model.user);
-        formdata.append('pid',i2b2.model.project);
-        formdata.append('sid',i2b2.model.session);
-        formdata.append('fid','get_tables');
-        const response = yield fetch(i2b2.model.endpointUrl, {
-            method: "POST",
-            mode: "cors",
-            body: formdata
-        });
-        if (response.ok) {
-            const data = parseData(yield response.json());
-            i2b2.model.tableList = data;
-            i2b2.state.save();
-            yield put(listTablesSuccess(data));
+        let response = yield call(getAllTablesListRequest);
+        if(!response.error) {
+            let tablesList = yield parseAllTablesListXml(response);
+            yield put(listTablesSuccess(tablesList));
         } else {
             yield put(listTablesError({errorMessage: "There was an error retrieving the list of tables"}));
         }
