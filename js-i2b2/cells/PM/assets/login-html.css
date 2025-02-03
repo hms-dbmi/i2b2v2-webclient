@@ -57,3 +57,17 @@
     min-width: 300px;
     overflow: hidden;
 }
+
+#PM-login-modal .sso-button:hover,
+#PM-login-modal .sso-button:focus {
+    background-color: #e5e5e5;
+    border-color: black;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+}
+
+#PM-login-modal .sso-button:hover {
+    box-shadow: 0 0 0 .25rem #CCCCCC;
+}
+
+
