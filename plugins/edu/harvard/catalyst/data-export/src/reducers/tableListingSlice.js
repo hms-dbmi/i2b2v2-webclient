@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { TABLE_LISTING } from "../actions";
 import { defaultState } from '../defaultState';
-import {StatusInfo, TableListing} from "../models";
+import {StatusInfo, TableListing, TableListingRow} from "../models";
 
 export const tableListingSlice = createSlice({
     name: TABLE_LISTING,
@@ -13,8 +13,26 @@ export const tableListingSlice = createSlice({
             })
         },
         listTablesSuccess: (state, { payload: tableDefs }) => {
-            state.sharedRows = tableDefs.sharedRows;
-            state.userRows = tableDefs.userRows;
+            state.sharedRows = tableDefs.sharedRows.map(table => {
+                return TableListingRow({
+                    id: table.id,
+                    title: table.title,
+                    creator_id: table.creator_id,
+                    create_date: table.create_date,
+                    column_count: table.column_count,
+                    visible: table.visible
+                });
+            });
+            state.userRows = tableDefs.userRows.map(table => {
+                return TableListingRow({
+                    id: table.id,
+                    title: table.title,
+                    creator_id: table.creator_id,
+                    create_date: table.create_date,
+                    column_count: table.column_count,
+                    visible: table.visible
+                });
+            });
             state.isFetching = false;
             state.statusInfo = StatusInfo({
                 status: "SUCCESS"
