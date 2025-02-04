@@ -20,7 +20,8 @@ export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
     const { userRows, statusInfo, isFetching, isDeleting, deleteStatusInfo } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
-    const tableDefRows = useSelector((state) => state.tableDef.rows);
+    const {rows: tableDefRows} = useSelector((state) => state.tableDef);
+    const { username } = useSelector((state) => state.userInfo);
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [enteredTitle, setEnteredTitle] = React.useState("My-Table-Definition");
     const [showOverwrite, setShowOverwrite] = React.useState(false);
@@ -47,9 +48,9 @@ export const SaveTableModal = ({open, handleClose}) => {
         setSelectedRows(matchedRows.map(srow => srow.id));
 
         if(matchedRows.length >0) {
-            setSelectedTableDef({title: matchedRows[0].title, id: matchedRows[0].id});
+            setSelectedTableDef({title: matchedRows[0].title, id: matchedRows[0].id, shared: false});
         }else{
-            setSelectedTableDef({title: title});
+            setSelectedTableDef({title: title, shared: false});
         }
     }
 
@@ -76,10 +77,13 @@ export const SaveTableModal = ({open, handleClose}) => {
 
     const doSave = () =>{
         dispatch(saveTable({
+            tableDefRows,
+            creator_id: username,
             tableId: selectedTableDef.id,
-            tableTitle: selectedTableDef.title,
-            tableDefRows: tableDefRows
-        }))
+            title: selectedTableDef.title,
+            shared: false
+            })
+        );
         setShowOverwrite(false);
         handleClose();
     }
