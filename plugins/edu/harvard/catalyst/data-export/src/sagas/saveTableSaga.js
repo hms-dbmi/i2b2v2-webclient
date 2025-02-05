@@ -20,14 +20,13 @@ const setTableRequest = (rows, title, creator_id, shared, id) => {
 
     const date = DateTime.now().toISO();
     if(id !== undefined) {
-        data.table_id_attr = "id = id";
-        data.create_date_xml = "";
+        data.table_id_attr = "id= " + id;
+        data.create_date_xml = "<create_date>" + date +"</create_date>";
         data.update_date_xml = "<update_date>" + date + " </update_date>";
     }else{
         data.table_id_attr = "";
         data.create_date_xml = "<create_date>" + date +"</create_date>";
-        data.update_date_xml = "";
-        let p =0;
+        data.update_date_xml = "<update_date>" + date + " </update_date>";
     }
 
     return i2b2.ajax.CRC.setTable(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);

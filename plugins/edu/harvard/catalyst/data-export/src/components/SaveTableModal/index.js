@@ -81,7 +81,7 @@ export const SaveTableModal = ({open, handleClose}) => {
             creator_id: username,
             tableId: selectedTableDef.id,
             title: selectedTableDef.title,
-            shared: false
+            shared: selectedTableDef.shared
             })
         );
         setShowOverwrite(false);
