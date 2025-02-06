@@ -110,7 +110,7 @@ i2b2.CRC.view.GENOTYPE_RSID = {
         return ret;
     },
     // ================================================================================================== //
-    showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx) {
+    showDialog: function(sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
 
         if (valueMetadata !== undefined) {
 
@@ -127,6 +127,19 @@ i2b2.CRC.view.GENOTYPE_RSID = {
                     ValueOperator: valueMetadata.ValueOperator,
                     Value: null
                 };
+
+                // populate an empty LabValue entry to the callback function on cancel/close of modal
+                $(labValuesModal).off("hidden.bs.modal"); // prevent multiple bindings
+                $(labValuesModal).on("hidden.bs.modal", function () {
+                    if (pluginCallBack) {
+                        if (sdxConcept.LabValues === undefined) {
+                            pluginCallBack({...sdxConcept, "LabValues": {}});
+                        } else {
+                            pluginCallBack(sdxConcept);
+                        }
+                    }
+                });
+
 
                 // default
                 $("#labZygosityHetero, #labZygosityHomo").prop("checked", true);
