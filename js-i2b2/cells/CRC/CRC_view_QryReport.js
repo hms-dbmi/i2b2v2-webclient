@@ -35,42 +35,42 @@ i2b2.CRC.view.QueryReport = {
     loadQueryResultSetInstance: function() {
         for (let i in i2b2.CRC.view.QueryReport.QRS) {
             let rec = i2b2.CRC.view.QueryReport.QRS[i];
-                if (rec.QRS_DisplayType === "CATNUM") {
-                    let scopedCallbackQRSI = new i2b2_scopedCallback(this._handleQueryResultInstance);
-                    i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryReport", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
-                } else if ((rec.QRS_DisplayType === "LIST")) {
-                    //----i2b2.CRC.view.QS.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
-                }
+            if (rec.QRS_DisplayType === "CATNUM") {
+                let scopedCallbackQRSI = new i2b2_scopedCallback(this._handleQueryResultInstance);
+                i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryReport", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
+            } else if ((rec.QRS_DisplayType === "LIST")) {
+                //----i2b2.CRC.view.QS.dispDIV.innerHTML += "<div style=\"clear: both; padding-top: 10px; font-weight: bold;\">" + rec.QRS_Description + "</div>";
+            }
 
-                if (rec.QRS_Type === "PATIENTSET") {
-                    let selectedResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => {
-                        let resultType = $(rec).parent().text().trim();
-                        // uncheck the timeline result type option
-                        // so timeline will not be loaded on query reload
-                        if (resultType === 'Timeline') $(rec).prop( "checked", false );
-                        return resultType;
-                    }).toArray();
-                    if (rec.size > 0 && selectedResultTypes.includes('Timeline') ) {
-                        //rec.QM_id = i2b2.CRC.ctrlr.QS.QM.id;
-                        rec.QI_id = this.queryData.queryInstanceId;
-                        rec.PRS_id = rec.QRS_ID;
-                        rec.result_instance_id = rec.PRS_id;
-                        let sdxData = {};
-                        sdxData[0] = i2b2.sdx.Master.EncapsulateData('PRS', rec);
+            if (rec.QRS_Type === "PATIENTSET") {
+                let selectedResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => {
+                    let resultType = $(rec).parent().text().trim();
+                    // uncheck the timeline result type option
+                    // so timeline will not be loaded on query reload
+                    if (resultType === 'Timeline') $(rec).prop( "checked", false );
+                    return resultType;
+                }).toArray();
+                if (rec.size > 0 && selectedResultTypes.includes('Timeline') ) {
+                    //rec.QM_id = i2b2.CRC.ctrlr.QS.QM.id;
+                    rec.QI_id = this.queryData.queryInstanceId;
+                    rec.PRS_id = rec.QRS_ID;
+                    rec.result_instance_id = rec.PRS_id;
+                    let sdxData = {};
+                    sdxData[0] = i2b2.sdx.Master.EncapsulateData('PRS', rec);
 
-                        let concepts = [];
-                        i2b2.CRC.model.query.groups.forEach(group => {
-                            group.events.forEach(event => {
-                                concepts = concepts.concat(event.concepts);
-                            });
+                    let concepts = [];
+                    i2b2.CRC.model.query.groups.forEach(group => {
+                        group.events.forEach(event => {
+                            concepts = concepts.concat(event.concepts);
                         });
-                        let initializationData = {};
-                        initializationData.patientSet = sdxData;
-                        initializationData.concepts = concepts;
-                        i2b2.PLUGIN.view.list.loadPlugin("Timeline", initializationData);
-                    }
+                    });
+                    let initializationData = {};
+                    initializationData.patientSet = sdxData;
+                    initializationData.concepts = concepts;
+                    i2b2.PLUGIN.view.list.loadPlugin("Timeline", initializationData);
                 }
             }
+        }
 
         i2b2.CRC.view.QueryReport.render({
             breakdowns: i2b2.CRC.view.QueryReport.breakdowns,
@@ -97,11 +97,10 @@ i2b2.CRC.view.QueryReport = {
             let descriptionLong;
             let visualAttr = "";
             let status = "";
-            let isShrine = false;
             for (let i = 0; i < l; i++) {
                 let temp = ri_list[i];
                 resultType = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
-                if (resultType.indexOf("_SHRINE_") > -1) isShrine = true;
+                breakdown.type = resultType;
                 visualAttr = i2b2.h.XPath(ri_list[0], 'descendant-or-self::query_result_type/visual_attribute_type')[0].firstChild.nodeValue;
                 // get the query name for display in the box
                 descriptionShort = i2b2.h.XPath(temp, 'descendant-or-self::query_result_type/description')[0].firstChild.nodeValue;
@@ -109,10 +108,11 @@ i2b2.CRC.view.QueryReport = {
                 // get the error status
                 status = i2b2.h.XPath(temp, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
             }
+            const isPatientCount = ["PATIENT_COUNT_XML","PATIENT_COUNT_SHRINE_XML"].includes(breakdown.type);
+            const isShrine = (resultType.indexOf("_SHRINE_") > -1);
 
             let crc_xml = results.refXML.getElementsByTagName('crc_xml_result');
             l = crc_xml.length;
-            let isPatientCount = false;
             for (let i = 0; i < l; i++) {
                 let temp = crc_xml[i];
                 let xml_value = i2b2.h.XPath(temp, 'descendant-or-self::xml_value')[0].firstChild.nodeValue;
@@ -158,14 +158,11 @@ i2b2.CRC.view.QueryReport = {
                     if (params[i2].getAttribute("column") === 'patient_count' && !(visualAttr === 'LR' || visualAttr === 'LX')) {
                         i2b2.CRC.view.QueryReport.breakdowns.patientCount.title = descriptionShort;
                         i2b2.CRC.view.QueryReport.breakdowns.patientCount.value = entryRecord.display ? entryRecord.display : entryRecord.value;
-                        breakdown.title = descriptionShort;
-                        breakdown.result.push(entryRecord);
-                        isPatientCount = true;
-                    } else {
-                        breakdown.title = descriptionShort;
-                        breakdown.visualAttr = visualAttr;
-                        breakdown.result.push(entryRecord);
                     }
+                    breakdown.title = descriptionShort;
+                    breakdown.description = descriptionLong;
+                    breakdown.visualAttr = visualAttr;
+                    breakdown.result.push(entryRecord);
                 }
 
                 // process "SHRINE" data
@@ -188,17 +185,17 @@ i2b2.CRC.view.QueryReport = {
                             siteData.results = [];
                             for (let siteresult of siteResults) {
                                 siteData.results.push({
-                                    name: siteresult.getAttribute('column'),
-                                    value: siteresult.value
+                                    name: $('<div>').html(siteresult.getAttribute('column')).text(),
+                                    value: parseInt(siteresult.textContent)
                                 });
                             }
                         }
                         ShrineData.sites.push(siteData);
                     }
                     breakdown.SHRINE = ShrineData;
-                        }
+                }
                 // render the site counts if they exist
-                if (breakdown.SHRINE?.sites.length) {
+                if (resultType === "PATIENT_SITE_COUNT_SHRINE_XML") {
                     $("#ShrineTitle").show();
                     let trgt = $("#ShrineSites");
                     trgt.hide();
@@ -206,13 +203,21 @@ i2b2.CRC.view.QueryReport = {
                     trgt.append("<thead><th>Site</th><th>Status</th></thead>");
                     for (let site of breakdown.SHRINE.sites) {
                         let name = site.name;
-                        switch (site.status) {
-                            case "complete":
+                        switch (site.status.toLowerCase()) {
+                            case "completed":
                                 let cnt = breakdown.result.filter((r) => r.name === name);
                                 let result = 0;
                                 if (cnt.length > 0) {
-                                    result = cnt[0].value;
-                                    if (cnt[0].display) result = cnt[0].display;
+                                    if (cnt[0].display) {
+                                        result = cnt[0].display;
+                                    } else {
+                                        result = cnt[0].value;
+                                        if (parseInt(result) < parseInt(site.threshold)) {
+                                            result = "<" + site.threshold;
+                                        } else if (parseInt(site.round) > 0) {
+                                            result = result + " ± " + site.round;
+                                        }
+                                    }
                                 }
                                 trgt.append(`<tr><td>${name}</td><td>${result} patients</td></tr>`);
                                 break;
@@ -226,32 +231,25 @@ i2b2.CRC.view.QueryReport = {
                     trgt.show();
                 }
 
-
-
-                if (breakdown.title) {
-                    if (isPatientCount) {
-                        i2b2.CRC.view.QueryReport.breakdowns.resultTable.unshift(breakdown);
-                        // update the display with SHRINE info if it is present
-                        if (breakdown.SHRINE) {
-                            let siteCnt = parseInt(breakdown.SHRINE.complete) + parseInt(breakdown.SHRINE.error);
-                            let ptCnt = breakdown.result[0].value;
-                            $('#patientCountLine3').text(siteCnt + " sites reporting up to " + ptCnt + " patients");
-                        }
-                    } else if(visualAttr === 'LR' || visualAttr === 'LX') {
-                        i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
-                    } else {
-                        i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
+                if (isPatientCount) {
+                    i2b2.CRC.view.QueryReport.breakdowns.resultTable.unshift(breakdown);
+                    // update the display with SHRINE info if it is present
+                    if (breakdown.SHRINE) {
+                        let siteCnt = parseInt(breakdown.SHRINE.complete) + parseInt(breakdown.SHRINE.error);
+                        let ptCnt = breakdown.result[0].value;
+                        $('#patientCountLine3').text(siteCnt + " sites reporting up to " + ptCnt + " patients");
                     }
+                } else if(visualAttr === 'LR' || visualAttr === 'LX') {
+                    i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
+                } else {
+                    i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
                 }
-
             }
 
             let isZeroPatients =  parseInt(i2b2.CRC.view.QueryReport.breakdowns.patientCount.value || -1) === 0;
-            if (isZeroPatients) {
-                i2b2.CRC.view.QueryReport.hasZeroPatients = isZeroPatients;
-            }
+            i2b2.CRC.view.QueryReport.hasZeroPatients = isZeroPatients;
             // only create graphs if there is breakdown data
-            if (!isPatientCount && !isZeroPatients  && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR") {
+            if (!isPatientCount && !isZeroPatients  && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR" && ["COMPLETED","FINISHED","INCOMPLETE"].includes(status)) {
                 i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
         }
@@ -261,11 +259,10 @@ i2b2.CRC.view.QueryReport = {
             dataExport: i2b2.CRC.view.QueryReport.dataExport
         });
 
-
-        // See how many non-errored graphs we have (minus the patient count)
+        // See how many non-errored graphs do we have (minus the patient count)
         let showGraphs = !i2b2.CRC.view.QueryReport.hasZeroPatients
             && i2b2.CRC.view.QueryReport.breakdowns.resultTable.length > 1
-            && i2b2.CRC.view.QueryReport.breakdowns.resultTable.map(a => a.status !== 'ERROR' && a.title !== "Number of patients").reduce((b,c) => b ? b : b || c);
+            && i2b2.CRC.view.QueryReport.breakdowns.resultTable.map(a => a.status !== 'ERROR' && !["PATIENT_COUNT_XML","PATIENT_COUNT_SHRINE_XML","PATIENT_SITE_COUNT_SHRINE_XML"].includes(a.type)).reduce((b,c) => b ? b : b || c);
         // hide graph section if there are no graphs
         if (!showGraphs) {
             $('#infoQueryStatusGraph').hide();
@@ -308,8 +305,6 @@ i2b2.CRC.view.QueryReport = {
                         } else {
                             rec.isShrine = false;
                         }
-// TODO: TESTING FOR SHRINE
-                            rec.isShrine = true;
                         // I2B2UI-759: Show admins/power-users the amount of time the server worked on running the query
                         console.log('Compute time on server was ' + ((rec.end_date - rec.start_date) / 1000).toFixed(1) + ' seconds for `' + rec.QRS_Description + '`');
                     }

@@ -32,17 +32,29 @@ i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData, breakdownIn
 
     };
 
+    const isShrine = (breakdownData?.SHRINE.sites.length > 0);
+
+    // sort the results [TODO: MAKE THIS PROGRAMATICLY ENABLED OR NOT]
+    // =====================
+    // let data = breakdownData.result.sort((b, a) => {
+    //     return parseFloat(a.value) - parseFloat(b.value);
+    // });
+    let data = breakdownData.result.map((d) => {return {...d, name: $('<div>').html(d.name).text()}})
+
+
     let parentContainer = $("#"+sDivName);
     if (parentContainer.length === 0) {
         console.error("Cannot render chart to invalid container");
         return;
     }
     parentContainer = parentContainer[0];
+    const subcontainer = $('<div class="graph-container"/>').appendTo(parentContainer)[0];
+
     let margin = {top: 30, right: 30, bottom: 70, left: 60},
         height = 400 - margin.top - margin.bottom;
 
     // append the svg object to the target div
-    var svg = d3.select(parentContainer)
+    var svg = d3.select(subcontainer)
         .append("svg")
         .attr("width", "100%")
         .attr("height", height + margin.top + margin.bottom)
@@ -54,15 +66,26 @@ i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData, breakdownIn
     $('#infoQueryStatusGraph').css("display", "");
 
     // get proper width for rendering
-    width = svg.node().parentElement.clientWidth - margin.left - margin.right;
+    width = svg.node().parentElement.clientWidth;
+    if (width < 10) width = i2b2.CRC.view.QueryMgr.lm_view.width - 28;
+    width = width - margin.left - margin.right;
 
-    // sort the results [TODO: MAKE THIS PROGRAMATICLY ENABLED OR NOT]
-    // =====================
-    // let data = breakdownData.result.sort((b, a) => {
-    //     return parseFloat(a.value) - parseFloat(b.value);
-    // });
-    let data = breakdownData.result;
-
+    // see if we add extra padding for download button based on SHRINE site count
+    if (isShrine === true) {
+        svg.attr('class','SHRINE');
+        width = width - 34;
+        const downloadIcon = $('<i class="bi bi-download SHRINE" title="Download"></i>').appendTo(subcontainer);
+        const downloadClickHandler = (d) => {
+            let dlLink = document.createElement('a');
+            let data = new Blob([i2b2.CRC.view.graphs.generateShrineDownload(d)], {'type':'text/csv'});
+            dlLink.href = URL.createObjectURL(data);
+            dlLink.download = d.title.replaceAll(' ','_') + ".csv";
+            document.body.appendChild(dlLink);
+            dlLink.click()
+            document.body.removeChild(dlLink);
+        };
+        downloadIcon.on('click', () => { downloadClickHandler(breakdownData); });
+    }
 
     // generate the X axis calc object
     var x = d3.scaleBand()
@@ -158,8 +181,62 @@ i2b2.CRC.view.graphs.rerenderGraphs = function() {
     let isZeroPatients = parseInt(i2b2.CRC.view.QueryReport.breakdowns.patientCount.value || -1) === 0;
     if(!isZeroPatients) {
         i2b2.CRC.view.QueryReport.breakdowns.resultTable.forEach((breakdown, i) => {
-            if (breakdown.title !== "Number of patients") i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown);
+            if (!["PATIENT_COUNT_SHRINE_XML","PATIENT_COUNT_XML"].includes(breakdown.type)) i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown);
         })
     }
 };
+
+
+// ======================================================================================================
+// this function is called when the center bar is moved or window is resized
+i2b2.CRC.view.graphs.generateShrineDownload = function(data) {
+    const siteCnt = data.SHRINE.sites.length;
+    let line, csv;
+    // build the first line
+    line = ['"' + data.description.replaceAll('"',"'") + '"'];
+    line.push('""');
+    for (let i=0; i<siteCnt; i++) line.push('"' + data.SHRINE.sites[i].name + '"');
+    line.push('"Total"');
+    csv = line.join(',') + "\n";
+    // build the totals line
+    line = ['"All Patients"', '""'];
+    let total = 0;
+    for (let i=0; i<siteCnt; i++) {
+        let subtotal = data.SHRINE.sites[i].results.map((t) => t.value).reduce((parialSum, a) => parialSum + a, 0);
+        total = total + subtotal;
+        line.push(subtotal);
+    }
+    line.push(total);
+    csv = csv + line.join(',') + "\n";
+    // build the data lines' title
+    let datalines = [];
+    for (let i=0; i<data.result.length; i++) {
+        let name = $('<div>').html(data.result[i].name).text();
+        datalines[i] = ['"' + name  + '"', '""'];
+        for (let a=0; a<siteCnt; a++) datalines[i].push(0);
+        datalines[i].push(parseInt(data.result[i].value));
+    }
+    // build the data lines' site counts
+    for (let i=0; i<datalines.length; i++) {
+        for (let s=0; s<siteCnt; s++) {
+            let subtotal = data.SHRINE.sites[s].results.filter((t) => t.name === datalines[i][0].substr(1,datalines[i][0].length-2));
+            if (subtotal.length > 0) {
+                subtotal = subtotal[0].value;
+            } else {
+                subtotal = 0;
+            }
+            let limit = data.SHRINE.sites[s].lowLimit;
+            if (subtotal <= limit) {
+                datalines[i][s+2] = '"'+limit+' patients or fewer"';
+            } else {
+                datalines[i][s+2] = subtotal;
+            }
+        }
+    }
+    // save the data lines
+    for (let i=0; i<datalines.length; i++) {
+        csv = csv + datalines[i].join(",") + "\n";
+    }
+    return csv;
+}
 

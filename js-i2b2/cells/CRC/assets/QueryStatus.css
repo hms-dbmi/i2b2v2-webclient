@@ -261,3 +261,17 @@
     font-size-adjust: from-font;
     cursor: pointer;
 }
+
+div.graph-container {
+    position: relative;
+}
+div.graph-container i.SHRINE {
+    float: right;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.2rem;
+    font-size-adjust: from-font;
+    cursor: pointer;
+}
+
