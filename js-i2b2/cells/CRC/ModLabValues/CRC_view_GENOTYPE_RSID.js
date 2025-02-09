@@ -128,6 +128,19 @@ i2b2.CRC.view.GENOTYPE_RSID = {
                     Value: null
                 };
 
+                // populate an empty LabValue entry to the callback function on cancel/close of modal
+                $(labValuesModal).off("hidden.bs.modal"); // prevent multiple bindings
+                $(labValuesModal).on("hidden.bs.modal", function () {
+                    if (pluginCallBack) {
+                        if (sdxConcept.LabValues === undefined) {
+                            pluginCallBack({...sdxConcept, "LabValues": {}});
+                        } else {
+                            pluginCallBack(sdxConcept);
+                        }
+                    }
+                });
+
+
                 // default
                 $("#labZygosityHetero, #labZygosityHomo").prop("checked", true);
                 $('.modal-footer .lab-save').addClass("disabled");
