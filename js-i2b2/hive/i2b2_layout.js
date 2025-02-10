@@ -114,23 +114,23 @@ i2b2.layout.init = function () {
     // Wrapper layout
     i2b2.layout.gl_instances.main = new GoldenLayout(i2b2.layout.gl_configs.main, '#goldenLayoutId1' );
     i2b2.layout.gl_instances.main.registerComponent('goldenLayoutLeftColFrame', function(container,state) {
-        container.getElement().html('<div id="goldenLayoutColId1" class="goldenLayoutCol"></div>');
+        container.getElement().innerHTML = '<div id="goldenLayoutColId1" class="goldenLayoutCol"></div>';
         container.on('resize',function() {
             $(window).trigger('resize');
         });
     });
     i2b2.layout.gl_instances.main.registerComponent('goldenLayoutRightColFrame', function(container,state) {
-        container.getElement().html('<div id="goldenLayoutColId2" class="goldenLayoutCol" style="left:3px"></div>');
+        container.getElement().innerHTML = '<div id="goldenLayoutColId2" class="goldenLayoutCol" style="left:3px"></div>';
     });
     i2b2.layout.gl_instances.main.init();
     i2b2.layout.gl_instances.main.on("stateChanged", (obj) => {
         // HACK so that layout renders in Safari on initial load
         i2b2.layout.gl_instances.main.updateSize();
-        i2b2.layout.gl_instances.main.off("stateChanged")
+        // i2b2.layout.gl_instances.main.off("stateChanged")
     });
 
     // Zoom layout
-    i2b2.layout.gl_instances.Zoom = new GoldenLayout( i2b2.layout.gl_configs.fullZoom, '#goldenLayoutId2' );
+    i2b2.layout.gl_instances.Zoom = new GoldenLayout( i2b2.layout.gl_configs.fullZoom, document.getElementById('goldenLayoutId2'));
     i2b2.layout.gl_instances.Zoom.registerComponent('emptyComponent', function() {});
     i2b2.layout.gl_instances.Zoom.on('initialised', () => {
         // remove the placeholder component
@@ -174,8 +174,8 @@ i2b2.layout.init = function () {
         func_processCol(i2b2.layout.gl_configs.rightCol, layoutConfig['right-column']);
 
         // Create the column layouts
-        i2b2.layout.gl_instances.leftCol = new GoldenLayout( i2b2.layout.gl_configs.leftCol, '#goldenLayoutColId1' );
-        i2b2.layout.gl_instances.rightCol = new GoldenLayout( i2b2.layout.gl_configs.rightCol, '#goldenLayoutColId2' );
+        i2b2.layout.gl_instances.leftCol = new GoldenLayout( i2b2.layout.gl_configs.leftCol, document.getElementById('goldenLayoutColId1'));
+        i2b2.layout.gl_instances.rightCol = new GoldenLayout( i2b2.layout.gl_configs.rightCol, document.getElementById('goldenLayoutColId2'));
 
         // ========== MAGIC TRICK ==========
         // delayed calling of all the registration callbacks registered by cells during their initialization

@@ -141,11 +141,14 @@ i2b2.PLUGIN.view.list.initialCategory = function(){
     if (i2b2.PM.model.projects[i2b2.PM.model.login_project].details[param_config_name]) initialCategory = i2b2.PM.model.projects[i2b2.PM.model.login_project].details[param_config_name];
     initialCategory = initialCategory.toUpperCase();
     // make sure the category exists, if so then set it
-    for (let t of $("#pluginCategory")[0].options) {
-        if (t.value.toUpperCase() === initialCategory) {
-            $("#pluginCategory").val(t.value);
-            i2b2.PLUGIN.view.list.renderList(i2b2.PLUGIN.view.list.mode.DETAIL, t.value);
-            break;
+    let pluginList = $("#pluginCategory");
+    if (pluginList.length > 0) {
+        for (let t of pluginList[0].options) {
+            if (t.value.toUpperCase() === initialCategory) {
+                $("#pluginCategory").val(t.value);
+                i2b2.PLUGIN.view.list.renderList(i2b2.PLUGIN.view.list.mode.DETAIL, t.value);
+                break;
+            }
         }
     }
 };

@@ -202,22 +202,22 @@ i2b2.events.afterCellInit.add((cell) => {
                 // change the tab's hover over to be the name of the term
                 let funcRetitle = (function(sdxData) {
                     // this can only be run after a bit when the tab has been created in the DOM
-                    this.tab.element[0].title = "title";
+                    this.tab.element.title = "title";
                 }).bind(container, i2b2.ONT.view.info.model.sdxData);
 
-                container.on("titleChanged", funcRetitle);
-                container.on("tab", funcRetitle);
+                container.on('titleChanged', funcRetitle);
+                container.on('tab', funcRetitle);
 
 
                 $.ajax("js-i2b2/cells/ONT/templates/OntologyTermInfo.html", {
                     success: (template) => {
                         i2b2.ONT.view.info.model.template = Handlebars.compile(template);
                         $(container).empty();
-                        $(i2b2.ONT.view.info.model.template({})).appendTo($('.i2b2OntInfo', container._contentElement)[0]);
+                        $(i2b2.ONT.view.info.model.template({})).appendTo($('.i2b2OntInfo', container.element)[0]);
                     },
                     error: (error) => { console.error("Could not retrieve template: OntologyTermInfo.html"); }
                 });
-                i2b2.ONT.view.info.model.viewport = $('<div class="i2b2OntInfo"></div>').appendTo(container._contentElement);
+                i2b2.ONT.view.info.model.viewport = $('<div class="i2b2OntInfo"></div>').appendTo(container.element);
             }).bind(this)
         );
     }

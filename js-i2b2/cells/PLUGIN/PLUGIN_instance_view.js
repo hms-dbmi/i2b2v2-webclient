@@ -104,7 +104,7 @@ i2b2.events.afterCellInit.add((cell) => {
                 });
 
                 // create the iframe and load the plugin into it
-                let iframeTarget = $('<iframe class="i2b2PluginIFrame" src="'+windowEntry.data.url+'" title="'+windowEntry.data.title+'"></iframe>').appendTo(container._contentElement)[0];
+                let iframeTarget = $('<iframe class="i2b2PluginIFrame" src="'+windowEntry.data.url+'" title="'+windowEntry.data.title+'"></iframe>').appendTo(container.element)[0];
                 console.log(windowEntry.title);
                 let exitPluginModalHTML = `<div class="modal fade" id="exitPluginModal" tabindex="-1" aria-labelledby="exitPluginModalLabel" aria-hidden="true" data-bs-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
                                             <div class="modal-dialog">
@@ -125,7 +125,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                         </div>`;
 
               
-                $(container._contentElement).append(exitPluginModalHTML);
+                $(container.element).append(exitPluginModalHTML);
 
 
             }).bind(this)

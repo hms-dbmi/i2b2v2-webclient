@@ -52,7 +52,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QueryMgr.lm_view = container;
 
                     // add the cellWhite flare
-                    cell.view.QueryMgr.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(container._contentElement);
+                    cell.view.QueryMgr.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(container.element);
                     cell.view.QueryMgr.containerDiv.append('<div id="infoQueryStatus"></div>');
                     cell.view.QueryMgr.containerDiv.append('<div id="infoQueryReport"></div>');
 

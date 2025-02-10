@@ -1869,7 +1869,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QT.lm_view = container;
 
                     // add the cellWhite flare
-                    cell.view.QT.containerRoot = $('<div class="CRC_QT_view"></div>').appendTo(cell.view.QT.lm_view._contentElement);
+                    cell.view.QT.containerRoot = $('<div class="CRC_QT_view"></div>').appendTo(cell.view.QT.lm_view.element);
                     let runBar = $('<div class="CRC_QT_runbar">' +
                             '<div class="left">' +
                                 '<label>Name:</label>' +

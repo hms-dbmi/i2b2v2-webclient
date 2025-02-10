@@ -21,7 +21,7 @@
      *
      */-->
 
-    <script type="text/javascript">
+    <script type="module">
         var i2b2build = "1.7.09   [05/03/17 2:00 PM] ";
     </script>
 
@@ -29,9 +29,17 @@
     <script type="text/javascript" src="js-ext/jquery/3.7.1/jquery.min.js" ></script>
 
     <!-- LOAD Golden-Layout FROM local server -->
-    <script type="text/javascript" src="js-ext/goldenlayout/1.5.9/goldenlayout.min.js" ></script>
-    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/1.5.9/goldenlayout-base.css">
-    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/1.5.9/goldenlayout-light-theme.css">
+<!--    <script type="text/javascript" src="js-ext/goldenlayout/1.5.9/goldenlayout.min.js" ></script>-->
+<!--    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/1.5.9/goldenlayout-base.css">-->
+<!--    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/1.5.9/goldenlayout-light-theme.css">-->
+    <script type="module" >
+      import { GoldenLayout } from './js-ext/goldenlayout/2.6.0/esm/index.js';
+      window.GoldenLayout = GoldenLayout;
+    </script>
+    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/2.6.0/css/goldenlayout-base.css">
+    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/2.6.0/css/themes/goldenlayout-light-theme.css">
+
+
 
     <!-- LOAD Bootstrap FROM local server -->
     <script type="text/javascript" src="js-ext/bootstrap/5.3.3/js/bootstrap.bundle.min.js" ></script>

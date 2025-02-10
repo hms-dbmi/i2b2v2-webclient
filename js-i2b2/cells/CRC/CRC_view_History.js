@@ -91,7 +91,7 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
 //================================================================================================== //
 i2b2.CRC.view.history.treeRedraw = function(ev, b) {
     // attach drag drop attribute
-    i2b2.CRC.view.history.lm_view._contentElement.find('li:not(:has(span.tvRoot))').attr("draggable", true);
+    $(i2b2.CRC.view.history.lm_view.element).find('li:not(:has(span.tvRoot))').attr("draggable", true);
 };
 
 //================================================================================================== //
@@ -579,7 +579,7 @@ i2b2.events.afterCellInit.add((cell) => {
                         success: (template) => {
                             cell.view.history.template.finder = Handlebars.compile(template);
                             // Render the template into place
-                            $(cell.view.history.template.finder({})).prependTo(container._contentElement);
+                            $(cell.view.history.template.finder({})).prependTo(container.element);
 
                             //init search result tooltip
                             $(".qHTooltip").tooltip();
@@ -650,10 +650,10 @@ i2b2.events.afterCellInit.add((cell) => {
                         error: (error) => { console.error("Could not retrieve template: QueryHistoryBar.html"); }
                     });
 
-                    $('<div id="i2b2QueryHistoryFinderMessage"></div>').prependTo(container._contentElement).hide();
+                    $('<div id="i2b2QueryHistoryFinderMessage"></div>').prependTo(container.element).hide();
 
                     // add the status DIV
-                    $('<div id="i2b2QueryHistoryFinderStatus"></div>').prependTo(container._contentElement).hide();
+                    $('<div id="i2b2QueryHistoryFinderStatus"></div>').prependTo(container.element).hide();
 
                     // create an empty Navigation treeview
                     let treeRoot = $(`
@@ -663,7 +663,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 <div class="history-more-bar">Load more...<i class="bi bi-arrow-repeat d-none"></i></div>
                             </div>
                         </div>
-                    `).appendTo(container._contentElement);
+                    `).appendTo(container.element);
                     $('.history-more-bar', treeRoot).on('click', i2b2.CRC.view.history.loadMore);
                     let treeTargetNav = $('.history-tv', treeRoot);
                     i2b2.CRC.view.history.treeview = $(treeTargetNav).treeview({
@@ -686,7 +686,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 <div class="datelist-more-bar">Load more...<i class="bi bi-arrow-repeat d-none"></i></div>
                             </div>
                         </div>
-                    `).appendTo(container._contentElement);
+                    `).appendTo(container.element);
                     treeTargetFinder.hide();
                     $('.datelist-more-bar', treeTargetFinder).on('click', i2b2.CRC.view.history.loadMoreDates);
                     i2b2.CRC.view.history.treeviewFinder = $(".datelist-tv", treeTargetFinder).treeview({
@@ -845,7 +845,7 @@ i2b2.events.afterCellInit.add((cell) => {
                         error: (error) => { console.error("Could not retrieve template: CRCContextMenuDialog.html"); }
                     });
                     container.on( 'tab', function( tab ){
-                        if(tab.element.text() === 'Queries') {
+                        if (tab.element.textContent === 'Queries') {
                             //add unique id to the term tab
                             let elemId = "queryHistoryTab";
                             $(tab.element).attr("id", elemId);
