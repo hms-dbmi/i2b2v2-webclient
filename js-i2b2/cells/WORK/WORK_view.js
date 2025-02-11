@@ -481,8 +481,8 @@ i2b2.events.afterCellInit.add((cell) => {
                     error: (error) => { console.error("Could not retrieve template: ContextMenuDialog.html"); }
                 });
 
-                container.on( 'tab', function( tab ){
-                    if(tab.element.text() === 'Workplace') {
+                container.on('tab', (tab) => {
+                    if (tab.contentItem.componentName === "i2b2.WORK.view.main") {
                         //add unique id to the term tab
                         let elemId = "workplaceTab";
                         $(tab.element).attr("id", elemId);
