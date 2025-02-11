@@ -254,8 +254,8 @@ i2b2.events.afterCellInit.add((cell) => {
                     });
                 });
 
-                container.on( 'tab', function( tab ){
-                    if(tab.element.text() === 'Terms') {
+                container.on('tab', (tab) => {
+                    if (tab.contentItem.componentName === "i2b2.ONT.view.nav") {
                         //add unique id to the term tab
                         let elemId = "ontologyTermTab";
 

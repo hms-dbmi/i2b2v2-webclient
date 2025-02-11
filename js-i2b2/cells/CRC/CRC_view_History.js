@@ -844,8 +844,8 @@ i2b2.events.afterCellInit.add((cell) => {
                         },
                         error: (error) => { console.error("Could not retrieve template: CRCContextMenuDialog.html"); }
                     });
-                    container.on( 'tab', function( tab ){
-                        if(tab.element.text() === 'Queries') {
+                    container.on('tab', (tab) => {
+                        if (tab.contentItem.componentName === "i2b2.CRC.view.history") {
                             //add unique id to the term tab
                             let elemId = "queryHistoryTab";
                             $(tab.element).attr("id", elemId);
