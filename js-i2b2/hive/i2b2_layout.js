@@ -18,9 +18,9 @@ i2b2.layout = {
 i2b2.layout.resize = function() {
     // resize handler
     i2b2.layout.gl_instances.main.updateSize();
-    let y = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutLeftColFrame")[0].container.height;
-    let w1 = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutLeftColFrame")[0].container.width;
-    let w2 = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutRightColFrame")[0].container.width;
+    let y = i2b2.layout.gl_instances.main.findFirstComponentItemById("goldenLayoutLeftColFrame").container.height;
+    let w1 = i2b2.layout.gl_instances.main.findFirstComponentItemById("goldenLayoutLeftColFrame").container.width;
+    let w2 = i2b2.layout.gl_instances.main.findFirstComponentItemById("goldenLayoutRightColFrame").container.width;
     i2b2.layout.gl_instances.leftCol.updateSize(w1 - 5, y - 22);
     i2b2.layout.gl_instances.rightCol.updateSize(w2 - 8, y - 22);
     if (i2b2.layout.gl_instances.Zoom.root) {
