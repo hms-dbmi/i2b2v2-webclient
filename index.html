@@ -29,13 +29,11 @@
     <script type="text/javascript" src="js-ext/jquery/3.7.1/jquery.min.js" ></script>
 
     <!-- LOAD Golden-Layout FROM local server -->
-<!--    <script type="text/javascript" src="js-ext/goldenlayout/1.5.9/goldenlayout.min.js" ></script>-->
-<!--    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/1.5.9/goldenlayout-base.css">-->
-<!--    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/1.5.9/goldenlayout-light-theme.css">-->
     <script type="module" >
-      import { GoldenLayout } from './js-ext/goldenlayout/2.6.0/esm/index.js';
+      import { GoldenLayout } from './js-ext/goldenlayout/2.6.0/esm-bundle.js';
       window.GoldenLayout = GoldenLayout;
     </script>
+    <script type="module" src="js-ext/goldenlayout/2.6.0/esm-bundle.js" ></script>
     <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/2.6.0/css/goldenlayout-base.css">
     <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/2.6.0/css/themes/goldenlayout-light-theme.css">
 
