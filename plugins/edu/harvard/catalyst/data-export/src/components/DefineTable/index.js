@@ -46,7 +46,6 @@ import {
     loadTermInfo, loadTable
 } from "../../reducers/tableDefSlice";
 
-import {getUserInfo} from "../../reducers/userInfoSlice";
 
 import "./DefineTable.scss";
 
@@ -514,18 +513,10 @@ export const DefineTable = (props) => {
         dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: false, displayLabValue: true}));
     };
 
-    const i2b2LibLoaded = () => {
-        dispatch(updateI2b2LibLoaded());
-    }
-
     useEffect(() => {
         if (isI2b2LibLoaded && i2b2.sdx !== undefined) {
             i2b2.sdx.AttachType("dropTrgt", "CONCPT");
             i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", conceptDropHandler);
-            dispatch(getUserInfo({}));
-            dispatch(loadTable({}));
-        } else {
-            window.addEventListener('I2B2_READY', i2b2LibLoaded);
         }
     }, [isI2b2LibLoaded]);
 

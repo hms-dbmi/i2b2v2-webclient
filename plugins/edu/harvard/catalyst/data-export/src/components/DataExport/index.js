@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
@@ -15,10 +15,26 @@ import CloudUploadSharpIcon from '@mui/icons-material/CloudUploadSharp';
 import CloudDownloadSharpIcon from '@mui/icons-material/CloudDownloadSharp';
 import {LoadTableModal} from "../LoadTableModal";
 import {SaveTableModal} from "../SaveTableModal";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {getUserInfo} from "../../reducers/userInfoSlice";
+
+import {
+    handleRowInsert,
+    loadTable
+} from "../../reducers/tableDefSlice";
+
+import {generateTableDefRowId} from "../../models/TableDefinitionRow";
+import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
+
+/* global i2b2 */
 
 export const DataExport = () => {
+    const dispatch = useDispatch();
+    const totalRows = React.useRef();
+
+    const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const [selectedTab, setSelectedTab] = React.useState(0);
+
     const handleTabChange = (event, newTab) => {
         if (tableDefRows.filter((x)=> x.name.trim().length === 0).length > 0) {
             handleSnackbarOpen('Please fix the errors in the table definition.');
@@ -61,6 +77,20 @@ export const DataExport = () => {
         setSnackbarViz(true);
     }
     const handleSnackbarClose = () => { setSnackbarViz(false); }
+
+    const i2b2LibLoaded = () => {
+        dispatch(updateI2b2LibLoaded());
+    }
+
+    useEffect(() => {
+        if (isI2b2LibLoaded && i2b2.sdx !== undefined) {
+            dispatch(getUserInfo({}));
+            dispatch(loadTable({}));
+            console.log("loading table again")
+        } else {
+            window.addEventListener('I2B2_READY', i2b2LibLoaded);
+        }
+    }, [isI2b2LibLoaded]);
 
     return (
         <Box sx={{ width: '100%' }}>
