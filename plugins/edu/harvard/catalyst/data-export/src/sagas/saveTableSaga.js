@@ -34,11 +34,23 @@ const setTableRequest = (rows, title, creator_id, shared, id) => {
 
 const getConceptsToXml = (concepts) => {
     const conceptsList = concepts.map(concept => {
+
+        let jsonData = {
+            dataOption: concept.dataOption,
+            index: concept.order
+        }
+
+        if(concept.sdxData){
+            jsonData.sdxData = concept.sdxData;
+        }
+
+        const dataXml = '<data><![CDATA[\n' + JSON.stringify(jsonData) + ']]>\n</data>';
         return "<concept>\n"
             + "<name>" + concept.name +"</name>\n"
             + "<display>" + concept.display +"</display>\n"
             + "<required>" + concept.required +"</required>\n"
             + "<locked>" + concept.locked +"</locked>\n"
+            + dataXml
             + "</concept>";
     })
 
