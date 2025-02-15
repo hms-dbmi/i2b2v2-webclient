@@ -9,7 +9,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {confirmDeleteTableStatus, deleteTable, listTables} from "../../reducers/tableListingSlice";
+import {confirmDeleteTableStatus, deleteTable, listTables, renameTable} from "../../reducers/tableListingSlice";
 import { TabPanel } from "../TabPanel";
 import {loadTable} from "../../reducers/tableDefSlice";
 import {Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} from "@mui/material";
@@ -43,6 +43,10 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
     const confirmDeleteStatus = () => {
         dispatch(confirmDeleteTableStatus());
     };
+
+    const updateTableDefinitionTitle = (id, title) => {
+        dispatch(renameTable({id, title}))
+    }
 
     useEffect(() => {
         if (open) {
@@ -95,6 +99,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                                       onDelete={(id) => onDeleteTable(id, true)}
                                       deleteFailed={deleteStatusInfo.status === 'FAIL'}
                                       onDeleteAlertClose={confirmDeleteStatus}
+                                      renameTable={updateTableDefinitionTitle}
                         />
                     </TabPanel>
                     <TabPanel
@@ -103,12 +108,13 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         className={'modalTabPanel'}
                     >
                         <TableListing id={"loadModalDefTableLocal"}
-                                      rows={userRows} canRename={false}
+                                      rows={userRows} canRename={true}
                                       onSelect={setSelectedTable}  isLoading={isFetching || isDeleting}
                                       hasError={statusInfo.status==='FAIL'}
                                       onDelete={(id) => onDeleteTable(id, false)}
                                       deleteFailed={deleteStatusInfo.status === 'FAIL'}
                                       onDeleteAlertClose={confirmDeleteStatus}
+                                      renameTable={updateTableDefinitionTitle}
                         />
                     </TabPanel>
                 </Box>
