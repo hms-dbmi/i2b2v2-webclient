@@ -1284,6 +1284,8 @@ i2b2.CRC.cfg.msgs.setTable = '<?xml version="1.0" encoding="UTF-8" standalone="y
     '      		    <title>{{{title}}}</title>\n'+
     '      		    <creator_id>{{{creator_id}}}</creator_id>\n'+
     '      		    <shared>{{{shared}}}</shared>\n'+
+    '      		    <column_count>{{{column_count}}}</column_count>\n'+
+    '      		    <visible>{{{visible}}}</visible>\n'+
     '      		    {{{create_date_xml}}}\n'+
     '      		    {{{update_date_xml}}}\n'+
     '      		    {{{concepts}}}\n'+

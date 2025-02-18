@@ -15,6 +15,8 @@ const setTableRequest = (rows, title, creator_id, shared, id) => {
         title: title,
         creator_id: creator_id,
         shared: shared,
+        column_count: rows.length,
+        visible: false,
         concepts: getConceptsToXml(rows)
     };
 
@@ -44,7 +46,7 @@ const getConceptsToXml = (concepts) => {
             jsonData.sdxData = concept.sdxData;
         }
 
-        const dataXml = '<data><![CDATA[\n' + JSON.stringify(jsonData) + ']]>\n</data>';
+        const dataXml = '<json_data><![CDATA[[\n' + JSON.stringify(jsonData) + ']]]>\n</json_data>';
         return "<concept>\n"
             + "<name>" + concept.name +"</name>\n"
             + "<display>" + concept.display +"</display>\n"
