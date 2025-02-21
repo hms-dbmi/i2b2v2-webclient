@@ -15,17 +15,18 @@ import {saveStatusConfirmed, saveTable} from "../../reducers/saveTableSlice";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 
 
-
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
     const { userRows, statusInfo, isFetching, isDeleting, deleteStatusInfo } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
     const {rows: tableDefRows} = useSelector((state) => state.tableDef);
-    const { username } = useSelector((state) => state.userInfo);
+    const { username, isAdmin } = useSelector((state) => state.userInfo);
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [enteredTitle, setEnteredTitle] = React.useState("My-Table-Definition");
     const [showOverwrite, setShowOverwrite] = React.useState(false);
     const [isNameInvalid, setIsNameInvalid] = React.useState(false);
+    const [isShared, setIsShared] = React.useState(false);
+    const [tab, setTab] = React.useState(1);
 
     const dispatch = useDispatch();
 
@@ -47,10 +48,10 @@ export const SaveTableModal = ({open, handleClose}) => {
 
         setSelectedRows(matchedRows.map(srow => srow.id));
 
-        if(matchedRows.length >0) {
-            setSelectedTableDef({title: matchedRows[0].title, id: matchedRows[0].id, shared: false});
+        if(matchedRows.length > 0) {
+            setSelectedTableDef({title: matchedRows[0].title, id: matchedRows[0].id});
         }else{
-            setSelectedTableDef({title: title, shared: false});
+            setSelectedTableDef({title: title});
         }
     }
 
@@ -81,7 +82,7 @@ export const SaveTableModal = ({open, handleClose}) => {
             creator_id: username,
             tableId: selectedTableDef.id,
             title: selectedTableDef.title,
-            shared: selectedTableDef.shared
+            shared: isShared
             })
         );
         setShowOverwrite(false);
@@ -123,6 +124,11 @@ export const SaveTableModal = ({open, handleClose}) => {
     const confirmDeleteStatus = () => {
         dispatch(confirmDeleteTableStatus());
     };
+    const handleChangeTab = (event, newValue) => {
+        setTab(newValue);
+        setIsShared(newValue === 0)
+    };
+
 
     useEffect(() => {
         if (open) {
@@ -160,11 +166,13 @@ export const SaveTableModal = ({open, handleClose}) => {
                 >
                     <Tabs
                         orientation="vertical"
-                        value={1}
+                        value={tab}
                         aria-label="Table Definition Folders"
                         sx={{ borderRight: 1, borderColor: 'divider'}}
+                        onChange={handleChangeTab}
                     >
-                        <Tab label="Shared Tables" {...addtlProps(0)} sx={{textDecoration:"line-through"}}/>
+                        {!isAdmin && <Tab label="Shared Tables" {...addtlProps(0)} sx={{textDecoration:"line-through"}}/>}
+                        {isAdmin && <Tab label="Shared Tables" {...addtlProps(0)}/>}
                         <Tab label="My Tables" {...addtlProps(1)} />
                     </Tabs>
                     <TabPanel
