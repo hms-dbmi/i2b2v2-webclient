@@ -17,7 +17,7 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
-    const { userRows, statusInfo, isFetching, isDeleting, deleteStatusInfo } = useSelector((state) => state.tableListing);
+    const { userRows, sharedRows, statusInfo, isFetching, isDeleting, deleteStatusInfo } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
     const {rows: tableDefRows} = useSelector((state) => state.tableDef);
     const { username, isAdmin } = useSelector((state) => state.userInfo);
@@ -39,7 +39,7 @@ export const SaveTableModal = ({open, handleClose}) => {
 
     const onRowSelect = (row) => {
         setSelectedTableDef({id: row.id, title: row.title});
-        setSelectedRows(row.id);
+        setSelectedRows([row.id]);
         setEnteredTitle(row.title);
     }
 
@@ -125,8 +125,11 @@ export const SaveTableModal = ({open, handleClose}) => {
         dispatch(confirmDeleteTableStatus());
     };
     const handleChangeTab = (event, newValue) => {
-        setTab(newValue);
-        setIsShared(newValue === 0)
+        if(isAdmin) {
+            setTab(newValue);
+        }
+        setIsShared(newValue === 0);
+        setSelectedRows([]);
     };
 
 
@@ -176,13 +179,25 @@ export const SaveTableModal = ({open, handleClose}) => {
                         <Tab label="My Tables" {...addtlProps(1)} />
                     </Tabs>
                     <TabPanel
-                        value={1}
+                        value={tab}
                         index={0}
                         className={'modalTabPanel'}
                     >
+                        <TableListing
+                            id={"saveModalDefTableGlobal"}
+                            rows={sharedRows}
+                            canRename={false}
+                            onSelect={onRowSelect}
+                            selectionModel={selectedRows}
+                            hasError={statusInfo.status==='FAIL'}
+                            onDelete={(id) => onDeleteTable(id, false)}
+                            isLoading={isFetching || isDeleting}
+                            deleteFailed={deleteStatusInfo.status === 'FAIL'}
+                            onDeleteAlertClose={confirmDeleteStatus}
+                        />
                     </TabPanel>
                     <TabPanel
-                        value={1}
+                        value={tab}
                         index={1}
                         className={'modalTabPanel'}
                         height={260}
