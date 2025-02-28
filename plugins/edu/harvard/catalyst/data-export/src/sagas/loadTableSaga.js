@@ -59,19 +59,19 @@ const parseGetTableXml = (tableXml, id) => {
                     if(display.length !== 0) {
                         display = display[0].value === "true";
 
+                        if(data.length !== 0) {
+                            data = data[0].value;
+                            //remove trailing '>' char in cdata string
+                            data = data.substring(0, data.length - 1);
+                            data = JSON.parse(data)[0];
+                        }
+
                         if(required){
-                            const dataOption = "Value";
+                            const dataOption = data.dataOption ? data.dataOption : "Value";
                             allColumns.required.push({name, required, locked, display, dataOption});
+
                         }else{
-                            if(data.length !== 0) {
-                                data = data[0].value;
-                                //remove trailing '>' char in cdata string
-                                data = data.substring(0, data.length - 1);
-                                data = JSON.parse(data)[0];
-                                const dataOption = data.dataOption;
-                                const sdxData = data.sdxData;
-                                allColumns.concepts.push({name, required, locked, display, dataOption, sdxData});
-                            }
+                            allColumns.concepts.push({name, required, locked, display, dataOption: data.dataOption, sdxData: data.sdxData});
                         }
                     }
                 }

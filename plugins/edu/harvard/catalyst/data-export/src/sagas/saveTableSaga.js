@@ -15,20 +15,13 @@ const setTableRequest = (rows, title, creator_id, shared, id) => {
         title: title,
         creator_id: creator_id,
         shared: shared,
-        column_count: rows.length,
-        visible: false,
         concepts: getConceptsToXml(rows)
     };
 
-    const date = DateTime.now().toISO();
     if(id !== undefined) {
         data.table_id_attr = "id= " + id;
-        data.create_date_xml = "<create_date>" + date +"</create_date>";
-        data.update_date_xml = "<update_date>" + date + " </update_date>";
     }else{
         data.table_id_attr = "";
-        data.create_date_xml = "<create_date>" + date +"</create_date>";
-        data.update_date_xml = "<update_date>" + date + " </update_date>";
     }
 
     return i2b2.ajax.CRC.setTable(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
@@ -46,7 +39,7 @@ const getConceptsToXml = (concepts) => {
             jsonData.sdxData = concept.sdxData;
         }
 
-        const dataXml = '<json_data><![CDATA[[\n' + JSON.stringify(jsonData) + ']]]>\n</json_data>';
+        const dataXml = '<data><![CDATA[[' + JSON.stringify(jsonData) + ']]]></data>';
         return "<concept>\n"
             + "<name>" + concept.name +"</name>\n"
             + "<display>" + concept.display +"</display>\n"
