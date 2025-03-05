@@ -1,6 +1,6 @@
 export { listRequestTableSaga } from "./listRequestTableSaga";
 export { getRequestDetailsSaga } from "./getRequestDetailsSaga";
-export { getUserAccessLevelSaga } from "./getUserAccessLevelSaga";
+export { getUserInfoSaga } from "./getUserInfoSaga";
 export { generateDataFileSaga } from "./generateDataFileSaga";
 export { getAdminNotesSaga } from "./getAdminNotesSaga";
 export { addAdminNoteSaga } from "./addAdminNoteSaga";

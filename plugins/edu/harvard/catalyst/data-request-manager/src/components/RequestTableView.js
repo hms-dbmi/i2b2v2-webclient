@@ -28,7 +28,7 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 2,
+            flex: 3,
             renderCell: (param) => {
                 return (
                     <SimpleTreeView defaultExpandedItems={isAdmin ? [] : [param.row.description]}>
@@ -50,14 +50,7 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 1,
-            valueGetter: (value) => {
-                if (!value) {
-                    return RequestStatus.statuses.UNKNOWN;
-                }
-
-                return  RequestStatus.statuses[value];
-            }
+            flex: 2,
         },
         {
             field: 'lastUpdated',
@@ -66,7 +59,7 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 1,
+            flex: 2,
             valueGetter: (value) => {
                 if (!value) {
                     return value;

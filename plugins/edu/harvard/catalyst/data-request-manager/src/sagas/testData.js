@@ -1,6 +1,6 @@
 export const requestList = [
     {
-        id: 1477,
+        id: 1898,
         name: "Abnormal findings on neonatal screenings",
         description: "Abnormal findings on neonatal screenings",
         dateSubmitted: "2024-01-02",
@@ -11,12 +11,12 @@ export const requestList = [
         ]
     },
     {
-        id: 1478,
+        id: 1916,
         name: "Female hypertensive disease",
         description: "Female hypertensive disease",
         dateSubmitted: "2024-03-18",
         lastUpdated: "2024-04-11",
-        status: "Approved",
+        status: "Submitted",
         requests: [
             "Request Demographics Data",
             "Request Diagnosis Data",
@@ -56,7 +56,7 @@ export const requestList = [
         description: "Circulatory system@21:30:14",
         dateSubmitted: "2024-09-03",
         lastUpdated: "2024-09-28",
-        status: "Cancelled",
+        status: "Withdrawn",
         requests: [
             "Request Diagnosis Data",
             "Request Lab Data"
@@ -100,7 +100,7 @@ export const requestDetails = [
             },
             {
                 date: requestList[1].lastUpdated,
-                status: "Approved"
+                status: "Queued"
             }
         ]
     },
@@ -141,8 +141,12 @@ export const requestDetails = [
                 status: "Submitted"
             },
             {
+                date: "2024-09-12",
+                status: "Queued"
+            },
+            {
                 date: "2024-09-14",
-                status: "Approved"
+                status: "Processing"
             },
             {
                 date: requestList[3].lastUpdated,
@@ -167,7 +171,7 @@ export const requestDetails = [
             },
             {
                 date: requestList[4].lastUpdated,
-                status: "Cancelled"
+                status: "Withdrawn"
             }
         ]
     }
@@ -295,7 +299,7 @@ export const adminRequestDetails = [
             },
             {
                 date: requestList[1].lastUpdated,
-                status: "Approved"
+                status: "Queued"
             }
         ],
         adminNotes: [
@@ -383,7 +387,11 @@ export const adminRequestDetails = [
             },
             {
                 date: "2024-09-14",
-                status: "Approved"
+                status: "Queued"
+            },
+            {
+                date: "2024-09-14",
+                status: "Processing"
             },
             {
                 date: requestList[3].lastUpdated,
@@ -471,7 +479,7 @@ export const adminRequestDetails = [
             },
             {
                 date: requestList[4].lastUpdated,
-                status: "Cancelled"
+                status: "Withdrawn"
             }
         ],
         adminNotes: [

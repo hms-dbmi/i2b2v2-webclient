@@ -12,11 +12,12 @@ export const AdminTableView = ({displayDetailViewId}) => {
     const dispatch = useDispatch();
     const { rows, isFetching } = useSelector((state) => state.requestTable);
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
+    const { username }  = useSelector((state) => state.userInfo);
 
 
     useEffect(() => {
         if (isI2b2LibLoaded) {
-            dispatch(listRequestTable({isAdmin: true}));
+            dispatch(listRequestTable({isAdmin: true, username}));
         }
     }, [isI2b2LibLoaded]);
 

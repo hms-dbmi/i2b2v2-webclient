@@ -410,7 +410,8 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
     let options = {
         crc_max_records: max + 1,
         crc_user_type: request_type,
-        crc_user_by: user_type
+        crc_user_by: user_type,
+        include_query_instance: false
     };
     i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", options,  scopedCallback);
 };

@@ -68,7 +68,9 @@ i2b2.CRC.cfg.msgs.getQueryMasterList_fromUserId = '<?xml version="1.0" encoding=
 '		<ns4:request xsi:type="ns4:user_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
 '			<user_id>{{{crc_user_by}}}</user_id>\n'+
 '			<group_id>{{{sec_project}}}</group_id>\n'+
+'			<include_query_instance>{{{include_query_instance}}}</include_query_instance>\n' +
 '			<fetch_size>{{{crc_max_records}}}</fetch_size>\n'+
+'			{{{master_type_cd_xml}}}\n'+
 '		</ns4:request>\n'+
 '	</message_body>\n'+
 '</ns6:request>\n';
@@ -107,7 +109,7 @@ i2b2.CRC.cfg.parsers.getQueryMasterList_fromUserId = function() {
 i2b2.CRC.ajax._addFunctionCall(	"getQueryMasterList_fromUserId",
                                 "{{{URL}}}request",
                                 i2b2.CRC.cfg.msgs.getQueryMasterList_fromUserId,
-                                null,
+                                ['master_type_cd_xml'],
                                 i2b2.CRC.cfg.parsers.getQueryMasterList_fromUserId);
 
 

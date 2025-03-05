@@ -13,13 +13,14 @@ export const ResearcherTableView = ({displayDetailViewId}) => {
     const dispatch = useDispatch();
     const { rows, isFetching } = useSelector((state) => state.requestTable);
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
+    const { username }  = useSelector((state) => state.userInfo);
 
 
     useEffect(() => {
-        if (isI2b2LibLoaded) {
-            dispatch(listRequestTable({isAdmin: false}));
+        if (username) {
+            dispatch(listRequestTable({isAdmin: false, username}));
         }
-    }, [isI2b2LibLoaded]);
+    }, [username]);
 
     return (
         <Box className={"ResearcherTableView"} style={{ display: 'flex', flexDirection: 'column' }}>
