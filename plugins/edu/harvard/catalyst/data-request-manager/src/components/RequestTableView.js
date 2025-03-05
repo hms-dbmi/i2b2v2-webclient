@@ -27,7 +27,7 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailViewI
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 4,
+            flex: 3,
             renderCell: (param) => {
                 return (
                     <SimpleTreeView defaultExpandedItems={isManager ? [] : [param.row.description]}>

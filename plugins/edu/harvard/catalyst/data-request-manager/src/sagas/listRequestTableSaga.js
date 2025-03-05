@@ -12,7 +12,12 @@ const getAllExportRequestsListRequest = (username, isManager) => {
 
     let request_type = "CRC_QRY_getQueryMasterList_fromUserId";
 
+    if(isManager){
+        request_type = "CRC_QRY_getQueryMasterList_fromGroupId";
+    }
+
     let data = {
+        crc_max_records: -1,
         crc_user_type: request_type,
         crc_user_by: username,
         include_query_instance: true,
