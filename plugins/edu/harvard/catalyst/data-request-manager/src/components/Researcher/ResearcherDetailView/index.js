@@ -15,15 +15,15 @@ import {RequestDetailView} from "../../RequestDetailView";
 import {DetailViewNav} from "../../DetailViewNav";
 
 
-export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
+export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details } = useSelector((state) => state.requestDetails);
 
     useEffect(() => {
-        if(requestId) {
-            dispatch(getRequestDetails({id: requestId}));
+        if(requestRow) {
+            dispatch(getRequestDetails({requestRow}));
         }
-    }, [requestId]);
+    }, [requestRow]);
 
 
     const goToViewRequestTable = () => {
@@ -33,10 +33,10 @@ export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
         <Box className={"ResearcherDetailView"}>
             {   details.id && (
                     <div>
-                        <DetailViewNav requestId={requestId} requestName={details.name} goToHome={goToViewRequestTable}/>
+                        <DetailViewNav requestId={requestRow.id} requestName={details.name} goToHome={goToViewRequestTable}/>
 
                         <Typography className={"ResearcherDetailViewTitle"}>
-                            Request {requestId}, {details.name}
+                            Request {requestRow.id}, {details.name}
                         </Typography>
 
                         <div className={"ResearcherDetailViewContent"}>

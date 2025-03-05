@@ -5,16 +5,16 @@ import {ResearcherTableView} from "./ResearcherTableView";
 
 
 export const Researcher = () => {
-    const [detailViewId, setDetailViewId] = useState(null);
+    const [detailView, setDetailView] = useState(null);
 
     const setViewRequestTable = () => {
-        setDetailViewId(null);
+        setDetailView(null);
     }
 
     return (
         <Box>
-            { detailViewId === null && <ResearcherTableView displayDetailViewId={setDetailViewId}/> }
-            { detailViewId !== null && <ResearcherDetailView requestId={detailViewId} setViewRequestTable={setViewRequestTable}/> }
+            { detailView === null && <ResearcherTableView displayDetailView={setDetailView}/> }
+            { detailView !== null && <ResearcherDetailView requestRow={detailView} setViewRequestTable={setViewRequestTable}/> }
         </Box>
 
     );

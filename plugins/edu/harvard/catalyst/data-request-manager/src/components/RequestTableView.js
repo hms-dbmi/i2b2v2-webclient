@@ -7,7 +7,7 @@ import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import {TreeItem} from "@mui/x-tree-view";
 import "./RequestTableView.scss";
 
-export const RequestTableView = ({rows, isLoading, isManager, displayDetailViewId}) => {
+export const RequestTableView = ({rows, isLoading, isManager, displayDetailView}) => {
     const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
     const columns = [
         {
@@ -78,14 +78,14 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailViewI
             minWidth: 138,
             renderCell: (param) => {
                 return (
-                    <Button variant="contained" size="small" className={"actions"} onClick={() => handleDisplayDetailView(param.row.id)}>View Details</Button>
+                    <Button variant="contained" size="small" className={"actions"} onClick={() => handleDisplayDetailView(param.row)}>View Details</Button>
                 );
             },
         }
     ];
 
-    const handleDisplayDetailView = (id) => {
-        displayDetailViewId(id);
+    const handleDisplayDetailView = (requestRow) => {
+        displayDetailView(requestRow);
     };
 
     const getColumns = () => {

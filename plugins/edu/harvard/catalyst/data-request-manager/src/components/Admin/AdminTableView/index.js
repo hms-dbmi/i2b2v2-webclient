@@ -8,7 +8,7 @@ import {RequestTableView} from "../../RequestTableView";
 import {listRequestTable} from "../../../reducers/requestTableSlice";
 
 
-export const AdminTableView = ({displayDetailViewId}) => {
+export const AdminTableView = ({displayDetailView}) => {
     const dispatch = useDispatch();
     const { rows, isFetching } = useSelector((state) => state.requestTable);
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
@@ -23,7 +23,7 @@ export const AdminTableView = ({displayDetailViewId}) => {
 
     return (
         <Box className={"AdminTableView"} style={{ display: 'flex', flexDirection: 'column' }}>
-            <RequestTableView rows={rows} isLoading={isFetching || !isI2b2LibLoaded} isManager={true} displayDetailViewId={displayDetailViewId}/>
+            <RequestTableView rows={rows} isLoading={isFetching || !isI2b2LibLoaded} isManager={true} displayDetailView={displayDetailView}/>
         </Box>
     )
 };

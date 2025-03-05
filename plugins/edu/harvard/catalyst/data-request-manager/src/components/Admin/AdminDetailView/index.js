@@ -22,17 +22,17 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import "./AdminDetailView.scss";
 import {ConfirmDialog} from "../../ConfirmDialog";
 
-export const AdminDetailView = ({requestId, setViewRequestTable}) => {
+export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details, isFetching } = useSelector((state) => state.requestDetails);
     const [requestStatus, setRequestStatus] = React.useState(null);
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
 
     useEffect(() => {
-        if(requestId) {
-            dispatch(getRequestDetails({id: requestId, isManager: true}));
+        if(requestRow) {
+            dispatch(getRequestDetails({requestRow, isManager: true}));
         }
-    }, [requestId]);
+    }, [requestRow]);
 
     useEffect(() => {
         if(details) {
@@ -51,17 +51,17 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
 
     const handleGenerateFile = () =>{
         setConfirmFileGen(false);
-        dispatch(generateDataFile({requestId}));
+        dispatch(generateDataFile({requestId: requestRow.id}));
     }
 
     return (
         <Box className={"AdminDetailView"}>
             {   details.id && (
                 <div>
-                    <DetailViewNav requestId={requestId} requestName={details.name} goToHome={goToViewRequestTable}/>
+                    <DetailViewNav requestId={requestRow.id} requestName={details.name} goToHome={goToViewRequestTable}/>
 
                     <Typography className={"AdminDetailViewTitle"}>
-                        Request {requestId}, {details.name}
+                        Request {requestRow.id}, {details.name}
                     </Typography>
 
                     <div className={"AdminDetailViewContent"}>
@@ -114,7 +114,7 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                             </Card>
                         </div>
                         <div className={"RequestNotes"}>
-                            <AdminNotesView requestId={requestId}/>
+                            <AdminNotesView requestId={requestRow.id}/>
                         </div>
                         {confirmFileGen && <ConfirmDialog
                             msg={'Are you sure you want to generate data file(s)?'}
