@@ -30,7 +30,7 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
 
     useEffect(() => {
         if(requestId) {
-            dispatch(getRequestDetails({id: requestId, isAdmin: true}));
+            dispatch(getRequestDetails({id: requestId, isManager: true}));
         }
     }, [requestId]);
 
@@ -65,7 +65,7 @@ export const AdminDetailView = ({requestId, setViewRequestTable}) => {
                     </Typography>
 
                     <div className={"AdminDetailViewContent"}>
-                        <RequestDetailView details={details} isAdmin={true}/>
+                        <RequestDetailView details={details} isManager={true}/>
 
                         <div className={"RequestAction"}>
                             <Typography className={"RequestActionTitle"}>

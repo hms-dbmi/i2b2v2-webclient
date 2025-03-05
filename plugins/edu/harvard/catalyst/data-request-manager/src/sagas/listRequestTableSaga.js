@@ -8,7 +8,7 @@ import {
     LIST_REQUEST_TABLE
 } from "../actions";
 
-const getAllExportRequestsListRequest = (username, isAdmin) => {
+const getAllExportRequestsListRequest = (username, isManager) => {
 
     let request_type = "CRC_QRY_getQueryMasterList_fromUserId";
 
@@ -74,14 +74,13 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
 }
 
 export function* doListRequestTable(action) {
-    const { username, isAdmin } = action.payload;
+    const { username, isManager } = action.payload;
 
     try {
-        let response = yield call(getAllExportRequestsListRequest, username, isAdmin);
+        let response = yield call(getAllExportRequestsListRequest, username, isManager);
         if (!response.error) {
             let dataExportRequestsList = yield parseAllExportRequestsListXml(response);
-            let t=0;
-            yield put(listRequestTableSuccess({researcherRequests: dataExportRequestsList, isAdmin: isAdmin}));
+            yield put(listRequestTableSuccess({researcherRequests: dataExportRequestsList, isManager}));
         }
         else {
             yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));

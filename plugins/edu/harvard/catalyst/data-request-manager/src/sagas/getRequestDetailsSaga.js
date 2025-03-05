@@ -6,10 +6,10 @@ import {getRequestDetailsError, getRequestDetailsSuccess} from "../reducers/requ
 import {requestDetails, adminRequestDetails} from "./testData";
 
 
-const getTestData = (requestId, isAdmin) => {
+const getTestData = (requestId, isManager) => {
     let request = null;
 
-    if(isAdmin){
+    if(isManager){
         request = adminRequestDetails.filter((req) => req.id === requestId);
     }else{
         request = requestDetails.filter((req) => req.id === requestId);
@@ -18,12 +18,12 @@ const getTestData = (requestId, isAdmin) => {
 }
 
 export function* doGetRequestDetails(action) {
-    const { id, isAdmin } = action.payload;
+    const { id, isManager } = action.payload;
     try {
         let response = {ok: true};
         if (response.ok) {
-            const data = getTestData(id, isAdmin); //parseData(yield response.json());
-            yield put(getRequestDetailsSuccess({requestDetails: data, isAdmin: isAdmin}));
+            const data = getTestData(id, isManager); //parseData(yield response.json());
+            yield put(getRequestDetailsSuccess({requestDetails: data, isManager}));
         } else {
             yield put(getRequestDetailsError({errorMessage: "There was an error getting the request details"}));
         }

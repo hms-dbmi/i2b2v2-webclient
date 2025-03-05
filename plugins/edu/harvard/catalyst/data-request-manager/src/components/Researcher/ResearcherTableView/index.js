@@ -18,13 +18,13 @@ export const ResearcherTableView = ({displayDetailViewId}) => {
 
     useEffect(() => {
         if (username) {
-            dispatch(listRequestTable({isAdmin: false, username}));
+            dispatch(listRequestTable({isManager: false, username}));
         }
     }, [username]);
 
     return (
         <Box className={"ResearcherTableView"} style={{ display: 'flex', flexDirection: 'column' }}>
-            <RequestTableView rows={rows} isLoading={isFetching || !isI2b2LibLoaded} isAdmin={false} displayDetailViewId={displayDetailViewId}/>
+            <RequestTableView rows={rows} isLoading={isFetching || !isI2b2LibLoaded} isManager={false} displayDetailViewId={displayDetailViewId}/>
         </Box>
     )
 };

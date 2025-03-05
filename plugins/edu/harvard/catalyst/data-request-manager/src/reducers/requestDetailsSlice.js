@@ -16,7 +16,7 @@ export const requestDetailsSlice = createSlice({
             state.details.isFetching = true;
             state.details.statusInfo = StatusInfo();
         },
-        getRequestDetailsSuccess: (state, { payload: {requestDetails, isAdmin }}) => {
+        getRequestDetailsSuccess: (state, { payload: {requestDetails, isManager }}) => {
             let status = RequestStatus._lookupStatus(requestDetails.status);
             if(status.length > 0){
                 status = RequestStatus.statuses[status[0]];
@@ -25,7 +25,7 @@ export const requestDetailsSlice = createSlice({
             }
             let details = null;
 
-            if(isAdmin){
+            if(isManager){
                 details = AdminRequestDetails({
                     id: requestDetails.id,
                     name: requestDetails.name,

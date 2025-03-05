@@ -17,13 +17,13 @@ export const AdminTableView = ({displayDetailViewId}) => {
 
     useEffect(() => {
         if (isI2b2LibLoaded) {
-            dispatch(listRequestTable({isAdmin: true, username}));
+            dispatch(listRequestTable({isManager: true, username}));
         }
     }, [isI2b2LibLoaded]);
 
     return (
         <Box className={"AdminTableView"} style={{ display: 'flex', flexDirection: 'column' }}>
-            <RequestTableView rows={rows} isLoading={isFetching || !isI2b2LibLoaded} isAdmin={true} displayDetailViewId={displayDetailViewId}/>
+            <RequestTableView rows={rows} isLoading={isFetching || !isI2b2LibLoaded} isManager={true} displayDetailViewId={displayDetailViewId}/>
         </Box>
     )
 };

@@ -40,7 +40,7 @@ export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
                         </Typography>
 
                         <div className={"ResearcherDetailViewContent"}>
-                            <RequestDetailView details={details} isAdmin={false}/>
+                            <RequestDetailView details={details} isManager={false}/>
 
                             <div className={"RequestAction"}>
                                 <Typography className={"RequestActionTitle"}>

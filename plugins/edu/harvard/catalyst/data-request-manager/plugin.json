@@ -13,7 +13,7 @@
     "variables" :{
       "i2b2.PM.model.login_password": "R",
       "i2b2.PM.model.login_username": "R",
-      "i2b2.PM.model.isAdmin": "R"
+      "i2b2.PM.model.userRoles": "RO"
     }
   },
   "state": {

@@ -3,17 +3,17 @@ import {StatusInfo} from "./StatusInfo";
 
 export const UserInfo = ({
     username= null,
-    isAdmin= false,
+    isManager= false,
     statusInfo= StatusInfo()
 } = {}) => ({
     username,
-    isAdmin,
+    isManager,
     statusInfo
 });
 
 UserInfo.propTypes = {
     username: PropTypes.string.isRequired,
-    isAdmin: PropTypes.bool.isRequired,
+    isManager: PropTypes.bool.isRequired,
     statusInfo: PropTypes.shape(StatusInfo),
 
 };

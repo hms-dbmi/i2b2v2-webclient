@@ -5,10 +5,9 @@ import {DataGrid} from "@mui/x-data-grid";
 
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import {TreeItem} from "@mui/x-tree-view";
-import {RequestStatus} from "../models";
+import "./RequestTableView.scss";
 
-
-export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}) => {
+export const RequestTableView = ({rows, isLoading, isManager, displayDetailViewId}) => {
     const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
     const columns = [
         {
@@ -31,7 +30,7 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
             flex: 3,
             renderCell: (param) => {
                 return (
-                    <SimpleTreeView defaultExpandedItems={isAdmin ? [] : [param.row.description]}>
+                    <SimpleTreeView defaultExpandedItems={isManager ? [] : [param.row.description]}>
                         <TreeItem itemId={param.row.description} label={param.row.description}>
                             {
                                 param.row.requests.map((name, index) => {
@@ -90,7 +89,7 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
     };
 
     const getColumns = () => {
-        if(isAdmin){
+        if(isManager){
             columns.splice(2, 0, {
                 field: 'userId',
                 headerName: 'User',
@@ -121,7 +120,7 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
         return columns;
     }
     return (
-        <Box className={"ResearcherTableView"} style={{ display: 'flex', flexDirection: 'column' }}>
+        <Box className={"RequestTableView"} style={{ display: 'flex', flexDirection: 'column' }}>
             <Typography className={"title"}>
                 List of Export Data Requests
             </Typography>
