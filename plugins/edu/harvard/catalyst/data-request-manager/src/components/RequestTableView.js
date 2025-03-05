@@ -27,7 +27,7 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailViewI
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 3,
+            flex: 4,
             renderCell: (param) => {
                 return (
                     <SimpleTreeView defaultExpandedItems={isManager ? [] : [param.row.description]}>
@@ -49,7 +49,7 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailViewI
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 2,
+            flex: 2
         },
         {
             field: 'lastUpdated',
@@ -58,12 +58,12 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailViewI
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 2,
+            minWidth: 105,
+            maxWidth: 105,
             valueGetter: (value) => {
                 if (!value) {
                     return value;
                 }
-
                 // Format the Date object
                 return value.toLocaleDateString();
             }
@@ -75,7 +75,7 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailViewI
             sortable: false,
             resizable: false,
             disableReorder: true,
-            minWidth: 149,
+            minWidth: 138,
             renderCell: (param) => {
                 return (
                     <Button variant="contained" size="small" className={"actions"} onClick={() => handleDisplayDetailView(param.row.id)}>View Details</Button>
