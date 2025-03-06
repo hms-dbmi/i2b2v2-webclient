@@ -143,6 +143,7 @@ i2b2.CRC.view.QT.showRun = function() {
                 });
             }
 
+            $("#dataRequestInfoEmail").val(i2b2.PM.model.email);
             let dataExportContainer = $("#crcModal .DataExportTypes");
             for (let code in i2b2.CRC.model.dataExportTypes) {
                 document.getElementById("DataExportDiv").style.display = "";
@@ -180,6 +181,21 @@ i2b2.CRC.view.QT.showRun = function() {
             // run the query on button press
             $('body #crcModal button.i2b2-save').on('click', (evt) => {
                 i2b2.CRC.view.QT.resetToCRCHistoryView();
+
+                const selectedDataRequests = $('body #DataRequestDiv .chkQueryType:checked');
+                if(selectedDataRequests.length > 0){
+                    const dataRequestInfoEmail = $("#dataRequestInfoEmail");
+                    const email = dataRequestInfoEmail.val();
+                    const emailRegex = /\S+@\S+\.\S+/;
+                    const isValidEmail = emailRegex.test(email);
+
+                    if(!isValidEmail) {
+                        dataRequestInfoEmail.css('border', '1px solid red');
+                        return;
+                    }else{
+                        dataRequestInfoEmail.css('border', '');
+                    }
+                }
 
                 // get the query name
                 let queryName = $("#crcQtQueryName").val().trim();
