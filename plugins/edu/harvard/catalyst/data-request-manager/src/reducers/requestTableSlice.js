@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { REQUEST_TABLE } from "../actions";
 import { defaultState } from '../defaultState';
-import {AdminTableRow, RequestStatus, RequestTable, ResearcherTableRow, StatusInfo} from "../models";
+import {AdminTableRow, ExportRequest, RequestStatus, RequestTable, ResearcherTableRow, StatusInfo} from "../models";
 import {DateTime} from "luxon";
 
 export const requestTableSlice = createSlice({
@@ -22,7 +22,10 @@ export const requestTableSlice = createSlice({
                     return AdminTableRow({
                         id: request.id,
                         description: request.description,
-                        requests: request.requests,
+                        requests: request.requests.map(req => {
+                            return ExportRequest({id: req.id, description: req.description})
+                        }),
+                        dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
                         lastUpdated: DateTime.fromISO(request.lastUpdated).toJSDate(),
                         patientCount: patientCount,
                         userId: request.userId,
@@ -33,7 +36,10 @@ export const requestTableSlice = createSlice({
                     return ResearcherTableRow({
                         id: request.id,
                         description: request.description,
-                        requests: request.requests,
+                        requests: request.requests.map(req => {
+                            return ExportRequest({id: req.id, description: req.description})
+                        }),
+                        dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
                         lastUpdated: DateTime.fromISO(request.lastUpdated).toJSDate(),
                         status: status
                     })

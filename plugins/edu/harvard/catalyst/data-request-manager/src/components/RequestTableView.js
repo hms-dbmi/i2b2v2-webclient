@@ -33,8 +33,8 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailView}
                     <SimpleTreeView defaultExpandedItems={isManager ? [] : [param.row.description]}>
                         <TreeItem itemId={param.row.description} label={param.row.description}>
                             {
-                                param.row.requests.map((name, index) => {
-                                    return (<TreeItem itemId={name} className={"requestLabel"} label={(index +1) + ". " + name}/>)
+                                param.row.requests.map((exportRequest, index) => {
+                                    return (<TreeItem itemId={exportRequest.description} className={"requestLabel"} label={(index +1) + ". " + exportRequest.description}/>)
                                 })
                             }
                         </TreeItem>

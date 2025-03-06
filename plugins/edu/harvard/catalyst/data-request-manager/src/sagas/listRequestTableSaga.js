@@ -3,6 +3,7 @@
 import {takeLatest, put, call} from "redux-saga/effects";
 import {listRequestTableSuccess, listRequestTableError} from "../reducers/requestTableSlice";
 import XMLParser from "react-xml-parser";
+import {decode} from 'html-entities';
 
 import {
     LIST_REQUEST_TABLE
@@ -39,7 +40,7 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
         if(userId.length > 0 && queryId.length > 0 && queryName.length > 0 && dateSubmitted.length && queryInstanceTypeList.length > 0){
             userId = userId[0].value;
             queryId = queryId[0].value
-            queryName = queryName[0].value;
+            queryName = decode(queryName[0].value);
             dateSubmitted = dateSubmitted[0].value;
             let status = '';
             let patientCount = '';
@@ -47,9 +48,9 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
             let requestList = [];
             queryInstanceTypeList.forEach(queryInstanceType => {
                 status = queryInstanceType.getElementsByTagName('batch_mode');
-                lastUpdated = queryInstanceType.getElementsByTagName('start_date');
+                lastUpdated = queryInstanceType.getElementsByTagName('end_date');
                 if(lastUpdated.length === 0){
-                    lastUpdated = queryInstanceType.getElementsByTagName('end_date');
+                    lastUpdated = queryInstanceType.getElementsByTagName('start_date');
                 }
                 if(lastUpdated.length !== 0){
                     lastUpdated = lastUpdated[0].value;
@@ -57,20 +58,34 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
                 let queryResultInstanceTypeList =  queryInstanceType.getElementsByTagName('query_result_instance_type');
                 queryResultInstanceTypeList.forEach(queryResultInstanceType => {
                     patientCount = queryResultInstanceType.getElementsByTagName('set_size');
-                   let request = queryResultInstanceType.getElementsByTagName('description');
-                   if(request.length > 0){
-                       request = request[0].value;
-                       request = request.replace('for "' + queryName + '"', "").trim();
-                       if(!request.includes("Number of patients")){
-                           requestList.push(request);
+                    let queryResultType = queryResultInstanceType.getElementsByTagName('query_result_type');
+
+                    let visualAttributeType = null;
+                    if(queryResultType.length > 0){
+                        queryResultType =  queryResultType[0];
+                       visualAttributeType = queryResultType.getElementsByTagName('visual_attribute_type');
+                       visualAttributeType = visualAttributeType.length > 0 ? visualAttributeType[0].value : '';
+                       if(visualAttributeType.toUpperCase() === "LU") {
+                           let request = {};
+                           const requestId = queryResultType.getElementsByTagName('name');
+                           let requestDescription = queryResultType.getElementsByTagName('description');
+                           if(requestId.length > 0 ) {
+                               request.id = requestId[0].value;
+                           }
+                           if(requestDescription.length > 0) {
+                               request.description = decode(requestDescription[0].value);
+                               requestList.push(request);
+                           }
                        }
-                   }
+                    }
+
                 });
                 if(status.length > 0 && patientCount.length > 0){
                     status = status[0].value;
                     patientCount = patientCount[0].value;
                 }
             })
+
             exportRequestList.push({id: queryId, description: queryName, dateSubmitted, lastUpdated, status, patientCount, userId, requests: requestList});
         }
     });
