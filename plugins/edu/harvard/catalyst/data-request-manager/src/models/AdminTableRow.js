@@ -7,7 +7,6 @@ export const AdminTableRow = ({
     description= "",
     requests = [],
     dateSubmitted = null,
-    lastUpdated = null,
     patientCount = null,
     userId = null,
     status= RequestStatus.statuses.SUBMITTED
@@ -16,7 +15,6 @@ export const AdminTableRow = ({
     description,
     requests,
     dateSubmitted,
-    lastUpdated,
     patientCount,
     userId,
     status
@@ -27,7 +25,6 @@ AdminTableRow.propTypes = {
     description:  PropTypes.string.isRequired,
     requests: PropTypes.arrayOf(PropTypes.string).isRequired,
     dateSubmitted: PropTypes.instanceOf(Date).isRequired,
-    lastUpdated: PropTypes.instanceOf(Date).isRequired,
     patientCount: PropTypes.number.isRequired,
     userId: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired
