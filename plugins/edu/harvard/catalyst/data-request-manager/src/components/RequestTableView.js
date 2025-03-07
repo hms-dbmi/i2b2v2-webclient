@@ -52,8 +52,8 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailView}
             flex: 2
         },
         {
-            field: 'lastUpdated',
-            headerName: 'Last Updated',
+            field: 'dateSubmitted',
+            headerName: 'Date Submitted',
             headerClassName: "header",
             sortable: true,
             resizable: false,
