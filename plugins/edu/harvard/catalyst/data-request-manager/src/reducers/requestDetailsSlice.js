@@ -35,20 +35,6 @@ export const requestDetailsSlice = createSlice({
                     userId: requestDetails.userId,
                     status: status,
                     patientCount: requestDetails.patientCount,
-                    /*statusLogs: requestDetails.statusLogs.map((st, index) => {
-                        let lstatus = RequestStatus._lookupStatus(st.status);
-                        if (lstatus.length > 0) {
-                            lstatus = lstatus[0];
-                        } else {
-                            lstatus = RequestStatus.statuses.UNKNOWN;
-                        }
-
-                        return RequestStatusLog({
-                            id: index,
-                            date: DateTime.fromISO(st.date).toJSDate(),
-                            status: lstatus
-                        })
-                    })*/
                 });
             }
            else {
@@ -60,20 +46,6 @@ export const requestDetailsSlice = createSlice({
                     email: requestDetails.email,
                     userId: requestDetails.userId,
                     status: status,
-                    /*statusLogs: requestDetails.statusLogs.map((st, index) => {
-                        let lstatus = RequestStatus._lookupStatus(st.status);
-                        if (lstatus.length > 0) {
-                            lstatus = lstatus[0];
-                        } else {
-                            lstatus = RequestStatus.statuses.UNKNOWN;
-                        }
-
-                        return RequestStatusLog({
-                            id: index,
-                            date: DateTime.fromISO(st.date).toJSDate(),
-                            status: lstatus
-                        })
-                    })*/
                 });
             }
             state.details = details;

@@ -2,11 +2,11 @@ import React from "react";
 import "./RequestDetailView.scss";
 import {
     Box,
-    Card,
+    Card, IconButton,
     Typography
 } from "@mui/material";
 import Grid from '@mui/material/Grid2';
-
+import PreviewIcon from '@mui/icons-material/Preview';
 
 export const RequestDetailView = ({details, isManager}) => {
     const formatNumber = (value) => {
@@ -40,7 +40,10 @@ export const RequestDetailView = ({details, isManager}) => {
                         <ol className={"RequestDetailContentItem DataRequestType"}>
                             {
                                 details.requests.map((request)=> {
-                                    return (<li> {request.description} </li>)
+                                    return (<li>
+                                        {request.description}
+                                        {request.tableId !== null && <IconButton title={"preview table definition"} size="small" onClick={() => alert("table definition id is " + request.tableId)}><PreviewIcon/></IconButton>}
+                                    </li>)
                                 })
                             }
                         </ol>

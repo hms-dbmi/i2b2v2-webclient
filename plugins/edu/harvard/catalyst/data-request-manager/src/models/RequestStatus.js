@@ -1,7 +1,7 @@
 
 export const RequestStatus = {
     statuses: {
-        SUBMITTED: "Submitted",
+        SUBMITTED: "Request Submitted",
         WITHDRAWN: "Withdrawn",
         DENIED: "Denied",
         FILE_IN_PROGRESS_QUEUED: "File In Progress (Queued)",

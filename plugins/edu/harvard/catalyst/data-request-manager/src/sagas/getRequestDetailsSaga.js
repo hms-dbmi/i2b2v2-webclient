@@ -56,8 +56,8 @@ export function* doGetRequestDetails(action) {
         else if (!response.error) {
             const emailAndStatusLogs = parseExportRequestDetailXml(response);
             let requestDetails = { ...requestRow };
-            requestDetails .email = emailAndStatusLogs.email;
-            requestDetails .statusLogs = emailAndStatusLogs.statusLogs;
+            requestDetails.email = emailAndStatusLogs.email;
+            requestDetails.statusLogs = emailAndStatusLogs.statusLogs;
             yield put(getRequestDetailsSuccess({requestDetails, isManager}));
         } else {
             yield put(getRequestDetailsError({errorMessage: "There was an error getting the request details"}));

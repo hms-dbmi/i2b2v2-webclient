@@ -67,7 +67,10 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
                            const requestId = queryResultType.getElementsByTagName('name');
                            let requestDescription = queryResultType.getElementsByTagName('description');
                            if(requestId.length > 0 ) {
-                               request.tableId = requestId[0].value;
+                               const tableId = parseInt(requestId[0].value);
+                               if(!isNaN(tableId)){
+                                   request.tableId = tableId;
+                               }
                            }
                            if(requestDescription.length > 0) {
                                request.description = decode(requestDescription[0].value);
@@ -101,9 +104,11 @@ export function* doListRequestTable(action) {
         }
         else {
             yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));
+            console.error("There was an error getting the list of researcher data export requests");
         }
     } catch (error) {
         yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));
+        console.error("There was an error getting the list of researcher data export requests");
     }
 }
 
