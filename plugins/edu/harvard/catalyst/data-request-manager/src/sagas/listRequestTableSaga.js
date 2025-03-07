@@ -44,18 +44,10 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
             dateSubmitted = dateSubmitted[0].value;
             let status = '';
             let patientCount = '';
-            let lastUpdated = dateSubmitted;
             let requestList = [];
             let resultInstanceId = '';
             queryInstanceTypeList.forEach(queryInstanceType => {
                 status = queryInstanceType.getElementsByTagName('batch_mode');
-                lastUpdated = queryInstanceType.getElementsByTagName('end_date');
-                if(lastUpdated.length === 0){
-                    lastUpdated = queryInstanceType.getElementsByTagName('start_date');
-                }
-                if(lastUpdated.length !== 0){
-                    lastUpdated = lastUpdated[0].value;
-                }
                 let queryResultInstanceTypeList =  queryInstanceType.getElementsByTagName('query_result_instance_type');
                 queryResultInstanceTypeList.forEach(queryResultInstanceType => {
                     let resultInstanceId =  queryResultInstanceType.getElementsByTagName('result_instance_id');

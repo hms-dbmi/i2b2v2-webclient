@@ -4,7 +4,7 @@ import {call, put, takeLatest} from "redux-saga/effects";
 import {GET_REQUEST_DETAILS} from "../actions";
 import {getRequestDetailsError, getRequestDetailsSuccess} from "../reducers/requestDetailsSlice";
 import XMLParser from "react-xml-parser";
-import {decode} from "html-entities";
+import {decode} from 'html-entities';
 
 const getExportRequestDetailRequest = (queryResultInstanceId) => {
     let data = {
@@ -14,7 +14,10 @@ const getExportRequestDetailRequest = (queryResultInstanceId) => {
 };
 
 const parseExportRequestDetailXml = (exportRequestListXml) => {
-    let exportRequestDetail = {};
+    let exportRequestDetail = {
+        email: '',
+        statusLogs: []
+    };
 
     let crcXmlResult = exportRequestListXml.getElementsByTagName('crc_xml_result');
     if(crcXmlResult.length > 0){
@@ -23,10 +26,18 @@ const parseExportRequestDetailXml = (exportRequestListXml) => {
         if(xmlValue.length > 0) {
             xmlValue = xmlValue[0].value;
             xmlValue = decode(xmlValue);
-            let parseXmlValue = new XMLParser().parseFromString(xmlValue);
-            let dataColumn = 0
+            let parsedXmlValue = new XMLParser().parseFromString(xmlValue);
+            let dataList = parsedXmlValue.getElementsByTagName('data');
+            dataList.forEach(data => {
+                let column = data.attributes['column'];
+                if(column.length > 0 && column.toUpperCase() === "EMAIL"){
+                    exportRequestDetail.email = data.value;
+                }
+            })
         }
     }
+
+    return exportRequestDetail;
 }
 
 export function* doGetRequestDetails(action) {
@@ -43,9 +54,11 @@ export function* doGetRequestDetails(action) {
             yield put(getRequestDetailsError({errorMessage: "There was an error getting result instance id for retrieving the request details"}));
         }
         else if (!response.error) {
-            let dataExportRequestsList = yield parseExportRequestDetailXml(response);
-
-            yield put(getRequestDetailsSuccess({requestDetails: requestRow, isManager}));
+            const emailAndStatusLogs = parseExportRequestDetailXml(response);
+            let requestDetails = { ...requestRow };
+            requestDetails .email = emailAndStatusLogs.email;
+            requestDetails .statusLogs = emailAndStatusLogs.statusLogs;
+            yield put(getRequestDetailsSuccess({requestDetails, isManager}));
         } else {
             yield put(getRequestDetailsError({errorMessage: "There was an error getting the request details"}));
         }

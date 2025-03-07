@@ -30,7 +30,6 @@ export const requestTableSlice = createSlice({
                             })
                         }),
                         dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
-                        lastUpdated: DateTime.fromISO(request.lastUpdated).toJSDate(),
                         patientCount: patientCount,
                         userId: request.userId,
                         status: status
@@ -48,7 +47,6 @@ export const requestTableSlice = createSlice({
                             })
                         }),
                         dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
-                        lastUpdated: DateTime.fromISO(request.lastUpdated).toJSDate(),
                         status: status
                     })
                 }
