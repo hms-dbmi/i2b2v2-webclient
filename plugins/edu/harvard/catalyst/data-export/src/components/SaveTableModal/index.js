@@ -14,7 +14,6 @@ import { TabPanel } from "../TabPanel";
 import {saveStatusConfirmed, saveTable} from "../../reducers/saveTableSlice";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 
-
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
     const { userRows, sharedRows, statusInfo, isFetching, isDeleting, deleteStatusInfo } = useSelector((state) => state.tableListing);
@@ -198,6 +197,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}
+                            renameTable={updateTableDefinitionTitle}
                         />
                     </TabPanel>
                     <TabPanel
@@ -209,7 +209,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                         <TableListing
                             id={"saveModalDefTableLocal"}
                             rows={userRows}
-                            canRename={false}
+                            canRename={true}
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
                             hasError={statusInfo.status==='FAIL'}
