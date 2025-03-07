@@ -1,14 +1,17 @@
 import PropTypes from "prop-types";
 
 export const ExportRequest = ({
-   id= null,
-   description= null,
+    tableId= null,
+    resultInstanceId = null,
+    description= null,
 } = {}) => ({
-    id,
+    tableId,
+    resultInstanceId,
     description,
 });
 
 ExportRequest.propTypes = {
-    id: PropTypes.number,
+    tableId: PropTypes.number,
+    resultInstanceId: PropTypes.number,
     description: PropTypes.string.isRequired,
 };

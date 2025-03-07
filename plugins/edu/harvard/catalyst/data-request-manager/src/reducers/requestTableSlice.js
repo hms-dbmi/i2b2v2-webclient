@@ -23,9 +23,14 @@ export const requestTableSlice = createSlice({
                         id: request.id,
                         description: request.description,
                         requests: request.requests.map(req => {
-                            return ExportRequest({id: req.id, description: req.description})
+                            return ExportRequest({
+                                tableId: req.tableId,
+                                resultInstanceId: req.resultInstanceId,
+                                description: req.description
+                            })
                         }),
                         dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
+                        lastUpdated: DateTime.fromISO(request.lastUpdated).toJSDate(),
                         patientCount: patientCount,
                         userId: request.userId,
                         status: status
@@ -36,9 +41,14 @@ export const requestTableSlice = createSlice({
                         id: request.id,
                         description: request.description,
                         requests: request.requests.map(req => {
-                            return ExportRequest({id: req.id, description: req.description})
+                            return ExportRequest({
+                                tableId: req.tableId,
+                                resultInstanceId: req.resultInstanceId,
+                                description: req.description
+                            })
                         }),
                         dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
+                        lastUpdated: DateTime.fromISO(request.lastUpdated).toJSDate(),
                         status: status
                     })
                 }

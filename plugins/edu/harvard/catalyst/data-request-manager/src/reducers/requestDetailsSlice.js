@@ -28,15 +28,14 @@ export const requestDetailsSlice = createSlice({
             if(isManager){
                 details = AdminRequestDetails({
                     id: requestDetails.id,
-                    name: requestDetails.name,
-                    description: requestDetails.description,
+                    name: requestDetails.description,
                     requests: requestDetails.requests,
-                    dateSubmitted: DateTime.fromISO(requestDetails.dateSubmitted).toJSDate(),
+                    dateSubmitted: requestDetails.dateSubmitted,
                     email: requestDetails.email,
                     userId: requestDetails.userId,
                     status: status,
                     patientCount: requestDetails.patientCount,
-                    statusLogs: requestDetails.statusLogs.map((st, index) => {
+                    /*statusLogs: requestDetails.statusLogs.map((st, index) => {
                         let lstatus = RequestStatus._lookupStatus(st.status);
                         if (lstatus.length > 0) {
                             lstatus = lstatus[0];
@@ -49,20 +48,19 @@ export const requestDetailsSlice = createSlice({
                             date: DateTime.fromISO(st.date).toJSDate(),
                             status: lstatus
                         })
-                    })
+                    })*/
                 });
             }
            else {
                 details = ResearcherRequestDetails({
                     id: requestDetails.id,
-                    name: requestDetails.name,
-                    description: requestDetails.description,
+                    name: requestDetails.description,
                     requests: requestDetails.requests,
-                    dateSubmitted: DateTime.fromISO(requestDetails.dateSubmitted).toJSDate(),
+                    dateSubmitted: requestDetails.dateSubmitted,
                     email: requestDetails.email,
                     userId: requestDetails.userId,
                     status: status,
-                    statusLogs: requestDetails.statusLogs.map((st, index) => {
+                    /*statusLogs: requestDetails.statusLogs.map((st, index) => {
                         let lstatus = RequestStatus._lookupStatus(st.status);
                         if (lstatus.length > 0) {
                             lstatus = lstatus[0];
@@ -75,7 +73,7 @@ export const requestDetailsSlice = createSlice({
                             date: DateTime.fromISO(st.date).toJSDate(),
                             status: lstatus
                         })
-                    })
+                    })*/
                 });
             }
             state.details = details;

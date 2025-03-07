@@ -99,12 +99,6 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                                     startIcon={<CreateIcon />}  onClick={() => setConfirmFileGen(true)}>Generate Data File(s)
                                             </Button>
                                         </div>
-
-                                        <div className={"RequestXmlMain"}>
-                                            <Button href="#"  variant="outlined" endIcon={<OpenInNewIcon />}>
-                                                View Request XML
-                                            </Button>
-                                        </div>
                                     </Grid>
                                     <Grid size={6}>
                                         <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
@@ -112,9 +106,6 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                     </Grid>
                                 </Grid>
                             </Card>
-                        </div>
-                        <div className={"RequestNotes"}>
-                            <AdminNotesView requestId={requestRow.id}/>
                         </div>
                         {confirmFileGen && <ConfirmDialog
                             msg={'Are you sure you want to generate data file(s)?'}

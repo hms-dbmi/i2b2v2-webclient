@@ -3,37 +3,49 @@
 import {call, put, takeLatest} from "redux-saga/effects";
 import {GET_REQUEST_DETAILS} from "../actions";
 import {getRequestDetailsError, getRequestDetailsSuccess} from "../reducers/requestDetailsSlice";
-import {requestDetails, adminRequestDetails} from "./testData";
 import XMLParser from "react-xml-parser";
-
+import {decode} from "html-entities";
 
 const getExportRequestDetailRequest = (queryResultInstanceId) => {
     let data = {
-        qr_key_value: queryResultInstanceId//1394,
+        qr_key_value: queryResultInstanceId,
     };
     return i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryResultInstanceId(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
 };
 
-const getTestData = (requestId, isManager) => {
-    let request = null;
+const parseExportRequestDetailXml = (exportRequestListXml) => {
+    let exportRequestDetail = {};
 
-    if(isManager){
-        request = adminRequestDetails.filter((req) => req.id === requestId);
-    }else{
-        request = requestDetails.filter((req) => req.id === requestId);
+    let crcXmlResult = exportRequestListXml.getElementsByTagName('crc_xml_result');
+    if(crcXmlResult.length > 0){
+        crcXmlResult = crcXmlResult[0];
+        let xmlValue = crcXmlResult.getElementsByTagName('xml_value');
+        if(xmlValue.length > 0) {
+            xmlValue = xmlValue[0].value;
+            xmlValue = decode(xmlValue);
+            let parseXmlValue = new XMLParser().parseFromString(xmlValue);
+            let dataColumn = 0
+        }
     }
-    return request.length > 0 ? request[0] : {};
 }
 
 export function* doGetRequestDetails(action) {
     const { requestRow, isManager } = action.payload;
 
-    let response1 = yield call(getExportRequestDetailRequest, requestRow.id);
     try {
-        let response = {ok: true};
-        if (response.ok) {
-            const data = getTestData(requestRow.id, isManager); //parseData(yield response.json());
-            yield put(getRequestDetailsSuccess({requestDetails: data, isManager}));
+        let response;
+        const isResultInstanceIdAvailable = requestRow.requests.length > 0 && requestRow.requests[0].resultInstanceId;
+        if(isResultInstanceIdAvailable){
+            response = yield call(getExportRequestDetailRequest, requestRow.requests[0].resultInstanceId);
+        }
+
+        if(!isResultInstanceIdAvailable){
+            yield put(getRequestDetailsError({errorMessage: "There was an error getting result instance id for retrieving the request details"}));
+        }
+        else if (!response.error) {
+            let dataExportRequestsList = yield parseExportRequestDetailXml(response);
+
+            yield put(getRequestDetailsSuccess({requestDetails: requestRow, isManager}));
         } else {
             yield put(getRequestDetailsError({errorMessage: "There was an error getting the request details"}));
         }
@@ -41,7 +53,6 @@ export function* doGetRequestDetails(action) {
         yield put(getRequestDetailsError({errorMessage: "There was an error getting the request details"}));
     }
 }
-
 
 export function* getRequestDetailsSaga() {
     yield takeLatest(GET_REQUEST_DETAILS, doGetRequestDetails);

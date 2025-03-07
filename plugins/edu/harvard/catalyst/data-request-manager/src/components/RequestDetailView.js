@@ -40,7 +40,7 @@ export const RequestDetailView = ({details, isManager}) => {
                         <ol className={"RequestDetailContentItem DataRequestType"}>
                             {
                                 details.requests.map((request)=> {
-                                    return (<li> {request} </li>)
+                                    return (<li> {request.description} </li>)
                                 })
                             }
                         </ol>
