@@ -19,18 +19,15 @@ import {useDispatch, useSelector} from "react-redux";
 import {getUserInfo} from "../../reducers/userInfoSlice";
 
 import {
-    handleRowInsert,
     loadTable
 } from "../../reducers/tableDefSlice";
 
-import {generateTableDefRowId} from "../../models/TableDefinitionRow";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 
 /* global i2b2 */
 
 export const DataExport = () => {
     const dispatch = useDispatch();
-    const totalRows = React.useRef();
 
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const [selectedTab, setSelectedTab] = React.useState(0);
@@ -86,7 +83,6 @@ export const DataExport = () => {
         if (isI2b2LibLoaded && i2b2.sdx !== undefined) {
             dispatch(getUserInfo({}));
             dispatch(loadTable({}));
-            console.log("loading table again")
         } else {
             window.addEventListener('I2B2_READY', i2b2LibLoaded);
         }

@@ -18,7 +18,6 @@ import LockIcon from '@mui/icons-material/Lock';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import CircularProgress from '@mui/material/CircularProgress';
 import {useDispatch, useSelector} from "react-redux";
-import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
 import {
     Dialog,

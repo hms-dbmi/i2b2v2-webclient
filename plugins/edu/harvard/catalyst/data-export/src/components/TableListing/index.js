@@ -187,7 +187,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         if(deleteFailed){
             setShowAlertDialog(true);
             setAlertMsgInfo({
-                title: "DeleteFile",
+                title: "Delete File",
                 msg: "An error occurred deleting file \"" + rowToDelete.fileName + "\"",
                 onOk: () => {setShowAlertDialog(false); onDeleteAlertClose();}
             })
@@ -251,10 +251,10 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" autoFocus onClick={handleDeleteRow}>
+                    <Button variant="contained" onClick={handleDeleteRow}>
                         Yes
                     </Button>
-                    <Button variant="contained" autoFocus onClick={handleCancelDeleteRow}>
+                    <Button variant="contained" onClick={handleCancelDeleteRow}>
                         No
                     </Button>
                 </DialogActions>

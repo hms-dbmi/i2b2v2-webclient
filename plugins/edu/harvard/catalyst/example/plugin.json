@@ -8,7 +8,6 @@
   "i2b2_version" : "1.7.12a",
   "base": "index.html",
   "sandbox": true,
-
   "authorizedTunnel": {
     "variables" :{
       "i2b2.PM.model.isAdmin": "R",

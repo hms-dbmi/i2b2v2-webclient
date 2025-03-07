@@ -1284,8 +1284,7 @@ i2b2.CRC.cfg.msgs.setTable = '<?xml version="1.0" encoding="UTF-8" standalone="y
     '      		    <title>{{{title}}}</title>\n'+
     '      		    <creator_id>{{{creator_id}}}</creator_id>\n'+
     '      		    <shared>{{{shared}}}</shared>\n'+
-    '      		    {{{create_date_xml}}}\n'+
-    '      		    {{{update_date_xml}}}\n'+
+    '      		    <cohort>true</cohort>\n'+
     '      		    {{{concepts}}}\n'+
     '      		</rpdo>\n'+
     '   	</ns3:rpdos>\n'+
@@ -1313,6 +1312,56 @@ i2b2.CRC.ajax._addFunctionCall(	"setTable",
     ['concepts', 'create_date_xml', 'update_date_xml'],
     i2b2.CRC.cfg.parsers.setTable);
 
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.deleteTable = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>AL</accept_acknowledgement_type>\n'+
+    '		<project_id>{{{sec_project}}}</project_id>\n'+
+    '		<country_code>US</country_code>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '   	<ns3:rpdos>\n'+
+    '      		<rpdo id="{{{tableId}}}">\n'+
+    '      		</rpdo>\n'+
+    '   	</ns3:rpdos>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>\n';
+i2b2.CRC.ajax._addFunctionCall(	"deleteTable",
+    "{{{URL}}}deleteTable",
+    i2b2.CRC.cfg.msgs.deleteTable,
+);
 // ================================================================================================== //
 i2b2.CRC.cfg.msgs.renameTable = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
     '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
