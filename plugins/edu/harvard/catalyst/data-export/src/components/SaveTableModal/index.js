@@ -9,11 +9,10 @@ import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 import "../../css/modals.scss";
 import { TableListing } from "../TableListing";
-import {confirmDeleteTableStatus, deleteTable, listTables} from "../../reducers/tableListingSlice";
+import {confirmDeleteTableStatus, deleteTable, listTables, renameTable} from "../../reducers/tableListingSlice";
 import { TabPanel } from "../TabPanel";
 import {saveStatusConfirmed, saveTable} from "../../reducers/saveTableSlice";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
-
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
@@ -35,6 +34,10 @@ export const SaveTableModal = ({open, handleClose}) => {
             id: `vertical-tab-${index}`,
             'aria-controls': `vertical-tabpanel-${index}`,
         };
+    }
+
+    const updateTableDefinitionTitle = (id, title) => {
+        dispatch(renameTable({id, title}));
     }
 
     const onRowSelect = (row) => {
@@ -194,6 +197,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}
+                            renameTable={updateTableDefinitionTitle}
                         />
                     </TabPanel>
                     <TabPanel
@@ -205,7 +209,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                         <TableListing
                             id={"saveModalDefTableLocal"}
                             rows={userRows}
-                            canRename={false}
+                            canRename={true}
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
                             hasError={statusInfo.status==='FAIL'}
@@ -213,6 +217,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}
+                            renameTable={updateTableDefinitionTitle}
                         />
                     </TabPanel>
                 </Box>

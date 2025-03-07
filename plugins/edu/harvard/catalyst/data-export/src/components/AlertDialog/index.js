@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {
-    Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+    Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from "@mui/material";
 
 export const AlertDialog = ({msg, title, onOk, customOkLabel }) => {
