@@ -121,7 +121,11 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
             disableReorder: true,
             type: 'number'
         },
-        {
+    ];
+
+    //add rename and delete icons if user has rename privileges
+    if(canRename){
+        columns.push({
             field: 'actions',
             type: 'actions',
             width: 77,
@@ -163,8 +167,8 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                     />,
                 ];
             },
-        },
-    ];
+        });
+    }
 
     function handleOnSelectionModelChange(selection, {api} ) {
         if (selection.length > 0) onSelect(api.getRow(selection[0]));
