@@ -103,7 +103,7 @@ i2b2.CRC.ctrlr.QueryMgr.generateQueryName = function() {
 
 
 // ================================================================================================== //
-i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, queryExecutionMethod) {
+i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, queryExecutionMethod, emailAndMessage) {
     // clear any old results
     i2b2.CRC.model.runner.isLoading = true;
     i2b2.CRC.view.QueryMgr.clearStatus();
@@ -113,6 +113,8 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
 
     i2b2.CRC.ctrlr.QueryMgr._processModel();
     i2b2.CRC.model.transformedQuery.name = queryName; // i2b2.h.Escape(queryName);
+    i2b2.CRC.model.transformedQuery.email = emailAndMessage.email;
+    i2b2.CRC.model.transformedQuery.message = emailAndMessage.message;
 
     let params = {
         result_wait_time: i2b2.CRC.view.QT.params.queryTimeout,
