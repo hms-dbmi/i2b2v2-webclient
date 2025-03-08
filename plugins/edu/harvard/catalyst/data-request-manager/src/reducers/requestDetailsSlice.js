@@ -46,6 +46,7 @@ export const requestDetailsSlice = createSlice({
                     email: requestDetails.email,
                     userId: requestDetails.userId,
                     status: status,
+                    patientCount: requestDetails.patientCount,
                 });
             }
             state.details = details;

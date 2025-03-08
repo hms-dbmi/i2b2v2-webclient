@@ -32,9 +32,7 @@ export const RequestDetailView = ({details, isManager}) => {
                         <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Email:</span> {details.email} </Typography>
                     </Grid>
                     <Grid size={6}>
-                        {isManager &&
-                            <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Count(Patient):</span> { formatNumber(details.patientCount)} </Typography>
-                        }
+                        <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Count(Patient):</span> { formatNumber(details.patientCount)} </Typography>
 
                         <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Data Request Type:</span> </Typography>
                         <ol className={"RequestDetailContentItem DataRequestType"}>

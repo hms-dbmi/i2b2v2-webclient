@@ -16,9 +16,9 @@ export const requestTableSlice = createSlice({
         listRequestTableSuccess: (state, { payload: {researcherRequests, isManager} }) => {
             const rows = researcherRequests.map((request) => {
                 let status = RequestStatus._convertI2b2Status(request.status);
+                const patientCount = request.patientCount.length > 0 ? request.patientCount.toLocaleString() : request.patientCount;
 
                 if(isManager){
-                    const patientCount = request.patientCount.length > 0 ? request.patientCount.toLocaleString() : request.patientCount;
                     return AdminTableRow({
                         id: request.id,
                         description: request.description,
@@ -47,6 +47,7 @@ export const requestTableSlice = createSlice({
                             })
                         }),
                         dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
+                        patientCount: patientCount,
                         status: status
                     })
                 }
