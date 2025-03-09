@@ -58,8 +58,8 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailView}
             sortable: true,
             resizable: false,
             disableReorder: true,
-            minWidth: 105,
-            maxWidth: 105,
+            minWidth: 125,
+            maxWidth: 125,
             valueGetter: (value) => {
                 if (!value) {
                     return value;
