@@ -47,6 +47,7 @@ import {
 
 
 import "./DefineTable.scss";
+import {DEFAULT_TABLE_TITLE} from "../../sagas/loadTableSaga";
 
 /* global i2b2 */
 
@@ -55,7 +56,7 @@ let currentDateRow = false;
 export const DefineTable = (props) => {
     const dispatch = useDispatch();
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
-    const { rows, statusInfo, labValueToDisplay} = useSelector((state) => state.tableDef);
+    const { rows, statusInfo, labValueToDisplay, title} = useSelector((state) => state.tableDef);
     const [cellModesModel, setCellModesModel] = React.useState({});
     const doDispSnackbar = props.dispSnackbar;
     const totalRows = React.useRef();
@@ -615,6 +616,7 @@ export const DefineTable = (props) => {
                 saveUpdate={handleDateSave}
             />
 
+            {title && title !== DEFAULT_TABLE_TITLE &&  <div className={"editingFile"}>editing: <b>{title}</b></div> }
             <div id="dropTrgt">
                 <p>Drag a concept onto the grid to add it to the list</p>
                 <DataGrid
