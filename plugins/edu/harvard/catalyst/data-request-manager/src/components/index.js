@@ -9,3 +9,5 @@ export { AdminDetailView } from "./Admin/AdminDetailView";
 export { RequestDetailView } from "./RequestDetailView";
 export { DetailViewNav } from "./DetailViewNav";
 export { RequestStatusLogView } from "./RequestStatusLogView";
+export { TableDefinitionPreview } from "./TableDefinitionPreview";
+

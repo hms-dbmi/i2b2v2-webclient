@@ -11,3 +11,6 @@ export { AdminRequestDetails } from "./AdminRequestDetails";
 export { AdminNotes } from "./AdminNotes";
 export { AdminNote } from "./AdminNote";
 export { ExportRequest } from "./ExportRequest";
+export { TableDefinition } from "./TableDefinition";
+export { DATA_OPTION_LOOKUP, TableDefinitionRow } from "./TableDefinitionRow";
+

@@ -1,5 +1,4 @@
-import React from "react";
-import "./RequestDetailView.scss";
+import React, {useEffect} from "react";
 import {
     Box,
     Card,
@@ -7,10 +6,16 @@ import {
     Typography
 } from "@mui/material";
 import Grid from '@mui/material/Grid2';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {reloadQuery} from "../reducers/requestDetailsSlice";
+import {getTableDefinition, getTableDefinitionStatusConfirmed} from "../reducers/tableDefSlice";
+import {TableDefinitionPreview} from "./TableDefinitionPreview";
+import "./RequestDetailView.scss";
 
-export const RequestDetailView = ({details, isManager}) => {
+export const RequestDetailView = ({details}) => {
+   const [showTableDefPreview, setShowTableDefPreview] = React.useState(false);
+    const tableDef  = useSelector((state) => state.tableDef);
+
     const dispatch = useDispatch();
 
     const formatNumber = (value) => {
@@ -24,6 +29,21 @@ export const RequestDetailView = ({details, isManager}) => {
     const handleQueryReload = (queryId) => {
         dispatch(reloadQuery({queryId}));
     }
+
+    const handlePreviewTableDef = (tableId) => {
+        dispatch(getTableDefinition({tableId}));
+    }
+
+    const handleClosePreviewTableDef = () => {
+        setShowTableDefPreview(false);
+    }
+
+    useEffect(() => {
+        if (tableDef.statusInfo.status === "SUCCESS") {
+            setShowTableDefPreview(true);
+            dispatch(getTableDefinitionStatusConfirmed());
+        }
+    }, [tableDef.concepts]);
 
     return (
         <Box className={"RequestDetailView"}>
@@ -47,7 +67,7 @@ export const RequestDetailView = ({details, isManager}) => {
                             {
                                 details.requests.map((request)=> {
                                     return (<li>
-                                        {request.tableId !== null && <span>{request.description} <Link component="button" variant="body1" title={"preview table definition"} size="small" onClick={() => alert("table definition id is " + request.tableId)}>view</Link></span>}
+                                        {request.tableId !== null && <span>{request.description} <Link component="button" variant="body1" title={"preview table definition"} size="small" onClick={() => handlePreviewTableDef(request.tableId)}>view</Link></span>}
                                         {request.tableId === null && request.description}
                                     </li>)
                                 })
@@ -56,6 +76,7 @@ export const RequestDetailView = ({details, isManager}) => {
                     </Grid>
                 </Grid>
             </Card>
+            <TableDefinitionPreview tableDefinition={tableDef} open={showTableDefPreview} onClose={handleClosePreviewTableDef}/>
         </Box>
     )
 }
