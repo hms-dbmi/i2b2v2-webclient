@@ -34,11 +34,11 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
                     statusBar.error += i2b2.CRC.model.runner.progress[status];
                     break;
                 case "COMPLETED":
+                case "PROCESSING":
                 case "FINISHED":
                     statusBar.finished += i2b2.CRC.model.runner.progress[status];
                     break;
                 case "WAITTOPROCESS":
-                case "PROCESSING":
                 case "QUEUED":
                 default:
                     statusBar.running += i2b2.CRC.model.runner.progress[status];
@@ -69,6 +69,16 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
         i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryRunner:polling", {qi_key_value: i2b2.CRC.model.runner.idQueryInstance}, i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryStatus);
     }
     if (!stillRunning || (i2b2.CRC.model.runner.finished && (!i2b2.CRC.model.runner.deleteCurrentQuery || (i2b2.CRC.model.runner.deleteCurrentQuery && i2b2.CRC.model.runner.idQueryMaster !== undefined)))) i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
+
+
+    // if we are still running but are now queued we will now render whatever we have to display (while still continuing to poll)
+    if (stillRunning && i2b2.CRC.model.runner.queued && i2b2.CRC.model.runner.isShrine) {
+        if (i2b2.CRC.model.runner.intervalGraphRefresh === false) {
+            i2b2.CRC.model.runner.intervalGraphRefresh = setInterval(() => {
+                i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport"))
+            }, 1000);
+        }
+    }
 
     // update the progress display
     i2b2.CRC.view.QueryMgr.updateStatus();
@@ -155,7 +165,8 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
         isLoading: false,
         isCancelled: false,
         hasError: false,
-        isShrine: false
+        isShrine: false,
+        intervalGraphRefresh: false
     };
 
     delete i2b2.CRC.model.runner.progress;
@@ -240,6 +251,10 @@ i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     i2b2.CRC.model.runner.isCancelled = true;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.queued = true;
+
+    // stop SHRINE dynamic rendering
+    if (i2b2.CRC.model.runner.intervalGraphRefresh !== false) clearInterval(i2b2.CRC.model.runner.intervalGraphRefresh);
+
     // if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
     //     clearInterval(i2b2.CRC.model.runner.intervalTimer);
     //     delete i2b2.CRC.model.runner.intervalTimer;
@@ -379,6 +394,8 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     i2b2.CRC.model.runner.isLoading = false;
     if (i2b2.CRC.model.runner.endTime === undefined) i2b2.CRC.model.runner.endTime = new Date();
 
+    // stop SHRINE dynamic rendering
+    if (i2b2.CRC.model.runner.intervalGraphRefresh !== false) clearInterval(i2b2.CRC.model.runner.intervalGraphRefresh);
 
     // stop the run timer
     if (i2b2.CRC.model.runner.intervalTimer !== undefined) {

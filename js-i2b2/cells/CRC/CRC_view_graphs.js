@@ -32,7 +32,7 @@ i2b2.CRC.view.graphs.createGraph = function(sDivName, breakdownData, breakdownIn
 
     };
 
-    const isShrine = (breakdownData?.SHRINE.sites.length > 0);
+    const isShrine = (breakdownData?.SHRINE?.sites.length > 0);
 
     // sort the results [TODO: MAKE THIS PROGRAMATICLY ENABLED OR NOT]
     // =====================
@@ -176,14 +176,16 @@ i2b2.CRC.view.graphs.rerenderGraphs = function() {
     let chartContainer = $("#breakdownChartsBody");
     if (chartContainer.length === 0) return;
 
+    let scrollPosition = chartContainer[0].offsetTop;
     chartContainer.empty();
 
     let isZeroPatients = parseInt(i2b2.CRC.view.QueryReport.breakdowns.patientCount.value || -1) === 0;
     if(!isZeroPatients) {
         i2b2.CRC.view.QueryReport.breakdowns.resultTable.forEach((breakdown, i) => {
-            if (!["PATIENT_COUNT_SHRINE_XML","PATIENT_COUNT_XML"].includes(breakdown.type)) i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown);
+            if (!["PATIENT_COUNT_SHRINE_XML", "PATIENT_COUNT_XML", "PATIENT_SITE_COUNT_SHRINE_XML"].includes(breakdown.type)) i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown);
         })
     }
+    chartContainer[0].offsetParent.scrollTo({top:scrollPosition});
 };
 
 

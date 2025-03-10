@@ -119,6 +119,9 @@ i2b2.CRC.view.QueryReport = {
                 let xml_v = i2b2.h.parseXml(xml_value);
                 // process "normal" data
                 let params = i2b2.h.XPath(xml_v, 'descendant::data[@column]/text()/..');
+                // short circuit exit because there is no data
+console.log(status + "\t\tColumns:" + params.length + "\t\t" +breakdown.type);
+                if (params.length === 0) return;
                 for (let i2 = 0; i2 < params.length; i2++) {
                     let entryRecord = {}
                     entryRecord.name = params[i2].getAttribute("column");
@@ -236,8 +239,10 @@ i2b2.CRC.view.QueryReport = {
                     // update the display with SHRINE info if it is present
                     if (breakdown.SHRINE) {
                         let siteCnt = parseInt(breakdown.SHRINE.complete) + parseInt(breakdown.SHRINE.error);
-                        let ptCnt = breakdown.result[0].value;
-                        $('#patientCountLine3').text(siteCnt + " sites reporting up to " + ptCnt + " patients");
+                        if (breakdown.result && breakdown.result.length > 1) {
+                            let ptCnt = breakdown.result[0].value;
+                            $('#patientCountLine3').text(siteCnt + " sites reporting up to " + ptCnt + " patients");
+                        }
                     }
                 } else if(visualAttr === 'LR' || visualAttr === 'LX') {
                     i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
@@ -259,7 +264,7 @@ i2b2.CRC.view.QueryReport = {
             dataExport: i2b2.CRC.view.QueryReport.dataExport
         });
 
-        // See how many non-errored graphs do we have (minus the patient count)
+        // See how many non-errored graphs do we have (minus the patient count(s))
         let showGraphs = !i2b2.CRC.view.QueryReport.hasZeroPatients
             && i2b2.CRC.view.QueryReport.breakdowns.resultTable.length > 1
             && i2b2.CRC.view.QueryReport.breakdowns.resultTable.map(a => a.status !== 'ERROR' && !["PATIENT_COUNT_XML","PATIENT_COUNT_SHRINE_XML","PATIENT_SITE_COUNT_SHRINE_XML"].includes(a.type)).reduce((b,c) => b ? b : b || c);
@@ -322,12 +327,15 @@ i2b2.CRC.view.QueryReport = {
             i2b2.CRC.view.QueryReport.loadQueryResultSetInstance();
     },
     render: function(allBreakdowns) {
-        let view = this.disDiv;
+        let view = this.disDiv[0];
+        let scrollPosition = view.offsetTop;
+
         let tableData = $("#infoQueryStatusTable").show().empty();
         $((Handlebars.compile("{{> QueryResult}}"))(allBreakdowns)).appendTo(tableData);
-
         let dataExportResult = $("#infoQueryDataExportTable").show().empty();
         $((Handlebars.compile("{{> QueryDataExportResult}}"))(allBreakdowns)).appendTo(dataExportResult);
+
+        view.offsetParent.scrollTo({top:scrollPosition});
     },
     _getTitle:  function(resultType, oRecord, oXML) {
         let title = "";
