@@ -80,6 +80,15 @@ export const requestDetailsSlice = createSlice({
                 errorMessage: errorMessage
             });
         },
+        reloadQuery: (state) => {
+            state.reloadQueryStatus = StatusInfo();
+        },
+        reloadQueryError: (state, { payload: { errorMessage} }) => {
+            state.reloadQueryStatus = StatusInfo({
+                status: "FAIL",
+                errorMessage: errorMessage
+            });
+        }
     }
 })
 
@@ -89,7 +98,9 @@ export const {
     getRequestDetailsError,
     generateDataFile,
     generateDataFileSuccess,
-    generateDataFileError
+    generateDataFileError,
+    reloadQuery,
+    reloadQueryError
 } = requestDetailsSlice.actions
 
 export default requestDetailsSlice.reducer

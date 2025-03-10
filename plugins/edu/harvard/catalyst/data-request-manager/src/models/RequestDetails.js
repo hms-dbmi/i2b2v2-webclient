@@ -1,21 +1,21 @@
 import PropTypes from "prop-types";
 import {ResearcherRequestDetails} from "./ResearcherRequestDetails";
 import {DataFileGeneration} from "./DataFileGeneration";
+import {StatusInfo} from "./StatusInfo";
 
 export const RequestDetails = ({
-     details = ResearcherRequestDetails(),
-     dataFileGeneration = DataFileGeneration(),
-     log = [],
- } = {}) => ({
+    details = ResearcherRequestDetails(),
+    dataFileGeneration = DataFileGeneration(),
+    reloadQueryStatus = StatusInfo(),
+} = {}) => ({
     details,
     dataFileGeneration,
-    log
+    reloadQueryStatus
 })
 
 RequestDetails.propTypes = {
     details: PropTypes.instanceOf(ResearcherRequestDetails).isRequired,
     dataFileGeneration: PropTypes.instanceOf(DataFileGeneration),
-    log: PropTypes.arrayOf(PropTypes.string).isRequired,
-    status: PropTypes.string.isRequired,
+    reloadQueryStatus: PropTypes.shape(StatusInfo),
     isFetching: PropTypes.bool
 };

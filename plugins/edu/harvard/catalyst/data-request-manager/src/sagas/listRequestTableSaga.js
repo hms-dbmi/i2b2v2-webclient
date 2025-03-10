@@ -39,7 +39,7 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
         let queryInstanceTypeList = exportRequest.getElementsByTagName('query_instance_type');
         if(userId.length > 0 && queryId.length > 0 && queryName.length > 0 && dateSubmitted.length && queryInstanceTypeList.length > 0){
             userId = userId[0].value;
-            queryId = queryId[0].value
+            queryId = queryId[0].value;
             queryName = decode(queryName[0].value);
             dateSubmitted = dateSubmitted[0].value;
             let status = '';

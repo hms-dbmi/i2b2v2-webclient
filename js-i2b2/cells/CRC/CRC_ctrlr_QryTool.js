@@ -26,6 +26,10 @@ function QueryToolController() {
     this.doQueryLoad = function(qm_id) {  // function to reload query from Query History or Workspace
         i2b2.CRC.model.runner.isLoading = true;
 
+        // make sure that the Find Patient window is visible
+        const FindPatientsTab = i2b2.layout.gl_instances.rightCol.root.getItemsByFilter((a) => { return a.componentName === 'i2b2.CRC.view.QT'; } )[0];
+        FindPatientsTab.parent.setActiveContentItem(FindPatientsTab);
+
         // clear existing query
         i2b2.CRC.view.QT.clearAll();
 
