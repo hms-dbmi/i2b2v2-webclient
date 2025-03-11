@@ -24,6 +24,7 @@ export const TableDefinitionPreview = ({tableDefinition, open, onClose}) => {
             disableColumnMenu: true,
             resizable: true,
             display: "flex",
+            sortable: false,
             flex: 1,
             renderCell: (cellValues) => {
                 if (cellValues.row.sdxData && (cellValues.row.sdxData.LabValues !== undefined || cellValues.row.sdxData.dateRange !== undefined)) {
@@ -108,13 +109,11 @@ export const TableDefinitionPreview = ({tableDefinition, open, onClose}) => {
                                 break;
                         }
                         let dateInfo = func_getDateTxt(cellValues.row.sdxData);
-                        return (<span><span title={txtMouseover}>{txtLab}</span> |
-                            <span title={dateInfo.mouse}>{dateInfo.txt}</span></span>);
+                        return dateInfo.txt ? (<span><span title={txtMouseover}>{txtLab}</span> |
+                            <span title={dateInfo.mouse}>{dateInfo.txt}</span></span>) : <span title={txtMouseover}>{txtLab}</span>;
                     } else {
                         let dateInfo = func_getDateTxt(cellValues.row.sdxData);
-                        if (labData !== undefined ) {
-                            return (<span>{dateInfo.txt}</span>);
-                        }
+                        return (<span>{dateInfo.txt}</span>);
                     }
                 }
             }
