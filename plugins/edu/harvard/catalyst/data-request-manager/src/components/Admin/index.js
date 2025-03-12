@@ -4,16 +4,16 @@ import {AdminTableView} from "./AdminTableView";
 import {AdminDetailView} from "./AdminDetailView";
 
 export const Admin = () => {
-    const [detailViewId, setDetailViewId] = useState(null);
+    const [detailView, setDetailView] = useState(null);
 
     const setViewRequestTable = () => {
-        setDetailViewId(null);
+        setDetailView(null);
     }
 
     return (
         <Box>
-            { detailViewId === null && <AdminTableView displayDetailViewId={setDetailViewId}/> }
-            { detailViewId !== null && <AdminDetailView requestId={detailViewId} setViewRequestTable={setViewRequestTable}/> }
+            { detailView === null && <AdminTableView displayDetailView={setDetailView}/> }
+            { detailView !== null && <AdminDetailView requestRow={detailView} setViewRequestTable={setViewRequestTable}/> }
         </Box>
 
     );

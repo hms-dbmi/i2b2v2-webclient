@@ -19,6 +19,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
     const { sharedRows, userRows, statusInfo, isFetching, isDeleting, deleteStatusInfo} = useSelector((state) => state.tableListing);
     const [tab, setTab] = React.useState(0);
     const [selectedTable, setSelectedTable] = useState(null);
+    const { isAdmin } = useSelector((state) => state.userInfo);
 
 
     const handleChangeTab = (event, newValue) => { setTab(newValue); };
@@ -92,7 +93,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                     >
                         <TableListing id={"loadModalDefTableGlobal"}
                                       rows={sharedRows}
-                                      canRename={false}
+                                      canRename={isAdmin}
                                       onSelect={setSelectedTable}
                                       hasError={statusInfo.status==='FAIL'}
                                       isLoading={isFetching || isDeleting}

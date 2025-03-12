@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { REQUEST_TABLE } from "../actions";
 import { defaultState } from '../defaultState';
-import {AdminTableRow, RequestStatus, RequestTable, ResearcherTableRow, StatusInfo} from "../models";
+import {AdminTableRow, ExportRequest, RequestStatus, RequestTable, ResearcherTableRow, StatusInfo} from "../models";
 import {DateTime} from "luxon";
 
 export const requestTableSlice = createSlice({
@@ -13,22 +13,19 @@ export const requestTableSlice = createSlice({
                 isFetching: true
             })
         },
-        listRequestTableSuccess: (state, { payload: {researcherRequests, isAdmin} }) => {
+        listRequestTableSuccess: (state, { payload: {researcherRequests, isManager} }) => {
             const rows = researcherRequests.map((request) => {
-                let status = RequestStatus._lookupStatus(request.status);
-                if(status.length > 0){
-                    status = status[0];
-                }else{
-                    status = RequestStatus.statuses.UNKNOWN;
-                }
+                let status = RequestStatus._convertI2b2Status(request.status);
 
-                if(isAdmin){
+                if(isManager){
                     const patientCount = request.patientCount.length > 0 ? request.patientCount.toLocaleString() : request.patientCount;
                     return AdminTableRow({
                         id: request.id,
                         description: request.description,
-                        requests: request.requests,
-                        lastUpdated: DateTime.fromISO(request.lastUpdated).toJSDate(),
+                        requests: request.requests.map(req => {
+                            return ExportRequest({id: req.id, description: req.description})
+                        }),
+                        dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
                         patientCount: patientCount,
                         userId: request.userId,
                         status: status
@@ -38,8 +35,10 @@ export const requestTableSlice = createSlice({
                     return ResearcherTableRow({
                         id: request.id,
                         description: request.description,
-                        requests: request.requests,
-                        lastUpdated: DateTime.fromISO(request.lastUpdated).toJSDate(),
+                        requests: request.requests.map(req => {
+                            return ExportRequest({id: req.id, description: req.description})
+                        }),
+                        dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
                         status: status
                     })
                 }

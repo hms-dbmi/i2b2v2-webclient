@@ -219,8 +219,20 @@ i2b2.CRC.view.QT.showRun = function() {
                 if (reqResultTypes.length > 0) {
                     $(".errorMsg", "#crcModal").addClass("hidden");
                     let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
+
+                    let emailAndComments = {};
+                    const email = $("#dataRequestInfoEmail").val();
+                    if(email.length > 0){
+                       emailAndComments.email = email;
+                    }
+
+                    const message = $("#dataRequestInfoComment").val();
+                    if(message.length > 0){
+                        emailAndComments.message = message;
+                    }
+
                     // start the query run
-                    i2b2.CRC.ctrlr.QueryMgr.startQuery(queryName, reqResultTypes, reqExecutionMethod);
+                    i2b2.CRC.ctrlr.QueryMgr.startQuery(queryName, reqResultTypes, reqExecutionMethod, emailAndComments);
                     // make sure that the Query Status window is visible
                     let QueryStatusTab = i2b2.layout.gl_instances.rightCol.root.getItemsByFilter((a) => { return a.componentName === 'i2b2.CRC.view.QueryMgr'; } )[0];
                     QueryStatusTab.parent.setActiveContentItem(QueryStatusTab)
@@ -242,6 +254,7 @@ i2b2.CRC.view.QT.showRun = function() {
         $("#crcQtQueryName").val(queryName).attr({placeholder: queryName, value: queryName });
         $("#crcModal .RequestTypes").find(".chkQueryType").prop( "checked", false );
         $("#crcModal .DataExportTypes").find(".chkQueryType").prop( "checked", false );
+        $("#dataRequestInfoComment").val('');
         $('body #crcModal div:eq(0)').modal('show');
     }
 };

@@ -189,7 +189,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                         <TableListing
                             id={"saveModalDefTableGlobal"}
                             rows={sharedRows}
-                            canRename={false}
+                            canRename={isAdmin}
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
                             hasError={statusInfo.status==='FAIL'}
