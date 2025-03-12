@@ -11,10 +11,13 @@ import {reloadQuery} from "../reducers/requestDetailsSlice";
 import {getTableDefinition, getTableDefinitionStatusConfirmed} from "../reducers/tableDefSlice";
 import {TableDefinitionPreview} from "./TableDefinitionPreview";
 import "./RequestDetailView.scss";
+import {AlertDialog} from "./AlertDialog";
 
 export const RequestDetailView = ({details}) => {
-   const [showTableDefPreview, setShowTableDefPreview] = React.useState(false);
     const tableDef  = useSelector((state) => state.tableDef);
+    const [showTableDefPreview, setShowTableDefPreview] = React.useState(false);
+    const [showAlert, setShowAlert] = React.useState(false);
+    const [alertMsg, setAlertMsg] = React.useState("");
 
     const dispatch = useDispatch();
 
@@ -43,7 +46,11 @@ export const RequestDetailView = ({details}) => {
             setShowTableDefPreview(true);
             dispatch(getTableDefinitionStatusConfirmed());
         }
-    }, [tableDef.concepts]);
+        if (tableDef.statusInfo.status === "FAIL") {
+            setShowAlert(true);
+            setAlertMsg("Error displaying table definition. Error: " + tableDef.statusInfo.errorMessage);
+        }
+    }, [tableDef.statusInfo]);
 
     const truncateDescriptionName = (name) => {
         let truncatedName = name;
@@ -86,6 +93,7 @@ export const RequestDetailView = ({details}) => {
                 </Grid>
             </Card>
             <TableDefinitionPreview tableDefinition={tableDef} open={showTableDefPreview} onClose={handleClosePreviewTableDef}/>
+            {showAlert && <AlertDialog msg={alertMsg}/> }
         </Box>
     )
 }

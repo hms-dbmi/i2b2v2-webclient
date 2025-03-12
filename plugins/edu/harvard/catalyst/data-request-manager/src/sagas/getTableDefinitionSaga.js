@@ -64,7 +64,7 @@ const parseGetTableXml = (tableXml) => {
 }
 
 export function* doGetTableDefinition(action) {
-    let {title, tableId}  = action.payload;
+    let {tableId}  = action.payload;
 
     try {
         let response = yield call(getTableRequest, tableId);
@@ -74,11 +74,11 @@ export function* doGetTableDefinition(action) {
             yield put(getTableDefinitionSuccess({tableDef}));
         }else{
             console.error("Error retrieving table! Message: " + response.errorMsg + ". Error details: " + response.errorData);
-            yield put(getTableDefinitionError({errorMessage: "There was an error retrieving the table definition " + title}));
+            yield put(getTableDefinitionError({errorMessage: "There was an error retrieving the table definition."}));
         }
     } catch (error) {
         console.log("Caught load table error " + error);
-        yield put(getTableDefinitionError({errorMessage: "There was an error retrieving the table definition " + title}));
+        yield put(getTableDefinitionError({errorMessage: "There was an error retrieving the table definition."}));
     }
 }
 
