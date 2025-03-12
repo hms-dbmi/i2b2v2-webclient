@@ -8,7 +8,7 @@ import {
 import Grid from '@mui/material/Grid2';
 
 
-export const RequestDetailView = ({details, isAdmin}) => {
+export const RequestDetailView = ({details, isManager}) => {
     const formatNumber = (value) => {
         let formattedValue = value.length > 0 ? parseInt(value): "";
         if(isNaN(formattedValue)){
@@ -32,7 +32,7 @@ export const RequestDetailView = ({details, isAdmin}) => {
                         <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Email:</span> {details.email} </Typography>
                     </Grid>
                     <Grid size={6}>
-                        {isAdmin &&
+                        {isManager &&
                             <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Count(Patient):</span> { formatNumber(details.patientCount)} </Typography>
                         }
 

@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import {RequestStatus} from "./RequestStatus";
 import {RequestStatusLog} from "./RequestStatusLog";
+import {ExportRequest} from "./ExportRequest";
 
 export const AdminRequestDetails = ({
     id = null,
@@ -27,7 +28,7 @@ export const AdminRequestDetails = ({
 AdminRequestDetails.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
-    requests: PropTypes.arrayOf(PropTypes.string).isRequired,
+    requests: PropTypes.arrayOf(ExportRequest).isRequired,
     dateSubmitted: PropTypes.instanceOf(Date).isRequired,
     status: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,

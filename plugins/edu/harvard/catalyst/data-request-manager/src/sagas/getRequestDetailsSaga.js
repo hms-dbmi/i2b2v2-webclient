@@ -1,15 +1,23 @@
 /* globals i2b2 */
 
-import {put, takeLatest} from "redux-saga/effects";
+import {call, put, takeLatest} from "redux-saga/effects";
 import {GET_REQUEST_DETAILS} from "../actions";
 import {getRequestDetailsError, getRequestDetailsSuccess} from "../reducers/requestDetailsSlice";
 import {requestDetails, adminRequestDetails} from "./testData";
+import XMLParser from "react-xml-parser";
 
 
-const getTestData = (requestId, isAdmin) => {
+const getExportRequestDetailRequest = (queryResultInstanceId) => {
+    let data = {
+        qr_key_value: queryResultInstanceId//1394,
+    };
+    return i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryResultInstanceId(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
+};
+
+const getTestData = (requestId, isManager) => {
     let request = null;
 
-    if(isAdmin){
+    if(isManager){
         request = adminRequestDetails.filter((req) => req.id === requestId);
     }else{
         request = requestDetails.filter((req) => req.id === requestId);
@@ -18,12 +26,14 @@ const getTestData = (requestId, isAdmin) => {
 }
 
 export function* doGetRequestDetails(action) {
-    const { id, isAdmin } = action.payload;
+    const { requestRow, isManager } = action.payload;
+
+    let response1 = yield call(getExportRequestDetailRequest, requestRow.id);
     try {
         let response = {ok: true};
         if (response.ok) {
-            const data = getTestData(id, isAdmin); //parseData(yield response.json());
-            yield put(getRequestDetailsSuccess({requestDetails: data, isAdmin: isAdmin}));
+            const data = getTestData(requestRow.id, isManager); //parseData(yield response.json());
+            yield put(getRequestDetailsSuccess({requestDetails: data, isManager}));
         } else {
             yield put(getRequestDetailsError({errorMessage: "There was an error getting the request details"}));
         }

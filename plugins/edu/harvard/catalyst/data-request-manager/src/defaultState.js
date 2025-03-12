@@ -1,9 +1,9 @@
-import {RequestTable, UserAccessLevel, RequestDetails, AdminNotes} from "./models";
+import {RequestTable, UserInfo, RequestDetails, AdminNotes} from "./models";
 
 export const defaultState = {
     isI2b2LibLoaded: false,
     requestTable: RequestTable(),
     requestDetails: RequestDetails(),
-    userAccessLevel: UserAccessLevel(),
+    userInfo: UserInfo(),
     adminNotes: AdminNotes(),
 };
