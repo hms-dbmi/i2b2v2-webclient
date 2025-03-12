@@ -1,10 +1,10 @@
 import { call, put, takeLatest} from "redux-saga/effects";
 import {getTableDefinitionSuccess, getTableDefinitionError} from "../reducers/tableDefSlice";
-import XMLParser from 'react-xml-parser';
 
 import {
     GET_TABLE_DEF
 } from "../actions";
+import {parseXml} from "../utilities/parseXml";
 /* global i2b2 */
 
 const getTableRequest = (tableId) => {
@@ -13,9 +13,11 @@ const getTableRequest = (tableId) => {
         tableId: tableId,
     };
 
-    return i2b2.ajax.CRC.getTable(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
+    return i2b2.ajax.CRC.getTable(data).then((xmlString) => {
+        return parseXml(xmlString);
+    }).catch((err) => err);
 };
-const parseGetTableXml = (tableXml, id) => {
+const parseGetTableXml = (tableXml) => {
 
     let table = {
         rows: [],
@@ -30,34 +32,31 @@ const parseGetTableXml = (tableXml, id) => {
     let requiredRows = [];
     let nonRequiredColumns = [];
 
-    let concepts = tableXml.getElementsByTagName('concept');
-    concepts.map(concept => {
+    const concepts = tableXml.getElementsByTagName('concept');
+    for (let i = 0; i < concepts.length; i++) {
+        let concept = concepts[i];
         let name = concept.getElementsByTagName('name');
         let required = concept.getElementsByTagName('required');
         let data = concept.getElementsByTagName('data');
 
-        if(name.length !== 0){
-            name = name[0].value;
-            if(required.length !== 0) {
-                required = required[0].value === "true";
+        if(name.length !== 0 && name[0].childNodes.length > 0 && required.length !== 0 && required[0].childNodes.length > 0){
+            name = name[0].childNodes[0].nodeValue;
+            required = required[0].childNodes[0].nodeValue === "true";
 
-                if (required) {
-                    const dataOption = "VALUE";
-                    requiredRows.push({name, dataOption});
-                } else {
-                    if (data.length !== 0) {
-                        data = data[0].value;
-                        //remove trailing '>' char in cdata string
-                        data = data.substring(0, data.length - 1);
-                        data = JSON.parse(data)[0];
-                        const dataOption = data.dataOption;
-                        const sdxData = data.sdxData;
-                        nonRequiredColumns.push({name, dataOption, sdxData});
-                    }
+            if (required) {
+                const dataOption = "VALUE";
+                requiredRows.push({name, dataOption});
+            } else {
+                if (data.length !== 0 && data[0].childNodes[0].length > 0) {
+                    data = data[0].childNodes[0].nodeValue;
+                    data = JSON.parse(data)[0];
+                    const dataOption = data.dataOption;
+                    const sdxData = data.sdxData;
+                    nonRequiredColumns.push({name, dataOption, sdxData});
                 }
             }
         }
-    });
+    };
 
     table.rows = table.rows.concat(requiredRows);
     table.rows = table.rows.concat(nonRequiredColumns);
@@ -71,6 +70,7 @@ export function* doGetTableDefinition(action) {
         let response = yield call(getTableRequest, tableId);
         if(!response.error) {
             let tableDef = parseGetTableXml(response);
+            if(tableDef)
             yield put(getTableDefinitionSuccess({tableDef}));
         }else{
             console.error("Error retrieving table! Message: " + response.errorMsg + ". Error details: " + response.errorData);

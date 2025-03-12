@@ -45,6 +45,15 @@ export const RequestDetailView = ({details}) => {
         }
     }, [tableDef.concepts]);
 
+    const truncateDescriptionName = (name) => {
+        let truncatedName = name;
+        const maxLength = 40;
+        if(truncatedName > maxLength){
+            truncatedName = truncatedName.slice(0, maxLength) + "...";
+        }
+        return truncatedName;
+    }
+
     return (
         <Box className={"RequestDetailView"}>
             <Typography className={"RequestDetailTitle"}>
@@ -67,7 +76,7 @@ export const RequestDetailView = ({details}) => {
                             {
                                 details.requests.map((request)=> {
                                     return (<li>
-                                        {request.tableId !== null && <span>{request.description} <Link component="button" variant="body1" title={"preview table definition"} size="small" onClick={() => handlePreviewTableDef(request.tableId)}>view</Link></span>}
+                                        {request.tableId !== null && <span title={request.description}>{truncateDescriptionName(request.description)} <Link component="button" variant="body1" title={"preview table definition"} size="small" onClick={() => handlePreviewTableDef(request.tableId)}>view</Link></span>}
                                         {request.tableId === null && request.description}
                                     </li>)
                                 })
