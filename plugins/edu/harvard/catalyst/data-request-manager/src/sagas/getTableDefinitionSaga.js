@@ -14,6 +14,7 @@ const getTableRequest = (tableId) => {
     };
 
     return i2b2.ajax.CRC.getTable(data).then((xmlString) => {
+        //parses XML with CDATA properly
         return parseXml(xmlString);
     }).catch((err) => err);
 };
