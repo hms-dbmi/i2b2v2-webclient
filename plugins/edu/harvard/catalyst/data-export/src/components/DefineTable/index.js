@@ -42,7 +42,7 @@ import {
     handleRowName,
     handleRowSdx,
     loadStatusConfirmed,
-    loadTermInfo, loadTable
+    loadTermInfo,
 } from "../../reducers/tableDefSlice";
 
 

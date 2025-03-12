@@ -89,7 +89,10 @@ export const tableListingSlice = createSlice({
                 status: "FAIL",
                 errorMessage: errorMessage
             });
-        }
+        },
+        confirmRenameTableStatus: state => {
+            state.renameStatusInfo = StatusInfo();
+        },
     }
 })
 
@@ -104,6 +107,7 @@ export const {
     renameTable,
     renameTableSuccess,
     renameTableError,
+    confirmRenameTableStatus,
 } = tableListingSlice.actions
 
 export default tableListingSlice.reducer
