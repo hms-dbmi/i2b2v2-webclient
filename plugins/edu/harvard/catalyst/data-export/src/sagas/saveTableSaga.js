@@ -18,7 +18,7 @@ const setTableRequest = (rows, title, creator_id, shared, id) => {
     };
 
     if(id !== undefined) {
-        data.table_id_attr = "id= " + id;
+        data.table_id_attr = 'id="' + id + '"';
     }else{
         data.table_id_attr = "";
     }
