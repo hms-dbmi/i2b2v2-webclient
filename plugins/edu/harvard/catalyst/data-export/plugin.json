@@ -15,7 +15,7 @@
       "i2b2.PM.model.login_password": "R",
       "i2b2.PM.model.login_username": "R",
       "i2b2.PM.model.login_project": "R",
-      "i2b2.PM.model.admin_only": "R"
+      "i2b2.PM.model.isAdmin": "R"
     },
     "functions": [
       "i2b2.CRC.view.QT.labValue.showLabValues"

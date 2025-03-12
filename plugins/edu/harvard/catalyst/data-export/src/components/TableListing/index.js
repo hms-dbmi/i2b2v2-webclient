@@ -1,18 +1,24 @@
 import React, {useEffect, useState} from "react";
 
-import {DataGrid, GridActionsCellItem} from "@mui/x-data-grid";
+import {DataGrid, GridActionsCellItem, GridRowModes} from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import "./TableListing.scss";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import Button from "@mui/material/Button";
 import {AlertDialog} from "../AlertDialog";
 
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Close';
+
 export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel,
-                                 hasError, isLoading, onDelete, deleteFailed, onDeleteAlertClose}) => {
+                                 hasError, isLoading, onDelete, deleteFailed, onDeleteAlertClose, renameTable}) => {
     const [rowToDelete, setRowToDelete] = useState({});
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const [showAlertDialog, setShowAlertDialog] = useState(false);
     const [alertMsgInfo, setAlertMsgInfo] = useState({});
+    const [rowModesModel, setRowModesModel] = useState({});
+    const [inValidCells, setInValidCells] = useState({});
 
     const handleConfirmDelete = (id, fileName) => {
         setRowToDelete({id, fileName});
@@ -28,11 +34,60 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         setShowConfirmDelete(false);
     }
 
+
+    const handleEditClick = (id) => () => {
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    };
+
+    const handleSaveClick = (id) => () => {
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    };
+
+    const handleCancelClick = (id) => () => {
+        setRowModesModel({
+            ...rowModesModel,
+            [id]: { mode: GridRowModes.View, ignoreModifications: true },
+        });
+
+        let updatedInValidCells = Object.keys(inValidCells).filter(i => inValidCells[i] === id)
+        setInValidCells(updatedInValidCells);
+    };
+
+    const processRowUpdate = (editedRow) => {
+        if(editedRow.title.length > 0){
+            renameTable(editedRow.id, editedRow.title);
+
+            const updatedInValidCells = Object.keys(inValidCells).filter(i => inValidCells[i] === editedRow.id)
+            setInValidCells(updatedInValidCells);
+
+            return editedRow;
+        }
+        else{
+            let updatedInValidCells = {
+                ...inValidCells
+            };
+            updatedInValidCells[editedRow.id] = {
+                title: editedRow.title,
+            }
+
+            setInValidCells(updatedInValidCells);
+        }
+        return false;
+    };
+
+    const handleRowModesModelChange = (newRowModesModel) => {
+        setRowModesModel(newRowModesModel);
+    };
+
+    const onProcessRowUpdateError = (error) => {
+        console.error("Process update error rows is " + JSON.stringify(rows));
+    };
+
     const columns = [
         {
             field: 'title',
             headerName: 'Table Definition Name',
-            minWidth: 405,
+            minWidth: 380,
             flex:1,
             sortable: true,
             editable: canRename,
@@ -41,7 +96,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         }, {
             field: 'create_date',
             headerName: 'Created',
-            width: 99,
+            width: 98,
             sortable: true,
             headerAlign: 'center',
             align: 'center',
@@ -50,7 +105,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         }, {
             field: 'edit_date',
             headerName: 'Edited',
-            width: 99,
+            width: 98,
             sortable: true,
             headerAlign: 'center',
             align: 'center',
@@ -66,19 +121,54 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
             disableReorder: true,
             type: 'number'
         },
-        {
+    ];
+
+    //add rename and delete icons if user has rename privileges
+    if(canRename){
+        columns.push({
             field: 'actions',
             type: 'actions',
-            width: 36,
-            getActions: (params) => [
-                <GridActionsCellItem
-                    icon={<DeleteIcon />}
-                    label="Delete"
-                    onClick={() => handleConfirmDelete(params.id, params.row.title)}
-                />
-            ],
-        },
-    ];
+            width: 77,
+            getActions: (params) => {
+                const isInEditMode = rowModesModel[params.id]?.mode === GridRowModes.Edit;
+
+                if (isInEditMode) {
+                    return [
+                        <GridActionsCellItem
+                            icon={<SaveIcon/>}
+                            label="Save"
+                            sx={{
+                                color: 'primary.main',
+                            }}
+                            onClick={handleSaveClick(params.id)}
+                        />,
+                        <GridActionsCellItem
+                            icon={<CancelIcon/>}
+                            label="Cancel"
+                            className="textPrimary"
+                            onClick={handleCancelClick(params.id)}
+                            color="inherit"
+                        />,
+                    ];
+                }
+
+                return [
+                    <GridActionsCellItem
+                        icon={<EditIcon/>}
+                        label="Edit"
+                        className="textPrimary"
+                        onClick={handleEditClick(params.id)}
+                        color="inherit"
+                    />,
+                    <GridActionsCellItem
+                        icon={<DeleteIcon/>}
+                        label="Delete"
+                        onClick={() => handleConfirmDelete(params.id, params.row.title)}
+                    />,
+                ];
+            },
+        });
+    }
 
     function handleOnSelectionModelChange(selection, {api} ) {
         if (selection.length > 0) onSelect(api.getRow(selection[0]));
@@ -101,7 +191,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         if(deleteFailed){
             setShowAlertDialog(true);
             setAlertMsgInfo({
-                title: "DeleteFile",
+                title: "Delete File",
                 msg: "An error occurred deleting file \"" + rowToDelete.fileName + "\"",
                 onOk: () => {setShowAlertDialog(false); onDeleteAlertClose();}
             })
@@ -121,6 +211,22 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                 disableColumnResize={true}
                 onRowSelectionModelChange = {handleOnSelectionModelChange}
                 rowSelectionModel = {selectionModel}
+                editMode="row"
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                processRowUpdate={processRowUpdate}
+                onProcessRowUpdateError={onProcessRowUpdateError}
+                getCellClassName={(params) => {
+                    let paramId = params.id;
+
+                    if(params.field ==="title"){
+                        return (inValidCells[paramId] !== undefined && inValidCells[paramId].title.length < 1) ? 'missing' : '';
+                    }
+                    else{
+                        return '';
+                    }
+                }}
+
                 loading={isLoading}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
@@ -149,10 +255,10 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" autoFocus onClick={handleDeleteRow}>
+                    <Button variant="contained" onClick={handleDeleteRow}>
                         Yes
                     </Button>
-                    <Button variant="contained" autoFocus onClick={handleCancelDeleteRow}>
+                    <Button variant="contained" onClick={handleCancelDeleteRow}>
                         No
                     </Button>
                 </DialogActions>
