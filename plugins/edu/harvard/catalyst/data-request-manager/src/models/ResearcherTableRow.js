@@ -8,12 +8,14 @@ export const ResearcherTableRow = ({
     description= "",
     requests = [],
     dateSubmitted = null,
+    patientCount = null,
     status= RequestStatus.statuses.SUBMITTED
 } = {}) => ({
     id,
     description,
     requests,
     dateSubmitted,
+    patientCount,
     status
 });
 
@@ -22,6 +24,7 @@ ResearcherTableRow.propTypes = {
     description:  PropTypes.string.isRequired,
     requests: PropTypes.arrayOf(ExportRequest).isRequired,
     dateSubmitted: PropTypes.instanceOf(Date).isRequired,
+    patientCount: PropTypes.number.isRequired,
     status: PropTypes.string.isRequired
 }
 

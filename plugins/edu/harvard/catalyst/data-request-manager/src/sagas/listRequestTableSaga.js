@@ -45,10 +45,15 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
             let status = '';
             let patientCount = '';
             let requestList = [];
+            let resultInstanceId = '';
             queryInstanceTypeList.forEach(queryInstanceType => {
                 status = queryInstanceType.getElementsByTagName('batch_mode');
                 let queryResultInstanceTypeList =  queryInstanceType.getElementsByTagName('query_result_instance_type');
                 queryResultInstanceTypeList.forEach(queryResultInstanceType => {
+                    let resultInstanceId =  queryResultInstanceType.getElementsByTagName('result_instance_id');
+                    if( resultInstanceId.length > 0){
+                        resultInstanceId = resultInstanceId[0].value;
+                    }
                     patientCount = queryResultInstanceType.getElementsByTagName('set_size');
                     let queryResultType = queryResultInstanceType.getElementsByTagName('query_result_type');
 
@@ -58,11 +63,14 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
                        visualAttributeType = queryResultType.getElementsByTagName('visual_attribute_type');
                        visualAttributeType = visualAttributeType.length > 0 ? visualAttributeType[0].value : '';
                        if(visualAttributeType.toUpperCase() === "LU") {
-                           let request = {};
+                           let request = {resultInstanceId};
                            const requestId = queryResultType.getElementsByTagName('name');
                            let requestDescription = queryResultType.getElementsByTagName('description');
                            if(requestId.length > 0 ) {
-                               request.id = requestId[0].value;
+                               const tableId = parseInt(requestId[0].value);
+                               if(!isNaN(tableId)){
+                                   request.tableId = tableId;
+                               }
                            }
                            if(requestDescription.length > 0) {
                                request.description = decode(requestDescription[0].value);
@@ -78,7 +86,7 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
                 }
             })
 
-            exportRequestList.push({id: queryId, description: queryName, dateSubmitted, status, patientCount, userId, requests: requestList});
+            exportRequestList.push({id: queryId, description: queryName, dateSubmitted, status, patientCount, userId, requests: requestList, resultInstanceId});
         }
     });
 
@@ -96,9 +104,11 @@ export function* doListRequestTable(action) {
         }
         else {
             yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));
+            console.error("There was an error getting the list of researcher data export requests");
         }
     } catch (error) {
         yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));
+        console.error("There was an error getting the list of researcher data export requests");
     }
 }
 

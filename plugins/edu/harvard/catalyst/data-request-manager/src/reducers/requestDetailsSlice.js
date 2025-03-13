@@ -13,6 +13,7 @@ export const requestDetailsSlice = createSlice({
     initialState: defaultState.requestDetails,
     reducers: {
         getRequestDetails: state => {
+            state.details = ResearcherRequestDetails();
             state.details.isFetching = true;
             state.details.statusInfo = StatusInfo();
         },
@@ -28,64 +29,35 @@ export const requestDetailsSlice = createSlice({
             if(isManager){
                 details = AdminRequestDetails({
                     id: requestDetails.id,
-                    name: requestDetails.name,
-                    description: requestDetails.description,
+                    name: requestDetails.description,
                     requests: requestDetails.requests,
-                    dateSubmitted: DateTime.fromISO(requestDetails.dateSubmitted).toJSDate(),
+                    dateSubmitted: requestDetails.dateSubmitted,
                     email: requestDetails.email,
                     userId: requestDetails.userId,
                     status: status,
                     patientCount: requestDetails.patientCount,
-                    statusLogs: requestDetails.statusLogs.map((st, index) => {
-                        let lstatus = RequestStatus._lookupStatus(st.status);
-                        if (lstatus.length > 0) {
-                            lstatus = lstatus[0];
-                        } else {
-                            lstatus = RequestStatus.statuses.UNKNOWN;
-                        }
-
-                        return RequestStatusLog({
-                            id: index,
-                            date: DateTime.fromISO(st.date).toJSDate(),
-                            status: lstatus
-                        })
-                    })
                 });
             }
            else {
                 details = ResearcherRequestDetails({
                     id: requestDetails.id,
-                    name: requestDetails.name,
-                    description: requestDetails.description,
+                    name: requestDetails.description,
                     requests: requestDetails.requests,
-                    dateSubmitted: DateTime.fromISO(requestDetails.dateSubmitted).toJSDate(),
+                    dateSubmitted: requestDetails.dateSubmitted,
                     email: requestDetails.email,
                     userId: requestDetails.userId,
                     status: status,
-                    statusLogs: requestDetails.statusLogs.map((st, index) => {
-                        let lstatus = RequestStatus._lookupStatus(st.status);
-                        if (lstatus.length > 0) {
-                            lstatus = lstatus[0];
-                        } else {
-                            lstatus = RequestStatus.statuses.UNKNOWN;
-                        }
-
-                        return RequestStatusLog({
-                            id: index,
-                            date: DateTime.fromISO(st.date).toJSDate(),
-                            status: lstatus
-                        })
-                    })
+                    patientCount: requestDetails.patientCount,
                 });
             }
             state.details = details;
-            state.details.isFetching = false;
+            //state.details.isFetching = false;
             state.details.statusInfo = StatusInfo({
                 status: "SUCCESS"
             });
         },
         getRequestDetailsError: (state, { payload: { errorMessage} }) => {
-            state.details.isFetching = false;
+            //state.details.isFetching = false;
             state.details.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage

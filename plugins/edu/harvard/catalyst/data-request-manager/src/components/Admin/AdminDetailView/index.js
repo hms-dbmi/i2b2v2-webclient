@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     Box,
     Button,
-    Card,
+    Card, CircularProgress,
     FormControl,
     FormControlLabel,
     MenuItem,
@@ -15,16 +15,14 @@ import Grid from '@mui/material/Grid2';
 import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";
 import {RequestDetailView} from "../../RequestDetailView";
-import {AdminNotesView} from "./AdminNotesView";
 import {DetailViewNav} from "../../DetailViewNav";
 import CreateIcon from '@mui/icons-material/Create';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import "./AdminDetailView.scss";
 import {ConfirmDialog} from "../../ConfirmDialog";
 
 export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
-    const { details, isFetching } = useSelector((state) => state.requestDetails);
+    const { details } = useSelector((state) => state.requestDetails);
     const [requestStatus, setRequestStatus] = React.useState(null);
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
 
@@ -56,7 +54,14 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
 
     return (
         <Box className={"AdminDetailView"}>
-            {   details.id && (
+            {details.isFetching &&
+                <div className={"LoadingProgress"}>
+                    <CircularProgress className="ProgressIcon" size="5rem"/>
+                    <Typography className={"ProgressLabel"}>Loading Details...</Typography>
+                </div>
+            }
+
+            { !details.isFetching && details.id && (
                 <div>
                     <DetailViewNav requestId={requestRow.id} requestName={details.name} goToHome={goToViewRequestTable}/>
 
@@ -99,12 +104,6 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                                     startIcon={<CreateIcon />}  onClick={() => setConfirmFileGen(true)}>Generate Data File(s)
                                             </Button>
                                         </div>
-
-                                        <div className={"RequestXmlMain"}>
-                                            <Button href="#"  variant="outlined" endIcon={<OpenInNewIcon />}>
-                                                View Request XML
-                                            </Button>
-                                        </div>
                                     </Grid>
                                     <Grid size={6}>
                                         <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
@@ -112,9 +111,6 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                     </Grid>
                                 </Grid>
                             </Card>
-                        </div>
-                        <div className={"RequestNotes"}>
-                            <AdminNotesView requestId={requestRow.id}/>
                         </div>
                         {confirmFileGen && <ConfirmDialog
                             msg={'Are you sure you want to generate data file(s)?'}
