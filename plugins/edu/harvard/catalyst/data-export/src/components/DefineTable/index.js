@@ -604,6 +604,15 @@ export const DefineTable = (props) => {
         dispatch(loadStatusConfirmed());
     };
 
+    const truncateStr = (str) => {
+        const maxLength = 60;
+        let truncatedStr = str;
+        if(str.length > maxLength){
+            truncatedStr = truncatedStr.slice(0, maxLength) + "...";
+        }
+
+        return truncatedStr;
+    }
     return (
         <div className={"DefineTable"} >
             <DateModal
@@ -615,8 +624,7 @@ export const DefineTable = (props) => {
                 setEndDate={setEndDate}
                 saveUpdate={handleDateSave}
             />
-
-            {title && title !== DEFAULT_TABLE_TITLE &&  <div className={"editingFile"}>editing: <b>{title}</b></div> }
+            {title && title !== DEFAULT_TABLE_TITLE &&  <div title={title} className={"editingFile"}>editing: <b>{truncateStr(title)}</b></div> }
             <div id="dropTrgt">
                 <p>Drag a concept onto the grid to add it to the list</p>
                 <DataGrid
