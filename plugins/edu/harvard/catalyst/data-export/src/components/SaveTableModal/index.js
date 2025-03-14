@@ -9,14 +9,20 @@ import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 import "../../css/modals.scss";
 import { TableListing } from "../TableListing";
-import {confirmDeleteTableStatus, deleteTable, listTables, renameTable} from "../../reducers/tableListingSlice";
+import {
+    confirmDeleteTableStatus,
+    confirmRenameTableStatus,
+    deleteTable,
+    listTables,
+    renameTable
+} from "../../reducers/tableListingSlice";
 import { TabPanel } from "../TabPanel";
 import {saveStatusConfirmed, saveTable} from "../../reducers/saveTableSlice";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
-    const { userRows, sharedRows, statusInfo, isFetching, isDeleting, deleteStatusInfo } = useSelector((state) => state.tableListing);
+    const { userRows, sharedRows, statusInfo, isFetching, isDeleting, deleteStatusInfo, renameStatusInfo } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
     const {rows: tableDefRows} = useSelector((state) => state.tableDef);
     const { username, isAdmin } = useSelector((state) => state.userInfo);
@@ -127,6 +133,11 @@ export const SaveTableModal = ({open, handleClose}) => {
     const confirmDeleteStatus = () => {
         dispatch(confirmDeleteTableStatus());
     };
+
+    const confirmRenameStatus = () => {
+        dispatch(confirmRenameTableStatus());
+    };
+
     const handleChangeTab = (event, newValue) => {
         if(isAdmin) {
             setTab(newValue);
@@ -197,7 +208,9 @@ export const SaveTableModal = ({open, handleClose}) => {
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}
-                            renameTable={updateTableDefinitionTitle}
+                            onRename={updateTableDefinitionTitle}
+                            renameFailed={renameStatusInfo.status === 'FAIL'}
+                            onRenameAlertClose={confirmRenameStatus}
                         />
                     </TabPanel>
                     <TabPanel
@@ -217,7 +230,9 @@ export const SaveTableModal = ({open, handleClose}) => {
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}
-                            renameTable={updateTableDefinitionTitle}
+                            onRename={updateTableDefinitionTitle}
+                            renameFailed={renameStatusInfo.status === 'FAIL'}
+                            onRenameAlertClose={confirmRenameStatus}
                         />
                     </TabPanel>
                 </Box>

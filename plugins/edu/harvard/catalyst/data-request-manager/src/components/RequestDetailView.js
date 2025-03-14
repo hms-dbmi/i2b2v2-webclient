@@ -3,12 +3,12 @@ import "./RequestDetailView.scss";
 import {
     Box,
     Card,
+    Link,
     Typography
 } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 
-
-export const RequestDetailView = ({details, isAdmin}) => {
+export const RequestDetailView = ({details, isManager}) => {
     const formatNumber = (value) => {
         let formattedValue = value.length > 0 ? parseInt(value): "";
         if(isNaN(formattedValue)){
@@ -32,15 +32,16 @@ export const RequestDetailView = ({details, isAdmin}) => {
                         <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Email:</span> {details.email} </Typography>
                     </Grid>
                     <Grid size={6}>
-                        {isAdmin &&
-                            <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Count(Patient):</span> { formatNumber(details.patientCount)} </Typography>
-                        }
+                        <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Count(Patient):</span> { formatNumber(details.patientCount)} </Typography>
 
                         <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Data Request Type:</span> </Typography>
                         <ol className={"RequestDetailContentItem DataRequestType"}>
                             {
                                 details.requests.map((request)=> {
-                                    return (<li> {request} </li>)
+                                    return (<li>
+                                        {request.tableId !== null && <Link component="button" variant="body1" title={"preview table definition"} size="small" onClick={() => alert("table definition id is " + request.tableId)}>{request.description}</Link>}
+                                        {request.tableId === null && request.description}
+                                    </li>)
                                 })
                             }
                         </ol>

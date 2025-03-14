@@ -5,6 +5,7 @@ import {
     Box,
     Button,
     Card,
+    CircularProgress,
     Typography
 } from "@mui/material";
 import {getRequestDetails} from "../../../reducers/requestDetailsSlice";
@@ -15,15 +16,15 @@ import {RequestDetailView} from "../../RequestDetailView";
 import {DetailViewNav} from "../../DetailViewNav";
 
 
-export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
+export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details } = useSelector((state) => state.requestDetails);
 
     useEffect(() => {
-        if(requestId) {
-            dispatch(getRequestDetails({id: requestId}));
+        if(requestRow) {
+            dispatch(getRequestDetails({requestRow}));
         }
-    }, [requestId]);
+    }, [requestRow]);
 
 
     const goToViewRequestTable = () => {
@@ -31,16 +32,23 @@ export const ResearcherDetailView = ({requestId, setViewRequestTable}) => {
     }
     return (
         <Box className={"ResearcherDetailView"}>
-            {   details.id && (
+            {details.isFetching &&
+                <div className={"LoadingProgress"}>
+                    <CircularProgress className="ProgressIcon" size="5rem"/>
+                    <Typography className={"ProgressLabel"}>Loading Details...</Typography>
+                </div>
+            }
+
+            {!details.isFetching && details.id && (
                     <div>
-                        <DetailViewNav requestId={requestId} requestName={details.name} goToHome={goToViewRequestTable}/>
+                        <DetailViewNav requestId={requestRow.id} requestName={details.name} goToHome={goToViewRequestTable}/>
 
                         <Typography className={"ResearcherDetailViewTitle"}>
-                            Request {requestId}, {details.name}
+                            Request {requestRow.id}, {details.name}
                         </Typography>
 
                         <div className={"ResearcherDetailViewContent"}>
-                            <RequestDetailView details={details} isAdmin={false}/>
+                            <RequestDetailView details={details} isManager={false}/>
 
                             <div className={"RequestAction"}>
                                 <Typography className={"RequestActionTitle"}>

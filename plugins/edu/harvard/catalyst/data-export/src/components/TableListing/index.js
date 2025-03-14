@@ -12,7 +12,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 
 export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel,
-                                 hasError, isLoading, onDelete, deleteFailed, onDeleteAlertClose, renameTable}) => {
+                                 hasError, isLoading, onDelete, deleteFailed, onDeleteAlertClose,
+                                 onRename, renameFailed, onRenameAlertClose}) => {
+    const [rowToRename, setRowToRename] = useState({});
     const [rowToDelete, setRowToDelete] = useState({});
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const [showAlertDialog, setShowAlertDialog] = useState(false);
@@ -34,9 +36,9 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         setShowConfirmDelete(false);
     }
 
-
-    const handleEditClick = (id) => () => {
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    const handleEditClick = (params) => () => {
+        setRowModesModel({ ...rowModesModel, [params.id]: { mode: GridRowModes.Edit } });
+        setRowToRename( params.row.title);
     };
 
     const handleSaveClick = (id) => () => {
@@ -55,7 +57,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
 
     const processRowUpdate = (editedRow) => {
         if(editedRow.title.length > 0){
-            renameTable(editedRow.id, editedRow.title);
+            onRename(editedRow.id, editedRow.title);
 
             const updatedInValidCells = Object.keys(inValidCells).filter(i => inValidCells[i] === editedRow.id)
             setInValidCells(updatedInValidCells);
@@ -157,7 +159,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                         icon={<EditIcon/>}
                         label="Edit"
                         className="textPrimary"
-                        onClick={handleEditClick(params.id)}
+                        onClick={handleEditClick(params)}
                         color="inherit"
                     />,
                     <GridActionsCellItem
@@ -197,6 +199,17 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
             })
         }
     }, [deleteFailed]);
+
+    useEffect(() => {
+        if(renameFailed){
+            setShowAlertDialog(true);
+            setAlertMsgInfo({
+                title: "Rename File",
+                msg: "An error occurred renaming file \"" + rowToRename + "\"",
+                onOk: () => {setShowAlertDialog(false); onRenameAlertClose();}
+            })
+        }
+    }, [renameFailed]);
 
     return (
         <div className={"TableListing"} id={id} style={{height: 400}} >

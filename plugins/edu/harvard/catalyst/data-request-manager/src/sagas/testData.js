@@ -1,22 +1,20 @@
 export const requestList = [
     {
-        id: 1477,
+        id: 1898,
         name: "Abnormal findings on neonatal screenings",
         description: "Abnormal findings on neonatal screenings",
         dateSubmitted: "2024-01-02",
-        lastUpdated: "2024-02-14",
         status: "Submitted",
         requests: [
             "Request Demographics Data"
         ]
     },
     {
-        id: 1478,
+        id: 1916,
         name: "Female hypertensive disease",
         description: "Female hypertensive disease",
         dateSubmitted: "2024-03-18",
-        lastUpdated: "2024-04-11",
-        status: "Approved",
+        status: "Submitted",
         requests: [
             "Request Demographics Data",
             "Request Diagnosis Data",
@@ -27,7 +25,6 @@ export const requestList = [
         name: "Diabetes Mellitus@10:32:58",
         description: "Diabetes Mellitus@10:32:58",
         dateSubmitted: "2024-07-11",
-        lastUpdated: "2024-08-11",
         status: "Denied",
         requests: [
             "Request Demographics Data",
@@ -40,7 +37,6 @@ export const requestList = [
         name: "Diabetes Mellitus@10:35:46",
         description: "Diabetes Mellitus@10:35:46",
         dateSubmitted: "2024-07-28",
-        lastUpdated: "2024-09-29",
         status: "File Available",
         requests: [
             "Request Demographics Data",
@@ -55,8 +51,7 @@ export const requestList = [
         name: "Circulatory system@21:30:14",
         description: "Circulatory system@21:30:14",
         dateSubmitted: "2024-09-03",
-        lastUpdated: "2024-09-28",
-        status: "Cancelled",
+        status: "Withdrawn",
         requests: [
             "Request Diagnosis Data",
             "Request Lab Data"
@@ -70,7 +65,6 @@ export const requestDetails = [
         id: requestList[0].id,
         description: requestList[0].description,
         dateSubmitted: requestList[0].dateSubmitted,
-        lastUpdated: requestList[0].lastUpdated,
         status: requestList[0].status,
         requests: requestList[0].requests,
         name: requestList[0].description,
@@ -87,7 +81,6 @@ export const requestDetails = [
         id: requestList[1].id,
         description: requestList[1].description,
         dateSubmitted: requestList[1].dateSubmitted,
-        lastUpdated: requestList[1].lastUpdated,
         status: requestList[1].status,
         requests: requestList[1].requests,
         name: requestList[1].description,
@@ -99,8 +92,8 @@ export const requestDetails = [
                 status: "Submitted"
             },
             {
-                date: requestList[1].lastUpdated,
-                status: "Approved"
+                date: requestList[1].dateSubmitted,
+                status: "Queued"
             }
         ]
     },
@@ -108,7 +101,6 @@ export const requestDetails = [
         id: requestList[2].id,
         description: requestList[2].description,
         dateSubmitted: requestList[2].dateSubmitted,
-        lastUpdated: requestList[2].lastUpdated,
         status: requestList[2].status,
         requests: requestList[2].requests,
         name: requestList[2].description,
@@ -120,7 +112,7 @@ export const requestDetails = [
                 status: "Submitted"
             },
             {
-                date: requestList[2].lastUpdated,
+                date: requestList[2].dateSubmitted,
                 status: "Denied"
             }
         ]
@@ -129,7 +121,6 @@ export const requestDetails = [
         id: requestList[3].id,
         description: requestList[3].description,
         dateSubmitted: requestList[3].dateSubmitted,
-        lastUpdated: requestList[3].lastUpdated,
         status: requestList[3].status,
         requests: requestList[3].requests,
         name: requestList[3].description,
@@ -141,11 +132,15 @@ export const requestDetails = [
                 status: "Submitted"
             },
             {
-                date: "2024-09-14",
-                status: "Approved"
+                date: "2024-09-12",
+                status: "Queued"
             },
             {
-                date: requestList[3].lastUpdated,
+                date: "2024-09-14",
+                status: "Processing"
+            },
+            {
+                date: requestList[3].dateSubmitted,
                 status: "File Available"
             }
         ]
@@ -154,7 +149,6 @@ export const requestDetails = [
         id: requestList[4].id,
         description: requestList[4].description,
         dateSubmitted: requestList[4].dateSubmitted,
-        lastUpdated: requestList[4].lastUpdated,
         status: requestList[4].status,
         requests: requestList[4].requests,
         name: requestList[4].description,
@@ -166,8 +160,8 @@ export const requestDetails = [
                 status: "Submitted"
             },
             {
-                date: requestList[4].lastUpdated,
-                status: "Cancelled"
+                date: requestList[4].dateSubmitted,
+                status: "Withdrawn"
             }
         ]
     }
@@ -178,7 +172,6 @@ export const adminRequestList = [
         id: requestList[0].id,
         description: requestList[0].description,
         dateSubmitted: requestList[0].dateSubmitted,
-        lastUpdated: requestList[0].lastUpdated,
         status: requestList[0].status,
         requests: requestList[0].requests,
         patientCount: "",
@@ -188,7 +181,6 @@ export const adminRequestList = [
         id: requestList[1].id,
         description: requestList[1].description,
         dateSubmitted: requestList[1].dateSubmitted,
-        lastUpdated: requestList[1].lastUpdated,
         status: requestList[1].status,
         requests: requestList[1].requests,
         patientCount: "27439",
@@ -198,7 +190,6 @@ export const adminRequestList = [
         id: requestList[2].id,
         description: requestList[2].description,
         dateSubmitted: requestList[2].dateSubmitted,
-        lastUpdated: requestList[2].lastUpdated,
         status: requestList[2].status,
         requests: requestList[2].requests,
         userId: "user19",
@@ -208,7 +199,6 @@ export const adminRequestList = [
         id: requestList[3].id,
         description: requestList[3].description,
         dateSubmitted: requestList[3].dateSubmitted,
-        lastUpdated: requestList[3].lastUpdated,
         status: requestList[3].status,
         requests: requestList[3].requests,
         userId: "user35",
@@ -218,7 +208,6 @@ export const adminRequestList = [
         id: 1480,
         description: "Diabetes Mellitus@14:27:10",
         dateSubmitted: requestList[3].dateSubmitted,
-        lastUpdated: requestList[3].lastUpdated,
         status: "Submitted",
         requests: requestList[3].requests,
         userId: "user35",
@@ -228,7 +217,6 @@ export const adminRequestList = [
         id: requestList[4].id,
         description: requestList[4].description,
         dateSubmitted: requestList[4].dateSubmitted,
-        lastUpdated: requestList[4].lastUpdated,
         status: requestList[4].status,
         requests: requestList[4].requests,
         userId: "user24",
@@ -241,7 +229,6 @@ export const adminRequestDetails = [
         id: requestList[0].id,
         description: requestList[0].description,
         dateSubmitted: requestList[0].dateSubmitted,
-        lastUpdated: requestList[0].lastUpdated,
         status: requestList[0].status,
         requests: requestList[0].requests,
         name: requestList[0].description,
@@ -281,7 +268,6 @@ export const adminRequestDetails = [
         id: requestList[1].id,
         description: requestList[1].description,
         dateSubmitted: requestList[1].dateSubmitted,
-        lastUpdated: requestList[1].lastUpdated,
         status: requestList[1].status,
         requests: requestList[1].requests,
         name: requestList[1].description,
@@ -294,8 +280,8 @@ export const adminRequestDetails = [
                 status: "Submitted"
             },
             {
-                date: requestList[1].lastUpdated,
-                status: "Approved"
+                date: requestList[1].dateSubmitted,
+                status: "Queued"
             }
         ],
         adminNotes: [
@@ -325,7 +311,6 @@ export const adminRequestDetails = [
         id: requestList[2].id,
         description: requestList[2].description,
         dateSubmitted: requestList[2].dateSubmitted,
-        lastUpdated: requestList[2].lastUpdated,
         status: requestList[2].status,
         requests: requestList[2].requests,
         name: requestList[2].description,
@@ -338,7 +323,7 @@ export const adminRequestDetails = [
                 status: "Submitted"
             },
             {
-                date: requestList[2].lastUpdated,
+                date: requestList[2].dateSubmitted,
                 status: "Denied"
             }
         ],
@@ -369,7 +354,6 @@ export const adminRequestDetails = [
         id: requestList[3].id,
         description: requestList[3].description,
         dateSubmitted: requestList[3].dateSubmitted,
-        lastUpdated: requestList[3].lastUpdated,
         status: requestList[3].status,
         requests: requestList[3].requests,
         name: requestList[3].description,
@@ -383,10 +367,14 @@ export const adminRequestDetails = [
             },
             {
                 date: "2024-09-14",
-                status: "Approved"
+                status: "Queued"
             },
             {
-                date: requestList[3].lastUpdated,
+                date: "2024-09-14",
+                status: "Processing"
+            },
+            {
+                date: requestList[3].dateSubmitted,
                 status: "File Available"
             }
         ],
@@ -417,7 +405,6 @@ export const adminRequestDetails = [
         id: 1480,
         description: adminRequestList[4].description,
         dateSubmitted: requestList[3].dateSubmitted,
-        lastUpdated: requestList[3].lastUpdated,
         status: "Submitted",
         requests: requestList[3].requests,
         name: adminRequestList[4].description,
@@ -457,7 +444,6 @@ export const adminRequestDetails = [
         id: requestList[4].id,
         description: requestList[4].description,
         dateSubmitted: requestList[4].dateSubmitted,
-        lastUpdated: requestList[4].lastUpdated,
         status: requestList[4].status,
         requests: requestList[4].requests,
         name: requestList[4].description,
@@ -470,8 +456,8 @@ export const adminRequestDetails = [
                 status: "Submitted"
             },
             {
-                date: requestList[4].lastUpdated,
-                status: "Cancelled"
+                date: requestList[4].dateSubmitted,
+                status: "Withdrawn"
             }
         ],
         adminNotes: [

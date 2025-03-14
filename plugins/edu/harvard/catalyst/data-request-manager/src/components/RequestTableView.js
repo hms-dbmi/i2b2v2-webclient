@@ -5,10 +5,9 @@ import {DataGrid} from "@mui/x-data-grid";
 
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import {TreeItem} from "@mui/x-tree-view";
-import {RequestStatus} from "../models";
+import "./RequestTableView.scss";
 
-
-export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}) => {
+export const RequestTableView = ({rows, isLoading, isManager, displayDetailView}) => {
     const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
     const columns = [
         {
@@ -28,14 +27,14 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 2,
+            flex: 3,
             renderCell: (param) => {
                 return (
-                    <SimpleTreeView defaultExpandedItems={isAdmin ? [] : [param.row.description]}>
+                    <SimpleTreeView defaultExpandedItems={isManager ? [] : [param.row.description]}>
                         <TreeItem itemId={param.row.description} label={param.row.description}>
                             {
-                                param.row.requests.map((name, index) => {
-                                    return (<TreeItem itemId={name} className={"requestLabel"} label={(index +1) + ". " + name}/>)
+                                param.row.requests.map((exportRequest, index) => {
+                                    return (<TreeItem itemId={exportRequest.description} className={"requestLabel"} label={(index +1) + ". " + exportRequest.description}/>)
                                 })
                             }
                         </TreeItem>
@@ -50,28 +49,21 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 1,
-            valueGetter: (value) => {
-                if (!value) {
-                    return RequestStatus.statuses.UNKNOWN;
-                }
-
-                return  RequestStatus.statuses[value];
-            }
+            flex: 2
         },
         {
-            field: 'lastUpdated',
-            headerName: 'Last Updated',
+            field: 'dateSubmitted',
+            headerName: 'Date Submitted',
             headerClassName: "header",
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 1,
+            minWidth: 125,
+            maxWidth: 125,
             valueGetter: (value) => {
                 if (!value) {
                     return value;
                 }
-
                 // Format the Date object
                 return value.toLocaleDateString();
             }
@@ -83,21 +75,21 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
             sortable: false,
             resizable: false,
             disableReorder: true,
-            minWidth: 149,
+            minWidth: 138,
             renderCell: (param) => {
                 return (
-                    <Button variant="contained" size="small" className={"actions"} onClick={() => handleDisplayDetailView(param.row.id)}>View Details</Button>
+                    <Button variant="contained" size="small" className={"actions"} onClick={() => handleDisplayDetailView(param.row)}>View Details</Button>
                 );
             },
         }
     ];
 
-    const handleDisplayDetailView = (id) => {
-        displayDetailViewId(id);
+    const handleDisplayDetailView = (requestRow) => {
+        displayDetailView(requestRow);
     };
 
     const getColumns = () => {
-        if(isAdmin){
+        if(isManager){
             columns.splice(2, 0, {
                 field: 'userId',
                 headerName: 'User',
@@ -128,7 +120,7 @@ export const RequestTableView = ({rows, isLoading, isAdmin, displayDetailViewId}
         return columns;
     }
     return (
-        <Box className={"ResearcherTableView"} style={{ display: 'flex', flexDirection: 'column' }}>
+        <Box className={"RequestTableView"} style={{ display: 'flex', flexDirection: 'column' }}>
             <Typography className={"title"}>
                 List of Export Data Requests
             </Typography>

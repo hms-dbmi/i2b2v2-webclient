@@ -1,40 +1,114 @@
 /* globals i2b2 */
 
-import { takeLatest, put} from "redux-saga/effects";
+import {takeLatest, put, call} from "redux-saga/effects";
 import {listRequestTableSuccess, listRequestTableError} from "../reducers/requestTableSlice";
-import {requestList, adminRequestList} from "./testData";
+import XMLParser from "react-xml-parser";
+import {decode} from 'html-entities';
 
 import {
     LIST_REQUEST_TABLE
 } from "../actions";
 
-/*const parseData = (tableList) => {
-    let results = [];
+const getAllExportRequestsListRequest = (username, isManager) => {
 
-    return results;
-}*/
+    let request_type = "CRC_QRY_getQueryMasterList_fromUserId";
 
-const getTestData = (isAdmin) => {
-    let data = requestList;
-    if(isAdmin) {
-       data = adminRequestList;
+    if(isManager){
+        request_type = "CRC_QRY_getQueryMasterList_fromGroupId";
     }
-    return data;
+
+    let data = {
+        crc_max_records: -1,
+        crc_user_type: request_type,
+        crc_user_by: username,
+        include_query_instance: true,
+        master_type_cd_xml: '<master_type_cd>EXPORT</master_type_cd>'
+    };
+    return i2b2.ajax.CRC.getQueryMasterList_fromUserId(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
+};
+
+const parseAllExportRequestsListXml = (exportRequestListXml) => {
+    let exportRequestList = [];
+
+    let queryMasters = exportRequestListXml.getElementsByTagName('query_master');
+    queryMasters.forEach(exportRequest => {
+        let queryId = exportRequest.getElementsByTagName('query_master_id');
+        let queryName = exportRequest.getElementsByTagName('name');
+        let dateSubmitted = exportRequest.getElementsByTagName('create_date');
+        let userId = exportRequest.getElementsByTagName('user_id');
+        let queryInstanceTypeList = exportRequest.getElementsByTagName('query_instance_type');
+        if(userId.length > 0 && queryId.length > 0 && queryName.length > 0 && dateSubmitted.length && queryInstanceTypeList.length > 0){
+            userId = userId[0].value;
+            queryId = queryId[0].value
+            queryName = decode(queryName[0].value);
+            dateSubmitted = dateSubmitted[0].value;
+            let status = '';
+            let patientCount = '';
+            let requestList = [];
+            let resultInstanceId = '';
+            queryInstanceTypeList.forEach(queryInstanceType => {
+                status = queryInstanceType.getElementsByTagName('batch_mode');
+                let queryResultInstanceTypeList =  queryInstanceType.getElementsByTagName('query_result_instance_type');
+                queryResultInstanceTypeList.forEach(queryResultInstanceType => {
+                    let resultInstanceId =  queryResultInstanceType.getElementsByTagName('result_instance_id');
+                    if( resultInstanceId.length > 0){
+                        resultInstanceId = resultInstanceId[0].value;
+                    }
+                    patientCount = queryResultInstanceType.getElementsByTagName('set_size');
+                    let queryResultType = queryResultInstanceType.getElementsByTagName('query_result_type');
+
+                    let visualAttributeType = null;
+                    if(queryResultType.length > 0){
+                        queryResultType =  queryResultType[0];
+                       visualAttributeType = queryResultType.getElementsByTagName('visual_attribute_type');
+                       visualAttributeType = visualAttributeType.length > 0 ? visualAttributeType[0].value : '';
+                       if(visualAttributeType.toUpperCase() === "LU") {
+                           let request = {resultInstanceId};
+                           const requestId = queryResultType.getElementsByTagName('name');
+                           let requestDescription = queryResultType.getElementsByTagName('description');
+                           if(requestId.length > 0 ) {
+                               const tableId = parseInt(requestId[0].value);
+                               if(!isNaN(tableId)){
+                                   request.tableId = tableId;
+                               }
+                           }
+                           if(requestDescription.length > 0) {
+                               request.description = decode(requestDescription[0].value);
+                               requestList.push(request);
+                           }
+                       }
+                    }
+
+                });
+                if(status.length > 0 && patientCount.length > 0){
+                    status = status[0].value;
+                    patientCount = patientCount[0].value;
+                }
+            })
+
+            exportRequestList.push({id: queryId, description: queryName, dateSubmitted, status, patientCount, userId, requests: requestList, resultInstanceId});
+        }
+    });
+
+    return exportRequestList;
 }
 
 export function* doListRequestTable(action) {
-    const { isAdmin } = action.payload;
+    const { username, isManager } = action.payload;
 
     try {
-        let response = {ok: true};
-        if (response.ok) {
-            const data = getTestData(isAdmin); //parseData(yield response.json());
-            yield put(listRequestTableSuccess({researcherRequests: data, isAdmin: isAdmin}));
-        } else {
+        let response = yield call(getAllExportRequestsListRequest, username, isManager);
+        if (!response.error) {
+            let dataExportRequestsList = yield parseAllExportRequestsListXml(response);
+            yield put(listRequestTableSuccess({researcherRequests: dataExportRequestsList, isManager}));
+        }
+        else {
             yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));
+            console.error("There was an error getting the list of researcher data export requests");
         }
     } catch (error) {
         yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));
+        console.error("There was an error getting the list of researcher data export requests");
     }
 }
 
