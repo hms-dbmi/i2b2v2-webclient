@@ -13,6 +13,7 @@ import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";
 import {RequestDetailView} from "../../RequestDetailView";
 import {DetailViewNav} from "../../DetailViewNav";
+import {getRequestStatusLog} from "../../../reducers/requestStatusLogSlice";
 
 
 export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
@@ -21,7 +22,10 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
 
     useEffect(() => {
         if(requestRow) {
-            dispatch(getRequestDetails({requestRow}));
+            dispatch(getRequestDetails({requestRow, isManager: false}));
+
+            const resultInstanceIds = requestRow.requests.map(ri => ri.resultInstanceId);
+            dispatch(getRequestStatusLog({resultInstanceIds}));
         }
     }, [requestRow]);
 

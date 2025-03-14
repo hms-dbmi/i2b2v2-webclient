@@ -1,17 +1,24 @@
 import PropTypes from "prop-types";
+import {RequestStatusLogItem} from "./RequestStatusLogItem";
+import {StatusInfo} from "./StatusInfo";
 
 export const RequestStatusLog = ({
-  id= null,
-  date = null,
-  status= "",
+    statusLogs= [],
+    isFetching= false,
+    statusInfo = StatusInfo(),
 } = {}) => ({
-    id,
-    date,
-    status
+    statusLogs,
+    isFetching,
+    statusInfo
 })
 
 RequestStatusLog.propTypes = {
-    id: PropTypes.number.isRequired,
-    date: PropTypes.instanceOf(Date).isRequired,
-    status: PropTypes.string.isRequired,
+    statusLogs: PropTypes.arrayOf(
+        PropTypes.shape({
+            description: PropTypes.string,
+            logItems: PropTypes.arrayOf(PropTypes.shape(RequestStatusLogItem))
+        })
+    ),
+    isFetching: PropTypes.bool,
+    statusInfo: PropTypes.shape(StatusInfo),
 };

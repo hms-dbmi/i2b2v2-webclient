@@ -18,19 +18,23 @@ import {RequestDetailView} from "../../RequestDetailView";
 import {AdminNotesView} from "./AdminNotesView";
 import {DetailViewNav} from "../../DetailViewNav";
 import CreateIcon from '@mui/icons-material/Create';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import "./AdminDetailView.scss";
 import {ConfirmDialog} from "../../ConfirmDialog";
+import {getRequestStatusLog} from "../../../reducers/requestStatusLogSlice";
 
 export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details, isFetching } = useSelector((state) => state.requestDetails);
+    const { statusLogs } = useSelector((state) => state.requestStatusLog);
     const [requestStatus, setRequestStatus] = React.useState(null);
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
 
     useEffect(() => {
         if(requestRow) {
             dispatch(getRequestDetails({requestRow, isManager: true}));
+
+            const resultInstanceIds = requestRow.requests.map(ri => ri.resultInstanceId);
+            dispatch(getRequestStatusLog({resultInstanceIds}));
         }
     }, [requestRow]);
 
@@ -86,7 +90,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                                 >
                                                     {
                                                         RequestStatus._getStatusesAsList().filter(s => RequestStatus.statuses[s] !== RequestStatus.statuses.UNKNOWN).map((status) => {
-                                                            return (<MenuItem value={RequestStatus.statuses[status]}> {RequestStatus.statuses[status]}</MenuItem>);
+                                                            return (<MenuItem value={RequestStatus.statuses[status]}> {RequestStatus.statuses[status].name}</MenuItem>);
                                                         })
                                                     }
                                                 </Select>
@@ -102,7 +106,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                     </Grid>
                                     <Grid size={6}>
                                         <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
-                                        <RequestStatusLogView statusLogs={details.statusLogs}/>
+                                        <RequestStatusLogView requestStatusLog={statusLogs}/>
                                     </Grid>
                                 </Grid>
                             </Card>

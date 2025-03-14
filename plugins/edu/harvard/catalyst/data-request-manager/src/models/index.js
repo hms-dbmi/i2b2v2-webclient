@@ -4,6 +4,7 @@ export { RequestStatus } from "./RequestStatus";
 export { RequestDetails } from "./RequestDetails";
 export { ResearcherRequestDetails } from "./ResearcherRequestDetails";
 export { RequestStatusLog } from "./RequestStatusLog";
+export { RequestStatusLogItem } from "./RequestStatusLogItem";
 export { UserInfo } from "./UserInfo";
 export { RequestTable } from "./RequestTable";
 export { AdminTableRow } from "./AdminTableRow";

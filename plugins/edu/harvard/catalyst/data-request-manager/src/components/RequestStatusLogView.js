@@ -1,5 +1,4 @@
-import React from "react";
-import {RequestStatus} from "../models";
+import React, {useEffect} from "react";
 import {
     Box,
     Paper,
@@ -14,11 +13,18 @@ import {
 import { visuallyHidden } from '@mui/utils';
 import './RequestStatusLogs.scss';
 
-export const RequestStatusLogView = ({statusLogs}) => {
+export const RequestStatusLogView = ({requestStatusLog}) => {
     const [order, setOrder] = React.useState('desc');
     const [orderBy, setOrderBy] = React.useState('date');
+    const [sortedStatusLogs, setSortedStatusLogs] = React.useState([]);
 
     const headCells = [
+        {
+            id: 'requestType',
+            numeric: false,
+            disablePadding: false,
+            label: 'Request',
+        },
         {
             id: 'date',
             numeric: false,
@@ -75,26 +81,39 @@ export const RequestStatusLogView = ({statusLogs}) => {
         setOrderBy(property);
     };
 
-    const descendingComparator = (a, b, orderBy) => {
-        if(orderBy === "date"){
+    const getLatestRequestStatusLog = (statusLogs) => {
+        const recentStatusLogList = statusLogs.map(requestLog => {
+            const logItemsSorted = requestLog.logItems.sort((a, b) => {
+                if(a.date === b.date){
+                    return a.order > b.order;
+                }
+                else {
+                    return a.date > b.date;
+                }
+            });
 
-        }
-        if (b[orderBy] < a[orderBy]) {
-            return -1;
-        }
-        if (b[orderBy] > a[orderBy]) {
-            return 1;
-        }
-        return 0;
+            let requestStatusLog = {
+                description: requestLog.description,
+                date: '',
+                status: '',
+            }
+            if(logItemsSorted.length > 0){
+                requestStatusLog.date = logItemsSorted[0].date;
+                requestStatusLog.status = logItemsSorted[0].status;
+            }
+
+            return requestStatusLog;
+        });
+
+        return recentStatusLogList;
     }
 
-    const getComparator = (order, orderBy) => {
-        return order === 'desc'
-            ? (a, b) => descendingComparator(a, b, orderBy)
-            : (a, b) => -descendingComparator(a, b, orderBy);
-    }
-
-    const sortedStatusLogs = [...statusLogs].sort(getComparator(order, orderBy));
+    useEffect(() => {
+        if(requestStatusLog.length > 0){
+            const sLogs = getLatestRequestStatusLog(requestStatusLog);
+            setSortedStatusLogs(sLogs);
+        }
+    }, [requestStatusLog]);
 
     return (
         <Box className={"RequestStatusTable"} style={{display: 'flex', flexDirection: 'column'}}>
@@ -104,7 +123,7 @@ export const RequestStatusLogView = ({statusLogs}) => {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={statusLogs.length}
+                        rowCount={sortedStatusLogs.length}
                     />
                     <TableBody>
                         {sortedStatusLogs.map((row) => (
@@ -113,9 +132,14 @@ export const RequestStatusLogView = ({statusLogs}) => {
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
+                                    {row.description}
+                                </TableCell>
+                                <TableCell align="left">
                                     {row.date.toLocaleDateString()}
                                 </TableCell>
-                                <TableCell align="left">{RequestStatus.statuses[row.status]}</TableCell>
+                                <TableCell component="th" scope="row">
+                                    {row.status.name}
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

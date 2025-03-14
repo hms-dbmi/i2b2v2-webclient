@@ -1,4 +1,4 @@
-import {RequestTable, UserInfo, RequestDetails, AdminNotes, TableDefinition} from "./models";
+import {RequestTable, UserInfo, RequestDetails, AdminNotes, TableDefinition, RequestStatusLog} from "./models";
 
 export const defaultState = {
     isI2b2LibLoaded: false,
@@ -7,4 +7,5 @@ export const defaultState = {
     userInfo: UserInfo(),
     adminNotes: AdminNotes(),
     tableDef: TableDefinition(),
+    requestStatusLog: RequestStatusLog()
 };
