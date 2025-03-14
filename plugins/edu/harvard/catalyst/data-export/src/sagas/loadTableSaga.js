@@ -1,10 +1,10 @@
 import { call, put, takeLatest} from "redux-saga/effects";
 import {loadTableSuccess, loadTableError} from "../reducers/tableDefSlice";
-import XMLParser from 'react-xml-parser';
 
 import {
     LOAD_DATA_TABLE
 } from "../actions";
+import {parseXml} from "../utilities/parseXml";
 /* global i2b2 */
 
 const DEFAULT_TABLE_ID = -1;
@@ -16,8 +16,12 @@ const getTableRequest = (tableId) => {
         tableId: tableId,
     };
 
-    return i2b2.ajax.CRC.getTable(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
+    return i2b2.ajax.CRC.getTable(data).then((xmlString) => {
+        //parses XML with CDATA properly
+        return parseXml(xmlString);
+    }).catch((err) => err);
 };
+
 const parseGetTableXml = (tableXml, id) => {
 
     let table = {
@@ -43,41 +47,38 @@ const parseGetTableXml = (tableXml, id) => {
     };
 
     let concepts = tableXml.getElementsByTagName('concept');
-    concepts.map(concept => {
+    for (let i = 0; i < concepts.length; i++) {
+        let concept = concepts[i];
         let name = concept.getElementsByTagName('name');
         let required = concept.getElementsByTagName('required');
         let locked = concept.getElementsByTagName('locked');
         let display = concept.getElementsByTagName('display');
         let data = concept.getElementsByTagName('data');
 
-        if(name.length !== 0){
-           name = name[0].value;
-            if(required.length !== 0) {
-                required = required[0].value === "true";
-                if(locked.length !== 0) {
-                    locked = locked[0].value === "true";
-                    if(display.length !== 0) {
-                        display = display[0].value === "true";
+        if(name.length !== 0 && name[0].childNodes.length > 0
+            && required.length !== 0 && required[0].childNodes.length > 0
+            && locked.length !== 0 && locked[0].childNodes.length > 0
+            && display.length !== 0 && display[0].childNodes.length > 0){
+            name = name[0].childNodes[0].nodeValue;
+            required = required[0].childNodes[0].nodeValue === "true";
+            locked = locked[0].childNodes[0].nodeValue === "true";
+            display = display[0].childNodes[0].nodeValue === "true";
 
-                        if(required){
-                            const dataOption = "Value";
-                            allColumns.required.push({name, required, locked, display, dataOption});
-                        }else{
-                            if(data.length !== 0) {
-                                data = data[0].value;
-                                //remove trailing '>' char in cdata string
-                                data = data.substring(0, data.length - 1);
-                                data = JSON.parse(data)[0];
-                                const dataOption = data.dataOption;
-                                const sdxData = data.sdxData;
-                                allColumns.concepts.push({name, required, locked, display, dataOption, sdxData});
-                            }
-                        }
-                    }
-                }
+            if(data.length !== 0 && data[0].childNodes[0].length > 0) {
+                data = data[0].childNodes[0].nodeValue;
+                data = JSON.parse(data)[0];
             }
+
+            if(required){
+                const dataOption = data.dataOption ? data.dataOption : "Value";
+                allColumns.required.push({name, required, locked, display, dataOption});
+
+            }else{
+                allColumns.concepts.push({name, required, locked, display, dataOption: data.dataOption, sdxData: data.sdxData});
+            }
+
         }
-    });
+    }
 
     table.rows = allColumns;
     return table;

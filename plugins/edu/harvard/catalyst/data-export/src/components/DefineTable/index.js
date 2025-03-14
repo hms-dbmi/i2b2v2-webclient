@@ -18,7 +18,6 @@ import LockIcon from '@mui/icons-material/Lock';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import CircularProgress from '@mui/material/CircularProgress';
 import {useDispatch, useSelector} from "react-redux";
-import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
 import {
     Dialog,
@@ -43,10 +42,9 @@ import {
     handleRowName,
     handleRowSdx,
     loadStatusConfirmed,
-    loadTermInfo, loadTable
+    loadTermInfo,
 } from "../../reducers/tableDefSlice";
 
-import {getUserInfo} from "../../reducers/userInfoSlice";
 
 import "./DefineTable.scss";
 
@@ -514,18 +512,10 @@ export const DefineTable = (props) => {
         dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: false, displayLabValue: true}));
     };
 
-    const i2b2LibLoaded = () => {
-        dispatch(updateI2b2LibLoaded());
-    }
-
     useEffect(() => {
         if (isI2b2LibLoaded && i2b2.sdx !== undefined) {
             i2b2.sdx.AttachType("dropTrgt", "CONCPT");
             i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", conceptDropHandler);
-            dispatch(getUserInfo({}));
-            dispatch(loadTable({}));
-        } else {
-            window.addEventListener('I2B2_READY', i2b2LibLoaded);
         }
     }, [isI2b2LibLoaded]);
 
