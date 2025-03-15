@@ -8,28 +8,25 @@ import {decode} from 'html-entities';
 import {DateTime} from "luxon";
 import {RequestStatus} from "../models";
 
-const getRequestStatusLogRequest = (queryResultInstanceId) => {
+const getRequestStatusLogRequest = (exportRequest) => {
     let data = {
-        qr_key_value: queryResultInstanceId,
+        qr_key_value: exportRequest.resultInstanceId,
     };
-    return i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryResultInstanceId(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
+    return i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryResultInstanceId(data).then((xmlString) => {
+        return {
+            description: exportRequest.description,
+            xml: new XMLParser().parseFromString(xmlString)
+        }
+    }).catch((err) => err);
 };
 
-const parseRequestStatusLogXml = (requestStatusLogXml) => {
+const parseRequestStatusLogXml = (requestStatusLogXmlAndDesc) => {
     let exportRequestDetail = {
-        description: '',
+        description:  requestStatusLogXmlAndDesc.description,
         statusLogs: []
     };
 
-    let queryResultInstance = requestStatusLogXml.getElementsByTagName('query_result_instance');
-    if(queryResultInstance.length > 0) {
-        let requestDescription = queryResultInstance[0].getElementsByTagName('description');
-        if (requestDescription.length > 0) {
-            exportRequestDetail.description = decode(requestDescription[0].value);
-        }
-    }
-
-    let crcXmlResult = requestStatusLogXml.getElementsByTagName('crc_xml_result');
+    let crcXmlResult = requestStatusLogXmlAndDesc.xml.getElementsByTagName('crc_xml_result');
     if(crcXmlResult.length > 0){
         crcXmlResult = crcXmlResult[0];
         let xmlValue = crcXmlResult.getElementsByTagName('xml_value');
@@ -60,10 +57,10 @@ const parseRequestStatusLogXml = (requestStatusLogXml) => {
 }
 
 export function* doGetRequestStatusLog(action) {
-    const { resultInstanceIds } = action.payload;
+    const { exportRequests } = action.payload;
 
     try {
-        const requestStatusLogRequestList = resultInstanceIds.map(instanceId => call(getRequestStatusLogRequest, instanceId));
+        const requestStatusLogRequestList = exportRequests.map(exportRequest => call(getRequestStatusLogRequest, exportRequest));
 
         const responseList = yield all(requestStatusLogRequestList);
 

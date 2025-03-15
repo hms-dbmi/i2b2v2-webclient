@@ -24,8 +24,14 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
         if(requestRow) {
             dispatch(getRequestDetails({requestRow, isManager: false}));
 
-            const resultInstanceIds = requestRow.requests.map(ri => ri.resultInstanceId);
-            dispatch(getRequestStatusLog({resultInstanceIds}));
+            const exportRequests = requestRow.requests.map(ri =>  {
+                    return {
+                        description: ri.description,
+                        resultInstanceId: ri.resultInstanceId
+                    }
+                }
+            );
+            dispatch(getRequestStatusLog({exportRequests}));
         }
     }, [requestRow]);
 

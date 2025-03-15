@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {
-    Box,
+    Box, IconButton,
     Paper,
     Table,
     TableBody,
@@ -12,11 +12,14 @@ import {
 } from "@mui/material";
 import { visuallyHidden } from '@mui/utils';
 import './RequestStatusLogs.scss';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export const RequestStatusLogView = ({requestStatusLog}) => {
     const [order, setOrder] = React.useState('desc');
     const [orderBy, setOrderBy] = React.useState('date');
     const [sortedStatusLogs, setSortedStatusLogs] = React.useState([]);
+    const [expandRowList, setExpandRowList] = React.useState([]);
 
     const headCells = [
         {
@@ -96,6 +99,7 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                 description: requestLog.description,
                 date: '',
                 status: '',
+                logItems:  requestLog.logItems
             }
             if(logItemsSorted.length > 0){
                 requestStatusLog.date = logItemsSorted[0].date;
@@ -115,6 +119,28 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
         }
     }, [requestStatusLog]);
 
+    const updateExpandList = (rowDescription) => {
+        const newExpandList = [...expandRowList];
+
+        const rowDescIndex = expandRowList.indexOf(rowDescription);
+        if(rowDescIndex !== -1){
+            newExpandList.splice(rowDescIndex, 1);
+        }
+        else{
+            newExpandList.push(rowDescription);
+        }
+        setExpandRowList(newExpandList);
+    }
+
+    const truncateDescriptionName = (name) => {
+        let truncatedName = name;
+        const maxLength = 20;
+        if(truncatedName.length > maxLength){
+            truncatedName = truncatedName.slice(0, maxLength) + "...";
+        }
+        return truncatedName;
+    }
+
     return (
         <Box className={"RequestStatusTable"} style={{display: 'flex', flexDirection: 'column'}}>
             <TableContainer component={Paper} sx={{ maxHeight: 200 }}>
@@ -127,12 +153,16 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                     />
                     <TableBody>
                         {sortedStatusLogs.map((row) => (
+                            <>
                             <TableRow
                                 key={row.status}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">
-                                    {row.description}
+                                <TableCell component="th" scope="row" title={row.description}>
+                                    <IconButton aria-label="expand" onClick={() => updateExpandList(row.description)}>
+                                        {!expandRowList.includes(row.description) ? <ChevronRightIcon/> : <ExpandMoreIcon />}
+                                    </IconButton>
+                                    {truncateDescriptionName(row.description)}
                                 </TableCell>
                                 <TableCell align="left">
                                     {row.date.toLocaleDateString()}
@@ -141,6 +171,26 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                                     {row.status.name}
                                 </TableCell>
                             </TableRow>
+                            {expandRowList.includes(row.description) &&
+                                row.logItems.map(logItem => {
+                                    return (
+                                        <TableRow
+                                            key={logItem.status}
+                                            sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        >
+                                            <TableCell component="th" scope="row">
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                {logItem.date.toLocaleDateString()}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                {logItem.status.name}
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            }
+                            </>
                         ))}
                     </TableBody>
                 </Table>
