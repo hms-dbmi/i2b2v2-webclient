@@ -11,7 +11,7 @@ import {
     TableSortLabel,
 } from "@mui/material";
 import { visuallyHidden } from '@mui/utils';
-import './RequestStatusLogs.scss';
+import './RequestStatusLogView.scss';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -132,19 +132,10 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
         setExpandRowList(newExpandList);
     }
 
-    const truncateDescriptionName = (name) => {
-        let truncatedName = name;
-        const maxLength = 20;
-        if(truncatedName.length > maxLength){
-            truncatedName = truncatedName.slice(0, maxLength) + "...";
-        }
-        return truncatedName;
-    }
-
     return (
-        <Box className={"RequestStatusTable"} style={{display: 'flex', flexDirection: 'column'}}>
-            <TableContainer component={Paper} sx={{ maxHeight: 200 }}>
-                <Table stickyHeader sx={{ minWidth: 50 }} size="small" aria-label="simple table">
+        <Box className={"RequestStatusLogView"} style={{display: 'flex', flexDirection: 'column'}}>
+            <TableContainer component={Paper} sx={{ maxHeight: 250 }}>
+                <Table stickyHeader sx={{ minWidth: 60 }} size="small" aria-label="simple table">
                     <EnhancedTableHead
                         order={order}
                         orderBy={orderBy}
@@ -158,16 +149,19 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                                 key={row.status}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row" title={row.description}>
-                                    <IconButton aria-label="expand" onClick={() => updateExpandList(row.description)}>
-                                        {!expandRowList.includes(row.description) ? <ChevronRightIcon/> : <ExpandMoreIcon />}
-                                    </IconButton>
-                                    {truncateDescriptionName(row.description)}
+                                <TableCell className={"descriptionColumn"} component="td" scope="row" title={row.description}>
+
+                                    <div className={"descriptionColumnLabel"}>
+                                        <IconButton  aria-label="expand" onClick={() => updateExpandList(row.description)}>
+                                            {!expandRowList.includes(row.description) ? <ChevronRightIcon/> : <ExpandMoreIcon />}
+                                        </IconButton>
+                                        {row.description}
+                                    </div>
                                 </TableCell>
                                 <TableCell align="left">
-                                    {row.date.toLocaleDateString()}
+                                    {row.date && row.date.toLocaleDateString()}
                                 </TableCell>
-                                <TableCell component="th" scope="row">
+                                <TableCell component="td" scope="row">
                                     {row.status.name}
                                 </TableCell>
                             </TableRow>

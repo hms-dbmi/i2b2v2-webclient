@@ -83,7 +83,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                             </Typography>
                             <Card className={"RequestDetailActionContent"}>
                                 <Grid container spacing={2}>
-                                    <Grid size={6}>
+                                    <Grid size={5}>
                                         <FormControl className={"statusControl"} variant="standard" sx={{ m: 1, minWidth: 120 }}>
                                         <FormControlLabel
                                             className={"statusLabel"}
@@ -110,7 +110,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                             </Button>
                                         </div>
                                     </Grid>
-                                    <Grid size={6}>
+                                    <Grid size={7}>
                                         <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
                                         <RequestStatusLogView requestStatusLog={statusLogs}/>
                                     </Grid>
