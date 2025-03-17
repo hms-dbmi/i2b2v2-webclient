@@ -5,6 +5,7 @@ import {
     Box,
     Button,
     Card,
+    CircularProgress,
     Typography
 } from "@mui/material";
 import {getRequestDetails} from "../../../reducers/requestDetailsSlice";
@@ -42,7 +43,14 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
     }
     return (
         <Box className={"ResearcherDetailView"}>
-            {   details.id && (
+            {details.isFetching &&
+                <div className={"LoadingProgress"}>
+                    <CircularProgress className="ProgressIcon" size="5rem"/>
+                    <Typography className={"ProgressLabel"}>Loading Details...</Typography>
+                </div>
+            }
+
+            {!details.isFetching && details.id && (
                     <div>
                         <DetailViewNav requestId={requestRow.id} requestName={details.name} goToHome={goToViewRequestTable}/>
 

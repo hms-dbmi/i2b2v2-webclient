@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     Box,
     Button,
-    Card,
+    Card, CircularProgress,
     FormControl,
     FormControlLabel,
     MenuItem,
@@ -66,7 +66,14 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
 
     return (
         <Box className={"AdminDetailView"}>
-            {   details.id && (
+            {details.isFetching &&
+                <div className={"LoadingProgress"}>
+                    <CircularProgress className="ProgressIcon" size="5rem"/>
+                    <Typography className={"ProgressLabel"}>Loading Details...</Typography>
+                </div>
+            }
+
+            { !details.isFetching && details.id && (
                 <div>
                     <DetailViewNav requestId={requestRow.id} requestName={details.name} goToHome={goToViewRequestTable}/>
 

@@ -73,4 +73,17 @@
   .RequestXmlMain {
     margin-top: 2.2em;
   }
+
+  .LoadingProgress {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+  }
+
+  .ProgressIcon {
+    margin-left: 23px;
+  }
 }
