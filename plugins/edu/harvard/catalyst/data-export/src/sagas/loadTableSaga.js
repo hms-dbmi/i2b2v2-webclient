@@ -7,8 +7,8 @@ import {
 import {parseXml} from "../utilities/parseXml";
 /* global i2b2 */
 
-const DEFAULT_TABLE_ID = -1;
-const DEFAULT_TABLE_TITLE = "DEFAULT";
+export const DEFAULT_TABLE_ID = -1;
+export const DEFAULT_TABLE_TITLE = "DEFAULT";
 
 const getTableRequest = (tableId) => {
 
@@ -95,6 +95,7 @@ export function* doLoadTable(action) {
         let response = yield call(getTableRequest, id);
         if(!response.error) {
             let table= yield parseGetTableXml(response, id);
+            table.title = title;
             yield put(loadTableSuccess(table));
         }else{
             console.error("Error loading table! Message: " + response.errorMsg + ". Error details: " + response.errorData);
