@@ -19,6 +19,7 @@ import {getRequestStatusLog} from "../../../reducers/requestStatusLogSlice";
 export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details } = useSelector((state) => state.requestDetails);
+    const { statusLogs } = useSelector((state) => state.requestStatusLog);
 
     useEffect(() => {
         if(requestRow) {
@@ -58,12 +59,12 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
                                 </Typography>
                                 <Card className={"RequestDetailActionContent"}>
                                     <Grid container spacing={2}>
-                                        <Grid size={6}>
+                                        <Grid size={5}>
                                             { details.status === RequestStatus.statuses.SUBMITTED && <Button variant="contained" color="error">Withdraw Request</Button>}
                                         </Grid>
-                                        <Grid size={6}>
+                                        <Grid size={7}>
                                             <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
-                                            <RequestStatusLogView statusLogs={details.statusLogs}/>
+                                            <RequestStatusLogView requestStatusLog={statusLogs}/>
                                         </Grid>
                                     </Grid>
                                 </Card>

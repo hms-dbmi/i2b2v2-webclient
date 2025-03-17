@@ -23,7 +23,7 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
 
     const headCells = [
         {
-            id: 'requestType',
+            id: 'description',
             numeric: false,
             disablePadding: false,
             label: 'Request',
@@ -82,6 +82,9 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
+
+        const resortedStatusLogs = [...sortedStatusLogs].sort(getComparator(order,property));
+        setSortedStatusLogs(resortedStatusLogs);
     };
 
     const getLatestRequestStatusLog = (statusLogs) => {
@@ -112,12 +115,24 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
         return recentStatusLogList;
     }
 
-    useEffect(() => {
-        if(requestStatusLog.length > 0){
-            const sLogs = getLatestRequestStatusLog(requestStatusLog);
-            setSortedStatusLogs(sLogs);
+    const descendingComparator = (a, b, orderBy) => {
+        if(orderBy === "date"){
+
         }
-    }, [requestStatusLog]);
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }
+
+    const getComparator = (order, orderBy) => {
+        return order === 'desc'
+            ? (a, b) => descendingComparator(a, b, orderBy)
+            : (a, b) => -descendingComparator(a, b, orderBy);
+    }
 
     const updateExpandList = (rowDescription) => {
         const newExpandList = [...expandRowList];
@@ -131,6 +146,13 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
         }
         setExpandRowList(newExpandList);
     }
+
+    useEffect(() => {
+        if(requestStatusLog.length > 0){
+            const sLogs = getLatestRequestStatusLog(requestStatusLog);
+            setSortedStatusLogs(sLogs);
+        }
+    }, [requestStatusLog]);
 
     return (
         <Box className={"RequestStatusLogView"} style={{display: 'flex', flexDirection: 'column'}}>
