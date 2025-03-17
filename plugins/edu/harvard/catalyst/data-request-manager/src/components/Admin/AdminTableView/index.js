@@ -16,10 +16,10 @@ export const AdminTableView = ({displayDetailView}) => {
 
 
     useEffect(() => {
-        if (isI2b2LibLoaded) {
+        if (username  && rows.length === 0) {
             dispatch(listRequestTable({isManager: true, username}));
         }
-    }, [isI2b2LibLoaded]);
+    }, [username]);
 
     return (
         <Box className={"AdminTableView"} style={{ display: 'flex', flexDirection: 'column' }}>

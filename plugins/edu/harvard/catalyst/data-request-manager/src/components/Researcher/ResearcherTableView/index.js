@@ -15,9 +15,8 @@ export const ResearcherTableView = ({displayDetailView}) => {
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const { username }  = useSelector((state) => state.userInfo);
 
-
     useEffect(() => {
-        if (username) {
+        if (username  &&  rows.length === 0) {
             dispatch(listRequestTable({isManager: false, username}));
         }
     }, [username]);
