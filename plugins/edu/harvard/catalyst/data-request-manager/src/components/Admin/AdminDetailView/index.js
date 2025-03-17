@@ -73,7 +73,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                 </div>
             }
 
-            { !details.isFetching && details.id && (
+            { !details.isFetching && !statusLogs.isFetching && details.id && (
                 <div>
                     <DetailViewNav requestId={requestRow.id} requestName={details.name} goToHome={goToViewRequestTable}/>
 
@@ -123,6 +123,9 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                     </Grid>
                                 </Grid>
                             </Card>
+                        </div>
+                        <div className={"RequestComments"}>
+                            <AdminNotesView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId}/>
                         </div>
                         {confirmFileGen && <ConfirmDialog
                             msg={'Are you sure you want to generate data file(s)?'}

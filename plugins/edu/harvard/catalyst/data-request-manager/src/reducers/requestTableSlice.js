@@ -21,6 +21,7 @@ export const requestTableSlice = createSlice({
                 if(isManager){
                     return AdminTableRow({
                         id: request.id,
+                        queryInstanceId: request.queryInstanceId,
                         description: request.description,
                         requests: request.requests.map(req => {
                             return ExportRequest({
@@ -38,6 +39,7 @@ export const requestTableSlice = createSlice({
                 else {
                     return ResearcherTableRow({
                         id: request.id,
+                        queryInstanceId: request.queryInstanceId,
                         description: request.description,
                         requests: request.requests.map(req => {
                             return ExportRequest({

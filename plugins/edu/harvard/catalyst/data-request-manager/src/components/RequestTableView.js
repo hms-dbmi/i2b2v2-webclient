@@ -75,7 +75,7 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailView}
             sortable: false,
             resizable: false,
             disableReorder: true,
-            minWidth: 138,
+            minWidth: 150,
             renderCell: (param) => {
                 return (
                     <Button variant="contained" size="small" className={"actions"} onClick={() => handleDisplayDetailView(param.row)}>View Details</Button>

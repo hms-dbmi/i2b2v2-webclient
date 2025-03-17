@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import {RequestStatus} from "./RequestStatus";
 
-
 export const AdminTableRow = ({
     id = null,
+    queryInstanceId = null,
     description= "",
     requests = [],
     dateSubmitted = null,
@@ -12,6 +12,7 @@ export const AdminTableRow = ({
     status= RequestStatus.statuses.SUBMITTED
 } = {}) => ({
     id,
+    queryInstanceId,
     description,
     requests,
     dateSubmitted,
@@ -22,6 +23,7 @@ export const AdminTableRow = ({
 
 AdminTableRow.propTypes = {
     id: PropTypes.number.isRequired,
+    queryInstanceId: PropTypes.number.isRequired,
     description:  PropTypes.string.isRequired,
     requests: PropTypes.arrayOf(PropTypes.string).isRequired,
     dateSubmitted: PropTypes.instanceOf(Date).isRequired,

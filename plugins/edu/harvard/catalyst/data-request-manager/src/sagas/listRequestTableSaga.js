@@ -46,7 +46,9 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
             let patientCount = '';
             let requestList = [];
             let resultInstanceId = '';
+            let queryInstanceId = null;
             queryInstanceTypeList.forEach(queryInstanceType => {
+                queryInstanceId = queryInstanceType.getElementsByTagName('query_instance_id');
                 status = queryInstanceType.getElementsByTagName('batch_mode');
                 let queryResultInstanceTypeList =  queryInstanceType.getElementsByTagName('query_result_instance_type');
                 queryResultInstanceTypeList.forEach(queryResultInstanceType => {
@@ -80,13 +82,14 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
                     }
 
                 });
-                if(status.length > 0 && patientCount.length > 0){
+                if(status.length > 0 && patientCount.length > 0 && queryInstanceId.length > 0){
                     status = status[0].value;
+                    queryInstanceId = queryInstanceId[0].value;
                     patientCount = patientCount[0].value;
                 }
             })
 
-            exportRequestList.push({id: queryId, description: queryName, dateSubmitted, status, patientCount, userId, requests: requestList, resultInstanceId});
+            exportRequestList.push({id: queryId, description: queryName, queryInstanceId, dateSubmitted, status, patientCount, userId, requests: requestList, resultInstanceId});
         }
     });
 
