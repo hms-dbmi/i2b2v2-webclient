@@ -194,7 +194,21 @@ i2b2.layout.init = function () {
 
 
 };
+// ================================================================================================== //
 
+i2b2.layout.selectTab = function (componentName) {
+    let rightColTab = i2b2.layout.gl_instances.rightCol.root.getItemsByFilter((a) => { return a.componentName === componentName; } );
+    if(rightColTab.length > 0){
+        rightColTab = rightColTab[0];
+        rightColTab.parent.setActiveContentItem(rightColTab);
+    }
+
+    let leftColTab = i2b2.layout.gl_instances.leftCol.root.getItemsByFilter((a) => { return a.componentName === componentName; } );
+    if(leftColTab.length > 0){
+        leftColTab = rightColTab[0];
+        leftColTab.parent.setActiveContentItem(leftColTab);
+    }
+}
 // ================================================================================================== //
 i2b2.events.afterLogin.add(
     (function() {
