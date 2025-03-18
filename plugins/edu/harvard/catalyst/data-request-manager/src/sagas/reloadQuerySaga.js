@@ -5,29 +5,29 @@ import { RELOAD_QUERY} from "../actions";
 import {reloadQueryError} from "../reducers/requestDetailsSlice";
 
 const reloadQueryRequest = (queryId) => {
-    i2b2.authorizedTunnel.function["i2b2.CRC.ctrlr.QT.doQueryLoad"](queryId).then((userRoles) => userRoles);
+    i2b2.authorizedTunnel.function["i2b2.CRC.ctrlr.QT.doQueryLoad"](queryId).error(e => {
+        console.log("Error reloading query " + e);
+    });
+}
+
+const switchToFindPatientsTabRequest = () => {
+    i2b2.authorizedTunnel.function["i2b2.layout.selectTab"]('i2b2.CRC.view.QT').error(e => {
+        console.log("Error switching to find Patients tab " + e);
+    });
 }
 
 export function* doReloadQuery(action) {
     const { queryId } = action.payload;
 
     try {
-        const [result] = yield all([
-            //call(getUserNameRequest),
-            call(reloadQueryRequest, queryId)
-        ])
-
-        if (result !== undefined) {
-            //  const isManager = userRoles.includes('MANAGER');
-            //yield put(reloadQuerySuccess({isManager, username}));
-            //} else {
-            yield put(reloadQueryError({errorMessage: "There was an error getting the user info"}));
-        }
+        yield all([
+            call(reloadQueryRequest, queryId),
+            call(switchToFindPatientsTabRequest)
+        ]);
     } catch (error) {
-        yield put(reloadQueryError({errorMessage: "There was an error getting the user info"}));
+        yield put(reloadQueryError({errorMessage: "There was an error while reloading query " + queryId}));
     }
 }
-
 
 export function* reloadQuerySaga() {
     yield takeLatest(RELOAD_QUERY, doReloadQuery);

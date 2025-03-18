@@ -21,6 +21,12 @@ export const RequestDetailView = ({details}) => {
 
     const dispatch = useDispatch();
 
+import {useDispatch} from "react-redux";
+import {reloadQuery} from "../reducers/requestDetailsSlice";
+
+export const RequestDetailView = ({details, isManager}) => {
+    const dispatch = useDispatch();
+
     const formatNumber = (value) => {
         let formattedValue = value.length > 0 ? parseInt(value): "";
         if(isNaN(formattedValue)){
