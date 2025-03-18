@@ -157,7 +157,7 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
     return (
         <Box className={"RequestStatusLogView"} style={{display: 'flex', flexDirection: 'column'}}>
             <TableContainer component={Paper} sx={{ maxHeight: 250 }}>
-                <Table stickyHeader sx={{ minWidth: 60 }} size="small" aria-label="simple table">
+                <Table stickyHeader sx={{ minWidth: 50 }} size="small" aria-label="simple table">
                     <EnhancedTableHead
                         order={order}
                         orderBy={orderBy}
