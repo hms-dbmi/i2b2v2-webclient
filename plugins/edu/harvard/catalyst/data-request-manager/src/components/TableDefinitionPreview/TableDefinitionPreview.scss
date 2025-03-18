@@ -5,4 +5,11 @@
   .TableDefinitionPreviewTitle {
     font-weight: bold;
   }
+
+  .Constraints {
+    width: 98%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

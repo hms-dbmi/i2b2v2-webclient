@@ -133,7 +133,7 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailView}
                 disableRowSelectionOnClick
                 initialState={{
                     sorting: {
-                        sortModel: [{field:'id',sort:'asc'}]
+                        sortModel: [{field:'id',sort:'desc'}]
                     }
                 }}
                 pageSizeOptions={[5, 10, 25]}

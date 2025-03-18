@@ -26,8 +26,8 @@ const parseGetTableXml = (tableXml) => {
     }
 
     let title = tableXml.getElementsByTagName('title');
-    if(title.length !== 0){
-        table.title = title[0].value;
+    if(title.length !== 0 && title[0].childNodes.length > 0){
+        table.title = title[0].childNodes[0].nodeValue;
     }
 
     let requiredRows = [];
