@@ -14,7 +14,11 @@
       "i2b2.PM.model.login_password": "R",
       "i2b2.PM.model.login_username": "R",
       "i2b2.PM.model.userRoles": "RO"
-    }
+    },
+    "functions" : [
+      "i2b2.CRC.ctrlr.QT.doQueryLoad",
+      "i2b2.layout.selectTab"
+    ]
   },
   "state": {
   }
