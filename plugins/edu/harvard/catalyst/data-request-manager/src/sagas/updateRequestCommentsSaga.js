@@ -1,7 +1,6 @@
 /* globals i2b2 */
 
 import {takeLatest, put, call} from "redux-saga/effects";
-import {adminRequestDetails} from "./testData";
 
 import {
     UPDATE_REQUEST_COMMENTS

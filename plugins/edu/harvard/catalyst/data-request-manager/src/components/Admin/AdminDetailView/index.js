@@ -15,16 +15,16 @@ import Grid from '@mui/material/Grid2';
 import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";
 import {RequestDetailView} from "../../RequestDetailView";
-import {AdminNotesView} from "./AdminNotesView";
 import {DetailViewNav} from "../../DetailViewNav";
 import CreateIcon from '@mui/icons-material/Create';
 import "./AdminDetailView.scss";
 import {ConfirmDialog} from "../../ConfirmDialog";
 import {getRequestStatusLog} from "../../../reducers/requestStatusLogSlice";
+import {RequestCommentsView} from "../../RequestCommentsView";
 
 export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
-    const { details, isFetching } = useSelector((state) => state.requestDetails);
+    const { details } = useSelector((state) => state.requestDetails);
     const { statusLogs } = useSelector((state) => state.requestStatusLog);
     const [requestStatus, setRequestStatus] = React.useState(null);
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
@@ -125,7 +125,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                             </Card>
                         </div>
                         <div className={"RequestComments"}>
-                            <AdminNotesView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId}/>
+                            <RequestCommentsView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId}/>
                         </div>
                         {confirmFileGen && <ConfirmDialog
                             msg={'Are you sure you want to generate data file(s)?'}

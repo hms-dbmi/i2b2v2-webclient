@@ -15,6 +15,7 @@ import {RequestStatus} from "../../../models";
 import {RequestDetailView} from "../../RequestDetailView";
 import {DetailViewNav} from "../../DetailViewNav";
 import {getRequestStatusLog} from "../../../reducers/requestStatusLogSlice";
+import {RequestCommentsView} from "../../RequestCommentsView";
 
 
 export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
@@ -76,6 +77,9 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
                                         </Grid>
                                     </Grid>
                                 </Card>
+                            </div>
+                            <div className={"RequestComments"}>
+                                <RequestCommentsView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId}/>
                             </div>
                         </div>
                     </div>

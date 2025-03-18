@@ -24,13 +24,9 @@
     font-weight: bold;
   }
 
-  .RequestDetailContent,.RequestDetailActionContent, .RequestDetailNotesContent {
+  .RequestDetailContent,.RequestDetailActionContent {
     margin-top: 0.4em;
     background-color: rgba(246, 245, 245, 0.8);
-  }
-
-  .RequestDetailNotesContent {
-    padding: 1.2em;
   }
 
   .RequestDetailContent {
