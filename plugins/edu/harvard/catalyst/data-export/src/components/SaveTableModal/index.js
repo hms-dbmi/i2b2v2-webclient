@@ -9,22 +9,29 @@ import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 import "../../css/modals.scss";
 import { TableListing } from "../TableListing";
-import {confirmDeleteTableStatus, deleteTable, listTables} from "../../reducers/tableListingSlice";
+import {
+    confirmDeleteTableStatus,
+    confirmRenameTableStatus,
+    deleteTable,
+    listTables,
+    renameTable
+} from "../../reducers/tableListingSlice";
 import { TabPanel } from "../TabPanel";
 import {saveStatusConfirmed, saveTable} from "../../reducers/saveTableSlice";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 
-
-
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
-    const { userRows, statusInfo, isFetching, isDeleting, deleteStatusInfo } = useSelector((state) => state.tableListing);
+    const { userRows, sharedRows, statusInfo, isFetching, isDeleting, deleteStatusInfo, renameStatusInfo } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
-    const tableDefRows = useSelector((state) => state.tableDef.rows);
+    const {rows: tableDefRows} = useSelector((state) => state.tableDef);
+    const { username, isAdmin } = useSelector((state) => state.userInfo);
     const [selectedRows, setSelectedRows] = React.useState([]);
     const [enteredTitle, setEnteredTitle] = React.useState("My-Table-Definition");
     const [showOverwrite, setShowOverwrite] = React.useState(false);
     const [isNameInvalid, setIsNameInvalid] = React.useState(false);
+    const [isShared, setIsShared] = React.useState(false);
+    const [tab, setTab] = React.useState(1);
 
     const dispatch = useDispatch();
 
@@ -35,9 +42,13 @@ export const SaveTableModal = ({open, handleClose}) => {
         };
     }
 
+    const updateTableDefinitionTitle = (id, title) => {
+        dispatch(renameTable({id, title}));
+    }
+
     const onRowSelect = (row) => {
         setSelectedTableDef({id: row.id, title: row.title});
-        setSelectedRows(row.id);
+        setSelectedRows([row.id]);
         setEnteredTitle(row.title);
     }
 
@@ -46,7 +57,7 @@ export const SaveTableModal = ({open, handleClose}) => {
 
         setSelectedRows(matchedRows.map(srow => srow.id));
 
-        if(matchedRows.length >0) {
+        if(matchedRows.length > 0) {
             setSelectedTableDef({title: matchedRows[0].title, id: matchedRows[0].id});
         }else{
             setSelectedTableDef({title: title});
@@ -76,10 +87,13 @@ export const SaveTableModal = ({open, handleClose}) => {
 
     const doSave = () =>{
         dispatch(saveTable({
+            tableDefRows,
+            creator_id: username,
             tableId: selectedTableDef.id,
-            tableTitle: selectedTableDef.title,
-            tableDefRows: tableDefRows
-        }))
+            title: selectedTableDef.title,
+            shared: isShared
+            })
+        );
         setShowOverwrite(false);
         handleClose();
     }
@@ -120,6 +134,19 @@ export const SaveTableModal = ({open, handleClose}) => {
         dispatch(confirmDeleteTableStatus());
     };
 
+    const confirmRenameStatus = () => {
+        dispatch(confirmRenameTableStatus());
+    };
+
+    const handleChangeTab = (event, newValue) => {
+        if(isAdmin) {
+            setTab(newValue);
+        }
+        setIsShared(newValue === 0);
+        setSelectedRows([]);
+    };
+
+
     useEffect(() => {
         if (open) {
             dispatch(listTables());
@@ -156,29 +183,24 @@ export const SaveTableModal = ({open, handleClose}) => {
                 >
                     <Tabs
                         orientation="vertical"
-                        value={1}
+                        value={tab}
                         aria-label="Table Definition Folders"
                         sx={{ borderRight: 1, borderColor: 'divider'}}
+                        onChange={handleChangeTab}
                     >
-                        <Tab label="Shared Tables" {...addtlProps(0)} sx={{textDecoration:"line-through"}}/>
+                        {!isAdmin && <Tab label="Shared Tables" {...addtlProps(0)} sx={{textDecoration:"line-through"}}/>}
+                        {isAdmin && <Tab label="Shared Tables" {...addtlProps(0)}/>}
                         <Tab label="My Tables" {...addtlProps(1)} />
                     </Tabs>
                     <TabPanel
-                        value={1}
+                        value={tab}
                         index={0}
                         className={'modalTabPanel'}
                     >
-                    </TabPanel>
-                    <TabPanel
-                        value={1}
-                        index={1}
-                        className={'modalTabPanel'}
-                        height={260}
-                    >
                         <TableListing
-                            id={"saveModalDefTableLocal"}
-                            rows={userRows}
-                            canRename={false}
+                            id={"saveModalDefTableGlobal"}
+                            rows={sharedRows}
+                            canRename={isAdmin}
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
                             hasError={statusInfo.status==='FAIL'}
@@ -186,6 +208,31 @@ export const SaveTableModal = ({open, handleClose}) => {
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}
+                            onRename={updateTableDefinitionTitle}
+                            renameFailed={renameStatusInfo.status === 'FAIL'}
+                            onRenameAlertClose={confirmRenameStatus}
+                        />
+                    </TabPanel>
+                    <TabPanel
+                        value={tab}
+                        index={1}
+                        className={'modalTabPanel'}
+                        height={260}
+                    >
+                        <TableListing
+                            id={"saveModalDefTableLocal"}
+                            rows={userRows}
+                            canRename={true}
+                            onSelect={onRowSelect}
+                            selectionModel={selectedRows}
+                            hasError={statusInfo.status==='FAIL'}
+                            onDelete={(id) => onDeleteTable(id, false)}
+                            isLoading={isFetching || isDeleting}
+                            deleteFailed={deleteStatusInfo.status === 'FAIL'}
+                            onDeleteAlertClose={confirmDeleteStatus}
+                            onRename={updateTableDefinitionTitle}
+                            renameFailed={renameStatusInfo.status === 'FAIL'}
+                            onRenameAlertClose={confirmRenameStatus}
                         />
                     </TabPanel>
                 </Box>

@@ -5,7 +5,7 @@ import { GET_USER_INFO} from "../actions";
 import {getUserInfoError, getUserInfoSuccess} from "../reducers/userInfoSlice";
 
 const getUserNameRequest = () => i2b2.authorizedTunnel.variable["i2b2.PM.model.login_username"].then((username) => username);
-const isAdminUserRequest = () => i2b2.authorizedTunnel.variable["i2b2.PM.model.admin_only"].then((isAdmin) => isAdmin);
+const isAdminUserRequest = () => i2b2.authorizedTunnel.variable["i2b2.PM.model.isAdmin"].then((isAdmin) => isAdmin);
 
 export function* doGetUserInfo(action) {
     try {

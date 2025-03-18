@@ -1,89 +1,71 @@
-import { takeLatest, put} from "redux-saga/effects";
+import { call, takeLatest, put} from "redux-saga/effects";
 import {saveTableSuccess, saveTableError} from "../reducers/saveTableSlice";
 
 import {
     SAVE_DATA_TABLE
 } from "../actions";
+import XMLParser from "react-xml-parser";
 /* global i2b2 */
 
 
-const transformTableDef = (tableDefRows) => {
-    let requiredRows = {};
-    let concepts = [];
+const setTableRequest = (rows, title, creator_id, shared, id) => {
 
-    let index=0;
-    tableDefRows.forEach(row => {
-        if(row.required){
-            requiredRows[row.id] = {
-                name: row.name,
-                display: row.display,
-                locked: row.locked
-            }
-        }
-        else{
-            concepts.push({
-                index: index,
-                dataOption: row.dataOption,
-                textDisplay: row.name,
-                locked: false,
-                sdxData: row.sdxData
-            });
-            index++;
-        }
-    });
+    let data = {
+        title: title,
+        creator_id: creator_id,
+        shared: shared,
+        concepts: getConceptsToXml(rows)
+    };
 
-    const newTdef = {
-        required: requiredRows,
-        concepts: concepts,
+    if(id !== undefined) {
+        data.table_id_attr = 'id="' + id + '"';
+    }else{
+        data.table_id_attr = "";
     }
 
-    return newTdef;
-}
+    return i2b2.ajax.CRC.setTable(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
+};
 
-export function* doSaveTable(action) {
-    let { tableId, tableTitle, tableDefRows } = action.payload;
+const getConceptsToXml = (concepts) => {
+    const conceptsList = concepts.map(concept => {
 
-    try {
-        let transformedTableDef = transformTableDef(tableDefRows);
-        transformedTableDef.title = tableTitle;
-        let formdata = new FormData();
-
-        formdata.append('uid',i2b2.model.user);
-        formdata.append('pid',i2b2.model.project);
-        formdata.append('sid',i2b2.model.session);
-        formdata.append('tdef', JSON.stringify(transformedTableDef));
-        formdata.append('fid','save_table');
-
-        if(tableId) {
-            formdata.append('tid',tableId);
+        let jsonData = {
+            dataOption: concept.dataOption,
+            index: concept.order
         }
 
-        const fetchConfig = {
-            method: "POST",
-            mode: "cors",
-            body: formdata
-        };
+        if(concept.sdxData){
+            jsonData.sdxData = concept.sdxData;
+        }
 
-        const response = yield fetch(i2b2.model.endpointUrl, fetchConfig);
-        if(response.ok) {
-            const data = yield response.json();
-            if(!data.success){
-                let error = data.error;
-                if(error && error.length === 0 ) {
-                    error = "There was an error saving the table"
-                }
-                console.error("Error saving table! Message: " + error);
-                yield put(saveTableError({errorMessage: error}));
-            }
-            else{
-                yield put(saveTableSuccess());
-            }
-        }else{
-            console.error("Error saving table! Status code: " + response.status + "Message: " + response.statusText);
+        const dataXml = '<data><![CDATA[[' + JSON.stringify(jsonData) + ']]]></data>';
+        return "<concept>\n"
+            + "<name>" + concept.name +"</name>\n"
+            + "<display>" + concept.display +"</display>\n"
+            + "<required>" + concept.required +"</required>\n"
+            + "<locked>" + concept.locked +"</locked>\n"
+            + dataXml
+            + "</concept>";
+    })
+
+    const conceptsXml = conceptsList.join("\n");
+    return conceptsXml;
+};
+
+export function* doSaveTable(action) {
+    let { tableId, tableDefRows, creator_id, title, shared } = action.payload;
+
+    try {
+        let response = yield call(setTableRequest, tableDefRows, title, creator_id, shared, tableId);
+        if(!response.error) {
+            yield put(saveTableSuccess());
+        }
+        else{
+            console.error("Error saving table! Message: " + response.errorMsg + ". Error details: " + response.errorData);
             yield put(saveTableError({errorMessage: "There was an error saving the table"}));
         }
     } catch (error) {
-        yield put(saveTableError({errorMessage: "There was an error saving the data table"}));
+        yield put(saveTableError({errorMessage: "There was an error saving the table"}));
     }
 }
 
