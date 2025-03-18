@@ -18,13 +18,6 @@ export const RequestDetailView = ({details}) => {
     const [showTableDefPreview, setShowTableDefPreview] = React.useState(false);
     const [showAlert, setShowAlert] = React.useState(false);
     const [alertMsg, setAlertMsg] = React.useState("");
-
-    const dispatch = useDispatch();
-
-import {useDispatch} from "react-redux";
-import {reloadQuery} from "../reducers/requestDetailsSlice";
-
-export const RequestDetailView = ({details, isManager}) => {
     const dispatch = useDispatch();
 
     const formatNumber = (value) => {
