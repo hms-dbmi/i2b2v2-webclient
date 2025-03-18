@@ -76,9 +76,12 @@ export const RequestCommentsView = ({queryMasterId, queryInstanceId}) => {
                         />
                     </Grid>
                     <Grid  className={"AddCommentActions"} size={1}>
-                        <Button variant="outlined" size={"small"} onClick={handleRestoreComment}>Restore</Button>
-                        {!isEditing ? <Button variant="contained" className={"CommentBtn"} size={"small"} onClick={handleEditComment}>Edit</Button> :
+
+                        {!isEditing ? <Button variant="contained" size={"small"} onClick={handleEditComment}>Edit</Button> :
+                            <>
+                            <Button variant="outlined" size={"small"} onClick={handleRestoreComment}>Restore</Button>
                             <Button variant="outlined" className={"CommentBtn"} size={"small"} onClick={handleCancelEditComment}>Cancel</Button>
+                            </>
                         }
                         {isEditing && <Button variant="contained" className={"CommentBtn"} size={"small"}
                                  disabled={newComment.length === 0 || newComment === comments} onClick={handleAddRequestComment}>
