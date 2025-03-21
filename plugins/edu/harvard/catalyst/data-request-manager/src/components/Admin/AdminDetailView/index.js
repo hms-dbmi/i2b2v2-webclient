@@ -26,6 +26,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details } = useSelector((state) => state.requestDetails);
     const { statusLogs } = useSelector((state) => state.requestStatusLog);
+    const { username } = useSelector((state) => state.userInfo);
     const [requestStatus, setRequestStatus] = React.useState(null);
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
 
@@ -125,7 +126,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                             </Card>
                         </div>
                         <div className={"RequestComments"}>
-                            <RequestCommentsView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId}/>
+                            <RequestCommentsView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId} username={username}/>
                         </div>
                         {confirmFileGen && <ConfirmDialog
                             msg={'Are you sure you want to generate data file(s)?'}

@@ -16,14 +16,14 @@ import {
     updateRequestCommentsConfirmed
 } from "../../reducers/requestCommentsSlice";
 
-export const RequestCommentsView = ({queryMasterId, queryInstanceId}) => {
+export const RequestCommentsView = ({queryMasterId, queryInstanceId, username}) => {
     const dispatch = useDispatch();
     const {comments, isSaving, isFetching, saveStatusInfo} = useSelector((state) => state.requestComments);
     const [newComment, setNewComment] = React.useState("");
     const [isEditing, setIsEditing] = React.useState(false);
 
     const handleAddRequestComment = (event) => {
-        dispatch(updateRequestComments({comments: newComment, queryInstanceId}));
+        dispatch(updateRequestComments({comments: newComment, queryInstanceId, username}));
     }
 
     const handleRestoreComment = (event) => {

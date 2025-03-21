@@ -43,51 +43,46 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
             queryName = decode(queryName[0].value);
             dateSubmitted = dateSubmitted[0].value;
             let status = '';
-            let patientCount = '';
+            let patientCount = null;
             let requestList = [];
-            let resultInstanceId = '';
+            let resultInstanceId = null;
             let queryInstanceId = null;
             queryInstanceTypeList.forEach(queryInstanceType => {
                 queryInstanceId = queryInstanceType.getElementsByTagName('query_instance_id');
+                queryInstanceId = queryInstanceId.length > 0 ? queryInstanceId[0].value : null;
                 status = queryInstanceType.getElementsByTagName('batch_mode');
+                status = status.length > 0 ? status[0].value : '';
                 let queryResultInstanceTypeList =  queryInstanceType.getElementsByTagName('query_result_instance_type');
                 queryResultInstanceTypeList.forEach(queryResultInstanceType => {
                     let resultInstanceId =  queryResultInstanceType.getElementsByTagName('result_instance_id');
-                    if( resultInstanceId.length > 0){
-                        resultInstanceId = resultInstanceId[0].value;
-                    }
+                    resultInstanceId = resultInstanceId.length > 0 ? resultInstanceId[0].value: null;
                     patientCount = queryResultInstanceType.getElementsByTagName('set_size');
+                    patientCount = patientCount.length > 0 ? patientCount[0].value : '';
                     let queryResultType = queryResultInstanceType.getElementsByTagName('query_result_type');
 
                     let visualAttributeType = null;
                     if(queryResultType.length > 0){
                         queryResultType =  queryResultType[0];
-                       visualAttributeType = queryResultType.getElementsByTagName('visual_attribute_type');
-                       visualAttributeType = visualAttributeType.length > 0 ? visualAttributeType[0].value : '';
-                       if(visualAttributeType.toUpperCase() === "LU") {
-                           let request = {resultInstanceId};
-                           const requestId = queryResultType.getElementsByTagName('name');
-                           let requestDescription = queryResultType.getElementsByTagName('description');
-                           if(requestId.length > 0 ) {
-                               const tableId = parseInt(requestId[0].value);
-                               if(!isNaN(tableId)){
-                                   request.tableId = tableId;
-                               }
-                           }
-                           if(requestDescription.length > 0) {
-                               request.description = decode(requestDescription[0].value);
-                               requestList.push(request);
-                           }
-                       }
+                        visualAttributeType = queryResultType.getElementsByTagName('visual_attribute_type');
+                        visualAttributeType = visualAttributeType.length > 0 ? visualAttributeType[0].value : null;
+                        if(visualAttributeType.toUpperCase() === "LU") {
+                            let request = {resultInstanceId};
+                            const requestId = queryResultType.getElementsByTagName('name');
+                            let requestDescription = queryResultType.getElementsByTagName('description');
+                            if(requestId.length > 0 ) {
+                                const tableId = parseInt(requestId[0].value);
+                                if(!isNaN(tableId)){
+                                    request.tableId = tableId;
+                                }
+                            }
+                            if(requestDescription.length > 0) {
+                                request.description = decode(requestDescription[0].value);
+                                requestList.push(request);
+                            }
+                        }
                     }
-
                 });
-                if(status.length > 0 && patientCount.length > 0 && queryInstanceId.length > 0){
-                    status = status[0].value;
-                    queryInstanceId = queryInstanceId[0].value;
-                    patientCount = patientCount[0].value;
-                }
-            })
+            });
 
             exportRequestList.push({id: queryId, description: queryName, queryInstanceId, dateSubmitted, status, patientCount, userId, requests: requestList, resultInstanceId});
         }

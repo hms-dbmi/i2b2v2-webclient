@@ -1290,6 +1290,7 @@ i2b2.CRC.cfg.msgs.updateQueryInstanceMessage = '<?xml version="1.0" encoding="UT
     '			<request_type>CRC_QRY_updateQueryInstanceMessage</request_type>\n'+
     '		</ns4:psmheader>\n'+
     '		<ns4:request xsi:type="ns4:instance_message_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
+    '			<user_id>{{{user_id}}}</user_id>\n'+
     '			<query_instance_id>{{{query_instance_id}}}</query_instance_id>\n'+
     '			<message>{{{query_instance_message}}}</message>\n'+
     '		</ns4:request>\n'+

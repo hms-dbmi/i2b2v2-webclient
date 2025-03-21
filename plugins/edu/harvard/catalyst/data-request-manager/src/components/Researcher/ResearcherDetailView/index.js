@@ -22,6 +22,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details } = useSelector((state) => state.requestDetails);
     const { statusLogs } = useSelector((state) => state.requestStatusLog);
+    const { username } = useSelector((state) => state.userInfo);
 
     useEffect(() => {
         if(requestRow) {
@@ -79,7 +80,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
                                 </Card>
                             </div>
                             <div className={"RequestComments"}>
-                                <RequestCommentsView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId}/>
+                                <RequestCommentsView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId} username={username}/>
                             </div>
                         </div>
                     </div>

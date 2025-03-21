@@ -9,8 +9,9 @@ import {updateRequestCommentsError, updateRequestCommentsSuccess} from "../reduc
 import XMLParser from "react-xml-parser";
 
 
-const updateRequestCommentsRequest = (queryInstanceId, comments) => {
+const updateRequestCommentsRequest = (queryInstanceId, comments, username) => {
     let data = {
+        user_id: username,
         query_instance_id: queryInstanceId,
         query_instance_message: comments
     };
@@ -32,10 +33,10 @@ const parseRequestCommentsXml = (exportRequestListXml) => {
     return message;
 }
 export function* doUpdateRequestComments(action) {
-    const {queryInstanceId, comments } = action.payload;
+    const {queryInstanceId, username, comments } = action.payload;
 
     try {
-        const response = yield call(updateRequestCommentsRequest, queryInstanceId, comments);
+        const response = yield call(updateRequestCommentsRequest, queryInstanceId, comments, username);
         if (!response.error) {
             const comments = parseRequestCommentsXml(response);
             yield put(updateRequestCommentsSuccess({comments}));
