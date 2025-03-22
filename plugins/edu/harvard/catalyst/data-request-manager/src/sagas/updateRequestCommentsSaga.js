@@ -22,12 +22,10 @@ const parseRequestCommentsXml = (exportRequestListXml) => {
     let message= "";
 
     let queryInstance = exportRequestListXml.getElementsByTagName('query_instance');
-    if (queryInstance.length > 0) {
-        queryInstance = queryInstance[0];
-        let queryInstanceMessage = queryInstance.getElementsByTagName('message');
-        if(queryInstanceMessage.length > 0) {
-            message = queryInstanceMessage[0].value;
-        }
+
+    if (queryInstance.length > 0 ) {
+        let queryInstanceMessage = queryInstance[0].getElementsByTagName('message');
+        message = queryInstanceMessage.length > 0 ? queryInstanceMessage[0].value: "";
     }
 
     return message;
@@ -38,8 +36,8 @@ export function* doUpdateRequestComments(action) {
     try {
         const response = yield call(updateRequestCommentsRequest, queryInstanceId, comments, username);
         if (!response.error) {
-            const comments = parseRequestCommentsXml(response);
-            yield put(updateRequestCommentsSuccess({comments}));
+            const responseComments = parseRequestCommentsXml(response);
+            yield put(updateRequestCommentsSuccess({responseComments}));
         } else {
             yield put(updateRequestCommentsError({errorMessage: "There was an error updating comments"}));
         }
