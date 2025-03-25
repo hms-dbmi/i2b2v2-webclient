@@ -122,7 +122,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                 />
                 <FormHelperText>Current Status: {details.status.name}</FormHelperText>
             </FormControl>
-            <Button variant="outlined" className={"statusControlBtn"} onClick={handleUpdateStatus} size={"small"} disabled={details.isUpdatingStatus}>Submit</Button>
+            <Button variant="contained" className={"statusControlBtn"} onClick={handleUpdateStatus} size={"small"} disabled={details.isUpdatingStatus}>Save</Button>
             { details.isUpdatingStatus && <CircularProgress size="1.3em" />}
         </>
     )

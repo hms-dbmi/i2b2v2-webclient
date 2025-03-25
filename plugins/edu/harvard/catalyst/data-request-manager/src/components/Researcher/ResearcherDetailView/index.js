@@ -16,6 +16,7 @@ import {RequestDetailView} from "../../RequestDetailView";
 import {DetailViewNav} from "../../DetailViewNav";
 import {getRequestStatusLog} from "../../../reducers/requestStatusLogSlice";
 import {RequestCommentsView} from "../../RequestCommentsView";
+import {ConfirmDialog} from "../../ConfirmDialog";
 
 
 export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
@@ -23,6 +24,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
     const { details } = useSelector((state) => state.requestDetails);
     const { statusLogs } = useSelector((state) => state.requestStatusLog);
     const { username } = useSelector((state) => state.userInfo);
+    const [confirmWithdrawRequest, setConfirmWithdrawRequest] = React.useState(false);
 
     useEffect(() => {
         if(requestRow) {
@@ -45,6 +47,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
     }
 
     const handleCancelRequest = () => {
+        setConfirmWithdrawRequest(false);
         dispatch(updateRequestStatus({queryInstanceId: requestRow.queryInstanceId, status: RequestStatus.statuses.CANCELLED, username}));
     }
 
@@ -78,9 +81,9 @@ Fix                    <CircularProgress className="LoadingProgressIcon" size="5
                                             <div>Status: {details.status.name}</div>
                                             <div className={"CancelRequest"}>
                                                 { details.status === RequestStatus.statuses.SUBMITTED
-                                                    && <Button variant="contained" className={"CancelRequestBtn"} color="error" onClick={handleCancelRequest}>Withdraw Request</Button>
+                                                    && <Button variant="contained" className={"CancelRequestBtn"} color="error" onClick={() => setConfirmWithdrawRequest(true)}>Withdraw Request</Button>
                                                 }
-                                                { details.isUpdatingStatus && <div className={"CancelRequestProgress"}><CircularProgress  size="1.6em" /></div>}
+                                                { details.isUpdatingStatus && <div className={"CancelRequestProgress"}><CircularProgress size="1.6em" /></div>}
                                             </div>
                                         </Grid>
                                         <Grid size={7}>
@@ -94,6 +97,13 @@ Fix                    <CircularProgress className="LoadingProgressIcon" size="5
                                 <RequestCommentsView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId} username={username}/>
                             </div>
                         </div>
+                        {confirmWithdrawRequest && <ConfirmDialog
+                            msg={'This action cannot be reversed. Are you sure you want to withdraw the request?'}
+                            title="Withdraw Request"
+                            onOk = {handleCancelRequest}
+                            onCancel = {() => setConfirmWithdrawRequest(false)}
+                        />
+                        }
                     </div>
                 )
             }

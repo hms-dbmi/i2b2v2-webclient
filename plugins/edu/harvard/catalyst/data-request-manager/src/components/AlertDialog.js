@@ -30,7 +30,7 @@ export const AlertDialog = ({msg, title, onOk, customOkLabel }) => {
         <DialogTitle id="alert-dialog-title">
             {title}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
             <DialogContentText id="alert-dialog-description">
                 {msg}
             </DialogContentText>
