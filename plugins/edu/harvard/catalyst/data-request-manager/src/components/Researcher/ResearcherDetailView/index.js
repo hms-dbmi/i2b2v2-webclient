@@ -79,7 +79,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
                                             { details.status === RequestStatus.statuses.SUBMITTED
                                                 && <Button variant="contained" className={"cancelRequestBtn"} color="error" onClick={handleCancelRequest}>Withdraw Request</Button>
                                             }
-                                            { details.isUpdatingStatus && <CircularProgress className={"cancelRequestProgress"} size="1.6em" />}
+                                            { !details.isUpdatingStatus && <div className={"cancelRequestProgress"}><CircularProgress  size="1.6em" /></div>}
                                         </Grid>
                                         <Grid size={7}>
                                             <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>

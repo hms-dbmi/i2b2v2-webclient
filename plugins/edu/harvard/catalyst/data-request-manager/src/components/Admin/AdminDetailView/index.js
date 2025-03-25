@@ -28,7 +28,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const { details } = useSelector((state) => state.requestDetails);
     const { statusLogs } = useSelector((state) => state.requestStatusLog);
     const { username } = useSelector((state) => state.userInfo);
-    const [requestStatus, setRequestStatus] = React.useState(null);
+    const [requestStatus, setRequestStatus] = React.useState(requestRow.status);
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
 
     useEffect(() => {
@@ -83,15 +83,15 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     }
 
     const editStatusOptions = () => {
-        const groupedStatuses = RequestStatus._getStatusKeysAsList().map((status) =>{
+        const allStatuses = RequestStatus._getStatusKeysAsList().map((status) =>{
             return {
                 key: status,
                 name: RequestStatus.statuses[status].name,
                 isSelectable: canSelectRequestStatus(RequestStatus.statuses[status])
             }
         });
-        const availableStatuses = groupedStatuses.filter(s => s.isSelectable);
-        const unAvailableStatuses = groupedStatuses.filter(s => !s.isSelectable);
+        const availableStatuses = allStatuses.filter(s => s.isSelectable);
+        const statusNotFound = availableStatuses.find(s => s.name === requestStatus.name) === undefined;
 
         return (
             <>
@@ -106,16 +106,14 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                             disabled={details.isUpdatingStatus}
                             onChange={onChangeStatusEvent}
                         >
-                            <ListSubheader className={"statusListSubHeader"}>Available Statuses</ListSubheader>
+                            {
+                                statusNotFound && <MenuItem disabled value={requestStatus}>
+                                    <em>{requestStatus.name}</em>
+                                </MenuItem>
+                            }
                             {
                                 availableStatuses.map(status => {
                                     return (<MenuItem value={RequestStatus.statuses[status.key]}> {status.name}</MenuItem>);
-                                })
-                            }
-                            <ListSubheader className={"statusListSubHeader"}>Unavailable Statuses</ListSubheader>
-                            {
-                                unAvailableStatuses.map(status => {
-                                    return (<MenuItem value={RequestStatus.statuses[status.key]} disabled={true}> {status.name}</MenuItem>);
                                 })
                             }
                         </Select>
