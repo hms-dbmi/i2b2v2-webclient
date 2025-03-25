@@ -28,7 +28,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const { details } = useSelector((state) => state.requestDetails);
     const { statusLogs } = useSelector((state) => state.requestStatusLog);
     const { username } = useSelector((state) => state.userInfo);
-    const [requestStatus, setRequestStatus] = React.useState(requestRow.status);
+    const [requestStatus, setRequestStatus] = React.useState("default");
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
 
     useEffect(() => {
@@ -45,12 +45,6 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
             dispatch(getRequestStatusLog({exportRequests}));
         }
     }, [requestRow]);
-
-    useEffect(() => {
-        if(details) {
-            setRequestStatus(details.status);
-        }
-    }, [details.status]);
 
 
     const goToViewRequestTable = () => {
@@ -91,40 +85,39 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
             }
         });
         const availableStatuses = allStatuses.filter(s => s.isSelectable);
-        const statusNotFound = availableStatuses.find(s => s.name === requestStatus.name) === undefined;
+        const statusNotFound = availableStatuses.find(s => details.status && s.name === details.status.name) === undefined;
 
         return (
-            <>
-            <FormControl className={"statusControl"} variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <FormControlLabel
-                    className={"statusLabel"}
-                    labelPlacement="start"
-                    control={
-                        <Select
-                            value={requestStatus}
-                            label="Status"
-                            disabled={details.isUpdatingStatus}
-                            onChange={onChangeStatusEvent}
-                        >
-                            {
-                                statusNotFound && <MenuItem disabled value={requestStatus}>
-                                    <em>{requestStatus.name}</em>
+            <div>
+                <FormControl className={"StatusControl"} variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <FormControlLabel
+                        className={"StatusLabel"}
+                        labelPlacement="start"
+                        control={
+                            <Select
+                                value={requestStatus}
+                                label="Status"
+                                disabled={details.isUpdatingStatus}
+                                onChange={onChangeStatusEvent}
+                            >
+                                <MenuItem disabled value={"default"}>
+                                    <em>Change Status</em>
                                 </MenuItem>
-                            }
-                            {
-                                availableStatuses.map(status => {
-                                    return (<MenuItem value={RequestStatus.statuses[status.key]}> {status.name}</MenuItem>);
-                                })
-                            }
-                        </Select>
-                    }
-                    label="Status:"
-                />
-                <FormHelperText>Current Status: {details.status.name}</FormHelperText>
-            </FormControl>
-            <Button variant="contained" className={"statusControlBtn"} onClick={handleUpdateStatus} size={"small"} disabled={details.isUpdatingStatus}>Save</Button>
-            { details.isUpdatingStatus && <CircularProgress size="1.3em" />}
-        </>
+                                {
+                                    availableStatuses.map(status => {
+                                        return (<MenuItem value={RequestStatus.statuses[status.key]}> {status.name}</MenuItem>);
+                                    })
+                                }
+                            </Select>
+                        }
+                        label="Status:"
+                    />
+                </FormControl>
+                <Button variant="contained" className={"StatusControlBtn"}
+                        onClick={handleUpdateStatus} size={"small"} disabled={details.isUpdatingStatus || requestStatus ==="default"}>Save</Button>
+                { details.isUpdatingStatus && <CircularProgress size="1.3em" />}
+                <FormHelperText className={"StatusControlHelpText"}>Current Status: {details.status.name}</FormHelperText>
+            </div>
     )
     }
     return (
