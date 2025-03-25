@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import {StatusInfo} from "./StatusInfo";
-import {ExportRequest} from "./ExportRequest";
 import {TableDefinitionRow} from "./TableDefinitionRow";
 
 export const TableDefinition = ({

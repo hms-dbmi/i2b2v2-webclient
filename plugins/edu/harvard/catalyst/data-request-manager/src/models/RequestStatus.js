@@ -39,7 +39,7 @@ export const RequestStatus = {
         },
     },
     _getStatusKeysAsList: () => Object.keys(RequestStatus.statuses),
-    _lookupStatusKey: (status) => Object.keys(RequestStatus.statuses).find(key => RequestStatus.statuses[key].name === status),
+    _lookupStatusKey: (status) => Object.keys(RequestStatus.statuses).find(key => RequestStatus.statuses[key] === status),
     _convertI2b2Status: (i2b2Status) => {
         let status = RequestStatus.statuses[i2b2Status];
         if(i2b2Status === "MEDIUM_QUEUE" || i2b2Status === "LONG_QUEUE") {

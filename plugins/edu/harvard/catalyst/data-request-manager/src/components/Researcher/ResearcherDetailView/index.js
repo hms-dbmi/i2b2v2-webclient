@@ -52,7 +52,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
         <Box className={"ResearcherDetailView"}>
             {details.isFetching &&
                 <div className={"LoadingProgress"}>
-                    <CircularProgress className="ProgressIcon" size="5rem"/>
+Fix                    <CircularProgress className="LoadingProgressIcon" size="5rem"/>
                     <Typography className={"ProgressLabel"}>Loading Details...</Typography>
                 </div>
             }
@@ -76,10 +76,12 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
                                     <Grid container spacing={2}>
                                         <Grid size={5}>
                                             <div>Status: {details.status.name}</div>
-                                            { details.status === RequestStatus.statuses.SUBMITTED
-                                                && <Button variant="contained" className={"cancelRequestBtn"} color="error" onClick={handleCancelRequest}>Withdraw Request</Button>
-                                            }
-                                            { !details.isUpdatingStatus && <div className={"cancelRequestProgress"}><CircularProgress  size="1.6em" /></div>}
+                                            <div className={"CancelRequest"}>
+                                                { details.status === RequestStatus.statuses.SUBMITTED
+                                                    && <Button variant="contained" className={"CancelRequestBtn"} color="error" onClick={handleCancelRequest}>Withdraw Request</Button>
+                                                }
+                                                { details.isUpdatingStatus && <div className={"CancelRequestProgress"}><CircularProgress  size="1.6em" /></div>}
+                                            </div>
                                         </Grid>
                                         <Grid size={7}>
                                             <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>

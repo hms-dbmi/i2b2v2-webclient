@@ -18,27 +18,13 @@ const updateRequestStatusRequest = (queryInstanceId, status, username) => {
     return i2b2.ajax.CRC.setQueryInstanceStatus(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => console.error(err));
 };
 
-const parseUpdateRequestStatusXml = (updateRequestStatusXml) => {
-    let updatedStatus = "";
-
-    let queryInstance = updateRequestStatusXml.getElementsByTagName('query_instance');
-    if(queryInstance.length > 0){
-        queryInstance = queryInstance[0];
-        const batchMode = queryInstance.getElementsByTagName('batch_mode');
-        if(batchMode.length > 0){
-            updatedStatus = batchMode[0].value;
-        }
-    }
-    return updatedStatus;
-}
 export function* doUpdateRequestStatus(action) {
     const {queryInstanceId, status, username } = action.payload;
 
     try {
-        const statusName = RequestStatus._lookupStatusKey(status.name);
+        const statusName = RequestStatus._lookupStatusKey(status);
         const response = yield call(updateRequestStatusRequest, queryInstanceId, statusName, username);
         if (!response.error) {
-            const newStatus = parseUpdateRequestStatusXml(response);
             yield put(updateRequestStatusSuccess({status}));
             yield put(updateRequestRowStatus({queryInstanceId, status}));
         } else {
