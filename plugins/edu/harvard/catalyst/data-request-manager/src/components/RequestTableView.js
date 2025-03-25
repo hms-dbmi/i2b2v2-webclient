@@ -49,7 +49,14 @@ export const RequestTableView = ({rows, isLoading, isManager, displayDetailView}
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 2
+            flex: 2,
+            valueGetter: (value) => {
+                if (!value) {
+                    return value;
+                }
+                // Format the Date object
+                return value.name;
+            }
         },
         {
             field: 'dateSubmitted',

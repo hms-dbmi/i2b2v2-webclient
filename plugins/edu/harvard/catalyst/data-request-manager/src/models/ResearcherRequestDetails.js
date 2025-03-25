@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import {RequestStatus} from "./RequestStatus";
 import {RequestStatusLog} from "./RequestStatusLog";
 import {ExportRequest} from "./ExportRequest";
+import {StatusInfo} from "./StatusInfo";
 
 export const ResearcherRequestDetails = ({
     id = null,
@@ -14,6 +15,9 @@ export const ResearcherRequestDetails = ({
     email= "",
     statusLogs= [],
     isFetching= false,
+    isUpdatingStatus = false,
+    statusInfo = StatusInfo(),
+    statusUpdateStatusInfo = StatusInfo()
  } = {}) => ({
     id,
     name,
@@ -24,7 +28,10 @@ export const ResearcherRequestDetails = ({
     userId,
     email,
     statusLogs,
-    isFetching
+    isFetching,
+    isUpdatingStatus,
+    statusInfo,
+    statusUpdateStatusInfo
 });
 
 ResearcherRequestDetails.propTypes = {
@@ -36,5 +43,8 @@ ResearcherRequestDetails.propTypes = {
     status: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     statusLogs: PropTypes.arrayOf(PropTypes.shape(RequestStatusLog)).isRequired,
-    isFetching: PropTypes.bool.isRequired
+    isFetching: PropTypes.bool.isRequired,
+    isUpdatingStatus: PropTypes.bool.isRequired,
+    statusInfo: PropTypes.shape(StatusInfo),
+    statusUpdateStatusInfo: PropTypes.shape(StatusInfo),
 };

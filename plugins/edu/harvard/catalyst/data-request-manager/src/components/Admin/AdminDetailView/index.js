@@ -5,22 +5,23 @@ import {
     Button,
     Card, CircularProgress,
     FormControl,
-    FormControlLabel,
+    FormControlLabel, FormHelperText,
+    ListSubheader,
     MenuItem,
     Select,
     Typography
 } from "@mui/material";
-import {generateDataFile, getRequestDetails} from "../../../reducers/requestDetailsSlice";
 import Grid from '@mui/material/Grid2';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import {generateDataFile, getRequestDetails, updateRequestStatus} from "../../../reducers/requestDetailsSlice";
 import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";
 import {RequestDetailView} from "../../RequestDetailView";
 import {DetailViewNav} from "../../DetailViewNav";
-import CreateIcon from '@mui/icons-material/Create';
-import "./AdminDetailView.scss";
 import {ConfirmDialog} from "../../ConfirmDialog";
 import {getRequestStatusLog} from "../../../reducers/requestStatusLogSlice";
 import {RequestCommentsView} from "../../RequestCommentsView";
+import "./AdminDetailView.scss";
 
 export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
@@ -49,7 +50,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
         if(details) {
             setRequestStatus(details.status);
         }
-    }, [details]);
+    }, [details.status]);
 
 
     const goToViewRequestTable = () => {
@@ -65,6 +66,69 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
         dispatch(generateDataFile({requestId: requestRow.id}));
     }
 
+    const handleUpdateStatus = () => {
+        dispatch(updateRequestStatus({queryInstanceId: requestRow.queryInstanceId, status: requestStatus, username}));
+    }
+
+    const canSelectRequestStatus = (rStatus) => {
+        let canSelect = false;
+        if(rStatus === RequestStatus.statuses.CANCELLED
+            || rStatus === RequestStatus.statuses.SUBMITTED
+            || rStatus === RequestStatus.statuses.INCOMPLETE
+        ){
+            canSelect = true;
+        }
+
+        return canSelect;
+    }
+
+    const editStatusOptions = () => {
+        const groupedStatuses = RequestStatus._getStatusKeysAsList().map((status) =>{
+            return {
+                key: status,
+                name: RequestStatus.statuses[status].name,
+                isSelectable: canSelectRequestStatus(RequestStatus.statuses[status])
+            }
+        });
+        const availableStatuses = groupedStatuses.filter(s => s.isSelectable);
+        const unAvailableStatuses = groupedStatuses.filter(s => !s.isSelectable);
+
+        return (
+            <>
+            <FormControl className={"statusControl"} variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <FormControlLabel
+                    className={"statusLabel"}
+                    labelPlacement="start"
+                    control={
+                        <Select
+                            value={requestStatus}
+                            label="Status"
+                            disabled={details.isUpdatingStatus}
+                            onChange={onChangeStatusEvent}
+                        >
+                            <ListSubheader className={"statusListSubHeader"}>Available Statuses</ListSubheader>
+                            {
+                                availableStatuses.map(status => {
+                                    return (<MenuItem value={RequestStatus.statuses[status.key]}> {status.name}</MenuItem>);
+                                })
+                            }
+                            <ListSubheader className={"statusListSubHeader"}>Unavailable Statuses</ListSubheader>
+                            {
+                                unAvailableStatuses.map(status => {
+                                    return (<MenuItem value={RequestStatus.statuses[status.key]} disabled={true}> {status.name}</MenuItem>);
+                                })
+                            }
+                        </Select>
+                    }
+                    label="Status:"
+                />
+                <FormHelperText>Current Status: {details.status.name}</FormHelperText>
+            </FormControl>
+            <Button variant="outlined" className={"statusControlBtn"} onClick={handleUpdateStatus} size={"small"} disabled={details.isUpdatingStatus}>Submit</Button>
+            { details.isUpdatingStatus && <CircularProgress size="1.3em" />}
+        </>
+    )
+    }
     return (
         <Box className={"AdminDetailView"}>
             {details.isFetching &&
@@ -92,29 +156,16 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                             <Card className={"RequestDetailActionContent"}>
                                 <Grid container spacing={2}>
                                     <Grid size={6}>
-                                        <FormControl className={"statusControl"} variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                        <FormControlLabel
-                                            className={"statusLabel"}
-                                            labelPlacement="start"
-                                            control={
-                                                <Select
-                                                    value={requestStatus}
-                                                    label="Status"
-                                                    onChange={onChangeStatusEvent}
-                                                >
-                                                    {
-                                                        RequestStatus._getStatusesAsList().filter(s => RequestStatus.statuses[s] !== RequestStatus.statuses.UNKNOWN).map((status) => {
-                                                            return (<MenuItem value={RequestStatus.statuses[status]}> {RequestStatus.statuses[status].name}</MenuItem>);
-                                                        })
-                                                    }
-                                                </Select>
-                                            }
-                                            label="Status:"
-                                        />
-                                        </FormControl>
+                                        <Grid container spacing={1}>
+                                            <Grid size={12} >
+                                                <Typography className={"RequestActionItem"}>
+                                                    {editStatusOptions()}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
                                         <div>
                                             <Button className={"generateFileBtn"} variant="contained" size="small"
-                                                    startIcon={<CreateIcon />}  onClick={() => setConfirmFileGen(true)}>Generate Data File(s)
+                                                    startIcon={<CreateNewFolderIcon />}  onClick={() => setConfirmFileGen(true)}>Generate Data File(s)
                                             </Button>
                                         </div>
                                     </Grid>

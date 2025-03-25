@@ -1,32 +1,36 @@
 
 export const RequestStatus = {
     statuses: {
+        MEDIUM_OR_LONG_QUEUE: {
+            order: 0,
+            name: "Pending",
+        },
         SUBMITTED: {
-            order: 1,
-            name: "Submitted"
+            order: 10,
+            name: "Submitted",
         },
-        WITHDRAWN: {
-            order: 1,
-            name: "Withdrawn"
+        CANCELLED: {
+            order: 11,
+            name: "Withdrawn",
         },
-        DENIED: {
-            order: 2,
-            name: "Denied"
+        INCOMPLETE: {
+            order: 12,
+            name: "Denied",
         },
-        FILE_IN_PROGRESS_QUEUED: {
-            order: 6,
-            name: "File In Progress (Queued)"
+        QUEUED: {
+            order: 13,
+            name: "File In Progress (Queued)",
         },
-        FILE_IN_PROGRESS_PROCESSING: {
-            order: 5,
+        PROCESSING: {
+            order: 14,
             name: "File In Progress (Processing)"
         },
-        FILE_AVAILABLE: {
-            order: 4,
+        FINISHED: {
+            order: 16,
             name: "File Available"
         },
         ERROR: {
-            order: 3,
+            order: 15,
             name: "Error"
         },
         UNKNOWN: {
@@ -34,39 +38,18 @@ export const RequestStatus = {
             name: "Unknown"
         },
     },
-    /*_getLatestStatus: (statuses) => {
-
-    },*/
-    _getStatusesAsList: () => Object.keys(RequestStatus.statuses),
-    _lookupStatus: (status) => Object.keys(RequestStatus.statuses).find(key => RequestStatus.statuses[key].name === status),
+    _getStatusKeysAsList: () => Object.keys(RequestStatus.statuses),
+    _lookupStatusKey: (status) => Object.keys(RequestStatus.statuses).find(key => RequestStatus.statuses[key].name === status),
     _convertI2b2Status: (i2b2Status) => {
-        let status = '';
-        switch (i2b2Status.toUpperCase()) {
-            case "SUBMITTED":
-                status = RequestStatus.statuses.SUBMITTED;
-                break;
-            case "CANCELLED":
-                status = RequestStatus.statuses.WITHDRAWN;
-                break;
-            case "INCOMPLETE":
-                status = RequestStatus.statuses.DENIED;
-                break;
-            case "QUEUED":
-                status = RequestStatus.statuses.FILE_IN_PROGRESS_QUEUED;
-                break;
-            case "PROCESSING":
-                status = RequestStatus.statuses.FILE_IN_PROGRESS_PROCESSING;
-                break;
-            case "FINISHED":
-                status = RequestStatus.statuses.FILE_AVAILABLE;
-                break;
-            case "ERROR":
-                status = RequestStatus.statuses.ERROR;
-                break;
-            default:
-                status = RequestStatus.statuses.UNKNOWN;
+        let status = RequestStatus.statuses[i2b2Status];
+        if(i2b2Status === "MEDIUM_QUEUE" || i2b2Status === "LONG_QUEUE") {
+            status = RequestStatus.statuses.MEDIUM_OR_LONG_QUEUE;
+        }
+        else if(status === undefined) {
+            status = RequestStatus.statuses.UNKNOWN;
+            console.warn("Unknown request status: " + i2b2Status);
         }
 
-        return status
+        return status;
     }
 }

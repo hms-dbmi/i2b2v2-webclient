@@ -8,7 +8,7 @@ import {
     CircularProgress,
     Typography
 } from "@mui/material";
-import {getRequestDetails} from "../../../reducers/requestDetailsSlice";
+import {getRequestDetails, updateRequestStatus} from "../../../reducers/requestDetailsSlice";
 import Grid from '@mui/material/Grid2';
 import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";
@@ -43,6 +43,11 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
     const goToViewRequestTable = () => {
         setViewRequestTable(true);
     }
+
+    const handleCancelRequest = () => {
+        dispatch(updateRequestStatus({queryInstanceId: requestRow.queryInstanceId, status: RequestStatus.statuses.CANCELLED, username}));
+    }
+
     return (
         <Box className={"ResearcherDetailView"}>
             {details.isFetching &&
@@ -70,7 +75,11 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
                                 <Card className={"RequestDetailActionContent"}>
                                     <Grid container spacing={2}>
                                         <Grid size={5}>
-                                            { details.status === RequestStatus.statuses.SUBMITTED && <Button variant="contained" color="error">Withdraw Request</Button>}
+                                            <div>Status: {details.status.name}</div>
+                                            { details.status === RequestStatus.statuses.SUBMITTED
+                                                && <Button variant="contained" className={"cancelRequestBtn"} color="error" onClick={handleCancelRequest}>Withdraw Request</Button>
+                                            }
+                                            { details.isUpdatingStatus && <CircularProgress className={"cancelRequestProgress"} size="1.6em" />}
                                         </Grid>
                                         <Grid size={7}>
                                             <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
