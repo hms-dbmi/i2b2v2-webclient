@@ -6,7 +6,6 @@ import {
     Card, CircularProgress,
     FormControl,
     FormControlLabel, FormHelperText,
-    ListSubheader,
     MenuItem,
     Select,
     Typography
@@ -85,7 +84,6 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
             }
         });
         const availableStatuses = allStatuses.filter(s => s.isSelectable);
-        const statusNotFound = availableStatuses.find(s => details.status && s.name === details.status.name) === undefined;
 
         return (
             <div>
