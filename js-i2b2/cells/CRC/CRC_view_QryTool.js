@@ -85,180 +85,248 @@ i2b2.CRC.view.QT.validateQuery = function() {
 // ================================================================================================== //
 i2b2.CRC.view.QT.showRun = function() {
 
+    let crcModal = $('body #crcModal');
     // show the options modal screen
-    if ($('body #crcModal').length === 0) {
-        $('body').append("<div id='crcModal'/>");
+    if (crcModal.length === 0) {
+        crcModal = $("<div id='crcModal'/>").appendTo('body');
+    }
 
-        // if the user presses enter in one of the input fields on the crcModal form then run the query
-        $("#crcModal").submit(function(evt) {
-            $('body #crcModal button.i2b2-save').click();
-            evt.preventDefault();
-        });
+    // if the user presses enter in one of the input fields on the crcModal form then run the query
+    crcModal.submit(function(evt) {
+        $('body #crcModal button.i2b2-save').click();
+        evt.preventDefault();
+    });
 
-        $('body #crcModal').load('js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
-            document.getElementById("DataRequestDiv").style.display = "none";
-            document.getElementById("DataExportDiv").style.display = "none";
-
-            // populate the results list based on...
-            // ==> i2b2.CRC.model.resultTypes
-            // ==> i2b2.CRC.model.selectedResultTypes
-            let checkContainer = $("#crcModal .ResultTypes");
-            for (let code in i2b2.CRC.model.resultTypes) {
-                let descriptions = i2b2.CRC.model.resultTypes[code];
-                descriptions.forEach(description => {
-                    let checked = '';
-                    if (i2b2.CRC.model.selectedResultTypes.includes(code)) checked = ' checked="checked" ';
-
-                    let disabled='';
-                    if(code === 'PATIENT_COUNT_XML'){
-                        disabled = 'disabled';
-                    }
-                    $('<div id="crcDlgResultOutput' + code + '">' +
-                        '<input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked +  ' '+ disabled +'> '
-                        + description + '</div>').appendTo(checkContainer);
-                });
+    function updateSelectedResultTypes(description){
+        const containsDescription = i2b2.CRC.model.selectedResultTypes.filter(n => n === description);
+        if(containsDescription.length > 0) {
+            i2b2.CRC.model.selectedResultTypes = i2b2.CRC.model.selectedResultTypes.filter(n => n !== description);
+        }
+        else{
+            if(description !== 'Timeline') {
+                i2b2.CRC.model.selectedResultTypes.push(description);
             }
+        }
+    }
+    crcModal.load('js-i2b2/cells/CRC/assets/modalRunQuery.html', function() {
+        document.getElementById("DataRequestDiv").style.display = "none";
+        document.getElementById("DataExportDiv").style.display = "none";
 
-            if(Object.keys(i2b2.CRC.model.requestTypes).length === 0 && Object.keys(i2b2.CRC.model.userRequestTypes).length === 0 ){
-                $('#DataRequestDiv').hide();
-                $('#CustomDataRequestInfoDiv').hide();
-            }
+        // populate the results list based on...
+        // ==> i2b2.CRC.model.resultTypes
+        // ==> i2b2.CRC.model.selectedResultTypes
+        let checkContainer = $("#crcModal .ResultTypes");
+        for (let code in i2b2.CRC.model.resultTypes) {
+            let descriptions = i2b2.CRC.model.resultTypes[code];
+            descriptions.forEach(description => {
+                let checked = '';
+                if (i2b2.CRC.model.selectedResultTypes.includes(description)) checked = ' checked="checked" ';
 
-
-            let requestContainer = $("#crcModal .RequestTypes");
-            for (let code in i2b2.CRC.model.requestTypes) {
-                document.getElementById("DataRequestDiv").style.display = "";
-                let descriptions = i2b2.CRC.model.requestTypes[code];
-                descriptions.forEach(description => {
-                    let checked = '';
-                    $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(requestContainer);
-                });
-            }
-            for (let code in i2b2.CRC.model.userRequestTypes) {
-                document.getElementById("DataRequestDiv").style.display = "";
-                let descriptions = i2b2.CRC.model.userRequestTypes[code];
-                descriptions.forEach(description => {
-                    let checked = '';
-                    $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> User Created: ' + description + '</div>').appendTo(requestContainer);
-                });
-            }
-
-            $("#dataRequestInfoEmail").val(i2b2.PM.model.email);
-            let dataExportContainer = $("#crcModal .DataExportTypes");
-            for (let code in i2b2.CRC.model.dataExportTypes) {
-                document.getElementById("DataExportDiv").style.display = "";
-                let descriptions = i2b2.CRC.model.dataExportTypes[code];
-                descriptions.forEach(description => {
-                    let checked = '';
-                    $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(dataExportContainer);
-                });
-            }
-
-            // populate/delete the query run methods
-            if (!i2b2.CRC.model.queryExecutionOptions) {
-                // no query execution options, remove input from form
-                $("#crcModal .QueryMethodInput").remove();
-            } else {
-                // populate the query execution options
-                let targetSelect = $('#crcModal .QueryMethodInput select');
-                for (const [code, description] of Object.entries(i2b2.CRC.model.queryExecutionOptions)) {
-                    $('<option value="' + code + '">' + description + '</option>').appendTo(targetSelect);
+                let disabled='';
+                if(code === 'PATIENT_COUNT_XML'){
+                    disabled = 'disabled';
                 }
-            }
-
-            let runBox = $('#queryName').val();
-            let queryName;
-            if (runBox.length ==0) {
-                queryName = i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
-            } else {
-                queryName = runBox;
-            } 
-            $("#crcQtQueryName").val(queryName).attr({placeholder: queryName, value: queryName });
-
-            // now show the modal form
-            $('body #crcModal div:eq(0)').modal('show');
-
-            // run the query on button press
-            $('body #crcModal button.i2b2-save').on('click', (evt) => {
-                i2b2.CRC.view.QT.resetToCRCHistoryView();
-
-                const selectedDataRequests = $('body #DataRequestDiv .chkQueryType:checked');
-                if(selectedDataRequests.length > 0){
-                    const dataRequestInfoEmail = $("#dataRequestInfoEmail");
-                    const email = dataRequestInfoEmail.val();
-                    const emailRegex = /\S+@\S+\.\S+/;
-                    const isValidEmail = emailRegex.test(email);
-
-                    if(!isValidEmail) {
-                        dataRequestInfoEmail.css('border', '1px solid red');
-                        return;
-                    }else{
-                        dataRequestInfoEmail.css('border', '');
-                    }
-                }
-
-                // get the query name
-                let queryName = $("#crcQtQueryName").val().trim();
-                // add (t) prefix  if this is a temporal query
-                let queryNamePrefix = "";
-                if (i2b2.CRC.model.transformedQuery.subQueries?.length > 1 && !queryName.startsWith("(t) ")) queryNamePrefix = "(t) ";
-                if (queryName.length === 0) {
-                    queryName =  queryNamePrefix + i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
-                } else {
-                    queryName = queryNamePrefix  + queryName;
-                }
-
-                // update the query name field
-                $('.CRC_QT_runbar input.name').attr({placeholder: queryName, value: queryName });
-
-                // build list of selected result types
-                let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
-                reqResultTypes = [...new Set(reqResultTypes)];
-                let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
-
-                if (reqResultTypes.length > 0) {
-                    $(".errorMsg", "#crcModal").addClass("hidden");
-                    let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
-
-                    let emailAndComments = {};
-                    const email = $("#dataRequestInfoEmail").val();
-                    if(email.length > 0){
-                       emailAndComments.email = email;
-                    }
-
-                    const message = $("#dataRequestInfoComment").val();
-                    if(message.length > 0){
-                        emailAndComments.message = message;
-                    }
-
-                    // start the query run
-                    i2b2.CRC.ctrlr.QueryMgr.startQuery(queryName, reqResultTypes, reqExecutionMethod, emailAndComments);
-                    // make sure that the Query Status window is visible
-                    let QueryStatusTab = i2b2.layout.gl_instances.rightCol.root.getItemsByFilter((a) => { return a.componentName === 'i2b2.CRC.view.QueryMgr'; } )[0];
-                    QueryStatusTab.parent.setActiveContentItem(QueryStatusTab)
-                    // close the modal
-                    $('body #crcModal div:eq(0)').modal('hide');
-                } else {
-                    $(".errorMsg", "#crcModal").removeClass("hidden");
-                }
+                $('<div id="crcDlgResultOutput' + code + '">' +
+                    '<input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked +  ' '+ disabled +'> '
+                    + description + '</div>').click(function(){
+                        updateSelectedResultTypes(description);
+                }).appendTo(checkContainer);
             });
-        });
-    } else {
+        }
+
+        if(Object.keys(i2b2.CRC.model.requestTypes).length === 0 && Object.keys(i2b2.CRC.model.userRequestTypes).length === 0 ){
+            $('#DataRequestDiv').hide();
+            $('#CustomDataRequestInfoDiv').hide();
+        }
+
+
+        let requestContainer = $("#crcModal .RequestTypes");
+        for (let code in i2b2.CRC.model.requestTypes) {
+            document.getElementById("DataRequestDiv").style.display = "";
+            let descriptions = i2b2.CRC.model.requestTypes[code];
+            descriptions.forEach(description => {
+                let checked = '';
+                $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(requestContainer);
+            });
+        }
+        for (let code in i2b2.CRC.model.userRequestTypes) {
+            document.getElementById("DataRequestDiv").style.display = "";
+            let descriptions = i2b2.CRC.model.userRequestTypes[code];
+            descriptions.forEach(description => {
+                let checked = '';
+                $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> User Created: ' + description + '</div>').appendTo(requestContainer);
+            });
+        }
+
+        $("#dataRequestInfoEmail").val(i2b2.PM.model.email);
+        let dataExportContainer = $("#crcModal .DataExportTypes");
+        for (let code in i2b2.CRC.model.dataExportTypes) {
+            document.getElementById("DataExportDiv").style.display = "";
+            let descriptions = i2b2.CRC.model.dataExportTypes[code];
+            descriptions.forEach(description => {
+                let checked = '';
+                $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(dataExportContainer);
+            });
+        }
+
+        // populate/delete the query run methods
+        if (!i2b2.CRC.model.queryExecutionOptions) {
+            // no query execution options, remove input from form
+            $("#crcModal .QueryMethodInput").remove();
+        } else {
+            // populate the query execution options
+            let targetSelect = $('#crcModal .QueryMethodInput select');
+            for (const [code, description] of Object.entries(i2b2.CRC.model.queryExecutionOptions)) {
+                $('<option value="' + code + '">' + description + '</option>').appendTo(targetSelect);
+            }
+        }
+
         let runBox = $('#queryName').val();
         let queryName;
         if (runBox.length ==0) {
             queryName = i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
         } else {
             queryName = runBox;
-        } 
+        }
         $("#crcQtQueryName").val(queryName).attr({placeholder: queryName, value: queryName });
-        $("#crcModal .RequestTypes").find(".chkQueryType").prop( "checked", false );
-        $("#crcModal .DataExportTypes").find(".chkQueryType").prop( "checked", false );
-        $("#dataRequestInfoComment").val('');
+
+        // now show the modal form
         $('body #crcModal div:eq(0)').modal('show');
-    }
+
+        // run the query on button press
+        $('body #crcModal button.i2b2-save').on('click', (evt) => {
+            i2b2.CRC.view.QT.resetToCRCHistoryView();
+
+            const selectedDataRequests = $('body #DataRequestDiv .chkQueryType:checked');
+            if(selectedDataRequests.length > 0){
+                const dataRequestInfoEmail = $("#dataRequestInfoEmail");
+                const email = dataRequestInfoEmail.val();
+                const emailRegex = /\S+@\S+\.\S+/;
+                const isValidEmail = emailRegex.test(email);
+
+                if(!isValidEmail) {
+                    dataRequestInfoEmail.css('border', '1px solid red');
+                    return;
+                }else{
+                    dataRequestInfoEmail.css('border', '');
+                }
+            }
+
+            // get the query name
+            let queryName = $("#crcQtQueryName").val().trim();
+            // add (t) prefix  if this is a temporal query
+            let queryNamePrefix = "";
+            if (i2b2.CRC.model.transformedQuery.subQueries?.length > 1 && !queryName.startsWith("(t) ")) queryNamePrefix = "(t) ";
+            if (queryName.length === 0) {
+                queryName =  queryNamePrefix + i2b2.CRC.ctrlr.QueryMgr.generateQueryName();
+            } else {
+                queryName = queryNamePrefix  + queryName;
+            }
+
+            // update the query name field
+            $('.CRC_QT_runbar input.name').attr({placeholder: queryName, value: queryName });
+
+            // build list of selected result types
+            let reqResultTypes = $('body #crcModal .chkQueryType:checked').map((idx, rec) => { return rec.value; }).toArray();
+            reqResultTypes = [...new Set(reqResultTypes)];
+
+            if (reqResultTypes.length > 0) {
+                $(".errorMsg", "#crcModal").addClass("hidden");
+                let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
+
+                let emailAndComments = {};
+                const email = $("#dataRequestInfoEmail").val();
+                if(email.length > 0){
+                   emailAndComments.email = email;
+                }
+
+                const message = $("#dataRequestInfoComment").val();
+                if(message.length > 0){
+                    emailAndComments.message = message;
+                }
+
+                // start the query run
+                i2b2.CRC.ctrlr.QueryMgr.startQuery(queryName, reqResultTypes, reqExecutionMethod, emailAndComments);
+                // make sure that the Query Status window is visible
+                let QueryStatusTab = i2b2.layout.gl_instances.rightCol.root.getItemsByFilter((a) => { return a.componentName === 'i2b2.CRC.view.QueryMgr'; } )[0];
+                QueryStatusTab.parent.setActiveContentItem(QueryStatusTab)
+                // close the modal
+                $('body #crcModal div:eq(0)').modal('hide');
+            } else {
+                $(".errorMsg", "#crcModal").removeClass("hidden");
+            }
+        });
+    });
 };
 // ================================================================================================== //
+i2b2.CRC.view.QT.loadResultTypesAndShowRun = function() {
+
+    // ==== Update the Query Result Types via ajax call ====
+    var scopedCallback = new i2b2_scopedCallback();
+    scopedCallback.callback = function(results) {
+        //var cl_onCompleteCB = onCompleteCallback;
+        // THIS function is used to process the AJAX results of the getChild call
+        //		results data object contains the following attributes:
+        //			refXML: xmlDomObject <--- for data processing
+        //			msgRequest: xml (string)
+        //			msgResponse: xml (string)
+        //			error: boolean
+        //			errorStatus: string [only with error=true]
+        //			errorMsg: string [only with error=true]
+        i2b2.CRC.model.resultTypes = {};
+        i2b2.CRC.model.requestTypes = {};
+        i2b2.CRC.model.userRequestTypes = {};
+        i2b2.CRC.model.dataExportTypes = {};
+
+        if (results.error){
+            console.log("ERROR: Unable to retrieve result types from server", results.msgResponse);
+        } else {
+            // extract records from XML msg
+            let ps = results.refXML.getElementsByTagName('query_result_type');
+            if(!i2b2.CRC.model.selectedResultTypes || i2b2.CRC.model.selectedResultTypes.length === 0) {
+                i2b2.CRC.model.selectedResultTypes = [];
+            }
+            for (let i1=0; i1<ps.length; i1++) {
+                let name = i2b2.h.getXNodeVal(ps[i1],'name');
+                let visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
+                if (visual_attribute_type === "LA") {
+                    if(i2b2.CRC.model.resultTypes[name] === undefined){
+                        i2b2.CRC.model.resultTypes[name] = [];
+                    }
+
+                    let description = i2b2.h.getXNodeVal(ps[i1],'description');
+                    i2b2.CRC.model.resultTypes[name].push(description);
+                    if (name === "PATIENT_COUNT_XML") {
+                        const selectedPatientCount = i2b2.CRC.model.selectedResultTypes.filter(n => n === description);
+                        if(selectedPatientCount.length === 0) {
+                            i2b2.CRC.model.selectedResultTypes.push(description);
+                        }
+                    }
+                } else if (visual_attribute_type === "LR") {
+                    if(i2b2.CRC.model.requestTypes[name] === undefined){
+                        i2b2.CRC.model.requestTypes[name] = [];
+                    }
+                    i2b2.CRC.model.requestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
+                } else if (visual_attribute_type === "LU") {
+                    if(i2b2.CRC.model.userRequestTypes[name] === undefined){
+                        i2b2.CRC.model.userRequestTypes[name] = [];
+                    }
+                    i2b2.CRC.model.userRequestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
+                }else if (visual_attribute_type === "LX") {
+                    if(i2b2.CRC.model.dataExportTypes[name] === undefined){
+                        i2b2.CRC.model.dataExportTypes[name] = [];
+                    }
+                    i2b2.CRC.model.dataExportTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
+                }
+            }
+        }
+        i2b2.CRC.view.QT.showRun();
+    }
+    i2b2.CRC.ajax.getQRY_getResultType("CRC:QueryTool", null, scopedCallback);
+}
+
+// ================================================================================================== //
+
 i2b2.CRC.view.QT._correctQgTitles = function() {
     // this function makes sure that the first query group always says "Find Patients"
     $(" .JoinText:first", i2b2.CRC.view.QT.containerDiv).text("Find Patients");
@@ -1960,7 +2028,7 @@ i2b2.events.afterCellInit.add((cell) => {
                             if(i2b2.CRC.view.QT.validateQuery()) {// run the query
                                 evt.target.blur();
                                 // only run if the query has entries
-                                if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();
+                                if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.loadResultTypesAndShowRun();
                             }
                         });
 
@@ -2105,62 +2173,6 @@ i2b2.events.afterCellInit.add((cell) => {
                 name: 'default query name',
                 groups: []
             };
-
-
-            // ==== Update the Query Result Types via ajax call ====
-            var scopedCallback = new i2b2_scopedCallback();
-            scopedCallback.callback = function(results) {
-                //var cl_onCompleteCB = onCompleteCallback;
-                // THIS function is used to process the AJAX results of the getChild call
-                //		results data object contains the following attributes:
-                //			refXML: xmlDomObject <--- for data processing
-                //			msgRequest: xml (string)
-                //			msgResponse: xml (string)
-                //			error: boolean
-                //			errorStatus: string [only with error=true]
-                //			errorMsg: string [only with error=true]
-                cell.model.resultTypes = {};
-                cell.model.requestTypes = {};
-                cell.model.userRequestTypes = {};
-                cell.model.dataExportTypes = {};
-
-                if (results.error){
-                    console.log("ERROR: Unable to retrieve result types from server", results.msgResponse);
-                } else {
-                    // extract records from XML msg
-                    let ps = results.refXML.getElementsByTagName('query_result_type');
-                    cell.model.selectedResultTypes = [];
-                    for (let i1=0; i1<ps.length; i1++) {
-                        let name = i2b2.h.getXNodeVal(ps[i1],'name');
-                        let visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
-                        if (visual_attribute_type === "LA") {
-                            if(cell.model.resultTypes[name] === undefined){
-                                cell.model.resultTypes[name] = [];
-                            }
-                            cell.model.resultTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
-                            if (name === "PATIENT_COUNT_XML") {
-                                cell.model.selectedResultTypes.push(name);
-                            }
-                        } else if (visual_attribute_type === "LR") {
-                            if(cell.model.requestTypes[name] === undefined){
-                                cell.model.requestTypes[name] = [];
-                            }
-                            cell.model.requestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
-                        } else if (visual_attribute_type === "LU") {
-                            if(cell.model.userRequestTypes[name] === undefined){
-                                cell.model.userRequestTypes[name] = [];
-                            }
-                            cell.model.userRequestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
-                        }else if (visual_attribute_type === "LX") {
-                            if(cell.model.dataExportTypes[name] === undefined){
-                                cell.model.dataExportTypes[name] = [];
-                            }
-                            cell.model.dataExportTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
-                        }
-                    }
-                }
-            }
-            i2b2.CRC.ajax.getQRY_getResultType("CRC:QueryTool", null, scopedCallback);
         }
     }
 );
