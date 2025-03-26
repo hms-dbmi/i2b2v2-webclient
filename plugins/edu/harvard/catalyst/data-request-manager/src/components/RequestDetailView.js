@@ -53,8 +53,8 @@ export const RequestDetailView = ({details}) => {
 
     const truncateDescriptionName = (name) => {
         let truncatedName = name;
-        const maxLength = 40;
-        if(truncatedName > maxLength){
+        const maxLength = 45;
+        if(truncatedName.length > maxLength){
             truncatedName = truncatedName.slice(0, maxLength) + "...";
         }
         return truncatedName;
