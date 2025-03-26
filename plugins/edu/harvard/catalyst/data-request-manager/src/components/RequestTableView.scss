@@ -1,5 +1,9 @@
 .RequestTableView {
 
+  .title {
+    font-size: 1.05em;
+  }
+
   .MuiTreeItem-content .MuiTreeItem-label {
     font-size: 1.01em;
   }
@@ -7,5 +11,10 @@
   .actions {
     margin-top: 0.5em;
     margin-bottom: 0.7em;
+  }
+
+  .RefreshTableIcon {
+    margin-top: 1.5em;
+    float: right;
   }
 }

@@ -25,8 +25,7 @@ export const DataRequestManager = () => {
 
     return (
         <div>
-            {!isManager &&  <Researcher/> }
-            {isManager &&  <Admin/> }
+            {!isManager ? <Researcher/> : <Admin/> }
         </div>
     )
 }
