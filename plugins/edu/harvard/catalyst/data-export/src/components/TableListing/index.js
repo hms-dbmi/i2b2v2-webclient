@@ -250,6 +250,11 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                         noRowsVariant: 'linear-progress',
                     },
                 }}
+                initialState={{
+                    sorting: {
+                        sortModel: [{field:'create_date',sort:'desc'}]
+                    }
+                }}
                 autoPageSize
             />
 
