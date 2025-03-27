@@ -1,0 +1,15 @@
+.TableDefinitionPreview {
+  .header {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .TableDefinitionPreviewTitle {
+    font-weight: bold;
+  }
+
+  .Constraints {
+    width: 98%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

@@ -5,7 +5,6 @@ import { RELOAD_QUERY} from "../actions";
 import {reloadQueryError} from "../reducers/requestDetailsSlice";
 
 const reloadQueryRequest = (queryId) => {
-
     i2b2.authorizedTunnel.function["i2b2.CRC.ctrlr.QT.doQueryLoad"](queryId).error(e => {
         console.log("Error reloading query " + e);
     });
