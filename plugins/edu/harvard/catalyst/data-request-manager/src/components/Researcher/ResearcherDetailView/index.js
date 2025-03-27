@@ -19,6 +19,7 @@ import {DetailViewNav} from "../../DetailViewNav";
 export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details } = useSelector((state) => state.requestDetails);
+    const { isObfuscated } = useSelector((state) => state.userInfo);
 
     useEffect(() => {
         if(requestRow) {
@@ -48,7 +49,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
                         </Typography>
 
                         <div className={"ResearcherDetailViewContent"}>
-                            <RequestDetailView details={details} isManager={false}/>
+                            <RequestDetailView details={details} isObfuscated={isObfuscated}/>
 
                             <div className={"RequestAction"}>
                                 <Typography className={"RequestActionTitle"}>

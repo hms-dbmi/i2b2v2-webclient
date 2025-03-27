@@ -9,13 +9,16 @@ import {TreeItem} from "@mui/x-tree-view";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {listRequestTable} from "../reducers/requestTableSlice";
 import "./RequestTableView.scss";
+import {decode} from "html-entities";
 
 export const RequestTableView = ({ userInfo, displayDetailView}) => {
     const dispatch = useDispatch();
     const { rows, isFetching } = useSelector((state) => state.requestTable);
     const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
     const [filterModel, setFilterModel] = useState({items: []});
-    const {isManager, username} = userInfo;
+    const {username, isManager, isObfuscated} = userInfo;
+    const { obfuscatedDisplayNumber, useFloorThreshold, floorThresholdNumber, floorThresholdText }
+        = useSelector((state) => state.configInfo);
 
     const columns = [
         {
@@ -51,6 +54,31 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             }
         },
         {
+            field: 'patientCount',
+            headerName: 'Count',
+            headerClassName: "header",
+            sortable: true,
+            resizable: false,
+            disableReorder: true,
+            flex: 1,
+            valueGetter: (value) => {
+                let formattedValue = value.length > 0 ? parseInt(value) : "";
+                if (isNaN(formattedValue)) {
+                    formattedValue = value;
+                }
+                let displayValue = formattedValue;
+                if (isObfuscated) {
+                    displayValue = formattedValue + decode("&plusmn;") + obfuscatedDisplayNumber;
+                }
+                if (useFloorThreshold) {
+                    if (formattedValue < floorThresholdNumber) {
+                        displayValue = floorThresholdText + floorThresholdNumber;
+                    }
+                }
+                return displayValue;
+            }
+        },
+        {
             field: 'status',
             headerName: 'Status',
             headerClassName: "header",
@@ -83,7 +111,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             sortable: false,
             resizable: false,
             disableReorder: true,
-            minWidth: 150,
+            minWidth: 140,
             renderCell: (param) => {
                 return (
                     <Button variant="contained" size="small" className={"actions"} onClick={() => handleDisplayDetailView(param.row)}>View Details</Button>
@@ -120,22 +148,6 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
                 resizable: false,
                 disableReorder: true,
                 flex: 1,
-            });
-            columns.splice(3, 0, {
-                field: 'patientCount',
-                headerName: 'Count',
-                headerClassName: "header",
-                sortable: true,
-                resizable: false,
-                disableReorder: true,
-                flex: 1,
-                valueGetter: (value) => {
-                    let formattedValue = value.length > 0 ? parseInt(value): "";
-                    if(isNaN(formattedValue)){
-                        formattedValue = value;
-                    }
-                    return formattedValue.toLocaleString();
-                }
             });
         }
 

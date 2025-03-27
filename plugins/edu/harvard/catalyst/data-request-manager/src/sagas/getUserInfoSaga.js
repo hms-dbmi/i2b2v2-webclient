@@ -17,7 +17,8 @@ export function* doGetUserInfo(action) {
 
         if (username !== undefined && userRoles !== undefined) {
             const isManager = userRoles.includes('MANAGER');
-            yield put(getUserInfoSuccess({isManager, username}));
+            const  isObfuscated = !userRoles.includes('DATA_AGG');
+            yield put(getUserInfoSuccess({isManager, username, isObfuscated}));
         } else {
             yield put(getUserInfoError({errorMessage: "There was an error getting the user info"}));
         }

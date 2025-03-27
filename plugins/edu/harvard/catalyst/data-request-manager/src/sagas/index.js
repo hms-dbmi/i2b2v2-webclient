@@ -6,4 +6,5 @@ export { getAdminNotesSaga } from "./getAdminNotesSaga";
 export { addAdminNoteSaga } from "./addAdminNoteSaga";
 export { reloadQuerySaga } from "./reloadQuerySaga";
 export { getTableDefinitionSaga } from "./getTableDefinitionSaga";
+export { getConfigInfoSaga } from "./getConfigInfoSaga";
 

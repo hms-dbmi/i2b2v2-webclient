@@ -4,6 +4,7 @@ import requestDetailsReducer from './requestDetailsSlice';
 import userInfoReducer from "./userInfoSlice";
 import adminNotesReducer from "./adminNotesSlice";
 import tableDefReducer from "./tableDefSlice";
+import configInfoReducer from "./configInfoSlice";
 
 const rootReducers = {
     requestTable : listRequestTableReducer,
@@ -12,6 +13,7 @@ const rootReducers = {
     userInfo: userInfoReducer,
     isI2b2LibLoaded: i2b2LibLoadedReducer,
     adminNotes: adminNotesReducer,
+    configInfo: configInfoReducer,
     tableDef: tableDefReducer,
 };
 

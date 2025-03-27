@@ -3,6 +3,7 @@ import {useSelector, useDispatch} from "react-redux";
 import {Researcher} from "../Researcher";
 import {getUserInfo} from "../../reducers/userInfoSlice";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
+import {getConfigInfo} from "../../reducers/configInfoSlice";
 import {Admin} from "../Admin";
 
 export const DataRequestManager = () => {
@@ -19,6 +20,7 @@ export const DataRequestManager = () => {
             window.addEventListener('I2B2_READY', i2b2LibLoaded);
         }else{
             dispatch(getUserInfo());
+            dispatch(getConfigInfo());
         }
     }, [isI2b2LibLoaded]);
 
