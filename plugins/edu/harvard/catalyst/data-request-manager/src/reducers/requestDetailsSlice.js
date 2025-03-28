@@ -13,6 +13,7 @@ export const requestDetailsSlice = createSlice({
     initialState: defaultState.requestDetails,
     reducers: {
         getRequestDetails: state => {
+            state.details = ResearcherRequestDetails();
             state.details.isFetching = true;
             state.details.statusInfo = StatusInfo();
         },

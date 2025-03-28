@@ -8,4 +8,12 @@
   .listingStatusErrorMsg {
     color: red;
   }
+
+  .MuiDataGrid-cell--editing {
+    border: 1px solid  rgba(85, 108, 214) !important;
+  }
+
+  .missing {
+    border: 1px solid  red !important;
+  }
 }

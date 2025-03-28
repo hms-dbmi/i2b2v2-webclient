@@ -9,16 +9,17 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {confirmDeleteTableStatus, deleteTable, listTables} from "../../reducers/tableListingSlice";
+import {confirmDeleteTableStatus, confirmRenameTableStatus, deleteTable, listTables, renameTable} from "../../reducers/tableListingSlice";
 import { TabPanel } from "../TabPanel";
 import {loadTable} from "../../reducers/tableDefSlice";
 import {Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} from "@mui/material";
 
 export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
     const dispatch = useDispatch();
-    const { sharedRows, userRows, statusInfo, isFetching, isDeleting, deleteStatusInfo} = useSelector((state) => state.tableListing);
-    const [tab, setTab] = React.useState(0);
+    const { sharedRows, userRows, statusInfo, isFetching, isDeleting, deleteStatusInfo, renameStatusInfo} = useSelector((state) => state.tableListing);
+    const [tab, setTab] = React.useState(1);
     const [selectedTable, setSelectedTable] = useState(null);
+    const { isAdmin } = useSelector((state) => state.userInfo);
 
 
     const handleChangeTab = (event, newValue) => { setTab(newValue); };
@@ -43,6 +44,14 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
     const confirmDeleteStatus = () => {
         dispatch(confirmDeleteTableStatus());
     };
+
+    const confirmRenameStatus = () => {
+        dispatch(confirmRenameTableStatus());
+    };
+
+    const updateTableDefinitionTitle = (id, title) => {
+        dispatch(renameTable({id, title}))
+    }
 
     useEffect(() => {
         if (open) {
@@ -88,13 +97,16 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                     >
                         <TableListing id={"loadModalDefTableGlobal"}
                                       rows={sharedRows}
-                                      canRename={false}
+                                      canRename={isAdmin}
                                       onSelect={setSelectedTable}
                                       hasError={statusInfo.status==='FAIL'}
                                       isLoading={isFetching || isDeleting}
                                       onDelete={(id) => onDeleteTable(id, true)}
                                       deleteFailed={deleteStatusInfo.status === 'FAIL'}
                                       onDeleteAlertClose={confirmDeleteStatus}
+                                      onRename={updateTableDefinitionTitle}
+                                      renameFailed={renameStatusInfo.status === 'FAIL'}
+                                      onRenameAlertClose={confirmRenameStatus}
                         />
                     </TabPanel>
                     <TabPanel
@@ -103,12 +115,15 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         className={'modalTabPanel'}
                     >
                         <TableListing id={"loadModalDefTableLocal"}
-                                      rows={userRows} canRename={false}
+                                      rows={userRows} canRename={true}
                                       onSelect={setSelectedTable}  isLoading={isFetching || isDeleting}
                                       hasError={statusInfo.status==='FAIL'}
                                       onDelete={(id) => onDeleteTable(id, false)}
                                       deleteFailed={deleteStatusInfo.status === 'FAIL'}
                                       onDeleteAlertClose={confirmDeleteStatus}
+                                      onRename={updateTableDefinitionTitle}
+                                      renameFailed={renameStatusInfo.status === 'FAIL'}
+                                      onRenameAlertClose={confirmRenameStatus}
                         />
                     </TabPanel>
                 </Box>

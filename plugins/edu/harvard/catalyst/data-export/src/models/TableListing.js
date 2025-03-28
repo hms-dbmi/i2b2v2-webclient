@@ -7,15 +7,19 @@ export const TableListing = ({
     userRows = [],
     isFetching= false,
     isDeleting = false,
+    isRenaming = false,
     statusInfo = StatusInfo(),
-    deleteStatusInfo = false
+    deleteStatusInfo = false,
+    renameStatusInfo = false
 } = {}) => ({
     sharedRows,
     userRows,
     isFetching,
     isDeleting,
+    isRenaming,
     statusInfo,
-    deleteStatusInfo
+    deleteStatusInfo,
+    renameStatusInfo
 });
 
 TableListing.propTypes = {
@@ -23,6 +27,8 @@ TableListing.propTypes = {
     userRows: PropTypes.arrayOf(TableListingRow),
     isFetching: PropTypes.bool,
     isDeleting: PropTypes.bool,
+    isRenaming: PropTypes.bool,
     statusInfo: PropTypes.shape(StatusInfo),
     deleteStatusInfo: PropTypes.shape(StatusInfo),
+    renameStatusInfo: PropTypes.shape(StatusInfo),
 };
