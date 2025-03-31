@@ -77,7 +77,7 @@ export const tableListingSlice = createSlice({
             state.isRenaming = true;
             state.renameStatusInfo = StatusInfo();
         },
-        renameTableSuccess: (state, { payload: { tableId, isShared } }) => {
+        renameTableSuccess: (state) => {
             state.isRenaming = false;
             state.renameStatusInfo = StatusInfo({
                 status: "SUCCESS"

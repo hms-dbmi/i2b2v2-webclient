@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {DataGrid, GridActionsCellItem, GridRowModes} from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import "./TableListing.scss";
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import Button from "@mui/material/Button";
 import {AlertDialog} from "../AlertDialog";
 
@@ -21,6 +21,8 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
     const [alertMsgInfo, setAlertMsgInfo] = useState({});
     const [rowModesModel, setRowModesModel] = useState({});
     const [inValidCells, setInValidCells] = useState({});
+    const [showInValidCellsMsg, setShowInValidCellsMsg] = useState(false);
+    const [inValidCellsMsg, setInValidCellsMsg] = useState("");
 
     const handleConfirmDelete = (id, fileName) => {
         setRowToDelete({id, fileName});
@@ -53,18 +55,38 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
 
         let updatedInValidCells = Object.keys(inValidCells).filter(i => inValidCells[i] === id)
         setInValidCells(updatedInValidCells);
+        clearInvalidCellAlertError();
     };
 
-    const processRowUpdate = (editedRow) => {
-        if(editedRow.title.length > 0){
-            onRename(editedRow.id, editedRow.title);
+    const clearInvalidCellAlertError = () => {
+        setShowInValidCellsMsg("");
+        setShowInValidCellsMsg(false);
+    }
+    const processRowUpdate = (editedRow, previousRow) => {
+        const matchedRows = rows.filter(srow => srow.title?.toUpperCase() === editedRow.title.toUpperCase());
+
+        if((previousRow.title.toUpperCase() === editedRow.title.toUpperCase())
+            || editedRow.title.length > 0 &&  matchedRows.length === 0){
+
+            if(previousRow.title.toUpperCase() !== editedRow.title.toUpperCase()) {
+                onRename(editedRow.id, editedRow.title);
+            }
 
             const updatedInValidCells = Object.keys(inValidCells).filter(i => inValidCells[i] === editedRow.id)
             setInValidCells(updatedInValidCells);
-
+            clearInvalidCellAlertError();
             return editedRow;
         }
         else{
+            let errorMsg = "";
+            if(matchedRows.length !== 0){
+                errorMsg = "File already exists";
+            }else if(editedRow.title.length > 200){
+                errorMsg = "File name must be less than 200 characters";
+            }else{
+                errorMsg = "Please enter a file name";
+            }
+
             let updatedInValidCells = {
                 ...inValidCells
             };
@@ -73,6 +95,8 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
             }
 
             setInValidCells(updatedInValidCells);
+            setInValidCellsMsg(errorMsg);
+            setShowInValidCellsMsg(true);
         }
         return false;
     };
@@ -213,6 +237,15 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
 
     return (
         <div className={"TableListing"} id={id} style={{height: 400}} >
+            {showInValidCellsMsg &&
+                <Alert
+                    className={"TableListingAlert"}
+                    severity="error"
+                    sx={{position: 'absolute', 'z-index': '1000'}}
+                >
+                    {inValidCellsMsg}
+                </Alert>
+            }
             <DataGrid
                 height={280}
                 columnHeaderHeight={40}
@@ -233,7 +266,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                     let paramId = params.id;
 
                     if(params.field ==="title"){
-                        return (inValidCells[paramId] !== undefined && inValidCells[paramId].title.length < 1) ? 'missing' : '';
+                        return (inValidCells[paramId] !== undefined) ? 'missing' : '';
                     }
                     else{
                         return '';

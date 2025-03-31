@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Box from "@mui/material/Box";
@@ -18,7 +18,7 @@ import {
 } from "../../reducers/tableListingSlice";
 import { TabPanel } from "../TabPanel";
 import {saveStatusConfirmed, saveTable} from "../../reducers/saveTableSlice";
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
@@ -32,6 +32,8 @@ export const SaveTableModal = ({open, handleClose}) => {
     const [isNameInvalid, setIsNameInvalid] = React.useState(false);
     const [isShared, setIsShared] = React.useState(false);
     const [tab, setTab] = React.useState(1);
+    const [showInValidCellsMsg, setShowInValidCellsMsg] = useState(false);
+    const [inValidCellsMsg, setInValidCellsMsg] = useState("");
 
     const dispatch = useDispatch();
 
@@ -145,12 +147,23 @@ export const SaveTableModal = ({open, handleClose}) => {
         if(isAdmin) {
             setTab(newValue);
         }
-        console.log('tab change detected ' + newValue);
         setIsShared(newValue === 0);
         setSelectedRows([]);
     };
 
 
+    const handeInValidCellsMsg = (msg) => {
+        if(msg && msg.length > 0) {
+            setInValidCellsMsg(msg);
+            setShowInValidCellsMsg(true);
+        }else{
+            setInValidCellsMsg("");
+            setShowInValidCellsMsg(false);
+        }
+    }
+    const handleInvalidCellClose = () => {
+        setShowInValidCellsMsg(false);
+    }
     useEffect(() => {
         if (open) {
             dispatch(listTables());
@@ -180,6 +193,16 @@ export const SaveTableModal = ({open, handleClose}) => {
                     <Typography id="modal-description">
                         Enter a table definition name to save as or select from the list to overwrite.
                     </Typography>
+                    {showInValidCellsMsg &&
+                        <Alert
+                            className={"TableListingAlert"}
+                            onClose={handleInvalidCellClose}
+                            severity="error"
+                            sx={{width: '100%'}}
+                        >
+                            File Exists
+                        </Alert>
+                    }
                 </DialogContentText>
                 <Box
                     className = {"modalDefListBox"}
@@ -215,6 +238,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onRename={updateTableDefinitionTitle}
                             renameFailed={renameStatusInfo.status === 'FAIL'}
                             onRenameAlertClose={confirmRenameStatus}
+                            setInValidCellsMsg={handeInValidCellsMsg}
                         />
                     </TabPanel>
                     <TabPanel
@@ -237,6 +261,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onRename={updateTableDefinitionTitle}
                             renameFailed={renameStatusInfo.status === 'FAIL'}
                             onRenameAlertClose={confirmRenameStatus}
+                            setInValidCellsMsg={handeInValidCellsMsg}
                         />
                     </TabPanel>
                 </Box>
