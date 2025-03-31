@@ -85,15 +85,18 @@ export const SaveTableModal = ({open, handleClose}) => {
         }
     }
 
-    const doSave = () =>{
-        dispatch(saveTable({
-            tableDefRows,
-            creator_id: username,
-            tableId: selectedTableDef.id,
-            title: selectedTableDef.title,
-            shared: isShared
-            })
-        );
+    const doSave = () => {
+        const saveAllowed = !(isShared && !isAdmin);
+        if (saveAllowed) {
+            dispatch(saveTable({
+                    tableDefRows,
+                    creator_id: username,
+                    tableId: selectedTableDef.id,
+                    title: selectedTableDef.title,
+                    shared: isShared
+                })
+            );
+        }
         setShowOverwrite(false);
         handleClose();
     }
@@ -142,6 +145,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         if(isAdmin) {
             setTab(newValue);
         }
+        console.log('tab change detected ' + newValue);
         setIsShared(newValue === 0);
         setSelectedRows([]);
     };
@@ -188,8 +192,8 @@ export const SaveTableModal = ({open, handleClose}) => {
                         sx={{ borderRight: 1, borderColor: 'divider'}}
                         onChange={handleChangeTab}
                     >
-                        {!isAdmin && <Tab label="Shared Tables" {...addtlProps(0)} sx={{textDecoration:"line-through"}}/>}
-                        {isAdmin && <Tab label="Shared Tables" {...addtlProps(0)}/>}
+                        {!isAdmin ?  <Tab label="Shared Tables" {...addtlProps(0)} sx={{textDecoration:"line-through"}}  disabled/>
+                        : <Tab label="Shared Tables" {...addtlProps(0)}/>}
                         <Tab label="My Tables" {...addtlProps(1)} />
                     </Tabs>
                     <TabPanel
