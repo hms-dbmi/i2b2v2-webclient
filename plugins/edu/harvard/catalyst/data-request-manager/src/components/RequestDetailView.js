@@ -12,12 +12,16 @@ import {getTableDefinition, getTableDefinitionStatusConfirmed} from "../reducers
 import {TableDefinitionPreview} from "./TableDefinitionPreview";
 import "./RequestDetailView.scss";
 import {AlertDialog} from "./AlertDialog";
+import {decode} from "html-entities";
 
-export const RequestDetailView = ({details}) => {
+export const RequestDetailView = ({details, isObfuscated}) => {
     const tableDef  = useSelector((state) => state.tableDef);
     const [showTableDefPreview, setShowTableDefPreview] = React.useState(false);
     const [showAlert, setShowAlert] = React.useState(false);
     const [alertMsg, setAlertMsg] = React.useState("");
+    const { obfuscatedDisplayNumber, useFloorThreshold, floorThresholdNumber, floorThresholdText }
+        = useSelector((state) => state.configInfo);
+
     const dispatch = useDispatch();
 
     const formatNumber = (value) => {
@@ -25,7 +29,17 @@ export const RequestDetailView = ({details}) => {
         if(isNaN(formattedValue)){
             formattedValue = value;
         }
-        return formattedValue.toLocaleString();
+
+        let displayValue = formattedValue;
+        if (isObfuscated) {
+            displayValue = formattedValue + decode("&plusmn;") + obfuscatedDisplayNumber;
+        }
+        if (useFloorThreshold) {
+            if (formattedValue < floorThresholdNumber) {
+                displayValue = floorThresholdText + floorThresholdNumber;
+            }
+        }
+        return displayValue;
     };
 
     const handleQueryReload = (queryId) => {

@@ -2,11 +2,10 @@ import { createSlice } from '@reduxjs/toolkit'
 import { REQUEST_DETAILS } from "../actions";
 import { defaultState } from '../defaultState';
 import {
-    RequestStatus, RequestStatusLog,
+    RequestStatus,
     ResearcherRequestDetails,
     StatusInfo, AdminRequestDetails
 } from "../models";
-import {DateTime} from "luxon";
 
 export const requestDetailsSlice = createSlice({
     name: REQUEST_DETAILS,
