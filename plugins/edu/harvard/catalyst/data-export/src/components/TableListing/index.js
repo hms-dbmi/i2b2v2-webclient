@@ -63,10 +63,11 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         setShowInValidCellsMsg(false);
     }
     const processRowUpdate = (editedRow, previousRow) => {
+        const MAX_FILENAME_LENGTH = 200;
         const matchedRows = rows.filter(srow => srow.title?.toUpperCase() === editedRow.title.toUpperCase());
 
         if((previousRow.title.toUpperCase() === editedRow.title.toUpperCase())
-            || (editedRow.title.length > 0 &&  matchedRows.length === 0)){
+            || (editedRow.title.length > 0 && editedRow.title.length <= MAX_FILENAME_LENGTH &&  matchedRows.length === 0)){
 
             if(previousRow.title.toUpperCase() !== editedRow.title.toUpperCase()) {
                 onRename(editedRow.id, editedRow.title);
@@ -80,8 +81,8 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         else{
             let errorMsg = "";
             if(matchedRows.length !== 0){
-                errorMsg = "File already exists";
-            }else if(editedRow.title.length > 200){
+                errorMsg = "File name already exists";
+            }else if(editedRow.title.length > MAX_FILENAME_LENGTH){
                 errorMsg = "File name must be less than 200 characters";
             }else{
                 errorMsg = "Please enter a file name";
