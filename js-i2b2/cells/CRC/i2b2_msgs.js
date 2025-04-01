@@ -1356,3 +1356,60 @@ i2b2.CRC.cfg.msgs.setQueryInstanceStatus = '<?xml version="1.0" encoding="UTF-8"
     '</ns6:request>';
 i2b2.CRC.ajax._addFunctionCall("setQueryInstanceStatus","{{{URL}}}request", i2b2.CRC.cfg.msgs.setQueryInstanceStatus);
 
+
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.runExport_fromQueryInstanceId = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_type>\n'+
+    '			<message_code>Q04</message_code>\n'+
+    '			<event_type>EQQ</event_type>\n'+
+    '		</message_type>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>messageId</accept_acknowledgement_type>\n'+
+    '			<project_id>{{{sec_project}}}</project_id>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '		<ns4:psmheader>\n'+
+    '			<user login="{{{sec_user}}}">{{{sec_user}}}</user>\n'+
+    '			<patient_set_limit>0</patient_set_limit>\n'+
+    '			<estimated_time>0</estimated_time>\n'+
+    '			<request_type>CRC_QRY_runExport_fromQueryInstanceId</request_type>\n'+
+    '		</ns4:psmheader>\n'+
+    '		<ns4:request xsi:type="ns4:instance_message_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
+    '			<query_instance_id>{{{query_instance_id}}}</query_instance_id>\n'+
+    '		</ns4:request>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>';
+i2b2.CRC.ajax._addFunctionCall("runExport_fromQueryInstanceId","{{{URL}}}request", i2b2.CRC.cfg.msgs.runExport_fromQueryInstanceId);
+

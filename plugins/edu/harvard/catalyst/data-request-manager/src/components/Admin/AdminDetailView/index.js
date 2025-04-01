@@ -56,7 +56,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
 
     const handleGenerateFile = () =>{
         setConfirmFileGen(false);
-        dispatch(generateDataFile({requestId: requestRow.id}));
+        dispatch(generateDataFile({queryInstanceId: requestRow.queryInstanceId}));
     }
 
     const handleUpdateStatus = () => {
