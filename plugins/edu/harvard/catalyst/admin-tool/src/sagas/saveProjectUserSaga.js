@@ -36,7 +36,7 @@ export function* doSaveProjectUser(action) {
     console.log("saving user " + user.username + " in project " + selectedProject.project.name + "...");
     try {
         let rolesToSave = [user.adminPath.name, user.dataPath.name];
-        if(user.editorPath){
+        if(user.editorPath === "true"){
             rolesToSave.push(EDITOR_ROLE);
         }
         const filterRolesToSave = rolesToSave.filter((role) => !previousRoles.includes(role));

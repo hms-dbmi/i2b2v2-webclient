@@ -45,10 +45,6 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
             value = DATA_ROLES[value];
         }
 
-        if(field === "editorPath"){
-            value = "true";
-        }
-
         let newUser = {
             ...updatedUser
         }

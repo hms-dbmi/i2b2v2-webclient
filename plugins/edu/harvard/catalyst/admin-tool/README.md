@@ -2,7 +2,7 @@
 
 ## To Get Started
 
-This development environment requires [Node version 20.11.0.]
+This development environment requires [Node version 23.3.0.]
 
 ## Setup the App
 ```bash
