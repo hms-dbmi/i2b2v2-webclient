@@ -16,7 +16,6 @@ import {saveProjectUser, saveProjectUserStatusConfirmed} from "actions";
 import { SelectedUser, ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE } from "models";
 
 import "./ProjectUserInfo.scss";
-import Select from "../../../node_modules_orig/@mui/material/Select/Select";
 
 export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, updateUser, updatedUser}) => {
     const [isDirty, setIsDirty] = useState(false);
@@ -51,7 +50,6 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
         }
         newUser[field] = value;
 
-        console.log("newuser " + JSON.stringify(newUser));
         updateUser(newUser);
 
         if(JSON.stringify(newUser) !== JSON.stringify(selectedUser.user)){
@@ -59,8 +57,6 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
         }else{
             setIsDirty(false);
         }
-
-        console.log('new user is ' + JSON.stringify(newUser) + "new value " + value);
     }
 
     const handleResetUserDetails = () => {
@@ -130,7 +126,8 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
                     </TextField>
                 </div>
                 <div className={"mainField"}>
-                    <Select
+                    <TextField
+                        select
                         className={"inputField"}
                         label="Data Path"
                         value={updatedUser.dataPath.name}
@@ -144,7 +141,7 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
                         <MenuItem value={"DATA_AGG"}>Aggregated</MenuItem>
                         <MenuItem value={"DATA_OBFSC"}>Obfuscated</MenuItem>
 
-                    </Select>
+                    </TextField>
                 </div>
                 <div className={"mainField"}>
                     <TextField
@@ -152,9 +149,7 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
                         className={"inputField"}
                         label="Editor Path"
                         value={updatedUser.editorPath}
-                        onChange={(event) => {
-                            handleUpdate("editorPath", event.target.value);
-                        }}
+                        onChange={(event) => handleUpdate("editorPath", event.target.value)}
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                     >
