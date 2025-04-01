@@ -21,7 +21,7 @@ const parseAllTablesListXml = (tablesListXml) => {
     };
 
     let tables = tablesListXml.getElementsByTagName('rpdo');
-    tables.map(table => {
+    tables.forEach(table => {
         let id = table.attributes['id'];
         let title = table.getElementsByTagName('title');
         let creator_id = table.getElementsByTagName('creator_id');

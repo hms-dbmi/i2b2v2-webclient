@@ -145,7 +145,6 @@ export const SaveTableModal = ({open, handleClose}) => {
         if(isAdmin) {
             setTab(newValue);
         }
-        console.log('tab change detected ' + newValue);
         setIsShared(newValue === 0);
         setSelectedRows([]);
     };
