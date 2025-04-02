@@ -241,7 +241,8 @@ i2b2.CRC.view.history.clickSearchName = function() {
         crc_find_category: crc_find_category,
         crc_find_strategy: crc_find_strategy,
         crc_create_date: "",
-        crc_find_string: $("#querySearchTermText").val()
+        crc_find_string: $("#querySearchTermText").val(),
+        master_type_cd_xml: ""
     };
     i2b2.CRC.ajax.getNameInfo("CRC:History", options, scopeCB);
 };
@@ -411,7 +412,8 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
         crc_max_records: max + 1,
         crc_user_type: request_type,
         crc_user_by: user_type,
-        include_query_instance: false
+        include_query_instance: false,
+        master_type_cd_xml: ""
     };
     i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", options,  scopedCallback);
 };

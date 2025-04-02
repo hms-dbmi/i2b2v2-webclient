@@ -64,3 +64,10 @@
 #crcModal .qtResultTypeHeader {
     padding: 0.6em 0.9em;
 }
+
+.dataRequestMetadata {
+    border: 1px solid #e9ebee;
+    padding: 0.6em;
+    margin-bottom: 1.1em;
+    background-color: #f1f2f5;
+}

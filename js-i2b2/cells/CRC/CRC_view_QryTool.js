@@ -235,14 +235,16 @@ i2b2.CRC.view.QT.showRun = function() {
                 let reqExecutionMethod = $('#crcModal .QueryMethodInput select').val();
 
                 let emailAndComments = {};
-                const email = $("#dataRequestInfoEmail").val();
-                if(email.length > 0){
-                   emailAndComments.email = email;
-                }
+                if(selectedDataRequests.length > 0) {
+                    const email = $("#dataRequestInfoEmail").val();
+                    if (email.length > 0) {
+                        emailAndComments.email = email;
+                    }
 
-                const message = $("#dataRequestInfoComment").val();
-                if(message.length > 0){
-                    emailAndComments.message = message;
+                    const message = $("#dataRequestInfoComment").val();
+                    if (message.length > 0) {
+                        emailAndComments.message = message;
+                    }
                 }
 
                 // start the query run
