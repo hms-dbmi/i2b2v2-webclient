@@ -207,9 +207,11 @@ i2b2.CRC.view.QT.showRun = function() {
                 if(!isValidEmail) {
                     dataRequestInfoEmail.css('border', '1px solid red');
                     document.getElementById("dataRequestInfoEmailLabel").scrollIntoView();
+                    $("#emailErrorMsg").show();
                     return;
                 }else{
                     dataRequestInfoEmail.css('border', '');
+                    $("#emailErrorMsg").hide();
                 }
             }
 
