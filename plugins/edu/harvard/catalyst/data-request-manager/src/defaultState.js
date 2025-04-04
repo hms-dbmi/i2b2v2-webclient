@@ -16,6 +16,6 @@ export const defaultState = {
     userInfo: UserInfo(),
     requestComments: RequestComments(),
     tableDef: TableDefinition(),
-    requestStatusLog: RequestStatusLog()
+    requestStatusLog: RequestStatusLog(),
     configInfo: ConfigInfo()
 };
