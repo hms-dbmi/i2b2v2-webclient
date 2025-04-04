@@ -5,6 +5,7 @@ export const USER_INFO = "userInfo";
 export const REQUEST_COMMENTS = "requestComments";
 export const TABLE_DEFINITION = "tableDef";
 export const REQUEST_STATUS_LOG = "tableDef";
+export const CONFIG_INFO = "configInfo";
 
 export const LIST_REQUEST_TABLE = `${REQUEST_TABLE}/listRequestTable`;
 export const GET_USER_INFO = `${USER_INFO}/getUserInfo`;
@@ -15,4 +16,5 @@ export const GET_TABLE_DEF = `${TABLE_DEFINITION}/getTableDefinition`;
 export const GET_REQUEST_COMMENTS = `${REQUEST_COMMENTS}/getRequestComments`;
 export const UPDATE_REQUEST_COMMENTS = `${REQUEST_COMMENTS}/updateRequestComments`;
 export const GET_REQUEST_STATUS_LOG = `${REQUEST_STATUS_LOG}/getRequestStatusLog`;
+export const GET_CONFIG_INFO = `${CONFIG_INFO}/getConfigInfo`;
 

@@ -12,12 +12,15 @@ import {getTableDefinition, getTableDefinitionStatusConfirmed} from "../reducers
 import {TableDefinitionPreview} from "./TableDefinitionPreview";
 import "./RequestDetailView.scss";
 import {AlertDialog} from "./AlertDialog";
+import {decode} from "html-entities";
 
-export const RequestDetailView = ({details}) => {
+export const RequestDetailView = ({details, isObfuscated}) => {
     const tableDef  = useSelector((state) => state.tableDef);
     const [showTableDefPreview, setShowTableDefPreview] = React.useState(false);
     const [showAlert, setShowAlert] = React.useState(false);
     const [alertMsg, setAlertMsg] = React.useState("");
+    const { obfuscatedDisplayNumber, useFloorThreshold, floorThresholdNumber, floorThresholdText }
+        = useSelector((state) => state.configInfo);
 
     const dispatch = useDispatch();
 
@@ -26,7 +29,17 @@ export const RequestDetailView = ({details}) => {
         if(isNaN(formattedValue)){
             formattedValue = value;
         }
-        return formattedValue.toLocaleString();
+
+        let displayValue = formattedValue;
+        if (isObfuscated) {
+            displayValue = formattedValue + decode("&plusmn;") + obfuscatedDisplayNumber;
+        }
+        if (useFloorThreshold) {
+            if (formattedValue < floorThresholdNumber) {
+                displayValue = floorThresholdText + floorThresholdNumber;
+            }
+        }
+        return displayValue;
     };
 
     const handleQueryReload = (queryId) => {
@@ -54,7 +67,7 @@ export const RequestDetailView = ({details}) => {
 
     const truncateDescriptionName = (name) => {
         let truncatedName = name;
-        const maxLength = 40;
+        const maxLength = 45;
         if(truncatedName.length > maxLength){
             truncatedName = truncatedName.slice(0, maxLength) + "...";
         }

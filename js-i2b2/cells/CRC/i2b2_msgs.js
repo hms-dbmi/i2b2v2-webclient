@@ -1472,4 +1472,3 @@ i2b2.CRC.cfg.msgs.updateQueryInstanceMessage = '<?xml version="1.0" encoding="UT
     '	</message_body>\n'+
     '</ns6:request>';
 i2b2.CRC.ajax._addFunctionCall("updateQueryInstanceMessage","{{{URL}}}request", i2b2.CRC.cfg.msgs.updateQueryInstanceMessage);
-

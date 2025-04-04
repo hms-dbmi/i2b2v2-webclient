@@ -4,8 +4,10 @@ import {
     RequestDetails,
     TableDefinition,
     RequestStatusLog,
-    RequestComments
+    RequestComments,
+    ConfigInfo
 } from "./models";
+
 
 export const defaultState = {
     isI2b2LibLoaded: false,
@@ -15,4 +17,5 @@ export const defaultState = {
     requestComments: RequestComments(),
     tableDef: TableDefinition(),
     requestStatusLog: RequestStatusLog()
+    configInfo: ConfigInfo()
 };

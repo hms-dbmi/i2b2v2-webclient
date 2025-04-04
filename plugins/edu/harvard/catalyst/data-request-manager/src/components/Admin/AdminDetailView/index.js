@@ -29,6 +29,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const { username } = useSelector((state) => state.userInfo);
     const [requestStatus, setRequestStatus] = React.useState(null);
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
+    const {isObfuscated } = useSelector((state) => state.userInfo);
 
     useEffect(() => {
         if(requestRow) {
@@ -83,7 +84,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                     </Typography>
 
                     <div className={"AdminDetailViewContent"}>
-                        <RequestDetailView details={details} isManager={true}/>
+                        <RequestDetailView details={details} isObfuscated={isObfuscated}/>
 
                         <div className={"RequestAction"}>
                             <Typography className={"RequestActionTitle"}>

@@ -2,11 +2,10 @@ import { createSlice } from '@reduxjs/toolkit'
 import { REQUEST_DETAILS } from "../actions";
 import { defaultState } from '../defaultState';
 import {
-    RequestStatus, RequestStatusLog,
+    RequestStatus,
     ResearcherRequestDetails,
     StatusInfo, AdminRequestDetails
 } from "../models";
-import {DateTime} from "luxon";
 
 export const requestDetailsSlice = createSlice({
     name: REQUEST_DETAILS,
@@ -51,13 +50,13 @@ export const requestDetailsSlice = createSlice({
                 });
             }
             state.details = details;
-            state.details.isFetching = false;
+            //state.details.isFetching = false;
             state.details.statusInfo = StatusInfo({
                 status: "SUCCESS"
             });
         },
         getRequestDetailsError: (state, { payload: { errorMessage} }) => {
-            state.details.isFetching = false;
+            //state.details.isFetching = false;
             state.details.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage
