@@ -3,7 +3,7 @@
  * SDX-style drag and drop with the main i2b2 UI.
  **/
 
-if (i2b2 === undefined) i2b2 = {};
+if (typeof i2b2 === 'undefined') i2b2 = {};
 // ----- Magic Strings -----
 if (i2b2.MSG_TYPES === undefined) i2b2.MSG_TYPES = {};
 i2b2.MSG_TYPES.SDX = {};

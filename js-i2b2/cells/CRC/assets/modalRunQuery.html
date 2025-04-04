@@ -57,6 +57,21 @@
                                     Data Request(s)</button>
                                 <div id="runQuery2" class="accordion-collapse collapse show">
                                     <div data-bs-toggle="collapse" class="accordion-body">
+                                        <div id="dataRequestMetadata" class="dataRequestMetadata accordion-collapse collapse show">
+                                            <div>
+                                                <div class="mb-3">
+                                                    <label id="dataRequestInfoEmailLabel" for="dataRequestInfoEmail" class="form-label">Enter your email</label>
+                                                    <input type="email" class="form-control form-control-sm" id="dataRequestInfoEmail" placeholder="name@example.com">
+                                                    <div id="emailErrorMsg" class="errorMsg">
+                                                        Email is required for data request(s)
+                                                    </div>
+                                                </div>
+                                                <div class="mb-1">
+                                                    <label for="dataRequestInfoComment" class="form-label">Enter comments (optional)</label>
+                                                    <textarea class="form-control form-control-sm" id="dataRequestInfoComment" rows="4" maxlength="1000" placeholder="Enter optional comments about this request."></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="RequestTypes"></div>
                                     </div>
                                 </div>
@@ -74,26 +89,6 @@
                                         <div class="DataExportTypes"></div>
                                     </div>
                                 </div>
-                        </div>
-                        <div class="accordion-item" id="CustomDataRequestInfoDiv">
-                            <div class="accordion-header">
-                                <button class="accordion-button qtResultTypeHeader" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#runQuery4"
-                                        aria-expanded="true" aria-controls="customDataRequests">
-                                    Custom Data Request(s) Info</button>
-                            </div>
-                            <div id="runQuery4" class="accordion-collapse collapse show">
-                                <div data-bs-toggle="collapse" class="accordion-body">
-                                    <div class="mb-3">
-                                        <label for="dataRequestInfoEmail" class="form-label">Enter your email</label>
-                                        <input type="email" class="form-control form-control-sm" id="dataRequestInfoEmail" placeholder="name@example.com">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="dataRequestInfoComment" class="form-label">Enter comments (optional)</label>
-                                        <textarea class="form-control form-control-sm" id="dataRequestInfoComment" rows="4" maxlength="1000" placeholder="Enter optional comments about this request."></textarea>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         </div>
                         <div class="errorMsg hidden">
