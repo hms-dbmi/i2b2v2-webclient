@@ -1,6 +1,6 @@
 {
-  "title": "Data Export",
-  "description": "This plugin allows for defining and requesting an export of data",
+  "title": "Create data table for export",
+  "description": "This plugin allows for defining the export of a data table",
   "category": ["export"],
   "icons": { "size32x32": "export-icon.png" },
   "assetDir": "build",
