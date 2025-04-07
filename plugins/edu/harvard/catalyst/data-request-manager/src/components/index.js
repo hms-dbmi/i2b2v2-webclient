@@ -11,4 +11,5 @@ export { DetailViewNav } from "./DetailViewNav";
 export { RequestStatusLogView } from "./RequestStatusLogView";
 export { TableDefinitionPreview } from "./TableDefinitionPreview";
 export { AlertDialog } from "./AlertDialog";
+export { RequestCommentsView } from "./RequestCommentsView";
 

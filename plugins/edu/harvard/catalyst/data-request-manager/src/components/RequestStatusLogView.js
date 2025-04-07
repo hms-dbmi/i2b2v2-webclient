@@ -1,7 +1,6 @@
-import React from "react";
-import {RequestStatus} from "../models";
+import React, {useEffect} from "react";
 import {
-    Box,
+    Box, IconButton,
     Paper,
     Table,
     TableBody,
@@ -12,13 +11,23 @@ import {
     TableSortLabel,
 } from "@mui/material";
 import { visuallyHidden } from '@mui/utils';
-import './RequestStatusLogs.scss';
+import './RequestStatusLogView.scss';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export const RequestStatusLogView = ({statusLogs}) => {
+export const RequestStatusLogView = ({requestStatusLog}) => {
     const [order, setOrder] = React.useState('desc');
     const [orderBy, setOrderBy] = React.useState('date');
+    const [sortedStatusLogs, setSortedStatusLogs] = React.useState([]);
+    const [expandRowList, setExpandRowList] = React.useState([]);
 
     const headCells = [
+        {
+            id: 'description',
+            numeric: false,
+            disablePadding: false,
+            label: 'Request',
+        },
         {
             id: 'date',
             numeric: false,
@@ -73,7 +82,38 @@ export const RequestStatusLogView = ({statusLogs}) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
+
+        const resortedStatusLogs = [...sortedStatusLogs].sort(getComparator(order,property));
+        setSortedStatusLogs(resortedStatusLogs);
     };
+
+    const getLatestRequestStatusLog = (statusLogs) => {
+        const recentStatusLogList = statusLogs.map(requestLog => {
+            const logItemsSorted = requestLog.logItems.sort((a, b) => {
+                if(a.date === b.date){
+                    return a.order > b.order;
+                }
+                else {
+                    return a.date > b.date;
+                }
+            });
+
+            let requestStatusLog = {
+                description: requestLog.description,
+                date: '',
+                status: '',
+                logItems:  requestLog.logItems
+            }
+            if(logItemsSorted.length > 0){
+                requestStatusLog.date = logItemsSorted[0].date;
+                requestStatusLog.status = logItemsSorted[0].status;
+            }
+
+            return requestStatusLog;
+        });
+
+        return recentStatusLogList;
+    }
 
     const descendingComparator = (a, b, orderBy) => {
         if(orderBy === "date"){
@@ -94,29 +134,79 @@ export const RequestStatusLogView = ({statusLogs}) => {
             : (a, b) => -descendingComparator(a, b, orderBy);
     }
 
-    const sortedStatusLogs = [...statusLogs].sort(getComparator(order, orderBy));
+    const updateExpandList = (rowDescription) => {
+        const newExpandList = [...expandRowList];
+
+        const rowDescIndex = expandRowList.indexOf(rowDescription);
+        if(rowDescIndex !== -1){
+            newExpandList.splice(rowDescIndex, 1);
+        }
+        else{
+            newExpandList.push(rowDescription);
+        }
+        setExpandRowList(newExpandList);
+    }
+
+    useEffect(() => {
+        if(requestStatusLog.length > 0){
+            const sLogs = getLatestRequestStatusLog(requestStatusLog);
+            setSortedStatusLogs(sLogs);
+        }
+    }, [requestStatusLog]);
 
     return (
-        <Box className={"RequestStatusTable"} style={{display: 'flex', flexDirection: 'column'}}>
-            <TableContainer component={Paper} sx={{ maxHeight: 200 }}>
+        <Box className={"RequestStatusLogView"} style={{display: 'flex', flexDirection: 'column'}}>
+            <TableContainer component={Paper} sx={{ maxHeight: 250 }}>
                 <Table stickyHeader sx={{ minWidth: 50 }} size="small" aria-label="simple table">
                     <EnhancedTableHead
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        rowCount={statusLogs.length}
+                        rowCount={sortedStatusLogs.length}
                     />
                     <TableBody>
                         {sortedStatusLogs.map((row) => (
+                            <>
                             <TableRow
                                 key={row.status}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">
-                                    {row.date.toLocaleDateString()}
+                                <TableCell className={"descriptionColumn"} component="td" scope="row" title={row.description}>
+
+                                    <div className={"descriptionColumnLabel"}>
+                                        <IconButton  aria-label="expand" onClick={() => updateExpandList(row.description)}>
+                                            {!expandRowList.includes(row.description) ? <ChevronRightIcon/> : <ExpandMoreIcon />}
+                                        </IconButton>
+                                        {row.description}
+                                    </div>
                                 </TableCell>
-                                <TableCell align="left">{RequestStatus.statuses[row.status]}</TableCell>
+                                <TableCell align="left">
+                                    {row.date && row.date.toLocaleDateString()}
+                                </TableCell>
+                                <TableCell component="td" scope="row">
+                                    {row.status.name}
+                                </TableCell>
                             </TableRow>
+                            {expandRowList.includes(row.description) &&
+                                row.logItems.map(logItem => {
+                                    return (
+                                        <TableRow
+                                            key={logItem.status}
+                                            sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        >
+                                            <TableCell component="th" scope="row">
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                {logItem.date.toLocaleDateString()}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                {logItem.status.name}
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            }
+                            </>
                         ))}
                     </TableBody>
                 </Table>

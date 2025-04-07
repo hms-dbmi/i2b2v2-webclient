@@ -1,17 +1,44 @@
 
 export const RequestStatus = {
     statuses: {
-        SUBMITTED: "Submitted",
-        WITHDRAWN: "Withdrawn",
-        DENIED: "Denied",
-        FILE_IN_PROGRESS_QUEUED: "File In Progress (Queued)",
-        FILE_IN_PROGRESS_PROCESSING: "File In Progress (Processing)",
-        FILE_AVAILABLE: "File Available",
-        ERROR: "Error",
-        UNKNOWN: "Unknown",
+        SUBMITTED: {
+            order: 1,
+            name: "Submitted"
+        },
+        WITHDRAWN: {
+            order: 1,
+            name: "Withdrawn"
+        },
+        DENIED: {
+            order: 2,
+            name: "Denied"
+        },
+        FILE_IN_PROGRESS_QUEUED: {
+            order: 6,
+            name: "File In Progress (Queued)"
+        },
+        FILE_IN_PROGRESS_PROCESSING: {
+            order: 5,
+            name: "File In Progress (Processing)"
+        },
+        FILE_AVAILABLE: {
+            order: 4,
+            name: "File Available"
+        },
+        ERROR: {
+            order: 3,
+            name: "Error"
+        },
+        UNKNOWN: {
+            order: 1000,
+            name: "Unknown"
+        },
     },
+    /*_getLatestStatus: (statuses) => {
+
+    },*/
     _getStatusesAsList: () => Object.keys(RequestStatus.statuses),
-    _lookupStatus: (status) => Object.entries(RequestStatus.statuses).find(([key, value]) => value === status),
+    _lookupStatus: (status) => Object.keys(RequestStatus.statuses).find(key => RequestStatus.statuses[key].name === status),
     _convertI2b2Status: (i2b2Status) => {
         let status = '';
         switch (i2b2Status.toUpperCase()) {

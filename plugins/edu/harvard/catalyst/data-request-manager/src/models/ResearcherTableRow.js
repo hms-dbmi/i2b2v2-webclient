@@ -5,6 +5,7 @@ import {ExportRequest} from "./ExportRequest";
 
 export const ResearcherTableRow = ({
     id = null,
+    queryInstanceId = null,
     description= "",
     requests = [],
     dateSubmitted = null,
@@ -12,6 +13,7 @@ export const ResearcherTableRow = ({
     status= RequestStatus.statuses.SUBMITTED
 } = {}) => ({
     id,
+    queryInstanceId,
     description,
     requests,
     dateSubmitted,
@@ -21,6 +23,7 @@ export const ResearcherTableRow = ({
 
 ResearcherTableRow.propTypes = {
     id: PropTypes.number.isRequired,
+    queryInstanceId: PropTypes.number.isRequired,
     description:  PropTypes.string.isRequired,
     requests: PropTypes.arrayOf(ExportRequest).isRequired,
     dateSubmitted: PropTypes.instanceOf(Date).isRequired,

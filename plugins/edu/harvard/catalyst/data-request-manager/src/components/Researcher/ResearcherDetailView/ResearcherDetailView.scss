@@ -35,7 +35,7 @@
   }
 
   .DataRequestType{
-    max-height: 6em;
+    max-height: 6.5em;
     overflow-y: auto;
     border: 1px solid #d0cccc;
     border-radius: 5px;
@@ -54,6 +54,15 @@
     th, td {
       border: 1px solid rgba(224, 224, 224, 1);
     }
+  }
+
+  .LoadingProgress {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
   }
 
   .ProgressIcon {

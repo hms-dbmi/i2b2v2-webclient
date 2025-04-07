@@ -1,0 +1,38 @@
+.RequestCommentsView {
+
+  .MuiTextField-root {
+    width : 100%;
+    background-color: #FFFFFF;
+  }
+
+  .RequestDetailCommentsContent {
+    margin-top: 0.4em;
+    background-color: rgba(246, 245, 245, 0.8);
+  }
+
+  .RequestDetailCommentsTitle {
+    font-weight: bold;
+    margin-bottom: 0.1em;
+    margin-top: 0.2em;
+  }
+
+  .CommentBtn {
+    margin-top: 1.2em;
+  }
+
+  th.MuiTableCell-root, td.MuiTableCell-root {
+    border: 1px solid rgba(224, 224, 224, 1) !important;
+  }
+
+  .MuiTableRow-root.MuiTableRow-head, .MuiTableCell-stickyHeader {
+    background-color: #e7edf3 !important;
+  }
+
+  .TextReadOnlyMode {
+    background: #f1f3f5;
+  }
+
+  .RequestDetailCommentsContent {
+    padding: 1.2em;
+  }
+}

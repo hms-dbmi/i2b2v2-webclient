@@ -19,10 +19,14 @@ import {DetailViewNav} from "../../DetailViewNav";
 import CreateIcon from '@mui/icons-material/Create';
 import "./AdminDetailView.scss";
 import {ConfirmDialog} from "../../ConfirmDialog";
+import {getRequestStatusLog} from "../../../reducers/requestStatusLogSlice";
+import {RequestCommentsView} from "../../RequestCommentsView";
 
 export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details } = useSelector((state) => state.requestDetails);
+    const { statusLogs } = useSelector((state) => state.requestStatusLog);
+    const { username } = useSelector((state) => state.userInfo);
     const [requestStatus, setRequestStatus] = React.useState(null);
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
     const {isObfuscated } = useSelector((state) => state.userInfo);
@@ -30,6 +34,15 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     useEffect(() => {
         if(requestRow) {
             dispatch(getRequestDetails({requestRow, isManager: true}));
+
+            const exportRequests = requestRow.requests.map(ri =>  {
+                    return {
+                        description: ri.description,
+                        resultInstanceId: ri.resultInstanceId
+                    }
+                }
+            );
+            dispatch(getRequestStatusLog({exportRequests}));
         }
     }, [requestRow]);
 
@@ -62,7 +75,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                 </div>
             }
 
-            { !details.isFetching && details.id && (
+            { !details.isFetching && !statusLogs.isFetching && details.id && (
                 <div>
                     <DetailViewNav requestId={requestRow.id} requestName={details.name} goToHome={goToViewRequestTable}/>
 
@@ -92,7 +105,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                                 >
                                                     {
                                                         RequestStatus._getStatusesAsList().filter(s => RequestStatus.statuses[s] !== RequestStatus.statuses.UNKNOWN).map((status) => {
-                                                            return (<MenuItem value={RequestStatus.statuses[status]}> {RequestStatus.statuses[status]}</MenuItem>);
+                                                            return (<MenuItem value={RequestStatus.statuses[status]}> {RequestStatus.statuses[status].name}</MenuItem>);
                                                         })
                                                     }
                                                 </Select>
@@ -108,10 +121,13 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                     </Grid>
                                     <Grid size={6}>
                                         <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
-                                        <RequestStatusLogView statusLogs={details.statusLogs}/>
+                                        <RequestStatusLogView requestStatusLog={statusLogs}/>
                                     </Grid>
                                 </Grid>
                             </Card>
+                        </div>
+                        <div className={"RequestComments"}>
+                            <RequestCommentsView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId} username={username}/>
                         </div>
                         {confirmFileGen && <ConfirmDialog
                             msg={'Are you sure you want to generate data file(s)?'}

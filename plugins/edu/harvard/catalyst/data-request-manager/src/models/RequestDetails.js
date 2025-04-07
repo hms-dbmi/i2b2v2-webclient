@@ -17,5 +17,4 @@ RequestDetails.propTypes = {
     details: PropTypes.instanceOf(ResearcherRequestDetails).isRequired,
     dataFileGeneration: PropTypes.instanceOf(DataFileGeneration),
     reloadQueryStatus: PropTypes.shape(StatusInfo),
-    isFetching: PropTypes.bool
 };

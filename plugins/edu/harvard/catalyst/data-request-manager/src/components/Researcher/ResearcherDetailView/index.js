@@ -14,16 +14,29 @@ import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";
 import {RequestDetailView} from "../../RequestDetailView";
 import {DetailViewNav} from "../../DetailViewNav";
+import {getRequestStatusLog} from "../../../reducers/requestStatusLogSlice";
+import {RequestCommentsView} from "../../RequestCommentsView";
 
 
 export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
     const dispatch = useDispatch();
     const { details } = useSelector((state) => state.requestDetails);
+    const { statusLogs } = useSelector((state) => state.requestStatusLog);
+    const { username } = useSelector((state) => state.userInfo);
     const { isObfuscated } = useSelector((state) => state.userInfo);
 
     useEffect(() => {
         if(requestRow) {
-            dispatch(getRequestDetails({requestRow}));
+            dispatch(getRequestDetails({requestRow, isManager: false}));
+
+            const exportRequests = requestRow.requests.map(ri =>  {
+                    return {
+                        description: ri.description,
+                        resultInstanceId: ri.resultInstanceId
+                    }
+                }
+            );
+            dispatch(getRequestStatusLog({exportRequests}));
         }
     }, [requestRow]);
 
@@ -57,15 +70,18 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
                                 </Typography>
                                 <Card className={"RequestDetailActionContent"}>
                                     <Grid container spacing={2}>
-                                        <Grid size={6}>
+                                        <Grid size={5}>
                                             { details.status === RequestStatus.statuses.SUBMITTED && <Button variant="contained" color="error">Withdraw Request</Button>}
                                         </Grid>
-                                        <Grid size={6}>
+                                        <Grid size={7}>
                                             <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
-                                            <RequestStatusLogView statusLogs={details.statusLogs}/>
+                                            <RequestStatusLogView requestStatusLog={statusLogs}/>
                                         </Grid>
                                     </Grid>
                                 </Card>
+                            </div>
+                            <div className={"RequestComments"}>
+                                <RequestCommentsView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId} username={username}/>
                             </div>
                         </div>
                     </div>

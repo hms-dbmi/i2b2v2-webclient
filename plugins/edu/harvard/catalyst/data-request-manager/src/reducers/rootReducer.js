@@ -2,8 +2,9 @@ import listRequestTableReducer from './requestTableSlice';
 import i2b2LibLoadedReducer from './i2b2LibLoadedSlice';
 import requestDetailsReducer from './requestDetailsSlice';
 import userInfoReducer from "./userInfoSlice";
-import adminNotesReducer from "./adminNotesSlice";
 import tableDefReducer from "./tableDefSlice";
+import requestStatusLogReducer from "./requestStatusLogSlice";
+import requestCommentsReducer from "./requestCommentsSlice";
 import configInfoReducer from "./configInfoSlice";
 
 const rootReducers = {
@@ -12,9 +13,10 @@ const rootReducers = {
     requestDetails: requestDetailsReducer,
     userInfo: userInfoReducer,
     isI2b2LibLoaded: i2b2LibLoadedReducer,
-    adminNotes: adminNotesReducer,
+    requestComments: requestCommentsReducer,
     configInfo: configInfoReducer,
     tableDef: tableDefReducer,
+    requestStatusLog: requestStatusLogReducer,
 };
 
 export default rootReducers;

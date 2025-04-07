@@ -13,7 +13,7 @@
     padding: 0.4em 0.8em;
   }
 
-  .RequestDetail, .RequestAction {
+  .RequestDetail, .RequestAction, .RequestComments {
     margin-bottom: 0.4em;
     padding: 0.2em;
   }
@@ -24,13 +24,9 @@
     font-weight: bold;
   }
 
-  .RequestDetailContent,.RequestDetailActionContent, .RequestDetailNotesContent {
+  .RequestDetailContent,.RequestDetailActionContent {
     margin-top: 0.4em;
     background-color: rgba(246, 245, 245, 0.8);
-  }
-
-  .RequestDetailNotesContent {
-    padding: 1.2em;
   }
 
   .RequestDetailContent {
@@ -42,7 +38,7 @@
   }
 
   .DataRequestType{
-    max-height: 6em;
+    max-height: 6.5em;
     overflow-y: auto;
     border: 1px solid #d0cccc;
     border-radius: 5px;
