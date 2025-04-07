@@ -145,8 +145,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
 
         let newUser = newRows.filter((row) => row.username === newRow.username).reduce((acc, item) => acc);
 
-        let user = selectedProject.users.filter((user) => user.username === newUser.username);
-
         dispatch(saveProjectUser({user: newUser, selectedProject}));
 
         return newRow;
@@ -206,7 +204,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
     };
 
     const confirmDelete = (username) => () => {
-        let param = rows.filter((row) => row.username === username).reduce((acc, item) => acc);
         setDeleteUsername(username);
         setDeleteUserConfirmMsg("Are you sure you want to remove user " + username + "?");
         setShowDeleteUserConfirm(true);
@@ -256,7 +253,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
 
     useEffect(() => {
         if(selectedProject.userStatus.status === "SAVE_SUCCESS"){
-            //dispatch(saveProjectUserStatusConfirmed());
             setSaveStatusMsg("Saved user " + selectedProject.userStatus.username + " to project");
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");
