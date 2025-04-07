@@ -55,6 +55,16 @@ const parseUserRolesXml = (xml) => {
                     }
                 }
             }
+
+            //assume user is a USER if not admin role is missing
+            if(userRolesMap[username].adminRole === undefined){
+                userRolesMap[username].adminRole = ADMIN_ROLES.USER;
+            }
+
+            //assume user is obfuscated if not data role is missing
+            if(userRolesMap[username].dataRole === undefined){
+                userRolesMap[username].dataRole = DATA_ROLES.DATA_OBFSC;
+            }
         }
     });
 
