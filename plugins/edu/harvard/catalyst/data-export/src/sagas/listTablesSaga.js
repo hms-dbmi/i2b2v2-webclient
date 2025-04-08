@@ -16,7 +16,8 @@ const getAllTablesListRequest = () => {
 
 const parseAllTablesListXml = (tablesListXml) => {
     let tablesObj = {
-        sharedRows: [],
+        globalRows: [],
+        projectRows: [],
         userRows: []
     };
 
@@ -43,8 +44,18 @@ const parseAllTablesListXml = (tablesListXml) => {
             } else {
                 visible = false;
             }
-            if(shared){
-                tablesObj.sharedRows.push({
+            if(creator_id === '@'){
+                tablesObj.globalRows.push({
+                    id,
+                    title,
+                    creator_id,
+                    create_date,
+                    column_count,
+                    visible
+                });
+            }
+            else if(shared){
+                tablesObj.projectRows.push({
                     id,
                     title,
                     creator_id,

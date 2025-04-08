@@ -16,8 +16,9 @@ import {Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} fr
 
 export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
     const dispatch = useDispatch();
-    const { sharedRows, userRows, statusInfo, isFetching, isDeleting, deleteStatusInfo, renameStatusInfo} = useSelector((state) => state.tableListing);
-    const [tab, setTab] = React.useState(1);
+    const { globalRows, projectRows, userRows, statusInfo,
+        isFetching, isDeleting, deleteStatusInfo, renameStatusInfo} = useSelector((state) => state.tableListing);
+    const [tab, setTab] = React.useState(2);
     const [selectedTable, setSelectedTable] = useState(null);
     const { isAdmin } = useSelector((state) => state.userInfo);
 
@@ -87,8 +88,9 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         aria-label="Table Definition Folders"
                         sx={{ borderRight: 1, borderColor: 'divider' }}
                     >
-                        <Tab label="Shared Tables" {...addtlProps(0)} />
-                        <Tab label="My Tables" {...addtlProps(1)} />
+                        <Tab label="System Shared Tables" {...addtlProps(0)} />
+                        <Tab label="Project Shared Tables" {...addtlProps(1)} />
+                        <Tab label="My Tables" {...addtlProps(2)} />
                     </Tabs>
                     <TabPanel
                         value={tab}
@@ -96,7 +98,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         className={'modalTabPanel'}
                     >
                         <TableListing id={"loadModalDefTableGlobal"}
-                                      rows={sharedRows}
+                                      rows={globalRows}
                                       canRename={isAdmin}
                                       onSelect={setSelectedTable}
                                       hasError={statusInfo.status==='FAIL'}
@@ -114,8 +116,28 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         index={1}
                         className={'modalTabPanel'}
                     >
+                        <TableListing id={"loadModalDefTableProject"}
+                                      rows={projectRows}
+                                      canRename={true}
+                                      onSelect={setSelectedTable}
+                                      hasError={statusInfo.status==='FAIL'}
+                                      isLoading={isFetching || isDeleting}
+                                      onDelete={(id) => onDeleteTable(id, true)}
+                                      deleteFailed={deleteStatusInfo.status === 'FAIL'}
+                                      onDeleteAlertClose={confirmDeleteStatus}
+                                      onRename={updateTableDefinitionTitle}
+                                      renameFailed={renameStatusInfo.status === 'FAIL'}
+                                      onRenameAlertClose={confirmRenameStatus}
+                        />
+                    </TabPanel>
+                    <TabPanel
+                        value={tab}
+                        index={2}
+                        className={'modalTabPanel'}
+                    >
                         <TableListing id={"loadModalDefTableLocal"}
-                                      rows={userRows} canRename={true}
+                                      rows={userRows}
+                                      canRename={true}
                                       onSelect={setSelectedTable}  isLoading={isFetching || isDeleting}
                                       hasError={statusInfo.status==='FAIL'}
                                       onDelete={(id) => onDeleteTable(id, false)}
