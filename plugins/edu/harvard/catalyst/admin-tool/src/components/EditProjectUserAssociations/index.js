@@ -67,7 +67,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
                 return params.row.adminPath.name;
             },
             valueSetter: (params) => {
-                console.log("admin Value setter input " + JSON.stringify(params));
                 const adminPath = ADMIN_ROLES[params.value];
 
                 return { ...params.row, adminPath };
@@ -145,7 +144,7 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
 
         let newUser = newRows.filter((row) => row.username === newRow.username).reduce((acc, item) => acc);
 
-        dispatch(saveProjectUser({user: newUser, selectedProject}));
+        dispatch(saveProjectUser({user: newUser, selectedProject, isNew: false}));
 
         return newRow;
     };
@@ -226,7 +225,7 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
             dataPath: DATA_ROLES.DATA_OBFSC
         });
 
-        dispatch(saveProjectUser({user: newUser, selectedProject, previousRoles: []}));
+        dispatch(saveProjectUser({user: newUser, selectedProject, isNew: true}));
     };
 
     const defaultProps = {
