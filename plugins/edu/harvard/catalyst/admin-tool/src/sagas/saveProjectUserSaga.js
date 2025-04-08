@@ -31,7 +31,7 @@ const deleteProjectUserRoleRequest = (projectId, username, role) => {
 };
 
 export function* doSaveProjectUser(action) {
-    const { user, selectedProject } = action.payload;
+    const { user, selectedProject, isNew } = action.payload;
 
     console.log("saving user " + user.username + " in project " + selectedProject.project.name + "...");
     try {
@@ -44,12 +44,17 @@ export function* doSaveProjectUser(action) {
         }
 
         //delete current user roles
-        let deletedProjectUserRoleResponse = yield all(rolesToDelete.map((role) => {
-            return call(deleteProjectUserRoleRequest, selectedProject.project.internalId, user.username, role);
-        }));
+        let deletedProjectUserRoleResponse = [];
+        if(!isNew) {
+            deletedProjectUserRoleResponse = yield all(rolesToDelete.map((role) => {
+                return call(deleteProjectUserRoleRequest, selectedProject.project.internalId, user.username, role);
+            }));
+        }
 
         const deletedProjectUserRolesResults = deletedProjectUserRoleResponse.filter(result => result.msgType === "AJAX_ERROR");
-        if(deletedProjectUserRolesResults.length === 0){
+        console.log("deleted project length " + deletedProjectUserRolesResults.length);
+
+        if(isNew || deletedProjectUserRolesResults.length !== 0){
             const projectUserRoleResponse = yield all(rolesToSave.map((role) => {
                 return call(saveProjectUserRoleRequest, selectedProject.project.internalId, user.username, role);
             }));
