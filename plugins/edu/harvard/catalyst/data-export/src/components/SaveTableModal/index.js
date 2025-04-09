@@ -27,9 +27,10 @@ export const SaveTableModal = ({open, handleClose}) => {
     const {rows: tableDefRows} = useSelector((state) => state.tableDef);
     const { username, isAdmin } = useSelector((state) => state.userInfo);
     const [selectedRows, setSelectedRows] = React.useState([]);
-    const [enteredTitle, setEnteredTitle] = React.useState("My-Table-Definition");
+    const [enteredTitle, setEnteredTitle] = React.useState("");
     const [showOverwrite, setShowOverwrite] = React.useState(false);
     const [isNameInvalid, setIsNameInvalid] = React.useState(false);
+    const [enableSave, setEnableSave] = React.useState(false);
     const [isShared, setIsShared] = React.useState(false);
     const [tab, setTab] = React.useState(1);
 
@@ -70,11 +71,9 @@ export const SaveTableModal = ({open, handleClose}) => {
         selectIfNameExists(title);
         setEnteredTitle(title);
 
-        if(title?.length > 0) {
-            setIsNameInvalid(false);
-        }else{
-            setIsNameInvalid(true);
-        }
+        const isValidName = title?.length > 0;
+        setIsNameInvalid(!isValidName);
+        setEnableSave(isValidName);
     }
 
     const onSave = (selectedRows) =>{
@@ -87,7 +86,10 @@ export const SaveTableModal = ({open, handleClose}) => {
 
     const doSave = () => {
         const saveAllowed = !(isShared && !isAdmin);
-        if (saveAllowed) {
+        const isValidName = selectedTableDef.title?.length > 0;
+        setIsNameInvalid(!isValidName);
+
+        if (saveAllowed && isValidName) {
             dispatch(saveTable({
                     tableDefRows,
                     creator_id: username,
@@ -96,9 +98,9 @@ export const SaveTableModal = ({open, handleClose}) => {
                     shared: isShared
                 })
             );
+            handleClose();
         }
         setShowOverwrite(false);
-        handleClose();
     }
 
     const handleConfirmStatus = () => {
@@ -152,6 +154,11 @@ export const SaveTableModal = ({open, handleClose}) => {
 
     useEffect(() => {
         if (open) {
+            setEnableSave(false);
+            setIsNameInvalid(false);
+            setEnteredTitle("");
+            setSelectedTableDef({});
+
             dispatch(listTables());
         }
     }, [open]);
@@ -254,7 +261,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                     sx={{float: "left", width:"60%", position:"absolute", left:32}}
                 />
                 <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-                <Button variant="contained" onClick={()=>onSave(selectedRows)} disabled={isNameInvalid || statusInfo.status === "FAIL"}>Save</Button>
+                <Button variant="contained" onClick={()=>onSave(selectedRows)} disabled={!enableSave}>Save</Button>
             </DialogActions>
         </Dialog>
         <Dialog
