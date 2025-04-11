@@ -7,6 +7,7 @@ import XMLParser from "react-xml-parser";
 import {UPDATE_REQUEST_STATUS} from "../actions";
 import {RequestStatus} from "../models";
 import {updateRequestRowStatus} from "../reducers/requestTableSlice";
+import {getRequestStatusLog} from "../reducers/requestStatusLogSlice";
 
 
 const updateRequestStatusRequest = (queryInstanceId, status, username) => {
@@ -19,7 +20,7 @@ const updateRequestStatusRequest = (queryInstanceId, status, username) => {
 };
 
 export function* doUpdateRequestStatus(action) {
-    const {queryInstanceId, status, username } = action.payload;
+    const {queryInstanceId, status, username, requests } = action.payload;
 
     try {
         const statusName = RequestStatus._lookupStatusKey(status);
@@ -27,6 +28,14 @@ export function* doUpdateRequestStatus(action) {
         if (!response.error) {
             yield put(updateRequestStatusSuccess({status}));
             yield put(updateRequestRowStatus({queryInstanceId, status}));
+
+            const exportRequests = requests.map(ri =>  {
+                return {
+                    description: ri.description,
+                    resultInstanceId: ri.resultInstanceId
+                }
+            });
+            yield put(getRequestStatusLog({exportRequests}));
         } else {
             yield put(updateRequestStatusError({errorMessage: "There was an error updating the request status."}));
         }

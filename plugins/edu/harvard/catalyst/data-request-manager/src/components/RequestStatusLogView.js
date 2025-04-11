@@ -89,24 +89,16 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
 
     const getLatestRequestStatusLog = (statusLogs) => {
         const recentStatusLogList = statusLogs.map(requestLog => {
-            const logItemsSorted = requestLog.logItems.sort((a, b) => {
-                if(a.date === b.date){
-                    return a.order > b.order;
-                }
-                else {
-                    return a.date > b.date;
-                }
-            });
-
+            const logItems = requestLog.logItems;
             let requestStatusLog = {
                 description: requestLog.description,
                 date: '',
                 status: '',
-                logItems:  requestLog.logItems
+                logItems: logItems
             }
-            if(logItemsSorted.length > 0){
-                requestStatusLog.date = logItemsSorted[0].date;
-                requestStatusLog.status = logItemsSorted[0].status;
+            if(logItems.length > 0){
+               requestStatusLog.date = logItems[logItems.length-1].date;
+                requestStatusLog.status = logItems[logItems.length-1].status;
             }
 
             return requestStatusLog;

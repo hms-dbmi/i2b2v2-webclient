@@ -56,11 +56,11 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
 
     const handleGenerateFile = () =>{
         setConfirmFileGen(false);
-        dispatch(generateDataFile({requestId: requestRow.id}));
+        dispatch(generateDataFile({queryInstanceId: requestRow.queryInstanceId}));
     }
 
     const handleUpdateStatus = () => {
-        dispatch(updateRequestStatus({queryInstanceId: requestRow.queryInstanceId, status: requestStatus, username}));
+        dispatch(updateRequestStatus({queryInstanceId: requestRow.queryInstanceId, status: requestStatus, username, requests: requestRow.requests}));
     }
 
     const canSelectRequestStatus = (rStatus) => {
