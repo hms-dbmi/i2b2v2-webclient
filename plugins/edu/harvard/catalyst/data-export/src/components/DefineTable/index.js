@@ -91,7 +91,7 @@ export const DefineTable = (props) => {
             renderEditCell: (params) => (
                 <GridEditInputCell
                     {...params}
-                    inputProps={{ maxLength: 2000 }}
+                    inputProps={{ maxLength: 200 }}
                 />
             ),
             valueSetter: (value, row) => {
@@ -532,7 +532,7 @@ export const DefineTable = (props) => {
             // Ignore portal
             if (event.target.nodeType === 1 && !event.currentTarget.contains(event.target)) return;
 
-            if (params !== undefined) {
+            if (params) {
                 if (params.field === "dataOption" && params.row.required === true) {
                     event.preventDefault();
                     return;
@@ -592,7 +592,7 @@ export const DefineTable = (props) => {
         [],
     );
 
-    const checkEmptyName = (temp) => {
+    const checkValidName = (temp) => {
         if (temp.field === "name") {
             if (temp.value.trim().length === 0) {
                 return 'missing';
@@ -613,6 +613,7 @@ export const DefineTable = (props) => {
 
         return truncatedStr;
     }
+
     return (
         <div className={"DefineTable"} >
             <DateModal
@@ -652,7 +653,7 @@ export const DefineTable = (props) => {
                     autoHeight={true}
                     hideFooter={true}
                     isCellEditable={({row, colDef}) => (!row.locked && !(row.required && colDef.field === "dataOption"))}
-                    getCellClassName={checkEmptyName}
+                    getCellClassName={checkValidName}
                 />
             </div>
 
