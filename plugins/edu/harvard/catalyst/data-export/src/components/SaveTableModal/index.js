@@ -51,6 +51,10 @@ export const SaveTableModal = ({open, handleClose}) => {
         setSelectedTableDef({id: row.id, title: row.title});
         setSelectedRows([row.id]);
         setEnteredTitle(row.title);
+
+        const isValidName = row.title?.length > 0;
+        setIsNameInvalid(!isValidName);
+        setEnableSave(isValidName);
     }
 
     const selectIfNameExists = (title) =>{
