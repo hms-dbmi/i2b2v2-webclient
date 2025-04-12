@@ -52,7 +52,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         setSelectedRows([row.id]);
         setEnteredTitle(row.title);
 
-        checkIsValidName(row.title);
+        handleInValidName(row.title);
     }
 
     const selectIfNameExists = (title) =>{
@@ -73,7 +73,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         selectIfNameExists(title);
         setEnteredTitle(title);
 
-        checkIsValidName(title);
+        handleInValidName(title);
     }
 
     const onSave = (selectedRows) =>{
@@ -84,7 +84,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         }
     }
 
-    const checkIsValidName = (title) => {
+    const handleInValidName = (title) => {
         const isValidName = title !== undefined && title.length > 0 && title.length <= 200;
         setIsNameInvalid(!isValidName);
         setEnableSave(isValidName);
@@ -93,7 +93,7 @@ export const SaveTableModal = ({open, handleClose}) => {
     const doSave = () => {
         const saveAllowed = !(isShared && !isAdmin);
 
-        if (saveAllowed && checkIsValidName(selectedTableDef.title)) {
+        if (saveAllowed) {
             dispatch(saveTable({
                     tableDefRows,
                     creator_id: username,
