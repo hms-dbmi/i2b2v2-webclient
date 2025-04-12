@@ -48,7 +48,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
 
     const handleCancelRequest = () => {
         setConfirmWithdrawRequest(false);
-        dispatch(updateRequestStatus({queryInstanceId: requestRow.queryInstanceId, status: RequestStatus.statuses.CANCELLED, username}));
+        dispatch(updateRequestStatus({queryInstanceId: requestRow.queryInstanceId, status: RequestStatus.statuses.CANCELLED, username, requests: requestRow.requests}));
     }
 
     return (

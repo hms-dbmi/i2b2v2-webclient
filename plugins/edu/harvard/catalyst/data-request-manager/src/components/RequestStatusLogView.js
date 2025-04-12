@@ -163,7 +163,7 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                                 key={row.status}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell className={"descriptionColumn"} component="td" scope="row" title={row.description}>
+                                <TableCell className={"descriptionColumn mainNoBorder"} component="td" scope="row" title={row.description}>
 
                                     <div className={"descriptionColumnLabel"}>
                                         <IconButton  aria-label="expand" onClick={() => updateExpandList(row.description)}>
@@ -186,12 +186,12 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                                             key={logItem.status}
                                             sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                         >
-                                            <TableCell component="th" scope="row">
+                                            <TableCell component="td" scope="row" className={"noborder"}>
                                             </TableCell>
-                                            <TableCell align="left">
+                                            <TableCell align="left" scope="row">
                                                 {logItem.date.toLocaleDateString()}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell component="td" scope="row">
                                                 {logItem.status.name}
                                             </TableCell>
                                         </TableRow>
