@@ -56,7 +56,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
         <Box className={"ResearcherDetailView"}>
             {details.isFetching &&
                 <div className={"LoadingProgress"}>
-Fix                    <CircularProgress className="LoadingProgressIcon" size="5rem"/>
+                    <CircularProgress className="LoadingProgressIcon" size="5rem"/>
                     <Typography className={"ProgressLabel"}>Loading Details...</Typography>
                 </div>
             }

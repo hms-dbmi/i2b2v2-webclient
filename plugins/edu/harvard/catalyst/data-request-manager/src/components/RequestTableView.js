@@ -27,6 +27,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             headerName: 'Request ID',
             headerClassName: "header",
             sortable: true,
+            type: 'number',
             resizable: false,
             disableReorder: true,
             flex: 1
