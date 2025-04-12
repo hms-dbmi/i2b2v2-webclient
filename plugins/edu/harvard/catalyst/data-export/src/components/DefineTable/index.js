@@ -18,7 +18,6 @@ import LockIcon from '@mui/icons-material/Lock';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import CircularProgress from '@mui/material/CircularProgress';
 import {useDispatch, useSelector} from "react-redux";
-import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
 import {
     Dialog,
@@ -43,12 +42,12 @@ import {
     handleRowName,
     handleRowSdx,
     loadStatusConfirmed,
-    loadTermInfo, loadTable
+    loadTermInfo,
 } from "../../reducers/tableDefSlice";
 
-import {getUserInfo} from "../../reducers/userInfoSlice";
 
 import "./DefineTable.scss";
+import {DEFAULT_TABLE_TITLE} from "../../sagas/loadTableSaga";
 
 /* global i2b2 */
 
@@ -57,7 +56,7 @@ let currentDateRow = false;
 export const DefineTable = (props) => {
     const dispatch = useDispatch();
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
-    const { rows, statusInfo, labValueToDisplay} = useSelector((state) => state.tableDef);
+    const { rows, statusInfo, labValueToDisplay, title} = useSelector((state) => state.tableDef);
     const [cellModesModel, setCellModesModel] = React.useState({});
     const doDispSnackbar = props.dispSnackbar;
     const totalRows = React.useRef();
@@ -92,7 +91,7 @@ export const DefineTable = (props) => {
             renderEditCell: (params) => (
                 <GridEditInputCell
                     {...params}
-                    inputProps={{ maxLength: 2000 }}
+                    inputProps={{ maxLength: 200 }}
                 />
             ),
             valueSetter: (value, row) => {
@@ -514,18 +513,10 @@ export const DefineTable = (props) => {
         dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: false, displayLabValue: true}));
     };
 
-    const i2b2LibLoaded = () => {
-        dispatch(updateI2b2LibLoaded());
-    }
-
     useEffect(() => {
         if (isI2b2LibLoaded && i2b2.sdx !== undefined) {
             i2b2.sdx.AttachType("dropTrgt", "CONCPT");
             i2b2.sdx.setHandlerCustom("dropTrgt", "CONCPT", "DropHandler", conceptDropHandler);
-            dispatch(getUserInfo({}));
-            dispatch(loadTable({}));
-        } else {
-            window.addEventListener('I2B2_READY', i2b2LibLoaded);
         }
     }, [isI2b2LibLoaded]);
 
@@ -541,7 +532,7 @@ export const DefineTable = (props) => {
             // Ignore portal
             if (event.target.nodeType === 1 && !event.currentTarget.contains(event.target)) return;
 
-            if (params !== undefined) {
+            if (params) {
                 if (params.field === "dataOption" && params.row.required === true) {
                     event.preventDefault();
                     return;
@@ -601,7 +592,7 @@ export const DefineTable = (props) => {
         [],
     );
 
-    const checkEmptyName = (temp) => {
+    const checkValidName = (temp) => {
         if (temp.field === "name") {
             if (temp.value.trim().length === 0) {
                 return 'missing';
@@ -612,6 +603,16 @@ export const DefineTable = (props) => {
     const handleConfirmStatus = () => {
         dispatch(loadStatusConfirmed());
     };
+
+    const truncateStr = (str) => {
+        const maxLength = 60;
+        let truncatedStr = str;
+        if(str.length > maxLength){
+            truncatedStr = truncatedStr.slice(0, maxLength) + "...";
+        }
+
+        return truncatedStr;
+    }
 
     return (
         <div className={"DefineTable"} >
@@ -624,7 +625,7 @@ export const DefineTable = (props) => {
                 setEndDate={setEndDate}
                 saveUpdate={handleDateSave}
             />
-
+            {title && title !== DEFAULT_TABLE_TITLE &&  <div title={title} className={"editingFile"}>editing: <b>{truncateStr(title)}</b></div> }
             <div id="dropTrgt">
                 <p>Drag a concept onto the grid to add it to the list</p>
                 <DataGrid
@@ -652,7 +653,7 @@ export const DefineTable = (props) => {
                     autoHeight={true}
                     hideFooter={true}
                     isCellEditable={({row, colDef}) => (!row.locked && !(row.required && colDef.field === "dataOption"))}
-                    getCellClassName={checkEmptyName}
+                    getCellClassName={checkValidName}
                 />
             </div>
 

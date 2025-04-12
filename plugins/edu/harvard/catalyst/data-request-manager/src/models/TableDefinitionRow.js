@@ -19,9 +19,11 @@ TableDefinitionRow.propTypes = {
     dataOption: PropTypes.string,
 };
 
+
 export const DATA_OPTION_LOOKUP = {
     "VALUE" : "Value",
     "Exists" : "Existence (Yes/No)",
+    "NumConcepts" : "Count: Number of Concepts",
     "NumDates" : "Count: Number of Dates",
     "NumEncounters" : "Count: Number of Encounters",
     "NumFacts" : "Count: Number of Facts",

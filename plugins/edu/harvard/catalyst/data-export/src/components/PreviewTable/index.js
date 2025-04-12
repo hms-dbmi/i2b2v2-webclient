@@ -4,7 +4,6 @@ import {DataGrid} from "@mui/x-data-grid";
 import "./PreviewTable.scss";
 import Stack from "@mui/material/Stack";
 import Typography from '@mui/material/Typography';
-import Button from "@mui/material/Button";
 
 
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';

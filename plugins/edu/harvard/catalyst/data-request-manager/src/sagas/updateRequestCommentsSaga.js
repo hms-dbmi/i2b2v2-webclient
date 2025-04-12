@@ -18,31 +18,19 @@ const updateRequestCommentsRequest = (queryInstanceId, comments, username) => {
     return i2b2.ajax.CRC.updateQueryInstanceMessage(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
 };
 
-const parseRequestCommentsXml = (exportRequestListXml) => {
-    let message= "";
-
-    let queryInstance = exportRequestListXml.getElementsByTagName('query_instance');
-
-    if (queryInstance.length > 0 ) {
-        let queryInstanceMessage = queryInstance[0].getElementsByTagName('message');
-        message = queryInstanceMessage.length > 0 ? queryInstanceMessage[0].value: "";
-    }
-
-    return message;
-}
 export function* doUpdateRequestComments(action) {
     const {queryInstanceId, username, comments } = action.payload;
 
     try {
         const response = yield call(updateRequestCommentsRequest, queryInstanceId, comments, username);
         if (!response.error) {
-            const responseComments = parseRequestCommentsXml(response);
-            yield put(updateRequestCommentsSuccess({responseComments}));
+            yield put(updateRequestCommentsSuccess({comments}));
         } else {
             yield put(updateRequestCommentsError({errorMessage: "There was an error updating comments"}));
         }
     } catch (error) {
         yield put(updateRequestCommentsError({errorMessage: "There was an error updating comments"}));
+        console.error("There was an error updating comments. Error: " + error);
     }
 }
 

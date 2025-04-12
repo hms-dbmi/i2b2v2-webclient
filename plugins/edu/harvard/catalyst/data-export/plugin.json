@@ -1,6 +1,6 @@
 {
-  "title": "Data Export",
-  "description": "This plugin allows for defining and requesting an export of data",
+  "title": "Create data table for export",
+  "description": "This plugin allows for defining the export of a data table",
   "category": ["export"],
   "icons": { "size32x32": "export-icon.png" },
   "assetDir": "build",
@@ -15,7 +15,7 @@
       "i2b2.PM.model.login_password": "R",
       "i2b2.PM.model.login_username": "R",
       "i2b2.PM.model.login_project": "R",
-      "i2b2.PM.model.admin_only": "R"
+      "i2b2.PM.model.isAdmin": "R"
     },
     "functions": [
       "i2b2.CRC.view.QT.labValue.showLabValues"

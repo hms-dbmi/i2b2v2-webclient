@@ -64,3 +64,16 @@
 #crcModal .qtResultTypeHeader {
     padding: 0.6em 0.9em;
 }
+
+#crcModal .dataRequestMetadata {
+    border: 1px solid #e9ebee;
+    padding: 0.6em;
+    margin-bottom: 1.1em;
+    background-color: #f1f2f5;
+}
+
+#emailErrorMsg{
+    margin-top: 0.3em;
+    display: none;
+}
+

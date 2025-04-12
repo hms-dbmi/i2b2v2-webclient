@@ -6,7 +6,7 @@ import {
     saveProjectUserFailed,
     saveProjectUserSucceeded,
 } from "actions";
-import {EDITOR_ROLE} from "../models";
+import {ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE} from "../models";
 
 const saveProjectUserRoleRequest = (projectId, username, role) => {
 
@@ -31,28 +31,31 @@ const deleteProjectUserRoleRequest = (projectId, username, role) => {
 };
 
 export function* doSaveProjectUser(action) {
-    const { selectedProject, user, previousRoles } = action.payload;
+    const { user, selectedProject, isNew } = action.payload;
 
     console.log("saving user " + user.username + " in project " + selectedProject.project.name + "...");
     try {
         let rolesToSave = [user.adminPath.name, user.dataPath.name];
-        if(user.editorPath){
+        let rolesToDelete = [ADMIN_ROLES.USER.name, DATA_ROLES.DATA_OBFSC.name];
+        if(user.editorPath === "true"){
             rolesToSave.push(EDITOR_ROLE);
+        }else{
+            rolesToDelete.push(EDITOR_ROLE);
         }
-        const filterRolesToSave = rolesToSave.filter((role) => !previousRoles.includes(role));
-
-        const filteredPreviousRoles = previousRoles.filter((role) => !rolesToSave.includes(role));
 
         //delete current user roles
-        let deletedProjectUserRoleResponse="";
-        if(filteredPreviousRoles) {
-            deletedProjectUserRoleResponse = yield all(filteredPreviousRoles.map((role) => {
+        let deletedProjectUserRoleResponse = [];
+        if(!isNew) {
+            deletedProjectUserRoleResponse = yield all(rolesToDelete.map((role) => {
                 return call(deleteProjectUserRoleRequest, selectedProject.project.internalId, user.username, role);
             }));
         }
+
         const deletedProjectUserRolesResults = deletedProjectUserRoleResponse.filter(result => result.msgType === "AJAX_ERROR");
-        if(deletedProjectUserRolesResults.length === 0){
-            const projectUserRoleResponse = yield all(filterRolesToSave.map((role) => {
+        console.log("deleted project length " + deletedProjectUserRolesResults.length);
+
+        if(isNew || deletedProjectUserRolesResults.length !== 0){
+            const projectUserRoleResponse = yield all(rolesToSave.map((role) => {
                 return call(saveProjectUserRoleRequest, selectedProject.project.internalId, user.username, role);
             }));
 

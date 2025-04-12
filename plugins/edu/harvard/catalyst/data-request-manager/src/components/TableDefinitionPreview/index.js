@@ -86,19 +86,19 @@ export const TableDefinitionPreview = ({tableDefinition, open, onClose}) => {
                                         txtLab = "Between " + labData.ValueLow + " - " + labData.ValueHigh;
                                         break;
                                     case "GT":
-                                        txtLab = ">" + labData.Value;
+                                        txtLab = "> " + labData.Value;
                                         break;
                                     case "GE":
                                         txtLab = "≥" + labData.Value;
                                         break;
                                     case "LE":
-                                        txtLab = "≤" + labData.Value;
+                                        txtLab = "≤ " + labData.Value;
                                         break;
                                     case "LT":
-                                        txtLab = "<" + labData.Value;
+                                        txtLab = "< " + labData.Value;
                                         break;
                                     case "EQ":
-                                        txtLab = "=" + labData.Value;
+                                        txtLab = "= " + labData.Value;
                                         break;
                                     default:
                                         txtLab = "UNKNOWN";
@@ -109,11 +109,10 @@ export const TableDefinitionPreview = ({tableDefinition, open, onClose}) => {
                                 break;
                         }
                         let dateInfo = func_getDateTxt(cellValues.row.sdxData);
-                        return dateInfo.txt ? (<span><span title={txtMouseover}>{txtLab}</span> |
-                            <span title={dateInfo.mouse}>{dateInfo.txt}</span></span>) : <span title={txtMouseover}>{txtLab}</span>;
+                        return dateInfo.txt ? (<div className={"Constraints"} title={txtMouseover + '|' + dateInfo.mouse}><span>{txtLab}</span> | <span>{dateInfo.txt}</span></div>) : <div className={"Constraints"} title={txtMouseover}>{txtLab}</div>;
                     } else {
-                        let dateInfo = func_getDateTxt(cellValues.row.sdxData);
-                        return (<span>{dateInfo.txt}</span>);
+                        const dateInfo = func_getDateTxt(cellValues.row.sdxData);
+                        return (<div className={"Constraints"} title={dateInfo.txt}>{dateInfo.txt}</div>);
                     }
                 }
             }
@@ -135,6 +134,12 @@ export const TableDefinitionPreview = ({tableDefinition, open, onClose}) => {
         aria-describedby="tabledefinitionpreview-dialog-description"
         fullWidth={true}
         maxWidth={'xl'}
+        PaperProps={{
+            sx: {
+                minHeight: '80%',
+                maxHeight: '80%'
+            }
+        }}
     >
         <DialogTitle id="tabledefinitionpreview-dialog-title">
             Table Definition: <span className={"TableDefinitionPreviewTitle"}>{tableDefinition.title}</span>

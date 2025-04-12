@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { REQUEST_DETAILS } from "../actions";
 import { defaultState } from '../defaultState';
 import {
+    RequestStatus,
     ResearcherRequestDetails,
     StatusInfo, AdminRequestDetails
 } from "../models";
@@ -11,6 +12,7 @@ export const requestDetailsSlice = createSlice({
     initialState: defaultState.requestDetails,
     reducers: {
         getRequestDetails: state => {
+            state.details = ResearcherRequestDetails();
             state.details.isFetching = true;
             state.details.statusInfo = StatusInfo();
         },
@@ -43,13 +45,13 @@ export const requestDetailsSlice = createSlice({
                 });
             }
             state.details = details;
-            state.details.isFetching = false;
+            //state.details.isFetching = false;
             state.details.statusInfo = StatusInfo({
                 status: "SUCCESS"
             });
         },
         getRequestDetailsError: (state, { payload: { errorMessage} }) => {
-            state.details.isFetching = false;
+            //state.details.isFetching = false;
             state.details.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage

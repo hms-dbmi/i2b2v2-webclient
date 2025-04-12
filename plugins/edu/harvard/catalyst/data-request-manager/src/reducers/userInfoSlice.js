@@ -15,6 +15,7 @@ export const userInfoSlice = createSlice({
         getUserInfoSuccess: (state, { payload: userInfo }) => {
             state.username = userInfo.username;
             state.isManager = userInfo.isManager;
+            state.isObfuscated = userInfo.isObfuscated;
             state.isFetching = false;
             state.statusInfo = StatusInfo({
                 status: "SUCCESS"

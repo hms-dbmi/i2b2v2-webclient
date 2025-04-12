@@ -73,6 +73,26 @@ export const tableListingSlice = createSlice({
         confirmDeleteTableStatus: state => {
             state.deleteStatusInfo = StatusInfo();
         },
+        renameTable: state => {
+            state.isRenaming = true;
+            state.renameStatusInfo = StatusInfo();
+        },
+        renameTableSuccess: (state) => {
+            state.isRenaming = false;
+            state.renameStatusInfo = StatusInfo({
+                status: "SUCCESS"
+            });
+        },
+        renameTableError: (state, { payload: { errorMessage } }) => {
+            state.isRenaming= false;
+            state.renameStatusInfo = StatusInfo({
+                status: "FAIL",
+                errorMessage: errorMessage
+            });
+        },
+        confirmRenameTableStatus: state => {
+            state.renameStatusInfo = StatusInfo();
+        },
     }
 })
 
@@ -83,7 +103,11 @@ export const {
     deleteTable,
     deleteTableSuccess,
     deleteTableError,
-    confirmDeleteTableStatus
+    confirmDeleteTableStatus,
+    renameTable,
+    renameTableSuccess,
+    renameTableError,
+    confirmRenameTableStatus,
 } = tableListingSlice.actions
 
 export default tableListingSlice.reducer

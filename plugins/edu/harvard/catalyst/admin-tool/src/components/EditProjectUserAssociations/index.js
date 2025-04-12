@@ -1,7 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import {DataType, ADMIN_ROLES, DATA_ROLES, ProjectUser} from "models";
+import {ADMIN_ROLES, DATA_ROLES, ProjectUser} from "models";
 import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes} from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
@@ -12,14 +11,12 @@ import Snackbar from "@mui/material/Snackbar";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { createFilterOptions } from '@mui/material/Autocomplete';
 import {
-    saveUserParam, saveUserParamStatusConfirmed,
-    deleteUserParamStatusConfirmed, saveProjectUser,
+    saveProjectUser,
     saveProjectUserStatusConfirmed,
     deleteProjectUser,
     deleteProjectUserStatusConfirmed, deleteUser
@@ -36,10 +33,10 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
     const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
-    const[isEditingUser, setIsEditingUser] = useState(false);
-    const[selectedUser, setSelectedUser] = useState(null);
-    const[userFound, setUserFound] = useState(false);
-    const[searchedUsername, setSearchedUsername] = useState({username:""});
+    const [isEditingUser, setIsEditingUser] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [userFound, setUserFound] = useState(false);
+    const [searchedUsername, setSearchedUsername] = useState({username:""});
     const [showDeleteUserConfirm, setShowDeleteUserConfirm] = useState(false);
     const [deleteUserConfirmMsg, setDeleteUserConfirmMsg] = useState("");
     const [deleteUsername, setDeleteUsername] = useState("");
@@ -61,11 +58,19 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
             type: 'singleSelect',
             valueOptions: [{
                 label: 'Manager',
-                value: ADMIN_ROLES.MANAGER
+                value: ADMIN_ROLES.MANAGER.name
             }, {
                 label: 'User',
-                value: ADMIN_ROLES.USER
-            }]
+                value: ADMIN_ROLES.USER.name
+            }],
+            valueGetter: (params) => {
+                return params.row.adminPath.name;
+            },
+            valueSetter: (params) => {
+                const adminPath = ADMIN_ROLES[params.value];
+
+                return { ...params.row, adminPath };
+            },
         },
         {
             field: 'dataPath',
@@ -76,25 +81,33 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
             type: 'singleSelect',
             valueOptions: [{
                 label: 'Protected',
-                value: DATA_ROLES.DATA_PROT
+                value: DATA_ROLES.DATA_PROT.name
             }, {
                 label: 'De-identified Data',
-                value: DATA_ROLES.DATA_DEID
+                value: DATA_ROLES.DATA_DEID.name
             },
-                {
-                    label: 'Limited Data Set',
-                    value: DATA_ROLES.DATA_LDS
-                },
-                {
-                    label: 'Aggregated',
-                    value: DATA_ROLES.DATA_AGG
-                },
-                {
-                    label: 'Obfuscated',
-                    value: DATA_ROLES.DATA_OBFSC
-                }]
+            {
+                label: 'Limited Data Set',
+                value: DATA_ROLES.DATA_LDS.name
+            },
+            {
+                label: 'Aggregated',
+                value: DATA_ROLES.DATA_AGG.name
+            },
+            {
+                label: 'Obfuscated',
+                value: DATA_ROLES.DATA_OBFSC.name
+            }],
+            valueGetter: (value) => {
+                return value.row.dataPath.name;
+            },
+            valueSetter: (params) => {
+                const dataPath = DATA_ROLES[params.value];
+
+                return { ...params.row, dataPath };
+            },
         },
-        {
+            {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
@@ -125,18 +138,15 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
         },
     ];
 
-    const processRowUpdate = (newRow) => {
-        const updatedRow = { ...newRow, isNew: false };
-
-        let newRows = rows.map((row) => (row.id === newRow.id ? updatedRow : row));
+    const processRowUpdate = (newRow, previousRow) => {
+        let newRows = rows.map((row) => (row.username === newRow.username ? newRow : row));
         setRows(newRows);
 
-        let param = newRows.filter((row) => row.id === newRow.id).reduce((acc, item) => acc);
-        setSaveParamId(param.id);
+        let newUser = newRows.filter((row) => row.username === newRow.username).reduce((acc, item) => acc);
 
-        dispatch(saveUserParam({user: selectedUser.user, param}));
+        dispatch(saveProjectUser({user: newUser, selectedProject, isNew: false}));
 
-        return updatedRow;
+        return newRow;
     };
 
     const onProcessRowUpdateError = (error) => {
@@ -193,7 +203,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
     };
 
     const confirmDelete = (username) => () => {
-        let param = rows.filter((row) => row.username === username).reduce((acc, item) => acc);
         setDeleteUsername(username);
         setDeleteUserConfirmMsg("Are you sure you want to remove user " + username + "?");
         setShowDeleteUserConfirm(true);
@@ -216,7 +225,7 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
             dataPath: DATA_ROLES.DATA_OBFSC
         });
 
-        dispatch(saveProjectUser({user: newUser, selectedProject, previousRoles: []}));
+        dispatch(saveProjectUser({user: newUser, selectedProject, isNew: true}));
     };
 
     const defaultProps = {
@@ -243,7 +252,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
 
     useEffect(() => {
         if(selectedProject.userStatus.status === "SAVE_SUCCESS"){
-            dispatch(saveProjectUserStatusConfirmed());
             setSaveStatusMsg("Saved user " + selectedProject.userStatus.username + " to project");
             setShowSaveStatus(true);
             setSaveStatusSeverity("success");

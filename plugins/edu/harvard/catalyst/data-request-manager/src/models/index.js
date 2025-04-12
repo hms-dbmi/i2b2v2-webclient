@@ -13,4 +13,6 @@ export { RequestComments } from "./RequestComments";
 export { ExportRequest } from "./ExportRequest";
 export { TableDefinition } from "./TableDefinition";
 export { DATA_OPTION_LOOKUP, TableDefinitionRow } from "./TableDefinitionRow";
+export { ConfigInfo } from "./ConfigInfo";
+
 

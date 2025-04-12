@@ -1,7 +1,6 @@
 import React, {useEffect} from "react";
 import {
     Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
-    Typography
 } from "@mui/material";
 
 export const ConfirmDialog = ({msg, title, onOk, onCancel, customOkLabel, customCancelLabel }) => {

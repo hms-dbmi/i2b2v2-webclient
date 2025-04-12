@@ -69,4 +69,15 @@
   .aggregateSelect {
     width: 60%;
   }
+
+  .editingFile {
+    margin-bottom: 0.3em;
+    font-size: 0.9em;
+    width: 100%;
+    text-align: right;
+  }
+
+  .missing {
+    border: 1px solid  red !important;
+  }
 }

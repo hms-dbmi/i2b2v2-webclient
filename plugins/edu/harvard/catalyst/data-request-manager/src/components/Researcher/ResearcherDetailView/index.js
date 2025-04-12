@@ -25,6 +25,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
     const { statusLogs } = useSelector((state) => state.requestStatusLog);
     const { username } = useSelector((state) => state.userInfo);
     const [confirmWithdrawRequest, setConfirmWithdrawRequest] = React.useState(false);
+    const { isObfuscated } = useSelector((state) => state.userInfo);
 
     useEffect(() => {
         if(requestRow) {
@@ -69,7 +70,7 @@ Fix                    <CircularProgress className="LoadingProgressIcon" size="5
                         </Typography>
 
                         <div className={"ResearcherDetailViewContent"}>
-                            <RequestDetailView details={details} isManager={false}/>
+                            <RequestDetailView details={details} isObfuscated={isObfuscated}/>
 
                             <div className={"RequestAction"}>
                                 <Typography className={"RequestActionTitle"}>
