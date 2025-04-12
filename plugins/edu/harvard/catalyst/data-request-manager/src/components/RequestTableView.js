@@ -27,6 +27,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             headerName: 'Request ID',
             headerClassName: "header",
             sortable: true,
+            type: 'number',
             resizable: false,
             disableReorder: true,
             flex: 1
@@ -85,7 +86,14 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 2
+            flex: 2,
+            valueGetter: (value) => {
+                if (!value) {
+                    return value;
+                }
+                // Format the Date object
+                return value.name;
+            }
         },
         {
             field: 'dateSubmitted',

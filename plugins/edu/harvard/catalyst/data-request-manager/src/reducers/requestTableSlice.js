@@ -33,7 +33,7 @@ export const requestTableSlice = createSlice({
                         dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
                         patientCount: patientCount,
                         userId: request.userId,
-                        status: status.name
+                        status: status
                     })
                 }
                 else {
@@ -50,7 +50,7 @@ export const requestTableSlice = createSlice({
                         }),
                         dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
                         patientCount: patientCount,
-                        status: status.name
+                        status: status
                     })
                 }
             });
@@ -67,6 +67,14 @@ export const requestTableSlice = createSlice({
                 errorMessage: errorMessage
             });
         },
+        updateRequestRowStatus: (state, { payload: { queryInstanceId, status } }) => {
+            state.rows  = state.rows.map(row => {
+                if(row.queryInstanceId === queryInstanceId){
+                    row.status = status;
+                }
+                return row;
+            });
+        },
     }
 })
 
@@ -74,6 +82,7 @@ export const {
     listRequestTable,
     listRequestTableSuccess,
     listRequestTableError,
+    updateRequestRowStatus
 } = requestTableSlice.actions
 
 export default requestTableSlice.reducer

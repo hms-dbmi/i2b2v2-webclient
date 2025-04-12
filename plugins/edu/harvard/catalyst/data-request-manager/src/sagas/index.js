@@ -7,4 +7,5 @@ export { updateRequestCommentsSaga } from "./updateRequestCommentsSaga";
 export { reloadQuerySaga } from "./reloadQuerySaga";
 export { getTableDefinitionSaga } from "./getTableDefinitionSaga";
 export { getRequestStatusLogSaga } from "./getRequestStatusLogSaga";
+export { updateRequestStatusSaga } from "./updateRequestStatusSaga";
 export { getConfigInfoSaga } from "./getConfigInfoSaga";

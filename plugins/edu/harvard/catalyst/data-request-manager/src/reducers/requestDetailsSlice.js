@@ -17,12 +17,7 @@ export const requestDetailsSlice = createSlice({
             state.details.statusInfo = StatusInfo();
         },
         getRequestDetailsSuccess: (state, { payload: {requestDetails, isManager }}) => {
-            let status = RequestStatus._lookupStatus(requestDetails.status);
-            if(status.length > 0){
-                status = RequestStatus.statuses[status[0]];
-            }else{
-                status = RequestStatus.statuses.UNKNOWN;
-            }
+            let status = requestDetails.status;//RequestStatus._lookupStatusKey(requestDetails.status);
             let details = null;
 
             if(isManager){
@@ -88,7 +83,25 @@ export const requestDetailsSlice = createSlice({
                 status: "FAIL",
                 errorMessage: errorMessage
             });
-        }
+        },
+        updateRequestStatus: state => {
+            state.details.isUpdatingStatus = true;
+            state.details.statusUpdateStatusInfo = StatusInfo();
+        },
+        updateRequestStatusSuccess: (state, { payload: {status} }) => {
+            state.details.status = status;
+            state.details.isUpdatingStatus = false;
+            state.details.statusUpdateStatusInfo = StatusInfo({
+                status: "SUCCESS"
+            });
+        },
+        updateRequestStatusError: (state, { payload: { errorMessage} }) => {
+            state.details.isUpdatingStatus = false;
+            state.details.statusUpdateStatusInfo = StatusInfo({
+                status: "FAIL",
+                errorMessage: errorMessage
+            });
+        },
     }
 })
 
@@ -100,7 +113,10 @@ export const {
     generateDataFileSuccess,
     generateDataFileError,
     reloadQuery,
-    reloadQueryError
+    reloadQueryError,
+    updateRequestStatus,
+    updateRequestStatusSuccess,
+    updateRequestStatusError
 } = requestDetailsSlice.actions
 
 export default requestDetailsSlice.reducer
