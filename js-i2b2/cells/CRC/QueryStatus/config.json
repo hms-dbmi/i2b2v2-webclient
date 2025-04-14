@@ -1,0 +1,106 @@
+{
+  "displayComponents": {
+    "BARS": {
+      "name": "Bar Chart",
+      "source": "BarGraph/BarGraph.js",
+      "default": true,
+      "displayOrder": 0,
+      "class": "bargraph",
+      "CSS": "BarGraph/BarGraph.css",
+      "results": [
+        "PATIENT_GENDER_COUNT_XML",
+        "PATIENT_SEX_COUNT_SHRINE_XML",
+        "PATIENT_VITALSTATUS_COUNT_XML",
+        "PATIENT_VITALSTATUS_COUNT_SHRINE_XML",
+        "PATIENT_RACE_COUNT_XML",
+        "PATIENT_RACE_COUNT_SHRINE_XML",
+        "PATIENT_AGE_COUNT_XML",
+        "PATIENT_AGE_COUNT_SHRINE_XML",
+        "PATIENT_LOS_XML",
+        "PATIENT_TOP20MEDS_XML",
+        "PATIENT_TOP20DIAG_XML",
+        "PATIENT_INOUT_XML"
+      ]
+    },
+    "TABLE": {
+      "name": "Table Summary",
+      "source": "Table/Table.js",
+      "CSS": "Table/Table.css",
+      "displayOrder": 100,
+      "results": [
+        "PATIENT_GENDER_COUNT_XML",
+        "PATIENT_SEX_COUNT_SHRINE_XML",
+        "PATIENT_VITALSTATUS_COUNT_XML",
+        "PATIENT_VITALSTATUS_COUNT_SHRINE_XML",
+        "PATIENT_RACE_COUNT_XML",
+        "PATIENT_RACE_COUNT_SHRINE_XML",
+        "PATIENT_AGE_COUNT_XML",
+        "PATIENT_AGE_COUNT_SHRINE_XML",
+        "PATIENT_LOS_XML",
+        "PATIENT_TOP20MEDS_XML",
+        "PATIENT_TOP20DIAG_XML",
+        "PATIENT_INOUT_XML"
+      ]
+    },
+    "DOWNLOAD": {
+      "name": "Download",
+      "source": "Download/Download.js",
+      "displayOrder": 101,
+      "results": [
+        "PATIENT_GENDER_COUNT_XML",
+        "PATIENT_SEX_COUNT_SHRINE_XML",
+        "PATIENT_VITALSTATUS_COUNT_XML",
+        "PATIENT_VITALSTATUS_COUNT_SHRINE_XML",
+        "PATIENT_RACE_COUNT_XML",
+        "PATIENT_RACE_COUNT_SHRINE_XML",
+        "PATIENT_AGE_COUNT_XML",
+        "PATIENT_AGE_COUNT_SHRINE_XML",
+        "PATIENT_LOS_XML",
+        "PATIENT_TOP20MEDS_XML",
+        "PATIENT_TOP20DIAG_XML",
+        "PATIENT_INOUT_XML"
+      ]
+    },
+    "SUMMARY": {
+      "source": "Summary/Summary.js",
+      "alwaysShow": true,
+      "noFrameTemplate": true,
+      "results": ["INTERNAL_SUMMARY"]
+    },
+    "COUNT": {
+      "source": "Count/Count.js",
+      "CSS": "Count/Count.css",
+      "class": "patient-count",
+      "alwaysShow": true,
+      "noFrameTemplate": true,
+      "results" :[
+        "PATIENT_COUNT_XML",
+        "PATIENT_COUNT_SHRINE_XML"
+      ]
+    },
+    "SHRINESITES": {
+      "source": "ShrineSites/ShrineSites.js",
+      "CSS": "ShrineSites/ShrineSites.css",
+      "alwaysShow": true,
+      "noFrameTemplate": true,
+      "results" :[
+        "PATIENT_SITE_COUNT_SHRINE_XML"
+      ]
+    }
+  },
+  "displayOrder": [
+    "INTERNAL_SUMMARY",
+    "PATIENT_COUNT_XML",
+    "PATIENT_COUNT_SHRINE_XML",
+    "PATIENT_SITE_COUNT_SHRINE_XML",
+    "INTERNAL_OTHERS"
+  ],
+  "haltPollingOnStatus": [
+    "COMPLETED",
+    "PROCESSING",
+    "FINISHED",
+    "ERROR",
+    "INCOMPLETE",
+    "TIMEOUT"
+  ]
+}

@@ -1,0 +1,23 @@
+/* Count Module CSS */
+
+.QueryStatusComponent.frameless.viztype-COUNT {
+    overflow:hidden;
+    border: none !important;
+}
+
+.QueryStatusComponent.viztype-COUNT .count-container {
+    width: 400px;
+    background-color: #ed9b40;
+    text-align: center;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.QueryStatusComponent.viztype-COUNT .count-container div {
+    padding: 0.3rem;
+}
+
+.QueryStatusComponent.viztype-COUNT .count-value {
+    font-size: 45px;
+    line-height: 45px;
+}

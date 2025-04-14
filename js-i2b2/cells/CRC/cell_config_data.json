@@ -22,7 +22,8 @@
     "ModLabValues/CRC_view_BASIC.js",
     "ModLabValues/CRC_view_GENOTYPE_RSID.js",
     "ModLabValues/CRC_view_GENOTYPE_GENE.js",
-    "ModLabValues/CRC_view_NUMBER_EXAMPLE.js"
+    "ModLabValues/CRC_view_NUMBER_EXAMPLE.js",
+    "QueryStatus/QueryStatusEngine.js"
   ],
   "preload": [
     "assets/sdx_CRC_PDO.svg",
@@ -41,7 +42,8 @@
     "QueryStatus.css",
     "sdx_CRC_types.css",
     "ModLabValues/CRC_view_BASIC.css",
-    "ModLabValues/CRC_view_NUMBER_EXAMPLE.css"
+    "ModLabValues/CRC_view_NUMBER_EXAMPLE.css",
+    "../QueryStatus/QueryStatus.css"
   ],
   "config": {
     "name": "Data Repository",

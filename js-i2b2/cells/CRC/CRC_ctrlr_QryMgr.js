@@ -75,7 +75,8 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
     if (stillRunning && i2b2.CRC.model.runner.queued && i2b2.CRC.model.runner.isShrine) {
         if (i2b2.CRC.model.runner.intervalGraphRefresh === false) {
             i2b2.CRC.model.runner.intervalGraphRefresh = setInterval(() => {
-                i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport"))
+                // i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport"))
+                i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport")[0]);
             }, 1000);
         }
     }
@@ -411,7 +412,8 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
         i2b2.CRC.ctrlr.history.queryDeleteNoPrompt(qmId);
     } else {
         // render the results tables/graphs
-        i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport"))
+        // i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport"))
+        i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport")[0]);
     }
 
     // re-render status
