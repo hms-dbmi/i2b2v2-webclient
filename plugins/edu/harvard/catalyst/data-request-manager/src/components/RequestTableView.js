@@ -7,11 +7,11 @@ import {DataGrid} from "@mui/x-data-grid";
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import {TreeItem} from "@mui/x-tree-view";
 import RefreshIcon from '@mui/icons-material/Refresh';
-import {listRequestTable} from "../reducers/requestTableSlice";
+import CircularProgress from '@mui/material/CircularProgress';
+import {generateDataFile, listRequestTable} from "../reducers/requestTableSlice";
 import "./RequestTableView.scss";
 import {decode} from "html-entities";
 import {ConfirmDialog} from "./ConfirmDialog";
-import {generateDataFile} from "../reducers/requestDetailsSlice";
 
 export const RequestTableView = ({ userInfo, displayDetailView}) => {
     const dispatch = useDispatch();
@@ -22,7 +22,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
     const { obfuscatedDisplayNumber, useFloorThreshold, floorThresholdNumber, floorThresholdText }
         = useSelector((state) => state.configInfo);
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
-    const [createFileInstanceId, setCreateFileInstanceId] = React.useState(null);
+    const [createFileData, setCreateFileData] = React.useState({});
 
 
     const columns = [
@@ -92,12 +92,19 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             resizable: false,
             disableReorder: true,
             flex: 2,
-            valueGetter: (value) => {
+            /*valueGetter: (value) => {
                 if (!value) {
                     return value;
                 }
                 // Format the Date object
                 return value.name;
+            }*/
+            renderCell: (param) => {
+                return (
+                    <div className={"RequestStatus"}>
+                        {param.row.isFetchingStatus ? <CircularProgress /> : <div>{param.row.status.name}</div>}
+                    </div>
+                );
             }
         },
         {
@@ -130,7 +137,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
                     <div className={"actions"}>
 
                         {isManager && <div><Button title={"Create File(s)"} className={"createFileBtn"} color="primary" variant="contained" size="small"
-                                          onClick={() => handleConfirmFileCreate(param.row.queryInstanceId)}>Create File(s)
+                                          onClick={() => handleConfirmFileCreate(param.row.id, param.row.queryInstanceId)}>Create File(s)
                             </Button> </div>
                         }
                         <div>
@@ -142,9 +149,12 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
         }
     ];
 
-    const handleConfirmFileCreate = (requestId) => {
+    const handleConfirmFileCreate = (queryMasterId, queryInstanceId) => {
         setConfirmFileGen(true);
-        setCreateFileInstanceId(requestId);
+        setCreateFileData({
+            queryMasterId,
+            queryInstanceId
+        });
     }
     const handleDisplayDetailView = (requestRow) => {
         displayDetailView(requestRow);
@@ -160,8 +170,8 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
 
     const handleCreateFile = () =>{
         setConfirmFileGen(false);
-        dispatch(generateDataFile({queryInstanceId: createFileInstanceId}));
-        setCreateFileInstanceId(null);
+        dispatch(generateDataFile({queryInstanceId: createFileData.queryInstanceId, queryMasterId: createFileData.queryMasterId}));
+        setCreateFileData({});
     }
 
     useEffect(() => {
@@ -231,7 +241,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
                 getRowHeight={() => 'auto'}
             />
             {confirmFileGen && <ConfirmDialog
-                msg={'Are you sure you want to create data file(s) for request with ID ' +  createFileInstanceId + '?'}
+                msg={'Are you sure you want to create data file(s) for request with ID ' +  createFileData.queryMasterId + '?'}
                 title="Create Data File(s)"
                 onOk = {handleCreateFile}
                 onCancel = {() => setConfirmFileGen(false)}

@@ -67,10 +67,81 @@ export const requestTableSlice = createSlice({
                 errorMessage: errorMessage
             });
         },
-        updateRequestRowStatus: (state, { payload: { queryInstanceId, status } }) => {
+        refreshRequestRowStatus: (state, { payload: { queryInstanceId, status } }) => {
             state.rows  = state.rows.map(row => {
                 if(row.queryInstanceId === queryInstanceId){
                     row.status = status;
+                }
+                return row;
+            });
+        },
+        getRequestStatus: (state, { payload: { queryMasterId, status } }) => {
+            state.rows  = state.rows.map(row => {
+                if(row.id === queryMasterId){
+                    row.status = status;
+                    if( row.isFetchingStatus !== undefined) {
+                        row.isFetchingStatus = true;
+                    }
+                }
+                return row;
+            });
+        },
+        getRequestStatusSuccess: (state, { payload: { queryMasterId, requestStatus } }) => {
+            state.rows = state.rows.map(row => {
+                if(row.id === queryMasterId){
+                    let status = RequestStatus._convertI2b2Status(requestStatus);
+                    row.status = status;
+                    if( row.isFetchingStatus !== undefined) {
+                        row.isFetchingStatus = false;
+                    }
+                }
+                return row;
+            });
+        },
+        getRequestStatusError: (state, { payload: { queryMasterId, errorMessage} }) => {
+            state.rows = state.rows.map(row => {
+                if(row.id === queryMasterId){
+                    if( row.isFetchingStatus !== undefined) {
+                        row.isFetchingStatus = false;
+                    }
+                }
+                return row;
+            });
+        },
+        generateDataFile: (state, { payload: { queryInstanceId} }) => {
+            state.rows = state.rows.map(row => {
+                if(row.queryInstanceId === queryInstanceId){
+                    if( row.dataFileGeneration !== undefined) {
+                        row.dataFileGeneration.isGeneratingFile = true;
+                        row.dataFileGeneration.statusInfo = StatusInfo();
+                    }
+                }
+                return row;
+            });
+        },
+        generateDataFileSuccess: (state, { payload: { queryInstanceId} }) => {
+            state.rows = state.rows.map(row => {
+                if(row.queryInstanceId === queryInstanceId){
+                    if( row.dataFileGeneration !== undefined) {
+                        row.dataFileGeneration.isGeneratingFile = false;
+                        row.dataFileGeneration.statusInfo = StatusInfo({
+                            status: "SUCCESS",
+                        });
+                    }
+                }
+                return row;
+            });
+        },
+        generateDataFileError: (state, { payload: { queryInstanceId, errorMessage} }) => {
+            state.rows = state.rows.map(row => {
+                if(row.queryInstanceId === queryInstanceId){
+                    if( row.dataFileGeneration !== undefined) {
+                        row.dataFileGeneration.isGeneratingFile = false;
+                        row.dataFileGeneration.statusInfo  = StatusInfo({
+                            status: "FAIL",
+                            errorMessage: errorMessage
+                        });
+                    }
                 }
                 return row;
             });
@@ -82,7 +153,13 @@ export const {
     listRequestTable,
     listRequestTableSuccess,
     listRequestTableError,
-    updateRequestRowStatus
+    refreshRequestRowStatus,
+    getRequestStatus,
+    getRequestStatusSuccess,
+    getRequestStatusError,
+    generateDataFile,
+    generateDataFileSuccess,
+    generateDataFileError,
 } = requestTableSlice.actions
 
 export default requestTableSlice.reducer

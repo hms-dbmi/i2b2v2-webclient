@@ -2,8 +2,8 @@
 
 import {call, put, takeLatest} from "redux-saga/effects";
 import {GENERATE_DATA_FILE} from "../actions";
-import {generateDataFileError, generateDataFileSuccess} from "../reducers/requestDetailsSlice";
 import XMLParser from "react-xml-parser";
+import {generateDataFileError, generateDataFileSuccess, getRequestStatus} from "../reducers/requestTableSlice";
 
 const runExportRequest = (queryInstanceId) => {
     let data = {
@@ -13,16 +13,17 @@ const runExportRequest = (queryInstanceId) => {
 };
 
 export function* doGenerateDataFile(action) {
-    const { queryInstanceId } = action.payload;
+    const { queryMasterId, queryInstanceId } = action.payload;
     try {
         const response = yield call(runExportRequest, queryInstanceId);
         if (!response.error) {
-            yield put(generateDataFileSuccess());
+            yield put(generateDataFileSuccess({queryInstanceId}));
+            yield put(getRequestStatus({queryMasterId}));
         } else {
-            yield put(generateDataFileError({errorMessage: "There was an error generating the file(s)"}));
+            yield put(generateDataFileError({queryInstanceId, errorMessage: "There was an error generating the file(s)"}));
         }
     } catch (error) {
-        yield put(generateDataFileError({errorMessage: "There was an error generating the file(s)"}));
+        yield put(generateDataFileError({queryInstanceId, errorMessage: "There was an error generating the file(s)"}));
         console.error("There was an error generating the file(s). Error: " + error);
     }
 }

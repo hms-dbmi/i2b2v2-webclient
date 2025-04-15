@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit'
 import { REQUEST_DETAILS } from "../actions";
 import { defaultState } from '../defaultState';
 import {
-    RequestStatus,
     ResearcherRequestDetails,
     StatusInfo, AdminRequestDetails
 } from "../models";
@@ -57,24 +56,6 @@ export const requestDetailsSlice = createSlice({
                 errorMessage: errorMessage
             });
         },
-        generateDataFile: state => {
-            state.dataFileGeneration.isGeneratingFile = false;
-            state.dataFileGeneration.statusInfo = StatusInfo();
-        },
-        generateDataFileSuccess: (state, { payload: { errorMessage} }) => {
-            state.dataFileGeneration.isGeneratingFile = false;
-            state.dataFileGeneration.statusInfo = StatusInfo({
-                status: "FAIL",
-                errorMessage: errorMessage
-            });
-        },
-        generateDataFileError: (state, { payload: { errorMessage} }) => {
-            state.dataFileGeneration.isGeneratingFile = false;
-            state.dataFileGeneration.statusInfo  = StatusInfo({
-                status: "FAIL",
-                errorMessage: errorMessage
-            });
-        },
         reloadQuery: (state) => {
             state.reloadQueryStatus = StatusInfo();
         },
@@ -109,9 +90,6 @@ export const {
     getRequestDetails,
     getRequestDetailsSuccess,
     getRequestDetailsError,
-    generateDataFile,
-    generateDataFileSuccess,
-    generateDataFileError,
     reloadQuery,
     reloadQueryError,
     updateRequestStatus,

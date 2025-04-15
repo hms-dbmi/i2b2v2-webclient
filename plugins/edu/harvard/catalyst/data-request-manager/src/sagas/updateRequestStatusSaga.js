@@ -6,7 +6,7 @@ import {updateRequestStatusError, updateRequestStatusSuccess} from "../reducers/
 import XMLParser from "react-xml-parser";
 import {UPDATE_REQUEST_STATUS} from "../actions";
 import {RequestStatus} from "../models";
-import {updateRequestRowStatus} from "../reducers/requestTableSlice";
+import {getRequestStatusSuccess, refreshRequestRowStatus, updateRequestRowStatus} from "../reducers/requestTableSlice";
 import {getRequestStatusLog} from "../reducers/requestStatusLogSlice";
 
 
@@ -27,7 +27,7 @@ export function* doUpdateRequestStatus(action) {
         const response = yield call(updateRequestStatusRequest, queryInstanceId, statusName, username);
         if (!response.error) {
             yield put(updateRequestStatusSuccess({status}));
-            yield put(updateRequestRowStatus({queryInstanceId, status}));
+            yield put(refreshRequestRowStatus({queryInstanceId, status}));
 
             const exportRequests = requests.map(ri =>  {
                 return {
