@@ -33,26 +33,37 @@ export const PreviewTable = (props) => {
                 id: i
             };
             for (const column of columns) {
-                let name = column.id;
+                let id = column.id;
+                let name = column.name;
                 let aggType= column.aggType;
 
-                row[name] = "[Value]";
+                row[id] = "[Value]";
 
                 switch (name) {
-                    case 'patient_number':
-                    case 'subject_id':
-                        row[name] = "RA15432-0000" + i
+                    case 'Gender':
+                        row[id] = ['Male','Female'].map((a) => ({ sort: Math.random(), value: a }))
+                            .sort((a, b) => a.sort - b.sort)
+                            .map((a) => a.value)[0];
                         break;
-                    case 'gender':
-                        row[name] = ['M','F'].map((a) => ({ sort: Math.random(), value: a }))
-                        .sort((a, b) => a.sort - b.sort)
-                        .map((a) => a.value)[0];
+                    case 'Race':
+                        row[id] = ['American Indian',
+                            'Alaska Native',
+                            'Asian',
+                            'Black or African American',
+                            'Multiple race',
+                            'Native Hawaiian or Other Pacific Islander',
+                            'No Information',
+                            'White'].map((a) => ({ sort: Math.random(), value: a }))
+                            .sort((a, b) => a.sort - b.sort)
+                            .map((a) => a.value)[0];
                         break;
-                    case 'age':
-                        row[name] = Math.floor(Math.random() * 81) + 20;
+                    case 'Age':
+                        row[id] = Math.floor(Math.random() * 72) + 18;
                         break;
-                    case 'vital_status':
-                        row[name] = "N";
+                    case 'Ethnicity':
+                        row[id] = ['Not Hispanic','Hispanic'].map((a) => ({ sort: Math.random(), value: a }))
+                            .sort((a, b) => a.sort - b.sort)
+                            .map((a) => a.value)[0];
                         break;
                     default:
                         break;
@@ -60,7 +71,7 @@ export const PreviewTable = (props) => {
 
                 switch (aggType) {
                     case 'Exists':
-                        row[name] = ["Yes", "No"].map((a) => ({ sort: Math.random(), value: a }))
+                        row[id] = ["Yes", "No"].map((a) => ({ sort: Math.random(), value: a }))
                             .sort((a, b) => a.sort - b.sort)
                             .map((a) => a.value)[0];
                         break;
@@ -70,12 +81,12 @@ export const PreviewTable = (props) => {
                     case "NumFacts":
                     case "NumProviders":
                     case "NumValues":
-                        row[name] = Math.floor(Math.random() * 101);
+                        row[id] = Math.floor(Math.random() * 101);
                         break;
                     case "MinDate":
                     case "MaxDate":
                         const time = Math.floor(Math.random() * 1577836801) + 1704067200;
-                        row[name] = (new Date(time)).toLocaleString();
+                        row[id] = (new Date(time)).toLocaleString();
                         break;
                     default:
                         break;
