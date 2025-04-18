@@ -88,7 +88,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                             <Select
                                 value={requestStatus}
                                 label="Status"
-                                disabled={details.isUpdatingStatus}
+                                disabled={details.isUpdatingStatus || details.status === RequestStatus.statuses.PROCESSING || details.status === RequestStatus.statuses.QUEUED}
                                 onChange={onChangeStatusEvent}
                             >
                                 <MenuItem disabled value={"default"}>
@@ -105,7 +105,8 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                     />
                 </FormControl>
                 <Button variant="contained" className={"StatusControlBtn"}
-                        onClick={handleUpdateStatus} size={"small"} disabled={details.isUpdatingStatus || requestStatus ==="default"}>Save</Button>
+                        onClick={handleUpdateStatus} size={"small"} disabled={details.isUpdatingStatus || requestStatus ==="default"
+                    || details.status === RequestStatus.statuses.PROCESSING || details.status === RequestStatus.statuses.QUEUED}>Save</Button>
                 { details.isUpdatingStatus && <CircularProgress size="1.3em" />}
                 <FormHelperText className={"StatusControlHelpText"}>Current Status: {details.status.name}</FormHelperText>
             </div>
