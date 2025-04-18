@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
+import Button from "@mui/material/Button";
 const CustomTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
 ))({
@@ -227,6 +228,15 @@ export const PreviewTable = (props) => {
                 hideFooter={true}
 
             />
+            <Stack
+                spacing={2}
+                direction="row"
+                justifyContent="right"
+                alignItems="center"
+                className={"PreviewTableActions"}
+            >
+                <Button variant="contained" onClick={()=>props.tabChanger(null,0)}>Back to Design Table</Button>
+            </Stack>
         </Stack>
     )
 }
