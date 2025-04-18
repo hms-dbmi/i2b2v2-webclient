@@ -1239,6 +1239,7 @@ i2b2.CRC.ajax._addFunctionCall(	"getAllTablesList",
     i2b2.CRC.cfg.msgs.getAllTablesList,
     null,
     i2b2.CRC.cfg.parsers.getAllTablesList);
+
 // ================================================================================================== //
 
 i2b2.CRC.cfg.msgs.setTable = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
