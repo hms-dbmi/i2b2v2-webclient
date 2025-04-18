@@ -12,6 +12,7 @@ import {generateDataFile, listRequestTable} from "../reducers/requestTableSlice"
 import "./RequestTableView.scss";
 import {decode} from "html-entities";
 import {ConfirmDialog} from "./ConfirmDialog";
+import {RequestStatus} from "../models";
 
 export const RequestTableView = ({ userInfo, displayDetailView}) => {
     const dispatch = useDispatch();
@@ -92,13 +93,6 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             resizable: false,
             disableReorder: true,
             flex: 2,
-            /*valueGetter: (value) => {
-                if (!value) {
-                    return value;
-                }
-                // Format the Date object
-                return value.name;
-            }*/
             renderCell: (param) => {
                 return (
                     <div className={"RequestStatus"}>
@@ -137,7 +131,8 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
                     <div className={"actions"}>
 
                         {isManager && <div><Button title={"Create File(s)"} className={"createFileBtn"} color="primary" variant="contained" size="small"
-                                          onClick={() => handleConfirmFileCreate(param.row.id, param.row.queryInstanceId)}>Create File(s)
+                                          onClick={() => handleConfirmFileCreate(param.row.id, param.row.queryInstanceId)}
+                                                   disabled={param.row.status === RequestStatus.statuses.PROCESSING || param.row.status === RequestStatus.statuses.QUEUED}>Create File(s)
                             </Button> </div>
                         }
                         <div>

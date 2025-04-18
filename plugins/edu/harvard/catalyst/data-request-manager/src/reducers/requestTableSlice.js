@@ -50,6 +50,7 @@ export const requestTableSlice = createSlice({
                         }),
                         dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
                         patientCount: patientCount,
+                        userId: request.userId,
                         status: status
                     })
                 }
