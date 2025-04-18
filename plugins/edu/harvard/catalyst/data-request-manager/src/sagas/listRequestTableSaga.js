@@ -106,7 +106,7 @@ export function* doListRequestTable(action) {
         }
     } catch (error) {
         yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));
-        console.error("There was an error getting the list of researcher data export requests");
+        console.error("There was an error getting the list of researcher data export requests. Error: " + error);
     }
 }
 

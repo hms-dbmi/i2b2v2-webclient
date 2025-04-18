@@ -89,24 +89,16 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
 
     const getLatestRequestStatusLog = (statusLogs) => {
         const recentStatusLogList = statusLogs.map(requestLog => {
-            const logItemsSorted = requestLog.logItems.sort((a, b) => {
-                if(a.date === b.date){
-                    return a.order > b.order;
-                }
-                else {
-                    return a.date > b.date;
-                }
-            });
-
+            const logItems = requestLog.logItems;
             let requestStatusLog = {
                 description: requestLog.description,
                 date: '',
                 status: '',
-                logItems:  requestLog.logItems
+                logItems: logItems
             }
-            if(logItemsSorted.length > 0){
-                requestStatusLog.date = logItemsSorted[0].date;
-                requestStatusLog.status = logItemsSorted[0].status;
+            if(logItems.length > 0){
+               requestStatusLog.date = logItems[logItems.length-1].date;
+                requestStatusLog.status = logItems[logItems.length-1].status;
             }
 
             return requestStatusLog;
@@ -171,7 +163,7 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                                 key={row.status}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell className={"descriptionColumn"} component="td" scope="row" title={row.description}>
+                                <TableCell className={"descriptionColumn mainNoBorder"} component="td" scope="row" title={row.description}>
 
                                     <div className={"descriptionColumnLabel"}>
                                         <IconButton  aria-label="expand" onClick={() => updateExpandList(row.description)}>
@@ -194,12 +186,12 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                                             key={logItem.status}
                                             sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                         >
-                                            <TableCell component="th" scope="row">
+                                            <TableCell component="td" scope="row" className={"noborder"}>
                                             </TableCell>
-                                            <TableCell align="left">
+                                            <TableCell align="left" scope="row">
                                                 {logItem.date.toLocaleDateString()}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell component="td" scope="row">
                                                 {logItem.status.name}
                                             </TableCell>
                                         </TableRow>

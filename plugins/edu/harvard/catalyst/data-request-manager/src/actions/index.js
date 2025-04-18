@@ -15,6 +15,7 @@ export const RELOAD_QUERY = `${REQUEST_DETAILS}/reloadQuery`;
 export const GET_TABLE_DEF = `${TABLE_DEFINITION}/getTableDefinition`;
 export const GET_REQUEST_COMMENTS = `${REQUEST_COMMENTS}/getRequestComments`;
 export const UPDATE_REQUEST_COMMENTS = `${REQUEST_COMMENTS}/updateRequestComments`;
+export const UPDATE_REQUEST_STATUS = `${REQUEST_DETAILS}/updateRequestStatus`;
 export const GET_REQUEST_STATUS_LOG = `${REQUEST_STATUS_LOG}/getRequestStatusLog`;
 export const GET_CONFIG_INFO = `${CONFIG_INFO}/getConfigInfo`;
 

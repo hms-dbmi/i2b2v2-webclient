@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import {RequestStatus} from "./RequestStatus";
 import {RequestStatusLog} from "./RequestStatusLog";
 import {ExportRequest} from "./ExportRequest";
+import {StatusInfo} from "./StatusInfo";
 
 export const AdminRequestDetails = ({
     id = null,
@@ -12,7 +13,11 @@ export const AdminRequestDetails = ({
     userId = "",
     email= "",
     patientCount = null,
-    statusLogs= []
+    statusLogs= [],
+    isFetching = false,
+    isUpdatingStatus = false,
+    statusInfo = StatusInfo(),
+    statusUpdateStatusInfo = StatusInfo()
 } = {}) => ({
     id,
     name,
@@ -22,7 +27,11 @@ export const AdminRequestDetails = ({
     userId,
     email,
     patientCount,
-    statusLogs
+    statusLogs,
+    isFetching,
+    isUpdatingStatus,
+    statusInfo,
+    statusUpdateStatusInfo
 });
 
 AdminRequestDetails.propTypes = {
@@ -34,4 +43,8 @@ AdminRequestDetails.propTypes = {
     email: PropTypes.string.isRequired,
     patientCount: PropTypes.number.isRequired,
     statusLogs: PropTypes.arrayOf(PropTypes.shape(RequestStatusLog)).isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    isUpdatingStatus: PropTypes.bool.isRequired,
+    statusInfo: PropTypes.shape(StatusInfo),
+    statusUpdateStatusInfo: PropTypes.shape(StatusInfo),
 };

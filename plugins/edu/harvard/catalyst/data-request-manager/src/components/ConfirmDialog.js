@@ -41,7 +41,7 @@ export const ConfirmDialog = ({msg, title, onOk, onCancel, customOkLabel, custom
         <DialogTitle id="confirm-dialog-title">
             {title}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
             <DialogContentText id="confirm-dialog-description">
                 {msg}
             </DialogContentText>
