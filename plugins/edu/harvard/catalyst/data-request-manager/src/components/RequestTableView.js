@@ -7,9 +7,12 @@ import {DataGrid} from "@mui/x-data-grid";
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import {TreeItem} from "@mui/x-tree-view";
 import RefreshIcon from '@mui/icons-material/Refresh';
-import {listRequestTable} from "../reducers/requestTableSlice";
+import CircularProgress from '@mui/material/CircularProgress';
+import {generateDataFile, listRequestTable} from "../reducers/requestTableSlice";
 import "./RequestTableView.scss";
 import {decode} from "html-entities";
+import {ConfirmDialog} from "./ConfirmDialog";
+import {RequestStatus} from "../models";
 
 export const RequestTableView = ({ userInfo, displayDetailView}) => {
     const dispatch = useDispatch();
@@ -19,6 +22,9 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
     const {username, isManager, isObfuscated} = userInfo;
     const { obfuscatedDisplayNumber, useFloorThreshold, floorThresholdNumber, floorThresholdText }
         = useSelector((state) => state.configInfo);
+    const [confirmFileGen, setConfirmFileGen] = React.useState(false);
+    const [createFileData, setCreateFileData] = React.useState({});
+
 
     const columns = [
         {
@@ -87,12 +93,12 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             resizable: false,
             disableReorder: true,
             flex: 2,
-            valueGetter: (value) => {
-                if (!value) {
-                    return value;
-                }
-                // Format the Date object
-                return value.name;
+            renderCell: (param) => {
+                return (
+                    <div className={"RequestStatus"}>
+                        {param.row.isFetchingStatus ? <CircularProgress /> : <div>{param.row.status.name}</div>}
+                    </div>
+                );
             }
         },
         {
@@ -114,20 +120,37 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
         },
         {
             field: 'actions',
-            headerName: 'Action',
+            headerName: 'Actions',
             headerClassName: "header",
             sortable: false,
             resizable: false,
             disableReorder: true,
-            minWidth: 140,
+            minWidth: 150,
             renderCell: (param) => {
                 return (
-                    <Button variant="contained" size="small" className={"actions"} onClick={() => handleDisplayDetailView(param.row)}>View Details</Button>
+                    <div className={"actions"}>
+
+                        {isManager && <div><Button title={"Create File(s)"} className={"createFileBtn"} color="primary" variant="contained" size="small"
+                                          onClick={() => handleConfirmFileCreate(param.row.id, param.row.queryInstanceId)}
+                                                   disabled={param.row.status === RequestStatus.statuses.PROCESSING || param.row.status === RequestStatus.statuses.QUEUED}>Create File(s)
+                            </Button> </div>
+                        }
+                        <div>
+                            <Button title={"View Details"} variant="outlined" size="small" onClick={() => handleDisplayDetailView(param.row)}>View Details</Button>
+                        </div>
+                    </div>
                 );
             },
         }
     ];
 
+    const handleConfirmFileCreate = (queryMasterId, queryInstanceId) => {
+        setConfirmFileGen(true);
+        setCreateFileData({
+            queryMasterId,
+            queryInstanceId
+        });
+    }
     const handleDisplayDetailView = (requestRow) => {
         displayDetailView(requestRow);
     };
@@ -138,6 +161,12 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
     const handleRefreshRequestTable = () => {
         clearFilterModel();
         dispatch(listRequestTable({isManager, username}));
+    }
+
+    const handleCreateFile = () =>{
+        setConfirmFileGen(false);
+        dispatch(generateDataFile({queryInstanceId: createFileData.queryInstanceId, queryMasterId: createFileData.queryMasterId}));
+        setCreateFileData({});
     }
 
     useEffect(() => {
@@ -177,10 +206,17 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
                 rows={rows}
                 columns={getColumns()}
                 showCellVerticalBorder={true}
+                density={'compact'}
                 disableRowSelectionOnClick
                 initialState={{
                     sorting: {
                         sortModel: [{field:'id',sort:'desc'}]
+                    },
+                    columns: {
+                        columnVisibilityModel: {
+                            // Hide column userId the other columns will remain visible
+                            userId: false,
+                        },
                     }
                 }}
                 filterModel={filterModel}
@@ -199,6 +235,13 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
                 }}
                 getRowHeight={() => 'auto'}
             />
+            {confirmFileGen && <ConfirmDialog
+                msg={'Are you sure you want to create data file(s) for request with ID ' +  createFileData.queryMasterId + '?'}
+                title="Create Data File(s)"
+                onOk = {handleCreateFile}
+                onCancel = {() => setConfirmFileGen(false)}
+            />
+            }
         </Box>
     )
 };

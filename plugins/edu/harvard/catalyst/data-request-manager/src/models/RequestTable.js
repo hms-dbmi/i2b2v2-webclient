@@ -4,13 +4,13 @@ import {StatusInfo} from "./StatusInfo";
 import {ResearcherTableRow} from "./ResearcherTableRow";
 
 export const RequestTable = ({
-   rows = [],
-   isFetching= false,
-   statusInfo = StatusInfo(),
+    rows = [],
+    isFetching= false,
+    statusInfo = StatusInfo(),
 } = {}) => ({
     rows,
     isFetching,
-    statusInfo
+    statusInfo,
 });
 
 RequestTable.propTypes = {

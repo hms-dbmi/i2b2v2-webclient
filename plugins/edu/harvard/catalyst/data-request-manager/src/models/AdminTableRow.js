@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import {RequestStatus} from "./RequestStatus";
+import {DataFileGeneration} from "./DataFileGeneration";
 
 export const AdminTableRow = ({
     id = null,
@@ -9,7 +10,9 @@ export const AdminTableRow = ({
     dateSubmitted = null,
     patientCount = null,
     userId = null,
-    status= RequestStatus.statuses.SUBMITTED
+    status= RequestStatus.statuses.SUBMITTED,
+    dataFileGeneration = DataFileGeneration(),
+    isFetchingStatus = false
 } = {}) => ({
     id,
     queryInstanceId,
@@ -18,7 +21,9 @@ export const AdminTableRow = ({
     dateSubmitted,
     patientCount,
     userId,
-    status
+    status,
+    dataFileGeneration,
+    isFetchingStatus
 });
 
 AdminTableRow.propTypes = {
@@ -29,5 +34,7 @@ AdminTableRow.propTypes = {
     dateSubmitted: PropTypes.instanceOf(Date).isRequired,
     patientCount: PropTypes.number.isRequired,
     userId: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired
+    status: PropTypes.string.isRequired,
+    isFetchingStatus: PropTypes.bool.isRequired,
+    dataFileGeneration: PropTypes.instanceOf(DataFileGeneration),
 }

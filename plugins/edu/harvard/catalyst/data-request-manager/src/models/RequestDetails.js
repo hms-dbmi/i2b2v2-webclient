@@ -5,16 +5,13 @@ import {StatusInfo} from "./StatusInfo";
 
 export const RequestDetails = ({
     details = ResearcherRequestDetails(),
-    dataFileGeneration = DataFileGeneration(),
     reloadQueryStatus = StatusInfo(),
 } = {}) => ({
     details,
-    dataFileGeneration,
     reloadQueryStatus
 })
 
 RequestDetails.propTypes = {
     details: PropTypes.instanceOf(ResearcherRequestDetails).isRequired,
-    dataFileGeneration: PropTypes.instanceOf(DataFileGeneration),
     reloadQueryStatus: PropTypes.shape(StatusInfo),
 };

@@ -11,13 +11,11 @@ import {
     Typography
 } from "@mui/material";
 import Grid from '@mui/material/Grid2';
-import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
-import {generateDataFile, getRequestDetails, updateRequestStatus} from "../../../reducers/requestDetailsSlice";
+import {getRequestDetails, updateRequestStatus} from "../../../reducers/requestDetailsSlice";
 import {RequestStatusLogView} from "../../RequestStatusLogView";
 import {RequestStatus} from "../../../models";
 import {RequestDetailView} from "../../RequestDetailView";
 import {DetailViewNav} from "../../DetailViewNav";
-import {ConfirmDialog} from "../../ConfirmDialog";
 import {getRequestStatusLog} from "../../../reducers/requestStatusLogSlice";
 import {RequestCommentsView} from "../../RequestCommentsView";
 import "./AdminDetailView.scss";
@@ -28,7 +26,6 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const { statusLogs } = useSelector((state) => state.requestStatusLog);
     const { username } = useSelector((state) => state.userInfo);
     const [requestStatus, setRequestStatus] = React.useState("default");
-    const [confirmFileGen, setConfirmFileGen] = React.useState(false);
     const {isObfuscated } = useSelector((state) => state.userInfo);
 
     useEffect(() => {
@@ -53,11 +50,6 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
 
     const onChangeStatusEvent = (event) => {
         setRequestStatus(event.target.value);
-    }
-
-    const handleGenerateFile = () =>{
-        setConfirmFileGen(false);
-        dispatch(generateDataFile({queryInstanceId: requestRow.queryInstanceId}));
     }
 
     const handleUpdateStatus = () => {
@@ -96,7 +88,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                             <Select
                                 value={requestStatus}
                                 label="Status"
-                                disabled={details.isUpdatingStatus}
+                                disabled={details.isUpdatingStatus || details.status === RequestStatus.statuses.PROCESSING || details.status === RequestStatus.statuses.QUEUED}
                                 onChange={onChangeStatusEvent}
                             >
                                 <MenuItem disabled value={"default"}>
@@ -113,7 +105,8 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                     />
                 </FormControl>
                 <Button variant="contained" className={"StatusControlBtn"}
-                        onClick={handleUpdateStatus} size={"small"} disabled={details.isUpdatingStatus || requestStatus ==="default"}>Save</Button>
+                        onClick={handleUpdateStatus} size={"small"} disabled={details.isUpdatingStatus || requestStatus ==="default"
+                    || details.status === RequestStatus.statuses.PROCESSING || details.status === RequestStatus.statuses.QUEUED}>Save</Button>
                 { details.isUpdatingStatus && <CircularProgress size="1.3em" />}
                 <FormHelperText className={"StatusControlHelpText"}>Current Status: {details.status.name}</FormHelperText>
             </div>
@@ -153,11 +146,6 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                        <div>
-                                            <Button className={"generateFileBtn"} variant="contained" size="small"
-                                                    startIcon={<CreateNewFolderIcon />}  onClick={() => setConfirmFileGen(true)}>Generate Data File(s)
-                                            </Button>
-                                        </div>
                                     </Grid>
                                     <Grid size={6}>
                                         <Typography className={"RequestActionItem"}> <span className={"title"}>Log:</span> </Typography>
@@ -169,13 +157,6 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                         <div className={"RequestComments"}>
                             <RequestCommentsView queryMasterId={requestRow.id} queryInstanceId={requestRow.queryInstanceId} username={username}/>
                         </div>
-                        {confirmFileGen && <ConfirmDialog
-                            msg={'Are you sure you want to generate data file(s)?'}
-                            title="Generate Data File(s)"
-                            onOk = {handleGenerateFile}
-                            onCancel = {() => setConfirmFileGen(false)}
-                            />
-                        }
                     </div>
                 </div>
             )

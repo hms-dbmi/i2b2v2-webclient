@@ -10,7 +10,8 @@ export const ResearcherTableRow = ({
     requests = [],
     dateSubmitted = null,
     patientCount = null,
-    status= RequestStatus.statuses.SUBMITTED
+    status= RequestStatus.statuses.SUBMITTED,
+    userId,
 } = {}) => ({
     id,
     queryInstanceId,
@@ -18,6 +19,7 @@ export const ResearcherTableRow = ({
     requests,
     dateSubmitted,
     patientCount,
+    userId,
     status
 });
 
@@ -28,6 +30,7 @@ ResearcherTableRow.propTypes = {
     requests: PropTypes.arrayOf(ExportRequest).isRequired,
     dateSubmitted: PropTypes.instanceOf(Date).isRequired,
     patientCount: PropTypes.number.isRequired,
+    userId:  PropTypes.string.isRequired,
     status: PropTypes.string.isRequired
 }
 
