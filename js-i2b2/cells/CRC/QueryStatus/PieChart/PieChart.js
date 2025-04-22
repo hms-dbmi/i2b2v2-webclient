@@ -26,34 +26,7 @@ export default class PieChart {
             svg.append("g")
                 .attr("class", "lines");
 
-            this.key = function(d){ return d.data.label; };
-            let entryNames = ["Lorem ipsum", "dolor sit", "amet", "consectetur", "adipisicing", "elit", "sed", "do", "eiusmod", "tempor", "incididunt"];
-            let entryColors = buildColorList(entryNames.length);
-
-            this.color = d3.scaleOrdinal()
-                .domain(entryNames)
-                .range(entryColors);
-
-            this.pie = d3.pie()
-                .sort(null)
-                .value(function(d) {
-                    return d.value;
-                });
-
             svg.attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")");
-
-
-            this.randomData = () => {
-                var labels = this.color.domain();
-                return labels.map(function(label){
-                    return { label: label, value: parseInt(Math.random() * 100) }
-                });
-            }
-
-            d3.select(".svg-body")
-                .on("click", function(){
-                    this.change(this.randomData());
-                });
 
 
         } catch(e) {
@@ -85,22 +58,25 @@ export default class PieChart {
             .outerRadius(this.radius * 0.9);
 
 
-        var slice = svg.select(".slices").selectAll("path.slice")
+        let generateTooltipText = (d) => {
+            // TODO: handle Obfuscation and Sketches
+            // i2b2.PM.model.isObfuscated
+            let val = parseInt(d.data.value).toLocaleString();
+            if (d.data.display !== undefined) val = d.data.display;
+            return d.data.name + "\n[ "+ val + " patients ]";
+        };
+
+
+        let slice = svg.select(".slices").selectAll("path.slice")
             .data(pie(data), key);
 
         slice.enter()
             .insert("path")
-            .style("fill", function(d) { return color(d.data.label); })
+            .style("fill", function(d) { return color(d.data.name); })
             .attr("stroke", "black")
             .attr("class", "slice")
             .append("title")
-            .text((d) => {
-                // TODO: handle Obfuscation and Sketches
-                // i2b2.PM.model.isObfuscated
-                let val = parseInt(d.data.value).toLocaleString();
-                if (d.data.display) val = data[i].display;
-                return d.data.label + "\n[ "+ val + " patients ]";
-            });
+            .text(generateTooltipText);
 
 
         slice
@@ -117,13 +93,7 @@ export default class PieChart {
         var sliceTooltip = svg.select(".slices").selectAll("path.slice").selectAll("title")
             .data(pie(data), key);
         sliceTooltip.transition()
-            .text((d) => {
-                // TODO: handle Obfuscation and Sketches
-                // i2b2.PM.model.isObfuscated
-                let val = parseInt(d.data.value).toLocaleString();
-                if (d.data.display) val = data[i].display;
-                return d.data.label + "\n[ "+ val + " patients ]";
-            });
+            .text(generateTooltipText);
         slice.exit()
             .remove();
 
@@ -135,32 +105,16 @@ export default class PieChart {
         text.enter()
             .append("text")
             .attr("dy", ".35em")
-            .text(function(d) {
-                return d.data.label;
-            });
+            .text((d) => d.data.name)
+            .append("title")
+            .text(generateTooltipText);
 
-        var labelTooltip = svg.select(".labels").selectAll("titles")
+        var labelTooltip = svg.select(".labels").selectAll("title")
             .data(pie(data), key);
 
-        labelTooltip.enter()
-            .append("title")
-            .text((d) => {
-                // TODO: handle Obfuscation and Sketches
-                // i2b2.PM.model.isObfuscated
-                let val = parseInt(d.data.value).toLocaleString();
-                if (d.data.display) val = data[i].display;
-                return d.data.label + "\n[ "+ val + " patients ]";
-            });
-
         labelTooltip.transition()
-            .text((d) => {
-                // TODO: handle Obfuscation and Sketches
-                // i2b2.PM.model.isObfuscated
-                let val = parseInt(d.data.value).toLocaleString();
-                if (d.data.display) val = data[i].display;
-                return d.data.label + "\n[ "+ val + " patients ]";
-            });
-        
+            .text(generateTooltipText);
+
 
 
 
@@ -219,7 +173,7 @@ export default class PieChart {
     }
 
 
-    update(data) {
+    update(inputData) {
         try {
             // update the pie chart
 
@@ -233,10 +187,33 @@ export default class PieChart {
 
             svg.attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")");
 
+
+            if (inputData !== undefined) {
+                // get the breakdown data information (if present)
+                let resultXML = i2b2.h.XPath(inputData, "//xml_value");
+                if (resultXML.length > 0) {
+                    resultXML = resultXML[0].firstChild.nodeValue;
+                    // parse the data and put the results into the new data slot
+                    this.data = parseData(resultXML);
+                }
+            }
+
             // -----------------------------------------------------------------------------------------------------
+            this.key = (d) => d.data.name;
+            let entryNames = this.data.result.map((d) => d.name);
+            let entryColors = buildColorList(entryNames.length);
 
-            this.change(this.randomData());
+            this.color = d3.scaleOrdinal()
+                .domain(entryNames)
+                .range(entryColors);
 
+            this.pie = d3.pie()
+                .sort(null)
+                .value(function(d) {
+                    return d.value;
+                });
+
+            this.change(this.data.result);
         } catch(e) {
             console.error("Error in QueryStatus:PieChart.update()");
         }
@@ -286,31 +263,34 @@ let parseData = function(xmlData) {
     if (params.length === 0) return;
     for (let i2 = 0; i2 < params.length; i2++) {
         let entryRecord = {}
-        entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text();
-        entryRecord.value = params[i2].firstChild.nodeValue;
+        entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text().trim();
+        entryRecord.value = parseInt(params[i2].firstChild.nodeValue).toLocaleString();
 
-        if (i2b2.PM.model.isObfuscated) {
-            const nodeValue = parseInt(params[i2].firstChild.nodeValue);
-            if (!isNaN(nodeValue) && nodeValue < 4) {
-                entryRecord.display = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-            }
-            if (isNaN(nodeValue) || entryRecord.name === 'QueryMasterID') {
-                entryRecord.display = params[i2].firstChild.nodeValue;
-            } else {
-                entryRecord.display = params[i2].firstChild.nodeValue + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-            }
-        }
-        if (i2b2.UI.cfg.useFloorThreshold) {
-            if (params[i2].firstChild.nodeValue < i2b2.UI.cfg.floorThresholdNumber) {
-                entryRecord.display = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber.toString();
-            }
-        }
+        // TODO: FIX THIS OR CONFIRM PROPER PROCESSING
+        // if (i2b2.PM.model.isObfuscated) {
+        //     const nodeValue = parseInt(params[i2].firstChild.nodeValue);
+        //     if (!isNaN(nodeValue) && nodeValue < 4) {
+        //         entryRecord.display = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+        //     }
+        //     if (isNaN(nodeValue) || entryRecord.name === 'QueryMasterID') {
+        //         entryRecord.display = params[i2].firstChild.nodeValue;
+        //     } else {
+        //         entryRecord.display = entryRecord.value.toLocaleString() + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+        //     }
+        // }
+        // if (i2b2.UI.cfg.useFloorThreshold) {
+        //     if (entryRecord.value < i2b2.UI.cfg.floorThresholdNumber) {
+        //         entryRecord.display = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber.toString();
+        //     }
+        // }
+
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
             entryRecord.value = i2b2.h.Unescape(entryRecord.value);
             entryRecord.display = params[i2].attributes.display.textContent;
         }
-        breakdown.result.push(entryRecord);
+        // TODO: Make this configurable (dropping "0" values)
+        if (entryRecord.value > 0) breakdown.result.push(entryRecord);
     }
 
     // process "SHRINE" data
@@ -349,7 +329,7 @@ let parseData = function(xmlData) {
 
 
 let turboColorScheme = [
-    "#23171b","#271a28","#2b1c33","#2f1e3f","#32204a","#362354","#39255f","#3b2768","#3e2a72","#402c7b",
+//    "#23171b","#271a28","#2b1c33","#2f1e3f","#32204a","#362354","#39255f","#3b2768","#3e2a72","#402c7b",
     "#422f83","#44318b","#453493","#46369b","#4839a2","#493ca8","#493eaf","#4a41b5","#4a44bb","#4b46c0",
     "#4b49c5","#4b4cca","#4b4ecf","#4b51d3","#4a54d7","#4a56db","#4959de","#495ce2","#485fe5","#4761e7",
     "#4664ea","#4567ec","#446aee","#446df0","#426ff2","#4172f3","#4075f5","#3f78f6","#3e7af7","#3d7df7",
@@ -380,7 +360,7 @@ let buildColorList = (count) => {
     let skip = (turboColorScheme.length - 1) / count;
     let ret = [];
 
-    for (let i = 0; i <= count; i++) {
+    for (let i = 0; i < count; i++) {
         ret.push(turboColorScheme[Math.floor(skip * i)]);
     }
     return ret;

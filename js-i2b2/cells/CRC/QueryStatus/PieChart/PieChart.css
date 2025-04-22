@@ -18,10 +18,14 @@
     stroke-dasharray: 5,0;
 }
 
-
 .viztype-PIECHART svg polyline {
     opacity: .3;
     stroke: black;
     stroke-width: 2px;
     fill: none;
 }
+
+/*.viztype-PIECHART svg text:hover {*/
+/*    font-weight: bold;*/
+/*}*/
+
