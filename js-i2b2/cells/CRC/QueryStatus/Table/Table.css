@@ -1,4 +1,26 @@
 .component-instance-viz.viztype-TABLE {
-    background: radial-gradient(red,transparent);
-    height: 15rem;
+    padding: 0 2rem;
+}
+
+.component-instance-viz.viztype-TABLE table {
+    width: 100%;
+    top: calc(-.5rem - 1px);
+    position: relative;
+    border: solid 1px #ccc;
+}
+
+.component-instance-viz.viztype-TABLE table th {
+    border: solid 1px #ccc;
+    padding: .3rem .5rem;
+    background: #eee;
+}
+
+.component-instance-viz.viztype-TABLE table td {
+    border: solid 1px #ccc;
+    padding: .2rem .5rem;
+}
+
+.component-instance-viz.viztype-TABLE table th.total,
+.component-instance-viz.viztype-TABLE table td.total {
+    text-align: center;
 }
