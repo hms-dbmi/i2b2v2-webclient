@@ -21,6 +21,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
     const [tab, setTab] = React.useState(2);
     const [selectedTable, setSelectedTable] = useState(null);
     const { isAdmin } = useSelector((state) => state.userInfo);
+    const TABINDEX_FOLDERNAME = ["System Shared Tables", "Project Shared Tables", "My Tables"];
 
 
     const handleChangeTab = (event, newValue) => { setTab(newValue); };
@@ -34,7 +35,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
 
     const handleLoadTable = () =>{
         handleClose();
-        dispatch(loadTable({id: selectedTable.id, title: selectedTable.title}));
+        dispatch(loadTable({id: selectedTable.id, title: selectedTable.title, folderName: TABINDEX_FOLDERNAME[tab]}));
         handleSetScreen(0);
     }
 
@@ -88,9 +89,9 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         aria-label="Table Definition Folders"
                         sx={{ borderRight: 1, borderColor: 'divider' }}
                     >
-                        <Tab label="System Shared Tables" {...addtlProps(0)} />
-                        <Tab label="Project Shared Tables" {...addtlProps(1)} />
-                        <Tab label="My Tables" {...addtlProps(2)} />
+                        <Tab label={TABINDEX_FOLDERNAME[0]} {...addtlProps(0)} />
+                        <Tab label={TABINDEX_FOLDERNAME[1]} {...addtlProps(1)} />
+                        <Tab label={TABINDEX_FOLDERNAME[2]} {...addtlProps(2)} />
                     </Tabs>
                     <TabPanel
                         value={tab}

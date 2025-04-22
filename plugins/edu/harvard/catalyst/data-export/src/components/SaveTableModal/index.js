@@ -35,6 +35,7 @@ export const SaveTableModal = ({open, handleClose}) => {
     const [enableSave, setEnableSave] = React.useState(false);
     const [isShared, setIsShared] = React.useState(false);
     const [tab, setTab] = React.useState(2);
+    const TABINDEX_FOLDERNAME = ["System Shared Tables", "Project Shared Tables", "My Tables"];
 
     const dispatch = useDispatch();
 
@@ -101,6 +102,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                     creator_id: username,
                     tableId: selectedTableDef.id,
                     title: selectedTableDef.title,
+                    folderName: TABINDEX_FOLDERNAME[tab],
                     shared: isShared
                 })
             );
@@ -204,10 +206,10 @@ export const SaveTableModal = ({open, handleClose}) => {
                         sx={{ borderRight: 1, borderColor: 'divider'}}
                         onChange={handleChangeTab}
                     >
-                        {!isAdmin ?  <Tab label="System Shared Tables" {...addtlProps(0)} sx={{textDecoration:"line-through"}}  disabled/>
-                        : <Tab label="System Shared Tables" {...addtlProps(0)}/>}
-                        <Tab label="Project Shared Tables" {...addtlProps(1)} />
-                        <Tab label="My Tables" {...addtlProps(2)} />
+                        {!isAdmin ?  <Tab label={TABINDEX_FOLDERNAME[0]} {...addtlProps(0)} sx={{textDecoration:"line-through"}}  disabled/>
+                        : <Tab label={TABINDEX_FOLDERNAME[0]} {...addtlProps(0)}/>}
+                        <Tab label={TABINDEX_FOLDERNAME[1]} {...addtlProps(1)} />
+                        <Tab label={TABINDEX_FOLDERNAME[2]} {...addtlProps(2)} />
                     </Tabs>
                     <TabPanel
                         value={tab}

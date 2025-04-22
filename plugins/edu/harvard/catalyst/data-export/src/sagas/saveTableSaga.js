@@ -5,6 +5,7 @@ import {
     SAVE_DATA_TABLE
 } from "../actions";
 import XMLParser from "react-xml-parser";
+import {refreshTitleAndFolderName} from "../reducers/tableDefSlice";
 /* global i2b2 */
 
 
@@ -53,12 +54,13 @@ const getConceptsToXml = (concepts) => {
 };
 
 export function* doSaveTable(action) {
-    let { tableId, tableDefRows, creator_id, title, shared } = action.payload;
+    let { tableId, tableDefRows, creator_id, title, shared, folderName } = action.payload;
 
     try {
         let response = yield call(setTableRequest, tableDefRows, title, creator_id, shared, tableId);
         if(!response.error) {
             yield put(saveTableSuccess());
+            yield put(refreshTitleAndFolderName({title, folderName}));
         }
         else{
             console.error("Error saving table! Message: " + response.errorMsg + ". Error details: " + response.errorData);

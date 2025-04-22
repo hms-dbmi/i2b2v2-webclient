@@ -11,7 +11,7 @@ export const saveTableSlice = createSlice({
             state.isSaving = true;
             state.statusInfo = StatusInfo();
         },
-        saveTableSuccess: (state, { payload: table }) => {
+        saveTableSuccess: state => {
             state.isSaving = false;
             state.statusInfo = StatusInfo({
                 status: "SUCCESS"

@@ -5,6 +5,7 @@ import {TableDefinitionRow} from "./TableDefinitionRow";
 export const TableDefinition = ({
     id = null,
     title= "",
+    folderName = "",
     shared= false,
     rows = [],
     isFetching= false,
@@ -14,6 +15,7 @@ export const TableDefinition = ({
 } = {}) => ({
     id,
     title,
+    folderName,
     shared,
     rows,
     isFetching,
@@ -26,6 +28,7 @@ TableDefinition.propTypes = {
     id: PropTypes.number,
     rows: PropTypes.arrayOf(TableDefinitionRow).isRequired,
     title: PropTypes.string,
+    folderName: PropTypes.string,
     shared: PropTypes.bool,
     isFetching: PropTypes.bool,
     statusInfo: PropTypes.shape(StatusInfo),
