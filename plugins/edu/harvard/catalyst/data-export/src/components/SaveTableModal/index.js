@@ -22,9 +22,8 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
-    const { userRows, projectRows,
-        globalRows,
-        statusInfo, isFetching, isDeleting, deleteStatusInfo, renameStatusInfo } = useSelector((state) => state.tableListing);
+    const { userRows, projectRows, globalRows, statusInfo, isFetching, isDeleting,
+        deleteStatusInfo, renameStatusInfo } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
     const {rows: tableDefRows} = useSelector((state) => state.tableDef);
     const { username, isAdmin } = useSelector((state) => state.userInfo);

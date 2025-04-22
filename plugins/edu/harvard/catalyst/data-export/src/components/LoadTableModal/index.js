@@ -16,8 +16,8 @@ import {Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText} fr
 
 export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
     const dispatch = useDispatch();
-    const { globalRows, projectRows, userRows, statusInfo,
-        isFetching, isDeleting, deleteStatusInfo, renameStatusInfo} = useSelector((state) => state.tableListing);
+    const { globalRows, projectRows, userRows, statusInfo, isFetching, isDeleting,
+        deleteStatusInfo, renameStatusInfo} = useSelector((state) => state.tableListing);
     const [tab, setTab] = React.useState(2);
     const [selectedTable, setSelectedTable] = useState(null);
     const { isAdmin } = useSelector((state) => state.userInfo);
