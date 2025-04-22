@@ -3,10 +3,11 @@
     "BARS": {
       "name": "Bar Chart",
       "source": "BarGraph/BarGraph.js",
+      "CSS": "BarGraph/BarGraph.css",
+      "iconClass": "bi bi-bar-chart-line",
       "default": true,
       "displayOrder": 0,
       "class": "bargraph",
-      "CSS": "BarGraph/BarGraph.css",
       "results": [
         "PATIENT_GENDER_COUNT_XML",
         "PATIENT_SEX_COUNT_SHRINE_XML",
@@ -26,6 +27,7 @@
       "name": "Table Summary",
       "source": "Table/Table.js",
       "CSS": "Table/Table.css",
+      "iconClass": "bi bi-table",
       "displayOrder": 100,
       "results": [
         "PATIENT_GENDER_COUNT_XML",
@@ -43,8 +45,9 @@
       ]
     },
     "DOWNLOAD": {
-      "name": "Download",
+      "name": "CSV Download",
       "source": "Download/Download.js",
+      "iconClass": "bi bi-filetype-csv",
       "displayOrder": 101,
       "results": [
         "PATIENT_GENDER_COUNT_XML",
@@ -65,7 +68,9 @@
       "source": "Summary/Summary.js",
       "alwaysShow": true,
       "noFrameTemplate": true,
-      "results": ["INTERNAL_SUMMARY"]
+      "results": [
+        "__INTERNAL_SUMMARY"
+      ]
     },
     "COUNT": {
       "source": "Count/Count.js",
@@ -73,9 +78,9 @@
       "class": "patient-count",
       "alwaysShow": true,
       "noFrameTemplate": true,
-      "results" :[
-        "PATIENT_COUNT_XML",
-        "PATIENT_COUNT_SHRINE_XML"
+      "results": [
+        "__PATIENT_COUNT_XML",
+        "__PATIENT_COUNT_SHRINE_XML"
       ]
     },
     "SHRINESITES": {
@@ -83,7 +88,7 @@
       "CSS": "ShrineSites/ShrineSites.css",
       "alwaysShow": true,
       "noFrameTemplate": true,
-      "results" :[
+      "results": [
         "PATIENT_SITE_COUNT_SHRINE_XML"
       ]
     },

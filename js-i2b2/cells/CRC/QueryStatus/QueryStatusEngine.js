@@ -77,7 +77,7 @@ i2b2.CRC.QueryStatus.componentDropdownClickHandler = (e) => {
     const selectEl = e.currentTarget;
     if (selectEl.classList.contains("show")) {
         selectEl.classList.remove("show");
-        const componentDropEl = e.target;
+        const componentDropEl = e.target.closest("li");
         for (const vizKey of Object.keys(i2b2.CRC.QueryStatus.model.visualizations)) {
             let vizComponent = i2b2.CRC.QueryStatus.model.visualizations[vizKey].componentInstances[0];
             if (vizComponent !== undefined && vizComponent.dropdownEl) {
@@ -277,7 +277,7 @@ i2b2.CRC.QueryStatus._handleQueryResultSet = function(results) {
                 // this is a QRS type that may have many visualization components
                 qrs_entries[code].componentInstances = [];
                 if (validComponents.length === 0) {
-                    console.error("QueryStatus: no valid components found to display " + code);
+                    console.warn("QueryStatus: no valid components found to display " + code);
                 } else {
                     // create the master frame for the visualizations
                     let componentParentEl = document.createElement("div");
@@ -315,7 +315,22 @@ i2b2.CRC.QueryStatus._handleQueryResultSet = function(results) {
                         // create an entry in the viz selection dropdown
                         const componentDropEntryEl = document.createElement("li");
                         // set label and mouse hover
-                        if (componentConfig.name !== undefined) componentDropEntryEl.textContent = componentConfig.name;
+                        let tempEl;
+                        if (componentConfig.iconClass !== undefined) {
+                            tempEl = document.createElement("i");
+                            for (let cname of componentConfig.iconClass.split(" ")) tempEl.classList.add(cname);
+                            componentDropEntryEl.appendChild(tempEl);
+                        }
+                        if (componentConfig.name !== undefined) {
+                            if (componentConfig.iconClass === undefined) {
+                                componentDropEntryEl.textContent = componentConfig.name;
+                            } else {
+                                tempEl = document.createElement("span");
+                                tempEl.classList.add("label");
+                                tempEl.textContent = componentConfig.name;
+                                componentDropEntryEl.appendChild(tempEl);
+                            }
+                        }
                         if (componentConfig.tooltip !== undefined) componentDropEntryEl.setAttribute('title', componentConfig.tooltip);
                         componentDropEntryEl.classList.add("viz-dropdown-item", "resulttype-" + code);
                         if (componentConfig.class !== undefined) componentDropEntryEl.classList.add(componentConfig.class);
