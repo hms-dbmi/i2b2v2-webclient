@@ -10,6 +10,14 @@ export default class Summary {
             console.error("Error in QueryStatus:Summary.constructor()");
         }
     }
+
+    destroy() {
+        delete this.config.displayEl;
+        delete this.config;
+        delete this.record;
+        delete this.data;
+    }
+
     update(data) {
         try {
 

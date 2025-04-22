@@ -10,9 +10,12 @@ export default class Download {
         }
     }
 
-    update(data) {
-        try {
-
+    destroy() {
+        delete this.config.displayEl;
+        delete this.config;
+        delete this.record;
+        delete this.data;
+    }
         } catch(e) {
             console.error("Error in QueryStatus:Download.update()");
         }

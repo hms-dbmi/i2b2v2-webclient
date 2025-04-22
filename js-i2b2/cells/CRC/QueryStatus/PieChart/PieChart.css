@@ -1,0 +1,27 @@
+/* PieChart CSS */
+
+.viztype-PIECHART svg {
+    caret-color: transparent;
+}
+
+.viztype-PIECHART svg path.slice {
+    transition: stroke-width 500ms;
+    transition-property: stroke-dasharray;
+    stroke-width: 1px;
+    stroke-opacity: .5;
+    stroke-dasharray: 1,5;
+}
+
+.viztype-PIECHART svg path.slice:hover {
+    stroke-width: 2px;
+    stroke-opacity: 1;
+    stroke-dasharray: 5,0;
+}
+
+
+.viztype-PIECHART svg polyline {
+    opacity: .3;
+    stroke: black;
+    stroke-width: 2px;
+    fill: none;
+}

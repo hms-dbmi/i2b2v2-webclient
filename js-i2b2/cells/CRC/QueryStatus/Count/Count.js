@@ -23,6 +23,13 @@ export default class Count {
         }
     }
 
+    destroy() {
+        delete this.config.displayEl;
+        delete this.config;
+        delete this.record;
+        delete this.data;
+    }
+
     update(data) {
         try {
             this.data = data;

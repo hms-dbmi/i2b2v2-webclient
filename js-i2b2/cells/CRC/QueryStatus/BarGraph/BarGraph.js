@@ -35,7 +35,6 @@ export default class BarGraph {
     }
     destroy() {
         delete this.config.displayEl;
-        delete this.config.displayEl;
         delete this.config;
         delete this.record;
         delete this.data;
@@ -102,7 +101,7 @@ export default class BarGraph {
                 });
 
             // resize the SGV height depending upon our max X axis label height
-//                if (maxHeight > margin.bottom) svg.node().parentElement.attributes.height.value = this.height + margin.top + maxHeight + 10;
+            if (maxHeight > margin.bottom) svg.node().parentElement.attributes.height.value = this.height + margin.top + maxHeight + 10;
 
 
             // generate the Y axis calc object
@@ -218,6 +217,9 @@ export default class BarGraph {
 }
 
 
+// =======================================================================================================================
+
+
 const shortenLabel = function(inText, maxLen) {
     if (inText.length > maxLen) {
         let tpos = inText.indexOf(" ",parseInt(maxLen * 0.75));
@@ -230,7 +232,6 @@ const shortenLabel = function(inText, maxLen) {
         return inText;
     }
 };
-
 
 let parseData = function(xmlData) {
     let breakdown = {};

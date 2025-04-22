@@ -24,15 +24,15 @@ i2b2.CRC.QueryStatus.start = function(queryInstanceId, mainEl) {
             // remove resize observer
             if (i2b2.CRC.QueryStatus.resizeObserver) i2b2.CRC.QueryStatus.resizeObserver.disconnect();
                 // clear display
-            while (mainEl.children.length > 0) mainEl.deleteChild(mainEl.children[0]);
+            while (mainEl.children.length > 0) mainEl.removeChild(mainEl.children[0]);
             // destroy the previous display module instances
             Object.keys(i2b2.CRC.QueryStatus.model.visualizations).forEach((breakdownCode) => {
                 const breakdown = i2b2.CRC.QueryStatus.model.visualizations[breakdownCode];
                 breakdown.componentInstances.forEach((breakdownVizComponent) => {
                     try {
-                        breakdownVizComponent.visualization.destroy();
-                        delete breakdownVizComponent.visualization;
                         i2b2.CRC.QueryStatus.resizeObserver.unobserve(breakdownVizComponent.displayEl);
+                        if (typeof breakdownVizComponent.visualization.destroy === 'function') breakdownVizComponent.visualization.destroy();
+                        delete breakdownVizComponent.visualization;
                     } catch(e) {
                         console.warn("QueryStatus: Error while destroying visualization component: " + breakdownCode + ":" + breakdownVizComponent.definition.componentCode);
                     }
