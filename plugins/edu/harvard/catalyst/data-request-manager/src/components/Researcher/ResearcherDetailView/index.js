@@ -29,7 +29,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
 
     useEffect(() => {
         if(requestRow) {
-            dispatch(getRequestDetails({requestRow, isManager: false}));
+            dispatch(getRequestDetails({requestRow, isManager: false, isAdmin: false}));
 
             const exportRequests = requestRow.requests.map(ri =>  {
                     return {

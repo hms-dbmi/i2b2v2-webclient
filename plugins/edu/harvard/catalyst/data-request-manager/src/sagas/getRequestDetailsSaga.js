@@ -41,7 +41,7 @@ const parseExportRequestDetailXml = (exportRequestListXml) => {
 }
 
 export function* doGetRequestDetails(action) {
-    const { requestRow, isManager } = action.payload;
+    const { requestRow, isManager, isAdmin } = action.payload;
 
     try {
         let response;
@@ -58,7 +58,7 @@ export function* doGetRequestDetails(action) {
             let requestDetails = { ...requestRow };
             requestDetails.email = emailAndStatusLogs.email;
             requestDetails.statusLogs = emailAndStatusLogs.statusLogs;
-            yield put(getRequestDetailsSuccess({requestDetails, isManager}));
+            yield put(getRequestDetailsSuccess({requestDetails, isManager, isAdmin}));
         } else {
             yield put(getRequestDetailsError({errorMessage: "There was an error getting the request details"}));
         }
