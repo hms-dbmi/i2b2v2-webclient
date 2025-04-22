@@ -13,7 +13,17 @@ export const tableListingSlice = createSlice({
             })
         },
         listTablesSuccess: (state, { payload: tableDefs }) => {
-            state.sharedRows = tableDefs.sharedRows.map(table => {
+            state.globalRows = tableDefs.globalRows.map(table => {
+                return TableListingRow({
+                    id: table.id,
+                    title: table.title,
+                    creator_id: table.creator_id,
+                    create_date: table.create_date,
+                    column_count: table.column_count,
+                    visible: table.visible
+                });
+            });
+            state.projectRows = tableDefs.projectRows.map(table => {
                 return TableListingRow({
                     id: table.id,
                     title: table.title,
@@ -56,7 +66,7 @@ export const tableListingSlice = createSlice({
                 status: "SUCCESS"
             });
             if(isShared){
-                state.sharedRows = state.sharedRows.filter((row) => row.id !== tableId);
+                state.projectRows = state.projectRows.filter((row) => row.id !== tableId);
             }
             else{
                 state.userRows = state.userRows.filter((row) => row.id !== tableId);

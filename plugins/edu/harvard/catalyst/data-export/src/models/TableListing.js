@@ -3,7 +3,8 @@ import {StatusInfo} from "./StatusInfo";
 import {TableListingRow} from "./TableListingRow";
 
 export const TableListing = ({
-    sharedRows = [],
+    globalRows = [],
+    projectRows=[],
     userRows = [],
     isFetching= false,
     isDeleting = false,
@@ -12,7 +13,8 @@ export const TableListing = ({
     deleteStatusInfo = false,
     renameStatusInfo = false
 } = {}) => ({
-    sharedRows,
+    globalRows,
+    projectRows,
     userRows,
     isFetching,
     isDeleting,
@@ -23,7 +25,8 @@ export const TableListing = ({
 });
 
 TableListing.propTypes = {
-    sharedRows: PropTypes.arrayOf(TableListingRow),
+    globalRows: PropTypes.arrayOf(TableListingRow),
+    projectRows: PropTypes.arrayOf(TableListingRow),
     userRows: PropTypes.arrayOf(TableListingRow),
     isFetching: PropTypes.bool,
     isDeleting: PropTypes.bool,

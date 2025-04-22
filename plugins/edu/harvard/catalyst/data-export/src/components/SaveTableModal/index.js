@@ -22,7 +22,9 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 
 export const SaveTableModal = ({open, handleClose}) => {
     const [selectedTableDef, setSelectedTableDef] = React.useState({});
-    const { userRows, sharedRows, statusInfo, isFetching, isDeleting, deleteStatusInfo, renameStatusInfo } = useSelector((state) => state.tableListing);
+    const { userRows, projectRows,
+        globalRows,
+        statusInfo, isFetching, isDeleting, deleteStatusInfo, renameStatusInfo } = useSelector((state) => state.tableListing);
     const saveTableInfo = useSelector((state) => state.saveTable);
     const {rows: tableDefRows} = useSelector((state) => state.tableDef);
     const { username, isAdmin } = useSelector((state) => state.userInfo);
@@ -32,7 +34,7 @@ export const SaveTableModal = ({open, handleClose}) => {
     const [isNameInvalid, setIsNameInvalid] = React.useState(false);
     const [enableSave, setEnableSave] = React.useState(false);
     const [isShared, setIsShared] = React.useState(false);
-    const [tab, setTab] = React.useState(1);
+    const [tab, setTab] = React.useState(2);
 
     const dispatch = useDispatch();
 
@@ -151,7 +153,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         if(isAdmin) {
             setTab(newValue);
         }
-        setIsShared(newValue === 0);
+        setIsShared(newValue !== 2);
         setSelectedRows([]);
     };
 
@@ -202,9 +204,10 @@ export const SaveTableModal = ({open, handleClose}) => {
                         sx={{ borderRight: 1, borderColor: 'divider'}}
                         onChange={handleChangeTab}
                     >
-                        {!isAdmin ?  <Tab label="Shared Tables" {...addtlProps(0)} sx={{textDecoration:"line-through"}}  disabled/>
-                        : <Tab label="Shared Tables" {...addtlProps(0)}/>}
-                        <Tab label="My Tables" {...addtlProps(1)} />
+                        {!isAdmin ?  <Tab label="System Shared Tables" {...addtlProps(0)} sx={{textDecoration:"line-through"}}  disabled/>
+                        : <Tab label="System Shared Tables" {...addtlProps(0)}/>}
+                        <Tab label="Project Shared Tables" {...addtlProps(1)} />
+                        <Tab label="My Tables" {...addtlProps(2)} />
                     </Tabs>
                     <TabPanel
                         value={tab}
@@ -213,7 +216,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                     >
                         <TableListing
                             id={"saveModalDefTableGlobal"}
-                            rows={sharedRows}
+                            rows={globalRows}
                             canRename={isAdmin}
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
@@ -230,6 +233,27 @@ export const SaveTableModal = ({open, handleClose}) => {
                     <TabPanel
                         value={tab}
                         index={1}
+                        className={'modalTabPanel'}
+                    >
+                        <TableListing
+                            id={"saveModalDefTableProject"}
+                            rows={projectRows}
+                            canRename={true}
+                            onSelect={onRowSelect}
+                            selectionModel={selectedRows}
+                            hasError={statusInfo.status==='FAIL'}
+                            onDelete={(id) => onDeleteTable(id, false)}
+                            isLoading={isFetching || isDeleting}
+                            deleteFailed={deleteStatusInfo.status === 'FAIL'}
+                            onDeleteAlertClose={confirmDeleteStatus}
+                            onRename={updateTableDefinitionTitle}
+                            renameFailed={renameStatusInfo.status === 'FAIL'}
+                            onRenameAlertClose={confirmRenameStatus}
+                        />
+                    </TabPanel>
+                    <TabPanel
+                        value={tab}
+                        index={2}
                         className={'modalTabPanel'}
                         height={260}
                     >
