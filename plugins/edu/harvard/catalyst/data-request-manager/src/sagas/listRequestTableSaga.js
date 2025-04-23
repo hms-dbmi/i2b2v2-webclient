@@ -70,7 +70,7 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
                             const requestId = queryResultType.getElementsByTagName('name');
                             let requestDescription = queryResultType.getElementsByTagName('description');
                             if(requestId.length > 0 ) {
-                                const tableId = parseInt(requestId[0].value);
+                                const tableId = parseInt(requestId[0].value.replace("RPDO_", ""));
                                 if(!isNaN(tableId)){
                                     request.tableId = tableId;
                                 }
