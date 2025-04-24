@@ -36,6 +36,7 @@ export const RequestCommentsView = ({queryMasterId, queryInstanceId, username}) 
 
     const handleCancelEditComment = (event) => {
         setIsEditing(false);
+        handleRestoreComment();
     }
 
     useEffect(() => {
