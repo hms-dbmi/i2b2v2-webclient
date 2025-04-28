@@ -14,6 +14,7 @@ import { visuallyHidden } from '@mui/utils';
 import './RequestStatusLogView.scss';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {DateTime} from "luxon";
 
 export const RequestStatusLogView = ({requestStatusLog}) => {
     const [order, setOrder] = React.useState('desc');
@@ -89,7 +90,7 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
 
     const getLatestRequestStatusLog = (statusLogs) => {
         const recentStatusLogList = statusLogs.map(requestLog => {
-            const logItems = requestLog.logItems;
+            const logItems = [...requestLog.logItems];
             let requestStatusLog = {
                 description: requestLog.description,
                 date: '',
@@ -97,8 +98,10 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                 logItems: logItems
             }
             if(logItems.length > 0){
-               requestStatusLog.date = logItems[logItems.length-1].date;
-                requestStatusLog.status = logItems[logItems.length-1].status;
+                logItems.reverse();
+                requestStatusLog.date = logItems[0].date;
+                requestStatusLog.status = logItems[0].status;
+                requestStatusLog.logItems = logItems.slice(1);
             }
 
             return requestStatusLog;
@@ -173,7 +176,7 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                                     </div>
                                 </TableCell>
                                 <TableCell align="left">
-                                    {row.date && row.date.toLocaleDateString()}
+                                    {row.date && row.date.toLocaleString(DateTime.DATETIME_SHORT)}
                                 </TableCell>
                                 <TableCell component="td" scope="row">
                                     {row.status.name}
@@ -189,7 +192,7 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                                             <TableCell component="td" scope="row" className={"noborder"}>
                                             </TableCell>
                                             <TableCell align="left" scope="row">
-                                                {logItem.date.toLocaleDateString()}
+                                                {logItem.date.toLocaleString(DateTime.DATETIME_SHORT)}
                                             </TableCell>
                                             <TableCell component="td" scope="row">
                                                 {logItem.status.name}

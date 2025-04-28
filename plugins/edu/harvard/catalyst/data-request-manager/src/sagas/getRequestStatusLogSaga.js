@@ -42,10 +42,10 @@ const parseRequestStatusLogXml = (requestStatusLogXmlAndDesc) => {
                 const status = RequestStatus.statuses[column];
                 if(status){
                     const id = exportRequestDetail.statusLogs.length + 1;
-                    let date = data.value.split("_");
+                    let inputFormat = "yyyyLLdd_HHmmss";
+                    let date = data.value;//.split("_");
                     if(date.length > 0){
-                        date = date[0];
-                        date = DateTime.fromISO(date).toJSDate();
+                        date = DateTime.fromFormat(date, inputFormat, {zone: 'utc'});
                         exportRequestDetail.statusLogs.push({id, date, status});
                     }
                 }
