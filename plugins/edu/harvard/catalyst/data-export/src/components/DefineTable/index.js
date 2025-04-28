@@ -56,7 +56,7 @@ let currentDateRow = false;
 export const DefineTable = (props) => {
     const dispatch = useDispatch();
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
-    const { rows, statusInfo, labValueToDisplay, title} = useSelector((state) => state.tableDef);
+    const { rows, statusInfo, labValueToDisplay, title, folderName, isFetching} = useSelector((state) => state.tableDef);
     const [cellModesModel, setCellModesModel] = React.useState({});
     const doDispSnackbar = props.dispSnackbar;
     const totalRows = React.useRef();
@@ -605,7 +605,7 @@ export const DefineTable = (props) => {
     };
 
     const truncateStr = (str) => {
-        const maxLength = 60;
+        const maxLength = 70;
         let truncatedStr = str;
         if(str.length > maxLength){
             truncatedStr = truncatedStr.slice(0, maxLength) + "...";
@@ -625,7 +625,14 @@ export const DefineTable = (props) => {
                 setEndDate={setEndDate}
                 saveUpdate={handleDateSave}
             />
-            {title && title !== DEFAULT_TABLE_TITLE &&  <div title={title} className={"editingFile"}>editing: <b>{truncateStr(title)}</b></div> }
+            {title && title !== DEFAULT_TABLE_TITLE &&  <div className={"EditingFile"}>
+                <div title={title} >
+                    Table name: <b>{truncateStr(title)}</b> (editing)
+                    <div className={"TitleFolderName"}>
+                        Current saved folder: <b>{folderName}</b>
+                    </div>
+                </div>
+                </div> }
             <div id="dropTrgt">
                 <p>Drag a concept onto the grid to add it to the list</p>
                 <DataGrid
@@ -649,6 +656,13 @@ export const DefineTable = (props) => {
                         sorting: {
                             sortModel: [{field:'order',sort:'asc'}]
                         }
+                    }}
+                    loading={isFetching}
+                    slotProps={{
+                        loadingOverlay: {
+                            variant: 'circular-progress',
+                            noRowsVariant: 'linear-progress',
+                        },
                     }}
                     autoHeight={true}
                     hideFooter={true}

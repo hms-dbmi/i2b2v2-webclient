@@ -85,7 +85,7 @@ const parseGetTableXml = (tableXml, id) => {
 }
 
 export function* doLoadTable(action) {
-    let {title, id}  = action.payload;
+    let {title, id, folderName}  = action.payload;
 
     if(!id) {
         id = DEFAULT_TABLE_ID;
@@ -96,6 +96,7 @@ export function* doLoadTable(action) {
         if(!response.error) {
             let table= yield parseGetTableXml(response, id);
             table.title = title;
+            table.folderName = folderName;
             yield put(loadTableSuccess(table));
         }else{
             console.error("Error loading table! Message: " + response.errorMsg + ". Error details: " + response.errorData);

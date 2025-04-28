@@ -73,6 +73,7 @@ export const tableDefSlice = createSlice({
 
             state.id = table.id;
             state.title = table.title;
+            state.folderName = table.folderName;
             state.shared = table.shared;
             state.rows = tableDefRows;
             state.statusInfo = StatusInfo({
@@ -208,6 +209,10 @@ export const tableDefSlice = createSlice({
                 }
             }
         },
+        refreshTitleAndFolderName: (state, { payload: {title, folderName} }) => {
+            state.title = title;
+            state.folderName = folderName;
+        }
     }
 })
 
@@ -226,6 +231,7 @@ export const {
     handleRowName,
     handleRowSdx,
     loadTermInfo,
+    refreshTitleAndFolderName
 } = tableDefSlice.actions
 
 export default tableDefSlice.reducer
