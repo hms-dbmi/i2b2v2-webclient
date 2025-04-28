@@ -229,7 +229,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onRename={updateTableDefinitionTitle}
                             renameFailed={renameStatusInfo.status === 'FAIL'}
                             onRenameAlertClose={confirmRenameStatus}
-                            showLastEditedBy={false}
+                            showCreatedBy={false}
                         />
                     </TabPanel>
                     <TabPanel
@@ -251,7 +251,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onRename={updateTableDefinitionTitle}
                             renameFailed={renameStatusInfo.status === 'FAIL'}
                             onRenameAlertClose={confirmRenameStatus}
-                            showLastEditedBy={true}
+                            showCreatedBy={true}
                         />
                     </TabPanel>
                     <TabPanel
@@ -274,7 +274,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onRename={updateTableDefinitionTitle}
                             renameFailed={renameStatusInfo.status === 'FAIL'}
                             onRenameAlertClose={confirmRenameStatus}
-                            showLastEditedBy={false}
+                            showCreatedBy={false}
                         />
                     </TabPanel>
                 </Box>

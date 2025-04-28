@@ -110,7 +110,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                                       onRename={updateTableDefinitionTitle}
                                       renameFailed={renameStatusInfo.status === 'FAIL'}
                                       onRenameAlertClose={confirmRenameStatus}
-                                      showLastEditedBy={false}
+                                      showCreatedBy={false}
                         />
                     </TabPanel>
                     <TabPanel
@@ -130,7 +130,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                                       onRename={updateTableDefinitionTitle}
                                       renameFailed={renameStatusInfo.status === 'FAIL'}
                                       onRenameAlertClose={confirmRenameStatus}
-                                      showLastEditedBy={true}
+                                      showCreatedBy={true}
                         />
                     </TabPanel>
                     <TabPanel
@@ -149,7 +149,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                                       onRename={updateTableDefinitionTitle}
                                       renameFailed={renameStatusInfo.status === 'FAIL'}
                                       onRenameAlertClose={confirmRenameStatus}
-                                      showLastEditedBy={false}
+                                      showCreatedBy={false}
                         />
                     </TabPanel>
                 </Box>
