@@ -26,11 +26,11 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
     const { statusLogs } = useSelector((state) => state.requestStatusLog);
     const { username } = useSelector((state) => state.userInfo);
     const [requestStatus, setRequestStatus] = React.useState("default");
-    const {isObfuscated } = useSelector((state) => state.userInfo);
+    const {isObfuscated, isAdmin, isManager } = useSelector((state) => state.userInfo);
 
     useEffect(() => {
         if(requestRow) {
-            dispatch(getRequestDetails({requestRow, isManager: true}));
+            dispatch(getRequestDetails({requestRow, isManager, isAdmin }));
 
             const exportRequests = requestRow.requests.map(ri =>  {
                     return {
@@ -41,7 +41,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
             );
             dispatch(getRequestStatusLog({exportRequests}));
         }
-    }, [requestRow]);
+    }, [requestRow, isManager, isAdmin]);
 
 
     const goToViewRequestTable = () => {

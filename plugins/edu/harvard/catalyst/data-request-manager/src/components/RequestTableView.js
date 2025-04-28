@@ -19,7 +19,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
     const { rows, isFetching } = useSelector((state) => state.requestTable);
     const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
     const [filterModel, setFilterModel] = useState({items: []});
-    const {username, isManager, isObfuscated} = userInfo;
+    const {username, isAdmin, isManager, isObfuscated} = userInfo;
     const { obfuscatedDisplayNumber, useFloorThreshold, floorThresholdNumber, floorThresholdText }
         = useSelector((state) => state.configInfo);
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
@@ -48,7 +48,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             flex: 3,
             renderCell: (param) => {
                 return (
-                    <SimpleTreeView defaultExpandedItems={isManager ? [] : [param.row.description]}>
+                    <SimpleTreeView defaultExpandedItems={(isManager || isAdmin) ? [] : [param.row.description]}>
                         <TreeItem itemId={param.row.description} label={param.row.description}>
                             {
                                 param.row.requests.map((exportRequest, index) => {
@@ -160,7 +160,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
     }
     const handleRefreshRequestTable = () => {
         clearFilterModel();
-        dispatch(listRequestTable({isManager, username}));
+        dispatch(listRequestTable({isManager, isAdmin, username}));
     }
 
     const handleCreateFile = () =>{
@@ -171,12 +171,12 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
 
     useEffect(() => {
         if (username) {
-            dispatch(listRequestTable({isManager, username}));
+            dispatch(listRequestTable({isManager, isAdmin, username}));
         }
-    }, [username]);
+    }, [username, isManager, isAdmin]);
 
     const getColumns = () => {
-        if(isManager){
+        if(isManager || isAdmin){
             columns.splice(2, 0, {
                 field: 'userId',
                 headerName: 'User',

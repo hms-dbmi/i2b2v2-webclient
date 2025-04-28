@@ -8,7 +8,7 @@ import {Admin} from "../Admin";
 
 export const DataRequestManager = () => {
     const dispatch = useDispatch();
-    const { isManager } = useSelector((state) => state.userInfo);
+    const { isManager, isAdmin } = useSelector((state) => state.userInfo);
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
 
     const i2b2LibLoaded = () => {
@@ -27,7 +27,7 @@ export const DataRequestManager = () => {
 
     return (
         <div>
-            {!isManager ? <Researcher/> : <Admin/> }
+            {!(isManager || isAdmin) ? <Researcher/> : <Admin/> }
         </div>
     )
 }

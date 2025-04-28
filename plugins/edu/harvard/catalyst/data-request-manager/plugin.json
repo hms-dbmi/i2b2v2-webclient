@@ -8,7 +8,7 @@
   "base": "build/index.html",
   "sandbox": true,
   "admin_only": false,
-  "roles": ["DATA_OBFSC","DATA_LDS", "DATA_PROT", "DATA_DEID", "MANAGER"],
+  "roles": ["ADMIN", "MANAGER", "DATA_LDS", "DATA_PROT", "DATA_DEID"],
   "authorizedTunnel": {
     "variables" :{
       "i2b2.UI.cfg.obfuscatedDisplayNumber": "R",
@@ -17,7 +17,8 @@
       "i2b2.UI.cfg.floorThresholdText" : "R",
       "i2b2.PM.model.login_password": "R",
       "i2b2.PM.model.login_username": "R",
-      "i2b2.PM.model.userRoles": "RO"
+      "i2b2.PM.model.userRoles": "RO",
+      "i2b2.PM.model.isAdmin": "R"
     },
     "functions" : [
       "i2b2.CRC.ctrlr.QT.doQueryLoad",

@@ -9,11 +9,11 @@ import {
     LIST_REQUEST_TABLE
 } from "../actions";
 
-const getAllExportRequestsListRequest = (username, isManager) => {
+const getAllExportRequestsListRequest = (username, isManager, isAdmin) => {
 
     let request_type = "CRC_QRY_getQueryMasterList_fromUserId";
 
-    if(isManager){
+    if(isManager || isAdmin){
         request_type = "CRC_QRY_getQueryMasterList_fromGroupId";
     }
 
@@ -92,13 +92,13 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
 }
 
 export function* doListRequestTable(action) {
-    const { username, isManager } = action.payload;
+    const { username, isManager, isAdmin } = action.payload;
 
     try {
-        let response = yield call(getAllExportRequestsListRequest, username, isManager);
+        let response = yield call(getAllExportRequestsListRequest, username, isManager, isAdmin);
         if (!response.error) {
             let dataExportRequestsList = yield parseAllExportRequestsListXml(response);
-            yield put(listRequestTableSuccess({researcherRequests: dataExportRequestsList, isManager}));
+            yield put(listRequestTableSuccess({researcherRequests: dataExportRequestsList, isManager, isAdmin}));
         }
         else {
             yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));
@@ -106,7 +106,7 @@ export function* doListRequestTable(action) {
         }
     } catch (error) {
         yield put(listRequestTableError({errorMessage: "There was an error getting the list of researcher data export requests"}));
-        console.error("There was an error getting the list of researcher data export requests. Error: " + error);
+        console.error("There was an error getting the list of researcher data export requests");
     }
 }
 
