@@ -80,8 +80,8 @@
       "alwaysShow": true,
       "noFrameTemplate": true,
       "results": [
-        "__PATIENT_COUNT_XML",
-        "__PATIENT_COUNT_SHRINE_XML"
+        "PATIENT_COUNT_XML",
+        "PATIENT_COUNT_SHRINE_XML"
       ]
     },
     "SHRINESITES": {
@@ -139,6 +139,6 @@
       "PIECHART": {
         "hideZeros": true
       }
-      }
-      }
+    }
+  }
 }
