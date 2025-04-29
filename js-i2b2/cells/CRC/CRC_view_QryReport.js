@@ -19,14 +19,14 @@ i2b2.CRC.view.QueryReport = {
 
         i2b2.CRC.view.QueryReport.disDiv = div;
         let view = this.disDiv;
-        $(view).empty();
-        let dataExportResultData = $('<div id="infoQueryDataExportTable"></div>').empty();
-        $(view).append(dataExportResultData);
-        let graphData = $('<div id="infoQueryStatusGraph"></div>').empty();
-        $(view).append(graphData);
-        let tableData = $('<div id="infoQueryStatusTable"></div>').empty();
-        $(view).append(tableData);
-        $((Handlebars.compile("{{> QueryResultBreakdownGraph}}"))()).appendTo(graphData);
+        // $(view).empty();
+        // let dataExportResultData = $('<div id="infoQueryDataExportTable"></div>').empty();
+        // $(view).append(dataExportResultData);
+        // let graphData = $('<div id="infoQueryStatusGraph"></div>').empty();
+        // $(view).append(graphData);
+        // let tableData = $('<div id="infoQueryStatusTable"></div>').empty();
+        // $(view).append(tableData);
+        // $((Handlebars.compile("{{> QueryResultBreakdownGraph}}"))()).appendTo(graphData);
         i2b2.CRC.view.QueryReport.QRS = {};
 
         let scopedCallbackQRS = new i2b2_scopedCallback(this._handleQueryResultSet);
@@ -327,15 +327,16 @@ console.log(status + "\t\tColumns:" + params.length + "\t\t" +breakdown.type);
             i2b2.CRC.view.QueryReport.loadQueryResultSetInstance();
     },
     render: function(allBreakdowns) {
-        let view = this.disDiv[0];
-        let scrollPosition = view.offsetTop;
-
-        let tableData = $("#infoQueryStatusTable").show().empty();
-        $((Handlebars.compile("{{> QueryResult}}"))(allBreakdowns)).appendTo(tableData);
-        let dataExportResult = $("#infoQueryDataExportTable").show().empty();
-        $((Handlebars.compile("{{> QueryDataExportResult}}"))(allBreakdowns)).appendTo(dataExportResult);
-
-        view.offsetParent.scrollTo({top:scrollPosition});
+        console.warn("QueryReport:render() is deprecated!");
+        // let view = this.disDiv[0];
+        // let scrollPosition = view.offsetTop;
+        //
+        // let tableData = $("#infoQueryStatusTable").show().empty();
+        // $((Handlebars.compile("{{> QueryResult}}"))(allBreakdowns)).appendTo(tableData);
+        // let dataExportResult = $("#infoQueryDataExportTable").show().empty();
+        // $((Handlebars.compile("{{> QueryDataExportResult}}"))(allBreakdowns)).appendTo(dataExportResult);
+        //
+        // view.offsetParent.scrollTo({top:scrollPosition});
     },
     _getTitle:  function(resultType, oRecord, oXML) {
         let title = "";

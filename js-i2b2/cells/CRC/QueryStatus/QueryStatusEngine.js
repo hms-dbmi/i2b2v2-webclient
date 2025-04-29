@@ -44,7 +44,7 @@ i2b2.CRC.QueryStatus.clear = function() {
 };
 
 i2b2.CRC.QueryStatus.start = function(queryInstanceId, mainEl) {
-    // restart process only when query instance id is given
+    // restart process only when new query instance id is given
     if (i2b2.CRC.QueryStatus.currentQueryInstanceId !== queryInstanceId) {
 
         i2b2.CRC.QueryStatus.model.QRS = {};

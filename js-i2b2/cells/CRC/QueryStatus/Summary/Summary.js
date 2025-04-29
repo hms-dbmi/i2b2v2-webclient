@@ -15,11 +15,12 @@ export default class Summary {
 
                     // display the initial info that was passed
                     $(thisClassInstance.template(this.record)).appendTo(thisClassInstance.config.displayEl);
+
+                    // make sure we are visible
+                    thisClassInstance.show();
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: CRC/QueryStatus/Summary/QueryStatus.html"); }
             });
-
-
         } catch(e) {
             console.error("Error in QueryStatus:Summary.constructor()");
         }
