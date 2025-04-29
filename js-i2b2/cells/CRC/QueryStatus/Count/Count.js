@@ -32,6 +32,12 @@ export default class Count {
 
     update(data) {
         try {
+            if (typeof data === 'undefined') {
+                if (typeof this.data === 'undefined') return;
+                data = this.data;
+            } else {
+                this.data = data;
+            }
             this.data = data;
             // extract the info from the XML
             const title = i2b2.h.XPath(data, "//query_result_instance/description")[0].firstChild.nodeValue;
