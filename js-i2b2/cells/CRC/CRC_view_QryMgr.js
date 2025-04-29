@@ -12,10 +12,9 @@ i2b2.CRC.view.QueryMgr = new i2b2Base_cellViewController(i2b2.CRC, 'QueryMgr');
 
 
 i2b2.CRC.view.QueryMgr.updateStatus = function() {
-    // this function does the initial render of the query run status
-    let statusDiv = $("#infoQueryStatus", i2b2.CRC.view.QueryMgr.containerDiv).empty();
-    $((Handlebars.compile("{{> QueryResultStatus}}"))(i2b2.CRC.model.runner)).appendTo(statusDiv);
-
+    // // this function does the initial render of the query run status
+    // let statusDiv = $("#infoQueryStatus", i2b2.CRC.view.QueryMgr.containerDiv).empty();
+    // $((Handlebars.compile("{{> QueryResultStatus}}"))(i2b2.CRC.model.runner)).appendTo(statusDiv);
 
     // in the Query Tool: hide/show run and cancel buttons
     if (i2b2.CRC.model.runner.finished || i2b2.CRC.model.runner.queued) {
@@ -31,12 +30,13 @@ i2b2.CRC.view.QueryMgr.updateStatus = function() {
 
 
 i2b2.CRC.view.QueryMgr.clearStatus = function() {
-    if (!i2b2.CRC.model.runner.isLoading) {
+    if (!i2b2.CRC.model.runner.isLoading && !i2b2.CRC.model.runner.finished) {
         i2b2.CRC.ctrlr.QueryMgr.stopQuery();
         i2b2.CRC.ctrlr.QueryMgr.tick();
     }
-    $("#infoQueryStatus", i2b2.CRC.view.QueryMgr.containerDiv).empty();
-    $("#infoQueryReport", i2b2.CRC.view.QueryMgr.containerDiv).empty();
+
+    // clear the query status window
+    i2b2.CRC.QueryStatus.clear();
 }
 
 
@@ -69,12 +69,12 @@ i2b2.events.afterCellInit.add((cell) => {
 
             // load the templates (TODO: Refactor this to loop using a varname/filename list)
 
-            $.ajax("js-i2b2/cells/CRC/templates/QueryResultStatus.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryResultStatus", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultStatus.html"); }
-            });
+            // $.ajax("js-i2b2/cells/CRC/templates/QueryResultStatus.html", {
+            //     success: (template, status, req) => {
+            //         Handlebars.registerPartial("QueryResultStatus", req.responseText);
+            //     },
+            //     error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultStatus.html"); }
+            // });
 
             $.ajax("js-i2b2/cells/CRC/templates/QueryResult.html", {
                 success: (template, status, req) => {
