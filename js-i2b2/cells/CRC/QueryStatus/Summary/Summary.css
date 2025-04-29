@@ -1,0 +1,82 @@
+/* Summary CSS */
+
+.viztype-SUMMARY {
+    padding: 0.3rem;
+}
+
+
+.info-text-status .status-finished {
+    color: #0d6efd;
+}
+.info-text-status .status-error,
+.info-text-status .status-cancelled,
+#dataExportDetails .status-error,
+#dataExportDetails .status-error,
+#breakdownDetails .status-error {
+    color: #fd0d6e
+}
+.info-text-status .status-running,
+.info-text-status .status-processing {
+    color: #198754;
+}
+
+
+
+#infoQueryStatusText .status-processing {
+    color: #198754;
+}
+
+#infoQueryStatusText .status-running {
+    color: #198754;
+}
+#infoQueryStatusText .status-bar {
+    width: 60%;
+    border: solid 1px;
+    height: 12px;
+    background: lightgrey;
+    margin: 1rem auto;
+}
+
+
+#infoQueryStatusText .statusButtons {
+    float:right;
+    margin-left:10px;
+}
+#infoQueryStatusText .statusButtons button {
+    display: none;
+}
+#infoQueryStatusText .statusButtons.running .cancel {
+    display: none;
+}
+#infoQueryStatusText .statusButtons.cancelled .cancelled {
+    display: block;
+    cursor: not-allowed;
+}
+
+#infoQueryStatusText .statusButtons.done .report {
+    display: block;
+}
+
+
+#infoQueryStatusText .status-bar .status-error {
+    background: red;
+    height: 100%;
+    float: left;
+}
+
+#infoQueryStatusText .status-bar .status-finished {
+    background: lightgreen;
+    height: 100%;
+    float: left;
+}
+
+#infoQueryStatusText .status-bar-label {
+    width: 100%;
+    text-align: center;
+    padding-top: 2em;
+    font-weight: bold;
+}
+
+#infoQueryStatusText .status-bar-text {
+    text-align: center;
+}

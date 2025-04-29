@@ -66,10 +66,11 @@
     },
     "SUMMARY": {
       "source": "Summary/Summary.js",
+      "CSS": "Summary/Summary.css",
       "alwaysShow": true,
       "noFrameTemplate": true,
       "results": [
-        "__INTERNAL_SUMMARY"
+        "INTERNAL_SUMMARY"
       ]
     },
     "COUNT": {

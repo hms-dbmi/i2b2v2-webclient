@@ -6,6 +6,20 @@ export default class Summary {
             this.record = qrsRecordInfo;
             this.data = qrsData;
             this.isVisible = false;
+
+            let thisClassInstance = this;
+            $.ajax("js-i2b2/cells/CRC/QueryStatus/Summary/QueryStatus.html", {
+                success: (template, status, req) => {
+                    // don't pollute the global Handlebars space
+                    thisClassInstance.template = Handlebars.compile(req.responseText);
+
+                    // display the initial info that was passed
+                    $(thisClassInstance.template(this.record)).appendTo(thisClassInstance.config.displayEl);
+                },
+                error: (error) => { console.error("Error (retrieval or structure) with template: CRC/QueryStatus/Summary/QueryStatus.html"); }
+            });
+
+
         } catch(e) {
             console.error("Error in QueryStatus:Summary.constructor()");
         }
@@ -20,7 +34,14 @@ export default class Summary {
 
     update(data) {
         try {
-
+            if (typeof data !== 'undefined') {
+                this.record = data;
+            }
+            if (typeof this.template !== 'undefined') {
+                // update the display
+                $(this.config.displayEl).empty();
+                $(this.template(this.record)).appendTo(this.config.displayEl);
+            }
         } catch(e) {
             console.error("Error in QueryStatus:Summary.update()");
         }
@@ -28,7 +49,7 @@ export default class Summary {
 
     redraw(width) {
         try {
-            this.config.displayEl.innerHTML = "{" + this.constructor.name + "} is " + width + " pixels wide";
+            this.config.displayEl.offsetWidth
         } catch(e) {
             console.error("Error in QueryStatus:Summary.redraw()");
         }

@@ -1,0 +1,85 @@
+<div id="infoQueryStatusText" class="StatusBoxText" oncontextmenu="return false">
+    <div style="clear:both;">
+        {{#if name}}
+            <div style="float:left;">
+                <div class="info-text-name"><span style="font-weight:bold;">Query Name:</span> <span>{{name}}</span></div>
+                <div class="info-text-status"><span style="font-weight:bold;">Query Status:</span>
+                
+                    {{#if isProcessing}}
+                        <span class="status-processing">Processing</span>
+                    {{else if isCancelled}}
+                        <span class="status-cancelled">Cancelled</span>
+                    {{else if isRunning}}
+                        <span class="status-running">Running</span>
+                    {{else if hasError}}
+                        <span class="status-error">Error(s)</span>
+                    {{else}}
+                        <span class="status-finished">Finished</span>
+                    {{/if}}
+                </div>
+                <div><span style="font-weight:bold;">Run Time: </span>[{{elapsedTime}} &nbsp; secs]</div>
+            </div>
+            
+
+            <div class="statusButtons
+                    {{#if isCancelled}}
+                        cancelled
+                    {{else if finished}}
+                        done
+                    {{else if queued}}
+                        queued
+                    {{else}}
+                        running
+                    {{/if}}
+                    ">
+                <button type="button" class="btn btn-primary btn-sm report" onclick="i2b2.CRC.view.QT.showQueryReport();">View Report</button>
+                <!-- must use "onmousedown" for cancel button because of the rerendering rate of this template during the query run/polling period -->
+                <button type="button" class="btn btn-danger btn-sm cancel" onmousedown="i2b2.CRC.ctrlr.QueryMgr.cancelQuery();">Cancel Query</button>
+                <button type="button" class="btn btn-danger btn-sm cancelled">Query Cancelled</button>
+            </div>
+
+            
+            {{#if computeTime}}
+                <div style="clear:both;"></div>
+                <div class="computeTime"><span style="font-weight:bold;">Compute Time: </span> {{computeTime}} &nbsp;secs</div>
+            {{/if}}
+            <div style="clear:both;"></div>
+        {{/if}}
+
+        {{#if queued}}
+            <div class="status-bar-label">Query Progress</div>
+            <div class="status-bar-text">Your query is now running in the background. The results will appear here and in the Queries panel when available. Click "Refresh All" in the Queries panel to view the status.</div>
+        {{/if}}
+
+        {{#ifCond patientCount '!==' undefined}}
+            {{#unless hasError}}
+            {{#unless isCancelled}}
+            {{#unless queued}}
+                <table style="width: 400px; margin-left: auto; margin-right: auto;">
+                    <tr style="background-color: #ed9b40">
+                        <td id="patientCountLine1" style="color: black; text-align: center; vertical-align: middle;">
+                            Number of patients for "{{name}}"
+                        </td>
+                    </tr>
+                    <tr style="background-color: #ed9b40">
+                        <td id="patientCountLine2" style="color: black; text-align: center; vertical-align: middle; font-size: 45px">
+                            {{patientCount}}
+                        </td>
+                    </tr>
+                    {{#if isShrine}}
+                        <td id="patientCountLine3" style="color: black; text-align: center; vertical-align: middle;">
+                            Multiple sites reporting up to {{patientCount}} patients
+                        </td>
+                    {{/if}}
+                    <tr style="background-color: white">
+                        <td style="color: red; text-align: center; vertical-align: middle;">&nbsp</td>
+                    </tr>
+                </table>
+                <div id="ShrineTitle" style="display:none">Query Results By Site<i class="bi bi-download" title="Download"></i></div>
+                <table id="ShrineSites" style="display:none"></table>
+            {{/unless}}
+            {{/unless}}
+            {{/unless}}
+        {{/ifCond}}
+    </div>
+</div>
