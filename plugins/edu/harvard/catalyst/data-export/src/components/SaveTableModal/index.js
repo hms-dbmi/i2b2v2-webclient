@@ -33,6 +33,7 @@ export const SaveTableModal = ({open, handleClose}) => {
     const [isNameInvalid, setIsNameInvalid] = React.useState(false);
     const [enableSave, setEnableSave] = React.useState(false);
     const [isShared, setIsShared] = React.useState(false);
+    const [creatorId, setCreatorId] = React.useState(username);
     const [tab, setTab] = React.useState(2);
     const TABINDEX_FOLDERNAME = ["System Shared Tables", "Project Shared Tables", "My Tables"];
 
@@ -87,7 +88,8 @@ export const SaveTableModal = ({open, handleClose}) => {
     }
 
     const handleInValidName = (title) => {
-        const isValidName = title !== undefined && title.length > 0 && title.length <= 200;
+        const trimmedTitle = title !== undefined ? title.trim() : "";
+        const isValidName = trimmedTitle.length > 0 && trimmedTitle.length <= 200;
         setIsNameInvalid(!isValidName);
         setEnableSave(isValidName);
     }
@@ -95,10 +97,11 @@ export const SaveTableModal = ({open, handleClose}) => {
     const doSave = () => {
         const saveAllowed = !(isShared && !isAdmin);
 
+        console.log("creatorid " + creatorId);
         if (saveAllowed) {
             dispatch(saveTable({
                     tableDefRows,
-                    creator_id: username,
+                    creator_id: creatorId,
                     tableId: selectedTableDef.id,
                     title: selectedTableDef.title,
                     folderName: TABINDEX_FOLDERNAME[tab],
@@ -154,6 +157,8 @@ export const SaveTableModal = ({open, handleClose}) => {
         if(isAdmin) {
             setTab(newValue);
         }
+
+        setCreatorId(newValue === 0 ? '@': username);
         setIsShared(newValue !== 2);
         setSelectedRows([]);
     };
@@ -169,6 +174,12 @@ export const SaveTableModal = ({open, handleClose}) => {
             dispatch(listTables());
         }
     }, [open]);
+
+    useEffect(() => {
+        if(creatorId === null) {
+            setCreatorId(username);
+        }
+    }, [username]);
 
     useEffect(() => {
         selectIfNameExists(enteredTitle);
