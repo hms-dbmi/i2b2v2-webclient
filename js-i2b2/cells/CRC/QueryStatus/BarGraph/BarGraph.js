@@ -16,7 +16,7 @@ export default class BarGraph {
             this.data = {"old": processedData, "new": processedData};
             this.isVisible = false;
 
-            if (typeof this.width === 'undefined') this.width = this.config.displayEl.clientWidth;
+            if (typeof this.width === 'undefined') this.width = this.config.displayEl.parentElement.clientWidth;
 
             // create the SVG element
             this.height = 400 - margin.top - margin.bottom;
