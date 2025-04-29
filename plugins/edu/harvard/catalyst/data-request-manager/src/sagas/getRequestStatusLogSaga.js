@@ -43,7 +43,7 @@ const parseRequestStatusLogXml = (requestStatusLogXmlAndDesc) => {
                 if(status){
                     const id = exportRequestDetail.statusLogs.length + 1;
                     let inputFormat = "yyyyLLdd_HHmmss";
-                    let date = data.value;//.split("_");
+                    let date = data.value;
                     if(date.length > 0){
                         date = DateTime.fromFormat(date, inputFormat, {zone: 'utc'});
                         exportRequestDetail.statusLogs.push({id, date, status});
