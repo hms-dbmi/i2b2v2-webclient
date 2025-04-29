@@ -13,7 +13,7 @@ import CancelIcon from '@mui/icons-material/Close';
 
 export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelChange, selectionModel,
                                  hasError, isLoading, onDelete, deleteFailed, onDeleteAlertClose,
-                                 onRename, renameFailed, onRenameAlertClose}) => {
+                                 onRename, renameFailed, onRenameAlertClose, showCreatedBy}) => {
     const [rowToRename, setRowToRename] = useState({});
     const [rowToDelete, setRowToDelete] = useState({});
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -138,7 +138,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
             align: 'center',
             disableReorder: true,
             type: 'date'
-        }, {
+        },{
             field: 'column_count',
             headerName: 'Columns',
             width: 92,
@@ -194,6 +194,18 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                     />,
                 ];
             },
+        });
+    }
+
+    if(showCreatedBy){
+        columns.splice(3,0 ,
+        {
+            field: 'creator_id',
+            headerName: 'Created By',
+            width: 115,
+            sortable: true,
+            headerAlign: 'center',
+            disableReorder: true,
         });
     }
 

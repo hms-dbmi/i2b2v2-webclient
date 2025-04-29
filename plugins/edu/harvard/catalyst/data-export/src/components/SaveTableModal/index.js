@@ -229,6 +229,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onRename={updateTableDefinitionTitle}
                             renameFailed={renameStatusInfo.status === 'FAIL'}
                             onRenameAlertClose={confirmRenameStatus}
+                            showCreatedBy={false}
                         />
                     </TabPanel>
                     <TabPanel
@@ -250,6 +251,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onRename={updateTableDefinitionTitle}
                             renameFailed={renameStatusInfo.status === 'FAIL'}
                             onRenameAlertClose={confirmRenameStatus}
+                            showCreatedBy={true}
                         />
                     </TabPanel>
                     <TabPanel
@@ -272,6 +274,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onRename={updateTableDefinitionTitle}
                             renameFailed={renameStatusInfo.status === 'FAIL'}
                             onRenameAlertClose={confirmRenameStatus}
+                            showCreatedBy={false}
                         />
                     </TabPanel>
                 </Box>
