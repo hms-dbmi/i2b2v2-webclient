@@ -194,7 +194,7 @@ export default class PieChart {
                 if (resultXML.length > 0) {
                     resultXML = resultXML[0].firstChild.nodeValue;
                     // parse the data and put the results into the new data slot
-                    this.data = parseData(resultXML);
+                    this.data = parseData(resultXML, this.config.advancedConfig);
                 }
             }
 
@@ -254,7 +254,7 @@ export default class PieChart {
 }
 
 // =======================================================================================================================
-let parseData = function(xmlData) {
+let parseData = function(xmlData, advancedConfig) {
     let breakdown = {};
     breakdown.result = [];
     // process "normal" data
@@ -290,7 +290,12 @@ let parseData = function(xmlData) {
             entryRecord.display = params[i2].attributes.display.textContent;
         }
         // TODO: Make this configurable (dropping "0" values)
-        if (entryRecord.value > 0) breakdown.result.push(entryRecord);
+        let display = true;
+        if (advancedConfig !== undefined) {
+            if (advancedConfig.hideZeros === true && parseInt(entryRecord.value) === 0) display = false;
+            if (Array.isArray(advancedConfig.hideEntries) && advancedConfig.hideEntries.includes(entryRecord.name.trim())) display = false;
+        }
+        if (display) breakdown.result.push(entryRecord);
     }
 
     // process "SHRINE" data

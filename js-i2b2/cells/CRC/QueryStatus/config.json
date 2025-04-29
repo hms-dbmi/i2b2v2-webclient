@@ -98,7 +98,9 @@
       "CSS": "PieChart/PieChart.css",
       "iconClass": "bi bi-pie-chart",
       "results": [
-        "PATIENT_GENDER_COUNT_XML"
+        "PATIENT_GENDER_COUNT_XML",
+        "PATIENT_RACE_COUNT_XML",
+        "PATIENT_AGE_COUNT_XML"
       ]
     }
   },
@@ -116,5 +118,26 @@
     "ERROR",
     "INCOMPLETE",
     "TIMEOUT"
-  ]
+  ],
+  "advancedConfigs": {
+    "PATIENT_GENDER_COUNT_XML": {
+      "PIECHART": {
+        "hideZeros": true
+      }
+    },
+    "PATIENT_AGE_COUNT_XML": {
+      "PIECHART": {
+        "hideEntries": [
+          ">= 85 years old",
+          ">= 65 years old"
+        ],
+        "hideZeros": true
+      }
+    },
+    "PATIENT_RACE_COUNT_XML": {
+      "PIECHART": {
+        "hideZeros": true
+      }
+      }
+      }
 }

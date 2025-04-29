@@ -471,6 +471,12 @@ let init = async function() {
         i2b2.CRC.QueryStatus.displayComponents = config.displayComponents;
         i2b2.CRC.QueryStatus.displayOrder = config.displayOrder;
         i2b2.CRC.QueryStatus.haltOnStatus = config.haltPollingOnStatus;
+        if (config.advancedConfigs === undefined) {
+            i2b2.CRC.QueryStatus.advancedConfigurations = false;
+        } else {
+            i2b2.CRC.QueryStatus.advancedConfigurations = config.advancedConfigs;
+        }
+
 
         // save component keys into component objects
         for (const compCode of Object.keys(i2b2.CRC.QueryStatus.displayComponents)) i2b2.CRC.QueryStatus.displayComponents[compCode].componentCode = compCode;
