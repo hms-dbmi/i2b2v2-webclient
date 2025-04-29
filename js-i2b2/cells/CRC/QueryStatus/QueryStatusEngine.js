@@ -8,37 +8,51 @@ i2b2.CRC.QueryStatus = {
     currentQueryInstanceId: false,
     displayEl: false,
     resizeObserver: false,
-    model: {}
+    model: {
+        QRS: {},
+        visualizations: {}
+    },
+    advancedConfigurations: {}
 };
 
+
+i2b2.CRC.QueryStatus.clear = function() {
+    // remove resize observer
+    if (i2b2.CRC.QueryStatus.resizeObserver) i2b2.CRC.QueryStatus.resizeObserver.disconnect();
+
+    // destroy the previous display module instances
+    Object.keys(i2b2.CRC.QueryStatus.model.visualizations).forEach((breakdownCode) => {
+        const breakdown = i2b2.CRC.QueryStatus.model.visualizations[breakdownCode];
+        breakdown.componentInstances.forEach((breakdownVizComponent) => {
+            try {
+                i2b2.CRC.QueryStatus.resizeObserver.unobserve(breakdownVizComponent.displayEl);
+                if (typeof breakdownVizComponent.visualization.destroy === 'function') breakdownVizComponent.visualization.destroy();
+                delete breakdownVizComponent.visualization;
+            } catch(e) {
+                console.warn("QueryStatus: Error while destroying visualization component: " + breakdownCode + ":" + breakdownVizComponent.definition.componentCode);
+            }
+        });
+        // clear the component's element
+        let mainEl = i2b2.CRC.QueryStatus.displayEl;
+        if (typeof mainEl !== 'undefined') {
+            while (mainEl.children.length > 0) mainEl.removeChild(mainEl.children[0]);
+        }
+
+        delete i2b2.CRC.QueryStatus.model.visualizations[breakdownCode];
+        i2b2.CRC.QueryStatus.model.QRS = {};
+    });
+};
 
 i2b2.CRC.QueryStatus.start = function(queryInstanceId, mainEl) {
     // restart process only when query instance id is given
     if (i2b2.CRC.QueryStatus.currentQueryInstanceId !== queryInstanceId) {
 
-        i2b2.CRC.QueryStatus.displayEl = mainEl;
         i2b2.CRC.QueryStatus.model.QRS = {};
         if (typeof i2b2.CRC.QueryStatus.model.visualizations === 'undefined') i2b2.CRC.QueryStatus.model.visualizations = {};
 
         if (mainEl) {
-            // remove resize observer
-            if (i2b2.CRC.QueryStatus.resizeObserver) i2b2.CRC.QueryStatus.resizeObserver.disconnect();
-                // clear display
-            while (mainEl.children.length > 0) mainEl.removeChild(mainEl.children[0]);
-            // destroy the previous display module instances
-            Object.keys(i2b2.CRC.QueryStatus.model.visualizations).forEach((breakdownCode) => {
-                const breakdown = i2b2.CRC.QueryStatus.model.visualizations[breakdownCode];
-                breakdown.componentInstances.forEach((breakdownVizComponent) => {
-                    try {
-                        i2b2.CRC.QueryStatus.resizeObserver.unobserve(breakdownVizComponent.displayEl);
-                        if (typeof breakdownVizComponent.visualization.destroy === 'function') breakdownVizComponent.visualization.destroy();
-                        delete breakdownVizComponent.visualization;
-                    } catch(e) {
-                        console.warn("QueryStatus: Error while destroying visualization component: " + breakdownCode + ":" + breakdownVizComponent.definition.componentCode);
-                    }
-                });
-                delete i2b2.CRC.QueryStatus.model.visualizations[breakdownCode];
-            });
+            i2b2.CRC.QueryStatus.displayEl = mainEl;
+            i2b2.CRC.QueryStatus.clear();
         }
 
         // setup resize observer engine
@@ -60,18 +74,17 @@ i2b2.CRC.QueryStatus.start = function(queryInstanceId, mainEl) {
             i2b2.CRC.QueryStatus.resizeObserver = resizeObvs;
         }
 
+        // generate and update internal records for Query Summary viz module
+        i2b2.CRC.QueryStatus.updateFromQueryMgr();
+
+        // instantiate visualization the Query Summary module
+        i2b2.CRC.QueryStatus.createVisualizationsFromList(i2b2.CRC.QueryStatus.model.QRS);
+
         // make call to get list of QRS from passed Query Instance
         const scopedCallbackQRS = new i2b2_scopedCallback(i2b2.CRC.QueryStatus._handleQueryResultSet);
         i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryStatus", {qi_key_value: queryInstanceId}, scopedCallbackQRS);
-   }
-
+    }
 }
-
-i2b2.CRC.QueryStatus.poll = function() {
-
-};
-
-
 
 i2b2.CRC.QueryStatus.componentDropdownClickHandler = (e) => {
     const selectEl = e.currentTarget;
@@ -150,7 +163,252 @@ i2b2.CRC.QueryStatus.updateFromQueryMgr = function() {
         if (refQueryMgrData[param] !== undefined) QueryMgrRecord[param] = refQueryMgrData[param];
     }
     i2b2.CRC.QueryStatus.model.QRS["INTERNAL_SUMMARY"] = QueryMgrRecord;
+
+    // cause an update of the display modules
+    if (typeof i2b2.CRC.QueryStatus.model.visualizations["INTERNAL_SUMMARY"] !== 'undefined') {
+        for (let viz of i2b2.CRC.QueryStatus.model.visualizations["INTERNAL_SUMMARY"].componentInstances) {
+            viz.visualization.update(QueryMgrRecord);
+        }
+    }
+
+    // see if we are going to poll again
+    // if (QueryMgrRecord.finished !== true) {
+    //     // set update for 100ms from now if the query is not yet finished
+    //     setTimeout(i2b2.CRC.QueryStatus.updateFromQueryMgr, 100);
+    // }
 }
+
+
+
+i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
+    // -------------------------------------------------------------------------------------------------------------
+    // format data and instantiate the visualization components for each QRS
+    // -------------------------------------------------------------------------------------------------------------
+
+    let qrs_entries = {};
+    let qrsCodesFound = Object.keys(i2b2.CRC.QueryStatus.model.QRS).map((a) => i2b2.CRC.QueryStatus.model.QRS[a].QRS_Type);
+
+    // find the expressly display-ranked results set(s)
+    let currentIndex = 0;
+    for (let codeRank of i2b2.CRC.QueryStatus.displayOrder) {
+        if (qrs_entries[codeRank] === undefined && qrsCodesFound.includes(codeRank)) {
+            qrs_entries[codeRank] = {"displayRank": currentIndex};
+            currentIndex++;
+        }
+    }
+
+    // remove the placed codes from the working list
+//    let codesToRemove = Object.keys(i2b2.CRC.QueryStatus.model.visualizations);
+    let codesToRemove = Object.keys(qrs_entries);
+    qrsCodesFound = qrsCodesFound.filter((code) => {
+        return !codesToRemove.includes(code);
+    });
+    qrsCodesFound.sort();
+    for (let codeInstance of qrsCodesFound) {
+        // create the initial record with display rank
+        qrs_entries[codeInstance] = {"displayRank": currentIndex};
+        currentIndex++;
+    }
+
+    // link record data into the component entries
+    Object.keys(qrs_entries).forEach((codeInstance) => {
+        // save reference to the underlying QRS (or internally used data)
+        const matchingRecord = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((a) => a.QRS_Type === codeInstance);
+        if (matchingRecord.length > 0) qrs_entries[codeInstance].record = matchingRecord[0];
+    });
+
+    // now create the visualization instances
+    const componentKeys = Object.keys(i2b2.CRC.QueryStatus.displayComponents);
+    const refDisplayComponents = i2b2.CRC.QueryStatus.displayComponents;
+    let orderedEntries = Object.keys(qrs_entries);
+    orderedEntries.sort((a,b) => qrs_entries[a].displayRank - qrs_entries[b].displayRank);
+
+    // but only for NEW visualizations
+    const existingViz = Object.keys(i2b2.CRC.QueryStatus.model.visualizations);
+    const newEntries = orderedEntries.filter((a) => !existingViz.includes(a));
+    // remove entries that are already placed
+    for (let code of Object.keys(qrs_entries)) {
+        if (existingViz.includes(code)) delete qrs_entries[code];
+    }
+
+    const functInstantiateViz = (qrsCode, componentDefObj, componentInstanceObj, componentIndexNumber = 1) => {
+        try {
+            // handle any advanced configuration
+            if (i2b2.CRC.QueryStatus.advancedConfigurations) {
+                if (i2b2.CRC.QueryStatus.advancedConfigurations[qrsCode] !== undefined) {
+                    if (i2b2.CRC.QueryStatus.advancedConfigurations[qrsCode][componentDefObj.componentCode] !== undefined) {
+                        componentInstanceObj.advancedConfig = i2b2.CRC.QueryStatus.advancedConfigurations[qrsCode][componentDefObj.componentCode];
+                    }
+                }
+            }
+
+            // record a reference to the QRS record information
+            let qrsObject = i2b2.CRC.QueryStatus.model.QRS[qrsCode];
+            const qrsRecordKey = Object.keys(i2b2.CRC.QueryStatus.model.QRS).filter((key) => i2b2.CRC.QueryStatus.model.QRS[key].QRS_Type === qrsCode);
+            if (qrsRecordKey.length > 0) {
+//                componentInstanceObj.record = i2b2.CRC.QueryStatus.model.QRS[qrsRecordKey];
+                qrsObject = i2b2.CRC.QueryStatus.model.QRS[qrsRecordKey];
+            }
+
+            // instantiate visualization component
+            const visualizationInstance = new componentDefObj.implementation(componentInstanceObj, qrsObject, null);
+            componentInstanceObj.visualization = visualizationInstance;
+            if (componentIndexNumber === 1) {
+                visualizationInstance.show();
+                // deal with the resizing the height of the parent div
+                let dispWindow = componentInstanceObj.parentDisplayEl.querySelector(".viz-window");
+                if (dispWindow !== null) {
+                    dispWindow.style.transition = 'none';
+                    dispWindow.style.height = componentInstanceObj.displayEl.offsetHeight + "px";
+                    setTimeout(()=> dispWindow.style.transition = '', 10);
+                }
+                // display the dropdown entry if relevant
+                if (componentInstanceObj.dropdownEl) componentInstanceObj.dropdownEl.style.display = '';
+            } else {
+                visualizationInstance.hide();
+                if (componentInstanceObj.dropdownEl) componentInstanceObj.dropdownEl.style.display = 'none';
+            }
+
+            return componentInstanceObj;
+        } catch (e) {
+            return false;
+        }
+    };
+
+
+    for (let code of newEntries) {
+        // create a list of references to QRS's valid visualizations
+        let validComponents = componentKeys.filter((k) => refDisplayComponents[k].results.includes(code)).map((b) => refDisplayComponents[b]);
+        // sort by component displayOrder
+        validComponents.sort((a, b) => {
+            let av = a.displayOrder;
+            let bv = b.displayOrder;
+            if (av === undefined) av = 50;
+            if (bv === undefined) bv = 50;
+            return av - bv;
+        });
+
+        // check for exclusive component in the list that matches the QRS type
+        let exclusiveComponent = validComponents.filter((a) => a.noFrameTemplate === true);
+        if (exclusiveComponent.length > 0) {
+            // there is an exclusive component that will override our default multi-component template
+            exclusiveComponent = exclusiveComponent[0];
+            // create the frameless display div
+            const componentEl = document.createElement("div");
+            componentEl.classList.add("QueryStatusComponent", "frameless", "viz-window", "resulttype-" + code, "viztype-" + exclusiveComponent.componentCode);
+            if (exclusiveComponent.class !== undefined) componentEl.classList.add(exclusiveComponent.class);
+            componentEl.style.display = 'none';
+            i2b2.CRC.QueryStatus.displayEl.appendChild(componentEl);
+            i2b2.CRC.QueryStatus.resizeObserver.observe(componentEl);
+            // add references to our entries
+            let componentInstanceObj = {
+                "definition": exclusiveComponent,
+                "parentDisplayEl": componentEl,
+                "displayEl": componentEl
+            }
+
+            // <MORE-MAGIC> (http://catb.org/jargon/html/magic-story.html)
+            //      CHROME MAGIC (we need to push the object into the componentInstances array NOW before viz module
+            //      instantiation -- otherwise it will softcrash the browser (in breakpoint mode?)
+            qrs_entries[code].componentInstances = [componentInstanceObj];
+            // </MORE-MAGIC>
+
+            // instantiate visualization
+            let instantiationResults = functInstantiateViz(code, exclusiveComponent, componentInstanceObj);
+            if (instantiationResults === false) {
+                console.error("Failed to Instantiate viz module");
+            }
+
+        } else {
+            // this is a QRS type that may have many visualization components
+            qrs_entries[code].componentInstances = [];
+            if (validComponents.length === 0) {
+                console.warn("QueryStatus: no valid components found to display " + code);
+            } else {
+                // create the master frame for the visualizations
+                let componentParentEl = document.createElement("div");
+                i2b2.CRC.QueryStatus.displayEl.appendChild(componentParentEl);
+                componentParentEl.outerHTML = i2b2.CRC.QueryStatus.componentFrameTemplate;
+                // get the correct reference directly from the main DOM document (implementation quirk)
+                let allComponentEls = i2b2.CRC.QueryStatus.displayEl.querySelectorAll('.QueryStatusComponent');
+                componentParentEl = allComponentEls[allComponentEls.length - 1];
+
+                // get the reference for the main display div
+                let refComponentMainDisplay = componentParentEl.querySelector(".viz-window");
+
+                // get the reference for the component selection dropdown
+                let refComponentDropdown = componentParentEl.querySelector(".viz-dropdown-select");
+
+                // attach the component drop down selector
+                refComponentDropdown.addEventListener('click', i2b2.CRC.QueryStatus.componentDropdownClickHandler);
+
+                // get the title
+                const refComponentTitle = componentParentEl.querySelector(".title");
+
+                let componentIndex = 0;
+                for (let componentConfig of validComponents) {
+                    componentIndex++;
+                    let componentInstanceObj = {"definition": componentConfig, "parentDisplayEl": componentParentEl};
+                    // <MORE-MAGIC> (http://catb.org/jargon/html/magic-story.html)
+                    //      CHROME MAGIC (we need to push the object into the componentInstances array NOW before viz module
+                    //      instantiation -- otherwise it will softcrash the browser (in breakpoint mode?)
+                    qrs_entries[code].componentInstances.push(componentInstanceObj);
+                    // </MORE-MAGIC>
+                    if (refComponentTitle) componentInstanceObj['parentTitleEl'] = refComponentTitle;
+
+                    // create the frame element for the visualization instance
+                    const componentVizEl = document.createElement("div");
+                    componentVizEl.classList.add("component-instance-viz", "resulttype-" + code, "viztype-" + componentConfig.componentCode);
+                    if (componentConfig.class !== undefined) componentVizEl.classList.add(componentConfig.class);
+                    componentVizEl.style.display = 'none';
+                    refComponentMainDisplay.appendChild(componentVizEl);
+                    i2b2.CRC.QueryStatus.resizeObserver.observe(componentVizEl);
+                    componentInstanceObj["displayEl"] = componentVizEl;
+
+                    // create an entry in the viz selection dropdown
+                    const componentDropEntryEl = document.createElement("li");
+                    // set label and mouse hover
+                    let tempEl;
+                    if (componentConfig.iconClass !== undefined) {
+                        tempEl = document.createElement("i");
+                        for (let cname of componentConfig.iconClass.split(" ")) tempEl.classList.add(cname);
+                        componentDropEntryEl.appendChild(tempEl);
+                    }
+                    if (componentConfig.name !== undefined) {
+                        if (componentConfig.iconClass === undefined) {
+                            componentDropEntryEl.textContent = componentConfig.name;
+                        } else {
+                            tempEl = document.createElement("span");
+                            tempEl.classList.add("label");
+                            tempEl.textContent = componentConfig.name;
+                            componentDropEntryEl.appendChild(tempEl);
+                        }
+                    }
+                    if (componentConfig.tooltip !== undefined) componentDropEntryEl.setAttribute('title', componentConfig.tooltip);
+                    componentDropEntryEl.classList.add("viz-dropdown-item", "resulttype-" + code);
+                    if (componentConfig.class !== undefined) componentDropEntryEl.classList.add(componentConfig.class);
+                    refComponentDropdown.appendChild(componentDropEntryEl);
+                    componentInstanceObj["dropdownEl"] = componentDropEntryEl;
+
+                    // instantiate visualization
+                    let instantiationResults = functInstantiateViz(code, componentConfig, componentInstanceObj, componentIndex);
+                    if (instantiationResults === false) {
+                        console.error("Failed to Instantiate viz module");
+                    }
+
+                }
+            }
+        }
+    }
+
+    // save all that we have done for the visualizations to the main namespace
+    for (let code of Object.keys(qrs_entries)) {
+        i2b2.CRC.QueryStatus.model.visualizations[code] = qrs_entries[code];
+    }
+};
+
+
+
 
 
 
@@ -203,171 +461,8 @@ i2b2.CRC.QueryStatus._handleQueryResultSet = function(results) {
             i2b2.CRC.QueryStatus.model.QRS[qrs_id] = rec;
         }
 
-        // -------------------------------------------------------------------------------------------------------------
-        // format data and instantiate the visualization components for each QRS
-        // -------------------------------------------------------------------------------------------------------------
-
-        let qrs_entries = {};
-        let qrsCodesFound = Object.keys(i2b2.CRC.QueryStatus.model.QRS).map((a) => i2b2.CRC.QueryStatus.model.QRS[a].QRS_Type);
-
-        // TODO: Create the internal display pseudo-entries
-        qrsCodesFound.push("INTERNAL_SUMMARY");
-        i2b2.CRC.QueryStatus.updateFromQueryMgr();
-
-        // find the expressly display-ranked results set(s)
-        let currentIndex = 0;
-        for (let codeRank of i2b2.CRC.QueryStatus.displayOrder) {
-            if (qrs_entries[codeRank] === undefined && qrsCodesFound.includes(codeRank)) {
-                qrs_entries[codeRank] = {"displayRank": currentIndex};
-                currentIndex++;
-            }
-        }
-        // remove the placed codes from the working list
-        let codesToRemove = Object.keys(qrs_entries);
-        qrsCodesFound = qrsCodesFound.filter((code) => {
-            return !codesToRemove.includes(code);
-        });
-        qrsCodesFound.sort();
-        for (let codeInstance of qrsCodesFound) {
-            // create the initial record with display rank
-            qrs_entries[codeInstance] = {"displayRank": currentIndex};
-            currentIndex++;
-        }
-
-        // link record data into the component entries
-        Object.keys(qrs_entries).forEach((codeInstance) => {
-            // save reference to the underlying QRS (or internally used data)
-            const matchingRecord = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((a) => a.QRS_Type === codeInstance);
-            if (matchingRecord.length > 0) qrs_entries[codeInstance].record = matchingRecord[0];
-        });
-
-
-        // now create the visualization instances
-        const componentKeys = Object.keys(i2b2.CRC.QueryStatus.displayComponents);
-        const refDisplayComponents = i2b2.CRC.QueryStatus.displayComponents;
-        let orderedEntries = Object.keys(qrs_entries);
-        orderedEntries.sort((a,b) => qrs_entries[a].displayRank - qrs_entries[b].displayRank);
-        for (let code of orderedEntries) {
-            // create a list of references to QRS's valid visualizations
-            let validComponents = componentKeys.filter((k) => refDisplayComponents[k].results.includes(code)).map((b) => refDisplayComponents[b]);
-            // sort by component displayOrder
-            validComponents.sort((a,b) => {
-                let av = a.displayOrder;
-                let bv = b.displayOrder;
-                if (av === undefined) av = 50;
-                if (bv === undefined) bv = 50;
-                return av - bv;
-            });
-
-            // check for exclusive component in the list that matches the QRS type
-            let exclusiveComponent = validComponents.filter((a) => a.noFrameTemplate === true);
-            if (exclusiveComponent.length > 0) {
-                // there is an exclusive component that will override our default multi-component template
-                exclusiveComponent = exclusiveComponent[0];
-                // create the frameless display div
-                const componentEl = document.createElement("div");
-                componentEl.classList.add("QueryStatusComponent", "frameless", "viz-window", "resulttype-" + code, "viztype-" + exclusiveComponent.componentCode);
-                if (exclusiveComponent.class !== undefined) componentEl.classList.add(exclusiveComponent.class);
-                componentEl.style.display = 'none';
-                i2b2.CRC.QueryStatus.displayEl.appendChild(componentEl);
-                i2b2.CRC.QueryStatus.resizeObserver.observe(componentEl);
-                // add references to our entries
-                qrs_entries[code].componentInstances = [{"definition": exclusiveComponent, "parentDisplayEl":componentEl, "displayEl": componentEl}];
-            } else {
-                // this is a QRS type that may have many visualization components
-                qrs_entries[code].componentInstances = [];
-                if (validComponents.length === 0) {
-                    console.warn("QueryStatus: no valid components found to display " + code);
-                } else {
-                    // create the master frame for the visualizations
-                    let componentParentEl = document.createElement("div");
-                    i2b2.CRC.QueryStatus.displayEl.appendChild(componentParentEl);
-                    componentParentEl.outerHTML = i2b2.CRC.QueryStatus.componentFrameTemplate;
-                    // get the correct reference directly from the main DOM document (implementation quirk)
-                    let allComponentEls = i2b2.CRC.QueryStatus.displayEl.querySelectorAll('.QueryStatusComponent');
-                    componentParentEl = allComponentEls[allComponentEls.length-1];
-
-                    // get the reference for the main display div
-                    let refComponentMainDisplay = componentParentEl.querySelector(".viz-window");
-
-                    // get the reference for the component selection dropdown
-                    let refComponentDropdown = componentParentEl.querySelector(".viz-dropdown-select");
-
-                    // attach the component drop down selector
-                    refComponentDropdown.addEventListener('click', i2b2.CRC.QueryStatus.componentDropdownClickHandler);
-
-                    // get the title
-                    const refComponentTitle = componentParentEl.querySelector(".title");
-
-                    for (let componentConfig of validComponents) {
-                        let componentInstanceObj = {"definition": componentConfig, "parentDisplayEl": componentParentEl};
-                        if (refComponentTitle) componentInstanceObj['parentTitleEl'] = refComponentTitle;
-
-                        // create the frame element for the visualization instance
-                        const componentVizEl = document.createElement("div");
-                        componentVizEl.classList.add("component-instance-viz", "resulttype-" + code, "viztype-" + componentConfig.componentCode);
-                        if (componentConfig.class !== undefined) componentVizEl.classList.add(componentConfig.class);
-                        componentVizEl.style.display = 'none';
-                        refComponentMainDisplay.appendChild(componentVizEl);
-                        i2b2.CRC.QueryStatus.resizeObserver.observe(componentVizEl);
-                        componentInstanceObj["displayEl"] = componentVizEl;
-
-                        // create an entry in the viz selection dropdown
-                        const componentDropEntryEl = document.createElement("li");
-                        // set label and mouse hover
-                        let tempEl;
-                        if (componentConfig.iconClass !== undefined) {
-                            tempEl = document.createElement("i");
-                            for (let cname of componentConfig.iconClass.split(" ")) tempEl.classList.add(cname);
-                            componentDropEntryEl.appendChild(tempEl);
-                        }
-                        if (componentConfig.name !== undefined) {
-                            if (componentConfig.iconClass === undefined) {
-                                componentDropEntryEl.textContent = componentConfig.name;
-                            } else {
-                                tempEl = document.createElement("span");
-                                tempEl.classList.add("label");
-                                tempEl.textContent = componentConfig.name;
-                                componentDropEntryEl.appendChild(tempEl);
-                            }
-                        }
-                        if (componentConfig.tooltip !== undefined) componentDropEntryEl.setAttribute('title', componentConfig.tooltip);
-                        componentDropEntryEl.classList.add("viz-dropdown-item", "resulttype-" + code);
-                        if (componentConfig.class !== undefined) componentDropEntryEl.classList.add(componentConfig.class);
-                        refComponentDropdown.appendChild(componentDropEntryEl);
-                        componentInstanceObj["dropdownEl"] = componentDropEntryEl;
-
-                        // save info
-                        qrs_entries[code].componentInstances.push(componentInstanceObj);
-                    }
-                }
-            }
-        }
-
-        // component entries of all QRS types have been created, time to instantiate each visualization module
-        Object.values(qrs_entries).forEach((qrsObject) => {
-            qrsObject.componentInstances.forEach((visualizationComponent, idx) => {
-                visualizationComponent["visualization"] = new visualizationComponent.definition.implementation(visualizationComponent, qrsObject.record, null);
-                if (idx === 0) {
-                    visualizationComponent["visualization"].show();
-                    // deal with the resizing the height of the parent div
-                    let dispWindow = visualizationComponent.parentDisplayEl.querySelector(".viz-window");
-                    if (dispWindow !== null) {
-                        dispWindow.style.transition = 'none';
-                        dispWindow.style.height = visualizationComponent.displayEl.offsetHeight + "px";
-                        setTimeout(()=> dispWindow.style.transition = '', 10);
-                    }
-                    // display the dropdown entry if relevant
-                    if (visualizationComponent.dropdownEl) visualizationComponent.dropdownEl.style.display = '';
-                } else {
-                    visualizationComponent["visualization"].hide();
-                    if (visualizationComponent.dropdownEl) visualizationComponent.dropdownEl.style.display = 'none';
-                }
-            });
-        });
-
-        // save all that we have done for the visualizations to the main namespace
-        i2b2.CRC.QueryStatus.model.visualizations = qrs_entries;
+        // instantiate visualization modules for the query instance results list
+        i2b2.CRC.QueryStatus.createVisualizationsFromList();
 
         // -------------------------------------------------------------------------------------------------------------
         // Fire off requests to get the results data for each QRS entry
