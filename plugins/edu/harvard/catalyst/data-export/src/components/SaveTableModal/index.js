@@ -95,9 +95,8 @@ export const SaveTableModal = ({open, handleClose}) => {
     }
 
     const doSave = () => {
-        const saveAllowed = !(isShared && !isAdmin);
+        const saveAllowed = !(tab === 0 && !isAdmin);
 
-        console.log("creatorid " + creatorId);
         if (saveAllowed) {
             dispatch(saveTable({
                     tableDefRows,
@@ -154,7 +153,7 @@ export const SaveTableModal = ({open, handleClose}) => {
     };
 
     const handleChangeTab = (event, newValue) => {
-        if(isAdmin) {
+        if(!(!isAdmin && newValue === 0)) {
             setTab(newValue);
         }
 
