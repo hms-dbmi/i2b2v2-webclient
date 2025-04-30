@@ -149,14 +149,45 @@ i2b2.CRC.view.QT.showRun = function() {
                 $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(requestContainer);
             });
         }
-        for (let code in i2b2.CRC.model.userRequestTypes) {
-            document.getElementById("DataRequestDiv").style.display = "";
-            let descriptions = i2b2.CRC.model.userRequestTypes[code];
+
+        const projectRequestTypesDescriptions = {};
+        for (let code in i2b2.CRC.model.projectRequestTypes) {
+            const descriptions = i2b2.CRC.model.projectRequestTypes[code];
             descriptions.forEach(description => {
+                if(projectRequestTypesDescriptions[descriptions] === undefined){
+                    projectRequestTypesDescriptions[descriptions] = [];
+                }
+                projectRequestTypesDescriptions[description].push(code);
+            });
+        }
+
+        const projectRequestTypesDescKeys = Object.keys(projectRequestTypesDescriptions).sort(([a,],[b,]) => a.localeCompare(b, undefined, { numeric: true }))
+        projectRequestTypesDescKeys.forEach( description =>  {
+            let codes = projectRequestTypesDescriptions[description];
+            codes.forEach(code => {
+                let checked = '';
+                $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> Project Created: ' + description + '</div>').appendTo(requestContainer);
+            });
+        })
+
+        const userRequestTypesDescriptions = {};
+        for (let code in i2b2.CRC.model.userRequestTypes) {
+            const descriptions = i2b2.CRC.model.userRequestTypes[code];
+            descriptions.forEach(description => {
+                if(userRequestTypesDescriptions[descriptions] === undefined){
+                    userRequestTypesDescriptions[descriptions] = [];
+                }
+                userRequestTypesDescriptions[description].push(code);
+            });
+        }
+        const userRequestTypesDescKeys = Object.keys(userRequestTypesDescriptions ).sort(([a,],[b,]) => a.localeCompare(b, undefined, { numeric: true }))
+        userRequestTypesDescKeys.forEach( description =>  {
+            let codes = userRequestTypesDescriptions[description];
+            codes.forEach(code => {
                 let checked = '';
                 $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> User Created: ' + description + '</div>').appendTo(requestContainer);
             });
-        }
+        });
 
         $("#dataRequestInfoEmail").val(i2b2.PM.model.email);
         let dataExportContainer = $("#crcModal .DataExportTypes");
@@ -281,6 +312,7 @@ i2b2.CRC.view.QT.loadResultTypesAndShowRun = function() {
         i2b2.CRC.model.resultTypes = {};
         i2b2.CRC.model.requestTypes = {};
         i2b2.CRC.model.userRequestTypes = {};
+        i2b2.CRC.model.projectRequestTypes = {};
         i2b2.CRC.model.dataExportTypes = {};
 
         if (results.error){
@@ -317,6 +349,11 @@ i2b2.CRC.view.QT.loadResultTypesAndShowRun = function() {
                         i2b2.CRC.model.userRequestTypes[name] = [];
                     }
                     i2b2.CRC.model.userRequestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
+                }else if (visual_attribute_type === "LP") {
+                    if(i2b2.CRC.model.projectRequestTypes[name] === undefined){
+                        i2b2.CRC.model.projectRequestTypes[name] = [];
+                    }
+                    i2b2.CRC.model.projectRequestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
                 }else if (visual_attribute_type === "LX") {
                     if(i2b2.CRC.model.dataExportTypes[name] === undefined){
                         i2b2.CRC.model.dataExportTypes[name] = [];
