@@ -170,12 +170,6 @@ i2b2.CRC.QueryStatus.updateFromQueryMgr = function() {
             viz.visualization.update(QueryMgrRecord);
         }
     }
-
-    // see if we are going to poll again
-    // if (QueryMgrRecord.finished !== true) {
-    //     // set update for 100ms from now if the query is not yet finished
-    //     setTimeout(i2b2.CRC.QueryStatus.updateFromQueryMgr, 100);
-    // }
 }
 
 
@@ -198,7 +192,6 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     }
 
     // remove the placed codes from the working list
-//    let codesToRemove = Object.keys(i2b2.CRC.QueryStatus.model.visualizations);
     let codesToRemove = Object.keys(qrs_entries);
     qrsCodesFound = qrsCodesFound.filter((code) => {
         return !codesToRemove.includes(code);
@@ -246,7 +239,6 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
             let qrsObject = i2b2.CRC.QueryStatus.model.QRS[qrsCode];
             const qrsRecordKey = Object.keys(i2b2.CRC.QueryStatus.model.QRS).filter((key) => i2b2.CRC.QueryStatus.model.QRS[key].QRS_Type === qrsCode);
             if (qrsRecordKey.length > 0) {
-//                componentInstanceObj.record = i2b2.CRC.QueryStatus.model.QRS[qrsRecordKey];
                 qrsObject = i2b2.CRC.QueryStatus.model.QRS[qrsRecordKey];
             }
 
@@ -395,7 +387,23 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
                     if (instantiationResults === false) {
                         console.error("Failed to Instantiate viz module");
                     }
+                }
 
+                // handle if a viz module's advanced configuration makes it the default displayed plugin
+                // debugger;
+                const forcedInitialDisplay = qrs_entries[code].componentInstances.filter((viz) => {
+                    if (typeof viz.advancedConfig === 'object') {
+                        if (viz.advancedConfig.forceInitialDisplay === true) return true;
+                    }
+                    return false;
+                });
+                if (forcedInitialDisplay.length > 0) {
+                    if (forcedInitialDisplay[0].visualization.show()) {
+                        // only hide others if we succeeded in showing our target viz module
+                        for (let vizToHide of qrs_entries[code].componentInstances) {
+                            if (vizToHide !== forcedInitialDisplay[0]) vizToHide.visualization.hide();
+                        }
+                    }
                 }
             }
         }
@@ -571,7 +579,6 @@ let init = async function() {
         } else {
             i2b2.CRC.QueryStatus.advancedConfigurations = config.advancedConfigs;
         }
-
 
         // save component keys into component objects
         for (const compCode of Object.keys(i2b2.CRC.QueryStatus.displayComponents)) i2b2.CRC.QueryStatus.displayComponents[compCode].componentCode = compCode;

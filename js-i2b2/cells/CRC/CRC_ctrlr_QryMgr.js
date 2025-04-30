@@ -69,17 +69,6 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
     }
     if (!stillRunning || (i2b2.CRC.model.runner.finished && (!i2b2.CRC.model.runner.deleteCurrentQuery || (i2b2.CRC.model.runner.deleteCurrentQuery && i2b2.CRC.model.runner.idQueryMaster !== undefined)))) i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
 
-
-    // if we are still running but are now queued we will now render whatever we have to display (while still continuing to poll)
-    // if (stillRunning && i2b2.CRC.model.runner.queued && i2b2.CRC.model.runner.isShrine) {
-    //     if (i2b2.CRC.model.runner.intervalGraphRefresh === false) {
-    //         i2b2.CRC.model.runner.intervalGraphRefresh = setInterval(() => {
-    //             // i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport"))
-    //             i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport")[0]);
-    //         }, 1000);
-    //     }
-    // }
-
     // update the progress display
     i2b2.CRC.view.QueryMgr.updateStatus();
 }
@@ -253,9 +242,6 @@ i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.queued = true;
 
-    // // stop SHRINE dynamic rendering
-    // if (i2b2.CRC.model.runner.intervalGraphRefresh !== false) clearInterval(i2b2.CRC.model.runner.intervalGraphRefresh);
-
     if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
         clearInterval(i2b2.CRC.model.runner.intervalTimer);
         delete i2b2.CRC.model.runner.intervalTimer;
@@ -274,8 +260,7 @@ i2b2.CRC.ctrlr.QueryMgr.clearQuery = function() {
     i2b2.CRC.ctrlr.QT.clearQuery();
 
     // clear the display window
-    $("#infoQueryStatus", cell.view.QueryMgr.lm_view).empty();
-    $("#infoQueryReport", cell.view.QueryMgr.lm_view).empty();
+    i2b2.CRC.view.QueryMgr.clearStatus();
 };
 
 
@@ -299,7 +284,7 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
         return;
     }
 
-        // get the query instance id
+    // get the query instance id
     let qiID = false;
 
     // try loading the query instance elements from the server results
@@ -395,9 +380,6 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     i2b2.CRC.model.runner.isLoading = false;
     if (i2b2.CRC.model.runner.endTime === undefined) i2b2.CRC.model.runner.endTime = new Date();
 
-    // // stop SHRINE dynamic rendering
-    // if (i2b2.CRC.model.runner.intervalGraphRefresh !== false) clearInterval(i2b2.CRC.model.runner.intervalGraphRefresh);
-
     // stop the run timer
     if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
         clearInterval(i2b2.CRC.model.runner.intervalTimer);
@@ -411,8 +393,12 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
         // query history window is refreshed by this call
         i2b2.CRC.ctrlr.history.queryDeleteNoPrompt(qmId);
     } else {
-        // render the results tables/graphs
-        if (typeof i2b2.CRC.model.runner.idQueryInstance !== 'undefined') i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
+        // render the results tables/graphs (but only if we have a proper QI reference)
+        if (typeof i2b2.CRC.model.runner.idQueryInstance === 'undefined') {
+            showStatus = false;
+        } else {
+            i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
+        }
     }
 
     // re-render status

@@ -12,28 +12,8 @@
     border-radius: 0 0 3px 3px;
 }
 
-.CRC_QS_view .accordion-button{
-    padding: 0.2em;
-    color: #212529;
-    background: none;
-    font-size: 0.45em;
-    font-weight: 600;
-}
-
 .CRC_QS_view td {
     padding: 0.3em;
-}
-
-.CRC_QS_view .accordion-item {
-    border: none
-}
-
-.CRC_QS_view .accordion-body {
-    padding: 0.5em;
-}
-
-.CRC_QS_view .accordion-header:hover {
-    background-color: #ececec;
 }
 
 .CRC_QS_view .computeTime {
@@ -43,19 +23,6 @@
     margin-top: 0.4em;
 }
 
-.CRC_QS_view .queryRunningSpinner {
-    height: 1.3em;
-    width: 1.3em;
-    margin-left: 0.3em;
-}
-
-.CRC_QS_view .breakdownStatus {
-    color: #00dd00;
-}
-
-.CRC_QS_view .breakdownValue {
-    color: #0000dd;
-}
 
 .CRC_QS_view .breakdownLabel {
     font-weight: 700;
@@ -84,10 +51,6 @@
 
 
 /* query report container styling (outside of the iframe) */
-
-
-
-
 #infoQueryStatusText table {
     width: 400px;
     margin: 2rem auto;
@@ -100,7 +63,7 @@
 
 
 
-    /* query report container styling (outside of the iframe) */
+/* query report container styling (outside of the iframe) */
 
 #queryReportModal .modal-dialog {
     max-width: 90%;
@@ -127,35 +90,6 @@
 
 
 /* ===================================== */
-#breakdownCharts svg text.graphLabel {
-    cursor: default;
-    text-anchor: end;
-}
-
-#breakdownCharts svg text.graphLabel:hover {
-    font-weight: bold;
-}
-
-#breakdownCharts svg rect.graphbar {
-    opacity: 0.60;
-    fill: rgb(39, 130, 163);
-    transition: opacity 100ms;
-}
-#breakdownCharts svg rect.graphbar:hover {
-    opacity: 1;
-    stroke: black;
-}
-
-#breakdownCharts svg text.graph-title {
-    font-weight: bold;
-    font-height: 1.05em;
-}
-
-#breakdownCharts svg text.y-label {
-    font-weight: bold;
-}
-
-
 #ShrineSites {
     width: 90% !important;
     text-align: left !important;
