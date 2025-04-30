@@ -51,10 +51,9 @@ export function* doSaveProjectUser(action) {
             }));
         }
 
-        const deletedProjectUserRolesResults = deletedProjectUserRoleResponse.filter(result => result.msgType === "AJAX_ERROR");
-        console.log("deleted project length " + deletedProjectUserRolesResults.length);
+        const deletedProjectUserRolesErrors = deletedProjectUserRoleResponse.filter(result => result.msgType === "AJAX_ERROR");
 
-        if(isNew || deletedProjectUserRolesResults.length !== 0){
+        if(isNew || deletedProjectUserRolesErrors.length === 0){
             const projectUserRoleResponse = yield all(rolesToSave.map((role) => {
                 return call(saveProjectUserRoleRequest, selectedProject.project.internalId, user.username, role);
             }));
@@ -68,7 +67,7 @@ export function* doSaveProjectUser(action) {
                 yield put(saveProjectUserFailed({projectUser: user, selectedProject}));
             }
         }else{
-            yield put(saveProjectUserFailed(deletedProjectUserRoleResponse));
+            yield put(saveProjectUserFailed({projectUser: user}));
         }
     } finally {
         const msg = `save project user thread closed`;

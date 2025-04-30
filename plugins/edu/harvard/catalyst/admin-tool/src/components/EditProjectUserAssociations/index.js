@@ -114,7 +114,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
             flex: 1,
             cellClassName: 'actions',
             getActions: ({ id }) => {
-                const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
                 if(id === "AGG_SERVICE_ACCOUNT"){
                     return [];
                 }
