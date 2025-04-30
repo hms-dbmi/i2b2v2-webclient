@@ -59,7 +59,7 @@ export const SaveTableModal = ({open, handleClose}) => {
     }
 
     const selectIfNameExists = (title) =>{
-        const matchedRows = userRows.filter(srow => srow.title?.toUpperCase() === title.toUpperCase());
+        const matchedRows = userRows.filter(srow => srow.title?.toUpperCase() === title.trim().toUpperCase());
 
         setSelectedRows(matchedRows.map(srow => srow.id));
 
