@@ -170,6 +170,8 @@ i2b2.CRC.view.QueryReport = {
                     if (isPatientCount) {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.unshift(breakdown);
                     } else if(visualAttr === "LR" || visualAttr === "LX" || visualAttr === "LU" || visualAttr === "LP") {
+                        breakdown.result = breakdown.result.filter(breakdownItem => breakdownItem.name === 'EMAIL');
+                        breakdown.result.forEach(breakdownItem => breakdownItem.name = "Requested By Email");
                         i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
                     } else {
                         i2b2.CRC.view.QueryReport.breakdowns.resultTable.push(breakdown);
