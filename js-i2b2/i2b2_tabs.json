@@ -9,7 +9,7 @@
         "type":"stack",
         "content":[
           {
-            "title":"Info",
+            "title":"Term Info",
             "componentName": "i2b2.ONT.view.info"
           }, {
             "title":"Workplace",
@@ -38,7 +38,7 @@
             "title":"Find Patients",
             "componentName": "i2b2.CRC.view.QT"
           },{
-            "title": "Analysis Tools",
+            "title": "Tools",
             "componentName": "i2b2.PLUGIN.view.list"
           }]
       },
