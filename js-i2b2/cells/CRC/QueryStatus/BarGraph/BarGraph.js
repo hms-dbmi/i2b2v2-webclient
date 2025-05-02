@@ -170,7 +170,7 @@ export default class BarGraph {
                 .remove();
 
             // update the viewport element to the height of the visualization
-            this.config.displayEl.parentElement.style.height = this.config.displayEl.offsetHeight + "px";
+            if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
 
         } catch(e) {
             console.error("Error in QueryStatus:BarGraph.update()");
@@ -197,7 +197,7 @@ export default class BarGraph {
             this.config.dropdownEl.style.display = 'block';
             this.config.parentTitleEl.innerHTML = this.record.title;
             // update the size
-            this.config.displayEl.parentElement.style.height = this.config.displayEl.offsetHeight;
+            this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
             return true;
         } catch(e) {
             console.error("Error in QueryStatus:BarGraph.show()");
