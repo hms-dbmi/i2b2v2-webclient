@@ -39,8 +39,8 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
         handleSetScreen(0);
     }
 
-    const onDeleteTable = (tableId, isShared) => {
-        dispatch(deleteTable({tableId, isShared}));
+    const onDeleteTable = (tableId, isProjectShared, isGlobalShared) => {
+        dispatch(deleteTable({tableId, isProjectShared, isGlobalShared}));
     }
 
     const confirmDeleteStatus = () => {
@@ -104,7 +104,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                                       onSelect={setSelectedTable}
                                       hasError={statusInfo.status==='FAIL'}
                                       isLoading={isFetching || isDeleting}
-                                      onDelete={(id) => onDeleteTable(id, true)}
+                                      onDelete={(id) => onDeleteTable(id, false, true)}
                                       deleteFailed={deleteStatusInfo.status === 'FAIL'}
                                       onDeleteAlertClose={confirmDeleteStatus}
                                       onRename={updateTableDefinitionTitle}
@@ -124,7 +124,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                                       onSelect={setSelectedTable}
                                       hasError={statusInfo.status==='FAIL'}
                                       isLoading={isFetching || isDeleting}
-                                      onDelete={(id) => onDeleteTable(id, true)}
+                                      onDelete={(id) => onDeleteTable(id, true, false)}
                                       deleteFailed={deleteStatusInfo.status === 'FAIL'}
                                       onDeleteAlertClose={confirmDeleteStatus}
                                       onRename={updateTableDefinitionTitle}
@@ -143,7 +143,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                                       canRename={true}
                                       onSelect={setSelectedTable}  isLoading={isFetching || isDeleting}
                                       hasError={statusInfo.status==='FAIL'}
-                                      onDelete={(id) => onDeleteTable(id, false)}
+                                      onDelete={(id) => onDeleteTable(id, false, false)}
                                       deleteFailed={deleteStatusInfo.status === 'FAIL'}
                                       onDeleteAlertClose={confirmDeleteStatus}
                                       onRename={updateTableDefinitionTitle}

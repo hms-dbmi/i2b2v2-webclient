@@ -60,12 +60,15 @@ export const tableListingSlice = createSlice({
             state.deleteStatusInfo = StatusInfo();
         },
 
-        deleteTableSuccess: (state, { payload: { tableId, isShared } }) => {
+        deleteTableSuccess: (state, { payload: { tableId, isProjectShared, isGlobalShared } }) => {
             state.isDeleting = false;
             state.deleteStatusInfo = StatusInfo({
                 status: "SUCCESS"
             });
-            if(isShared){
+            if(isGlobalShared){
+                state.globalRows = state.globalRows.filter((row) => row.id !== tableId);
+            }
+            else if(isProjectShared){
                 state.projectRows = state.projectRows.filter((row) => row.id !== tableId);
             }
             else{

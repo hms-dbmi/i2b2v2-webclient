@@ -59,7 +59,16 @@ export const SaveTableModal = ({open, handleClose}) => {
     }
 
     const selectIfNameExists = (title) =>{
-        const matchedRows = userRows.filter(srow => srow.title?.toUpperCase() === title.trim().toUpperCase());
+        let matchedRows = [];
+        if(tab === 0){
+            matchedRows = globalRows.filter(srow => srow.title?.toUpperCase() === title.trim().toUpperCase());
+        }
+        else if(tab === 1){
+            matchedRows = projectRows.filter(srow => srow.title?.toUpperCase() === title.trim().toUpperCase());
+        }
+        else{
+           matchedRows = userRows.filter(srow => srow.title?.toUpperCase() === title.trim().toUpperCase());
+        }
 
         setSelectedRows(matchedRows.map(srow => srow.id));
 
@@ -140,8 +149,8 @@ export const SaveTableModal = ({open, handleClose}) => {
        )
     }
 
-    const onDeleteTable = (tableId, isShared) => {
-        dispatch(deleteTable({tableId, isShared}));
+    const onDeleteTable = (tableId, isProjectShared, isGlobalShared) => {
+        dispatch(deleteTable({tableId, isProjectShared, isGlobalShared}));
     }
 
     const confirmDeleteStatus = () => {
@@ -232,7 +241,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
                             hasError={statusInfo.status==='FAIL'}
-                            onDelete={(id) => onDeleteTable(id, false)}
+                            onDelete={(id) => onDeleteTable(id, false, true)}
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}
@@ -254,7 +263,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
                             hasError={statusInfo.status==='FAIL'}
-                            onDelete={(id) => onDeleteTable(id, false)}
+                            onDelete={(id) => onDeleteTable(id, true, false)}
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}
@@ -277,7 +286,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             onSelect={onRowSelect}
                             selectionModel={selectedRows}
                             hasError={statusInfo.status==='FAIL'}
-                            onDelete={(id) => onDeleteTable(id, false)}
+                            onDelete={(id) => onDeleteTable(id, false, false)}
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}

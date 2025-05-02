@@ -87,6 +87,7 @@ export const RequestDetailView = ({details, isObfuscated}) => {
                         <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Date Request Submitted:</span> {details.dateSubmitted.toLocaleDateString()} </Typography>
                         <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Submitted By:</span> {details.userId} </Typography>
                         <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Email:</span> {details.email} </Typography>
+                        <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Approved By:</span> {details.approvedBy} </Typography>
                     </Grid>
                     <Grid size={6}>
                         <Typography className={"RequestDetailContentItem"}> <span className={"title"}>Count(Patient):</span> { formatNumber(details.patientCount)} </Typography>

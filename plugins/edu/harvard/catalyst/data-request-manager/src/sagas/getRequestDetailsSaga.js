@@ -16,6 +16,7 @@ const getExportRequestDetailRequest = (queryResultInstanceId) => {
 const parseExportRequestDetailXml = (exportRequestListXml) => {
     let exportRequestDetail = {
         email: '',
+        approvedBy: '',
         exportDirectory: '',
     };
 
@@ -32,6 +33,9 @@ const parseExportRequestDetailXml = (exportRequestListXml) => {
                 let column = data.attributes['column'];
                 if(column.length > 0 && column.toUpperCase() === "EMAIL"){
                     exportRequestDetail.email = data.value;
+                }
+                if(column.length > 0 && column.toUpperCase() === "APPROVEDBY"){
+                    exportRequestDetail.approvedBy = data.value;
                 }
                 if(column.length > 0 && column.toUpperCase() === "DIRECTORY"){
                     exportRequestDetail.exportDirectory = data.value;

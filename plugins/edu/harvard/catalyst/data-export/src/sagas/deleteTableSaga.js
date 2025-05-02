@@ -17,13 +17,13 @@ const deleteTableRequest = (tableId) => {
 };
 
 export function* doDeleteTable(action) {
-    let { tableId, isShared } = action.payload;
+    let { tableId, isProjectShared, isGlobalShared } = action.payload;
 
     try {
         let response = yield call(deleteTableRequest, tableId);
 
         if(!response.error) {
-            yield put(deleteTableSuccess({tableId, isShared}));
+            yield put(deleteTableSuccess({tableId, isProjectShared, isGlobalShared}));
         }else{
             console.error("Error deleting table! Message: " + response.errorMsg + ". Error details: " + response.errorData);
             yield put(deleteTableError({errorMessage: "There was an error deleting the table."}));
