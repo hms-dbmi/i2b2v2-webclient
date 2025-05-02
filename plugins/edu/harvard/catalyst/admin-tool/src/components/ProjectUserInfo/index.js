@@ -28,12 +28,7 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
 
     const saveProjectUserInfo = () => {
         setShowSaveBackdrop(true);
-        const previousRoles = [selectedUser.user.adminPath.name, selectedUser.user.dataPath.name];
-
-        if(selectedUser.user.editorPath === "true"){
-            previousRoles.push(EDITOR_ROLE);
-        }
-        dispatch(saveProjectUser({user: updatedUser, selectedProject, previousRoles:previousRoles}));
+        dispatch(saveProjectUser({user: updatedUser, selectedProject, isEditor: selectedUser.user.editorPath.length > 0}));
     };
 
     const handleUpdate = (field, value) => {

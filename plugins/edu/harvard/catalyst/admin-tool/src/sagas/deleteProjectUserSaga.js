@@ -6,7 +6,7 @@ import {
     deleteProjectUserFailed,
     deleteProjectUserSucceeded,
 } from "actions";
-import {EDITOR_ROLE} from "../models";
+import {ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE} from "../models";
 
 const deleteProjectUserRoleRequest = (projectId, username, role) => {
 
@@ -24,7 +24,7 @@ export function* doDeleteProjectUser(action) {
 
     console.log("saving user " + user.username + " in project " + selectedProject.project.name + "...");
     try {
-        let rolesToDelete = [user.adminPath.name, user.dataPath.name];
+        let rolesToDelete = [ADMIN_ROLES.USER.name, DATA_ROLES.DATA_OBFSC.name];
         if(user.editorPath){
             rolesToDelete.push(EDITOR_ROLE);
         }

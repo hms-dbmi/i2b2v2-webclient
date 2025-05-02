@@ -143,7 +143,7 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
 
         let newUser = newRows.filter((row) => row.username === newRow.username).reduce((acc, item) => acc);
 
-        dispatch(saveProjectUser({user: newUser, selectedProject, isNew: false}));
+        dispatch(saveProjectUser({user: newUser, selectedProject, isNew: false, isEditor: previousRow.editorPath.length > 0}));
 
         return newRow;
     };

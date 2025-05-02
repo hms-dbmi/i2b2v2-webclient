@@ -31,15 +31,19 @@ const deleteProjectUserRoleRequest = (projectId, username, role) => {
 };
 
 export function* doSaveProjectUser(action) {
-    const { user, selectedProject, isNew } = action.payload;
+    const { user, selectedProject, isNew, isEditor } = action.payload;
 
     console.log("saving user " + user.username + " in project " + selectedProject.project.name + "...");
     try {
         let rolesToSave = [user.adminPath.name, user.dataPath.name];
         let rolesToDelete = [ADMIN_ROLES.USER.name, DATA_ROLES.DATA_OBFSC.name];
-        if(user.editorPath === "true"){
+
+        if(user.editorPath === "true" && !isEditor){
             rolesToSave.push(EDITOR_ROLE);
-        }else{
+        }
+
+        if(user.editorPath !== "true" && isEditor){
+            console.log("no editor path push " + user.editorPath);
             rolesToDelete.push(EDITOR_ROLE);
         }
 
