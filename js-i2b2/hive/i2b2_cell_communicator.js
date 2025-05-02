@@ -96,7 +96,6 @@ i2b2.hive.communicatorFactory = function(cellCode){
         }
         sUrl = i2b2.h.Escape(sUrl);
         sUrl = this._commData[funcName].url.replace("{{{URL}}}",sUrl);
-        sUrl = sUrl.replace( "http://127.0.0.1:9090", " http://www.dataenclave.net");
         execBubble.funcURL = sUrl;
         var sProxy_Url = i2b2.h.getProxy();
         if (sProxy_Url) {
