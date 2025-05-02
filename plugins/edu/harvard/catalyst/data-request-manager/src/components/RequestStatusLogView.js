@@ -166,12 +166,16 @@ export const RequestStatusLogView = ({requestStatusLog}) => {
                                 key={row.status}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell className={"descriptionColumn mainNoBorder"} component="td" scope="row" title={row.description}>
+                                <TableCell className={row.logItems.length === 0 ? "descriptionColumnNoExpand mainNoBorder": "descriptionColumn mainNoBorder"} component="td" scope="row" title={row.description}>
 
                                     <div className={"descriptionColumnLabel"}>
-                                        <IconButton  aria-label="expand" onClick={() => updateExpandList(row.description)}>
-                                            {!expandRowList.includes(row.description) ? <ChevronRightIcon/> : <ExpandMoreIcon />}
-                                        </IconButton>
+                                        {row.logItems.length > 0 &&
+                                            <IconButton aria-label="expand"
+                                                     onClick={() => updateExpandList(row.description)}>
+                                            {!expandRowList.includes(row.description) ? <ChevronRightIcon/> :
+                                                <ExpandMoreIcon/>}
+                                            </IconButton>
+                                        }
                                         {row.description}
                                     </div>
                                 </TableCell>

@@ -16,7 +16,7 @@ const getExportRequestDetailRequest = (queryResultInstanceId) => {
 const parseExportRequestDetailXml = (exportRequestListXml) => {
     let exportRequestDetail = {
         email: '',
-        statusLogs: []
+        exportDirectory: '',
     };
 
     let crcXmlResult = exportRequestListXml.getElementsByTagName('crc_xml_result');
@@ -32,6 +32,9 @@ const parseExportRequestDetailXml = (exportRequestListXml) => {
                 let column = data.attributes['column'];
                 if(column.length > 0 && column.toUpperCase() === "EMAIL"){
                     exportRequestDetail.email = data.value;
+                }
+                if(column.length > 0 && column.toUpperCase() === "DIRECTORY"){
+                    exportRequestDetail.exportDirectory = data.value;
                 }
             })
         }
@@ -54,10 +57,10 @@ export function* doGetRequestDetails(action) {
             yield put(getRequestDetailsError({errorMessage: "There was an error getting result instance id for retrieving the request details"}));
         }
         else if (!response.error) {
-            const emailAndStatusLogs = parseExportRequestDetailXml(response);
+            const details = parseExportRequestDetailXml(response);
             let requestDetails = { ...requestRow };
-            requestDetails.email = emailAndStatusLogs.email;
-            requestDetails.statusLogs = emailAndStatusLogs.statusLogs;
+            requestDetails.email = details.email;
+            requestDetails.exportDirectory = details.exportDirectory;
             yield put(getRequestDetailsSuccess({requestDetails, isManager, isAdmin}));
         } else {
             yield put(getRequestDetailsError({errorMessage: "There was an error getting the request details"}));

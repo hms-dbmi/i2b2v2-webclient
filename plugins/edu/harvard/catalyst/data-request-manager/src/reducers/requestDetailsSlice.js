@@ -15,17 +15,18 @@ export const requestDetailsSlice = createSlice({
             state.details.isFetching = true;
             state.details.statusInfo = StatusInfo();
         },
-        getRequestDetailsSuccess: (state, { payload: {requestDetails, isManager }}) => {
-            let status = requestDetails.status;//RequestStatus._lookupStatusKey(requestDetails.status);
+        getRequestDetailsSuccess: (state, { payload: {requestDetails, isManager, isAdmin }}) => {
+            let status = requestDetails.status;
             let details = null;
 
-            if(isManager){
+            if(isManager || isAdmin){
                 details = AdminRequestDetails({
                     id: requestDetails.id,
                     name: requestDetails.description,
                     requests: requestDetails.requests,
                     dateSubmitted: requestDetails.dateSubmitted,
                     email: requestDetails.email,
+                    exportDirectory: requestDetails.exportDirectory,
                     userId: requestDetails.userId,
                     status: status,
                     patientCount: requestDetails.patientCount,
@@ -44,13 +45,13 @@ export const requestDetailsSlice = createSlice({
                 });
             }
             state.details = details;
-            //state.details.isFetching = false;
+            state.details.isFetching = false;
             state.details.statusInfo = StatusInfo({
                 status: "SUCCESS"
             });
         },
         getRequestDetailsError: (state, { payload: { errorMessage} }) => {
-            //state.details.isFetching = false;
+            state.details.isFetching = false;
             state.details.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage

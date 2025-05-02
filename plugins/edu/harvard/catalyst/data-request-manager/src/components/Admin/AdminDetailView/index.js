@@ -134,7 +134,7 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
 
                         <div className={"RequestAction"}>
                             <Typography className={"RequestActionTitle"}>
-                                Actions
+                                Request Status
                             </Typography>
                             <Card className={"RequestDetailActionContent"}>
                                 <Grid container spacing={2}>
@@ -144,6 +144,10 @@ export const AdminDetailView = ({requestRow, setViewRequestTable}) => {
                                                 <Typography className={"RequestActionItem"}>
                                                     {editStatusOptions()}
                                                 </Typography>
+                                                {details.exportDirectory && <div className={"RequestDirectory"}>
+                                                    File directory: {details.exportDirectory}
+                                                </div>
+                                                }
                                             </Grid>
                                         </Grid>
                                     </Grid>
