@@ -1,0 +1,90 @@
+{
+  "INTERNAL_SUMMARY": {
+    "SUMMARY": true
+  },
+  "PATIENT_COUNT_XML": {
+    "COUNT": true
+  },
+  "PATIENT_COUNT_SHRINE_XML": {
+    "COUNT": true
+  },
+  "PATIENT_GENDER_COUNT_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true,
+    "PIECHART": {
+      "hideZeros": true,
+      "forceInitialDisplay": true
+    }
+  },
+  "PATIENT_SEX_COUNT_SHRINE_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_VITALSTATUS_COUNT_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_VITALSTATUS_COUNT_SHRINE_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_RACE_COUNT_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true,
+    "__PIECHART": {
+      "hideZeros": true
+    }
+  },
+  "PATIENT_RACE_COUNT_SHRINE_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true,
+    "__PIECHART": {
+      "hideZeros": true
+    }
+  },
+  "PATIENT_AGE_COUNT_XML": {
+    "BARS": true,
+    "DOWNLOAD": true,
+    "TABLE": {
+      "forceInitialDisplay": true
+    },
+    "__PIECHART": {
+      "hideEntries": [
+        ">= 85 years old",
+        ">= 65 years old"
+      ],
+      "hideZeros": true
+    }
+  },
+  "PATIENT_AGE_COUNT_SHRINE_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_LOS_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_TOP20MEDS_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_TOP20DIAG_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_INOUT_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  }
+}

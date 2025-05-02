@@ -227,12 +227,8 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     const functInstantiateViz = (qrsCode, componentDefObj, componentInstanceObj, componentIndexNumber = 1) => {
         try {
             // handle any advanced configuration
-            if (i2b2.CRC.QueryStatus.advancedConfigurations) {
-                if (i2b2.CRC.QueryStatus.advancedConfigurations[qrsCode] !== undefined) {
-                    if (i2b2.CRC.QueryStatus.advancedConfigurations[qrsCode][componentDefObj.componentCode] !== undefined) {
-                        componentInstanceObj.advancedConfig = i2b2.CRC.QueryStatus.advancedConfigurations[qrsCode][componentDefObj.componentCode];
-                    }
-                }
+            if (typeof i2b2.CRC.QueryStatus.breakdownConfig[qrsCode][componentDefObj.componentCode] === 'object') {
+                componentInstanceObj.advancedConfig = i2b2.CRC.QueryStatus.breakdownConfig[qrsCode][componentDefObj.componentCode];
             }
 
             // record a reference to the QRS record information
@@ -269,8 +265,17 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
 
 
     for (let code of newEntries) {
+        qrs_entries[code].componentInstances = [];
+
         // create a list of references to QRS's valid visualizations
-        let validComponents = componentKeys.filter((k) => refDisplayComponents[k].results.includes(code)).map((b) => refDisplayComponents[b]);
+//        let validComponents = componentKeys.filter((k) => refDisplayComponents[k].results.includes(code)).map((b) => refDisplayComponents[b]);
+        let validComponents = componentKeys.filter((k) => Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[code]).includes(k) && i2b2.CRC.QueryStatus.breakdownConfig[code][k] !== false).map((b) => refDisplayComponents[b]);
+
+        if (validComponents.length === 0) {
+            // short circuit if no components are configured
+            continue;
+        }
+
         // sort by component displayOrder
         validComponents.sort((a, b) => {
             let av = a.displayOrder;
@@ -313,7 +318,6 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
 
         } else {
             // this is a QRS type that may have many visualization components
-            qrs_entries[code].componentInstances = [];
             if (validComponents.length === 0) {
                 console.warn("QueryStatus: no valid components found to display " + code);
             } else {
@@ -568,17 +572,18 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
 // load and process the configuration file
 let init = async function() {
     try {
+        // load config.json
         let response = await fetch(i2b2.CRC.QueryStatus.baseURL + "config.json");
-        if (!response.ok) throw new Error(`Failed to retreve QueryStatus config file: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to retreve QueryStatus config.json file: ${response.status}`);
         const config = await response.json();
         i2b2.CRC.QueryStatus.displayComponents = config.displayComponents;
         i2b2.CRC.QueryStatus.displayOrder = config.displayOrder;
         i2b2.CRC.QueryStatus.haltOnStatus = config.haltPollingOnStatus;
-        if (config.advancedConfigs === undefined) {
-            i2b2.CRC.QueryStatus.advancedConfigurations = false;
-        } else {
-            i2b2.CRC.QueryStatus.advancedConfigurations = config.advancedConfigs;
-        }
+
+        // load breakdowns.json
+        response = await fetch(i2b2.CRC.QueryStatus.baseURL + "breakdowns.json");
+        if (!response.ok) throw new Error(`Failed to retreve QueryStatus breakdowns.json file: ${response.status}`);
+        i2b2.CRC.QueryStatus.breakdownConfig = await response.json();
 
         // save component keys into component objects
         for (const compCode of Object.keys(i2b2.CRC.QueryStatus.displayComponents)) i2b2.CRC.QueryStatus.displayComponents[compCode].componentCode = compCode;
