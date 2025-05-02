@@ -64,6 +64,7 @@ export function* doGetRequestDetails(action) {
             const details = parseExportRequestDetailXml(response);
             let requestDetails = { ...requestRow };
             requestDetails.email = details.email;
+            requestDetails.approvedBy = details.approvedBy;
             requestDetails.exportDirectory = details.exportDirectory;
             yield put(getRequestDetailsSuccess({requestDetails, isManager, isAdmin}));
         } else {
