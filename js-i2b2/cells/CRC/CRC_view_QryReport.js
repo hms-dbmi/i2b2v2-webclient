@@ -184,7 +184,7 @@ i2b2.CRC.view.QueryReport = {
                 i2b2.CRC.view.QueryReport.hasZeroPatients = isZeroPatients;
             }
             // only create graphs if there is breakdown data
-            if (!isPatientCount && !isZeroPatients  && !(visualAttr === 'LR' || visualAttr === 'LX') && status !== "ERROR") {
+            if (!isPatientCount && !isZeroPatients  && !(visualAttr === 'LR' || visualAttr === 'LX' || visualAttr === 'LP'|| visualAttr === 'LU') && status !== "ERROR") {
                 i2b2.CRC.view.graphs.createGraph("breakdownChartsBody", breakdown, i2b2.CRC.view.QueryReport.breakdowns.length);
             }
         }
