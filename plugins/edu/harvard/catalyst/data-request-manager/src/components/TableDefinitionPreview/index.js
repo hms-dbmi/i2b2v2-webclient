@@ -119,7 +119,7 @@ export const TableDefinitionPreview = ({tableDefinition, open, onClose}) => {
         },
         {
             field: 'dataOption',
-            headerName: 'Value',
+            headerName: 'Aggregation Method',
             headerClassName: "header",
             flex: 1,
             sortable: true,
