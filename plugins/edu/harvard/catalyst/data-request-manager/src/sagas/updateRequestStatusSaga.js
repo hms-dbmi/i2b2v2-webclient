@@ -6,7 +6,7 @@ import {updateRequestStatusError, updateRequestStatusSuccess} from "../reducers/
 import XMLParser from "react-xml-parser";
 import {UPDATE_REQUEST_STATUS} from "../actions";
 import {RequestStatus} from "../models";
-import {getRequestStatusSuccess, refreshRequestRowStatus, updateRequestRowStatus} from "../reducers/requestTableSlice";
+import { refreshRequestRowStatus} from "../reducers/requestTableSlice";
 import {getRequestStatusLog} from "../reducers/requestStatusLogSlice";
 
 

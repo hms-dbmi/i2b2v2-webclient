@@ -1,10 +1,8 @@
 /* globals i2b2 */
 
 import {call, put, takeLatest} from "redux-saga/effects";
-import {GET_REQUEST_DETAILS, GET_REQUEST_STATUS} from "../actions";
-import {getRequestDetailsError, getRequestDetailsSuccess} from "../reducers/requestDetailsSlice";
+import {GET_REQUEST_STATUS} from "../actions";
 import XMLParser from "react-xml-parser";
-import {decode} from 'html-entities';
 import {getRequestStatusError, getRequestStatusSuccess} from "../reducers/requestTableSlice";
 
 const getRequestStatusRequest = (queryMasterId, comments) => {

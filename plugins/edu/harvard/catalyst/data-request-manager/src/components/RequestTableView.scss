@@ -1,4 +1,5 @@
 .RequestTableView {
+  width: 100%;
 
   .title {
     font-size: 1.05em;
@@ -20,5 +21,9 @@
 
   .createFileBtn {
     margin-bottom: 0.9em;
+  }
+
+  .RequestTableGrid {
+    width: 100%;
   }
 }

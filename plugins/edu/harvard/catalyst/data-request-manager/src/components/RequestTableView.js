@@ -36,7 +36,6 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             type: 'number',
             resizable: false,
             disableReorder: true,
-            flex: 1
         },
         {
             field: 'description',
@@ -45,7 +44,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 3,
+            minWidth: 210,
             renderCell: (param) => {
                 return (
                     <SimpleTreeView defaultExpandedItems={(isManager || isAdmin) ? [] : [param.row.description]}>
@@ -92,7 +91,8 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 2,
+            display: "flex",
+            flex: 1,
             renderCell: (param) => {
                 return (
                     <div className={"RequestStatus"}>
@@ -191,7 +191,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
         return columns;
     }
     return (
-        <Box className={"RequestTableView"} style={{ display: 'flex', flexDirection: 'column' }}>
+        <Box className={"RequestTableView"}>
             <Typography className={"title"}>
                 List of Export Data Requests
                 <div className={"RefreshTableIcon"}>
@@ -202,7 +202,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             </Typography>
             <DataGrid
                 style={{background:"white"}}
-                className={"ResearcherTableGrid"}
+                className={"RequestTableGrid"}
                 rows={rows}
                 columns={getColumns()}
                 showCellVerticalBorder={true}
