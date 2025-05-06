@@ -65,7 +65,7 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
                         queryResultType =  queryResultType[0];
                         visualAttributeType = queryResultType.getElementsByTagName('visual_attribute_type');
                         visualAttributeType = visualAttributeType.length > 0 ? visualAttributeType[0].value : null;
-                        if(visualAttributeType.toUpperCase() === "LU") {
+                        if(visualAttributeType.toUpperCase() === "LU" || visualAttributeType.toUpperCase() === "LP") {
                             let request = {resultInstanceId};
                             const requestId = queryResultType.getElementsByTagName('name');
                             let requestDescription = queryResultType.getElementsByTagName('description');
