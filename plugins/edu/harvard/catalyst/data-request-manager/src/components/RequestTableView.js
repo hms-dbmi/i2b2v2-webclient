@@ -130,7 +130,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
                 return (
                     <div className={"actions"}>
 
-                        {isManager && <div><Button title={"Create File(s)"} className={"createFileBtn"} color="primary" variant="contained" size="small"
+                        {(isManager || isAdmin) && <div><Button title={"Create File(s)"} className={"createFileBtn"} color="primary" variant="contained" size="small"
                                           onClick={() => handleConfirmFileCreate(param.row.id, param.row.queryInstanceId)}
                                                    disabled={param.row.status === RequestStatus.statuses.PROCESSING || param.row.status === RequestStatus.statuses.QUEUED}>Create File(s)
                             </Button> </div>

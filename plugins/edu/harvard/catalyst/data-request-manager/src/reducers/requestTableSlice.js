@@ -13,12 +13,12 @@ export const requestTableSlice = createSlice({
                 isFetching: true
             })
         },
-        listRequestTableSuccess: (state, { payload: {researcherRequests, isManager} }) => {
+        listRequestTableSuccess: (state, { payload: {researcherRequests, isManager, isAdmin} }) => {
             const rows = researcherRequests.map((request) => {
                 let status = RequestStatus._convertI2b2Status(request.status);
                 const patientCount = request.patientCount.length > 0 ? request.patientCount.toLocaleString() : request.patientCount;
 
-                if(isManager){
+                if(isManager ||isAdmin){
                     return AdminTableRow({
                         id: request.id,
                         queryInstanceId: request.queryInstanceId,
