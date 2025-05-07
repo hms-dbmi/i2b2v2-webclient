@@ -2,7 +2,6 @@ import {StatusInfo, ConfigInfo} from "../models";
 import {CONFIG_INFO} from "../actions";
 import {defaultState} from "../defaultState";
 import {createSlice} from "@reduxjs/toolkit";
-import PropTypes from "prop-types";
 
 export const configInfoSlice = createSlice({
     name: CONFIG_INFO,

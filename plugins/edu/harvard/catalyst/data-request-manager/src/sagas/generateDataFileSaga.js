@@ -17,8 +17,8 @@ export function* doGenerateDataFile(action) {
     try {
         const response = yield call(runExportRequest, queryInstanceId);
         if (!response.error) {
-            yield put(generateDataFileSuccess({queryInstanceId}));
             yield put(getRequestStatus({queryMasterId}));
+            yield put(generateDataFileSuccess({queryInstanceId}));
         } else {
             yield put(generateDataFileError({queryInstanceId, errorMessage: "There was an error generating the file(s)"}));
         }

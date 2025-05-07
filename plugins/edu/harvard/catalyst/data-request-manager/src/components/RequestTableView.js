@@ -25,7 +25,6 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
     const [confirmFileGen, setConfirmFileGen] = React.useState(false);
     const [createFileData, setCreateFileData] = React.useState({});
 
-
     const columns = [
         {
             field: 'id',
@@ -132,7 +131,12 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
 
                         {(isManager || isAdmin) && <div><Button title={"Create File(s)"} className={"createFileBtn"} color="primary" variant="contained" size="small"
                                           onClick={() => handleConfirmFileCreate(param.row.id, param.row.queryInstanceId)}
-                                                   disabled={param.row.status === RequestStatus.statuses.PROCESSING || param.row.status === RequestStatus.statuses.QUEUED}>Create File(s)
+                                                   disabled={param.row.status === RequestStatus.statuses.PROCESSING
+                                                       || param.row.status === RequestStatus.statuses.QUEUED
+                                                       || param.row.status === RequestStatus.statuses.FINISHED
+                                                       || param.row.status === RequestStatus.statuses.CANCELLED
+                                                       || param.row.isFetchingStatus
+                                                       || param.row.dataFileGeneration.isGeneratingFile}>Create File(s)
                             </Button> </div>
                         }
                         <div>
