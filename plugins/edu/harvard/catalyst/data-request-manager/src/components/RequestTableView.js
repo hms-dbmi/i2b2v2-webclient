@@ -92,6 +92,12 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             disableReorder: true,
             display: "flex",
             flex: 1,
+            valueGetter: (status) => {
+                if (status) {
+                    return status.name;
+                }
+                return status;
+            },
             renderCell: (param) => {
                 return (
                     <div className={"RequestStatus"}>
