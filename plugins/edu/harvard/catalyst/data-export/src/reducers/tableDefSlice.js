@@ -30,6 +30,7 @@ export const tableDefSlice = createSlice({
                         locked: requiredConcept.locked,
                         dataOption: requiredConcept.dataOption,
                         required: requiredConcept.required,
+                        sdxData: requiredConcept.sdxData
                     });
                     tableDefRows.push(tableDefRow);
                     index++;

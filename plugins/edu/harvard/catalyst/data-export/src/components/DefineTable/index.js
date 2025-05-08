@@ -83,11 +83,18 @@ export const DefineTable = (props) => {
             resizable: true,
             disableColumnSorting: true,
             disableColumnMenu: false,
-            renderCell: ({row}) =>  (
-                <Tooltip title={row.sdxData.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This column was originally called \""+ row.id+"\""} >
-                    { row.name.length ? <span className="tabledef-cell-trucate">{row.name}</span>  : <div className="tabledef-cell-trucate">&nbsp;</div> }
-                </Tooltip>
-            ),
+            renderCell: ({row}) =>  {
+                let toolTip = row.name;
+                if(row.sdxData?.renderData){
+                toolTip =  row.sdxData?.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This column was originally called \""+ row.sdxData.renderData.title+"\"";
+                }
+
+                return (
+                    <Tooltip title={toolTip} >
+                        { row.name.length ? <span className="tabledef-cell-trucate">{row.name}</span>  : <div className="tabledef-cell-trucate">&nbsp;</div> }
+                    </Tooltip>
+                )
+            },
             renderEditCell: (params) => (
                 <GridEditInputCell
                     {...params}
