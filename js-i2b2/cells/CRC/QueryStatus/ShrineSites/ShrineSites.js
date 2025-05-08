@@ -1,15 +1,19 @@
 export default class ShrineSites {
     constructor(componentConfig, qrsRecordInfo, qrsData) {
         try {
+            const self = this;
+
             this.config = componentConfig;
             this.record = qrsRecordInfo;
             this.data = qrsData;
             this.columns = ["Site", "Results"];
+            this.columnSort = Array(this.columns.length).fill(false);
 
             // create the base TABLE
             let table = d3.select(this.config.displayEl).append('table');
             let header = table.append('thead');
             let body = table.append('tbody');
+
 
             let colEls = header.append('tr')
                 .selectAll('th')
@@ -20,7 +24,16 @@ export default class ShrineSites {
                     let t = parent.append("i");
                     t.classed("bi",true);
                     t.classed("bi-sort-alpha-down", true);
-                })
+                    t.attr("title","Sort Column");
+                    t.on("click", (e,d, i) => {
+                        const sortIndex = self.columns.indexOf(d);
+                        if (sortIndex !== -1) {
+                            // update sort configuration
+                            self.columnSort = self.columnSort.map((d,i) => i === sortIndex);
+                            self.update();
+                        }
+                    });
+                });
 
             colEls.each((d, idx, el) => {
                 let cname = "site";
@@ -28,6 +41,8 @@ export default class ShrineSites {
                 if (idx > 1) cname = "details";
                 el[idx].classList.add(cname);
             });
+
+
 
 
         } catch(e) {
@@ -52,8 +67,26 @@ export default class ShrineSites {
             }
 
             // select the previously created TABLE element
+            let sortedData = Object.values(this.data);
+            const sortBy = this.columns.filter(((d,i) => this.columnSort[i]).bind(this));
+            if (sortBy.length > 0) {
+                sortedData = sortedData.sort((a,b) => {
+                    switch (sortBy[0]) {
+                        case "Site":
+                            return d3.ascending(a.site, b.site);
+                            break;
+                        case "Results":
+                            return d3.ascending(a.count, b.count);
+                            break;
+                    }
+                });
+            }
+
+
             let tbody = d3.select(this.config.displayEl).select('tbody');
-            let rows = tbody.selectAll('tr').data(Object.values(this.data));
+            tbody.selectAll("*").remove();
+            this.rows =  tbody.selectAll('tr').data(sortedData);
+            let rows = this.rows;
 
             // add new rows
             let newRows = rows.enter().append('tr');
