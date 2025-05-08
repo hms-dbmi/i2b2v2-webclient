@@ -31,7 +31,6 @@ export default class Table {
     }
 
 
-
     destroy() {
         delete this.config.displayEl;
         delete this.config;
@@ -39,8 +38,9 @@ export default class Table {
         delete this.data;
     }
 
+
     update(inputData) {
-//        try {
+        try {
             if (typeof inputData === 'undefined') {
                 // no data has been set... exit
                 if (Object.keys(this.data).length === 0) return;
@@ -75,23 +75,23 @@ export default class Table {
                 el[idx].classList.add(cname);
             });
 
-
-        // update the viewport element to the height of the visualization
-        if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.offsetHeight + "px";
-
-        // } catch(e) {
-        //     console.error("Error in QueryStatus:Table.update()");
-        // }
+            // update the viewport element to the height of the visualization
+            if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
+        } catch(e) {
+            console.error("Error in QueryStatus:Table.update()");
+        }
     }
+
 
     redraw(width) {
         try {
             // update the viewport element to the height of the visualization
-            if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.offsetHeight + "px";
+            if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
         } catch(e) {
             console.error("Error in QueryStatus:Table.redraw()");
         }
     }
+
 
     show() {
         // this is executed before a render and/or displaying of this visualization.
@@ -107,6 +107,7 @@ export default class Table {
         }
     }
 
+
     hide() {
         try {
             this.config.displayEl.style.display = 'none';
@@ -117,8 +118,9 @@ export default class Table {
             console.error("Error in QueryStatus:Table.hide()");
         }
     }
-
 }
+
+
 
 let parseData = function(xmlData) {
     let breakdown = {};
@@ -133,7 +135,6 @@ let parseData = function(xmlData) {
         entryRecord.value = parseInt(params[i2].firstChild.nodeValue).toLocaleString();
 
         // format with commas
-
         if (i2b2.PM.model.isObfuscated) {
             const nodeValue = parseInt(params[i2].firstChild.nodeValue);
             if (!isNaN(nodeValue) && nodeValue < 4) {
