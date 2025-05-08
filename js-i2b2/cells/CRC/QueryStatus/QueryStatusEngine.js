@@ -167,7 +167,7 @@ i2b2.CRC.QueryStatus.updateFromQueryMgr = function() {
     // cause an update of the display modules
     if (typeof i2b2.CRC.QueryStatus.model.visualizations["INTERNAL_SUMMARY"] !== 'undefined') {
         for (let viz of i2b2.CRC.QueryStatus.model.visualizations["INTERNAL_SUMMARY"].componentInstances) {
-            viz.visualization.update(QueryMgrRecord);
+            if (typeof viz.visualization !== 'undefined') viz.visualization.update(QueryMgrRecord);
         }
     }
 }
@@ -269,7 +269,13 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
 
         // create a list of references to QRS's valid visualizations
 //        let validComponents = componentKeys.filter((k) => refDisplayComponents[k].results.includes(code)).map((b) => refDisplayComponents[b]);
-        let validComponents = componentKeys.filter((k) => Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[code]).includes(k) && i2b2.CRC.QueryStatus.breakdownConfig[code][k] !== false).map((b) => refDisplayComponents[b]);
+        let validComponents = componentKeys.filter((k) => {
+            if (typeof i2b2.CRC.QueryStatus.breakdownConfig[code] !== 'undefined') {
+                return (Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[code]).includes(k) && i2b2.CRC.QueryStatus.breakdownConfig[code][k] !== false);
+            } else {
+                return false;
+            }
+        }).map((b) => refDisplayComponents[b]);
 
         if (validComponents.length === 0) {
             // short circuit if no components are configured
@@ -437,7 +443,7 @@ i2b2.CRC.QueryStatus._handleQueryResultSet = function(results) {
             let temp = qrs_list[i];
             let qrs_id = i2b2.h.XPath(temp, 'descendant-or-self::result_instance_id')[0].firstChild.nodeValue;
             if (i2b2.CRC.QueryStatus.model.QRS.hasOwnProperty(qrs_id)) {
-                rec = i2b2.CRC.view.QueryReport.QRS[qrs_id];
+                rec = i2b2.CRC.QueryStatus.model.QRS[qrs_id];
             } else {
                 rec.QRS_ID = qrs_id;
                 rec.size = i2b2.h.getXNodeVal(temp, 'set_size');
@@ -479,7 +485,7 @@ i2b2.CRC.QueryStatus._handleQueryResultSet = function(results) {
         // -------------------------------------------------------------------------------------------------------------
         // Fire off requests to get the results data for each QRS entry
         // -------------------------------------------------------------------------------------------------------------
-        const ignoreQrsCodes = ["INTERNAL_SUMMARY"];
+        const ignoreQrsCodes = Object.keys(i2b2.CRC.QueryStatus.model.QRS).filter((d) => (d.indexOf("INTERNAL") !== -1));
         for (const qrsID of Object.keys(i2b2.CRC.QueryStatus.model.QRS)) {
             if (!ignoreQrsCodes.includes(qrsID)) {
                 const rec = i2b2.CRC.QueryStatus.model.QRS[qrsID];

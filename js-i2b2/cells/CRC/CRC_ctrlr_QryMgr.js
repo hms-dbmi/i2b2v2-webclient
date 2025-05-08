@@ -360,6 +360,9 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
             i2b2.CRC.model.runner.isPolling = false;
             i2b2.CRC.model.runner.queued = true;
         }
+
+        // Start the query status panel!
+        i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
     }
 };
 
