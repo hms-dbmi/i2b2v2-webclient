@@ -1,0 +1,38 @@
+/* Shrine Sites CSS */
+
+
+.viztype-SHRINESITES {
+    padding: 0 10rem;
+}
+
+.viztype-SHRINESITES table {
+    width: 100%;
+    top: calc(-.5rem - 1px);
+    position: relative;
+    border: solid 1px #ccc;
+}
+
+.viztype-SHRINESITES table th {
+    border: solid 1px #ccc;
+    padding: .3rem .5rem;
+    background: #eee;
+}
+
+.viztype-SHRINESITES table th i.bi {
+    float: right;
+    cursor: pointer;
+}
+
+
+
+.viztype-SHRINESITES table td {
+    border: solid 1px #ccc;
+    padding: .2rem .5rem;
+}
+
+.viztype-SHRINESITES table th.result,
+.viztype-SHRINESITES table td.result {
+    text-align: center;
+}
+
+
