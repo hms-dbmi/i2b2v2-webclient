@@ -46,7 +46,7 @@
     display: none;
 }
 #infoQueryStatusText .statusButtons.running .cancel {
-    display: none;
+    display: block;
 }
 #infoQueryStatusText .statusButtons.cancelled .cancelled {
     display: block;

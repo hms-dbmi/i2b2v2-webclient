@@ -7,17 +7,20 @@ export default class Summary {
             this.data = qrsData;
             this.isVisible = false;
 
-            let thisClassInstance = this;
             $.ajax("js-i2b2/cells/CRC/QueryStatus/Summary/QueryStatus.html", {
                 success: (template, status, req) => {
+                    // re-identify the "this" value
+                    let thisClassInstance = i2b2.CRC.QueryStatus.model.visualizations["INTERNAL_SUMMARY"].componentInstances[0].visualization;
+                    if (typeof thisClassInstance.template !== "undefined") return;
+
                     // don't pollute the global Handlebars space
                     thisClassInstance.template = Handlebars.compile(req.responseText);
 
-                    // display the initial info that was passed
-                    $(thisClassInstance.template(this.record)).appendTo(thisClassInstance.config.displayEl);
-
-                    // make sure we are visible
-                    thisClassInstance.show();
+                    // display the initial info that was passed (if we are ready)
+                    if (typeof thisClassInstance.record !== "undefined") thisClassInstance.update(thisClassInstance.record);
+                    //
+                    // // make sure we are visible
+                    // thisClassInstance.show();
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: CRC/QueryStatus/Summary/QueryStatus.html"); }
             });
