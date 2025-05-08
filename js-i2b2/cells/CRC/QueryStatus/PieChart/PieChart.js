@@ -9,7 +9,7 @@ export default class PieChart {
 
             // create the SVG element
             this.height = 450;
-            this.width = this.config.displayEl.parentElement.offsetWidth;
+            this.width = this.config.displayEl.parentElement.clientWidth;
             this.radius = Math.min(this.width, this.height) / 2;
 
             let svg = d3.select(this.config.displayEl)
@@ -28,6 +28,7 @@ export default class PieChart {
 
             svg.attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")");
 
+            this.svg = svg;
 
         } catch(e) {
             console.error("Error in QueryStatus:PieChart.constructor()");
@@ -42,7 +43,9 @@ export default class PieChart {
     }
 
     change(data) {
-        let svg = d3.select(this.config.displayEl).select('.svg-body');
+        if (this.isVisible !== true) return;
+
+        let svg = this.svg;
 
         let pie = this.pie;
         let key = this.key;
@@ -58,7 +61,7 @@ export default class PieChart {
             .outerRadius(this.radius * 0.9);
 
 
-        let generateTooltipText = (d) => {
+        let generateTooltipText = (d,i,t) => {
             // TODO: handle Obfuscation and Sketches
             // i2b2.PM.model.isObfuscated
             let val = parseInt(d.data.value).toLocaleString();
@@ -67,48 +70,80 @@ export default class PieChart {
         };
 
 
+        function midAngle(d){
+            return d.startAngle + (d.endAngle - d.startAngle)/2;
+        }
+
+
+
+        // ====[Pie Slices]=============================================================================================
+
         let slice = svg.select(".slices").selectAll("path.slice")
             .data(pie(data), key);
 
-        slice.enter()
-            .insert("path")
-            .style("fill", function(d) { return color(d.data.name); })
-            .attr("stroke", "black")
-            .attr("class", "slice")
-            .append("title")
-            .text(generateTooltipText);
-
-
         slice
-            .transition().duration(1000)
-            .attrTween("d", function(d) {
-                this._current = this._current || d;
-                var interpolate = d3.interpolate(this._current, d);
-                this._current = interpolate(0);
-                return function(t) {
-                    return arc(interpolate(t));
-                };
-            })
+            .enter()
+                .insert("path")
+                .style("fill", function(d) { return color(d.data.name); })
+                .attr("stroke", "black")
+                .attr("class", "slice")
+                .call((parent) => { parent.append("title"); })
+            .merge(slice)
+                .transition().duration(1000)
+                .attrTween("d", function(d) {
+                    this._current = this._current || d;
+                    var interpolate = d3.interpolate(this._current, d);
+                    this._current = interpolate(0);
+                    return (t) => { return arc(interpolate(t)); };
+                })
+
+        slice.exit().remove();
 
         var sliceTooltip = svg.select(".slices").selectAll("path.slice").selectAll("title")
             .data(pie(data), key);
+
         sliceTooltip.transition()
             .text(generateTooltipText);
-        slice.exit()
-            .remove();
 
-        /* ------- TEXT LABELS -------*/
+
+        // ====[Text Labels]============================================================================================
 
         var text = svg.select(".labels").selectAll("text")
             .data(pie(data), key);
 
-        text.enter()
-            .append("text")
-            .attr("dy", ".35em")
-            .text((d) => d.data.name)
-            .append("title")
-            .text(generateTooltipText);
+        text
+            .enter()
+                .append("text")
+                .attr("dy", ".35em")
+                .text((d) => d.data.name)
+                .call((parent) => { parent.append("title"); })
+            .merge(text)
+                .transition()
+                .duration(1000)
+                .attrTween("transform", function(d) {
+                    this._current = this._current || d;
+                    var interpolate = d3.interpolate(this._current, d);
+                    this._current = interpolate(0);
+                    return function(t) {
+                        var d2 = interpolate(t);
+                        var pos = outerArc.centroid(d2);
+                        pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
+                        return "translate("+ pos +")";
+                    };
+                })
+                .styleTween("text-anchor", function(d){
+                    this._current = this._current || d;
+                    var interpolate = d3.interpolate(this._current, d);
+                    this._current = interpolate(0);
+                    return function(t) {
+                        var d2 = interpolate(t);
+                        return midAngle(d2) < Math.PI ? "start":"end";
+                    };
+                });
 
+        text.exit().remove();
+
+        // ====[Text Label Tooltips]====================================================================================
         var labelTooltip = svg.select(".labels").selectAll("title")
             .data(pie(data), key);
 
@@ -117,45 +152,15 @@ export default class PieChart {
 
 
 
-
-        function midAngle(d){
-            return d.startAngle + (d.endAngle - d.startAngle)/2;
-        }
-
-        text.transition().duration(1000)
-            .attrTween("transform", function(d) {
-                this._current = this._current || d;
-                var interpolate = d3.interpolate(this._current, d);
-                this._current = interpolate(0);
-                return function(t) {
-                    var d2 = interpolate(t);
-                    var pos = outerArc.centroid(d2);
-                    pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
-                    return "translate("+ pos +")";
-                };
-            })
-            .styleTween("text-anchor", function(d){
-                this._current = this._current || d;
-                var interpolate = d3.interpolate(this._current, d);
-                this._current = interpolate(0);
-                return function(t) {
-                    var d2 = interpolate(t);
-                    return midAngle(d2) < Math.PI ? "start":"end";
-                };
-            });
-
-        text.exit()
-            .remove();
-
-        /* ------- SLICE TO TEXT POLYLINES -------*/
+        // ====[Slice to Text Polylines]================================================================================
 
         var polyline = svg.select(".lines").selectAll("polyline")
             .data(pie(data), key);
 
-        polyline.enter()
-            .append("polyline");
-
-        polyline.transition().duration(1000)
+        polyline
+            .join("polyline")
+            .transition()
+            .duration(1000)
             .attrTween("points", function(d){
                 this._current = this._current || d;
                 var interpolate = d3.interpolate(this._current, d);
@@ -168,8 +173,7 @@ export default class PieChart {
                 };
             });
 
-        polyline.exit()
-            .remove();
+        polyline.exit().remove();
     }
 
 
@@ -177,16 +181,15 @@ export default class PieChart {
         try {
             // update the pie chart
 
-//            let data = this.data.result;
             // select the previously created SVG element
-            let svg = d3.select(this.config.displayEl).select('.svg-body');
+            let svg = this.svg;
 
-            this.width = svg.node().parentElement.clientWidth
-            this.height = svg.node().parentElement.clientHeight
+            // this.width = svg.node().parentElement.clientWidth
+            // this.height = svg.node().parentElement.scrollHeight
+            this.width = svg.node().parentElement.parentElement.clientWidth;
             this.radius = Math.min(this.width, this.height) / 2;
 
             svg.attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")");
-
 
             if (inputData !== undefined) {
                 // get the breakdown data information (if present)
@@ -197,6 +200,9 @@ export default class PieChart {
                     this.data = parseData(resultXML, this.config.advancedConfig);
                 }
             }
+
+            // only continue if we have data
+            if (typeof this.data !== 'object' || this.data === null) return;
 
             // -----------------------------------------------------------------------------------------------------
             this.key = (d) => d.data.name;
@@ -209,9 +215,7 @@ export default class PieChart {
 
             this.pie = d3.pie()
                 .sort(null)
-                .value(function(d) {
-                    return d.value;
-                });
+                .value((d) => d.value);
 
             this.change(this.data.result);
         } catch(e) {
@@ -222,7 +226,7 @@ export default class PieChart {
     redraw(width) {
         try {
             this.width = width;
-            this.update();
+            if (this.isVisible === true && !(typeof this.data !== 'object' || this.data === null)) this.update();
         } catch(e) {
             console.error("Error in QueryStatus:PieChart.redraw()");
         }
@@ -236,7 +240,9 @@ export default class PieChart {
             this.config.dropdownEl.style.display = 'block';
             this.config.parentTitleEl.innerHTML = this.record.title;
             // update the size
-            this.config.displayEl.parentElement.style.height = this.config.displayEl.offsetHeight;
+            this.config.displayEl.parentElement.style.height = this.config.displayEl.offsetHeight + 'px';
+            // redraw the visualization
+            this.update();
             return true;
         } catch(e) {
             console.error("Error in QueryStatus:PieChart.show()");
@@ -264,7 +270,8 @@ let parseData = function(xmlData, advancedConfig) {
     for (let i2 = 0; i2 < params.length; i2++) {
         let entryRecord = {}
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text().trim();
-        entryRecord.value = parseInt(params[i2].firstChild.nodeValue).toLocaleString();
+        entryRecord.value = params[i2].firstChild.nodeValue
+        entryRecord.display = parseInt(entryRecord.value).toLocaleString();
 
         // TODO: FIX THIS OR CONFIRM PROPER PROCESSING
         // if (i2b2.PM.model.isObfuscated) {
