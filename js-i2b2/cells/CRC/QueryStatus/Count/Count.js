@@ -6,17 +6,25 @@ export default class Count {
             this.data = qrsData;
             this.isVisible = false;
             let componentRef = this;
+
+            // see if we are SHRINE count
+            if (this.record.QRS_Type.indexOf("_SHRINE_") === -1) {
+                this.isShrine = false;
+            } else {
+                this.isShrine = true;
+            }
+
             let init = async function() {
                 // retrieve the component frame template
                 let response = await fetch(i2b2.CRC.QueryStatus.baseURL + "Count/Count.html");
                 if (!response.ok) {
                     console.error(`Failed to retrieve Count component template file: ${response.status}`);
-                    componentRef.dispTemplate = "";
+                    this.dispTemplate = "";
                 } else {
-                    componentRef.dispTemplate = await response.text();
+                    this.dispTemplate = await response.text();
                 }
             }
-            init();
+            init.call(this);
 
         } catch(e) {
             console.error("Error in QueryStatus:Count.constructor()");
@@ -40,8 +48,15 @@ export default class Count {
             }
             this.data = data;
             // extract the info from the XML
-            const title = i2b2.h.XPath(data, "//query_result_instance/description")[0].firstChild.nodeValue;
+            let title = i2b2.h.XPath(data, "//query_result_instance/description");
+            if (title.length === 0) {
+                // deal with PATIENT_COUNT_SHRINE_XML which is different
+                title = i2b2.h.XPath(data, "//query_result_instance/query_result_type/description")
+            }
+            title = title[0].firstChild.nodeValue;
+
             const count = i2b2.h.XPath(data, "//query_result_instance/set_size")[0].firstChild.nodeValue;
+
 
             // display the info
             this.config.displayEl.innerHTML = this.dispTemplate;
@@ -50,14 +65,31 @@ export default class Count {
             const titleEl = refContainer.querySelector('.count-title');
             titleEl.innerHTML = title;
             const countEl = refContainer.querySelector('.count-value');
-            countEl.innerHTML = count;
-            refContainer.style.height = '0px';
-            refContainer.style.display = 'block';
-            let countContainer = refContainer.querySelector('.count-container');
-            setTimeout(()=>{
-                refContainer.style.transitionDuration = '1s';
-                refContainer.style.height = countContainer.offsetHeight + 'px';
-            }, 10);
+            let rawCount = parseInt(count).toLocaleString();
+            if (this.isShrine) {
+                // get the extra site information
+                const xmlSHRINE = i2b2.h.Unescape(i2b2.h.XPath(data, "//xml_value")[0].innerHTML);
+                const sitesTotal = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@sites")[0].nodeValue).toLocaleString();
+                const sitesDone = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@complete")[0].nodeValue).toLocaleString();
+                const obfuscateFloor = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@floorThresholdNumber")[0].nodeValue).toLocaleString();
+                const obfuscateDisplay = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@obfuscatedDisplayNumber")[0].nodeValue).toLocaleString();
+
+                // count
+                if (parseInt(count) <= obfuscateFloor) {
+                    countEl.innerHTML = "&lt;" + rawCount;
+                } else {
+                    countEl.innerHTML = rawCount + "  &#177;" + obfuscateDisplay;
+                }
+                // sites reporting
+                let sitesContainer = refContainer.querySelector('.count-sites');
+                sitesContainer.innerHTML = "With " + sitesDone + " out of " + sitesTotal + " sites reporting";
+                sitesContainer.style.display = "block";
+            } else {
+                // count
+                countEl.innerHTML = rawCount;
+            }
+            // show everything
+             refContainer.style.display = 'block';
         } catch(e) {
             console.error("Error in QueryStatus:Count.update()");
         }

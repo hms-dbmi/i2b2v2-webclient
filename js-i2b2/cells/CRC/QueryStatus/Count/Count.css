@@ -21,3 +21,8 @@
     font-size: 45px;
     line-height: 45px;
 }
+
+.QueryStatusComponent.viztype-COUNT .count-sites {
+    padding: 0 0 0.3rem 0;
+    font-style: italic;
+}
