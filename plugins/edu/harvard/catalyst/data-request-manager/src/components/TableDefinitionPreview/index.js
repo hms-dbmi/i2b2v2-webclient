@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 
-import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Tooltip} from "@mui/material";
 import {DataGrid} from "@mui/x-data-grid";
 import "./TableDefinitionPreview.scss";
 
@@ -15,6 +15,18 @@ export const TableDefinitionPreview = ({tableDefinition, open, onClose}) => {
             headerClassName: "header",
             flex: 2,
             sortable: true,
+            renderCell: ({row}) =>  {
+                let toolTip = row.name;
+                if(row.sdxData?.renderData){
+                   toolTip =  row.sdxData?.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This column was originally called \""+ row.sdxData.renderData.title+"\"";
+                }
+
+                return (
+                    <Tooltip title={toolTip} >
+                        { row.name.length ? <span className="tabledef-cell-trucate">{row.name}</span>  : <div className="tabledef-cell-trucate">&nbsp;</div> }
+                    </Tooltip>
+                )
+            },
         },
         {
             field: "constraints",

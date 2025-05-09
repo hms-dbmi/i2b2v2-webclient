@@ -71,12 +71,17 @@ const parseGetTableXml = (tableXml, id) => {
 
             if(required){
                 const dataOption = data.dataOption ? data.dataOption : "Value";
-                allColumns.required.push({name, required, locked, display, dataOption});
+                let sdxData = data.sdxData ?  data.sdxData : {};
+                sdxData.renderData = sdxData.renderData ?  sdxData.renderData : {};
+
+                if(!sdxData.renderData.title){
+                   sdxData.renderData.title = name;
+                }
+                allColumns.required.push({name, required, locked, display, dataOption, sdxData});
 
             }else{
                 allColumns.concepts.push({name, required, locked, display, dataOption: data.dataOption, sdxData: data.sdxData});
             }
-
         }
     }
 

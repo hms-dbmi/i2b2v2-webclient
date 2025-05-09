@@ -44,13 +44,17 @@ const parseGetTableXml = (tableXml) => {
             name = name[0].childNodes[0].nodeValue;
             required = required[0].childNodes[0].nodeValue === "true";
 
+            if (data.length !== 0 && data[0].childNodes[0].length > 0) {
+                data = data[0].childNodes[0].nodeValue;
+                data = JSON.parse(data)[0];
+            }
+
             if (required) {
                 const dataOption = "VALUE";
-                requiredRows.push({name, dataOption});
+                const sdxData = data.sdxData ? data.sdxData : {};
+                requiredRows.push({name, dataOption, sdxData});
             } else {
-                if (data.length !== 0 && data[0].childNodes[0].length > 0) {
-                    data = data[0].childNodes[0].nodeValue;
-                    data = JSON.parse(data)[0];
+                if (data?.dataOption.length > 0) {
                     const dataOption = data.dataOption;
                     const sdxData = data.sdxData;
                     nonRequiredColumns.push({name, dataOption, sdxData});
