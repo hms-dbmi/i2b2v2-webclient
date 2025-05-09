@@ -24,10 +24,16 @@ export default class ShrineSites {
                     let t = parent.append("i");
                     t.classed("bi",true);
                     t.classed("bi-sort-alpha-down", true);
-                    t.attr("title","Sort Column");
-                    t.on("click", (e,d, i) => {
+                    t.attr("title","Sort by Column");
+                    t.on("click", (e, d) => {
                         const sortIndex = self.columns.indexOf(d);
                         if (sortIndex !== -1) {
+                            // deal with styling
+                            for (let node of self.config.displayEl.querySelectorAll('i.sort-by')) {
+                                node.classList.remove("sort-by");
+                            }
+                            e.target.classList.add("sort-by");
+
                             // update sort configuration
                             self.columnSort = self.columnSort.map((d,i) => i === sortIndex);
                             self.update();

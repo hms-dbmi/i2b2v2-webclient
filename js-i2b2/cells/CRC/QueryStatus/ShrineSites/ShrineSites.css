@@ -21,8 +21,13 @@
 .viztype-SHRINESITES table th i.bi {
     float: right;
     cursor: pointer;
+    border: 1px solid #eee;
 }
 
+.viztype-SHRINESITES table th i.bi.sort-by {
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
 
 
 .viztype-SHRINESITES table td {
