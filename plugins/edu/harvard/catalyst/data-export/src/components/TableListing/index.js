@@ -130,7 +130,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
             disableReorder: true,
             type: 'date'
         }, {
-            field: 'edit_date',
+            field: 'update_date',
             headerName: 'Edited',
             width: 98,
             sortable: true,

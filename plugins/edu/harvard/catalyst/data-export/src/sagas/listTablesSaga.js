@@ -28,6 +28,7 @@ const parseAllTablesListXml = (tablesListXml) => {
         let creator_id = table.getElementsByTagName('creator_id');
         let shared = table.getElementsByTagName('shared');
         let create_date = table.getElementsByTagName('create_date');
+        let update_date = table.getElementsByTagName('update_date');
         let column_count = table.getElementsByTagName('column_count');
         let visible = table.getElementsByTagName('visible');
         if(id.length !== 0 && title.length !== 0 && creator_id.length !== 0 && shared.length !== 0
@@ -39,40 +40,32 @@ const parseAllTablesListXml = (tablesListXml) => {
 
             create_date = create_date[0].value;
             create_date = DateTime.fromISO(create_date).toJSDate();
+
+            update_date = update_date[0].value;
+            update_date = DateTime.fromISO(update_date).toJSDate();
             if (visible.length !== 0) {
                 visible = visible[0].value === "true";
             } else {
                 visible = false;
             }
+
+            const rowData = {
+                id,
+                title,
+                creator_id,
+                create_date,
+                update_date,
+                column_count,
+                visible
+            };
             if(creator_id === '@'){
-                tablesObj.globalRows.push({
-                    id,
-                    title,
-                    creator_id,
-                    create_date,
-                    column_count,
-                    visible
-                });
+                tablesObj.globalRows.push(rowData);
             }
             else if(shared){
-                tablesObj.projectRows.push({
-                    id,
-                    title,
-                    creator_id,
-                    create_date,
-                    column_count,
-                    visible
-                });
+                tablesObj.projectRows.push(rowData);
             }
             else {
-                tablesObj.userRows.push({
-                    id,
-                    title,
-                    creator_id,
-                    create_date,
-                    column_count,
-                    visible
-                });
+                tablesObj.userRows.push(rowData);
             }
         }
     });

@@ -5,6 +5,7 @@ export const TableListingRow = ({
     title = null,
     creator_id= null,
     create_date= null,
+    update_date= null,
     column_count = 0,
     visible = false,
  } = {}) => ({
@@ -12,6 +13,7 @@ export const TableListingRow = ({
     title,
     creator_id,
     create_date,
+    update_date,
     column_count,
     visible
 });
@@ -21,6 +23,7 @@ TableListingRow.propTypes = {
     title: PropTypes.string.isRequired,
     creator_id: PropTypes.string.isRequired,
     create_date: PropTypes.instanceOf(Date).isRequired,
+    update_date: PropTypes.instanceOf(Date),
     column_count: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
 };
