@@ -86,15 +86,56 @@ export default class Download {
 let generateCSV = (inputData) => {
     let line, csv;
 
-    csv = `"` + inputData.title + `",""\n`;
-    line = [`"Breakdown Group"`, `"Total"`];
-    csv = csv + line.join(',') + "\n";
+    let siteCnt = 0;
+    if (typeof inputData.SHRINE !== 'undefined') siteCnt = inputData.SHRINE.sites.length;
+
+    const func_ProcessLine = (lineArray) => {
+        let line = lineArray.map((x) => x.trim().replaceAll(`"`, `'`));
+        line = line.map((x) => `"` + x + `"`);
+        return line.join(',') + `\n`;
+    };
+
+    // title line
+    line = [inputData.title];
+    line.push("");
+    for (let i=0; i<siteCnt; i++) line.push("");
+    csv = func_ProcessLine(line);
+
+    // column header line
+    line = ["Breakdown Group"];
+    if (siteCnt > 0) {
+        for (let i=0; i<siteCnt; i++) line.push(inputData.SHRINE.sites[i].name);
+    }
+    line.push("Total");
+    csv = csv + func_ProcessLine(line);
+
+    // add the "All Patients" line if we have SHRINE data
+    if (siteCnt > 0) {
+        line = ["All Patients"];
+        let total = 0;
+        for (let i=0; i<siteCnt; i++) {
+            let subtotal = inputData.SHRINE.sites[i].results.map((t) => t.value).reduce((parialSum, a) => parialSum + a, 0);
+            total = total + subtotal;
+            line.push(String(subtotal));
+        }
+        line.push(String(total));
+        csv = csv + func_ProcessLine(line);
+    }
 
     for (let grouping of inputData.result) {
-        line = [grouping.name, grouping.value];
-        line = line.map((x) => x.trim().replaceAll(`"`, `'`));
-        line = line.map((x) => `"` + x + `"`);
-        csv = csv + line.join(',') + `\n`;
+        line = [grouping.name];
+        if (siteCnt > 0) {
+            for (let i=0; i<siteCnt; i++) {
+                let temp = inputData.SHRINE.sites[i].results.filter((t) => t.name === grouping.name);
+                if (temp.length > 0) {
+                    line.push(String(temp[0].value));
+                } else {
+                    line.push('');
+                }
+            }
+        }
+        line.push(grouping.value) // total column value
+        csv = csv + func_ProcessLine(line);
     }
     return csv;
 };
