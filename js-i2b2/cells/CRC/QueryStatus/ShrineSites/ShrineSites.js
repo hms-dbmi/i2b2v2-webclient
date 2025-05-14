@@ -178,8 +178,6 @@ export default class ShrineSites {
 }
 
 const parseData = (xmlData) => {
-    console.dir(xmlData);
-    console.log(xmlData)
     let data = {};
     let records = i2b2.h.XPath(xmlData, "//data[@column]");
     for (let rec of records) {
