@@ -19,7 +19,7 @@ export const tableListingSlice = createSlice({
                     title: table.title,
                     creator_id: table.creator_id,
                     create_date: table.create_date,
-                    update_date: table.create_date,
+                    update_date: table.update_date,
                     column_count: table.column_count,
                     visible: table.visible
                 });
