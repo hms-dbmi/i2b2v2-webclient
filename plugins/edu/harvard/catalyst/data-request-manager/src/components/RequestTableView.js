@@ -141,6 +141,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
                                                        || param.row.status === RequestStatus.statuses.QUEUED
                                                        || param.row.status === RequestStatus.statuses.FINISHED
                                                        || param.row.status === RequestStatus.statuses.CANCELLED
+                                                       || param.row.status === RequestStatus.statuses.INCOMPLETE
                                                        || param.row.isFetchingStatus
                                                        || param.row.dataFileGeneration.isGeneratingFile}>Create File(s)
                             </Button> </div>
