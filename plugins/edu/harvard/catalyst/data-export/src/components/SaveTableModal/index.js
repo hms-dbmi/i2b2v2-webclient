@@ -169,6 +169,7 @@ export const SaveTableModal = ({open, handleClose}) => {
         setCreatorId(newValue === 0 ? '@': username);
         setIsShared(newValue !== 2);
         setSelectedRows([]);
+        setSelectedTableDef({title: selectedTableDef.title});
     };
 
 
