@@ -5,6 +5,8 @@ import {
     LOAD_DATA_TABLE
 } from "../actions";
 import {parseXml} from "../utilities/parseXml";
+import {decode} from 'html-entities';
+
 /* global i2b2 */
 
 export const DEFAULT_TABLE_ID = -1;
@@ -59,7 +61,7 @@ const parseGetTableXml = (tableXml, id) => {
             && required.length !== 0 && required[0].childNodes.length > 0
             && locked.length !== 0 && locked[0].childNodes.length > 0
             && display.length !== 0 && display[0].childNodes.length > 0){
-            name = name[0].childNodes[0].nodeValue;
+            name = decode(name[0].childNodes[0].nodeValue);
             required = required[0].childNodes[0].nodeValue === "true";
             locked = locked[0].childNodes[0].nodeValue === "true";
             display = display[0].childNodes[0].nodeValue === "true";

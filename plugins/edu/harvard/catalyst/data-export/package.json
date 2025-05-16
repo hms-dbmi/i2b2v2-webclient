@@ -19,6 +19,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/react": "^18.3.4",
     "dayjs": "^1.11.13",
+    "html-entities": "^2.6.0",
     "luxon": "^3.5.0",
     "prop-types": "^15.8.1",
     "react": "^17.0.0 || ^18.0.0",

@@ -5,6 +5,7 @@ import {
     SAVE_DATA_TABLE
 } from "../actions";
 import XMLParser from "react-xml-parser";
+import {encode} from 'html-entities';
 import {refreshTitleAndFolderName} from "../reducers/tableDefSlice";
 /* global i2b2 */
 
@@ -41,7 +42,7 @@ const getConceptsToXml = (concepts) => {
 
         const dataXml = '<data><![CDATA[[' + JSON.stringify(jsonData) + ']]]></data>';
         return "<concept>\n"
-            + "<name>" + concept.name +"</name>\n"
+            + "<name>" + encode(concept.name) +"</name>\n"
             + "<display>" + concept.display +"</display>\n"
             + "<required>" + concept.required +"</required>\n"
             + "<locked>" + concept.locked +"</locked>\n"
@@ -67,6 +68,7 @@ export function* doSaveTable(action) {
             yield put(saveTableError({errorMessage: "There was an error saving the table"}));
         }
     } catch (error) {
+        console.error("Error saving table! Message: " + error);
         yield put(saveTableError({errorMessage: "There was an error saving the table"}));
     }
 }
