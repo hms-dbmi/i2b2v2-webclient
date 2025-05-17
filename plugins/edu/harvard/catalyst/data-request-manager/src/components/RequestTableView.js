@@ -50,7 +50,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
                         <TreeItem itemId={param.row.description} label={param.row.description}>
                             {
                                 param.row.requests.map((exportRequest, index) => {
-                                    return (<TreeItem itemId={exportRequest.description} className={"requestLabel"} label={(index +1) + ". " + exportRequest.description}/>)
+                                    return (<TreeItem itemId={exportRequest.description + index} className={"requestLabel"} label={(index +1) + ". " + exportRequest.description}/>)
                                 })
                             }
                         </TreeItem>
@@ -67,9 +67,9 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             disableReorder: true,
             flex: 1,
             valueGetter: (value) => {
-                let formattedValue = value.length > 0 ? parseInt(value) : "";
-                if (isNaN(formattedValue)) {
-                    formattedValue = value;
+                let formattedValue = value?.length > 0 ? parseInt(value) : value;
+                if (isNaN(formattedValue) || !(value?.length > 0)) {
+                    formattedValue = "Not Available";
                 }
                 let displayValue = formattedValue;
                 if (isObfuscated) {
@@ -90,7 +90,6 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             sortable: true,
             resizable: false,
             disableReorder: true,
-            display: "flex",
             flex: 1,
             valueGetter: (status) => {
                 if (status) {
@@ -142,12 +141,14 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
                                                        || param.row.status === RequestStatus.statuses.FINISHED
                                                        || param.row.status === RequestStatus.statuses.CANCELLED
                                                        || param.row.status === RequestStatus.statuses.INCOMPLETE
+                                                       || param.row.status === RequestStatus.statuses.INVALID
                                                        || param.row.isFetchingStatus
                                                        || param.row.dataFileGeneration.isGeneratingFile}>Create File(s)
                             </Button> </div>
                         }
                         <div>
-                            <Button title={"View Details"} variant="outlined" size="small" onClick={() => handleDisplayDetailView(param.row)}>View Details</Button>
+                            <Button title={"View Details"} variant="outlined" size="small" onClick={() => handleDisplayDetailView(param.row)}
+                                    disabled={param.row.status === RequestStatus.statuses.INVALID}>View Details</Button>
                         </div>
                     </div>
                 );
@@ -243,6 +244,21 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
                         variant: 'circular-progress',
                         noRowsVariant: 'linear-progress',
                     },
+                }}
+                getCellClassName={(params) => {
+                    if (params.field === 'status' && params.value === RequestStatus.statuses.INVALID) {
+                        return "InvalidRow";
+                    }else{
+                        return '';
+                    }
+                }}
+                getRowClassName={(params) => {
+                    if(params.row.status === RequestStatus.statuses.INVALID){
+                        return "InvalidRow";
+                    }
+                    else{
+                        return '';
+                    }
                 }}
                 getRowHeight={() => 'auto'}
             />

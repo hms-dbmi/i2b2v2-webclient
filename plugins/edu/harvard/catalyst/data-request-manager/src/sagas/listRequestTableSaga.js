@@ -24,6 +24,7 @@ const getAllExportRequestsListRequest = (username, isManager, isAdmin) => {
         include_query_instance: true,
         master_type_cd_xml: '<master_type_cd>EXPORT</master_type_cd>'
     };
+
     return i2b2.ajax.CRC.getQueryMasterList_fromUserId(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
 };
 

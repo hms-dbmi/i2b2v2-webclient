@@ -37,6 +37,10 @@ export const RequestStatus = {
             order: 1000,
             name: "Unknown"
         },
+        INVALID: {
+            order: 1050,
+            name: "Invalid"
+        },
     },
     _getStatusKeysAsList: () => Object.keys(RequestStatus.statuses),
     _lookupStatusKey: (status) => Object.keys(RequestStatus.statuses).find(key => RequestStatus.statuses[key] === status),
@@ -45,7 +49,7 @@ export const RequestStatus = {
         if(i2b2Status === "MEDIUM_QUEUE" || i2b2Status === "LONG_QUEUE") {
             status = RequestStatus.statuses.MEDIUM_OR_LONG_QUEUE;
         }
-        else if(status === undefined) {
+        else if(status === undefined || status?.length === 0) {
             status = RequestStatus.statuses.UNKNOWN;
             console.warn("Unknown request status: " + i2b2Status);
         }

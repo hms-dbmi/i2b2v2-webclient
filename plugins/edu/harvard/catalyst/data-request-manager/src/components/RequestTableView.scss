@@ -28,4 +28,24 @@
     margin-top: 3.4em;
     width: 100%;
   }
+
+  .InvalidRow {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  .InvalidRow:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  .MuiTreeItem-content:hover {
+      background-color: transparent;
+  }
+
+  .MuiDataGrid-cell:focus, .MuiDataGrid-cell:focus-within {
+    outline: none !important;
+  }
+
+  .Mui-selected, .Mui-selected.focused {
+    background-color: transparent !important;
+  }
 }

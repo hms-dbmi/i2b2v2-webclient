@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import {ResearcherRequestDetails} from "./ResearcherRequestDetails";
-import {DataFileGeneration} from "./DataFileGeneration";
 import {StatusInfo} from "./StatusInfo";
 
 export const RequestDetails = ({

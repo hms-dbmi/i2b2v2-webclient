@@ -16,7 +16,10 @@ export const requestTableSlice = createSlice({
         listRequestTableSuccess: (state, { payload: {researcherRequests, isManager, isAdmin} }) => {
             const rows = researcherRequests.map((request) => {
                 let status = RequestStatus._convertI2b2Status(request.status);
-                const patientCount = request.patientCount.length > 0 ? request.patientCount.toLocaleString() : request.patientCount;
+                if(request.requests.length === 0){
+                    status = RequestStatus.statuses.INVALID;
+                }
+                const patientCount = request.patientCount?.length > 0 ? request.patientCount.toLocaleString() : request.patientCount;
 
                 if(isManager ||isAdmin){
                     return AdminTableRow({
