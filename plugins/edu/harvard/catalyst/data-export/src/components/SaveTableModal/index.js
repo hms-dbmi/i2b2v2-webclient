@@ -168,8 +168,6 @@ export const SaveTableModal = ({open, handleClose}) => {
 
         setCreatorId(newValue === 0 ? '@': username);
         setIsShared(newValue !== 2);
-        setSelectedRows([]);
-        setSelectedTableDef({title: selectedTableDef.title});
     };
 
 
@@ -192,7 +190,7 @@ export const SaveTableModal = ({open, handleClose}) => {
 
     useEffect(() => {
         selectIfNameExists(enteredTitle);
-    }, [userRows]);
+    }, [userRows, tab]);
 
     return (
     <div>
