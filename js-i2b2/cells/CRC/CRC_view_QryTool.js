@@ -161,7 +161,9 @@ i2b2.CRC.view.QT.showRun = function() {
             });
         }
 
-        const projectRequestTypesDescKeys = Object.keys(projectRequestTypesDescriptions).sort(([a,],[b,]) => a.localeCompare(b, undefined, { numeric: true }))
+        const sortAlphaNum = (a, b) => a.toUpperCase().localeCompare(b.toUpperCase(), undefined, { numeric: true })
+
+        const projectRequestTypesDescKeys = Object.keys(projectRequestTypesDescriptions).sort(sortAlphaNum);
         projectRequestTypesDescKeys.forEach( description =>  {
             let codes = projectRequestTypesDescriptions[description];
             codes.forEach(code => {
@@ -180,7 +182,7 @@ i2b2.CRC.view.QT.showRun = function() {
                 userRequestTypesDescriptions[description].push(code);
             });
         }
-        const userRequestTypesDescKeys = Object.keys(userRequestTypesDescriptions ).sort(([a,],[b,]) => a.localeCompare(b, undefined, { numeric: true }))
+        const userRequestTypesDescKeys = Object.keys(userRequestTypesDescriptions ).sort(sortAlphaNum);
         userRequestTypesDescKeys.forEach( description =>  {
             let codes = userRequestTypesDescriptions[description];
             codes.forEach(code => {
