@@ -6,6 +6,11 @@ export default class ShrineSites {
             this.config = componentConfig;
             this.record = qrsRecordInfo;
             this.data = qrsData;
+
+
+            this.config.parentTitleEl.innerHTML = "Site Results";
+
+
             this.columns = ["Site", "Results"];
             this.columnSort = Array(this.columns.length).fill(false);
 
@@ -151,6 +156,7 @@ export default class ShrineSites {
 
     redraw(width) {
         try {
+            this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
 //            this.config.displayEl.innerHTML = "{" + this.constructor.name + "} is " + width + " pixels wide";
         } catch(e) {
             console.error("Error in QueryStatus:ShrineSites.redraw()");
@@ -162,6 +168,7 @@ export default class ShrineSites {
         // returning false will cancel the selection and (re)displaying of this visualization
         // USED PRIMARLY BY THE "Download" MODULE
         try {
+            this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
             return true;
         } catch(e) {
             console.error("Error in QueryStatus:ShrineSites.show()");

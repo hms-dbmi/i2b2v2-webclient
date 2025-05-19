@@ -2,12 +2,12 @@
 
 
 .viztype-SHRINESITES {
-    padding: 0 10rem;
+    padding: 0 2rem;
 }
 
 .viztype-SHRINESITES table {
     width: 100%;
-    top: calc(-.5rem - 1px);
+    top: calc(-1rem - 1px);
     position: relative;
     border: solid 1px #ccc;
 }
