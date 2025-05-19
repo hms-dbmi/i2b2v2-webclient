@@ -139,6 +139,23 @@ i2b2.CRC.view.QT.showRun = function() {
             $('#CustomDataRequestInfoDiv').hide();
         }
 
+        const selectPatientSetForDataRequest = () => {
+            const patientSetResultDiv =  $('.ResultTypes').find('#crcDlgResultOutputPATIENTSET:contains("Patient set")');
+            const patientSetResultCheckbox = patientSetResultDiv.find('.chkQueryType');
+
+            if( $('.chkRequestQueryType').is(":checked")) {
+                if($('#requiredForExportText').length === 0){
+                    patientSetResultDiv.append("<span id='requiredForExportText'> (required for data exports)</span>");
+                }
+                if(patientSetResultCheckbox.is(":not(:checked)")){
+                    patientSetResultCheckbox.click();
+                }
+                patientSetResultCheckbox.prop('disabled', true);
+            }else{
+                $('#requiredForExportText').remove();
+                patientSetResultCheckbox.prop('disabled', false);
+            }
+        };
 
         let requestContainer = $("#crcModal .RequestTypes");
         for (let code in i2b2.CRC.model.requestTypes) {
@@ -146,7 +163,10 @@ i2b2.CRC.view.QT.showRun = function() {
             let descriptions = i2b2.CRC.model.requestTypes[code];
             descriptions.forEach(description => {
                 let checked = '';
-                $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(requestContainer);
+                const dataRequestSelection = $('<input type="checkbox" class="chkQueryType chkRequestQueryType" name="queryType" value="' + code + '"' + checked + '>');
+                dataRequestSelection.click(selectPatientSetForDataRequest);
+
+                $('<div id="crcDlgResultOutput' + code + '">' + description + '</div>').prepend(dataRequestSelection).appendTo(requestContainer);
             });
         }
 
@@ -168,7 +188,10 @@ i2b2.CRC.view.QT.showRun = function() {
             let codes = projectRequestTypesDescriptions[description];
             codes.forEach(code => {
                 let checked = '';
-                $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> Project Created: ' + description + '</div>').appendTo(requestContainer);
+                const dataRequestSelection = $('<input type="checkbox" class="chkQueryType chkRequestQueryType" name="queryType" value="' + code + '"' + checked + '>');
+                dataRequestSelection.click(selectPatientSetForDataRequest);
+
+                $('<div id="crcDlgResultOutput' + code + '"> Project Created: ' + description + '</div>').prepend(dataRequestSelection).appendTo(requestContainer);
             });
         })
 
@@ -187,7 +210,9 @@ i2b2.CRC.view.QT.showRun = function() {
             let codes = userRequestTypesDescriptions[description];
             codes.forEach(code => {
                 let checked = '';
-                $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> User Created: ' + description + '</div>').appendTo(requestContainer);
+                const dataRequestSelection = $('<input type="checkbox" class="chkQueryType chkRequestQueryType" name="queryType" value="' + code + '"' + checked + '>');
+                dataRequestSelection.click(selectPatientSetForDataRequest);
+                $('<div id="crcDlgResultOutput' + code + '"> User Created: ' + description + '</div>').prepend(dataRequestSelection).appendTo(requestContainer);
             });
         });
 

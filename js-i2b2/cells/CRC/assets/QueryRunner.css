@@ -77,3 +77,8 @@
     display: none;
 }
 
+#requiredForExportText {
+    font-size: 0.95em;
+    font-style: italic;
+}
+
