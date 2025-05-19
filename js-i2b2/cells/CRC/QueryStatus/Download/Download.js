@@ -109,18 +109,18 @@ let generateCSV = (inputData) => {
     line.push("Total");
     csv = csv + func_ProcessLine(line);
 
-    // add the "All Patients" line if we have SHRINE data
-    if (siteCnt > 0) {
-        line = ["All Patients"];
-        let total = 0;
-        for (let i=0; i<siteCnt; i++) {
-            let subtotal = inputData.SHRINE.sites[i].results.map((t) => t.value).reduce((parialSum, a) => parialSum + a, 0);
-            total = total + subtotal;
-            line.push(String(subtotal));
-        }
-        line.push(String(total));
-        csv = csv + func_ProcessLine(line);
-    }
+    // // add the "All Patients" line if we have SHRINE data
+    // if (siteCnt > 0) {
+    //     line = ["All Patients"];
+    //     let total = 0;
+    //     for (let i=0; i<siteCnt; i++) {
+    //         let subtotal = inputData.SHRINE.sites[i].results.map((t) => t.value).reduce((parialSum, a) => parialSum + a, 0);
+    //         total = total + subtotal;
+    //         line.push(String(subtotal));
+    //     }
+    //     line.push(String(total));
+    //     csv = csv + func_ProcessLine(line);
+    // }
 
     for (let grouping of inputData.result) {
         line = [grouping.name];
