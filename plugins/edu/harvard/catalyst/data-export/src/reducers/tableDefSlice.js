@@ -4,6 +4,7 @@ import { defaultState } from '../defaultState';
 import {StatusInfo, TableDefinitionRow} from "../models";
 import {DATATYPE, generateTableDefRowId} from "../models/TableDefinitionRow";
 import XMLParser from 'react-xml-parser';
+import {decode} from 'html-entities';
 
 export const tableDefSlice = createSlice({
     name: TABLE_DEF,
@@ -124,7 +125,7 @@ export const tableDefSlice = createSlice({
             const newRow = TableDefinitionRow({
                 id: rowId,
                 order : newRowIndex,
-                name: sdx.renderData.title,
+                name: decode(sdx.renderData.title),
                 display: true,
                 locked: false,
                 sdxData: sdx,
