@@ -25,7 +25,6 @@ const setTableRequest = (rows, title, creator_id, shared, id) => {
         data.table_id_attr = "";
     }
 
-    console.log("id is " + id);
     return i2b2.ajax.CRC.setTable(data).then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
 };
 

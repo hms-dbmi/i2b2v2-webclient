@@ -3,7 +3,7 @@
 import {takeLatest, put, call} from "redux-saga/effects";
 import {listTablesSuccess, listTablesError} from "../reducers/tableListingSlice";
 import { DateTime } from "luxon";
-import XMLParser from "react-xml-parser";
+import {parseXml} from "../utilities/parseXml";
 
 import {
     LIST_TABLES
@@ -11,7 +11,10 @@ import {
 
 
 const getAllTablesListRequest = () => {
-    return i2b2.ajax.CRC.getAllTablesList().then((xmlString) => new XMLParser().parseFromString(xmlString)).catch((err) => err);
+    return i2b2.ajax.CRC.getAllTablesList().then((xmlString) => {
+        //parses XML with CDATA properly
+        return parseXml(xmlString);
+    }).catch((err) => err);
 };
 
 const parseAllTablesListXml = (tablesListXml) => {
@@ -22,8 +25,9 @@ const parseAllTablesListXml = (tablesListXml) => {
     };
 
     let tables = tablesListXml.getElementsByTagName('rpdo');
-    tables.forEach(table => {
-        let id = table.attributes['id'];
+    for (let i = 0; i < tables.length; i++) {
+        let table = tables[i];
+        let id = table.attributes[0].nodeValue;
         let title = table.getElementsByTagName('title');
         let creator_id = table.getElementsByTagName('creator_id');
         let shared = table.getElementsByTagName('shared');
@@ -33,18 +37,18 @@ const parseAllTablesListXml = (tablesListXml) => {
         let visible = table.getElementsByTagName('visible');
         if(id.length !== 0 && title.length !== 0 && creator_id.length !== 0 && shared.length !== 0
             && create_date.length !== 0&& column_count.length !== 0) {
-            title = title[0].value;
-            creator_id = creator_id[0].value;
-            shared = shared[0].value === "true";
-            column_count = column_count[0].value;
+            title = title[0].childNodes[0].nodeValue;
+            creator_id = creator_id[0].childNodes[0].nodeValue;
+            shared = shared[0].childNodes[0].nodeValue === "true";
+            column_count = column_count[0].childNodes[0].nodeValue;
 
-            create_date = create_date[0].value;
+            create_date = create_date[0].childNodes[0].nodeValue;
             create_date = DateTime.fromISO(create_date).toJSDate();
 
-            update_date = update_date[0].value;
+            update_date = update_date[0].childNodes[0].nodeValue;
             update_date = DateTime.fromISO(update_date).toJSDate();
             if (visible.length !== 0) {
-                visible = visible[0].value === "true";
+                visible = visible[0].childNodes[0].nodeValue === "true";
             } else {
                 visible = false;
             }
@@ -68,7 +72,7 @@ const parseAllTablesListXml = (tablesListXml) => {
                 tablesObj.userRows.push(rowData);
             }
         }
-    });
+    }
 
     return tablesObj;
 }

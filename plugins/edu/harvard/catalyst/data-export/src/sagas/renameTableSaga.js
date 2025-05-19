@@ -29,7 +29,7 @@ export function* doRenameTable(action) {
             yield put(renameTableError({errorMessage: "There was an error renaming the table definition " + title}));
         }
     } catch (error) {
-        console.log("Caught load table error " + error);
+        console.log("Caught rename table error " + error);
         yield put(renameTableError({errorMessage: "There was an error renaming the table definition " + title}));
     }
 }
