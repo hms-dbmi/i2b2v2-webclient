@@ -82,3 +82,6 @@
     font-style: italic;
 }
 
+#crcModal .RequestTypes, #crcModal .ResultTypes {
+    overflow-wrap: break-word;
+}
