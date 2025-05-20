@@ -77,7 +77,11 @@
     display: none;
 }
 
+#requiredForExportText {
+    font-size: 0.95em;
+    font-style: italic;
+}
+
 #crcModal .RequestTypes, #crcModal .ResultTypes {
     overflow-wrap: break-word;
 }
-
