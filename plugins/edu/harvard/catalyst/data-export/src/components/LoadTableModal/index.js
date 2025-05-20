@@ -57,6 +57,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
 
     useEffect(() => {
         if (open) {
+            setSelectedTable(null);
             dispatch(listTables());
         }
     }, [open]);
