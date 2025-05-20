@@ -29,6 +29,7 @@ export const tableDefSlice = createSlice({
                     name: tdef.name,
                     sdxData: tdef.sdxData,
                     dataOption: dataOption,
+                    display: tdef.display
                 });
             });
         },

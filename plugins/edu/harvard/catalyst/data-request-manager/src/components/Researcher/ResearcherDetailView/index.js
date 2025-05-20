@@ -74,7 +74,7 @@ export const ResearcherDetailView = ({requestRow, setViewRequestTable}) => {
 
                             <div className={"RequestAction"}>
                                 <Typography className={"RequestActionTitle"}>
-                                    Actions
+                                    Request Status
                                 </Typography>
                                 <Card className={"RequestDetailActionContent"}>
                                     <Grid container spacing={2}>

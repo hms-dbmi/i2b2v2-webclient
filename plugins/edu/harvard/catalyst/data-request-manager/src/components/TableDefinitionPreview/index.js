@@ -161,7 +161,7 @@ export const TableDefinitionPreview = ({tableDefinition, open, onClose}) => {
                 <DataGrid
                     style={{background:"white"}}
                     className={"DefineTableGrid"}
-                    rows={tableDefinition.concepts}
+                    rows={tableDefinition.concepts.filter(p=> p.display)}
                     columns={columns}
                     density={'compact'}
                     showCellVerticalBorder={true}

@@ -5,11 +5,13 @@ export const TableDefinitionRow = ({
     name = "",
     sdxData = null,
     dataOption,
+    display
 } = {}) => ({
     id,
     name,
     sdxData,
     dataOption,
+    display
 });
 
 TableDefinitionRow.propTypes = {
@@ -17,6 +19,7 @@ TableDefinitionRow.propTypes = {
     name: PropTypes.string,
     sdxData: PropTypes.object,
     dataOption: PropTypes.string,
+    display: PropTypes.bool,
 };
 
 

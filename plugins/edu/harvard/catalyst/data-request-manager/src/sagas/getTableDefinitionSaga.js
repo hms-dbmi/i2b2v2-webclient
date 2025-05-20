@@ -38,11 +38,14 @@ const parseGetTableXml = (tableXml) => {
         let concept = concepts[i];
         let name = concept.getElementsByTagName('name');
         let required = concept.getElementsByTagName('required');
+        let display = concept.getElementsByTagName('display');
         let data = concept.getElementsByTagName('data');
 
-        if(name.length !== 0 && name[0].childNodes.length > 0 && required.length !== 0 && required[0].childNodes.length > 0){
+        if(name.length !== 0 && name[0].childNodes.length > 0 && required.length !== 0 && required[0].childNodes.length > 0
+            && display[0].childNodes.length > 0){
             name = name[0].childNodes[0].nodeValue;
             required = required[0].childNodes[0].nodeValue === "true";
+            display = display[0].childNodes[0].nodeValue === "true";
 
             if (data.length !== 0 && data[0].childNodes[0].length > 0) {
                 data = data[0].childNodes[0].nodeValue;
@@ -52,12 +55,12 @@ const parseGetTableXml = (tableXml) => {
             if (required) {
                 const dataOption = "VALUE";
                 const sdxData = data.sdxData ? data.sdxData : {};
-                requiredRows.push({name, dataOption, sdxData});
+                requiredRows.push({name, dataOption, sdxData, display});
             } else {
                 if (data?.dataOption.length > 0) {
                     const dataOption = data.dataOption;
                     const sdxData = data.sdxData;
-                    nonRequiredColumns.push({name, dataOption, sdxData});
+                    nonRequiredColumns.push({name, dataOption, sdxData, display});
                 }
             }
         }
