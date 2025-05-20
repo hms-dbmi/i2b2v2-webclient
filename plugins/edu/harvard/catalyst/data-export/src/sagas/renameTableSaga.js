@@ -18,12 +18,12 @@ const renameTableRequest = (tableId, title) => {
 };
 
 export function* doRenameTable(action) {
-    let {id, title}  = action.payload;
+    let {id, title, isProjectShared, isGlobalShared}  = action.payload;
 
     try {
         let response = yield call(renameTableRequest, id, title);
         if(!response.error) {
-            yield put(renameTableSuccess());
+            yield put(renameTableSuccess({id, title, isProjectShared, isGlobalShared}));
         }else{
             console.error("Error renaming the table definition! Message: " + response.errorMsg + ". Error details: " + response.errorData);
             yield put(renameTableError({errorMessage: "There was an error renaming the table definition " + title}));

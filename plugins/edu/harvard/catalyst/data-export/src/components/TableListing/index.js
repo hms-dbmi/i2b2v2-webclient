@@ -71,6 +71,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
 
             if(previousRow.title.toUpperCase() !== editedRow.title.toUpperCase()) {
                 onRename(editedRow.id, editedRow.title);
+                setRowToRename({id: editedRow.id, title: editedRow.title});
             }
 
             const updatedInValidCells = Object.keys(inValidCells).filter(i => inValidCells[i] === editedRow.id)
@@ -242,7 +243,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
             setShowAlertDialog(true);
             setAlertMsgInfo({
                 title: "Rename File",
-                msg: "An error occurred renaming file \"" + rowToRename + "\"",
+                msg: "An error occurred renaming file \"" + rowToRename.title + "\"",
                 onOk: () => {setShowAlertDialog(false); onRenameAlertClose();}
             })
         }

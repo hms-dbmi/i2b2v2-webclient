@@ -46,8 +46,8 @@ export const SaveTableModal = ({open, handleClose}) => {
         };
     }
 
-    const updateTableDefinitionTitle = (id, title) => {
-        dispatch(renameTable({id, title}));
+    const updateTableDefinitionTitle = (id, title, isProjectShared, isGlobalShared) => {
+        dispatch(renameTable({id, title, isProjectShared, isGlobalShared}));
     }
 
     const onRowSelect = (row) => {
@@ -244,7 +244,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}
-                            onRename={updateTableDefinitionTitle}
+                            onRename={(id, title) =>updateTableDefinitionTitle(id, title,false, true)}
                             renameFailed={renameStatusInfo.status === 'FAIL'}
                             onRenameAlertClose={confirmRenameStatus}
                             showCreatedBy={false}
@@ -266,7 +266,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}
-                            onRename={updateTableDefinitionTitle}
+                            onRename={(id, title) => updateTableDefinitionTitle(id, title, true, false)}
                             renameFailed={renameStatusInfo.status === 'FAIL'}
                             onRenameAlertClose={confirmRenameStatus}
                             showCreatedBy={true}
@@ -289,7 +289,7 @@ export const SaveTableModal = ({open, handleClose}) => {
                             isLoading={isFetching || isDeleting}
                             deleteFailed={deleteStatusInfo.status === 'FAIL'}
                             onDeleteAlertClose={confirmDeleteStatus}
-                            onRename={updateTableDefinitionTitle}
+                            onRename={(id, title) => updateTableDefinitionTitle(id, title, false, false)}
                             renameFailed={renameStatusInfo.status === 'FAIL'}
                             onRenameAlertClose={confirmRenameStatus}
                             showCreatedBy={false}

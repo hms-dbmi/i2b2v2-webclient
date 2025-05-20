@@ -93,11 +93,35 @@ export const tableListingSlice = createSlice({
             state.isRenaming = true;
             state.renameStatusInfo = StatusInfo();
         },
-        renameTableSuccess: (state) => {
+        renameTableSuccess: (state, { payload: { id, title, isProjectShared, isGlobalShared } }) => {
             state.isRenaming = false;
             state.renameStatusInfo = StatusInfo({
                 status: "SUCCESS"
             });
+            if(isGlobalShared){
+                state.globalRows = state.globalRows.map((row) => {
+                    if(row.id === id){
+                        row.title = title;
+                    }
+                    return row;
+                });
+            }
+            else if(isProjectShared){
+                state.projectRows = state.projectRows.map((row) => {
+                    if(row.id === id){
+                        row.title = title;
+                    }
+                    return row;
+                });
+            }
+            else{
+                state.userRows = state.userRows.map((row) => {
+                    if(row.id === id){
+                        row.title = title;
+                    }
+                    return row;
+                });
+            }
         },
         renameTableError: (state, { payload: { errorMessage } }) => {
             state.isRenaming= false;

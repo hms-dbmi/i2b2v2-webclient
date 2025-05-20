@@ -51,8 +51,8 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
         dispatch(confirmRenameTableStatus());
     };
 
-    const updateTableDefinitionTitle = (id, title) => {
-        dispatch(renameTable({id, title}))
+    const updateTableDefinitionTitle = (id, title, isProjectShared, isGlobalShared) => {
+        dispatch(renameTable({id, title, isProjectShared, isGlobalShared}))
     }
 
     useEffect(() => {
@@ -108,7 +108,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                                       onDelete={(id) => onDeleteTable(id, false, true)}
                                       deleteFailed={deleteStatusInfo.status === 'FAIL'}
                                       onDeleteAlertClose={confirmDeleteStatus}
-                                      onRename={updateTableDefinitionTitle}
+                                      onRename={(id, title) => updateTableDefinitionTitle(id, title, false, true)}
                                       renameFailed={renameStatusInfo.status === 'FAIL'}
                                       onRenameAlertClose={confirmRenameStatus}
                                       showCreatedBy={false}
@@ -128,7 +128,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                                       onDelete={(id) => onDeleteTable(id, true, false)}
                                       deleteFailed={deleteStatusInfo.status === 'FAIL'}
                                       onDeleteAlertClose={confirmDeleteStatus}
-                                      onRename={updateTableDefinitionTitle}
+                                      onRename={(id, title) =>updateTableDefinitionTitle(id, title, true, false)}
                                       renameFailed={renameStatusInfo.status === 'FAIL'}
                                       onRenameAlertClose={confirmRenameStatus}
                                       showCreatedBy={true}
@@ -147,7 +147,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                                       onDelete={(id) => onDeleteTable(id, false, false)}
                                       deleteFailed={deleteStatusInfo.status === 'FAIL'}
                                       onDeleteAlertClose={confirmDeleteStatus}
-                                      onRename={updateTableDefinitionTitle}
+                                      onRename={(id, title) => updateTableDefinitionTitle(id, title, false, false)}
                                       renameFailed={renameStatusInfo.status === 'FAIL'}
                                       onRenameAlertClose={confirmRenameStatus}
                                       showCreatedBy={false}
