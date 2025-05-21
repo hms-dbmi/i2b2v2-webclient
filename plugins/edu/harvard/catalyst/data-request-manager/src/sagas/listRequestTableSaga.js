@@ -57,8 +57,6 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
                 queryResultInstanceTypeList.forEach(queryResultInstanceType => {
                     let resultInstanceId =  queryResultInstanceType.getElementsByTagName('result_instance_id');
                     resultInstanceId = resultInstanceId.length > 0 ? resultInstanceId[0].value: null;
-                    patientCount = queryResultInstanceType.getElementsByTagName('set_size');
-                    patientCount = patientCount.length > 0 ? patientCount[0].value : '';
                     let queryResultType = queryResultInstanceType.getElementsByTagName('query_result_type');
 
                     let visualAttributeType = null;
@@ -66,13 +64,22 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
                         queryResultType =  queryResultType[0];
                         visualAttributeType = queryResultType.getElementsByTagName('visual_attribute_type');
                         visualAttributeType = visualAttributeType.length > 0 ? visualAttributeType[0].value : null;
+                        let requestId = queryResultType.getElementsByTagName('name');
+                        if(requestId.length > 0 ) {
+                            requestId = requestId[0].value;
+                        }
+                        if(requestId === "PATIENT_COUNT_XML"){
+                            patientCount = queryResultInstanceType.getElementsByTagName('set_size');
+                            patientCount = patientCount.length > 0 ? patientCount[0].value : '';
+                        }
+
                         if(visualAttributeType.toUpperCase() === "LU" || visualAttributeType.toUpperCase() === "LP"
                          || visualAttributeType.toUpperCase() === "LR") {
                             let request = {resultInstanceId};
-                            const requestId = queryResultType.getElementsByTagName('name');
+
                             let requestDescription = queryResultType.getElementsByTagName('description');
                             if(requestId.length > 0 ) {
-                                const tableId = parseInt(requestId[0].value.replace("RPDO_", ""));
+                                const tableId = parseInt(requestId.replace("RPDO_", ""));
                                 if(!isNaN(tableId)){
                                     request.tableId = tableId;
                                 }

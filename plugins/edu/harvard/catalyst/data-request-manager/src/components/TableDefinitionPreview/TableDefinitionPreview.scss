@@ -12,4 +12,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .TableDefinitionPreviewTitle{
+    overflow-wrap: break-word;
+  }
 }
