@@ -35,7 +35,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
 
     const handleLoadTable = () =>{
         handleClose();
-        dispatch(loadTable({id: selectedTable.id, title: selectedTable.title, folderName: TABINDEX_FOLDERNAME[tab]}));
+        dispatch(loadTable({id: selectedTable.id, title: selectedTable.title, folderName: TABINDEX_FOLDERNAME[selectedTable.tabIndex]}));
         handleSetScreen(0);
     }
 
@@ -43,6 +43,10 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
         dispatch(deleteTable({tableId, isProjectShared, isGlobalShared}));
     }
 
+    const updateSelectedTable = (tableDefInfo, tabIndex) => {
+        let newTableDefInfo = { ...tableDefInfo,  tabIndex};
+        setSelectedTable(newTableDefInfo);
+    }
     const confirmDeleteStatus = () => {
         dispatch(confirmDeleteTableStatus());
     };
@@ -102,7 +106,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         <TableListing id={"loadModalDefTableGlobal"}
                                       rows={globalRows}
                                       canRename={isAdmin}
-                                      onSelect={setSelectedTable}
+                                      onSelect={(tableDefInfo) => updateSelectedTable(tableDefInfo, 0)}
                                       hasError={statusInfo.status==='FAIL'}
                                       isLoading={isFetching || isDeleting}
                                       onDelete={(id) => onDeleteTable(id, false, true)}
@@ -122,7 +126,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         <TableListing id={"loadModalDefTableProject"}
                                       rows={projectRows}
                                       canRename={true}
-                                      onSelect={setSelectedTable}
+                                      onSelect={(tableDefInfo) => updateSelectedTable(tableDefInfo, 1)}
                                       hasError={statusInfo.status==='FAIL'}
                                       isLoading={isFetching || isDeleting}
                                       onDelete={(id) => onDeleteTable(id, true, false)}
@@ -142,7 +146,8 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
                         <TableListing id={"loadModalDefTableLocal"}
                                       rows={userRows}
                                       canRename={true}
-                                      onSelect={setSelectedTable}  isLoading={isFetching || isDeleting}
+                                      onSelect={(tableDefInfo) => updateSelectedTable(tableDefInfo, 2)}
+                                      isLoading={isFetching || isDeleting}
                                       hasError={statusInfo.status==='FAIL'}
                                       onDelete={(id) => onDeleteTable(id, false, false)}
                                       deleteFailed={deleteStatusInfo.status === 'FAIL'}
