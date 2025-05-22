@@ -36,12 +36,14 @@ export const PreviewTable = (props) => {
             };
             for (const column of columns) {
                 let id = column.id;
-                let name = column.name;
+                const regex = /[0-9]*$/;
+                const splitName = id.split(regex);
+                let rowName = splitName[0];
                 let aggType= column.aggType;
 
                 row[id] = "[Value]";
 
-                switch (name) {
+                switch (rowName) {
                     case 'Gender':
                         row[id] = ['Male','Female'].map((a) => ({ sort: Math.random(), value: a }))
                             .sort((a, b) => a.sort - b.sort)
