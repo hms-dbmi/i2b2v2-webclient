@@ -103,6 +103,20 @@ export const PreviewTable = (props) => {
         let columnNames = [];
         setColumns(tableDefRows.filter(p => p.display).map(row => {
             columnNames.push({id:row.id, name: row.name, aggType: row.dataOption});
+            let index = -1;
+            let dupIndex = -1;
+            tableDefRows.forEach(p => {
+                if(p.name === row.name){
+                    index++;
+                }
+                if(p.id === row.id){
+                    dupIndex = index;
+                }
+            });
+            let duplicateCountStr = "";
+            if(dupIndex > 0){
+                duplicateCountStr = " (" + dupIndex + ")";
+            }
             return {
                 field: row.id,
                 headerName: row.name,
@@ -114,7 +128,7 @@ export const PreviewTable = (props) => {
                 flex: 1,
                 minWidth: 150,
                 renderHeader: (data) => {
-                    let ret = [row.name];
+                    let ret = [row.name + duplicateCountStr];
                     ret.push('['+row.dataOption+']');
                     if (row.sdxData.LabValues) {
                         let labData = row.sdxData.LabValues;
@@ -189,7 +203,7 @@ export const PreviewTable = (props) => {
                         }
                     }
                     let tooltip = ret.join("\n\n");
-                    return (<CustomTooltip title={tooltip}>{row.name}</CustomTooltip>);
+                    return (<CustomTooltip title={tooltip}>{row.name + duplicateCountStr}</CustomTooltip>);
                 }
             }
         }));
