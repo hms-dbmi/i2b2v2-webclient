@@ -20,6 +20,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
         deleteStatusInfo, renameStatusInfo} = useSelector((state) => state.tableListing);
     const [tab, setTab] = React.useState(2);
     const [selectedTable, setSelectedTable] = useState(null);
+    const [renamedTableInfo, setRenameTableInfo] = useState({});
     const { isAdmin } = useSelector((state) => state.userInfo);
     const TABINDEX_FOLDERNAME = ["System Shared Tables", "Project Shared Tables", "My Tables"];
 
@@ -56,6 +57,7 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
     };
 
     const updateTableDefinitionTitle = (id, title, isProjectShared, isGlobalShared) => {
+        setRenameTableInfo({id, title});
         dispatch(renameTable({id, title, isProjectShared, isGlobalShared}))
     }
 
@@ -65,6 +67,21 @@ export const LoadTableModal = ({open, handleClose, handleSetScreen}) => {
             dispatch(listTables());
         }
     }, [open]);
+
+    useEffect(() => {
+        if(renameStatusInfo.status === 'SUCCESS') {
+            //update selected table title in case it was renamed
+            if(renamedTableInfo.id === selectedTable.id) {
+                let updatedCurrentSelectedTable = {...selectedTable};
+                updatedCurrentSelectedTable.title = renamedTableInfo.title;
+                setSelectedTable(updatedCurrentSelectedTable);
+            }
+        }
+
+        if(renameStatusInfo.status === 'SUCCESS' || (renameStatusInfo.status === 'FAIL')){
+            setRenameTableInfo({});
+        }
+    }, [renameStatusInfo.status]);
 
     return (
         <Dialog
