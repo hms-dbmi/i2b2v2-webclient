@@ -31,6 +31,7 @@ export const PreviewTable = (props) => {
         let newRows = [];
         for (let i = 0; i < 5; i++) {
             let row = {
+                index: i+1,
                 id: i
             };
             for (const column of columns) {
@@ -100,9 +101,9 @@ export const PreviewTable = (props) => {
     }
 
     useEffect( ()  =>{
-        let columnNames = [];
-        setColumns(tableDefRows.filter(p => p.display).map(row => {
-            columnNames.push({id:row.id, name: row.name, aggType: row.dataOption});
+        let rowData = [];
+        let colNames = tableDefRows.filter(p => p.display).map((row, idx) => {
+            rowData.push({id:row.id, name: row.name, aggType: row.dataOption});
             let index = -1;
             let dupIndex = -1;
             tableDefRows.forEach(p => {
@@ -206,8 +207,21 @@ export const PreviewTable = (props) => {
                     return (<CustomTooltip title={tooltip}>{row.name + duplicateCountStr}</CustomTooltip>);
                 }
             }
-        }));
-        updateRows(columnNames);
+        });
+
+        colNames.unshift({
+            field: "index",
+            headerName: "",
+            description: "",
+            headerClassName: "header",
+            sortable: false,
+            hideSortIcons: true,
+            disableReorder: true,
+            flex: 1,
+            minWidth: 50,
+        });
+        setColumns(colNames);
+        updateRows(rowData);
     },[tableDefRows]);
 
     return (

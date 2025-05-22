@@ -49,7 +49,7 @@ const getConceptsToXml = (concepts) => {
             if(p.id === concept.id){
                 dupIndex = index;
             }
-        })
+        });
 
         let duplicateCountStr = "";
         if(dupIndex > 0){
