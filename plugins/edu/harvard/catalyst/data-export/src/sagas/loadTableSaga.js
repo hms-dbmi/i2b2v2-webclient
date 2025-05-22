@@ -62,6 +62,9 @@ const parseGetTableXml = (tableXml, id) => {
             && locked.length !== 0 && locked[0].childNodes.length > 0
             && display.length !== 0 && display[0].childNodes.length > 0){
             name = decode(name[0].childNodes[0].nodeValue);
+            const regex = /\([0-9]*\)$/;
+            const splitName = name.split(regex);
+            name = splitName[0].trim();
             required = required[0].childNodes[0].nodeValue === "true";
             locked = locked[0].childNodes[0].nodeValue === "true";
             display = display[0].childNodes[0].nodeValue === "true";

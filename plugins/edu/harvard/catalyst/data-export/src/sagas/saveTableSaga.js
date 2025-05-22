@@ -40,9 +40,24 @@ const getConceptsToXml = (concepts) => {
             jsonData.sdxData = concept.sdxData;
         }
 
+        let index = -1;
+        let dupIndex = -1;
+        concepts.forEach(p => {
+            if(p.name === concept.name){
+                index++;
+            }
+            if(p.id === concept.id){
+                dupIndex = index;
+            }
+        })
+
+        let duplicateCountStr = "";
+        if(dupIndex > 0){
+            duplicateCountStr = " (" + dupIndex + ")";
+        }
         const dataXml = '<data><![CDATA[[' + JSON.stringify(jsonData) + ']]]></data>';
         return "<concept>\n"
-            + "<name>" + encode(concept.name) +"</name>\n"
+            + "<name>" + encode(concept.name) + duplicateCountStr +"</name>\n"
             + "<display>" + concept.display +"</display>\n"
             + "<required>" + concept.required +"</required>\n"
             + "<locked>" + concept.locked +"</locked>\n"

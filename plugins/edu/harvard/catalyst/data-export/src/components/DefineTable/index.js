@@ -84,6 +84,17 @@ export const DefineTable = (props) => {
             disableColumnSorting: true,
             disableColumnMenu: false,
             renderCell: ({row}) =>  {
+                let index = -1;
+                let dupIndex = -1;
+                rows.forEach(p => {
+                    if(p.name === row.name){
+                        index++;
+                    }
+                    if(p.id === row.id){
+                        dupIndex = index;
+                    }
+                })
+                const name = dupIndex > 0 ? row.name + " (" + dupIndex + ")" : row.name;
                 let toolTip = row.name;
                 if(row.sdxData?.renderData){
                 toolTip =  row.sdxData?.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This column was originally called \""+ row.sdxData.renderData.title+"\"";
@@ -91,7 +102,7 @@ export const DefineTable = (props) => {
 
                 return (
                     <Tooltip title={toolTip} >
-                        { row.name.length ? <span className="tabledef-cell-trucate">{row.name}</span>  : <div className="tabledef-cell-trucate">&nbsp;</div> }
+                        { name.length ? <span className="tabledef-cell-trucate">{name}</span>  : <div className="tabledef-cell-trucate">&nbsp;</div> }
                     </Tooltip>
                 )
             },
@@ -101,10 +112,16 @@ export const DefineTable = (props) => {
                     inputProps={{ maxLength: 200 }}
                 />
             ),
-            valueSetter: (value, row) => {
+           /* valueSetter: (value, row) => {
                 dispatch(handleRowName({id: row.id, value: value}));
                 return { ...row };
-            },
+            },*/
+            valueGetter: (value, row) => {
+               //dispatch(handleRowName({id: row.id, value: value}));
+                 const name = row.duplicateCount > 0 ? value + " (--" + row.duplicateCount + ")" : value;
+
+                 return name;
+           },
         },
         {
             field: "constraints",
@@ -621,6 +638,18 @@ export const DefineTable = (props) => {
         return truncatedStr;
     }
 
+    const processRowUpdate = (newRow, previousRow) => {
+        const duplicateRowCount = rows.filter(p => p.name === newRow.name).length;
+        newRow.duplicateCount = duplicateRowCount;
+        dispatch(handleRowName({id: newRow.id, value: newRow.name}));
+
+        return newRow;
+    };
+
+    const onProcessRowUpdateError = (error) => {
+        console.warn("Process row error: " + error);
+    };
+
     return (
         <div className={"DefineTable"} >
             <DateModal
@@ -659,6 +688,8 @@ export const DefineTable = (props) => {
                     onCellModesModelChange={handleCellModesModelChange}
                     onCellClick={handleCellClick}
                     onCellDoubleClick={handleCellClick}
+                    processRowUpdate={processRowUpdate}
+                    onProcessRowUpdateError={onProcessRowUpdateError}
                     initialState={{
                         sorting: {
                             sortModel: [{field:'order',sort:'asc'}]
