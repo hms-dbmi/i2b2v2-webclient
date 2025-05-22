@@ -219,8 +219,7 @@ export const PreviewTable = (props) => {
             sortable: false,
             hideSortIcons: true,
             disableReorder: true,
-            flex: 1,
-            minWidth: 50,
+            width: 40,
         });
         setColumns(colNames);
         updateRows(rowData);
