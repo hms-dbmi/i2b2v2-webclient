@@ -23,8 +23,9 @@ export const tableDefSlice = createSlice({
             const rows = table.rows;
             if(rows.required.length > 0){
                 rows.required.forEach(requiredConcept => {
+                    const id = requiredConcept.sdxData?.renderData ? requiredConcept.sdxData.renderData.title + index: requiredConcept.name + index;
                     let tableDefRow = TableDefinitionRow({
-                        id: requiredConcept.name + index,
+                        id: id,
                         order: index,
                         name: requiredConcept.name,
                         display: requiredConcept.display,
