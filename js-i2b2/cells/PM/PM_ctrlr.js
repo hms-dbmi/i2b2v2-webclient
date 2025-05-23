@@ -194,16 +194,23 @@ i2b2.PM._processUserConfig = function (data) {
     let ieInCompatibilityMode = false;
     let ua = window.navigator.userAgent;
     let msie = ua.indexOf("MSIE ");
-    if (msie > 0)
-        browserIsIE8 = true;
-    if(browserIsIE8){
-        if (ua.indexOf("Trident/4.0") > -1) {
-            ieInCompatibilityMode = true;
+    if (msie > 0) browserIsIE8 = true;
+    if (browserIsIE8) {
+        if (ua.indexOf("Trident/4.0") > -1) ieInCompatibilityMode = true;
+    }
+    if (!(window.ActiveXObject) && "ActiveXObject" in window) browserIsIE11 = true;
+
+    let xml = data.refXML;
+    if (data.error === true) {
+        let s = i2b2.h.XPath(xml, 'descendant::result_status/status[@type="ERROR"]');
+        if (s.length > 0) {
+            // we have a proper error msg
+            if (s[0].firstChild.nodeValue !== "Password Expired.") {
+                alert("ERROR: " + s[0].firstChild.nodeValue);
+                return false;
+            }
         }
     }
-    if(!(window.ActiveXObject) && "ActiveXObject" in window)
-        browserIsIE11 = true;
-
 
     // save the valid data that was passed into the PM cell's data model
     i2b2.PM.model.login_username = data.msgParams.sec_user;
@@ -225,7 +232,6 @@ i2b2.PM._processUserConfig = function (data) {
     if (i2b2.PM.model.reLogin) {
         try { i2b2.PM.view.modal.login.hide(); } catch(e) {}
         i2b2.PM.model.reLogin = false;
-
         return;
     }
     i2b2.PM.model.otherAuthMethod = false;
@@ -259,7 +265,6 @@ i2b2.PM._processUserConfig = function (data) {
     i2b2.PM.removeLoginDialog();
 
     i2b2.PM.cfg.cellURL = i2b2.PM.model.url;  // remember the url
-    let xml = data.refXML;
 
     // copy any global params to i2b2.hive.model.params
     i2b2.hive.model.globalParams = {}
@@ -302,22 +307,23 @@ i2b2.PM._processUserConfig = function (data) {
     }
 
      if (!i2b2.PM.model.isAdmin && i2b2.PM.model.admin_only) {
-        if (data.msgResponse === "")
-                    alert("The PM Cell is down or the address in the properties file is incorrect.");
-        else
+        if (data.msgResponse === "") {
+            alert("The PM Cell is down or the address in the properties file is incorrect.");
+        } else {
             alert("Requires ADMIN role, please contact your system administrator");
+        }
         try { i2b2.PM.view.modal.login.show(); } catch(e) {}
         return true;
     } else if (i2b2.PM.model.admin_only) {
         // default to the first project
         i2b2.PM.model.login_project = ""; //i2b2.h.XPath(projs[0], 'attribute::id')[0].nodeValue;
         i2b2.PM._processLaunchFramework();
-    } else 	if (projs.length === 0) {
+    } else if (projs.length === 0) {
         // show project selection dialog if needed
         // better error messages
         let s = i2b2.h.XPath(xml, 'descendant::result_status/status[@type="ERROR"]');
         if (s.length > 0) {
-            // we have a proper error msg
+            // we have a proper error msg (which was handled at the top unless the password was expired)
             try {
                 if (s[0].firstChild.nodeValue === "Password Expired.") {
                     i2b2.PM.view.changePassword.show(function(){
