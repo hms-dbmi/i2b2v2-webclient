@@ -126,7 +126,10 @@ let generateCSV = (inputData) => {
         line = [grouping.name];
         if (siteCnt > 0) {
             for (let i=0; i<siteCnt; i++) {
-                let temp = inputData.SHRINE.sites[i].results.filter((t) => t.name === grouping.name);
+                let temp = [];
+                if (typeof inputData.SHRINE.sites[i].results !== "undefined") {
+                    temp = inputData.SHRINE.sites[i].results.filter((t) => t.name === grouping.name);
+                }
                 if (temp.length > 0) {
                     line.push(String(temp[0].value));
                 } else {

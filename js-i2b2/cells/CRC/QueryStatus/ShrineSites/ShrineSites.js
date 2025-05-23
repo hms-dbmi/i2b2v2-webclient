@@ -7,10 +7,6 @@ export default class ShrineSites {
             this.record = qrsRecordInfo;
             this.data = qrsData;
 
-
-            this.config.parentTitleEl.innerHTML = "Site Results";
-
-
             this.columns = ["Site", "Results"];
             this.columnSort = Array(this.columns.length).fill(false);
 
@@ -53,9 +49,7 @@ export default class ShrineSites {
                 el[idx].classList.add(cname);
             });
 
-
-
-
+            this.config.displayEl.style.display = "none";
         } catch(e) {
             console.error("Error in QueryStatus:ShrineSites.constructor()");
         }
@@ -87,7 +81,13 @@ export default class ShrineSites {
                             return d3.ascending(a.site, b.site);
                             break;
                         case "Results":
-                            return d3.ascending(a.count, b.count);
+                            if (a.error || b.error) {
+                                if (a.error && b.error) return d3.ascending(a.site, b.site);
+                                if (a.error) return 1;
+                                return -1;
+                            } else {
+                                return d3.ascending(a.count, b.count);
+                            }
                             break;
                     }
                 });
@@ -122,11 +122,11 @@ export default class ShrineSites {
                     } else {
                         // display the site's current status
                         let rec = {text:row.status};
-                        switch (String(row.status).toUpperCase()) {
-                            case "ERROR":
-                                rec.class = "status-error";
-                            default:
-                                rec.class = "status-unknown";
+                        if (row.error === true) {
+                            rec.text = row.status + ": " + row.text;
+                            rec.class = "status-error";
+                        } else {
+                            rec.class = "status-unknown";
                         }
                         ret.push(rec);
                     }
@@ -152,6 +152,7 @@ export default class ShrineSites {
             console.error("Error in QueryStatus:ShrineSites.update()");
         }
         this.config.displayEl.style.display = "block";
+        this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
     }
 
     redraw(width) {
@@ -168,6 +169,7 @@ export default class ShrineSites {
         // returning false will cancel the selection and (re)displaying of this visualization
         // USED PRIMARLY BY THE "Download" MODULE
         try {
+            this.config.parentTitleEl.innerHTML = this.record.title;
             this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
             return true;
         } catch(e) {
@@ -192,6 +194,9 @@ const parseData = (xmlData) => {
         data[key] = {};
         data[key].site = key;
         data[key].count = parseInt(rec.textContent);
+        if (isNaN(data[key].count)) {
+            data[key].count = rec.textContent;
+        }
     }
     // SHRINE site details
     let attribs = ["status", "floorThresholdNumber","obfuscatedDisplayNumber","binSize","stdDev"];
@@ -200,9 +205,11 @@ const parseData = (xmlData) => {
         let key = rec.getAttribute("name");
         if (typeof data[key] === "undefined") data[key] = {};
         data[key].site = key;
+        data[key].text = rec.textContent;
         for (let attrib of attribs) {
             data[key][attrib] = rec.getAttribute(attrib);
         }
+        if (data[key].status.toUpperCase().indexOf("ERROR") !== -1) data[key].error = true;
     }
     return data;
 };
