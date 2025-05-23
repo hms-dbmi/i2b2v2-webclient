@@ -561,7 +561,6 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
         // see if we still need to continue polling
         if (!i2b2.CRC.QueryStatus.haltOnStatus.includes(rec.QRS_Status)) {
             // status is not in the list of Halt statuses, prepare for poll to execute in the future
-            const rec = i2b2.CRC.QueryStatus.model.QRS[qrsID];
             if (rec.QRS_DisplayType === "CATNUM") {
                 // get a reference to the correct visualization
                 const vizRef = {id: rec.QRS_ID, type: rec.QRS_Type, reference: i2b2.CRC.QueryStatus.model.visualizations[rec.QRS_Type]};
