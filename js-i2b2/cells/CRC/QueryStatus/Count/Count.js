@@ -46,7 +46,6 @@ export default class Count {
             } else {
                 this.data = data;
             }
-            this.data = data;
             // extract the info from the XML
             let title = i2b2.h.XPath(data, "//query_result_instance/description");
             if (title.length === 0) {
@@ -71,6 +70,7 @@ export default class Count {
                 const xmlSHRINE = i2b2.h.Unescape(i2b2.h.XPath(data, "//xml_value")[0].innerHTML);
                 const sitesTotal = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@sites")[0].nodeValue).toLocaleString();
                 const sitesDone = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@complete")[0].nodeValue).toLocaleString();
+                const status = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@status")[0].textContent;
                 const obfuscateFloor = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@floorThresholdNumber")[0].nodeValue).toLocaleString();
                 const obfuscateDisplay = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@obfuscatedDisplayNumber")[0].nodeValue).toLocaleString();
 
@@ -82,7 +82,7 @@ export default class Count {
                 }
                 // sites reporting
                 let sitesContainer = refContainer.querySelector('.count-sites');
-                sitesContainer.innerHTML = "With " + sitesDone + " out of " + sitesTotal + " sites reporting";
+                sitesContainer.innerHTML = status + ": " + sitesDone + " out of " + sitesTotal + " sites reporting";
                 sitesContainer.style.display = "block";
             } else {
                 // count
