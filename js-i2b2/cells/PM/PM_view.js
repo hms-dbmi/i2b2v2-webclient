@@ -64,11 +64,23 @@ i2b2.PM.doLoginDialog = function() {
                 text: domain.name
             }));
         });
-        // attach the onSubmit handler
-        $("#PM-login-modal form").submit(function(event) {
-            event.preventDefault();
-            i2b2.PM.doLogin();
+        // attach the onClick/onSubmit handlers
+        $("#PM-login-modal .login-button").click(function(event) {
+            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+            if (selectedDomain.ignorePasswordMgrs === true) {
+                // prevent the browser's password save option from saving/checking the password
+                event.preventDefault();
+                i2b2.PM.doLogin();
+            } else {
+                // allow the form's submit handler to fire (this is the hook for Chrome's password manager)
+                i2b2.PM.doLogin();
+            }
         });
+        $("#PM-login-modal form").submit(function(event) {
+            // we don't actually want to use the browser's form submit action
+            event.preventDefault();
+        });
+
         // attach event handlers for the SSO buttons
         let func_lauchSaml = (evt) => { i2b2.PM.doSamlLogin($(evt.currentTarget).data('service')); };
         $('.sso-button').on('click', func_lauchSaml);
@@ -142,6 +154,17 @@ i2b2.PM.view.showProjectSelectionModal = function(){
 // ================================================================================================== //
 i2b2.PM.doChangeDomain = function() {
     let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+    // remove the submit attribute on the login button if configured
+    if (selectedDomain.ignorePasswordMgrs === true) {
+        $("#PM-login-modal input[name='loginpass']").attr('type', 'text');
+        $("#PM-login-modal input[name='loginpass']").attr('autocomplete', 'off');
+        $("#PM-login-modal input[name='loginusr']").attr('autocomplete', 'off');
+    } else {
+        $("#PM-login-modal input[name='loginpass']").attr('type', 'password');
+        $("#PM-login-modal input[name='loginpass']").removeAttr('autocomplete', '');
+        $("#PM-login-modal input[name='loginusr']").removeAttr('autocomplete', '');
+    }
+
     let loginElements = $(".login-user, .login-password, .login-button");
     if (selectedDomain.saml !== undefined) {
         loginElements.hide();
