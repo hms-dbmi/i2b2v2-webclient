@@ -48,7 +48,6 @@ export default class ShrineSites {
                 if (idx > 1) cname = "details";
                 el[idx].classList.add(cname);
             });
-
             this.config.displayEl.style.display = "none";
         } catch(e) {
             console.error("Error in QueryStatus:ShrineSites.constructor()");
@@ -108,10 +107,12 @@ export default class ShrineSites {
                         // return the site's count
                         if (row.count <= row.floorThresholdNumber) {
                             // handle if it is below our floor threshold
-                            ret.push({
+                            let temp = {
                                 text: "<" + parseInt(row.floorThresholdNumber).toLocaleString() + " Patients",
                                 class: "status-complete"
-                            });
+                            };
+                            if (row.count === 0) temp.text = "0 Patients";
+                            ret.push(temp);
                         } else {
                             // handle the obfuscation
                             ret.push({
@@ -121,12 +122,23 @@ export default class ShrineSites {
                         }
                     } else {
                         // display the site's current status
-                        let rec = {text:row.status};
+                        let rec = {text: row.status};
                         if (row.error === true) {
                             rec.text = row.status + ": " + row.text;
                             rec.class = "status-error";
                         } else {
-                            rec.class = "status-unknown";
+                            switch(String(row.status).toUpperCase()) {
+                                case "SENT TO SITE":
+                                case "PROCESSING AT HUB":
+                                case "PROCESSING AT SITE":
+                                    rec.class = "status-good";
+                                    break;
+                                case "DELAYED AT SITE":
+                                    rec.class = "status-warn";
+                                    break;
+                                default:
+                                    rec.class = "status-unknown";
+                            }
                         }
                         ret.push(rec);
                     }
@@ -158,7 +170,6 @@ export default class ShrineSites {
     redraw(width) {
         try {
             this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
-//            this.config.displayEl.innerHTML = "{" + this.constructor.name + "} is " + width + " pixels wide";
         } catch(e) {
             console.error("Error in QueryStatus:ShrineSites.redraw()");
         }

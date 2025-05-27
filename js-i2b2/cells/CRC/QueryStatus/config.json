@@ -14,12 +14,11 @@
       "noFrameTemplate": true
     },
     "SHRINESITES": {
-      "name": "SHRINE Results",
+      "name": "Table Summary",
       "source": "ShrineSites/ShrineSites.js",
       "CSS": "ShrineSites/ShrineSites.css",
-      "iconClass": "bi bi-cloud",
-      "alwaysShow": true,
-      "noFrameTemplate": false
+      "iconClass": "bi bi-table",
+      "alwaysShow": true
     },
     "BARS": {
       "name": "Bar Chart",

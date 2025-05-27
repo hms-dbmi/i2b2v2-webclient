@@ -38,6 +38,12 @@
 .viztype-SHRINESITES table td.status-error {
     color: red;
 }
+.viztype-SHRINESITES table td.status-good {
+    color: green;
+}
+.viztype-SHRINESITES table td.status-warn {
+    color: orange;
+}
 
 
 
