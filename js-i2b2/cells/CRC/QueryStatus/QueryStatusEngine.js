@@ -179,6 +179,90 @@ i2b2.CRC.QueryStatus.updateFromQueryMgr = function() {
 
 
 
+i2b2.CRC.QueryStatus._getTitle = function(resultType, oRecord, oXML) {
+    let title = "";
+    switch (resultType) {
+        case "PATIENT_ENCOUNTER_SET":
+            // use given title if it exists otherwise generate a title
+            let t = null;
+            try {
+                t = i2b2.h.XPath(oXML,'self::query_result_instance/description')[0].firstChild.nodeValue;
+            } catch(e) {}
+            if (!t) { t = "Encounter Set"; }
+            // create the title using shrine setting
+            if (oRecord.size >= 10) {
+                if (i2b2.PM.model.isObfuscated) {
+                    title = t+" - "+oRecord.size + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" encounters";
+                } else {
+                    title = t;
+                }
+            } else {
+                if (i2b2.PM.model.isObfuscated) {
+                    title = t+" - 10 encounters or less";
+                } else {
+                    title = t;
+                }
+            }
+            break;
+        case "PATIENTSET":
+            // use given title if it exist otherwise generate a title
+            let p = null;
+            try {
+                p = i2b2.h.XPath(oXML,'self::query_result_instance/description')[0].firstChild.nodeValue;
+            } catch(e) {}
+            if (!p) { p = "Patient Set"; }
+            // create the title using shrine setting
+            if (oRecord.size >= 10) {
+                if (i2b2.PM.model.isObfuscated) {
+                    title = p+" - "+oRecord.size + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
+                } else {
+                    title = p;
+                }
+            } else {
+                if (i2b2.PM.model.isObfuscated) {
+                    title = p+" - 10 patients or less";
+                } else {
+                    title = p; //+" - "+oRecord.size+" patients";
+                }
+            }
+            break;
+        case "PATIENT_COUNT_XML":
+        case "PATIENT_COUNT_SHRINE_XML":
+            // use given title if it exists otherwise generate a title
+            let x = null;
+            try {
+                x = i2b2.h.XPath(oXML,'self::query_result_instance/description')[0].firstChild.nodeValue;
+            } catch(e) {
+            }
+            if (!x) { x="Patient Count"; }
+            // create the title using shrine setting
+            if (oRecord.size >= 10) {
+                if (i2b2.PM.model.isObfuscated) {
+                    title = x+" - "+oRecord.size + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString()+" patients";
+                } else {
+                    title = x+" - "+oRecord.size+" patients";
+                }
+            } else {
+                if (i2b2.PM.model.isObfuscated) {
+                    title = x+" - 10 patients or less";
+                } else {
+                    title = x+" - "+oRecord.size+" patients";
+                }
+            }
+            break;
+        default :
+            try {
+                title = i2b2.h.XPath(oXML,'self::query_result_instance/query_result_type/description')[0].firstChild.nodeValue;
+            } catch(e) {
+            }
+            break;
+    }
+    return title;
+}
+
+
+
+
 i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     // -------------------------------------------------------------------------------------------------------------
     // format data and instantiate the visualization components for each QRS
@@ -405,7 +489,6 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
                 }
 
                 // handle if a viz module's advanced configuration makes it the default displayed plugin
-                // debugger;
                 const forcedInitialDisplay = qrs_entries[code].componentInstances.filter((viz) => {
                     if (typeof viz.advancedConfig === 'object') {
                         if (viz.advancedConfig.forceInitialDisplay === true) return true;
@@ -428,6 +511,7 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     for (let code of Object.keys(qrs_entries)) {
         i2b2.CRC.QueryStatus.model.visualizations[code] = qrs_entries[code];
     }
+
 };
 
 
@@ -478,7 +562,7 @@ i2b2.CRC.QueryStatus._handleQueryResultSet = function(results) {
                 rec.polling = true;
             }
             // set the proper title if it was not already set
-            if (!rec.title) rec.title =  i2b2.CRC.view.QueryReport._getTitle(rec.QRS_Type, rec, temp);
+            if (!rec.title) rec.title = i2b2.CRC.QueryStatus._getTitle(rec.QRS_Type, rec, temp);
 
             // save the reference
             i2b2.CRC.QueryStatus.model.QRS[qrs_id] = rec;
