@@ -12,7 +12,12 @@ i2b2.CRC.QueryStatus = {
         QRS: {},
         visualizations: {}
     },
-    advancedConfigurations: {}
+    advancedConfigurations: {},
+    showOnZeroCount: [
+        "SUMMARY",
+        "COUNT",
+        "SHRINESITES"
+    ]
 };
 
 
@@ -569,7 +574,22 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
                     i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
                 }, i2b2.CRC.QueryStatus.shortestPollInterval);
             }
+        } else {
+            // done polling, see if we hide because it has 0 patients
+            if (parseInt(rec.size) === 0) {
+                // hide all components that are not in this list
+                let hide = true;
+                let components = this.reference.componentInstances.map((d) => d.definition.componentCode);
+                for (let code of components) {
+                    if (i2b2.CRC.QueryStatus.showOnZeroCount.includes(code)) {
+                        hide = false;
+                        break;
+                    }
+                }
+                if (hide) this.reference.componentInstances[0].parentDisplayEl.style.display = "none";
+            }
         }
+
     }
 };
 
