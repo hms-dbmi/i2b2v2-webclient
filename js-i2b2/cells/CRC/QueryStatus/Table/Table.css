@@ -4,7 +4,7 @@
 
 .component-instance-viz.viztype-TABLE table {
     width: 100%;
-    top: calc(-.5rem - 1px);
+    top: calc(-1rem - 1px);
     position: relative;
     border: solid 1px #ccc;
 }
