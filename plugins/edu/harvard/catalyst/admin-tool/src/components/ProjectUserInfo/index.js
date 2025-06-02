@@ -110,7 +110,7 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
                     <TextField
                         select
                         className={"inputField"}
-                        label="Admin Path"
+                        label="User Role"
                         value={updatedUser.adminPath.name}
                         onChange={(event) => handleUpdate("adminPath", event.target.value)}
                         variant="standard"
@@ -124,7 +124,7 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
                     <TextField
                         select
                         className={"inputField"}
-                        label="Data Path"
+                        label="Data Role"
                         value={updatedUser.dataPath.name}
                         onChange={(event) => handleUpdate("dataPath", event.target.value)}
                         variant="standard"
@@ -142,7 +142,7 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
                     <TextField
                         select
                         className={"inputField"}
-                        label="Editor Path"
+                        label="Editor Role"
                         value={updatedUser.editorPath}
                         onChange={(event) => handleUpdate("editorPath", event.target.value)}
                         variant="standard"

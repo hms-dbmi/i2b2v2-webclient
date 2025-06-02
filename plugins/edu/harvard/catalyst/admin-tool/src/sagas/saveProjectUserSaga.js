@@ -43,7 +43,6 @@ export function* doSaveProjectUser(action) {
         }
 
         if(user.editorPath !== "true" && isEditor){
-            console.log("no editor path push " + user.editorPath);
             rolesToDelete.push(EDITOR_ROLE);
         }
 
