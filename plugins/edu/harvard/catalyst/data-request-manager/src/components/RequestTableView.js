@@ -68,18 +68,21 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             flex: 1,
             valueGetter: (value) => {
                 let formattedValue = value?.length > 0 ? parseInt(value) : value;
-                if (isNaN(formattedValue) || !(value?.length > 0)) {
-                    formattedValue = "Not Available";
-                }
                 let displayValue = formattedValue;
-                if (isObfuscated) {
-                    displayValue = formattedValue + decode("&plusmn;") + obfuscatedDisplayNumber;
-                }
-                if (useFloorThreshold) {
-                    if (formattedValue < floorThresholdNumber) {
-                        displayValue = floorThresholdText + floorThresholdNumber;
+
+                if (isNaN(formattedValue) || !(value?.length > 0)) {
+                    displayValue = "Not Available";
+                }else{
+                    if (isObfuscated) {
+                        displayValue = formattedValue + decode("&plusmn;") + obfuscatedDisplayNumber;
+                    }
+                    if (useFloorThreshold) {
+                        if (formattedValue < floorThresholdNumber) {
+                            displayValue = floorThresholdText + floorThresholdNumber;
+                        }
                     }
                 }
+
                 return displayValue;
             }
         },
