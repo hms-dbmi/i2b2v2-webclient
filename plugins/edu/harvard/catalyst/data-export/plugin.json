@@ -9,6 +9,7 @@
   "base": "build/index.html",
   "sandbox": true,
   "admin_only": false,
+  "roles": ["DATA_LDS", "DATA_PROT", "DATA_DEID", "MANAGER", "ADMIN"],
   "authorizedTunnel": {
     "variables" :{
       "i2b2.PM.model.login_password": "R",
