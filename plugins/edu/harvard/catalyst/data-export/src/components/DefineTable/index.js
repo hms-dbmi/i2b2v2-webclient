@@ -111,17 +111,7 @@ export const DefineTable = (props) => {
                     {...params}
                     inputProps={{ maxLength: 200 }}
                 />
-            ),
-           /* valueSetter: (value, row) => {
-                dispatch(handleRowName({id: row.id, value: value}));
-                return { ...row };
-            },*/
-            valueGetter: (value, row) => {
-               //dispatch(handleRowName({id: row.id, value: value}));
-                 const name = row.duplicateCount > 0 ? value + " (--" + row.duplicateCount + ")" : value;
-
-                 return name;
-           },
+            )
         },
         {
             field: "constraints",
