@@ -85,7 +85,7 @@ export const RequestCommentsView = ({queryMasterId, queryInstanceId, username}) 
                             </>
                         }
                         {isEditing && <Button variant="contained" className={"CommentBtn"} size={"small"}
-                                 disabled={newComment.length === 0 || newComment === comments} onClick={handleAddRequestComment}>
+                                 disabled={newComment === comments} onClick={handleAddRequestComment}>
                              Save {isSaving && <CircularProgress size="15px"/>}
                          </Button>
                         }
