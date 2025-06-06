@@ -1,4 +1,3 @@
-
 i2b2.CRC.QueryStatus = {
     shortestPollInterval: 5000,
     baseURL: "js-i2b2/cells/CRC/QueryStatus/",
@@ -12,7 +11,6 @@ i2b2.CRC.QueryStatus = {
         QRS: {},
         visualizations: {}
     },
-    advancedConfigurations: {},
     showOnZeroCount: [
         "SUMMARY",
         "COUNT",
@@ -679,7 +677,7 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
 
 
 // load and process the configuration file
-let init = async function() {
+(async function() {
     try {
         // load config.json
         let response = await fetch(i2b2.CRC.QueryStatus.baseURL + "config.json");
@@ -736,8 +734,7 @@ let init = async function() {
     } catch (error) {
         console.error("Failed to initialize QueryStatus engine: ", error);
     }
-};
-init();
+})();
 
 
 
