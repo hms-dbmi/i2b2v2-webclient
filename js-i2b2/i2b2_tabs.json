@@ -9,7 +9,7 @@
         "type":"stack",
         "content":[
           {
-            "title":"Info",
+            "title":"Term Info",
             "componentName": "i2b2.ONT.view.info"
           }, {
             "title":"Workplace",
@@ -20,7 +20,7 @@
         "type":"stack",
         "content":[
           {
-            "title":"Queries",
+            "title":"Previous Queries",
             "componentName": "i2b2.CRC.view.history"
           }
         ]
