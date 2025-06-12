@@ -7,6 +7,12 @@
     top: calc(-1rem - 1px);
     position: relative;
     border: solid 1px #ccc;
+    caption-side: bottom;
+    border-collapse: collapse;
+}
+
+.component-instance-viz.viztype-TABLE table {
+    text-align: -webkit-match-parent;
 }
 
 .component-instance-viz.viztype-TABLE table th {
@@ -23,4 +29,12 @@
 .component-instance-viz.viztype-TABLE table th.total,
 .component-instance-viz.viztype-TABLE table td.total {
     text-align: center;
+}
+
+
+
+@media print {
+    .component-instance-viz.viztype-TABLE table {
+        top: 0;
+    }
 }

@@ -10,6 +10,8 @@
     top: calc(-1rem - 1px);
     position: relative;
     border: solid 1px #ccc;
+    caption-side: bottom;
+    border-collapse: collapse;
 }
 
 .viztype-SHRINESITES table th {
@@ -53,3 +55,8 @@
 }
 
 
+@media print {
+    .component-instance-viz.viztype-SHRINESITES table {
+        top: 0;
+    }
+}
