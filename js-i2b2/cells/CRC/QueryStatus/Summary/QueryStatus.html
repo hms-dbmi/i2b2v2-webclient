@@ -32,7 +32,7 @@
                         running
                     {{/if}}
                     ">
-                <button type="button" class="btn btn-primary btn-sm report" onclick="i2b2.CRC.view.QT.showQueryReport();">View Report</button>
+                <button type="button" class="btn btn-primary btn-sm report" onclick="i2b2.CRC.QueryReport.show();">View Report</button>
                 <!-- must use "onmousedown" for cancel button because of the rerendering rate of this template during the query run/polling period -->
                 <button type="button" class="btn btn-danger btn-sm cancel" onmousedown="i2b2.CRC.ctrlr.QueryMgr.cancelQuery();">Cancel Query</button>
                 <button type="button" class="btn btn-danger btn-sm cancelled">Query Cancelled</button>
