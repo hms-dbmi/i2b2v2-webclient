@@ -99,8 +99,8 @@ export default class Table {
         try {
             this.isVisible = true;
             this.config.displayEl.style.display = 'block';
-            this.config.dropdownEl.style.display = 'block';
-            this.config.parentTitleEl.innerHTML = this.record.title;
+            if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'block';
+            if (this.config.parentTitleEl) this.config.parentTitleEl.innerHTML = this.record.title;
             return true;
         } catch(e) {
             console.error("Error in QueryStatus:Table.show()");
@@ -110,9 +110,9 @@ export default class Table {
 
     hide() {
         try {
-            this.config.displayEl.style.display = 'none';
-            this.config.dropdownEl.style.display = 'none';
             this.isVisible = false;
+            this.config.displayEl.style.display = 'none';
+            if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'none';
             return true;
         } catch(e) {
             console.error("Error in QueryStatus:Table.hide()");

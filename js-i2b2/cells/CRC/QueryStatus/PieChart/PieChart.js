@@ -237,8 +237,8 @@ export default class PieChart {
         try {
             this.isVisible = true;
             this.config.displayEl.style.display = 'block';
-            this.config.dropdownEl.style.display = 'block';
-            this.config.parentTitleEl.innerHTML = this.record.title;
+            if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'block';
+            if (this.config.parentTitleEl) this.config.parentTitleEl.innerHTML = this.record.title;
             // update the size
             this.config.displayEl.parentElement.style.height = this.config.displayEl.offsetHeight + 'px';
             // redraw the visualization
@@ -252,7 +252,7 @@ export default class PieChart {
 
     hide() {
         this.config.displayEl.style.display = 'none';
-        this.config.dropdownEl.style.display = 'none';
+        if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'none';
         this.isVisible = false;
         return true;
     }

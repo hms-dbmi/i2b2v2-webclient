@@ -194,8 +194,8 @@ export default class BarGraph {
         try {
             this.isVisible = true;
             this.config.displayEl.style.display = 'block';
-            this.config.dropdownEl.style.display = 'block';
-            this.config.parentTitleEl.innerHTML = this.record.title;
+            if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'block';
+            if (this.config.parentTitleEl) this.config.parentTitleEl.innerHTML = this.record.title;
             // update the size
             this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
             return true;
@@ -207,7 +207,7 @@ export default class BarGraph {
     hide() {
         try {
             this.config.displayEl.style.display = 'none';
-            this.config.dropdownEl.style.display = 'none';
+            if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'none';
             this.isVisible = false;
             return true;
         } catch(e) {
