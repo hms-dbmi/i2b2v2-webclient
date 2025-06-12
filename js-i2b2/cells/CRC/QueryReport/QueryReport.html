@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Query Report</title>
-  <link rel="stylesheet" href="js-i2b2/cells/CRC/assets/QueryReport.css">
+  <link rel="stylesheet" href="js-i2b2/cells/CRC/QueryReport/QueryReportDocument.css">
+  {{#each stylesheets}}
+  <link rel="stylesheet" href="{{this}}">
+  {{/each}}
 </head>
 <body>
-<h1 class="title">i2b2 Query Report</h1>
+<h1 class="main-title">i2b2 Query Report</h1>
 {{#if hasError}}
   The query entitled "{{name}}" submitted on <span class="no-break">{{submittedAt}}</span>.
 {{else}}
@@ -165,15 +168,26 @@
 
 <h2 class="sub-title">Query Results</h2>
 
-{{#if reports}}
-  {{#each reports}}
+{{#if visualizations}}
+  {{#each visualizations}}
   <div class="results-group">
-    <div class="results-chart">
-      {{{this.chart}}}
-    </div>
-    <div class="results-graph">
-      {{{this.graph}}}
-    </div>
+    <label class="results-group-label">{{this.title}}</label>
+    {{#each this.visualizations}}
+      {{#ifCond this.module.noFrameTemplate "===" true}}
+        <div class="QueryStatusComponent frameless viz-window resulttype-{{this.codeQRS}} viztype-{{this.codeViz}}"></div>
+      {{/ifCond}}
+      {{#ifCond this.module.noFrameTemplate "!==" true}}
+        <div class="QueryStatusComponent main">
+          <div class="header">
+            <div class="title">Component Title</div>
+            <ul class="viz-dropdown-select" style="border: 0;"></ul>
+          </div>
+          <div class="viz-window">
+            <div class="component-instance-viz resulttype-{{this.codeQRS}} viztype-{{this.codeViz}}"></div>
+          </div>
+        </div>
+      {{/ifCond}}
+    {{/each}}
   </div>
   {{/each}}
 {{else}}

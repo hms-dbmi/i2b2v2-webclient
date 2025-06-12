@@ -1,0 +1,67 @@
+{
+  "PATIENT_COUNT_XML": {
+    "COUNT": true
+  },
+  "PATIENT_COUNT_SHRINE_XML": {
+    "COUNT": true
+  },
+  "PATIENT_SITE_COUNT_SHRINE_XML": {
+    "SHRINESITES": true
+  },
+  "PATIENT_GENDER_COUNT_XML": {
+    "TABLE": true,
+    "BARS": true
+  },
+  "PATIENT_SEX_COUNT_SHRINE_XML": {
+    "TABLE": true,
+    "BARS": true
+  },
+  "PATIENT_VITALSTATUS_COUNT_XML": {
+    "TABLE": true,
+    "BARS": true
+  },
+  "PATIENT_VITALSTATUS_COUNT_SHRINE_XML": {
+    "TABLE": true,
+    "BARS": true
+  },
+  "PATIENT_RACE_COUNT_XML": {
+    "TABLE": true,
+    "BARS": true
+  },
+  "PATIENT_RACE_COUNT_SHRINE_XML": {
+    "TABLE": true,
+    "BARS": true
+  },
+  "PATIENT_AGE_COUNT_XML": {
+    "TABLE": true,
+    "BARS": true
+  },
+  "PATIENT_AGE_COUNT_SHRINE_XML": {
+    "TABLE": true,
+    "BARS": true,
+    "PIECHART": true
+  },
+  "PATIENT_LOS_XML": {
+    "TABLE": true,
+    "BARS": true
+  },
+  "PATIENT_TOP100MEDS_XML" : {
+    "TABLE": true
+  },
+  "PATIENT_TOP20MEDS_XML": {
+    "TABLE": {
+      "forceInitialDisplay": true
+    },
+    "BARS": true
+  },
+  "PATIENT_TOP20DIAG_XML": {
+    "TABLE": {
+      "forceInitialDisplay": true
+    },
+    "BARS": true
+  },
+  "PATIENT_INOUT_XML": {
+    "TABLE": true,
+    "BARS": true
+  }
+}

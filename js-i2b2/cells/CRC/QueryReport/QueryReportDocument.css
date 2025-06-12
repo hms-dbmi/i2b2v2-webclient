@@ -1,9 +1,10 @@
 body {
     font-family: arial, helvetica, verdana, sans-serif;
     margin: 1.8em;
+    max-width: 670px;
 }
 
-.title {
+.main-title {
     border-bottom: 1px solid #000000;
 }
 
@@ -11,6 +12,8 @@ body {
     color-legacy_i2b2: #006699;
     color: #2782a3;
     border-bottom: 1px solid #2782a3;
+    break-after: avoid;
+    break-before: auto;
 }
 
 .groups-container, .events-container, .eventlinks-container {
@@ -93,58 +96,63 @@ body {
     margin-bottom: 1rem;
 }
 
-
-.results-chart {
+.results-group {
     margin-bottom: 1rem;
+    break-before: auto;
 }
-.results-chart label {
+
+.results-group:first-of-type {
+    break-before: avoid !important;
+}
+
+
+.results-group-label {
     font-weight: bold;
     padding-left: 1rem;
     line-height: 3rem;
-}
-.results-chart table {
-    margin: auto;
-    min-width: 30%;
-    border-collapse: collapse;
-}
-.results-chart table td {
-    border: 1px solid black;
-    padding: 0.3rem;
-}
-
-.results-chart .breakdownStatus{
-    /*breakdownStatus*/
-    line-height: 3rem;
-}
-
-
-.results-graph {
-    border-bottom: 1px solid #999999;
-}
-.results-graph svg {
-    margin-left: 2rem;
-    display: block;
-    margin: auto;
+    break-after: avoid-page;
 }
 
 
 
-.results-graph svg text.graphLabel {
-    cursor: default;
-    text-anchor: end;
+.QueryStatusComponent:first-of-type {
+    break-before: avoid;
 }
 
-.results-graph svg rect.graphbar {
-    opacity: 1;
-    stroke: black;
-    fill: rgb(39, 130, 163);
-    transition: opacity 100ms;
+
+.QueryStatusComponent {
+    clear: both;
+    margin-bottom: 3rem;
+    break-inside: avoid-page;
 }
 
-.results-graph svg text.graph-title {
-    display: none;
+.QueryStatusComponent .title {
+    text-align: center;
+}
+.QueryStatusComponent .header {
+    margin: 0 2rem;
 }
 
-.results-graph svg text.y-label {
-    font-weight: bold;
+.QueryStatusComponent .title {
+    padding: .5rem;
+}
+.QueryStatusComponent .viz-dropdown-select {
+    margin-top: -0.5rem;
+    margin-bottom: 0;
+}
+
+
+.QueryStatusComponent .viz-dropdown-select {
+    float: right;
+    top: -1rem;
+    position: relative;
+    height: 1rem;
+    list-style-type: none;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    padding: .2rem 1rem .23rem .3rem;
+    border: 1px solid #ccc;
+    border-bottom: 0;
+    border-radius: .35rem .35rem 0 0;
 }

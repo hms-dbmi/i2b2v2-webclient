@@ -676,6 +676,11 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
 };
 
 
+i2b2.CRC.QueryStatus.renderVizModule = function() {
+
+};
+
+
 // load and process the configuration file
 (async function() {
     try {

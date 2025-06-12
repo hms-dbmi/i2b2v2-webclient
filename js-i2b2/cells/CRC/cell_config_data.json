@@ -14,16 +14,15 @@
     "CRC_view_QryTool.js",
     "CRC_ctrlr_QryMgr.js",
     "CRC_view_QryMgr.js",
-    "CRC_view_QryReport.js",
     "i2b2_msgs.js",
     "CRC_ctrlr_LabValues.js",
-    "CRC_view_graphs.js",
     "CRC_view_search.js",
     "ModLabValues/CRC_view_BASIC.js",
     "ModLabValues/CRC_view_GENOTYPE_RSID.js",
     "ModLabValues/CRC_view_GENOTYPE_GENE.js",
     "ModLabValues/CRC_view_NUMBER_EXAMPLE.js",
-    "QueryStatus/QueryStatusEngine.js"
+    "QueryStatus/QueryStatusEngine.js",
+    "QueryReport/QueryReport.js"
   ],
   "preload": [
     "assets/sdx_CRC_PDO.svg",
