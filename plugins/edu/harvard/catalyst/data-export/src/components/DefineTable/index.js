@@ -87,7 +87,7 @@ export const DefineTable = (props) => {
                 let index = -1;
                 let dupIndex = -1;
                 rows.forEach(p => {
-                    if(p.name === row.name){
+                    if(p.name.toLowerCase() === row.name.toLowerCase()){
                         index++;
                     }
                     if(p.id === row.id){
@@ -629,9 +629,8 @@ export const DefineTable = (props) => {
     }
 
     const processRowUpdate = (newRow, previousRow) => {
-        const duplicateRowCount = rows.filter(p => p.name === newRow.name).length;
-        newRow.duplicateCount = duplicateRowCount;
-        dispatch(handleRowName({id: newRow.id, value: newRow.name}));
+        newRow.name = newRow.name.trim();
+        dispatch(handleRowName({id: newRow.id, value:  newRow.name}));
 
         return newRow;
     };
