@@ -74,6 +74,10 @@ export const RequestDetailView = ({details, isObfuscated}) => {
         return truncatedName;
     }
 
+    const handleAlertClose = () => {
+        setShowAlert(false);
+        dispatch(getTableDefinitionStatusConfirmed());
+    }
     return (
         <Box className={"RequestDetailView"}>
             <Typography className={"RequestDetailTitle"}>
@@ -107,7 +111,7 @@ export const RequestDetailView = ({details, isObfuscated}) => {
                 </Grid>
             </Card>
             <TableDefinitionPreview tableDefinition={tableDef} open={showTableDefPreview} onClose={handleClosePreviewTableDef}/>
-            {showAlert && <AlertDialog msg={alertMsg}/> }
+            {showAlert && <AlertDialog msg={alertMsg} onOk={handleAlertClose}/> }
         </Box>
     )
 }
