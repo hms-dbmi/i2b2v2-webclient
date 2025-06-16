@@ -41,7 +41,7 @@ export const tableDefSlice = createSlice({
 
             rows.concepts.forEach(concept => {
                 let tableDefRow = TableDefinitionRow({
-                    id: generateTableDefRowId(concept.sdxData.sdxInfo.sdxKeyValue),
+                    id: concept.sdxData.sdxInfo.sdxKeyValue + '[' + index + ']',
                     order: index,
                     name: concept.name,
                     locked: concept.locked,

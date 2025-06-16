@@ -523,7 +523,7 @@ export const DefineTable = (props) => {
             return false;
         }
 
-        const rowId = generateTableDefRowId(sdx.sdxInfo.sdxKeyValue);
+        const rowId = sdx.sdxInfo.sdxKeyValue + '[' +( totalRows.current+1) + ']';
         dispatch(handleRowInsert({rowIndex: rowNum, rowId: rowId, sdx: sdx, hasError: false, displayLabValue: true}));
     };
 
