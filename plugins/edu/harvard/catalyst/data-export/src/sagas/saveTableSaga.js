@@ -43,7 +43,7 @@ const getConceptsToXml = (concepts) => {
         let index = -1;
         let dupIndex = -1;
         concepts.forEach(p => {
-            if(p.name === concept.name){
+            if(p.name.toLowerCase() === concept.name.toLowerCase()){
                 index++;
             }
             if(p.id === concept.id){

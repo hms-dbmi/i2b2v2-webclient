@@ -109,7 +109,7 @@ export const PreviewTable = (props) => {
             let index = -1;
             let dupIndex = -1;
             tableDefRows.forEach(p => {
-                if(p.name === row.name){
+                if(p.name.toLowerCase() === row.name.toLowerCase()){
                     index++;
                 }
                 if(p.id === row.id){
