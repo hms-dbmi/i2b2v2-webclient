@@ -14,7 +14,7 @@ export default class Count {
                 this.isShrine = true;
             }
 
-            let init = async function() {
+            (async function() {
                 // retrieve the component frame template
                 let response = await fetch(i2b2.CRC.QueryStatus.baseURL + "Count/Count.html");
                 if (!response.ok) {
@@ -22,9 +22,9 @@ export default class Count {
                     this.dispTemplate = "";
                 } else {
                     this.dispTemplate = await response.text();
+                    this.update();
                 }
-            }
-            init.call(this);
+            }).call(this);
 
         } catch(e) {
             console.error("Error in QueryStatus:Count.constructor()");
@@ -46,6 +46,10 @@ export default class Count {
             } else {
                 this.data = data;
             }
+
+            // only continue if we have the template loaded (bugfix: race condition)
+            if (typeof this.dispTemplate === 'undefined') return;
+
             // extract the info from the XML
             let title = i2b2.h.XPath(data, "//query_result_instance/description");
             if (title.length === 0) {
