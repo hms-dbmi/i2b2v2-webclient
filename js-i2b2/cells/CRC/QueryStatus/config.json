@@ -41,13 +41,15 @@
       "source": "Table/Table.js",
       "CSS": "Table/Table.css",
       "iconClass": "bi bi-table",
-      "displayOrder": 100
+      "displayOrder": 100,
+      "displayForUnregistered": true
     },
     "DOWNLOAD": {
       "name": "CSV Download",
       "source": "Download/Download.js",
       "iconClass": "bi bi-filetype-csv",
-      "displayOrder": 500
+      "displayOrder": 500,
+      "displayForUnregistered": true
     }
   },
   "displayOrder": [

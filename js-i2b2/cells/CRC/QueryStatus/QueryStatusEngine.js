@@ -314,7 +314,7 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     const functInstantiateViz = (qrsCode, componentDefObj, componentInstanceObj, componentIndexNumber = 1) => {
         try {
             // handle any advanced configuration
-            if (typeof i2b2.CRC.QueryStatus.breakdownConfig[qrsCode][componentDefObj.componentCode] === 'object') {
+            if (typeof i2b2.CRC.QueryStatus.breakdownConfig[qrsCode]?.[componentDefObj.componentCode] === 'object') {
                 componentInstanceObj.advancedConfig = i2b2.CRC.QueryStatus.breakdownConfig[qrsCode][componentDefObj.componentCode];
             }
 
@@ -365,8 +365,12 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
         }).map((b) => refDisplayComponents[b]);
 
         if (validComponents.length === 0) {
-            // short circuit if no components are configured
-            continue;
+            // see if there are any default viz modules configured to capture unregistered breakdowns
+            validComponents = Object.values(refDisplayComponents).filter((x) => x.displayForUnregistered === true);
+            if (validComponents.length === 0) {
+                // short circuit if no components are configured for unregistered components
+                continue;
+            }
         }
 
         // sort by component displayOrder
