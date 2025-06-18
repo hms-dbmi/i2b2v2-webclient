@@ -18,7 +18,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import CircularProgress from '@mui/material/CircularProgress';
 import {useDispatch, useSelector} from "react-redux";
-import {DATATYPE, generateTableDefRowId} from "../../models/TableDefinitionRow";
+import {DATATYPE} from "../../models/TableDefinitionRow";
 import {
     Dialog,
     DialogActions,
@@ -94,7 +94,7 @@ export const DefineTable = (props) => {
                         dupIndex = index;
                     }
                 })
-                const name = dupIndex > 0 ? row.name + " (" + dupIndex + ")" : row.name;
+                const name = (dupIndex > 0 && row.name.length > 0) ? row.name + " (" + dupIndex + ")" : row.name;
                 let toolTip = row.name;
                 if(row.sdxData?.renderData){
                 toolTip =  row.sdxData?.renderData?.moreDescriptMinor ? row.sdxData.renderData.moreDescriptMinor : "This column was originally called \""+ row.sdxData.renderData.title+"\"";
@@ -608,7 +608,13 @@ export const DefineTable = (props) => {
 
     const checkValidName = (temp) => {
         if (temp.field === "name") {
-            if (temp.value.trim().length === 0) {
+            let newName = temp.value.trim();
+            const regex = /\([0-9]*\)$/;
+            const splitName = newName.split(regex);
+            newName = splitName[0].trim();
+
+            const dupRows = rows.filter(r => r.name.trim().toLowerCase() === newName.toLowerCase());
+            if (newName.length === 0 || (newName !== temp.value && dupRows.length > 1)) {
                 return 'missing';
             }
         }

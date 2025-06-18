@@ -32,8 +32,20 @@ export const DataExport = () => {
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const [selectedTab, setSelectedTab] = React.useState(0);
 
+    const getDupRows = () => {
+        return tableDefRows.filter(r => {
+            let newName = r.name.trim();
+            const regex = /\([0-9]*\)$/;
+            const splitName = newName.split(regex);
+            newName = splitName[0].trim();
+
+            return tableDefRows.filter(p => p.name.trim().toLowerCase() === newName.trim().toLowerCase()).length > 0;
+        });
+    }
     const handleTabChange = (event, newTab) => {
-        if (tableDefRows.filter((x)=> x.name.trim().length === 0).length > 0) {
+        const dupRows =  getDupRows();
+
+        if (tableDefRows.filter((x)=> x.name.trim().length === 0).length > 0 ||  dupRows.length > 1) {
             handleSnackbarOpen('Please fix the errors in the table definition.');
         } else {
             if (newTab === 0) {
@@ -58,7 +70,9 @@ export const DataExport = () => {
     const handleLoadClose = () => setLoadViz(false);
     const [showSave, setSaveViz] = React.useState(false);
     const handleSaveOpen = () => {
-        if (tableDefRows.filter((x)=> x.name.trim().length === 0).length > 0) {
+        const dupRows = getDupRows();
+
+        if (tableDefRows.filter((x)=> x.name.trim().length === 0).length > 0 ||  dupRows.length > 1) {
             handleSnackbarOpen('Please fix the errors in the table definition.');
         } else {
             setSaveViz(true);
@@ -125,7 +139,7 @@ export const DataExport = () => {
                 </AppBar>
             </Box>
             <CustomTabPanel value={selectedTab} index={0}>
-                <DefineTable tabChanger={handleTabChange} dispSnackbar={handleSnackbarOpen} />
+                <DefineTable tabChanger={handleTabChange} dispSnackbar={handleSnackbarOpen}/>
             </CustomTabPanel>
             <CustomTabPanel value={selectedTab} index={1}>
                 <PreviewTable tabChanger={handleTabChange} dispSnackbar={handleSnackbarOpen} />
