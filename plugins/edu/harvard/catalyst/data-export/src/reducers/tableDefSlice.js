@@ -96,7 +96,7 @@ export const tableDefSlice = createSlice({
         handleRowDelete:(state, { payload: { row } }) => {
             state.rows = state.rows.filter(r => r.id !== row.id);
             // handle reindexing the order attribute for all items
-            state.rows.sort((a,b) => a.order - b.order).forEach((x,i)=> { x.order = i + 1 });
+            state.rows.sort((a,b) => a.order - b.order).forEach((x,i)=> { x.order = i + 1; x.id = i; });
         },
         handleRowInsert:(state, { payload: {rowIndex, rowId, sdx, hasError} }) => {
             // get the range in which we can correctly place the row
