@@ -176,8 +176,9 @@ i2b2.CRC.QueryReport.generateReport = () => {
 
     // determine what visualizations we are going to display
     let visualizations = [];
-    // we display in the order defined in the JSON
-    for (let qrsCode in i2b2.CRC.QueryReport.displayConfig) {
+    // we display in the order defined in the JSON (for configured breakdowns)
+    const configuredBreakdownCodes = Object.keys(i2b2.CRC.QueryReport.displayConfig);
+    for (let qrsCode of configuredBreakdownCodes) {
         // get the data entry
         let qrsData = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => x.QRS_Type === qrsCode);
         if (qrsData.length > 0) {
@@ -186,7 +187,7 @@ i2b2.CRC.QueryReport.generateReport = () => {
             // we are displaying this breakdown, run through the viz modules
             for (let vizCode in i2b2.CRC.QueryReport.displayConfig[qrsCode]) {
                 if (i2b2.CRC.QueryStatus.displayComponents[vizCode] !== undefined) {
-                    // valid vizualization
+                    // valid visualization
                     visualizationGroup.push({
                         "codeViz": vizCode,
                         "codeQRS": qrsCode,
@@ -202,6 +203,29 @@ i2b2.CRC.QueryReport.generateReport = () => {
             });
         }
     }
+    // display any non-configured breakdowns not defined in the JSON
+    let definedBreakdowns = visualizations.map((x) => x.visualizations[0].codeQRS);
+    let todoBreakdowns = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => !definedBreakdowns.includes(x.QRS_Type) && x.QRS_Type !== 'INTERNAL_SUMMARY');
+    let targetVizModules = Object.values(i2b2.CRC.QueryStatus.displayComponents).filter((x) => x.displayForUnregistered === true && x.notInReport !== true).sort((a, b) => (a.displayOrderx || -Infinity) - (b.displayOrder || -Infinity))
+    for (let undefinedBreakdown of todoBreakdowns) {
+        let visualizationGroup = [];
+        // we are displaying this breakdown, run through the viz modules
+        for (let vizCode of targetVizModules) {
+            // create visualization
+            visualizationGroup.push({
+                "codeViz": vizCode.componentCode,
+                "codeQRS": undefinedBreakdown.QRS_Type,
+                "module": vizCode,
+                "data": undefinedBreakdown,
+                "config": {}
+            });
+        }
+        if (visualizationGroup.length > 0) visualizations.push({
+            title: visualizationGroup[0].data.title,
+            visualizations: visualizationGroup
+        });
+    }
+
     if (visualizations.length > 0) reportData.visualizations = visualizations;
 
     const reportHtml = i2b2.CRC.QueryReport.templates.queryReport(reportData);

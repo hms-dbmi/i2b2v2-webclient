@@ -4,7 +4,8 @@
       "source": "Summary/Summary.js",
       "CSS": "Summary/Summary.css",
       "alwaysShow": true,
-      "noFrameTemplate": true
+      "noFrameTemplate": true,
+      "notInReport": true
     },
     "COUNT": {
       "source": "Count/Count.js",
@@ -49,7 +50,8 @@
       "source": "Download/Download.js",
       "iconClass": "bi bi-filetype-csv",
       "displayOrder": 500,
-      "displayForUnregistered": true
+      "displayForUnregistered": true,
+      "notInReport": true
     }
   },
   "displayOrder": [
