@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { TABLE_DEF } from "../actions";
 import { defaultState } from '../defaultState';
 import {StatusInfo, TableDefinitionRow} from "../models";
-import {DATATYPE, generateTableDefRowId} from "../models/TableDefinitionRow";
+import { DATATYPE } from "../models/TableDefinitionRow";
 import XMLParser from 'react-xml-parser';
 import {decode} from 'html-entities';
 
@@ -100,7 +100,7 @@ export const tableDefSlice = createSlice({
                 x.order = i + 1;
 
                 if(x.sdxData?.sdxInfo?.sdxKeyValue){
-                    x.id = x.sdxData.sdxInfo.sdxKeyValue + '[' + i + ']'
+                    x.id = x.sdxData.sdxInfo.sdxKeyValue + '[' + i + ']';
                 }
             });
         },
