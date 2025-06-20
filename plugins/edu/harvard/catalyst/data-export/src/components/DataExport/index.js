@@ -37,9 +37,8 @@ export const DataExport = () => {
             let newName = r.name.trim();
             const regex = /\([0-9]*\)$/;
             const splitName = newName.split(regex);
-            newName = splitName[0].trim();
-
-            return tableDefRows.filter(p => p.name.trim().toLowerCase() === newName.trim().toLowerCase()).length > 0;
+            const newNameParsed = splitName[0].trim();
+            return tableDefRows.filter(p => p.name.trim().toLowerCase() === newNameParsed.toLowerCase()).length > 1;
         });
     }
     const handleTabChange = (event, newTab) => {
