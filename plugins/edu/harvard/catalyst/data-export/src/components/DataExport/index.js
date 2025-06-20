@@ -34,17 +34,18 @@ export const DataExport = () => {
 
     const getDupRows = () => {
         return tableDefRows.filter(r => {
-            let newName = r.name.trim();
+            let trimmedName = r.name.trim();
             const regex = /\([0-9]*\)$/;
-            const splitName = newName.split(regex);
-            const newNameParsed = splitName[0].trim();
-            return tableDefRows.filter(p => p.name.trim().toLowerCase() === newNameParsed.toLowerCase()).length > 1;
+            const splitName = trimmedName.split(regex);
+            const parsedNewName = splitName[0].trim();
+
+            return tableDefRows.filter(p => parsedNewName !== trimmedName && p.name.trim().toLowerCase() === parsedNewName.trim().toLowerCase()).length > 0;
         });
     }
     const handleTabChange = (event, newTab) => {
         const dupRows =  getDupRows();
 
-        if (tableDefRows.filter((x)=> x.name.trim().length === 0).length > 0 ||  dupRows.length > 1) {
+        if (tableDefRows.filter((x)=> x.name.trim().length === 0).length > 0 ||  dupRows.length > 0) {
             handleSnackbarOpen('Please fix the errors in the table definition.');
         } else {
             if (newTab === 0) {
@@ -71,7 +72,7 @@ export const DataExport = () => {
     const handleSaveOpen = () => {
         const dupRows = getDupRows();
 
-        if (tableDefRows.filter((x)=> x.name.trim().length === 0).length > 0 ||  dupRows.length > 1) {
+        if (tableDefRows.filter((x)=> x.name.trim().length === 0).length > 0 ||  dupRows.length > 0) {
             handleSnackbarOpen('Please fix the errors in the table definition.');
         } else {
             setSaveViz(true);
