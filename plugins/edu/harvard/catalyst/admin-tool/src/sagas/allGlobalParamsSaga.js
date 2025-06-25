@@ -1,5 +1,4 @@
 import { call, takeLatest, put} from "redux-saga/effects";
-import XMLParser from 'react-xml-parser';
 import {
     GET_ALL_GLOBAL_PARAMS_ACTION,
     getAllGlobalParamsFailed,
@@ -7,6 +6,7 @@ import {
 } from "actions";
 import {DataType} from "models";
 import {decodeHTML} from "../utilities";
+import {parseXml} from "../utilities/parseXml";
 
 //a function that returns a promise
 const getAllGlobalParamsRequest = () => {
@@ -15,18 +15,19 @@ const getAllGlobalParamsRequest = () => {
         param_xml: "",
         table: "global"
     }
-    return i2b2.ajax.PM.getAllParam(data).then((xmlString) => new XMLParser().parseFromString(xmlString));
+    return i2b2.ajax.PM.getAllParam(data).then((xmlString) =>parseXml(xmlString));
 };
 
 const parseParamsXml = (allGlobalParamsXml) => {
     let params = allGlobalParamsXml.getElementsByTagName('param');
     let globalParamsList = [];
     let id=0;
-    params.forEach((param) => {
-        let internalId = param.attributes['id'];
-        let name = param.attributes['name'];
-        let value = param.value;
-        let dataType = param.attributes['datatype'];
+    for (let i = 0; i < params.length; i++) {
+        const param = params[i];
+        let internalId = param.attributes['id'].nodeValue;
+        let name = param.attributes['name'].nodeValue;
+        let value = param.childNodes[0].nodeValue;
+        let dataType = param.attributes['datatype'].nodeValue;
 
         if(name && dataType) {
             dataType = DataType[dataType];
@@ -36,7 +37,7 @@ const parseParamsXml = (allGlobalParamsXml) => {
             globalParamsList.push({id, internalId, name, value, dataType});
             id = id + 1;
         }
-    });
+    }
 
     return globalParamsList;
 }
