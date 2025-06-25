@@ -41,7 +41,7 @@ i2b2.PM.doSamlLogin = function(service) {
     // save the SAML login method if it was used
     if (domain.saml) {
         let samlConfig = domain?.saml[service];
-        if (!samlConfig) samlConfig = {};
+        if (typeof samlConfig !== 'object') samlConfig = {};
         i2b2.PM.model.samlConfig = samlConfig;
     } else {
         i2b2.PM.model.samlConfig = false;
