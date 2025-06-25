@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { DataType } from "models";
-import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes, useGridApiRef} from "@mui/x-data-grid";
+import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes, useGridApiRef,useGridApiContext} from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import TextField from '@mui/material/TextField/TextField';
+import {GridRowEditStopReasons} from '@mui/x-data-grid';
 import { Confirmation,  StatusUpdate } from "components";
 
 import "./EditParameters.scss";
@@ -49,6 +50,28 @@ export const EditParameters = ({
             headerName: 'Value',
             flex: 2,
             editable: true,
+            renderEditCell: (params) => {
+                const {id, value, field} = params;
+                const apiRefContext = useGridApiContext();
+
+                const handleValueChange = (event) => {
+                    const newValue = event.target.value;
+                    apiRefContext.current.setEditCellValue({id, field, value: newValue});
+                };
+
+                return (
+                     <TextField
+                        className={"ParameterValueTextField"}
+                        multiline={params.row.dataType !== DataType.N
+                            && params.row.dataType !== DataType.D
+                            && params.row.dataType !== DataType.I
+                            && params.row.dataType !== DataType.B}
+                        value={value}
+                        onChange={handleValueChange}
+                    />
+                );
+
+            },
         },
         {
             field: 'dataType',
@@ -241,6 +264,11 @@ export const EditParameters = ({
                         return (inValidCells[paramId] !== undefined && inValidCells[paramId].value.length < 1) ? 'missing' : '';
                     }else{
                         return '';
+                    }
+                }}
+                onRowEditStop={(params, event) => {
+                    if (params.reason === GridRowEditStopReasons.enterKeyDown) {
+                        event.defaultMuiPrevented = true;
                     }
                 }}
                 disableRowSelectionOnClicks

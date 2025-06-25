@@ -26,4 +26,24 @@
   .missing {
     border: 1px solid  red !important;
   }
+
+  .ParameterValueTextField {
+    width: 100%;
+    border: none;
+    .MuiInputBase-root {
+      outline: none;
+    }
+    .MuiOutlinedInput-notchedOutline {
+      outline: none;
+      border: none;
+    }
+  }
+
+  .ParameterValueTextField:focus-visible {
+    outline: none;
+  }
+
+  .MuiDataGrid-cell--editing:focus-visible {
+    outline: none;
+  }
 }
