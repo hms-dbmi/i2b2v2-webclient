@@ -210,7 +210,7 @@ export const RequestTableView = ({ userInfo, displayDetailView}) => {
             <Typography className={"title"}>
                 List of Export Data Requests
                 <div className={"RefreshTableIcon"}>
-                    <Button onClick={handleRefreshRequestTable} variant="outlined" startIcon={<RefreshIcon />}>
+                    <Button onClick={handleRefreshRequestTable} variant="contained" startIcon={<RefreshIcon />}>
                     Refresh
                 </Button>
                 </div>
