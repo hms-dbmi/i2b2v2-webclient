@@ -37,6 +37,9 @@
       outline: none;
       border: none;
     }
+    .MuiOutlinedInput-input {
+      height: auto !important;
+    }
   }
 
   .ParameterValueTextField:focus-visible {
