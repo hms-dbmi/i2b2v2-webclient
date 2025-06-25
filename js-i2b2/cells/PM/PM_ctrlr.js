@@ -300,13 +300,22 @@ i2b2.PM._processUserConfig = function (data) {
             let paramName = projdetails[d].getAttribute('name');
             // BUG FIX - Firefox splits large values into multiple 4k text nodes... use Firefox-specific function to read concatenated value
             if (projdetails[d].textContent) {
-                i2b2.PM.model.projects[code].details[paramName] = projdetails[d].textContent;
+                i2b2.PM.model.projects[code].details[paramName] = {
+                    status: projdetails[d].getAttribute('status'),
+                    value: projdetails[d].textContent
+                };
             } else if (projdetails[d].firstChild) {
                 // BUG FIX - WEBCLIENT-118
                 if(((browserIsIE8 && ieInCompatibilityMode) || browserIsIE11) && paramName === "announcement")
-                    i2b2.PM.model.projects[code].details[paramName] = projdetails[d].firstChild.nodeValue;
+                    i2b2.PM.model.projects[code].details[paramName] = {
+                        status: projdetails[d].getAttribute('status'),
+                        value: projdetails[d].firstChild.nodeValue
+                    };
                 else
-                    i2b2.PM.model.projects[code].details[paramName] = projdetails[d].firstChild.nodeValue.unescapeHTML();
+                    i2b2.PM.model.projects[code].details[paramName] = {
+                        status: projdetails[d].getAttribute('status'),
+                        value: projdetails[d].firstChild.nodeValue.unescapeHTML()
+                    };
             }
         }
     }

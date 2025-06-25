@@ -101,8 +101,9 @@ i2b2.PM.view.updateProjectSelection = function(projectSelElem){
 
     let project = $(projectSelElem).val();
     $("#projectSelectionDetails").empty();
+    let details = Object.fromEntries(Object.entries(i2b2.PM.model.projects[project].details).filter(([key, detail]) => detail.status !== 'P'));
     let projectDetails = {
-        projectDetails: i2b2.PM.model.projects[project].details
+        projectDetails: details
     }
 
     $((Handlebars.compile("{{> ProjectSelectionDetail }}"))(projectDetails)).appendTo("#projectSelectionDetails");
@@ -115,10 +116,12 @@ i2b2.PM.view.showProjectSelectionModal = function(){
 
     let projects = [];
     for (let code in i2b2.PM.model.projects) {
+        let details = Object.fromEntries(Object.entries( i2b2.PM.model.projects[code].details).filter(([key, detail]) => detail.status !== 'P'));
+
         projects.push({
             name : i2b2.PM.model.projects[code].name,
             value: code,
-            details:  i2b2.PM.model.projects[code].details
+            details:  details
         });
     }
 
