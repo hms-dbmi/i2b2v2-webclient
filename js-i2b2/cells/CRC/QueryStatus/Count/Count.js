@@ -41,7 +41,7 @@ export default class Count {
     update(data) {
         try {
             if (typeof data === 'undefined') {
-                if (typeof this.data === 'undefined') return;
+                if (typeof this.data === 'undefined' || this.data === null) return;
                 data = this.data;
             } else {
                 this.data = data;
