@@ -11,8 +11,11 @@ if (typeof i2b2.h === "undefined") i2b2.h = {};
 // ================================================================================================== //
 // TODO: Remove this functionality
 i2b2.h.parseXml = function(xmlString){
-    var xmlDocRet = false;
-    var isActiveXSupported = false;
+    let xmlDocRet = false;
+    let isActiveXSupported = false;
+
+    // kill namespaces - needed fix for Firefox
+    xmlString = xmlString.replace(/(<\/?)\w+:(\w+[^>]*>)/g, "$1$2")
 
     try { new ActiveXObject ("MSXML2.DOMDocument.6.0"); isActiveXSupported =  true; } catch (e) { isActiveXSupported =  false; }
 
@@ -38,6 +41,8 @@ i2b2.h.XPath = function(xmlDoc, xPath) {
 
     // do some inline translation of the xmlDoc from string to XMLDocument
     if (typeof xmlDoc === 'string') {
+        // kill namespaces - needed fix for Firefox
+        xmlDoc = xmlDoc.replace(/(<\/?)\w+:(\w+[^>]*>)/g, "$1$2")
         try {
             let parser = new DOMParser();
             let test = parser.parseFromString(xmlDoc, "text/xml");
@@ -70,13 +75,14 @@ i2b2.h.XPath = function(xmlDoc, xPath) {
             }
             retArray = xmlDoc.selectNodes(xPath);
 
-        }
-        else if (document.implementation && document.implementation.createDocument) {
+        } else if (document.implementation && document.implementation.createDocument) {
+            // namespace resolver
+            let nsResolver = (prefix) => { return "http://" + prefix; };
             // W3C XPath implementation (Internet standard)
-            var ownerDoc = xmlDoc.ownerDocument;
+            let ownerDoc = xmlDoc.ownerDocument;
             if (!ownerDoc) {ownerDoc = xmlDoc; }
-            var nodes = ownerDoc.evaluate(xPath, xmlDoc, null, XPathResult.ANY_TYPE, null);
-            var rec = nodes.iterateNext();
+            let nodes = ownerDoc.evaluate(xPath, xmlDoc, nsResolver, XPathResult.ANY_TYPE, null);
+            let rec = nodes.iterateNext();
             while (rec) {
                 retArray.push(rec);
                 rec = nodes.iterateNext();
