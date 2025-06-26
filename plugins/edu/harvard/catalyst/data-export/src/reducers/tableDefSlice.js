@@ -155,7 +155,6 @@ export const tableDefSlice = createSlice({
                     if(row.sdxData.origData === undefined){
                         row.sdxData.origData = {};
                     }
-                    row.sdxData.origData.xmlOrig = xmlOrig;
 
                     if(valueMetadataXml){
                         row.valueMetadataXml = valueMetadataXml;
@@ -165,6 +164,10 @@ export const tableDefSlice = createSlice({
                                 sdx: row.sdxData,
                                 valueMetadataXml: valueMetadataXml
                             }
+                        }
+
+                        if(xmlOrig) {
+                            row.sdxData.origData.xmlOrig = xmlOrig;
                         }
                     }
                 }
