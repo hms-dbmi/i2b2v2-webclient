@@ -5,7 +5,7 @@ import {
     getAllProjectUserParamsSucceeded,
 } from "actions";
 
-import {DataType} from "models";
+import {DataType, ParamStatus} from "models";
 import {decodeHTML} from "../utilities";
 import {parseXml} from "../utilities/parseXml";
 
@@ -30,9 +30,11 @@ const parseParamsXml = (allParamsXml) => {
         let name = param.attributes['name'].nodeValue;
         let value = param.childNodes[0].nodeValue;
         let dataType = param.attributes['datatype'].nodeValue;
+        let status = param.attributes['status'].nodeValue;
 
         if(name && dataType) {
             dataType = DataType[dataType];
+            status = ParamStatus[status];
             if(value.length > 0){
                 value = decodeHTML(value);
             }

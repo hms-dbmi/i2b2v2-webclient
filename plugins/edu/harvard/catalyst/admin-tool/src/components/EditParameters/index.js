@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { DataType } from "models";
 import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes, useGridApiRef,useGridApiContext} from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
@@ -10,9 +9,10 @@ import CancelIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField/TextField';
 import {GridRowEditStopReasons} from '@mui/x-data-grid';
 import { Confirmation,  StatusUpdate } from "components";
+import {DataType, ParamStatus} from "models";
 
 import "./EditParameters.scss";
-import {Typography} from "@mui/material";
+import {Tooltip, Typography} from "@mui/material";
 
 export const EditParameters = ({
                                    rows,
@@ -118,7 +118,7 @@ export const EditParameters = ({
             headerName: 'Actions',
             flex: 1,
             cellClassName: 'actions',
-            getActions: ({ id }) => {
+            getActions: ({ id, row }) => {
                 const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
                 if (isInEditMode) {
@@ -149,12 +149,17 @@ export const EditParameters = ({
                         onClick={handleEditClick(id)}
                         color="inherit"
                     />,
-                    <GridActionsCellItem
-                        icon={<DeleteIcon />}
-                        label="Delete"
-                        onClick={confirmDelete(id)}
-                        color="inherit"
-                    />,
+                    <Tooltip title={row.status === ParamStatus.P ? "Parameter is private and cannot be deleted": "" } >
+                        <span>
+                            <GridActionsCellItem
+                                icon={<DeleteIcon />}
+                                label="Delete"
+                                onClick={verifyDelete(id, row.status)}
+                                disabled={row.status === ParamStatus.P}
+                                color="inherit"
+                            />
+                        </span>
+                    </Tooltip>,
                 ];
             },
         },
@@ -314,7 +319,13 @@ export const EditParameters = ({
         }
     };
 
-    const confirmDelete = (id) => () => {
+    const verifyDelete = (id, paramStatus) => () => {
+        if(paramStatus !== ParamStatus.P){
+            confirmDelete(id);
+        }
+    };
+
+    const confirmDelete = (id)  => {
         let param = rows.filter((row) => row.id === id).reduce((acc, item) => acc);
         setDeleteParamData(param);
 

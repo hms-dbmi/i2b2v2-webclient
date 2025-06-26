@@ -47,8 +47,9 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
                     name: param.name,
                     value:param.value,
                     dataType: param.dataType,
+                    status: param.status
                 }));
-            })
+            });
 
             return SelectedProject({
                 ...state,

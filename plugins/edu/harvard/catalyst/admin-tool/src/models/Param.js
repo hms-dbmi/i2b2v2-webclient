@@ -5,13 +5,15 @@ export const Param = ({
     internalId = null,
     name = null,
     value= null,
-    dataType= DataType.T
+    dataType= DataType.T,
+    status = null
 } = {}) => ({
     id,
     internalId,
     name,
     value,
-    dataType
+    dataType,
+    status
 });
 
 Param.propTypes = {
@@ -20,6 +22,7 @@ Param.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     dataType: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired
 };
 
 export const DataType = {
@@ -33,5 +36,10 @@ export const DataType = {
     XLS: "XLS", //Excel
     XML: "XML",  //Xml
     DOC: "DOC", //Word
+};
+
+export const ParamStatus = {
+    A : "ACTIVE",
+    P: "PRIVATE"
 };
 

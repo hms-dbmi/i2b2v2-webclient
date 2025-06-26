@@ -4,7 +4,7 @@
  export { AllProjects } from "./AllProjects";
  export { AllHives } from "./AllHives";
  export { HiveDomain } from "./HiveDomain";
- export { Param, DataType } from "./Param";
+ export { Param, DataType, ParamStatus } from "./Param";
  export { SelectedUser } from "./SelectedUser";
  export { DeletedUser } from "./DeletedUser";
  export { DeletedProject } from "./DeletedProject";
