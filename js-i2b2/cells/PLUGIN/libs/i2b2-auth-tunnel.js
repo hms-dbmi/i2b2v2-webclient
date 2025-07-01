@@ -3,7 +3,7 @@
  * plugins to access protected variables and functions in the parent UI.
  **/
 
-if (i2b2 === undefined) i2b2 = {};
+if (typeof i2b2 === 'undefined') i2b2 = {};
 // ----- Magic Strings -----
 if (i2b2.MSG_TYPES === undefined) i2b2.MSG_TYPES = {};
 i2b2.MSG_TYPES.TUNNEL = {};
@@ -125,7 +125,8 @@ window.addEventListener(i2b2.MSG_TYPES.TUNNEL.LIB_INIT, function(event) {
                         resolve(resultMsg.functionResults);
                     }).catch((resultMsg) => {
                         // TODO: Meaningful error message generated here
-                        console.error(i2b2.h.StripCRLF(resultMsg.errorMsg));
+                        let ret = String(resultMsg.errorMsg).replace(/\r/g, ">");
+                        console.error(ret.replace(/\n/g, ">"));
                         reject();
                     });
                 })
