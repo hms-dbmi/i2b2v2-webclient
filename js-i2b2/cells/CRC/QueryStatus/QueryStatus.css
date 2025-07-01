@@ -73,6 +73,9 @@
     position: relative;
     top: -.04rem;
 }
+.QueryStatusComponent .viz-dropdown-select.show li i {
+    top: 0;
+}
 
 
 .QueryStatusComponent .viz-dropdown-select.show .viz-dropdown-item {
@@ -83,6 +86,8 @@
     border: solid #ccc;
     border-width: 0 1px;
 }
+
+
 
 .QueryStatusComponent .viz-dropdown-select.show .viz-dropdown-item:last-of-type {
     border-bottom: 1px solid #ccc;
