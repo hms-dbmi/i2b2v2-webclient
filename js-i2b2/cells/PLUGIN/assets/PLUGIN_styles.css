@@ -16,6 +16,10 @@ DIV#PluginListBox {
     overflow: hidden;
 }
 
+DIV#PluginListBox HR {
+    margin: .3rem 0 .5rem 0;
+}
+
 #pluginListView{
     padding: 1.1em 0.8em 0.8em 0.8em;
 }

@@ -22,7 +22,7 @@ i2b2.UI.cfg = {
     useExpandedLabFlags: false,
     footer: {
         active: true,
-        height: '3rem',
+        height: '2rem',
         file: 'assets/footer_bar.html'
     }
 };
