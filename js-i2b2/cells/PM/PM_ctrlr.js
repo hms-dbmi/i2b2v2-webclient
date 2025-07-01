@@ -253,6 +253,11 @@ i2b2.PM._processUserConfig = function (data) {
         }
     } catch(e) {}
 
+    try {
+        const email = i2b2.h.XPath(data.refXML, '//user/email')[0];
+        i2b2.PM.model.email = i2b2.h.getXNodeVal(email, 'email');
+    } catch(e) {}
+
     i2b2.PM.model.login_domain = data.msgParams.sec_domain;
     i2b2.PM.model.shrine_domain = Boolean.parseTo(data.msgParams.is_shrine);
     i2b2.PM.model.login_project = data.msgParams.sec_project;
