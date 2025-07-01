@@ -61,3 +61,7 @@
 .changePasswordModal .eye-btn {
     border: 1px solid #ced4da;
 }
+
+.formattedParamValue {
+    white-space: pre-line;
+}
