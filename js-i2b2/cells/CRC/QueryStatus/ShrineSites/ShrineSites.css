@@ -39,6 +39,8 @@
 
 .viztype-SHRINESITES table td.status-error {
     color: red;
+    cursor: pointer;
+    text-decoration: underline;
 }
 .viztype-SHRINESITES table td.status-good {
     color: green;

@@ -124,7 +124,8 @@ export default class ShrineSites {
                         // display the site's current status
                         let rec = {text: row.status};
                         if (row.error === true) {
-                            rec.text = row.status + ": " + row.text;
+                            rec.text = row.status;
+                            rec.error = row.text;
                             rec.class = "status-error";
                         } else {
                             switch(String(row.status).toUpperCase()) {
@@ -150,6 +151,7 @@ export default class ShrineSites {
                 .each((d, i, el)=>{
                     for (let c of d.class.split(" ")) {
                         if (c.length > 0) el[i].classList.add(c);
+                        if (typeof d.error !== 'undefined') el[i].dataset["errorMsg"] = d.error;
                     }
                 });
 
@@ -158,6 +160,10 @@ export default class ShrineSites {
                 if (idx == 1) cname = "result";
                 if (idx > 1) cname = "details";
                 el[idx].classList.add(cname);
+            });
+
+            $(".status-error.result[data-error-msg]").on('click', (e) => {
+                alert(e.target.__data__.error);
             });
 
         } catch(e) {
