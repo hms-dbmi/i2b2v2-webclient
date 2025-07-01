@@ -26,3 +26,9 @@
     padding: 0 0 0.3rem 0;
     font-style: italic;
 }
+
+@media print {
+    .QueryStatusComponent.viztype-COUNT .count-container {
+        border: 1px solid;
+    }
+}
