@@ -9,7 +9,7 @@
 
 i2b2.CRC.view.BASIC = {
 	// ================================================================================================== //
-	showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx) {
+	showDialog: function(sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
 		if (valueMetadata) {
 			let extractedLabValues = valueMetadata;
 
@@ -143,8 +143,11 @@ i2b2.CRC.view.BASIC = {
 
 						sdxConcept.LabValues = newLabValues;
 
-						i2b2.CRC.view.BASIC.updateDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
-						queryPanelController.redrawConcept(sdxConcept, groupIdx, eventIdx);
+						if (groupIdx !== undefined) {
+							i2b2.CRC.view.BASIC.updateDisplayValue(sdxConcept, extractedLabValues, groupIdx, eventIdx);
+							queryPanelController.redrawConcept(sdxConcept, groupIdx, eventIdx);
+						}
+						if (pluginCallBack) pluginCallBack(sdxConcept);
 					});
 
 					// UI event handler
@@ -562,6 +565,17 @@ i2b2.CRC.view.BASIC = {
 			rangeInfo: {},
 			enumInfo: {}
 		};
+
+		//allow XML in string format
+		if (typeof valueMetaDataXml === 'string') {
+			try {
+				let parser = new DOMParser();
+				let test = parser.parseFromString(valueMetaDataXml, "text/xml");
+				valueMetaDataXml = test.documentElement;
+			} catch(e) {
+				return extractedModel;
+			}
+		}
 
 		const flagsToUse = i2b2.h.getXNodeVal(valueMetaDataXml, "Flagstouse");
 

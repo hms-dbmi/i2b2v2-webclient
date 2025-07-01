@@ -110,7 +110,7 @@ i2b2.CRC.view.GENOTYPE_RSID = {
         return ret;
     },
     // ================================================================================================== //
-    showDialog: function (sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx) {
+    showDialog: function(sdxConcept, valueMetadata, queryPanelController, groupIdx, eventIdx, pluginCallBack) {
 
         if (valueMetadata !== undefined) {
 

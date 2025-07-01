@@ -1495,28 +1495,39 @@ i2b2.CRC.view.QT.labValue.editLabValue = function(evt) {
     i2b2.CRC.view.QT.labValue.getAndShowLabValues(sdx, queryGroupIdx, eventIdx);
 };
 // ==================================================================================================
-i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, valueMetadataXml, groupIdx, eventIdx) {
+i2b2.CRC.view.QT.labValue.showLabValues = function(sdxConcept, valueMetadataXml, groupIdx, eventIdx, callback) {
+    return new Promise((resolve, reject) => {
+        if (eventIdx !== undefined && groupIdx !== undefined) {
+            let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
+            const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
+            i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
+        }
 
-    if (eventIdx !== undefined && groupIdx !== undefined) {
-        let eventData = i2b2.CRC.model.query.groups[groupIdx].events[eventIdx];
-        const targetTermList = $(".event[data-eventidx=" + eventIdx + "] .TermList", $(".CRC_QT_query .QueryGroup")[groupIdx]);
-        i2b2.CRC.view.QT.renderTermList(eventData, targetTermList);
-    }
+        //Determine the value type
+        try {
+            let GeneralValueType = i2b2.CRC.ctrlr.labValues.extractDataType(sdxConcept, valueMetadataXml);
 
-    //Determine the value type
-    try {
-        let GeneralValueType = i2b2.CRC.ctrlr.labValues.extractDataType(sdxConcept, valueMetadataXml);
-
-        if (GeneralValueType && i2b2.CRC.view[GeneralValueType]
-            && typeof i2b2.CRC.view[GeneralValueType].parseMetadataXml === 'function'
-            && typeof i2b2.CRC.view[GeneralValueType].showDialog === 'function') {
-            let valueMetadataModel = i2b2.CRC.view[GeneralValueType].parseMetadataXml(valueMetadataXml);
-            i2b2.CRC.view[GeneralValueType].showDialog(sdxConcept, valueMetadataModel, i2b2.CRC.ctrlr.labValues, groupIdx, eventIdx);
-        } else
-            alert('An error has occurred while trying to determine the value type.');
-    } catch(e) {
-        alert('An error has occurred while trying to initialize the Valuebox.');
-    }
+            if (GeneralValueType && i2b2.CRC.view[GeneralValueType]
+                && typeof i2b2.CRC.view[GeneralValueType].parseMetadataXml === 'function'
+                && typeof i2b2.CRC.view[GeneralValueType].showDialog === 'function') {
+                let valueMetadataModel = i2b2.CRC.view[GeneralValueType].parseMetadataXml(valueMetadataXml);
+                i2b2.CRC.view[GeneralValueType].showDialog(sdxConcept, valueMetadataModel,
+                    i2b2.CRC.ctrlr.labValues,
+                    groupIdx,
+                    eventIdx,
+                    function(result){
+                        resolve(result);
+                    }
+                );
+            } else {
+                reject();
+                alert('An error has occurred while trying to determine the value type.');
+            }
+        } catch(e) {
+            reject();
+            alert('An error has occurred while trying to initialize the Valuebox.');
+        }
+    });
 };
 
 // ==================================================================================================
@@ -1525,7 +1536,7 @@ i2b2.CRC.view.QT.labValue.getAndShowLabValues = function(sdxConcept, groupIdx, e
         i2b2.CRC.ctrlr.labValues.loadData(sdxConcept, function (valueMetadataXml) {
             if (doNotShowLabValues === undefined || !doNotShowLabValues) {
                 i2b2.CRC.view.QT.labValue.showLabValues(sdxConcept, valueMetadataXml, groupIdx, eventIdx, function(result){
-                    resolve(result);
+                      resolve(result);
                 });
             } else {
                 if (valueMetadataXml !== undefined) {
