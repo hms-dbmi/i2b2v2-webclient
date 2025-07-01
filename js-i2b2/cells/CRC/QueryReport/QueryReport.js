@@ -300,6 +300,23 @@ i2b2.CRC.QueryReport.generateReport = () => {
         const template = await response.text();
         i2b2.CRC.QueryReport.templates.queryReport = Handlebars.compile(template);
 
+
+        // ================= handlebars helper to manage rendering of special ModLab option selection(s) ==================
+        Handlebars.registerHelper('dataTypeReportHtml', function(sdxConcept, options) {
+            if (sdxConcept === undefined) return "";
+            // Create a select element
+            let result = "";
+            const valueMetaDataArr = i2b2.h.XPath(sdxConcept.origData.xmlOrig, "metadataxml/ValueMetadata[string-length(Version)>0]");
+            if (valueMetaDataArr.length > 0) {
+                let GeneralValueType = i2b2.CRC.ctrlr.labValues.extractDataType(sdxConcept, valueMetaDataArr[0]);
+                if (GeneralValueType && i2b2.CRC.view[GeneralValueType] && typeof i2b2.CRC.view[GeneralValueType].reportHtml === 'function') {
+                    result = i2b2.CRC.view[GeneralValueType].reportHtml(sdxConcept);
+                }
+            }
+            return result;
+        });
+
+
     } catch (error) {
         console.error("Failed to initialize QueryStatus engine: ", error);
     }
