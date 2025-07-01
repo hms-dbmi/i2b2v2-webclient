@@ -300,6 +300,10 @@ i2b2.events.afterCellInit.add((cell) => {
                             pluginAllowed = pluginJson.roles.some((role) => i2b2.PM.model.userRoles.indexOf(role) !== -1);
                         }
 
+                        if (i2b2.PM.model.isAdmin && pluginJson.roles !== undefined && pluginJson.roles.indexOf("ADMIN") !== -1){
+                            pluginAllowed = true;
+                        }
+
                         if (pluginJson.admin_only && !i2b2.PM.model.isAdmin){
                             pluginAllowed = false;
                         }
