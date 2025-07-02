@@ -37,7 +37,19 @@ export default class ZipcodeMap {
                     $('.zoom-link').on('click', (e)=>{
                         let data = e.currentTarget.dataset;
                         self.map.setView([data.lat, data.long], data.zoom);
+                        // delay by 50ms because we are going to lose the link as we just started a viewport change
+                        const closureEl = e.currentTarget;
+                        setTimeout(()=>{
+                            $(closureEl).addClass('selected');
+                        }, 50);
                     });
+                    // set the initial zoom state as selected
+                    for (let idx in i2b2.CRC.QueryStatus.model.GeoJSON.zooms) {
+                        if (i2b2.CRC.QueryStatus.model.GeoJSON.zooms[idx].initial) {
+                            $('.zoom-link[data-index="' + idx + '"]', this.config.displayEl).addClass('selected');
+                            break;
+                        }
+                    }
 
 
                     this.mapEl = $('.map-target', this.config.displayEl)[0];
@@ -50,7 +62,15 @@ export default class ZipcodeMap {
                         this.map = L.map(this.mapEl).setView([5.00339434502215, 21.26953125], 3);
                     }
 
-                    // add OpenStreetMap
+                    // capture zoom and move events
+                    const clearSelectedZoom = (e) => {
+                        $('.zoom-link', self.config.displayEl).removeClass('selected');
+                    };
+                    this.map.on('zoomstart', clearSelectedZoom);
+                    this.map.on('movestart', clearSelectedZoom);
+
+
+                    // add Map image layer
                     let options = {maxZoom: mapSettings.mapLayer.maxZoom}
                     if (typeof mapSettings.mapLayer.attribution !== 'undefined') options.attribution = mapSettings.mapLayer.attribution;
                     L.tileLayer(mapSettings.mapLayer.urlTemplate, options).addTo(this.map);
@@ -83,6 +103,7 @@ export default class ZipcodeMap {
 
     redraw(width) {
         try {
+            this.map.invalidateSize();
             this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
         } catch(e) {
             console.error("Error in QueryStatus:ZipcodeMap.redraw()");
@@ -173,50 +194,6 @@ export default class ZipcodeMap {
             }
             console.dir(i2b2.CRC.QueryStatus.model.GeoJSON);
         });
-
-        // // load breakdowns.json
-        // response = await fetch(i2b2.CRC.QueryStatus.baseURL + "breakdowns.json");
-        // if (!response.ok) throw new Error(`Failed to retreve QueryStatus breakdowns.json file: ${response.status}`);
-        // i2b2.CRC.QueryStatus.breakdownConfig = await response.json();
-        //
-        // // save component keys into component objects
-        // for (const compCode of Object.keys(i2b2.CRC.QueryStatus.displayComponents)) i2b2.CRC.QueryStatus.displayComponents[compCode].componentCode = compCode;
-        //
-        // // retrieve the component frame template
-        // response = await fetch(i2b2.CRC.QueryStatus.baseURL + "componentFrameTemplate.html");
-        // if (!response.ok) {
-        //     console.error(`Failed to retrieve component frame template file: ${response.status}`);
-        //     i2b2.CRC.QueryStatus.componentFrameTemplate = "<div class='QueryStatusComponent'></div><div class='viz-window'></div><div>";
-        // } else {
-        //     i2b2.CRC.QueryStatus.componentFrameTemplate = await response.text();
-        // }
-        //
-        // // load the component implementations and CSS
-        // let CSSAccumulator = "";
-        // for (let code in i2b2.CRC.QueryStatus.displayComponents) {
-        //     const componentInfo = i2b2.CRC.QueryStatus.displayComponents[code];
-        //     try {
-        //         const component = await import("./" + componentInfo.source);
-        //         componentInfo.implementation = component.default;
-        //     } catch(e) {
-        //         console.error("QueryStatus " + code + " Component load error: " + e.message);
-        //     }
-        //
-        //     if (componentInfo.CSS) {
-        //         const response = await fetch(i2b2.CRC.QueryStatus.baseURL + componentInfo.CSS);
-        //         if (!response.ok) console.error(`QueryStatus ` + code + ` CSS loading error: ${response.status}`);
-        //         let cssDefinitions = await response.text();
-        //         cssDefinitions = cssDefinitions.trim();
-        //         if (cssDefinitions.length > 0) CSSAccumulator = CSSAccumulator + "\n\n\n\n" + cssDefinitions;
-        //     }
-        // }
-        //
-        // // append the component style definitions
-        // if (CSSAccumulator.trim().length > 0) {
-        //     const componentStyleDefEl = document.createElement('style');
-        //     componentStyleDefEl.innerHTML = CSSAccumulator + "\n";
-        //     document.head.append(componentStyleDefEl);
-        // }
 
     } catch (error) {
         console.error("Failed to initialize ZipcodeMap visualization module: ", error);

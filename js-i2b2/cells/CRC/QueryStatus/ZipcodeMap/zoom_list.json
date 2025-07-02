@@ -1,8 +1,8 @@
 [
   {
-    "lat": 42.33917481454365,
-    "long": -71.10831254330827,
-    "zoom": 15,
+    "lat": 42.33880604791197,
+    "long": -71.1066726902258,
+    "zoom": 16,
     "title": "Longwood",
     "tooltip": "Longwood Medical Area"
   },
@@ -21,7 +21,6 @@
     "title": "Massachussetts"
   },
   {
-    "initial": true,
     "lat": 44.005656883349886,
     "long": -71.50448802716126,
     "zoom": 6,

@@ -108,5 +108,8 @@
     "BARS": true,
     "TABLE": true,
     "DOWNLOAD": true
+  },
+  "PATIENT_TOP25MEDS_XML": {
+    "ZIPCODEMAP": true
   }
 }

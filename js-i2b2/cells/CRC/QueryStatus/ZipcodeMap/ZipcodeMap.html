@@ -2,7 +2,7 @@
 <div style="margin: 0 auto; width: fit-content;">
     <ul class="zoom-links">
         {{#each zoomList}}
-        <li class="zoom-link" data-lat="{{lat}}" data-long="{{long}}" data-zoom="{{zoom}}" {{#if tooltip}}title="{{tooltip}}"{{/if}}><span>{{title}}</span></li>
+        <li><span class="zoom-link" data-index="{{@index}}" data-lat="{{lat}}" data-long="{{long}}" data-zoom="{{zoom}}" {{#if tooltip}}title="{{tooltip}}"{{/if}}>{{title}}</span></li>
         {{/each}}
     </ul>
 </div>

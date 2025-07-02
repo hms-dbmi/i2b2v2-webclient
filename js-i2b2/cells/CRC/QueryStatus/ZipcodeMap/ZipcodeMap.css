@@ -1,5 +1,5 @@
 .viztype-ZIPCODEMAP .map-target {
-    height: 450px;
+    height: 600px;
     width: 100%;
 }
 
@@ -9,16 +9,21 @@
     margin: .5rem;
 }
 
-.viztype-ZIPCODEMAP li.zoom-link { display: inline; }
-.viztype-ZIPCODEMAP li.zoom-link span {
+.viztype-ZIPCODEMAP ul.zoom-links li { display: inline; }
+.viztype-ZIPCODEMAP span.zoom-link {
     white-space: nowrap;
     cursor: pointer;
 }
-.viztype-ZIPCODEMAP li.zoom-link span:hover {
-    text-decoration: underline;
+.viztype-ZIPCODEMAP span.zoom-link:hover {
+    border-bottom: 1px solid;
 }
 
-.viztype-ZIPCODEMAP li.zoom-link:after {
+.viztype-ZIPCODEMAP span.zoom-link.selected {
+    border-bottom: 1px solid;
+}
+
+
+.viztype-ZIPCODEMAP ul.zoom-links li:after {
     content: " ";
     letter-spacing: 1em;
     background: center center no-repeat url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=);
