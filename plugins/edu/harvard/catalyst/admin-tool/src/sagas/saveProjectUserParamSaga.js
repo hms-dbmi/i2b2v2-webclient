@@ -22,7 +22,7 @@ const saveParamRequest = (project, user, param) => {
     const userXml = '<user_name>'+user.username+'</user_name>';
     const msg_xml = userXml + '<param '
         + paramIdStr +' datatype="'+ param.dataType
-        +'" name="'+param.name+'">'
+        +'" name="'+param.name +'" status="'+param.status +'">'
         + dataValue
         +'</param>';
 

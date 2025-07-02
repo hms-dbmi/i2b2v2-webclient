@@ -113,6 +113,29 @@ export const EditParameters = ({
             }]
         },
         {
+            field: 'status',
+            headerName: 'Status',
+            flex: 1,
+            editable: true,
+            filterable: false,
+            type: 'singleSelect',
+            valueOptions: [{
+                label: 'Active',
+                value: ParamStatus.A
+            }, {
+                label: 'Hidden',
+                value: ParamStatus.H
+            }],
+            renderCell: (params) => {
+                if(params.value === ParamStatus.D){
+                    return "Deleted";
+                }
+                else{
+                    return params.label;
+                }
+           }
+        },
+        {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
@@ -149,17 +172,13 @@ export const EditParameters = ({
                         onClick={handleEditClick(id)}
                         color="inherit"
                     />,
-                    <Tooltip title={row.status === ParamStatus.P ? "Parameter is private and cannot be deleted": "" } >
-                        <span>
-                            <GridActionsCellItem
-                                icon={<DeleteIcon />}
-                                label="Delete"
-                                onClick={verifyDelete(id, row.status)}
-                                disabled={row.status === ParamStatus.P}
-                                color="inherit"
-                            />
-                        </span>
-                    </Tooltip>,
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={confirmDelete(id)}
+                        color="inherit"
+                    />
+                    ,
                 ];
             },
         },
@@ -319,13 +338,7 @@ export const EditParameters = ({
         }
     };
 
-    const verifyDelete = (id, paramStatus) => () => {
-        if(paramStatus !== ParamStatus.P){
-            confirmDelete(id);
-        }
-    };
-
-    const confirmDelete = (id)  => {
+    const confirmDelete = (id) => () =>{
         let param = rows.filter((row) => row.id === id).reduce((acc, item) => acc);
         setDeleteParamData(param);
 

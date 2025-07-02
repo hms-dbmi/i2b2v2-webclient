@@ -101,7 +101,7 @@ i2b2.PM.view.updateProjectSelection = function(projectSelElem){
 
     let project = $(projectSelElem).val();
     $("#projectSelectionDetails").empty();
-    let details = Object.fromEntries(Object.entries(i2b2.PM.model.projects[project].details).filter(([key, detail]) => detail.status !== 'P'));
+    let details = Object.fromEntries(Object.entries(i2b2.PM.model.projects[project].details).filter(([key, detail]) => detail.status !== 'H'));
     let projectDetails = {
         projectDetails: details
     }

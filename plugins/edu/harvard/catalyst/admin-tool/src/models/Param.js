@@ -39,7 +39,8 @@ export const DataType = {
 };
 
 export const ParamStatus = {
-    A : "ACTIVE",
-    P: "PRIVATE"
+    A : "A", //"ACTIVE"
+    H: "H", //"HIDDEN"
+    D: "D" //"DELETED"
 };
 

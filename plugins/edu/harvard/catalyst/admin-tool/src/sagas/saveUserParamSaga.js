@@ -19,7 +19,7 @@ const saveParamRequest = (username, param) => {
 
     const msg_xml = '<user_name>'+username +'</user_name><param '
         + paramIdStr +' datatype="'+ param.dataType
-        +'" name="'+param.name+'">'
+        +'" name="'+param.name +'" status="'+param.status +'">'
         + dataValue
         +'</param>';
 

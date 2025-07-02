@@ -18,7 +18,9 @@ const saveParamRequest = (param) => {
 
     const msg_xml = '<project_path>/</project_path><can_override>Y</can_override>' +
             '<param datatype="'+param.dataType+ '" ' + paramIdStr
-        + ' name="'+param.name+'">'+ dataValue +"</param>";
+        +'" name="'+param.name +'" status="'+param.status +'">'
+        + dataValue
+        +"</param>";
 
     let data = {
         table: "global",
