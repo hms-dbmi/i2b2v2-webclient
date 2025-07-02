@@ -52,6 +52,12 @@
       "displayOrder": 500,
       "displayForUnregistered": true,
       "notInReport": true
+    },
+    "ZIPCODEMAP": {
+      "name": "Zipcode Map",
+      "source": "ZipcodeMap/ZipcodeMap.js",
+      "CSS": "ZipcodeMap/ZipcodeMap.css",
+      "iconClass": "bi bi-globe-americas"
     }
   },
   "displayOrder": [

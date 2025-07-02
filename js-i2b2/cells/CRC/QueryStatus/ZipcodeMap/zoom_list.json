@@ -1,0 +1,30 @@
+[
+  {
+    "lat": 42.33917481454365,
+    "long": -71.10831254330827,
+    "zoom": 15,
+    "title": "Longwood",
+    "tooltip": "Longwood Medical Area"
+  },
+  {
+    "lat": 42.33023458841124,
+    "long": -71.13364100605521,
+    "zoom": 11,
+    "title": "Boston",
+    "tooltip": "Boston and surrounding area"
+  },
+  {
+    "initial": true,
+    "lat": 42.13082130188811,
+    "long": -71.75667941820339,
+    "zoom": 8,
+    "title": "Massachussetts"
+  },
+  {
+    "initial": true,
+    "lat": 44.005656883349886,
+    "long": -71.50448802716126,
+    "zoom": 6,
+    "title": "New England"
+  }
+]

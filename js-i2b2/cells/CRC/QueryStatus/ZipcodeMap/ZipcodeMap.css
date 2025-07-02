@@ -1,0 +1,25 @@
+.viztype-ZIPCODEMAP .map-target {
+    height: 450px;
+    width: 100%;
+}
+
+.viztype-ZIPCODEMAP ul.zoom-links {
+    display: inline-block;
+    padding: 0;
+    margin: .5rem;
+}
+
+.viztype-ZIPCODEMAP li.zoom-link { display: inline; }
+.viztype-ZIPCODEMAP li.zoom-link span {
+    white-space: nowrap;
+    cursor: pointer;
+}
+.viztype-ZIPCODEMAP li.zoom-link span:hover {
+    text-decoration: underline;
+}
+
+.viztype-ZIPCODEMAP li.zoom-link:after {
+    content: " ";
+    letter-spacing: 1em;
+    background: center center no-repeat url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=);
+}
