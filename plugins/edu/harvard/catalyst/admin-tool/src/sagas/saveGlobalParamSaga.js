@@ -17,8 +17,8 @@ const saveParamRequest = (param) => {
     let dataValue = encodeHTML(param.value);
 
     const msg_xml = '<project_path>/</project_path><can_override>Y</can_override>' +
-            '<param datatype="'+param.dataType+ '" ' + paramIdStr
-        +'" name="'+param.name +'" status="'+param.status +'">'
+            '<param datatype="'+param.dataType + '" ' + paramIdStr
+        +' name="'+param.name +'" status="'+param.status +'">'
         + dataValue
         +"</param>";
 
