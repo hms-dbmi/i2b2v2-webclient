@@ -52,7 +52,8 @@ export const tableDefSlice = createSlice({
                 if(concept.sdxData.origData?.xmlOrig?.length > 0){
                     try{
                         const xmlParser = new XMLParser();
-                        const parseXmlOrig = xmlParser.parseFromString(concept.sdxData.origData.xmlOrig);
+                        const xmlOrig = decode(concept.sdxData.origData.xmlOrig);
+                        const parseXmlOrig = xmlParser.parseFromString(xmlOrig);
                         if(parseXmlOrig) {
                             let conceptXml = parseXmlOrig.getElementsByTagName('concept');
                             if(conceptXml.length !== 0) {

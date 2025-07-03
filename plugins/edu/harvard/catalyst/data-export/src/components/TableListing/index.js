@@ -115,7 +115,7 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
         {
             field: 'title',
             headerName: 'Table Definition Name',
-            minWidth: 380,
+            minWidth: 250,
             flex:1,
             sortable: true,
             editable: canRename,
