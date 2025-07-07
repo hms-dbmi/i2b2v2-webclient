@@ -98,9 +98,10 @@ export default class Table {
         // returning false will cancel the selection and (re)displaying of this visualization
         try {
             this.isVisible = true;
-            this.config.displayEl.style.display = 'block';
             if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'block';
             if (this.config.parentTitleEl) this.config.parentTitleEl.innerHTML = this.record.title;
+            this.config.displayEl.style.display = 'block';
+            this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
             return true;
         } catch(e) {
             console.error("Error in QueryStatus:Table.show()");
