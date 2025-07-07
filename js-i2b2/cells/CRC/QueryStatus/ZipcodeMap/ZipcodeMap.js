@@ -1,7 +1,7 @@
 const mapSettings = {
     "mapLayer": {
         "urlTemplate": "http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-        "maxZoom": 19
+        "maxZoom": 16
     }
 }
 
@@ -117,8 +117,9 @@ export default class ZipcodeMap {
         // USED PRIMARLY BY THE "Download" MODULE
         try {
             this.isVisible = true;
-
             if (typeof this.config.parentTitleEl !== 'undefined') this.config.parentTitleEl.innerHTML = this.record.title;
+            if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'block';
+            this.config.displayEl.style.display = 'block';
             this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
             return true;
         } catch(e) {
@@ -130,6 +131,8 @@ export default class ZipcodeMap {
     hide() {
         try {
             this.isVisible = false;
+            this.config.displayEl.style.display = 'none';
+            if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'none';
             return true;
         } catch(e) {
             console.error("Error in QueryStatus:ZipcodeMap.hide()");
