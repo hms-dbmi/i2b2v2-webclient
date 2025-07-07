@@ -357,7 +357,7 @@ export const EditParameters = ({
 
     const handleAddParam = () => {
         const id = rows.length;
-        let newParams = [ ...rows, { id, name: '', value: '', dataType: DataType.T, isUpdated: true, isNew: true }];
+        let newParams = [ ...rows, { id, name: '', value: '', dataType: DataType.T, status: ParamStatus.A, isUpdated: true, isNew: true }];
 
         updateParams(newParams);
         setRowModesModel((oldModel) => ({
