@@ -151,6 +151,12 @@
         },
         "template": "<b>[{{ZCTA5CE10}}]</b><br/>{{~count}} patients"
       },
+      "hoverBox": {
+        "position": "topright",
+        "className": "onhover-box",
+        "__default": "<h4>Patient Count</h4>Hover over an area",
+        "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{~count}} patients</span>"
+      },
       "colors": [
         {"color": "#4d4d4d"},
         {"color": "#878787"},
