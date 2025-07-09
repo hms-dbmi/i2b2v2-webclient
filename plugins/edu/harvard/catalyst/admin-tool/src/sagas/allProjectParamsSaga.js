@@ -13,6 +13,7 @@ import {parseXml} from "../utilities/parseXml";
 const getAllProjectParamsRequest = (projectId) => {
     let data = {
         table:"project_param",
+        hidden: true,
         param_xml:"",
         id_xml:projectId
     };

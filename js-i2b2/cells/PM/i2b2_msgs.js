@@ -551,7 +551,7 @@ i2b2.PM.cfg.msgs.getAllParam = '<?xml version="1.0" encoding="UTF-8" standalone=
 '        <result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
 '    </request_header>\n'+
 '    <message_body>\n'+
-'        <pm:get_all_{{{table}}} {{{param_xml}}}>{{{id_xml}}}</pm:get_all_{{{table}}}>\n'+
+'        <pm:get_all_{{{table}}} hidden="{{{hidden}}}" {{{param_xml}}}>{{{id_xml}}}</pm:get_all_{{{table}}}>\n'+
 '    </message_body>\n'+
 '</i2b2:request>';
 i2b2.PM.cfg.parsers.getAllParam = function(username) {

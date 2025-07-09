@@ -13,6 +13,7 @@ const getAllProjectUserParamsRequest = (projectId, user) => {
     let data = {
         table:"project_user_param",
         param_xml:' id="'+projectId+'"',
+        hidden: true,
         id_xml:"<user_name>"+user.username+"</user_name>"
     };
 
