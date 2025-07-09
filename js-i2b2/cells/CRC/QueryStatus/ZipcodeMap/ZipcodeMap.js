@@ -4,6 +4,7 @@ const mapSettings = {
         "maxZoom": 16
     }
 }
+const zipAttrib = "ZCTA5CE10";
 
 export default class ZipcodeMap {
     constructor(componentConfig, qrsRecordInfo, qrsData) {
@@ -15,6 +16,20 @@ export default class ZipcodeMap {
             this.isVisible = false;
             this.config.displayEl.style.display = "none";
             const self = this;
+
+            // make sure that we have some colors defined
+            if (typeof this.config.advancedConfig === 'undefined') this.config.advancedConfig = {};
+            if (typeof this.config.advancedConfig.colors === 'undefined') this.config.advancedConfig.colors = [
+                {"color": "#b2182b"},
+                {"color": "#d6604d"},
+                {"color": "#f4a582"},
+                {"color": "#fddbc7"},
+                {"color": "#ffffff"},
+                {"color": "#e0e0e0"},
+                {"color": "#bababa"},
+                {"color": "#878787"},
+                {"color": "#4d4d4d"}
+            ];
 
             /* code here */
 
@@ -28,9 +43,14 @@ export default class ZipcodeMap {
                     // render the layout template
                     const templateText = await response.text();
                     this.config.template = Handlebars.compile(templateText);
+
                     let renderdata = {
                         "zoomList": i2b2.CRC.QueryStatus.model.GeoJSON.zooms
                     };
+                    if (Array.isArray(this.config.advancedConfig?.zooms)) {
+                        renderdata.zoomList = this.config.advancedConfig?.zooms;
+                    }
+
                     $(this.config.template(renderdata)).appendTo(this.config.displayEl);
 
                     // connect the zoom link click events
@@ -44,8 +64,8 @@ export default class ZipcodeMap {
                         }, 50);
                     });
                     // set the initial zoom state as selected
-                    for (let idx in i2b2.CRC.QueryStatus.model.GeoJSON.zooms) {
-                        if (i2b2.CRC.QueryStatus.model.GeoJSON.zooms[idx].initial) {
+                    for (let idx in renderdata.zoomList) {
+                        if (renderdata.zoomList[idx].initial) {
                             $('.zoom-link[data-index="' + idx + '"]', this.config.displayEl).addClass('selected');
                             break;
                         }
@@ -55,7 +75,7 @@ export default class ZipcodeMap {
                     this.mapEl = $('.map-target', this.config.displayEl)[0];
                     this.config.displayEl.style.display = "block";
                     //  instantiate leaflet with initial zoom set
-                    const zoomInitial = i2b2.CRC.QueryStatus.model.GeoJSON.zooms.filter((zoom) => zoom.initial === true);
+                    const zoomInitial = renderdata.zoomList.filter((zoom) => zoom.initial === true);
                     if (zoomInitial.length > 0) {
                         this.map = L.map(this.mapEl).setView([zoomInitial[0].lat, zoomInitial[0].long], zoomInitial[0].zoom);
                     } else {
