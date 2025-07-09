@@ -42,8 +42,8 @@ i2b2.CRC.QueryStatus.clear = function() {
         }
 
         delete i2b2.CRC.QueryStatus.model.visualizations[breakdownCode];
-        i2b2.CRC.QueryStatus.model.QRS = {};
     });
+    i2b2.CRC.QueryStatus.model.QRS = {};
 };
 
 i2b2.CRC.QueryStatus.start = function(queryInstanceId, mainEl) {
@@ -614,6 +614,10 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
         return;
     }
     let qriData = ri_list[0];
+    let rec = this.reference.record;
+
+    // only continue processing/polling while the QRS is still in the QueryStatusEngine's model
+    if (!Object.keys(i2b2.CRC.QueryStatus.model.QRS).includes(rec.QRS_ID)) return;
 
     // update the visualization components if the data has changed (looking at the entire message body)
     let body_xml = results.refXML.getElementsByTagName('message_body')[0].outerHTML;
@@ -623,7 +627,6 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
         this.reference.record.data = body_xml;
 
         // update the extracted record data
-        let rec = this.reference.record;
         rec.QRS_Type = i2b2.h.XPath(qriData, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
         rec.isShrine = (rec.QRS_Type.indexOf("_SHRINE_") > -1);
         rec.isPatientCount = ["PATIENT_COUNT_XML","PATIENT_COUNT_SHRINE_XML"].includes(rec.QRS_Type);
@@ -675,7 +678,16 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
                 if (hide) this.reference.componentInstances[0].parentDisplayEl.style.display = "none";
             }
         }
-
+    } else {
+        // results have not changed, continue polling
+        const vizRef = {id: rec.QRS_ID, type: rec.QRS_Type, reference: i2b2.CRC.QueryStatus.model.visualizations[rec.QRS_Type]};
+        const scopedCallbackQRSI = new i2b2_scopedCallback(i2b2.CRC.QueryStatus._handleQueryResultInstance, vizRef);
+        setTimeout(() => {
+            // only continue polling while the QRS is still in the QueryStatusEngine's model
+            if (!Object.keys(i2b2.CRC.QueryStatus.model.QRS).includes(rec.QRS_ID)) return;
+            // send poll request
+            i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
+        }, i2b2.CRC.QueryStatus.shortestPollInterval);
     }
 };
 
