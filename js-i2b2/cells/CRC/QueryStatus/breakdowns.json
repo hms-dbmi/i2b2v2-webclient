@@ -129,6 +129,19 @@
           "initial": true
   }
       ],
+      "styles": {
+        "norm": {
+          "weight": 1,
+          "opacity": 1,
+          "color": "#000",
+          "fillOpacity": 0.3
+        },
+        "hover": {
+          "weight": 3,
+          "dashArray": "4,6",
+          "color": "#FFF"
+        }
+      },
       "colors": [
         {"color": "#4d4d4d"},
         {"color": "#878787"},

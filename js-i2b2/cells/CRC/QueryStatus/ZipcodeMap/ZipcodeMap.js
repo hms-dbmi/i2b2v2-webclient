@@ -110,6 +110,134 @@ export default class ZipcodeMap {
     update(inputData) {
         this.config.displayEl.style.display = "none";
         try {
+            let data = func_processData(inputData);
+
+            // get list of valid zip codes that we care about and collect min/max patient counts while at it
+            let validData = {};
+            let minCount = Infinity;
+            let maxCount = -Infinity;
+            for (let zip of Object.keys(data)) {
+                if (i2b2.CRC.QueryStatus.model.GeoJSON.validZips.includes(zip)) {
+                    let temp = data[zip]
+                    validData[zip] = temp;
+                    if (typeof temp.error === 'undefined') {
+                        minCount = Math.min(temp.count, minCount);
+                        maxCount = Math.max(temp.count, maxCount);
+                    }
+                }
+            }
+
+            let rangeCount = maxCount - minCount;
+            let rangeSize = rangeCount / this.config.advancedConfig.colors.length;
+            let colorBucketsAreRanged = false;
+            if (this.config.advancedConfig.colors[0].min || this.config.advancedConfig.colors[0].max) {
+                // the color buckets have min/max settings, use them
+                colorBucketsAreRanged = true;
+            }
+
+            // generate list of valid GeoJSON features
+            let foundZips = Object.keys(validData);
+            let featureZipAttribute = "";
+            let geoJSON = {
+                type: "FeatureCollection",
+                features: []
+            }
+            i2b2.CRC.QueryStatus.model.GeoJSON.data.features.forEach((feature) => {
+                const currentZip = feature.properties[zipAttrib];
+                if (typeof validData[currentZip] !== 'undefined') {
+                    // only insert feature if we have some data for the zip code
+                    let featureCopy = structuredClone(feature);
+                    // copy over the data from the server
+                    for (let attrib in validData[currentZip]) {
+                        let attribValue = validData[currentZip][attrib];
+                        featureCopy.properties[attrib] = attribValue;
+                        if (attrib === "count") {
+                            // special processing for the main count value from the server
+                            if (colorBucketsAreRanged) {
+                                // the color buckets have min/max settings, use them
+                                for (let bucketData of this.config.advancedConfig.colors) {
+                                    let matchCriteria = 0;
+                                    if (bucketData.min) {
+                                        if (attribValue >= bucketData.min) matchCriteria++;
+                                    } else {
+                                        matchCriteria++;
+                                    }
+                                    if (bucketData.max) {
+                                        if (attribValue <= bucketData.max) matchCriteria++;
+                                    } else {
+                                        matchCriteria++;
+                                    }
+                                    if (matchCriteria == 2) {
+                                        // value falls within the matching range
+                                        featureCopy.properties.color = bucketData.color;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                // the color buckets have no range setting, base on equal
+                                let bucketIdx = Math.floor((attribValue - minCount) / rangeSize);
+                                if (isNaN(bucketIdx)) {
+                                    featureCopy.properties.color = "none";
+                                } else {
+                                    if (bucketIdx < 0) bucketIdx = 0;
+                                    if (bucketIdx > this.config.advancedConfig.colors.length - 1) bucketIdx = this.config.advancedConfig.colors.length - 1;
+                                    featureCopy.properties.color = this.config.advancedConfig.colors[bucketIdx].color;
+                                }
+                            }
+                        }
+                    }
+                    geoJSON.features.push(featureCopy);
+                }
+            });
+
+            // interaction/helper functions
+            // ---------------------------
+            const func_StylingNorm = ((feature) => {
+                let ret = {
+                    fillColor: feature.properties.color
+                };
+                // override styles if we have those options set
+                for (let attrib in this.config.advancedConfig?.styles.norm) {
+                    ret[attrib] = this.config.advancedConfig?.styles.norm[attrib];
+                }
+                return ret;
+            }).bind(this);
+            // ---------------------------
+            const func_StylingHighlight = ((e) => {
+                let layer = e.target;
+                let style = {}
+                // override styles if we have those options set
+                for (let attrib in this.config.advancedConfig?.styles.hover) {
+                    style[attrib] = this.config.advancedConfig?.styles.hover[attrib];
+                }
+                layer.setStyle(style);
+                layer.bringToFront();
+            }).bind(this);
+            // ---------------------------
+            const func_StylingReset = ((e) => {
+                // reset area styles
+                this.geojson.resetStyle(e.target);
+            }).bind(this);
+            // ---------------------------
+            const func_onClick = ((e) => {
+            }).bind(this);
+            // ---------------------------
+            const func_onEachFeature = ((feature, layer) => {
+                layer.on({
+                    mouseover: func_StylingHighlight,
+                    mouseout: func_StylingReset,
+                    click: func_onClick
+                });
+            }).bind(this);
+
+
+            // render the geoJSON data
+            if (geoJSON.features.length > 0) {
+                this.geojson = L.geoJson(geoJSON, {
+                    style: func_StylingNorm,
+                    onEachFeature: func_onEachFeature
+                }).addTo(this.map);
+            }
 
         } catch (e) {
             console.error("Error in QueryStatus:ZipcodeMap.update()");
@@ -123,8 +251,8 @@ export default class ZipcodeMap {
 
     redraw(width) {
         try {
-            this.map.invalidateSize();
-            this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
+            if (this.map) this.map.invalidateSize();
+            if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
         } catch(e) {
             console.error("Error in QueryStatus:ZipcodeMap.redraw()");
         }
@@ -215,10 +343,47 @@ export default class ZipcodeMap {
                     delete entry.value;
                 }
             }
-            console.dir(i2b2.CRC.QueryStatus.model.GeoJSON);
+            // build list of valid zip codes
+            i2b2.CRC.QueryStatus.model.GeoJSON.validZips = i2b2.CRC.QueryStatus.model.GeoJSON.data.features.map((feature) => feature.properties[zipAttrib])
         });
 
     } catch (error) {
         console.error("Failed to initialize ZipcodeMap visualization module: ", error);
     }
 })();
+
+
+
+const func_processData = (data) => {
+
+    let ret = {
+        "99999":{"count": 99000},
+        "02114":{"count": 24160},
+        "02113":{"count": 19173},
+        "02203":{"count": 19173},
+        "02109":{"count": 19173},
+        "02108":{"count": 19173},
+        "02110":{"count": 19173},
+        "02116":{"count": 19173},
+        "02111":{"count": 19173},
+        "02118":{"count": 19173},
+        "02199":{"count": 18208},
+        "02210":{"count": 4262},
+        "02127":{"count": 4262},
+        "02119":{"count": 4262},
+        "02120":{"count": 3597},
+        "02115":{"count": 3597},
+        "02215":{"count": 2334},
+        "02134":{"count": 2334},
+        "02163":{"count": 2255},
+        "02135":{"count": 2226},
+        "02129":{"count": 2084},
+        "02128":{"count": 2084},
+        "02151":{"count": 1670},
+        "02125":{"count": 940},
+        "02130":{"count": 699},
+        "02122":{"count": 642}
+    };
+
+    return ret;
+};
