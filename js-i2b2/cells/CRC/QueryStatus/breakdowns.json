@@ -142,6 +142,15 @@
           "color": "#FFF"
         }
       },
+      "clickBox": {
+        "options": {
+          "closeButton": "true",
+          "className": "onclick-box",
+          "autoClose": false,
+          "closeOnClick": false
+        },
+        "template": "<b>[{{ZCTA5CE10}}]</b><br/>{{~count}} patients"
+      },
       "colors": [
         {"color": "#4d4d4d"},
         {"color": "#878787"},

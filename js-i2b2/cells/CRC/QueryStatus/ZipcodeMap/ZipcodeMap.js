@@ -220,6 +220,15 @@ export default class ZipcodeMap {
             }).bind(this);
             // ---------------------------
             const func_onClick = ((e) => {
+                if (typeof this.config.advancedConfig?.clickBox.template === 'undefined') return;
+
+                let data = e.target.feature.properties;
+
+                let options = {
+                    content: func_processTemplate(this.config.advancedConfig.clickBox.template, data)
+                };
+                if (typeof this.config.advancedConfig?.clickBox.options !== 'undefined') options = {...options, ...this.config.advancedConfig.clickBox.options};
+                let popup = L.popup(e.latlng, options).openOn(this.map);
             }).bind(this);
             // ---------------------------
             const func_onEachFeature = ((feature, layer) => {
@@ -289,6 +298,32 @@ export default class ZipcodeMap {
 
 }
 
+const func_processTemplate = (template, data) => {
+    // processes templates
+    // "this is template variable number {{~count}} out of {{total}}" is a template string
+    // template vars will be replaced with data["count"] and data["total"] values
+    // template var {{~count}} will be converted to a number and will have commas added to it
+    let ret = template;
+    // find the template variables
+    let templateVars = template.match(/(\{\{[\s]*.*?[\s]*\}\})/g);
+    for (let templateVar of templateVars) {
+        let varname = templateVar.replaceAll('{{','').replaceAll('}}','');
+        let prettyNum = false;
+        if (varname.substring(0,1) === '~') {
+            varname = varname.substring(1);
+            prettyNum = true;
+        }
+        if (typeof data[varname] !== 'undefined') {
+            let dataString = data[varname];
+            if (prettyNum) {
+                // pretty up potential numbers
+                dataString = Number(dataString).toLocaleString();
+            }
+            ret = ret.replaceAll(templateVar, dataString);
+        }
+    }
+    return ret;
+};
 
 // load the GeoJSON data
 (async function() {
