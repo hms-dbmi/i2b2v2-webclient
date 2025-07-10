@@ -145,6 +145,8 @@
         "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{~count}} patients</span>"
       },
       "map": {
+        "tiles": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+        "maxZoom": 16,
         "colors": [
             {"color": "#4d4d4d"},
             {"color": "#878787"},

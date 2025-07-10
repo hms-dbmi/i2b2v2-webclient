@@ -1,4 +1,4 @@
-const mapSettings = {
+let mapSettings = {
     "mapLayer": {
         "urlTemplate": "http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
         "maxZoom": 16
@@ -16,6 +16,10 @@ export default class ZipcodeMap {
             this.isVisible = false;
             this.config.displayEl.style.display = "none";
             const self = this;
+
+            // handle override settings in breakdowns.json for map tile info
+            if (this.config.advancedConfig?.map.tiles) mapSettings.mapLayer.urlTemplate = this.config.advancedConfig.map.tiles;
+            if (this.config.advancedConfig?.map.maxZoom) mapSettings.mapLayer.maxZoom = this.config.advancedConfig.map.maxZoom;
 
             // generate the valid zipcode list if it does not already exist
             if (typeof i2b2.CRC.QueryStatus.model.GeoJSON.validZips === 'undefined') i2b2.CRC.QueryStatus.model.GeoJSON.validZips = i2b2.CRC.QueryStatus.model.GeoJSON.data.features.map((feature) => feature.properties[this.zipAttribName])
