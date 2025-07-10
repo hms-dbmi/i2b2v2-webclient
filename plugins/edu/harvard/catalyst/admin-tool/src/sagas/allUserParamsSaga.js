@@ -8,6 +8,7 @@ import {decodeHTML} from "../utilities";
 
 import { DataType } from "models";
 import {parseXml} from "../utilities/parseXml";
+import {ParamStatus} from "../models";
 
 //a function that returns a promise
 const getAllUserParamsRequest = (username) => {
