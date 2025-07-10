@@ -13,6 +13,7 @@ const getAllGlobalParamsRequest = () => {
     const data = {
         id_xml: "/",
         param_xml: "",
+        hidden: true,
         table: "global"
     }
     return i2b2.ajax.PM.getAllParam(data).then((xmlString) =>parseXml(xmlString));

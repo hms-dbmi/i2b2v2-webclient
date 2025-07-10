@@ -13,6 +13,7 @@ import {parseXml} from "../utilities/parseXml";
 const getAllProjectParamsRequest = (projectId) => {
     let data = {
         table:"project_param",
+        hidden: true,
         param_xml:"",
         id_xml:projectId
     };
@@ -34,7 +35,14 @@ const parseParamsXml = (allParamsXml) => {
 
         if(name && dataType) {
             dataType = DataType[dataType];
-            status = ParamStatus[status];
+            if(name==='PrivateParam') {
+                status = ParamStatus.H;
+            }
+            else if(name==='Delete') {
+                status = ParamStatus.D;
+            }else{
+                status = ParamStatus[status];
+            }
             if(value.length > 0){
                 value = decodeHTML(value);
             }

@@ -8,11 +8,13 @@ import {decodeHTML} from "../utilities";
 
 import { DataType } from "models";
 import {parseXml} from "../utilities/parseXml";
+import {ParamStatus} from "../models";
 
 //a function that returns a promise
 const getAllUserParamsRequest = (username) => {
     let data = {
         table:"user_param",
+        hidden: true,
         param_xml:"",
         id_xml:"<user_name>"+username+"</user_name>"
     };
@@ -23,20 +25,22 @@ const getAllUserParamsRequest = (username) => {
 const parseUserParamsXml = (user, allUserParamsXml) => {
     let params = allUserParamsXml.getElementsByTagName('param');
     let userParamsList = [];
+    let id = 0;
     for (let i = 0; i < params.length; i++) {
         const param = params[i];
-        let id = i+1;
         let internalId = param.attributes['id'].nodeValue;
         let name = param.attributes['name'].nodeValue;
         let value = param.childNodes[0].nodeValue;
         let dataType = param.attributes['datatype'].nodeValue;
-
+        let status = param.attributes['status'].nodeValue;
+        status = ParamStatus[status];
         if(name && dataType) {
             dataType = DataType[dataType];
             if(value.length > 0){
                 value = decodeHTML(value);
             }
-            userParamsList.push({id, internalId, name, value, dataType});
+            userParamsList.push({id, internalId, name, value, dataType, status});
+            id = i+1;
         }
     }
 

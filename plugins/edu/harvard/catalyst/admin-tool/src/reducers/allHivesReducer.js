@@ -80,6 +80,7 @@ export const allHivesReducer = (state = defaultState.allHives, action) => {
                     name: param.name,
                     value:param.value,
                     dataType: param.dataType,
+                    status: param.status
                 }));
             })
 

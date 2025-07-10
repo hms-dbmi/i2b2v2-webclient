@@ -21,7 +21,7 @@ const saveParamRequest = (project, param) => {
 
     const msg_xml = '<param '
         + paramIdStr +' datatype="'+ param.dataType
-        +'" name="'+param.name+'">'
+        +'" name="'+param.name +'" status="'+param.status +'">'
         + dataValue
         +'</param>';
 
