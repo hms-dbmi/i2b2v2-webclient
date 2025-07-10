@@ -17,6 +17,8 @@ export default class ZipcodeMap {
             this.config.displayEl.style.display = "none";
             const self = this;
 
+            // generate the valid zipcode list if it does not already exist
+            if (typeof i2b2.CRC.QueryStatus.model.GeoJSON.validZips === 'undefined') i2b2.CRC.QueryStatus.model.GeoJSON.validZips = i2b2.CRC.QueryStatus.model.GeoJSON.data.features.map((feature) => feature.properties[this.zipAttribName])
 
 
             // make sure that we have some colors defined
@@ -424,10 +426,7 @@ const func_processTemplate = (template, data) => {
                     delete entry.value;
                 }
             }
-            // build list of valid zip codes
-            i2b2.CRC.QueryStatus.model.GeoJSON.validZips = i2b2.CRC.QueryStatus.model.GeoJSON.data.features.map((feature) => feature.properties[zipAttrib])
         });
-
     } catch (error) {
         console.error("Failed to initialize ZipcodeMap visualization module: ", error);
     }
