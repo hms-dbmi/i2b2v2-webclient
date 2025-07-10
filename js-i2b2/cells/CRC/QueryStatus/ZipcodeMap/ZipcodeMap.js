@@ -17,9 +17,15 @@ export default class ZipcodeMap {
             this.config.displayEl.style.display = "none";
             const self = this;
 
+
+
             // make sure that we have some colors defined
-            if (typeof this.config.advancedConfig === 'undefined') this.config.advancedConfig = {};
-            if (typeof this.config.advancedConfig.colors === 'undefined') this.config.advancedConfig.colors = [
+            if (typeof this.config?.advancedConfig.map === 'undefined') {
+                console.error("ZIPCODEMAP is missing configuration in breakdowns.json!");
+                this.errors = true;
+                return;
+            }
+            if (typeof this.config.advancedConfig.map.colors === 'undefined') this.config.advancedConfig.map.colors = [
                 {"color": "#b2182b"},
                 {"color": "#d6604d"},
                 {"color": "#f4a582"},
@@ -30,8 +36,6 @@ export default class ZipcodeMap {
                 {"color": "#878787"},
                 {"color": "#4d4d4d"}
             ];
-
-            /* code here */
 
             // retrieve and inject the template
             (async function() {
@@ -142,6 +146,7 @@ export default class ZipcodeMap {
     }
 
     update(inputData) {
+        if (this.errors) return;
         this.config.displayEl.style.display = "none";
         try {
             let data = func_processData(inputData);
@@ -162,9 +167,9 @@ export default class ZipcodeMap {
             }
 
             let rangeCount = maxCount - minCount;
-            let rangeSize = rangeCount / this.config.advancedConfig.colors.length;
+            let rangeSize = rangeCount / this.config.advancedConfig.map.colors.length;
             let colorBucketsAreRanged = false;
-            if (this.config.advancedConfig.colors[0].min || this.config.advancedConfig.colors[0].max) {
+            if (this.config.advancedConfig.map.colors[0].min || this.config.advancedConfig.map.colors[0].max) {
                 // the color buckets have min/max settings, use them
                 colorBucketsAreRanged = true;
             }
@@ -177,7 +182,7 @@ export default class ZipcodeMap {
                 features: []
             }
             i2b2.CRC.QueryStatus.model.GeoJSON.data.features.forEach((feature) => {
-                const currentZip = feature.properties[zipAttrib];
+                const currentZip = feature.properties[this.zipAttribName];
                 if (typeof validData[currentZip] !== 'undefined') {
                     // only insert feature if we have some data for the zip code
                     let featureCopy = structuredClone(feature);
@@ -189,7 +194,7 @@ export default class ZipcodeMap {
                             // special processing for the main count value from the server
                             if (colorBucketsAreRanged) {
                                 // the color buckets have min/max settings, use them
-                                for (let bucketData of this.config.advancedConfig.colors) {
+                                for (let bucketData of this.config.advancedConfig.map.colors) {
                                     let matchCriteria = 0;
                                     if (bucketData.min) {
                                         if (attribValue >= bucketData.min) matchCriteria++;
@@ -214,8 +219,8 @@ export default class ZipcodeMap {
                                     featureCopy.properties.color = "none";
                                 } else {
                                     if (bucketIdx < 0) bucketIdx = 0;
-                                    if (bucketIdx > this.config.advancedConfig.colors.length - 1) bucketIdx = this.config.advancedConfig.colors.length - 1;
-                                    featureCopy.properties.color = this.config.advancedConfig.colors[bucketIdx].color;
+                                    if (bucketIdx > this.config.advancedConfig.map.colors.length - 1) bucketIdx = this.config.advancedConfig.map.colors.length - 1;
+                                    featureCopy.properties.color = this.config.advancedConfig.map.colors[bucketIdx].color;
                                 }
                             }
                         }
@@ -231,8 +236,8 @@ export default class ZipcodeMap {
                     fillColor: feature.properties.color
                 };
                 // override styles if we have those options set
-                for (let attrib in this.config.advancedConfig?.styles.norm) {
-                    ret[attrib] = this.config.advancedConfig?.styles.norm[attrib];
+                for (let attrib in this.config.advancedConfig.map?.styles.norm) {
+                    ret[attrib] = this.config.advancedConfig.map?.styles.norm[attrib];
                 }
                 return ret;
             }).bind(this);
@@ -241,8 +246,8 @@ export default class ZipcodeMap {
                 let layer = e.target;
                 let style = {}
                 // override styles if we have those options set
-                for (let attrib in this.config.advancedConfig?.styles.hover) {
-                    style[attrib] = this.config.advancedConfig?.styles.hover[attrib];
+                for (let attrib in this.config.advancedConfig.map?.styles.hover) {
+                    style[attrib] = this.config.advancedConfig.map?.styles.hover[attrib];
                 }
                 layer.setStyle(style);
                 layer.bringToFront();
@@ -301,6 +306,7 @@ export default class ZipcodeMap {
 
 
     redraw(width) {
+        if (this.errors) return;
         try {
             if (this.map) this.map.invalidateSize();
             if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
@@ -311,9 +317,7 @@ export default class ZipcodeMap {
 
 
     show() {
-        // this is executed before a render and/or displaying of this visualization.
-        // returning false will cancel the selection and (re)displaying of this visualization
-        // USED PRIMARLY BY THE "Download" MODULE
+        if (this.errors) return;
         try {
             this.isVisible = true;
             if (typeof this.config.parentTitleEl !== 'undefined') this.config.parentTitleEl.innerHTML = this.record.title;

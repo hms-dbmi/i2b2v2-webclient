@@ -129,19 +129,6 @@
           "initial": true
   }
       ],
-      "styles": {
-        "norm": {
-          "weight": 1,
-          "opacity": 1,
-          "color": "#000",
-          "fillOpacity": 0.3
-        },
-        "hover": {
-          "weight": 3,
-          "dashArray": "4,6",
-          "color": "#FFF"
-        }
-      },
       "clickBox": {
         "options": {
           "closeButton": "true",
@@ -157,17 +144,32 @@
         "__default": "<h4>Patient Count</h4>Hover over an area",
         "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{~count}} patients</span>"
       },
-      "colors": [
-        {"color": "#4d4d4d"},
-        {"color": "#878787"},
-        {"color":"#bababa"},
-        {"color":"#e0e0e0"},
-        {"color":"#ffffff"},
-        {"color":"#fddbc7"},
-        {"color":"#f4a582"},
-        {"color":"#d6604d"},
-        {"color":"#b2182b"}
-      ]
+      "map": {
+        "colors": [
+            {"color": "#4d4d4d"},
+            {"color": "#878787"},
+            {"color": "#bababa"},
+            {"color": "#e0e0e0"},
+            {"color": "#ffffff"},
+            {"color": "#fddbc7"},
+            {"color": "#f4a582"},
+            {"color": "#d6604d"},
+            {"color": "#b2182b"}
+        ],
+        "styles": {
+          "norm": {
+            "weight": 1,
+            "opacity": 1,
+            "color": "#000",
+            "fillOpacity": 0.3
+          },
+          "hover": {
+            "weight": 3,
+            "dashArray": "4,6",
+            "color": "#FFF"
+          }
+        }
+      }
     }
-    }
+  }
 }
