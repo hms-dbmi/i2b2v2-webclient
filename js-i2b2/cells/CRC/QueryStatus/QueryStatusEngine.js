@@ -685,6 +685,8 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
         setTimeout(() => {
             // only continue polling while the QRS is still in the QueryStatusEngine's model
             if (!Object.keys(i2b2.CRC.QueryStatus.model.QRS).includes(rec.QRS_ID)) return;
+            // see if we still need to continue polling
+            if (i2b2.CRC.QueryStatus.haltOnStatus.includes(rec.QRS_Status)) return;
             // send poll request
             i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
         }, i2b2.CRC.QueryStatus.shortestPollInterval);
