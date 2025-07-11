@@ -186,8 +186,13 @@ export default class ShrineSites {
         // returning false will cancel the selection and (re)displaying of this visualization
         // USED PRIMARLY BY THE "Download" MODULE
         try {
+            this.isVisible = true;
             this.config.parentTitleEl.innerHTML = this.record.title;
+            if (typeof this.config.parentTitleEl !== 'undefined') this.config.parentTitleEl.innerHTML = this.record.title;
+            if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'block';
+            this.config.displayEl.style.display = 'block';
             this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
+
             return true;
         } catch(e) {
             console.error("Error in QueryStatus:ShrineSites.show()");
@@ -196,7 +201,10 @@ export default class ShrineSites {
 
     hide() {
         try {
-            return false;
+            this.isVisible = false;
+            this.config.displayEl.style.display = 'none';
+            if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'none';
+            return true;
         } catch(e) {
             console.error("Error in QueryStatus:ShrineSites.hide()");
         }

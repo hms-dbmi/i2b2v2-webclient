@@ -58,6 +58,15 @@
       "source": "ZipcodeMap/ZipcodeMap.js",
       "CSS": "ZipcodeMap/ZipcodeMap.css",
       "iconClass": "bi bi-globe-americas"
+    },
+    "PATIENTCOUNTMAP": {
+      "name": "Patient Count Map",
+      "source": "PatientCountMap/PatientCountMap.js",
+      "CSS": "PatientCountMap/PatientCountMap.css",
+      "iconClass": "bi bi-pin-map-fill",
+      "displayOrder": 200,
+      "displayForUnregistered": true,
+      "notInReport": true
     }
   },
   "displayOrder": [
