@@ -40,6 +40,7 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
             const  {project, params}  = action.payload;
 
             let paramsList = [];
+
             params.map((param) => {
                 paramsList.push(Param({
                     id: param.id,

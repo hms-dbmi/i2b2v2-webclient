@@ -17,7 +17,6 @@ export const EditUserParameters = ({selectedUser,
                                    setPaginationModel
 }) => {
     const [saveStatus, setSaveStatus] = useState("");
-    const [deleteStatus, setDeleteStatus] = useState("");
     const [userParamStatus, setUserParamStatus] = useState("");
 
     const dispatch = useDispatch();
@@ -28,16 +27,8 @@ export const EditUserParameters = ({selectedUser,
         }
     };
 
-    const handleDeleteClick = (param)  => {
-        dispatch(deleteUserParam({user: selectedUser.user, param}));
-    };
-
     const saveStatusConfirm = () =>{
         dispatch(saveUserParamStatusConfirmed());
-    }
-
-    const deleteStatusConfirm = () =>{
-        dispatch(deleteUserParamStatusConfirmed());
     }
 
     useEffect(() => {
@@ -46,12 +37,6 @@ export const EditUserParameters = ({selectedUser,
         }
         if(selectedUser.paramStatus.status === "SAVE_FAIL"){
             setSaveStatus(selectedUser.paramStatus);
-        }
-        if(selectedUser.paramStatus.status === "DELETE_SUCCESS"){
-            setDeleteStatus(selectedUser.paramStatus);
-        }
-        if(selectedUser.paramStatus.status === "DELETE_FAIL"){
-            setDeleteStatus(selectedUser.paramStatus);
         }
 
         if(selectedUser.allUserParamStatus === "FAIL"){
@@ -69,12 +54,9 @@ export const EditUserParameters = ({selectedUser,
                 updateParams={updateParams}
                 title={title}
                 saveParam={saveParam}
-                deleteParam={handleDeleteClick}
                 saveStatus={saveStatus}
-                deleteStatus={deleteStatus}
                 allParamStatus={userParamStatus}
                 saveStatusConfirm={saveStatusConfirm}
-                deleteStatusConfirm={deleteStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
             />

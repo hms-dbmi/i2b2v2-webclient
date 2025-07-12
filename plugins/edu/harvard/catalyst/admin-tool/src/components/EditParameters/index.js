@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes, useGridApiRef,useGridApiContext} from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,23 +7,20 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField/TextField';
 import {GridRowEditStopReasons} from '@mui/x-data-grid';
-import { Confirmation,  StatusUpdate } from "components";
+import { StatusUpdate } from "components";
 import {DataType, ParamStatus} from "models";
 
 import "./EditParameters.scss";
-import {Tooltip, Typography} from "@mui/material";
+import { Typography} from "@mui/material";
 
 export const EditParameters = ({
                                    rows,
                                    title,
                                    updateParams,
                                    saveParam,
-                                   deleteParam,
                                    saveStatus,
-                                   deleteStatus,
                                    allParamStatus,
                                    saveStatusConfirm,
-                                   deleteStatusConfirm,
                                    paginationModel,
                                    setPaginationModel
 }) => {
@@ -32,9 +28,6 @@ export const EditParameters = ({
     const [showStatus, setShowStatus] = useState(false);
     const [statusMsg, setStatusMsg] = useState("");
     const [statusSeverity, setStatusSeverity] = useState("info");
-    const [showDeleteParamConfirm, setShowDeleteParamConfirm] = useState(false);
-    const [deleteParamConfirmMsg, setDeleteParamConfirmMsg] = useState("");
-    const [deleteParamData, setDeleteParamData] = useState(null);
     const [inValidCells, setInValidCells] = useState({});
 
     const apiRef = useGridApiRef();
@@ -125,15 +118,11 @@ export const EditParameters = ({
             }, {
                 label: 'Hidden',
                 value: ParamStatus.H
+            },
+            {
+                label: 'Deleted',
+                value: ParamStatus.D
             }],
-            renderCell: (params) => {
-                if(params.value === ParamStatus.D){
-                    return "Deleted";
-                }
-                else{
-                    return params.label;
-                }
-           }
         },
         {
             field: 'actions',
@@ -171,14 +160,7 @@ export const EditParameters = ({
                         className="textPrimary"
                         onClick={handleEditClick(id)}
                         color="inherit"
-                    />,
-                    <GridActionsCellItem
-                        icon={<DeleteIcon />}
-                        label="Delete"
-                        onClick={confirmDelete(id)}
-                        color="inherit"
                     />
-                    ,
                 ];
             },
         },
@@ -238,27 +220,16 @@ export const EditParameters = ({
             setShowStatus(true);
             setStatusSeverity("error");
         }
-        if(deleteStatus.status === "DELETE_SUCCESS"){
-            setStatusMsg("Deleted parameter " + deleteStatus.param.name);
-            setShowStatus(true);
-            setStatusSeverity("success");
-        }
-        if(deleteStatus.status === "DELETE_FAIL"){
-            setStatusMsg("ERROR: failed to delete parameter " + deleteStatus.param.name);
-            setShowStatus(true);
-            setStatusSeverity("error");
-        }
 
         if(allParamStatus === "FAIL"){
             setStatusMsg("ERROR: failed to reload parameters");
             setShowStatus(true);
             setStatusSeverity("error");
         }
-    }, [saveStatus, deleteStatus]);
+    }, [saveStatus]);
 
     useEffect(() => {
         saveStatusConfirm();
-        deleteStatusConfirm();
     }, []);
 
     const isCellEditable = (params) => {
@@ -338,23 +309,6 @@ export const EditParameters = ({
         }
     };
 
-    const confirmDelete = (id) => () =>{
-        let param = rows.filter((row) => row.id === id).reduce((acc, item) => acc);
-        setDeleteParamData(param);
-
-        setDeleteParamConfirmMsg("Are you sure you want to delete parameter " + param.name + "?");
-        setShowDeleteParamConfirm(true);
-    };
-
-    const handleDeleteClick = () => {
-        let param = rows.filter((row) => row.id === deleteParamData.id).reduce((acc, item) => acc);
-        setDeleteParamData(null);
-        setDeleteParamConfirmMsg("");
-        setShowDeleteParamConfirm(false);
-
-        deleteParam(param);
-    };
-
     const handleAddParam = () => {
         const id = rows.length;
         let newParams = [ ...rows, { id, name: '', value: '', dataType: DataType.T, status: ParamStatus.A, isUpdated: true, isNew: true }];
@@ -372,7 +326,6 @@ export const EditParameters = ({
 
     const handleStatusClose = () => {
         saveStatusConfirm();
-        deleteStatusConfirm();
         setShowStatus(false);
     };
 
@@ -386,12 +339,6 @@ export const EditParameters = ({
             {displayParamsTable()}
 
             <StatusUpdate isOpen={showStatus} setIsOpen={handleStatusClose} severity={statusSeverity} message={statusMsg}/>
-
-            { showDeleteParamConfirm && <Confirmation
-                text={deleteParamConfirmMsg}
-                onOk={handleDeleteClick}
-                onCancel={() => setShowDeleteParamConfirm(false)}
-            />}
         </div>
     );
 

@@ -39,7 +39,7 @@ const parseParamsXml = (allParamsXml) => {
             if(value.length > 0){
                 value = decodeHTML(value);
             }
-            paramsParamsList.push({id, internalId, name, value, dataType});
+            paramsParamsList.push({id, internalId, name, value, dataType, status});
             id = id + 1;
         }
     }

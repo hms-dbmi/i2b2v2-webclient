@@ -35,14 +35,7 @@ const parseParamsXml = (allParamsXml) => {
 
         if(name && dataType) {
             dataType = DataType[dataType];
-            if(name==='PrivateParam') {
-                status = ParamStatus.H;
-            }
-            else if(name==='Delete') {
-                status = ParamStatus.D;
-            }else{
-                status = ParamStatus[status];
-            }
+            status = ParamStatus[status];
             if(value.length > 0){
                 value = decodeHTML(value);
             }

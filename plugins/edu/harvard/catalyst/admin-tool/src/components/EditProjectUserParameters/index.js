@@ -1,10 +1,8 @@
 import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import {
-    saveProjectUserParam, saveProjectUserParamStatusConfirmed,
-    deleteProjectUserParam, deleteProjectUserParamStatusConfirmed,
-    getAllProjectUserParamsStatusConfirmed,
+    saveProjectUserParam,
+    saveProjectUserParamStatusConfirmed,
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 import "./EditProjectUserParameters.scss";
@@ -18,14 +16,9 @@ export const EditProjectUserParameters = ({selectedProject,
                                           setPaginationModel
 }) => {
     const [saveStatus, setSaveStatus] = useState("");
-    const [deleteStatus, setDeleteStatus] = useState("");
     const [userParamStatus, setUserParamStatus] = useState("");
 
     const dispatch = useDispatch();
-
-    const handleDeleteClick = (param)  => {
-        dispatch(deleteProjectUserParam({selectedProject, projectUser, param}));
-    };
 
     const saveParam = (param) => {
         if(param && param.name.length > 0) {
@@ -37,9 +30,6 @@ export const EditProjectUserParameters = ({selectedProject,
         dispatch(saveProjectUserParamStatusConfirmed());
     }
 
-    const deleteStatusConfirm = () =>{
-        dispatch(deleteProjectUserParamStatusConfirmed());
-    }
 
     useEffect(() => {
         if(selectedProject.paramStatus.status === "SAVE_SUCCESS"){
@@ -48,14 +38,6 @@ export const EditProjectUserParameters = ({selectedProject,
 
         if(selectedProject.paramStatus.status === "SAVE_FAIL"){
             setSaveStatus(selectedProject.paramStatus);
-        }
-
-        if(selectedProject.paramStatus.status === "DELETE_SUCCESS"){
-            setDeleteStatus(selectedProject.paramStatus);
-        }
-
-        if(selectedProject.paramStatus.status === "DELETE_FAIL"){
-            setDeleteStatus(selectedProject.paramStatus);
         }
 
         if(selectedProject.userParamStatus === "FAIL"){
@@ -71,12 +53,9 @@ export const EditProjectUserParameters = ({selectedProject,
                 updateParams={updateParams}
                 title={title}
                 saveParam={saveParam}
-                deleteParam={handleDeleteClick}
                 saveStatus={saveStatus}
-                deleteStatus={deleteStatus}
                 allParamStatus={userParamStatus}
                 saveStatusConfirm={saveStatusConfirm}
-                deleteStatusConfirm={deleteStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
             />
