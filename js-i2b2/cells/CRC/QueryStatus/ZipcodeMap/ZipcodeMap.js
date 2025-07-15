@@ -4,7 +4,8 @@ let mapSettings = {
         "maxZoom": 16
     }
 }
-const zipAttrib = "ZCTA5CE10";
+const defaultZipAttrib = "ZCTA5CE10";
+const defaultZipRegEx = "^(.*)[0-9]{5}";
 
 export default class ZipcodeMap {
     constructor(componentConfig, qrsRecordInfo, qrsData) {
@@ -16,6 +17,13 @@ export default class ZipcodeMap {
             this.isVisible = false;
             this.config.displayEl.style.display = "none";
             const self = this;
+
+            // handle the GeoJSON feature property name that we will use
+            this.zipAttribName = defaultZipAttrib;
+            if (this.config.advancedConfig?.map.zipAttribName) this.zipAttribName = this.config.advancedConfig.map.zipAttribName;
+            // regex that extracts the zipcode value from the column name
+            this.zipRegEx = defaultZipRegEx;
+            if (this.config.advancedConfig?.map.zipRegEx) this.zipRegEx = this.config.advancedConfig.map.zipRegEx;
 
             // handle override settings in breakdowns.json for map tile info
             if (this.config.advancedConfig?.map.tiles) mapSettings.mapLayer.urlTemplate = this.config.advancedConfig.map.tiles;
@@ -139,9 +147,7 @@ export default class ZipcodeMap {
                         this.hoverbox.addTo(this.map);
                     }
 
-                    if (this.isVisible === true) {
-                        this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
-                    }
+                    if (this.isVisible === true) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
 
                     this.update();
                 }
@@ -152,18 +158,29 @@ export default class ZipcodeMap {
     }
 
     update(inputData) {
-        if (this.errors) return;
-        this.config.displayEl.style.display = "none";
+//        if (this.errors || typeof inputData === 'undefined') return;
         try {
-            let data = func_processData(inputData);
+
+            // get the breakdown data information (if present)
+            let resultXML = i2b2.h.XPath(inputData, "//xml_value");
+            if (resultXML.length > 0) {
+                resultXML = resultXML[0].firstChild.nodeValue;
+                // parse the data and put the results into the new data slot
+                this.data = func_processData(resultXML, this.config.advancedConfig.map.zipRegEx);
+            } else {
+                this.data = func_processData("", this.config.advancedConfig.map.zipRegEx);
+//                return;
+            }
+
+            this.config.displayEl.style.display = "none";
 
             // get list of valid zip codes that we care about and collect min/max patient counts while at it
             let validData = {};
             let minCount = Infinity;
             let maxCount = -Infinity;
-            for (let zip of Object.keys(data)) {
+            for (let zip of Object.keys(this.data)) {
                 if (i2b2.CRC.QueryStatus.model.GeoJSON.validZips.includes(zip)) {
-                    let temp = data[zip]
+                    let temp = this.data[zip];
                     validData[zip] = temp;
                     if (typeof temp.error === 'undefined') {
                         minCount = Math.min(temp.count, minCount);
@@ -292,9 +309,12 @@ export default class ZipcodeMap {
                 });
             }).bind(this);
 
-
             // render the geoJSON data
             if (geoJSON.features.length > 0) {
+                // delete existing features if they have already been populated
+                if (typeof this.geojson !== 'undefined') this.map.removeLayer(this.geojson);
+
+                // add the features to the map
                 this.geojson = L.geoJson(geoJSON, {
                     style: func_StylingNorm,
                     onEachFeature: func_onEachFeature
@@ -438,36 +458,110 @@ const func_processTemplate = (template, data) => {
 
 
 
-const func_processData = (data) => {
+const func_processData = (xmlData, zipRegEx) => {
+/*
+   <xml_value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?>&lt;ns10:i2b2_result_envelope>&lt;body>&lt;ns10:result name="PATIENT_ZIP_COUNT_SHRINE_XML">
+    &lt;data column="01001 - AGAWAM" floorThresholdNumber="20" obfuscatedDisplayNumber="6">270&lt;/data>
+    &lt;data column="01002 - AMHERST" floorThresholdNumber="20" obfuscatedDisplayNumber="6">280&lt;/data>
+    &lt;data column="01003 - AMHERST" floorThresholdNumber="20" obfuscatedDisplayNumber="6">300&lt;/data>
+    &lt;data column="01004 - AMHERST" floorThresholdNumber="20" obfuscatedDisplayNumber="6">280&lt;/data>
+    &lt;data column="01005 - BARRE" floorThresholdNumber="20" obfuscatedDisplayNumber="6">315&lt;/data>
+    &lt;data column="01007 - BELCHERTOWN" floorThresholdNumber="20" obfuscatedDisplayNumber="6">315&lt;/data>
+    &lt;data column="01008 - BLANDFORD" floorThresholdNumber="20" obfuscatedDisplayNumber="6">305&lt;/data>
+    &lt;data column="01009 - BONDSVILLE" floorThresholdNumber="20" obfuscatedDisplayNumber="6">305&lt;/data>
+    &lt;data column="01010 - BRIMFIELD" floorThresholdNumber="20" obfuscatedDisplayNumber="6">270&lt;/data>
+    &lt;data column="01011 - CHESTER" floorThresholdNumber="20" obfuscatedDisplayNumber="6">270&lt;/data>
+    &lt;data column="01012 - CHESTERFIELD" floorThresholdNumber="20" obfuscatedDisplayNumber="6">295&lt;/data>
+    &lt;data column="01013 - CHICOPEE" floorThresholdNumber="20" obfuscatedDisplayNumber="6">265&lt;/data>
+    &lt;data column="01014 - CHICOPEE" floorThresholdNumber="20" obfuscatedDisplayNumber="6">290&lt;/data>
+    &lt;data column="01020 - CHICOPEE" floorThresholdNumber="20" obfuscatedDisplayNumber="6">270&lt;/data>
+    &lt;data column="01021 - CHICOPEE" floorThresholdNumber="20" obfuscatedDisplayNumber="6">305&lt;/data>
+    &lt;data column="01022 - CHICOPEE" floorThresholdNumber="20" obfuscatedDisplayNumber="6">330&lt;/data>
+    &lt;data column="01026 - CUMMINGTON" floorThresholdNumber="20" obfuscatedDisplayNumber="6">260&lt;/data>
+    &lt;data column="01027 - EASTHAMPTON" floorThresholdNumber="20" obfuscatedDisplayNumber="6">285&lt;/data>
+    &lt;data column="01028 - EAST LONGMEADOW" floorThresholdNumber="20" obfuscatedDisplayNumber="6">270&lt;/data>
+    &lt;data column="01029 - EAST OTIS" floorThresholdNumber="20" obfuscatedDisplayNumber="6">325&lt;/data>
+    &lt;data column="01030 - FEEDING HILLS" floorThresholdNumber="20" obfuscatedDisplayNumber="6">295&lt;/data>
+    &lt;/ns10:result>
+    &lt;SHRINE sites="2" complete="2" error="0">
+        &lt;site name="Site 1" status="Completed" binsize="5" stdDev="6.500000000000000e+000" obfuscatedDisplayNumber="10" floorThresholdNumber="10">
+            &lt;siteresult column="02738 - MARION" type="int">120&lt;/siteresult>
+            &lt;siteresult column="01845 - NORTH ANDOVER" type="int">150&lt;/siteresult>
+            &lt;siteresult column="01115 - SPRINGFIELD" type="int">130&lt;/siteresult>
+            &lt;siteresult column="02361 - PLYMOUTH" type="int">130&lt;/siteresult>
+            &lt;siteresult column="02043 - HINGHAM" type="int">155&lt;/siteresult>
+            &lt;siteresult column="01864 - NORTH READING" type="int">155&lt;/siteresult>
+            &lt;siteresult column="02559 - POCASSET" type="int">155&lt;/siteresult>
+            &lt;siteresult column="02347 - LAKEVILLE" type="int">165&lt;/siteresult>
+            &lt;siteresult column="01748 - HOPKINTON" type="int">140&lt;/siteresult>
+            &lt;siteresult column="01843 - LAWRENCE" type="int">140&lt;/siteresult>
+            &lt;siteresult column="02027 - DEDHAM" type="int">135&lt;/siteresult>
+        &lt;/site>
+        &lt;site name="Site 2" status="Completed" binsize="5" stdDev="6.500000000000000e+000" obfuscatedDisplayNumber="10" floorThresholdNumber="10">
+            &lt;siteresult column="02738 - MARION" type="int">125&lt;/siteresult>
+            &lt;siteresult column="01566 - STURBRIDGE" type="int">155&lt;/siteresult>
+            &lt;siteresult column="02138 - CAMBRIDGE" type="int">150&lt;/siteresult>
+            &lt;siteresult column="01740 - BOLTON" type="int">150&lt;/siteresult>
+            &lt;siteresult column="02637 - CUMMAQUID" type="int">125&lt;/siteresult>
+            &lt;siteresult column="02537 - EAST SANDWICH" type="int">130&lt;/siteresult>
+            &lt;siteresult column="02140 - CAMBRIDGE" type="int">185&lt;/siteresult>
+            &lt;siteresult column="02141 - CAMBRIDGE" type="int">160&lt;/siteresult>
+            &lt;siteresult column="02133 - BOSTON" type="int">120&lt;/siteresult>
+            &lt;siteresult column="02302 - BROCKTON" type="int">160&lt;/siteresult>
+            &lt;siteresult column="01237 - LANESBOROUGH" type="int">155&lt;/siteresult>
+            &lt;siteresult column="02641 - EAST DENNIS" type="int">150&lt;/siteresult>
+            &lt;siteresult column="02477 - WATERTOWN" type="int">135&lt;/siteresult>
+            &lt;/site>
+        &lt;/SHRINE>&lt;/body>
+        &lt;/ns10:i2b2_result_envelope>
+            </xml_value>
+*/
 
-    let ret = {
-        "99999":{"count": 99000},
-        "02114":{"count": 24160},
-        "02113":{"count": 19173},
-        "02203":{"count": 19173},
-        "02109":{"count": 19173},
-        "02108":{"count": 19173},
-        "02110":{"count": 19173},
-        "02116":{"count": 19173},
-        "02111":{"count": 19173},
-        "02118":{"count": 19173},
-        "02199":{"count": 18208},
-        "02210":{"count": 4262},
-        "02127":{"count": 4262},
-        "02119":{"count": 4262},
-        "02120":{"count": 3597},
-        "02115":{"count": 3597},
-        "02215":{"count": 2334},
-        "02134":{"count": 2334},
-        "02163":{"count": 2255},
-        "02135":{"count": 2226},
-        "02129":{"count": 2084},
-        "02128":{"count": 2084},
-        "02151":{"count": 1670},
-        "02125":{"count": 940},
-        "02130":{"count": 699},
-        "02122":{"count": 642}
-    };
+
+    let ret = {};
+    let params = i2b2.h.XPath(xmlData, 'descendant::data[@column]/text()/..');
+    // short circuit exit because there is no data
+    if (params.length === 0)
+        return {
+            "99999":{"count": 99000},
+            "02114":{"count": 24160},
+            "02113":{"count": 19173},
+            "02203":{"count": 19173},
+            "02109":{"count": 19173},
+            "02108":{"count": 19173},
+            "02110":{"count": 19173},
+            "02116":{"count": 19173},
+            "02111":{"count": 19173},
+            "02118":{"count": 19173},
+            "02199":{"count": 18208},
+            "02210":{"count": 4262},
+            "02127":{"count": 4262},
+            "02119":{"count": 4262},
+            "02120":{"count": 3597},
+            "02115":{"count": 3597},
+            "02215":{"count": 2334},
+            "02134":{"count": 2334},
+            "02163":{"count": 2255},
+            "02135":{"count": 2226},
+            "02129":{"count": 2084},
+            "02128":{"count": 2084},
+            "02151":{"count": 1670},
+            "02125":{"count": 940},
+            "02130":{"count": 699},
+            "02122":{"count": 642}
+        };
+
+    for (let i = 0; i < params.length; i++) {
+        const zipData = params[i].getAttribute("column");
+        let zipSearch = zipData.match(zipRegEx);
+        if (zipSearch.length > 0) {
+            const zipCode = zipSearch[0].trim();
+            ret[zipCode] = {
+                count: params[i].firstChild.nodeValue,
+                text: zipData
+            };
+        }
+    }
 
     return ret;
 };
