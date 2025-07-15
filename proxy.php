@@ -7,7 +7,7 @@
 	Author: Nick Benik
 	Contributors: Nich Wattanasin
 				  Mike Mendis
-	Last Revised: 04-26-23
+	Last Revised: 07-15-25
 
 *****************************************************************
 
@@ -128,7 +128,7 @@ if ($PostBody=="") {
 	foreach ($WHITELIST as $entryValue) {
 	    $isAllowed = true;
 	    // additional security checks
-	    $sec_fix_whitelist = parse_url($entryValue);
+	    $sec_fix_whitelist = parse_url(strtoupper($entryValue));
 	    if ($sec_fix_whitelist['scheme'] != $sec_fix_request['scheme']) $isAllowed = false;
 	    if ($sec_fix_whitelist['host'] != $sec_fix_request['host']) $isAllowed = false;
 	    if ($sec_fix_whitelist['port'] != $sec_fix_request['port']) $isAllowed = false;
@@ -143,7 +143,7 @@ if ($PostBody=="") {
 	// ---------------------------------------------------
 	foreach ($BLACKLIST as $entryValue) {
 	    // additional security checks
-	    $sec_fix_blacklist = parse_url($entryValue);
+	    $sec_fix_blacklist = parse_url(strtoupper($entryValue));
 		if (($sec_fix_blacklist['scheme'] == $sec_fix_request['scheme']) &&
             ($sec_fix_blacklist['host'] == $sec_fix_request['host']) &&
             ($sec_fix_blacklist['port'] == $sec_fix_request['port'])) {
