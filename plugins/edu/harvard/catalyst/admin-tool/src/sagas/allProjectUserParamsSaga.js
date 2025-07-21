@@ -50,18 +50,21 @@ const parseParamsXml = (allParamsXml) => {
 export function* doGetAllProjectUserParameters(action) {
     const { project, user } = action.payload;
 
-    console.log("getting all parameters for user " + user.username + " in project " + project.project.name + "...");
+    console.log("getting allmy parameters for user " + user.username + " in project " + project.project.name + "...");
 
     try {
         const response = yield call(getAllProjectUserParamsRequest, project.project.internalId, user);
 
-        if(response) {
+        if(!response.error) {
             let paramsList = parseParamsXml(response);
             yield put(getAllProjectUserParamsSucceeded({user, project, params:paramsList}));
         }else{
             yield put(getAllProjectUserParamsFailed(response));
         }
-    } finally {
+    } catch(e){
+        yield put(getAllProjectUserParamsFailed(e));
+    }
+    finally {
         const msg = `get all project user params thread closed`;
         yield msg;
     }

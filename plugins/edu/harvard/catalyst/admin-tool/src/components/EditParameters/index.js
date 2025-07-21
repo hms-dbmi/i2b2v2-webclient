@@ -232,6 +232,15 @@ export const EditParameters = ({
         saveStatusConfirm();
     }, []);
 
+    const CustomNoRowsOverlay = () => {
+        return (
+            <div className={"tableListingOverlay"}>
+                { allParamStatus !== "FAIL" && <div className={"listingStatusMsg"} >No parameters</div> }
+                { allParamStatus === "FAIL" && <div className={"listingStatusMsg listingStatusErrorMsg"} >There was an error retrieving existing parameters</div>}
+            </div>
+        );
+    };
+
     const isCellEditable = (params) => {
         return  (params.field !== "name" || (params.field === "name" && !params.row.internalId));
     }
@@ -281,6 +290,9 @@ export const EditParameters = ({
                         {
                             outline: 'none',
                         },
+                }}
+                slots={{
+                    noRowsOverlay: CustomNoRowsOverlay,
                 }}
             />
         );

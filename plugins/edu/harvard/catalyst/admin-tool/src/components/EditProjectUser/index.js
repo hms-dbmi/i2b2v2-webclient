@@ -9,12 +9,10 @@ import {
 import {Tab, Tabs} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from "@mui/material/Button";
 import "./EditProjectUser.scss";
-import {selectedProject} from "../../reducers";
 
 
 export const EditProjectUser = ({project, user,  setIsEditingUser}) => {
