@@ -79,7 +79,9 @@ export default class Table {
             if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
         } catch(e) {
             console.error("Error in QueryStatus:Table.update()");
+            return false;
         }
+        return true;
     }
 
 

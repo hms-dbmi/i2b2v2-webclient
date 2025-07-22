@@ -38,6 +38,7 @@ export default class Download {
         } catch(e) {
             console.error("Error in QueryStatus:Download.update()");
         }
+        return false;
     }
 
     redraw(width) {

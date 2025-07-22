@@ -509,6 +509,9 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
                             if (vizToHide !== forcedInitialDisplay[0]) vizToHide.visualization.hide();
                         }
                     }
+                } else {
+                    // by default hide the visualization module parent frame
+                    componentParentEl.style.display = "none";
                 }
             }
         }
@@ -652,9 +655,14 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
         }
 
         // fire off data update calls to the visualization components for this QRI
+        let showVizGroup = false;
         this.reference.componentInstances.forEach((vizComponent) => {
-            if (typeof vizComponent.visualization !== 'undefined') vizComponent.visualization.update(results.refXML);
+            if (typeof vizComponent.visualization !== 'undefined') if (vizComponent.visualization.update(results.refXML) === true) showVizGroup = true;
         });
+        if (showVizGroup) {
+            // display the main frame
+            this.reference.componentInstances[0].parentDisplayEl.style.display = '';
+        }
 
         const validComponentCount = this.reference.componentInstances.filter((vizComponent) => typeof vizComponent.visualization !== 'undefined').length;
 

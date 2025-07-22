@@ -171,10 +171,11 @@ export default class BarGraph {
 
             // update the viewport element to the height of the visualization
             if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
-
         } catch(e) {
             console.error("Error in QueryStatus:BarGraph.update()");
+            return false;
         }
+        return true;
     }
 
     redraw(width) {

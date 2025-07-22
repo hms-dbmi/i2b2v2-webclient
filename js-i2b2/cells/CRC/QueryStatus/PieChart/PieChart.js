@@ -220,7 +220,9 @@ export default class PieChart {
             this.change(this.data.result);
         } catch(e) {
             console.error("Error in QueryStatus:PieChart.update()");
+            return false;
         }
+        return true;
     }
 
     redraw(width) {

@@ -323,11 +323,13 @@ export default class ZipcodeMap {
 
         } catch (e) {
             console.error("Error in QueryStatus:ZipcodeMap.update()");
+            return false;
         }
         if (this.isVisible) {
             this.config.displayEl.style.display = "block";
             this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
         }
+        return true;
     }
 
 

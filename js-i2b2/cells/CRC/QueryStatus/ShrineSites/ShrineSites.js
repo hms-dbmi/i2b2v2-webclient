@@ -211,12 +211,14 @@ export default class ShrineSites {
             $(".status-error.result[data-error-msg]").on('click', (e) => {
                 alert(e.target.__data__.error);
             });
-
         } catch(e) {
             console.error("Error in QueryStatus:ShrineSites.update()");
+            return false;
         }
         this.config.displayEl.style.display = "block";
         this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
+        // only display if we have rows returned
+        if (Object.keys(this.data).length > 0) return true;
     }
 
     redraw(width) {

@@ -96,7 +96,9 @@ export default class Count {
              refContainer.style.display = 'block';
         } catch(e) {
             console.error("Error in QueryStatus:Count.update()");
+            return false;
         }
+        return true;
     }
 
     redraw(width) {
