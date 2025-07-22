@@ -50,7 +50,7 @@ const parseParamsXml = (allParamsXml) => {
 export function* doGetAllProjectUserParameters(action) {
     const { project, user } = action.payload;
 
-    console.log("getting allmy parameters for user " + user.username + " in project " + project.project.name + "...");
+    console.log("getting all parameters for user " + user.username + " in project " + project.project.name + "...");
 
     try {
         const response = yield call(getAllProjectUserParamsRequest, project.project.internalId, user);
@@ -62,6 +62,7 @@ export function* doGetAllProjectUserParameters(action) {
             yield put(getAllProjectUserParamsFailed(response));
         }
     } catch(e){
+        console.error("Error retrieving project user parameters. ", e);
         yield put(getAllProjectUserParamsFailed(e));
     }
     finally {

@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import {
+    getAllProjectUserParamsStatusConfirmed,
     saveProjectUserParam,
     saveProjectUserParamStatusConfirmed,
 } from "../../actions";
@@ -9,6 +10,7 @@ import "./EditProjectUserParameters.scss";
 
 export const EditProjectUserParameters = ({selectedProject,
                                           projectUser,
+                                          projectUserParamStatus,
                                           updatedParams,
                                           updateParams,
                                           title,
@@ -16,8 +18,6 @@ export const EditProjectUserParameters = ({selectedProject,
                                           setPaginationModel
 }) => {
     const [saveStatus, setSaveStatus] = useState("");
-    const [userParamStatus, setUserParamStatus] = useState("");
-
     const dispatch = useDispatch();
 
     const saveParam = (param) => {
@@ -30,6 +30,10 @@ export const EditProjectUserParameters = ({selectedProject,
         dispatch(saveProjectUserParamStatusConfirmed());
     }
 
+    const allParamsStatusConfirm = () =>{
+        dispatch(getAllProjectUserParamsStatusConfirmed());
+    }
+
 
     useEffect(() => {
         if(selectedProject.paramStatus.status === "SAVE_SUCCESS"){
@@ -38,10 +42,6 @@ export const EditProjectUserParameters = ({selectedProject,
 
         if(selectedProject.paramStatus.status === "SAVE_FAIL"){
             setSaveStatus(selectedProject.paramStatus);
-        }
-
-        if(selectedProject.userParamStatus === "FAIL"){
-            setUserParamStatus("FAIL");
         }
     }, [selectedProject]);
 
@@ -54,7 +54,7 @@ export const EditProjectUserParameters = ({selectedProject,
                 title={title}
                 saveParam={saveParam}
                 saveStatus={saveStatus}
-                allParamStatus={userParamStatus}
+                allParamStatus={projectUserParamStatus}
                 saveStatusConfirm={saveStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}

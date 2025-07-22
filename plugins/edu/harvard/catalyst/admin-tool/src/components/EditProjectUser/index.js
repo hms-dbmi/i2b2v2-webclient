@@ -100,6 +100,7 @@ export const EditProjectUser = ({project, user,  setIsEditingUser}) => {
                         && <EditProjectUserParameters
                             selectedProject={project}
                             projectUser={selectedUser.user}
+                            projectUserParamStatus= {selectedUser.allUserParamStatus}
                             updatedParams={updatedParams}
                             updateParams={setUpdatedParams}
                             paginationModel={paginationModel}

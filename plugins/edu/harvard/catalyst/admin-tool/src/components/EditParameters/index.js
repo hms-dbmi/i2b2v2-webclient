@@ -220,12 +220,6 @@ export const EditParameters = ({
             setShowStatus(true);
             setStatusSeverity("error");
         }
-
-        if(allParamStatus === "FAIL"){
-            setStatusMsg("ERROR: failed to reload parameters");
-            setShowStatus(true);
-            setStatusSeverity("error");
-        }
     }, [saveStatus]);
 
     useEffect(() => {
@@ -338,6 +332,7 @@ export const EditParameters = ({
 
     const handleStatusClose = () => {
         saveStatusConfirm();
+        //allParamsStatusConfirm();
         setShowStatus(false);
     };
 

@@ -51,13 +51,17 @@ export function* doGetAllGlobalParameters(action) {
     try {
         const response = yield call(getAllGlobalParamsRequest);
 
-        if(response) {
+        if(!response.error) {
             let paramsList = parseParamsXml(response);
             yield put(getAllGlobalParamsSucceeded({params:paramsList}));
         }else{
             yield put(getAllGlobalParamsFailed(response));
         }
-    } finally {
+    } catch(e){
+        console.error("Error retrieving global parameters. ", e);
+        yield put(getAllGlobalParamsFailed(e));
+    }
+    finally {
         const msg = `get all global params thread closed`;
         yield msg;
     }

@@ -55,13 +55,17 @@ export function* doGetAllProjectParameters(action) {
     try {
         const response = yield call(getAllProjectParamsRequest, project.internalId);
 
-        if(response) {
+        if(!response.error) {
             let paramsList = parseParamsXml(response);
             yield put(getAllProjectParamsSucceeded({project: project, params:paramsList}));
         }else{
             yield put(getAllProjectParamsFailed(response));
         }
-    } finally {
+    } catch(e){
+        console.error("Error retrieving project parameters. ", e);
+        yield put(getAllProjectParamsFailed(e));
+    }
+    finally {
         const msg = `get all project params thread closed`;
         yield msg;
     }

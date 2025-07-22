@@ -1,9 +1,8 @@
 import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import {
     saveUserParam, saveUserParamStatusConfirmed,
-    deleteUserParam, deleteUserParamStatusConfirmed, getAllUserParamsStatusConfirmed, deleteGlobalParamStatusConfirmed,
+    getAllUserParamsStatusConfirmed,
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 
@@ -17,7 +16,6 @@ export const EditUserParameters = ({selectedUser,
                                    setPaginationModel
 }) => {
     const [saveStatus, setSaveStatus] = useState("");
-    const [userParamStatus, setUserParamStatus] = useState("");
 
     const dispatch = useDispatch();
 
@@ -31,17 +29,16 @@ export const EditUserParameters = ({selectedUser,
         dispatch(saveUserParamStatusConfirmed());
     }
 
+    const allParamsStatusConfirm = () =>{
+        dispatch(getAllUserParamsStatusConfirmed());
+    }
+
     useEffect(() => {
         if(selectedUser.paramStatus.status === "SAVE_SUCCESS"){
             setSaveStatus(selectedUser.paramStatus);
         }
         if(selectedUser.paramStatus.status === "SAVE_FAIL"){
             setSaveStatus(selectedUser.paramStatus);
-        }
-
-        if(selectedUser.allUserParamStatus === "FAIL"){
-            dispatch(getAllUserParamsStatusConfirmed());
-            setUserParamStatus("FAIL");
         }
 
     }, [selectedUser]);
@@ -55,7 +52,7 @@ export const EditUserParameters = ({selectedUser,
                 title={title}
                 saveParam={saveParam}
                 saveStatus={saveStatus}
-                allParamStatus={userParamStatus}
+                allParamStatus={selectedUser.allUserParamStatus}
                 saveStatusConfirm={saveStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import {
     saveProjectParam, saveProjectParamStatusConfirmed,
-    getAllProjectParamsStatusConfirmed
+    getAllProjectParamsStatusConfirmed,
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 import "./EditProjectParameters.scss";
@@ -11,13 +11,13 @@ import "./EditProjectParameters.scss";
 export const EditProjectParameters = ({selectedProject,
                                           updatedParams,
                                           updateParams,
+                                          projectParamStatus,
                                           doSave,
                                           setSaveCompleted,
                                           paginationModel,
                                           setPaginationModel
                                          }) => {
     const [saveStatus, setSaveStatus] = useState("");
-    const [projectParamStatus, setProjectParamStatus] = useState("");
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -36,6 +36,9 @@ export const EditProjectParameters = ({selectedProject,
         dispatch(saveProjectParamStatusConfirmed());
     }
 
+    const allParamsStatusConfirm = () =>{
+        dispatch(getAllProjectParamsStatusConfirmed());
+    }
 
     useEffect(() => {
         if(selectedProject.paramStatus.status === "SAVE_SUCCESS"){
@@ -43,11 +46,6 @@ export const EditProjectParameters = ({selectedProject,
         }
         if(selectedProject.paramStatus.status === "SAVE_FAIL"){
             setSaveStatus(selectedProject.paramStatus);
-        }
-
-        if(selectedProject.allParamStatus === "FAIL"){
-            dispatch(getAllProjectParamsStatusConfirmed());
-            setProjectParamStatus("FAIL");
         }
 
     }, [selectedProject]);

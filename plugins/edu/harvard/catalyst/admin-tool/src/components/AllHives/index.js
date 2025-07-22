@@ -1,12 +1,9 @@
 import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import {Tab, Tabs} from "@mui/material";
 import {
-    deleteProjectUserParamStatusConfirmed,
     getAllGlobalParams,
     getAllHives,
-    saveProjectUserParamStatusConfirmed
 } from "actions";
 import {Loader, DomainSettings, EditGlobalParameters} from "components";
 import "./AllHives.scss";

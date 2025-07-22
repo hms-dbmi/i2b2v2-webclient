@@ -33,6 +33,7 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
             return SelectedProject({
                 ...state,
                 project,
+                allParamStatus: null,
                 isFetchingParams: true,
             });
         }
@@ -57,12 +58,14 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
                 project,
                 params: paramsList,
                 isFetchingParams: false,
+                allParamStatus: "SUCCESS"
             });
         }
         case  GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS_FAILED: {
             return SelectedProject({
                 ...state,
                 isFetchingParams: false,
+                allParamStatus: "FAIL"
             });
         }
 
@@ -70,7 +73,7 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
 
             return SelectedUser({
                 ...state,
-                userParamStatus: null
+                allParamStatus: null
             });
         }
 

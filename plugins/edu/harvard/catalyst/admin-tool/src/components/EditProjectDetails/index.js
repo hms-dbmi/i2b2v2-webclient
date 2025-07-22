@@ -122,6 +122,7 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                     updatedParams={updatedParams}
                     updateParams={setUpdatedParams}
                     doSave={doSave}
+                    projectParamStatus={selectedProject.allParamStatus}
                     setSaveCompleted={setSaveCompleted}
                     paginationModel={paginationModel}
                     setPaginationModel={setPaginationModel}

@@ -55,13 +55,17 @@ export function* doGetAllUserParameters(action) {
     try {
         const response = yield call(getAllUserParamsRequest, user.username);
 
-        if(response) {
+        if(!response.error) {
             let paramsList = parseUserParamsXml(user, response);
             yield put(getAllUserParamsSucceeded({user: user, params:paramsList}));
         }else{
             yield put(getAllUserParamsFailed(response));
         }
-    } finally {
+    } catch(e){
+        console.error("Error retrieving user parameters. ", e);
+        yield put(getAllUserParamsFailed(e));
+    }
+    finally {
         const msg = `get all user params thread closed`;
         yield msg;
     }
