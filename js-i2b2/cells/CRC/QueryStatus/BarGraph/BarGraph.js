@@ -55,6 +55,7 @@ export default class BarGraph {
                     // parse the data and put the results into the new data slot
                     this.data.new = parseData(resultXML);
                 }
+                if (typeof this.data.new === 'undefined') return;
             }
 
             // update the bar graph
@@ -182,7 +183,6 @@ export default class BarGraph {
         try {
             this.width = width;
             this.update();
-            // this.config.displayEl.innerHTML = "{" + this.constructor.name + "} is " + width + " pixels wide";
         } catch(e) {
             console.error("Error in QueryStatus:BarGraph.redraw()");
         }

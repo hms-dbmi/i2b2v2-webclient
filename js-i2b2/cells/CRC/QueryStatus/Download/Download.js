@@ -29,6 +29,7 @@ export default class Download {
                     resultXML = resultXML[0].firstChild.nodeValue;
                     // parse the data and put the results into the new data slot
                     this.data = parseData(resultXML);
+                    if (typeof this.data === 'undefined') return;
                     // add the query name to the data
                     this.data.title = this.record.description.replaceAll("\"","'"); // replace " with ' to prevent CSV errors
                 } else {
