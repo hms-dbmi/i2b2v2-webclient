@@ -60,10 +60,10 @@
       "iconClass": "bi bi-globe-americas"
     },
     "PATIENTCOUNTMAP": {
-      "name": "Patient Count Map",
+      "name": "Map Viewer",
       "source": "PatientCountMap/PatientCountMap.js",
       "CSS": "PatientCountMap/PatientCountMap.css",
-      "iconClass": "bi bi-pin-map-fill",
+      "iconClass": "bi bi-globe2",
       "displayOrder": 200,
       "displayForUnregistered": true,
       "notInReport": true

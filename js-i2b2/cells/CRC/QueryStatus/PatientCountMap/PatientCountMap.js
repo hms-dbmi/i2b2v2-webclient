@@ -1,7 +1,6 @@
 const mapSettings = {
     "mapLayer": {
-        "urlTemplate": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "attribution": '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        "urlTemplate": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
         "maxZoom": 16
     }
 }
@@ -124,7 +123,7 @@ export default class PatientCountMap {
                     max = Math.max(max, count);
                 });
 
-                let scaleRadiusFunc = d3.scaleLinear([min, max], [15, 30]);
+                let scaleRadiusFunc = d3.scaleLinear([min, max], [15, 20]);
 
                 siteData.forEach(siteResult => {
                     let patientCount = siteResult.count;
