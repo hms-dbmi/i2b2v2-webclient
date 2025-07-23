@@ -32,3 +32,7 @@
 .viztype-PATIENTCOUNTMAP .zoom-links-label {
     font-weight: bold;
 }
+
+.viztype-PATIENTCOUNTMAP .leaflet-attribution-flag {
+    display: none !important;
+}
