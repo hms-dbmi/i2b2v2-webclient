@@ -36,6 +36,8 @@ const parseUserParamsXml = (user, allUserParamsXml) => {
         status = ParamStatus[status];
         if(name && dataType) {
             dataType = DataType[dataType];
+            name = decodeHTML(name);
+
             if(value.length > 0){
                 value = decodeHTML(value);
             }

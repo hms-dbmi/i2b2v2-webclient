@@ -36,6 +36,7 @@ const parseParamsXml = (allParamsXml) => {
         if(name && dataType) {
             dataType = DataType[dataType];
             status = ParamStatus[status];
+            name = decodeHTML(name);
             if(value.length > 0){
                 value = decodeHTML(value);
             }

@@ -15,12 +15,13 @@ const saveParamRequest = (username, param) => {
         paramIdStr = 'id="'+param.internalId+'"';
     }
 
-    let dataValue = encodeHTML(param.value);
+    let paramName = encodeHTML(param.name);
+    let paramValue = encodeHTML(param.value);
 
     const msg_xml = '<user_name>'+username +'</user_name><param '
         + paramIdStr +' datatype="'+ param.dataType
-        +'" name="'+param.name +'" status="'+param.status +'">'
-        + dataValue
+        +'" name="'+paramName +'" status="'+param.status +'">'
+        + paramValue
         +'</param>';
 
     let data = {
