@@ -54,10 +54,10 @@
       "notInReport": true
     },
     "ZIPCODEMAP": {
-      "name": "Zipcode Map",
+      "name": "Map View",
       "source": "ZipcodeMap/ZipcodeMap.js",
       "CSS": "ZipcodeMap/ZipcodeMap.css",
-      "iconClass": "bi bi-globe-americas"
+      "iconClass": "bi bi-globe2"
     },
     "PATIENTCOUNTMAP": {
       "name": "Map Viewer",

@@ -437,6 +437,8 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
 
                 // get the title
                 const refComponentTitle = componentParentEl.querySelector(".title");
+                // set an initial title value
+                refComponentTitle.textContent = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((a) => a.QRS_Type === code).map((b) => b.title)[0];
 
                 let componentIndex = 0;
                 for (let componentConfig of validComponents) {
@@ -486,7 +488,10 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
                     // instantiate visualization
                     let instantiationResults = functInstantiateViz(code, componentConfig, componentInstanceObj, componentIndex);
                     if (instantiationResults === false) {
-                        console.error("Failed to Instantiate viz module");
+                        console.error("Failed to Instantiate " + code + ":" + componentConfig.componentCode + " viz module");
+                        let badComponent = qrs_entries[code].componentInstances.pop();
+                        badComponent.displayEl.parentElement.removeChild(badComponent.displayEl);
+                        if (badComponent.dropdownEl) badComponent.dropdownEl.parentElement.removeChild(badComponent.dropdownEl);
                     }
                 }
 
@@ -504,6 +509,9 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
                             if (vizToHide !== forcedInitialDisplay[0]) vizToHide.visualization.hide();
                         }
                     }
+                } else {
+                    // by default hide the visualization module parent frame
+                    componentParentEl.style.display = "none";
                 }
             }
         }
@@ -513,7 +521,6 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     for (let code of Object.keys(qrs_entries)) {
         i2b2.CRC.QueryStatus.model.visualizations[code] = qrs_entries[code];
     }
-
 };
 
 
@@ -648,12 +655,19 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
         }
 
         // fire off data update calls to the visualization components for this QRI
+        let showVizGroup = false;
         this.reference.componentInstances.forEach((vizComponent) => {
-            vizComponent.visualization.update(results.refXML);
+            if (typeof vizComponent.visualization !== 'undefined') if (vizComponent.visualization.update(results.refXML) === true) showVizGroup = true;
         });
+        if (showVizGroup) {
+            // display the main frame
+            this.reference.componentInstances[0].parentDisplayEl.style.display = '';
+        }
+
+        const validComponentCount = this.reference.componentInstances.filter((vizComponent) => typeof vizComponent.visualization !== 'undefined').length;
 
         // see if we still need to continue polling
-        if (!i2b2.CRC.QueryStatus.haltOnStatus.includes(rec.QRS_Status)) {
+        if (!i2b2.CRC.QueryStatus.haltOnStatus.includes(rec.QRS_Status) && validComponentCount > 0) {
             // status is not in the list of Halt statuses, prepare for poll to execute in the future
             if (rec.QRS_DisplayType === "CATNUM") {
                 // get a reference to the correct visualization
@@ -665,7 +679,7 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
             }
         } else {
             // done polling, see if we hide because it has 0 patients
-            if (parseInt(rec.size) === 0) {
+            if (parseInt(rec.size) === 0 || validComponentCount === 0) {
                 // hide all components that are not in this list
                 let hide = true;
                 let components = this.reference.componentInstances.map((d) => d.definition.componentCode);
@@ -685,15 +699,12 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
         setTimeout(() => {
             // only continue polling while the QRS is still in the QueryStatusEngine's model
             if (!Object.keys(i2b2.CRC.QueryStatus.model.QRS).includes(rec.QRS_ID)) return;
+            // see if we still need to continue polling
+            if (i2b2.CRC.QueryStatus.haltOnStatus.includes(rec.QRS_Status)) return;
             // send poll request
             i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryResultInstanceId("CRC:QueryStatus", {qr_key_value: rec.QRS_ID}, scopedCallbackQRSI);
         }, i2b2.CRC.QueryStatus.shortestPollInterval);
     }
-};
-
-
-i2b2.CRC.QueryStatus.renderVizModule = function() {
-
 };
 
 

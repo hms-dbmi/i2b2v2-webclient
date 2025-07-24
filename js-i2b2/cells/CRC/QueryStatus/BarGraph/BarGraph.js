@@ -55,6 +55,7 @@ export default class BarGraph {
                     // parse the data and put the results into the new data slot
                     this.data.new = parseData(resultXML);
                 }
+                if (typeof this.data.new === 'undefined') return;
             }
 
             // update the bar graph
@@ -171,17 +172,17 @@ export default class BarGraph {
 
             // update the viewport element to the height of the visualization
             if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
-
         } catch(e) {
             console.error("Error in QueryStatus:BarGraph.update()");
+            return false;
         }
+        return true;
     }
 
     redraw(width) {
         try {
             this.width = width;
             this.update();
-            // this.config.displayEl.innerHTML = "{" + this.constructor.name + "} is " + width + " pixels wide";
         } catch(e) {
             console.error("Error in QueryStatus:BarGraph.redraw()");
         }

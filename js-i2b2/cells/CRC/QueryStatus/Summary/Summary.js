@@ -46,8 +46,10 @@ export default class Summary {
                 $(this.config.displayEl).empty();
                 $(this.template(this.record)).appendTo(this.config.displayEl);
             }
+            return true;
         } catch(e) {
             console.error("Error in QueryStatus:Summary.update()");
+            return false;
         }
     }
 

@@ -51,6 +51,7 @@ export default class Table {
                     resultXML = resultXML[0].firstChild.nodeValue;
                     // parse the data and put the results into the new data slot
                     this.data = parseData(resultXML);
+                    if (typeof this.data === 'undefined') return;
                 }
             }
 
@@ -79,7 +80,9 @@ export default class Table {
             if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
         } catch(e) {
             console.error("Error in QueryStatus:Table.update()");
+            return false;
         }
+        return true;
     }
 
 

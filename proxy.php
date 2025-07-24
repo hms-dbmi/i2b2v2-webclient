@@ -7,7 +7,7 @@
 	Author: Nick Benik
 	Contributors: Nich Wattanasin
 				  Mike Mendis
-	Last Revised: 04-26-23
+	Last Revised: 07-15-25
 
 *****************************************************************
 
@@ -123,14 +123,16 @@ if ($PostBody=="") {
     // ---------------------------------------------------
 	//   white-list processing on the URL
 	// ---------------------------------------------------
-	$isAllowed = false;
 	$requestedURL = strtoupper($proxyURL);
+	$sec_fix_request = parse_url($requestedURL);
 	foreach ($WHITELIST as $entryValue) {
-		$checkValue = strtoupper(substr($requestedURL, 0, strlen($entryValue)));
-		if ($checkValue == strtoupper($entryValue)) {
-			$isAllowed = true;
-			break;
-		}
+	    $isAllowed = true;
+	    // additional security checks
+	    $sec_fix_whitelist = parse_url(strtoupper($entryValue));
+	    if ($sec_fix_whitelist['scheme'] != $sec_fix_request['scheme']) $isAllowed = false;
+	    if ($sec_fix_whitelist['host'] != $sec_fix_request['host']) $isAllowed = false;
+	    if ($sec_fix_whitelist['port'] != $sec_fix_request['port']) $isAllowed = false;
+		if ($isAllowed == true) break;
 	}
 	if (!$isAllowed) {
 		// security as failed - exit here and don't allow one more line of execution the opportunity to reverse this
@@ -140,11 +142,22 @@ if ($PostBody=="") {
 	//   black-list processing on the URL
 	// ---------------------------------------------------
 	foreach ($BLACKLIST as $entryValue) {
-		$checkValue = strtoupper(substr($requestedURL, 0, strlen($entryValue)));
-		if ($checkValue == strtoupper($entryValue)) {
+	    // additional security checks
+	    $sec_fix_blacklist = parse_url(strtoupper($entryValue));
+		if (($sec_fix_blacklist['scheme'] == $sec_fix_request['scheme']) &&
+            ($sec_fix_blacklist['host'] == $sec_fix_request['host']) &&
+            ($sec_fix_blacklist['port'] == $sec_fix_request['port'])) {
+
 			// security as failed - exit here and don't allow one more line of execution the opportunity to reverse this
 			die("The proxy has refused to relay your request.");
 		}
+	}
+
+	$newXML = $PostBody;
+	// Do not allow DOCTYPE declarations
+	$replace_match = '/^.*(?:!DOCTYPE).*$(?:\r\n|\n)?/m';
+	if (preg_match($replace_match, $newXML)) {
+        exit('DOCTYPE not allowed to be proxied');
 	}
 
 	if ($pmCheckAllRequests) {

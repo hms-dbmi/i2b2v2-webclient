@@ -110,6 +110,94 @@
     "TABLE": true,
     "DOWNLOAD": true
   },
+  "PATIENT_ZIP_COUNT_SHRINE_XML": {
+    "ZIPCODEMAP": {
+      "zooms": [
+        {
+          "lat": 42.33023458841124,
+          "long": -71.13364100605521,
+          "zoom": 11,
+          "title": "Boston",
+          "tooltip": "Boston and surrounding area",
+          "initial": true
+        },
+        {
+          "lat": 42.01652429956454,
+          "long": -71.7354813533802,
+          "zoom": 8,
+          "title": "Massachussetts",
+          "tooltip": "State of Massachussetts"
+        },
+        {
+          "lat": 42.33880604791197,
+          "long": -71.1066726902258,
+          "zoom": 7,
+          "title": "New England",
+          "tooltip": "New England Area"
+        }
+      ],
+      "clickBox": {
+        "options": {
+          "closeButton": "true",
+          "className": "onclick-box",
+          "autoClose": false,
+          "closeOnClick": false
+        },
+        "template": "<b>[{{ZCTA5CE10}}]</b><br/>{{~count}} patients"
+      },
+      "hoverBox": {
+        "position": "topright",
+        "className": "onhover-box",
+        "__default": "<h4>Patient Count</h4>Hover over an area",
+        "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{~count}} patients</span>"
+      },
+      "legendBox": {
+        "position": "bottomright",
+        "options": {},
+        "templates": {
+          "root": "<div><h4>Patient Count</h4></div><div>{{entries}}</div>",
+          "auto": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>",
+          "min-max": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min}}&ndash;{{~max}}</span></div>",
+          "no-min": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>&lt;{{~max}}</span></div>",
+          "no-max": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min}}+</span></div>"
+        }
+      },
+      "map": {
+        "_tiles": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+        "_labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+        "tiles": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
+        "labelTiles": "https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png",
+        "maxZoom": 18,
+        "zipAttribName": "ZCTA5CE10",
+        "zipRegEx": "^(.*)[0-9]{5}",
+        "colors": [
+          {"color": "#d73027"},
+          {"color": "#f46d43"},
+          {"color": "#fdae61"},
+          {"color": "#fee090"},
+          {"color": "#ffffbf"},
+          {"color": "#e0f3f8"},
+          {"color": "#abd9e9"},
+          {"color": "#74add1"},
+          {"color": "#4575b4"}
+        ],
+        "styles": {
+          "norm": {
+            "weight": 1,
+            "opacity": 1,
+            "color": "#000",
+            "fillOpacity": 0.5
+           },
+          "hover": {
+            "weight": 3,
+            "_dashArray": "4,6",
+            "color": "#F00",
+            "fillOpacity": 0.5
+          }
+        }
+      }
+    }
+  },
   "PATIENT_TOP25MEDS_XML": {
     "TABLE": true,
     "ZIPCODEMAP": {
@@ -130,19 +218,6 @@
           "initial": true
   }
       ],
-      "styles": {
-        "norm": {
-          "weight": 1,
-          "opacity": 1,
-          "color": "#000",
-          "fillOpacity": 0.3
-        },
-        "hover": {
-          "weight": 3,
-          "dashArray": "4,6",
-          "color": "#FFF"
-        }
-      },
       "clickBox": {
         "options": {
           "closeButton": "true",
@@ -158,17 +233,34 @@
         "__default": "<h4>Patient Count</h4>Hover over an area",
         "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{~count}} patients</span>"
       },
-      "colors": [
-        {"color": "#4d4d4d"},
-        {"color": "#878787"},
-        {"color":"#bababa"},
-        {"color":"#e0e0e0"},
-        {"color":"#ffffff"},
-        {"color":"#fddbc7"},
-        {"color":"#f4a582"},
-        {"color":"#d6604d"},
-        {"color":"#b2182b"}
-      ]
+      "map": {
+        "tiles": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+        "maxZoom": 16,
+        "colors": [
+            {"color": "#4d4d4d"},
+            {"color": "#878787"},
+            {"color": "#bababa"},
+            {"color": "#e0e0e0"},
+            {"color": "#ffffff"},
+            {"color": "#fddbc7"},
+            {"color": "#f4a582"},
+            {"color": "#d6604d"},
+            {"color": "#b2182b"}
+        ],
+        "styles": {
+          "norm": {
+            "weight": 1,
+            "opacity": 1,
+            "color": "#000",
+            "fillOpacity": 0.3
+          },
+          "hover": {
+            "weight": 3,
+            "dashArray": "4,6",
+            "color": "#FFF"
+          }
+        }
+      }
     }
-    }
+  }
 }

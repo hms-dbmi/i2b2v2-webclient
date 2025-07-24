@@ -3,6 +3,11 @@
     width: 100%;
 }
 
+.viztype-ZIPCODEMAP .zoom-links-label {
+    font-weight: bold;
+    margin-left: .5rem;
+}
+
 .viztype-ZIPCODEMAP ul.zoom-links {
     display: inline-block;
     padding: 0;
@@ -30,7 +35,8 @@
 }
 
 
-.viztype-ZIPCODEMAP div.hoverinfo-box {
+.viztype-ZIPCODEMAP div.hoverinfo-box,
+.viztype-ZIPCODEMAP div.legend-box {
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
     background: white;
@@ -40,13 +46,43 @@
     -webkit-transition: opacity 0.3s ease-in-out;
     -moz-transition: opacity 0.3s ease-in-out;
     transition: opacity 0.3s ease-in-out;
-    min-width: 140px;
 }
 
+.viztype-ZIPCODEMAP div.hoverinfo-box {
+    min-width: 140px;
+}
+.viztype-ZIPCODEMAP div.legend-box {
+    min-width: 100px;
+}
 
-.viztype-ZIPCODEMAP div.hoverinfo-box h4 {
+.viztype-ZIPCODEMAP div.hoverinfo-box h4,
+.viztype-ZIPCODEMAP div.legend-box h4 {
     font: 16px Arial, Helvetica, sans-serif;
     font-weight: bold;
     margin: 0 0 5px;
     color: #777;
 }
+
+.viztype-ZIPCODEMAP div.legend-box i {
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+    position: relative;
+    top: .15rem;
+    margin-right: .3rem;
+    outline: 1px solid #000;
+    outline-offset: -1px;
+}
+
+.viztype-ZIPCODEMAP div.legend-box *.selected i {
+    outline: 3px solid #000;
+    outline-offset: -3px;
+}
+
+
+.viztype-ZIPCODEMAP .leaflet-attribution-flag {
+    display: none !important;
+}
+
+
+

@@ -71,12 +71,28 @@ export default class Count {
             let rawCount = parseInt(count).toLocaleString();
             if (this.isShrine) {
                 // get the extra site information
-                const xmlSHRINE = i2b2.h.Unescape(i2b2.h.XPath(data, "//xml_value")[0].innerHTML);
-                const sitesTotal = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@sites")[0].nodeValue).toLocaleString();
-                const sitesDone = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@complete")[0].nodeValue).toLocaleString();
-                const status = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@status")[0].textContent;
-                const obfuscateFloor = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@floorThresholdNumber")[0].nodeValue).toLocaleString();
-                const obfuscateDisplay = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@obfuscatedDisplayNumber")[0].nodeValue).toLocaleString();
+                let xmlSHRINE = i2b2.h.Unescape(i2b2.h.XPath(data, "//xml_value")[0].innerHTML);
+                let sitesTotal = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@sites")
+                if (sitesTotal.length > 0) {
+                    sitesTotal = parseInt(sitesTotal[0].nodeValue).toLocaleString();
+                } else {
+                    // no data present, signal that we have nothing to display
+                    return false;
+                }
+                let sitesDone = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@complete")[0].nodeValue).toLocaleString();
+                let status = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@status")[0].textContent;
+                let obfuscateFloor = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@floorThresholdNumber");
+                if (obfuscateFloor.length > 0) {
+                    obfuscateFloor = parseInt(obfuscateFloor[0].nodeValue);
+                } else {
+                    obfuscateFloor = 0;
+                }
+                let obfuscateDisplay = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@obfuscatedDisplayNumber");
+                if (obfuscateDisplay.length > 0) {
+                    obfuscateDisplay = parseInt(obfuscateDisplay[0].nodeValue).toLocaleString();
+                } else {
+                    obfuscateDisplay = 0;
+                }
 
                 // count
                 if (parseInt(count) <= obfuscateFloor) {
@@ -96,7 +112,9 @@ export default class Count {
              refContainer.style.display = 'block';
         } catch(e) {
             console.error("Error in QueryStatus:Count.update()");
+            return false;
         }
+        return true;
     }
 
     redraw(width) {
