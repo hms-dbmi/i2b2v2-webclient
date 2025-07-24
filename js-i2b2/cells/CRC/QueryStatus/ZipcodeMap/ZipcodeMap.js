@@ -73,7 +73,7 @@ export default class ZipcodeMap {
                     $(this.config.template(renderdata)).appendTo(this.config.displayEl);
 
                     // connect the zoom link click events
-                    $('.zoom-link', this.config.displayEl).on('click', (e)=>{
+                    $('.zoom-link', self.config.displayEl).on('click', (e)=>{
                         let data = e.currentTarget.dataset;
                         self.map.setView([data.lat, data.long], data.zoom);
                         // delay by 50ms because we are going to lose the link as we just started a viewport change

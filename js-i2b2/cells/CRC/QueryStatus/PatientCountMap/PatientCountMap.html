@@ -1,0 +1,11 @@
+{{#if zoomList}}
+<div style="width: fit-content;">
+    <span class="zoom-links-label">Zoom:</span>
+    <ul class="zoom-links">
+        {{#each zoomList}}
+        <li><span class="zoom-link" data-index="{{@index}}" data-lat="{{lat}}" data-long="{{long}}" data-zoom="{{zoom}}" {{#if tooltip}}title="{{tooltip}}"{{/if}}>{{title}}</span></li>
+        {{/each}}
+    </ul>
+</div>
+{{/if}}
+<div class="patient-map"></div>

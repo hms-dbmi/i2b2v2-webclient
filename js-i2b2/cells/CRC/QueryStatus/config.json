@@ -58,6 +58,15 @@
       "source": "ZipcodeMap/ZipcodeMap.js",
       "CSS": "ZipcodeMap/ZipcodeMap.css",
       "iconClass": "bi bi-globe2"
+    },
+    "PATIENTCOUNTMAP": {
+      "name": "Map Viewer",
+      "source": "PatientCountMap/PatientCountMap.js",
+      "CSS": "PatientCountMap/PatientCountMap.css",
+      "iconClass": "bi bi-globe2",
+      "displayOrder": 200,
+      "displayForUnregistered": true,
+      "notInReport": true
     }
   },
   "displayOrder": [

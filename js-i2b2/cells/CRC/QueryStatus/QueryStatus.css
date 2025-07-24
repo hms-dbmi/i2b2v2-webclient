@@ -20,11 +20,6 @@
     margin-bottom: 3rem;
 }
 
-.QueryStatusComponent .title {
-    text-align: center;
-    font-weight: bold;
-}
-
 .QueryStatusComponent .viz-dropdown-select {
     float: right;
     top: -1rem;
@@ -44,7 +39,7 @@
     background-color: white;
     padding-left: 0;
     padding-right: 0;
-    z-index: 100;
+    z-index: 1000;
     display: block;
     border: none;
 }
@@ -114,8 +109,21 @@
 .QueryStatusComponent .title {
     padding: .5rem;
     border-bottom: 1px solid #ccc;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.20em;
+
 }
+
 .QueryStatusComponent .viz-dropdown-select {
     margin-top: -0.5rem;
     margin-bottom: 0;
+}
+
+.QueryStatusComponent table th {
+    font-size: 1.16em;
+}
+
+.QueryStatusComponent table tr td {
+    font-size: 1.11em;
 }
