@@ -27,6 +27,7 @@ export default class ZipcodeMap {
 
             // handle override settings in breakdowns.json for map tile info
             if (this.config.advancedConfig?.map.tiles) mapSettings.mapLayer.urlTemplate = this.config.advancedConfig.map.tiles;
+            if (this.config.advancedConfig?.map.labelTiles) mapSettings.mapLayer.urlLabelsTemplate = this.config.advancedConfig.map.labelTiles;
             if (this.config.advancedConfig?.map.maxZoom) mapSettings.mapLayer.maxZoom = this.config.advancedConfig.map.maxZoom;
 
             // generate the valid zipcode list if it does not already exist
@@ -113,6 +114,18 @@ export default class ZipcodeMap {
                     if (typeof mapSettings.mapLayer.attribution !== 'undefined') options.attribution = mapSettings.mapLayer.attribution;
                     L.tileLayer(mapSettings.mapLayer.urlTemplate, options).addTo(this.map);
 
+                    // see if we create a labels pane
+                    if (typeof mapSettings.mapLayer.urlLabelsTemplate !== 'undefined') {
+                        this.map.createPane('labels');
+                        let labelsPane = this.map.getPane('labels');
+                        labelsPane.style.zIndex = 650;
+                        labelsPane.style.pointerEvents = 'none';
+                        L.tileLayer(mapSettings.mapLayer.urlLabelsTemplate, {
+                            pane: 'labels'
+                        }).addTo(this.map);
+                    }
+
+
                     // create a hover control if it is configured
                     if (typeof this.config.advancedConfig?.hoverBox.template !== 'undefined') {
                         // create a hoverbox control
@@ -146,6 +159,113 @@ export default class ZipcodeMap {
                         };
                         this.hoverbox.addTo(this.map);
                     }
+
+                    // create a legend control if it is configured
+                    if (typeof this.config.advancedConfig?.legendBox.templates !== 'undefined') {
+                        // create a hoverbox control
+                        const legendConfig = self.config.advancedConfig.legendBox;
+                        let options = {};
+                        if (typeof legendConfig.position !== 'undefined') options.position = legendConfig.position;
+                        this.legendbox = L.control(options);
+                        this.legendbox.onAdd = (map) => {
+                            let className = "legend-box";
+                            if (typeof legendConfig.className !== 'undefined') className = className + ' ' + legendConfig.className;
+                            self.legendbox._div = L.DomUtil.create('div', className);
+                            self.legendbox._div.style.display = 'none';
+                            self.legendbox.update();
+                            self.legendbox._div.style.display = '';
+                            return self.legendbox._div;
+                        };
+                        this.legendbox.update = (data) => {
+                            if (typeof self.legendbox._div === 'undefined') return; // fixes race condition bug
+                            const colorsConfig = self.config.advancedConfig.map.colors;
+                            let entriesHtml = [];
+                            if (data) {
+                                for (let i=0; i < data.length; i++) {
+                                    let entryData = {
+                                        color: colorsConfig[i].color,
+                                        min: data[i].min,
+                                        max: data[i].max
+                                    };
+                                    // figure out our default template to use
+                                    let templateName;
+                                    if (typeof legendConfig.templates["auto"] !== 'undefined') {
+                                        templateName = "auto";
+                                    } else if (typeof legendConfig.templates["min-max"] !== 'undefined') {
+                                        templateName = "min-max";
+                                    }
+                                    // see if we override based on min or max being set on the map's color config entry
+                                    if (typeof colorsConfig[i].min === 'undefined' && typeof colorsConfig[i].max === 'undefined') {
+                                        // switch to auto template if it exists
+                                        if (typeof legendConfig.templates["auto"] !== 'undefined') templateName = "auto";
+                                    } else if (typeof colorsConfig[i].min === 'undefined') {
+                                        // switch to no-min
+                                        if (typeof legendConfig.templates["no-min"] !== 'undefined') templateName = "no-min";
+                                        entryData.max = colorsConfig[i].max;
+                                    } else if (typeof colorsConfig[i].max === 'undefined') {
+                                        // switch to no-max
+                                        if (typeof legendConfig.templates["no-max"] !== 'undefined') templateName = "no-max";
+                                        entryData.min = colorsConfig[i].min;
+                                    } else {
+                                        // min and max are both defined
+                                        entryData.min = colorsConfig[i].min;
+                                        entryData.max = colorsConfig[i].max;
+                                        // switch to min-max template if it exists
+                                        if (typeof legendConfig.templates["min-max"] !== 'undefined') templateName = "min-max";
+                                    }
+                                    // generate the templated output
+                                    entriesHtml.push(func_processTemplate(legendConfig.templates[templateName], entryData));
+                                }
+                            } else {
+                                for (let i = 0; i < colorsConfig.length; i++) {
+                                    let entryData = {color: colorsConfig[i].color};
+                                    // figure out our default template to use
+                                    let templateName;
+                                    if (typeof legendConfig.templates["auto"] !== 'undefined') {
+                                        templateName = "auto";
+                                    } else if (typeof legendConfig.templates["min-max"] !== 'undefined') {
+                                        templateName = "min-max";
+                                    }
+                                    // see if we override based on min or max being set on the map's color config entry
+                                    if (typeof colorsConfig[i].min === 'undefined' && typeof colorsConfig[i].max === 'undefined') {
+                                        // switch to auto template if it exists
+                                        if (typeof legendConfig.templates["auto"] !== 'undefined') templateName = "auto";
+                                    } else if (typeof colorsConfig[i].min === 'undefined') {
+                                        // switch to no-min
+                                        if (typeof legendConfig.templates["no-min"] !== 'undefined') templateName = "no-min";
+                                        entryData.max = colorsConfig[i].max;
+                                    } else if (typeof colorsConfig[i].max === 'undefined') {
+                                        // switch to no-max
+                                        if (typeof legendConfig.templates["no-max"] !== 'undefined') templateName = "no-max";
+                                        entryData.min = colorsConfig[i].min;
+                                    } else {
+                                        // min and max are both defined
+                                        entryData.min = colorsConfig[i].min;
+                                        entryData.max = colorsConfig[i].max;
+                                        // switch to min-max template if it exists
+                                        if (typeof legendConfig.templates["min-max"] !== 'undefined') templateName = "min-max";
+                                    }
+                                    // generate the templated output
+                                    entriesHtml.push(func_processTemplate(legendConfig.templates[templateName], entryData));
+                                }
+                            }
+                            if (entriesHtml.length > 0) {
+                                let entries = entriesHtml.join("\n");
+                                // we have info to display
+                                if (legendConfig.templates.root) {
+                                    // insert the entries into the root template (if it exists)
+                                    self.legendbox._div.innerHTML = func_processTemplate(legendConfig.templates.root, {entries: entries});
+                                } else {
+                                    self.legendbox._div.innerHTML = entries;
+                                }
+                                self.legendbox._div.style.opacity = 1;
+                            } else {
+                                // hide the legend box until we have data
+                                self.hoverbox._div.style.opacity = 0;
+                            }
+                        };
+                        this.legendbox.addTo(this.map);
+                                }
 
                     if (this.isVisible === true) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
 
@@ -196,6 +316,20 @@ export default class ZipcodeMap {
                 // the color buckets have min/max settings, use them
                 colorBucketsAreRanged = true;
             }
+
+            // handle legendbox update
+            if (typeof this.legendbox !== 'undefined') {
+                let ranges = [];
+                if (!colorBucketsAreRanged) {
+                    for (let i=0; i < this.config.advancedConfig.map.colors.length; i++) {
+                        ranges.push({
+                            min: rangeSize * i + minCount,
+                            max: rangeSize * (i + 1) + minCount
+                        });
+                    }
+                }
+                this.legendbox.update(ranges);
+                    }
 
             // generate list of valid GeoJSON features
             let foundZips = Object.keys(validData);
