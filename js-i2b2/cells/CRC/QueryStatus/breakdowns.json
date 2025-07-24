@@ -170,27 +170,28 @@
         "zipAttribName": "ZCTA5CE10",
         "zipRegEx": "^(.*)[0-9]{5}",
         "colors": [
-          {"color": "#fff7fb"},
-          {"color": "#ece7f2"},
-          {"color": "#d0d1e6"},
-          {"color": "#a6bddb"},
-          {"color": "#74a9cf"},
-          {"color": "#3690c0"},
-          {"color": "#0570b0"},
-          {"color": "#045a8d"},
-          {"color": "#023858"}
+          {"color": "#d73027"},
+          {"color": "#f46d43"},
+          {"color": "#fdae61"},
+          {"color": "#fee090"},
+          {"color": "#ffffbf"},
+          {"color": "#e0f3f8"},
+          {"color": "#abd9e9"},
+          {"color": "#74add1"},
+          {"color": "#4575b4"}
         ],
         "styles": {
           "norm": {
             "weight": 1,
             "opacity": 1,
             "color": "#000",
-            "fillOpacity": 0.75
+            "fillOpacity": 0.5
            },
           "hover": {
             "weight": 3,
-            "dashArray": "4,6",
-            "color": "#FFF"
+            "_dashArray": "4,6",
+            "color": "#F00",
+            "fillOpacity": 0.5
           }
         }
       }
