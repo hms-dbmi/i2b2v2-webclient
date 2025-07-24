@@ -229,7 +229,7 @@ export default class ZipcodeMap {
                                     } else {
                                         matchCriteria++;
                                     }
-                                    if (matchCriteria == 2) {
+                                    if (matchCriteria === 2) {
                                         // value falls within the matching range
                                         featureCopy.properties.color = bucketData.color;
                                         break;
