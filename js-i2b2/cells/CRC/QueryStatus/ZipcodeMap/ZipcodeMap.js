@@ -249,6 +249,12 @@ export default class ZipcodeMap {
                                     entriesHtml.push(func_processTemplate(legendConfig.templates[templateName], entryData));
                                 }
                             }
+                            //     if (typeof colorsConfig[0].min !== 'undefined' || typeof colorsConfig[0].max !== 'undefined') {
+                            //         let entries = colorsConfig.reduce((acc, d) => {
+                            //             return acc + " > " + d.color;
+                            //         }, '');
+                            //     }
+                            // }
                             if (entriesHtml.length > 0) {
                                 let entries = entriesHtml.join("\n");
                                 // we have info to display
@@ -265,7 +271,7 @@ export default class ZipcodeMap {
                             }
                         };
                         this.legendbox.addTo(this.map);
-                                }
+                    }
 
                     if (this.isVisible === true) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
 
@@ -329,7 +335,7 @@ export default class ZipcodeMap {
                     }
                 }
                 this.legendbox.update(ranges);
-                    }
+            }
 
             // generate list of valid GeoJSON features
             let foundZips = Object.keys(validData);
@@ -524,18 +530,37 @@ const func_processTemplate = (template, data) => {
     let templateVars = template.match(/(\{\{[\s]*.*?[\s]*\}\})/g);
     for (let templateVar of templateVars) {
         let varname = templateVar.replaceAll('{{','').replaceAll('}}','');
+        let options = {};
         let prettyNum = false;
         if (varname.substring(0,1) === '~') {
             varname = varname.substring(1);
             prettyNum = true;
+            // by default round to integer
+            options.minimumFractionDigits = 0;
+            options.maximumFractionDigits = 0;
         }
+        let decIdx = varname.lastIndexOf('.');
+        if (decIdx > 0) {
+            let decVal = parseInt(varname.substring(decIdx + 1));
+            varname = varname.substring(0,decIdx);
+            // defined fractional precision
+            options.minimumFractionDigits = decVal;
+            options.maximumFractionDigits = decVal;
+        }
+        let significantIdx = varname.lastIndexOf('|');
+        if (significantIdx > 0) {
+            let significantVal = parseInt(varname.substring(significantIdx + 1));
+            varname = varname.substring(0, significantIdx);
+            // defined significance precision
+            options.maximumSignificantDigits = significantVal;
+        }
+
         if (typeof data[varname] !== 'undefined') {
             let dataString = data[varname];
-            if (prettyNum) {
-                // pretty up potential numbers
-                dataString = Number(dataString).toLocaleString();
-            }
+            if (prettyNum) dataString = new Intl.NumberFormat(navigator.language, options).format(Number(dataString));
             ret = ret.replaceAll(templateVar, dataString);
+        } else {
+            ret = ret.replaceAll(templateVar, '');
         }
     }
     return ret;
