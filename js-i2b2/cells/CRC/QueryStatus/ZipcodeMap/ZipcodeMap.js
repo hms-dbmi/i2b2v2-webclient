@@ -73,7 +73,7 @@ export default class ZipcodeMap {
                     $(this.config.template(renderdata)).appendTo(this.config.displayEl);
 
                     // connect the zoom link click events
-                    $('.zoom-link').on('click', (e)=>{
+                    $('.zoom-link', this.config.displayEl).on('click', (e)=>{
                         let data = e.currentTarget.dataset;
                         self.map.setView([data.lat, data.long], data.zoom);
                         // delay by 50ms because we are going to lose the link as we just started a viewport change
@@ -396,12 +396,14 @@ export default class ZipcodeMap {
                 for (let attrib in this.config.advancedConfig.map?.styles.norm) {
                     ret[attrib] = this.config.advancedConfig.map?.styles.norm[attrib];
                 }
+                // remove highlighting in legendbox if it is active
+                if (typeof this.legendbox !== 'undefined') $("*.selected", this.legendbox._div).removeClass("selected");
                 return ret;
             }).bind(this);
             // ---------------------------
             const func_StylingHighlight = ((e) => {
                 let layer = e.target;
-                let style = {}
+                let style = {};
                 // override styles if we have those options set
                 for (let attrib in this.config.advancedConfig.map?.styles.hover) {
                     style[attrib] = this.config.advancedConfig.map?.styles.hover[attrib];
@@ -412,6 +414,12 @@ export default class ZipcodeMap {
                 if (typeof this.hoverbox !== 'undefined') {
                     this.hoverbox.update(layer.feature.properties);
                 }
+                // add highlighting in legendbox if it is active
+                if (typeof this.legendbox !== 'undefined') {
+                    let color = layer.feature?.properties.color;
+                    if (typeof color !== 'undefined') $('*[data-color="' + color + '"]', this.legendbox._div).addClass('selected');
+                }
+
             }).bind(this);
             // ---------------------------
             const func_StylingReset = ((e) => {
