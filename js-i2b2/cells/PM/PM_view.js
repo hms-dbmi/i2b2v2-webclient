@@ -116,7 +116,7 @@ i2b2.PM.view.showProjectSelectionModal = function(){
 
     let projects = [];
     for (let code in i2b2.PM.model.projects) {
-        let details = Object.fromEntries(Object.entries( i2b2.PM.model.projects[code].details).filter(([key, detail]) => detail.status !== 'P'));
+        let details = Object.fromEntries(Object.entries( i2b2.PM.model.projects[code].details).filter(([key, detail]) => detail.status !== 'H'));
 
         projects.push({
             name : i2b2.PM.model.projects[code].name,
