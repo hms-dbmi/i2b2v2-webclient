@@ -3,7 +3,7 @@
  * @inherits 	i2b2.CRC.ctrlr
  * @namespace	i2b2.CRC.ctrlr.history
  * @author		Nick Benik, Griffin Weber MD PhD
- * @version 	1.3
+ * @version 	1.8.2
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik] 
  */
