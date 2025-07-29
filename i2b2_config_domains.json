@@ -16,8 +16,8 @@
       "debug": false,
       "saml" : {
         "commonjava": {
-          "redirect": "saml-redirect.php",
-          "logout": "saml-logout.php"
+          "redirect": "https://commonjava.catalyst.harvard.edu/api/sso?tier=prod&entity=aHR0cHM6Ly9zaHJpbmUtbWFzc2Nwci1kZXYtaHViLWkyYjJ1aS5jYXRhbHlzdC5oYXJ2YXJkLmVkdS8=",
+          "logout": "https://commonjava.catalyst.harvard.edu/api/logout"
         }
       }
     }, {
@@ -28,8 +28,8 @@
       "debug": false,
       "saml" : {
         "harvardkey": {
-          "redirect": "saml-redirect.php",
-          "logout": "saml-logout.php"
+          "redirect": "https://commonjava.catalyst.harvard.edu/api/sso?tier=prod&entity=aHR0cHM6Ly9zaHJpbmUtbWFzc2Nwci1kZXYtaHViLWkyYjJ1aS5jYXRhbHlzdC5oYXJ2YXJkLmVkdS8=",
+          "logout": "https://commonjava.catalyst.harvard.edu/api/logout"
         }
       }
     }, {
