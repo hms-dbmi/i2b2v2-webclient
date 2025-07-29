@@ -297,22 +297,26 @@ i2b2.PM._processUserConfig = function (data) {
         let projdetails = i2b2.h.XPath(projs[i], 'descendant-or-self::param[@name]');
         i2b2.PM.model.projects[code].details = {};
         for (let d=0; d<projdetails.length; d++) {
+            let paramId = projdetails[d].getAttribute('id');
             let paramName = projdetails[d].getAttribute('name');
             // BUG FIX - Firefox splits large values into multiple 4k text nodes... use Firefox-specific function to read concatenated value
             if (projdetails[d].textContent) {
-                i2b2.PM.model.projects[code].details[paramName] = {
+                i2b2.PM.model.projects[code].details[paramId] = {
+                    name: paramName,
                     status: projdetails[d].getAttribute('status'),
                     value: projdetails[d].textContent
                 };
             } else if (projdetails[d].firstChild) {
                 // BUG FIX - WEBCLIENT-118
                 if(((browserIsIE8 && ieInCompatibilityMode) || browserIsIE11) && paramName === "announcement")
-                    i2b2.PM.model.projects[code].details[paramName] = {
+                    i2b2.PM.model.projects[code].details[paramId] = {
+                        name: paramName,
                         status: projdetails[d].getAttribute('status'),
                         value: projdetails[d].firstChild.nodeValue
                     };
                 else
-                    i2b2.PM.model.projects[code].details[paramName] = {
+                    i2b2.PM.model.projects[code].details[paramId] = {
+                        name: paramName,
                         status: projdetails[d].getAttribute('status'),
                         value: projdetails[d].firstChild.nodeValue.unescapeHTML()
                     };
@@ -365,12 +369,14 @@ i2b2.PM._processUserConfig = function (data) {
         i2b2.PM.model.login_project = i2b2.h.XPath(projs[0], 'attribute::id')[0].nodeValue;
         i2b2.PM.model.login_projectname = i2b2.h.getXNodeVal(projs[0], "name");
         try {
-            let announcement = i2b2.PM.model.projects[i2b2.PM.model.login_project].details.announcement;
-            if (announcement) {
-                i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcement);
+            let announcement = Object.entries(i2b2.PM.model.projects[i2b2.PM.model.login_project].details).filter(([key, detail]) => detail.name.toUpperCase() === "ANNOUNCEMENT");
+            if (announcement.length > 0) {
+                i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcement.name);
                 return;
             }
-        } catch(e) {}
+        } catch(e) {
+            console.warn("Error in processing announcement. ", e);
+        }
         i2b2.PM._processLaunchFramework();
     } else {
         // display list of possible projects for the user to select
