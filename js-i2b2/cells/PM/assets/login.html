@@ -3,14 +3,14 @@
 <body>
 <div id="PM-login-modal" class="modal">
     <form class="modal-content" method="post">
-        <div class="container" style="background-color:#f1f1f1; font-weight: bold; font-size: 15px;"><div>i2b2 Login</div></div>
+        <div class="container" style="background-color:#f1f1f1; font-weight: bold; font-size: 15px;"><div>MassCPR Login</div></div>
         <div class="imgcontainer">
-            <img src="assets/images/logo.png" alt="i2b2 transmart logo" class="logo">
+            <img src="assets/images/MassCPR_minimal_logo.gif" alt="MassCPR logo" class="logo">
         </div>
 
         <div class="container">
             <div class="form-group">
-                <label for="logindomain"><b>i2b2 Host</b></label>
+                <label for="logindomain"><b>Host</b></label>
                 <select class="form-select" id="logindomain">
                     <option value="0">Loading...</option>
                 </select>
@@ -31,16 +31,23 @@
                 <img src="assets/images/sso/okta.png" />
                 <div>Sign in with Okta</div>
             </a>
+            <a class="btn sso-button btn-sm" data-service="harvardkey" style="display: none" tabindex="0">
+                <img src="assets/images/sso/HarvardKeyLogo.png" style="padding:20px; height: 5rem; width: 26rem;" />
+                <div style="padding-left: 26rem;">Sign in</div>
+            </a>
             <a class="btn sso-button btn-sm" data-service="shibboleth" style="display: none" tabindex="0">
                 <img src="assets/images/sso/shibboleth.png" />
                 <div>Sign in with Shibboleth</div>
+            </a>
+            <a class="btn sso-button btn-sm" data-service="commonjava" style="display: none" tabindex="0">
+                <img src="assets/images/sso/commonjava.png" />
+                <div>Sign in with HarvardKey</div>
             </a>
 
         </div>
 
         <div class="container" style="background-color:#f1f1f1">
-            <div>Forgot <a href="#">password?</a></div>
-            <div class="classic">For classic i2b2 webclient click <a href="#">here</a></div>
+            <div>Powered by Harvard Catalyst SHRINE v4.3</div>
         </div>
     </form>
 </div>
