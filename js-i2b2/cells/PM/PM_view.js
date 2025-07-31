@@ -110,6 +110,19 @@ i2b2.PM.view.updateProjectSelection = function(projectSelElem){
 }
 // ================================================================================================== //
 
+i2b2.PM.view.showAnnouncements = function() {
+    try {
+        let announcement = Object.entries(i2b2.PM.model.projects[i2b2.PM.model.login_project].details).find(([key, detail]) => detail.name.toUpperCase() === "ANNOUNCEMENT");
+        if (announcement.length > 0 && announcement[1].status.toUpperCase() === "A") {
+            i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcement[1].value);
+            return;
+        }
+    } catch(e) {
+        console.warn("Error in processing announcement. ", e);
+    }
+    i2b2.PM._processLaunchFramework();
+}
+
 i2b2.PM.view.showProjectSelectionModal = function(){
 
     let projectSelModal = $("#projectSelection");
@@ -140,7 +153,8 @@ i2b2.PM.view.showProjectSelectionModal = function(){
                 if (ProjId !== 'admin_HY!5Axu&') {
                     i2b2.PM.model.login_project = ProjId;
                     i2b2.PM.model.login_projectname = ProjName;
-                    i2b2.PM._processLaunchFramework();
+                    i2b2.PM.view.showAnnouncements();
+                    //i2b2.PM._processLaunchFramework();
                 }
 
                 $("#projectSelection div").eq(0).modal("hide");
