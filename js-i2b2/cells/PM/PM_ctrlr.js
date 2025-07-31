@@ -370,7 +370,7 @@ i2b2.PM._processUserConfig = function (data) {
         i2b2.PM.model.login_projectname = i2b2.h.getXNodeVal(projs[0], "name");
         try {
             let announcement = Object.entries(i2b2.PM.model.projects[i2b2.PM.model.login_project].details).find(([key, detail]) => detail.name.toUpperCase() === "ANNOUNCEMENT");
-            if (announcement.length > 0) {
+            if (announcement.length > 0 && announcement[1].status.toUpperCase() === "A") {
                 i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcement[1].value);
                 return;
             }
