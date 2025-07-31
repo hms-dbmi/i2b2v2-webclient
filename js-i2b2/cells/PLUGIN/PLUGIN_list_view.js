@@ -4,11 +4,6 @@ i2b2.PLUGIN.view.list.category = {
     ALL: "ALL"
 };
 
-i2b2.PLUGIN.view.list.legacy = {
-    categories: [],
-    plugins: []
-};
-
 i2b2.PLUGIN.view.list.mode = {
     DETAIL:  "DETAIL",
     SUMMARY: "SUMMARY"
@@ -18,7 +13,6 @@ i2b2.PLUGIN.view.list.mode = {
 i2b2.PLUGIN.view.list.buildListCategory = function() {
 
     let pluginsListCategories = [i2b2.PLUGIN.view.list.category.ALL];
-    pluginsListCategories = pluginsListCategories.concat(i2b2.PLUGIN.view.list.legacy.categories);
 
     // loop through all plugins in the framework
     let pluginsLoaded = i2b2.PLUGIN.model.plugins;
@@ -46,14 +40,6 @@ i2b2.PLUGIN.view.list.buildListData = function(mode, category, searchString){
     let pluginsListData = [];
     // loop through all plugins in the framework
     let pluginsLoaded = i2b2.PLUGIN.model.plugins;
-
-    //add any legacy plugins
-    i2b2.PLUGIN.view.list.legacy.plugins.forEach(plugin => {
-        let pl = JSON.parse(plugin);
-        pl.isLegacy = true;
-        pluginsLoaded[pl.id] = pl;
-    });
-
     for (let pluginName in pluginsLoaded) {
         let pluginRef = pluginsLoaded[pluginName];
         let pluginCategories = [];
@@ -70,16 +56,10 @@ i2b2.PLUGIN.view.list.buildListData = function(mode, category, searchString){
             // change the entry id
             pluginRecord.id = pluginName;
             pluginRecord.name = "pluginViewList-"+pluginName;
-            pluginRecord.isLegacy = pluginRef.isLegacy === true;
             // change the plugin's icon
             if (pluginRef.icons && pluginRef.icons[xIconVarName]) {
                 const loc = pluginName.replaceAll('.', '/');
-                if(pluginRef.isLegacy){
-                    pluginRecord.iconSrc = i2b2.LEGACYPLUGIN.cfg.baseDir + "/legacy_plugin/" + pluginRef.assetDir + "/" + pluginRef.icons[xIconVarName];
-                }
-                else {
-                    pluginRecord.iconSrc = "plugins/" + loc + "/" + pluginRef.assetDir + "/" + pluginRef.icons[xIconVarName];
-                }
+                pluginRecord.iconSrc = "plugins/" + loc + "/" + pluginRef.assetDir + "/" + pluginRef.icons[xIconVarName];
             } else {
                 pluginRecord.iconSrc = i2b2.PLUGIN.cfg.config.assetDir + i2b2.PLUGIN.cfg.config.defaultListIcons[xIconVarName];
             }
@@ -259,38 +239,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     },
                     error: (error) => { console.error("Could not retrieve template: PluginListingContainer.html"); }
                 });
-
-                // handle listing of legacy plugins
-                if(i2b2.hive.cfg.LoadedCells["LEGACYPLUGIN"]){
-                    let iframe = $("<iframe id='pluginframe' onload='i2b2.PLUGIN.view.list.onPluginFrameLoad();' src='' class='pluginCell'></iframe>");
-                    iframe.attr("src", "js-i2b2/cells/LEGACYPLUGIN/legacy_plugin/index.html");
-
-                    let frameDiv = $("<div class='cellWhite pluginCellMain' style='display: none'></div>");
-                    frameDiv.append(iframe);
-                    $("body").append(frameDiv);
-                    // content window only exists after iframe is appended to the main DOM
-                    i2b2.PLUGIN.view.list.listingEventWindow = iframe[0].contentWindow;
-                }
-
             }).bind(this)
         );
-    }
-});
-
-// ================================================================================================== //
-window.addEventListener("message", (event) => {
-    // security check and make sure that we only listen to messages from the legacy listing window
-    if (event.origin === window.location.origin && i2b2.PLUGIN.view.list.listingEventWindow === event.source) {
-        if(event.data.categories){
-            i2b2.PLUGIN.view.list.legacy.categories = [];
-            event.data.categories.forEach(category => {
-                i2b2.PLUGIN.view.list.legacy.categories.push(category.toUpperCase());
-            });
-            i2b2.PLUGIN.view.list.updateCategories();
-
-            i2b2.PLUGIN.view.list.legacy.plugins = event.data.plugins;
-            // switch to default category if param is set
-            i2b2.PLUGIN.view.list.initialCategory();
-        }
     }
 });

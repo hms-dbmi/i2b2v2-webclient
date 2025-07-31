@@ -12,10 +12,6 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
 
     let componentName = 'i2b2.PLUGIN.view';
     let pluginTitle = pluginData.title;
-    if(pluginData.isLegacy){
-        componentName = 'i2b2.LEGACYPLUGIN.view.main';
-        pluginTitle = pluginData.name;
-    }
     
     // create the new tab configuration
     let newPluginWindow = {
@@ -30,7 +26,7 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
     let tempRef = i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems;
     if (tempRef.length > 2) {
         for (let idx in tempRef) {
-            if (["i2b2.LEGACYPLUGIN.view.main","i2b2.PLUGIN.view"].includes(tempRef[idx].componentName)) {
+            if (tempRef[idx].componentName === "i2b2.PLUGIN.view") {
                 tempRef[idx].close();
                 break;
             }
