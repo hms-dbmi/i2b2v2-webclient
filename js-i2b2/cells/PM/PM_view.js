@@ -101,7 +101,8 @@ i2b2.PM.view.updateProjectSelection = function(projectSelElem){
 
     let project = $(projectSelElem).val();
     $("#projectSelectionDetails").empty();
-    let details = Object.fromEntries(Object.entries(i2b2.PM.model.projects[project].details).filter(([key, detail]) => detail.status !== 'H'));
+    let details = Object.fromEntries(Object.entries(i2b2.PM.model.projects[project].details)
+        .filter(([key, detail]) => detail.status !== 'H' && detail.name.toUpperCase() !== "ANNOUNCEMENT"));
     let projectDetails = {
         projectDetails: details
     }
@@ -129,7 +130,8 @@ i2b2.PM.view.showProjectSelectionModal = function(){
 
     let projects = [];
     for (let code in i2b2.PM.model.projects) {
-        let details = Object.fromEntries(Object.entries( i2b2.PM.model.projects[code].details).filter(([key, detail]) => detail.status !== 'H'));
+        let details = Object.fromEntries(Object.entries( i2b2.PM.model.projects[code].details)
+            .filter(([key, detail]) => detail.status !== 'H' && detail.name.toUpperCase() !== "ANNOUNCEMENT"));
 
         projects.push({
             name : i2b2.PM.model.projects[code].name,
