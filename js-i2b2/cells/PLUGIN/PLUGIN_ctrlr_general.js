@@ -1,5 +1,5 @@
 /**
- * @projectDescription	View controller for ONT's "Terms" tab.
+ * @projectDescription	MainUI side of Plugin controller for stub library in plugins to communicate with.
  * @inherits 	i2b2
  * @namespace	i2b2.PLUGIN
  * @version 	2.0
@@ -100,13 +100,13 @@ i2b2.PLUGIN.ctrlr._handleRawAjaxMsg = function(msgEvent, instanceRef) {
         type: "POST",
         url:  i2b2.h.getProxy(),
         data: rawMsg
-    }).done((response, status, xhr)=>{
+    }).done((response, status, xhr) => {
         msgEvent.source.postMessage({
             msgType: i2b2.PLUGIN.model.MSG_TYPES.AJAX.RESULT,
             msgId: msgEvent.data.msgId,
             ajaxReply: xhr.responseText
         }, '/');
-    }).fail((xhr, status, error)=>{
+    }).fail((xhr, status, error) => {
         let response;
         try {
             // handle JSON returned with erroneous text/xml MIME header
@@ -127,7 +127,6 @@ i2b2.PLUGIN.ctrlr._handleRawAjaxMsg = function(msgEvent, instanceRef) {
 i2b2.PLUGIN.ctrlr._handleStateMsg = function(msgEvent, instanceRef) {
     instanceRef.state = msgEvent.data.stateData;
 };
-
 
 
 // ====[ msg handling for the plugin's AuthorizedTunnel function execution messages ]===================================
@@ -180,9 +179,9 @@ i2b2.PLUGIN.ctrlr._handleTunnelFuncExec = function(msgEvent, instanceRef) {
         }
         if (typeof origResults === 'object' && typeof origResults.then === 'function') {
             // we have a promise wait for resolution to sent back data (or error)
-            origResults.then((result)=>{
+            origResults.then((result) => {
                 func_sendResults(result);
-            }).catch(()=>{
+            }).catch(() => {
                 funcSendError(msgEvent, msgEvent.data.functionPath+"() returned a Promise that rejected!");
             });
         } else {
@@ -192,7 +191,6 @@ i2b2.PLUGIN.ctrlr._handleTunnelFuncExec = function(msgEvent, instanceRef) {
         funcSendError(msgEvent,"Variable path traversal error!");
         return;
     }
-
 }
 
 
@@ -296,11 +294,11 @@ i2b2.events.afterCellInit.add((cell) => {
                 $.getJSON("plugins/" + loc + "/plugin.json", (pluginJson) => {
                     if (pluginJson !== undefined) {
                         let pluginAllowed = true;
-                        if (pluginJson.roles !== undefined && pluginJson.roles.length > 0){
+                        if (pluginJson.roles !== undefined && pluginJson.roles.length > 0) {
                             pluginAllowed = pluginJson.roles.some((role) => i2b2.PM.model.userRoles.indexOf(role) !== -1);
                         }
 
-                        if (i2b2.PM.model.isAdmin && pluginJson.roles !== undefined && pluginJson.roles.indexOf("ADMIN") !== -1){
+                        if (i2b2.PM.model.isAdmin && pluginJson.roles !== undefined && pluginJson.roles.indexOf("ADMIN") !== -1) {
                             pluginAllowed = true;
                         }
 
@@ -332,7 +330,7 @@ i2b2.events.afterCellInit.add((cell) => {
 // Once all cells are loaded we crawl the i2b2 namespace to extract information for AJAX and SDX operations
 //======================================================================================================================
 i2b2.events.afterAllCellsLoaded.add((function() {
-    // Build the configure object that goes to the plugin-side i2b2 libraries
+    // Build the configuration object that goes to the plugin-side i2b2 libraries
     // Get cells and their known AJAX calls
     let ajaxTree = {};
     for (let idx in i2b2) {
