@@ -333,7 +333,7 @@ export const DefineTable = (props) => {
     ];
 
     const createAggregationSelect = (row) => {
-        if(!row.required) {
+        if(!(row.required || row.sdxData?.origData?.table_name.toLowerCase() === "patient_dimension")) {
             if (row.dataOptionHasError && !row.isLoadingTermInfo) {
                 return (
                     <Select
@@ -386,7 +386,7 @@ export const DefineTable = (props) => {
         }else{
             return (
                 <div>
-                    {row.dataOption}
+                    {row.dataOption === "Exists" ?  "Existence (Yes/No)" : row.dataOption}
                 </div>
             )
         }
