@@ -2,7 +2,6 @@
     { "code": "PM", "forceLoading": true },
     { "code": "ONT"	},
     { "code": "CRC"	},
-    { "code": "LEGACYPLUGIN", "forceLoading": true},
     { "code": "PLUGIN", "forceLoading": true },
     { "code": "WORK" }
 ]

@@ -6,6 +6,7 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
     const pluginData = i2b2.PLUGIN.model.plugins[pluginId];
     if (pluginData === undefined) {
         console.error("Plugin does not exist: " + pluginId);
+        alert("Plugin does not exist: " + pluginId);
         return false;
     }
     pluginData.initializationData = initializationData;
