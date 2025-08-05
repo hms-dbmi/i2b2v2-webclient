@@ -1,14 +1,16 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {REQUEST_STATUS_LOG} from "../actions";
 import {defaultState} from "../defaultState";
-import {RequestStatusLog, RequestStatusLogItem, StatusInfo} from "../models";
+import {RequestStatusLog, RequestStatusLogItem, RequestTable, StatusInfo} from "../models";
 
 export const requestStatusLogSlice = createSlice({
     name: REQUEST_STATUS_LOG,
     initialState: defaultState.requestStatusLog,
     reducers: {
         getRequestStatusLog: state => {
-            state = RequestStatusLog();
+            return RequestStatusLog({
+                isFetching: true
+            });
         },
         getRequestStatusLogSuccess: (state, { payload: { requestStatusLog } }) => {
             const statusLogs = requestStatusLog.map(requestStatus => {
@@ -19,7 +21,9 @@ export const requestStatusLogSlice = createSlice({
                     })
                 }
             })
-            state.statusLogs = statusLogs;
+            if(state.statusLogs.length === 0) {
+                state.statusLogs = statusLogs;
+            }
             state.isFetching = false;
             state.statusInfo = StatusInfo({
                 status: "SUCCESS",
