@@ -30,7 +30,7 @@ const parseParamsXml = (allParamsXml) => {
         let internalId = param.attributes['id'].nodeValue;
         let name = param.attributes['name'].nodeValue;
         let value = param.childNodes[0].nodeValue;
-        let dataType = param.attributes['datatype'].nodeValue;
+        let dataType = param.attributes['datatype'] ? param.attributes['datatype'].nodeValue : 'T';
         let status = param.attributes['status'].nodeValue;
 
         if(name && dataType) {
