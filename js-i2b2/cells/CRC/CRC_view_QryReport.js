@@ -68,7 +68,7 @@ i2b2.CRC.view.QueryReport = {
                         let initializationData = {};
                         initializationData.patientSet = sdxData;
                         initializationData.concepts = concepts;
-                        i2b2.PLUGIN.view.list.loadPlugin("Timeline", initializationData);
+                        i2b2.PLUGIN.view.newInstance("Timeline", initializationData);
                     }
                 }
             }

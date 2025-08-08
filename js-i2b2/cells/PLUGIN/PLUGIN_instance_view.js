@@ -1,36 +1,33 @@
 if (i2b2.PLUGIN.view === undefined) i2b2.PLUGIN.view = {};
-i2b2.PLUGIN.view.options ={};
+i2b2.PLUGIN.view.options = {};
 i2b2.PLUGIN.view.windows = [];
 i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
     // get the plugin info from the model
     const pluginData = i2b2.PLUGIN.model.plugins[pluginId];
     if (pluginData === undefined) {
         console.error("Plugin does not exist: " + pluginId);
+        alert("Plugin does not exist: " + pluginId);
         return false;
     }
     pluginData.initializationData = initializationData;
 
     let componentName = 'i2b2.PLUGIN.view';
     let pluginTitle = pluginData.title;
-    if(pluginData.isLegacy){
-        componentName = 'i2b2.LEGACYPLUGIN.view.main';
-        pluginTitle = pluginData.name;
-    }
-    
+
     // create the new tab configuration
     let newPluginWindow = {
         type:'component',
-        isClosable:true,
+        isClosable: true,
         componentName: componentName,
         componentPlugin: pluginData,
         componentPluginCode: pluginId,
-        title:pluginTitle
+        title: pluginTitle
     };
     // remove any previously existing instance of a plugin window
     let tempRef = i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems;
     if (tempRef.length > 2) {
         for (let idx in tempRef) {
-            if (["i2b2.LEGACYPLUGIN.view.main","i2b2.PLUGIN.view"].includes(tempRef[idx].componentName)) {
+            if (tempRef[idx].componentName === "i2b2.PLUGIN.view") {
                 tempRef[idx].close();
                 break;
             }
@@ -72,17 +69,12 @@ i2b2.events.afterCellInit.add((cell) => {
                     // this can only be run after a bit when the tab has been created in the DOM
                     this.tab.element[0].title = title;
                     this.tab.element[0].classList.add('active-plugin');
-                         
-                    
                 }).bind(container, windowEntry.title);
-
-                           
-
                 container.on("titleChanged", funcRetitle);
                 container.on("tab", funcRetitle);
 
-                container.on( 'tab', function( tab ){
-                    if($(tab.element).hasClass('active-plugin')) {                                          
+                container.on("tab", (tab) => {
+                    if ($(tab.element).hasClass('active-plugin')) {
 
                         let optionsBtn = $('<div id="activePluginOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Plugin Options"></i></div>');
                         $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));   
@@ -92,20 +84,18 @@ i2b2.events.afterCellInit.add((cell) => {
                             actions: {
                                 ClosePlugin: {
                                     name: 'Close Plugin',
-                                    onClick: function (node) {
+                                    onClick: (node) => {
                                        i2b2.PLUGIN.view.exitInstance(container);
                                     }
                                 }
                             }
                         });
 
-                        
                     }
                 });
 
                 // create the iframe and load the plugin into it
                 let iframeTarget = $('<iframe class="i2b2PluginIFrame" src="'+windowEntry.data.url+'" title="'+windowEntry.data.title+'"></iframe>').appendTo(container._contentElement)[0];
-                console.log(windowEntry.title);
                 let exitPluginModalHTML = `<div class="modal fade" id="exitPluginModal" tabindex="-1" aria-labelledby="exitPluginModalLabel" aria-hidden="true" data-bs-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -123,10 +113,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                                 </div>
                                             </div>
                                         </div>`;
-
-              
                 $(container._contentElement).append(exitPluginModalHTML);
-
 
             }).bind(this)
         );
@@ -138,16 +125,11 @@ i2b2.PLUGIN.view.exitInstance = function(container){
     let exitPluginModal = new bootstrap.Modal(document.getElementById('exitPluginModal'), {
         keyboard: false
     });
-   
     exitPluginModal.show();
        
     let modalDiv = document.getElementById('exitPluginModal');
     let triggerClose = modalDiv.getElementsByClassName('trigger-close');
-    
-    triggerClose[0].addEventListener('click', handleClick);
-    
-      
-      function handleClick(event) {
+    triggerClose[0].addEventListener('click', (event) => {
         container.close();    
            
         for (let i in i2b2.PLUGIN.view.windows) {
@@ -158,6 +140,5 @@ i2b2.PLUGIN.view.exitInstance = function(container){
             } 
         }        
         exitPluginModal.hide();
-      
-      }     
+    });
 };
