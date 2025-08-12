@@ -1,0 +1,30 @@
+:root {
+    --text-light: #EEAAAA;
+    --text-dark: #887766;
+
+    --text-secondary-light: #2782a3;
+    --text-secondary-dark: #550000;
+
+    --head-foot-background: #990000;
+    --head-foot-text: #FFFFFF;
+
+    --tabs-left-background: #bb7676;
+    --tabs-left-border: rgba(99, 117, 140, 0.28);
+    --tabs-right-background: #ccc2b6;
+    --tabs-right-border: rgba(99, 117, 140, 0.28);
+
+    --component-border:  rgba(99, 117, 140, 0.28);
+
+    --tabs-text: #FFFFFF;
+    --tabs-text-active: #FFFFFF;
+    --tabs-text-hover: #000000;
+    --tabs-text-active-hover: #000000;
+
+    --dragdrop-hover-ok: #ffffcc;
+
+    --splitter: #369;
+
+    /* color of the input form elements when the keyboard focus is on them */
+    --focus-border: #888888;
+    --focus-shadow: rgba(0, 0, 0, .25);
+}

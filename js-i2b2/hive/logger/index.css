@@ -1,3 +1,5 @@
+@import "../../../assets/css/color-scheme.css";
+
 body {
     overflow-y: hidden;
     overflow-x: auto;
@@ -7,7 +9,7 @@ body {
 }
 
 .MessageLog .filterMenuBar {
-    background-color: #2782a3;
+    background-color: var(--head-foot-background);
     padding-top: 0.8em;
     padding-left: 1.3em;
     padding-right: 1.3em;
@@ -23,7 +25,7 @@ body {
 }
 
 
-.MessageLog .messageDetail{
+.MessageLog .messageDetail {
     overflow: auto;
     position: absolute;
     top: 3.8em;
@@ -33,10 +35,10 @@ body {
     bottom: 0;
     padding: 0.5em;
     padding-left: 0.9em;
-    border-left: 1px solid rgb(102, 119, 136);
+    border-left: 1px solid var(--component-border);
 }
 
-.MessageLog .logItems{
+.MessageLog .logItems {
     overflow-y: scroll;
     width: 280px;
     position: absolute;
@@ -51,6 +53,7 @@ body {
     text-align: left;
     display: flex;
     cursor: pointer;
+    /*border-bottom: 1px solid var(--component-border);*/
     border-bottom: 1px solid rgb(102, 119, 136);
 }
 
@@ -67,12 +70,12 @@ body {
     text-align: center;
 }
 
-.MessageLog .msgData{
+.MessageLog .msgData {
     width: 100%;
     padding: 0.2em 0.5em 0.2em 0.5em;
  }
 
-.MessageLog .msgData:hover{
+.MessageLog .msgData:hover {
     background: rgba(232, 228, 222, 0.6);
 }
 
@@ -108,12 +111,12 @@ body {
     background: #FFFF90;
 }
 
-.MessageLog .msgSentXml{
+.MessageLog .msgSentXml {
     border-left: 8px solid #E99;
     padding: 0.4em;
 }
 
-.MessageLog .msgRcvdXml{
+.MessageLog .msgRcvdXml {
     border-left: 8px solid #9E9;
     padding: 0.4em;
 }

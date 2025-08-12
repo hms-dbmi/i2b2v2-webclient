@@ -5,7 +5,7 @@
 .event.i2b2DropTarget.DropHover,
 .event .i2b2DropTarget.DropHover,
 .CRC_QT_runbar .i2b2DropTarget.DropHover {
-    background: #d1f0ff;
+    background: var(--dragdrop-hover-ok);
     box-shadow: 0 5px 20px rgb(0 0 0 / 19%), 0 6px 6px rgb(0 0 0 / 23%);
 }
 
@@ -55,7 +55,8 @@
     height: 3.1em;
     padding: 0.7em 0 0 0;
     border-radius: 0 0 3px 3px;
-    color: #2782a3;
+    color: var(--text-secondary-dark);
+    /*color: #2782a3;*/
     font-weight: bold;
     font-size: 1.1em;
     border: 1px solid rgba(39, 130, 163, 0.41);
@@ -114,8 +115,10 @@
     line-height: 1.5em;
     margin-top: -0.1em;
     margin-right: 0.8em;
-    color: #2782a3;
+    color: var(--text-secondary-dark);
+    /*color: #2782a3;*/
     background-color: #fff;
+    border-color: var(--text-secondary-dark);
 }
 
 .CRC_QT_runbar .button-cancel{
