@@ -100,11 +100,15 @@
     min-width: 20rem;
 }
 
-#i2b2QueryHistoryBar .searchTermMain{
+#i2b2QueryHistoryBar .searchTermMain {
      flex-grow: 1;
      min-width: 6.5rem;
      margin-top: -0.1em;
 }
+#i2b2QueryHistoryBar .searchTermMain input {
+    box-shadow: none !important;
+}
+
 
 #i2b2QueryHistoryBar #querySearchTermText{
     flex-grow: 1;
