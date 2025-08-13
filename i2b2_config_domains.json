@@ -4,12 +4,6 @@
   "lstDomains": [
     {
       "domain": "shrine-masscpr-dev-hub",
-      "name": "SHRINE Demo",
-      "urlCellPM": "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/PMService/",
-      "allowAnalysis": true,
-      "debug": false
-    }, {
-      "domain": "shrine-masscpr-dev-hub",
       "name": "SHRINE SSO Demo 1",
       "urlCellPM": "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/PMService/",
       "allowAnalysis": true,
@@ -19,6 +13,12 @@
           "logout": "https://commonjava.catalyst.harvard.edu/api/logout"
         }
       }
+    }, {
+      "domain": "shrine-masscpr-dev-hub",
+      "name": "SHRINE Demo",
+      "urlCellPM": "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/PMService/",
+      "allowAnalysis": true,
+      "debug": false
     }, {
       "domain": "shrine-masscpr-dev-hub",
       "name": "SHRINE SSO Demo 2",
