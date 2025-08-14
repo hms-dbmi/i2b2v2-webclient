@@ -411,6 +411,7 @@ i2b2.sdx.TypeControllers.CONCPT.MakeObject = function(c, modifier, cl_options, o
                 o.tooltip = i2b2.h.getXNodeVal(c,'tooltip');
             }
             o.icd9 = '';
+            o.fact_table_column = i2b2.h.getXNodeVal(c,'facttablecolumn');
             o.table_name = i2b2.h.getXNodeVal(c,'tablename');
             o.column_name = i2b2.h.getXNodeVal(c,'columnname');
             o.operator = i2b2.h.getXNodeVal(c,'operator');
