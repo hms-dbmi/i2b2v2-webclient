@@ -699,7 +699,7 @@ export const DefineTable = (props) => {
                     }}
                     autoHeight={true}
                     hideFooter={true}
-                    isCellEditable={({row, colDef}) => (!row.locked && !(row.required && colDef.field === "dataOption"))}
+                    isCellEditable={({row, colDef}) => (!row.required)}
                     getCellClassName={checkValidName}
                 />
             </div>
