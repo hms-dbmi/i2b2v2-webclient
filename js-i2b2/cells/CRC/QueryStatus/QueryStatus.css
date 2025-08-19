@@ -13,8 +13,6 @@
 }
 
 
-
-
 .QueryStatusComponent {
     clear: both;
     margin-bottom: 3rem;
@@ -82,6 +80,9 @@
     border-width: 0 1px;
 }
 
+.QueryStatusComponent .viz-dropdown-item:focus-visible {
+    outline: 2px solid var(--focus-border) !important;
+}
 
 
 .QueryStatusComponent .viz-dropdown-select.show .viz-dropdown-item:last-of-type {

@@ -434,6 +434,11 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
 
                 // attach the component drop down selector
                 refComponentDropdown.addEventListener('click', i2b2.CRC.QueryStatus.componentDropdownClickHandler);
+                refComponentDropdown.addEventListener('keydown', (e) => {
+                    if (["Space", "Enter"].includes(e.code)) {
+                        i2b2.CRC.QueryStatus.componentDropdownClickHandler(e);
+                        e.preventDefault();
+                    }});
 
                 // get the title
                 const refComponentTitle = componentParentEl.querySelector(".title");
@@ -462,6 +467,8 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
 
                     // create an entry in the viz selection dropdown
                     const componentDropEntryEl = document.createElement("li");
+                    componentDropEntryEl.setAttribute("tabindex", "0");
+
                     // set label and mouse hover
                     let tempEl;
                     if (componentConfig.iconClass !== undefined) {
