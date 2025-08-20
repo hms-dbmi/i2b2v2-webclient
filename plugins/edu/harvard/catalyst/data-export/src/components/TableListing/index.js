@@ -23,6 +23,8 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
     const [inValidCells, setInValidCells] = useState({});
     const [showInValidCellsMsg, setShowInValidCellsMsg] = useState(false);
     const [inValidCellsMsg, setInValidCellsMsg] = useState("");
+    const [paginationModel, setPaginationModel] = useState({ pageSize: 25, page: 0});
+
 
     const handleConfirmDelete = (id, fileName) => {
         setRowToDelete({id, fileName});
@@ -287,6 +289,9 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                     }
                 }}
 
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+
                 loading={isLoading}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
@@ -302,7 +307,6 @@ export const TableListing = ({id, rows, canRename, onSelect, onSelectionModelCha
                         sortModel: [{field:'create_date',sort:'desc'}]
                     }
                 }}
-                autoPageSize
             />
 
             <Dialog
