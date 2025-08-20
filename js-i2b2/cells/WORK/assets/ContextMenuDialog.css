@@ -7,7 +7,7 @@
 }
 
 #WKContextMenuDialog .modal-form {
-    margin: 0px 40px;
+    margin: 0 40px;
 }
 
 #WKContextMenuDialog .required-input {
@@ -16,6 +16,6 @@
     visibility: hidden;
 }
 
-#WKContextMenuDialog .required-input .visible{
+#WKContextMenuDialog .required-input .visible {
     visibility: visible;
 }

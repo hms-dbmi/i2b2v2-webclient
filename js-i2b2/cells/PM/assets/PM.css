@@ -7,7 +7,7 @@
 
 #projectSelectionModal #projectSelectionDetails table {
     width: 100%;
-    border-spacing: 0px;
+    border-spacing: 0;
     table-layout: fixed;
 }
 
@@ -16,7 +16,7 @@
     border-left: 0;
 }
 
-#projectSelectionModal #projectSelectionDetails td{
+#projectSelectionModal #projectSelectionDetails td {
     border-bottom: 1px solid #93b0ce;
     border-left: 1px solid #93b0ce;
     padding: 0.5em;
@@ -25,21 +25,21 @@
     word-wrap: break-word;
 }
 
-#projectSelectionModal #projectSelectionDetails .noDetails{
+#projectSelectionModal #projectSelectionDetails .noDetails {
     width: 17em;
     margin: auto;
     padding-top: 0.8em;
 }
 
-.changePasswordModal .row{
+.changePasswordModal .row {
     margin-bottom: 0.9em;
 }
 
-.changePasswordModal .pwd-eye{
+.changePasswordModal .pwd-eye {
     /*color: #007bff;*/
 }
 
-.changePasswordModal .showPassword{
+.changePasswordModal .showPassword {
     display: none;
 }
 

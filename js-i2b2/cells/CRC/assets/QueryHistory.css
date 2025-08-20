@@ -67,7 +67,7 @@
 }
 
 
-#i2b2QueryHistoryFinderMessage{
+#i2b2QueryHistoryFinderMessage {
     padding-top: 0.6em;
     padding-left: 0.9em;
 }
@@ -100,13 +100,13 @@
     min-width: 20rem;
 }
 
-#i2b2QueryHistoryBar .searchTermMain{
+#i2b2QueryHistoryBar .searchTermMain {
      flex-grow: 1;
      min-width: 6.5rem;
      margin-top: -0.1em;
 }
 
-#i2b2QueryHistoryBar #querySearchTermText{
+#i2b2QueryHistoryBar #querySearchTermText {
     flex-grow: 1;
     min-width: 6.5rem;
     margin-top: 0.9em;
@@ -116,11 +116,11 @@
     padding-bottom: 0;
 }
 
-#i2b2QueryHistoryBar #submitQueryHistorySearch{
+#i2b2QueryHistoryBar #submitQueryHistorySearch {
     margin-left: -0.2em;
 }
 
-#i2b2QueryHistoryBar #querySearchFilter{
+#i2b2QueryHistoryBar #querySearchFilter {
     padding: 0 0.7rem;
     margin-bottom: -10px;
 }
@@ -135,7 +135,7 @@
 }
 
 
-#i2b2QueryHistoryBar .form-control{
+#i2b2QueryHistoryBar .form-control {
     border-radius: 0;
     box-shadow: none;
     background: transparent;
@@ -149,28 +149,28 @@
 #i2b2QueryHistoryBar .qHTooltip {
   color:   #87898a
 }
-button.invert{
+button.invert {
     color: #0d6efd;
     background: #FFFFFF;
 }
 
-button.invert:hover{
+button.invert:hover {
     opacity: 0.7;
 }
 
-.hidden{
+.hidden {
     display: none;
 }
 
-#i2b2QueryHistoryBar .form-select-sm{
+#i2b2QueryHistoryBar .form-select-sm {
     font-size: 0.84em;
 }
 
-#i2b2QueryHistoryBar .btn-sm{
+#i2b2QueryHistoryBar .btn-sm {
     font-size: 0.89em;
 }
 
-#i2b2QueryHistoryBar .form-control-sm{
+#i2b2QueryHistoryBar .form-control-sm {
     font-size: 1em;
     padding-left: 0.1em;
 }
@@ -184,31 +184,31 @@ button.invert:hover{
     margin-top: 5px;
 }
 
-#i2b2QueryHistoryBar .navbar-nav{
+#i2b2QueryHistoryBar .navbar-nav {
     border: 1px solid #ced4da;
     border-radius: 5px 5px 5px 5px;
     font-size: 0.9em;
     background-color: #FFFFFF;
 }
 
-#i2b2QueryHistoryBar .nav-link{
+#i2b2QueryHistoryBar .nav-link {
     color: #212529;
     margin-right: 0.2em;
     padding-right: 0.5em;
     padding-left: 0.5em;
 }
 
-#i2b2QueryHistoryBar .dropdown-menu{
+#i2b2QueryHistoryBar .dropdown-menu {
     font-size: 1em;
     position: fixed !important;
 }
 
-#i2b2FinderOnt .submenu{
+#i2b2FinderOnt .submenu {
     max-height: 18em;
     overflow-y: auto;
 }
 
-#i2b2QueryHistoryBar .search{
+#i2b2QueryHistoryBar .search {
     margin-right: 0.5em;
 }
 
@@ -246,29 +246,29 @@ button.invert:hover{
     background-color: #f1f1f1;
 }
 
-#i2b2QueryHistoryBar .centerText{
+#i2b2QueryHistoryBar .centerText {
     text-align: center;
 }
 
-#searchTermError{
+#searchTermError {
     color: red;
     font-size: 0.85em;
     width: 22.4em;
 }
 
-#i2b2QueryHistoryBar .searchBtn{
+#i2b2QueryHistoryBar .searchBtn {
     font-size: 1.4em !important;
     margin-left: 0;
     border-radius: 3px;
     border-width: 0.10em !important;
 }
 
-#i2b2QueryHistoryBar .searchBtn:hover:enabled{
+#i2b2QueryHistoryBar .searchBtn:hover:enabled {
     background-color: #6c757d;
     border-color: #797a7c !important;
 }
 
-#i2b2QueryHistoryBar .searchBtn:enabled{
+#i2b2QueryHistoryBar .searchBtn:enabled {
     opacity: 0.65;
 }
 
@@ -296,13 +296,13 @@ button.invert:hover{
     visibility: hidden;
 }
 
-#i2b2QueryHistoryBar .searchTermMain .input-group{
+#i2b2QueryHistoryBar .searchTermMain .input-group {
     border-color: rgba(71, 72, 73, 0.63);
     border-style: solid;
     border-width: 0 0 2px 0 !important;
 }
 
-#queryHistoryOptionsFields .form-check-label{
+#queryHistoryOptionsFields .form-check-label {
     margin-top: 0.15em;
 }
 
