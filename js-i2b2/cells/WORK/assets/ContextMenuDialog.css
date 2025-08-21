@@ -12,7 +12,7 @@
 
 #WKContextMenuDialog .required-input {
     margin-top: 4px;
-    color: #f44336;
+    color: var(--error-text-light);
     visibility: hidden;
 }
 

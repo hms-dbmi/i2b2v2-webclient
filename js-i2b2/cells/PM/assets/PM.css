@@ -44,11 +44,11 @@
 }
 
 .changePasswordModal .errorMsg {
-    color: #f44336;
+    color: var(--error-text-light);
 }
 
 .changePasswordModal .error {
-    border: 2px solid #f44336;
+    border: 2px solid var(--error-border);
 }
 
 .changePasswordModal .pwd-ins .list-group-item {

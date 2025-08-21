@@ -1,30 +1,45 @@
 :root {
-    --text-light: #EEAAAA;
+    --text-light: #757575;
     --text-dark: #887766;
 
     --text-secondary-light: #2782a3;
-    --text-secondary-dark: #550000;
+    --text-secondary-dark: #2782a3;
 
-    --head-foot-background: #990000;
+    --text-primary-dark: #000000;
+    --text-primary-light: #ffffff;
+
+
+    --head-foot-background: #2782a3;
     --head-foot-text: #FFFFFF;
+    --head-foot-icon: #FFFFFF;
+    --head-foot-icon-select: #000000;
 
-    --tabs-left-background: #bb7676;
+
+    --tabs-left-background: #ed9b40;
     --tabs-left-border: rgba(99, 117, 140, 0.28);
     --tabs-right-background: #ccc2b6;
     --tabs-right-border: rgba(99, 117, 140, 0.28);
 
     --component-border:  rgba(99, 117, 140, 0.28);
+    --component-background: #FFFFFF;
 
-    --tabs-text: #FFFFFF;
-    --tabs-text-active: #FFFFFF;
+    --tabs-text: #000000;
+    --tabs-text-active: #000000;
     --tabs-text-hover: #000000;
-    --tabs-text-active-hover: #000000;
+    --tabs-text-active-hover: #404040;
 
-    --dragdrop-hover-ok: #ffffcc;
+    --error-text-light: red;
+    --error-text-dark: #f44336;
+    --error-border: #f44336;
+
+    --dragdrop-hover-ok: #d1f0ff;
+
+    --dropdown-menu-hover: #ccc;
+    --treeview-hover-background: rgba(205, 208, 208, 0.56);
 
     --splitter: #369;
 
     /* color of the input form elements when the keyboard focus is on them */
-    --focus-border: #888888;
-    --focus-shadow: rgba(0, 0, 0, .25);
+    --focus-border: #86b7fe;
+    --focus-shadow: rgba(13,110,253,.25);
 }

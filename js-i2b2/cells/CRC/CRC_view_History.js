@@ -640,7 +640,7 @@ i2b2.events.afterCellInit.add((cell) => {
                             });
 
                             // inject the cancel date listing button
-                            $(`<button class="btn border-left-0 dateListingCancel">
+                            $(`<button class="btn border-left-0 dateListingCancel btn-outline-secondary">
                                     <i class="bi bi-x-lg" title="Cancel Listing by Date"></i></button>`).appendTo($("#i2b2QueryHistoryBar .dateListing .gj-datepicker"));
                             // attach the controller
                             $("#i2b2QueryHistoryBar .dateListingCancel").on('click', i2b2.CRC.view.history.showBrowseView);
