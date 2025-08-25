@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 function find_rsid($search){
 	// this is an example function for returning hardcoded rsids to the autocomplete results
 	$output = array("rsid" => $search, "alleles" => array("T=T", "T>C"));
-	return json_encode($output);
+	return $output;
 }
 
 function search_by_gene($search){
@@ -52,7 +52,7 @@ function search_by_gene($search){
 	$stmt = $db->prepare("SELECT gene_id, symbol, name FROM genes_search AS gs JOIN genes AS g ON (g.rowid = gs.rowid) WHERE gs.content MATCH :term LIMIT 20;");
 	$stmt->execute(array($search.'*'));
 	$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	return json_encode($data);
+	return $data;
 }
 
 
@@ -61,10 +61,10 @@ if(isset($_GET['op']) && isset($_GET['term'])){
 	$op = $_GET['op'];
 	switch($op) {
 		case 'rsid':
-			print find_rsid($search);
+			print json_encode(find_rsid($search));
 			break;
 		case 'gene':
-			print search_by_gene($search);
+			print json_encode(search_by_gene($search));
 			break;
 	}
 }
