@@ -525,12 +525,19 @@ i2b2.PM._processLaunchFramework = function() {
                         }
                     }
                 }
-                // params
+                // cell params
                 let x = i2b2.h.XPath(oXML, "//cell_data[@id='"+cellKey+"']/param[@name]");
                 for (let i = 0; i < x.length; i++) {
                     let n = i2b2.h.XPath(x[i], "attribute::name")[0].nodeValue;
                     cellRef.params[n] = x[i].innerHTML;
                 }
+                // project params
+                x = i2b2.h.XPath(oXML, "//user/project[@id='"+i2b2.PM.model.login_project+"']/param[@name]");
+                for (let i = 0; i < x.length; i++) {
+                    let n = i2b2.h.XPath(x[i], "attribute::name")[0].nodeValue;
+                    cellRef.params[n] = x[i].innerHTML;
+                }
+
                 // do not save cell info unless the URL attribute has been set (exception is PM cell)
                 if (cellRef.url === "" && cellKey !== "PM") {
                     deleteKeys[cellKey] = true;

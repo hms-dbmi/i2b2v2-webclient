@@ -303,11 +303,14 @@ i2b2.events.afterCellInit.add((cell) => {
                     error: (error) => { console.error("Could not retrieve template: AlertDialog.html"); }
                 });
 
-                //set default values
-                i2b2.ONT.view.nav.params.modifiers = false;
-                i2b2.ONT.view.nav.params.synonyms = false;
-                i2b2.ONT.view.nav.params.hiddens = false;
-                i2b2.ONT.view.nav.params.max = 200;
+                // set default values (if they are not already set via "cell_config_data.json" file)
+                i2b2.ONT.view.nav.params = Object.assign({
+                        modifiers: false,
+                        synonyms: false,
+                        hiddens: false,
+                        max: 200
+                    }, i2b2.ONT.view.nav.params);
+
                 i2b2.ONT.model.searchResults = {};
             }).bind(this)
         );

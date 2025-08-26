@@ -202,8 +202,15 @@ function i2b2_BaseCell(configObj) {
         i2b2[configObj.code].cfg.params = {};
         for (var i1=0; i1<paramsInfo.length; i1++) {
             if (paramsInfo[i1].defaultValue !== undefined) {
+                let value = this.cfg.cellParams[paramsInfo[i1].xmlName];
+                if (value !== undefined) {
+                    const isBoolean = /^(true|false)$/i;
+                    if (isBoolean.test(value)) value = /^true$/i.test(value);
+                    i2b2[configObj.code].cfg.params[paramsInfo[i1].thinClientName] = value;
+                } else {
                 i2b2[configObj.code].cfg.params[paramsInfo[i1].thinClientName] = paramsInfo[i1].defaultValue;
             }
+        }
         }
     });
 
