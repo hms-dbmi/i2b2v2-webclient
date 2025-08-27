@@ -52,9 +52,10 @@ export function* doGetRequestDetails(action) {
 
     try {
         let response;
-        const isResultInstanceIdAvailable = requestRow.requests.length > 0 && requestRow.requests[0].resultInstanceId;
+        const rpdoRequest = requestRow.requests.filter(l => l.isRPDO === true);
+        const isResultInstanceIdAvailable = rpdoRequest.length > 0;
         if(isResultInstanceIdAvailable){
-            response = yield call(getExportRequestDetailRequest, requestRow.requests[0].resultInstanceId);
+            response = yield call(getExportRequestDetailRequest, rpdoRequest[0].resultInstanceId);
         }
 
         if(!isResultInstanceIdAvailable){

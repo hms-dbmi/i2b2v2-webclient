@@ -82,6 +82,7 @@ const parseAllExportRequestsListXml = (exportRequestListXml) => {
                                 const tableId = parseInt(requestId.replace("RPDO_", ""));
                                 if(!isNaN(tableId)){
                                     request.tableId = tableId;
+                                    request.isRPDO = requestId.toUpperCase().includes("RPDO_");
                                 }
                             }
                             if(requestDescription.length > 0) {

@@ -30,7 +30,8 @@ export const requestTableSlice = createSlice({
                             return ExportRequest({
                                 tableId: req.tableId,
                                 resultInstanceId: req.resultInstanceId,
-                                description: req.description
+                                description: req.description,
+                                isRPDO: req.isRPDO
                             })
                         }),
                         dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
@@ -48,7 +49,8 @@ export const requestTableSlice = createSlice({
                             return ExportRequest({
                                 tableId: req.tableId,
                                 resultInstanceId: req.resultInstanceId,
-                                description: req.description
+                                description: req.description,
+                                isRPDO: req.isRPDO
                             })
                         }),
                         dateSubmitted: DateTime.fromISO(request.dateSubmitted).toJSDate(),
