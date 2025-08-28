@@ -147,9 +147,11 @@ if ($PostBody=="") {
 		if (($sec_fix_blacklist['scheme'] == $sec_fix_request['scheme']) &&
             ($sec_fix_blacklist['host'] == $sec_fix_request['host']) &&
             ($sec_fix_blacklist['port'] == $sec_fix_request['port'])) {
-
-			// security as failed - exit here and don't allow one more line of execution the opportunity to reverse this
-			die("The proxy has refused to relay your request.");
+            // bug fix: path must match as well for the blacklist entries
+            if ($sec_fix_blacklist['path'] == $sec_fix_request['path']) {
+                // security as failed - exit here and don't allow one more line of execution the opportunity to reverse this
+                die("The proxy has refused to relay your request.");
+            }
 		}
 	}
 
