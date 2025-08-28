@@ -1,42 +1,60 @@
 :root {
-    --text-light: #757575;
-    --text-dark: #887766;
-
-    --text-secondary-light: #2782a3;
-    --text-secondary-dark: #2782a3;
-
+    /* primary text colors */
     --text-primary-dark: #000000;
     --text-primary-light: #ffffff;
 
+    /* secondary text colors */
+    --text-secondary-light: #2782a3;
+    --text-secondary-dark: #2782a3;
 
+    --text-light: #757575;
+    --text-dark: #887766;
+
+    /* header and footers for the main application screen */
     --head-foot-background: #2782a3;
     --head-foot-text: #FFFFFF;
     --head-foot-icon: #FFFFFF;
     --head-foot-icon-select: #000000;
 
+    /* main screen components (inside tabs) */
+    --component-border:  rgba(99, 117, 140, 0.28);
+    --component-background: #FFFFFF;
 
+    /* main screen tabs (left/right sides) */
     --tabs-left-background: #ed9b40;
     --tabs-left-border: rgba(99, 117, 140, 0.28);
     --tabs-right-background: #ccc2b6;
     --tabs-right-border: rgba(99, 117, 140, 0.28);
 
-    --component-border:  rgba(99, 117, 140, 0.28);
-    --component-background: #FFFFFF;
-
+    /* text for the tabs */
     --tabs-text: #000000;
     --tabs-text-active: #000000;
     --tabs-text-hover: #000000;
     --tabs-text-active-hover: #404040;
 
+    /* displaying errors */
     --error-text-light: red;
     --error-text-dark: #f44336;
     --error-border: #f44336;
 
+    /* when dropping items into the Query Tool */
     --dragdrop-hover-ok: #d1f0ff;
 
+    /* when hovering over a plugin in the Analysis Tools tab */
+    --plugin-list-hover: #FFFFCC;
+
+    /* when hovering over an entry in any of the right-click popup menus */
     --dropdown-menu-hover: #ccc;
+
+    /* when hovering over a entry in any of the treeviews */
     --treeview-hover-background: rgba(205, 208, 208, 0.56);
 
+    /* modal stuff */
+    --modal-header-bg: #f1f1f1;
+    --bs-modal-header-border-color: #dee2e6;
+    --bs-modal-footer-border-color: #dee2e6;
+
+    /* layout splitters to resize windows */
     --splitter: #369;
 
     /* color of the input form elements when the keyboard focus is on them */

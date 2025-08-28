@@ -1,16 +1,9 @@
 /* Set a style for all buttons */
 #PM-login-modal button {
-    background-color: #4CAF50;
-    color: white;
     padding: 14px 20px;
     margin: 8px 0;
-    border: none;
     cursor: pointer;
     width: 100%;
-}
-
-#PM-login-modal button:hover {
-    opacity: 0.8;
 }
 
 /* Center the image and position the close button */
@@ -30,6 +23,14 @@
 
 #PM-login-modal .classic {
     padding: 15px 16px 16px 0;
+}
+
+#PM-login-modal .form-group label {
+    margin-bottom: 8px;
+}
+
+#PM-login-modal .form-group input {
+    margin-bottom: 14px;
 }
 
 
@@ -58,18 +59,17 @@
     overflow: hidden;
 }
 
+
+
+
+
 #PM-login-modal .sso-button:hover,
 #PM-login-modal .sso-button:focus {
-    background-color: #e5e5e5;
-    border-color: black;
+    background-color: var(--treeview-hover-background);
+    border-color: var(--focus-border);
     outline: 0;
-    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+    box-shadow: 0 0 0 .25rem var(--focus-shadow);
 }
-
-#PM-login-modal .sso-button:hover {
-    box-shadow: 0 0 0 .25rem #CCCCCC;
-}
-
 
 
 

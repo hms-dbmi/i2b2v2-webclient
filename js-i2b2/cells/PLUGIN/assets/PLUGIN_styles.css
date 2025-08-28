@@ -39,7 +39,7 @@ DIV#PluginListBox A.pluginRecordBox {
 }
 
 DIV#PluginListBox A.pluginRecordBox:hover {
-    background-color: #FFFFCC;
+    background-color: var(--plugin-list-hover);
     box-shadow: rgb(60 64 67 / 60%) 0 4px 5px 0, rgb(60 64 67 / 30%) 0 4px 8px 5px;
     transition: box-shadow 100ms ease;
 }

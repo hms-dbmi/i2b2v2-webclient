@@ -217,6 +217,8 @@
 #i2b2QueryHistoryBar .searchBtn {
     font-size: 1.4em !important;
     margin-left: 0;
+    border-radius: 3px;
+    border-width: 0.10em !important;
 }
 
 #i2b2QueryHistoryBar .searchBtn:disabled {

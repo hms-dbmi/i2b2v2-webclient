@@ -1,5 +1,5 @@
 @import "color-scheme.css";
-
+@import "gradient-buttons.css";
 
 body {
 	margin:0;
@@ -234,7 +234,9 @@ button.invert:hover {
 }
 
 #headerOptions a:focus i {
-	color: var(--head-foot-icon-select);
+	color: var(--head-foot-icon-select) !important;
+	border: 1px dotted;
+	box-sizing: border-box;
 }
 
 
@@ -266,6 +268,7 @@ button.invert:hover {
 
 #userInfo .logout {
 	width: 75%;
+	color: white;
 }
 
 #userInfo .center {
@@ -279,16 +282,6 @@ button.invert:hover {
 	margin-left: 0;
 }
 
-#userInfo button {
-	color: #0d6efd;
-	background: #fff;
-}
-
-#userInfo button:active {
-	background: #0d6efd;
-	color: #fff;
-}
-
 #userInfo a {
 	color: blue !important;
 	text-decoration: underline;
@@ -297,7 +290,9 @@ button.invert:hover {
 #userInfo a:hover {
 	color: blue;
 	text-decoration: underline;
-	background: none;
+	background: none !important;
+	box-sizing: border-box;
+	border: 1px dotted;
 }
 
 #userInfo a:active {
@@ -305,12 +300,7 @@ button.invert:hover {
 	text-decoration: underline;
 }
 
-#userInfo .logout:active {
-	opacity: 1;
-	color: #fff;
-}
-
-#userInfo .dropdown-divider{
+#userInfo .dropdown-divider {
 	margin: 0;
 }
 
@@ -320,39 +310,25 @@ button.invert:hover {
 
 /* === End Page Header === */
 
-.xmlMsg {
-	background:#FFFFFF none repeat scroll 0%;
-	border:1px solid #000000;
-	height: 100%;
-	width: 100%;
-	overflow: scroll;
-}
 
+/* legacy plugin styles */
 A.selectedView { font-weight:bold; }
-
 #screenQueryData {
 	padding: 4px 0px 0px;
 }
 
-
-
-/* function buttons on right of tabs */
 DIV.opXML {
 	position: relative;
 	float: right;
 	padding: 6px 10px 0px 0px;
 	overflow: hidden;
 }
-
-/* <standarized main tab style> */
 DIV.TopTabs {
 	height:30px;
 	position:relative;
 	z-index:100 !important;
 	overflow:hidden;
 }
-
-
 DIV.tabBox {
 	background: var(--text-light) none repeat scroll 0;
 	border-color: var(--text-dark);
@@ -364,12 +340,10 @@ DIV.tabBox {
 	margin-right:5px;
 	padding:5px 5px 0px;
 }
-
 DIV.tabBox DIV {
 	padding: 0px 5px;
 	display:inline;
 }
-
 DIV.tabBox > DIV {
 	color:#445588;
 	font-weight:bold;
@@ -381,8 +355,6 @@ DIV.tabBox > DIV {
 	padding: 0px 5px;
 	display:block;
 }
-
-
 DIV.tabBox.active {
 	background: var(--text-light) none repeat scroll 0 50%;
 	border-color: var(--text-dark);
@@ -391,7 +363,6 @@ DIV.tabBox.active {
 	margin-right:5px;
 	height:20px;
 }
-
 DIV.tabBox.active DIV {
 	background:#6677AA;
 	border:1px solid #667788;
@@ -400,7 +371,6 @@ DIV.tabBox.active DIV {
 	font-family:arial,helvetica;
 	font-size:12px;
 }
-
 DIV.tabTextBox {
 	background: var(--text-light) none repeat scroll 0% 50%;
 	border-color: var(--text-dark);
@@ -415,7 +385,6 @@ DIV.tabTextBox {
 	width:136px;
 	z-index:10;
 }
-
 DIV.tabTextBox DIV {
 	background: #6677AA none repeat scroll 0%;
 	border: 1px solid #667788;
@@ -428,11 +397,7 @@ DIV.tabTextBox DIV {
 	text-align: center;
 	padding: 0px 8px;
 }
-
-DIV.tabText {}
 /* </standarized main tab style> */
-
-
 .pageMask {
 	background:#000;
 	opacity: 0.25;
@@ -446,6 +411,9 @@ DIV.tabText {}
 }
 
 
+
+
+
 #footer-bar {
 	height: var(--FooterBarHeight) !important;
 	position: absolute;
@@ -455,7 +423,6 @@ DIV.tabText {}
 
 
 /* === Start Golden Layout === */
-
 .goldenLayout {
 	margin-right:10px;
 	margin-left:10px;
@@ -678,8 +645,7 @@ textarea {
 	height:50px;
 }
 
-.goldenLayout div.pluginCellMain
-{
+.goldenLayout div.pluginCellMain {
  	border: 1px solid #678;
 }
 
@@ -691,18 +657,29 @@ iframe.pluginCell {
 	width: 100%;
 }
 
-#PM-login-modal .form-group label {
-	margin-bottom: 8px;
+/* modal dialog box */
+.modal .modal-header,
+.modal .modal-footer {
+	background-color: var(--modal-header-bg);
 }
 
-#PM-login-modal .form-group input {
-	margin-bottom: 14px;
+.modal-header {
+	font-weight: bold;
+	font-size: 1.1em;
 }
+.modal-header h5 {
+	font-size: 1.1rem;
+	line-height: 1rem;
+}
+
+
+
+
+
 
 .form-group select {
 	margin-bottom: 14px;
 }
-
 
 
 .treeview .list-group li.list-group-item:hover {

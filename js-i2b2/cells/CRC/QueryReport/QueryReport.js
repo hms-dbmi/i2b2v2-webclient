@@ -279,7 +279,6 @@ i2b2.CRC.QueryReport.generateReport = () => {
                 }, 100);
             }
         }
-        console.dir(targetDivs);
     }
 };
 
