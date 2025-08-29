@@ -27,6 +27,16 @@ Update: 05-03-17 (nw096):
 
 */
 
+function unparse_url($parsed_url) {
+  $scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
+  $host     = isset($parsed_url['host']) ? $parsed_url['host'] : '';
+  $port     = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
+  $path     = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+  $query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
+  return "$scheme$host$port$path$query";
+}
+
+
 
 $pmURL = "http://127.0.0.1:8080/i2b2/rest/PMService/getServices";
 $pmCheckAllRequests = false;
@@ -193,8 +203,11 @@ if ($PostBody=="") {
         }
 	}
 
+    // sanitize the proxyURL (security improvement)
+    $sanitized_proxyURL = unparse_url(parse_url($proxyURL));
+
 	// open the URL and forward the new XML in the POST body
-	$proxyRequest = curl_init($proxyURL);
+	$proxyRequest = curl_init($sanitized_proxyURL);
 	curl_setopt($proxyRequest, CURLOPT_SSL_VERIFYPEER, FALSE);
 	// these options are set for hyper-vigilance purposes
 	curl_setopt($proxyRequest, CURLOPT_COOKIESESSION, 0);
