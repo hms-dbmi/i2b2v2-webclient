@@ -20,7 +20,7 @@
         "type":"stack",
         "content":[
           {
-            "title":"Queries",
+            "title":"Previous Queries",
             "componentName": "i2b2.CRC.view.history"
           }
         ]
