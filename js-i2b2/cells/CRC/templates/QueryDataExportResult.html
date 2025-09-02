@@ -8,39 +8,61 @@
         </div>
 
         <div id="dataExportDetails" data-bs-toggle="collapse" class="accordion-collapse collapse show">
-            {{#each dataExport.resultTable}}
-            <div>
-                <label class="breakdownLabel" id="dataExportResultStatus{{@index}}"> {{this.title}} </label>
-                {{#if this.statusMessage}}
-                <div style="float: right">
-                    {{#ifCond this.statusMessage '===' "ERROR"}}
-                        <span class="dataExportStatus status-error">{{this.statusMessage}}</span>
-                    {{/ifCond}}
-                    {{#ifCond this.statusMessage '!==' "ERROR"}}
-                        <span class="dataExportStatus">{{this.statusMessage}}</span>
-                    {{/ifCond}}
-                </div>
-                {{/if}}
-                <div id="dataExportCollapse{{@index}}" class="breakdownResultList" aria-labelledby="dataExportResultStatus{{@index}}">
-                    <div>
-                        <table>
-                            {{#each this.result}}
-                            <tr>
-                                <td>{{this.name}}</td>
-                                <td class="breakdownValue">
-                                    {{#if this.display}}
-                                    {{{this.display}}}
-                                    {{else}}
-                                    {{{this.value}}}
-                                    {{/if}}
-                                </td>
-                            </tr>
-                            {{/each}}
-                        </table>
-                    </div>
-                </div>
+            <div class="dataExportInfo">
+                <table>
+                    <tr>
+                        <td class="dataExportInfoName">{{dataExport.requestInfo.email.name}}</td>
+                        <td class="breakdownValue">
+                            {{dataExport.requestInfo.email.value}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="dataExportInfoName">{{dataExport.requestInfo.emailMsg.name}}</td>
+                        <td class="breakdownValue">
+                            {{dataExport.requestInfo.emailMsg.value}}
+                        </td>
+                    </tr>
+                </table>
             </div>
-            {{/each}}
+
+            {{#if dataExport.resultTable}}
+                <label class="requestTableLabel">Request Type</label>
+            {{/if}}
+            <ol>
+                {{#each dataExport.resultTable}}
+                <li>
+                    <label class="breakdownLabel" id="dataExportResultStatus{{@index}}"> {{this.title}} </label>
+                    {{#if this.statusMessage}}
+                    <div style="float: right">
+                        {{#ifCond this.statusMessage '===' "ERROR"}}
+                            <span class="dataExportStatus status-error">{{this.statusMessage}}</span>
+                        {{/ifCond}}
+                        {{#ifCond this.statusMessage '!==' "ERROR"}}
+                            <span class="dataExportStatus">{{this.statusMessage}}</span>
+                        {{/ifCond}}
+                    </div>
+                    {{/if}}
+                    <div id="dataExportCollapse{{@index}}" class="breakdownResultList" aria-labelledby="dataExportResultStatus{{@index}}">
+                        <div>
+                            <table>
+                                {{#each this.result}}
+                                <tr>
+                                    <td>{{this.name}}</td>
+                                    <td class="breakdownValue">
+                                        {{#if this.display}}
+                                        {{{this.display}}}
+                                        {{else}}
+                                        {{{this.value}}}
+                                        {{/if}}
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </table>
+                        </div>
+                    </div>
+                </li>
+                {{/each}}
+            </ol>
         </div>
     </div>
 </div>

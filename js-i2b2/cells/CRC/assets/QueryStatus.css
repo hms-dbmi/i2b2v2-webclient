@@ -81,7 +81,20 @@
     margin-bottom: 0.5em;
 }
 
+.CRC_QS_view .dataExportInfo{
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
 
+.CRC_QS_view .dataExportInfoName {
+    min-width: 10em;
+}
+
+
+.CRC_QS_view .requestTableLabel {
+    margin-bottom: 0.5em;
+    margin-left: 0.4em;
+}
 
 .info-text-status .status-finished {
     color: #0d6efd;
