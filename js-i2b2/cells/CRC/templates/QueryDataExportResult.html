@@ -11,23 +11,27 @@
             {{#if dataExport.requestInfo.emailMsg.name}}
                 <div class="dataExportInfo">
                     <table>
-                        <tr>
-                            <td class="dataExportInfoName">{{dataExport.requestInfo.email.name}}</td>
-                            <td class="breakdownValue">
-                                {{dataExport.requestInfo.email.value}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="dataExportInfoName">{{dataExport.requestInfo.emailMsg.name}}</td>
-                            <td class="breakdownValue">
-                                {{dataExport.requestInfo.emailMsg.value}}
-                            </td>
-                        </tr>
+                        {{#if dataExport.requestInfo.email.name}}
+                            <tr>
+                                <td class="dataExportInfoName">{{dataExport.requestInfo.email.name}}</td>
+                                <td class="breakdownValue">
+                                    {{dataExport.requestInfo.email.value}}
+                                </td>
+                            </tr>
+                        {{/if}}
+                        {{#if dataExport.requestInfo.emailMsg.name}}
+                            <tr>
+                                <td class="dataExportInfoName">{{dataExport.requestInfo.emailMsg.name}}</td>
+                                <td class="breakdownValue">
+                                    {{dataExport.requestInfo.emailMsg.value}}
+                                </td>
+                            </tr>
+                        {{/if}}
                     </table>
                 </div>
             {{/if}}
             {{#if dataExport.resultTable}}
-                <label class="requestTableLabel">Request Type</label>
+                <label class="requestTableLabel">Request Type(s)</label>
             {{/if}}
             <ol>
                 {{#each dataExport.resultTable}}
