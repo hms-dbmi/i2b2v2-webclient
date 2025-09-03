@@ -238,7 +238,7 @@ if ($PostBody=="") {
 	// perform any analysis or processing on the returned result here
 	header("Content-Type: text/xml", true);
 	$sanitized = new SimpleXMLElement($proxyResult);
-	echo $sanitized;
+	echo $sanitized->asXML();
 }
 
 ?>
