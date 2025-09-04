@@ -183,7 +183,7 @@ i2b2.CRC.view.QueryReport = {
                             }
 
                             if(breakdownItem.name.toUpperCase() === "REQUESTEMAIL") {
-                                i2b2.CRC.view.QueryReport.dataExport.requestInfo.emailMsg.name = "Request Email";
+                                i2b2.CRC.view.QueryReport.dataExport.requestInfo.emailMsg.name = "Request Message";
                                 i2b2.CRC.view.QueryReport.dataExport.requestInfo.emailMsg.value = breakdownItem.value;
                             }
 
