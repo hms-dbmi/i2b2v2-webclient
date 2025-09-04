@@ -14,6 +14,10 @@ i2b2.CRC.view.QueryReport = {
         };
         this.dataExport  = {
             resultTable: [],
+            requestInfo: {
+                email: {},
+                emailMsg: {}
+            }
         };
         this.hasZeroPatients = false;
 
@@ -174,10 +178,17 @@ i2b2.CRC.view.QueryReport = {
                             breakdownItem.name === 'EMAIL' || breakdownItem.name === 'RequestEmail');
                         breakdown.result.forEach(breakdownItem => {
                             if(breakdownItem.name.toUpperCase() === "EMAIL") {
-                                breakdownItem.name = "Requested By Email";
+                                i2b2.CRC.view.QueryReport.dataExport.requestInfo.email.name = "Requested By Email";
+                                i2b2.CRC.view.QueryReport.dataExport.requestInfo.email.value = breakdownItem.value;
                             }
+
                             if(breakdownItem.name.toUpperCase() === "REQUESTEMAIL") {
-                                breakdownItem.name = "Request Email";
+                                i2b2.CRC.view.QueryReport.dataExport.requestInfo.emailMsg.name = "Request Message";
+                                i2b2.CRC.view.QueryReport.dataExport.requestInfo.emailMsg.value = breakdownItem.value;
+                            }
+
+                            if(!(breakdownItem.name.toUpperCase() === "EMAIL" && breakdownItem.name.toUpperCase() === "REQUESTEMAIL")) {
+                                breakdown = {title: breakdown.title};
                             }
                         });
                         i2b2.CRC.view.QueryReport.dataExport.resultTable.push(breakdown);
