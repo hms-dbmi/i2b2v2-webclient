@@ -58,6 +58,45 @@
 }
 
 
+
+#PM-login-modal .sso-button {
+    border: 1px solid grey;
+    padding: 0;
+    width: 100%;
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+#PM-login-modal .sso-button:hover,
+#PM-login-modal .sso-button:focus {
+    background-color: var(--treeview-hover-background);
+    border-color: var(--focus-border);
+    outline: 0;
+    box-shadow: 0 0 0 .25rem var(--focus-shadow);
+}
+
+
+#PM-login-modal .sso-button img {
+    height: 4.6em;
+    width: 4.6em;
+    float: left;
+    border-right: 1px solid grey;
+    border-bottom-left-radius: 2px;
+    border-top-left-radius: 2px;
+}
+
+#PM-login-modal .sso-button div {
+    width: 100%;
+    padding-left: 4.6em;
+    position: absolute;
+    margin:0;
+    top: 35%;
+}
+
+
+
+
+
 /* Login password box (for disabling of password warning) */
 @font-face {
     font-family: 'password' ;
