@@ -27,9 +27,13 @@
     padding: 16px;
 }
 
-#PM-login-modal .classic {
-    padding: 15px 16px 16px 0px;
+#PM-login-modal .form-group label {
+    margin-bottom: 8px;
 }
+#PM-login-modal .form-group input {
+    margin-bottom: 14px;
+}
+
 
 
 /* The Modal (background) */
@@ -55,6 +59,15 @@
     width: 25%; /* Could be more or less, depending on screen size */
     min-width: 300px;
     overflow: hidden;
+}
+
+
+#PM-login-modal .modal-footer div {
+    text-align: left;
+    width: 100%;
+}
+#PM-login-modal .classic {
+    padding: 14px 0 5px 0;
 }
 
 
