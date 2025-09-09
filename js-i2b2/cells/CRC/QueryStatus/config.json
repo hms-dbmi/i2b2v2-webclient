@@ -13,6 +13,31 @@
       "class": "patient-count",
       "alwaysShow": true,
       "noFrameTemplate": true
+    },
+    "BARS": {
+      "name": "Bar Chart",
+      "source": "BarGraph/BarGraph.js",
+      "CSS": "BarGraph/BarGraph.css",
+      "iconClass": "bi bi-bar-chart-line",
+      "default": true,
+      "displayOrder": 1,
+      "class": "bargraph"
+    },
+    "TABLE": {
+      "name": "Table Summary",
+      "source": "Table/Table.js",
+      "CSS": "Table/Table.css",
+      "iconClass": "bi bi-table",
+      "displayOrder": 100,
+      "displayForUnregistered": true
+    },
+    "DOWNLOAD": {
+      "name": "CSV Download",
+      "source": "Download/Download.js",
+      "iconClass": "bi bi-filetype-csv",
+      "displayOrder": 500,
+      "displayForUnregistered": true,
+      "notInReport": true
     }
   },
   "displayOrder": [

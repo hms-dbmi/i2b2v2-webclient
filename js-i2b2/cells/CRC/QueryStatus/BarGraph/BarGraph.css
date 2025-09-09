@@ -1,0 +1,35 @@
+/* Bar Graph CSS */
+
+.component-instance-viz.viztype-BARS {
+    /*background: radial-gradient(black,transparent);*/
+    /*height: 10rem;*/
+}
+
+
+.component-instance-viz.viztype-BARS svg text.graphLabel {
+    cursor: default;
+    text-anchor: end;
+}
+
+.component-instance-viz.viztype-BARS svg text.graphLabel:hover {
+    font-weight: bold;
+}
+
+.component-instance-viz.viztype-BARS svg rect.graphbar {
+    opacity: 0.60;
+    fill: rgb(39, 130, 163);
+    transition: opacity 100ms;
+}
+.component-instance-viz.viztype-BARS svg rect.graphbar:hover {
+    opacity: 1;
+    stroke: black;
+}
+
+.component-instance-viz.viztype-BARS svg text.graph-title {
+    font-weight: bold;
+    font-height: 1.05em;
+}
+
+.component-instance-viz.viztype-BARS svg text.y-label {
+    font-weight: bold;
+}
