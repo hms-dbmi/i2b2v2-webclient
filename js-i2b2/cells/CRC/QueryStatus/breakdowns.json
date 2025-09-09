@@ -7,21 +7,41 @@
   },
   "PATIENT_GENDER_COUNT_XML": {
     "BARS": true,
+    "PIECHART": {
+      "hideZeros": true
+    },
     "TABLE": true,
     "DOWNLOAD": true
   },
   "PATIENT_VITALSTATUS_COUNT_XML": {
     "BARS": true,
+    "PIECHART": {
+      "hideZeros": true
+    },
     "TABLE": true,
     "DOWNLOAD": true
   },
   "PATIENT_RACE_COUNT_XML": {
     "BARS": true,
+    "PIECHART": {
+      "hideZeros": true,
+      "forceInitialDisplay": true
+    },
     "TABLE": true,
     "DOWNLOAD": true
   },
   "PATIENT_AGE_COUNT_XML": {
     "BARS": true,
+    "PIECHART": {
+      "hideEntries": [
+        "(children) < 18 years old",
+        "(adults) >= 18 years old",
+        ">= 90 years old",
+        ">= 85 years old",
+        ">= 65 years old"
+      ],
+      "hideZeros": true
+    },
     "TABLE": true,
     "DOWNLOAD": true
   },

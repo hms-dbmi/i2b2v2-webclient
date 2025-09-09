@@ -23,6 +23,13 @@
       "displayOrder": 1,
       "class": "bargraph"
     },
+    "PIECHART": {
+      "name": "Pie Chart",
+      "source": "PieChart/PieChart.js",
+      "CSS": "PieChart/PieChart.css",
+      "iconClass": "bi bi-pie-chart",
+      "displayOrder": 2
+    },
     "TABLE": {
       "name": "Table Summary",
       "source": "Table/Table.js",
