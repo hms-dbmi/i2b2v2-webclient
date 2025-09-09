@@ -28,6 +28,7 @@ export default class ZipcodeMap {
             // handle override settings in breakdowns.json for map tile info
             if (this.config.advancedConfig?.map.tiles) mapSettings.mapLayer.urlTemplate = this.config.advancedConfig.map.tiles;
             if (this.config.advancedConfig?.map.labelTiles) mapSettings.mapLayer.urlLabelsTemplate = this.config.advancedConfig.map.labelTiles;
+            if (this.config.advancedConfig?.map.attribution) mapSettings.mapLayer.attribution = this.config.advancedConfig.map.attribution;
             if (this.config.advancedConfig?.map.maxZoom) mapSettings.mapLayer.maxZoom = this.config.advancedConfig.map.maxZoom;
 
             // generate the valid zipcode list if it does not already exist

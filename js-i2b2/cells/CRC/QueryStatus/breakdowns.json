@@ -151,7 +151,7 @@
       "hoverBox": {
         "position": "topright",
         "className": "onhover-box",
-        "__default": "<h4>Patient Count</h4>Hover over an area",
+        "default": "<h4>Patient Count</h4>Hover over an area",
         "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{~count}} patients</span>"
       },
       "legendBox": {
@@ -166,10 +166,9 @@
         }
       },
       "map": {
-        "_tiles": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-        "_labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
         "tiles": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
-        "labelTiles": "https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png",
+        "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+        "attribution": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\">CARTO</a>",
         "maxZoom": 18,
         "zipAttribName": "ZCTA5CE10",
         "zipRegEx": "^(.*)[0-9]{5}",
@@ -193,7 +192,6 @@
            },
           "hover": {
             "weight": 3,
-            "_dashArray": "4,6",
             "color": "#F00",
             "fillOpacity": 0.5
           }
