@@ -80,7 +80,12 @@ export default class Count {
                     return false;
                 }
                 let sitesDone = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@complete")[0].nodeValue).toLocaleString();
-                let status = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@status")[0].textContent;
+                let status;
+                try {
+                    status = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@status")[0].textContent;
+                } catch(e) {
+                    status = "Unknown";
+                }
                 let obfuscateFloor = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@floorThresholdNumber");
                 if (obfuscateFloor.length > 0) {
                     obfuscateFloor = parseInt(obfuscateFloor[0].nodeValue);
