@@ -1,0 +1,11 @@
+{
+  "INTERNAL_SUMMARY": {
+    "SUMMARY": true
+  },
+  "PATIENT_COUNT_XML": {
+    "COUNT": true
+  },
+  "PATIENT_COUNT_SHRINE_XML": {
+    "COUNT": true
+  }
+}

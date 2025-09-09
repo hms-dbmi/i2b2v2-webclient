@@ -1,0 +1,32 @@
+{
+  "displayComponents": {
+    "SUMMARY": {
+      "source": "Summary/Summary.js",
+      "CSS": "Summary/Summary.css",
+      "alwaysShow": true,
+      "noFrameTemplate": true,
+      "notInReport": true
+    },
+    "COUNT": {
+      "source": "Count/Count.js",
+      "CSS": "Count/Count.css",
+      "class": "patient-count",
+      "alwaysShow": true,
+      "noFrameTemplate": true
+    }
+  },
+  "displayOrder": [
+    "INTERNAL_SUMMARY",
+    "PATIENT_COUNT_XML",
+    "PATIENT_COUNT_SHRINE_XML",
+    "PATIENT_SITE_COUNT_SHRINE_XML"
+  ],
+  "haltPollingOnStatus": [
+    "COMPLETED",
+    "PROCESSING",
+    "FINISHED",
+    "ERROR",
+    "INCOMPLETE",
+    "TIMEOUT"
+  ]
+}

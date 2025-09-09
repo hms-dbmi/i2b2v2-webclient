@@ -162,7 +162,8 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
     i2b2.CRC.model.runner.intervalTimer = setInterval(i2b2.CRC.ctrlr.QueryMgr.tick, 100);
 
     // show run status HTML
-    i2b2.CRC.view.QueryMgr.updateStatus();
+    i2b2.CRC.view.QueryMgr.updateStatus(); // we need to pass the query runner status over first!
+    i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
 
     // run query and get back the query master ID
     i2b2.CRC.ajax.runQueryInstance_fromQueryDefinition("CRC:QueryManager", params, i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster);
@@ -236,10 +237,11 @@ i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     i2b2.CRC.model.runner.isCancelled = true;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.queued = true;
-    // if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
-    //     clearInterval(i2b2.CRC.model.runner.intervalTimer);
-    //     delete i2b2.CRC.model.runner.intervalTimer;
-    // }
+
+    if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
+        clearInterval(i2b2.CRC.model.runner.intervalTimer);
+        delete i2b2.CRC.model.runner.intervalTimer;
+    }
 };
 
 
@@ -254,7 +256,7 @@ i2b2.CRC.ctrlr.QueryMgr.clearQuery = function() {
     i2b2.CRC.ctrlr.QT.clearQuery();
 
     // clear the display window
-    $("#infoQueryStatus", cell.view.QueryMgr.lm_view).empty();
+    i2b2.CRC.view.QueryMgr.clearStatus();
 };
 
 
@@ -352,6 +354,9 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
             i2b2.CRC.model.runner.isPolling = false;
             i2b2.CRC.model.runner.queued = true;
         }
+
+        // Start the query status panel!
+        i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
     }
 };
 
@@ -386,7 +391,12 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
         // query history window is refreshed by this call
         i2b2.CRC.ctrlr.history.queryDeleteNoPrompt(qmId);
     } else {
-        // TODO: render the results tables/graphs
+        // render the results tables/graphs (but only if we have a proper QI reference)
+        if (typeof i2b2.CRC.model.runner.idQueryInstance === 'undefined') {
+            showStatus = false;
+        } else {
+            i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
+        }
     }
 
     // re-render status
