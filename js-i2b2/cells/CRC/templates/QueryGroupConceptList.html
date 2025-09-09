@@ -49,12 +49,6 @@
     <span class="actions">
         {{#if this.isLab}}
             <i class="bi bi-moisture editLabValue" title="Edit lab values"></i>
-        <!--
-            <i class="bi bi-eyedropper" title="Edit Lab Values"></i>
-            <i class="bi bi-droplet" title="Edit Lab Values"></i>
-            <i class="bi bi-speedometer" title="Edit Lab Values"></i>
-            <i class="bi bi-thermometer-half" title="Edit Lab Values"></i>
-        -->
         {{/if}}
         {{#ifCond this.sdxInfo.sdxType "===" "CONCPT"}}
             {{#if this.origData.hasMetadata}}
