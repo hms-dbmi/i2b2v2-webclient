@@ -1,0 +1,72 @@
+/* Shrine Sites CSS */
+
+
+.viztype-SHRINESITES {
+    padding: 0 2rem;
+}
+
+.viztype-SHRINESITES table {
+    width: 100%;
+    top: calc(-1rem - 1px);
+    position: relative;
+    border: solid 1px #ccc;
+    caption-side: bottom;
+    border-collapse: collapse;
+}
+
+.viztype-SHRINESITES table th {
+    border: solid 1px #ccc;
+    padding: .3rem .5rem;
+    background: #eee;
+    /*font-size: 1.1em;*/
+}
+
+.viztype-SHRINESITES table th i.bi {
+    float: right;
+    cursor: pointer;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    margin-left: .3rem;
+}
+
+.viztype-SHRINESITES table th i.bi.sort-by {
+    background: #FFF;
+    border-color: #000;
+}
+
+
+.viztype-SHRINESITES table td {
+    border: solid 1px #ccc;
+    padding: .2rem .5rem;
+}
+
+/*.viztype-SHRINESITES table tr td {
+    font-size: 1.09em;
+}*/
+
+
+.viztype-SHRINESITES table td.status-error {
+    color: red;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.viztype-SHRINESITES table td.status-good {
+    color: green;
+}
+.viztype-SHRINESITES table td.status-warn {
+    color: orange;
+}
+
+
+
+.viztype-SHRINESITES table th.result,
+.viztype-SHRINESITES table td.result {
+    text-align: center;
+}
+
+
+@media print {
+    .component-instance-viz.viztype-SHRINESITES table {
+        top: 0;
+    }
+}

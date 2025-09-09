@@ -34,11 +34,11 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
                     statusBar.error += i2b2.CRC.model.runner.progress[status];
                     break;
                 case "COMPLETED":
+                case "PROCESSING":
                 case "FINISHED":
                     statusBar.finished += i2b2.CRC.model.runner.progress[status];
                     break;
                 case "WAITTOPROCESS":
-                case "PROCESSING":
                 case "QUEUED":
                 default:
                     statusBar.running += i2b2.CRC.model.runner.progress[status];
@@ -155,7 +155,9 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
         isRunning: true,
         isLoading: false,
         isCancelled: false,
-        hasError: false
+        hasError: false,
+        isShrine: false,
+        intervalGraphRefresh: false
     };
 
     delete i2b2.CRC.model.runner.progress;
@@ -214,6 +216,9 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
         i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryMgr:loadQuery",{qi_key_value: qi_id}, cb_hack);
     };
     i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryMgr:loadQuery", {qm_key_value: idQueryMaster}, cb);
+
+    // make sure that the Query Status window is visible
+    i2b2.layout.selectTab('i2b2.CRC.view.QueryMgr');
 };
 
 
@@ -321,6 +326,8 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
             rec.id = i2b2.h.XPath(qri, 'descendant-or-self::result_instance_id')[0].firstChild.nodeValue;
             rec.desc = i2b2.h.XPath(qri, 'descendant-or-self::query_result_type/description')[0].firstChild.nodeValue;
             rec.status = i2b2.h.XPath(qri, 'descendant-or-self::query_status_type/name')[0].firstChild.nodeValue;
+            rec.type = i2b2.h.XPath(qri, 'descendant-or-self::query_result_type/name')[0].firstChild.nodeValue;
+            if (rec.type.indexOf('_SHRINE_') > -1) i2b2.CRC.model.runner.isShrine = true;
             idQRI[rec.id] = rec;
 
             // check for errors
@@ -376,7 +383,6 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
     i2b2.CRC.model.runner.isRunning = false;
     i2b2.CRC.model.runner.isLoading = false;
     if (i2b2.CRC.model.runner.endTime === undefined) i2b2.CRC.model.runner.endTime = new Date();
-
 
     // stop the run timer
     if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
@@ -702,5 +708,6 @@ i2b2.CRC.model.runner = {
     isRunning: true,
     isLoading: false,
     isCancelled: false,
-    hasError: false
+    hasError: false,
+    isShrine: false
 };

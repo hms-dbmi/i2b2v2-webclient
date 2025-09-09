@@ -14,6 +14,13 @@
       "alwaysShow": true,
       "noFrameTemplate": true
     },
+    "SHRINESITES": {
+      "name": "Table Summary",
+      "source": "ShrineSites/ShrineSites.js",
+      "CSS": "ShrineSites/ShrineSites.css",
+      "iconClass": "bi bi-table",
+      "alwaysShow": true
+    },
     "BARS": {
       "name": "Bar Chart",
       "source": "BarGraph/BarGraph.js",

@@ -5,6 +5,13 @@
   "PATIENT_COUNT_XML": {
     "COUNT": true
   },
+  "PATIENT_COUNT_SHRINE_XML": {
+    "COUNT": true
+  },
+  "PATIENT_SITE_COUNT_SHRINE_XML": {
+    "SHRINESITES": true,
+    "DOWNLOAD": true
+  },
   "PATIENT_GENDER_COUNT_XML": {
     "BARS": true,
     "PIECHART": {
@@ -13,7 +20,20 @@
     "TABLE": true,
     "DOWNLOAD": true
   },
+  "PATIENT_SEX_COUNT_SHRINE_XML": {
+    "BARS": true,
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
   "PATIENT_VITALSTATUS_COUNT_XML": {
+    "BARS": true,
+    "PIECHART": {
+      "hideZeros": true
+    },
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_VITALSTATUS_COUNT_SHRINE_XML": {
     "BARS": true,
     "PIECHART": {
       "hideZeros": true
@@ -30,7 +50,30 @@
     "TABLE": true,
     "DOWNLOAD": true
   },
+  "PATIENT_RACE_COUNT_SHRINE_XML": {
+    "BARS": true,
+    "PIECHART": {
+      "hideZeros": true
+    },
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
   "PATIENT_AGE_COUNT_XML": {
+    "BARS": true,
+    "PIECHART": {
+      "hideEntries": [
+        "(children) < 18 years old",
+        "(adults) >= 18 years old",
+        ">= 90 years old",
+        ">= 85 years old",
+        ">= 65 years old"
+      ],
+      "hideZeros": true
+    },
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_AGE_COUNT_SHRINE_XML": {
     "BARS": true,
     "PIECHART": {
       "hideEntries": [
