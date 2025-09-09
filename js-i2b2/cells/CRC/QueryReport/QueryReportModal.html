@@ -1,0 +1,47 @@
+<style>
+    #queryReportModal .modal-dialog {
+        max-width: calc(670px + 5%);
+    }
+
+    #queryReportModal .modal-content {
+        height: 90%;
+    }
+
+    #queryReportModal .modal-body {
+        overflow: hidden;
+        padding: 0;
+    }
+
+    #queryReportModal .modal.fade.show {
+        background: rgba(0,0,0,.6);
+    }
+
+    #queryReportModal #queryReportWindow {
+        width: 100%;
+        height: 100%;
+        overflow: scroll;
+    }
+</style>
+<div class="modal fade" data-bs-backdrop="false">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <span class="modal-title">i2b2 Query Report</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <iframe id="queryReportWindow"></iframe>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success print">Print Report</button>
+            </div>
+        </div>
+    </div>
+</div>

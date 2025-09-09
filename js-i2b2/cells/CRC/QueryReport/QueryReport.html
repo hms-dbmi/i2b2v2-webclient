@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Query Report</title>
+  <link rel="stylesheet" href="js-i2b2/cells/CRC/QueryReport/QueryReportDocument.css">
+  {{#each stylesheets}}
+  <link rel="stylesheet" href="{{this}}">
+  {{/each}}
+</head>
+<body>
+<h1 class="main-title">i2b2 Query Report</h1>
+{{#if hasError}}
+  The query entitled "{{name}}" submitted on <span class="no-break">{{submittedAt}}</span>.
+{{else}}
+  The query entitled "{{name}}" submitted on <span class="no-break">{{submittedAt}}</span>, was successfully completed on <span class="no-break">{{completedAt}}</span>.
+  This query was performed by <span class="no-break">"{{submittedBy}}"</span>.
+  The search was completed in {{runDuration}} seconds.
+{{/if}}
+
+
+<h2 class="sub-title">Query Definition</h2>
+<p class="temporal-constraint">Temporal Constraint: {{temporalMode}}</p>
+
+{{#if panels}}
+<div class="groups-container">
+  <h3>All Groups</h3>
+  {{#each panels}}
+  {{#unless @first}}<span class="joiner and">AND </span>{{/unless}}
+  {{#ifCond this.invert "==" "1"}}<span class="joiner and">NOT</span>{{/ifCond}}
+  <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
+    {{#each this.items}}
+      <div class="item-container">
+        <div class="item-title"><img src="{{this.moreInfo.renderData.iconImg}}"/> {{{this.moreInfo.renderData.title}}}</div>
+        <div class="item-discript">{{this.moreInfo.renderData.moreDescriptMinor}}</div>
+        <div>{{{dataTypeReportHtml this.moreInfo}}}</div>
+        {{#if this.timing}}
+        <div class="item-timing">
+          {{#ifCond this.timing "==" "ANY"}}
+          Independent of Visit
+          {{/ifCond}}
+          {{#ifCond this.timing "==" "SAMEVISIT"}}
+          Occurs in Same Encounter
+          {{/ifCond}}
+          {{#ifCond this.timing "==" "SAMEINSTANCENUM"}}
+          Item's Instance will be the same
+          {{/ifCond}}
+        </div>
+        {{/if}}
+        <div class="item-dates">{{#if this.timingFrom}}From {{this.timingFrom}}{{/if}}{{#if this.timingTo}} to {{this.timingTo}}{{/if}}</div>
+        {{#if this.occurs}}
+        <div class="item-occurs"># of times an item is recorded is >= {{this.occurs}}</div>
+        {{/if}}
+      </div>
+      {{#unless @last}}<div class="joiner or">OR</div>{{/unless}}
+    {{/each}}
+  </div>
+  {{/each}}
+</div>
+{{/if}}
+
+{{#if events}}
+<div class="events-container">
+  <h3>All Events</h3>
+  {{#each events}}
+  <div class="panel-definition {{#ifCond this.invert "==" "1"}}not{{/ifCond}}">
+    <div class="event-title">{{this.name}}</div>
+    {{#each this.panels}}
+    <div class="event-panel">
+      {{#each this.items}}
+      <div class="item-container">
+        <div class="item-title"><img src="{{this.moreInfo.renderData.iconImg}}"/> {{this.moreInfo.renderData.title}}</div>
+        <div class="item-discript">{{this.moreInfo.renderData.moreDescriptMinor}}</div>
+        <div class="item-timing">
+          {{#ifCond this.timing "==" "ANY"}}
+          Independent of Visit
+          {{/ifCond}}
+          {{#ifCond this.timing "==" "SAMEVISIT"}}
+          Occurs in Same Encounter
+          {{/ifCond}}
+          {{#ifCond this.timing "==" "SAMEINSTANCENUM"}}
+          Item's Instance will be the same
+          {{/ifCond}}
+        </div>
+        <div class="item-dates">From {{this.timingFrom}} to {{this.timingTo}}</div>
+        <div class="item-occurs"># of times an item is recorded is >= {{this.occurs}}</div>
+      </div>
+      {{#unless @last}}<div class="joiner or">OR</div>{{/unless}}
+      {{/each}}
+    </div>
+    {{#unless @last}}<div class="joiner and">AND {{#if this.next_is_not}}NOT{{/if}}</div>{{/unless}}
+    {{/each}}
+  </div>
+  {{/each}}
+</div>
+
+<h3 class="eventlinks-title">Order of Events</h3>
+<div class="eventlinks-container">
+  {{#each eventLinks}}
+  <div class="line
+    {{#if @first}}first{{/if}}
+    {{#if @last}}last{{/if}}
+  ">
+    {{#ifCond joinColumn1 "==" "STARTDATE"}}Start{{/ifCond}}
+    {{#ifCond joinColumn1 "==" "ENDDATE"}}End{{/ifCond}}
+
+    of
+
+    {{#ifCond aggregateOp1 "==" "FIRST"}}the first ever{{/ifCond}}
+    {{#ifCond aggregateOp1 "==" "LAST"}}the last ever{{/ifCond}}
+    {{#ifCond aggregateOp1 "==" "ANY"}}any{{/ifCond}}
+
+    occurrence for Event {{prevNum}} occurs
+
+    {{#ifCond operator "==" "GREATER"}}after{{/ifCond}}
+    {{#ifCond operator "==" "GREATEREQUAL"}}on or after{{/ifCond}}
+    {{#ifCond operator "==" "EQUAL"}}simultaneously with{{/ifCond}}
+    {{#ifCond operator "==" "LESSEQUAL"}} on or before{{/ifCond}}
+    {{#ifCond operator "==" "LESS"}}before{{/ifCond}}
+
+    the <br/>
+
+    {{#ifCond joinColumn2 "==" "STARTDATE"}}start{{/ifCond}}
+    {{#ifCond joinColumn2 "==" "ENDDATE"}}end{{/ifCond}}
+
+    of
+
+    {{#ifCond aggregateOp2 "==" "FIRST"}} the first ever{{/ifCond}}
+    {{#ifCond aggregateOp2 "==" "LAST"}}the last ever{{/ifCond}}
+    {{#ifCond aggregateOp2 "==" "ANY"}}any{{/ifCond}}
+
+    occurrence for Event {{nextNum}}
+
+    {{#ifCond timeSpans.0.value "||" timeSpans.1.value}}
+      by
+      {{#if timeSpans.0.value}}
+        {{#ifCond timeSpans.0.operator "==" "GREATER"}}>{{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "GREATEREQUAL"}}>={{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "EQUAL"}}={{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "LESSEQUAL"}}<={{/ifCond}}
+        {{#ifCond timeSpans.0.operator "==" "LESS"}}<{{/ifCond}}
+        {{timeSpans.0.value}}
+        {{#ifCond timeSpans.0.unit "==" "DAY"}}day(s){{/ifCond}}
+        {{#ifCond timeSpans.0.unit "==" "WEEK"}}week(s){{/ifCond}}
+        {{#ifCond timeSpans.0.unit "==" "MONTH"}}month(s){{/ifCond}}
+        {{#ifCond timeSpans.0.unit "==" "YEAR"}}year(s){{/ifCond}}
+
+        {{#if timeSpans.1.value}}and{{/if}}
+      {{/if}}
+      {{#if timeSpans.1.value}}
+        {{#ifCond timeSpans.1.operator "==" "GREATER"}}>{{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "GREATEREQUAL"}}>={{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "EQUAL"}}={{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "LESSEQUAL"}}<={{/ifCond}}
+        {{#ifCond timeSpans.1.operator "==" "LESS"}}<{{/ifCond}}
+        {{timeSpans.1.value}}
+        {{#ifCond timeSpans.1.unit "==" "DAY"}}day(s){{/ifCond}}
+        {{#ifCond timeSpans.1.unit "==" "WEEK"}}week(s){{/ifCond}}
+        {{#ifCond timeSpans.1.unit "==" "MONTH"}}month(s){{/ifCond}}
+        {{#ifCond timeSpans.1.unit "==" "YEAR"}}year(s){{/ifCond}}
+      {{/if}}
+    {{/ifCond}}
+
+  </div>
+  {{/each}}
+</div>
+{{/if}}
+
+<h2 class="sub-title">Query Results</h2>
+
+{{#if visualizations}}
+  {{#each visualizations}}
+  <div class="results-group">
+    <label class="results-group-label">{{this.title}}</label>
+    {{#each this.visualizations}}
+      {{#ifCond this.module.noFrameTemplate "===" true}}
+        <div class="QueryStatusComponent frameless viz-window resulttype-{{this.codeQRS}} viztype-{{this.codeViz}}"></div>
+      {{/ifCond}}
+      {{#ifCond this.module.noFrameTemplate "!==" true}}
+        <div class="QueryStatusComponent main">
+          <div class="header">
+            <div class="title">Component Title</div>
+            <ul class="viz-dropdown-select" style="border: 0;"></ul>
+          </div>
+          <div class="viz-window">
+            <div class="component-instance-viz resulttype-{{this.codeQRS}} viztype-{{this.codeViz}}"></div>
+          </div>
+        </div>
+      {{/ifCond}}
+    {{/each}}
+  </div>
+  {{/each}}
+{{else}}
+  <div>Not Complete</div>
+{{/if}}
+</body>
+</html>
