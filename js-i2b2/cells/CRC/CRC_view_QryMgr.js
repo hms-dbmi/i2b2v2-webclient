@@ -36,7 +36,6 @@ i2b2.CRC.view.QueryMgr.clearStatus = function() {
         i2b2.CRC.ctrlr.QueryMgr.tick();
     }
     $("#infoQueryStatus", i2b2.CRC.view.QueryMgr.containerDiv).empty();
-    $("#infoQueryReport", i2b2.CRC.view.QueryMgr.containerDiv).empty();
 }
 
 
@@ -51,17 +50,9 @@ i2b2.events.afterCellInit.add((cell) => {
                     // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
                     cell.view.QueryMgr.lm_view = container;
 
-                    // add the cellWhite flare
+                    // add the root DIV for display
                     cell.view.QueryMgr.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(container._contentElement);
                     cell.view.QueryMgr.containerDiv.append('<div id="infoQueryStatus"></div>');
-                    cell.view.QueryMgr.containerDiv.append('<div id="infoQueryReport"></div>');
-
-                    container.on('resize',function() {
-                        // rerender result graphs if needed
-                        if (i2b2.CRC.view.QueryReport.breakdowns) i2b2.CRC.view.graphs.rerenderGraphs();
-                    });
-
-
 
                     // Show initial screen
                 }).bind(this)
@@ -74,27 +65,6 @@ i2b2.events.afterCellInit.add((cell) => {
                     Handlebars.registerPartial("QueryResultStatus", req.responseText);
                 },
                 error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultStatus.html"); }
-            });
-
-            $.ajax("js-i2b2/cells/CRC/templates/QueryResult.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryResult", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResult.html"); }
-            });
-
-            $.ajax("js-i2b2/cells/CRC/templates/QueryDataExportResult.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryDataExportResult", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template:QueryDataExportResult.html"); }
-            });
-
-            $.ajax("js-i2b2/cells/CRC/templates/QueryResultBreakdownGraph.html", {
-                success: (template, status, req) => {
-                    Handlebars.registerPartial("QueryResultBreakdownGraph", req.responseText);
-                },
-                error: (error) => { console.error("Error (retrieval or structure) with template: QueryResultBreakdownGraph.html"); }
             });
         }
     }

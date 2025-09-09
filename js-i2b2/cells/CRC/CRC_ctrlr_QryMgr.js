@@ -57,7 +57,6 @@ i2b2.CRC.ctrlr.QueryMgr.tick = function() {
     }
     i2b2.CRC.model.runner.progressBar = statusBar;
 
-
     // see if wee need to run another poll to get the progress from the server
     if (stillRunning
         && (((new Date()) - i2b2.CRC.model.runner.lastPoll) / 1000) > secPollInterval
@@ -256,7 +255,6 @@ i2b2.CRC.ctrlr.QueryMgr.clearQuery = function() {
 
     // clear the display window
     $("#infoQueryStatus", cell.view.QueryMgr.lm_view).empty();
-    $("#infoQueryReport", cell.view.QueryMgr.lm_view).empty();
 };
 
 
@@ -280,7 +278,7 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
         return;
     }
 
-        // get the query instance id
+    // get the query instance id
     let qiID = false;
 
     // try loading the query instance elements from the server results
@@ -388,8 +386,7 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
         // query history window is refreshed by this call
         i2b2.CRC.ctrlr.history.queryDeleteNoPrompt(qmId);
     } else {
-        // render the results tables/graphs
-        i2b2.CRC.view.QueryReport.displayQueryResults(i2b2.CRC.model.runner.idQueryInstance, $("#infoQueryReport"))
+        // TODO: render the results tables/graphs
     }
 
     // re-render status
