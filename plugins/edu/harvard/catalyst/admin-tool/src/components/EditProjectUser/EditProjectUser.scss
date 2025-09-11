@@ -1,10 +1,17 @@
 .EditProjectUser{
   max-height: 36em;
+  min-height: 36em;
   height: 36em;
 
   .EditParameters {
     min-height: 19.5em;
     max-height: 36em;
     overflow: auto;
+  }
+
+  .EditProjectUserDetails {
+    max-height: 30em;
+    min-height: 30em;
+    height: 30em;
   }
 }
