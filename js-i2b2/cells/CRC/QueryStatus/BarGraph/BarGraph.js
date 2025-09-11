@@ -17,6 +17,25 @@ export default class BarGraph {
             this.isVisible = false;
 
             if (typeof this.width === 'undefined') this.width = this.config.displayEl.parentElement.clientWidth;
+            if (this.config.advancedConfig?.maxLabelLength) {
+                this.maxLabelLength = parseInt(this.config.advancedConfig.maxLabelLength);
+            } else {
+                this.maxLabelLength = 150;
+            }
+            if (this.config.advancedConfig?.textColor) {
+                this.textColor = this.config.advancedConfig.textColor;
+            } else {
+                this.textColor = "var(--text-primary-dark)";
+            }
+            if (this.config.advancedConfig?.barColor) {
+                this.barColor = this.config.advancedConfig.barColor;
+            } else {
+                this.barColor = false;
+            }
+
+
+
+
 
             // create the SVG element
             this.height = 400 - margin.top - margin.bottom;
@@ -84,8 +103,9 @@ export default class BarGraph {
                 .attr("transform", "translate(0," + this.height + ")")
                 .call(d3.axisBottom(x))
                 .selectAll("text")
-                .text((d)=>shortenLabel(d, i2b2.CRC.cfg.params.maxBarLabelLength))
+                .text((d) => shortenLabel(d, this.maxLabelLength))
                 .attr("transform", "translate(-10,0)rotate(-45)")
+                .attr("fill", this.textColor)
                 .classed("graphLabel", true)
                 .attr("test", (x, y, z) => {
                     let h = z[y].getBoundingClientRect().height;
@@ -118,7 +138,7 @@ export default class BarGraph {
                 .classed("y-axis", true)
                 .call(d3.axisLeft(y).tickFormat(d3.format(".2~s")));
             y_axis.append("text")
-                .attr("fill","currentColor")
+                .attr("fill", this.textColor)
                 .text("Number of Patients")
                 .classed("y-label", true)
                 .attr("letter-spacing", "1.16")
@@ -127,6 +147,9 @@ export default class BarGraph {
                     let h = (height - z[0].getBoundingClientRect().width) / 2;
                     return "translate(" + l + "," + h + ") rotate(-90) ";
                 });
+            svg.selectAll(".y-axis .tick text").attr("fill", this.textColor);
+
+
 
 
             // Bars selection and updating
@@ -169,6 +192,12 @@ export default class BarGraph {
             bars.exit().transition().duration(1000)
                 .attr('height', 0)
                 .remove();
+
+            // overide the bar's color if specified
+            if (this.barColor) {
+                bars.attr("style", "fill: " + this.barColor + " !important");
+            }
+
 
             // update the viewport element to the height of the visualization
             if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";

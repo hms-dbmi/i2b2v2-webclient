@@ -60,7 +60,9 @@
     "DOWNLOAD": true
   },
   "PATIENT_AGE_COUNT_XML": {
-    "BARS": true,
+    "BARS": {
+      "maxLabelLength": 15
+    },
     "PIECHART": {
       "hideEntries": [
         "(children) < 18 years old",
@@ -75,7 +77,9 @@
     "DOWNLOAD": true
   },
   "PATIENT_AGE_COUNT_SHRINE_XML": {
-    "BARS": true,
+    "BARS": {
+      "maxLabelLength": 15
+    },
     "PIECHART": {
       "hideEntries": [
         "(children) < 18 years old",
@@ -94,6 +98,11 @@
     "TABLE": true,
     "DOWNLOAD": true
   },
+  "PATIENT_SHRINE_LOS_XML": {
+    "TABLE": true,
+    "DOWNLOAD": true
+  },
+
   "PATIENT_TOP20MEDS_XML": {
     "BARS": true,
     "TABLE": {
