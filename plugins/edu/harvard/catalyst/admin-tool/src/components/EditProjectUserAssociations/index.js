@@ -250,11 +250,18 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
     }
 
     useEffect(() => {
+        if(selectedUser) {
+            let updatedSelectedUser = selectedProject.users.filter((user) => user.username === selectedUser.username);
+            if(updatedSelectedUser.length > 0) {
+                setSelectedUser(updatedSelectedUser[0]);
+            }
+        }
+
+        setRows(selectedProject.users);
+
         if(selectedProject.userStatus.status === "SAVE_SUCCESS"){
-            setSaveStatusMsg("Saved user " + selectedProject.userStatus.username + " to project");
-            setShowSaveStatus(true);
-            setSaveStatusSeverity("success");
             dispatch(saveProjectUserStatusConfirmed());
+            handleEditClick(searchedUsername.username)();
         }
         if(selectedProject.userStatus.status === "SAVE_FAIL"){
             dispatch(saveProjectUserStatusConfirmed());
@@ -276,13 +283,6 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
             setShowSaveStatus(true);
             setSaveStatusSeverity("error");
         }
-
-       if(selectedUser) {
-            let updatedSelectedUser = selectedProject.users.filter((user) => user.username === selectedUser.username).reduce((acc, item) => acc);
-            setSelectedUser(updatedSelectedUser);
-        }
-
-        setRows(selectedProject.users);
 
     }, [selectedProject]);
 

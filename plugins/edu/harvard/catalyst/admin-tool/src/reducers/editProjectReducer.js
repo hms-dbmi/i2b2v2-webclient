@@ -228,7 +228,14 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
         case  SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_SUCCEEDED: {
             const  { selectedProject, projectUser }  = action.payload;
 
-            const users = selectedProject.users.map((user) => (user.username === projectUser.username ? projectUser : user));
+            const existingUser =  selectedProject.users.filter((user) => user.username === projectUser.username).length > 0;
+            let users = [...selectedProject.users];
+
+            if(existingUser) {
+                users.map((user) => (user.username === projectUser.username ? projectUser : user));
+            } else{
+                users.push(projectUser);
+            }
 
             return SelectedProject({
                 ...state,
