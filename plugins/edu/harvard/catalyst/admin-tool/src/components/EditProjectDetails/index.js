@@ -6,6 +6,7 @@ import { Project } from "models";
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import StepButton from '@mui/material/StepButton';
 import Typography from '@mui/material/Typography';
 import "./EditProjectDetails.scss";
 import {EditProjectDataSources, EditProjectParameters, EditProjectUserAssociations, ProjectInfo, StatusUpdate} from "components";
@@ -46,6 +47,10 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
     };
 
     const handleNext = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep +1);
+    };
+
+    const handleSave = () => {
         setDoSave(true);
     };
 
@@ -126,11 +131,35 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
         }
     }, [deletedProject]);
 
+    const handleStep = (step) => () => {
+        setActiveStep(step);
+    };
+
     return (
         <div className={"EditProjectDetails"}>
             <Link  className="BackToUsers" component="button" onClick={cancelEdit}>back to All Projects</Link>
 
-            <Stepper activeStep={activeStep}>
+            { isExistingProject && <Stepper nonLinear activeStep={activeStep}>
+                    {steps.map((label, index) => {
+                        const stepProps = {};
+                        const labelProps = {};
+                        if (isStepOptional(index)) {
+                            labelProps.optional = (
+                                <Typography variant="caption">Optional</Typography>
+                            );
+                        }
+
+                        return (
+                            <Step key={label} {...stepProps}>
+                                <StepButton {...labelProps} onClick={handleStep(index)}>
+                                    {label}
+                                </StepButton>
+                            </Step>
+                        );
+                    })}
+                </Stepper>
+            }
+            {!isExistingProject && <Stepper activeStep={activeStep}>
                 {steps.map((label, index) => {
                     const stepProps = {};
                     const labelProps = {};
@@ -147,6 +176,7 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                     );
                 })}
             </Stepper>
+            }
 
             { activeStep===0 && <ProjectInfo
                 selectedProject={selectedProject}
@@ -190,9 +220,17 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                     </div>}
 
                     <div className="EditProjectActionPrimary">
-                        <Button  variant="outlined" onClick={handleNext}>
-                            {activeStep === 3 ? "Save and Exit" : "Save and Continue"} </Button>
+                        {((activeStep < 3 && isExistingProject) || (activeStep == 1)) &&  <Button  variant="outlined" onClick={handleNext}>
+                            Continue
+                        </Button>}
                     </div>
+
+                    {(activeStep === 0 || activeStep === 2) &&
+                        <div className="EditProjectActionPrimary">
+                            <Button  variant="outlined" onClick={handleSave}> Save </Button>
+                        </div>
+                    }
+
                     {activeStep > 0 && <div className="EditProjectActionPrimary">
                         <Button  variant="outlined" onClick={handlePrevious}>
                             Previous
