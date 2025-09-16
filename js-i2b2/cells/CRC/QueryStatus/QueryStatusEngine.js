@@ -258,6 +258,17 @@ i2b2.CRC.QueryStatus._getTitle = function(resultType, oRecord, oXML) {
     return title;
 }
 
+i2b2.CRC.QueryStatus._generateRegEx = function(regexStr) {
+    if (regexStr.substring(0,1) !== '/') return false;
+    let lastSlash = regexStr.lastIndexOf('/');
+    if (lastSlash < regexStr.length - 1) {
+        // we have modifier(s)
+        let modifiers = regexStr.substring(lastSlash + 1);
+        return new RegExp(regexStr.substring(1,lastSlash), modifiers);
+    } else {
+        return new RegExp(regexStr.substring(1,lastSlash));
+    }
+}
 
 
 
@@ -272,9 +283,22 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     // find the expressly display-ranked results set(s)
     let currentIndex = 0;
     for (let codeRank of i2b2.CRC.QueryStatus.displayOrder) {
-        if (qrs_entries[codeRank] === undefined && qrsCodesFound.includes(codeRank)) {
-            qrs_entries[codeRank] = {"displayRank": currentIndex};
-            currentIndex++;
+        if (codeRank.substring(0,1) === '/') {
+            // handles regex mapping
+            let currentRegEx = i2b2.CRC.QueryStatus._generateRegEx(codeRank);
+            let matchingBreakdowns = qrsCodesFound.filter((x) => currentRegEx.test(x));
+            for (let currentBreakdown of matchingBreakdowns) {
+                if (qrs_entries[currentBreakdown] === undefined) {
+                    qrs_entries[currentBreakdown] = {"displayRank": currentIndex};
+                    currentIndex++;
+                }
+            }
+        } else {
+            // non-regex mappings
+            if (qrs_entries[codeRank] === undefined && qrsCodesFound.includes(codeRank)) {
+                qrs_entries[codeRank] = {"displayRank": currentIndex};
+                currentIndex++;
+            }
         }
     }
 
@@ -353,15 +377,24 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
 
     for (let code of newEntries) {
         qrs_entries[code].componentInstances = [];
-
         // create a list of references to QRS's valid visualizations
-//        let validComponents = componentKeys.filter((k) => refDisplayComponents[k].results.includes(code)).map((b) => refDisplayComponents[b]);
         let validComponents = componentKeys.filter((k) => {
+            let ret = false;
             if (typeof i2b2.CRC.QueryStatus.breakdownConfig[code] !== 'undefined') {
-                return (Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[code]).includes(k) && i2b2.CRC.QueryStatus.breakdownConfig[code][k] !== false);
-            } else {
-                return false;
+                ret = (Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[code]).includes(k) && i2b2.CRC.QueryStatus.breakdownConfig[code][k] !== false);
             }
+            if (ret === false) {
+                // check for RegEx matches
+                let regexList = Object.keys(i2b2.CRC.QueryStatus.breakdownConfig).filter((rx) => rx.substring(0,1) === '/');
+                for (let rx of regexList) {
+                    let testRegEx = i2b2.CRC.QueryStatus._generateRegEx(rx);
+                    if (testRegEx.test(code) && Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[rx]).includes(k) && i2b2.CRC.QueryStatus.breakdownConfig[rx][k] !== false) {
+                        ret = true;
+                        break;
+                    }
+                }
+            }
+            return ret;
         }).map((b) => refDisplayComponents[b]);
 
         if (validComponents.length === 0) {
@@ -529,8 +562,6 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
         i2b2.CRC.QueryStatus.model.visualizations[code] = qrs_entries[code];
     }
 };
-
-
 
 
 
