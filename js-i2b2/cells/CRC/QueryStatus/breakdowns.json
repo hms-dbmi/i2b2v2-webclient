@@ -23,6 +23,9 @@
   },
   "PATIENT_SEX_COUNT_SHRINE_XML": {
     "BARS": true,
+    "PIECHART": {
+      "hideZeros": true
+    },
     "TABLE": true,
     "DOWNLOAD": true
   },
