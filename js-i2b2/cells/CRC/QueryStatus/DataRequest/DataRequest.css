@@ -1,0 +1,18 @@
+.component-instance-viz.viztype-DATAREQUEST {
+    padding: 0 2rem;
+}
+
+
+.component-instance-viz.viztype-DATAREQUEST .breakdownValue {
+    color: #0000dd;
+}
+
+.component-instance-viz.viztype-DATAREQUEST .breakdownLabel {
+    font-weight: 700;
+    font-size: 1em;
+}
+
+.component-instance-viz.viztype-DATAREQUEST .dataExportInfoName {
+    min-width: 10em;
+}
+
