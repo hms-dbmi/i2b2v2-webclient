@@ -42,10 +42,12 @@ export function* doSaveProjectDataSources(action) {
             yield put(saveProjectDataSourcesSucceeded());
         }
         else{
-            yield put(saveProjectDataSourcesFailed(dataSourcesResponse));
+            yield put(saveProjectDataSourcesFailed({dataSources: dataSources}));
         }
 
-    } finally{
+    } catch(e){
+        console.error("Error saving project data sources:", e);
+    }finally{
         const msg = `save project data sources thread closed`;
         yield msg;
     }

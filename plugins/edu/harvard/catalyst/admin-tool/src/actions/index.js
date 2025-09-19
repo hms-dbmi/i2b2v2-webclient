@@ -208,6 +208,7 @@ export const deleteProjectParam = createAction(DELETE_PROJECT_PARAM_ACTION.DELET
 export const deleteProjectParamSucceeded = createAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_SUCCEEDED);
 export const deleteProjectParamFailed = createAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_FAILED);
 export const deleteProjectParamStatusConfirmed = createAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_STATUS_CONFIRMED);
+
 //================================================================================================== //
 export const GET_ALL_PROJECT_DATASOURCES_ACTION = {
     GET_ALL_PROJECT_DATASOURCES: "GET_ALL_PROJECT_DATASOURCES",
@@ -237,6 +238,15 @@ export const saveProjectDataSources = createAction(SAVE_PROJECT_DATASOURCES_ACTI
 export const saveProjectDataSourcesSucceeded = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_SUCCEEDED);
 export const saveProjectDataSourcesFailed = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_FAILED);
 export const saveProjectDataSourcesStatusConfirmed = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_STATUS_CONFIRMED);
+
+
+
+export const UPDATE_ALL_PROJECT_DATASOURCES_URL_ACTION = {
+    UPDATE_ALL_PROJECT_DATASOURCES_URL: "UPDATE_ALL_PROJECT_DATASOURCES_URL",
+};
+export const updateAllProjectDataSourcesUrl = createAction(UPDATE_ALL_PROJECT_DATASOURCES_URL_ACTION.UPDATE_ALL_PROJECT_DATASOURCES_URL);
+
+
 //================================================================================================== //
 export const GET_ALL_PROJECT_USER_PARAMS_ACTION = {
     GET_ALL_PROJECT_USER_PARAMS: "GET_ALL_PROJECT_USER_PARAMS",
