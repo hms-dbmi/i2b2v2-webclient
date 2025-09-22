@@ -218,10 +218,17 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
 
 
     const handleAssociateUser = () => {
+        let adminPath = ADMIN_ROLES.USER;
+        let dataPath = DATA_ROLES.DATA_OBFSC;
+        if(searchedUsername.username === "AGG_SERVICE_ACCOUNT"){
+            adminPath = ADMIN_ROLES.MANAGER;
+            dataPath = DATA_ROLES.DATA_AGG;
+        }
+
         const newUser = ProjectUser({
             username: searchedUsername.username,
-            adminPath: ADMIN_ROLES.USER,
-            dataPath: DATA_ROLES.DATA_OBFSC
+            adminPath: adminPath,
+            dataPath: dataPath
         });
 
         dispatch(saveProjectUser({user: newUser, selectedProject, isNew: true}));
