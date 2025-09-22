@@ -171,6 +171,7 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
                 processRowUpdate={processRowUpdate}
                 onProcessRowUpdateError={onProcessRowUpdateError}
                 columns={columns}
+                isCellEditable={(params) => params.row.username !== "AGG_SERVICE_ACCOUNT"}
                 disableRowSelectionOnClick
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
