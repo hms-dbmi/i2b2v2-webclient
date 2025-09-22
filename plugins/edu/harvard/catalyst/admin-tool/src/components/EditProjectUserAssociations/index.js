@@ -195,10 +195,12 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
     };
 
     const handleEditClick = (username) => () => {
-        let user = selectedProject.users.filter((user) => user.username === username);
-        if(user.length === 1) {
-            setSelectedUser(user[0]);
-            setIsEditingUser(true);
+        if(username !== "AGG_SERVICE_ACCOUNT") {
+            let user = selectedProject.users.filter((user) => user.username === username);
+            if (user.length === 1) {
+                setSelectedUser(user[0]);
+                setIsEditingUser(true);
+            }
         }
     };
 
@@ -219,10 +221,17 @@ export const EditProjectUserAssociations = ({selectedProject, doSave, setSaveCom
 
 
     const handleAssociateUser = () => {
+        let adminPath = ADMIN_ROLES.USER;
+        let dataPath = DATA_ROLES.DATA_OBFSC;
+        if(searchedUsername.username === "AGG_SERVICE_ACCOUNT"){
+            adminPath = ADMIN_ROLES.MANAGER;
+            dataPath = DATA_ROLES.DATA_AGG;
+        }
+
         const newUser = ProjectUser({
             username: searchedUsername.username,
-            adminPath: ADMIN_ROLES.USER,
-            dataPath: DATA_ROLES.DATA_OBFSC
+            adminPath: adminPath,
+            dataPath: dataPath
         });
 
         dispatch(saveProjectUser({user: newUser, selectedProject, isNew: true}));

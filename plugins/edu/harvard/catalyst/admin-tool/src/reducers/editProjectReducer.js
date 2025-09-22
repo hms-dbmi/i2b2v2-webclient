@@ -6,12 +6,12 @@ import {
     DELETE_PROJECT_PARAM_ACTION,
     GET_ALL_PROJECT_DATASOURCES_ACTION,
     GET_ALL_PROJECT_USERS_ACTION,
-    GET_ALL_USER_PARAMS_ACTION,
     SAVE_PROJECT_DATASOURCES_ACTION,
     SAVE_PROJECT_USER_ACTION,
     DELETE_PROJECT_USER_ACTION,
     SAVE_PROJECT_USER_PARAM_ACTION,
     DELETE_PROJECT_USER_PARAM_ACTION,
+    UPDATE_ALL_PROJECT_DATASOURCES_URL_ACTION
 
 } from "actions";
 import { defaultState } from "defaultState";
@@ -131,6 +131,25 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
             });
         }
 
+        case  UPDATE_ALL_PROJECT_DATASOURCES_URL_ACTION.UPDATE_ALL_PROJECT_DATASOURCES_URL: {
+            const  { dataSources }  = action.payload;
+            let dsList = {
+                ...state.dataSources
+            };
+
+            dataSources.forEach((ds) => {
+                dsList[ds.id] = ProjectDataSource({
+                    ...dsList[ds.id],
+                    cellURL: ds.url
+                });
+            });
+
+            return SelectedProject({
+                ...state,
+                dataSources: dsList,
+            });
+        }
+
         case  GET_ALL_PROJECT_USERS_ACTION.GET_ALL_PROJECT_USERS: {
             const  {project}  = action.payload;
 
@@ -202,11 +221,11 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
         }
 
         case  SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_FAILED: {
+            const  { dataSources }  = action.payload;
 
-            console.log("reducer datasources failed");
             return SelectedProject({
                 ...state,
-                saveDSStatus: "FAIL"
+                saveDSStatus: "FAIL",
             });
         }
 

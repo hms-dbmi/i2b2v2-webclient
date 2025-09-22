@@ -4,6 +4,7 @@ import {
     GET_ALL_PROJECT_DATASOURCES_ACTION,
     getAllProjectDataSourcesFailed,
     getAllProjectDataSourcesSucceeded,
+    updateAllProjectDataSourcesUrl
 } from "actions";
 import {CELL_ID} from "../models";
 
@@ -67,66 +68,155 @@ const parseCellXml = (xml) => {
     return cellList;
 }
 
+const findMatchingCellUrlForProject = (cellList, projectPath) => {
+
+    let matchingCell;
+    const projectPathSplit = projectPath.split("/");
+    let maxMatchCount = 0;
+
+    cellList.forEach(cell => {
+        const cellProjectPathSplit = cell.projectPath.split("/");
+        const length = Math.min(cellProjectPathSplit.length, projectPathSplit.length);
+
+        let matchCount = 0;
+        for(let i=0;i < length; i++){
+            if(cellProjectPathSplit[i] === projectPathSplit[i] && matchCount === i){
+                matchCount++;
+            }
+        }
+        if(matchCount > maxMatchCount){
+            maxMatchCount = matchCount;
+            matchingCell = cell;
+        }
+    })
+
+    return matchingCell;
+}
+
+const parseDataSourceXmlStatus = (xml) => {
+    let response_header = xml.getElementsByTagName('response_header');
+    let statusValue = "";
+    if(response_header.length > 0){
+        response_header = response_header[0];
+        let result_status = response_header.getElementsByTagName('result_status');
+        if(result_status.length > 0){
+            result_status = result_status[0];
+            let status = result_status.getElementsByTagName('status');
+            if(status.length > 0){
+                statusValue = status[0].value;
+            }
+        }
+    }
+
+    return statusValue;
+}
+
 const parseDataSourceXml = (cellId, cellURL, xml) => {
     let dblookups = xml.getElementsByTagName('dblookup');
     let dataSource = {};
-    dblookups.forEach((dblookup) => {
-        let project_path = dblookup.attributes['project_path'];
-        let name = dblookup.getElementsByTagName('db_nicename');
-        let dbSchema = dblookup.getElementsByTagName('db_fullschema');
-        let jndiDataSource = dblookup.getElementsByTagName('db_datasource');
-        let dbServerType = dblookup.getElementsByTagName('db_servertype');
-        let ownerId = dblookup.getElementsByTagName('owner_id');
-        if(project_path) {
-            if (name.length !== 0) {
-                name = name[0].value;
-                if (dbSchema.length !== 0) {
-                    dbSchema = dbSchema[0].value;
-                    if (jndiDataSource.length !== 0) {
-                        jndiDataSource = jndiDataSource[0].value;
-                        if (dbServerType.length !== 0) {
-                            dbServerType = dbServerType[0].value;
-                            if (ownerId.length !== 0) {
-                                ownerId = ownerId[0].value;
-                                dataSource = {
-                                    cellId: cellId,
-                                    cellURL: cellURL,
-                                    name: name,
-                                    dbSchema: dbSchema,
-                                    jndiDataSource: jndiDataSource,
-                                    dbServerType: dbServerType,
-                                    ownerId: ownerId,
-                                    projectPath: project_path
-                                };
+
+    if(dblookups.length === 0){
+        dataSource = {
+            cellId: cellId,
+            cellURL: cellURL,
+        };
+    }
+    else {
+        dblookups.forEach((dblookup) => {
+            let dataSourceProjectPath = dblookup.attributes['project_path'];
+            let name = dblookup.getElementsByTagName('db_nicename');
+            let dbSchema = dblookup.getElementsByTagName('db_fullschema');
+            let jndiDataSource = dblookup.getElementsByTagName('db_datasource');
+            let dbServerType = dblookup.getElementsByTagName('db_servertype');
+            let ownerId = dblookup.getElementsByTagName('owner_id');
+            if (dataSourceProjectPath) {
+                if (name.length !== 0) {
+                    name = name[0].value;
+                    if (dbSchema.length !== 0) {
+                        dbSchema = dbSchema[0].value;
+                        if (jndiDataSource.length !== 0) {
+                            jndiDataSource = jndiDataSource[0].value;
+                            if (dbServerType.length !== 0) {
+                                dbServerType = dbServerType[0].value;
+                                if (ownerId.length !== 0) {
+                                    ownerId = ownerId[0].value;
+                                    dataSource = {
+                                        cellId: cellId,
+                                        cellURL: cellURL,
+                                        name: name,
+                                        dbSchema: dbSchema,
+                                        jndiDataSource: jndiDataSource,
+                                        dbServerType: dbServerType,
+                                        ownerId: ownerId,
+                                        projectPath: dataSourceProjectPath
+                                    };
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    }
 
     return dataSource;
 }
 
 export function* doGetAllProjectDataSources(action) {
-    const { project } = action.payload;
+    const { project, isNew } = action.payload;
     console.log("getting all data sources for project ..." + project.name);
     try {
         const getCellResponse = yield call(getAllCellRequest, project.path);
         if(getCellResponse) {
-            const cellMap = parseCellXml(getCellResponse);
+            const cellList = parseCellXml(getCellResponse);
 
-            const dataSourcesResponse = yield all(cellMap.map((cell) => {
-                return call(getDataSourceRequest, cell.id, cell.url, project.path);
+            const filteredCellList = [];
+            let crcCell = cellList.filter(cell => cell.id === CELL_ID.CRC);
+            if(crcCell.length > 0) {
+                crcCell = findMatchingCellUrlForProject(crcCell, project.path);
+                if(crcCell){
+                    filteredCellList.push(crcCell);
+                }
+            }
+
+            let ontCell = cellList.filter(cell => cell.id === CELL_ID.ONT);
+            if(ontCell.length > 0) {
+                ontCell = findMatchingCellUrlForProject(ontCell, project.path);
+                if(ontCell){
+                    filteredCellList.push(ontCell);
+                }
+            }
+
+            let workCell = cellList.filter(cell => cell.id === CELL_ID.WORK);
+            if(workCell.length > 0) {
+                workCell = findMatchingCellUrlForProject(workCell, project.path);
+                if(workCell){
+                    filteredCellList.push(workCell);
+                }
+            }
+
+            if(filteredCellList.length !== 0){
+                yield put(updateAllProjectDataSourcesUrl({dataSources: filteredCellList}));
+            }
+
+            const dataSourcesResponse = yield all(filteredCellList.map((cell) => {
+                return call(getDataSourceRequest, cell.id, cell.url, "/" + project.path);
             }));
 
             const dataSourcesResults = dataSourcesResponse.filter(result => result.msgType !== "AJAX_ERROR");
             if(dataSourcesResults.length > 0) {
                 let dataSourceList = dataSourcesResults.map((dataSource) => {
-                    return parseDataSourceXml(dataSource.cellId, dataSource.cellURL, dataSource.response);
+                    let dataSourceResult = parseDataSourceXml(dataSource.cellId, dataSource.cellURL, dataSource.response);
+
+                    if(dataSourceResult.cellURL === undefined) {
+                        dataSourceResult.statusMsg = parseDataSourceXmlStatus(dataSource.response);
+                        console.warn("Received status message ",  dataSourceResult.statusMsg);
+                    }
+                    return dataSourceResult;
                 });
+
                 dataSourceList = dataSourceList.filter((ds) => ds.cellId !== undefined);
+
                 yield put(getAllProjectDataSourcesSucceeded({dataSources: dataSourceList}));
             }
             else{
@@ -135,7 +225,10 @@ export function* doGetAllProjectDataSources(action) {
         }else{
             yield put(getAllProjectDataSourcesFailed(response));
         }
-    } finally {
+    }catch(e) {
+        console.error("Unexpected error in get all data sources:", e);
+    }
+    finally {
         const msg = `get all data sources thread closed`;
         yield msg;
     }
