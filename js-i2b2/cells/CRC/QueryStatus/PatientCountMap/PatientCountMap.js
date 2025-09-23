@@ -115,38 +115,43 @@ export default class PatientCountMap {
 
                 let min = -1;
                 let max = -1;
-                siteData.forEach((res) => {
-                    let count = res.count;
-                    if (min === -1) {
-                        min = count;
-                    } else {
-                        min = Math.min(min, count);
-                    }
-                    max = Math.max(max, count);
-                });
-
-                let scaleRadiusFunc = d3.scaleLinear([min, max], [15, 20]);
-
-                siteData.forEach(siteResult => {
-                    let patientCount = siteResult.count;
-                    let scalePatientCount = scaleRadiusFunc(patientCount);
-
-                    let siteZoomData = i2b2.CRC.QueryStatus.model.MapJSON.zooms.filter(s => s.title === siteResult.site);
-                    if (siteZoomData.length !== 0){
-                        let circle = L.circleMarker([siteZoomData[0].lat, siteZoomData[0].long], {
-                            fillOpacity: 0.5,
-                            radius: scalePatientCount
-                        }).addTo(this.map);
-
-                        let toolTip = '';
-                        if (siteResult.count <= siteResult.floorThresholdNumber) {
-                            toolTip = "<" + parseInt(siteResult.floorThresholdNumber).toLocaleString() + " Patients at " + siteResult.site;
-                        }else{
-                            toolTip = parseInt(siteResult.count).toLocaleString() + "±" + parseInt(siteResult.obfuscatedDisplayNumber).toLocaleString() + " Patients at " + siteResult.site;
+                if (siteData.length > 0) {
+                    siteData.forEach((res) => {
+                        let count = 0;
+                        if (!isNaN(res.count)) {
+                            count = res.count;
+                            if (min === -1) {
+                                min = count;
+                            } else {
+                                min = Math.min(min, count);
+                            }
                         }
-                        circle.bindPopup(toolTip);
-                    }
-                })
+                        max = Math.max(max, count);
+                    });
+
+                    let scaleRadiusFunc = d3.scaleLinear([min, max], [15, 20]);
+
+                    siteData.forEach(siteResult => {
+                        let patientCount = siteResult.count;
+                        let scalePatientCount = scaleRadiusFunc(patientCount);
+
+                        let siteZoomData = i2b2.CRC.QueryStatus.model.MapJSON.zooms.filter(s => s.title === siteResult.site);
+                        if (siteZoomData.length !== 0) {
+                            let circle = L.circleMarker([siteZoomData[0].lat, siteZoomData[0].long], {
+                                fillOpacity: 0.5,
+                                radius: scalePatientCount
+                            }).addTo(this.map);
+
+                            let toolTip = '';
+                            if (siteResult.count <= siteResult.floorThresholdNumber) {
+                                toolTip = "<" + parseInt(siteResult.floorThresholdNumber).toLocaleString() + " Patients at " + siteResult.site;
+                            } else {
+                                toolTip = parseInt(siteResult.count).toLocaleString() + "±" + parseInt(siteResult.obfuscatedDisplayNumber).toLocaleString() + " Patients at " + siteResult.site;
+                            }
+                            circle.bindPopup(toolTip);
+                        }
+                    })
+                }
             }
 
         } catch (e) {
