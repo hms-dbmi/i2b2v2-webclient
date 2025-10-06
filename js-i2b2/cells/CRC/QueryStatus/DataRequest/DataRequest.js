@@ -94,7 +94,7 @@ export default class DataRequest {
             if (this.config.dropdownEl) this.config.dropdownEl.style.display = 'none';
             return true;
         } catch(e) {
-            console.error("Error in QueryStatus:Table.hide()");
+            console.error("Error in QueryStatus:DataRequest.hide()");
         }
     }
 }
@@ -125,13 +125,13 @@ let parseData = function(xmlData) {
             dataExport.requestInfo.emailMsg = {
                 name: "Request Email",
                 value: entryRecord.value
-            }
+            };
         }
         else if(entryRecord.name === 'EMAIL') {
             dataExport.requestInfo.email = {
                 name: "Requested By Email",
                 value: entryRecord.value
-            }
+            };
         }else{
             dataExport.resultTable.push(entryRecord);
         }
