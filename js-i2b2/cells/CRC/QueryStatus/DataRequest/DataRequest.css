@@ -2,14 +2,15 @@
     padding: 0 2rem;
 }
 
-
+.component-instance-viz.viztype-DATAREQUEST td {
+    padding: 0.3em;
+}
 .component-instance-viz.viztype-DATAREQUEST .breakdownValue {
     color: #0000dd;
 }
 
-.component-instance-viz.viztype-DATAREQUEST .breakdownLabel {
-    font-weight: 700;
-    font-size: 1em;
+.component-instance-viz.viztype-DATAREQUEST .dataExportInfo {
+   margin-top: 0.3em;
 }
 
 .component-instance-viz.viztype-DATAREQUEST .dataExportInfoName {
