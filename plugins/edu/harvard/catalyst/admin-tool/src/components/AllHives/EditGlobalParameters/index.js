@@ -64,7 +64,7 @@ export const EditGlobalParameters = ({allHives,
                 setPaginationModel={setPaginationModel}
                 customActions={authTemplateActions}
                 customActionsHandler={handleConfigureAuth}
-                customActionsBtnOption={<AddIcon />}
+                customActionsBtnOption={{startIcon: <AddIcon />}}
             />
             {showAuthConfig && <AuthenticationConfigModal onOk={onClose} onCancel={onClose}/>}
         </div>

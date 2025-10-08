@@ -44,7 +44,7 @@ export const SplitButton = ({optionsList, handleClick, customActionsBtnOption}) 
                 ref={anchorRef}
                 aria-label="Button group with a nested menu"
             >
-                {customActionsBtnOption ? <Button startIcon={customActionsBtnOption} onClick={handleClickItem}>{optionsList[selectedIndex]}</Button>
+                {customActionsBtnOption ? <Button startIcon={customActionsBtnOption.startIcon} onClick={handleClickItem}>{optionsList[selectedIndex]}</Button>
                 : <Button onClick={handleClickItem}>{optionsList[selectedIndex]}</Button>}
                 <Button
                     size="small"
