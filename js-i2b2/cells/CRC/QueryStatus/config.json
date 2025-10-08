@@ -45,6 +45,14 @@
       "displayOrder": 100,
       "displayForUnregistered": true
     },
+    "DATAREQUEST": {
+      "name": "Data Request",
+      "source": "DataRequest/DataRequest.js",
+      "CSS": "DataRequest/DataRequest.css",
+      "iconClass": "bi bi-table",
+      "displayOrder": 100,
+      "displayForUnregistered": false
+    },
     "DOWNLOAD": {
       "name": "CSV Download",
       "source": "Download/Download.js",
@@ -73,7 +81,8 @@
     "INTERNAL_SUMMARY",
     "PATIENT_COUNT_XML",
     "PATIENT_COUNT_SHRINE_XML",
-    "PATIENT_SITE_COUNT_SHRINE_XML"
+    "PATIENT_SITE_COUNT_SHRINE_XML",
+    "/^RPDO_/"
   ],
   "haltPollingOnStatus": [
     "COMPLETED",

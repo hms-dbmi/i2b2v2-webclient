@@ -13,6 +13,9 @@
     "DOWNLOAD": true,
     "PATIENTCOUNTMAP": true
   },
+  "/^RPDO_/": {
+    "DATAREQUEST": true
+  },
   "PATIENT_GENDER_COUNT_XML": {
     "BARS": true,
     "PIECHART": {

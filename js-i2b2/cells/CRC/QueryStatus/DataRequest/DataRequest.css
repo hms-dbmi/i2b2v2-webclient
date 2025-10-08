@@ -1,0 +1,19 @@
+.component-instance-viz.viztype-DATAREQUEST {
+    padding: 0 2rem;
+}
+
+.component-instance-viz.viztype-DATAREQUEST td {
+    padding: 0.3em;
+}
+.component-instance-viz.viztype-DATAREQUEST .breakdownValue {
+    color: #0000dd;
+}
+
+.component-instance-viz.viztype-DATAREQUEST .dataExportInfo {
+   margin-top: 0.3em;
+}
+
+.component-instance-viz.viztype-DATAREQUEST .dataExportInfoName {
+    min-width: 10em;
+}
+
