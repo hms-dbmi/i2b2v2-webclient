@@ -13,3 +13,5 @@
  export { ProjectUser, ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE } from "./ProjectUser";
  export { ParamStatusInfo } from "./ParamStatusInfo";
  export { UserStatusInfo } from "./UserStatusInfo";
+ export { AUTHENTICATION_METHODS } from "./AUTHENTICATION_METHODS";
+ export { AUTH_CONFIG_PARAM_NAME } from "./AuthenticationConfig";

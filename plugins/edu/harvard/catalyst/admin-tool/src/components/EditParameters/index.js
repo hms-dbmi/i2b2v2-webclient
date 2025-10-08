@@ -7,7 +7,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField/TextField';
 import {GridRowEditStopReasons} from '@mui/x-data-grid';
-import { StatusUpdate } from "components";
+import { StatusUpdate, SplitButton } from "components";
 import {DataType, ParamStatus} from "models";
 
 import "./EditParameters.scss";
@@ -22,7 +22,10 @@ export const EditParameters = ({
                                    allParamStatus,
                                    saveStatusConfirm,
                                    paginationModel,
-                                   setPaginationModel
+                                   setPaginationModel,
+                                   customActions,
+                                   customActionsHandler,
+                                   customActionsBtnOption
 }) => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [showStatus, setShowStatus] = useState(false);
@@ -332,16 +335,35 @@ export const EditParameters = ({
 
     const handleStatusClose = () => {
         saveStatusConfirm();
-        //allParamsStatusConfirm();
         setShowStatus(false);
     };
+
+    const handleCustomActionsClick = (actionName) => {
+        if(actionName === "Add") {
+            handleAddParam();
+        }
+        else{
+            customActionsHandler(actionName);
+        }
+    }
+    const customActionButtons = () => {
+        const addParamWithCustomOptions= [
+            ...customActions,
+            "Add"
+        ];
+        return <div className="AddParam">
+                <SplitButton  optionsList={addParamWithCustomOptions} handleClick={handleCustomActionsClick} customActionsBtnOption={customActionsBtnOption} />
+        </div>;
+    }
 
     return (
         <div className="EditParameters" >
             <Typography> {title} </Typography>
-            <Button className="AddParam" variant="contained" startIcon={<AddIcon />} onClick={handleAddParam}>
-                Add
-            </Button>
+            {customActions?.length > 0 && customActionsHandler ? customActionButtons() :
+                <Button className="AddParam" variant="contained" startIcon={<AddIcon/>} onClick={handleAddParam}>
+                    Add
+                </Button>
+            }
 
             {displayParamsTable()}
 
