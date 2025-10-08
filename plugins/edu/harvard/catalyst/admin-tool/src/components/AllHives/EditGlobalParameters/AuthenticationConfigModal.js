@@ -105,6 +105,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                 label="Authentication Method"
                                 value={authMethod}
                                 variant="standard"
+                                helperText={authMethod === AUTHENTICATION_METHODS.NTLM.value ? "NOTE: Use oF NTLM is not recommended.":""}
                                 onChange={(event) => {setAuthMethod(event.target.value);}}
                                 sx={{ minWidth: 200 }}
                             >
@@ -112,8 +113,8 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                     <MenuItem value={AUTHENTICATION_METHODS.LDAP.value} onClick={handleShowLDAPSettings}>{AUTHENTICATION_METHODS.LDAP.name}</MenuItem>
                                     <MenuItem value={AUTHENTICATION_METHODS.NTLM.value} onClick={handleShowDomainSettings}>{AUTHENTICATION_METHODS.NTLM.name}</MenuItem>
                                     <MenuItem value={AUTHENTICATION_METHODS.NTLM2.value} onClick={handleShowDomainSettings}>{AUTHENTICATION_METHODS.NTLM2.name}</MenuItem>
-                                    <MenuItem value={AUTHENTICATION_METHODS.SAML.value} onClick={handleHideDomainSettings}>{AUTHENTICATION_METHODS.SAML.name}</MenuItem>
                                     <MenuItem value={AUTHENTICATION_METHODS.OKTA.value} onClick={handleShowDomainSettings}>{AUTHENTICATION_METHODS.OKTA.name}</MenuItem>
+                                    <MenuItem value={AUTHENTICATION_METHODS.SAML.value} onClick={handleHideDomainSettings}>{AUTHENTICATION_METHODS.SAML.name}</MenuItem>
                             </TextField>
                             {showDomainSettings && <div> <TextField label="Domain"
                                                             required
