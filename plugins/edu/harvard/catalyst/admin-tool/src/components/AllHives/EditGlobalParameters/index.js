@@ -45,7 +45,7 @@ export const EditGlobalParameters = ({allHives,
     }, [allHives]);
 
 
-    const authTemplateActions = ["Define Auth Templates"];
+    const authTemplateActions = ["Define Auth Template"];
     const handleConfigureAuth = (actionName) => {
         if(actionName === authTemplateActions[0]) {
             setShowAuthConfig(true);

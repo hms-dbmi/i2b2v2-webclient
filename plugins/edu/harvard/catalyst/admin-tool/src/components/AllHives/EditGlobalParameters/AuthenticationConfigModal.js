@@ -82,7 +82,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                 aria-labelledby="authentication-config"
             >
                 <DialogTitle id="authentication-config-title">
-                    Authentication Configuration
+                    Define Authentication Template
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="authentication-config-description">
@@ -98,7 +98,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                        variant="standard"
                                        value={authName}
                                        onChange={(event) => {setAuthName(event.target.value);}}
-                                       sx={{ minWidth: 250 }}/>
+                                       sx={{ minWidth: 300 }}/>
                             <TextField
                                 select
                                 required
@@ -118,11 +118,13 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                             {showDomainSettings && <div> <TextField label="Domain"
                                                             required
                                                             value={domainSettings.domain}
+                                                            placeholder={"Example: i2b2.org"}
                                                             onChange={(event) => {setDomainSettings({...domainSettings, domain: event.target.value})}}
                                                             variant="standard" sx={{ minWidth: 300 }}/>
                              <TextField label="Domain Controller"
                                                             required
                                                             value={domainSettings.domain_controller}
+                                                            placeholder={"Example: pdc.i2b2.org"}
                                                             onChange={(event) => {setDomainSettings({...domainSettings, domain_controller: event.target.value})}}
                                                             variant="standard" sx={{ minWidth: 300 }} />
                                 </div>
