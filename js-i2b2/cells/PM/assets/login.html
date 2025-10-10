@@ -8,24 +8,38 @@
             <img src="assets/images/logo.png" alt="i2b2 transmart logo" class="logo">
         </div>
 
-        <div class="container">
-            <div class="form-group">
-                <label for="logindomain"><b>i2b2 Host</b></label>
-                <select class="form-select" id="logindomain">
-                    <option value="0">Loading...</option>
-                </select>
+        <div>
+            <div style="float:left;width:50%">
+                <div class="container">
+                    <div class="form-group">
+                        <label for="logindomain"><b>i2b2 Host</b></label>
+                        <select class="form-select" id="logindomain">
+                            <option value="0">Loading...</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group login-user">
+                        <label for="loginusr"><b>Username</b></label>
+                        <input type="text" placeholder="Enter Username" name="loginusr" id="loginusr" required class="form-control">
+                    </div>
+                    <div class="form-group login-password">
+                        <label for="loginpass"><b>Password</b></label>
+                        <input type="password" placeholder="Enter Password" name="loginpass" id="loginpass" required class="form-control">
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group login-user">
-                <label for="loginusr"><b>Username</b></label>
-                <input type="text" placeholder="Enter Username" name="loginusr" id="loginusr" required class="form-control">
-            </div>
-            <div class="form-group login-password">
-                <label for="loginpass"><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" name="loginpass" id="loginpass" required class="form-control">
+            <div style="float:left;width:50%">
+                <div class="container">
+                    <label for="logindomain"><b>Message</b></label>
+                    <div style="padding:5%;border:2px solid #f1f1f1;border-radius:25px; margin:3%;height:125px;max-height:155px;overflow:auto">i2b2, or Informatics for Integrating Biology and the Bedside, is a research tool that allows users to query and analyze patient data. <br><br>This is i2b2 demo site, this is all fake data.<br><br><br><br><br><br>Had to scroll to see this</div>
+                    <div style="display: flex;justify-content:center;align-items:center">
+                        <button type="submit" style="width:50%" class="btn btn-primary btn-sm login-button">Login to i2b2</button>
+                    </div>
+                </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-sm login-button gradient-button-blue">Login</button>
 
             <a class="btn sso-button btn-sm" data-service="okta" style="display: none" tabindex="0">
                 <img src="assets/images/sso/okta.png" />
@@ -37,13 +51,11 @@
             </a>
 
         </div>
-
-        <div class="container modal-footer">
+        <!--<div class="container  modal-footer">
             <div>Forgot <a href="#">password?</a></div>
             <div class="classic">For classic i2b2 webclient click <a href="#">here</a></div>
-        </div>
+        </div>-->
     </form>
 </div>
-
 </body>
 </html>
