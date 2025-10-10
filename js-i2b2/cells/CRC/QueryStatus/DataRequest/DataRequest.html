@@ -1,0 +1,28 @@
+{{#if dataExport.resultTable}}
+<div class="DataRequest">
+    <div id="dataExportDetails" data-bs-toggle="collapse" class="accordion-collapse collapse show">
+        {{#if dataExport.requestInfo.emailMsg.name}}
+        <div class="dataExportInfo">
+            <table>
+                {{#if dataExport.requestInfo.email.name}}
+                <tr>
+                    <td class="dataExportInfoName">{{dataExport.requestInfo.email.name}}</td>
+                    <td class="breakdownValue">
+                        {{dataExport.requestInfo.email.value}}
+                    </td>
+                </tr>
+                {{/if}}
+                {{#if dataExport.requestInfo.emailMsg.name}}
+                <tr>
+                    <td class="dataExportInfoName">{{dataExport.requestInfo.emailMsg.name}}</td>
+                    <td class="breakdownValue">
+                        {{dataExport.requestInfo.emailMsg.value}}
+                    </td>
+                </tr>
+                {{/if}}
+            </table>
+        </div>
+        {{/if}}
+    </div>
+</div>
+{{/if}}

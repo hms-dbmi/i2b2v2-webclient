@@ -29,7 +29,10 @@ const parseParamsXml = (allGlobalParamsXml) => {
         let name = param.attributes['name'].nodeValue;
         let value = param.childNodes[0].nodeValue;
         let dataType = param.attributes['datatype'].nodeValue;
-        let status = param.attributes['status'].nodeValue;
+        let status = 'A';
+        if(param.attributes['status']) {
+            status = param.attributes['status'].nodeValue;
+        }
 
         if(name && dataType) {
             dataType = DataType[dataType];

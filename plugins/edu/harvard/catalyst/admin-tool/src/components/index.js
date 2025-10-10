@@ -19,5 +19,6 @@ export { EditProjectUserAssociations } from "./EditProjectUserAssociations";
 export { EditProjectUser } from "./EditProjectUser";
 export { ProjectUserInfo } from "./ProjectUserInfo";
 export { EditProjectUserParameters } from "./EditProjectUserParameters";
+export { SplitButton } from "./SplitButton";
 
 
