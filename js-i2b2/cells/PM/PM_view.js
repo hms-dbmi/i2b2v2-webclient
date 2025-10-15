@@ -55,6 +55,10 @@ i2b2.PM.doLoginDialog = function() {
             $("#PM-login-modal input[name='loginpass']").val(i2b2.UI.cfg.loginDefaultPassword);
         } catch(e) {}
 
+        try {
+            $("#PM-login-modal #loginmessage").text(i2b2.UI.cfg.loginDefaultMessage);
+        } catch(e) {}
+
         // clear any domains
         $('#logindomain option').remove();
         // load the domains into dropdown
