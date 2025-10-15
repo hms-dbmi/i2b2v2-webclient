@@ -1,0 +1,35 @@
+.AuthenticationConfigModal {
+
+    .MuiAccordion-root {
+        box-shadow: none;
+        color: blue;
+        margin-left: 0;
+        padding-left: 0;
+        margin-top: 1.69em;
+    }
+
+    .MuiAccordionDetails-root {
+        background: none;
+        padding: 0;
+        box-shadow: none;
+        margin-top: 0;
+    }
+
+    .Mui-expanded {
+        padding: 0;
+        box-shadow: none;
+        background: none;
+        color: blue;
+        margin-left: 0;
+        margin-top: 0;
+    }
+
+    .MuiButtonBase-root, {
+        padding-left: 0;
+        box-shadow: none;
+    }
+
+    .MuiAccordion-root::before {
+        background: none;
+    }
+}
