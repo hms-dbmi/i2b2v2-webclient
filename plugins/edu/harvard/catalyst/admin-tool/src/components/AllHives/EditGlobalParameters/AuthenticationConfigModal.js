@@ -9,7 +9,6 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContentText from "@mui/material/DialogContentText";
-import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -18,6 +17,9 @@ import {AUTH_CONFIG_PARAM_NAME, AUTHENTICATION_METHODS, DataType, ParamStatus} f
 import {saveGlobalParam} from "../../../actions";
 import {useDispatch} from "react-redux";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import IconButton from "@mui/material/IconButton";
+import Tooltip from '@mui/material/Tooltip';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import "./AuthenticationConfigModal.scss";
 
 export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
@@ -192,76 +194,92 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                         <MenuItem value={"CRAM-MD5"}>{"CRAM-MD5"}</MenuItem>
                                         <MenuItem value={"EXTERNAL"}>{"EXTERNAL"}</MenuItem>
                                     </TextField>
-                                    <Accordion expanded={expanded} onChange={handleChange()}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon sx={{ fontSize: '1.5rem' }} />}
-                                            aria-controls="option-ldap-configurations"
-                                            sx={{ flexDirection: 'row-reverse'}}
-                                        >
-                                            <Typography component="span" sx={{flexShrink: 0 }}>
-                                                Additional Optional Configurations
-                                            </Typography>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
-                                            <Typography>
-                                                <Stack
-                                                    direction="column"
-                                                    spacing={2}
-                                                >
-                                                    <TextField
-                                                        select
-                                                        label="SSL"
-                                                        value={LDAPSettings.ssl}
-                                                        variant="standard"
-                                                        sx={{ minWidth: 140, maxWidth: 140 }}
-                                                        onChange={(event) => {setLDAPSettings({...LDAPSettings, ssl: event.target.value});}}
+                                    <div className={"OptionalLADPOptions"}>
+                                        <Accordion  expanded={expanded} onChange={handleChange()}>
+                                            <AccordionSummary
+                                                expandIcon={<ExpandMoreIcon sx={{ fontSize: '1.5rem' }} />}
+                                                aria-controls="option-ldap-configurations"
+                                                sx={{ flexDirection: 'row-reverse'}}
+                                            >
+                                                <Typography component="span" sx={{flexShrink: 0 }}>
+                                                    Additional Optional Configurations
+                                                </Typography>
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+                                                <Typography>
+                                                    <Stack
+                                                        direction="column"
+                                                        spacing={2}
                                                     >
-                                                        <MenuItem value={"true"}>{"true"}</MenuItem>
-                                                        <MenuItem value={"false"}>{"false"}</MenuItem>
-                                                    </TextField>
+                                                        <TextField
+                                                            select
+                                                            label="SSL"
+                                                            value={LDAPSettings.ssl}
+                                                            variant="standard"
+                                                            sx={{ minWidth: 110, maxWidth: 110 }}
+                                                            onChange={(event) => {setLDAPSettings({...LDAPSettings, ssl: event.target.value});}}
+                                                        >
+                                                            <MenuItem value={"true"}>{"true"}</MenuItem>
+                                                            <MenuItem value={"false"}>{"false"}</MenuItem>
+                                                        </TextField>
 
-                                                    <TextField label="Max Buffer (bytes)"
-                                                               value={LDAPSettings.max_buffer}
-                                                               onChange={(event) => {setLDAPSettings({...LDAPSettings, max_buffer: event.target.value})}}
-                                                               variant="standard"
-                                                               size="small"
-                                                               placeholder={"Example: 65536"}
-                                                               sx={{ minWidth: 200, maxWidth: 200 }}
-                                                    />
-                                                    <TextField
-                                                        select
-                                                        label="Privacy Strength"
-                                                        value={LDAPSettings.privacy_strength}
-                                                        variant="standard"
-                                                        sx={{ maxWidth: 200, minWidth: 200 }}
-                                                        onChange={(event) => {setLDAPSettings({...LDAPSettings, privacy_strength: event.target.value});}}
-                                                    >
-                                                        <MenuItem value="high,medium,low">{"high, medium, low"}</MenuItem>
-                                                        <MenuItem value={"low"}>{"low"}</MenuItem>
-                                                        <MenuItem value={"medium"}>{"medium"}</MenuItem>
-                                                        <MenuItem value={"high"}>{"high"}</MenuItem>
-                                                        <MenuItem value={"medium,low"}>{"medium, low"}</MenuItem>
-                                                        <MenuItem value={"high,low"}>{"high, low"}</MenuItem>
-                                                        <MenuItem value={"high,medium"}>{"high, medium"}</MenuItem>
-                                                    </TextField>
-                                                    <TextField
-                                                        select
-                                                        label="Security Layer"
-                                                        value={LDAPSettings.security_layer}
-                                                        variant="standard"
-                                                        sx={{ minWidth: 200 }}
-                                                        onChange={(event) => {setLDAPSettings({...LDAPSettings, security_layer: event.target.value});}}
-                                                    >
-                                                        <MenuItem value={"auth"}>{"Authentication only"}</MenuItem>
-                                                        <MenuItem value={"auth-int"}>{"Auth Plus Integrity"}</MenuItem>
-                                                        <MenuItem value={"auth-conf"}>{"Auth Plus Integrity and Confidentiality"}</MenuItem>
-                                                        <MenuItem value={"auth-int,auth-conf"}>{"Auth Plus Integrity, Auth Plus Integrity and Confidentiality"}</MenuItem>
-                                                        <MenuItem value={"auth-conf,auth-int"}>{"Auth Plus Integrity and Confidentiality, Auth Plus Integrity"}</MenuItem>
-                                                    </TextField>
-                                                </Stack>
-                                            </Typography>
-                                        </AccordionDetails>
-                                    </Accordion>
+                                                        <TextField label="Max Buffer (bytes)"
+                                                                   value={LDAPSettings.max_buffer}
+                                                                   onChange={(event) => {setLDAPSettings({...LDAPSettings, max_buffer: event.target.value})}}
+                                                                   variant="standard"
+                                                                   size="small"
+                                                                   placeholder={"Example: 65536"}
+                                                                   sx={{ minWidth: 200, maxWidth: 200 }}
+                                                        />
+                                                        <div>
+                                                            <TextField
+                                                                select
+                                                                label="Privacy Strength"
+                                                                value={LDAPSettings.privacy_strength}
+                                                                variant="standard"
+                                                                sx={{ maxWidth: 200, minWidth: 200 }}
+                                                                onChange={(event) => {setLDAPSettings({...LDAPSettings, privacy_strength: event.target.value});}}
+                                                            >
+                                                                <MenuItem value="high,medium,low">{"high, medium, low"}</MenuItem>
+                                                                <MenuItem value={"low"}>{"low"}</MenuItem>
+                                                                <MenuItem value={"medium"}>{"medium"}</MenuItem>
+                                                                <MenuItem value={"high"}>{"high"}</MenuItem>
+                                                                <MenuItem value={"medium,low"}>{"medium, low"}</MenuItem>
+                                                                <MenuItem value={"high,low"}>{"high, low"}</MenuItem>
+                                                                <MenuItem value={"high,medium"}>{"high, medium"}</MenuItem>
+                                                            </TextField>
+                                                            <Tooltip className={"LADPTooltipInfo"} title="The cipher strength to use. The order of the list specifies the preference order.">
+                                                                <IconButton>
+                                                                    <InfoOutlinedIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </div>
+                                                        <div>
+                                                            <TextField
+                                                                select
+                                                                label="Security Layer"
+                                                                value={LDAPSettings.security_layer}
+                                                                variant="standard"
+                                                                sx={{ minWidth: 200 }}
+                                                                onChange={(event) => {setLDAPSettings({...LDAPSettings, security_layer: event.target.value});}}
+                                                            >
+                                                                <MenuItem value={"auth"}>{"Auth only"}</MenuItem>
+                                                                <MenuItem value={"auth-int"}>{"Auth + Integrity"}</MenuItem>
+                                                                <MenuItem value={"auth-conf"}>{"Auth + Integrity and Confidentiality"}</MenuItem>
+                                                                <MenuItem value={"auth-int,auth-conf"}>{"Auth + Integrity, Auth + Integrity and Confidentiality"}</MenuItem>
+                                                                <MenuItem value={"auth-conf,auth-int"}>{"Auth + Integrity and Confidentiality, Auth + Integrity"}</MenuItem>
+                                                            </TextField>
+                                                            <Tooltip className={"LADPTooltipInfo"} title="The quality-of-protection to use. The order of the list specifies the preference order.">
+                                                                <IconButton>
+                                                                    <InfoOutlinedIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </div>
+                                                    </Stack>
+                                                </Typography>
+                                            </AccordionDetails>
+                                        </Accordion>
+                                    </div>
                                 </Stack>
                             }
                         </Stack>
