@@ -64,9 +64,14 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
         ){
             authConfig.authConfigOptions = domainSettings;
         }
+
         if(authMethod === AUTHENTICATION_METHODS.LDAP.value){
+            if(LDAPSettings.ssl === "false"){
+                delete LDAPSettings.ssl;
+            }
             authConfig.authConfigOptions = LDAPSettings;
         }
+
         const authConfigParam = {
             name: AUTH_CONFIG_PARAM_NAME,
             value: JSON.stringify(authConfig),
@@ -78,6 +83,12 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
             dispatch(saveGlobalParam({param: authConfigParam}));
         }
         onOk();
+    };
+
+    const updateLADPAuthConfigOption = (name, value) => {
+        let newLADPSettings = {...LDAPSettings};
+        newLADPSettings[name] = value;
+        setLDAPSettings(newLADPSettings);
     };
 
     return (
@@ -156,7 +167,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                         label="Connection URL"
                                         value={LDAPSettings.connection_url}
                                         placeholder={"Example: ldap://ldap.server.company.com:389"}
-                                        onChange={(event) => {setLDAPSettings({...LDAPSettings, connection_url: event.target.value})}}
+                                        onChange={(event) => {updateLADPAuthConfigOption("connection_url", event.target.value)}}
                                         variant="standard"
                                         size="small"
                                         sx={{ minWidth: 380 }}
@@ -165,7 +176,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                        required
                                        value={LDAPSettings.search_base}
                                        placeholder={"Example: OU=People, DC=company, DC=com"}
-                                       onChange={(event) => {setLDAPSettings({...LDAPSettings, search_base: event.target.value})}}
+                                       onChange={(event) => {updateLADPAuthConfigOption("search_base", event.target.value)}}
                                        variant="standard"
                                        size="small"
                                        sx={{ minWidth: 380 }}
@@ -174,7 +185,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                        required
                                        value={LDAPSettings.distinguished_name}
                                        placeholder={'Example: "cuser", "dn:", "uid="'}
-                                       onChange={(event) => {setLDAPSettings({...LDAPSettings, distinguished_name: event.target.value})}}
+                                       onChange={(event) => {updateLADPAuthConfigOption("distinguished_name", event.target.value)}}
                                        variant="standard"
                                        size="small"
                                        sx={{ minWidth: 380 }}
@@ -186,7 +197,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                         value={LDAPSettings.security_authentication}
                                         variant="standard"
                                         sx={{ minWidth: 200 }}
-                                        onChange={(event) => {setLDAPSettings({...LDAPSettings, security_authentication: event.target.value});}}
+                                        onChange={(event) => {updateLADPAuthConfigOption("security_authentication", event.target.value)}}
                                     >
                                         <MenuItem value={"none"}>{"None"}</MenuItem>
                                         <MenuItem value={"simple"}>{"Simple"}</MenuItem>
@@ -217,7 +228,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                                             value={LDAPSettings.ssl}
                                                             variant="standard"
                                                             sx={{ minWidth: 110, maxWidth: 110 }}
-                                                            onChange={(event) => {setLDAPSettings({...LDAPSettings, ssl: event.target.value});}}
+                                                            onChange={(event) => {updateLADPAuthConfigOption("ssl", event.target.value)}}
                                                         >
                                                             <MenuItem value={"true"}>{"true"}</MenuItem>
                                                             <MenuItem value={"false"}>{"false"}</MenuItem>
@@ -225,7 +236,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
 
                                                         <TextField label="Max Buffer (bytes)"
                                                                    value={LDAPSettings.max_buffer}
-                                                                   onChange={(event) => {setLDAPSettings({...LDAPSettings, max_buffer: event.target.value})}}
+                                                                   onChange={(event) => {updateLADPAuthConfigOption("max_buffer", event.target.value)}}
                                                                    variant="standard"
                                                                    size="small"
                                                                    placeholder={"Example: 65536"}
@@ -238,7 +249,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                                                 value={LDAPSettings.privacy_strength}
                                                                 variant="standard"
                                                                 sx={{ maxWidth: 200, minWidth: 200 }}
-                                                                onChange={(event) => {setLDAPSettings({...LDAPSettings, privacy_strength: event.target.value});}}
+                                                                onChange={(event) => {updateLADPAuthConfigOption("privacy_strength", event.target.value)}}
                                                             >
                                                                 <MenuItem value="high,medium,low">{"high, medium, low"}</MenuItem>
                                                                 <MenuItem value={"low"}>{"low"}</MenuItem>
@@ -261,7 +272,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                                                 value={LDAPSettings.security_layer}
                                                                 variant="standard"
                                                                 sx={{ minWidth: 200 }}
-                                                                onChange={(event) => {setLDAPSettings({...LDAPSettings, security_layer: event.target.value});}}
+                                                                onChange={(event) => {updateLADPAuthConfigOption("security_layer", event.target.value)}}
                                                             >
                                                                 <MenuItem value={"auth"}>{"Auth only"}</MenuItem>
                                                                 <MenuItem value={"auth-int"}>{"Auth + Integrity"}</MenuItem>
