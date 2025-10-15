@@ -18,7 +18,7 @@
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@fontsource/roboto": "^5.0.8",
-    "@mui/icons-material": "^5.15.9",
+    "@mui/icons-material": "^5.18.0",
     "@mui/material": "latest",
     "@mui/x-data-grid": "^6.19.4",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
