@@ -1,10 +1,12 @@
 import PropTypes from "prop-types";
+import {AUTHENTICATION_METHODS} from "./AUTHENTICATION_METHODS";
 
 export const User = ({
  username = "",
  fullname = "",
  email = "",
  isAdmin = false,
+ authMethod= AUTHENTICATION_METHODS.I2B2.value,
  password= "",
  passwordVerify= "",
 } = {}) => ({
@@ -12,6 +14,7 @@ export const User = ({
     fullname,
     email,
     isAdmin,
+    authMethod,
     password,
     passwordVerify
 });
@@ -21,4 +24,5 @@ User.propTypes = {
     fullname: PropTypes.string.isRequired,
     email: PropTypes.string,
     isAdmin: PropTypes.bool.isRequired,
+    authMethod: PropTypes.string.isRequired
 };
