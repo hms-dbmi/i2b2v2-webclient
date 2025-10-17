@@ -8,7 +8,7 @@ import {
 } from "actions";
 import {encodeHTML} from "../utilities";
 
-const saveParamRequest = (username, param) => {
+export const saveParamRequest = (username, param) => {
 
     let paramIdStr="";
     if (param.internalId) {

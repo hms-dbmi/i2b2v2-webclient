@@ -17,6 +17,13 @@
     width: 30%;
   }
 
+  .passwordFields {
+    width: 100%;
+    .mainField {
+      margin-bottom: 1.4em;
+    }
+  }
+
   .EditUserActions {
     display: flex;
     align-items: center;

@@ -18,10 +18,13 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import {saveUser, saveUserStatusConfirmed} from "actions";
 import { SelectedUser } from "models";
+import {getAllAuthConfigs} from "../../reducers/allAuthenticationConfigsSlice";
 import "./UserInfo.scss";
+import {AUTHENTICATION_METHODS} from "../../models";
 
 export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isNewUser}) => {
     const allUsers = useSelector((state) => state.allUsers );
+    const authenticationConfigs = useSelector((state) => state.allAuthenticationConfigs);
     const [showSaveBackdrop, setShowSaveBackdrop] = useState(false);
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
@@ -39,6 +42,8 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
     const [passwordNotValidError, setPasswordNotValidError] = useState("");
     const [doPasswordsNotMatch, setDoPasswordsNotMatch] = useState(false);
     const [passwordsDoNotMatchError, setPasswordsDoNotMatchError] = useState("");
+    const [newAuthMethod, setNewAuthMethod] = useState("");
+
     const dispatch = useDispatch();
 
     const handleClickShowPassword = () => {
@@ -95,26 +100,27 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
         }
 
         //if this is a new user check the password fields
-        updatedUser.password = updatedUser.password.trim();
-        if(isNewUser && updatedUser.password.length === 0) {
+        if(newAuthMethod === AUTHENTICATION_METHODS.I2B2.value) {
+            updatedUser.password = updatedUser.password.trim();
+            if (isNewUser && updatedUser.password.length === 0) {
                 setIsPasswordNotValid(true);
                 setPasswordNotValidError("Password is required");
                 isValid = false;
-        } else {
-            setIsPasswordNotValid(false);
-            setPasswordNotValidError("");
+            } else {
+                setIsPasswordNotValid(false);
+                setPasswordNotValidError("");
+            }
+
+
+            if (isNewUser && updatedUser.password !== updatedUser.passwordVerify) {
+                setDoPasswordsNotMatch(true);
+                setPasswordsDoNotMatchError("Passwords do not match");
+                isValid = false;
+            } else {
+                setDoPasswordsNotMatch(false);
+                setPasswordsDoNotMatchError("");
+            }
         }
-
-
-        if (isNewUser && updatedUser.password !== updatedUser.passwordVerify) {
-            setDoPasswordsNotMatch(true);
-            setPasswordsDoNotMatchError("Passwords do not match");
-            isValid = false;
-        } else {
-            setDoPasswordsNotMatch(false);
-            setPasswordsDoNotMatchError("");
-        }
-
         return isValid;
     }
 
@@ -126,7 +132,12 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                 updatedUser.username = updatedUser.username.trim();
             }
 
-            dispatch(saveUser({user: updatedUser}));
+            let authConfig = null;
+            if(newAuthMethod !== AUTHENTICATION_METHODS.I2B2.value){
+                authConfig = authenticationConfigs.authConfigs.find((ac)=> ac.method === newAuthMethod);
+            }
+
+            dispatch(saveUser({user: updatedUser, authConfig: authConfig, userParams: selectedUser.params}));
         }
     };
 
@@ -138,7 +149,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
 
         updateUser(newUser);
 
-        if(JSON.stringify(newUser) !== JSON.stringify(selectedUser.user)){
+        if(JSON.stringify(newUser) !== JSON.stringify(selectedUser.user) || newAuthMethod !== ""){
             setIsDirty(true);
         }else{
             setIsDirty(false);
@@ -180,6 +191,10 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
             setIsDirty(true);
         }
     }, [updatedUser]);
+
+    useEffect(() => {
+        dispatch(getAllAuthConfigs());
+    }, []);
 
     return (
         <Box  className="UserInfo" sx={{ width: '100%' }}>
@@ -239,7 +254,49 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                 </div>
                 <div className={"mainField"}>
                     <TextField
-                        required={isNewUser}
+                        select
+                        className={"inputField"}
+                        label="Is Admin"
+                        value={updatedUser.isAdmin}
+                        onChange={(event) => handleUpdate("isAdmin", event.target.value)}
+                        variant="standard"
+                        InputLabelProps={{ shrink: true }}
+                    >
+                        <MenuItem value={"false"}>No</MenuItem>
+                        <MenuItem value={"true"}>Yes</MenuItem>
+                    </TextField>
+                </div>
+                <div className={"mainField"}>
+                    <TextField
+                        select
+                        className={"inputField"}
+                        label="Authentication Config"
+                        value={newAuthMethod}
+                        onChange={(event) => {
+                                const newValue = event.target.value;
+                                handleUpdate("password", "");
+
+                                if(newValue.length > 0){
+                                    setIsDirty(true);
+                                }
+
+                                setNewAuthMethod(newValue);
+                            }
+                        }
+                        variant="standard"
+                        helperText={selectedUser.user.username.length > 0 ? "Current Authentication Method: " + selectedUser.user.authMethod: ""}
+                        InputLabelProps={{ shrink: true }}
+                    >
+                        <MenuItem value={AUTHENTICATION_METHODS.I2B2.value}>{AUTHENTICATION_METHODS.I2B2.name}</MenuItem>
+                        { authenticationConfigs.authConfigs.map((authConfig) => {
+                            return < MenuItem value={authConfig.method}> {authConfig.name}</MenuItem>
+                            })
+                        }
+                    </TextField>
+                </div>
+                { newAuthMethod === AUTHENTICATION_METHODS.I2B2.value && <div className={"passwordFields"}><div className={"mainField"}>
+                    <TextField
+                        required={selectedUser.user.authMethod !== AUTHENTICATION_METHODS.I2B2.value && newAuthMethod === AUTHENTICATION_METHODS.I2B2.value}
                         className="inputField"
                         label="Password"
                         type={showPassword ? "text" : "password"}
@@ -266,7 +323,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                 </div>
                 <div className={"mainField"}>
                     <TextField
-                        required={isNewUser}
+                        required={newAuthMethod === AUTHENTICATION_METHODS.I2B2.value}
                         className="inputField"
                         label="Verify Password"
                         type={showPasswordVerify ? "text" : "password"}
@@ -291,20 +348,8 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                         }}
                     />
                 </div>
-                <div className={"mainField"}>
-                    <TextField
-                        select
-                        className={"inputField"}
-                        label="Is Admin"
-                        value={updatedUser.isAdmin}
-                        onChange={(event) => handleUpdate("isAdmin", event.target.value)}
-                        variant="standard"
-                        InputLabelProps={{ shrink: true }}
-                    >
-                        <MenuItem value={"false"}>No</MenuItem>
-                        <MenuItem value={"true"}>Yes</MenuItem>
-                    </TextField>
                 </div>
+              }
             </Stack>
             <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
                 <BottomNavigation className={"EditUserActions"}>

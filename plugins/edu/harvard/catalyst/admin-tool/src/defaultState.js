@@ -1,4 +1,4 @@
-import {AllUsers, AllProjects, AllHives, SelectedUser, DeletedUser, DeletedProject, SelectedProject} from "models";
+import {AllUsers, AllProjects, AllHives, SelectedUser, DeletedUser, DeletedProject, SelectedProject, AuthenticationConfigs} from "models";
 import PropTypes from "prop-types";
 
 export const defaultState = {
@@ -9,6 +9,7 @@ export const defaultState = {
     deletedUser: DeletedUser(),
     selectedProject: SelectedProject(),
     deletedProject: DeletedProject(),
+    allAuthenticationConfigs: AuthenticationConfigs(),
     isI2b2LibLoaded: false
 };
 
@@ -20,5 +21,6 @@ defaultState.propTypes = {
     selectedProject: PropTypes.shape(SelectedProject.propTypes),
     deletedUser: PropTypes.shape(DeletedUser.propTypes),
     deletedProject: PropTypes.shape(DeletedProject.propTypes),
+    allAuthenticationConfigs: PropTypes.shape(AuthenticationConfigs.propTypes),
     isI2b2LibLoaded: PropTypes.bool
 };

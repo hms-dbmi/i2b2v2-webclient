@@ -314,3 +314,11 @@ export const CLEAR_SELECTED_USER_ACTION = {
 export const clearSelectedUser =  createAction(CLEAR_SELECTED_USER_ACTION.CLEAR_SELECTED_USER);
 
 
+//================================================================================================== //
+//Please use pattern below for new actions and slices
+//Please update any existing action to use the new pattern when possible
+
+export const AUTHENTICATION_CONFIG_INFO = "authConfigInfo";
+export const GET_ALL_AUTH_CONFIGS = `${AUTHENTICATION_CONFIG_INFO}/getAllAuthConfigs`;
+
+

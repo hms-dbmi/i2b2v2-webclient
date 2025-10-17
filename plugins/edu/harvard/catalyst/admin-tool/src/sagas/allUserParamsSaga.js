@@ -32,8 +32,9 @@ const parseUserParamsXml = (user, allUserParamsXml) => {
         let name = param.attributes['name'].nodeValue;
         let value = param.childNodes[0].nodeValue;
         let dataType = param.attributes['datatype'].nodeValue;
-        let status = param.attributes['status'].nodeValue;
-        status = ParamStatus[status];
+        //let status = param.attributes['status'].nodeValue;
+        //status = ParamStatus[status];
+        let status='A';
         if(name && dataType) {
             dataType = DataType[dataType];
             name = decodeHTML(name);
