@@ -11,7 +11,7 @@ import { StatusUpdate, SplitButton } from "components";
 import {DataType, ParamStatus} from "models";
 
 import "./EditParameters.scss";
-import { Typography} from "@mui/material";
+import {FormControlLabel, FormGroup, Switch, Typography} from "@mui/material";
 
 export const EditParameters = ({
                                    rows,
@@ -32,6 +32,7 @@ export const EditParameters = ({
     const [statusMsg, setStatusMsg] = useState("");
     const [statusSeverity, setStatusSeverity] = useState("info");
     const [inValidCells, setInValidCells] = useState({});
+    const [showDeletedParams, setShowDeletedParams] = useState(false);
 
     const apiRef = useGridApiRef();
 
@@ -244,8 +245,9 @@ export const EditParameters = ({
     const displayParamsTable = () => {
         return (
             <DataGrid
+                className={"ParametersTable"}
                 autoHeight
-                rows={rows}
+                rows={showDeletedParams ? rows : rows.filter(row => row.status === ParamStatus.A)}
                 columns={columns}
                 getRowId={getRowId}
                 editMode="row"
@@ -356,15 +358,32 @@ export const EditParameters = ({
         </div>;
     }
 
+    const handleToggleDeletedParams = (event) => {
+        if(event.target.checked){
+            setShowDeletedParams(true);
+        }else{
+            setShowDeletedParams(false);
+        }
+    }
+
     return (
         <div className="EditParameters" >
-            <Typography> {title} </Typography>
-            {customActions?.length > 0 && customActionsHandler ? customActionButtons() :
-                <Button className="AddParam" variant="contained" startIcon={<AddIcon/>} onClick={handleAddParam}>
-                    Add
-                </Button>
-            }
+            <div>
+                <Typography> {title}
+                    {customActions?.length > 0 && customActionsHandler ? customActionButtons() :
+                        <Button className="AddParam" variant="contained" startIcon={<AddIcon/>} onClick={handleAddParam}>
+                            Add
+                        </Button>
+                    }
 
+                    <FormGroup className={"DeletedParamsToggle"}>
+                        <FormControlLabel
+                            onChange={handleToggleDeletedParams}
+                            control={<Switch defaultChecked />
+                        } checked={showDeletedParams} label={"Show deleted/hidden parameters"}/>
+                    </FormGroup>
+                </Typography>
+            </div>
             {displayParamsTable()}
 
             <StatusUpdate isOpen={showStatus} setIsOpen={handleStatusClose} severity={statusSeverity} message={statusMsg}/>

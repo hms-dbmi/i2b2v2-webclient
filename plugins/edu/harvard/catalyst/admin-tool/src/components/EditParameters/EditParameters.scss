@@ -4,6 +4,7 @@
   .AddParam {
     margin-top: 0.7em;
     margin-bottom: 0.7em;
+    float: left;
   }
 
   .MuiDataGrid-columnHeaders{
@@ -52,5 +53,17 @@
 
   .tableListingOverlay{
     padding: 0.6em;
+  }
+
+  .DeletedParamsToggle {
+    float: right;
+    margin-top: 1.2em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .ParametersTable {
+    clear: both;
   }
 }
