@@ -114,6 +114,7 @@
     "DOWNLOAD": true
   },
   "PATIENT_ZIP_COUNT_SHRINE_XML": {
+    "TABLE": true,
     "ZIPCODEMAP": {
       "zooms": [
         {
@@ -146,13 +147,13 @@
           "autoClose": false,
           "closeOnClick": false
         },
-        "template": "<b>[{{ZCTA5CE10}}]</b><br/>{{~count}} patients"
+        "template": "<b>[{{text}}]</b><br/>{{~count}} patients"
       },
       "hoverBox": {
         "position": "topright",
         "className": "onhover-box",
         "__default": "<h4>Patient Count</h4>Hover over an area",
-        "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{~count}} patients</span>"
+        "template": "<h4>Patient Count</h4><div>ZIP Code: {{ZCTA5CE10}}</div><span>{{~count}} patients</span>"
       },
       "legendBox": {
         "position": "bottomright",
@@ -167,9 +168,9 @@
       },
       "map": {
         "_tiles": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-        "_labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+        "_labelTiles": "https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png",
         "tiles": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
-        "labelTiles": "https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png",
+        "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
         "maxZoom": 18,
         "zipAttribName": "ZCTA5CE10",
         "zipRegEx": "^(.*)[0-9]{5}",
@@ -234,7 +235,7 @@
         "position": "topright",
         "className": "onhover-box",
         "__default": "<h4>Patient Count</h4>Hover over an area",
-        "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{~count}} patients</span>"
+        "template": "<h4>Patient Count</h4><div>ZIP Code: {{ZCTA5CE10}}</div><span>{{~count}} patients</span>"
       },
       "map": {
         "tiles": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
