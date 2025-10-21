@@ -29,8 +29,23 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
     const [authName, setAuthName] = useState('');
     const [LDAPSettings, setLDAPSettings] = useState({});
     const [domainSettings, setDomainSettings] = useState({});
-    const [expanded, setExpanded] = React.useState(false);
-
+    const [expanded, setExpanded] = useState(false);
+    const [isDomainNotValid, setIsDomainNotValid] = useState(false);
+    const [domainNotValidError, setDomainNotValidError] = useState("");
+    const [isDomainControllerNotValid, setIsDomainControllerNotValid] = useState(false);
+    const [isAuthNameNotValid,  setIsAuthNameNotValid] = useState(false);
+    const [authNameNotValidError, setAuthNameNotValidError] = useState("");
+    const [domainControllerNotValidError, setDomainControllerNotValidError] = useState("");
+    const [isLDAPConnectionURLNotValid, setIsLDAPConnectionURLNotValid] = useState(false);
+    const [LDAPConnectionURLNotValidError, setLDAPConnectionURLNotValidError] = useState("");
+    const [isLDAPSearchBaseNotValid,  setIsLDAPSearchBaseNotValid] = useState(false);
+    const [LDAPSearchBaseNotValidError, setLDAPSearchBaseNotValidError] = useState("");
+    const [isLDAPDistNameBaseNotValid,  setIsLDAPDistNameNotValid] = useState(false);
+    const [LDAPDistNameNotValidError, setLDAPDistNameNotValidError] = useState("");
+    const [isLDAPSecurityAuthNotValid,  setIsLDAPSecurityAuthNotValid] = useState(false);
+    const [LDAPSecurityAuthNotValidError, setLDAPSecurityAuthNotValidError] = useState("");
+    const [isLDAPMaxBufferNotValid,  setIsLDAPMaxBufferNotValid] = useState(false);
+    const [LDAPMaxBufferNotValidError, setLDAPMaxBufferNotValidError] = useState("");
     const dispatch = useDispatch();
 
     const handleChange = () => (event, isExpanded) => {
@@ -52,37 +67,138 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
         setShowLDAPSettings(false);
     };
 
-    const saveAuthConfig= () => {
-        let authConfig = {
-            name: authName,
-            method: authMethod
+    const isValidAuthConfig = () => {
+        let isValid = true;
+
+        if(!authName || authName.trim().length === 0){
+            setIsAuthNameNotValid(true);
+            setAuthNameNotValidError("Display Name is required");
+            isValid = false;
+        }else{
+            setIsAuthNameNotValid(false);
+            setAuthNameNotValidError("");
         }
 
-        if(authMethod === AUTHENTICATION_METHODS.NTLM.value ||
+        if (authMethod === AUTHENTICATION_METHODS.NTLM.value ||
             authMethod === AUTHENTICATION_METHODS.NTLM2.value ||
             authMethod === AUTHENTICATION_METHODS.OKTA.value
-        ){
-            authConfig.authConfigOptions = domainSettings;
-        }
-
-        if(authMethod === AUTHENTICATION_METHODS.LDAP.value){
-            if(LDAPSettings.ssl === "false"){
-                delete LDAPSettings.ssl;
+        ) {
+            if(!domainSettings.domain || domainSettings.domain.trim().length === 0){
+                setIsDomainNotValid(true);
+                setDomainNotValidError("Domain is required");
+                isValid = false;
+            }else{
+                setIsDomainNotValid(false);
+                setDomainNotValidError("");
             }
-            authConfig.authConfigOptions = LDAPSettings;
+
+            if(!domainSettings.domain_controller || domainSettings.domain_controller.trim().length === 0){
+                setIsDomainControllerNotValid(true);
+                setDomainControllerNotValidError("Domain Controller is required");
+                isValid = false;
+            }else{
+                setIsDomainControllerNotValid(false);
+                setDomainControllerNotValidError("");
+            }
         }
 
-        const authConfigParam = {
-            name: AUTH_CONFIG_PARAM_NAME,
-            value: JSON.stringify(authConfig),
-            dataType: DataType.T,
-            status: ParamStatus.A
-        };
+        if (authMethod === AUTHENTICATION_METHODS.LDAP.value) {
+            if(!LDAPSettings.connection_url || LDAPSettings.connection_url.trim().length === 0){
+                setIsLDAPConnectionURLNotValid(true);
+                setLDAPConnectionURLNotValidError("Connection URL is required");
+                isValid = false;
+            }else{
+                setIsLDAPConnectionURLNotValid(false);
+                setLDAPConnectionURLNotValidError("");
+            }
 
-        if(authName.length > 0) {
-            dispatch(saveGlobalParam({param: authConfigParam}));
+            if(!LDAPSettings.search_base || LDAPSettings.search_base.trim().length === 0){
+                setIsLDAPSearchBaseNotValid(true);
+                setLDAPSearchBaseNotValidError("Search Base is required");
+                isValid = false;
+            }else{
+                setIsLDAPSearchBaseNotValid(false);
+                setLDAPSearchBaseNotValidError("");
+            }
+
+            if(!LDAPSettings.distinguished_name || LDAPSettings.distinguished_name.trim().length === 0){
+                setIsLDAPDistNameNotValid(true);
+                setLDAPDistNameNotValidError("Distinguised Name is required");
+                isValid = false;
+            }else{
+                setIsLDAPDistNameNotValid(false);
+                setLDAPDistNameNotValidError("");
+            }
+
+            if(!LDAPSettings.security_authentication || LDAPSettings.security_authentication.trim().length === 0){
+                setIsLDAPSecurityAuthNotValid(true);
+                setLDAPSecurityAuthNotValidError("Security Authentication is required");
+                isValid = false;
+            }else{
+                setIsLDAPSecurityAuthNotValid(false);
+                setLDAPSecurityAuthNotValidError("");
+            }
+
+            const numericRegex = /^[0-9]+$/;
+            if(LDAPSettings.max_buffer && LDAPSettings.max_buffer.length > 0 && !numericRegex.test(LDAPSettings.max_buffer)){
+                setIsLDAPMaxBufferNotValid(true);
+                setLDAPMaxBufferNotValidError("Max Buffer must be an integer");
+                isValid = false;
+            }else{
+                setIsLDAPMaxBufferNotValid(false);
+                setLDAPMaxBufferNotValidError("");
+            }
         }
-        onOk();
+        return isValid;
+    }
+
+    const saveAuthConfig= () => {
+        if(isValidAuthConfig()) {
+            let authConfig = {
+                name: authName,
+                method: authMethod
+            }
+
+            if (authMethod === AUTHENTICATION_METHODS.NTLM.value ||
+                authMethod === AUTHENTICATION_METHODS.NTLM2.value ||
+                authMethod === AUTHENTICATION_METHODS.OKTA.value
+            ) {
+                const trimmedDomainSettings = {
+                    ...domainSettings
+                };
+
+                Object.keys(trimmedDomainSettings).forEach(function(key) {
+                    trimmedDomainSettings[key] = trimmedDomainSettings[key].trim();
+                });
+                authConfig.authConfigOptions = trimmedDomainSettings;
+            }
+
+            if (authMethod === AUTHENTICATION_METHODS.LDAP.value) {
+                if (LDAPSettings.ssl === "false") {
+                    delete LDAPSettings.ssl;
+                }
+                const trimmedLDAPSettings = {
+                    ...LDAPSettings
+                };
+
+                Object.keys(trimmedLDAPSettings).forEach(function(key) {
+                    trimmedLDAPSettings[key] = trimmedLDAPSettings[key].trim();
+                });
+                authConfig.authConfigOptions = trimmedLDAPSettings;
+            }
+
+            const authConfigParam = {
+                name: AUTH_CONFIG_PARAM_NAME,
+                value: JSON.stringify(authConfig),
+                dataType: DataType.T,
+                status: ParamStatus.A
+            };
+
+            if (authName.length > 0) {
+                dispatch(saveGlobalParam({param: authConfigParam}));
+            }
+            onOk();
+        }
     };
 
     const updateLADPAuthConfigOption = (name, value) => {
@@ -123,6 +239,8 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                        required
                                        variant="standard"
                                        value={authName}
+                                       error={isAuthNameNotValid}
+                                       helperText={authNameNotValidError}
                                        onChange={(event) => {setAuthName(event.target.value);}}
                                        sx={{ minWidth: 300 }}/>
                             <TextField
@@ -145,12 +263,16 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                                             required
                                                             value={domainSettings.domain}
                                                             placeholder={"Example: i2b2.org"}
+                                                            error={isDomainNotValid}
+                                                            helperText={domainNotValidError}
                                                             onChange={(event) => {setDomainSettings({...domainSettings, domain: event.target.value})}}
                                                             variant="standard" sx={{ minWidth: 300 }}/>
                              <TextField label="Domain Controller"
                                                             required
                                                             value={domainSettings.domain_controller}
                                                             placeholder={"Example: pdc.i2b2.org"}
+                                                            error={isDomainControllerNotValid}
+                                                            helperText={domainControllerNotValidError}
                                                             onChange={(event) => {setDomainSettings({...domainSettings, domain_controller: event.target.value})}}
                                                             variant="standard" sx={{ minWidth: 320 }} />
                                 </div>
@@ -166,6 +288,8 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                         required
                                         label="Connection URL"
                                         value={LDAPSettings.connection_url}
+                                        error={isLDAPConnectionURLNotValid}
+                                        helperText={LDAPConnectionURLNotValidError}
                                         placeholder={"Example: ldap://ldap.server.company.com:389"}
                                         onChange={(event) => {updateLADPAuthConfigOption("connection_url", event.target.value)}}
                                         variant="standard"
@@ -175,6 +299,8 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                     <TextField label="Search Base"
                                        required
                                        value={LDAPSettings.search_base}
+                                       error={isLDAPSearchBaseNotValid}
+                                       helperText={LDAPSearchBaseNotValidError}
                                        placeholder={"Example: OU=People, DC=company, DC=com"}
                                        onChange={(event) => {updateLADPAuthConfigOption("search_base", event.target.value)}}
                                        variant="standard"
@@ -184,6 +310,8 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                     <TextField label="Distinguished Name"
                                        required
                                        value={LDAPSettings.distinguished_name}
+                                       error={isLDAPDistNameBaseNotValid}
+                                       helperText={LDAPDistNameNotValidError}
                                        placeholder={'Example: "cuser", "dn:", "uid="'}
                                        onChange={(event) => {updateLADPAuthConfigOption("distinguished_name", event.target.value)}}
                                        variant="standard"
@@ -195,6 +323,8 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                         required
                                         label="Security Authentication"
                                         value={LDAPSettings.security_authentication}
+                                        error={isLDAPSecurityAuthNotValid}
+                                        helperText={LDAPSecurityAuthNotValidError}
                                         variant="standard"
                                         sx={{ minWidth: 200 }}
                                         onChange={(event) => {updateLADPAuthConfigOption("security_authentication", event.target.value)}}
@@ -227,7 +357,7 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                                             label="SSL"
                                                             value={LDAPSettings.ssl}
                                                             variant="standard"
-                                                            sx={{ minWidth: 110, maxWidth: 110 }}
+                                                            sx={{ minWidth: 100, maxWidth: 100 }}
                                                             onChange={(event) => {updateLADPAuthConfigOption("ssl", event.target.value)}}
                                                         >
                                                             <MenuItem value={"true"}>{"true"}</MenuItem>
@@ -236,6 +366,8 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
 
                                                         <TextField label="Max Buffer (bytes)"
                                                                    value={LDAPSettings.max_buffer}
+                                                                   error={isLDAPMaxBufferNotValid}
+                                                                   helperText={LDAPMaxBufferNotValidError}
                                                                    onChange={(event) => {updateLADPAuthConfigOption("max_buffer", event.target.value)}}
                                                                    variant="standard"
                                                                    size="small"
