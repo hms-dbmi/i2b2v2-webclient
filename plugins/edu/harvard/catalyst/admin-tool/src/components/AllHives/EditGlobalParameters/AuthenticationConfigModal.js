@@ -35,6 +35,8 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
     const [isDomainControllerNotValid, setIsDomainControllerNotValid] = useState(false);
     const [isAuthNameNotValid,  setIsAuthNameNotValid] = useState(false);
     const [authNameNotValidError, setAuthNameNotValidError] = useState("");
+    const [isAuthMethodNotValid,  setIsAuthMethodNotValid] = useState(false);
+    const [authMethodNotValidError, setAuthMethodNotValidError] = useState("");
     const [domainControllerNotValidError, setDomainControllerNotValidError] = useState("");
     const [isLDAPConnectionURLNotValid, setIsLDAPConnectionURLNotValid] = useState(false);
     const [LDAPConnectionURLNotValidError, setLDAPConnectionURLNotValidError] = useState("");
@@ -77,6 +79,15 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
         }else{
             setIsAuthNameNotValid(false);
             setAuthNameNotValidError("");
+        }
+
+        if(!authMethod || authMethod.length === 0){
+            setIsAuthMethodNotValid(true);
+            setAuthMethodNotValidError("Authentication Method is required");
+            isValid = false;
+        }else{
+            setIsAuthMethodNotValid(false);
+            setAuthMethodNotValidError("");
         }
 
         if (authMethod === AUTHENTICATION_METHODS.NTLM.value ||
@@ -207,6 +218,18 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
         setLDAPSettings(newLADPSettings);
     };
 
+    const getAuthMethodHelpText = () => {
+        let helpText = "";
+        if(isAuthMethodNotValid){
+            helpText = authMethodNotValidError;
+        }
+
+        if(authMethod === AUTHENTICATION_METHODS.NTLM.value){
+            helpText = "NOTE: Use oF NTLM is not recommended.";
+        }
+
+        return helpText;
+    }
     return (
         <div>
             <Dialog
@@ -249,7 +272,8 @@ export const AuthenticationConfigModal = ({ onOk, onCancel }) => {
                                 label="Authentication Method"
                                 value={authMethod}
                                 variant="standard"
-                                helperText={authMethod === AUTHENTICATION_METHODS.NTLM.value ? "NOTE: Use oF NTLM is not recommended.":""}
+                                error={isAuthMethodNotValid}
+                                helperText={getAuthMethodHelpText()}
                                 onChange={(event) => {setAuthMethod(event.target.value);}}
                                 sx={{ minWidth: 200 }}
                             >
