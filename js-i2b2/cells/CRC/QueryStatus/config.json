@@ -77,10 +77,8 @@
   ],
   "haltPollingOnStatus": [
     "COMPLETED",
-    "PROCESSING",
     "FINISHED",
     "ERROR",
-    "INCOMPLETE",
     "TIMEOUT"
   ]
 }
