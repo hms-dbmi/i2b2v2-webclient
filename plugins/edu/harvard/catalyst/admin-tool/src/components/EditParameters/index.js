@@ -369,7 +369,7 @@ export const EditParameters = ({
     return (
         <div className="EditParameters" >
             <div>
-                <Typography> {title}
+                <Typography> {title}</Typography>
                     {customActions?.length > 0 && customActionsHandler ? customActionButtons() :
                         <Button className="AddParam" variant="contained" startIcon={<AddIcon/>} onClick={handleAddParam}>
                             Add
@@ -382,7 +382,7 @@ export const EditParameters = ({
                             control={<Switch defaultChecked />
                         } checked={showDeletedParams} label={"Show deleted/hidden parameters"}/>
                     </FormGroup>
-                </Typography>
+
             </div>
             {displayParamsTable()}
 
