@@ -24,6 +24,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
         }
         case  GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS_SUCCEEDED: {
             const  {user, params}  = action.payload;
+            user.authMethod = AUTHENTICATION_METHODS.I2B2.value;
 
             //Extract each user param data into Param model and return an array of Params
             let paramsList = [];

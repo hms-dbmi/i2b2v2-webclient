@@ -275,6 +275,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                         onChange={(event) => {
                                 const newValue = event.target.value;
                                 handleUpdate("password", "");
+                                handleUpdate("passwordVerify", "");
 
                                 if(newValue.length > 0){
                                     setIsDirty(true);
