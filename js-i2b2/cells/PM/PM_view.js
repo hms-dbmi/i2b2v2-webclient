@@ -59,6 +59,49 @@ i2b2.PM.doLoginDialog = function() {
             $("#PM-login-modal #loginmessage").text(i2b2.UI.cfg.loginDefaultMessage);
         } catch(e) {}
 
+        $("#PM-login-modal .showLoginPwd").click(function(){
+            const showPasswordLink = $("#PM-login-modal .showLoginPwd");
+            const hidePasswordLink = $("#PM-login-modal .hideLoginPwd");
+            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+
+            if (showPasswordLink.is(':visible')) {
+                $("#loginpass").prop('type', 'text');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
+                }
+            } else {
+                $("#loginpass").prop('type', 'password');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").addClass("ignorePasswordMgrs");
+                }
+            }
+
+            showPasswordLink.toggle();
+            hidePasswordLink.toggle();
+        });
+
+        $("#PM-login-modal .hideLoginPwd").click(function(){
+            const showPasswordLink = $("#PM-login-modal .showLoginPwd");
+            const hidePasswordLink = $("#PM-login-modal .hideLoginPwd");
+            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+
+
+            if (showPasswordLink.is(':visible')) {
+                $("#loginpass").prop('type', 'text');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
+                }
+            } else {
+                $("#loginpass").prop('type', 'password');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").addClass("ignorePasswordMgrs");
+                }
+            }
+
+            showPasswordLink.toggle();
+            hidePasswordLink.toggle();
+        }).hide();
+
         // clear any domains
         $('#logindomain option').remove();
         // load the domains into dropdown
@@ -182,10 +225,12 @@ i2b2.PM.doChangeDomain = function() {
         $("#PM-login-modal input[name='loginpass']").attr('type', 'text');
         $("#PM-login-modal input[name='loginpass']").attr('autocomplete', 'off');
         $("#PM-login-modal input[name='loginusr']").attr('autocomplete', 'off');
+        $("#PM-login-modal input[name='loginpass']").addClass("ignorePasswordMgrs");
     } else {
         $("#PM-login-modal input[name='loginpass']").attr('type', 'password');
         $("#PM-login-modal input[name='loginpass']").removeAttr('autocomplete', '');
         $("#PM-login-modal input[name='loginusr']").removeAttr('autocomplete', '');
+        $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
     }
 
     let loginElements = $(".login-user, .login-password, .login-button");
