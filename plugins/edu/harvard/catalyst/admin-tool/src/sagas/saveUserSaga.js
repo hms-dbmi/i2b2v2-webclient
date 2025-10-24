@@ -178,17 +178,22 @@ export function* doSaveUser(action) {
             }));
             const deleteAuthParamsResults = deleteAuthParamsResponse.filter(result => result.msgType === "AJAX_ERROR");
             if(deleteAuthParamsResults.length === 0) {
-                //save new auth params
-                const saveAuthParamsList = getAllUserAuthConfigParams(user, authConfig);
-                const saveAuthParamsResponse = yield all(saveAuthParamsList.map((authParam) => {
-                    return call(saveParamRequest, user.username, authParam);
-                }));
-                const saveAuthParamsResults = saveAuthParamsResponse.filter(result => result.msgType === "AJAX_ERROR");
-                if(saveAuthParamsResults.length === 0) {
+                if(authConfig) {
+                    //save new auth params
+                    const saveAuthParamsList = getAllUserAuthConfigParams(user, authConfig);
+                    const saveAuthParamsResponse = yield all(saveAuthParamsList.map((authParam) => {
+                        return call(saveParamRequest, user.username, authParam);
+                    }));
+                    const saveAuthParamsResults = saveAuthParamsResponse.filter(result => result.msgType === "AJAX_ERROR");
+                    if (saveAuthParamsResults.length === 0) {
+                        yield put(getAllUserParams({user}));
+                        yield put(saveUserSucceeded({user}));
+                    } else {
+                        yield put(saveUserFailed("An error occurred while updating user authentication parameters"));
+                    }
+                }else{
                     yield put(getAllUserParams({user}));
                     yield put(saveUserSucceeded({user}));
-                }else{
-                    yield put(saveUserFailed("An error occurred while updating user authentication parameters"));
                 }
             }else{
                 yield put(saveUserFailed("An error occurred while updating user authentication parameters"));
