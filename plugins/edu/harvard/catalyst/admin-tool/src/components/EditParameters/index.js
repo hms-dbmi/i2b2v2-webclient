@@ -380,7 +380,7 @@ export const EditParameters = ({
                         <FormControlLabel
                             onChange={handleToggleDeletedParams}
                             control={<Switch defaultChecked />
-                        } checked={showDeletedParams} label={"Show deleted/hidden parameters"}/>
+                        } checked={showDeletedParams} label={"Show inactive parameters"}/>
                     </FormGroup>
 
             </div>
