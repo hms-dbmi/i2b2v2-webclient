@@ -184,6 +184,14 @@ i2b2.PM.doLogin = function() {
 
 // ================================================================================================== //
 i2b2.PM._processUserConfig = function (data) {
+    // clear the UX treatment 6 seconds after the login button was clicked
+    setTimeout(() => {
+        const clickedLoginBtns = document.querySelectorAll(".clicked");
+        clickedLoginBtns.forEach((el) => {
+            el.classList.remove("clicked");
+        });
+    }, 5000);
+
     console.group("PROCESS Login XML");
     console.debug(" === run the following command in console to view message sniffer: i2b2.hive.MsgSniffer.show() ===");
 
