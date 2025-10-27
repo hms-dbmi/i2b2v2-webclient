@@ -34,8 +34,6 @@
     margin-bottom: 14px;
 }
 
-
-
 /* The Modal (background) */
 #PM-login-modal.modal {
     position: fixed; /* Stay in place */
@@ -116,9 +114,14 @@
     overflow: auto;
 }
 
+#PM-login-modal .showLoginPwd, #PM-login-modal .hideLoginPwd {
+    margin-left: 0.2em;
+    margin-top: 0.1em;
+}
 
-
-
+#PM-login-modal .input-group input {
+    margin-bottom: 0px;
+}
 
 /* Login password box (for disabling of password warning) */
 @font-face {
@@ -128,6 +131,8 @@
     url('../../../../../assets/fonts/password.woff') format('woff'); /* Pretty Modern Browsers */
 }
 
-#PM-login-modal #loginpass {
+#PM-login-modal .ignorePasswordMgrs {
     font-family: password, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.15em;
 }
