@@ -220,15 +220,24 @@ i2b2.hive.communicatorFactory = function(cellCode){
                       }
                       if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
 
-                      /* success handler code */
                       if (typeof o !== "object") {
-                          alert("There is a problem contacting the server!");
-                          return false;
+                          /* error handler code */
+                          let retObj = {
+                              request: {
+                                  options: {
+                                      i2b2_execBubble: commOptions.i2b2_execBubble
+                                  }
+                              },
+                              responseText: o
+                          };
+                          retCommObj._defaultCallbackFAIL(retObj);
+                      } else {
+                          /* success handler code */
+                          o.request = {};
+                          o.request.options = {};
+                          o.request.options.i2b2_execBubble = commOptions.i2b2_execBubble;
+                          retCommObj._defaultCallbackOK(o);
                       }
-                      o.request = {};
-                      o.request.options = {};
-                      o.request.options.i2b2_execBubble = commOptions.i2b2_execBubble;
-                      retCommObj._defaultCallbackOK(o);
                   },
                   failure: function(o, status, xhr) {
                       pendingAsyncRequestCount = pendingAsyncRequestCount-1;
