@@ -102,7 +102,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
         //if this is a new user check the password fields
         if(newAuthMethod === AUTHENTICATION_METHODS.I2B2.value) {
             updatedUser.password = updatedUser.password.trim();
-            if (isNewUser && updatedUser.password.length === 0) {
+            if (updatedUser.password.length === 0) {
                 setIsPasswordNotValid(true);
                 setPasswordNotValidError("Password is required");
                 isValid = false;
@@ -112,7 +112,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
             }
 
 
-            if (isNewUser && updatedUser.password !== updatedUser.passwordVerify) {
+            if (updatedUser.password !== updatedUser.passwordVerify) {
                 setDoPasswordsNotMatch(true);
                 setPasswordsDoNotMatchError("Passwords do not match");
                 isValid = false;
@@ -274,8 +274,13 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                         value={newAuthMethod}
                         onChange={(event) => {
                                 const newValue = event.target.value;
-                                handleUpdate("password", "");
-                                handleUpdate("passwordVerify", "");
+                                let newUser = {
+                                    ...updatedUser
+                                }
+                                newUser["password"] = "";
+                                newUser["passwordVerify"] = "";
+
+                                updateUser(newUser);
 
                                 if(newValue.length > 0){
                                     setIsDirty(true);

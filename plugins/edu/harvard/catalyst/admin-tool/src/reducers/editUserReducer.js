@@ -8,7 +8,7 @@ import {
 } from "actions";
 import { defaultState } from "defaultState";
 import {SelectedUser, Param, ParamStatusInfo, SelectedProject} from "models";
-import {AUTHENTICATION_METHODS} from "../models";
+import {AUTHENTICATION_METHODS, ParamStatus} from "../models";
 
 export const editUserReducer = (state = defaultState.selectedUser, action) => {
     switch (action.type) {
@@ -37,7 +37,7 @@ export const editUserReducer = (state = defaultState.selectedUser, action) => {
                     dataType: param.dataType,
                     status: param.status
                 }));
-                if(param.name === "authentication_method"){
+                if(param.name === "authentication_method" && param.status === ParamStatus.A){
                     if(param.value === AUTHENTICATION_METHODS.LDAP.value) {
                         user.authMethod = AUTHENTICATION_METHODS.LDAP.value;
                     }
