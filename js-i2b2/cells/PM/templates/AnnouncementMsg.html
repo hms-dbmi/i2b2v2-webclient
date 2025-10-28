@@ -10,12 +10,16 @@
             <!-- Modal body -->
             <div class="modal-body">
                 <div class="modal-form">
-                    <div class="form-group row">
-                        <div >
-                            <div>
-                                <span id="confirm-msg" class="prompt formattedParamValue">{{{msg}}}</span>
+                    <div class="form-group row announcementList">
+                        {{#each msgs}}
+                            <div class="announcement">
+                                <div> <h6> Announcement #{{increment @index}} </h6>
+                                    <div>
+                                        <span class="prompt formattedParamValue">{{{this}}}</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        {{/each}}
                     </div>
                 </div>
             </div>
