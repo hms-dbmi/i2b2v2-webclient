@@ -71,7 +71,7 @@
     overflow: auto;
 }
 
-#PMAnnouncementDialog .announcementList h6 {
+#PMAnnouncementDialog .announcementList .title {
     font-weight: bold;
 }
 
