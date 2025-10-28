@@ -38,13 +38,13 @@ export const EditParameters = ({
 
     const columns = [
         { field: 'name',
-            headerName: 'Name',
+            headerName: 'Parameter Name',
             flex: 2,
             editable: true,
         },
         {
             field: 'value',
-            headerName: 'Value',
+            headerName: 'Parameter Value',
             flex: 2,
             editable: true,
             renderEditCell: (params) => {
@@ -280,7 +280,7 @@ export const EditParameters = ({
                 onSortModelChange={(model) => {
                     apiRef.current.setPage(0);
                 }}
-                pageSizeOptions={[5, 10, 25]}
+                pageSizeOptions={[10, 25, 50]}
                 sx={{
                     [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
                         outline: 'none',
