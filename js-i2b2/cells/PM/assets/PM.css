@@ -71,7 +71,7 @@
     overflow: auto;
 }
 
-#PMAnnouncementDialog .announcementList .title {
+#PMAnnouncementDialog .announcementList .projAnnTitle {
     font-weight: bold;
 }
 
