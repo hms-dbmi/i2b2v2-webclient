@@ -233,6 +233,9 @@ i2b2.PM.doChangeDomain = function() {
         $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
     }
 
+    $("#PM-login-modal .showLoginPwd").show();
+    $("#PM-login-modal .hideLoginPwd").hide();
+
     let loginElements = $(".login-user, .login-password, .login-button");
     if (selectedDomain.saml !== undefined) {
         loginElements.hide();
