@@ -65,3 +65,16 @@
 .formattedParamValue {
     white-space: pre-line;
 }
+
+#PMAnnouncementDialog .announcementList {
+    max-height: 20em;
+    overflow: auto;
+}
+
+#PMAnnouncementDialog .announcementList .projAnnTitle {
+    font-weight: bold;
+}
+
+#PMAnnouncementDialog .announcement{
+    margin-bottom: 0.9em;
+}

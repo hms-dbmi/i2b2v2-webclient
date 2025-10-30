@@ -160,9 +160,11 @@ i2b2.PM.view.updateProjectSelection = function(projectSelElem){
 
 i2b2.PM.view.showAnnouncements = function() {
     try {
-        let announcement = Object.entries(i2b2.PM.model.projects[i2b2.PM.model.login_project].details).find(([key, detail]) => detail.name.toUpperCase() === "ANNOUNCEMENT");
-        if (announcement.length > 0 && announcement[1].status.toUpperCase() === "A") {
-            i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcement[1].value);
+        let announcements = Object.entries(i2b2.PM.model.projects[i2b2.PM.model.login_project].details)
+            .filter(([key, detail]) => (detail.name.toUpperCase() === "ANNOUNCEMENT" && detail.status === 'A'))
+            .map(ann => ann.length > 1 ? ann[1].value : "");
+        if (announcements.length > 0) {
+            i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcements);
             return;
         }
     } catch(e) {
@@ -250,7 +252,7 @@ i2b2.PM.doChangeDomain = function() {
 };
 // ================================================================================================== //
 i2b2.PM.view.modal.announcementDialog = {
-    showAnnouncement: function(msg) {
+    showAnnouncement: function(msgs) {
         let pmAnnouncementMsgDialogModal = $("#pmAnnouncementMsgDialogModal");
         if (pmAnnouncementMsgDialogModal.length === 0) {
             $("body").append("<div id='pmAnnouncementMsgDialogModal'/>");
@@ -260,7 +262,7 @@ i2b2.PM.view.modal.announcementDialog = {
 
         let data = {
             "title": i2b2.PM.model.login_project + " Announcements",
-            "msg": msg,
+            "msgs": msgs,
         };
         $(i2b2.PM.view.template.announcementMsgDialog(data)).appendTo(pmAnnouncementMsgDialogModal);
         $("#pmAnnouncementMsgDialogModal div:eq(0)").modal('show');
