@@ -13,6 +13,11 @@
     opacity: 0.8;
 }
 
+#PM-login-modal button.disabled {
+    cursor: not-allowed !important;
+    pointer-events: all !important;
+}
+
 /* Center the image and position the close button */
 #PM-login-modal .imgcontainer {
     text-align: center;

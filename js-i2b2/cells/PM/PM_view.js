@@ -66,8 +66,11 @@ i2b2.PM.doLoginDialog = function() {
         });
         // attach the onClick/onSubmit handlers
         $("#PM-login-modal .login-button").click(function(event) {
+            const targetElClasses = event.target.classList;
+            if (targetElClasses.contains("disabled")) return;
             // UX animation to show that the button was clicked
-            event.target.classList.add("clicked");
+            targetElClasses.add("clicked");
+            targetElClasses.add("disabled");
 
             // start login process
             let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
