@@ -11,7 +11,8 @@ import { StatusUpdate, SplitButton } from "components";
 import {DataType, ParamStatus} from "models";
 
 import "./EditParameters.scss";
-import {FormControlLabel, FormGroup, Switch, Typography} from "@mui/material";
+import {Autocomplete, FormControlLabel, FormGroup, Switch, Typography} from "@mui/material";
+import Paper from "@mui/material/Paper";
 
 export const EditParameters = ({
                                    rows,
@@ -25,7 +26,8 @@ export const EditParameters = ({
                                    setPaginationModel,
                                    customActions,
                                    customActionsHandler,
-                                   customActionsBtnOption
+                                   customActionsBtnOption,
+                                   predefinedParams
 }) => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [showStatus, setShowStatus] = useState(false);
@@ -33,14 +35,51 @@ export const EditParameters = ({
     const [statusSeverity, setStatusSeverity] = useState("info");
     const [inValidCells, setInValidCells] = useState({});
     const [showDeletedParams, setShowDeletedParams] = useState(false);
-
+    const autosuggestParams = predefinedParams ? predefinedParams : {};
     const apiRef = useGridApiRef();
 
     const columns = [
-        { field: 'name',
+        {
+            field: 'name',
             headerName: 'Parameter Name',
             flex: 2,
             editable: true,
+            renderEditCell: (params) => {
+                const {id, value, field} = params;
+                const apiRefContext = useGridApiContext();
+
+                const handleValueChange = (event, value) => {
+                    let newValue = value;
+                    if(value.label) {
+                        newValue = value.label;
+                    }
+                    apiRefContext.current.setEditCellValue({id, field, value: newValue});
+                };
+
+                return (
+                    <Autocomplete
+                        freeSolo
+                        disableClearable
+                        options={autosuggestParams}
+                        onChange={handleValueChange}
+                        style={{ width: "100%" }}
+                        PaperComponent={props => (
+                            <Paper {...props} className={"ParameterNameAutoSuggest"} />
+                        )}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                onChange={handleValueChange}
+                                placeholder={autosuggestParams.length > 0 ? "Select a name or enter": ""}
+                                slotProps={{
+                                    shrink: true
+                                }}
+                            />
+                        )}
+                    />
+                );
+
+            },
         },
         {
             field: 'value',
@@ -205,6 +244,7 @@ export const EditParameters = ({
     };
 
     const onProcessRowUpdateError = (error) => {
+        console.error("Process update error is " + error);
         console.error("Process update error rows is " + JSON.stringify(rows));
     };
 
@@ -240,7 +280,10 @@ export const EditParameters = ({
     };
 
     const isCellEditable = (params) => {
-        return  (params.field !== "name" || (params.field === "name" && !params.row.internalId));
+        const notExistingParam = (params.field !== "name" || (params.field === "name" && !params.row.internalId));
+        const notPredefinedParam = (params.field !== "dataType" ||  predefinedParams.filter(p => p.label === params.row.name).length === 0);
+
+        return  notExistingParam && notPredefinedParam;
     }
     const displayParamsTable = () => {
         return (
@@ -376,7 +419,7 @@ export const EditParameters = ({
                         </Button>
                     }
 
-                    <FormGroup className={"DeletedParamsToggle"}>
+                <FormGroup className={"InactiveParamsToggle"}>
                         <FormControlLabel
                             onChange={handleToggleDeletedParams}
                             control={<Switch defaultChecked />

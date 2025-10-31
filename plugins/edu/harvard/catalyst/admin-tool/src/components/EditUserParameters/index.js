@@ -7,6 +7,7 @@ import {
 import {EditParameters} from "../EditParameters";
 
 import "./EditUserParameters.scss";
+import {DataType} from "models";
 
 export const EditUserParameters = ({selectedUser,
                                    updatedParams,
@@ -16,6 +17,9 @@ export const EditUserParameters = ({selectedUser,
                                    setPaginationModel
 }) => {
     const [saveStatus, setSaveStatus] = useState("");
+    const predefinedParams = [
+        { label: "PM_EXPIRED_PASSWORD", type: DataType.T}
+    ];
 
     const dispatch = useDispatch();
 
@@ -56,6 +60,7 @@ export const EditUserParameters = ({selectedUser,
                 saveStatusConfirm={saveStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
+                predefinedParams={predefinedParams}
             />
         </div>
     );
