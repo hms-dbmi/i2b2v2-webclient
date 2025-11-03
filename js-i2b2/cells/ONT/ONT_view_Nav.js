@@ -399,8 +399,13 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
                 func_HighlightNode(n);
             } else {
                 n.state.requested = true;
-                i2b2.ONT.view.nav.treeview.treeview('redraw', []);
-                i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
+                if(!n.state.expanded) {
+                    i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+                    i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
+                }
+                else {
+                    onLoadChildrenComplete(n);
+                }
             }
             break;
         }
