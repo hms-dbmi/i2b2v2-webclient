@@ -49,8 +49,8 @@ export const EditParameters = ({
                 const apiRefContext = useGridApiContext();
 
                 const handleValueChange = (event, value) => {
-                    let newValue = value;
-                    if(value.label) {
+                    let newValue = event.target.value;
+                    if(value && value.label) {
                         newValue = value.label;
                     }
                     apiRefContext.current.setEditCellValue({id, field, value: newValue});
@@ -281,7 +281,10 @@ export const EditParameters = ({
 
     const isCellEditable = (params) => {
         const notExistingParam = (params.field !== "name" || (params.field === "name" && !params.row.internalId));
-        const notPredefinedParam = (params.field !== "dataType" ||  predefinedParams.filter(p => p.label === params.row.name).length === 0);
+        const notPredefinedParam = (params.field !== "dataType" ||  predefinedParams.filter(p => {
+            const name = p.label ? p.label: p;
+            return name === params.row.name
+        }).length === 0);
 
         return  notExistingParam && notPredefinedParam;
     }
