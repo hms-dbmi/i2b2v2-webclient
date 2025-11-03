@@ -14,7 +14,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import {DialogTitle, TextField} from "@mui/material";
 import {AUTH_CONFIG_PARAM_NAME, AUTHENTICATION_METHODS, DataType, ParamStatus} from "../../../models";
-import {saveGlobalParam} from "../../../actions";
+import {saveGlobalParam} from "../../../reducers/allHivesSlice";
 import {useDispatch} from "react-redux";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import IconButton from "@mui/material/IconButton";

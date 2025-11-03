@@ -45,18 +45,6 @@ export const GET_ALL_PROJECTS_ACTION = {
 export const getAllProjects =  createAction(GET_ALL_PROJECTS_ACTION.GET_ALL_PROJECTS);
 export const getAllProjectsSucceeded = createAction(GET_ALL_PROJECTS_ACTION.GET_ALL_PROJECTS_SUCCEEDED);
 export const getAllProjectsFailed = createNamedArgsAction(GET_ALL_PROJECTS_ACTION.GET_ALL_PROJECTS_FAILED);
-
-//================================================================================================== //
-
-export const GET_ALL_HIVES_ACTION = {
-    GET_ALL_HIVES: "GET_ALL_HIVES",
-    GET_ALL_HIVES_SUCCEEDED:  "GET_ALL_HIVES_SUCCEEDED",
-    GET_ALL_HIVES_FAILED: "GET_ALL_HIVES_FAILED"
-};
-export const getAllHives =  createAction(GET_ALL_HIVES_ACTION.GET_ALL_HIVES);
-export const getAllHivesSucceeded = createAction(GET_ALL_HIVES_ACTION.GET_ALL_HIVES_SUCCEEDED);
-export const getAllHivesFailed = createNamedArgsAction(GET_ALL_HIVES_ACTION.GET_ALL_HIVES_FAILED);
-
 //================================================================================================== //
 
 export const GET_ALL_USER_PARAMS_ACTION = {
@@ -118,52 +106,6 @@ export const deleteProject =  createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT)
 export const deleteProjectSucceeded = createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_SUCCEEDED);
 export const deleteProjectFailed = createNamedArgsAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_FAILED, "projectName");
 export const deleteProjectStatusConfirmed = createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_STATUS_CONFIRMED);
-
-//================================================================================================== //
-export const SAVE_HIVE_DOMAIN_ACTION = {
-    SAVE_HIVE_DOMAIN: "SAVE_HIVE_DOMAIN",
-    SAVE_HIVE_DOMAIN_SUCCEEDED:  "SAVE_HIVE_DOMAIN_SUCCEEDED",
-    SAVE_HIVE_DOMAIN_FAILED: "SAVE_HIVE_DOMAIN_FAILED",
-    SAVE_HIVE_DOMAIN_STATUS_CONFIRMED: "SAVE_HIVE_DOMAIN_STATUS_CONFIRMED"
-};
-export const saveHiveDomain =  createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN);
-export const saveHiveDomainSucceeded = createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_SUCCEEDED);
-export const saveHiveDomainFailed = createNamedArgsAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_FAILED);
-export const saveHiveDomainStatusConfirmed = createAction(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN_STATUS_CONFIRMED);
-
-//================================================================================================== //
-export const GET_ALL_GLOBAL_PARAMS_ACTION = {
-    GET_ALL_GLOBAL_PARAMS: "GET_ALL_GLOBAL_PARAMS",
-    GET_ALL_GLOBAL_PARAMS_SUCCEEDED:  "GET_ALL_GLOBAL_PARAMS_SUCCEEDED",
-    GET_ALL_GLOBAL_PARAMS_FAILED: "GET_ALL_GLOBAL_PARAMS_FAILED",
-    GET_ALL_GLOBAL_PARAMS_STATUS_CONFIRMED: "GET_ALL_GLOBAL_PARAMS_STATUS_CONFIRMED"
-};
-export const getAllGlobalParams =  createAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS);
-export const getAllGlobalParamsSucceeded = createAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_SUCCEEDED);
-export const getAllGlobalParamsFailed = createAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_FAILED);
-export const getAllGlobalParamsStatusConfirmed = createAction(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS_STATUS_CONFIRMED);
-//================================================================================================== //
-export const SAVE_GLOBAL_PARAM_ACTION = {
-    SAVE_GLOBAL_PARAM: "SAVE_GLOBAL_PARAM",
-    SAVE_GLOBAL_PARAM_SUCCEEDED:  "SAVE_GLOBAL_PARAM_SUCCEEDED",
-    SAVE_GLOBAL_PARAM_FAILED: "SAVE_GLOBAL_PARAM_FAILED",
-    SAVE_GLOBAL_PARAM_STATUS_CONFIRMED: "SAVE_GLOBAL_PARAM_STATUS_CONFIRMED"
-};
-export const saveGlobalParam =  createAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM);
-export const saveGlobalParamSucceeded = createAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_SUCCEEDED);
-export const saveGlobalParamFailed = createNamedArgsAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_FAILED, "param");
-export const saveGlobalParamStatusConfirmed = createAction(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM_STATUS_CONFIRMED);
-//================================================================================================== //
-export const DELETE_GLOBAL_PARAM_ACTION = {
-    DELETE_GLOBAL_PARAM: "DELETE_GLOBAL_PARAM",
-    DELETE_GLOBAL_PARAM_SUCCEEDED:  "DELETE_GLOBAL_PARAM_SUCCEEDED",
-    DELETE_GLOBAL_PARAM_FAILED: "DELETE_GLOBAL_PARAM_FAILED",
-    DELETE_GLOBAL_PARAM_STATUS_CONFIRMED: "DELETE_GLOBAL_PARAM_STATUS_CONFIRMED"
-};
-export const deleteGlobalParam =  createAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM);
-export const deleteGlobalParamSucceeded = createAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_SUCCEEDED);
-export const deleteGlobalParamFailed = createNamedArgsAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_FAILED, "param");
-export const deleteGlobalParamStatusConfirmed = createAction(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM_STATUS_CONFIRMED);
 //================================================================================================== //
 export const SAVE_PROJECT_ACTION = {
     SAVE_PROJECT: "SAVE_PROJECT",
@@ -317,8 +259,16 @@ export const clearSelectedUser =  createAction(CLEAR_SELECTED_USER_ACTION.CLEAR_
 //================================================================================================== //
 //Please use pattern below for new actions and slices
 //Please update any existing action to use the new pattern when possible
+//================================================================================================== //
 
 export const AUTHENTICATION_CONFIG_INFO = "authConfigInfo";
 export const GET_ALL_AUTH_CONFIGS = `${AUTHENTICATION_CONFIG_INFO}/getAllAuthConfigs`;
 
+//================================================================================================== //
 
+export const ALL_HIVES = "allHivesInfo";
+export const GET_ALL_HIVES = `${ALL_HIVES}/getAllHives`;
+export const SAVE_HIVE_DOMAIN = `${ALL_HIVES}/saveHiveDomain`;
+export const GET_ALL_GLOBAL_PARAMS = `${ALL_HIVES}/getAllGlobalParams`;
+export const SAVE_GLOBAL_PARAM = `${ALL_HIVES}/saveGlobalParam`;
+export const DELETE_GLOBAL_PARAM = `${ALL_HIVES}/deleteGlobalParam`;

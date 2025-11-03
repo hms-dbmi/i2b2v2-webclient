@@ -1,10 +1,13 @@
 import { all, call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
-    DELETE_GLOBAL_PARAM_ACTION,
+    DELETE_GLOBAL_PARAM,
+} from "../actions";
+import {
     deleteGlobalParamFailed,
-    deleteGlobalParamSucceeded, getAllGlobalParams,
-} from "actions";
+    deleteGlobalParamSucceeded,
+    getAllGlobalParams
+} from "../reducers/allHivesSlice";
 
 const deleteParamRequest = (param) => {
 
@@ -41,5 +44,5 @@ export function* doDeleteGlobalParam(action) {
 }
 
 export function* deleteGlobalParamSaga() {
-    yield takeLatest(DELETE_GLOBAL_PARAM_ACTION.DELETE_GLOBAL_PARAM, doDeleteGlobalParam);
+    yield takeLatest(DELETE_GLOBAL_PARAM, doDeleteGlobalParam);
 }

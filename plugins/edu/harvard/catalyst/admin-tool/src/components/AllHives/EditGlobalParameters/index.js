@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import {
     saveGlobalParam,
-    saveGlobalParamStatusConfirmed,
-} from "actions";
+    saveGlobalParamStatusConfirmed
+} from "../../../reducers/allHivesSlice";
+
 import {EditParameters} from "../../EditParameters";
 import {AuthenticationConfigModal} from "./AuthenticationConfigModal";
 import "./EditGlobalParameters.scss";

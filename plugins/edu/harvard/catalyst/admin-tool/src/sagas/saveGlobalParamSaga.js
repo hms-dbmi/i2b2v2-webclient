@@ -1,11 +1,14 @@
 import { all, call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
+    SAVE_GLOBAL_PARAM,
+} from "../actions";
+import {
     getAllGlobalParams,
-    SAVE_GLOBAL_PARAM_ACTION,
     saveGlobalParamFailed,
-    saveGlobalParamSucceeded,
-} from "actions";
+    saveGlobalParamSucceeded
+} from "../reducers/allHivesSlice";
+
 import {encodeHTML} from "../utilities";
 
 const saveParamRequest = (param) => {
@@ -53,5 +56,5 @@ export function* doSaveGlobalParam(action) {
 }
 
 export function* saveGlobalParamSaga() {
-    yield takeLatest(SAVE_GLOBAL_PARAM_ACTION.SAVE_GLOBAL_PARAM, doSaveGlobalParam);
+    yield takeLatest(SAVE_GLOBAL_PARAM, doSaveGlobalParam);
 }

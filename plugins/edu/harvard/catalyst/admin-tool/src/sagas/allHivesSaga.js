@@ -1,10 +1,13 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
-    GET_ALL_HIVES_ACTION,
+    GET_ALL_HIVES,
+} from "../actions";
+
+import {
     getAllHivesFailed,
-    getAllHivesSucceeded,
-} from "actions";
+    getAllHivesSucceeded
+} from "../reducers/allHivesSlice";
 
 //a function that returns a promise
 const getAllHivesRequest = () => i2b2.ajax.PM.getAllHive({}).then((xmlString) => new XMLParser().parseFromString(xmlString));
@@ -62,5 +65,5 @@ export function* doGetAllHives(action) {
 }
 
 export function* allHivesSaga() {
-    yield takeLatest(GET_ALL_HIVES_ACTION.GET_ALL_HIVES, doGetAllHives);
+    yield takeLatest(GET_ALL_HIVES, doGetAllHives);
 }

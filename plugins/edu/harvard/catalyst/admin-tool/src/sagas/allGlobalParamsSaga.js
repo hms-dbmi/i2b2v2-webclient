@@ -1,9 +1,12 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import {
-    GET_ALL_GLOBAL_PARAMS_ACTION,
+    GET_ALL_GLOBAL_PARAMS,
+} from "../actions";
+import {
     getAllGlobalParamsFailed,
     getAllGlobalParamsSucceeded,
-} from "actions";
+} from "../reducers/allHivesSlice";
+
 import {DataType, ParamStatus} from "models";
 import {decodeHTML} from "../utilities";
 import {parseXml} from "../utilities/parseXml";
@@ -73,5 +76,5 @@ export function* doGetAllGlobalParameters(action) {
 }
 
 export function* allGlobalParamsSaga() {
-    yield takeLatest(GET_ALL_GLOBAL_PARAMS_ACTION.GET_ALL_GLOBAL_PARAMS, doGetAllGlobalParameters);
+    yield takeLatest(GET_ALL_GLOBAL_PARAMS, doGetAllGlobalParameters);
 }

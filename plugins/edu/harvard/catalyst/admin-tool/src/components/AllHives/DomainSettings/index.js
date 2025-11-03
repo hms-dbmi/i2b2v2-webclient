@@ -1,6 +1,5 @@
 import { useDispatch} from "react-redux";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import Stack from '@mui/material/Stack';
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
@@ -13,7 +12,7 @@ import IconButton from "@mui/material/IconButton";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import {saveHiveDomain, saveHiveDomainStatusConfirmed} from "actions";
+import {saveHiveDomain, saveHiveDomainStatusConfirmed} from "../../../reducers/allHivesSlice";
 
 import "./DomainSettings.scss";
 

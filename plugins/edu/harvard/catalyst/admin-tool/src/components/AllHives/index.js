@@ -1,10 +1,8 @@
 import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import {Tab, Tabs} from "@mui/material";
-import {
-    getAllGlobalParams,
-    getAllHives,
-} from "actions";
+import { getAllGlobalParams, getAllHives} from "../../reducers/allHivesSlice";
+
 import {Loader, DomainSettings, EditGlobalParameters} from "components";
 import "./AllHives.scss";
 

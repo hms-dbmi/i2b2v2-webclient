@@ -1,11 +1,12 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
-    SAVE_HIVE_DOMAIN_ACTION,
-    SAVE_USER_ACTION, saveHiveDomainFailed, saveHiveDomainSucceeded,
-    saveUserFailed,
-    saveUserSucceeded,
-} from "actions";
+    SAVE_HIVE_DOMAIN,
+} from "../actions";
+import {
+    saveHiveDomainFailed,
+    saveHiveDomainSucceeded
+} from "../reducers/allHivesSlice";
 
 
 //a function that returns a promise
@@ -40,5 +41,5 @@ export function* doSaveHiveDomainSettings(action) {
 }
 
 export function* saveHiveDomainSettingsSaga() {
-    yield takeLatest(SAVE_HIVE_DOMAIN_ACTION.SAVE_HIVE_DOMAIN, doSaveHiveDomainSettings);
+    yield takeLatest(SAVE_HIVE_DOMAIN, doSaveHiveDomainSettings);
 }

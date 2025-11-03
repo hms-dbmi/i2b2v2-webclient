@@ -5,8 +5,8 @@ import {deleteProjectReducer} from "./deleteProjectReducer";
 import {i2b2LibLoadedReducer} from "./i2b2LibLoadedReducer";
 import {deleteUserReducer} from "./deleteUserReducer";
 import {editUserReducer} from "./editUserReducer";
-import {allHivesReducer} from "./allHivesReducer";
-import allAuthenticationConfigsReducer from './allAuthenticationConfigsSlice';
+import allAuthenticationConfigsReducer from "./allAuthenticationConfigsSlice";
+import allHivesReducer from "./allHivesSlice";
 
 const rootReducers = {
     allHives: allHivesReducer,
