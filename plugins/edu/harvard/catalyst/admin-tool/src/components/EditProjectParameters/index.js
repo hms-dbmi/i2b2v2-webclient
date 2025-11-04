@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
     saveProjectParam, saveProjectParamStatusConfirmed,
     getAllProjectParamsStatusConfirmed,
@@ -7,7 +7,7 @@ import {
 import {EditParameters} from "../EditParameters";
 import "./EditProjectParameters.scss";
 import {DataType} from "models";
-
+import {getAllGlobalParams} from "../../reducers/allHivesSlice";
 
 export const EditProjectParameters = ({selectedProject,
                                           updatedParams,
@@ -18,14 +18,9 @@ export const EditProjectParameters = ({selectedProject,
                                           paginationModel,
                                           setPaginationModel
                                          }) => {
+    const allGlobalParams = useSelector((state) => state.allHives?.params );
     const [saveStatus, setSaveStatus] = useState("");
-    const predefinedParams = [
-        { label: 'Announcement', type: DataType.T },
-        { label: 'Data Request Email Address', type: DataType.T },
-        { label: "Data Request Template", type: DataType.T},
-        { label: "Data Request Letter", type: DataType.T},
-        { label: "Data Request Subject", type: DataType.T}
-    ];
+    const [predefinedParams, setPredefinedParams] = useState([]);
 
     const dispatch = useDispatch();
 
@@ -59,6 +54,26 @@ export const EditProjectParameters = ({selectedProject,
 
     }, [selectedProject]);
 
+
+    useEffect(() => {
+        dispatch(getAllGlobalParams());
+    }, []);
+
+    useEffect(() => {
+        if(allGlobalParams && allGlobalParams.length > 0){
+            const userPredefinedParamsJson = allGlobalParams.find(g => g.name === "Predefined Project Params");
+            if(userPredefinedParamsJson) {
+                const userPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
+
+                const mappedUserDefParams = userPredefinedParams.map(param => {
+                    param.dataType= DataType[param.dataType];
+                    return param;
+                });
+
+                setPredefinedParams(mappedUserDefParams);
+            }
+        }
+    }, [allGlobalParams]);
 
     return (
         <div className="EditProjectParameters" >

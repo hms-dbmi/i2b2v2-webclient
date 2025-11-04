@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import {
@@ -15,16 +15,12 @@ export const EditGlobalParameters = ({allHives,
                                      updatedParams,
                                      updateParams,
                                      paginationModel,
-                                     setPaginationModel
+                                     setPaginationModel,
 }) => {
+    const allGlobalParams = useSelector((state) => state.allHives?.params );
+    const [predefinedParams, setPredefinedParams] = useState([]);
     const [saveStatus, setSaveStatus] = useState("");
     const [showAuthConfig, setShowAuthConfig] = useState(false);
-    const predefinedParams = [
-        { label: 'PM_COMPLEX_PASSWORD', type: DataType.T},
-        { label: "PM_EXPIRED_PASSWORD", type: DataType.T},
-        { label: "PM_LOCKED_MAX_COUNT", type: DataType.T},
-        { label: 'PM_LOCKED_WAIT_TIME', type: DataType.T},
-    ];
     const dispatch = useDispatch();
 
     const saveParam = (param) => {
@@ -51,6 +47,21 @@ export const EditGlobalParameters = ({allHives,
 
     }, [allHives]);
 
+
+    useEffect(() => {
+        if(allGlobalParams && allGlobalParams.length > 0){
+            const userPredefinedParamsJson = allGlobalParams.find(g => g.name === "Predefined Global Params");
+            if(userPredefinedParamsJson) {
+                const userPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
+                const mappedUserDefParams = userPredefinedParams.map(param => {
+                    param.dataType= DataType[param.dataType];
+                    return param;
+                });
+
+                setPredefinedParams(mappedUserDefParams);
+            }
+        }
+    }, [allGlobalParams]);
 
     const authTemplateActions = ["Define Auth Template"];
     const handleConfigureAuth = (actionName) => {

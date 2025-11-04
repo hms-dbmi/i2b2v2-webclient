@@ -4,15 +4,19 @@ import AddIcon from "@mui/icons-material/Add";
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
+import InfoIcon from '@mui/icons-material/Info';
 import CancelIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField/TextField';
 import {GridRowEditStopReasons} from '@mui/x-data-grid';
 import { StatusUpdate, SplitButton } from "components";
 import {DataType, ParamStatus} from "models";
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 
 import "./EditParameters.scss";
 import {Autocomplete, FormControlLabel, FormGroup, Switch, Typography} from "@mui/material";
 import Paper from "@mui/material/Paper";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 export const EditParameters = ({
                                    rows,
@@ -37,6 +41,18 @@ export const EditParameters = ({
     const [showDeletedParams, setShowDeletedParams] = useState(false);
     const autosuggestParams = predefinedParams ? predefinedParams : {};
     const apiRef = useGridApiRef();
+
+    const getCustomTooltipComponent = (description) => {
+        const CustomActionComponent = ({ label, onClick, icon }) => (
+            <Tooltip title={description}>
+                <IconButton>
+                    <InfoOutlinedIcon />
+                </IconButton>
+            </Tooltip>
+        );
+
+        return CustomActionComponent;
+    };
 
     const columns = [
         {
@@ -176,8 +192,22 @@ export const EditParameters = ({
             getActions: ({ id, row }) => {
                 const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
+                const predefParam = predefinedParams.find(p => p.label === row.name);
+
+                let infoAction = null;
+                if(predefParam?.description){
+                    infoAction = <GridActionsCellItem
+                        icon={<InfoIcon />}
+                        label="Info"
+                        component={getCustomTooltipComponent(predefParam.description)}
+                        sx={{
+                            color: 'primary.main',
+                        }}
+                        onClick={handleSaveClick(predefParam.description)}
+                    />;
+                }
                 if (isInEditMode) {
-                    return [
+                    const editModeActions =  [
                         <GridActionsCellItem
                             icon={<SaveIcon />}
                             label="Save"
@@ -194,9 +224,14 @@ export const EditParameters = ({
                             color="inherit"
                         />,
                     ];
+                    if(infoAction) {
+                        editModeActions.push(infoAction);
+                    }
+
+                    return editModeActions;
                 }
 
-                return [
+                const noEditModeActions = [
                     <GridActionsCellItem
                         icon={<EditIcon />}
                         label="Edit"
@@ -205,6 +240,11 @@ export const EditParameters = ({
                         color="inherit"
                     />
                 ];
+
+                if(infoAction) {
+                    noEditModeActions.push(infoAction);
+                }
+                return noEditModeActions;
             },
         },
     ];
