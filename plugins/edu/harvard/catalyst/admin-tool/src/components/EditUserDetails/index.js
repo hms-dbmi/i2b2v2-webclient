@@ -17,7 +17,7 @@ export const EditUserDetails = ({user, setIsEditingUser, setIsCreatingUser, isCr
     const selectedUser = useSelector((state) => state.selectedUser );
     const [updatedUser, setUpdatedUser] = useState(selectedUser.user);
     const [updatedParams, setUpdatedParams] = useState(selectedUser.params);
-    const [paginationModel, setPaginationModel] = useState({ pageSize: 5, page: 0});
+    const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
 
     const dispatch = useDispatch();
     const EditDetails = {

@@ -6,6 +6,7 @@ import {
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 import "./EditProjectParameters.scss";
+import {DataType} from "models";
 
 
 export const EditProjectParameters = ({selectedProject,
@@ -18,6 +19,14 @@ export const EditProjectParameters = ({selectedProject,
                                           setPaginationModel
                                          }) => {
     const [saveStatus, setSaveStatus] = useState("");
+    const predefinedParams = [
+        { label: 'Announcement', type: DataType.T },
+        { label: 'Data Request Email Address', type: DataType.T },
+        { label: "Data Request Template", type: DataType.T},
+        { label: "Data Request Letter", type: DataType.T},
+        { label: "Data Request Subject", type: DataType.T}
+    ];
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -63,6 +72,7 @@ export const EditProjectParameters = ({selectedProject,
                 saveStatusConfirm={saveStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
+                predefinedParams={predefinedParams}
             />
         </div>
     );

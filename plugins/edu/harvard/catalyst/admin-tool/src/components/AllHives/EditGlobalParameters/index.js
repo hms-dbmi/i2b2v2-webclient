@@ -9,6 +9,7 @@ import {
 import {EditParameters} from "../../EditParameters";
 import {AuthenticationConfigModal} from "./AuthenticationConfigModal";
 import "./EditGlobalParameters.scss";
+import {DataType} from "models";
 
 export const EditGlobalParameters = ({allHives,
                                      updatedParams,
@@ -18,7 +19,12 @@ export const EditGlobalParameters = ({allHives,
 }) => {
     const [saveStatus, setSaveStatus] = useState("");
     const [showAuthConfig, setShowAuthConfig] = useState(false);
-
+    const predefinedParams = [
+        { label: 'PM_COMPLEX_PASSWORD', type: DataType.T},
+        { label: "PM_EXPIRED_PASSWORD", type: DataType.T},
+        { label: "PM_LOCKED_MAX_COUNT", type: DataType.T},
+        { label: 'PM_LOCKED_WAIT_TIME', type: DataType.T},
+    ];
     const dispatch = useDispatch();
 
     const saveParam = (param) => {
@@ -66,11 +72,11 @@ export const EditGlobalParameters = ({allHives,
                 customActions={authTemplateActions}
                 customActionsHandler={handleConfigureAuth}
                 customActionsBtnOption={{startIcon: <AddIcon />}}
+                predefinedParams={predefinedParams}
             />
             {showAuthConfig && <AuthenticationConfigModal onOk={onClose} onCancel={onClose}/>}
         </div>
     );
-
 };
 
 EditGlobalParameters.propTypes = {};
