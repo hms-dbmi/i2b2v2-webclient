@@ -1,8 +1,8 @@
 {
   "title": "Waste Water Visualization",
   "description": "Overlay previous queries onto temporal waste water trend snapshots",
-  "category": ["example", "demographics"],
-  "icons": { "size32x32": "exampleplugin_32x32.gif" },
+  "category": [],
+  "icons": { "size32x32": "waste-water-visualization.png" },
   "assetDir": "assets",
   "plugin_version" : "1.0",
   "i2b2_version" : "1.7.12a",
