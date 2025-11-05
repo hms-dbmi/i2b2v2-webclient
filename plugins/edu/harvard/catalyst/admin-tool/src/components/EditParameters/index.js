@@ -17,6 +17,7 @@ import "./EditParameters.scss";
 import {Autocomplete, FormControlLabel, FormGroup, Switch, Typography} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import MenuItem from "@mui/material/MenuItem";
 
 export const EditParameters = ({
                                    rows,
@@ -40,6 +41,38 @@ export const EditParameters = ({
     const [inValidCells, setInValidCells] = useState({});
     const [showDeletedParams, setShowDeletedParams] = useState(false);
     const autosuggestParams = predefinedParams ? predefinedParams : {};
+    const dataTypeOptions =  [{
+        label: 'Text',
+        value: DataType.T
+        }, {
+        label: 'Numeric',
+        value: DataType.N
+        }, {
+        label: 'Date',
+        value: DataType.D
+        }, {
+        label: 'Integer',
+        value: DataType.I
+        }, {
+        label : 'Boolean',
+        value: DataType.B
+        }, {
+        label : 'Reference Binary',
+        value: DataType.C
+        },{
+        label: 'RTF',
+        value: DataType.RTF
+        }, {
+        label: 'Word',
+        value: DataType.DOC
+        }, {
+        label: 'Excel',
+        value: DataType.XLS
+        }, {
+        label : 'XML',
+        value: DataType.XML
+    }];
+
     const apiRef = useGridApiRef();
 
     const getCustomTooltipComponent = (description) => {
@@ -66,7 +99,12 @@ export const EditParameters = ({
 
                 const handleValueChange = (event, value) => {
                     let newValue = event.target.value;
+
                     if(value && value.label) {
+                        if(value.dataType){
+                            apiRefContext.current.setEditCellValue({id, field: "dataType", value: value.dataType});
+                        }
+
                         newValue = value.label;
                     }
                     apiRefContext.current.setEditCellValue({id, field, value: newValue});
@@ -256,6 +294,18 @@ export const EditParameters = ({
     const processRowUpdate = (newRow) => {
         if(newRow.name.length > 0 && newRow.value.length > 0){
             const updatedRow = {...newRow, isNew: false};
+
+            const predefParam = predefinedParams.find(p => {
+                const name = p.label ? p.label: p;
+                return name === newRow.name
+            });
+
+            if(predefParam && predefParam.dataType){
+                const dataType = DataType[predefParam.dataType];
+                if(dataType) {
+                    updatedRow.dataType = dataType;
+                }
+            }
 
             let newRows = rows.map((row) => (row.id === newRow.id ? updatedRow : row));
             updateParams(newRows);
