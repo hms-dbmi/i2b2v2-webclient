@@ -3,13 +3,15 @@
 <body>
 <div id="PM-login-modal" class="modal">
     <form class="modal-content" method="post" style="min-width: 630px">
-        <div class="container" style="background-color:#f1f1f1; font-weight: bold; font-size: 15px;"><div>MassCPR Login</div></div>
+        <div class="container header">
+            <div>MassCPR Federated Data Network Login</div>
+        </div>
         <div class="imgcontainer">
             <img src="assets/images/MassCPR_minimal_logo.gif" alt="MassCPR logo" class="logo">
         </div>
 
         <div class="container">
-            <div class="form-group">
+            <div class="form-group login-host">
                 <label for="logindomain"><b>Host</b></label>
                 <select class="form-select" id="logindomain">
                     <option value="0">Loading...</option>
@@ -46,8 +48,11 @@
 
         </div>
 
-        <div class="container" style="background-color:#f1f1f1">
-            <div>Powered by Harvard Catalyst SHRINE v4.3</div>
+        <div class="container footer">
+            <div>
+                Powered by Harvard Catalyst SHRINE v4.3
+                <div style="float:right"><a href="https://key.harvard.edu/" target="_blank">Help with HarvardKey</a></div>
+            </div>
         </div>
     </form>
 </div>

@@ -21,7 +21,8 @@
 }
 
 #PM-login-modal img.logo {
-    width: 70%;
+    _height: 100px;
+    width: 40%;
 }
 
 #PM-login-modal .container {
@@ -30,6 +31,24 @@
 
 #PM-login-modal .classic {
     padding: 15px 16px 16px 0px;
+}
+
+#PM-login-modal .header,
+#PM-login-modal .footer {
+    background-color:#f1f1f1
+}
+
+#PM-login-modal .header {
+    border-bottom: 1px solid #CCCCCC;
+    font-weight: bold;
+    font-size: 15px;
+}
+#PM-login-modal .footer {
+    border-top: 1px solid #CCCCCC;
+}
+
+#PM-login-modal .login-host {
+    _display: none;
 }
 
 
