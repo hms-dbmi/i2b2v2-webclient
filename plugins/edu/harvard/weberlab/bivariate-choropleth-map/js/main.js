@@ -410,43 +410,6 @@ i2b2.Plugin.renderMap = function() {
 
 
 // ---------------------------------------------------------------------------------------
-function sendInitMsg() {
-    console.log("sending Init message...");
-    window.parent.postMessage({"msgType":"INIT"}, "/");
-}
-// ---------------------------------------------------------------------------------------
-function sendTestMsg() {
-    console.log("sending test message...");
-    let ajaxData = {
-        ont_synonym_records: "N",
-        ont_hidden_records: "N"
-    };
-    i2b2.ajax.ONT.GetCategories(ajaxData).then((data)=> {
-        console.log("Got response base from ONT.GetCategories()");
-        console.log(data);
-    })
-}
-// ---------------------------------------------------------------------------------------
-function testAuthTunnelVar() {
-    i2b2.authorizedTunnel.variable["i2b2.PM.model.isAdmin"].then((isReallyAnAdmin) => {
-        if (isReallyAnAdmin) {
-            alert("You ARE logged in as an Administrator");
-        } else {
-            alert("You are NOT logged in as an Administrator");
-        }
-    });
-}
-// ---------------------------------------------------------------------------------------
-function testAuthTunnelFunc() {
-    i2b2.authorizedTunnel.function["i2b2.h.getDomain"]().then((domain) => {
-        alert("The i2b2 domain is: "+domain);
-    });
-}
-
-
-
-
-// ---------------------------------------------------------------------------------------
 window.addEventListener("I2B2_READY", ()=> {
     // the i2b2 framework is loaded and ready (including population of i2b2.model namespace)
 
@@ -587,7 +550,7 @@ window.addEventListener("I2B2_READY", ()=> {
             ['r','g','b'].forEach((color) => {
                 inverseColor[color] = 255 - inverseColor[color];
             });
-            highlightColor = RGBvalues.toHTML(inverseColor);
+            highlightColor = RGBvalues.toHTML(inverseColor.r, inverseColor.g, inverseColor.b);
         }
         let target = self._svg.querySelector(`rect[data-coordinate="${x}-${y}"]`);
         if (target) target.setAttribute("stroke", highlightColor);
@@ -623,13 +586,13 @@ window.addEventListener("I2B2_READY", ()=> {
         const blockWithSpacing = blockSize + spacing;
 
         // Calculate SVG dimensions
-        let width = cols * blockWithSpacing - spacing;
-        let height = rows * blockWithSpacing - spacing;
+        let width = cols * blockWithSpacing;
+        let height = rows * blockWithSpacing;
 
         // Set SVG attributes
-        svg.setAttribute('width', width);
-        svg.setAttribute('height', height);
-        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        // svg.setAttribute('width', width);
+        // svg.setAttribute('height', height);
+        // svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
         // add a group for the matrix elements
         const matrixGroup = document.createElementNS(svgNS,"g");
@@ -644,8 +607,8 @@ window.addEventListener("I2B2_READY", ()=> {
                 const rect = document.createElementNS(svgNS, "rect");
 
                 // Calculate position (invert row to make bottom-left the origin)
-                const x = (cols - col - 1) * blockWithSpacing;
-                const y = row * blockWithSpacing;
+                const x = col * blockWithSpacing;
+                const y = (rows - row - 1) * blockWithSpacing;
 
                 rect.setAttribute('x', x);
                 rect.setAttribute('y', y);
@@ -660,7 +623,7 @@ window.addEventListener("I2B2_READY", ()=> {
             }
         }
 
-        // add low / high text
+        // add "low" text
         const textLow = document.createElementNS(svgNS, "text");
         textLow.textContent = "Low";
         textLow.setAttribute("x", 0);
@@ -678,6 +641,29 @@ window.addEventListener("I2B2_READY", ()=> {
 
         // shift the location of the matrix to adjust for the new text
         matrixGroup.setAttribute("transform", `translate(${textLow.scrollWidth}, 0)`);
+
+
+        // add "Cohort 1" text
+        const textCohort1 = document.createElementNS(svgNS, "text");
+        textCohort1.textContent = "Cohort 1";
+        textCohort1.setAttribute("x", 0);
+        textCohort1.setAttribute("y", 0);
+        textCohort1.setAttribute("fill", "#000");
+        textCohort1.setAttribute("font-size", "16");
+        textCohort1.setAttribute("font-weight", "bold");
+        svg.appendChild(textCohort1);
+        textCohort1.setAttribute("transform", `translate (16, ${height - 40}) rotate(-90)`);
+
+        // add "Cohort 2" text
+        const textCohort2 = document.createElementNS(svgNS, "text");
+        textCohort2.textContent = "Cohort 2";
+        textCohort2.setAttribute("x", 0);
+        textCohort2.setAttribute("y", 0);
+        textCohort2.setAttribute("fill", "#000");
+        textCohort2.setAttribute("font-size", "16");
+        textCohort2.setAttribute("font-weight", "bold");
+        svg.appendChild(textCohort2);
+        textCohort2.setAttribute("transform", `translate (40, ${height})`);
 
 
         // recalculate the SVG size and viewport

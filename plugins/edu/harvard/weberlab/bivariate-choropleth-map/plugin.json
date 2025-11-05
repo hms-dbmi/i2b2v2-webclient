@@ -38,7 +38,7 @@
       },
       "hoverBox": {
         "position": "bottomright",
-        "template": "<h4>Patient Counts</h4><div class=\"zipcode\">ZIP Code: {{text}}</div><div>{{dataX-text}}<span class=\"counts\">{{dataX-count}} patients</span></div><div>{{dataY-text}}<span class=\"counts\">{{dataY-count}} patients</spam></div>"
+        "template": "<h4>Patient Counts</h4><div class=\"zipcode\">ZIP Code: {{text}}</div><div>{{dataY-text}}<span class=\"counts\">{{dataY-count}} patients</span></div><div>{{dataX-text}}<span class=\"counts\">{{dataX-count}} patients</spam></div>"
       },
       "legend": {
         "position": "bottomleft",
