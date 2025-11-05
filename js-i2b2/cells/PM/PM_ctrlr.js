@@ -238,7 +238,7 @@ i2b2.PM._processUserConfig = function (data) {
     i2b2.PM.model.isAdmin = false;
     try {
         var t = i2b2.h.XPath(data.refXML, '//user/full_name')[0];
-        i2b2.PM.model.login_fullname = i2b2.h.Xml2String(t);
+        i2b2.PM.model.login_fullname = t.textContent;
     } catch(e) {}
     try {
         var t = i2b2.h.XPath(data.refXML, '//user/is_admin')[0];
