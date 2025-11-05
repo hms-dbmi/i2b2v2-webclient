@@ -75,7 +75,7 @@ i2b2.ONT.view.nav.nodeClickedAction =  function(event) {
     let nodeId = parseInt(target.closest('li.list-group-item').attr('data-nodeid'));
     let nodeData = i2b2.ONT.view.nav.treeview.treeview("getNodes", (snode)=> (snode.nodeId === nodeId));
     if(nodeData.length > 0) {
-        i2b2.ONT.view.info.load(nodeData[0].i2b2, true);
+        i2b2.ONT.view.info.load(nodeData[0].i2b2, false);
     }
 };
 // ================================================================================================== //
