@@ -1,0 +1,54 @@
+{
+  "title": "Bivariate Zipcode Map",
+  "description": "Visualizes two population variables using a Zip code map ",
+  "category": ["zipcode", "map"],
+  "icons": { "size32x32": "icon.png" },
+  "assetDir": "assets",
+  "plugin_version" : "1.0",
+  "i2b2_version" : "1.8.3",
+  "base": "index.html",
+  "sandbox": true,
+  "state": {
+    "settings": {
+      "initialView": {
+        "lat": 43.224572456546156,
+        "lng": -71.92749023437501,
+        "zoom": 7
+      },
+      "tiles": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
+      "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+      "maxZoom": 18,
+      "zipAttribName": "ZCTA5CE10",
+      "zipRegEx": "^(.*)[0-9]{5}",
+      "__colorSet": "seqseq2",
+      "colorSet": "greenblue",
+      "styles": {
+        "norm": {
+          "weight": 1,
+          "opacity": 1,
+          "color": "#000",
+          "fillOpacity": 0.6
+        },
+        "hover": {
+          "weight": 3,
+          "_dashArray": "4,6",
+          "color": "#F00",
+          "fillOpacity": 0.25
+        }
+      },
+      "hoverBox": {
+        "position": "bottomright",
+        "template": "<h4>Patient Counts</h4><div class=\"zipcode\">ZIP Code: {{text}}</div><div>{{dataX-text}}<span class=\"counts\">{{dataX-count}} patients</span></div><div>{{dataY-text}}<span class=\"counts\">{{dataY-count}} patients</spam></div>"
+      },
+      "legend": {
+        "position": "bottomleft",
+        "highlight": "#000000"
+      }
+    }
+   },
+  "authorizedTunnel": {
+    "variables": {
+      "i2b2.CRC.QueryStatus.model.GeoJSON": "RO"
+    }
+  }
+}

@@ -1,0 +1,181 @@
+:root {
+    --drop-margins: .5rem;
+    --top-min: 1.8em;
+    --drop-background: #EFEFEF;
+    --drop-border-color: #CCCCCC;
+    --button-animate-time: .5s;
+
+    font-family: Arial, sans-serif;
+}
+
+
+body.working {
+    cursor: wait;
+}
+body.working .leaflet-grab {
+    cursor: progress;
+}
+
+
+
+#header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+#header .dataset-group {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease-out;
+    overflow: hidden;
+    max-height: fit-content;
+    background-color: var(--drop-background);
+}
+#header.dropped .dataset-group {
+    grid-template-rows: 1fr;
+}
+#header .dataset-group .inner {
+    overflow: hidden;
+}
+
+#header .dataset {
+    border: 1px solid red;
+    border-radius: .4rem;
+    margin-top: var(--drop-margins);
+    margin-bottom: var(--drop-margins);
+    margin-left: var(--drop-margins);
+    margin-right: var(--drop-margins);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 4em;
+    background-color: #FFF;
+}
+#header .dataset.isSet {
+    border-color: green !important;
+}
+
+
+#header .instructions-icon {
+    float: right;
+    cursor: help;
+    margin-right: .3em;
+}
+
+#header .select-colors {
+    float: right;
+    cursor: pointer;
+}
+
+
+#header .zoom-levels {
+    background-color: var(--drop-background);
+    border-bottom: 1px solid var(--drop-border-color);
+    padding: .3rem;
+    height: 1rem;
+}
+#header.dropped .zoom-levels {
+    border-top: 1px solid var(--drop-border-color);
+}
+
+#header .hide-show {
+    background-color: #FFF;
+    border: solid 1px var(--drop-border-color);
+    border-top: none;
+    border-right: none;
+    border-radius: 0 0 0 .6rem;
+    padding: .4rem .4rem .4rem .6rem;
+    width: fit-content;
+    height: auto;
+    float: right;
+    cursor: pointer;
+    vertical-align: top;
+    transition: opacity var(--button-animate-time) ease-in, min-width calc(var(--button-animate-time) * 2.25) ease-in;
+    text-align: left;
+    min-width: 3rem;
+}
+#header.locked .hide-show {
+    cursor: not-allowed;
+    opacity: 0;
+    min-width: 100%;
+}
+
+
+#header .hide-show svg {
+    vertical-align: top;
+}
+#header .hide-show .iconArrowUpAlt {
+    display: none;
+}
+#header.dropped .hide-show .iconArrowDownAlt {
+    display: none;
+}
+#header.dropped .hide-show .iconArrowUpAlt {
+    display: inline;
+}
+#header.dropped .hide-show .label::before {
+    content: "Apply and Show";
+}
+#header .hide-show .label::before {
+    content: "Settings";
+}
+
+
+
+
+.hoverinfo-box {
+    background-color: #FFF;
+    padding: .3em 1em .5em 1em;
+    border-radius: .8em;
+    border: 1px solid #ccc;
+    min-width: 18em;
+    transition: opacity .18s ease-in;
+    pointer-events: none !important;
+}
+
+.hoverinfo-box h4 {
+    font-size: 1.16em;
+    margin: 0 0 .4em 0;
+}
+.hoverinfo-box .zipcode {
+    font-style: italic;
+    text-align: left;
+}
+
+.hoverinfo-box div {
+    text-align: right;
+}
+
+
+.hoverinfo-box .counts {
+    float: right;
+    margin-left: 1em;
+    font-weight: bold;
+}
+
+
+.legend-box {
+    background: #FFFFFF;
+    border-radius: .8em;
+    padding: 4px 4px 0 4px;
+    border: 1px solid #ccc;
+}
+
+
+
+#map-target {
+    background: #ddffdd;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--top-min);
+    bottom: 0;
+    z-index: -1;
+}
+
+.i2b2DropTarget.dragging {
+    background-color: lightyellow !important;
+}
+
