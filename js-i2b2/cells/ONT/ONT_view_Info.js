@@ -133,7 +133,7 @@ i2b2.ONT.view.info = {
 
         // render what we have and make the tab active if asked to do so
         i2b2.ONT.view.info.render();
-        if (display) i2b2.ONT.view.info.model.lm_view.parent.parent.setActiveContentItem(i2b2.ONT.view.info.model.lm_view.parent);
+        if (display) i2b2.layout.selectTab("i2b2.ONT.view.info");
     },
     load: function(sdxConcept, display){
         let termInfoCallback = function(response) {
