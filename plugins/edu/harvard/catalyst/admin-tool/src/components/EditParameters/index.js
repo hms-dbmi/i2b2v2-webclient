@@ -41,41 +41,10 @@ export const EditParameters = ({
     const [inValidCells, setInValidCells] = useState({});
     const [showDeletedParams, setShowDeletedParams] = useState(false);
     const autosuggestParams = predefinedParams ? predefinedParams : {};
-    const dataTypeOptions =  [{
-        label: 'Text',
-        value: DataType.T
-        }, {
-        label: 'Numeric',
-        value: DataType.N
-        }, {
-        label: 'Date',
-        value: DataType.D
-        }, {
-        label: 'Integer',
-        value: DataType.I
-        }, {
-        label : 'Boolean',
-        value: DataType.B
-        }, {
-        label : 'Reference Binary',
-        value: DataType.C
-        },{
-        label: 'RTF',
-        value: DataType.RTF
-        }, {
-        label: 'Word',
-        value: DataType.DOC
-        }, {
-        label: 'Excel',
-        value: DataType.XLS
-        }, {
-        label : 'XML',
-        value: DataType.XML
-    }];
 
     const apiRef = useGridApiRef();
 
-    const getCustomTooltipComponent = (description) => {
+    const getPredefParamTooltipComponent = (description) => {
         const CustomActionComponent = ({ label, onClick, icon }) => (
             <Tooltip title={description}>
                 <IconButton>
@@ -237,7 +206,7 @@ export const EditParameters = ({
                     infoAction = <GridActionsCellItem
                         icon={<InfoIcon />}
                         label="Info"
-                        component={getCustomTooltipComponent(predefParam.description)}
+                        component={getPredefParamTooltipComponent(predefParam.description)}
                         sx={{
                             color: 'primary.main',
                         }}
