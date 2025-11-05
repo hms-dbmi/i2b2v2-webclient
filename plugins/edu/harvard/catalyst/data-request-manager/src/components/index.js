@@ -1,1 +1,0 @@
-export { DataRequestManager } from "./DataRequestManager";

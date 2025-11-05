@@ -1,7 +1,3 @@
 [
-  "edu.harvard.catalyst.example",
-  "edu.harvard.catalyst.multiset-breakdowns",
-  "edu.harvard.catalyst.admin-tool",
-  "edu.harvard.catalyst.data-export",
-  "edu.harvard.catalyst.data-request-manager"
+  "edu.harvard.catalyst.multiset-breakdowns"
 ]
