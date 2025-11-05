@@ -45,6 +45,13 @@
 #infoQueryStatusText .statusButtons button {
     display: none;
 }
+
+#infoQueryStatusText .statusButtons .view-query {
+    display: block;
+    float: left;
+    margin-right: 1em;
+}
+
 #infoQueryStatusText .statusButtons.running .cancel {
     display: block;
 }
