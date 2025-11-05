@@ -8,7 +8,7 @@
   "css": ["PLUGIN_styles.css"],
   "config": {
     "name": "Plugins Manager",
-    "description": "Manager component for modern i2b2v2 plugins.",
+    "description": "Manager component for i2b2 plugins.",
     "icons": {},
     "defaultListIcons": {
       "size16x16": "DEFAULTLIST_icon_14x14.gif",
