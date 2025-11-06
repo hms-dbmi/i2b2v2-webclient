@@ -1,45 +1,27 @@
-i2b2.ExamplePlugin = {};
-// ---------------------------------------------------------------------------------------
-i2b2.ExamplePlugin.prsDropped = function(sdxData) {
-    console.dir("example plugin received patient drop " + JSON.stringify(sdxData));
-    let mainDiv = document.getElementsByClassName("psmaindiv-content")[0];
-    mainDiv.innerHTML= JSON.stringify(sdxData);
-};
-// ---------------------------------------------------------------------------------------
-i2b2.ExamplePlugin.itemDropped = function(sdxData) {
-    console.dir("example plugin received item drop " + JSON.stringify(sdxData));
-    let mainDiv = document.getElementsByClassName("maindiv-content")[0];
-    mainDiv.innerHTML= JSON.stringify(sdxData);
-};
-// ---------------------------------------------------------------------------------------
+i2b2.WasteWaterVisualization = {};
+
 window.addEventListener("I2B2_SDX_READY", (event) => {
-    i2b2.sdx.AttachType("ExamplePlugin-psmaindiv", "PRS");
-
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "CONCPT");
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "PRS");
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "ENS");
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "PRC");
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QDEF");
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QGDEF");
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QI");
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "QM");
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "WRK");
-    i2b2.sdx.AttachType("ExamplePlugin-maindiv", "XML");
-
     // drop event handlers used by this plugin
-    i2b2.sdx.setHandlerCustom("ExamplePlugin-psmaindiv", "PRS", "DropHandler", i2b2.ExamplePlugin.prsDropped);
-
-    i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "CONCPT", "DropHandler", i2b2.ExamplePlugin.itemDropped);
-    i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "PRS", "DropHandler", i2b2.ExamplePlugin.itemDropped);
-    i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "ENS", "DropHandler", i2b2.ExamplePlugin.itemDropped);
-    i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "PRC", "DropHandler", i2b2.ExamplePlugin.itemDropped);
-    i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "QDEF", "DropHandler", i2b2.ExamplePlugin.itemDropped);
-    i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "QGDEF", "DropHandler", i2b2.ExamplePlugin.itemDropped);
-    i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "Qi", "DropHandler", i2b2.ExamplePlugin.itemDropped);
-    i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "QM", "DropHandler", i2b2.ExamplePlugin.itemDropped);
-    i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "WRK", "DropHandler", i2b2.ExamplePlugin.itemDropped);
-    i2b2.sdx.setHandlerCustom("ExamplePlugin-maindiv", "XML", "DropHandler", i2b2.ExamplePlugin.itemDropped);
+    i2b2.sdx.AttachType("WasteWaterVisualization-psmaindiv", "QI");
+    i2b2.sdx.setHandlerCustom("WasteWaterVisualization-psmaindiv", "QI", "DropHandler", i2b2.WasteWaterVisualization.qiDropHandler);
 });
+
+// ---------------------------------------------------------------------------------------
+
+//drop handler
+i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
+   console.log(sdxData)
+   let titleFull = sdxData.renderData.title;
+    sdxData.cleanTitle = titleFull.replace('Results of', '').replace(' - FINISHED','').replace(/^\s*/gm, '');
+
+    let multiSetPSMainDiv = document.getElementById("WasteWaterVisualization-psmaindiv");
+
+    multiSetPSMainDiv.innerHTML = sdxData.cleanTitle
+
+
+    console.log(titleFull)
+ 
+};
 
 // ---------------------------------------------------------------------------------------
 function saveState() {
