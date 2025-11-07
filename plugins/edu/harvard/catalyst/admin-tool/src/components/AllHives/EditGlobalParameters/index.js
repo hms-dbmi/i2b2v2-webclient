@@ -52,13 +52,13 @@ export const EditGlobalParameters = ({allHives,
         if(allGlobalParams && allGlobalParams.length > 0){
             const userPredefinedParamsJson = allGlobalParams.find(g => g.name === "Predefined Global Params");
             if(userPredefinedParamsJson) {
-                const userPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
-                const mappedUserDefParams = userPredefinedParams.map(param => {
+                const globalPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
+                const mappedPredefParams = globalPredefinedParams.map(param => {
                     param.dataType= DataType[param.dataType];
                     return param;
                 });
 
-                setPredefinedParams(mappedUserDefParams);
+                setPredefinedParams(mappedPredefParams);
             }
         }
     }, [allGlobalParams]);

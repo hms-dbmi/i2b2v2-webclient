@@ -65,12 +65,12 @@ export const EditProjectParameters = ({selectedProject,
             if(userPredefinedParamsJson) {
                 const userPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
 
-                const mappedUserDefParams = userPredefinedParams.map(param => {
+                const mappedPredefParams = userPredefinedParams.map(param => {
                     param.dataType= DataType[param.dataType];
                     return param;
                 });
 
-                setPredefinedParams(mappedUserDefParams);
+                setPredefinedParams(mappedPredefParams);
             }
         }
     }, [allGlobalParams]);
