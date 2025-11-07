@@ -8,10 +8,18 @@ window.addEventListener("I2B2_SDX_READY", (event) => {
 
 // ---------------------------------------------------------------------------------------
 
+window.addEventListener("I2B2_READY", ()=> { 
+    if (!i2b2.model.qiList) i2b2.model.qiList = {};
+    if (!i2b2.model.renderCharts) i2b2.model.renderCharts = {};
+    i2b2.WasteWaterVisualization.renderQIList();
+});
+
+// ---------------------------------------------------------------------------------------
+
 //drop handler
 i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
    console.log(sdxData)
-   let titleFull = sdxData.renderData.title;
+    let titleFull = sdxData.renderData.title;
     sdxData.cleanTitle = titleFull.replace('Results of', '').replace(' - FINISHED','').replace(/^\s*/gm, '');
 
     let multiSetPSMainDiv = document.getElementById("WasteWaterVisualization-psmaindiv");
