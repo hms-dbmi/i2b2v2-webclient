@@ -74,6 +74,10 @@ export const EditParameters = ({
                             apiRefContext.current.setEditCellValue({id, field: "dataType", value: value.dataType});
                         }
 
+                        if(value.defaultValue){
+                            apiRefContext.current.setEditCellValue({id, field: "value", value: value.defaultValue});
+                        }
+
                         newValue = value.label;
                     }
                     apiRefContext.current.setEditCellValue({id, field, value: newValue});
