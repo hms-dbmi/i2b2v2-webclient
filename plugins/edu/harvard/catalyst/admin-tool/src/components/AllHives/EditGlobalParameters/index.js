@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import {
@@ -9,16 +9,18 @@ import {
 import {EditParameters} from "../../EditParameters";
 import {AuthenticationConfigModal} from "./AuthenticationConfigModal";
 import "./EditGlobalParameters.scss";
+import {DataType} from "models";
 
 export const EditGlobalParameters = ({allHives,
                                      updatedParams,
                                      updateParams,
                                      paginationModel,
-                                     setPaginationModel
+                                     setPaginationModel,
 }) => {
+    const allGlobalParams = useSelector((state) => state.allHives?.params );
+    const [predefinedParams, setPredefinedParams] = useState([]);
     const [saveStatus, setSaveStatus] = useState("");
     const [showAuthConfig, setShowAuthConfig] = useState(false);
-
     const dispatch = useDispatch();
 
     const saveParam = (param) => {
@@ -46,6 +48,21 @@ export const EditGlobalParameters = ({allHives,
     }, [allHives]);
 
 
+    useEffect(() => {
+        if(allGlobalParams && allGlobalParams.length > 0){
+            const userPredefinedParamsJson = allGlobalParams.find(g => g.name === "Predefined Global Params");
+            if(userPredefinedParamsJson) {
+                const globalPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
+                const mappedPredefParams = globalPredefinedParams.map(param => {
+                    param.dataType= DataType[param.dataType];
+                    return param;
+                });
+
+                setPredefinedParams(mappedPredefParams);
+            }
+        }
+    }, [allGlobalParams]);
+
     const authTemplateActions = ["Define Auth Template"];
     const handleConfigureAuth = (actionName) => {
         if(actionName === authTemplateActions[0]) {
@@ -66,11 +83,11 @@ export const EditGlobalParameters = ({allHives,
                 customActions={authTemplateActions}
                 customActionsHandler={handleConfigureAuth}
                 customActionsBtnOption={{startIcon: <AddIcon />}}
+                predefinedParams={predefinedParams}
             />
             {showAuthConfig && <AuthenticationConfigModal onOk={onClose} onCancel={onClose}/>}
         </div>
     );
-
 };
 
 EditGlobalParameters.propTypes = {};

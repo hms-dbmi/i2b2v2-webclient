@@ -55,7 +55,7 @@
     padding: 0.6em;
   }
 
-  .DeletedParamsToggle {
+  .InactiveParamsToggle {
     float: right;
     margin-top: 1.2em;
     display: flex;
@@ -66,4 +66,9 @@
   .ParametersTable {
     clear: both;
   }
+}
+
+.ParameterNameAutoSuggest {
+  background-color: #f8f8fa !important;
+  border: 1px solid blue;
 }

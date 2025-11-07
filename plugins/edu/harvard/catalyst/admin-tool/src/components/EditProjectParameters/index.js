@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
     saveProjectParam, saveProjectParamStatusConfirmed,
     getAllProjectParamsStatusConfirmed,
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 import "./EditProjectParameters.scss";
-
+import {DataType} from "models";
+import {getAllGlobalParams} from "../../reducers/allHivesSlice";
 
 export const EditProjectParameters = ({selectedProject,
                                           updatedParams,
@@ -17,7 +18,10 @@ export const EditProjectParameters = ({selectedProject,
                                           paginationModel,
                                           setPaginationModel
                                          }) => {
+    const allGlobalParams = useSelector((state) => state.allHives?.params );
     const [saveStatus, setSaveStatus] = useState("");
+    const [predefinedParams, setPredefinedParams] = useState([]);
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -51,6 +55,26 @@ export const EditProjectParameters = ({selectedProject,
     }, [selectedProject]);
 
 
+    useEffect(() => {
+        dispatch(getAllGlobalParams());
+    }, []);
+
+    useEffect(() => {
+        if(allGlobalParams && allGlobalParams.length > 0){
+            const userPredefinedParamsJson = allGlobalParams.find(g => g.name === "Predefined Project Params");
+            if(userPredefinedParamsJson) {
+                const userPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
+
+                const mappedPredefParams = userPredefinedParams.map(param => {
+                    param.dataType= DataType[param.dataType];
+                    return param;
+                });
+
+                setPredefinedParams(mappedPredefParams);
+            }
+        }
+    }, [allGlobalParams]);
+
     return (
         <div className="EditProjectParameters" >
             <EditParameters
@@ -63,6 +87,7 @@ export const EditProjectParameters = ({selectedProject,
                 saveStatusConfirm={saveStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
+                predefinedParams={predefinedParams}
             />
         </div>
     );

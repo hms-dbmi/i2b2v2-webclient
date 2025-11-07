@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import {
     saveUserParam, saveUserParamStatusConfirmed,
@@ -7,6 +7,8 @@ import {
 import {EditParameters} from "../EditParameters";
 
 import "./EditUserParameters.scss";
+import {DataType} from "../../models";
+import {getAllGlobalParams} from "../../reducers/allHivesSlice";
 
 export const EditUserParameters = ({selectedUser,
                                    updatedParams,
@@ -15,7 +17,9 @@ export const EditUserParameters = ({selectedUser,
                                    paginationModel,
                                    setPaginationModel
 }) => {
+    const allGlobalParams = useSelector((state) => state.allHives?.params );
     const [saveStatus, setSaveStatus] = useState("");
+    const [predefinedParams, setPredefinedParams] = useState([]);
 
     const dispatch = useDispatch();
 
@@ -43,6 +47,24 @@ export const EditUserParameters = ({selectedUser,
 
     }, [selectedUser]);
 
+    useEffect(() => {
+        dispatch(getAllGlobalParams());
+    }, []);
+
+    useEffect(() => {
+       if(allGlobalParams && allGlobalParams.length > 0){
+           const userPredefinedParamsJson = allGlobalParams.find(g => g.name === "Predefined User Params");
+           if(userPredefinedParamsJson) {
+               const userPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
+               const mappedUserDefParams = userPredefinedParams.map(param => {
+                   param.dataType= DataType[param.dataType];
+                   return param;
+               });
+
+               setPredefinedParams(mappedUserDefParams);
+           }
+       }
+    }, [allGlobalParams]);
 
     return (
         <div className="EditUserParameters" >
@@ -56,6 +78,7 @@ export const EditUserParameters = ({selectedUser,
                 saveStatusConfirm={saveStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
+                predefinedParams={predefinedParams}
             />
         </div>
     );
