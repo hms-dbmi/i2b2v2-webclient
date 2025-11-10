@@ -120,8 +120,8 @@ export const EditParameters = ({
                 const handleValueChange = (event, value) => {
                     let newValue = event.target.value;
 
-                    if(value && value.label) {
-                        newValue = value.label;
+                    if(value) {
+                        newValue = value;
                     }
                     apiRefContext.current.setEditCellValue({id, field, value: newValue});
                 };
@@ -133,6 +133,7 @@ export const EditParameters = ({
                         disableClearable
                         options={valueSuggestions}
                         onChange={handleValueChange}
+                        value={value}
                         style={{ width: "100%" }}
                         PaperComponent={props => (
                             <Paper {...props} className={"ParameterValueTextField"} />
@@ -145,7 +146,6 @@ export const EditParameters = ({
                                     && params.row.dataType !== DataType.D
                                     && params.row.dataType !== DataType.I
                                     && params.row.dataType !== DataType.B}
-                                value={value}
                                 slotProps={{
                                     shrink: true
                                 }}
