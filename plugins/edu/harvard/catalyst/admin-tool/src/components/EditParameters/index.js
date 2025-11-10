@@ -40,7 +40,7 @@ export const EditParameters = ({
     const [statusSeverity, setStatusSeverity] = useState("info");
     const [inValidCells, setInValidCells] = useState({});
     const [showDeletedParams, setShowDeletedParams] = useState(false);
-    const autosuggestParams = predefinedParams ? predefinedParams : {};
+    const autosuggestParams = predefinedParams ? predefinedParams : [];
 
     const apiRef = useGridApiRef();
 
@@ -117,20 +117,40 @@ export const EditParameters = ({
                 const {id, value, field} = params;
                 const apiRefContext = useGridApiContext();
 
-                const handleValueChange = (event) => {
-                    const newValue = event.target.value;
+                const handleValueChange = (event, value) => {
+                    let newValue = event.target.value;
+
+                    if(value && value.label) {
+                        newValue = value.label;
+                    }
                     apiRefContext.current.setEditCellValue({id, field, value: newValue});
                 };
 
+                const valueSuggestions = params.row.dataType === DataType.B ? ["true", "false"] : [];
                 return (
-                     <TextField
-                        className={"ParameterValueTextField"}
-                        multiline={params.row.dataType !== DataType.N
-                            && params.row.dataType !== DataType.D
-                            && params.row.dataType !== DataType.I
-                            && params.row.dataType !== DataType.B}
-                        value={value}
+                    <Autocomplete
+                        freeSolo
+                        disableClearable
+                        options={valueSuggestions}
                         onChange={handleValueChange}
+                        style={{ width: "100%" }}
+                        PaperComponent={props => (
+                            <Paper {...props} className={"ParameterValueTextField"} />
+                        )}
+                        renderInput={(textParams) => (
+                            <TextField
+                                {...textParams}
+                                onChange={handleValueChange}
+                                multiline={params.row.dataType !== DataType.N
+                                    && params.row.dataType !== DataType.D
+                                    && params.row.dataType !== DataType.I
+                                    && params.row.dataType !== DataType.B}
+                                value={value}
+                                slotProps={{
+                                    shrink: true
+                                }}
+                            />
+                        )}
                     />
                 );
 
