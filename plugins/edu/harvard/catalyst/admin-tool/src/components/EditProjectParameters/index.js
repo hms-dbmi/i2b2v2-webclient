@@ -21,6 +21,50 @@ export const EditProjectParameters = ({selectedProject,
     const allGlobalParams = useSelector((state) => state.allHives?.params );
     const [saveStatus, setSaveStatus] = useState("");
     const [predefinedParams, setPredefinedParams] = useState([]);
+    const ONT_PREDEFINED_PARAMS = [
+        {
+            label: "UI Options Ont Disable Modifiers",
+            dataType: "B",
+            description: "Whether to disable modifiers in ontology"
+        },
+        {
+            label: "UI Options Ont Enable Patient Counts",
+            dataType: "B",
+            defaultValue: "true",
+            description: "Whether to enable patient counts in the ontology"
+        },
+        {
+            label: "UI Options Ont Show Synonymous Terms",
+            dataType: "T",
+            description: "Whether to enable patient counts in the ontology"
+        },
+        {
+            label: "UI Options Ont Show Hidden Terms",
+            dataType: "B",
+            description: "Whether to show hidden terms in the ontology"
+        },
+        {
+            label: "UI Options Ont Show Concept Codes in Tooltips",
+            dataType: "B",
+            description: "Whether to show concept codes in tooltips in the ontology"
+        },
+        {
+            label: "UI Options Ont Use Short Tooltips",
+            dataType: "B",
+            description: "Whether to use short tooltips in the ontology"
+        },
+        {
+            label: "UI Options Ont Disable Optimized Search",
+            dataType: "B",
+            description: "Whether to disable optimized search in the ontology"
+        },
+        {
+            label: "UI Options Ont Max Number of Children to Display",
+            dataType: "N",
+            defaultValue: "200",
+            description: "The maximum number of children to display in the ontology"
+        }
+    ]
 
     const dispatch = useDispatch();
 
@@ -60,19 +104,20 @@ export const EditProjectParameters = ({selectedProject,
     }, []);
 
     useEffect(() => {
+        let updatedPredefParams = ONT_PREDEFINED_PARAMS;
         if(allGlobalParams && allGlobalParams.length > 0){
-            const userPredefinedParamsJson = allGlobalParams.find(g => g.name === "Predefined Project Params");
-            if(userPredefinedParamsJson) {
-                const userPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
+            const projPredefinedParamsJson = allGlobalParams.find(g => g.name === "Predefined Project Params");
+            if(projPredefinedParamsJson) {
+                const projPredefinedParams = JSON.parse(projPredefinedParamsJson.value);
 
-                const mappedPredefParams = userPredefinedParams.map(param => {
+                projPredefinedParams.forEach(param => {
                     param.dataType= DataType[param.dataType];
-                    return param;
+                    updatedPredefParams.push(param);
                 });
-
-                setPredefinedParams(mappedPredefParams);
             }
         }
+        setPredefinedParams(updatedPredefParams);
+
     }, [allGlobalParams]);
 
     return (
