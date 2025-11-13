@@ -284,19 +284,17 @@ export default class ZipcodeMap {
     }
 
     update(inputData) {
-//        if (this.errors || typeof inputData === 'undefined') return;
+        if (this.errors || typeof inputData === 'undefined') return false; // don't display (no data yet)
         try {
 
             // get the breakdown data information (if present)
             let resultXML = i2b2.h.XPath(inputData, "//xml_value");
-            if (resultXML.length > 0) {
-                resultXML = resultXML[0].firstChild.nodeValue;
-                // parse the data and put the results into the new data slot
-                this.data = func_processData(resultXML, this.config.advancedConfig.map.zipRegEx);
-            } else {
-                this.data = func_processData("", this.config.advancedConfig.map.zipRegEx);
-//                return;
-            }
+            if (resultXML.length === 0) return false; // don't display (no data yet)
+            resultXML = resultXML[0].firstChild.nodeValue;
+            // parse the data and put the results into the new data slot
+            this.data = func_processData(resultXML, this.config.advancedConfig.map.zipRegEx);
+            if (Object.keys(this.data).length === 0) return false; // don't display (no data yet)
+
 
             this.config.displayEl.style.display = "none";
 
