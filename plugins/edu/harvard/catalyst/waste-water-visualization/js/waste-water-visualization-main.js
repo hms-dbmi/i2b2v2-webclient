@@ -25,7 +25,7 @@ window.addEventListener("I2B2_SDX_READY", (event) => {
 window.addEventListener("I2B2_READY", ()=> { 
     if (!i2b2.model.qiList) i2b2.model.qiList = {};
     if (!i2b2.model.renderCharts) i2b2.model.renderCharts = {};
-    i2b2.WasteWaterVisualization.renderQIList();
+    //i2b2.WasteWaterVisualization.renderQIList();
 });
 
 // ---------------------------------------------------------------------------------------
@@ -53,11 +53,11 @@ i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
     // save the state
     i2b2.state.save();
 
-    // Start a crawl to retrieve subdocuments of dropped QI's
-    i2b2.WasteWaterVisualization.parseQIXML([sdxData.sdxInfo.sdxKeyValue]);
+    // // Start a crawl to retrieve subdocuments of dropped QI's
+    // i2b2.WasteWaterVisualization.parseQIXML([sdxData.sdxInfo.sdxKeyValue]);
 
-    //trigger separate render function that displays the list
-    i2b2.WasteWaterVisualization.renderQIList();
+    // //trigger separate render function that displays the list
+    // i2b2.WasteWaterVisualization.renderQIList();
 
  
 };
@@ -164,30 +164,58 @@ i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
 //         })
 // };
 
+// ---------------------------------------------------------------------------------------
 i2b2.WasteWaterVisualization.fetchWaterData = function(startDateValue, endDateValue) {
     console.log('Start Date:', startDateValue);
     console.log('End Date:', endDateValue);
-    mockData = window.outputData;
-    
-   let keyDates = [];
+    const mockData = window.outputData;
 
-    mockData.forEach(entry => {
-    let rawDate = entry["Sample Date"];
+    const dateIndex = {};
+    const filteredRecords = [];
 
-    rawDate = rawDate.replace(/\\\//g, "/");
+    mockData.forEach(item => {
+        const sampleDate = i2b2.WasteWaterVisualization.normalizeDates(item["Sample Date"]);
+        if (sampleDate) {
+            const ts = sampleDate.getTime();
+            dateIndex[ts] = item;
 
-    const [month, day, year] = rawDate.split(/[\/-]/).map(Number);
-    const normalizedDate = new Date(year, month - 1, day);
-
-    keyDates.push(normalizedDate);
+            // Filter here
+            if (sampleDate >= startDateValue && sampleDate <= endDateValue) {
+                filteredRecords.push(item);
+            }
+        }
     });
 
-    console.log("Normalized dates:", keyDates);
-    
+    console.log("All normalized dates:", dateIndex);
+    console.log("Filtered records:", filteredRecords);
+    console.table(filteredRecords);
+
+    // next: feed filteredRecords into your D3 drawing function
+    //i2b2.WasteWaterVisualization.drawChart(filteredRecords);
 };
 
-i2b2.WasteWaterVisualization.parseDateString = function(str){
-    str = new Date()
+
+
+i2b2.WasteWaterVisualization.normalizeDates = function(dateStr) {
+    if (!dateStr) return null;
+
+    const cleaned = dateStr.replace(/[-.]/g, "/").trim();
+    const parts = cleaned.split("/").map(Number);
+
+    let year, month, day;
+
+    if (parts[0] > 1900) {
+        // format: YYYY/MM/DD
+        [year, month, day] = parts;
+    } else {
+        // format: MM/DD/YYYY or MM/DD/YY
+        [month, day, year] = parts;
+        if (year < 100) {
+            year += 2000;
+        }
+    }
+
+    return new Date(year, month - 1, day);
 };
 
 
@@ -196,8 +224,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let startVisBtn = document.getElementById("visualizationTrigger");
     
     startVisBtn.addEventListener('click', function(){
-        let startDateValue = document.getElementById("startDate").value;
-        let endDateValue = document.getElementById("endDate").value;
+        let startDateValue = i2b2.WasteWaterVisualization.normalizeDates(document.getElementById("startDate").value);
+        let endDateValue = i2b2.WasteWaterVisualization.normalizeDates(document.getElementById("endDate").value);
 
         i2b2.WasteWaterVisualization.fetchWaterData(startDateValue, endDateValue);
 
