@@ -6,6 +6,11 @@
     <script type="text/javascript" src="js/i2b2-loader.js" ></script>
     <script type="text/javascript" src="js/waste-water-visualization-main.js" ></script>
     <script src="js/output.js"></script>
+    <script src="js/d3v7.min.js"></script>
+    <script src="js/d3-color.v1.min.js"></script>
+    <script src="js/d3-interpolate.v1.min.js"></script>
+    <script src="js/d3-scale-chromatic.v1.min.js"></script>
+    <script src="js/d3-array.v3.min.js"></script>
       <!-- Bootstrap CSS only -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/waste-water-visualization-main.css">
@@ -28,7 +33,7 @@
                 <input type="date" class="form-control" id="endDate" name="endDate" required>
             </div>
             <div class="col-md-4">
-                <button type="submit" id="visualizationTrigger" class="btn btn-primary w-100">Start Visualization</button>
+                <button type="button" id="visualizationTrigger" class="btn btn-primary w-100">Start Visualization</button>
             </div>
             </div>
         </form>       
@@ -37,7 +42,7 @@
             drop a patient set here   
             <div class="WasteWaterVisualization-psmaindiv-content"></div>    
         </div>
-        <div class="WasteWaterVisualization-psmaindiv-graphs"></div>
+        <div id="wasteWaterChart" class="WasteWaterVisualization-psmaindiv-graphs"></div>
     </div>
 
 </body>

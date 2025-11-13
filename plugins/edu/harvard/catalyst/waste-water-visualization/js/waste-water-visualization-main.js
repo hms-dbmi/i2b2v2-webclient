@@ -168,7 +168,15 @@ i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
 i2b2.WasteWaterVisualization.fetchWaterData = function(startDateValue, endDateValue) {
     console.log('Start Date:', startDateValue);
     console.log('End Date:', endDateValue);
-    const mockData = window.outputData;
+        // Normalize keys first
+    const mockData = window.outputData.map(item => {
+        const cleanItem = {};
+        Object.keys(item).forEach(key => {
+            const cleanKey = key.replace(/\n/g, " ").trim(); // replace newlines with spaces
+            cleanItem[cleanKey] = item[key];
+        });
+        return cleanItem;
+    });
 
     const dateIndex = {};
     const filteredRecords = [];
@@ -190,11 +198,68 @@ i2b2.WasteWaterVisualization.fetchWaterData = function(startDateValue, endDateVa
     console.log("Filtered records:", filteredRecords);
     console.table(filteredRecords);
 
-    // next: feed filteredRecords into your D3 drawing function
-    //i2b2.WasteWaterVisualization.drawChart(filteredRecords);
+    filteredRecords.forEach(d => {
+  console.log("Sample Date:", d["Sample Date"], 
+              "Southern 7 day avg raw:", d["Southern 7 day avg"],
+              "Number conversion:", +d["Southern 7 day avg"]);
+});
+    
+    i2b2.WasteWaterVisualization.drawChart(filteredRecords);
 };
 
+i2b2.WasteWaterVisualization.drawChart = function(filteredRecords) {
+    console.log("Filtered records for chart:", filteredRecords);
 
+    // Filter out points without numeric Y
+    const validData = filteredRecords.filter(d => !isNaN(+d["Southern 7 day avg"]));
+
+    let svg = d3.select("#wasteWaterChart svg");
+    if (svg.empty()) {
+        svg = d3.select("#wasteWaterChart")
+                .append("svg")
+                .attr("width", 600)
+                .attr("height", 300);
+    }
+    svg.selectAll("*").remove();
+
+    const xScale = d3.scaleTime()
+        .domain(d3.extent(validData, d => new Date(d["Sample Date"])))
+        .range([50, 550]);
+
+    const yScale = d3.scaleLinear()
+        .domain([0, d3.max(validData, d => +d["Southern 7 day avg"])])
+        .range([250, 50]);
+
+    svg.append("g")
+        .attr("transform", "translate(0,250)")
+        .call(d3.axisBottom(xScale));
+
+    svg.append("g")
+        .attr("transform", "translate(50,0)")
+        .call(d3.axisLeft(yScale));
+
+    // Draw line
+    const line = d3.line()
+        .x(d => xScale(new Date(d["Sample Date"])))
+        .y(d => yScale(+d["Southern 7 day avg"]));
+
+    svg.append("path")
+        .datum(validData)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 2)
+        .attr("d", line);
+
+    // Draw circles
+    svg.selectAll("circle")
+        .data(validData)
+        .enter()
+        .append("circle")
+        .attr("cx", d => xScale(new Date(d["Sample Date"])))
+        .attr("cy", d => yScale(+d["Southern 7 day avg"]))
+        .attr("r", 4)
+        .attr("fill", "steelblue");
+};
 
 i2b2.WasteWaterVisualization.normalizeDates = function(dateStr) {
     if (!dateStr) return null;
