@@ -11,9 +11,6 @@
           {
             "title":"Term Info",
             "componentName": "i2b2.ONT.view.info"
-          }, {
-            "title":"Workplace",
-            "componentName": "i2b2.WORK.view.main"
           }
         ]
       },{
