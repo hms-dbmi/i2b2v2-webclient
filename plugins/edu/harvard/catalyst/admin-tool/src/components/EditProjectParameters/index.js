@@ -54,7 +54,7 @@ export const EditProjectParameters = ({selectedProject,
             description: "Whether to use short tooltips in the ontology"
         },
         {
-            label: "Term Options: Disable Optimized Search",
+            label: "Terms Options: Disable Optimized Search",
             dataType: "B",
             description: "Whether to disable optimized search in the ontology"
         },

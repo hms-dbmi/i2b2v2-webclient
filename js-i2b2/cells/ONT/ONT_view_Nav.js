@@ -232,7 +232,6 @@ i2b2.events.afterCellInit.add((cell) => {
                 $("body").append(optionsDialogModal);
                 optionsDialogModal.load('js-i2b2/cells/ONT/assets/modalOptionsONT.html', function () {
                     //enable patient counts by default
-                    i2b2.ONT.view.nav.params.patientCounts = true;
                     $("body #ontOptionsModal button.options-save").click(function () {
                         // deal with limiting max records
                         i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);
@@ -252,44 +251,6 @@ i2b2.events.afterCellInit.add((cell) => {
                         i2b2.ONT.view.nav.doRefreshAll();
                         $("#ontOptionsModal div").eq(0).modal("hide");
                     });
-
-                    //set ONT options from UI project params
-                    const currentProjData = i2b2.PM.model.projects[i2b2.PM.model.login_project];
-                    if(currentProjData.details){
-                        Object.entries(currentProjData.details).forEach(([key, param]) => {
-                            if(param.name === "UI Options Ont Disable Modifiers") {
-                                i2b2.ONT.view.nav.params.modifiers = (param.value === "true");
-                            }
-
-                            if(param.name === "UI Options Ont Show Synonymous Terms") {
-                                i2b2.ONT.view.nav.params.synonyms = (param.value === "true");
-                            }
-
-                            if(param.name === "UI Options Ont Enable Patient Counts") {
-                                i2b2.ONT.view.nav.params.patientCounts = (param.value === "true");
-                            }
-
-                            if(param.name === "UI Options Ont Show Hidden Terms") {
-                                i2b2.ONT.view.nav.params.hiddens = (param.value === "true");
-                            }
-
-                            if(param.name === "UI Options Ont Show Concept Codes in Tooltips") {
-                                i2b2.ONT.view.nav.params.showConceptCode = (param.value === "true");
-                            }
-
-                            if(param.name === "UI Options Ont Use Short Tooltips") {
-                                i2b2.ONT.view.nav.params.showShortTooltips = (param.value === "true");
-                            }
-
-                            if(param.name === "UI Options Ont Disable Optimized Search") {
-                                i2b2.ONT.view.nav.params.fullSearch = (param.value === "true");
-                            }
-
-                            if(param.name === "UI Options Ont Max Number of Children to Display") {
-                                i2b2.ONT.view.nav.params.max = param.value;
-                            }
-                        });
-                    }
                 });
 
                 container.on('tab', (tab) => {
