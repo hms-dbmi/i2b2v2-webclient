@@ -23,43 +23,43 @@ export const EditProjectParameters = ({selectedProject,
     const [predefinedParams, setPredefinedParams] = useState([]);
     const ONT_PREDEFINED_PARAMS = [
         {
-            label: "UI Options Ont Disable Modifiers",
+            label: "Terms Options: Disable Modifiers",
             dataType: "B",
             description: "Whether to disable modifiers in ontology"
         },
         {
-            label: "UI Options Ont Enable Patient Counts",
+            label: "Terms Options: Enable Patient Counts",
             dataType: "B",
             defaultValue: "true",
             description: "Whether to enable patient counts in the ontology"
         },
         {
-            label: "UI Options Ont Show Synonymous Terms",
-            dataType: "T",
-            description: "Whether to enable patient counts in the ontology"
+            label: "Terms Options: Show Synonymous Terms",
+            dataType: "B",
+            description: "Whether to show synonymous terms the ontology"
         },
         {
-            label: "UI Options Ont Show Hidden Terms",
+            label: "Terms Options: Show Hidden Terms",
             dataType: "B",
             description: "Whether to show hidden terms in the ontology"
         },
         {
-            label: "UI Options Ont Show Concept Codes in Tooltips",
+            label: "Terms Options: Show Concept Codes in Tooltips",
             dataType: "B",
             description: "Whether to show concept codes in tooltips in the ontology"
         },
         {
-            label: "UI Options Ont Use Short Tooltips",
+            label: "Terms Options: Use Short Tooltips",
             dataType: "B",
             description: "Whether to use short tooltips in the ontology"
         },
         {
-            label: "UI Options Ont Disable Optimized Search",
+            label: "Term Options: Disable Optimized Search",
             dataType: "B",
             description: "Whether to disable optimized search in the ontology"
         },
         {
-            label: "UI Options Ont Max Number of Children to Display",
+            label: "Terms Options: Max Display",
             dataType: "N",
             defaultValue: "200",
             description: "The maximum number of children to display in the ontology"
