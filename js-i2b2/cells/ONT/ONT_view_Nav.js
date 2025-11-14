@@ -232,7 +232,6 @@ i2b2.events.afterCellInit.add((cell) => {
                 $("body").append(optionsDialogModal);
                 optionsDialogModal.load('js-i2b2/cells/ONT/assets/modalOptionsONT.html', function () {
                     //enable patient counts by default
-                    i2b2.ONT.view.nav.params.patientCounts = true;
                     $("body #ontOptionsModal button.options-save").click(function () {
                         // deal with limiting max records
                         i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);
