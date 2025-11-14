@@ -1,17 +1,5 @@
 i2b2.WasteWaterVisualization = {};
 
-
-// ---------------------------------------------------------------------------------------
-// Mock data for now
-// i2b2.WasteWaterVisualization.fetchWasteWaterData = async function() {
-//     // Mock API response
-//     return Promise.resolve([
-//         { date: "2024-10-01", viralLoad: 120 },
-//         { date: "2024-10-08", viralLoad: 140 },
-//         { date: "2024-10-15", viralLoad: 95 }
-//     ]);
-// };
-
 // ---------------------------------------------------------------------------------------
 
 window.addEventListener("I2B2_SDX_READY", (event) => {
@@ -25,10 +13,43 @@ window.addEventListener("I2B2_SDX_READY", (event) => {
 window.addEventListener("I2B2_READY", ()=> { 
     if (!i2b2.model.qiList) i2b2.model.qiList = {};
     if (!i2b2.model.renderCharts) i2b2.model.renderCharts = {};
+    if (!i2b2.WasteWaterVisualization.mockData) i2b2.WasteWaterVisualization.mockData = window.outputData;
+    i2b2.WasteWaterVisualization.cleanedData = i2b2.WasteWaterVisualization.fetchAndCleanData(i2b2.WasteWaterVisualization.mockData);
+    i2b2.WasteWaterVisualization.dateRangeDisplay(i2b2.WasteWaterVisualization.cleanedData);
     //i2b2.WasteWaterVisualization.renderQIList();
 });
 
 // ---------------------------------------------------------------------------------------
+
+i2b2.WasteWaterVisualization.fetchAndCleanData = function(mockData){
+
+    //console.log(mockData)
+    return mockData.map(item => {
+        const cleanItem = {};
+        Object.keys(item).forEach(key => {
+            const cleanKey = key.replace(/\n/g, " ").trim();
+            cleanItem[cleanKey] = item[key];
+        });
+        return cleanItem;
+    });
+};
+
+i2b2.WasteWaterVisualization.dateRangeDisplay = function(cleanedData){
+    let dateSpread = []
+    let targetDiv = document.getElementById("dataDetail");
+    cleanedData.forEach(key => {
+        dateSpread.push(key["Sample Date"])
+    });
+    
+    console.log(dateSpread)
+    const firstItem = dateSpread.at(0);
+    const lastItem = dateSpread.at(-1);
+    
+    console.log(firstItem);
+    console.log(lastItem);
+    targetDiv.innerHTML = "Select Waste Water measurement dates between " + firstItem + " and " + lastItem + ".";
+};
+
 
 //drop handler
 i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
@@ -165,18 +186,10 @@ i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
 // };
 
 // ---------------------------------------------------------------------------------------
-i2b2.WasteWaterVisualization.fetchWaterData = function(startDateValue, endDateValue) {
+i2b2.WasteWaterVisualization.filterWaterData = function(startDateValue, endDateValue, mockData) {
     console.log('Start Date:', startDateValue);
     console.log('End Date:', endDateValue);
-        // Normalize keys first
-    const mockData = window.outputData.map(item => {
-        const cleanItem = {};
-        Object.keys(item).forEach(key => {
-            const cleanKey = key.replace(/\n/g, " ").trim(); // replace newlines with spaces
-            cleanItem[cleanKey] = item[key];
-        });
-        return cleanItem;
-    });
+   
 
     const dateIndex = {};
     const filteredRecords = [];
@@ -213,36 +226,53 @@ i2b2.WasteWaterVisualization.drawChart = function(filteredRecords) {
     // Filter out points without numeric Y
     const validData = filteredRecords.filter(d => !isNaN(+d["Southern 7 day avg"]));
 
-    let svg = d3.select("#wasteWaterChart svg");
+    // Get container + size
+    const container = d3.select("#wasteWaterChart").node();
+    const width = container.offsetWidth || 900;   
+    const height = container.offsetHeight || 450;
+
+    // Margins
+    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    // Prepare or update SVG
+    let svg = d3.select("#wasteWaterChart").select("svg");
     if (svg.empty()) {
         svg = d3.select("#wasteWaterChart")
-                .append("svg")
-                .attr("width", 600)
-                .attr("height", 300);
+                .append("svg");
     }
+    svg.attr("width", width)
+       .attr("height", height);
+
+    // Clear previous content
     svg.selectAll("*").remove();
 
+    // Scales
     const xScale = d3.scaleTime()
         .domain(d3.extent(validData, d => new Date(d["Sample Date"])))
-        .range([50, 550]);
+        .range([margin.left, margin.left + innerWidth]);
 
     const yScale = d3.scaleLinear()
         .domain([0, d3.max(validData, d => +d["Southern 7 day avg"])])
-        .range([250, 50]);
+        .range([margin.top + innerHeight, margin.top]);
 
+    // X axis
     svg.append("g")
-        .attr("transform", "translate(0,250)")
+        .attr("transform", `translate(0, ${margin.top + innerHeight})`)
         .call(d3.axisBottom(xScale));
 
+    // Y axis
     svg.append("g")
-        .attr("transform", "translate(50,0)")
+        .attr("transform", `translate(${margin.left}, 0)`)
         .call(d3.axisLeft(yScale));
 
-    // Draw line
+    // Line generator
     const line = d3.line()
         .x(d => xScale(new Date(d["Sample Date"])))
         .y(d => yScale(+d["Southern 7 day avg"]));
 
+    // Line path
     svg.append("path")
         .datum(validData)
         .attr("fill", "none")
@@ -250,7 +280,7 @@ i2b2.WasteWaterVisualization.drawChart = function(filteredRecords) {
         .attr("stroke-width", 2)
         .attr("d", line);
 
-    // Draw circles
+    // Circles
     svg.selectAll("circle")
         .data(validData)
         .enter()
@@ -260,6 +290,8 @@ i2b2.WasteWaterVisualization.drawChart = function(filteredRecords) {
         .attr("r", 4)
         .attr("fill", "steelblue");
 };
+
+
 
 i2b2.WasteWaterVisualization.normalizeDates = function(dateStr) {
     if (!dateStr) return null;
@@ -285,6 +317,9 @@ i2b2.WasteWaterVisualization.normalizeDates = function(dateStr) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    
+    
+
     // event listener for the Start Visualization button
     let startVisBtn = document.getElementById("visualizationTrigger");
     
@@ -292,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let startDateValue = i2b2.WasteWaterVisualization.normalizeDates(document.getElementById("startDate").value);
         let endDateValue = i2b2.WasteWaterVisualization.normalizeDates(document.getElementById("endDate").value);
 
-        i2b2.WasteWaterVisualization.fetchWaterData(startDateValue, endDateValue);
+        i2b2.WasteWaterVisualization.filterWaterData(startDateValue, endDateValue, i2b2.WasteWaterVisualization.cleanedData);
 
     });
 });

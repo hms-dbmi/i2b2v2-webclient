@@ -20,8 +20,3 @@
 .i2b2DropTarget.dragging {
     background-color: lightyellow;
 }
-
-#wasteWaterChart {
-    width: 600px;
-    height: 300px;
-}
