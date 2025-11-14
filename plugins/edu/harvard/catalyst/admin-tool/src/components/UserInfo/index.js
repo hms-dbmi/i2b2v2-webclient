@@ -100,7 +100,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
         }
 
         //if this is a new user check the password fields
-        if(newAuthMethod === AUTHENTICATION_METHODS.I2B2.value) {
+        if(newAuthMethod === AUTHENTICATION_METHODS.I2B2.name) {
             updatedUser.password = updatedUser.password.trim();
             if (updatedUser.password.length === 0) {
                 setIsPasswordNotValid(true);
@@ -133,8 +133,8 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
             }
 
             let authConfig = null;
-            if(newAuthMethod !== AUTHENTICATION_METHODS.I2B2.value){
-                authConfig = authenticationConfigs.authConfigs.find((ac)=> ac.method === newAuthMethod);
+            if(newAuthMethod !== AUTHENTICATION_METHODS.I2B2.name){
+                authConfig = authenticationConfigs.authConfigs.find((ac)=> ac.name === newAuthMethod);
             }
 
             dispatch(saveUser({user: updatedUser, authConfig: authConfig, userParams: selectedUser.params}));
@@ -293,16 +293,16 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                         helperText={selectedUser.user.username.length > 0 ? "Current Authentication Method: " + selectedUser.user.authMethod: ""}
                         InputLabelProps={{ shrink: true }}
                     >
-                        <MenuItem value={AUTHENTICATION_METHODS.I2B2.value}>{AUTHENTICATION_METHODS.I2B2.name}</MenuItem>
+                        <MenuItem value={AUTHENTICATION_METHODS.I2B2.name}>{AUTHENTICATION_METHODS.I2B2.name}</MenuItem>
                         { authenticationConfigs.authConfigs.map((authConfig) => {
-                            return < MenuItem value={authConfig.method}> {authConfig.name}</MenuItem>
+                            return < MenuItem value={authConfig.name}> {authConfig.name}</MenuItem>
                             })
                         }
                     </TextField>
                 </div>
-                { newAuthMethod === AUTHENTICATION_METHODS.I2B2.value && <div className={"passwordFields"}><div className={"mainField"}>
+                { newAuthMethod === AUTHENTICATION_METHODS.I2B2.name && <div className={"passwordFields"}><div className={"mainField"}>
                     <TextField
-                        required={selectedUser.user.authMethod !== AUTHENTICATION_METHODS.I2B2.value && newAuthMethod === AUTHENTICATION_METHODS.I2B2.value}
+                        required={selectedUser.user.authMethod !== AUTHENTICATION_METHODS.I2B2.value && newAuthMethod === AUTHENTICATION_METHODS.I2B2.name}
                         className="inputField"
                         label="Password"
                         type={showPassword ? "text" : "password"}
@@ -329,7 +329,7 @@ export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isN
                 </div>
                 <div className={"mainField"}>
                     <TextField
-                        required={newAuthMethod === AUTHENTICATION_METHODS.I2B2.value}
+                        required={newAuthMethod === AUTHENTICATION_METHODS.I2B2.name}
                         className="inputField"
                         label="Verify Password"
                         type={showPasswordVerify ? "text" : "password"}
