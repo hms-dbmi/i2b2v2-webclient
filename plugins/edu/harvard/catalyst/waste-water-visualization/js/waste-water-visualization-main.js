@@ -74,116 +74,173 @@ i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
     // save the state
     i2b2.state.save();
 
-    // // Start a crawl to retrieve subdocuments of dropped QI's
-    // i2b2.WasteWaterVisualization.parseQIXML([sdxData.sdxInfo.sdxKeyValue]);
+    // Start a crawl to retrieve subdocuments of dropped QI's
+    i2b2.WasteWaterVisualization.parseQIXML([sdxData.sdxInfo.sdxKeyValue]);
 
-    // //trigger separate render function that displays the list
-    // i2b2.WasteWaterVisualization.renderQIList();
+    //trigger separate render function that displays the list
+    i2b2.WasteWaterVisualization.renderQIList();
 
  
 };
 // ---------------------------------------------------------------------------------------
 
-// i2b2.WasteWaterVisualization.renderQIList = function(){
+i2b2.WasteWaterVisualization.renderQIList = function(){
 
-//     let wasteWaterPSMainDiv = document.getElementsByClassName("WasteWaterVisualization-psmaindiv")[0];
+    let wasteWaterPSMainDiv = document.getElementsByClassName("WasteWaterVisualization-psmaindiv")[0];
 
-//     //create an array to store the names of each query
-//     let instanceNames = [];
+    //create an array to store the names of each query
+    let instanceNames = [];
 
-//     //for each of the keys in the list, push an element containing the name into an array
-//     Object.keys(i2b2.model.qiList).forEach(qiKeyValue => {
-//         let qiColor = i2b2.model.qiList[qiKeyValue].color;
-//         instanceNames.push("<div class='qi-row' data-qi-id='" + qiKeyValue + "' style='background-color:"+qiColor+"'>" + "<button class ='delete-qi'><i class='fas fa-times-circle mx-2' title='Delete'></i><span class='sr-only'>Delete</span></button>" +  i2b2.model.qiList[qiKeyValue].cleanTitle + "</div>");
-//     });
-//     if (instanceNames.length > 0){
-//         document.getElementById("qi-drop-ph").classList.remove("d-block");
-//         document.getElementById("qi-drop-ph").classList.add("d-none");
-//     }
-//     wasteWaterPSMainDiv.innerHTML = instanceNames.join("");
+    //for each of the keys in the list, push an element containing the name into an array
+    Object.keys(i2b2.model.qiList).forEach(qiKeyValue => {
+        let qiColor = i2b2.model.qiList[qiKeyValue].color;
+        instanceNames.push("<div class='qi-row' data-qi-id='" + qiKeyValue + "' style='background-color:"+qiColor+"'>" + "<button class ='delete-qi'><i class='fas fa-times-circle mx-2' title='Delete'></i><span class='sr-only'>Delete</span></button>" +  i2b2.model.qiList[qiKeyValue].cleanTitle + "</div>");
+    });
+    if (instanceNames.length > 0){
+        document.getElementById("qi-drop-ph").classList.remove("d-block");
+        document.getElementById("qi-drop-ph").classList.add("d-none");
+    }
+    wasteWaterPSMainDiv.innerHTML = instanceNames.join("");
 
-//     //delete individual QI and when we render, we re-attach handlers
-//     document.querySelectorAll('.delete-qi').forEach(function(node){
-//         node.addEventListener("click", function(){
-//             let deleteTargetId = this.parentNode.dataset['qiId'];
-//             delete i2b2.model.qiList[deleteTargetId];
-//             i2b2.model.isDirty = true;
-//             i2b2.state.save();
-//             i2b2.WasteWaterVisualization.renderQIList();
-//         });
-//     });
-// };
+    //delete individual QI and when we render, we re-attach handlers
+    document.querySelectorAll('.delete-qi').forEach(function(node){
+        node.addEventListener("click", function(){
+            let deleteTargetId = this.parentNode.dataset['qiId'];
+            delete i2b2.model.qiList[deleteTargetId];
+            i2b2.model.isDirty = true;
+            i2b2.state.save();
+            i2b2.WasteWaterVisualization.renderQIList();
+        });
+    });
+};
 // ---------------------------------------------------------------------------------------
 //Parse XML for saved QI's
-// i2b2.WasteWaterVisualization.parseQIXML = function(keyValue){
-//     keyValue.forEach(parent => {
-//         i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryInstanceId({qi_key_value: parent}).then(function(data){
-//             const xmlStr = data;
-//             const parser = new DOMParser();
-//             const doc = parser.parseFromString(xmlStr, "text/xml");
-//             let queryResultInst = doc.getElementsByTagName("query_result_instance");
-//             for (let  i = 0;i < queryResultInst.length; i++) {
-//                 if (queryResultInst[i].getElementsByTagName("display_type")[0].childNodes[0].nodeValue.toUpperCase() === "CATNUM") {
-//                     let resultInstId = queryResultInst[i].getElementsByTagName("result_instance_id")[0].childNodes[0].nodeValue;
-//                     let resultTypeId = queryResultInst[i].getElementsByTagName("result_type_id")[0].childNodes[0].nodeValue;
-//                     let queryInstId = queryResultInst[i].getElementsByTagName("query_instance_id")[0].childNodes[0].nodeValue;
-//                     let resultTypeName = queryResultInst[i].getElementsByTagName("description")[1].childNodes[0].nodeValue;
-//                     i2b2.model.qiList[queryInstId].qriList[resultInstId]= {typeId : resultTypeId, name: resultTypeName, data: {}};
-//                     i2b2.WasteWaterVisualization.parseQRIXML(queryInstId, resultInstId);
-//                 }
-//             }
-//             // print the name of the root element or error message
-//             const errorNode = doc.querySelector("parsererror");
-//             if (errorNode) {
-//                 console.log("error while parsing");
-//             } else {
-//                 console.log(doc.documentElement.nodeName);
-//             }
-//         })
-//     });
-// };
+i2b2.WasteWaterVisualization.parseQIXML = function(keyValue){
+    keyValue.forEach(parent => {
+        i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryInstanceId({qi_key_value: parent}).then(function(data){
+            const xmlStr = data;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(xmlStr, "text/xml");
+            let queryResultInst = doc.getElementsByTagName("query_result_instance");
+            for (let  i = 0;i < queryResultInst.length; i++) {
+                if (queryResultInst[i].getElementsByTagName("display_type")[0].childNodes[0].nodeValue.toUpperCase() === "CATNUM") {
+                    let resultInstId = queryResultInst[i].getElementsByTagName("result_instance_id")[0].childNodes[0].nodeValue;
+                    let resultTypeId = queryResultInst[i].getElementsByTagName("result_type_id")[0].childNodes[0].nodeValue;
+                    let queryInstId = queryResultInst[i].getElementsByTagName("query_instance_id")[0].childNodes[0].nodeValue;
+                    let resultTypeName = queryResultInst[i].getElementsByTagName("description")[1].childNodes[0].nodeValue;
+                    let queryMasterId = i2b2.model.qiList[queryInstId].origData.query_master_id;
+                    i2b2.model.qiList[queryInstId].qriList[resultInstId]= {typeId : resultTypeId, name: resultTypeName, data: {}};
+                    i2b2.WasteWaterVisualization.parseQRIXML(queryInstId, resultInstId);
+                    i2b2.WasteWaterVisualization.parseQMXML(queryMasterId, queryInstId);
+                }
+            }
+            // print the name of the root element or error message
+            const errorNode = doc.querySelector("parsererror");
+            if (errorNode) {
+                console.log("error while parsing");
+            } else {
+                console.log(doc.documentElement.nodeName);
+            }
+        })
+    });
+};
 
 // ---------------------------------------------------------------------------------------
 //Parse XML for QRI's from QI's
-// i2b2.WasteWaterVisualization.parseQRIXML = function(queryInstId, resultInstId){
-//         i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryResultInstanceId({qr_key_value : resultInstId}).then(function(data){
-//             const xmlStr = data;
-//             const parser = new DOMParser();
-//             const doc = parser.parseFromString(xmlStr, "text/xml");
-//             let crcXMLResult = doc.getElementsByTagName("crc_xml_result");
-//             for ( let i = 0;i < crcXMLResult.length; i++) {
-//                 let xmlValue = crcXMLResult[i].getElementsByTagName("xml_value")[0].childNodes[0].nodeValue;
-//                 const snip = parser.parseFromString(xmlValue, "text/xml");
-//                 let resultTag = snip.getElementsByTagName("body")[0].childNodes; //this might not always be the namespace, try body: first-child
-//                 //console.dir(xmlValue);
-//                 const dataTags = snip.querySelectorAll("data");
-//                 dataObj ={};
-//                 dataTags.forEach(tag =>{
-//                     try {
-//                         let col = tag.attributes.column.nodeValue;
-//                         let val = tag.textContent;
-//                         dataObj[col] = val;
-//                     } catch (e) {
-//                         //do nothing
-//                     }
-//                 });
-//                 //The try catch above allows us to look for data tags that have actual patient counts or breakdown data associated with it. If we don't find data we're deleting this QI from the candidate list
-//                  if (Object.keys(dataObj).length > 0){
-//                     i2b2.model.qiList[queryInstId].qriList[resultInstId].data= dataObj;
-//                  } else {
-//                     delete i2b2.model.qiList[queryInstId].qriList[resultInstId];
-//                  }
-//             }
-//             //console.dir(dataObj);
-//             // print the name of the root element or error message
-//             const errorNode = doc.querySelector("parsererror");
-//             if (errorNode) {
-//             console.log("error while parsing");
-//             } else {
-//             console.log(doc.documentElement.nodeName);
-//             }
-//         })
-// };
+i2b2.WasteWaterVisualization.parseQRIXML = function(queryInstId, resultInstId){
+        i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryResultInstanceId({qr_key_value : resultInstId}).then(function(data){
+            const xmlStr = data;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(xmlStr, "text/xml");
+            let crcXMLResult = doc.getElementsByTagName("crc_xml_result");
+            for ( let i = 0;i < crcXMLResult.length; i++) {
+                let xmlValue = crcXMLResult[i].getElementsByTagName("xml_value")[0].childNodes[0].nodeValue;
+                const snip = parser.parseFromString(xmlValue, "text/xml");
+                let resultTag = snip.getElementsByTagName("body")[0].childNodes; //this might not always be the namespace, try body: first-child
+                //console.dir(xmlValue);
+                const dataTags = snip.querySelectorAll("data");
+                dataObj ={};
+                dataTags.forEach(tag =>{
+                    try {
+                        let col = tag.attributes.column.nodeValue;
+                        let val = tag.textContent;
+                        dataObj[col] = val;
+                    } catch (e) {
+                        //do nothing
+                    }
+                });
+                //The try catch above allows us to look for data tags that have actual patient counts or breakdown data associated with it. If we don't find data we're deleting this QI from the candidate list
+                 if (Object.keys(dataObj).length > 0){
+                    i2b2.model.qiList[queryInstId].qriList[resultInstId].data= dataObj;
+                 } else {
+                    delete i2b2.model.qiList[queryInstId].qriList[resultInstId];
+                 }
+            }
+            //console.dir(dataObj);
+            // print the name of the root element or error message
+            const errorNode = doc.querySelector("parsererror");
+            if (errorNode) {
+            console.log("error while parsing");
+            } else {
+            console.log(doc.documentElement.nodeName);
+            }
+        })
+};
+
+i2b2.WasteWaterVisualization.parseQMXML = function(queryMasterId, queryInstId){
+    console.log("QM is " + queryMasterId)
+
+    i2b2.ajax.CRC.getRequestXml_fromQueryMasterId({
+        qm_key_value: queryMasterId
+    }).then(xmlStr => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xmlStr, "text/xml");
+        const constraints = i2b2.WasteWaterVisualization.extractDateConstraints(doc);
+
+        i2b2.model.qiList[queryInstId].temporalConstraints = constraints;
+    });
+};
+
+i2b2.WasteWaterVisualization.extractDateConstraints = function(queryDefinitionXML) {
+    const panels = queryDefinitionXML.querySelectorAll("panel");
+    const constraints = [];
+
+    panels.forEach((panel, panelIndex) => {
+        // A panel may have zero or many items
+        const items = panel.querySelectorAll("item");
+
+        items.forEach((item, itemIndex) => {
+            const dateNode = item.querySelector("constrain_by_date");
+            if (!dateNode) return;
+
+            let dateFrom = null;
+            let dateTo = null;
+
+            const fromNode = dateNode.querySelector("date_from");
+            const toNode = dateNode.querySelector("date_to");
+
+            if (fromNode && fromNode.textContent.trim() !== "") {
+                dateFrom = new Date(fromNode.textContent.trim());
+            }
+            if (toNode && toNode.textContent.trim() !== "") {
+                dateTo = new Date(toNode.textContent.trim());
+            }
+
+            // Only add if at least one constraint exists
+            if (dateFrom || dateTo) {
+                constraints.push({
+                    panel: panelIndex + 1,
+                    item: itemIndex + 1,
+                    dateFrom: dateFrom,
+                    dateTo: dateTo
+                });
+            }
+        });
+    });
+
+    return constraints;
+};
+
 
 // ---------------------------------------------------------------------------------------
 i2b2.WasteWaterVisualization.filterWaterData = function(startDateValue, endDateValue, mockData) {
@@ -316,10 +373,8 @@ i2b2.WasteWaterVisualization.normalizeDates = function(dateStr) {
 };
 
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {  
     
-    
-
     // event listener for the Start Visualization button
     let startVisBtn = document.getElementById("visualizationTrigger");
     
