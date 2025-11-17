@@ -17,7 +17,6 @@ import "./EditParameters.scss";
 import {Autocomplete, FormControlLabel, FormGroup, Switch, Typography} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import MenuItem from "@mui/material/MenuItem";
 
 export const EditParameters = ({
                                    rows,
