@@ -401,7 +401,7 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
                 func_HighlightNode(n);
             } else {
                 n.state.requested = true;
-                if(!n.state.expanded) {
+                if(!n.state.loaded) {
                     i2b2.ONT.view.nav.treeview.treeview('redraw', []);
                     i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
                 }

@@ -28,7 +28,7 @@ const parseAuthConfigsXml = (allGlobalParamsXml) => {
             status = param.attributes['status'].nodeValue;
         }
 
-        if(name === AUTH_CONFIG_PARAM_NAME && status !== 'D') {
+        if(name === AUTH_CONFIG_PARAM_NAME && status === 'A') {
             status = ParamStatus[status];
 
             if(value.length > 0){
