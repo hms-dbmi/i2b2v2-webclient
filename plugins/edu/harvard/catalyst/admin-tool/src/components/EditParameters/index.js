@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {DataGrid, GridActionsCellItem, gridClasses, GridRowModes, useGridApiRef,useGridApiContext} from "@mui/x-data-grid";
 import AddIcon from "@mui/icons-material/Add";
 import Button from '@mui/material/Button';
@@ -12,11 +12,27 @@ import { StatusUpdate, SplitButton } from "components";
 import {DataType, ParamStatus} from "models";
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-
-import "./EditParameters.scss";
-import {Autocomplete, FormControlLabel, FormGroup, Switch, Typography} from "@mui/material";
+import {
+    Autocomplete, DialogActions,
+    DialogContent,
+    DialogContentText,
+    FormControlLabel,
+    FormGroup,
+    Switch,
+    Typography
+} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import PreviewIcon from '@mui/icons-material/Preview';
+import InputAdornment from '@mui/material/InputAdornment';
+import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material/Dialog';
+import Box from '@mui/material/Box';
+import OpenInFullIcon from '@mui/icons-material/OpenInFull';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import ExpandSharpIcon from '@mui/icons-material/ExpandSharp';
+import "./EditParameters.scss";
+
 
 export const EditParameters = ({
                                    rows,
@@ -40,6 +56,17 @@ export const EditParameters = ({
     const [inValidCells, setInValidCells] = useState({});
     const [showDeletedParams, setShowDeletedParams] = useState(false);
     const autosuggestParams = predefinedParams ? predefinedParams : [];
+    const [paramValuePreview, setParamValuePreview] = React.useState({text: "", title: ""});
+    const [openParamValuePreview, setOpenParamValuePreview] = React.useState(false);
+
+    const handleOpenParamValuePreview = (title, text) => {
+        setParamValuePreview({title, text});
+        setOpenParamValuePreview(true);
+    };
+
+    const handleCloseParamValuePreview = () => {
+        setOpenParamValuePreview(false);
+    };
 
     const apiRef = useGridApiRef();
 
@@ -54,6 +81,64 @@ export const EditParameters = ({
 
         return CustomActionComponent;
     };
+
+    const OverflowExpandCell = (params) => {
+        const { value } = params;
+        const textElementRef = useRef(null);
+        const [showTooltip, setShowTooltip] = useState(false);
+
+        const handleShouldShowTooltip = () => {
+            if (textElementRef.current) {
+                // Check if scrollWidth (total content width) is greater than clientWidth (visible width)
+                setShowTooltip(textElementRef.current.scrollWidth > textElementRef.current.clientWidth);
+            }
+        };
+
+        useEffect(() => {
+            handleShouldShowTooltip(); // Check on initial render
+            window.addEventListener('resize', handleShouldShowTooltip); // Re-check on resize
+            return () => {
+                window.removeEventListener('resize', handleShouldShowTooltip); // Clean up
+            };
+        }, [value]); // Re-check if cell value changes
+
+        return (
+            <Box
+                sx={{
+                    alignItems: 'center',
+                    lineHeight: '24px',
+                    width: '100%',
+                    height: '100%',
+                    position: 'relative',
+                    display: 'flex',
+                }}
+            >
+                <Box
+                    sx={{
+                        height: '100%',
+                        width: '100%',
+                        display: 'block',
+                        position: 'absolute',
+                        top: 0,
+                    }}
+                />
+                <Box
+                    ref={textElementRef}
+                     sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                >
+                    {params.value}
+                </Box>
+                { showTooltip && <IconButton
+                    aria-label={'preview value'}
+                    size={"small"}
+                    onClick={() => handleOpenParamValuePreview(params.row.name, params.value)}
+                >
+                    <OpenInFullIcon fontSize="small"/>
+                </IconButton>
+                }
+            </Box>
+        );
+    }
 
     const columns = [
         {
@@ -165,6 +250,7 @@ export const EditParameters = ({
                 }
 
             },
+            renderCell: (params) => <OverflowExpandCell {...params} />,
         },
         {
             field: 'dataType',
@@ -526,6 +612,37 @@ export const EditParameters = ({
             {displayParamsTable()}
 
             <StatusUpdate isOpen={showStatus} setIsOpen={handleStatusClose} severity={statusSeverity} message={statusMsg}/>
+
+            <Dialog
+                className={"ParamValuePreview"}
+                open={openParamValuePreview}
+                onClose={handleCloseParamValuePreview}
+                scroll={"paper"}
+                fullWidth={true}
+                maxWidth={'sm'}
+                PaperProps={{
+                    sx: {
+                        minHeight: '40%',
+                        maxHeight: '40%'
+                    }
+                }}
+            >
+                <DialogTitle>
+                    {paramValuePreview.title}
+                </DialogTitle>
+                <DialogContent dividers>
+                    <DialogContentText className={"ParamValuePreviewContent"}>
+                        <pre>
+                            {paramValuePreview.text}
+                        </pre>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseParamValuePreview} autoFocus>
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 
