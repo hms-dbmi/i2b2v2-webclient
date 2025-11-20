@@ -634,11 +634,16 @@ const func_processData = (xmlData, zipRegEx) => {
 
     for (let i = 0; i < params.length; i++) {
         const zipData = params[i].getAttribute("column");
+        const floorThreshold = params[i].getAttribute("floorThresholdNumber");
+        const obfuscatedNum = params[i].getAttribute("obfuscatedDisplayNumber");
         let zipSearch = zipData.match(zipRegEx);
         if (zipSearch.length > 0) {
             const zipCode = zipSearch[0].trim();
+            const zipCount = parseInt(params[i].firstChild.nodeValue);
+            const displayCount = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(zipCount, floorThreshold, obfuscatedNum);
             ret[zipCode] = {
-                count: params[i].firstChild.nodeValue,
+                count: zipCount,
+                display: displayCount,
                 text: zipData
             };
         }

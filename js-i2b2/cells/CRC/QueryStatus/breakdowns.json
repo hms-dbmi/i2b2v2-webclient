@@ -154,13 +154,13 @@
           "autoClose": false,
           "closeOnClick": false
         },
-        "template": "<b>[{{text}}]</b><br/>{{~count}} patients"
+        "template": "<b>[{{text}}]</b><br/>{{display}} patients"
       },
       "hoverBox": {
         "position": "topright",
         "className": "onhover-box",
-        "__default": "<h4>Patient Count</h4>Hover over an area",
-        "template": "<h4>Patient Count</h4><div>ZIP Code: {{ZCTA5CE10}}</div><span>{{~count}} patients</span>"
+        "default": "<h4>Patient Count</h4>Hover over an area",
+        "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
       },
       "legendBox": {
         "position": "bottomright",

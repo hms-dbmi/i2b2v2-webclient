@@ -21,6 +21,8 @@ i2b2.CRC.QueryStatus = {
 i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber = function(number, floorValue, obfuscateValue) {
     // this function is used by all the breakdown modules to generate the display numbers
     number = parseInt(number);
+    if (['string','number'].includes(typeof floorValue)) floorValue = parseInt(floorValue)
+    if (['string','number'].includes(typeof floorValue)) obfuscateValue = parseInt(obfuscateValue)
 
     let retValue = false;
     if (typeof floorValue === "undefined" || !floorValue) {
