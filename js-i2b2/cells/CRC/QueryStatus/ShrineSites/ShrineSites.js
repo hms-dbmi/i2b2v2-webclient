@@ -151,21 +151,10 @@ export default class ShrineSites {
                     let ret = [{text: row.site, class:"site"}];
                     if (String(row.status).toUpperCase() === "COMPLETED") {
                         // return the site's count
-                        if (row.count <= row.floorThresholdNumber) {
-                            // handle if it is below our floor threshold
-                            let temp = {
-                                text: "<" + parseInt(row.floorThresholdNumber).toLocaleString() + " Patients",
-                                class: "status-complete"
-                            };
-                            if (row.count === 0) temp.text = "0 Patients";
-                            ret.push(temp);
-                        } else {
-                            // handle the obfuscation
-                            ret.push({
-                                text: parseInt(row.count).toLocaleString() + "±" + parseInt(row.obfuscatedDisplayNumber).toLocaleString() + " Patients",
-                                class: "status-complete"
-                            });
-                        }
+                        ret.push({
+                            text: i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(row.count, row.floorThresholdNumber, row.obfuscatedDisplayNumber) + " Patients",
+                            class: "status-complete"
+                        });
                     } else {
                         // display the site's current status
                         let rec = {text: row.status};

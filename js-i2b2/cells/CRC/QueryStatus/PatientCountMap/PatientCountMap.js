@@ -142,16 +142,10 @@ export default class PatientCountMap {
                                 radius: scalePatientCount
                             }).addTo(this.map);
 
-                            let toolTip = '';
-                            if (siteResult.count <= siteResult.floorThresholdNumber) {
-                                toolTip = "<" + parseInt(siteResult.floorThresholdNumber).toLocaleString() + " Patients at " + siteResult.site;
-                            } else {
-                                toolTip = parseInt(siteResult.count).toLocaleString() + "±" + parseInt(siteResult.obfuscatedDisplayNumber).toLocaleString() + " Patients at " + siteResult.site;
-                            }
-                            circle.bindPopup(toolTip);
-                        }
-                    })
-                }
+                        let toolTip = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(siteResult.count, siteResult.floorThresholdNumber, siteResult.obfuscatedDisplayNumber) + " Patients at " + siteResult.site;
+                        circle.bindPopup(toolTip);
+                    }
+                })
             }
 
         } catch (e) {
