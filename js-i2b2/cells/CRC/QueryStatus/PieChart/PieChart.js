@@ -63,8 +63,7 @@ export default class PieChart {
 
         let generateTooltipText = (d,i,t) => {
             // TODO: handle Obfuscation and Sketches
-            // i2b2.PM.model.isObfuscated
-            let val = parseInt(d.data.value).toLocaleString();
+            let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(d.data.value);
             if (d.data.display !== undefined) val = d.data.display;
             return d.data.name + "\n[ "+ val + " patients ]";
         };
@@ -117,6 +116,7 @@ export default class PieChart {
                 .attr("dy", ".35em")
                 .text((d) => d.data.name)
                 .call((parent) => { parent.append("title"); })
+                .style("cursor", "default")
             .merge(text)
                 .transition()
                 .duration(1000)
@@ -273,25 +273,7 @@ let parseData = function(xmlData, advancedConfig) {
         let entryRecord = {}
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text().trim();
         entryRecord.value = params[i2].firstChild.nodeValue
-        entryRecord.display = parseInt(entryRecord.value).toLocaleString();
-
-        // TODO: FIX THIS OR CONFIRM PROPER PROCESSING
-        // if (i2b2.PM.model.isObfuscated) {
-        //     const nodeValue = parseInt(params[i2].firstChild.nodeValue);
-        //     if (!isNaN(nodeValue) && nodeValue < 4) {
-        //         entryRecord.display = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-        //     }
-        //     if (isNaN(nodeValue) || entryRecord.name === 'QueryMasterID') {
-        //         entryRecord.display = params[i2].firstChild.nodeValue;
-        //     } else {
-        //         entryRecord.display = entryRecord.value.toLocaleString() + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-        //     }
-        // }
-        // if (i2b2.UI.cfg.useFloorThreshold) {
-        //     if (entryRecord.value < i2b2.UI.cfg.floorThresholdNumber) {
-        //         entryRecord.display = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber.toString();
-        //     }
-        // }
+        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value);
 
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {

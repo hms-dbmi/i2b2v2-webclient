@@ -136,25 +136,7 @@ let parseData = function(xmlData) {
     for (let i2 = 0; i2 < params.length; i2++) {
         let entryRecord = {}
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text();
-        entryRecord.value = parseInt(params[i2].firstChild.nodeValue).toLocaleString();
-
-        // format with commas
-        if (i2b2.PM.model.isObfuscated) {
-            const nodeValue = parseInt(params[i2].firstChild.nodeValue);
-            if (!isNaN(nodeValue) && nodeValue < 4) {
-                entryRecord.display = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-            }
-            if (isNaN(nodeValue) || entryRecord.name === 'QueryMasterID') {
-                entryRecord.display = params[i2].firstChild.nodeValue;
-            } else {
-                entryRecord.display = entryRecord.value + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-            }
-        }
-        if (i2b2.UI.cfg.useFloorThreshold) {
-            if (params[i2].firstChild.nodeValue < i2b2.UI.cfg.floorThresholdNumber) {
-                entryRecord.display = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber.toString();
-            }
-        }
+        entryRecord.value = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(params[i2].firstChild.nodeValue);
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
             entryRecord.value = i2b2.h.Unescape(entryRecord.value);

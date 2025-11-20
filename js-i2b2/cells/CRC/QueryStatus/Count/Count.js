@@ -99,31 +99,14 @@ export default class Count {
                 }
 
                 // count
-                if (parseInt(count) <= obfuscateFloor) {
-                    countEl.innerHTML = "≤" + rawCount;
-                } else {
-                    countEl.innerHTML = rawCount + "±" + obfuscateDisplay;
-                }
+                countEl.innerHTML = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count, obfuscateFloor, obfuscateDisplay);
+
                 // sites reporting
                 let sitesContainer = refContainer.querySelector('.count-sites');
                 sitesContainer.innerHTML = status + ": " + sitesDone + " out of " + sitesTotal + " sites reporting";
                 sitesContainer.style.display = "block";
             } else {
-                if (i2b2.UI?.cfg?.useFloorThreshold && (count <= i2b2.UI?.cfg?.floorThresholdNumber)) {
-                    // deal with the floor threshold value
-                    let prefix = i2b2.UI?.cfg?.floorThresholdText;
-                    if (typeof prefix === 'undefined') prefix = "≤";
-                    countEl.innerHTML = prefix + i2b2.UI.cfg.floorThresholdNumber;
-                } else {
-                    // deal with the obfuscate number
-                    if (i2b2.UI?.cfg?.obfuscatedDisplayNumber) {
-                        // count
-                        countEl.innerHTML = rawCount + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber;
-                    } else {
-                        // count
-                        countEl.innerHTML = rawCount;
-                    }
-                }
+                countEl.innerHTML = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count);
             }
             // show everything
              refContainer.style.display = 'block';
@@ -134,13 +117,7 @@ export default class Count {
         return true;
     }
 
-    redraw(width) {
-        try {
-///            this.config.displayEl.innerHTML = "{" + this.constructor.name + "} is " + width + " pixels wide";
-        } catch(e) {
-            console.error("Error in QueryStatus:Count.redraw()");
-        }
-    }
+    redraw(width) {}
 
     show() {
         // this is executed before a render and/or displaying of this visualization.
