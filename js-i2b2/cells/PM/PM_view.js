@@ -77,7 +77,7 @@ i2b2.PM.doLoginDialog = function() {
             targetElClasses.add("disabled");
 
             // start login process
-            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+            const selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
             if (selectedDomain.ignorePasswordMgrs === true) {
                 // prevent the browser's password save option from saving/checking the password
                 event.preventDefault();
@@ -93,7 +93,7 @@ i2b2.PM.doLoginDialog = function() {
         });
 
         // attach event handlers for the SSO buttons
-        let func_lauchSaml = (evt) => {
+        const func_lauchSaml = (evt) => {
             // UX animation to show that the button was clicked
             evt.currentTarget.classList.add("clicked");
             setTimeout(() => {
