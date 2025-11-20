@@ -68,6 +68,17 @@
   }
 }
 
+.ParamValuePreview {
+  pre {
+    font-family: "Arial", Courier, monospace;
+    color: black;
+  }
+
+  .ParamValuePreviewContent {
+    padding: 0.4em;
+  }
+}
+
 .ParameterNameAutoSuggest {
   background-color: #f8f8fa !important;
   border: 1px solid blue;
