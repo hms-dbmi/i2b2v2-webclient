@@ -60,7 +60,6 @@ export default class Count {
 
             const count = i2b2.h.XPath(data, "//query_result_instance/set_size")[0].firstChild.nodeValue;
 
-
             // display the info
             this.config.displayEl.innerHTML = this.dispTemplate;
             this.config.displayEl = this.config.displayEl.parentElement.querySelector('.viztype-COUNT.resulttype-' + this.record.QRS_Type);
@@ -101,17 +100,30 @@ export default class Count {
 
                 // count
                 if (parseInt(count) <= obfuscateFloor) {
-                    countEl.innerHTML = "&lt;" + rawCount;
+                    countEl.innerHTML = "≤" + rawCount;
                 } else {
-                    countEl.innerHTML = rawCount + "  &#177;" + obfuscateDisplay;
+                    countEl.innerHTML = rawCount + "±" + obfuscateDisplay;
                 }
                 // sites reporting
                 let sitesContainer = refContainer.querySelector('.count-sites');
                 sitesContainer.innerHTML = status + ": " + sitesDone + " out of " + sitesTotal + " sites reporting";
                 sitesContainer.style.display = "block";
             } else {
-                // count
-                countEl.innerHTML = rawCount;
+                if (i2b2.UI?.cfg?.useFloorThreshold && (count <= i2b2.UI?.cfg?.floorThresholdNumber)) {
+                    // deal with the floor threshold value
+                    let prefix = i2b2.UI?.cfg?.floorThresholdText;
+                    if (typeof prefix === 'undefined') prefix = "≤";
+                    countEl.innerHTML = prefix + i2b2.UI.cfg.floorThresholdNumber;
+                } else {
+                    // deal with the obfuscate number
+                    if (i2b2.UI?.cfg?.obfuscatedDisplayNumber) {
+                        // count
+                        countEl.innerHTML = rawCount + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber;
+                    } else {
+                        // count
+                        countEl.innerHTML = rawCount;
+                    }
+                }
             }
             // show everything
              refContainer.style.display = 'block';
