@@ -113,7 +113,14 @@ i2b2.PM.doLoginDialog = function() {
         });
         // attach the onClick/onSubmit handlers
         $("#PM-login-modal .login-button").click(function(event) {
-            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+            const targetElClasses = event.target.classList;
+            if (targetElClasses.contains("disabled")) return;
+            // UX animation to show that the button was clicked
+            targetElClasses.add("clicked");
+            targetElClasses.add("disabled");
+
+            // start login process
+            const selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
             if (selectedDomain.ignorePasswordMgrs === true) {
                 // prevent the browser's password save option from saving/checking the password
                 event.preventDefault();
@@ -129,7 +136,16 @@ i2b2.PM.doLoginDialog = function() {
         });
 
         // attach event handlers for the SSO buttons
-        let func_lauchSaml = (evt) => { i2b2.PM.doSamlLogin($(evt.currentTarget).data('service')); };
+        const func_lauchSaml = (evt) => {
+            // UX animation to show that the button was clicked
+            evt.currentTarget.classList.add("clicked");
+            setTimeout(() => {
+                // remove UX treatment in case user closes popup and looks to login again
+                evt.currentTarget.classList.remove("clicked");
+                evt.currentTarget.blur();
+            }, 4000);
+            i2b2.PM.doSamlLogin($(evt.currentTarget).data('service'));
+        };
         $('.sso-button').on('click', func_lauchSaml);
         $('.sso-button').on('keyup', (evt) => {
             if (evt.which === 13) func_lauchSaml(evt);
