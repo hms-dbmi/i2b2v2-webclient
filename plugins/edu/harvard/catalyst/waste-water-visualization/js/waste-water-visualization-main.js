@@ -4,16 +4,17 @@ i2b2.WasteWaterVisualization = {};
 
 window.addEventListener("I2B2_SDX_READY", (event) => {
     // drop event handlers used by this plugin
-    i2b2.sdx.AttachType("WasteWaterVisualization-psmaindiv", "QI");
-    i2b2.sdx.setHandlerCustom("WasteWaterVisualization-psmaindiv", "QI", "DropHandler", i2b2.WasteWaterVisualization.qiDropHandler);
+    i2b2.sdx.AttachType("wasteWaterChart", "QI");
+    i2b2.sdx.setHandlerCustom("wasteWaterChart", "QI", "DropHandler", i2b2.WasteWaterVisualization.qiDropHandler);
 });
 
 // ---------------------------------------------------------------------------------------
 
 window.addEventListener("I2B2_READY", ()=> { 
     if (!i2b2.model.qiList) i2b2.model.qiList = {};
-    if (!i2b2.model.renderCharts) i2b2.model.renderCharts = {};
+    if (!i2b2.model.renderCharts) i2b2.model.renderCharts = {};//update this
     if (!i2b2.WasteWaterVisualization.mockData) i2b2.WasteWaterVisualization.mockData = window.outputData;
+    if (!i2b2.WasteWaterVisualization.mockHIVEncounterData) i2b2.WasteWaterVisualization.mockHIVEncounterData = window.HIVEncounterData;
     i2b2.WasteWaterVisualization.cleanedData = i2b2.WasteWaterVisualization.fetchAndCleanData(i2b2.WasteWaterVisualization.mockData);
     i2b2.WasteWaterVisualization.dateRangeDisplay(i2b2.WasteWaterVisualization.cleanedData);
     //i2b2.WasteWaterVisualization.renderQIList();
@@ -47,7 +48,7 @@ i2b2.WasteWaterVisualization.dateRangeDisplay = function(cleanedData){
     
     console.log(firstItem);
     console.log(lastItem);
-    targetDiv.innerHTML = "Select Waste Water measurement dates between " + firstItem + " and " + lastItem + ".";
+    targetDiv.innerHTML = "Select wastewater measurement dates between " + firstItem + " and " + lastItem + ".";
 };
 
 
@@ -57,7 +58,7 @@ i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
     let titleFull = sdxData.renderData.title;
     sdxData.cleanTitle = titleFull.replace('Results of', '').replace(' - FINISHED','').replace(/^\s*/gm, '');
 
-    let wasteWaterPSMainDiv = document.getElementById("WasteWaterVisualization-psmaindiv");
+    let wasteWaterPSMainDiv = document.getElementById("wasteWaterChart");
 
     wasteWaterPSMainDiv.innerHTML = sdxData.cleanTitle
 
@@ -86,7 +87,7 @@ i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
 
 i2b2.WasteWaterVisualization.renderQIList = function(){
 
-    let wasteWaterPSMainDiv = document.getElementsByClassName("WasteWaterVisualization-psmaindiv")[0];
+    let wasteWaterPSMainDiv = document.getElementsByClassName("dropped-qi")[0];
 
     //create an array to store the names of each query
     let instanceNames = [];
@@ -197,6 +198,7 @@ i2b2.WasteWaterVisualization.parseQMXML = function(queryMasterId, queryInstId){
         const doc = parser.parseFromString(xmlStr, "text/xml");
         const constraints = i2b2.WasteWaterVisualization.extractDateConstraints(doc);
 
+
         i2b2.model.qiList[queryInstId].temporalConstraints = constraints;
     });
 };
@@ -208,7 +210,7 @@ i2b2.WasteWaterVisualization.extractDateConstraints = function(queryDefinitionXM
     panels.forEach((panel, panelIndex) => {
         // A panel may have zero or many items
         const items = panel.querySelectorAll("item");
-
+        
         items.forEach((item, itemIndex) => {
             const dateNode = item.querySelector("constrain_by_date");
             if (!dateNode) return;

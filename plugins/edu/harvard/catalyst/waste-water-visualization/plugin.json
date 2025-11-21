@@ -1,6 +1,6 @@
 {
-  "title": "Waste Water Visualization",
-  "description": "Overlay previous queries onto temporal waste water trend snapshots",
+  "title": "Wastewater Visualization",
+  "description": "Overlay previous queries onto temporal wastewater trend snapshots",
   "category": [],
   "icons": { "size32x32": "waste-water-visualization.png" },
   "assetDir": "assets",

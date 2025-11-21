@@ -6,6 +6,7 @@
     <script type="text/javascript" src="js/i2b2-loader.js" ></script>
     <script type="text/javascript" src="js/waste-water-visualization-main.js" ></script>
     <script src="js/output.js"></script>
+    <script src="js/obs_flax_hiv_output.js"></script>
     <script src="js/d3v7.min.js"></script>
     <script src="js/d3-color.v1.min.js"></script>
     <script src="js/d3-interpolate.v1.min.js"></script>
@@ -18,7 +19,7 @@
 <body>
     <div class="container">
         <div class="row mb-3">
-            <div class="col-6"><h1 class="h4">Waste Water Previous Query Visualizer</h1></div>
+            <div class="col-6"><h1 class="h4">Wastewater Previous Query Visualizer</h1></div>
             <div class="col-3"><a href="plugin-info.html">Plugin Info</a></div>
             <div class="col-3"><input type="button" onclick="window.location.reload()" value="Reload Plugin"></div>
         </div>
@@ -41,9 +42,8 @@
             </div>
         </form>       
      
-        <div id="WasteWaterVisualization-psmaindiv">
-            drop a patient set here   
-            <div class="WasteWaterVisualization-psmaindiv-content"></div>    
+        <div class="dropped-qi">
+
         </div>
         <div id="wasteWaterChart" class="WasteWaterVisualization-psmaindiv-graphs"></div>
     </div>
