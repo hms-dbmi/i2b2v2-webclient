@@ -60,7 +60,13 @@ i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
 
     let wasteWaterPSMainDiv = document.getElementById("wasteWaterChart");
 
-    wasteWaterPSMainDiv.innerHTML = sdxData.cleanTitle
+    const encounterData = i2b2.WasteWaterVisualization.mockHIVEncounterData;
+    const filterstart = i2b2.WasteWaterVisualization.startDateValue;
+    const filterend = i2b2.WasteWaterVisualization.endDateValue;
+
+    console.log("start date at drop handler is " + filterstart);
+
+    //wasteWaterPSMainDiv.innerHTML = sdxData.cleanTitle
 
       // save to the model
     i2b2.model.qiList[sdxData.sdxInfo.sdxKeyValue] = sdxData; //data packet
@@ -76,12 +82,13 @@ i2b2.WasteWaterVisualization.qiDropHandler = function(sdxData){
     i2b2.state.save();
 
     // Start a crawl to retrieve subdocuments of dropped QI's
-    i2b2.WasteWaterVisualization.parseQIXML([sdxData.sdxInfo.sdxKeyValue]);
+    //i2b2.WasteWaterVisualization.parseQIXML([sdxData.sdxInfo.sdxKeyValue]);
 
     //trigger separate render function that displays the list
-    i2b2.WasteWaterVisualization.renderQIList();
+    //i2b2.WasteWaterVisualization.renderQIList();
 
- 
+    //pass in start and end into filter encounters
+    i2b2.WasteWaterVisualization.filterEncounterData(filterstart, filterend, encounterData);
 };
 // ---------------------------------------------------------------------------------------
 
@@ -243,6 +250,38 @@ i2b2.WasteWaterVisualization.extractDateConstraints = function(queryDefinitionXM
     return constraints;
 };
 
+i2b2.WasteWaterVisualization.filterEncounterData = function(startDateValue, endDateValue, HIVEncounterData) { 
+    //console.log(HIVEncounterData);
+    console.log("start date value is " + startDateValue);
+    console.log("end date value is " + endDateValue);
+    const dateIndex = {};
+    const filteredEncounters = [];
+
+    HIVEncounterData.forEach(item => {
+        const startDate = i2b2.WasteWaterVisualization.normalizeDates(item["start_date"]);
+        console.log(startDate)
+        if (startDate) {
+            const ts = startDate.getTime();
+            console.log("ts is " + ts)
+            dateIndex[ts] = item;
+
+            // Filter here
+            if (startDate >= startDateValue && startDate <= endDateValue) {
+                filteredEncounters.push(item);
+            }
+        }
+    });
+
+    console.log("All normalized dates:", dateIndex);
+    console.log("Filtered records:", filteredEncounters);
+    console.table(filteredEncounters);
+
+    filteredEncounters.forEach(d => {
+  console.log("Start Date:", d["start_date"]);
+});
+    
+    i2b2.WasteWaterVisualization.updateChart(filteredEncounters);
+};
 
 // ---------------------------------------------------------------------------------------
 i2b2.WasteWaterVisualization.filterWaterData = function(startDateValue, endDateValue, mockData) {
@@ -275,7 +314,7 @@ i2b2.WasteWaterVisualization.filterWaterData = function(startDateValue, endDateV
               "Southern 7 day avg raw:", d["Southern 7 day avg"],
               "Number conversion:", +d["Southern 7 day avg"]);
 });
-    
+    i2b2.WasteWaterVisualization.filteredWaterRecords = filteredRecords;
     i2b2.WasteWaterVisualization.drawChart(filteredRecords);
 };
 
@@ -350,11 +389,21 @@ i2b2.WasteWaterVisualization.drawChart = function(filteredRecords) {
         .attr("fill", "steelblue");
 };
 
-
+i2b2.WasteWaterVisualization.updateChart = function(filteredEncounters){
+    console.log("we're at filter")
+    console.log(filteredEncounters)
+};
 
 i2b2.WasteWaterVisualization.normalizeDates = function(dateStr) {
     if (!dateStr) return null;
 
+    // --- CASE 1: ISO timestamp (2023-05-01T09:00:00) ---
+    if (dateStr.includes("T")) {
+        const d = new Date(dateStr);
+        if (!isNaN(d)) return d;
+    }
+
+    // Clean up non-ISO date formats
     const cleaned = dateStr.replace(/[-.]/g, "/").trim();
     const parts = cleaned.split("/").map(Number);
 
@@ -375,6 +424,7 @@ i2b2.WasteWaterVisualization.normalizeDates = function(dateStr) {
 };
 
 
+
 document.addEventListener('DOMContentLoaded', () => {  
     
     // event listener for the Start Visualization button
@@ -383,6 +433,10 @@ document.addEventListener('DOMContentLoaded', () => {
     startVisBtn.addEventListener('click', function(){
         let startDateValue = i2b2.WasteWaterVisualization.normalizeDates(document.getElementById("startDate").value);
         let endDateValue = i2b2.WasteWaterVisualization.normalizeDates(document.getElementById("endDate").value);
+
+
+        i2b2.WasteWaterVisualization.startDateValue = startDateValue;
+        i2b2.WasteWaterVisualization.endDateValue = endDateValue;
 
         i2b2.WasteWaterVisualization.filterWaterData(startDateValue, endDateValue, i2b2.WasteWaterVisualization.cleanedData);
 
