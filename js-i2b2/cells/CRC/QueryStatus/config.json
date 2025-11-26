@@ -67,6 +67,15 @@
       "displayOrder": 200,
       "displayForUnregistered": true,
       "notInReport": true
+    },
+    "LINECHART": {
+      "name": "Line Chart",
+      "source": "LineChart/LineChart.js",
+      "CSS": "LineChart/LineChart.css",
+      "iconClass": "bi bi-graph-up",
+      "displayOrder": 100,
+      "class": "linechart",
+      "displayForUnregistered": false
     }
   },
   "displayOrder": [

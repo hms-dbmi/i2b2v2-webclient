@@ -1,0 +1,10 @@
+.LineChart svg .svg-body text {
+    font-family: sans-serif;
+    fill: var(--text-primary-dark, #000);
+}
+
+.y-axis-label {
+    font-size: 10px;
+    fill: var(--text-primary-dark);
+    pointer-events: none;
+}
