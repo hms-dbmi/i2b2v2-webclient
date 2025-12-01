@@ -18,6 +18,45 @@ i2b2.CRC.QueryStatus = {
     ]
 };
 
+i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber = function(number, floorValue, obfuscateValue) {
+    // this function is used by all the breakdown modules to generate the display numbers
+    number = parseInt(number);
+    if (['string','number'].includes(typeof floorValue)) floorValue = parseInt(floorValue)
+    if (['string','number'].includes(typeof floorValue)) obfuscateValue = parseInt(obfuscateValue)
+
+    let retValue = false;
+    if (typeof floorValue === "undefined" || !floorValue) {
+        // pull the floor value info from the UI config
+        let floorThreshold = i2b2.UI?.cfg?.floorThresholdNumber;
+        if (typeof floorThreshold === 'undefined') floorThreshold = 0;
+        if (i2b2.UI?.cfg?.useFloorThreshold && (number <= floorThreshold)) {
+            // deal with the floor threshold value
+            let prefix = i2b2.UI?.cfg?.floorThresholdText;
+            if (typeof prefix === 'undefined') prefix = "≤";
+            return prefix + parseInt(floorThreshold).toLocaleString();
+        }
+    } else {
+        // process if the floor threshold value is reached
+        if (number <= floorValue) {
+            // deal with the floor threshold value
+            let prefix = i2b2.UI?.cfg?.floorThresholdText;
+            if (typeof prefix === 'undefined') prefix = "≤";
+            return prefix + parseInt(floorValue).toLocaleString();
+        }
+    }
+    // apply obfuscation value
+    if (typeof obfuscateValue === "undefined") {
+        // deal with the obfuscate number
+        if (i2b2.PM.model.isObfuscated && i2b2.UI?.cfg?.obfuscatedDisplayNumber) {
+            return parseInt(number).toLocaleString() + "±" + parseInt(i2b2.UI.cfg.obfuscatedDisplayNumber).toLocaleString();
+        } else {
+            return parseInt(number).toLocaleString();
+        }
+    } else if (typeof obfuscateValue === "number" && obfuscateValue > 0) {
+        return parseInt(number).toLocaleString() + "±" + parseInt(obfuscateValue).toLocaleString();
+    }
+    return parseInt(number).toLocaleString();
+};
 
 i2b2.CRC.QueryStatus.clear = function() {
     // remove resize observer

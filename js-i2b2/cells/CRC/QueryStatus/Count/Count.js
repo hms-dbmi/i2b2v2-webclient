@@ -60,7 +60,6 @@ export default class Count {
 
             const count = i2b2.h.XPath(data, "//query_result_instance/set_size")[0].firstChild.nodeValue;
 
-
             // display the info
             this.config.displayEl.innerHTML = this.dispTemplate;
             this.config.displayEl = this.config.displayEl.parentElement.querySelector('.viztype-COUNT.resulttype-' + this.record.QRS_Type);
@@ -100,18 +99,14 @@ export default class Count {
                 }
 
                 // count
-                if (parseInt(count) <= obfuscateFloor) {
-                    countEl.innerHTML = "&lt;" + rawCount;
-                } else {
-                    countEl.innerHTML = rawCount + "  &#177;" + obfuscateDisplay;
-                }
+                countEl.innerHTML = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count, obfuscateFloor, obfuscateDisplay);
+
                 // sites reporting
                 let sitesContainer = refContainer.querySelector('.count-sites');
                 sitesContainer.innerHTML = status + ": " + sitesDone + " out of " + sitesTotal + " sites reporting";
                 sitesContainer.style.display = "block";
             } else {
-                // count
-                countEl.innerHTML = rawCount;
+                countEl.innerHTML = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count);
             }
             // show everything
              refContainer.style.display = 'block';
@@ -122,13 +117,7 @@ export default class Count {
         return true;
     }
 
-    redraw(width) {
-        try {
-///            this.config.displayEl.innerHTML = "{" + this.constructor.name + "} is " + width + " pixels wide";
-        } catch(e) {
-            console.error("Error in QueryStatus:Count.redraw()");
-        }
-    }
+    redraw(width) {}
 
     show() {
         // this is executed before a render and/or displaying of this visualization.

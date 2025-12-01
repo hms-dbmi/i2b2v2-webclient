@@ -115,8 +115,7 @@ export default class BarGraph {
                 .append("title")
                 .text((t, i) => {
                     // TODO: handle Obfuscation and Sketches
-                    // i2b2.PM.model.isObfuscated
-                    let val = parseInt(data[i].value).toLocaleString();
+                    let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(data[i].value);
                     if (data[i].display) val = data[i].display;
                     return t + "\n[ "+ val + " patients ]";
                 });
@@ -166,8 +165,7 @@ export default class BarGraph {
                 .select('title')
                 .text((d) => {
                         // TODO: handle Obfuscation and Sketches
-                        // i2b2.PM.model.isObfuscated
-                        let val = parseInt(d.value).toLocaleString();
+                        let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(d.value);
                         if (d.display) val = d.display;
                         return "[ " + val + " patients ]\n" + d.name.trim()
                 });
@@ -182,8 +180,7 @@ export default class BarGraph {
                 .append("title")
                 .text((d) => {
                     // TODO: handle Obfuscation and Sketches
-                    // i2b2.PM.model.isObfuscated
-                    let val = parseInt(d.value).toLocaleString();
+                    let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(d.value);
                     if (d.display) val = d.display;
                     return "[ " + val + " patients ]\n" + d.name.trim()
                   });
@@ -197,7 +194,6 @@ export default class BarGraph {
             if (this.barColor) {
                 bars.attr("style", "fill: " + this.barColor + " !important");
             }
-
 
             // update the viewport element to the height of the visualization
             if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
