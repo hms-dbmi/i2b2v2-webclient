@@ -22,7 +22,7 @@ i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber = function(number, floorValue, 
     // this function is used by all the breakdown modules to generate the display numbers
     number = parseInt(number);
     if (['string','number'].includes(typeof floorValue)) floorValue = parseInt(floorValue)
-    if (['string','number'].includes(typeof floorValue)) obfuscateValue = parseInt(obfuscateValue)
+    if (['string','number'].includes(typeof obfuscateValue)) obfuscateValue = parseInt(obfuscateValue)
 
     let retValue = false;
     if (typeof floorValue === "undefined" || !floorValue) {
@@ -45,7 +45,7 @@ i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber = function(number, floorValue, 
         }
     }
     // apply obfuscation value
-    if (typeof obfuscateValue === "undefined") {
+    if (typeof obfuscateValue === "undefined" || (!obfuscateValue && obfuscateValue !== 0)) {
         // deal with the obfuscate number
         if (i2b2.PM.model.isObfuscated && i2b2.UI?.cfg?.obfuscatedDisplayNumber) {
             return parseInt(number).toLocaleString() + "±" + parseInt(i2b2.UI.cfg.obfuscatedDisplayNumber).toLocaleString();
