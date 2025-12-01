@@ -14,10 +14,6 @@
     fill: var(--text-primary-dark, #000);
 }
 
-/* ============================================================
-   Prevent ALL clipping anywhere in the chain.
-   This ensures the rotated y-label can never be hidden.
-   ============================================================ */
 .component-instance-viz.viztype-LINECHART,
 .component-instance-viz.viztype-LINECHART * {
     overflow: visible !important;
