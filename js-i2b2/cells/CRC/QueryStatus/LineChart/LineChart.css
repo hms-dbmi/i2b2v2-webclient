@@ -1,10 +1,30 @@
-.LineChart svg .svg-body text {
+/* ============================================================
+   LineChart CSS — Full Corrected File
+   ============================================================ */
+
+/* Match BarGraph's y-label styling */
+.component-instance-viz.viztype-LINECHART svg text.y-label {
+    fill: var(--text-primary-dark, #000);
+    font-size: 10px;
+    pointer-events: none;
+}
+
+/* General text styling inside the chart */
+.component-instance-viz.viztype-LINECHART svg text {
     font-family: sans-serif;
     fill: var(--text-primary-dark, #000);
 }
 
-.y-axis-label {
-    font-size: 10px;
-    fill: var(--text-primary-dark);
-    pointer-events: none;
+/* ============================================================
+   Prevent ALL clipping anywhere in the chain.
+   This ensures the rotated y-label can never be hidden.
+   ============================================================ */
+.component-instance-viz.viztype-LINECHART,
+.component-instance-viz.viztype-LINECHART * {
+    overflow: visible !important;
+}
+
+/* SVG must explicitly allow overflow — Chrome collapses it otherwise */
+.component-instance-viz.viztype-LINECHART svg {
+    overflow: visible !important;
 }

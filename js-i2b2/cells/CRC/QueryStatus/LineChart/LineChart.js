@@ -28,9 +28,11 @@ export default class LineChart {
             this.svg = d3.select(this.config.displayEl)
                 .append("svg")
                 .attr("width", "100%")
-                .attr("height", this.height)
+                .attr("height", this.height + margin.top + margin.bottom)
                 .append("g")
-                .classed("LineChart", true);
+                .classed("svg-body", true)
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
 
         } catch (e) {
             console.error("Error in QueryStatus:LineChart.constructor()", e);
@@ -114,25 +116,21 @@ export default class LineChart {
             .attr("transform", "rotate(-45)")
             .style("text-anchor", "end");
 
-            // Y Axis
-            const yAxis = g.append("g")
-                .classed("y-axis", true)
-                .call(d3.axisLeft(yScale).tickFormat(d3.format(".2~s")));
+        // Y Axis
+        const yAxis = g.append("g")
+            .classed("y-axis", true)
+            .call(d3.axisLeft(yScale).tickFormat(d3.format(".2~s")));
 
-            // ---- Y AXIS LABEL (Correct & matching BarGraph) ----
-            yAxis.append("text")
-                .attr("class", "y-label")
-                .attr("fill", "var(--text-primary-dark)")
-                .text("Number of Patients")
-                .attr("letter-spacing", "1.16")
-                .attr("transform", function(_, i, nodes) {
-                    const axisNode = nodes[i];
-                    const axisWidth = axisNode.getBBox().width;   // <-- use getBBox(), not getBoundingClientRect()
-                    const labelX = -margin.left + 15;             // ← EXACT BarGraph offset
-                    const labelY = (height - axisWidth) / 2;
-                    return `translate(${labelX},${labelY}) rotate(-90)`;
-                });
+            
+        // --- Y AXIS LABEL (copy BarGraph behavior) ---
+        yAxis.selectAll("text.y-label").remove(); 
 
+        yAxis.append("text")
+            .attr("class", "y-label")
+            .attr("text-anchor", "middle")
+            .attr("letter-spacing", "1.16")
+            .attr("transform", `translate(${-30}, ${height/2}) rotate(-90)`)
+            .text("Number of Patients");
 
         //Line generator and drawing
         const line = d3.line()
