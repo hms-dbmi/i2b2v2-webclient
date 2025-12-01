@@ -33,7 +33,6 @@ export default class LineChart {
                 .classed("svg-body", true)
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
-
         } catch (e) {
             console.error("Error in QueryStatus:LineChart.constructor()", e);
         }

@@ -73,7 +73,7 @@
       "source": "LineChart/LineChart.js",
       "CSS": "LineChart/LineChart.css",
       "iconClass": "bi bi-graph-up",
-      "displayOrder": 100,
+      "displayOrder": 3,
       "class": "linechart",
       "displayForUnregistered": false
     }

@@ -6,7 +6,6 @@
 .component-instance-viz.viztype-LINECHART svg text.y-label {
     fill: var(--text-primary-dark, #000);
     font-size: 10px;
-    pointer-events: none;
 }
 
 /* General text styling inside the chart */
@@ -28,3 +27,8 @@
 .component-instance-viz.viztype-LINECHART svg {
     overflow: visible !important;
 }
+
+.component-instance-viz.viztype-LINECHART svg text.y-label {
+    display: inline !important;
+}
+
