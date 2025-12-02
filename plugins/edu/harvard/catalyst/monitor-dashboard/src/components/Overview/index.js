@@ -23,7 +23,7 @@ export const Overview = () => {
 
     return (
         <div className="Overview">
-            <div className="container">
+            <div className="ProjectOverviewHeader">
                 <Tooltip title={project}>
                     <TextField
                         select
