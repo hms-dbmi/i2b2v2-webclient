@@ -1,0 +1,19 @@
+.Overview {
+  padding: 1.1em 1.4em;
+
+  .ProjectOverviewCount{
+    margin-top: 0.8em;
+    margin-left: 0.6em;
+  }
+
+  .ViewProjectBtn {
+    margin-top: 0.98em;
+    vertical-align: bottom;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}

@@ -16,7 +16,7 @@ export const getStore = () => {
             middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
         });
 
-       // initSagas(sagaMiddleware);
+        initSagas(sagaMiddleware);
     }
     return store;
 }
