@@ -101,7 +101,7 @@ export default class PatientCountMap {
 
             if (typeof inputData === 'undefined') {
                 // no data has been set... exit
-                if (this.data === null || Object.keys(this.data).length === 0) return;
+                if (this.data === null || Object.keys(this.data).length === 0) return false;
             } else {
                 // get the breakdown data information (if present)
                 let resultXML = i2b2.h.XPath(inputData, "//xml_value");
@@ -142,12 +142,12 @@ export default class PatientCountMap {
                                 radius: scalePatientCount
                             }).addTo(this.map);
 
-                        let toolTip = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(siteResult.count, siteResult.floorThresholdNumber, siteResult.obfuscatedDisplayNumber) + " Patients at " + siteResult.site;
-                        circle.bindPopup(toolTip);
-                    }
-                })
+                            let toolTip = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(siteResult.count, siteResult.floorThresholdNumber, siteResult.obfuscatedDisplayNumber) + " Patients at " + siteResult.site;
+                            circle.bindPopup(toolTip);
+                        }
+                    });
+                }
             }
-
         } catch (e) {
             console.error("Error in QueryStatus:PatientCountMap.update()", e);
         }
