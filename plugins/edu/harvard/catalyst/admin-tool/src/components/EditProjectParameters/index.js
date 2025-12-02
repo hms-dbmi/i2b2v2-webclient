@@ -133,6 +133,7 @@ export const EditProjectParameters = ({selectedProject,
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
                 predefinedParams={predefinedParams}
+                paramTableName={"PM_PROJECT_PARAMS"}
             />
         </div>
     );
