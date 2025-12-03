@@ -72,7 +72,13 @@
       "hideZeros": true
     },
     "TABLE": true,
-    "DOWNLOAD": true
+    "DOWNLOAD": true,
+    "LINECHART": {
+      "hideEntries": [
+        ">= 85 years old",
+        ">= 65 years old"
+      ]
+    }
   },
   "PATIENT_AGE_COUNT_SHRINE_XML": {
     "BARS": true,
