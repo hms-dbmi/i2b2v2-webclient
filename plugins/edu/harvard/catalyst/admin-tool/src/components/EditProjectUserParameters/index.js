@@ -58,6 +58,7 @@ export const EditProjectUserParameters = ({selectedProject,
                 saveStatusConfirm={saveStatusConfirm}
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
+                paramTableName={"PM_PROJECT_USER_PARAMS"}
             />
         </div>
     );

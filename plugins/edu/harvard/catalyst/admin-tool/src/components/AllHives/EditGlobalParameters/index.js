@@ -84,6 +84,7 @@ export const EditGlobalParameters = ({allHives,
                 customActionsHandler={handleConfigureAuth}
                 customActionsBtnOption={{startIcon: <AddIcon />}}
                 predefinedParams={predefinedParams}
+                paramTableName={"PM_GLOBAL_PARAMS"}
             />
             {showAuthConfig && <AuthenticationConfigModal onOk={onClose} onCancel={onClose}/>}
         </div>
