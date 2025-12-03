@@ -113,7 +113,13 @@ export default class LineChart {
             .call(d3.axisBottom(xScale))
             .selectAll("text")
             .attr("transform", "rotate(-45)")
-            .style("text-anchor", "end");
+            .style("text-anchor", "end")
+            .append("title")
+            .text((label, i) => {
+                const val = points[i].display ?? points[i].value;
+                return `${label}\n[ ${val} patients ]`;
+            });
+
 
         // Y Axis
         const yAxis = g.append("g")
@@ -154,9 +160,11 @@ export default class LineChart {
             .attr("fill", "steelblue")
             .append("title")
             .text(d => {
-                const v = d.display ?? d.value.toLocaleString();
-                return `${d.name}\n${v} patients`;
+                let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(d.value);
+                if (d.display) val = d.display;
+                return `[ ${val} patients ]\n${d.name.trim()}`;
             });
+
 
         // Resize container
 
@@ -238,7 +246,9 @@ let parseData = function (xmlData, advancedConfig) {
             .trim();
 
         entryRecord.value = p.firstChild.nodeValue;
-        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value);
+        const floorThreshold = p.getAttribute("floorThresholdNumber");
+        const obfuscateNumber = p.getAttribute("obfuscatedDisplayNumber");
+        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, floorThreshold, obfuscateNumber);
 
         // Server-specified `display` attribute override
         if (typeof p.attributes.display !== "undefined") {
