@@ -72,7 +72,13 @@
       "hideZeros": true
     },
     "TABLE": true,
-    "DOWNLOAD": true
+    "DOWNLOAD": true,
+    "LINECHART": {
+      "hideEntries": [
+        ">= 85 years old",
+        ">= 65 years old"
+      ]
+    }
   },
   "PATIENT_AGE_COUNT_SHRINE_XML": {
     "BARS": true,
@@ -85,6 +91,16 @@
         ">= 65 years old"
       ],
       "hideZeros": true
+    },
+    "LINECHART": {
+      "hideEntries": [
+        "(children) < 18 years old",
+        "(adults) >= 18 years old",
+        ">= 90 years old",
+        ">= 85 years old",
+        ">= 65 years old",
+        "Not recorded"
+      ]
     },
     "TABLE": true,
     "DOWNLOAD": true
