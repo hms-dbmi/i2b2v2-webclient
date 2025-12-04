@@ -94,6 +94,9 @@
     },
     "LINECHART": {
       "hideEntries": [
+        "(children) < 18 years old",
+        "(adults) >= 18 years old",
+        ">= 90 years old",
         ">= 85 years old",
         ">= 65 years old"
       ]
