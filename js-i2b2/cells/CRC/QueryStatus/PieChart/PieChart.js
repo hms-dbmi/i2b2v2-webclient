@@ -202,7 +202,7 @@ export default class PieChart {
             }
 
             // only continue if we have data
-            if (typeof this.data !== 'object' || this.data === null) return;
+            if (typeof this.data !== 'object' || this.data === null) return false;
 
             // -----------------------------------------------------------------------------------------------------
             this.key = (d) => d.data.name;

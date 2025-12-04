@@ -43,7 +43,7 @@ export default class Table {
         try {
             if (typeof inputData === 'undefined') {
                 // no data has been set... exit
-                if (this.data === null || Object.keys(this.data).length === 0) return;
+                if (this.data === null || Object.keys(this.data).length === 0) return false;
             } else {
                 // get the breakdown data information (if present)
                 let resultXML = i2b2.h.XPath(inputData, "//xml_value");
@@ -51,7 +51,7 @@ export default class Table {
                     resultXML = resultXML[0].firstChild.nodeValue;
                     // parse the data and put the results into the new data slot
                     this.data = parseData(resultXML);
-                    if (typeof this.data === 'undefined') return;
+                    if (typeof this.data === 'undefined') return false;
                 }
             }
 

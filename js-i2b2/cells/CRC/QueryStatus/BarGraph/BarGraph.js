@@ -43,7 +43,7 @@ export default class BarGraph {
         try {
             if (typeof inputData === 'undefined') {
                 // no data has been set... exit
-                if (Object.keys(this.data.new).length === 0) return;
+                if (Object.keys(this.data.new).length === 0) return false;
             } else {
                 // shift previous data into the old data slot
                 this.data.old = this.data.new;
@@ -55,7 +55,7 @@ export default class BarGraph {
                     // parse the data and put the results into the new data slot
                     this.data.new = parseData(resultXML);
                 }
-                if (typeof this.data.new === 'undefined') return;
+                if (typeof this.data.new === 'undefined') return false;
             }
 
             // update the bar graph
@@ -110,8 +110,8 @@ export default class BarGraph {
             var y = d3.scaleLinear()
                 .domain([0, maxValue])
                 .range([ height, 0]);
-            // build the Y axis
 
+            // build the Y axis
             svg.select(".y-axis").remove();
             let y_axis = svg.append("g")
                 .classed("y-axis", true)

@@ -21,7 +21,7 @@ export default class Download {
         try {
             if (typeof inputData === 'undefined') {
                 // no data has been set... exit
-                return;
+                return false;
             } else {
                 // get the breakdown data information (if present)
                 let resultXML = i2b2.h.XPath(inputData, "//xml_value");

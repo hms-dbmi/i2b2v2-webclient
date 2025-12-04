@@ -491,7 +491,7 @@ export default class ZipcodeMap {
 
 
     show() {
-        if (this.errors) return;
+        if (this.errors) return false;
         try {
             this.isVisible = true;
             if (typeof this.config.parentTitleEl !== 'undefined') this.config.parentTitleEl.innerHTML = this.record.title;
