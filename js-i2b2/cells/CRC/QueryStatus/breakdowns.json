@@ -92,6 +92,12 @@
       ],
       "hideZeros": true
     },
+    "LINECHART": {
+      "hideEntries": [
+        ">= 85 years old",
+        ">= 65 years old"
+      ]
+    },
     "TABLE": true,
     "DOWNLOAD": true
   },
