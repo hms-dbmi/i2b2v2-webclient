@@ -47,7 +47,8 @@ export const EditParameters = ({
                                    customActions,
                                    customActionsHandler,
                                    customActionsBtnOption,
-                                   predefinedParams
+                                   predefinedParams,
+                                   paramTableName
 }) => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [showStatus, setShowStatus] = useState(false);
@@ -319,7 +320,7 @@ export const EditParameters = ({
             getActions: ({ id, row }) => {
                 const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
-                const predefParam = predefinedParams.find(p => p.label === row.name);
+                const predefParam = predefinedParams && predefinedParams.find(p => p.label === row.name);
 
                 let infoAction = null;
                 if(predefParam?.description){
@@ -460,10 +461,10 @@ export const EditParameters = ({
 
     const isCellEditable = (params) => {
         const notExistingParam = (params.field !== "name" || (params.field === "name" && !params.row.internalId));
-        const notPredefinedParam = (params.field !== "dataType" ||  predefinedParams.filter(p => {
+        const notPredefinedParam = (params.field !== "dataType" ||   (predefinedParams && predefinedParams.filter(p => {
             const name = p.label ? p.label: p;
             return name === params.row.name
-        }).length === 0);
+        }).length === 0));
 
         return  notExistingParam && notPredefinedParam;
     }
@@ -601,12 +602,18 @@ export const EditParameters = ({
                         </Button>
                     }
 
-                <FormGroup className={"InactiveParamsToggle"}>
-                        <FormControlLabel
-                            onChange={handleToggleDeletedParams}
-                            control={<Switch defaultChecked />
-                        } checked={showDeletedParams} label={"Show inactive parameters"}/>
-                    </FormGroup>
+                <FormGroup className={"ParameterOptions"}>
+                    <FormControlLabel
+                        onChange={handleToggleDeletedParams}
+                        control={<Switch defaultChecked />
+                    } checked={showDeletedParams} label={"Show inactive parameters"}/>
+
+                    <Tooltip title={"Referenced table is " + paramTableName} className={"P1aramTableInfoTooltip"}>
+                        <IconButton>
+                            <InfoOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
+                </FormGroup>
 
             </div>
             {displayParamsTable()}

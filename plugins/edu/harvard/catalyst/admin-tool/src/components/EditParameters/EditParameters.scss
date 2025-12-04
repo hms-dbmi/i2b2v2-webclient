@@ -55,11 +55,11 @@
     padding: 0.6em;
   }
 
-  .InactiveParamsToggle {
+  .ParameterOptions {
     float: right;
     margin-top: 1.2em;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-end;
   }
 

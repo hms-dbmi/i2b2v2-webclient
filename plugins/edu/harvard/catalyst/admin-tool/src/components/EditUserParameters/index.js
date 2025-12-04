@@ -79,6 +79,7 @@ export const EditUserParameters = ({selectedUser,
                 paginationModel={paginationModel}
                 setPaginationModel={setPaginationModel}
                 predefinedParams={predefinedParams}
+                paramTableName={"PM_USER_PARAMS"}
             />
         </div>
     );
