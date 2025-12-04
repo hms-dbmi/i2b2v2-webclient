@@ -53,13 +53,8 @@ export default class Summary {
         }
     }
 
-    redraw(width) {
-        try {
-            this.config.displayEl.offsetWidth
-        } catch(e) {
-            console.error("Error in QueryStatus:Summary.redraw()");
-        }
-    }
+    redraw(width) {}
+
     show() {
         // this is executed before a render and/or displaying of this visualization.
         // returning false will cancel the selection and (re)displaying of this visualization
