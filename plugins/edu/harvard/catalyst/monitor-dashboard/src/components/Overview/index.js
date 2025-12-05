@@ -71,7 +71,7 @@ export const Overview = () => {
                     />
                 </Tooltip>
                 <Button className={"ViewProjectBtn"} variant="outlined" size="small">View</Button>
-                <div className={"ProjectOverviewCount"}>{project === ALL_PROJECTS ? "Viewing " + projects.projectList.length + " Projects": ""}</div>
+                <div className={"ProjectOverviewCount"}>{!projects.isFetching && project.id === ALL_PROJECTS ? "Viewing " + projects.projectList.length + " Projects": "Viewing 1 project"}</div>
             </div>
             <Grid className={"ProjectOverviewInfoGrid"} container spacing={5}>
                 <Grid size={3}>
