@@ -76,7 +76,16 @@
       "displayOrder": 3,
       "class": "linechart",
       "displayForUnregistered": false
-    }
+    },
+    "INFECTIOUS_TIMELINE": {
+    "name": "Infectious Disease Timeline",
+    "source": "InfectiousTimeline/InfectiousTimeline.js",
+    "CSS": "InfectiousTimeline/InfectiousTimeline.css",
+    "iconClass": "bi bi-virus2",
+    "displayOrder": 3,
+    "class": "infectious-timeline",
+    "displayForUnregistered": false
+    } 
   },
   "displayOrder": [
     "INTERNAL_SUMMARY",
