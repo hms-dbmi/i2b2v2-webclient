@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {
+    Autocomplete,
     Box,
     Button,
     Card,
     CardContent,
     CircularProgress,
     Grid,
-    MenuItem,
+    Paper,
     TextField,
     Tooltip,
     Typography
@@ -22,9 +23,10 @@ export const Overview = () => {
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const projects  = useSelector((state) => state.projects);
     const userSessions  = useSelector((state) => state.userSessions);
-
     const ALL_PROJECTS = "ALL_PROJECTS";
-    const [project, setProject] = React.useState(ALL_PROJECTS);
+    const allProjects = [{id: ALL_PROJECTS, name: ALL_PROJECTS}];
+    const [project, setProject] = React.useState(allProjects[0]);
+    const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
 
     useEffect(() => {
         if (isI2b2LibLoaded) {
@@ -33,33 +35,40 @@ export const Overview = () => {
         }
     }, [isI2b2LibLoaded]);
 
+
+    useEffect(() => {
+        const projs = [...allProjects, ...projects.projectList];
+        setProjectListOptions(projs);
+    }, [projects.projectList]);
+
     return (
         <div className="Overview">
             <div className="ProjectOverviewHeader">
-                <Tooltip title={project}>
-                    <TextField
-                        select
-                        value={project}
-                        label="View Activity Overview for:"
-                        onChange={(event)=> {
-                            setProject(event.target.value);
+                <Tooltip title={project ? project.name : ""}>
+                   <Autocomplete
+                       getOptionLabel={(option) => option.name}
+                        getOptionKey={(option) => option.id}
+                        value={project ? project : {id: "", name: ""}}
+                        options={ projectListOptions }
+                        onChange={(event, value) => {
+                            setProject(value);
                         }}
-                        variant="standard"
-                        size="large"
-                        sx={{ minWidth: 220, maxWidth: 520 }}
-                        InputLabelProps={{
-                            style: { fontSize: 22, fontWeight: "bold" },
-                        }}
-                    >
-                        <MenuItem key={ALL_PROJECTS} value={ALL_PROJECTS}>
-                            All Projects
-                        </MenuItem>
-                        {projects.projectList.map((option) => (
-                            <MenuItem key={option.id} value={option.id}>
-                                {option.name}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                       sx={{ minWidth: 320, maxWidth: 540 }}
+                       PaperComponent={props => (
+                            <Paper {...props} className={"ProjectOverviewSuggest"}/>
+                        )}
+                        renderInput={(params) => (
+                            <TextField
+                                label="View Activity Overview for:"
+                                variant={"standard"}
+                                {...params}
+                                InputLabelProps={{
+                                    style: { fontSize: 22, fontWeight: "bold" },
+                                    shrink: true,
+                                }}
+                            />
+                        )}
+                    />
                 </Tooltip>
                 <Button className={"ViewProjectBtn"} variant="outlined" size="small">View</Button>
                 <div className={"ProjectOverviewCount"}>{project === ALL_PROJECTS ? "Viewing " + projects.projectList.length + " Projects": ""}</div>
