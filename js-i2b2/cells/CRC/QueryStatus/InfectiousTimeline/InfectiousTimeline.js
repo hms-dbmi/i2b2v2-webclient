@@ -1,6 +1,6 @@
 const margin = { top: 20, right: 20, bottom: 70, left: 60 };
 
-export default class LineChart {
+export default class InfectiousTimeline {
 
     constructor(componentConfig, qrsRecordInfo, qrsData) {
         try {
@@ -34,7 +34,7 @@ export default class LineChart {
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
         } catch (e) {
-            console.error("Error in QueryStatus:LineChart.constructor()", e);
+            console.error("Error in QueryStatus:InfectiousTimeline.constructor()", e);
         }
     }
 
@@ -174,7 +174,7 @@ export default class LineChart {
         }
 
     } catch (e) {
-        console.error("Error in QueryStatus:LineChart.update()", e);
+        console.error("Error in QueryStatus:InfectiousTimeline.update()", e);
         return false;
     }
 
@@ -188,7 +188,7 @@ export default class LineChart {
             this.width = width;
             this.update();
         } catch (e) {
-            console.error("Error in QueryStatus:LineChart.redraw()", e);
+            console.error("Error in QueryStatus:InfectiousTimeline.redraw()", e);
         }
     }
 
@@ -207,7 +207,7 @@ export default class LineChart {
 
             return true;
         } catch (e) {
-            console.error("Error in QueryStatus:LineChart.show()", e);
+            console.error("Error in QueryStatus:InfectiousTimeline.show()", e);
         }
     }
 
@@ -219,7 +219,7 @@ export default class LineChart {
             this.isVisible = false;
             return true;
         } catch (e) {
-            console.error("Error in QueryStatus:LineChart.hide()", e);
+            console.error("Error in QueryStatus:InfectiousTimeline.hide()", e);
         }
     }
 }
