@@ -1,5 +1,5 @@
 .Overview {
-  padding: 1.1em 1.4em;
+  padding: 1.3em 1.4em;
 
   .ProjectOverviewCount{
     margin-top: 0.8em;
@@ -15,5 +15,28 @@
     display: flex;
     align-items: center;
     gap: 10px;
+  }
+
+  .ProjectOverviewInfoGrid {
+    margin-top: 2.3em;
+  }
+
+  .ProjectOverviewInfo {
+    height: 10em;
+    width: 10em;
+    background-color: #f8f8f875;
+    .ProjectOverviewInfoContent {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      justify-content: center;
+      height: 9em;
+    }
+  }
+
+  .UserSessionCount {
+    font-weight: bold;
+    font-size: 1.2em;
   }
 }
