@@ -31,7 +31,7 @@ export const MonitorDashboard = () => {
         if (!isI2b2LibLoaded) {
             window.addEventListener('I2B2_READY', i2b2LibLoaded);
         } else {
-            console.log("i2b2 is loaded");
+            console.log("i2b2 lib is loaded");
         }
     }, [isI2b2LibLoaded]);
 

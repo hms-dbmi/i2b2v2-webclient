@@ -28,6 +28,7 @@ export const projectsSlice = createSlice({
                     path: project.path
                 }));
             })
+            projects.sort((a, b) => a.name.localeCompare(b.name));
 
             state.projectList = projects;
         },
