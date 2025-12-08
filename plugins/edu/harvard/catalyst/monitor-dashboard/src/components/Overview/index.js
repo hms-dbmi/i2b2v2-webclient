@@ -41,6 +41,16 @@ export const Overview = () => {
         setProjectListOptions(projs);
     }, [projects.projectList]);
 
+    const getProjectCountText = () => {
+        if(!projects.isFetching && project.id === ALL_PROJECTS){
+            return "Viewing " + projects.projectList.length + " Projects";
+        }else if(!projects.isFetching && project.id !== ""){
+            return "Viewing 1 Project";
+        }
+        else {
+            return "";
+        }
+    }
     return (
         <div className="Overview">
             <div className="ProjectOverviewHeader">
@@ -51,6 +61,9 @@ export const Overview = () => {
                         value={project ? project : {id: "", name: ""}}
                         options={ projectListOptions }
                         onChange={(event, value) => {
+                            if(!value){
+                                value = {id: "", name: ""};
+                            }
                             setProject(value);
                         }}
                        sx={{ minWidth: 320, maxWidth: 540 }}
@@ -71,7 +84,7 @@ export const Overview = () => {
                     />
                 </Tooltip>
                 <Button className={"ViewProjectBtn"} variant="outlined" size="small">View</Button>
-                <div className={"ProjectOverviewCount"}>{!projects.isFetching && project.id === ALL_PROJECTS ? "Viewing " + projects.projectList.length + " Projects": "Viewing 1 project"}</div>
+                <div className={"ProjectOverviewCount"}>{getProjectCountText()}</div>
             </div>
             <Grid className={"ProjectOverviewInfoGrid"} container spacing={5}>
                 <Grid size={3}>
