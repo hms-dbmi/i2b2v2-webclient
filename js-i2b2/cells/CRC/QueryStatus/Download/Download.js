@@ -157,8 +157,10 @@ let parseData = function(xmlData) {
     for (let i2 = 0; i2 < params.length; i2++) {
         let entryRecord = {}
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text();
-        entryRecord.value = parseInt(params[i2].firstChild.nodeValue);
-        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(params[i2].firstChild.nodeValue);
+        entryRecord.value = params[i2].firstChild.nodeValue;
+        entryRecord.floorThreshold = params[i2].getAttribute("floorThresholdNumber");
+        entryRecord.obfuscateNumber = params[i2].getAttribute("obfuscatedDisplayNumber");
+        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, entryRecord.floorThreshold, entryRecord.obfuscateNumber);
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
             entryRecord.value = i2b2.h.Unescape(entryRecord.value);
@@ -188,7 +190,8 @@ let parseData = function(xmlData) {
                 for (let siteresult of siteResults) {
                     siteData.results.push({
                         name: $('<div>').html(siteresult.getAttribute('column')).text(),
-                        value: parseInt(siteresult.textContent)
+                        value: parseInt(siteresult.textContent),
+                        display: i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(siteresult.textContent, siteData.floorThresholdNumberX, siteData.obfuscatedDisplayNumber)
                     });
                 }
             }
@@ -199,3 +202,36 @@ let parseData = function(xmlData) {
 
     return breakdown;
 }
+
+
+// <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+// <ns10:i2b2_result_envelope>
+//     <body>
+//         <ns10:result name="PATIENT_SEX_COUNT_SHRINE_XML">
+//             <data column="Ambiguous" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
+//             <data column="Female" floorThresholdNumber="20" obfuscatedDisplayNumber="6">38350</data>
+//             <data column="Male" floorThresholdNumber="20" obfuscatedDisplayNumber="6">37360</data>
+//             <data column="No Infomation" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
+//             <data column="Other" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
+//             <data column="X (Eg. Nonbinary, AGender, etc)" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
+//         </ns10:result>
+//         <SHRINE sites="2" complete="2" error="0">
+//             <site name="Site 1" status="Completed" binsize="5" stdDev="6.500000000000000e+000" obfuscatedDisplayNumber="10" floorThresholdNumber="10">
+//                 <siteresult column="No Infomation" type="int">0</siteresult>
+//                 <siteresult column="Female" type="int">19180</siteresult>
+//                 <siteresult column="X (Eg. Nonbinary, AGender, etc)" type="int">0</siteresult>
+//                 <siteresult column="Other" type="int">0</siteresult>
+//                 <siteresult column="Male" type="int">18680</siteresult>
+//                 <siteresult column="Ambiguous" type="int">0</siteresult>
+//             </site>
+//             <site name="Site 2" status="Completed" binsize="5" stdDev="6.500000000000000e+000" obfuscatedDisplayNumber="10" floorThresholdNumber="10">
+//                 <siteresult column="No Infomation" type="int">0</siteresult>
+//                 <siteresult column="Female" type="int">19170</siteresult>
+//                 <siteresult column="X (Eg. Nonbinary, AGender, etc)" type="int">0</siteresult>
+//                 <siteresult column="Other" type="int">0</siteresult>
+//                 <siteresult column="Male" type="int">18680</siteresult>
+//                 <siteresult column="Ambiguous" type="int">0</siteresult>
+//             </site>
+//         </SHRINE>
+//     </body>
+// </ns10:i2b2_result_envelope>
