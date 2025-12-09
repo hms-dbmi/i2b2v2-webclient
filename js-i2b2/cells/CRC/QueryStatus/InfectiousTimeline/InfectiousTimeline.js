@@ -1,16 +1,18 @@
 const margin = { top: 20, right: 20, bottom: 70, left: 60 };
 
 export default class InfectiousTimeline {
-
     constructor(componentConfig, qrsRecordInfo, qrsData) {
         try {
             this.config = componentConfig;
             this.record = qrsRecordInfo;
 
+            // --- Parse initial data (if any) ---
             let processedData = {};
-            if (qrsData !== null &&
+            if (
+                qrsData !== null &&
                 typeof qrsData === "object" &&
-                qrsData.constructor.name === "XMLDocument") {
+                qrsData.constructor.name === "XMLDocument"
+            ) {
                 let resultXML = i2b2.h.XPath(qrsData, "//xml_value");
                 if (resultXML.length > 0) {
                     resultXML = resultXML[0].firstChild.nodeValue;
@@ -21,18 +23,40 @@ export default class InfectiousTimeline {
             this.data = { old: processedData, new: processedData };
             this.isVisible = false;
 
-            // Width follows BarGraph convention
-            this.width = this.config.displayEl.parentElement.clientWidth;
-            this.height = 400;
+            // Dimensions (similar to BarGraph/LineChart)
+            if (typeof this.width === "undefined") {
+                this.width = this.config.displayEl.parentElement.clientWidth;
+            }
+            this.height = 400 - margin.top - margin.bottom;
 
-            this.svg = d3.select(this.config.displayEl)
+            // --- Controls (may be absent in early phases) ---
+            this.controls = {
+                disease: document.getElementById("infDiseaseSelect") || null,
+                site: document.getElementById("siteSelect") || null,
+                overlay: document.getElementById("overlaySelect") || null
+            };
+
+            if (this.controls.disease) {
+                this.controls.disease.addEventListener("change", () => this.update());
+            }
+            if (this.controls.site) {
+                this.controls.site.addEventListener("change", () => this.update());
+            }
+            if (this.controls.overlay) {
+                this.controls.overlay.addEventListener("change", () => this.update());
+            }
+
+            // --- SVG scaffolding ---
+            this.svgRoot = d3
+                .select(this.config.displayEl)
                 .append("svg")
                 .attr("width", "100%")
-                .attr("height", this.height + margin.top + margin.bottom)
+                .attr("height", this.height + margin.top + margin.bottom);
+
+            this.svg = this.svgRoot
                 .append("g")
                 .classed("svg-body", true)
                 .attr("transform", `translate(${margin.left},${margin.top})`);
-
         } catch (e) {
             console.error("Error in QueryStatus:InfectiousTimeline.constructor()", e);
         }
@@ -47,140 +71,173 @@ export default class InfectiousTimeline {
     }
 
     // ------------------------------------------------------------------
-   update(inputData) {
-    try {
+    update(inputData) {
+        try {
+            // --- Load / refresh breakdown data ---
+            if (typeof inputData === "undefined") {
+                if (!this.data.new || Object.keys(this.data.new).length === 0) return;
+            } else {
+                // shift previous data
+                this.data.old = this.data.new;
 
-        //Load incoming breakdown data
-
-        if (typeof inputData === "undefined") {
-            if (Object.keys(this.data.new).length === 0) return;
-        } else {
-            this.data.old = this.data.new;
-
-            let resultXML = i2b2.h.XPath(inputData, "//xml_value");
-            if (resultXML.length > 0) {
-                resultXML = resultXML[0].firstChild.nodeValue;
-                this.data.new = parseData(resultXML, this.config.advancedConfig);
+                let resultXML = i2b2.h.XPath(inputData, "//xml_value");
+                if (resultXML.length > 0) {
+                    resultXML = resultXML[0].firstChild.nodeValue;
+                    this.data.new = parseData(resultXML, this.config.advancedConfig);
+                }
+                if (!this.data.new) return;
             }
-            if (!this.data.new) return;
+
+            const raw = this.data.new.result;
+            if (!raw || raw.length === 0) return;
+
+            // --- Read current filter selections (with safe fallbacks) ---
+            const selectedDisease = this.controls.disease
+                ? this.controls.disease.value
+                : "(All)";
+
+            const selectedSite = this.controls.site
+                ? this.controls.site.value
+                : "(Combined)";
+
+            const selectedOverlay = this.controls.overlay
+                ? this.controls.overlay.value
+                : "(None)";
+
+            // --- Apply filtering ---
+            const filtered = filterBreakdown(raw, selectedDisease, selectedSite);
+
+            // --- Draw chart with filtered data ---
+            this.draw(filtered, selectedOverlay);
+
+            // Resize container height to fit viz
+            if (this.isVisible) {
+                this.config.displayEl.parentElement.style.height =
+                    this.config.displayEl.scrollHeight + "px";
+            }
+        } catch (e) {
+            console.error("Error in QueryStatus:InfectiousTimeline.update()", e);
+            return false;
+        }
+        return true;
+    }
+
+    // ------------------------------------------------------------------
+    draw(records, selectedOverlay) {
+        // TODO: hook selectedOverlay into wastewater overlay once the API is wired
+        if (!records || records.length === 0) {
+            this.svg.selectAll("*").remove();
+            return;
         }
 
-        const raw = this.data.new.result;
-        if (!raw || raw.length === 0) return;
+        // --- Dimensions ---
+        const width = this.width - margin.left - margin.right;
+        const height = this.height; // already margin-adjusted in constructor
 
-
-        // Normalize into points
-
-        const points = raw.map(r => ({
-            name: r.name.trim(),
-            value: Number(r.value),
-            display: r.display ?? null
-        }));
-
-        // Clear old SVG contents
-
+        // --- Clear previous contents ---
         this.svg.selectAll("*").remove();
 
+        // --- Group by disease -> multiple curves ---
+        const seriesByDisease = d3.group(records, d => d.disease);
 
-        // Dimensioning
+        // --- X scale (time) ---
+        const allDates = records.map(d => d.date);
+        const xExtent = d3.extent(allDates);
+        const xScale = d3
+            .scaleTime()
+            .domain(xExtent)
+            .range([0, width]);
 
-        const width = this.width - margin.left - margin.right;
-        const height = this.height - margin.top - margin.bottom;
-
-        const g = this.svg
-            .attr("transform", `translate(${margin.left},${margin.top})`);
-
-        // Scales
-
-        const xScale = d3.scalePoint()
-            .domain(points.map(p => p.name))
-            .range([0, width])
-            .padding(0.5);
-
-        const maxY = d3.max(points, d => d.value);
-        const yScale = d3.scaleLinear()
+        // --- Y scale (patient counts) ---
+        const maxY = d3.max(records, d => d.value);
+        const yScale = d3
+            .scaleLinear()
             .domain([0, maxY])
+            .nice()
             .range([height, 0]);
 
-        //Axes
-        g.selectAll(".x-axis").remove();
-        g.selectAll(".y-axis").remove();
-
-        // X-Axis
-        g.append("g")
+        // --- Axes ---
+        // X axis
+        this.svg
+            .append("g")
             .classed("x-axis", true)
             .attr("transform", `translate(0, ${height})`)
-            .call(d3.axisBottom(xScale))
+            .call(
+                d3
+                    .axisBottom(xScale)
+                    .ticks(10)
+                    .tickFormat(d3.timeFormat("%Y-%m"))
+            )
             .selectAll("text")
             .attr("transform", "rotate(-45)")
-            .style("text-anchor", "end")
-            .append("title")
-            .text((label, i) => {
-                const val = points[i].display ?? points[i].value;
-                return `${label}\n[ ${val} patients ]`;
-            });
+            .style("text-anchor", "end");
 
-
-        // Y Axis
-        const yAxis = g.append("g")
+        // Y axis
+        const yAxis = this.svg
+            .append("g")
             .classed("y-axis", true)
             .call(d3.axisLeft(yScale).tickFormat(d3.format(".2~s")));
 
-            
-        // --- Y AXIS LABEL (copy BarGraph behavior) ---
-        yAxis.selectAll("text.y-label").remove(); 
-
-        yAxis.append("text")
+        // Y-axis label (like BarGraph / LineChart)
+        yAxis
+            .append("text")
             .attr("class", "y-label")
             .attr("text-anchor", "middle")
             .attr("letter-spacing", "1.16")
-            .attr("transform", `translate(${-30}, ${height/2}) rotate(-90)`)
+            .attr("transform", `translate(${-30}, ${height / 2}) rotate(-90)`)
             .text("Number of Patients");
 
-        //Line generator and drawing
-        const line = d3.line()
-            .x(d => xScale(d.name))
+        // --- Color scale for diseases ---
+        const diseases = Array.from(seriesByDisease.keys());
+        const color = d3
+            .scaleOrdinal()
+            .domain(diseases)
+            .range(d3.schemeCategory10);
+
+        // --- Line generator ---
+        const line = d3
+            .line()
+            .x(d => xScale(d.date))
             .y(d => yScale(d.value));
 
-        g.append("path")
-            .datum(points)
-            .attr("fill", "none")
-            .attr("stroke", "steelblue")
-            .attr("stroke-width", 2)
-            .attr("d", line);
+        // --- Draw each disease series ---
+        for (let [disease, rows] of seriesByDisease.entries()) {
+            // Sort rows by date to ensure a proper line
+            rows = rows.slice().sort((a, b) => a.date - b.date);
 
-        // Circles + tooltips
-        g.selectAll("circle")
-            .data(points)
-            .enter()
-            .append("circle")
-            .attr("cx", d => xScale(d.name))
-            .attr("cy", d => yScale(d.value))
-            .attr("r", 4)
-            .attr("fill", "steelblue")
-            .append("title")
-            .text(d => {
-                let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(d.value);
-                if (d.display) val = d.display;
-                return `[ ${val} patients ]\n${d.name.trim()}`;
-            });
+            // Path
+            this.svg
+                .append("path")
+                .datum(rows)
+                .attr("fill", "none")
+                .attr("stroke", color(disease))
+                .attr("stroke-width", 2)
+                .attr("d", line);
 
-
-        // Resize container
-
-        if (this.isVisible) {
-            this.config.displayEl.parentElement.style.height =
-                this.config.displayEl.scrollHeight + "px";
+            // Points + tooltips
+            this.svg
+                .selectAll(`circle.point-${cssSafeKey(disease)}`)
+                .data(rows)
+                .enter()
+                .append("circle")
+                .attr("class", `timeline-point point-${cssSafeKey(disease)}`)
+                .attr("cx", d => xScale(d.date))
+                .attr("cy", d => yScale(d.value))
+                .attr("r", 4)
+                .attr("fill", color(disease))
+                .append("title")
+                .text(d => {
+                    // use precomputed display, but fall back to obfuscation
+                    let val = d.display;
+                    if (!val) {
+                        val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(
+                            d.value
+                        );
+                    }
+                    return `${d.disease} — ${d.dateStr}\n[ ${val} patients ]`;
+                });
         }
-
-    } catch (e) {
-        console.error("Error in QueryStatus:InfectiousTimeline.update()", e);
-        return false;
     }
-
-    return true;
-}
-
 
     // ------------------------------------------------------------------
     redraw(width) {
@@ -224,9 +281,8 @@ export default class InfectiousTimeline {
     }
 }
 
-
 // ======================================================================
-// parseData — combined aspects of bargraph and piechart
+// parseData — parse InfectiousTimeline breakdown into structured rows
 // ======================================================================
 
 let parseData = function (xmlData, advancedConfig) {
@@ -238,47 +294,77 @@ let parseData = function (xmlData, advancedConfig) {
     if (params.length === 0) return breakdown;
 
     for (let p of params) {
-        let entryRecord = {};
+        // Example column: "COVID|2020-01-05"
+        let column = p.getAttribute("column");
+        if (!column) continue;
 
-        entryRecord.name = $('<div>')
-            .html(p.getAttribute("column"))
-            .text()
-            .trim();
+        let [disease, dateStr] = column.split("|");
+        if (!disease || !dateStr) continue;
 
-        entryRecord.value = p.firstChild.nodeValue;
+        disease = disease.trim();
+        dateStr = dateStr.trim();
+
+        let date = new Date(dateStr);
+
+        // Optional site attribute if the breakdown provides it
+        let site =
+            p.getAttribute("site") ||
+            p.getAttribute("SITE") ||
+            p.getAttribute("siteId") ||
+            "(Combined)";
+
+        // Numeric value
+        let value = parseInt(p.textContent);
+        value = isNaN(value) ? 0 : value;
+
+        // New obfuscation signature
         const floorThreshold = p.getAttribute("floorThresholdNumber");
         const obfuscateNumber = p.getAttribute("obfuscatedDisplayNumber");
-        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, floorThreshold, obfuscateNumber);
+        let display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(
+            value,
+            floorThreshold,
+            obfuscateNumber
+        );
 
-        // Server-specified `display` attribute override
+        // Server-specified display override
         if (typeof p.attributes.display !== "undefined") {
-            entryRecord.value = i2b2.h.Unescape(entryRecord.value);
-            entryRecord.display = p.attributes.display.textContent;
+            value = i2b2.h.Unescape(value);
+            display = p.attributes.display.textContent;
         }
 
-        // Advanced filtering rules
+        // Advanced filtering
         let include = true;
-
-        if (advancedConfig !== undefined) {
+        if (advancedConfig) {
             // hideZeros
-            if (advancedConfig.hideZeros === true &&
-                parseInt(entryRecord.value) === 0) {
+            if (advancedConfig.hideZeros === true && value === 0) {
                 include = false;
             }
 
-            // hideEntries
-            if (Array.isArray(advancedConfig.hideEntries) &&
-                advancedConfig.hideEntries.includes(entryRecord.name.trim())) {
-                include = false;
+            // hideEntries (match on disease or full column label)
+            if (Array.isArray(advancedConfig.hideEntries)) {
+                if (
+                    advancedConfig.hideEntries.includes(disease) ||
+                    advancedConfig.hideEntries.includes(column)
+                ) {
+                    include = false;
+                }
             }
         }
 
-        if (include) {
-            breakdown.result.push(entryRecord);
-        }
+        if (!include) continue;
+
+        breakdown.result.push({
+            disease,
+            date,
+            dateStr,
+            site,
+            value,
+            display
+        });
     }
 
-    // SHRINE section (unchanged)
+    // SHRINE section — unchanged pattern (kept for completeness, though
+    // InfectiousTimeline may or may not need it)
     let ShrineNode = i2b2.h.XPath(xmlData, "descendant::SHRINE");
     if (ShrineNode.length) {
         let ShrineData = {
@@ -289,7 +375,6 @@ let parseData = function (xmlData, advancedConfig) {
 
         for (let site of i2b2.h.XPath(ShrineNode[0], "site")) {
             let siteData = {};
-
             for (let attrib of site.attributes) {
                 siteData[attrib.name] = attrib.value;
             }
@@ -299,14 +384,13 @@ let parseData = function (xmlData, advancedConfig) {
                 siteData.results = [];
                 for (let siteresult of siteResults) {
                     siteData.results.push({
-                        name: $('<div>')
+                        name: $("<div>")
                             .html(siteresult.getAttribute("column"))
                             .text(),
                         value: parseInt(siteresult.textContent)
                     });
                 }
             }
-
             ShrineData.sites.push(siteData);
         }
 
@@ -316,3 +400,34 @@ let parseData = function (xmlData, advancedConfig) {
     return breakdown;
 };
 
+// ======================================================================
+// Helpers
+// ======================================================================
+
+function filterBreakdown(rows, diseaseFilter, siteFilter) {
+    if (!rows) return [];
+
+    return rows.filter(row => {
+        let diseaseOk =
+            !diseaseFilter ||
+            diseaseFilter === "(All)" ||
+            diseaseFilter === "ALL" ||
+            row.disease === diseaseFilter;
+
+        let siteOk =
+            !siteFilter ||
+            siteFilter === "(Combined)" ||
+            siteFilter === "ALL" ||
+            row.site === siteFilter;
+
+        return diseaseOk && siteOk;
+    });
+}
+
+// Make a string safe to use as a CSS class fragment
+function cssSafeKey(str) {
+    return String(str)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}

@@ -37,3 +37,10 @@
     display: inline !important;
 }
 
+.inf-timeline-controls .form-label {
+    font-size: 0.85rem;
+}
+
+.inf-timeline-controls {
+    flex-wrap: wrap; /* allows stacking on small screens */
+}
