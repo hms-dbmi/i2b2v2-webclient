@@ -125,6 +125,7 @@ export const Overview = () => {
                                         onChange={(event) => handleUpdateLoginsSince(event.target.value)}
                                         variant="standard"
                                     >
+                                        <MenuItem value={"1"}>1 day</MenuItem>
                                         <MenuItem value={"7"}>7 days</MenuItem>
                                         <MenuItem value={"30"}>30 days</MenuItem>
                                         <MenuItem value={"60"}>60 days</MenuItem>
