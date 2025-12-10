@@ -12,8 +12,8 @@ import {parseXml} from "../utilities/parseXml";
 //a function that returns a promise
 const getUserSessionsRequest = () => i2b2.ajax.PM.getUserSession({}).then((xmlString) => parseXml(xmlString));
 
-const parseUserSessionsXml = (projectsXml) => {
-    let sessions = projectsXml.getElementsByTagName('user_login');
+const parseUserSessionsXml = (userSessionsXml) => {
+    let sessions = userSessionsXml.getElementsByTagName('user_login');
     let sessionsList = [];
     for (let i = 0; i < sessions.length; i++) {
         const session = sessions[i];
