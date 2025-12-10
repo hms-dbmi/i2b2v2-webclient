@@ -38,6 +38,19 @@ i2b2.Plugin = {
 i2b2.Plugin.itemDropped = function(sdxData, e) {
     const targetId = e.target.id;
 
+    // hide the legend box
+    document.querySelector('.legend-box').classList.add('hidden');
+
+    // clear the data from the map
+    if (i2b2.Plugin.geojson) {
+        document.querySelector('.leaflet-overlay-pane').classList.add('hidden');
+        setTimeout(()=>{
+            i2b2.Plugin.geojson.clearLayers();
+            i2b2.Plugin.map.removeLayer(i2b2.Plugin.geojson);
+            delete i2b2.Plugin.geojson;
+        }, 1000);
+    }
+
     // analyze the data and make sure that it is the proper type "PATIENT_ZIP_COUNT*"
     const regExPatientZip = /patient_zip_count/i;
     if (!regExPatientZip.test(sdxData.origData.result_type)) {
@@ -396,6 +409,9 @@ i2b2.Plugin.renderMap = function() {
                 style: func_StylingNorm,
                 onEachFeature: func_onEachFeature
             }).addTo(i2b2.Plugin.map);
+
+            // display the map if hidden
+            document.querySelector('.leaflet-overlay-pane').classList.remove('hidden');
         }
 
         // show that we are no longer processing
@@ -489,9 +505,9 @@ window.addEventListener("I2B2_READY", ()=> {
                         setTimeout(()=> i2b2.Plugin.map.setView([data.lat, data.long], data.zoom), 500);
                         break;
                     }
-                    }
-                    }
-                    }
+                }
+            }
+        }
     });
 
     // instantiate Leaflet map
@@ -525,6 +541,8 @@ window.addEventListener("I2B2_READY", ()=> {
     map.on('zoomstart', clearSelectedZoom);
     map.on('movestart', clearSelectedZoom);
     
+    // initially hide the overlay plane (uses this for animation)
+    document.querySelector('.leaflet-overlay-pane').classList.add('hidden');
 
     // create a hoverbox control
     let hoverOptions = {};
@@ -723,7 +741,7 @@ window.addEventListener("I2B2_READY", ()=> {
         svg.setAttribute('height', height);
         svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-
+        self._div.classList.remove('hidden');
     };
     legendbox.addTo(map);
 });
@@ -790,6 +808,21 @@ const indicateBadDrop = (datasetId) => {
     setTimeout(() => {
         targetEl.style.transition = "";
     }, 750);
+    if (i2b2.Plugin.dataIds.indexOf(datasetId) === 0) {
+        targetEl.innerText = 'Drag and drop here a 1st ZIP Code breakdown';
+    } else {
+        targetEl.innerText = 'Drag and drop here a 2nd ZIP Code breakdown';
+    }
+
+
+
+    document.querySelector('#header').classList.add('locked');
+    const applyButton = document.querySelector('#header .hide-show')
+    applyButton.classList.add('hidden');
+    setTimeout(()=>{
+        applyButton.classList.remove('hidden');
+    },1000);
+
 
 };
 

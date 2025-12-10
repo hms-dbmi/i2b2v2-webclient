@@ -96,13 +96,16 @@ body.working .leaflet-grab {
     text-align: left;
     min-width: 3rem;
 }
+#header .hide-show.hidden {
+    display: none;
+}
 #header.locked .hide-show {
     cursor: not-allowed;
     opacity: 0;
     min-width: 100%;
+    height: 0;
+    padding: 0;
 }
-
-
 #header .hide-show svg {
     vertical-align: top;
 }
@@ -161,8 +164,13 @@ body.working .leaflet-grab {
     border-radius: .8em;
     padding: 4px 4px 0 4px;
     border: 1px solid #ccc;
+    opacity: 1;
+    transition: opacity .5s;
 }
 
+.legend-box.hidden {
+    opacity: 0;
+}
 
 
 #map-target {
@@ -214,4 +222,12 @@ ul.zoom-links li:after {
     content: " ";
     letter-spacing: 1em;
     background: center center no-repeat url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=);
+}
+
+
+.leaflet-overlay-pane {
+    transition: opacity .5s;
+}
+.leaflet-overlay-pane.hidden {
+    opacity: 0;
 }
