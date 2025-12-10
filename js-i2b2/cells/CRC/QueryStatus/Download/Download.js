@@ -133,7 +133,11 @@ let generateCSV = (inputData) => {
                     temp = inputData.SHRINE.sites[i].results.filter((t) => t.name === grouping.name);
                 }
                 if (temp.length > 0) {
-                    line.push(String(temp[0].value));
+                    if (typeof temp[0].display !== "undefined") {
+                        line.push(temp[0].display);
+                    } else {
+                        line.push(String(temp[0].value));
+                    }
                 } else {
                     line.push('');
                 }
