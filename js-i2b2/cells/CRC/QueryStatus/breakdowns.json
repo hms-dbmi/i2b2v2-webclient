@@ -8,11 +8,6 @@
   "PATIENT_COUNT_SHRINE_XML": {
     "COUNT": true
   },
-  "PATIENT_SITE_COUNT_SHRINE_XML": {
-    "SHRINESITES": true,
-    "DOWNLOAD": true,
-    "PATIENTCOUNTMAP": true
-  },
   "/^RPDO_/": {
     "DATAREQUEST": true
   },
@@ -88,91 +83,5 @@
     "BARS": true,
     "TABLE": true,
     "DOWNLOAD": true
-  },
-  "PATIENT_ZIP_COUNT_SHRINE_XML": {
-    "ZIPCODEMAP": {
-      "zooms": [
-        {
-          "lat": 42.33023458841124,
-          "long": -71.13364100605521,
-          "zoom": 11,
-          "title": "Boston",
-          "tooltip": "Boston and surrounding area",
-          "initial": true
-        },
-        {
-          "lat": 42.01652429956454,
-          "long": -71.7354813533802,
-          "zoom": 8,
-          "title": "Massachussetts",
-          "tooltip": "State of Massachussetts"
-        },
-        {
-          "lat": 42.33880604791197,
-          "long": -71.1066726902258,
-          "zoom": 7,
-          "title": "New England",
-          "tooltip": "New England Area"
-        }
-      ],
-      "clickBox": {
-        "options": {
-          "closeButton": "true",
-          "className": "onclick-box",
-          "autoClose": false,
-          "closeOnClick": false
-        },
-        "template": "<b>[{{text}}]</b><br/>{{display}} patients"
-      },
-      "hoverBox": {
-        "position": "topright",
-        "className": "onhover-box",
-        "default": "<h4>Patient Count</h4>Hover over an area",
-        "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
-      },
-      "legendBox": {
-        "position": "bottomright",
-        "options": {},
-        "templates": {
-          "root": "<div><h4>Patient Count</h4></div><div>{{entries}}</div>",
-          "auto": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>",
-          "min-max": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min}}&ndash;{{~max}}</span></div>",
-          "no-min": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>&lt;{{~max}}</span></div>",
-          "no-max": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min}}+</span></div>"
-        }
-      },
-      "map": {
-        "tiles": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
-        "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
-        "attribution": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\">CARTO</a>",
-        "maxZoom": 18,
-        "zipAttribName": "ZCTA5CE10",
-        "zipRegEx": "^(.*)[0-9]{5}",
-        "colors": [
-          {"color": "#d73027"},
-          {"color": "#f46d43"},
-          {"color": "#fdae61"},
-          {"color": "#fee090"},
-          {"color": "#ffffbf"},
-          {"color": "#e0f3f8"},
-          {"color": "#abd9e9"},
-          {"color": "#74add1"},
-          {"color": "#4575b4"}
-        ],
-        "styles": {
-          "norm": {
-            "weight": 1,
-            "opacity": 1,
-            "color": "#000",
-            "fillOpacity": 0.25
-           },
-          "hover": {
-            "weight": 3,
-            "color": "#F00",
-            "fillOpacity": 0.5
-          }
-        }
-      }
-    }
   }
 }

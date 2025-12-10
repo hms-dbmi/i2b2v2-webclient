@@ -14,13 +14,6 @@
       "alwaysShow": true,
       "noFrameTemplate": true
     },
-    "SHRINESITES": {
-      "name": "Table Summary",
-      "source": "ShrineSites/ShrineSites.js",
-      "CSS": "ShrineSites/ShrineSites.css",
-      "iconClass": "bi bi-table",
-      "alwaysShow": true
-    },
     "BARS": {
       "name": "Bar Chart",
       "source": "BarGraph/BarGraph.js",
@@ -60,28 +53,11 @@
       "displayOrder": 500,
       "displayForUnregistered": true,
       "notInReport": true
-    },
-    "ZIPCODEMAP": {
-      "name": "Map View",
-      "source": "ZipcodeMap/ZipcodeMap.js",
-      "CSS": "ZipcodeMap/ZipcodeMap.css",
-      "iconClass": "bi bi-globe2"
-    },
-    "PATIENTCOUNTMAP": {
-      "name": "Map Viewer",
-      "source": "PatientCountMap/PatientCountMap.js",
-      "CSS": "PatientCountMap/PatientCountMap.css",
-      "iconClass": "bi bi-globe2",
-      "displayOrder": 200,
-      "displayForUnregistered": false,
-      "notInReport": true
     }
   },
   "displayOrder": [
     "INTERNAL_SUMMARY",
     "PATIENT_COUNT_XML",
-    "PATIENT_COUNT_SHRINE_XML",
-    "PATIENT_SITE_COUNT_SHRINE_XML",
     "/^RPDO_/"
   ],
   "haltPollingOnStatus": [
