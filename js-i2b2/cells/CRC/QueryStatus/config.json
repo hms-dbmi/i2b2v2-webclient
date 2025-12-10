@@ -53,6 +53,12 @@
       "displayForUnregistered": true,
       "notInReport": true
     },
+    "SHRINESITESDOWNLOAD": {
+      "name": "CSV Download",
+      "source": "ShrineSitesDownload/Download.js",
+      "iconClass": "bi bi-filetype-csv",
+      "notInReport": true
+    },
     "ZIPCODEMAP": {
       "name": "Map View",
       "source": "ZipcodeMap/ZipcodeMap.js",

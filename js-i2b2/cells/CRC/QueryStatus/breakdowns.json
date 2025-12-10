@@ -10,7 +10,7 @@
   },
   "PATIENT_SITE_COUNT_SHRINE_XML": {
     "SHRINESITES": true,
-    "DOWNLOAD": true,
+    "SHRINESITESDOWNLOAD": true,
     "PATIENTCOUNTMAP": true
   },
   "PATIENT_GENDER_COUNT_XML": {
