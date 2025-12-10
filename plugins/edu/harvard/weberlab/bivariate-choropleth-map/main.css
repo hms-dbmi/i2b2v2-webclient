@@ -179,3 +179,39 @@ body.working .leaflet-grab {
     background-color: lightyellow !important;
 }
 
+
+.zoom-levels {
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.zoom-links-label {
+    font-weight: bold;
+    margin-left: .5rem;
+}
+
+ul.zoom-links {
+    display: inline-block;
+    padding: 0;
+    margin: 0 .5rem;
+}
+
+ul.zoom-links li { display: inline; }
+span.zoom-link {
+    white-space: nowrap;
+    cursor: pointer;
+}
+span.zoom-link:hover {
+    border-bottom: 1px solid;
+}
+
+span.zoom-link.selected {
+    border-bottom: 1px solid;
+}
+
+
+ul.zoom-links li:after {
+    content: " ";
+    letter-spacing: 1em;
+    background: center center no-repeat url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=);
+}

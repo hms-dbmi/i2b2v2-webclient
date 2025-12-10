@@ -449,7 +449,49 @@ window.addEventListener("I2B2_READY", ()=> {
         i2b2.Plugin.GeoJSON = data;
 
         // TODO: extract and process the zooms data
+        if (data.zooms) {
+            if (data.zooms.length > 0) {
+                const ulZoomList = document.getElementById("zoom-list");
+                data.zooms.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    const span = document.createElement('span');
+                    span.className = 'zoom-link';
+                    span.dataset.index = index;
+                    span.dataset.lat = item.lat;
+                    span.dataset.long = item.long;
+                    span.dataset.zoom = item.zoom;
+                    span.title = item.tooltip;
+                    span.textContent = item.title;
+                    li.appendChild(span);
+                    ulZoomList.appendChild(li);
+                });
 
+                // connect the zoom link click events
+                document.querySelectorAll('.zoom-link').forEach((el) => {
+                    el.addEventListener('click', (e) => {
+                        let data = e.currentTarget.dataset;
+                        i2b2.Plugin.map.setView([data.lat, data.long], data.zoom);
+                        // delay by 50ms because we are going to lose the link as we just started a viewport change
+                        const closureEl = e.currentTarget;
+                        setTimeout(()=>{
+                            document.querySelectorAll('.zoom-link').forEach((li) => li.classList.remove('selected'));
+                            closureEl.classList.add('selected');
+                        }, 50);
+                    });
+                });
+
+                // set the initial zoom state as selected
+                for (let idx in data.zooms) {
+                    if (data.zooms[idx].initial) {
+                        const initialZoomEl = document.querySelector('.zoom-link[data-index="' + idx + '"]');
+                        const data = initialZoomEl.dataset;
+                        initialZoomEl.classList.add('selected');
+                        setTimeout(()=> i2b2.Plugin.map.setView([data.lat, data.long], data.zoom), 500);
+                        break;
+                    }
+                    }
+                    }
+                    }
     });
 
     // instantiate Leaflet map
@@ -475,6 +517,14 @@ window.addEventListener("I2B2_READY", ()=> {
         settings.labelTiles,
         {pane: 'labels'}
     ).addTo(map);
+
+    // capture zoom and move events and unselect zoom level link if selected
+    const clearSelectedZoom = (e) => {
+        document.querySelectorAll('.zoom-link').forEach((el) => el.classList.remove('selected'));
+    };
+    map.on('zoomstart', clearSelectedZoom);
+    map.on('movestart', clearSelectedZoom);
+    
 
     // create a hoverbox control
     let hoverOptions = {};
