@@ -6,7 +6,7 @@ export default class ShrineSitesDownload {
             this.data = qrsData;
             this.isVisible = false;
         } catch(e) {
-            console.error("Error in QueryStatus:Download.constructor()");
+            console.error("Error in QueryStatus:ShrineSitesDownload.constructor()");
         }
     }
 
@@ -37,7 +37,7 @@ export default class ShrineSitesDownload {
                 }
             }
         } catch(e) {
-            console.error("Error in QueryStatus:Download.update()");
+            console.error("Error in QueryStatus:ShrineSitesDownload.update()");
         }
         return false;
     }
@@ -66,7 +66,7 @@ export default class ShrineSitesDownload {
             this.isVisible = false;
             return false;
         } catch(e) {
-            console.error("Error in QueryStatus:Download.show()");
+            console.error("Error in QueryStatus:ShrineSitesDownload.show()");
         }
     }
 
@@ -75,7 +75,7 @@ export default class ShrineSitesDownload {
             this.isVisible = false;
             return true;
         } catch(e) {
-            console.error("Error in QueryStatus:Download.hide()");
+            console.error("Error in QueryStatus:ShrineSitesDownload.hide()");
         }
     }
 }
