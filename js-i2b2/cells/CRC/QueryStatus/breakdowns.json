@@ -196,7 +196,7 @@
         "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
         "maxZoom": 18,
         "zipAttribName": "ZCTA5CE10",
-        "zipRegEx": "^(.*)[0-9]{5}",
+        "zipRegEx": "^([0-9]{5}) - (.*)$",
         "colors": [
           {"color": "#d73027"},
           {"color": "#f46d43"},
