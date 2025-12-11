@@ -637,7 +637,7 @@ const func_processData = (xmlData, zipRegEx) => {
         const floorThreshold = params[i].getAttribute("floorThresholdNumber");
         const obfuscatedNum = params[i].getAttribute("obfuscatedDisplayNumber");
         let zipSearch = zipData.match(zipRegEx);
-        if (zipSearch.length > 0) {
+        if (zipSearch !== null && zipSearch.length > 0) {
             const zipCode = zipSearch[0].trim();
             const zipCount = parseInt(params[i].firstChild.nodeValue);
             const displayCount = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(zipCount, floorThreshold, obfuscatedNum);
