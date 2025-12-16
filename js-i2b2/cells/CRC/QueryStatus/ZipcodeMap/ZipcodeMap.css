@@ -1,6 +1,11 @@
+.component-instance-viz.viztype-ZIPCODEMAP {
+    padding: var(--viz-module-padding);
+}
+
 .viztype-ZIPCODEMAP .map-target {
     height: 600px;
     width: 100%;
+    border: 1px solid #ccc;
 }
 
 .viztype-ZIPCODEMAP .zoom-links-label {
@@ -46,6 +51,7 @@
     -webkit-transition: opacity 0.3s ease-in-out;
     -moz-transition: opacity 0.3s ease-in-out;
     transition: opacity 0.3s ease-in-out;
+    pointer-events: none !important;
 }
 
 .viztype-ZIPCODEMAP div.hoverinfo-box {
@@ -75,8 +81,9 @@
 }
 
 .viztype-ZIPCODEMAP div.legend-box *.selected i {
-    outline: 3px solid #000;
-    outline-offset: -3px;
+    outline: 4px solid #000;
+    outline-offset: -2px;
+    outline-style: inset;
 }
 
 

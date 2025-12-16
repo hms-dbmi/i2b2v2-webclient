@@ -1,4 +1,4 @@
-export default class Download {
+export default class ShrineSitesDownload {
     constructor(componentConfig, qrsRecordInfo, qrsData) {
         try {
             this.config = componentConfig;
@@ -6,7 +6,7 @@ export default class Download {
             this.data = qrsData;
             this.isVisible = false;
         } catch(e) {
-            console.error("Error in QueryStatus:Download.constructor()");
+            console.error("Error in QueryStatus:ShrineSitesDownload.constructor()");
         }
     }
 
@@ -37,7 +37,7 @@ export default class Download {
                 }
             }
         } catch(e) {
-            console.error("Error in QueryStatus:Download.update()");
+            console.error("Error in QueryStatus:ShrineSitesDownload.update()");
         }
         return false;
     }
@@ -48,9 +48,6 @@ export default class Download {
     }
 
     show() {
-        // this is executed before a render and/or displaying of this visualization.
-        // returning false will cancel the selection and (re)displaying of this visualization
-        // USED PRIMARLY BY THE "Download" MODULE
         try {
             if (this.data === false) {
                 alert("No data to download for " + this.record.title);
@@ -69,7 +66,7 @@ export default class Download {
             this.isVisible = false;
             return false;
         } catch(e) {
-            console.error("Error in QueryStatus:Download.show()");
+            console.error("Error in QueryStatus:ShrineSitesDownload.show()");
         }
     }
 
@@ -78,7 +75,7 @@ export default class Download {
             this.isVisible = false;
             return true;
         } catch(e) {
-            console.error("Error in QueryStatus:Download.hide()");
+            console.error("Error in QueryStatus:ShrineSitesDownload.hide()");
         }
     }
 }
@@ -97,53 +94,37 @@ let generateCSV = (inputData) => {
         return line.join(',') + `\n`;
     };
 
+    const dataFunctions = {
+        "Site": (key) => key,
+        "Status": (key) => Object.values(inputData.SHRINE.sites).filter((site) => site.name === key)[0].status,
+        "Results": (key) => {
+            const rec = Object.values(inputData.result).filter((site) => site.name === key)[0];
+            return rec.display ? rec.display : rec.value;
+        },
+        "Obfuscation Noise Clamp": (key) => Object.values(inputData.SHRINE.sites).filter((site) => site.name === key)[0].obfuscatedDisplayNumber,
+        "Obfuscation Low Limit": (key) => Object.values(inputData.SHRINE.sites).filter((site) => site.name === key)[0].floorThresholdNumber,
+        "Obfuscation Standard Deviation": (key) => Object.values(inputData.SHRINE.sites).filter((site) => site.name === key)[0].stdDev
+    };
+
     // title line
     line = [inputData.title];
-    line.push("");
-    for (let i=0; i<siteCnt; i++) line.push("");
+    for (let i=0; i < Object.keys(dataFunctions).length - 1; i++) line.push("");
     csv = func_ProcessLine(line);
 
     // column header line
-    line = ["Breakdown Group"];
-    if (siteCnt > 0) {
-        for (let i=0; i<siteCnt; i++) line.push(inputData.SHRINE.sites[i].name);
-    }
-    line.push("Total");
+    line = Object.keys(dataFunctions);
     csv = csv + func_ProcessLine(line);
 
-    // // add the "All Patients" line if we have SHRINE data
-    // if (siteCnt > 0) {
-    //     line = ["All Patients"];
-    //     let total = 0;
-    //     for (let i=0; i<siteCnt; i++) {
-    //         let subtotal = inputData.SHRINE.sites[i].results.map((t) => t.value).reduce((parialSum, a) => parialSum + a, 0);
-    //         total = total + subtotal;
-    //         line.push(String(subtotal));
-    //     }
-    //     line.push(String(total));
-    //     csv = csv + func_ProcessLine(line);
-    // }
-
-    for (let grouping of inputData.result) {
-        line = [grouping.name];
-        if (siteCnt > 0) {
-            for (let i=0; i<siteCnt; i++) {
-                let temp = [];
-                if (typeof inputData.SHRINE.sites[i].results !== "undefined") {
-                    temp = inputData.SHRINE.sites[i].results.filter((t) => t.name === grouping.name);
-                }
-                if (temp.length > 0) {
-                    if (typeof temp[0].display !== "undefined") {
-                        line.push(temp[0].display);
-                    } else {
-                        line.push(String(temp[0].value));
-                    }
-                } else {
-                    line.push('');
-                }
+    for (let row of inputData.result) {
+        const siteName = row.name;
+        line = [];
+        for (const colName in dataFunctions) {
+            try {
+                line.push(dataFunctions[colName](siteName));
+            } catch (e) {
+                line.push('!ERROR!');
             }
         }
-        line.push(grouping.display) // total column value
         csv = csv + func_ProcessLine(line);
     }
     return csv;
@@ -162,8 +143,6 @@ let parseData = function(xmlData) {
         let entryRecord = {}
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text();
         entryRecord.value = params[i2].firstChild.nodeValue;
-        entryRecord.floorThreshold = params[i2].getAttribute("floorThresholdNumber");
-        entryRecord.obfuscateNumber = params[i2].getAttribute("obfuscatedDisplayNumber");
         entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, entryRecord.floorThreshold, entryRecord.obfuscateNumber);
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
@@ -207,35 +186,16 @@ let parseData = function(xmlData) {
     return breakdown;
 }
 
-
 // <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 // <ns10:i2b2_result_envelope>
 //     <body>
-//         <ns10:result name="PATIENT_SEX_COUNT_SHRINE_XML">
-//             <data column="Ambiguous" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
-//             <data column="Female" floorThresholdNumber="20" obfuscatedDisplayNumber="6">38350</data>
-//             <data column="Male" floorThresholdNumber="20" obfuscatedDisplayNumber="6">37360</data>
-//             <data column="No Infomation" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
-//             <data column="Other" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
-//             <data column="X (Eg. Nonbinary, AGender, etc)" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
+//         <ns10:result name="PATIENT_SITE_COUNT_SHRINE_XML">
+//             <data column="Site 1" type="int">37850</data>
+//             <data column="Site 2" type="int">37850</data>
 //         </ns10:result>
-//         <SHRINE sites="2" complete="2" error="0">
-//             <site name="Site 1" status="Completed" binsize="5" stdDev="6.500000000000000e+000" obfuscatedDisplayNumber="10" floorThresholdNumber="10">
-//                 <siteresult column="No Infomation" type="int">0</siteresult>
-//                 <siteresult column="Female" type="int">19180</siteresult>
-//                 <siteresult column="X (Eg. Nonbinary, AGender, etc)" type="int">0</siteresult>
-//                 <siteresult column="Other" type="int">0</siteresult>
-//                 <siteresult column="Male" type="int">18680</siteresult>
-//                 <siteresult column="Ambiguous" type="int">0</siteresult>
-//             </site>
-//             <site name="Site 2" status="Completed" binsize="5" stdDev="6.500000000000000e+000" obfuscatedDisplayNumber="10" floorThresholdNumber="10">
-//                 <siteresult column="No Infomation" type="int">0</siteresult>
-//                 <siteresult column="Female" type="int">19170</siteresult>
-//                 <siteresult column="X (Eg. Nonbinary, AGender, etc)" type="int">0</siteresult>
-//                 <siteresult column="Other" type="int">0</siteresult>
-//                 <siteresult column="Male" type="int">18680</siteresult>
-//                 <siteresult column="Ambiguous" type="int">0</siteresult>
-//             </site>
+//         <SHRINE sites="2" complete="2" error="0" status="Completed" >
+//             <site name="Site 1" status="Completed" floorThresholdNumber="10" obfuscatedDisplayNumber="10" binSize="0" stdDev="3" />
+//             <site name="Site 2" status="Completed" floorThresholdNumber="10" obfuscatedDisplayNumber="10" binSize="0" stdDev="3" />
 //         </SHRINE>
 //     </body>
 // </ns10:i2b2_result_envelope>

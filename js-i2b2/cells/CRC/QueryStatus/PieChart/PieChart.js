@@ -202,7 +202,7 @@ export default class PieChart {
             }
 
             // only continue if we have data
-            if (typeof this.data !== 'object' || this.data === null) return;
+            if (typeof this.data !== 'object' || this.data === null) return false;
 
             // -----------------------------------------------------------------------------------------------------
             this.key = (d) => d.data.name;
@@ -272,12 +272,13 @@ let parseData = function(xmlData, advancedConfig) {
     for (let i2 = 0; i2 < params.length; i2++) {
         let entryRecord = {}
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text().trim();
-        entryRecord.value = params[i2].firstChild.nodeValue
-        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value);
-
+        entryRecord.value = params[i2].firstChild.nodeValue;
+        const floorThreshold = params[i2].getAttribute("floorThresholdNumber");
+        const obfuscateNumber = params[i2].getAttribute("obfuscatedDisplayNumber");
+        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, floorThreshold, obfuscateNumber);
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
-            entryRecord.value = i2b2.h.Unescape(entryRecord.value);
+            entryRecord.value = $('<div>').html(params[i2].textContent).text();
             entryRecord.display = params[i2].attributes.display.textContent;
         }
         // TODO: Make this configurable (dropping "0" values)
@@ -310,7 +311,8 @@ let parseData = function(xmlData, advancedConfig) {
                 for (let siteresult of siteResults) {
                     siteData.results.push({
                         name: $('<div>').html(siteresult.getAttribute('column')).text(),
-                        value: parseInt(siteresult.textContent)
+                        value: parseInt(siteresult.textContent),
+                        display: i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(siteresult.textContent, siteData.floorThresholdNumberX, siteData.obfuscatedDisplayNumber)
                     });
                 }
             }

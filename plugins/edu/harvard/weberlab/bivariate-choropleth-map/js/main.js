@@ -44,6 +44,7 @@ i2b2.Plugin.itemDropped = function(sdxData, e) {
         // this is the wrong breakdown type
         indicateBadDrop(targetId);
         delete i2b2.model[targetId];
+        func_ClearExistingData();
         return;
     }
 
@@ -55,11 +56,12 @@ i2b2.Plugin.itemDropped = function(sdxData, e) {
         // see if it is a different entry from what is currently specified (short circuit out of function if the same)
         if (sdxData.sdxInfo.sdxKeyValue === i2b2.model[targetId].sdx.sdxInfo.sdxKeyValue) return;
         // save the new information
+        i2b2.model[targetId].buckets = 5;
         i2b2.model[targetId].sdx = sdxData;
         delete i2b2.model[targetId].dataXML;
         i2b2.model[targetId].dirty = true;
         // delete existing features if they have already been populated
-        if (typeof i2b2.Plugin.geojson !== 'undefined') i2b2.Plugin.map.removeLayer(i2b2.Plugin.geojson);
+        func_ClearExistingData();
     } else {
         i2b2.model[targetId] = {
             sdx: sdxData,
@@ -68,6 +70,9 @@ i2b2.Plugin.itemDropped = function(sdxData, e) {
         }
     }
     i2b2.model.dirtyData = true;
+
+
+
 
     // get the query name from the query master
     const reqVars = {qm_key_value: sdxData.origData["QM_id"]};
@@ -222,6 +227,7 @@ i2b2.Plugin.recalculateColors = function() {
 i2b2.Plugin.toBucket = function(datasetName, value) {
     if (typeof i2b2.model[datasetName] !== 'object') return NaN;
     // bucketing function for the map variable
+    if (i2b2.model[datasetName].max === i2b2.model[datasetName].min) return 0;
     const bucketSize = (i2b2.model[datasetName].max - i2b2.model[datasetName].min) / i2b2.model[datasetName].buckets;
     const calulated = Math.floor((value - i2b2.model[datasetName].min) / bucketSize);
     return Math.min((i2b2.model[datasetName].buckets - 1), Math.max(0, calulated));
@@ -234,12 +240,6 @@ i2b2.Plugin.renderMap = function() {
 
     // show that we are processing
     document.body.classList.add("working");
-
-    // recalculate the map variables
-    i2b2.Plugin.recalculateColors();
-
-    // redisplay the legend
-    i2b2.Plugin.legend.update();
 
     // get data for the zipcode maps if needed
     let promiseList = [];
@@ -266,6 +266,7 @@ i2b2.Plugin.renderMap = function() {
                 // XML does not contain the breakdown info
                 indicateBadDrop(targetId);
                 delete i2b2.model[targetId].dataXML;
+                func_ClearExistingData();
             } else {
                 resultXML = resultXML[0].firstChild.nodeValue;
                 let minCount = Infinity;
@@ -294,8 +295,16 @@ i2b2.Plugin.renderMap = function() {
                 // save the data's min/max values
                 i2b2.model[targetId].min = minCount;
                 i2b2.model[targetId].max = maxCount;
+                // resize us to only 1 bucket if only one value is present
+                if (minCount === maxCount) i2b2.model[targetId].buckets = 1;
             }
         }
+
+        // recalculate the map variables
+        i2b2.Plugin.recalculateColors();
+
+        // redisplay the legend
+        i2b2.Plugin.legend.update();
 
         // copy the data onto the mapping info
         let workingGeoJSON = {
@@ -319,7 +328,7 @@ i2b2.Plugin.renderMap = function() {
                 const bucketX = i2b2.Plugin.toBucket(dataIdX, mainDataLookup[dataIdX]);
                 const bucketY = i2b2.Plugin.toBucket(dataIdY, mainDataLookup[dataIdY]);
                 if (isNaN(bucketX) || isNaN(bucketY)) {
-                    featureCopy.properties.color = "none";
+                    featureCopy.properties.color = "url(#error-pattern)";
                 } else {
                     featureCopy.properties.color = i2b2.model.activeColors[bucketY][bucketX];
                     featureCopy.properties.buckets = [bucketY, bucketX];
@@ -396,6 +405,9 @@ i2b2.Plugin.renderMap = function() {
                 style: func_StylingNorm,
                 onEachFeature: func_onEachFeature
             }).addTo(i2b2.Plugin.map);
+
+            // display the map if hidden
+            document.querySelector('.leaflet-overlay-pane').classList.remove('hidden');
         }
 
         // show that we are no longer processing
@@ -449,7 +461,49 @@ window.addEventListener("I2B2_READY", ()=> {
         i2b2.Plugin.GeoJSON = data;
 
         // TODO: extract and process the zooms data
+        if (data.zooms) {
+            if (data.zooms.length > 0) {
+                const ulZoomList = document.getElementById("zoom-list");
+                data.zooms.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    const span = document.createElement('span');
+                    span.className = 'zoom-link';
+                    span.dataset.index = index;
+                    span.dataset.lat = item.lat;
+                    span.dataset.long = item.long;
+                    span.dataset.zoom = item.zoom;
+                    span.title = item.tooltip;
+                    span.textContent = item.title;
+                    li.appendChild(span);
+                    ulZoomList.appendChild(li);
+                });
 
+                // connect the zoom link click events
+                document.querySelectorAll('.zoom-link').forEach((el) => {
+                    el.addEventListener('click', (e) => {
+                        let data = e.currentTarget.dataset;
+                        i2b2.Plugin.map.setView([data.lat, data.long], data.zoom);
+                        // delay by 50ms because we are going to lose the link as we just started a viewport change
+                        const closureEl = e.currentTarget;
+                        setTimeout(()=>{
+                            document.querySelectorAll('.zoom-link').forEach((li) => li.classList.remove('selected'));
+                            closureEl.classList.add('selected');
+                        }, 50);
+                    });
+                });
+
+                // set the initial zoom state as selected
+                for (let idx in data.zooms) {
+                    if (data.zooms[idx].initial) {
+                        const initialZoomEl = document.querySelector('.zoom-link[data-index="' + idx + '"]');
+                        const data = initialZoomEl.dataset;
+                        initialZoomEl.classList.add('selected');
+                        setTimeout(()=> i2b2.Plugin.map.setView([data.lat, data.long], data.zoom), 500);
+                        break;
+                    }
+                }
+            }
+        }
     });
 
     // instantiate Leaflet map
@@ -476,6 +530,17 @@ window.addEventListener("I2B2_READY", ()=> {
         {pane: 'labels'}
     ).addTo(map);
 
+    // capture zoom and move events and unselect zoom level link if selected
+    const clearSelectedZoom = (e) => {
+        document.querySelectorAll('.zoom-link').forEach((el) => el.classList.remove('selected'));
+    };
+    map.on('zoomstart', clearSelectedZoom);
+    map.on('movestart', clearSelectedZoom);
+    
+
+    // initially hide the overlay plane (uses this for animation)
+    document.querySelector('.leaflet-overlay-pane').classList.add('hidden');
+
     // create a hoverbox control
     let hoverOptions = {};
     if (typeof settings.hoverBox.position !== 'undefined') hoverOptions.position = settings.hoverBox.position;
@@ -501,6 +566,8 @@ window.addEventListener("I2B2_READY", ()=> {
                 "dataY-count": data[i2b2.Plugin.dataIds[0]],
                 "dataX-count": data[i2b2.Plugin.dataIds[1]]
             }
+            if (typeof lookupData['dataX-count'] === 'undefined') lookupData['dataX-count'] = "(unknown)";
+            if (typeof lookupData['dataY-count'] === 'undefined') lookupData['dataY-count'] = "(unknown)";
             const allData = {...data, ...lookupData};
 
             self._div.innerHTML = processTemplate(settings.hoverBox.template, allData);
@@ -673,7 +740,7 @@ window.addEventListener("I2B2_READY", ()=> {
         svg.setAttribute('height', height);
         svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-
+        self._div.classList.remove('hidden');
     };
     legendbox.addTo(map);
 });
@@ -740,6 +807,21 @@ const indicateBadDrop = (datasetId) => {
     setTimeout(() => {
         targetEl.style.transition = "";
     }, 750);
+    if (i2b2.Plugin.dataIds.indexOf(datasetId) === 0) {
+        targetEl.innerText = 'Drag and drop here a 1st ZIP Code breakdown';
+    } else {
+        targetEl.innerText = 'Drag and drop here a 2nd ZIP Code breakdown';
+    }
+
+
+
+    document.querySelector('#header').classList.add('locked');
+    const applyButton = document.querySelector('#header .hide-show')
+    applyButton.classList.add('hidden');
+    setTimeout(()=>{
+        applyButton.classList.remove('hidden');
+    },1000);
+
 
 };
 
@@ -884,3 +966,17 @@ const RGBvalues = (function() {
     };
 }());
 
+const func_ClearExistingData = () => {
+    // hide the legend box
+    document.querySelector('.legend-box').classList.add('hidden');
+
+    // clear the data from the map
+    if (i2b2.Plugin.geojson) {
+        document.querySelector('.leaflet-overlay-pane').classList.add('hidden');
+        setTimeout(()=>{
+            i2b2.Plugin.geojson.clearLayers();
+            i2b2.Plugin.map.removeLayer(i2b2.Plugin.geojson);
+            delete i2b2.Plugin.geojson;
+        }, 1000);
+    }
+};

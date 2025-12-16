@@ -5,7 +5,6 @@ export default class Count {
             this.record = qrsRecordInfo;
             this.data = qrsData;
             this.isVisible = false;
-            let componentRef = this;
 
             // see if we are SHRINE count
             if (this.record.QRS_Type.indexOf("_SHRINE_") === -1) {
@@ -41,14 +40,14 @@ export default class Count {
     update(data) {
         try {
             if (typeof data === 'undefined') {
-                if (typeof this.data === 'undefined' || this.data === null) return;
+                if (typeof this.data === 'undefined' || this.data === null) return false;
                 data = this.data;
             } else {
                 this.data = data;
             }
 
             // only continue if we have the template loaded (bugfix: race condition)
-            if (typeof this.dispTemplate === 'undefined') return;
+            if (typeof this.dispTemplate === 'undefined') return false;
 
             // extract the info from the XML
             let title = i2b2.h.XPath(data, "//query_result_instance/description");

@@ -1,5 +1,5 @@
 .component-instance-viz.viztype-TABLE {
-    padding: 0 2rem;
+    padding: var(--viz-module-padding);
 }
 
 .component-instance-viz.viztype-TABLE table {

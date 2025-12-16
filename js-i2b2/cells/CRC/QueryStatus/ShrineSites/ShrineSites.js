@@ -90,7 +90,7 @@ export default class ShrineSites {
         try {
             if (typeof inputData === 'undefined') {
                 // no data has been set... exit
-                if (Object.keys(this.data).length === 0) return;
+                if (Object.keys(this.data).length === 0) return false;
             } else {
                 // get the breakdown data information (if present)
                 let resultXML = i2b2.h.XPath(inputData, "//xml_value");
@@ -204,10 +204,14 @@ export default class ShrineSites {
             console.error("Error in QueryStatus:ShrineSites.update()");
             return false;
         }
-        this.config.displayEl.style.display = "block";
-        this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
         // only display if we have rows returned
-        if (Object.keys(this.data).length > 0) return true;
+        if (Object.keys(this.data).length > 0) {
+            this.config.displayEl.style.display = "block";
+            this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
+            return true;
+        } else {
+            return false;
+        }
     }
 
     redraw(width) {

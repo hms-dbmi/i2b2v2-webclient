@@ -53,6 +53,13 @@
       "displayForUnregistered": true,
       "notInReport": true
     },
+    "SHRINESITESDOWNLOAD": {
+      "name": "CSV Download",
+      "source": "ShrineSitesDownload/Download.js",
+      "iconClass": "bi bi-filetype-csv",
+      "displayOrder": 500,
+      "notInReport": true
+    },
     "ZIPCODEMAP": {
       "name": "Map View",
       "source": "ZipcodeMap/ZipcodeMap.js",
@@ -64,8 +71,7 @@
       "source": "PatientCountMap/PatientCountMap.js",
       "CSS": "PatientCountMap/PatientCountMap.css",
       "iconClass": "bi bi-globe2",
-      "displayOrder": 200,
-      "displayForUnregistered": true,
+      "displayOrder": 150,
       "notInReport": true
     },
     "LINECHART": {
@@ -85,7 +91,14 @@
     "displayOrder": 3,
     "class": "pathogen-timeline",
     "displayForUnregistered": false
-    } 
+    }, 
+    "NIHENROLLTABLE": {
+      "name": "Enrollment Form",
+      "source": "NihEnrollTable/Table.js",
+      "CSS": "NihEnrollTable/Table.css",
+      "iconClass": "bi bi-grid-3x3",
+      "displayOrder": 1
+    }
   },
   "displayOrder": [
     "INTERNAL_SUMMARY",
