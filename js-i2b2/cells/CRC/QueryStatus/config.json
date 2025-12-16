@@ -57,6 +57,7 @@
       "name": "CSV Download",
       "source": "ShrineSitesDownload/Download.js",
       "iconClass": "bi bi-filetype-csv",
+      "displayOrder": 500,
       "notInReport": true
     },
     "ZIPCODEMAP": {
@@ -70,8 +71,7 @@
       "source": "PatientCountMap/PatientCountMap.js",
       "CSS": "PatientCountMap/PatientCountMap.css",
       "iconClass": "bi bi-globe2",
-      "displayOrder": 200,
-      "displayForUnregistered": true,
+      "displayOrder": 150,
       "notInReport": true
     },
     "LINECHART": {
