@@ -185,10 +185,17 @@ export default class PathogenTimeline {
         let wwPoints = [];
 
         if (selectedOverlay !== "(None)" && this.wastewater?.length) {
-            wwPoints = this.wastewater.map(d => ({
-                date: new Date(d.date),
-                value: d.value
-            }));
+            wwPoints = this.wastewater
+                .map(d => {
+                    const dt = new Date(d.date);
+                    if (isNaN(dt.getTime())) return null;
+                    return {
+                        date: dt,
+                        value: d.value
+                    };
+                })
+                .filter(Boolean);
+
 
             yRight = d3.scaleLinear()
                 .domain([0, d3.max(wwPoints, d => d.value)])
@@ -310,9 +317,12 @@ export default class PathogenTimeline {
                 .attr("fill", "#333")
                 .attr("stroke", "#333")
                 .append("title")
-                .text(d =>
-                    `Wastewater\n${d.date.toISOString().slice(0,10)}\n${d.value}`
-                );
+                .text(d => {
+                    const dateStr = isNaN(d.date.getTime())
+                        ? "Invalid date"
+                        : d.date.toISOString().slice(0,10);
+                    return `Wastewater\n${dateStr}\n${d.value}`;
+                });
         }
     }
 
