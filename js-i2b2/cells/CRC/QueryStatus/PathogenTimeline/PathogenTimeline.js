@@ -200,12 +200,15 @@ export default class PathogenTimeline {
 
                     let val = NaN;
 
+                    const parseWW = v =>
+                        v == null ? NaN : Number(String(v).replace(/,/g, ""));
+
                     if (selectedOverlay === "mwra-north") {
-                        val = Number(d.mwra_north);
+                        val = parseWW(d.mwra_north);
                     } else if (selectedOverlay === "mwra-south") {
-                        val = Number(d.mwra_south);
+                        val = parseWW(d.mwra_south);
                     } else if (selectedOverlay === "mwra-combined") {
-                        val = Number(d.mwra_combined);
+                        val = parseWW(d.mwra_combined);
                     }
 
                     if (isNaN(val)) return null;
