@@ -84,6 +84,10 @@ export default class PathogenTimeline {
 
                 // Load wastewater
                 fetchWastewater("1/01/2020", "1/01/2025").then(data => {
+
+                    console.log("WW RAW RESPONSE:", data);
+                    console.log("WW TYPE:", typeof data);
+                    console.log("WW IS ARRAY:", Array.isArray(data));
                     // NORMALIZE wastewater payload to array
                     if (Array.isArray(data)) {
                         self.wastewater = data;
