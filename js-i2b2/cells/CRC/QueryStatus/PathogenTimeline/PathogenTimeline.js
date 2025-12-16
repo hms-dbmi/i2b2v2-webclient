@@ -195,19 +195,24 @@ export default class PathogenTimeline {
 
             wwPoints = this.wastewater
                 .map(d => {
-                    const dt = new Date(d.date || d.sample_date);
-                    const val =
-                        d.value != null ? Number(d.value) :
-                        d.mwra_combined != null ? Number(d.mwra_combined) :
-                        d.copies_per_ml != null ? Number(d.copies_per_ml) :
-                        d.concentration != null ? Number(d.concentration) :
-                        NaN;
+                    const dt = new Date(d.sample_date || d.date);
+                    if (isNaN(dt.getTime())) return null;
 
-                    if (isNaN(dt.getTime()) || isNaN(val)) return null;
+                    let val = NaN;
 
+                    if (selectedOverlay === "mwra-north") {
+                        val = Number(d.mwra_north);
+                    } else if (selectedOverlay === "mwra-south") {
+                        val = Number(d.mwra_south);
+                    } else if (selectedOverlay === "mwra-combined") {
+                        val = Number(d.mwra_combined);
+                    }
+
+                    if (isNaN(val)) return null;
                     return { date: dt, value: val };
                 })
                 .filter(Boolean);
+
 
             if (wwPoints.length > 0) {
                 yRight = d3.scaleLinear()
