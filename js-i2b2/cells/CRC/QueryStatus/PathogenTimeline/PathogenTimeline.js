@@ -197,28 +197,48 @@ export default class PathogenTimeline {
 
         if (selectedOverlay !== "(None)" && this.wastewater && this.wastewater.length > 0) {
 
-            wwPoints = this.wastewater
-                .map(d => {
+           const monthlyMap = d3.rollup(
+                this.wastewater,
+                rows => {
+                    const values = rows
+                        .map(d => {
+                            if (selectedOverlay === "mwra-north") {
+                                return Number(d["Northern 7 day avg"]);
+                            }
+                            if (selectedOverlay === "mwra-south") {
+                                return Number(d["Southern 7 day avg"]);
+                            }
+                            if (selectedOverlay === "mwra-combined") {
+                                const n = Number(d["Northern 7 day avg"]);
+                                const s = Number(d["Southern 7 day avg"]);
+                                return (isNaN(n) ? 0 : n) + (isNaN(s) ? 0 : s);
+                            }
+                            return NaN;
+                        })
+                        .filter(v => !isNaN(v));
+
+                    return values.length
+                        ? d3.mean(values)
+                        : null;
+                },
+                d => {
                     const dt = new Date(d["Sample Date"]);
-                    if (isNaN(dt.getTime())) return null;
+                    return isNaN(dt.getTime())
+                        ? null
+                        : `${dt.getFullYear()}-${dt.getMonth()}`;
+                }
+            );
 
-                    let val = null;
+            wwPoints = Array.from(monthlyMap.entries())
+                .filter(([k, v]) => k !== null && v !== null)
+                .map(([key, value]) => {
+                    const [year, month] = key.split("-").map(Number);
+                    return {
+                        date: new Date(year, month, 1),
+                        value
+                    };
+                });
 
-                    if (selectedOverlay === "mwra-north") {
-                        val = Number(d["Northern 7 day avg"]);
-                    } else if (selectedOverlay === "mwra-south") {
-                        val = Number(d["Southern 7 day avg"]);
-                    } else if (selectedOverlay === "mwra-combined") {
-                        const n = Number(d["Northern 7 day avg"]);
-                        const s = Number(d["Southern 7 day avg"]);
-                        val = (isNaN(n) ? 0 : n) + (isNaN(s) ? 0 : s);
-                    }
-
-                    if (isNaN(val)) return null;
-
-                    return { date: dt, value: val };
-                })
-                .filter(Boolean);
 
 
             if (wwPoints.length > 0) {
