@@ -489,20 +489,8 @@ function cssSafeKey(str) {
 }
 
 async function fetchWastewater(startDate, endDate) {
-    // fallback for the case that proxy is not available
-    if (
-        !window.i2b2 ||
-        !i2b2.hive ||
-        !i2b2.hive.proxy ||
-        typeof i2b2.hive.proxy.handler !== "function"
-    ) {
-        console.warn("Wastewater overlay unavailable: i2b2 proxy not present");
-        return null;
-    }
-
     const msg = `
-        <ns6:request
-            xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
+        <ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
             <message_header>
                 <proxy>
                     <redirect_url>
@@ -510,7 +498,6 @@ async function fetchWastewater(startDate, endDate) {
                     </redirect_url>
                 </proxy>
             </message_header>
-
             <message_body>
                 { "Start Date":"${startDate}", "End Date":"${endDate}" }
             </message_body>
@@ -518,18 +505,50 @@ async function fetchWastewater(startDate, endDate) {
     `;
 
     try {
-        const response = await i2b2.hive.proxy.handler({
-            url: "/~proxy",
-            msg: msg,
-            method: "POST"
+        // --------------------------------------------------
+        // Preferred path (only if proxy helper exists)
+        // --------------------------------------------------
+        if (i2b2?.hive?.proxy?.handler) {
+            const response = await i2b2.hive.proxy.handler({
+                url: "/~proxy",
+                msg: msg,
+                method: "POST"
+            });
+
+            const bodyNode = i2b2.h.XPath(
+                response.refXML,
+                "//message_body/text()"
+            )[0];
+
+            return bodyNode ? JSON.parse(bodyNode.nodeValue) : null;
+        }
+
+        // --------------------------------------------------
+        // Fallback path: direct POST to /~proxy
+        // --------------------------------------------------
+        const response = await fetch("/~proxy", {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/xml"
+            },
+            body: msg,
+            credentials: "include" // REQUIRED for i2b2 session
         });
 
-        const bodyNode = i2b2.h.XPath(response.refXML, "//message_body/text()")[0];
-        if (!bodyNode) return null;
+        if (!response.ok) {
+            console.error("Wastewater /~proxy call failed:", response.status);
+            return null;
+        }
 
-        return JSON.parse(bodyNode.nodeValue);
+        const text = await response.text();
+        const xml = new DOMParser().parseFromString(text, "text/xml");
+        const bodyNode = xml.querySelector("message_body");
+
+        return bodyNode ? JSON.parse(bodyNode.textContent) : null;
+
     } catch (err) {
         console.error("Failed to fetch wastewater data", err);
         return null;
     }
 }
+
