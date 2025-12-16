@@ -1,4 +1,5 @@
-const margin = { top: 20, right: 20, bottom: 70, left: 60 };
+const margin = { top: 20, right: 80, bottom: 70, left: 60 };
+
 
 const DISEASE_COLORS = {
     COVID: "#1f77b4",        // blue
