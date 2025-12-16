@@ -3,7 +3,7 @@
    ============================================================ */
 
 /* Match BarGraph's y-label styling */
-.component-instance-viz.viztype-INFECTIOUSTIMELINE svg text.y-label {
+.component-instance-viz.viztype-PATHOGENTIMELINE svg text.y-label {
     fill: var(--text-primary-dark, #000);
     font-size: 10px;
 }
@@ -11,29 +11,29 @@
 /* -----------------------------------------------------------
    Hover bold for X-axis labels (match BarGraph behavior)
    ----------------------------------------------------------- */
-.component-instance-viz.viztype-INFECTIOUSTIMELINE svg .x-axis g.tick text:hover {
+.component-instance-viz.viztype-PATHOGENTIMELINE svg .x-axis g.tick text:hover {
     font-weight: bold;
     cursor: default;
 }
 
 
 /* General text styling inside the chart */
-.component-instance-viz.viztype-INFECTIOUSTIMELINE svg text {
+.component-instance-viz.viztype-PATHOGENTIMELINE svg text {
     font-family: sans-serif;
     fill: var(--text-primary-dark, #000);
 }
 
-.component-instance-viz.viztype-INFECTIOUSTIMELINE,
-.component-instance-viz.viztype-INFECTIOUSTIMELINE * {
+.component-instance-viz.viztype-PATHOGENTIMELINE,
+.component-instance-viz.viztype-PATHOGENTIMELINE * {
     overflow: visible !important;
 }
 
 /* SVG must explicitly allow overflow — Chrome collapses it otherwise */
-.component-instance-viz.viztype-INFECTIOUSTIMELINE svg {
+.component-instance-viz.viztype-PATHOGENTIMELINE svg {
     overflow: visible !important;
 }
 
-.component-instance-viz.viztype-INFECTIOUSTIMELINE svg text.y-label {
+.component-instance-viz.viztype-PATHOGENTIMELINE svg text.y-label {
     display: inline !important;
 }
 

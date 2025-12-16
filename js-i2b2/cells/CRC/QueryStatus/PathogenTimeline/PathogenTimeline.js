@@ -1,6 +1,6 @@
 const margin = { top: 20, right: 20, bottom: 70, left: 60 };
 
-export default class InfectiousTimeline {
+export default class PathogenTimeline {
     constructor(componentConfig, qrsRecordInfo, qrsData) {
         try {
             this.config = componentConfig;
@@ -30,7 +30,7 @@ export default class InfectiousTimeline {
 
             // --- Controls ---
             this.controls = {
-                disease: document.getElementById("infDiseaseSelect") || null,
+                disease: document.getElementById("pathDiseaseSelect") || null,
                 site: document.getElementById("siteSelect") || null,
                 overlay: document.getElementById("overlaySelect") || null
             };
@@ -61,7 +61,7 @@ export default class InfectiousTimeline {
             });
 
         } catch (e) {
-            console.error("Error in QueryStatus:InfectiousTimeline.constructor()", e);
+            console.error("Error in QueryStatus:PathogenTimeline.constructor()", e);
         }
     }
 
@@ -107,7 +107,7 @@ export default class InfectiousTimeline {
                     this.config.displayEl.scrollHeight + "px";
             }
         } catch (e) {
-            console.error("Error in QueryStatus:InfectiousTimeline.update()", e);
+            console.error("Error in QueryStatus:PathogenTimeline.update()", e);
             return false;
         }
         return true;
@@ -245,7 +245,7 @@ export default class InfectiousTimeline {
             this.width = width;
             this.update();
         } catch (e) {
-            console.error("Error in QueryStatus:InfectiousTimeline.redraw()", e);
+            console.error("Error in QueryStatus:PathogenTimeline.redraw()", e);
         }
     }
 
@@ -264,7 +264,7 @@ export default class InfectiousTimeline {
 
             return true;
         } catch (e) {
-            console.error("Error in QueryStatus:InfectiousTimeline.show()", e);
+            console.error("Error in QueryStatus:PathogenTimeline.show()", e);
         }
     }
 
@@ -276,13 +276,13 @@ export default class InfectiousTimeline {
             this.isVisible = false;
             return true;
         } catch (e) {
-            console.error("Error in QueryStatus:InfectiousTimeline.hide()", e);
+            console.error("Error in QueryStatus:PathogenTimeline.hide()", e);
         }
     }
 }
 
 // ======================================================================
-// parseData — parse InfectiousTimeline breakdown into structured rows
+// parseData — parse PathogenTimeline breakdown into structured rows
 // ======================================================================
 
 let parseData = function (xmlData, advancedConfig) {
@@ -363,7 +363,7 @@ let parseData = function (xmlData, advancedConfig) {
     }
 
     // SHRINE section — unchanged pattern (kept for completeness, though
-    // InfectiousTimeline may or may not need it)
+    // PathogenTimeline may or may not need it)
     let ShrineNode = i2b2.h.XPath(xmlData, "descendant::SHRINE");
     if (ShrineNode.length) {
         let ShrineData = {
