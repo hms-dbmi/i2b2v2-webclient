@@ -644,7 +644,8 @@ const func_processData = (xmlData, zipRegEx) => {
             ret[zipCode] = {
                 count: zipCount,
                 display: displayCount,
-                text: zipData[0]
+                text: zipSearch[0],
+                name: zipSearch[2]
             };
         }
     }

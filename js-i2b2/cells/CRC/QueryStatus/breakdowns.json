@@ -170,13 +170,13 @@
           "autoClose": false,
           "closeOnClick": false
         },
-        "template": "<b>[{{text}}]</b><br/>{{display}} patients"
+        "template": "<b>[{{ZCTA5CE10}}] - {{name}}</b><br/>{{display}} patients"
       },
       "hoverBox": {
         "position": "topright",
         "className": "onhover-box",
         "default": "<h4>Patient Count</h4>Hover over an area",
-        "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
+        "template": "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
       },
       "legendBox": {
         "position": "bottomright",
