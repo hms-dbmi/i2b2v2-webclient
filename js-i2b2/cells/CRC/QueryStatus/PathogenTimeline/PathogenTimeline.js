@@ -145,6 +145,7 @@ export default class PathogenTimeline {
     }
 
     // ------------------------------------------------------------------
+   
     draw(records, selectedOverlay) {
         if (!records || records.length === 0) {
             this.svg.selectAll("*").remove();
@@ -160,14 +161,6 @@ export default class PathogenTimeline {
         // Group disease series
         // -----------------------------
         const seriesByDisease = d3.group(records, d => d.disease);
-
-        // -----------------------------
-        // X SCALE (shared time axis)
-        // -----------------------------
-        const allDates = records.map(d => d.date);
-        const xScale = d3.scaleTime()
-            .domain(d3.extent(allDates))
-            .range([0, width]);
 
         // -----------------------------
         // LEFT Y SCALE (patients)
@@ -196,12 +189,25 @@ export default class PathogenTimeline {
                 })
                 .filter(Boolean);
 
-
-            yRight = d3.scaleLinear()
-                .domain([0, d3.max(wwPoints, d => d.value)])
-                .nice()
-                .range([height, 0]);
+            if (wwPoints.length) {
+                yRight = d3.scaleLinear()
+                    .domain([0, d3.max(wwPoints, d => d.value)])
+                    .nice()
+                    .range([height, 0]);
+            }
         }
+
+        // -----------------------------
+        // X SCALE (patients + wastewater)
+        // -----------------------------
+        let allDates = records.map(d => d.date);
+        if (wwPoints.length) {
+            allDates = allDates.concat(wwPoints.map(d => d.date));
+        }
+
+        const xScale = d3.scaleTime()
+            .domain(d3.extent(allDates))
+            .range([0, width]);
 
         // -----------------------------
         // AXES
@@ -320,7 +326,7 @@ export default class PathogenTimeline {
                 .text(d => {
                     const dateStr = isNaN(d.date.getTime())
                         ? "Invalid date"
-                        : d.date.toISOString().slice(0,10);
+                        : d3.timeFormat("%Y-%m-%d")(d.date);
                     return `Wastewater\n${dateStr}\n${d.value}`;
                 });
         }
