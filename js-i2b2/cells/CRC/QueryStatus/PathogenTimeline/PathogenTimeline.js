@@ -197,10 +197,11 @@ export default class PathogenTimeline {
                 .map(d => {
                     const dt = new Date(d.date || d.sample_date);
                     const val =
-                        Number(d.value) ||
-                        Number(d.mwra_combined) ||
-                        Number(d.copies_per_ml) ||
-                        Number(d.concentration);
+                        d.value != null ? Number(d.value) :
+                        d.mwra_combined != null ? Number(d.mwra_combined) :
+                        d.copies_per_ml != null ? Number(d.copies_per_ml) :
+                        d.concentration != null ? Number(d.concentration) :
+                        NaN;
 
                     if (isNaN(dt.getTime()) || isNaN(val)) return null;
 
