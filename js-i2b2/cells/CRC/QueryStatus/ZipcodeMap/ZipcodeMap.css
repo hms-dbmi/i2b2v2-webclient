@@ -1,3 +1,7 @@
+.component-instance-viz.viztype-ZIPCODEMAP {
+    padding: var(--viz-module-padding);
+}
+
 .viztype-ZIPCODEMAP .map-target {
     height: 600px;
     width: 100%;

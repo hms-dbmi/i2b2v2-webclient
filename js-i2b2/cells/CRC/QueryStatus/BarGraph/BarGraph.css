@@ -1,6 +1,7 @@
 /* Bar Graph CSS */
 
 .component-instance-viz.viztype-BARS {
+    /*padding: var(--viz-module-padding);*/
     /*background: radial-gradient(black,transparent);*/
     /*height: 10rem;*/
 }

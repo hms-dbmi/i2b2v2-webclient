@@ -1,8 +1,6 @@
 /* Shrine Sites CSS */
-
-
 .viztype-SHRINESITES {
-    padding: 0 2rem;
+    padding: var(--viz-module-padding);
 }
 
 .viztype-SHRINESITES table {

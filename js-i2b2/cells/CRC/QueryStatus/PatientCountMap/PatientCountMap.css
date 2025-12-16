@@ -1,3 +1,7 @@
+.component-instance-viz.viztype-PATIENTCOUNTMAP {
+    padding: var(--viz-module-padding);
+}
+
 .viztype-PATIENTCOUNTMAP .patient-map {
     height: 35em;
     width: 100%;
