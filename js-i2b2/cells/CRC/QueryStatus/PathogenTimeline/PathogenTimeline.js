@@ -84,9 +84,20 @@ export default class PathogenTimeline {
 
                 // Load wastewater
                 fetchWastewater("1/01/2020", "1/01/2025").then(data => {
-                    self.wastewater = data;
+                    // NORMALIZE wastewater payload to array
+                    if (Array.isArray(data)) {
+                        self.wastewater = data;
+                    } else if (data?.data && Array.isArray(data.data)) {
+                        self.wastewater = data.data;
+                    } else if (data?.result && Array.isArray(data.result)) {
+                        self.wastewater = data.result;
+                    } else {
+                        console.warn("Unrecognized wastewater payload shape", data);
+                        self.wastewater = [];
+                    }
                     self.update();
                 });
+
 
                 self.update();
             }).call(this);
@@ -148,6 +159,8 @@ export default class PathogenTimeline {
     // ------------------------------------------------------------------
    
     draw(records, selectedOverlay) {
+        console.log("DRAW overlay =", selectedOverlay);
+
         if (!records || records.length === 0) {
             this.svg.selectAll("*").remove();
             return;
@@ -178,7 +191,8 @@ export default class PathogenTimeline {
         let yRight = null;
         let wwPoints = [];
 
-        if (selectedOverlay !== "(None)" && Array.isArray(this.wastewater)) {
+        if (selectedOverlay !== "(None)" && this.wastewater && this.wastewater.length > 0) {
+
             wwPoints = this.wastewater
                 .map(d => {
                     const dt = new Date(d.date || d.sample_date);
