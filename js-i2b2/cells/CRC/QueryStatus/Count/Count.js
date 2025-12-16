@@ -5,7 +5,6 @@ export default class Count {
             this.record = qrsRecordInfo;
             this.data = qrsData;
             this.isVisible = false;
-            let componentRef = this;
 
             // see if we are SHRINE count
             if (this.record.QRS_Type.indexOf("_SHRINE_") === -1) {

@@ -1,4 +1,9 @@
 .CRC_QS_view {
+    --viz-module-padding: 0 2rem;
+}
+
+
+.CRC_QS_view {
     position: absolute;
     background: #FFF;
     top: 0;
@@ -104,7 +109,7 @@
 }
 
 .QueryStatusComponent .header {
-    margin: 0 2rem;
+    padding: var(--viz-module-padding);
 }
 
 .QueryStatusComponent .title {
