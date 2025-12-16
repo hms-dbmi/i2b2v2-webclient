@@ -87,7 +87,7 @@
     "name": "Pathogen Timeline",
     "source": "PathogenTimeline/PathogenTimeline.js",
     "CSS": "PathogenTimeline/PathogenTimeline.css",
-    "iconClass": "bi bi-virus2",
+    "iconClass": "bi-graph-up-arrow",
     "displayOrder": 3,
     "class": "pathogen-timeline",
     "displayForUnregistered": false

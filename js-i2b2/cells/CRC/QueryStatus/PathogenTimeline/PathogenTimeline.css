@@ -37,10 +37,18 @@
     display: inline !important;
 }
 
-.inf-timeline-controls .form-label {
+.path-timeline-controls .form-label {
     font-size: 0.85rem;
 }
 
-.inf-timeline-controls {
+.path-timeline-controls {
     flex-wrap: wrap; /* allows stacking on small screens */
+}
+
+.y-axis.right text {
+    fill: #333;
+}
+.y-axis.right path,
+.y-axis.right line {
+    stroke: #333;
 }
