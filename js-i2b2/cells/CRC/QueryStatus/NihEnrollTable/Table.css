@@ -1,0 +1,130 @@
+/* configuration variables */
+.viztype-NIHENROLLTABLE {
+    --outer-border: #8b9dc3;
+    --inner-border: #d0d0d0;
+    --legend-text: #5b7fab;
+    --legend-background: #5b7fab;
+}
+
+.component-instance-viz.viztype-NIHENROLLTABLE {
+    padding: var(--viz-module-padding);
+}
+
+.viztype-NIHENROLLTABLE .header-text,
+.viztype-NIHENROLLTABLE .header-ethnic-group,
+.viztype-NIHENROLLTABLE .row-label {
+    font-size: 13px;
+    text-align: center;
+    color: var(--legend-text);
+    font-weight: bold;
+}
+
+.viztype-NIHENROLLTABLE .table-grid {
+    display: grid;
+    grid-template-columns: clamp(50px, 16%, 150px) repeat(10, 1fr);
+    grid-template-rows: repeat(2, 2rem) repeat(8, 1fr) 2rem;
+    border: 2px solid var(--outer-border);
+    background-color: #d4e1f5;
+    width: 100%;
+    position: relative;
+    top: calc(-1rem - 1px);
+    overflow: clip;
+}
+
+.viztype-NIHENROLLTABLE .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.viztype-NIHENROLLTABLE .data-cell {
+    background-color: white;
+    color: #666;
+    border: 1px solid var(--inner-border);
+}
+
+.viztype-NIHENROLLTABLE .total-cell {
+    color: var(--legend-text);
+    font-weight: bold;
+}
+
+/* Data rows positioning */
+.viztype-NIHENROLLTABLE .r1 { grid-row: 1; }
+.viztype-NIHENROLLTABLE .r2 { grid-row: 2; }
+.viztype-NIHENROLLTABLE .r3 { grid-row: 3; }
+.viztype-NIHENROLLTABLE .r4 { grid-row: 4; }
+.viztype-NIHENROLLTABLE .r5 { grid-row: 5; }
+.viztype-NIHENROLLTABLE .r6 { grid-row: 6; }
+.viztype-NIHENROLLTABLE .r7 { grid-row: 7; }
+.viztype-NIHENROLLTABLE .r8 { grid-row: 8; }
+.viztype-NIHENROLLTABLE .r9 { grid-row: 9; }
+.viztype-NIHENROLLTABLE .r10 { grid-row: 10; }
+.viztype-NIHENROLLTABLE .r11 { grid-row: 11; }
+
+.viztype-NIHENROLLTABLE .c1 { grid-column: 1; }
+.viztype-NIHENROLLTABLE .c2 { grid-column: 2; }
+.viztype-NIHENROLLTABLE .c3 { grid-column: 3; }
+.viztype-NIHENROLLTABLE .c4 { grid-column: 4; }
+.viztype-NIHENROLLTABLE .c5 { grid-column: 5; }
+.viztype-NIHENROLLTABLE .c6 { grid-column: 6; }
+.viztype-NIHENROLLTABLE .c7 { grid-column: 7; }
+.viztype-NIHENROLLTABLE .c8 { grid-column: 8; }
+.viztype-NIHENROLLTABLE .c9 { grid-column: 9; }
+.viztype-NIHENROLLTABLE .c10 { grid-column: 10; }
+.viztype-NIHENROLLTABLE .c11 { grid-column: 11; }
+
+
+/* special row/column formatting - borders */
+.viztype-NIHENROLLTABLE .r1,
+.viztype-NIHENROLLTABLE .r2,
+.viztype-NIHENROLLTABLE .r3,
+.viztype-NIHENROLLTABLE .r11,
+.viztype-NIHENROLLTABLE .c1,
+.viztype-NIHENROLLTABLE .c11 {
+    border: 1px solid var(--outer-border);
+}
+.viztype-NIHENROLLTABLE .r1 { border-width: 0 0 1px 0; }
+.viztype-NIHENROLLTABLE .r2 {
+    outline: 2px solid var(--outer-border);
+    outline-offset: -1px;
+    border-width: 0 0 0 0;
+}
+.viztype-NIHENROLLTABLE .r4 { border-top-color: var(--outer-border); }
+.viztype-NIHENROLLTABLE .r10 { border-bottom-color: var(--outer-border); }
+.viztype-NIHENROLLTABLE .r11 { border-bottom-width: 0;}
+
+.viztype-NIHENROLLTABLE .c1 { border-width: 1px 1px 1px 0; }
+.viztype-NIHENROLLTABLE .c2 { border-left-color: var(--outer-border); }
+.viztype-NIHENROLLTABLE .c10 { border-right-color: var(--outer-border); }
+.viztype-NIHENROLLTABLE .c11 { border-right: 0; }
+
+/* special row/column formatting - cell sizes */
+.viztype-NIHENROLLTABLE .r1.c2 { grid-column: 2 / 11; }
+.viztype-NIHENROLLTABLE .r2.c2 { grid-column: 2 / 5; }
+.viztype-NIHENROLLTABLE .r2.c5 { grid-column: 5 / 8; }
+.viztype-NIHENROLLTABLE .r2.c8 { grid-column: 8 / 11; }
+
+/* special cell formatting - borders */
+.viztype-NIHENROLLTABLE .r3.c1 { border-top: 0; }
+.viztype-NIHENROLLTABLE .r3.c11 {border-width: 0 0 1px 1px;}
+.viztype-NIHENROLLTABLE .r11.c1 { border-width: 1px 1px 0 0; }
+.viztype-NIHENROLLTABLE .r11.c11 { border-right: 0; }
+
+
+@media print {
+    .component-instance-viz.viztype-NIHENROLLTABLE .table-grid {
+        top: 0;
+        left: -10%;
+        width: 120%;
+    }
+    .viztype-NIHENROLLTABLE .header-text,
+    .viztype-NIHENROLLTABLE .row-label {
+        font-size: .5rem;
+    }
+
+    .viztype-NIHENROLLTABLE .table-grid {
+        font-size: .5rem !important;
+        color: #000 !important;
+    }
+}

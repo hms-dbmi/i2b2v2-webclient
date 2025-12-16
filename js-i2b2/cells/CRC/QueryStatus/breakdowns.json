@@ -224,5 +224,11 @@
         }
       }
     }
+  },
+  "PATIENT_NIH_ENROLLMENT_SHRINE_XML": {
+    "TABLE": true,
+    "NIHENROLLTABLE": true,
+    "DOWNLOAD": true
   }
+
 }

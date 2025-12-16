@@ -82,6 +82,13 @@
       "displayOrder": 3,
       "class": "linechart",
       "displayForUnregistered": false
+    },
+    "NIHENROLLTABLE": {
+      "name": "Enrollment Form",
+      "source": "NihEnrollTable/Table.js",
+      "CSS": "NihEnrollTable/Table.css",
+      "iconClass": "bi bi-grid-3x3",
+      "displayOrder": 1
     }
   },
   "displayOrder": [
