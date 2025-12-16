@@ -5,6 +5,7 @@
 .viztype-PATIENTCOUNTMAP .patient-map {
     height: 35em;
     width: 100%;
+    border: 1px solid #ccc;
 }
 
 .viztype-PATIENTCOUNTMAP ul.zoom-links {

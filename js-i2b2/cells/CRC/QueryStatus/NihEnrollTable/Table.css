@@ -19,6 +19,10 @@
     font-weight: bold;
 }
 
+.viztype-NIHENROLLTABLE .header-text {
+    color: #333 !important;
+}
+
 .viztype-NIHENROLLTABLE .table-grid {
     display: grid;
     grid-template-columns: clamp(50px, 16%, 150px) repeat(10, 1fr);
@@ -35,13 +39,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px;
+    padding: 3px;
 }
 
 .viztype-NIHENROLLTABLE .data-cell {
     background-color: white;
     color: #666;
     border: 1px solid var(--inner-border);
+    padding: 3px;
 }
 
 .viztype-NIHENROLLTABLE .total-cell {
@@ -84,7 +89,10 @@
 .viztype-NIHENROLLTABLE .c11 {
     border: 1px solid var(--outer-border);
 }
-.viztype-NIHENROLLTABLE .r1 { border-width: 0 0 1px 0; }
+.viztype-NIHENROLLTABLE .r1 {
+    border-width: 0 2px 1px 2px;
+    margin: 0 -1px 0 -1px;
+}
 .viztype-NIHENROLLTABLE .r2 {
     outline: 2px solid var(--outer-border);
     outline-offset: -1px;

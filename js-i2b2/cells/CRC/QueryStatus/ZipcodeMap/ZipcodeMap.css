@@ -5,6 +5,7 @@
 .viztype-ZIPCODEMAP .map-target {
     height: 600px;
     width: 100%;
+    border: 1px solid #ccc;
 }
 
 .viztype-ZIPCODEMAP .zoom-links-label {
