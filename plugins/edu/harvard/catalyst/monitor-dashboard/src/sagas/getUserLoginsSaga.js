@@ -70,7 +70,7 @@ export function* doGetUserLogins(action) {
             yield put(getUserLoginsFailed(response));
         }
     } catch(e) {
-        console.error("Error getting user logins! Message: " + error);
+        console.error("Error getting user logins! Message: " + e);
         yield put(getUserLoginsFailed({errorMessage: "There was an error getting user logins."}));
     }
     finally {
