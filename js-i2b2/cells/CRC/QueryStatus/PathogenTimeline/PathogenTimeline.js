@@ -83,7 +83,7 @@ export default class PathogenTimeline {
 
 
                 // Load wastewater
-                fetchWastewater("1/01/2020", "1/01/2025").then(data => {
+                fetchWastewater("4/1/2020", "1/1/2025").then(data => {
 
                     console.log("WW RAW RESPONSE:", data);
                     console.log("WW TYPE:", typeof data);
@@ -567,10 +567,11 @@ async function fetchWastewater(startDate, endDate) {
                 </proxy>
             </message_header>
             <message_body>
-                { "Start Date":"${startDate}", "End Date":"${endDate}" }
+                {&quot;Start Date&quot;:&quot;${startDate}&quot;, &quot;End Date&quot;:&quot;${endDate}&quot;}
             </message_body>
         </ns6:request>
-    `;
+        `;
+
 
     try {
         // --------------------------------------------------
@@ -612,7 +613,28 @@ async function fetchWastewater(startDate, endDate) {
         const xml = new DOMParser().parseFromString(text, "text/xml");
         const bodyNode = xml.querySelector("message_body");
 
-        return bodyNode ? JSON.parse(bodyNode.textContent) : null;
+
+            let parsed = null;
+
+            if (bodyNode) {
+                parsed = JSON.parse(bodyNode.textContent);
+            }
+
+
+            console.log(
+                "WW ROW COUNT:",
+                Array.isArray(parsed)
+                    ? parsed.length
+                    : Array.isArray(parsed?.data)
+                        ? parsed.data.length
+                        : Array.isArray(parsed?.result)
+                            ? parsed.result.length
+                            : "UNKNOWN SHAPE",
+                parsed
+            );
+
+            return parsed;
+
 
     } catch (err) {
         console.error("Failed to fetch wastewater data", err);
