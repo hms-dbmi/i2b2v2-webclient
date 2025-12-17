@@ -32,8 +32,11 @@ export const userSessionsSlice = createSlice({
             state.sessionList = sessions;
             state.sessionCount = sessions.length;
         },
-        getUserSessionsFailed: (state, { payload: { errorMessage } }) => {
+        getUserSessionsFailed: (state, { payload: response }) => {
             state.isFetching = false;
+            const errorMessage = response && response.errorMessage ? response.errorMessage: "An error occurred retrieving " +
+                "user logins";
+
             state.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage

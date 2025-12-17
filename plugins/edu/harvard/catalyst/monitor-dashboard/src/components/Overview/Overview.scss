@@ -22,21 +22,45 @@
   }
 
   .ProjectOverviewInfo {
-    height: 10em;
-    width: 10em;
+    height: 11.9em;
+    width: 11.9em;
     background-color: #f8f8f875;
     .ProjectOverviewInfoContent {
       display: flex;
       align-items: center;
-      flex-direction: column;
       text-align: center;
       justify-content: center;
-      height: 9em;
+
+      .ProjectOverviewInfoContentCentered{
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+        height: 100%;
+      }
+
+      .ProjectOverviewInfoContentCount {
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+
+      .ProjectOverviewInfoContentCountDetail{
+        margin-top: 0.9em;
+        font-size: 0.95em;
+      }
     }
+    position: relative;
   }
 
-  .UserSessionCount {
-    font-weight: bold;
-    font-size: 1.2em;
+  .LoadingContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 100%;
+    height: 100%;
+    z-index: 5;
   }
 }

@@ -3,7 +3,7 @@ import {UserSession} from "./UserSession";
 
 export const UserSessions = ({
     sessionList = [],
-    sessionCount = null,
+    sessionCount = 0,
     isFetching= false,
 } = {}) => ({
     sessionList,
