@@ -84,10 +84,6 @@ export default class PathogenTimeline {
 
                 // Load wastewater
                 fetchWastewater("3/1/2020", "1/1/2025").then(data => {
-
-                    console.log("WW RAW RESPONSE:", data);
-                    console.log("WW TYPE:", typeof data);
-                    console.log("WW IS ARRAY:", Array.isArray(data));
                     // NORMALIZE wastewater payload to array
                     if (Array.isArray(data)) {
                         self.wastewater = data;
@@ -163,8 +159,7 @@ export default class PathogenTimeline {
     // ------------------------------------------------------------------
    
     draw(records, selectedOverlay) {
-        console.log("DRAW overlay =", selectedOverlay);
-
+ 
         if (!records || records.length === 0) {
             this.svg.selectAll("*").remove();
             return;
@@ -619,20 +614,7 @@ async function fetchWastewater(startDate, endDate) {
             if (bodyNode) {
                 parsed = JSON.parse(bodyNode.textContent);
             }
-
-
-            console.log(
-                "WW ROW COUNT:",
-                Array.isArray(parsed)
-                    ? parsed.length
-                    : Array.isArray(parsed?.data)
-                        ? parsed.data.length
-                        : Array.isArray(parsed?.result)
-                            ? parsed.result.length
-                            : "UNKNOWN SHAPE",
-                parsed
-            );
-
+            
             return parsed;
 
 
