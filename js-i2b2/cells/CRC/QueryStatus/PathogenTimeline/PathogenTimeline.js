@@ -83,7 +83,7 @@ export default class PathogenTimeline {
 
 
                 // Load wastewater
-                fetchWastewater("4/1/2020", "1/1/2025").then(data => {
+                fetchWastewater("3/1/2022", "4/1/2022").then(data => {
 
                     console.log("WW RAW RESPONSE:", data);
                     console.log("WW TYPE:", typeof data);
