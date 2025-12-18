@@ -1,6 +1,6 @@
 {
-  "title": "Bivariate Zipcode Map",
-  "description": "Visualizes two population variables using a Zip code map ",
+  "title": "Bivariate ZIP Code Map",
+  "description": "Visualizes two population variables using a ZIP Code map",
   "category": ["zipcode", "map"],
   "icons": { "size32x32": "icon.png" },
   "assetDir": "assets",
