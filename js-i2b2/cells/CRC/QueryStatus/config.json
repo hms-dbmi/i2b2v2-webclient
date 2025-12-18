@@ -98,6 +98,13 @@
       "CSS": "NihEnrollTable/Table.css",
       "iconClass": "bi bi-grid-3x3",
       "displayOrder": 1
+    },
+    "NIHENROLLCSV": {
+      "name": "Enrollment Form CSV",
+      "source": "NihEnrollCsv/Download.js",
+      "iconClass": "bi bi-filetype-csv",
+      "displayOrder": 100,
+      "notInReport": true
     }
   },
   "displayOrder": [
