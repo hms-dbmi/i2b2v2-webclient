@@ -83,6 +83,15 @@
       "class": "linechart",
       "displayForUnregistered": false
     },
+    "PATHOGENTIMELINE": {
+    "name": "Pathogen Timeline",
+    "source": "PathogenTimeline/PathogenTimeline.js",
+    "CSS": "PathogenTimeline/PathogenTimeline.css",
+    "iconClass": "bi-graph-up-arrow",
+    "displayOrder": 3,
+    "class": "pathogen-timeline",
+    "displayForUnregistered": false
+    }, 
     "NIHENROLLTABLE": {
       "name": "Enrollment Form",
       "source": "NihEnrollTable/Table.js",

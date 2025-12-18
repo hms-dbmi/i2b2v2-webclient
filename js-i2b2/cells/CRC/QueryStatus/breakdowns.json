@@ -129,6 +129,11 @@
     "TABLE": true,
     "DOWNLOAD": true
   },
+   "PATIENT_PATHOGEN_TIMELINE_SHRINE_XML": {
+    "TABLE": true,
+    "DOWNLOAD": true,
+    "PATHOGENTIMELINE": true
+  },
   "PATIENT_ZIP_COUNT_SHRINE_XML": {
     "TABLE": true,
     "ZIPCODEMAP": {
