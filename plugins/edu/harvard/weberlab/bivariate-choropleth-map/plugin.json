@@ -19,7 +19,7 @@
       "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
       "maxZoom": 18,
       "zipAttribName": "ZCTA5CE10",
-      "zipRegEx": "^(.*)[0-9]{5}",
+      "zipRegEx": "^([0-9]{5}) - (.*)",
       "__colorSet": "seqseq2",
       "colorSet": "greenblue",
       "styles": {
