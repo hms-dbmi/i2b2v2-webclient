@@ -6,6 +6,7 @@ import AppBar from '@mui/material/AppBar';
 
 import "./MonitorDashboard.scss";
 import {Overview} from "../Overview";
+import {Query} from "../Query";
 
 export const MonitorDashboard = () => {
     const dispatch = useDispatch();
@@ -52,7 +53,7 @@ export const MonitorDashboard = () => {
             </AppBar>
 
             {selectedTab === ViewModeTypes.OVERVIEW && <Overview/>}
-
+            {selectedTab === ViewModeTypes.QUERY && <Query/>}
         </div>
     );
 };

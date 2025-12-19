@@ -1,0 +1,18 @@
+.Query {
+  padding: 1.3em 1.4em;
+
+  .ViewProjectBtn {
+    margin-top: 0.98em;
+    vertical-align: bottom;
+  }
+
+  .QueryHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ProjectSelection {
+    margin-top: 0.9em;
+  }
+}

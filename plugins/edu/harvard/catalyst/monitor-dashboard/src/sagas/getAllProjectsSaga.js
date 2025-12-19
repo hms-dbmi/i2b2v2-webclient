@@ -8,6 +8,7 @@ import {
     getAllProjectsSucceeded,
 } from "../reducers/projectsSlice";
 import {parseXml} from "../utilities/parseXml";
+import {getAllDataSourcesFailed} from "../reducers/dataSourcesSlice";
 
 //a function that returns a promise
 const getAllProjectsRequest = () => i2b2.ajax.PM.getAllProject({}).then((xmlString) => parseXml(xmlString));
@@ -61,6 +62,9 @@ export function* doGetAllProjects(action) {
         }else{
             yield put(getAllProjectsFailed(response));
         }
+    }catch(e){
+        console.error("Error retrieving projects. ", e);
+        yield put(getAllProjectsFailed({errorMessage: e}));
     } finally {
         const msg = `get all projects thread closed`;
         yield msg;
