@@ -276,12 +276,13 @@ i2b2.Plugin.renderMap = function() {
                 for (let i = 0; i < params.length; i++) {
                     const zipData = params[i].getAttribute("column");
                     let zipSearch = zipData.match(i2b2.model.settings.zipRegEx);
-                    if (zipSearch.length > 0) {
-                        const zipCode = zipSearch[0].trim();
+                    if (zipSearch !== null && zipSearch.length > 0) {
+                        const zipCode = zipSearch[1].trim();
                         if (typeof i2b2.model.mainData[zipCode] === 'undefined') {
                             // initial creation the ZIP Code record
                             i2b2.model.mainData[zipCode] = {
-                                text: zipData
+                                text: zipSearch[0],
+                                label: zipSearch[2]
                             };
                         }
                         // save the count value of the ZIP Code for the dataset
