@@ -22,11 +22,16 @@
     text-align: center;
     margin: 14px 0 0 0;
     position: relative;
+    padding: 2rem 0;
+}
+
+#PM-login-modal .description {
+    padding: 0 3rem 2rem 3rem;
+    text-align: justify;
 }
 
 #PM-login-modal img.logo {
-    _height: 100px;
-    width: 40%;
+    width: 80%;
 }
 
 #PM-login-modal .container {
