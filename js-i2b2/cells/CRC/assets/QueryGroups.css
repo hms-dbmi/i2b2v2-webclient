@@ -47,7 +47,7 @@
 }
 
 .CRC_QT_view .CRC_QT_runbar {
-    background: rgba(204, 194, 182, 0.6);
+    background: var(--tabs-right-background);
     position: absolute;
     bottom: 0;
     right: 0;
@@ -59,7 +59,7 @@
     /*color: #2782a3;*/
     font-weight: bold;
     font-size: 1.1em;
-    border: 1px solid rgba(39, 130, 163, 0.41);
+    border: 1px solid var(--tabs-right-border);
 }
 
 .CRC_QT_view .CRC_QT_runbar .left {
@@ -139,9 +139,9 @@
     line-height: 1.5em;
 }
 
-.CRC_QT_runbar button:hover{
+.CRC_QT_runbar button:hover {
     opacity: 0.7;
-    background-color: #2782a3;
+    background-color: var(--text-secondary-dark);
     color: #fff;
 }
 
