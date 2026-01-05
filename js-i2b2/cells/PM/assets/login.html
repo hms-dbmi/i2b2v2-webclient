@@ -7,11 +7,19 @@
             <div>MassCPR Federated Data Network Login</div>
         </div>
         <div class="imgcontainer">
-            <img src="assets/images/MassCPR_minimal_logo.gif" alt="MassCPR logo" class="logo">
+            <img src="assets/images/logo-masscpr.png" alt="MassCPR logo" class="logo">
+        </div>
+
+        <div class="description">
+            The MassCPR Federated Data Network combines the aggregate results of analyses that are performed locally
+            within each participating institution using electronic health record (EHR) data. By leveraging the
+            collective informatics capabilities of the consortium, this network enables data discovery and sharing
+            while maintaining institutional autonomy and patient privacy.
+            <a style="right: -.3rem; font-size: .8rem; position: relative; top: .1rem;" href="https://masscpr.hms.harvard.edu/our-data-network/" target="_blank" rel="noopener noreferrer">Learn more</a>
         </div>
 
         <div class="container">
-            <div class="form-group login-host">
+            <div class="form-group login-host" style="display:none">
                 <label for="logindomain"><b>Host</b></label>
                 <select class="form-select" id="logindomain">
                     <option value="0">Loading...</option>
@@ -51,8 +59,8 @@
 
         <div class="container footer">
             <div>
-                Powered by Harvard Catalyst SHRINE v4.3
-                <div style="float:right"><a href="https://key.harvard.edu/" target="_blank">Help with HarvardKey</a></div>
+                Powered by Harvard Catalyst SHRINE v4<a href="javascript:$('.login-host').attr('style','')" style="text-decoration: none;cursor:text">.</a>3
+                <div style="float:right"><a href="https://key.harvard.edu/" target="_blank" rel="noopener noreferrer">Help with HarvardKey</a></div>
             </div>
         </div>
     </form>
