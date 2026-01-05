@@ -8,6 +8,10 @@
   "PATIENT_SITE_COUNT_SHRINE_XML": {
     "SHRINESITES": true
   },
+  "PATIENT_NIH_ENROLLMENT_SHRINE_XML": {
+    "NIHENROLLTABLE": true,
+    "TABLE": true
+  },
   "PATIENT_GENDER_COUNT_XML": {
     "TABLE": true,
     "BARS": true

@@ -1,6 +1,6 @@
 {
-  "title": "Bivariate Zipcode Map",
-  "description": "Visualizes two population variables using a Zip code map ",
+  "title": "Bivariate ZIP Code Map",
+  "description": "Visualizes two population variables using a ZIP Code map",
   "category": ["zipcode", "map"],
   "icons": { "size32x32": "icon.png" },
   "assetDir": "assets",
@@ -19,9 +19,10 @@
       "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
       "maxZoom": 18,
       "zipAttribName": "ZCTA5CE10",
-      "zipRegEx": "^(.*)[0-9]{5}",
+      "zipRegEx": "^([0-9]{5}) - (.*)",
       "__colorSet": "seqseq2",
-      "colorSet": "greenblue",
+      "__colorSet": "greenblue",
+      "colorSet": "griffin",
       "styles": {
         "norm": {
           "weight": 1,

@@ -77,40 +77,14 @@
     "TABLE": true,
     "DOWNLOAD": true
   },
+   "PATIENT_PATHOGEN_TIMELINE_SHRINE_XML": {
+    "TABLE": true,
+    "DOWNLOAD": true,
+    "PATHOGENTIMELINE": true
+  },
   "PATIENT_ZIP_COUNT_SHRINE_XML": {
     "TABLE": true,
     "ZIPCODEMAP": {
-      "zooms": [
-        {
-          "lat": 42.30778424213693,
-          "long": -71.09493880296402,
-          "zoom": 12,
-          "title": "Boston",
-          "tooltip": "City of Boston"
-        },
-        {
-          "lat": 42.33023458841124,
-          "long": -71.13364100605521,
-          "zoom": 11,
-          "title": "Greater Boston",
-          "tooltip": "Boston and surrounding area",
-          "initial": true
-        },
-        {
-          "lat": 42.01652429956454,
-          "long": -71.7354813533802,
-          "zoom": 8,
-          "title": "Massachussetts",
-          "tooltip": "State of Massachussetts"
-        },
-        {
-          "lat": 42.33880604791197,
-          "long": -71.1066726902258,
-          "zoom": 7,
-          "title": "New England",
-          "tooltip": "New England Area"
-        }
-      ],
       "clickBox": {
         "options": {
           "closeButton": "true",
@@ -118,13 +92,13 @@
           "autoClose": false,
           "closeOnClick": false
         },
-        "template": "<b>[{{text}}]</b><br/>{{display}} patients"
+        "template": "<b>[{{ZCTA5CE10}}] - {{name}}</b><br/>{{display}} patients"
       },
       "hoverBox": {
         "position": "topright",
         "className": "onhover-box",
         "default": "<h4>Patient Count</h4>Hover over an area",
-        "template": "<h4>Patient Count</h4><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
+        "template": "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
       },
       "legendBox": {
         "position": "bottomright",
@@ -144,7 +118,7 @@
         "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
         "maxZoom": 18,
         "zipAttribName": "ZCTA5CE10",
-        "zipRegEx": "^(.*)[0-9]{5}",
+        "zipRegEx": "^([0-9]{5}) - (.*)$",
         "colors": [
           {"color": "#d73027"},
           {"color": "#f46d43"},
@@ -172,5 +146,12 @@
         }
       }
     }
+  },
+  "PATIENT_NIH_ENROLLMENT_SHRINE_XML": {
+    "TABLE": true,
+    "NIHENROLLTABLE": true,
+    "NIHENROLLCSV": true,
+    "DOWNLOAD": true
   }
+
 }

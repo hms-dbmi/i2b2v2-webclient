@@ -5,7 +5,7 @@ let mapSettings = {
     }
 }
 const defaultZipAttrib = "ZCTA5CE10";
-const defaultZipRegEx = "^(.*)[0-9]{5}";
+const defaultZipRegEx = "^([0-9]{5}) - (.*)$";
 
 export default class ZipcodeMap {
     constructor(componentConfig, qrsRecordInfo, qrsData) {
@@ -637,14 +637,15 @@ const func_processData = (xmlData, zipRegEx) => {
         const floorThreshold = params[i].getAttribute("floorThresholdNumber");
         const obfuscatedNum = params[i].getAttribute("obfuscatedDisplayNumber");
         let zipSearch = zipData.match(zipRegEx);
-        if (zipSearch.length > 0) {
-            const zipCode = zipSearch[0].trim();
+        if (zipSearch !== null && zipSearch.length > 0) {
+            const zipCode = zipSearch[1].trim();
             const zipCount = parseInt(params[i].firstChild.nodeValue);
             const displayCount = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(zipCount, floorThreshold, obfuscatedNum);
             ret[zipCode] = {
                 count: zipCount,
                 display: displayCount,
-                text: zipData
+                text: zipSearch[0],
+                name: zipSearch[2]
             };
         }
     }

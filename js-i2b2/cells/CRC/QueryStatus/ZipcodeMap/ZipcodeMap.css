@@ -1,6 +1,11 @@
+.component-instance-viz.viztype-ZIPCODEMAP {
+    padding: var(--viz-module-padding);
+}
+
 .viztype-ZIPCODEMAP .map-target {
     height: 600px;
     width: 100%;
+    border: 1px solid #ccc;
 }
 
 .viztype-ZIPCODEMAP .zoom-links-label {
@@ -76,8 +81,9 @@
 }
 
 .viztype-ZIPCODEMAP div.legend-box *.selected i {
-    outline: 3px solid #000;
-    outline-offset: -3px;
+    outline: 4px solid #000;
+    outline-offset: -2px;
+    outline-style: inset;
 }
 
 
