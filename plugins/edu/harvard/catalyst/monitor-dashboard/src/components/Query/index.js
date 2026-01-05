@@ -3,15 +3,17 @@ import {useSelector, useDispatch} from "react-redux";
 import {Autocomplete, Box, Button, Paper, TextField, Tooltip} from "@mui/material";
 import "./Query.scss";
 import {getAllDataSources} from "../../reducers/dataSourcesSlice";
+import {QueryTableView} from "./QueryTableView";
 
 export const Query = () => {
     const dispatch = useDispatch();
     const [dataSource, setDataSource] = React.useState("");
-    const ALL_PROJECTS = "ALL_PROJECTS";
+    const ALL_PROJECTS = "@";
     const allProjects = [{id: ALL_PROJECTS, name: "All Projects"}];
     const projects  = useSelector((state) => state.projects);
     const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
     const [project, setProject] = React.useState(allProjects[0]);
+    const [selectedProjectId, setSelectedProjectId] = React.useState("");
 
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const dataSources  = useSelector((state) => state.dataSources);
@@ -38,12 +40,21 @@ export const Query = () => {
         });
         const newProjectList = [...allProjects, ...filteredProjectsList];
         setProjectListOptions(newProjectList);
-        setProject(allProjects[0]);
+
+        if(filteredProjectsList.length === 1) {
+            setProject(filteredProjectsList[0]);
+            setSelectedProjectId(filteredProjectsList[0].id);
+        }else{
+            setProject(allProjects[0]);
+        }
     }
 
+    const handleViewQueryTable = () => {
+        setSelectedProjectId(project.id);
+    }
     return (
         <Box className={"Query"}>
-            <div className="QueryHeader">
+            <Box className="QueryHeader">
                 {dataSources.isFetching || dataSources.dataSourceList.length > 1 && <Tooltip title={dataSource ? dataSource.dbSchema : ""}>
                     <Autocomplete
                         getOptionLabel={(option) => option.dbSchema ? option.dbSchema: ""}
@@ -110,8 +121,11 @@ export const Query = () => {
                     }
                     {projectListOptions.length === 2 && <Box className>{projectListOptions[1].name}</Box>}
                 </Box>
-                {projectListOptions.length > 2 && <Button className={"ViewProjectBtn"} variant="outlined" size="small">View</Button>}
-            </div>
+                {projectListOptions.length > 2 && <Button className={"ViewProjectBtn"} variant="outlined" size="small" onClick={handleViewQueryTable}>View</Button>}
+            </Box>
+            <Box>
+                {selectedProjectId && <QueryTableView projectId={selectedProjectId}/>}
+            </Box>
         </Box>
     )
 }

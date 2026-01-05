@@ -125,7 +125,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         }
         if (commOptions.project !== undefined) {
             sMsgValues.sec_project = commOptions.project;
-        } else {
+        }  else if (sMsgValues.sec_project === undefined) {
             sMsgValues.sec_project = i2b2.h.getProject();
         }
         if (commOptions.msg_id !== undefined) {

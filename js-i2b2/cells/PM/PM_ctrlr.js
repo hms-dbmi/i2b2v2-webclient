@@ -165,12 +165,12 @@ i2b2.PM.doLogin = function() {
         is_shrine: shrine_domain,
         project: login_project,
         username: login_username,
-        sec_pass_node: `<password>${login_password}</password>`
+        sec_pass_node: `<password>demouser</password>`
     };
     let transportOptions = {
         url: login_url,
         user: login_username,
-        password: `<password>${login_password}</password>`,
+        password: `<password>demouser</password>`,
         domain: login_domain,
         project: login_project
     };
@@ -224,6 +224,7 @@ i2b2.PM._processUserConfig = function (data) {
     i2b2.PM.model.login_username = data.msgParams.sec_user;
     try {
         var t = i2b2.h.XPath(data.refXML, '//user/password')[0]; //[@token_ms_timeout]
+        //i2b2.PM.model.login_password = "<password>demouser</password>\n";//i2b2.h.Xml2String(t);
         i2b2.PM.model.login_password = i2b2.h.Xml2String(t);
 
         let timeout = t.getAttribute('token_ms_timeout');
@@ -234,7 +235,7 @@ i2b2.PM._processUserConfig = function (data) {
         }
     } catch (e) {
         //console.error("Could not find returned password node in login XML");
-        i2b2.PM.model.login_password = "<password>"+data.msgParams.sec_pass+"</password>\n";
+        i2b2.PM.model.login_password = "<password>demouser</password>\n";
     }
 
     if (i2b2.PM.model.reLogin) {

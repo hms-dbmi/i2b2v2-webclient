@@ -3,6 +3,7 @@ import projectsReducer from './projectsSlice';
 import userSessionsReducer from './userSessionsSlice';
 import userLoginsReducer from './userLoginsSlice';
 import dataSourcesReducer from './dataSourcesSlice';
+import queriesReducer from './queriesSlice';
 
 const rootReducers = {
     isI2b2LibLoaded: i2b2LibLoadedReducer,
@@ -10,6 +11,7 @@ const rootReducers = {
     userSessions: userSessionsReducer,
     userLogins: userLoginsReducer,
     dataSources: dataSourcesReducer,
+    queries: queriesReducer
 };
 
 export default rootReducers;
