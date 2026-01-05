@@ -389,7 +389,7 @@ DIV.tabText {}
 }
 
 .goldenLayout .lm_splitter {
-	background:#369;
+	background: var(--splitter);
 	opacity: 0.001;
 	transition: opacity 200ms ease;
 }

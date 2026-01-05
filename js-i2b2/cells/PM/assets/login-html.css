@@ -155,7 +155,7 @@
     background-color: var(--treeview-hover-background);
     border-color: var(--focus-border);
     outline: 0;
-    box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+    box-shadow: 0 0 0 .25rem var(--focus-shadow);
 }
 #PM-login-modal .sso-button.clicked {
     box-shadow: transparent !important;
