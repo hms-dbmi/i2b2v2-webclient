@@ -26,7 +26,7 @@ export const Overview = () => {
     const userLogins = useSelector((state) => state.userLogins);
 
     const ALL_PROJECTS = "ALL_PROJECTS";
-    const allProjects = [{id: ALL_PROJECTS, name: ALL_PROJECTS}];
+    const allProjects = [{id: ALL_PROJECTS, name: "All Projects"}];
     const [project, setProject] = React.useState(allProjects[0]);
     const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
     const [loginsSinceInDays, setLoginsSinceInDays] = React.useState(7);
