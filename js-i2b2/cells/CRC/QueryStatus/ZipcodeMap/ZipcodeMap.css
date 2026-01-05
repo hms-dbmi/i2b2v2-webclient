@@ -52,14 +52,21 @@
     -moz-transition: opacity 0.3s ease-in-out;
     transition: opacity 0.3s ease-in-out;
     pointer-events: none !important;
+    min-width: 11rem;
 }
 
-.viztype-ZIPCODEMAP div.hoverinfo-box {
-    min-width: 140px;
-}
 .viztype-ZIPCODEMAP div.legend-box {
-    min-width: 100px;
+    min-width: 9rem;
 }
+
+.viztype-ZIPCODEMAP div.legend-box .map-title {
+    text-align: center;
+}
+.viztype-ZIPCODEMAP div.legend-box .map-entries {
+    display: grid;
+    place-items: center;
+}
+
 
 .viztype-ZIPCODEMAP div.hoverinfo-box h4,
 .viztype-ZIPCODEMAP div.legend-box h4 {
