@@ -4,7 +4,7 @@
   "lstDomains": [
     {
       "domain": "shrine-masscpr-dev-hub",
-      "name": "SHRINE SSO Demo 1",
+      "name": "SHRINE Demo SSO",
       "urlCellPM": "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/PMService/",
       "allowAnalysis": true,
       "debug": false,
@@ -19,28 +19,6 @@
       "urlCellPM": "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/PMService/",
       "allowAnalysis": true,
       "debug": false
-    }, {
-      "domain": "shrine-masscpr-dev-hub",
-      "name": "SHRINE SSO Demo 2",
-      "urlCellPM": "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/PMService/",
-      "allowAnalysis": true,
-      "debug": false,
-      "saml" : {
-        "harvardkey": {
-          "redirect": "https://commonjava.catalyst.harvard.edu/api/sso?tier=prod&entity=aHR0cHM6Ly9zaHJpbmUtbWFzc2Nwci1kZXYtaHViLWkyYjJ1aS5jYXRhbHlzdC5oYXJ2YXJkLmVkdS8=",
-          "logout": "https://commonjava.catalyst.harvard.edu/api/logout"
-        }
-      }
-    }, {
-      "domain": "i2b2demo",
-      "name": "Test multiple SAML2 logins",
-      "urlCellPM": "http://127.0.0.1/i2b2/services/PMService/",
-      "allowAnalysis": true,
-      "debug": false,
-      "saml" : {
-        "shibboleth": null,
-        "okta": null
-      }
     }
   ],
   "loginTimeout": 5
