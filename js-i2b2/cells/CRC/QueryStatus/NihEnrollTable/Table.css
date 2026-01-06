@@ -35,6 +35,10 @@
     overflow: clip;
 }
 
+.viztype-NIHENROLLTABLE .table-grid.oversized {
+    border-right: dashed;
+}
+
 .viztype-NIHENROLLTABLE .cell {
     display: flex;
     align-items: center;
