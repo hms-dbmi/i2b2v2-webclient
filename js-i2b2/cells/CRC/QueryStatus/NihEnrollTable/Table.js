@@ -150,7 +150,7 @@ export default class NihEnrollTable {
                     } else {
                         dispGrid.classList.remove('oversized');
                     }
-                }).bind(this),100);
+                }).bind(this),25);
             }
         } catch(e) {
             console.error("Error in QueryStatus:Table.redraw()");
