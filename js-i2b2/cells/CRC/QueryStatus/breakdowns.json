@@ -76,7 +76,8 @@
     "TABLE": {
       "forceInitialDisplay": true
     },
-    "DOWNLOAD": true
+    "DOWNLOAD": true,
+    "TABLEBARCHART": true
   },
   "PATIENT_INOUT_XML": {
     "BARS": true,

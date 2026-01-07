@@ -1,0 +1,47 @@
+.component-instance-viz.viztype-TABLEBARCHART {
+    padding: var(--viz-module-padding);
+}
+
+.component-instance-viz.viztype-TABLEBARCHART table {
+    width: 100%;
+    top: calc(-1rem - 1px);
+    position: relative;
+    border: solid 1px #ccc;
+    caption-side: bottom;
+    border-collapse: collapse;
+}
+
+.component-instance-viz.viztype-TABLEBARCHART table {
+    text-align: -webkit-match-parent;
+}
+
+.component-instance-viz.viztype-TABLEBARCHART table th {
+    border: solid 1px #ccc;
+    padding: .3rem .5rem;
+    background: #eee;
+}
+
+.component-instance-viz.viztype-TABLEBARCHART table td {
+    border: solid 1px #ccc;
+    padding: .2rem .5rem;
+}
+
+.component-instance-viz.viztype-TABLEBARCHART table th.total,
+.component-instance-viz.viztype-TABLEBARCHART table td.total {
+    text-align: center;
+}
+
+.component-instance-viz.viztype-TABLEBARCHART table .cell-bar {
+    background-color: #7db4c8;
+    height: 1.3em;
+}
+
+.component-instance-viz.viztype-TABLEBARCHART table .barchart {
+    min-width: 10em;
+}
+
+@media print {
+    .component-instance-viz.viztype-TABLEBARCHART table {
+        top: 0;
+    }
+}

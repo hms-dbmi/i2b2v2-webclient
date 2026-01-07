@@ -105,6 +105,14 @@
       "iconClass": "bi bi-filetype-csv",
       "displayOrder": 100,
       "notInReport": true
+    },
+    "TABLEBARCHART": {
+      "name": "Table Bar Chart",
+      "source": "TableBarchart/TableBarChart.js",
+      "CSS": "TableBarChart/TableBarChart.css",
+      "iconClass": "bi bi-bar-chart-steps",
+      "displayOrder": 100,
+      "displayForUnregistered": true
     }
   },
   "displayOrder": [
