@@ -117,7 +117,7 @@ export function* doGetAllQueries(action) {
         }
         else {
             yield put(getAllQueriesFailed({errorMessage: "There was an error getting the list of queries for project ", projectId}));
-            console.error("There was an error getting the list queries for project ", projectId);
+            console.error("There was an error getting the list queries for project ", projectId, " Error: " , response);
         }
     } catch (error) {
         yield put(getAllQueriesFailed({errorMessage: "There was an error getting the list of queries for project ", projectId}));

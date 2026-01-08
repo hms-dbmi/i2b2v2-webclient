@@ -55,6 +55,7 @@ export const queriesSlice = createSlice({
         },
         getAllQueriesFailed: (state, { payload: { errorMessage } }) => {
             state.isFetching = false;
+            state.queryList = [];
             state.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage

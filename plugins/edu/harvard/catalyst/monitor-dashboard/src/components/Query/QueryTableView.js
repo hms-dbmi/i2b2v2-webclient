@@ -164,6 +164,15 @@ export const QueryTableView = ({projectId}) => {
         }
     ];
 
+    const CustomNoRowsOverlay = () => {
+        return (
+            <div className={"tableListingOverlay"}>
+                { queries.statusInfo.status !== "FAIL" && <div className={"listingStatusMsg"} >No queries found</div> }
+                { queries.statusInfo.status === "FAIL" && <div className={"listingStatusMsg listingStatusErrorMsg"} >There was an error retrieving queries</div>}
+            </div>
+        );
+    };
+
     return(
         <DataGrid
             style={{background:"white"}}
@@ -187,6 +196,9 @@ export const QueryTableView = ({projectId}) => {
                     variant: 'circular-progress',
                     noRowsVariant: 'linear-progress',
                 },
+            }}
+            slots={{
+                noRowsOverlay: CustomNoRowsOverlay,
             }}
             getRowHeight={() => 'auto'}
         />
