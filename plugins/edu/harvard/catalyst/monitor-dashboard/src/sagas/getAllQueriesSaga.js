@@ -60,7 +60,7 @@ const parseAllQueryListXml = (queryListXml) => {
 
                 let queryResultInstanceTypeList =  queryInstanceType.getElementsByTagName('query_result_instance_type');
                 for (let i = 0; i < queryResultInstanceTypeList.length; i++) {
-                    const queryResultInstanceType = queryResultInstanceTypeList[0];
+                    const queryResultInstanceType = queryResultInstanceTypeList[i];
                     let resultInstanceId =  queryResultInstanceType.getElementsByTagName('result_instance_id');
                     resultInstanceId = resultInstanceId.length > 0 ? resultInstanceId[0].childNodes[0].nodeValue: null;
                     let queryResultType = queryResultInstanceType.getElementsByTagName('query_result_type');
@@ -95,6 +95,7 @@ const parseAllQueryListXml = (queryListXml) => {
                                 request.description = decode(requestDescription[0].childNodes[0].nodeValue);
                                 requestList.push(request);
                             }
+                            console.log(i + ".\t request " + JSON.stringify(request));
                         }
                     }
                 }
