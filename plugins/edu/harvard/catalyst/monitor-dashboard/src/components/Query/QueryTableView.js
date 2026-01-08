@@ -2,13 +2,17 @@ import React, { useEffect, useState } from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {DataGrid, GridActionsCellItem} from "@mui/x-data-grid";
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import {decode} from "html-entities";
 
 import "./QueryTableView.scss";
 import {getAllQueries} from "../../reducers/queriesSlice";
 
-export const QueryTableView = ({projectId}) => {
+export const QueryTableView = ({projectId, isObfuscated}) => {
     const dispatch = useDispatch();
     const queries  = useSelector((state) => state.queries);
+    const { obfuscatedDisplayNumber, useFloorThreshold, floorThresholdNumber, floorThresholdText }
+        = useSelector((state) => state.configInfo);
+
     const [paginationModel, setPaginationModel] = useState({ pageSize: 100, page: 0});
 
     useEffect(() => {
@@ -120,14 +124,14 @@ export const QueryTableView = ({projectId}) => {
             resizable: true,
             disableReorder: true,
             minWidth: 110,
-            /*valueGetter: (value) => {
+            valueGetter: (value) => {
                 let formattedValue = value?.length > 0 ? parseInt(value) : value;
                 let displayValue = formattedValue;
 
                 if (isNaN(formattedValue) || !(value?.length > 0)) {
-                    displayValue = "Not Available";
+                    displayValue = "";
                 }else{
-                    if (isObfuscated) {
+                    if (isObfuscated && formattedValue >= 0) {
                         displayValue = formattedValue + decode("&plusmn;") + obfuscatedDisplayNumber;
                     }
                     if (useFloorThreshold) {
@@ -138,7 +142,7 @@ export const QueryTableView = ({projectId}) => {
                 }
 
                 return displayValue;
-            }*/
+            }
         },
         {
             field: 'actions',

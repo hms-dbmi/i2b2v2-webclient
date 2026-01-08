@@ -14,7 +14,7 @@ export const Query = () => {
     const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
     const [project, setProject] = React.useState(allProjects[0]);
     const [selectedProjectId, setSelectedProjectId] = React.useState("");
-
+    const {isObfuscated} = useSelector((state) => state.userInfo);
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const dataSources  = useSelector((state) => state.dataSources);
 
@@ -118,7 +118,7 @@ export const Query = () => {
                 {dataSource && <Button className={"ViewProjectBtn"} variant="contained" size="small" onClick={handleViewQueryTable}>View</Button>}
             </Box>
             <Box>
-                {selectedProjectId && <QueryTableView projectId={selectedProjectId}/>}
+                {selectedProjectId && <QueryTableView projectId={selectedProjectId} isObfuscated={isObfuscated}/>}
             </Box>
         </Box>
     )

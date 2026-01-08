@@ -1,4 +1,4 @@
-import { DataSources, Projects, Queries, UserLogins, UserSessions } from "models";
+import { ConfigInfo, DataSources, Projects, Queries, UserInfo, UserLogins, UserSessions } from "models";
 
 export const defaultState = {
     isI2b2LibLoaded: false,
@@ -6,5 +6,7 @@ export const defaultState = {
     userSessions: UserSessions(),
     userLogins: UserLogins(),
     dataSources: DataSources(),
-    queries: Queries()
+    queries: Queries(),
+    userInfo: UserInfo(),
+    configInfo: ConfigInfo(),
 };
