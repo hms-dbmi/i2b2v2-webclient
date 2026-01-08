@@ -8,28 +8,32 @@ export const QueryStatus = {
             order: 20,
             name: "Processing"
         },
-        MEDIUM_QUEUE: {
+        QUEUED: {
             order: 30,
+            name: "Queued",
+        },
+        MEDIUM_QUEUE: {
+            order: 40,
             name: "Medium Queue",
         },
         LONG_QUEUE: {
-            order: 35,
+            order: 50,
             name: "Long Queue",
         },
         CANCELLED: {
-            order: 40,
+            order: 60,
             name: "Cancelled",
         },
         INCOMPLETE: {
-            order: 50,
+            order: 70,
             name: "Incomplete",
         },
         FINISHED: {
-            order: 60,
+            order: 80,
             name: "Finished"
         },
         ERROR: {
-            order: 70,
+            order: 90,
             name: "Error"
         },
         UNKNOWN: {

@@ -18,12 +18,11 @@ export const QueryTableView = ({projectId}) => {
     const columns = [
         {
             field: 'id',
-            minWidth: 120,
+            minWidth: 150,
             headerName: 'Query Master ID',
             headerClassName: "header",
             sortable: true,
             type: 'number',
-            resizable: false,
             disableReorder: true,
         },
         {
@@ -48,16 +47,14 @@ export const QueryTableView = ({projectId}) => {
             headerName: 'User Name',
             headerClassName: "header",
             sortable: true,
-            resizable: false,
             disableReorder: true,
-            minWidth: 210,
+            minWidth: 200,
         },
         {
             field: 'startDate',
             headerName: 'Start Date',
             headerClassName: "header",
             sortable: true,
-            resizable: false,
             disableReorder: true,
             minWidth: 125,
             maxWidth: 125,
@@ -73,22 +70,22 @@ export const QueryTableView = ({projectId}) => {
             }
         },
         {
-            field: 'runtime',
+            field: 'runTime',
             headerName: 'Run Time',
             headerClassName: "header",
             sortable: true,
-            resizable: false,
             disableReorder: true,
-            //minWidth: 210,
+            valueGetter: (value) => {
+                return value ? value + " secs" : "";
+            }
         },
         {
             field: 'status',
             headerName: 'Status',
             headerClassName: "header",
             sortable: true,
-            resizable: false,
             disableReorder: true,
-            flex: 1,
+            minWidth: 100,
             valueGetter: (status) => {
                 if (status) {
                     return status.name;
@@ -108,9 +105,9 @@ export const QueryTableView = ({projectId}) => {
             headerName: 'Data Requests',
             headerClassName: "header",
             sortable: true,
-            resizable: false,
+            resizable: true,
             disableReorder: true,
-           // minWidth: 210,
+            minWidth: 130,
             valueGetter: (value) => {
                 return value.length;
             }
@@ -120,9 +117,9 @@ export const QueryTableView = ({projectId}) => {
             headerName: 'Count',
             headerClassName: "header",
             sortable: true,
-            resizable: false,
+            resizable: true,
             disableReorder: true,
-            flex: 1,
+            minWidth: 110,
             /*valueGetter: (value) => {
                 let formattedValue = value?.length > 0 ? parseInt(value) : value;
                 let displayValue = formattedValue;
@@ -147,7 +144,7 @@ export const QueryTableView = ({projectId}) => {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
-            flex: 1,
+            minWidth: 80,
             cellClassName: 'actions',
             getActions: ({id, row}) => {
                 let infoAction = null;

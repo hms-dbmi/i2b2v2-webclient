@@ -31,29 +31,33 @@ const parseAllQueryListXml = (queryListXml) => {
         const query = queryMasters[i];
         let queryId = query.getElementsByTagName('query_master_id');
         let queryName = query.getElementsByTagName('name');
-        let createDate = query.getElementsByTagName('create_date');
         let userId = query.getElementsByTagName('user_id');
         let queryInstanceTypeList = query.getElementsByTagName('query_instance_type');
         if(userId.length > 0 && userId[0].childNodes.length !== 0
             && queryId.length > 0 &&  queryId[0].childNodes.length !== 0
             && queryName.length > 0 && queryName[0].childNodes.length !== 0
-            && createDate.length && createDate[0].childNodes.length !== 0
             && queryInstanceTypeList.length > 0 && queryInstanceTypeList[0].childNodes.length !== 0){
             userId = userId[0].childNodes[0].nodeValue;
             queryId = queryId[0].childNodes[0].nodeValue;
             queryName = decode(queryName[0].childNodes[0].nodeValue);
-            createDate = createDate[0].childNodes[0].nodeValue;
             let status = '';
             let patientCount = null;
             let requestList = [];
             let resultInstanceId = null;
             let queryInstanceId = null;
+            let startDate = null;
+            let endDate = null
             for (let i = 0; i < queryInstanceTypeList.length; i++) {
                 const queryInstanceType = queryInstanceTypeList[0];
                 queryInstanceId = queryInstanceType.getElementsByTagName('query_instance_id');
                 queryInstanceId = queryInstanceId.length > 0 && queryInstanceId[0].childNodes.length !== 0 ? queryInstanceId[0].childNodes[0].nodeValue : null;
                 status = queryInstanceType.getElementsByTagName('batch_mode');
                 status = status.length > 0 && status[0].childNodes.length !== 0 ? status[0].childNodes[0].nodeValue : '';
+                startDate = query.getElementsByTagName('start_date');
+                startDate = startDate.length > 0 && startDate[0].childNodes.length !== 0 ? startDate[0].childNodes[0].nodeValue : '';
+                endDate = query.getElementsByTagName('end_date');
+                endDate = endDate.length > 0 && endDate[0].childNodes.length !== 0 ? endDate[0].childNodes[0].nodeValue : '';
+
                 let queryResultInstanceTypeList =  queryInstanceType.getElementsByTagName('query_result_instance_type');
                 for (let i = 0; i < queryResultInstanceTypeList.length; i++) {
                     const queryResultInstanceType = queryResultInstanceTypeList[0];
@@ -95,7 +99,7 @@ const parseAllQueryListXml = (queryListXml) => {
                     }
                 }
             }
-            exportRequestList.push({id: queryId, queryName, queryInstanceId, createDate, status, patientCount, userId, requests: requestList, resultInstanceId});
+            exportRequestList.push({id: queryId, queryName, queryInstanceId, startDate, endDate, status, patientCount, userId, dataRequests: requestList, resultInstanceId});
         }
     }
 

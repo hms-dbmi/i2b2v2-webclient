@@ -11,6 +11,7 @@ export const Query = ({
     startDate = null,
     patientCount = null,
     status= QueryStatus.statuses.SUBMITTED,
+    runTime=null,
     username,
 } = {}) => ({
     id,
@@ -21,7 +22,8 @@ export const Query = ({
     startDate,
     patientCount,
     username,
-    status
+    status,
+    runTime
 });
 
 Query.propTypes = {
@@ -32,6 +34,7 @@ Query.propTypes = {
     startDat: PropTypes.instanceOf(Date).isRequired,
     patientCount: PropTypes.number.isRequired,
     userId:  PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired
+    status: PropTypes.string.isRequired,
+    runTime: PropTypes.number.isRequired
 }
 
