@@ -95,7 +95,6 @@ const parseAllQueryListXml = (queryListXml) => {
                                 request.description = decode(requestDescription[0].childNodes[0].nodeValue);
                                 requestList.push(request);
                             }
-                            console.log(i + ".\t request " + JSON.stringify(request));
                         }
                     }
                 }
