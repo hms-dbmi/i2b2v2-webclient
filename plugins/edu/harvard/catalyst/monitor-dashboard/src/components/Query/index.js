@@ -115,7 +115,7 @@ export const Query = () => {
                         </Tooltip>
                     }
                 </Box>
-                {dataSource && <Button className={"ViewProjectBtn"} variant="outlined" size="small" onClick={handleViewQueryTable}>View</Button>}
+                {dataSource && <Button className={"ViewProjectBtn"} variant="contained" size="small" onClick={handleViewQueryTable}>View</Button>}
             </Box>
             <Box>
                 {selectedProjectId && <QueryTableView projectId={selectedProjectId}/>}

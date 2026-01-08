@@ -91,7 +91,7 @@ export const Overview = () => {
                         )}
                     />
                 </Tooltip>
-                <Button className={"ViewProjectBtn"} variant="outlined" size="small">View</Button>
+                <Button className={"ViewProjectBtn"} variant="contained" size="small">View</Button>
                 <div className={"ProjectOverviewCount"}>{getProjectCountText()}</div>
             </div>
             <Grid className={"ProjectOverviewInfoGrid"} container spacing={5}>
