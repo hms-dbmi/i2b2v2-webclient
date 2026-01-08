@@ -41,12 +41,7 @@ export const Query = () => {
         const newProjectList = [...allProjects, ...filteredProjectsList];
         setProjectListOptions(newProjectList);
 
-        if(filteredProjectsList.length === 1) {
-            setProject(filteredProjectsList[0]);
-            setSelectedProjectId(filteredProjectsList[0].id);
-        }else{
-            setProject(allProjects[0]);
-        }
+        setProject(allProjects[0]);
     }
 
     const handleViewQueryTable = () => {
@@ -89,7 +84,7 @@ export const Query = () => {
                 </Tooltip>
                 }
                 <Box className={"ProjectSelection"}>
-                    {projectListOptions.length > 2 &&
+                    {dataSource &&
                         <Tooltip title={project ? project.name : ""}>
                             <Autocomplete
                                 getOptionLabel={(option) => option.name}
@@ -119,9 +114,8 @@ export const Query = () => {
                             />
                         </Tooltip>
                     }
-                    {projectListOptions.length === 2 && <Box className>{projectListOptions[1].name}</Box>}
                 </Box>
-                {projectListOptions.length > 2 && <Button className={"ViewProjectBtn"} variant="outlined" size="small" onClick={handleViewQueryTable}>View</Button>}
+                {dataSource && <Button className={"ViewProjectBtn"} variant="outlined" size="small" onClick={handleViewQueryTable}>View</Button>}
             </Box>
             <Box>
                 {selectedProjectId && <QueryTableView projectId={selectedProjectId}/>}

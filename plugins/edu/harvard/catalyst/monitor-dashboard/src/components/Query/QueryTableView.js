@@ -20,7 +20,7 @@ export const QueryTableView = ({projectId}) => {
             field: 'id',
             minWidth: 150,
             headerName: 'Query Master ID',
-            headerClassName: "header",
+            headerClassName: "headerNumeric",
             sortable: true,
             type: 'number',
             disableReorder: true,
@@ -48,7 +48,7 @@ export const QueryTableView = ({projectId}) => {
             headerClassName: "header",
             sortable: true,
             disableReorder: true,
-            minWidth: 200,
+            minWidth: 150,
         },
         {
             field: 'startDate',
@@ -56,8 +56,8 @@ export const QueryTableView = ({projectId}) => {
             headerClassName: "header",
             sortable: true,
             disableReorder: true,
-            minWidth: 125,
-            maxWidth: 125,
+            minWidth: 100,
+            maxWidth: 100,
             valueGetter: (value) => {
                 if (!value) {
                     return value;
@@ -107,7 +107,7 @@ export const QueryTableView = ({projectId}) => {
             sortable: true,
             resizable: true,
             disableReorder: true,
-            minWidth: 130,
+            width: 85,
             valueGetter: (value) => {
                 return value.length;
             }
