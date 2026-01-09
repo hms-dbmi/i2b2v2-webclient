@@ -8,5 +8,17 @@
   "i2b2_version" : "1.8.3",
   "base": "dist/index.html",
   "sandbox": true,
-  "admin_only": true
+  "admin_only": true,
+  "authorizedTunnel": {
+    "variables" :{
+      "i2b2.UI.cfg.floorThresholdNumber" : "R",
+      "i2b2.UI.cfg.floorThresholdText" : "R",
+      "i2b2.PM.model.login_username": "R",
+      "i2b2.PM.model.userRoles": "RO",
+      "i2b2.PM.model.isAdmin": "R"
+    },
+    "functions" : [
+    "i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber"
+    ]
+  }
 }

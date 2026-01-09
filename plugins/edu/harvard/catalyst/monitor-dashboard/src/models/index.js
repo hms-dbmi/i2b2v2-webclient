@@ -7,3 +7,8 @@ export { UserLogins } from "./UserLogins";
 export { UserLogin, LOGIN_ATTEMPT } from "./UserLogin";
 export { DataSource, CELL_ID } from "./DataSource";
 export { DataSources } from "./DataSources";
+export { Queries } from "./Queries";
+export { Query } from "./Query";
+export { ExportRequest } from "./ExportRequest";
+export { QueryStatus } from "./QueryStatus";
+export { UserInfo } from "./UserInfo";

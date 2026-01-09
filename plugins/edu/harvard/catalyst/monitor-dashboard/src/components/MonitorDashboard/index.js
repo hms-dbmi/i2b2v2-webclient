@@ -2,6 +2,8 @@ import {useSelector, useDispatch} from "react-redux";
 import React, { useState, useEffect } from "react";
 import { Tabs, Tab } from "@mui/material";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
+import {getUserInfo} from "../../reducers/userInfoSlice";
+
 import AppBar from '@mui/material/AppBar';
 
 import "./MonitorDashboard.scss";
@@ -33,6 +35,7 @@ export const MonitorDashboard = () => {
             window.addEventListener('I2B2_READY', i2b2LibLoaded);
         } else {
             console.log("i2b2 lib is loaded");
+            dispatch(getUserInfo());
         }
     }, [isI2b2LibLoaded]);
 
