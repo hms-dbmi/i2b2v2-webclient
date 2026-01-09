@@ -15,11 +15,13 @@
   },
   "PATIENT_GENDER_COUNT_XML": {
     "BARS": true,
+    "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
   "PATIENT_SEX_COUNT_SHRINE_XML": {
     "BARS": true,
+    "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
@@ -30,6 +32,7 @@
   },
   "PATIENT_VITALSTATUS_COUNT_SHRINE_XML": {
     "BARS": true,
+    "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
@@ -40,6 +43,7 @@
   },
   "PATIENT_RACE_COUNT_SHRINE_XML": {
     "BARS": true,
+    "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
@@ -50,6 +54,8 @@
   },
   "PATIENT_AGE_COUNT_SHRINE_XML": {
     "BARS": true,
+    "LINECHART": true,
+    "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },

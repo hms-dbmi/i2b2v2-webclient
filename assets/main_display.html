@@ -8,7 +8,7 @@
             <td class="logo"> <h5><strong>MassCPR</strong> Federated Data Network</h5> </td>
             <td>
                 <div id="headerOptions" class="fs-4 mb-3">
-                    <a href="#" onclick="window.open('help/index.html','_blank', 'toolbar=no,resizable=yes,scrollbars=yes,height=490,width=800', false)" title="Help Page"><i class="bi bi-question-circle"></i></a>
+                    <a href="#" onclick="window.open('help/index.html','_blank', 'toolbar=no,resizable=yes,scrollbars=yes,height=490,width=940', false)" title="Help Page"><i class="bi bi-question-circle"></i></a>
                     <div class="dropdown">
                         <a href="#" onclick="i2b2.PM.setUserAccountInfo()" title="Account Information" data-bs-toggle="dropdown"><i class="bi bi-person-circle"></i></a>
                         <ul id="userInfo" class="dropdown-menu">
@@ -18,38 +18,18 @@
                             <li class="dropdown-item static">
                                 <span class="user"></span>
                             </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <h6 class="dropdown-header">Project</h6>
-                            </li>
-                            <li class="dropdown-item static">
+                            <li><hr class="dropdown-divider"></li>
+                            <li class="dropdown-item static" style="display:none;">
                                 <span class="project"></span>
                             </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <h6 class="dropdown-header">Role</h6>
-                            </li>
-                            <li class="dropdown-item static">
+                            <li class="dropdown-item static" style="display:none;">
                                 <div class="userRole"></div>
                             </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <h6 class="dropdown-header">Version</h6>
-                            </li>
-                            <li class="dropdown-item static">
+                            <li class="dropdown-item static" style="display:none;">
                                 <span class="versionNum"></span>
                             </li>
-                            <li><hr class="dropdown-divider"></li>
                             <li class="center">
                                 <a href="Javascript:void(0)" title="Query Options" class="queryOptions" onclick="i2b2.CRC.view.QT.showOptions();">Query Options</a>
-                            </li>
-                            <li class="hidden"><hr class="dropdown-divider"></li>
-                            <li id="changePasswordLink" class="hidden center">
-                                <a id="helpLink" href="Javascript:void(0)" onclick="i2b2.PM.view.changePassword.show();">Change Password</a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li class="center">

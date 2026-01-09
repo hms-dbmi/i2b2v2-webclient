@@ -140,7 +140,18 @@ export default class NihEnrollTable {
     redraw(width) {
         try {
             // update the viewport element to the height of the visualization
-            if (this.isVisible) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
+            if (this.isVisible) {
+                this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
+                // add style if the display grid is bigger than the viewport window
+                setTimeout((()=>{
+                    const dispGrid = this.config.displayEl.querySelector('.table-grid');
+                    if (dispGrid.scrollWidth > dispGrid.clientWidth) {
+                        dispGrid.classList.add('oversized');
+                    } else {
+                        dispGrid.classList.remove('oversized');
+                    }
+                }).bind(this),25);
+            }
         } catch(e) {
             console.error("Error in QueryStatus:Table.redraw()");
         }

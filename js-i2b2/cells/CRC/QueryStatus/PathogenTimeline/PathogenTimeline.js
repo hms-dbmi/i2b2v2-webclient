@@ -2,7 +2,7 @@ const margin = { top: 20, right: 80, bottom: 70, left: 60 };
 
 
 const DISEASE_COLORS = {
-    COVID: "#1f77b4",        // blue
+    "COVID-19": "#1f77b4",        // blue
     Influenza: "#ff7f0e",    // orange
     RSV: "#2ca02c"           // green
 };
@@ -83,7 +83,7 @@ export default class PathogenTimeline {
 
 
                 // Load wastewater
-                fetchWastewater("3/1/2020", "1/1/2025").then(data => {
+                fetchWastewater("3/1/2020", "11/1/2025").then(data => {
                     // NORMALIZE wastewater payload to array
                     if (Array.isArray(data)) {
                         self.wastewater = data;
@@ -511,7 +511,7 @@ function canonicalizeDisease(raw) {
     const key = raw.trim().toUpperCase();
 
     if (key === "COVID-19" || key === "COVID19" || key === "SARS-COV-2") {
-        return "COVID";
+        return "COVID-19";
     }
     if (key === "INFLUENZA") {
         return "Influenza";

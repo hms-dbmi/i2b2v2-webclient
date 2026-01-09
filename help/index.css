@@ -7,3 +7,22 @@
 .app-name{
     padding-top:.5rem;
 }
+
+#i2b2-help .content {
+  margin: 0.8em 1.8em;
+}
+
+#i2b2-help .imgcontainer {
+    text-align: center;
+    margin: 14px 0 0 0;
+    position: relative;
+    padding: 2rem 0;
+}
+
+#i2b2-help img.logo {
+    width: 80%;
+}
+
+#i2b2-help .doc-description {
+   margin-top: 1.1em;
+}

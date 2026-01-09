@@ -52,3 +52,10 @@
 .y-axis.right line {
     stroke: #333;
 }
+
+.legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  display: inline-block;
+}
