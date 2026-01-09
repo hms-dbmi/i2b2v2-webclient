@@ -46,9 +46,10 @@ export const queriesSlice = createSlice({
                     patientCount: query.patientCount,
                     status: QueryStatus.convertI2b2Status(query.status),
                     username: query.userId,
+                    obfuscatedPatientCountStr: query.obfuscatedPatientCountStr,
                     runTime: runTime,
                 }));
-            })
+            });
             queries.sort((a, b) => a.id - b.id);
 
             state.queryList = queries;
@@ -60,14 +61,14 @@ export const queriesSlice = createSlice({
                 status: "FAIL",
                 errorMessage: errorMessage
             });
-        },
+        }
     }
 })
 
 export const {
     getAllQueries,
     getAllQueriesSucceeded,
-    getAllQueriesFailed
+    getAllQueriesFailed,
 } = queriesSlice.actions
 
 export default queriesSlice.reducer

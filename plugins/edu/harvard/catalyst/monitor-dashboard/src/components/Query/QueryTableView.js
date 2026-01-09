@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {DataGrid, GridActionsCellItem} from "@mui/x-data-grid";
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import {decode} from "html-entities";
 
 import "./QueryTableView.scss";
 import {getAllQueries} from "../../reducers/queriesSlice";
@@ -10,13 +9,10 @@ import {getAllQueries} from "../../reducers/queriesSlice";
 export const QueryTableView = ({projectId, isObfuscated}) => {
     const dispatch = useDispatch();
     const queries  = useSelector((state) => state.queries);
-    const { obfuscatedDisplayNumber, useFloorThreshold, floorThresholdNumber, floorThresholdText }
-        = useSelector((state) => state.configInfo);
-
     const [paginationModel, setPaginationModel] = useState({ pageSize: 100, page: 0});
 
     useEffect(() => {
-        dispatch(getAllQueries({projectId}));
+        dispatch(getAllQueries({projectId, isObfuscated}));
     }, [projectId]);
 
     const columns = [
@@ -124,21 +120,14 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             resizable: true,
             disableReorder: true,
             minWidth: 110,
-            valueGetter: (value) => {
+            valueGetter: (value, row) => {
                 let formattedValue = value?.length > 0 ? parseInt(value) : value;
                 let displayValue = formattedValue;
 
                 if (isNaN(formattedValue) || !(value?.length > 0)) {
                     displayValue = "";
-                }else{
-                    if (isObfuscated && formattedValue >= 0) {
-                        displayValue = formattedValue + decode("&plusmn;") + obfuscatedDisplayNumber;
-                    }
-                    if (useFloorThreshold) {
-                        if (formattedValue < floorThresholdNumber) {
-                            displayValue = floorThresholdText + floorThresholdNumber;
-                        }
-                    }
+                }else if (isObfuscated && formattedValue !== -1) {
+                    displayValue = row.obfuscatedPatientCountStr;
                 }
 
                 return displayValue;

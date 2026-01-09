@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Tabs, Tab } from "@mui/material";
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import {getUserInfo} from "../../reducers/userInfoSlice";
-import {getConfigInfo} from "../../reducers/configInfoSlice";
 
 import AppBar from '@mui/material/AppBar';
 
@@ -37,7 +36,6 @@ export const MonitorDashboard = () => {
         } else {
             console.log("i2b2 lib is loaded");
             dispatch(getUserInfo());
-            dispatch(getConfigInfo());
         }
     }, [isI2b2LibLoaded]);
 

@@ -49,9 +49,6 @@ export const userLoginsSlice = createSlice({
             state.isFetching = false;
             const errorMessage = response && response.errorMessage ? response.errorMessage: "An error occurred retrieving " +
                 "user logins";
-
-            console.log("error msg " + errorMessage);
-
             state.statusInfo = StatusInfo({
                 status: "FAIL",
                 errorMessage: errorMessage

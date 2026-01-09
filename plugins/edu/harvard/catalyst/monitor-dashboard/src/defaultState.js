@@ -8,5 +8,4 @@ export const defaultState = {
     dataSources: DataSources(),
     queries: Queries(),
     userInfo: UserInfo(),
-    configInfo: ConfigInfo(),
 };

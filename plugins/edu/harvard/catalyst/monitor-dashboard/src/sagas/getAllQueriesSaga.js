@@ -1,5 +1,5 @@
 /* globals i2b2 */
-import {takeLatest, put, call} from "redux-saga/effects";
+import {all, takeLatest, put, call} from "redux-saga/effects";
 import {getAllQueriesSucceeded, getAllQueriesFailed} from "../reducers/queriesSlice";
 import {decode} from 'html-entities';
 
@@ -22,6 +22,17 @@ const getAllQueryListRequest = (projectId) => {
 
     return i2b2.ajax.CRC.getQueryMasterList_fromUserId(data).then((xmlString) => parseXml(xmlString)).catch((err) => err);
 };
+
+const getObfuscatedCountStringRequest = (query) => {
+    return i2b2.authorizedTunnel.function["i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber"](query.patientCount).then((obfuscatedCountStr) => {
+            return {
+                ...query,
+                obfuscatedPatientCountStr: obfuscatedCountStr
+            };
+        }).catch(e => {
+        console.error("Error getting obfuscated count string. Error" + e);
+    });
+}
 
 const parseAllQueryListXml = (queryListXml) => {
     let exportRequestList = [];
@@ -107,13 +118,20 @@ const parseAllQueryListXml = (queryListXml) => {
 }
 
 export function* doGetAllQueries(action) {
-    const { projectId } = action.payload;
+    const { projectId, isObfuscated } = action.payload;
 
     try {
         let response = yield call(getAllQueryListRequest, projectId);
         if (!response.error) {
             let queryList = yield parseAllQueryListXml(response);
-            yield put(getAllQueriesSucceeded({queryList}));
+            if(isObfuscated) {
+                const getObfuscatedCountStringRequestList = queryList.map(query => call(getObfuscatedCountStringRequest, query));
+                const queriesWithObfuscatedCountString = yield all(getObfuscatedCountStringRequestList);
+                yield put(getAllQueriesSucceeded({queryList: queriesWithObfuscatedCountString}));
+            }
+            else{
+                yield put(getAllQueriesSucceeded({queryList}));
+            }
         }
         else {
             yield put(getAllQueriesFailed({errorMessage: "There was an error getting the list of queries for project ", projectId}));

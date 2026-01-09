@@ -12,4 +12,3 @@ export { Query } from "./Query";
 export { ExportRequest } from "./ExportRequest";
 export { QueryStatus } from "./QueryStatus";
 export { UserInfo } from "./UserInfo";
-export { ConfigInfo } from "./ConfigInfo";

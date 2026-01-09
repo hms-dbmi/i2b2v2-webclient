@@ -16,9 +16,6 @@ const getUserLoginsRequest = (loginsSinceInDays) => {
     if(loginsSinceInDays !== undefined) {
         const now = DateTime.now();
         const nDaysAgo = now.minus({ days: loginsSinceInDays });
-
-        console.log("nDaysAge iso " + nDaysAgo.toISO());
-        console.log("nDaysAge " + nDaysAgo.toJSON());
         data.entry_date_xml = '<entry_date>' + nDaysAgo.toISO() + '</entry_date>';
     }
 

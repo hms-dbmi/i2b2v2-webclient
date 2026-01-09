@@ -10,6 +10,7 @@ export const Query = ({
     dataRequests = [],
     startDate = null,
     patientCount = null,
+    obfuscatedPatientCountStr= "",
     status= QueryStatus.statuses.SUBMITTED,
     runTime=null,
     username,
@@ -21,6 +22,7 @@ export const Query = ({
     dataRequests,
     startDate,
     patientCount,
+    obfuscatedPatientCountStr,
     username,
     status,
     runTime
@@ -33,6 +35,7 @@ Query.propTypes = {
     dataRequests: PropTypes.arrayOf(ExportRequest).isRequired,
     startDat: PropTypes.instanceOf(Date).isRequired,
     patientCount: PropTypes.number.isRequired,
+    obfuscatedPatientCountStr: PropTypes.string,
     userId:  PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     runTime: PropTypes.number.isRequired

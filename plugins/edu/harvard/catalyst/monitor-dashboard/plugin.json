@@ -11,13 +11,14 @@
   "admin_only": true,
   "authorizedTunnel": {
     "variables" :{
-      "i2b2.UI.cfg.obfuscatedDisplayNumber": "R",
-      "i2b2.UI.cfg.useFloorThreshold" : "R",
       "i2b2.UI.cfg.floorThresholdNumber" : "R",
       "i2b2.UI.cfg.floorThresholdText" : "R",
       "i2b2.PM.model.login_username": "R",
       "i2b2.PM.model.userRoles": "RO",
       "i2b2.PM.model.isAdmin": "R"
-    }
+    },
+    "functions" : [
+    "i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber"
+    ]
   }
 }
