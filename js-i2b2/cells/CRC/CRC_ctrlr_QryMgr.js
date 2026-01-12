@@ -231,6 +231,8 @@ i2b2.CRC.ctrlr.QueryMgr.cancelQuery = function() {
 
     // update the screen to show status as cancelled
     $("#infoQueryStatusText .statusButtons").removeClass("running").addClass("cancelled");
+    $(".CRC_QT_runbar .button-cancel").css("display", "none");
+    $(".CRC_QT_runbar .button-run").css("display", "inline-block");
 }
 
 // ================================================================================================== //
