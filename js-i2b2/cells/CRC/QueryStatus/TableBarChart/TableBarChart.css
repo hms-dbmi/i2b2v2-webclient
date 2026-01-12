@@ -40,6 +40,18 @@
     min-width: 10em;
 }
 
+.component-instance-viz.viztype-TABLEBARCHART .hideNotTop10 {
+    display: none !important;
+}
+
+.component-instance-viz.viztype-TABLEBARCHART .showMore,
+.component-instance-viz.viztype-TABLEBARCHART .showLess {
+    display:block;
+    text-align:center;
+    cursor: pointer;
+}
+
+
 @media print {
     .component-instance-viz.viztype-TABLEBARCHART table {
         top: 0;

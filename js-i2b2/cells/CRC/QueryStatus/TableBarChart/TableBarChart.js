@@ -28,6 +28,12 @@ export default class TableBarChart {
                 el[idx].classList.add(cname);
             });
 
+            d3.select(this.config.displayEl).append("a")
+            .attr("class", "showMore")
+            d3.select(this.config.displayEl).append("a")
+            .attr("class", "showLess hideNotTop10")
+            .text("Only show the top 10 rows")
+
         } catch(e) {
             console.error("Error in QueryStatus:TableBarChart.constructor()");
         }
@@ -60,21 +66,40 @@ export default class TableBarChart {
 
             // select the previously created TABLE element
             let tbody = d3.select(this.config.displayEl).select('tbody');
+
             let rows = tbody.selectAll('tr').data(this.data.result);
 
             const dataValues = this.data.result.map(d => d.value);
             const min = Math.min(...dataValues);
             const max = Math.max(...dataValues);
 
+
             // add new rows
             let newRows = rows.enter().append('tr');
+
+            d3.select(this.config.displayEl).select(".showMore")
+            .text("Show all " + this.data.result.length + " rows")
+            .on('click', function(event) {
+                d3.select(".showLess").classed("hideNotTop10", false);
+                d3.selectAll(".notTop10")
+                    .classed("hideNotTop10", false);
+
+                d3.select(this).classed('hideNotTop10', true);
+            });
+
+            d3.select(this.config.displayEl).select(".showLess")
+            .on('click', function(event) {
+                d3.select(".showMore").classed("hideNotTop10", false);
+                d3.select(this).classed("hideNotTop10", true);
+                d3.selectAll(".notTop10").classed('hideNotTop10', true);
+            });
 
             let tds = newRows.selectAll('td')
                 .data((row) => {
                     return [row.name, row.display, row.value];
                 })
                 .enter()
-                .append('td')
+                .append('td');
 
             tds.each(function(d, idx, el) {
                 let cname = "name";
@@ -94,6 +119,13 @@ export default class TableBarChart {
                         .attr("style", "width:" + width + "%");
                 }else {
                     cellSelection.text(d);
+                }
+            });
+
+            newRows.each(function(n,idx, el){
+                if(idx > 9){
+                    el[idx].classList.add("notTop10");
+                    el[idx].classList.add("hideNotTop10");
                 }
             });
 
