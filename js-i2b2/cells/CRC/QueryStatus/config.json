@@ -108,7 +108,7 @@
     },
     "TABLEBARCHART": {
       "name": "Table Bar Chart",
-      "source": "TableBarchart/TableBarChart.js",
+      "source": "TableBarChart/TableBarChart.js",
       "CSS": "TableBarChart/TableBarChart.css",
       "iconClass": "bi bi-bar-chart-steps",
       "displayOrder": 10,

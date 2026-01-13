@@ -67,13 +67,14 @@ export default class TableBarChart {
             // select the previously created TABLE element
             let tbody = d3.select(this.config.displayEl).select('tbody');
 
-            let rows = tbody.selectAll('tr').data(this.data.result);
+            const sortedData = this.data.result.sort((a, b) => b.value - a.value);
+            let rows = tbody.selectAll('tr').data(sortedData);
 
             // add new rows
             let newRows = rows.enter().append('tr');
 
             d3.select(this.config.displayEl).select(".showMore")
-            .text("Show all " + this.data.result.length + " rows")
+            .text("Show all " + sortedData.length + " rows")
             .on('click', function(event) {
                 d3.select(".showLess").classed("hideNotTop10", false);
                 d3.selectAll(".notTop10")
@@ -96,7 +97,7 @@ export default class TableBarChart {
                 .enter()
                 .append('td');
 
-            const dataValues = this.data.result.map(d => d.value);
+            const dataValues = sortedData.map(d => d.value);
             const max = Math.max(...dataValues);
 
             tds.each(function(d, idx, el) {
