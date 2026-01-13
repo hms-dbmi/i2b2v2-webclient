@@ -393,6 +393,7 @@ DIV.tabText {}
 	background: var(--splitter);
 	opacity: 0.001;
 	transition: opacity 200ms ease;
+	z-index: 20000 !important;
 }
 
 .goldenLayout .lm_splitter:hover,
