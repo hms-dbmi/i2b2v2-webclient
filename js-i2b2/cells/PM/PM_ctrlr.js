@@ -228,9 +228,9 @@ i2b2.PM._processUserConfig = function (data) {
 
         let timeout = t.getAttribute('token_ms_timeout');
         if (timeout === undefined ||  timeout < 300001) {
-            i2b2.PM.model.IdleTimer.start(60000,300000); //1800000-300000, 300000);
+            i2b2.PM.model.IdleTimer.start(1800000-300000, 300000);
         } else {
-            i2b2.PM.model.IdleTimer.start(60000,300000);//.start(timeout-300000, 300000);
+            i2b2.PM.model.IdleTimer.start(timeout-300000, 300000);
         }
     } catch (e) {
         //console.error("Could not find returned password node in login XML");

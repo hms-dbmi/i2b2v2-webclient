@@ -110,7 +110,6 @@ i2b2.PM.model.IdleTimer.add(function(eventName){
                     '           </div>' +
                     '           <div class="modal-footer">' +
                     '               <button type="button" class="btn btn-secondary btn-sm session-extend" data-bs-dismiss="modal" aria-label="Close">Ok</button>' +
-                    '               <button type="button" class="btn btn-primary btn-sm session-logout-all">Logout from all sessions</button>' +
                     '               <button type="button" class="btn btn-primary btn-sm session-logout">Logout</button>' +
                     '           </div>' +
                 '           </div>' +
@@ -118,9 +117,6 @@ i2b2.PM.model.IdleTimer.add(function(eventName){
                     '</div>'
                 );
                 $("body").append(sessionTimeoutModal);
-                $('#sessionTimeoutModal .session-logout-all').click(function () {
-                    i2b2.PM.doLogout(true);
-                });
                 $('#sessionTimeoutModal .session-logout').click(function () {
                     i2b2.PM.doLogout();
                 });
