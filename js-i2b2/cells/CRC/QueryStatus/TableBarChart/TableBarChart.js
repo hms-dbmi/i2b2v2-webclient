@@ -69,10 +69,6 @@ export default class TableBarChart {
 
             let rows = tbody.selectAll('tr').data(this.data.result);
 
-            const dataValues = this.data.result.map(d => d.value);
-            const max = Math.max(...dataValues);
-
-
             // add new rows
             let newRows = rows.enter().append('tr');
 
@@ -99,6 +95,9 @@ export default class TableBarChart {
                 })
                 .enter()
                 .append('td');
+
+            const dataValues = this.data.result.map(d => d.value);
+            const max = Math.max(...dataValues);
 
             tds.each(function(d, idx, el) {
                 let cname = "name";
