@@ -228,9 +228,9 @@ i2b2.PM._processUserConfig = function (data) {
 
         let timeout = t.getAttribute('token_ms_timeout');
         if (timeout === undefined ||  timeout < 300001) {
-            i2b2.PM.model.IdleTimer.start(1800000-300000, 300000);
+            i2b2.PM.model.IdleTimer.start(60000,300000); //1800000-300000, 300000);
         } else {
-            i2b2.PM.model.IdleTimer.start(timeout-300000, 300000);
+            i2b2.PM.model.IdleTimer.start(60000,300000);//.start(timeout-300000, 300000);
         }
     } catch (e) {
         //console.error("Could not find returned password node in login XML");
@@ -409,11 +409,29 @@ i2b2.PM.extendUserSession = function() {
 };
 
 // ================================================================================================== //
-i2b2.PM.doLogout = function() {
+i2b2.PM.doLogout = function(allSessions) {
     // must reload page to avoid dirty data from lingering
     const logoutUri = i2b2.PM.model?.samlConfig?.logout;
     if (logoutUri === undefined) {
-        window.location.reload();
+        let callback = new i2b2_scopedCallback(function(response){
+            if(!response.error) {
+                window.location.reload();
+            }
+            else{
+                alert("Error logging out user.");
+            }
+        }, i2b2.PM);
+        let parameters = {
+            username: i2b2.PM.model.login_username,
+        };
+
+        if(allSessions){
+            parameters.password = `<password>@</password>`;
+        }else{
+            parameters.password = i2b2.PM.model.login_password ;
+        }
+
+        i2b2.PM.ajax.logoutUser("PM:Logout", parameters, callback);
     } else {
         window.location.href = logoutUri;
     }
