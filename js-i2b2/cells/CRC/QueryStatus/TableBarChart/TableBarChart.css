@@ -37,7 +37,7 @@
 }
 
 .component-instance-viz.viztype-TABLEBARCHART table .barchart {
-    min-width: 10em;
+    width: 80px;
 }
 
 .component-instance-viz.viztype-TABLEBARCHART .hideNotTop10 {

@@ -72,12 +72,12 @@
     "DOWNLOAD": true
   },
   "PATIENT_TOP20DIAG_XML": {
-    "BARS": true,
-    "TABLE": {
+    "TABLEBARCHART": {
       "forceInitialDisplay": true
     },
-    "DOWNLOAD": true,
-    "TABLEBARCHART": true
+    "BARS": true,
+    "TABLE":true,
+    "DOWNLOAD": true
   },
   "PATIENT_INOUT_XML": {
     "BARS": true,

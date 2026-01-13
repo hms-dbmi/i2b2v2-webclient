@@ -111,7 +111,7 @@
       "source": "TableBarchart/TableBarChart.js",
       "CSS": "TableBarChart/TableBarChart.css",
       "iconClass": "bi bi-bar-chart-steps",
-      "displayOrder": 100,
+      "displayOrder": 10,
       "displayForUnregistered": true
     }
   },
