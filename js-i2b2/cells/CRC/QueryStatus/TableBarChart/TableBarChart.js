@@ -70,7 +70,6 @@ export default class TableBarChart {
             let rows = tbody.selectAll('tr').data(this.data.result);
 
             const dataValues = this.data.result.map(d => d.value);
-            const min = Math.min(...dataValues);
             const max = Math.max(...dataValues);
 
 
@@ -109,10 +108,7 @@ export default class TableBarChart {
 
                 const cellSelection = d3.select(this);
                 if (idx === 2) {
-                    let minRange = Math.min(100, min);
-                    minRange = Math.max(0, minRange);
-
-                    let scaleRadiusFunc = d3.scaleLinear([min, max], [minRange, 100]);
+                    let scaleRadiusFunc = d3.scaleLinear([0, max], [0, 100]);
                     let width = scaleRadiusFunc(d);
                     cellSelection.append("div")
                         .attr("class", "cell-bar")
