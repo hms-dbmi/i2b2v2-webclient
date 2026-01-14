@@ -90,9 +90,8 @@ a:focus-visible {
 	border-spacing: 0px;
 }
 
-#topBarTable .logo{
+#topBarTable .logo {
 	text-align: left;
-	margin-top: -6px;
 }
 
 #topBarTable td {
@@ -118,9 +117,10 @@ a:focus-visible {
 }
 
 #headerOptions {
-	display: inline-block;
-	margin-left: 110px;
-	margin-top: 11px;
+	display: flex;
+	align-items: center;
+	justify-content: right;
+	margin: 0 !important;
 }
 
 #headerOptions a {
@@ -143,12 +143,10 @@ a:focus-visible {
 
 #headerOptions a:focus i {
 	color: var(--head-foot-icons-hover) !important;
-	border: 1px dotted;
-	box-sizing: border-box;
 }
 
 #headerOptions .dropdown {
-	display: inline-block;
+	display: flex;
 }
 
 #userInfo {
