@@ -79,7 +79,8 @@ export default class PathogenTimeline {
                 // Cache controls (SCOPED)
                 self.controls = {
                     disease: $(".path-disease-select", self.config.displayEl)[0],
-                    overlay: $(".path-overlay-select", self.config.displayEl)[0]
+                    overlay: $(".path-overlay-select", self.config.displayEl)[0],
+                    legend: $(".path-legend-items", self.config.displayEl)[0],
                 };
                 // Add all option to the filter
                 $(self.controls.disease).append('<option value="(All)">(All)</option>');
@@ -184,6 +185,13 @@ export default class PathogenTimeline {
 
             // --- Apply filtering ---
             const filtered = filterBreakdown(raw, selectedDisease);
+
+            const diseasesInView = filtered.map(row => row.disease);
+            const currentKeys = Array.from(new Set(diseasesInView));
+
+            // Clear legend first
+            this.controls.legend.innerHTML = "";
+
 
             // --- Draw chart with filtered data ---
             this.draw(filtered, selectedOverlay);
