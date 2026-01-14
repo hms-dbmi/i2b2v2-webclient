@@ -81,6 +81,25 @@ export default class PathogenTimeline {
                     disease: $(".path-disease-select", self.config.displayEl)[0],
                     overlay: $(".path-overlay-select", self.config.displayEl)[0]
                 };
+                // Add all option to the filter
+                $(self.controls.disease).append('<option value="(All)">(All)</option>');
+
+                // add the filter labels from the registry
+                Object.entries(DISEASE_REGISTRY.diseases)
+                    .sort(([, a], [, b]) => a.order - b.order)
+                    .forEach(([key, disease]) => {
+                        $(self.controls.disease).append(
+                        `<option value="${key}">${disease.label}</option>`
+                        );
+                    });
+
+                    Object.entries(WASTEWATER_REGISTRY.wastewater_sources)
+                    .sort(([, a], [, b]) => a.order - b.order)
+                    .forEach(([key, wastewater_source]) => {
+                        $(self.controls.overlay).append(
+                        `<option value="${key}">${wastewater_source.label}</option>`
+                        );
+                    });
 
                 if (self.controls.disease) {
                     $(self.controls.disease).on("change", () => self.update());
