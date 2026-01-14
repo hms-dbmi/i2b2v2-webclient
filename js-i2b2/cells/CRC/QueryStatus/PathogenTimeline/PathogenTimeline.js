@@ -1,3 +1,35 @@
+
+const DISEASE_REGISTRY = {
+
+    diseases: {
+        "COVID-19" : {key:"COVID-19", label:"COVID-19", color:"#1f77b4", order:1, aliases:["COVID-19", "COVID19", "SARS-COV-2"]},
+        "Influenza" : {key:"Influenza", label:"Influenza", color:"#ff7f0e", order:2, aliases:["INFLUENZA"]},
+        "RSV": {key:"RSV", label:"RSV", color:"#2ca02c", order:3, aliases:["RSV"]}
+    },
+     canonicalize(raw){
+        const key = raw.trim().toUpperCase();
+        for (const disease of Object.values(this.diseases)) {
+            if (disease.aliases.includes(key)){
+                return disease.key;
+            }
+        }
+        return raw.trim(); 
+
+    }
+
+
+}
+
+const WASTEWATER_REGISTRY = {
+    wastewater_sources: {
+        "mwra-north": {label:"Wastewater (MWRA-North)", color:"#333", order: 1, accessor: (row) => Number(row["Northern 7 day avg"])},
+        "mwra-south": {label:"Wastewater (MWRA-South)", color:"#333", order:2, accessor: (row) => Number(row["Southern 7 day avg"]) },
+        "mwra-combined": {label: "Wastewater (Combined)", color:"#333", order:3, accessor: (row) => Number(row["Northern 7 day avg"]) || 0 + Number(row["Southern 7 day avg"]) || 0 }
+    } 
+   
+}
+
+
 const margin = { top: 20, right: 80, bottom: 70, left: 60 };
 
 
