@@ -7,7 +7,7 @@ import {
     Card,
     CardContent,
     CircularProgress,
-    Grid, LinearProgress, MenuItem,
+    Grid, MenuItem,
     Paper,
     TextField,
     Tooltip,
@@ -16,7 +16,9 @@ import {
 import {getAllProjects} from "../../reducers/projectsSlice";
 import {getUserSessions} from "../../reducers/userSessionsSlice";
 import {getUserLogins} from "../../reducers/userLoginsSlice";
+import {getAllUserRoleCounts} from "../../reducers/userRoleCountsSlice";
 import "./Overview.scss";
+import {getAllUsers} from "../../reducers/usersSlice";
 
 export const Overview = () => {
     const dispatch = useDispatch();
@@ -24,6 +26,8 @@ export const Overview = () => {
     const projects  = useSelector((state) => state.projects);
     const userSessions  = useSelector((state) => state.userSessions);
     const userLogins = useSelector((state) => state.userLogins);
+    const userRoleCounts = useSelector((state) => state.userRoleCounts);
+    const users = useSelector((state) => state.users);
 
     const ALL_PROJECTS = "ALL_PROJECTS";
     const allProjects = [{id: ALL_PROJECTS, name: "All Projects"}];
@@ -40,6 +44,10 @@ export const Overview = () => {
             dispatch(getAllProjects());
             dispatch(getUserSessions());
             dispatch(getUserLogins({loginsSinceInDays}));
+            dispatch(getAllUsers());
+            const roleProject = project.id === ALL_PROJECTS ? "" : project.id;
+            dispatch(getAllUserRoleCounts({project: roleProject}));
+
         }
     }, [isI2b2LibLoaded]);
 
@@ -96,7 +104,24 @@ export const Overview = () => {
             </div>
             <Grid className={"ProjectOverviewInfoGrid"} container spacing={5}>
                 <Grid size={3}>
-                    <Card className={"ProjectOverviewInfo"}> </Card>
+                    <Card className={"ProjectOverviewInfo"}>
+                        <CardContent className={userRoleCounts.isFetching ? "ProjectOverviewInfoContent LoadingContent" : "ProjectOverviewInfoContent" }>
+                            <Typography variant="body2" className={"ProjectOverviewInfoContentCentered"}>
+                                {userRoleCounts.isFetching && (
+                                    <Box className={"LoadingContent"}>
+                                        <CircularProgress className={"ContentProgress"}/>
+                                    </Box>
+                                )}
+                                <Box>
+                                    Total Number of Users
+                                    <Box className={"ProjectOverviewInfoContentCount UserRoleCount"}>
+                                        {users.userList.length} Users
+                                        including  {userRoleCounts.adminUserCount} Admins
+                                    </Box>
+                                </Box>
+                            </Typography>
+                        </CardContent>
+                    </Card>
                 </Grid>
                 <Grid size={3}>
                     <Card className={"ProjectOverviewInfo"}> </Card>

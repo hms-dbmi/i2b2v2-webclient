@@ -12,3 +12,7 @@ export { Query } from "./Query";
 export { ExportRequest } from "./ExportRequest";
 export { QueryStatus } from "./QueryStatus";
 export { UserInfo } from "./UserInfo";
+export { UserRoleCount, USER_DATA_ROLES } from "./UserRoleCount";
+export { UserRoleCounts } from "./UserRoleCounts";
+export { User } from "./User";
+export { Users } from "./Users";
