@@ -24,20 +24,13 @@ const WASTEWATER_REGISTRY = {
     wastewater_sources: {
         "mwra-north": {label:"Wastewater (MWRA-North)", color:"#333", order: 1, accessor: (row) => Number(row["Northern 7 day avg"])},
         "mwra-south": {label:"Wastewater (MWRA-South)", color:"#333", order:2, accessor: (row) => Number(row["Southern 7 day avg"]) },
-        "mwra-combined": {label: "Wastewater (Combined)", color:"#333", order:3, accessor: (row) => Number(row["Northern 7 day avg"]) || 0 + Number(row["Southern 7 day avg"]) || 0 }
+        "mwra-combined": {label: "Wastewater (Combined)", color:"#333", order:3, accessor: (row) => (Number(row["Northern 7 day avg"])|| 0) + (Number(row["Southern 7 day avg"]) || 0)}
     } 
    
 }
 
 
 const margin = { top: 20, right: 80, bottom: 70, left: 60 };
-
-
-const DISEASE_COLORS = {
-    "COVID-19": "#1f77b4",        // blue
-    Influenza: "#ff7f0e",    // orange
-    RSV: "#2ca02c"           // green
-};
 
 
 export default class PathogenTimeline {
@@ -348,7 +341,8 @@ export default class PathogenTimeline {
         // -----------------------------
         for (let [disease, rows] of seriesByDisease.entries()) {
             rows = rows.slice().sort((a, b) => a.date - b.date);
-            const color = DISEASE_COLORS[disease] || "#999";
+            const color = DISEASE_REGISTRY.diseases[disease]?.color || "#999";
+
 
             // Line
             this.svg.append("path")
@@ -480,7 +474,7 @@ let parseData = function (xmlData, advancedConfig) {
         const dateStr = parts[1].trim();
         const label = parts[2].trim();   
         const diseaseRaw = parts[3].trim();
-        const disease = canonicalizeDisease(diseaseRaw);
+        const disease = DISEASE_REGISTRY.canonicalize(diseaseRaw);
 
 
         const date = new Date(dateStr);
@@ -532,29 +526,6 @@ let parseData = function (xmlData, advancedConfig) {
 
     return breakdown;
 };
-
-// ======================================================================
-// Normalize Disease Keys
-// ======================================================================
-
-function canonicalizeDisease(raw) {
-    if (!raw) return raw;
-
-    const key = raw.trim().toUpperCase();
-
-    if (key === "COVID-19" || key === "COVID19" || key === "SARS-COV-2") {
-        return "COVID-19";
-    }
-    if (key === "INFLUENZA") {
-        return "Influenza";
-    }
-    if (key === "RSV") {
-        return "RSV";
-    }
-
-    // fallback: preserve original
-    return raw;
-}
 
 
 // ======================================================================
