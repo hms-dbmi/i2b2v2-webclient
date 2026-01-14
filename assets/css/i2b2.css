@@ -156,8 +156,9 @@ button.invert:hover {
 	border-spacing: 0;
 }
 
-#topBarTable .logo{
-	text-align: left;
+#topBarTable .logo {
+	display: flex;
+	align-items: center;
 }
 
 #topBarTable td {
@@ -165,6 +166,7 @@ button.invert:hover {
 	padding: 0;
 	vertical-align: middle;
 	text-align: right;
+	height: 100%;
 }
 
 #topBarTable a {
@@ -183,9 +185,10 @@ button.invert:hover {
 }
 
 #headerOptions {
-	display: inline-block;
-	margin-left: 110px;
-	margin-top: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: right;
+	margin: 0 !important;
 }
 
 #headerOptions a {
@@ -207,12 +210,10 @@ button.invert:hover {
 
 #headerOptions a:focus i {
 	color: var(--head-foot-icon-select) !important;
-	border: 1px dotted;
-	box-sizing: border-box;
 }
 
 #headerOptions .dropdown {
-	display: inline-block;
+	display: flex;
 }
 
 #userInfo {
