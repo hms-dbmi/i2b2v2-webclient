@@ -22,19 +22,19 @@ export const UserRoleCountView = ({users, userRoleCounts, projectId}) => {
         return text;
     }
     const getRoleBreakDowns = () => {
-        const obfUsers = userRoleCounts.userRoleCountsList.filter(userRole => userRole.role === USER_DATA_ROLES.DATA_OBFSC);
-        const aggUsers = userRoleCounts.userRoleCountsList.filter(userRole => userRole.role === USER_DATA_ROLES.DATA_AGG);
-        const ldsUsers = userRoleCounts.userRoleCountsList.filter(userRole => userRole.role === USER_DATA_ROLES.DATA_LDS);
-        const deidUsers = userRoleCounts.userRoleCountsList.filter(userRole => userRole.role === USER_DATA_ROLES.DATA_DEID);
-        const protUsers = userRoleCounts.userRoleCountsList.filter(userRole => userRole.role === USER_DATA_ROLES.DATA_PROT);
+        const obfUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.role === USER_DATA_ROLES.DATA_OBFSC);
+        const aggUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.role === USER_DATA_ROLES.DATA_AGG);
+        const ldsUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.role === USER_DATA_ROLES.DATA_LDS);
+        const deidUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.role === USER_DATA_ROLES.DATA_DEID);
+        const protUsers = userRoleCounts.userRoleCountsList.find(userRole => userRole.role === USER_DATA_ROLES.DATA_PROT);
 
         return (
             <div className={"UserRoleCountBreakdown"}>
-                <Box>Obfuscated: {obfUsers.length}</Box>
-                <Box>Aggregated: {aggUsers.length}</Box>
-                <Box>Limited Data Set: {ldsUsers.length}</Box>
-                <Box>De-identified: {deidUsers.length}</Box>
-                <Box>Protected: {protUsers.length}</Box>
+                <Box>Obfuscated: {obfUsers ? obfUsers.count: ""}</Box>
+                <Box>Aggregated: {aggUsers ? aggUsers.count: ""}</Box>
+                <Box>Limited Data Set: {ldsUsers ? ldsUsers.count: ""}</Box>
+                <Box>De-identified: {deidUsers? deidUsers.count: ""}</Box>
+                <Box>Protected: {protUsers ? protUsers.count: ""}</Box>
             </div>
         )
     }
@@ -52,7 +52,7 @@ export const UserRoleCountView = ({users, userRoleCounts, projectId}) => {
                     <Box>including</Box>
                     { getAdminOrManagerCountText()}
                 </Box>
-                {getRoleBreakDowns()}
+                {projectId && getRoleBreakDowns()}
             </Box>
         </Typography>
     );
