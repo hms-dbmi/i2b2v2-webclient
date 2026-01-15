@@ -1,9 +1,21 @@
 import React from "react";
-import {Box, CircularProgress, Typography} from "@mui/material";
+import {Box, CircularProgress, Popover, Typography} from "@mui/material";
 import {USER_DATA_ROLES} from "../../models";
 import "./UserRoleCountView.scss";
+import Button from '@mui/material/Button';
 
 export const UserRoleCountView = ({users, userRoleCounts, projectId}) => {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
 
     const getAdminOrManagerCountText = () => {
         let text = "";
@@ -38,6 +50,8 @@ export const UserRoleCountView = ({users, userRoleCounts, projectId}) => {
             </div>
         )
     }
+
+
     return (
         <Typography variant="body2" className={"UserRoleCountView ProjectOverviewInfoContentCentered"}>
             {userRoleCounts.isFetching && (
@@ -52,7 +66,26 @@ export const UserRoleCountView = ({users, userRoleCounts, projectId}) => {
                     <Box>including</Box>
                     { getAdminOrManagerCountText()}
                 </Box>
-                {projectId && getRoleBreakDowns()}
+                {projectId &&
+                    <div>
+                        <Button variant="outlined" onClick={handleClick} size="small">
+                            View Details
+                        </Button>
+                        <Popover
+                            open={open}
+                            anchorEl={anchorEl}
+                            onClose={handleClose}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                        >
+                            <Typography sx={{p: 2}}>
+                                {getRoleBreakDowns()}
+                            </Typography>
+                        </Popover>
+                    </div>
+                }
             </Box>
         </Typography>
     );
