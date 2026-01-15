@@ -11,7 +11,7 @@ export const usersSlice = createSlice({
             return Users({
                 isFetching: true,
                 statusInfo: StatusInfo()
-            })
+            });
         },
         getAllUsersSucceeded: (state, { payload: userList }) => {
             let users = [];

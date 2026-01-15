@@ -2,16 +2,13 @@ import React, { useEffect } from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {
     Autocomplete,
-    Box,
     Button,
     Card,
     CardContent,
-    CircularProgress,
-    Grid, MenuItem,
+    Grid,
     Paper,
     TextField,
     Tooltip,
-    Typography
 } from "@mui/material";
 import {getAllProjects} from "../../reducers/projectsSlice";
 import {getUserSessions} from "../../reducers/userSessionsSlice";
@@ -49,7 +46,7 @@ export const Overview = () => {
             dispatch(getUserSessions());
             dispatch(getUserLogins({loginsSinceInDays}));
             dispatch(getAllUsers());
-            dispatch(getAllUserRoleCounts({project: selectedProject.id}));
+            dispatch(getAllUserRoleCounts({projectId: selectedProject.id}));
 
         }
     }, [isI2b2LibLoaded]);

@@ -3,16 +3,18 @@ import {
     USER_ROLE_COUNTS,
 } from "../actions";
 import { defaultState } from '../defaultState';
-import { UserRoleCount, StatusInfo } from "models";
-import {USER_DATA_ROLES} from "../models";
+import { UserRoleCount, UserRoleCounts, StatusInfo } from "models";
+import {USER_DATA_ROLES, Users} from "../models";
 
 export const userRoleCountsSlice = createSlice({
     name: USER_ROLE_COUNTS,
     initialState: defaultState.userRoleCounts,
     reducers: {
         getAllUserRoleCounts: state => {
-            state.isFetching = true;
-            state.statusInfo = StatusInfo();
+            return UserRoleCounts({
+                isFetching: true,
+                statusInfo: StatusInfo()
+            })
         },
         getAllUserRoleCountsSucceeded: (state, { payload: {userRoleCountsList, projectId} }) => {
             state.isFetching = false;
