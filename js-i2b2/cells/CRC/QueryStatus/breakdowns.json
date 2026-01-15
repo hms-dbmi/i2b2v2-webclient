@@ -71,7 +71,7 @@
     },
     "DOWNLOAD": true
   },
-  "PATIENT_TOP20DIAG_XML": {
+  "PATIENT_DIAG3_COUNT_SHRINE_XML": {
     "TABLEBARCHART": {
       "forceInitialDisplay": true
     },
