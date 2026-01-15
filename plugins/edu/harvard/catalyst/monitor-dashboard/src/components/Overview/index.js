@@ -14,11 +14,11 @@ import {getAllProjects} from "../../reducers/projectsSlice";
 import {getUserSessions} from "../../reducers/userSessionsSlice";
 import {getUserLogins} from "../../reducers/userLoginsSlice";
 import {getAllUserRoleCounts} from "../../reducers/userRoleCountsSlice";
-import "./Overview.scss";
 import {getAllUsers} from "../../reducers/usersSlice";
 import {UserRoleCountView} from "./UserRoleCountView";
 import {UserLoginView} from "./UserLoginView";
 import {UserSessionView} from "./UserSessionView";
+import "./Overview.scss";
 
 export const Overview = () => {
     const dispatch = useDispatch();
@@ -40,12 +40,13 @@ export const Overview = () => {
         setLoginsSinceInDays(days);
         dispatch(getUserLogins({loginsSinceInDays: days}));
     }
+
     useEffect(() => {
         if (isI2b2LibLoaded) {
             dispatch(getAllProjects());
             dispatch(getUserSessions());
             dispatch(getUserLogins({loginsSinceInDays}));
-            dispatch(getAllUsers());
+            dispatch(getAllUsers({projectId: selectedProject.id}));
             dispatch(getAllUserRoleCounts({projectId: selectedProject.id}));
 
         }
@@ -69,8 +70,10 @@ export const Overview = () => {
     }
     const handleViewProjectOverview = () => {
         setSelectedProject(project);
+        dispatch(getAllUsers({projectId: project.id}));
         dispatch(getAllUserRoleCounts({projectId: project.id}));
     }
+
     return (
         <div className="Overview">
             <div className="ProjectOverviewHeader">

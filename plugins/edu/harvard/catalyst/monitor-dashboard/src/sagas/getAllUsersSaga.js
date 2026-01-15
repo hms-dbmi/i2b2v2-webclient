@@ -4,7 +4,16 @@ import {GET_ALL_USERS} from "../actions";
 import {parseXml} from "../utilities/parseXml";
 
 //a function that returns a promise
-const getAllUsersRequest = () => i2b2.ajax.PM.getAllUser({}).then((xmlString) => parseXml(xmlString));
+const getAllUsersRequest = (projectId) => {
+    const data = {};
+    if(projectId){
+        data.sec_project = projectId;
+    }else{
+        data.sec_project = "@"
+    }
+
+    return i2b2.ajax.PM.getAllUser(data).then((xmlString) => parseXml(xmlString));
+}
 
 const parseUsersXml = (allUsersXml) => {
     let users = allUsersXml.getElementsByTagName('user');
@@ -31,8 +40,10 @@ const parseUsersXml = (allUsersXml) => {
 
 export function* doGetAllUsers(action) {
     console.log("getting all users...");
+    const { projectId } = action.payload;
+
     try {
-        const response = yield call(getAllUsersRequest);
+        const response = yield call(getAllUsersRequest, projectId);
 
         if(response) {
             let userList = parseUsersXml(response);
