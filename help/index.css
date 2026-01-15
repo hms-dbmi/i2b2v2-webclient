@@ -7,3 +7,29 @@
 .app-name{
     padding-top:.5rem;
 }
+
+#i2b2-help {
+    margin: 1em 2.5em 4em 2.5em;
+}
+
+#i2b2-help .content-header{
+    color: #2666a1;
+    margin-top: 2em;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+#i2b2-help .content {
+  margin: 1.2em 0;
+}
+
+#i2b2-help .imgcontainer {
+    text-align: center;
+    margin: 14px 0 0 0;
+    position: relative;
+    padding: 2rem 0;
+}
+
+#i2b2-help img.logo {
+    width: 25em;
+}

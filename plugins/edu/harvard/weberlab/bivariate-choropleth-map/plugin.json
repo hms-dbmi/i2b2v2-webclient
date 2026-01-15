@@ -21,7 +21,8 @@
       "zipAttribName": "ZCTA5CE10",
       "zipRegEx": "^([0-9]{5}) - (.*)",
       "__colorSet": "seqseq2",
-      "colorSet": "greenblue",
+      "__colorSet": "greenblue",
+      "colorSet": "griffin",
       "styles": {
         "norm": {
           "weight": 1,

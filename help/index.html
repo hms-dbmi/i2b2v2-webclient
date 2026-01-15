@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
 <meta charset="UTF-8">
-<title>Webclient Help</title>
+<title>MassCPR Federated Data Network Help</title>
 <script type="text/javascript" src="../js-ext/jquery/3.7.1/jquery.min.js" ></script>
 <!-- LOAD Bootstrap FROM local server -->
 <script type="text/javascript" src="../js-ext/bootstrap/5.3.3/js/bootstrap.bundle.min.js" ></script>
@@ -12,20 +12,70 @@
 </head>
 <body>
 <header class="top-bar-replica px-3">
-    <h1 class="h5 text-white app-name"><span class="fw-bold">i2b2</span> Query & Analysis Tool</h1>   
+    <h1 class="h5 text-white app-name"><span class="fw-bold">MassCPR</span> Federated Data Network Help</h1>
 </header>
-<div class="container my-5">
-    <div class="row">
-        <div class="col-sm-12">
-            <h1>Help for i2b2 Webclient version 1.8.1</h1>
-        </div><!-- /.col-sm-12 -->
-    </div><!-- /.row -->
-    <div class="row">
-        <div class="col-sm-12">
-            <h2 class="h3"><a href="I2B2_Webclient_Help_v1_8_1.pdf" target="_blank">Access help documentation</a> for the i2b2 Webclient (PDF)</h2>
-        </div><!-- /.col-sm-12 -->
-    </div><!-- /.row -->
-</div><!-- /.container -->
+<div id="i2b2-help">
+    <div class="imgcontainer">
+        <img src="../assets/images/logo-masscpr.png" alt="MassCPR logo" class="logo">
+    </div>
+
+    <div class="content">
+        <div class="content-header">
+            About the Network
+        </div>
+        <div class="content">
+            The MassCPR Federated Data Network combines the aggregate results of analyses that are performed locally
+            within each participating institution using electronic health record (EHR) data. By leveraging the
+            collective informatics capabilities of the consortium, this network enables data discovery and sharing while
+            maintaining institutional autonomy and patient privacy.
+        </div>
+        <div class="content-header">
+            Help Using This Website
+        </div>
+        <div class="content">
+            View <a href="https://i2b2transmart.org/i2b2-user-tutorials/" target="_blank" rel="noopener noreferrer">online tutorials</a> or <a href="I2B2_Webclient_Help_v1_8_1.pdf" target="_blank" rel="noopener noreferrer">download PDF documentation</a> on how to use this website. Note that these guides
+            describe a software program called i2b2, which is used by the MassCPR Federated Data Network. Some of the
+            details in the guides might differ from what you see on this website. If you have questions or feedback
+            about the MassCPR Federated Data Network, please email us at
+            <a href="mailto:contact@catalyst.harvard.edu?subject=MassCPR Federated Data Network%20Question">contact@catalyst.harvard.edu</a>
+        </div>
+        <div class="content-header">
+            Terms of Query Access
+        </div>
+        <div class="content">
+            <p>
+                QUALIFIED USERS: Access to the MassCPR Federated Data Network is limited to faculty with a primary
+                appointment at or above the Instructor level at Beth Israel Lahey Health (BILH), Dana-Farber Cancer
+                Institute (DFCI) or Mass General Brigham (MGB).
+            </p>
+            <p>
+                AUTHORIZED USE CASES: <strong>Use of the MassCPR Federated Data Network is restricted to research and public health
+                use cases related to infectious diseases.</strong> All queries are archived for monitoring and auditing purposes and
+                are linked to your account.
+            </p>
+            <p>
+                OBFUSCATION: Queries will return only aggregate counts and summary statistics. Queries resulting in small
+                numbers of patients will return blurred or obfuscated estimates to prevent inadvertent disclosure of
+                individually identifiable patient information. <strong> Any attempt to circumvent these safeguards will be reported
+                to the Network Oversight Committee and may result in your account being deactivated.</strong>
+            </p>
+            <p>
+                IDENTIFICATION: You may not, either alone or in combination with other information, attempt to identify
+                or contact any individual who is or may be a source of the data. If you inadvertently receive
+                identifiable information or otherwise identify an individual, you must promptly notify us at
+                contact@catalyst.harvard.edu.
+
+            </p>
+            <p>
+                CITATIONS: Network Sites may not be individually named in any publication using network data without
+                permission. If permission isn’t granted, sites must be referenced as “Site 1, Site 2, …”. Any
+                intellectual property, including but not limited to patents, that is derived from the use of the
+                Network, as well as publications that include Network Data, must acknowledge the MassCPR Federated
+                Data Network.
+            </p>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
