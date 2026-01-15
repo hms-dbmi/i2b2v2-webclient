@@ -192,6 +192,18 @@ export default class PathogenTimeline {
             // Clear legend first
             this.controls.legend.innerHTML = "";
 
+            currentKeys.forEach((key, index) => {
+               const diseaseConfig = DISEASE_REGISTRY.diseases[key]
+
+               $(this.controls.legend).append(
+                    `<div class="d-flex align-items-center gap-2">
+                        <span class="legend-swatch" style="background:${diseaseConfig.color}"></span>
+                        <span>${diseaseConfig.label}</span>
+                    </div>`);
+
+            });
+
+
 
             // --- Draw chart with filtered data ---
             this.draw(filtered, selectedOverlay);
