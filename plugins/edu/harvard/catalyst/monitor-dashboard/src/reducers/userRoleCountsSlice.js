@@ -14,7 +14,7 @@ export const userRoleCountsSlice = createSlice({
             state.isFetching = true;
             state.statusInfo = StatusInfo();
         },
-        getAllUserRoleCountsSucceeded: (state, { payload: userRoleCountsList }) => {
+        getAllUserRoleCountsSucceeded: (state, { payload: {userRoleCountsList, projectId} }) => {
             state.isFetching = false;
             state.statusInfo = StatusInfo({
                 status: "SUCCESS"
@@ -23,6 +23,7 @@ export const userRoleCountsSlice = createSlice({
             let userRoleCounts = [];
 
             let adminUserCount = 0;
+            let managerUserCount = 0;
 
             userRoleCountsList.map((userRoleCount) => {
                 let role = USER_DATA_ROLES[userRoleCount.role];
@@ -37,10 +38,15 @@ export const userRoleCountsSlice = createSlice({
                 if(userRoleCount.projectId === "@" && userRoleCount.role === "ADMIN"){
                     adminUserCount = userRoleCount.count;
                 }
+
+                if(userRoleCount.projectId === projectId && userRoleCount.role === "MANAGER"){
+                    managerUserCount = userRoleCount.count;
+                }
             });
 
             state.userRoleCountsList = userRoleCounts;
             state.adminUserCount = adminUserCount;
+            state.managerUserCount = managerUserCount;
         },
         getAllUserRoleCountsFailed: (state, { payload: response }) => {
             state.isFetching = false;

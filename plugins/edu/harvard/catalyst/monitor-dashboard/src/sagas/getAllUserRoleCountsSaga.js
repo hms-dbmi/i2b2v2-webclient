@@ -16,7 +16,7 @@ const getAllUserRoleCountsListRequest = (projectId) => {
     return i2b2.ajax.PM.getAllRole(data).then((xmlString) => parseXml(xmlString)).catch((err) => err);
 };
 
-const parseUserRoleCountsXml = (userRoleXml) => {
+const parseUserRoleCountsXml = (userRoleXml, projectId) => {
     let roles = userRoleXml.getElementsByTagName('role');
 
     let userRoleCountsList = [];
@@ -44,12 +44,14 @@ const parseUserRoleCountsXml = (userRoleXml) => {
 
 export function* doGetAllUserRoleCounts(action) {
     console.log("getting all user role counts...");
+    const { projectId } = action.payload;
+
     try {
-        const response = yield call(getAllUserRoleCountsListRequest);
+        const response = yield call(getAllUserRoleCountsListRequest, projectId);
 
         if(response) {
             let userRoleCountsList = parseUserRoleCountsXml(response);
-            yield put(getAllUserRoleCountsSucceeded(userRoleCountsList));
+            yield put(getAllUserRoleCountsSucceeded({userRoleCountsList, projectId}));
         }else{
             console.error("Error retrieving user role counts. ");
             yield put(getAllUserRoleCountsFailed(response));

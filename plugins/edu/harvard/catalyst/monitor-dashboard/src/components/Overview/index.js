@@ -19,6 +19,7 @@ import {getUserLogins} from "../../reducers/userLoginsSlice";
 import {getAllUserRoleCounts} from "../../reducers/userRoleCountsSlice";
 import "./Overview.scss";
 import {getAllUsers} from "../../reducers/usersSlice";
+import {UserRoleCountView} from "./UserRoleCountView";
 
 export const Overview = () => {
     const dispatch = useDispatch();
@@ -29,9 +30,10 @@ export const Overview = () => {
     const userRoleCounts = useSelector((state) => state.userRoleCounts);
     const users = useSelector((state) => state.users);
 
-    const ALL_PROJECTS = "ALL_PROJECTS";
+    const ALL_PROJECTS = "@";
     const allProjects = [{id: ALL_PROJECTS, name: "All Projects"}];
     const [project, setProject] = React.useState(allProjects[0]);
+    const [selectedProject, setSelectedProject] = React.useState(allProjects[0]);
     const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
     const [loginsSinceInDays, setLoginsSinceInDays] = React.useState(7);
 
@@ -45,7 +47,7 @@ export const Overview = () => {
             dispatch(getUserSessions());
             dispatch(getUserLogins({loginsSinceInDays}));
             dispatch(getAllUsers());
-            const roleProject = project.id === ALL_PROJECTS ? "" : project.id;
+            const roleProject = selectedProject.id === ALL_PROJECTS ? "" : selectedProject.id;
             dispatch(getAllUserRoleCounts({project: roleProject}));
 
         }
@@ -58,14 +60,18 @@ export const Overview = () => {
     }, [projects.projectList]);
 
     const getProjectCountText = () => {
-        if(!projects.isFetching && project.id === ALL_PROJECTS){
+        if(!projects.isFetching && selectedProject.id === ALL_PROJECTS){
             return "Viewing " + projects.projectList.length + " Projects";
-        }else if(!projects.isFetching && project.id !== ""){
+        }else if(!projects.isFetching && selectedProject.id !== ""){
             return "Viewing 1 Project";
         }
         else {
             return "";
         }
+    }
+    const handleViewProjectOverview = () => {
+        setSelectedProject(project);
+        dispatch(getAllUserRoleCounts({projectId: project.id}));
     }
     return (
         <div className="Overview">
@@ -99,27 +105,14 @@ export const Overview = () => {
                         )}
                     />
                 </Tooltip>
-                <Button className={"ViewProjectBtn"} variant="contained" size="small">View</Button>
+                <Button className={"ViewProjectBtn"} variant="contained" size="small" onClick={handleViewProjectOverview}>View</Button>
                 <div className={"ProjectOverviewCount"}>{getProjectCountText()}</div>
             </div>
             <Grid className={"ProjectOverviewInfoGrid"} container spacing={5}>
                 <Grid size={3}>
                     <Card className={"ProjectOverviewInfo"}>
                         <CardContent className={userRoleCounts.isFetching ? "ProjectOverviewInfoContent LoadingContent" : "ProjectOverviewInfoContent" }>
-                            <Typography variant="body2" className={"ProjectOverviewInfoContentCentered"}>
-                                {userRoleCounts.isFetching && (
-                                    <Box className={"LoadingContent"}>
-                                        <CircularProgress className={"ContentProgress"}/>
-                                    </Box>
-                                )}
-                                <Box>
-                                    Total Number of Users
-                                    <Box className={"ProjectOverviewInfoContentCount UserRoleCount"}>
-                                        {users.userList.length} Users
-                                        including  {userRoleCounts.adminUserCount} Admins
-                                    </Box>
-                                </Box>
-                            </Typography>
+                            <UserRoleCountView userRoleCounts={userRoleCounts} users={users} projectId={selectedProject.id}/>
                         </CardContent>
                     </Card>
                 </Grid>
