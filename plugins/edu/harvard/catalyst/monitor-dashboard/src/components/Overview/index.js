@@ -21,6 +21,7 @@ import "./Overview.scss";
 import {getAllUsers} from "../../reducers/usersSlice";
 import {UserRoleCountView} from "./UserRoleCountView";
 import {UserLoginView} from "./UserLoginView";
+import {UserSessionView} from "./UserSessionView";
 
 export const Overview = () => {
     const dispatch = useDispatch();
@@ -131,21 +132,7 @@ export const Overview = () => {
                 <Grid size={3}>
                     <Card className={"ProjectOverviewInfo"}>
                         <CardContent className={"ProjectOverviewInfoContent"}>
-                            {selectedProject.id === ALL_PROJECTS_ID &&
-                                <Typography variant="body2" className={"ProjectOverviewInfoContentCentered"}>
-                                    {userSessions.isFetching && (
-                                        <Box className={"LoadingContent"}>
-                                            <CircularProgress className={"ContentProgress"}/>
-                                        </Box>
-                                    )}
-                                    <Box className={"ProjectOverviewInfoContentCount"}>
-                                        {userSessions.sessionCount}
-                                    </Box>
-                                    <Box>
-                                        Current active sessions
-                                    </Box>
-                                </Typography>
-                            }
+                            {selectedProject.id === ALL_PROJECTS_ID && <UserSessionView userSessions={userSessions}/>}
                         </CardContent>
                     </Card>
                 </Grid>
