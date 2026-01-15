@@ -30,7 +30,7 @@ export const Overview = () => {
     const userRoleCounts = useSelector((state) => state.userRoleCounts);
     const users = useSelector((state) => state.users);
 
-    const ALL_PROJECTS_ID = "@";
+    const ALL_PROJECTS_ID = "";
     const allProjects = [{id: ALL_PROJECTS_ID, name: "All Projects"}];
     const [project, setProject] = React.useState(allProjects[0]);
     const [selectedProject, setSelectedProject] = React.useState(allProjects[0]);
@@ -47,8 +47,7 @@ export const Overview = () => {
             dispatch(getUserSessions());
             dispatch(getUserLogins({loginsSinceInDays}));
             dispatch(getAllUsers());
-            const roleProject = selectedProject.id === ALL_PROJECTS_ID ? "" : selectedProject.id;
-            dispatch(getAllUserRoleCounts({project: roleProject}));
+            dispatch(getAllUserRoleCounts({project: selectedProject.id}));
 
         }
     }, [isI2b2LibLoaded]);
