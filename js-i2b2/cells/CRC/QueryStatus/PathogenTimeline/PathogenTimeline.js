@@ -84,6 +84,7 @@ export default class PathogenTimeline {
                 };
                 // Add all option to the filter
                 $(self.controls.disease).append('<option value="(All)">(All)</option>');
+                $(self.controls.overlay).append('<option value="(None)">(None)</option>');
 
                 // add the filter labels from the registry
                 Object.entries(DISEASE_REGISTRY.diseases)
@@ -182,7 +183,6 @@ export default class PathogenTimeline {
             const selectedDisease = this.controls.disease?.value || "(All)";
             const selectedOverlay = this.controls.overlay?.value || "(None)";
 
-
             // --- Apply filtering ---
             const filtered = filterBreakdown(raw, selectedDisease);
 
@@ -192,7 +192,7 @@ export default class PathogenTimeline {
             // Clear legend first
             this.controls.legend.innerHTML = "";
 
-            currentKeys.forEach((key, index) => {
+            currentKeys.forEach((key) => {
                const diseaseConfig = DISEASE_REGISTRY.diseases[key]
 
                $(this.controls.legend).append(
@@ -203,7 +203,20 @@ export default class PathogenTimeline {
 
             });
 
+            let hasWastewater = false;
+            if (selectedOverlay !== "(None)") {
+                hasWastewater = true;
+            }
 
+            if (hasWastewater){
+                const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay]
+                $(this.controls.legend).append(
+                    `<div class="d-flex align-items-center gap-2">
+                        <span class="legend-swatch" style="background:${waterConfig.color}"></span>
+                        <span>Wastewater</span>
+                    </div>`);
+
+            }
 
             // --- Draw chart with filtered data ---
             this.draw(filtered, selectedOverlay);
