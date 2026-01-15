@@ -92,6 +92,7 @@ a:focus-visible {
 
 #topBarTable .logo{
 	text-align: left;
+	margin-top: -6px;
 }
 
 #topBarTable td {
