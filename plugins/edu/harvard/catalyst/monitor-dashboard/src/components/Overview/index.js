@@ -30,8 +30,8 @@ export const Overview = () => {
     const userRoleCounts = useSelector((state) => state.userRoleCounts);
     const users = useSelector((state) => state.users);
 
-    const ALL_PROJECTS = "@";
-    const allProjects = [{id: ALL_PROJECTS, name: "All Projects"}];
+    const ALL_PROJECTS_ID = "@";
+    const allProjects = [{id: ALL_PROJECTS_ID, name: "All Projects"}];
     const [project, setProject] = React.useState(allProjects[0]);
     const [selectedProject, setSelectedProject] = React.useState(allProjects[0]);
     const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
@@ -47,7 +47,7 @@ export const Overview = () => {
             dispatch(getUserSessions());
             dispatch(getUserLogins({loginsSinceInDays}));
             dispatch(getAllUsers());
-            const roleProject = selectedProject.id === ALL_PROJECTS ? "" : selectedProject.id;
+            const roleProject = selectedProject.id === ALL_PROJECTS_ID ? "" : selectedProject.id;
             dispatch(getAllUserRoleCounts({project: roleProject}));
 
         }
@@ -60,7 +60,7 @@ export const Overview = () => {
     }, [projects.projectList]);
 
     const getProjectCountText = () => {
-        if(!projects.isFetching && selectedProject.id === ALL_PROJECTS){
+        if(!projects.isFetching && selectedProject.id === ALL_PROJECTS_ID){
             return "Viewing " + projects.projectList.length + " Projects";
         }else if(!projects.isFetching && selectedProject.id !== ""){
             return "Viewing 1 Project";
@@ -122,62 +122,66 @@ export const Overview = () => {
                 <Grid size={3}>
                     <Card className={"ProjectOverviewInfo"}>
                         <CardContent className={userLogins.isFetching ? "ProjectOverviewInfoContent LoadingContent" : "ProjectOverviewInfoContent" }>
-                            <Typography variant="body2" className={"ProjectOverviewInfoContentCentered"}>
-                                {userLogins.isFetching && (
-                                    <Box
-                                        className={"LoadingContent"}
-                                    >
-                                        <CircularProgress className={"ContentProgress"}/>
+                            {selectedProject.id === ALL_PROJECTS_ID &&
+                                <Typography variant="body2" className={"ProjectOverviewInfoContentCentered"}>
+                                    {userLogins.isFetching && (
+                                        <Box
+                                            className={"LoadingContent"}
+                                        >
+                                            <CircularProgress className={"ContentProgress"}/>
+                                        </Box>
+                                    )}
+                                    <Box className={"ProjectOverviewInfoContentCount"}>
+                                        {userLogins.loginSuccessCount + userLogins.loginFailCount}
                                     </Box>
-                                )}
-                                <Box className={"ProjectOverviewInfoContentCount"}>
-                                    {userLogins.loginSuccessCount + userLogins.loginFailCount}
-                                </Box>
-                                <Box>
-                                     login attempts in last
-                                </Box>
-                                <Box>
-                                    <TextField
-                                        select
-                                        value={loginsSinceInDays}
-                                        onChange={(event) => handleUpdateLoginsSince(event.target.value)}
-                                        variant="standard"
-                                    >
-                                        <MenuItem value={"1"}>1 day</MenuItem>
-                                        <MenuItem value={"7"}>7 days</MenuItem>
-                                        <MenuItem value={"30"}>30 days</MenuItem>
-                                        <MenuItem value={"60"}>60 days</MenuItem>
-                                        <MenuItem value={"90"}>90 days</MenuItem>
-                                    </TextField>
-                                </Box>
-                                <Box className={"ProjectOverviewInfoContentCountDetail"}>
-                                    <Box className={"ProjectOverviewInfoContentCountDetailItem"}>
-                                        Success: {userLogins.loginSuccessCount}
+                                    <Box>
+                                        login attempts in last
                                     </Box>
-                                    <Box className={"ProjectOverviewInfoContentCountDetailItem"}>
-                                        Failed: {userLogins.loginFailCount}
+                                    <Box>
+                                        <TextField
+                                            select
+                                            value={loginsSinceInDays}
+                                            onChange={(event) => handleUpdateLoginsSince(event.target.value)}
+                                            variant="standard"
+                                        >
+                                            <MenuItem value={"1"}>1 day</MenuItem>
+                                            <MenuItem value={"7"}>7 days</MenuItem>
+                                            <MenuItem value={"30"}>30 days</MenuItem>
+                                            <MenuItem value={"60"}>60 days</MenuItem>
+                                            <MenuItem value={"90"}>90 days</MenuItem>
+                                        </TextField>
                                     </Box>
-                                </Box>
-                            </Typography>
+                                    <Box className={"ProjectOverviewInfoContentCountDetail"}>
+                                        <Box className={"ProjectOverviewInfoContentCountDetailItem"}>
+                                            Success: {userLogins.loginSuccessCount}
+                                        </Box>
+                                        <Box className={"ProjectOverviewInfoContentCountDetailItem"}>
+                                            Failed: {userLogins.loginFailCount}
+                                        </Box>
+                                    </Box>
+                                </Typography>
+                            }
                         </CardContent>
                     </Card>
                 </Grid>
                 <Grid size={3}>
                     <Card className={"ProjectOverviewInfo"}>
                         <CardContent className={"ProjectOverviewInfoContent"}>
-                            <Typography variant="body2" className={"ProjectOverviewInfoContentCentered"}>
-                                {userSessions.isFetching && (
-                                    <Box className={"LoadingContent"}>
-                                        <CircularProgress className={"ContentProgress"}/>
+                            {selectedProject.id === ALL_PROJECTS_ID &&
+                                <Typography variant="body2" className={"ProjectOverviewInfoContentCentered"}>
+                                    {userSessions.isFetching && (
+                                        <Box className={"LoadingContent"}>
+                                            <CircularProgress className={"ContentProgress"}/>
+                                        </Box>
+                                    )}
+                                    <Box className={"ProjectOverviewInfoContentCount"}>
+                                        {userSessions.sessionCount}
                                     </Box>
-                                )}
-                                <Box className={"ProjectOverviewInfoContentCount"}>
-                                    {userSessions.sessionCount}
-                                </Box>
-                                <Box>
-                                    Current active sessions
-                                </Box>
-                            </Typography>
+                                    <Box>
+                                        Current active sessions
+                                    </Box>
+                                </Typography>
+                            }
                         </CardContent>
                     </Card>
                 </Grid>
