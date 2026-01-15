@@ -266,60 +266,58 @@ export default class PathogenTimeline {
         // -----------------------------
         let yRight = null;
         let wwPoints = [];
-
+        let wwConfig = null;
+    
         if (selectedOverlay !== "(None)" && this.wastewater && this.wastewater.length > 0) {
+            const overlayConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+            wwConfig = overlayConfig;
 
-           const monthlyMap = d3.rollup(
-                this.wastewater,
-                rows => {
-                    const values = rows
-                        .map(d => {
-                            if (selectedOverlay === "mwra-north") {
-                                return Number(d["Northern 7 day avg"]);
-                            }
-                            if (selectedOverlay === "mwra-south") {
-                                return Number(d["Southern 7 day avg"]);
-                            }
-                            if (selectedOverlay === "mwra-combined") {
-                                const n = Number(d["Northern 7 day avg"]);
-                                const s = Number(d["Southern 7 day avg"]);
-                                return (isNaN(n) ? 0 : n) + (isNaN(s) ? 0 : s);
-                            }
-                            return NaN;
-                        })
-                        .filter(v => !isNaN(v));
+            // Guard against stale/unknown overlay keys
+            if (!overlayConfig || typeof overlayConfig.accessor !== "function") {
+                console.warn("Unknown wastewater overlay:", selectedOverlay);
+                // Treat as no overlay
+                wwPoints = [];
+                yRight = null;
+            } else {
+                const monthlyMap = d3.rollup(
+                    this.wastewater,
+                    rows => {
+                        const values = rows
+                            .map(row => {
+                                const value = overlayConfig.accessor(row);
+                                return value;
+                            })
+                            .filter(v => v !== null && v !== undefined && !isNaN(v));
 
-                    return values.length
-                        ? d3.mean(values)
-                        : null;
-                },
-                d => {
-                    const dt = new Date(d["Sample Date"]);
-                    return isNaN(dt.getTime())
-                        ? null
-                        : `${dt.getFullYear()}-${dt.getMonth()}`;
+                        return values.length ? d3.mean(values) : null;
+                    },
+                    d => {
+                        const dt = new Date(d["Sample Date"]);
+                        return isNaN(dt.getTime())
+                            ? null
+                            : `${dt.getFullYear()}-${dt.getMonth()}`;
+                    }
+                );
+
+                wwPoints = Array.from(monthlyMap.entries())
+                    .filter(([k, v]) => k !== null && v !== null)
+                    .map(([key, value]) => {
+                        const [year, month] = key.split("-").map(Number);
+                        return {
+                            date: new Date(year, month, 1),
+                            value
+                        };
+                    });
+
+                if (wwPoints.length > 0) {
+                    yRight = d3.scaleLinear()
+                        .domain([0, d3.max(wwPoints, d => d.value)])
+                        .nice()
+                        .range([height, 0]);
                 }
-            );
-
-            wwPoints = Array.from(monthlyMap.entries())
-                .filter(([k, v]) => k !== null && v !== null)
-                .map(([key, value]) => {
-                    const [year, month] = key.split("-").map(Number);
-                    return {
-                        date: new Date(year, month, 1),
-                        value
-                    };
-                });
-
-
-
-            if (wwPoints.length > 0) {
-                yRight = d3.scaleLinear()
-                    .domain([0, d3.max(wwPoints, d => d.value)])
-                    .nice()
-                    .range([height, 0]);
             }
         }
+
 
         // -----------------------------
         // X SCALE (patients + wastewater)
@@ -431,7 +429,7 @@ export default class PathogenTimeline {
             this.svg.append("path")
                 .datum(wwPoints)
                 .attr("fill", "none")
-                .attr("stroke", "#333")
+                .attr("stroke", wwConfig.color)
                 .attr("stroke-width", 2)
                 .attr("stroke-dasharray", "4 3")
                 .attr("d", wastewaterLine);
@@ -445,8 +443,8 @@ export default class PathogenTimeline {
                 .attr("cx", d => xScale(d.date))
                 .attr("cy", d => yRight(d.value))
                 .attr("r", 3)
-                .attr("fill", "#333")
-                .attr("stroke", "#333")
+                .attr("fill", wwConfig.color)
+                .attr("stroke", wwConfig.color)
                 .append("title")
                 .text(d => {
                     const dateStr = isNaN(d.date.getTime())
@@ -456,9 +454,6 @@ export default class PathogenTimeline {
                 });
         }
     }
-
-
-
 
     // ------------------------------------------------------------------
     redraw(width) {
