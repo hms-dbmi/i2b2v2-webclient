@@ -15,7 +15,7 @@ export const UserRoleCountView = ({users, userRoleCounts, projectId}) => {
                 Total Number of Users
                 <Box className={"ProjectOverviewInfoContentCount UserRoleCount"}>
                     {users.userList.length} Users
-                    including  {(projectId && ? userRoleCounts.managerUserCount + " Managers" : userRoleCounts.adminUserCount + " Admins" }
+                    including  {projectId ? userRoleCounts.managerUserCount + " Managers" : userRoleCounts.adminUserCount + " Admins" }
                 </Box>
             </Box>
         </Typography>
