@@ -409,11 +409,29 @@ i2b2.PM.extendUserSession = function() {
 };
 
 // ================================================================================================== //
-i2b2.PM.doLogout = function() {
+i2b2.PM.doLogout = function(allSessions) {
     // must reload page to avoid dirty data from lingering
     const logoutUri = i2b2.PM.model?.samlConfig?.logout;
     if (logoutUri === undefined) {
-        window.location.reload();
+        let callback = new i2b2_scopedCallback(function(response){
+            if(!response.error) {
+                window.location.reload();
+            }
+            else{
+                alert("Error logging out user.");
+            }
+        }, i2b2.PM);
+        let parameters = {
+            username: i2b2.PM.model.login_username,
+        };
+
+        if(allSessions){
+            parameters.password = `<password>@</password>`;
+        }else{
+            parameters.password = i2b2.PM.model.login_password ;
+        }
+
+        i2b2.PM.ajax.logoutUser("PM:Logout", parameters, callback);
     } else {
         window.location.href = logoutUri;
     }
