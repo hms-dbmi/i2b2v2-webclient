@@ -7,6 +7,7 @@ export const QUERIES = "queries";
 export const USER_INFO = "userInfo";
 export const USER_ROLE_COUNTS = "userRoleCounts";
 export const USERS = "users";
+export const NEW_USERS = "newUsers";
 
 export const GET_ALL_PROJECTS = `${PROJECTS}/getAllProjects`;
 export const GET_USER_SESSIONS = `${USER_SESSIONS}/getUserSessions`;
@@ -16,3 +17,4 @@ export const GET_ALL_QUERIES = `${QUERIES}/getAllQueries`;
 export const GET_USER_INFO = `${USER_INFO}/getUserInfo`;
 export const GET_ALL_USER_ROLE_COUNTS = `${USER_ROLE_COUNTS}/getAllUserRoleCounts`;
 export const GET_ALL_USERS = `${USERS}/getAllUsers`;
+export const GET_NEW_USERS = `${NEW_USERS}/getNewUsers`;

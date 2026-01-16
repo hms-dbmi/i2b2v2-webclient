@@ -6,3 +6,4 @@ export { getAllQueriesSaga } from "./getAllQueriesSaga";
 export { getUserInfoSaga } from "./getUserInfoSaga";
 export { getAllUserRoleCountsSaga } from "./getAllUserRoleCountsSaga";
 export { getAllUsersSaga } from "./getAllUsersSaga";
+export { getNewUsersSaga } from "./getNewUsersSaga";
