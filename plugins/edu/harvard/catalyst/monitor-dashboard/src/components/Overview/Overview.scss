@@ -22,8 +22,8 @@
   }
 
   .ProjectOverviewInfo {
-    height: 11.9em;
-    width: 11.9em;
+    height: 10.8em;
+    width: 11.5em;
     background-color: #f8f8f875;
     .ProjectOverviewInfoContent {
       display: flex;
@@ -36,6 +36,10 @@
         margin-left: auto;
         margin-right: auto;
         height: 100%;
+
+        .UserRoleCount {
+          margin-top: 0.1em;
+        }
       }
 
       .ProjectOverviewInfoContentCount {

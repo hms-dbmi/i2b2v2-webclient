@@ -2,20 +2,22 @@ import React, { useEffect } from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {
     Autocomplete,
-    Box,
     Button,
     Card,
     CardContent,
-    CircularProgress,
-    Grid, LinearProgress, MenuItem,
+    Grid,
     Paper,
     TextField,
     Tooltip,
-    Typography
 } from "@mui/material";
 import {getAllProjects} from "../../reducers/projectsSlice";
 import {getUserSessions} from "../../reducers/userSessionsSlice";
 import {getUserLogins} from "../../reducers/userLoginsSlice";
+import {getAllUserRoleCounts} from "../../reducers/userRoleCountsSlice";
+import {getAllUsers} from "../../reducers/usersSlice";
+import {UserRoleCountView} from "./UserRoleCountView";
+import {UserLoginView} from "./UserLoginView";
+import {UserSessionView} from "./UserSessionView";
 import "./Overview.scss";
 
 export const Overview = () => {
@@ -24,10 +26,13 @@ export const Overview = () => {
     const projects  = useSelector((state) => state.projects);
     const userSessions  = useSelector((state) => state.userSessions);
     const userLogins = useSelector((state) => state.userLogins);
+    const userRoleCounts = useSelector((state) => state.userRoleCounts);
+    const users = useSelector((state) => state.users);
 
-    const ALL_PROJECTS = "ALL_PROJECTS";
-    const allProjects = [{id: ALL_PROJECTS, name: "All Projects"}];
+    const ALL_PROJECTS_ID = "";
+    const allProjects = [{id: ALL_PROJECTS_ID, name: "All Projects"}];
     const [project, setProject] = React.useState(allProjects[0]);
+    const [selectedProject, setSelectedProject] = React.useState(allProjects[0]);
     const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
     const [loginsSinceInDays, setLoginsSinceInDays] = React.useState(7);
 
@@ -35,11 +40,15 @@ export const Overview = () => {
         setLoginsSinceInDays(days);
         dispatch(getUserLogins({loginsSinceInDays: days}));
     }
+
     useEffect(() => {
         if (isI2b2LibLoaded) {
             dispatch(getAllProjects());
             dispatch(getUserSessions());
             dispatch(getUserLogins({loginsSinceInDays}));
+            dispatch(getAllUsers({projectId: selectedProject.id}));
+            dispatch(getAllUserRoleCounts({projectId: selectedProject.id}));
+
         }
     }, [isI2b2LibLoaded]);
 
@@ -50,15 +59,21 @@ export const Overview = () => {
     }, [projects.projectList]);
 
     const getProjectCountText = () => {
-        if(!projects.isFetching && project.id === ALL_PROJECTS){
+        if(!projects.isFetching && selectedProject.id === ALL_PROJECTS_ID){
             return "Viewing " + projects.projectList.length + " Projects";
-        }else if(!projects.isFetching && project.id !== ""){
+        }else if(!projects.isFetching && selectedProject.id !== ""){
             return "Viewing 1 Project";
         }
         else {
             return "";
         }
     }
+    const handleViewProjectOverview = () => {
+        setSelectedProject(project);
+        dispatch(getAllUsers({projectId: project.id}));
+        dispatch(getAllUserRoleCounts({projectId: project.id}));
+    }
+
     return (
         <div className="Overview">
             <div className="ProjectOverviewHeader">
@@ -91,12 +106,16 @@ export const Overview = () => {
                         )}
                     />
                 </Tooltip>
-                <Button className={"ViewProjectBtn"} variant="contained" size="small">View</Button>
+                <Button className={"ViewProjectBtn"} variant="contained" size="small" onClick={handleViewProjectOverview}>View</Button>
                 <div className={"ProjectOverviewCount"}>{getProjectCountText()}</div>
             </div>
             <Grid className={"ProjectOverviewInfoGrid"} container spacing={5}>
                 <Grid size={3}>
-                    <Card className={"ProjectOverviewInfo"}> </Card>
+                    <Card className={"ProjectOverviewInfo"}>
+                        <CardContent className={userRoleCounts.isFetching ? "ProjectOverviewInfoContent LoadingContent" : "ProjectOverviewInfoContent" }>
+                            <UserRoleCountView userRoleCounts={userRoleCounts} users={users} projectId={selectedProject.id}/>
+                        </CardContent>
+                    </Card>
                 </Grid>
                 <Grid size={3}>
                     <Card className={"ProjectOverviewInfo"}> </Card>
@@ -104,62 +123,16 @@ export const Overview = () => {
                 <Grid size={3}>
                     <Card className={"ProjectOverviewInfo"}>
                         <CardContent className={userLogins.isFetching ? "ProjectOverviewInfoContent LoadingContent" : "ProjectOverviewInfoContent" }>
-                            <Typography variant="body2" className={"ProjectOverviewInfoContentCentered"}>
-                                {userLogins.isFetching && (
-                                    <Box
-                                        className={"LoadingContent"}
-                                    >
-                                        <CircularProgress className={"ContentProgress"}/>
-                                    </Box>
-                                )}
-                                <Box className={"ProjectOverviewInfoContentCount"}>
-                                    {userLogins.loginSuccessCount + userLogins.loginFailCount}
-                                </Box>
-                                <Box>
-                                     login attempts in last
-                                </Box>
-                                <Box>
-                                    <TextField
-                                        select
-                                        value={loginsSinceInDays}
-                                        onChange={(event) => handleUpdateLoginsSince(event.target.value)}
-                                        variant="standard"
-                                    >
-                                        <MenuItem value={"1"}>1 day</MenuItem>
-                                        <MenuItem value={"7"}>7 days</MenuItem>
-                                        <MenuItem value={"30"}>30 days</MenuItem>
-                                        <MenuItem value={"60"}>60 days</MenuItem>
-                                        <MenuItem value={"90"}>90 days</MenuItem>
-                                    </TextField>
-                                </Box>
-                                <Box className={"ProjectOverviewInfoContentCountDetail"}>
-                                    <Box className={"ProjectOverviewInfoContentCountDetailItem"}>
-                                        Success: {userLogins.loginSuccessCount}
-                                    </Box>
-                                    <Box className={"ProjectOverviewInfoContentCountDetailItem"}>
-                                        Failed: {userLogins.loginFailCount}
-                                    </Box>
-                                </Box>
-                            </Typography>
+                            {selectedProject.id === ALL_PROJECTS_ID &&
+                                <UserLoginView userLogins={userLogins} loginsSinceInDays={loginsSinceInDays} updateLoginDaysSince={handleUpdateLoginsSince}/>
+                            }
                         </CardContent>
                     </Card>
                 </Grid>
                 <Grid size={3}>
                     <Card className={"ProjectOverviewInfo"}>
                         <CardContent className={"ProjectOverviewInfoContent"}>
-                            <Typography variant="body2" className={"ProjectOverviewInfoContentCentered"}>
-                                {userSessions.isFetching && (
-                                    <Box className={"LoadingContent"}>
-                                        <CircularProgress className={"ContentProgress"}/>
-                                    </Box>
-                                )}
-                                <Box className={"ProjectOverviewInfoContentCount"}>
-                                    {userSessions.sessionCount}
-                                </Box>
-                                <Box>
-                                    Current active sessions
-                                </Box>
-                            </Typography>
+                            {selectedProject.id === ALL_PROJECTS_ID && <UserSessionView userSessions={userSessions}/>}
                         </CardContent>
                     </Card>
                 </Grid>
