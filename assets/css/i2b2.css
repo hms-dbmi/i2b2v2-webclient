@@ -91,7 +91,8 @@ a:focus-visible {
 }
 
 #topBarTable .logo {
-	text-align: left;
+	display: flex;
+	align-items: center;
 }
 
 #topBarTable td {
@@ -99,6 +100,7 @@ a:focus-visible {
 	padding: 0;
 	vertical-align: middle;
 	text-align: right;
+	height: 100%;
 }
 
 #topBarTable a {

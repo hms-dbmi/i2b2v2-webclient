@@ -71,11 +71,12 @@
     },
     "DOWNLOAD": true
   },
-  "PATIENT_TOP20DIAG_XML": {
-    "BARS": true,
-    "TABLE": {
+  "PATIENT_DIAG3_COUNT_SHRINE_XML": {
+    "TABLEBARCHART": {
       "forceInitialDisplay": true
     },
+    "BARS": true,
+    "TABLE":true,
     "DOWNLOAD": true
   },
   "PATIENT_INOUT_XML": {
