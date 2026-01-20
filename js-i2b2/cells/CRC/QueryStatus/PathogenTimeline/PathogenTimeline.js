@@ -698,65 +698,89 @@ function aggregatePatientsByView(records, view) {
 
     return out;
 }
+const WASTEWATER_URLS = {
+  dev: "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
+  prod: "http://prod-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData"
+};
+
+
+function detectEnv() {
+  const override = (window.PATHOGEN_TIMELINE_ENV || "").toLowerCase();
+  if (override === "dev" || override === "prod") return override;
+
+  const host = (window.location?.hostname || "").toLowerCase();
+
+  // Local dev should use dev backend by default
+  if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return "dev";
+
+  if (host.includes("dev") || host.includes("catalyst")) return "dev";
+
+  return "prod";
+}
+
+function getWastewaterServiceUrl() {
+  const env = detectEnv();
+  return WASTEWATER_URLS[env] || WASTEWATER_URLS.prod;
+}
 
 async function fetchWastewater(startDate, endDate) {
+    const redirectUrl = getWastewaterServiceUrl();
+    const env = detectEnv();
+    console.info(
+    `[WASTEWATER] ${env.toUpperCase()} detected; calling ${env.toUpperCase()} wastewater service`
+    );
+
     const msg = `
-        <ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
-            <message_header>
-                <proxy>
-                    <redirect_url>
-                        http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData
-                    </redirect_url>
-                </proxy>
-            </message_header>
-            <message_body>
-                {&quot;Start Date&quot;:&quot;${startDate}&quot;, &quot;End Date&quot;:&quot;${endDate}&quot;}
-            </message_body>
-        </ns6:request>
-        `;
+    <ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
+        <message_header>
+        <proxy>
+            <redirect_url>${redirectUrl}</redirect_url>
+        </proxy>
+        </message_header>
+        <message_body>
+        {&quot;Start Date&quot;:&quot;${startDate}&quot;, &quot;End Date&quot;:&quot;${endDate}&quot;}
+        </message_body>
+    </ns6:request>
+    `;
 
     try {
-        // Preferred proxy helper
-        if (i2b2?.hive?.proxy?.handler) {
-            const response = await i2b2.hive.proxy.handler({
-                url: "/~proxy",
-                msg: msg,
-                method: "POST"
-            });
-
-            const bodyNode = i2b2.h.XPath(
-                response.refXML,
-                "//message_body/text()"
-            )[0];
-
-            return bodyNode ? JSON.parse(bodyNode.nodeValue) : null;
-        }
-
-        // Fallback direct POST to /~proxy
-        const response = await fetch("/~proxy", {
-            method: "POST",
-            headers: { "Content-Type": "text/xml" },
-            body: msg,
-            credentials: "include"
+    // Preferred proxy helper
+    if (i2b2?.hive?.proxy?.handler) {
+        const response = await i2b2.hive.proxy.handler({
+        url: "/~proxy",
+        msg: msg,
+        method: "POST"
         });
 
-        if (!response.ok) {
-            console.error("Wastewater /~proxy call failed:", response.status);
-            return null;
-        }
+        const bodyNode = i2b2.h.XPath(
+        response.refXML,
+        "//message_body/text()"
+        )[0];
 
-        const text = await response.text();
-        const xml = new DOMParser().parseFromString(text, "text/xml");
-        const bodyNode = xml.querySelector("message_body");
+        return bodyNode ? JSON.parse(bodyNode.nodeValue) : null;
+    }
 
-        let parsed = null;
-        if (bodyNode) {
-            parsed = JSON.parse(bodyNode.textContent);
-        }
-        return parsed;
+    // Fallback direct POST to /~proxy
+    const response = await fetch("/~proxy", {
+        method: "POST",
+        headers: { "Content-Type": "text/xml" },
+        body: msg,
+        credentials: "include"
+    });
+
+    if (!response.ok) {
+        console.error("Wastewater /~proxy call failed:", response.status, "env:", detectEnv(), "redirect:", redirectUrl);
+        return null;
+    }
+
+    const text = await response.text();
+    const xml = new DOMParser().parseFromString(text, "text/xml");
+    const bodyNode = xml.querySelector("message_body");
+
+    return bodyNode ? JSON.parse(bodyNode.textContent) : null;
 
     } catch (err) {
-        console.error("Failed to fetch wastewater data", err);
-        return null;
+    console.error("Failed to fetch wastewater data", err, "env:", detectEnv(), "redirect:", redirectUrl);
+    return null;
     }
 }
