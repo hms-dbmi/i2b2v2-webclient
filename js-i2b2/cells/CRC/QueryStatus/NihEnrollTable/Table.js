@@ -93,7 +93,8 @@ export default class NihEnrollTable {
                         const ethnicityKey = treeStruct[2][ethnicityIdx];
                         colIdx = parseInt(ethnicityIdx * 3) + parseInt(sexIdx);
                         // cell value
-                        renderArray[idx][colIdx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(dataTree[race][sexKey][ethnicityKey].value);
+                        // renderArray[idx][colIdx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(dataTree[race][sexKey][ethnicityKey].value);
+                        renderArray[idx][colIdx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(dataTree[race][sexKey][ethnicityKey].value, 0 ,0);
                         // increment row value
                         count += parseInt(dataTree[race][sexKey][ethnicityKey].value);
                         // increment column value
