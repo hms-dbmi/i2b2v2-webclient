@@ -18,6 +18,8 @@ import {getAllUsers} from "../../reducers/usersSlice";
 import {UserRoleCountView} from "./UserRoleCountView";
 import {UserLoginView} from "./UserLoginView";
 import {UserSessionView} from "./UserSessionView";
+import {NewUsersView} from "./NewUsersView";
+import {getNewUsers} from "../../reducers/newUsersSlice";
 import "./Overview.scss";
 
 export const Overview = () => {
@@ -28,6 +30,7 @@ export const Overview = () => {
     const userLogins = useSelector((state) => state.userLogins);
     const userRoleCounts = useSelector((state) => state.userRoleCounts);
     const users = useSelector((state) => state.users);
+    const newUsers = useSelector((state) => state.newUsers);
 
     const ALL_PROJECTS_ID = "";
     const allProjects = [{id: ALL_PROJECTS_ID, name: "All Projects"}];
@@ -35,10 +38,16 @@ export const Overview = () => {
     const [selectedProject, setSelectedProject] = React.useState(allProjects[0]);
     const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
     const [loginsSinceInDays, setLoginsSinceInDays] = React.useState(7);
+    const [newUsersSinceInDays, setNewUsersSinceInDays] = React.useState(30);
 
     const handleUpdateLoginsSince = (days) => {
         setLoginsSinceInDays(days);
         dispatch(getUserLogins({loginsSinceInDays: days}));
+    }
+
+    const handleUpdateNewUsersSince = (days) => {
+        setNewUsersSinceInDays(days);
+        dispatch(getNewUsers({newUsersSinceInDays: days, projectId: selectedProject.id}));
     }
 
     useEffect(() => {
@@ -48,7 +57,7 @@ export const Overview = () => {
             dispatch(getUserLogins({loginsSinceInDays}));
             dispatch(getAllUsers({projectId: selectedProject.id}));
             dispatch(getAllUserRoleCounts({projectId: selectedProject.id}));
-
+            dispatch(getNewUsers({newUsersSinceInDays, projectId: selectedProject.id}));
         }
     }, [isI2b2LibLoaded]);
 
@@ -70,8 +79,11 @@ export const Overview = () => {
     }
     const handleViewProjectOverview = () => {
         setSelectedProject(project);
+        setLoginsSinceInDays(7);
+        setNewUsersSinceInDays(30);
         dispatch(getAllUsers({projectId: project.id}));
         dispatch(getAllUserRoleCounts({projectId: project.id}));
+        dispatch(getNewUsers({newUsersSinceInDays, projectId: project.id}));
     }
 
     return (
@@ -118,7 +130,11 @@ export const Overview = () => {
                     </Card>
                 </Grid>
                 <Grid size={3}>
-                    <Card className={"ProjectOverviewInfo"}> </Card>
+                    <Card className={"ProjectOverviewInfo"}>
+                        <CardContent className={userRoleCounts.isFetching ? "ProjectOverviewInfoContent LoadingContent" : "ProjectOverviewInfoContent" }>
+                            <NewUsersView newUsers={newUsers} newUsersSinceInDays={newUsersSinceInDays} updateNewUsersSince={handleUpdateNewUsersSince} />
+                        </CardContent>
+                    </Card>
                 </Grid>
                 <Grid size={3}>
                     <Card className={"ProjectOverviewInfo"}>

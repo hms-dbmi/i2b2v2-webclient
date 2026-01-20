@@ -16,3 +16,4 @@ export { UserRoleCount, USER_DATA_ROLES } from "./UserRoleCount";
 export { UserRoleCounts } from "./UserRoleCounts";
 export { User } from "./User";
 export { Users } from "./Users";
+export { NewUsers } from "./NewUsers";
