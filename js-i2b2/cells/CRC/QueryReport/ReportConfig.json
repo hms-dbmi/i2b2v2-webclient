@@ -12,6 +12,10 @@
     "NIHENROLLTABLE": true,
     "TABLE": true
   },
+   "PATIENT_PATHOGEN_TIMELINE_SHRINE_XML": {
+    "TABLE": true,
+    "PATHOGENTIMELINE": true
+  },
   "PATIENT_GENDER_COUNT_XML": {
     "TABLE": true,
     "BARS": true
