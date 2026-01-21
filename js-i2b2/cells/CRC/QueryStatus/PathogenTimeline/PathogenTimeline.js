@@ -168,7 +168,7 @@ export default class PathogenTimeline {
                 self.config.displayEl.style.display = "block";
 
                 // Load wastewater
-                fetchWastewater("3/1/2020", "11/1/2025").then(data => {
+                fetchWastewater("3/1/2020", "01/15/2026").then(data => {
                     if (Array.isArray(data)) {
                         self.wastewater = data;
                     } else if (data?.data && Array.isArray(data.data)) {
@@ -216,7 +216,12 @@ export default class PathogenTimeline {
             const selectedOverlay = this.state?.overlay || "(None)";
             const selectedView = this.state?.view || "month"; // "month" | "year"
 
-            const filtered = filterBreakdown(raw, selectedDisease);
+            // IMPORTANT: filter by grain so month view doesn't accidentally include year rows (and vice versa)
+            const viewGrain = (selectedView === "year") ? "Y" : "M";
+            const viewRows = raw.filter(r => (r.grain || "").toUpperCase() === viewGrain);
+
+            const filtered = filterBreakdown(viewRows, selectedDisease);
+
 
             const diseasesInView = filtered.map(row => row.disease);
             const currentKeys = Array.from(new Set(diseasesInView));
@@ -589,11 +594,12 @@ let parseData = function (xmlData, advancedConfig) {
         const parts = column.split("^");
         if (parts.length < 4) continue;
 
-        const site = parts[0].trim();
+        const grain = parts[0].trim().toUpperCase();
         const dateStr = parts[1].trim();
         const label = parts[2].trim();
         const diseaseRaw = parts[3].trim();
         const disease = DISEASE_REGISTRY.canonicalize(diseaseRaw);
+
 
         // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
         const date = parseYMDLocal(dateStr);
@@ -627,7 +633,7 @@ let parseData = function (xmlData, advancedConfig) {
         if (!include) continue;
 
         breakdown.result.push({
-            site,
+            grain,     
             disease,
             diseaseRaw,
             date,
@@ -635,6 +641,7 @@ let parseData = function (xmlData, advancedConfig) {
             value,
             display: rawText
         });
+
     }
 
     return breakdown;
