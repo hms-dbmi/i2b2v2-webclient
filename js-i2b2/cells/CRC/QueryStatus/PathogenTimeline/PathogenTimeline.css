@@ -1,5 +1,5 @@
 /* ============================================================
-   InfectiousTimeline CSS
+   Pathogen Timeline CSS
    ============================================================ */
 
 /* Match BarGraph's y-label styling */
@@ -50,145 +50,100 @@
   stroke: #333;
 }
 
-/* Legend swatch */
-.legend-swatch {
-  width: 14px;
-  height: 14px;
+/* -----------------------------------------------------------
+   CONTROLS: normalize to ZIPCODEMAP link-control style
+   ----------------------------------------------------------- */
+
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-timeline-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.175rem; /* reduced ~50% from earlier */
+}
+
+/* Each row behaves like "Label: <ul>" */
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-control-row {
+  width: fit-content;
+}
+
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-links-label {
+  font-weight: bold;
+  margin-left: 0.5rem;
+}
+
+/* Horizontal list */
+.component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links {
+  display: inline-block;
+  padding: 0;
+  margin: 0.25rem 0.5rem; /* tightened vertical spacing */
+}
+
+.component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links li {
+  display: inline;
+}
+
+/* Clickable link-like spans */
+.component-instance-viz.viztype-PATHOGENTIMELINE span.path-link {
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.component-instance-viz.viztype-PATHOGENTIMELINE span.path-link:hover {
+  border-bottom: 1px solid;
+}
+
+.component-instance-viz.viztype-PATHOGENTIMELINE span.path-link.selected {
+  border-bottom: 1px solid;
+}
+
+/* Mimic ZIPCODEMAP pseudo separator image */
+.component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links li:not(:last-child)::after {
+  content: " ";
+  letter-spacing: 1em;
+  background: center center no-repeat
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=);
+}
+
+/* -----------------------------------------------------------
+   LEGEND: stays in controls section, inline with label, wraps
+   ----------------------------------------------------------- */
+
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-block {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;      /* allow legend items to wrap to next line */
+  gap: 0.35rem 0.9rem;  /* row/col gap */
+
+  margin-top: 0;
+  margin-left: 0;       /* prevent double-indent vs other labels */
+}
+
+/* Keep "Legend:" aligned with the other row labels */
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-block .path-links-label {
+  margin-left: 0.5rem;
+}
+
+/* Horizontal, grows horizontally, wraps */
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  align-items: center;
+  margin-top: 0;        /* keep label + items on same line */
+}
+
+/* Each legend item is swatch + label */
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-items .legend-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Swatch styling (normalize similar to ZIPCODEMAP boxes) */
+.component-instance-viz.viztype-PATHOGENTIMELINE .legend-swatch {
+  width: 1rem;
+  height: 1rem;
   border-radius: 2px;
   display: inline-block;
-}
-
-/* -----------------------------------------------------------
-   Controls/Legend: stable height + pinned right (GRID)
-   ----------------------------------------------------------- */
-
-/*
-  We override the Bootstrap flex row with CSS Grid to guarantee:
-  - controls labels stay aligned
-  - legend is always pinned to the far right
-  - legend content never changes the bar height (it scrolls)
-*/
-.path-timeline-controls {
-  display: grid !important;
-
-  /* columns: Disease | Overlay | flexible spacer | Legend */
-  grid-template-columns: max-content max-content max-content 1fr max-content;
-
-  column-gap: 1rem;
-  align-items: start;
-  width: 100%;
-
-  /* stable controls bar height */
-  min-height: 78px;
-}
-
-/* Keep label spacing consistent */
-.path-timeline-controls .form-label {
-  display: block;
-  line-height: 1.1;
-  margin-bottom: 6px;
-  font-size: 0.85rem;
-}
-
-/* -----------------------------------------------------------
-   Legend: fixed width (no shifting) + clean alignment
-   ----------------------------------------------------------- */
-
-/* Legend block pinned right, but with stable width */
-.path-legend-block,
-.path-timeline-controls .form-group.ms-auto {
-  justify-self: end;
-  align-self: start;
-
-  /* IMPORTANT: lock width so adding Wastewater doesn't resize the legend */
-  width: 150px;     /* tweak if you want more/less */
-  max-width: 150px;
-
-  /* Keep header aligned with swatch rail (left edge) */
-  text-align: left;
-}
-
-/* Ensure the "Legend" label aligns to the left edge (swatch rail) */
-.path-legend-block .form-label,
-.path-timeline-controls .form-group.ms-auto .form-label {
-  margin-left: 0;
-  padding-left: 0;
-}
-
-/*
-  Make the legend list itself a 2-column grid:
-    col 1 = swatch (fixed)
-    col 2 = label (auto)
-  Then flatten each row wrapper so all rows share the same columns.
-*/
-.path-legend-items {
-  display: grid !important;
-  grid-template-columns: 14px 1fr;
-  column-gap: 8px;
-  row-gap: 6px;
-
-  /* do NOT right-pack; we want left-aligned within fixed legend block */
-  justify-content: start;
-  align-items: center;
-
-  /* prevent legend from changing the controls bar height */
-  max-height: 52px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 6px;
-}
-
-/* Flatten the row wrapper so its children participate in the grid */
-.path-legend-items > div {
-  display: contents !important;
-}
-
-/* Swatch in column 1 */
-.path-legend-items .legend-swatch {
-  grid-column: 1;
-  justify-self: start;
-}
-
-/* Label in column 2 */
-.path-legend-items > div span:last-child {
-  grid-column: 2;
-  justify-self: start;
-
-  /* keep labels tidy if you ever add longer ones */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* -----------------------------------------------------------
-   Responsive tweaks
-   ----------------------------------------------------------- */
-@media (max-width: 992px) {
-  .path-timeline-controls {
-    min-height: 92px;
-  }
-  .path-legend-items {
-    max-height: 66px;
-  }
-}
-
-/* On very small screens, stack controls */
-@media (max-width: 576px) {
-  .path-timeline-controls {
-    grid-template-columns: 1fr;
-    row-gap: 0.75rem;
-    min-height: 120px;
-  }
-
-  /* Let legend use full width when stacked */
-  .path-legend-block,
-  .path-timeline-controls .form-group.ms-auto {
-    justify-self: start;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .path-legend-items > div span:last-child {
-    white-space: normal;
-  }
+  outline: 1px solid #000;
+  outline-offset: -1px;
 }

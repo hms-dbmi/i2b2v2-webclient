@@ -68,52 +68,90 @@ export default class PathogenTimeline {
 
                 $(self.config.template({})).appendTo(self.config.displayEl);
 
-                // Cache controls (SCOPED)
+                // Cache controls (SCOPED) - LINK STYLE CONTROLS
                 self.controls = {
-                    disease: $(".path-disease-select", self.config.displayEl)[0],
-                    overlay: $(".path-overlay-select", self.config.displayEl)[0],
-                    view: $(".path-view-select", self.config.displayEl)[0],
+                    diseaseList: $(".path-disease-links", self.config.displayEl)[0],
+                    overlayList: $(".path-overlay-links", self.config.displayEl)[0],
+                    viewList: $(".path-view-links", self.config.displayEl)[0],
                     legend: $(".path-legend-items", self.config.displayEl)[0],
                 };
 
-                // Add all/none options
-                $(self.controls.disease).append('<option value="(All)">(All)</option>');
-                $(self.controls.overlay).append('<option value="(None)">(None)</option>');
+                // Internal state (update() reads from here)
+                self.state = {
+                    disease: "(All)",
+                    overlay: "(None)",
+                    view: "month"
+                };
 
-                // Default view if missing
-                if (self.controls.view && !self.controls.view.value) {
-                    self.controls.view.value = "month";
-                }
-
-                // Populate disease dropdown
-                Object.entries(DISEASE_REGISTRY.diseases)
-                    .sort(([, a], [, b]) => a.order - b.order)
-                    .forEach(([key, disease]) => {
-                        $(self.controls.disease).append(
-                            `<option value="${key}">${disease.label}</option>`
-                        );
+                // Helpers for link-style controls
+                function renderLinks(ulEl, items, selectedValue) {
+                    if (!ulEl) return;
+                    ulEl.innerHTML = "";
+                    items.forEach(({ value, label }) => {
+                        const li = document.createElement("li");
+                        const sp = document.createElement("span");
+                        sp.className = "path-link" + (value === selectedValue ? " selected" : "");
+                        sp.setAttribute("data-value", value);
+                        sp.textContent = label;
+                        li.appendChild(sp);
+                        ulEl.appendChild(li);
                     });
+                }
 
-                // Populate overlay dropdown
-                Object.entries(WASTEWATER_REGISTRY.wastewater_sources)
-                    .sort(([, a], [, b]) => a.order - b.order)
-                    .forEach(([key, wastewater_source]) => {
-                        $(self.controls.overlay).append(
-                            `<option value="${key}">${wastewater_source.label}</option>`
-                        );
+                function bindLinkClicks(ulEl, onPick) {
+                    if (!ulEl) return;
+                    ulEl.addEventListener("click", (e) => {
+                        const target = e.target;
+                        if (!(target instanceof HTMLElement)) return;
+                        if (!target.classList.contains("path-link")) return;
+
+                        const value = target.getAttribute("data-value");
+                        if (!value) return;
+
+                        // Toggle selected within this UL
+                        ulEl.querySelectorAll(".path-link.selected").forEach(n => n.classList.remove("selected"));
+                        target.classList.add("selected");
+
+                        onPick(value);
                     });
-
-                if (self.controls.disease) {
-                    $(self.controls.disease).on("change", () => self.update());
                 }
 
-                if (self.controls.overlay) {
-                    $(self.controls.overlay).on("change", () => self.update());
+                // Build items
+                const diseaseItems = [
+                    { value: "(All)", label: "(All)" },
+                    ...Object.entries(DISEASE_REGISTRY.diseases)
+                        .sort(([, a], [, b]) => a.order - b.order)
+                        .map(([key, d]) => ({ value: key, label: d.label }))
+                ];
+
+                const overlayItems = [
+                    { value: "(None)", label: "(None)" },
+                    ...Object.entries(WASTEWATER_REGISTRY.wastewater_sources)
+                        .sort(([, a], [, b]) => a.order - b.order)
+                        .map(([key, w]) => ({ value: key, label: w.label }))
+                ];
+
+                // Render initial lists
+                renderLinks(self.controls.diseaseList, diseaseItems, self.state.disease);
+                renderLinks(self.controls.overlayList, overlayItems, self.state.overlay);
+
+                // View list is in HTML; ensure we have a selected item + sync state
+                if (self.controls.viewList) {
+                    const selectedViewNode = self.controls.viewList.querySelector(".path-link.selected");
+                    if (selectedViewNode) {
+                        self.state.view = selectedViewNode.getAttribute("data-value") || "month";
+                    } else {
+                        // If HTML forgot to set selected, default to month
+                        const first = self.controls.viewList.querySelector(".path-link[data-value='month']");
+                        if (first) first.classList.add("selected");
+                        self.state.view = "month";
+                    }
                 }
 
-                if (self.controls.view) {
-                    $(self.controls.view).on("change", () => self.update());
-                }
+                // Bind clicks
+                bindLinkClicks(self.controls.diseaseList, (v) => { self.state.disease = v; self.update(); });
+                bindLinkClicks(self.controls.overlayList, (v) => { self.state.overlay = v; self.update(); });
+                bindLinkClicks(self.controls.viewList, (v) => { self.state.view = v; self.update(); });
 
                 // Create SVG
                 self.svgRoot = d3
@@ -174,9 +212,9 @@ export default class PathogenTimeline {
             const raw = this.data?.new?.result;
             if (!raw || raw.length === 0) return;
 
-            const selectedDisease = this.controls.disease?.value || "(All)";
-            const selectedOverlay = this.controls.overlay?.value || "(None)";
-            const selectedView = this.controls.view?.value || "month"; // "month" | "year"
+            const selectedDisease = this.state?.disease || "(All)";
+            const selectedOverlay = this.state?.overlay || "(None)";
+            const selectedView = this.state?.view || "month"; // "month" | "year"
 
             const filtered = filterBreakdown(raw, selectedDisease);
 
@@ -184,16 +222,16 @@ export default class PathogenTimeline {
             const currentKeys = Array.from(new Set(diseasesInView));
 
             // Clear legend
-            this.controls.legend.innerHTML = "";
+            if (this.controls?.legend) this.controls.legend.innerHTML = "";
 
             currentKeys.forEach((key) => {
                 const diseaseConfig = DISEASE_REGISTRY.diseases[key];
                 if (!diseaseConfig) return;
                 $(this.controls.legend).append(
-                    `<div class="d-flex align-items-center gap-2">
+                    `<span class="legend-row">
                         <span class="legend-swatch" style="background:${diseaseConfig.color}"></span>
                         <span>${diseaseConfig.label}</span>
-                    </div>`
+                    </span>`
                 );
             });
 
@@ -202,10 +240,10 @@ export default class PathogenTimeline {
                 const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
                 if (waterConfig) {
                     $(this.controls.legend).append(
-                        `<div class="d-flex align-items-center gap-2">
+                        `<span class="legend-row">
                             <span class="legend-swatch" style="background:${waterConfig.color}"></span>
                             <span>Wastewater</span>
-                        </div>`
+                        </span>`
                     );
                 }
             }
@@ -642,7 +680,6 @@ function parseYMDLocal(s) {
     return null;
 }
 
-
 /**
  * Returns a Date snapped to the start of the bucket (month or year).
  */
@@ -698,11 +735,11 @@ function aggregatePatientsByView(records, view) {
 
     return out;
 }
+
 const WASTEWATER_URLS = {
   dev: "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
   prod: "http://prod-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData"
 };
-
 
 function detectEnv() {
   const override = (window.PATHOGEN_TIMELINE_ENV || "").toLowerCase();
@@ -727,7 +764,7 @@ async function fetchWastewater(startDate, endDate) {
     const redirectUrl = getWastewaterServiceUrl();
     const env = detectEnv();
     console.info(
-    `[WASTEWATER] ${env.toUpperCase()} detected; calling ${env.toUpperCase()} wastewater service`
+        `[WASTEWATER] ${env.toUpperCase()} detected; calling ${env.toUpperCase()} wastewater service`
     );
 
     const msg = `
@@ -744,43 +781,43 @@ async function fetchWastewater(startDate, endDate) {
     `;
 
     try {
-    // Preferred proxy helper
-    if (i2b2?.hive?.proxy?.handler) {
-        const response = await i2b2.hive.proxy.handler({
-        url: "/~proxy",
-        msg: msg,
-        method: "POST"
+        // Preferred proxy helper
+        if (i2b2?.hive?.proxy?.handler) {
+            const response = await i2b2.hive.proxy.handler({
+                url: "/~proxy",
+                msg: msg,
+                method: "POST"
+            });
+
+            const bodyNode = i2b2.h.XPath(
+                response.refXML,
+                "//message_body/text()"
+            )[0];
+
+            return bodyNode ? JSON.parse(bodyNode.nodeValue) : null;
+        }
+
+        // Fallback direct POST to /~proxy
+        const response = await fetch("/~proxy", {
+            method: "POST",
+            headers: { "Content-Type": "text/xml" },
+            body: msg,
+            credentials: "include"
         });
 
-        const bodyNode = i2b2.h.XPath(
-        response.refXML,
-        "//message_body/text()"
-        )[0];
+        if (!response.ok) {
+            console.error("Wastewater /~proxy call failed:", response.status, "env:", detectEnv(), "redirect:", redirectUrl);
+            return null;
+        }
 
-        return bodyNode ? JSON.parse(bodyNode.nodeValue) : null;
-    }
+        const text = await response.text();
+        const xml = new DOMParser().parseFromString(text, "text/xml");
+        const bodyNode = xml.querySelector("message_body");
 
-    // Fallback direct POST to /~proxy
-    const response = await fetch("/~proxy", {
-        method: "POST",
-        headers: { "Content-Type": "text/xml" },
-        body: msg,
-        credentials: "include"
-    });
-
-    if (!response.ok) {
-        console.error("Wastewater /~proxy call failed:", response.status, "env:", detectEnv(), "redirect:", redirectUrl);
-        return null;
-    }
-
-    const text = await response.text();
-    const xml = new DOMParser().parseFromString(text, "text/xml");
-    const bodyNode = xml.querySelector("message_body");
-
-    return bodyNode ? JSON.parse(bodyNode.textContent) : null;
+        return bodyNode ? JSON.parse(bodyNode.textContent) : null;
 
     } catch (err) {
-    console.error("Failed to fetch wastewater data", err, "env:", detectEnv(), "redirect:", redirectUrl);
-    return null;
+        console.error("Failed to fetch wastewater data", err, "env:", detectEnv(), "redirect:", redirectUrl);
+        return null;
     }
 }
