@@ -29,8 +29,8 @@ export const queryMetricsSlice = createSlice({
         },
         getQueryMetricsFailed: (state, { payload: { errorMessage} }) => {
             state.isFetching = false;
-            const errorMsg = errorMessage ? errorMessage: "An error occurred retrieving new " +
-                "users";
+            const errorMsg = errorMessage ? errorMessage: "An error occurred retrieving query " +
+                "metrics";
 
             state.statusInfo = StatusInfo({
                 status: "FAIL",
