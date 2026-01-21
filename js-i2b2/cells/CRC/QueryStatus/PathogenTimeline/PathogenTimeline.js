@@ -412,11 +412,28 @@ export default class PathogenTimeline {
             .classed("y-axis left", true)
             .call(d3.axisLeft(yLeft).tickFormat(d3.format(".2~s")));
 
-        yAxisLeft.append("text")
+        const yLabelText = "Number of Patients";
+
+        const yLabelLeft = yAxisLeft.append("text")
             .attr("class", "y-label")
+            .attr("fill", "currentColor")
+            .attr("letter-spacing", "1.16")
             .attr("text-anchor", "middle")
-            .attr("transform", `translate(${-40}, ${height / 2}) rotate(-90)`)
-            .text("Number of Patients");
+            .text(yLabelText)
+            .attr("transform", "rotate(-90)");
+
+        // After render, center it using SVG bbox
+        yLabelLeft.each(function () {
+            let w = 0;
+            try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
+
+            const x = -(height / 2);          // centered vertically
+            const y = -margin.left + 32;      // gutter position 
+
+        d3.select(this)
+            .attr("x", x)
+            .attr("y", y);
+        });
 
         // Right Y axis (wastewater)
         if (yRight) {
@@ -428,6 +445,7 @@ export default class PathogenTimeline {
             yAxisRight.append("text")
                 .attr("class", "y-label")
                 .attr("text-anchor", "middle")
+                .attr("letter-spacing", "1.16")
                 .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
                 .text("Wastewater Level");
         }
