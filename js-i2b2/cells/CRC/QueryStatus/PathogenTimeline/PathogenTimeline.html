@@ -1,27 +1,27 @@
-<div class="container px-5 pt-3">
-  <div class="path-timeline-controls d-flex gap-3 mb-3">
+<div class="container px-4 pt-3">
+  <div class="path-timeline-controls mb-3">
 
-    <div class="form-group">
-      <label class="form-label fw-bold">Infectious Disease</label>
-      <select class="form-select form-select-sm path-disease-select"></select>
+    <div class="path-control-row">
+      <span class="path-links-label">Infectious Disease:</span>
+      <ul class="path-links path-disease-links"></ul>
     </div>
 
-    <div class="form-group">
-      <label class="form-label fw-bold">Overlay</label>
-      <select class="form-select form-select-sm path-overlay-select"></select>
+    <div class="path-control-row">
+      <span class="path-links-label">Overlay:</span>
+      <ul class="path-links path-overlay-links"></ul>
     </div>
 
-    <div class="form-group">
-      <label class="form-label fw-bold">View</label>
-      <select class="form-select form-select-sm path-view-select">
-        <option value="month">Month</option>
-        <option value="year">Year</option>
-      </select>
+    <div class="path-control-row">
+      <span class="path-links-label">View:</span>
+      <ul class="path-links path-view-links">
+        <li><span class="path-link selected" data-value="month">Month</span></li>
+        <li><span class="path-link" data-value="year">Year</span></li>
+      </ul>
     </div>
 
-    <div class="form-group ms-auto path-legend-block">
-      <div class="form-label fw-bold mb-1">Legend</div>
-      <div class="path-legend-items d-flex flex-column gap-1 small"></div>
+    <div class="path-legend-block">
+      <div class="path-links-label">Legend:</div>
+      <div class="path-legend-items"></div>
     </div>
 
   </div>
