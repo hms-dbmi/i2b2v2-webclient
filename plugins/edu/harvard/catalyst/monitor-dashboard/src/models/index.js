@@ -17,3 +17,5 @@ export { UserRoleCounts } from "./UserRoleCounts";
 export { User } from "./User";
 export { Users } from "./Users";
 export { NewUsers } from "./NewUsers";
+export { QueryMetrics } from "./QueryMetrics";
+export { QueryActivityInDays } from "./QueryActivityInDays";

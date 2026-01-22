@@ -8,6 +8,7 @@ import userInfoReducer from './userInfoSlice';
 import userRoleCountsReducer from './userRoleCountsSlice';
 import usersReducer from './usersSlice';
 import newUsersReducer from './newUsersSlice';
+import queryMetricsReducer from './queryMetricsSlice';
 
 const rootReducers = {
     isI2b2LibLoaded: i2b2LibLoadedReducer,
@@ -20,6 +21,7 @@ const rootReducers = {
     userRoleCounts: userRoleCountsReducer,
     users: usersReducer,
     newUsers: newUsersReducer,
+    queryMetrics: queryMetricsReducer,
 };
 
 export default rootReducers;

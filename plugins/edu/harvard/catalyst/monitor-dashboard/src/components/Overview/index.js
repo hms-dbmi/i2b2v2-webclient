@@ -15,11 +15,13 @@ import {getUserSessions} from "../../reducers/userSessionsSlice";
 import {getUserLogins} from "../../reducers/userLoginsSlice";
 import {getAllUserRoleCounts} from "../../reducers/userRoleCountsSlice";
 import {getAllUsers} from "../../reducers/usersSlice";
+import {getQueryMetrics} from "../../reducers/queryMetricsSlice";
 import {UserRoleCountView} from "./UserRoleCountView";
 import {UserLoginView} from "./UserLoginView";
 import {UserSessionView} from "./UserSessionView";
 import {NewUsersView} from "./NewUsersView";
 import {getNewUsers} from "../../reducers/newUsersSlice";
+import {TotalQueryView} from "./TotalQueryView";
 import "./Overview.scss";
 
 export const Overview = () => {
@@ -31,6 +33,7 @@ export const Overview = () => {
     const userRoleCounts = useSelector((state) => state.userRoleCounts);
     const users = useSelector((state) => state.users);
     const newUsers = useSelector((state) => state.newUsers);
+    const queryMetrics  = useSelector((state) => state.queryMetrics);
 
     const ALL_PROJECTS_ID = "";
     const allProjects = [{id: ALL_PROJECTS_ID, name: "All Projects"}];
@@ -39,6 +42,7 @@ export const Overview = () => {
     const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
     const [loginsSinceInDays, setLoginsSinceInDays] = React.useState(7);
     const [newUsersSinceInDays, setNewUsersSinceInDays] = React.useState(30);
+    const [totalQueriesInDays, setTotalQueriesInDays] = React.useState(1);
 
     const handleUpdateLoginsSince = (days) => {
         setLoginsSinceInDays(days);
@@ -84,6 +88,7 @@ export const Overview = () => {
         dispatch(getAllUsers({projectId: project.id}));
         dispatch(getAllUserRoleCounts({projectId: project.id}));
         dispatch(getNewUsers({newUsersSinceInDays, projectId: project.id}));
+        dispatch(getQueryMetrics({projectId: project.id}));
     }
 
     return (
@@ -141,6 +146,10 @@ export const Overview = () => {
                         <CardContent className={userLogins.isFetching ? "ProjectOverviewInfoContent LoadingContent" : "ProjectOverviewInfoContent" }>
                             {selectedProject.id === ALL_PROJECTS_ID &&
                                 <UserLoginView userLogins={userLogins} loginsSinceInDays={loginsSinceInDays} updateLoginDaysSince={handleUpdateLoginsSince}/>
+                            }
+
+                            {selectedProject.id !== ALL_PROJECTS_ID &&
+                                <TotalQueryView queryMetrics={queryMetrics}/>
                             }
                         </CardContent>
                     </Card>
