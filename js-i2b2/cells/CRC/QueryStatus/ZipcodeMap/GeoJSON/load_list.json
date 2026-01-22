@@ -1,8 +1,17 @@
 [
-  "me_maine_zip_codes_geo.min.json",
-  "nh_new_hampshire_zip_codes_geo.min.json",
-  "vt_vermont_zip_codes_geo.min.json",
-  "ma_massachusetts_zip_codes_geo.min.json",
-  "ct_connecticut_zip_codes_geo.min.json",
-  "ny_new_york_zip_codes_geo.min.json"
+  "ALL_STATES.json",
+  "CT_zip3.json",
+  "CT_zip5.json",
+  "MA_zip3.json",
+  "MA_zip5.json",
+  "ME_zip3.json",
+  "ME_zip5.json",
+  "NH_zip3.json",
+  "NH_zip5.json",
+  "NY_zip3.json",
+  "NY_zip5.json",
+  "RI_zip3.json",
+  "RI_zip5.json",
+  "VT_zip3.json",
+  "VT_zip5.json"
 ]
