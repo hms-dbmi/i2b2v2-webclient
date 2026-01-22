@@ -35,12 +35,17 @@ export default class PathogenTimeline {
             this.wastewater = null;
             this.isVisible = false;
 
+            // Wastewater fetch gating + computed range
+            this.wwRequestRange = null;
+            this._wwFetched = false;
+
             this.width = this.config.displayEl.parentElement.clientWidth;
             this.height = 400 - margin.top - margin.bottom;
 
             this.config.displayEl.style.display = "none";
             const self = this;
 
+            // Parse initial XML if present (often empty at constructor-time; update() will get real data later)
             if (
                 qrsData &&
                 typeof qrsData === "object" &&
@@ -78,8 +83,8 @@ export default class PathogenTimeline {
 
                 // Internal state (update() reads from here)
                 self.state = {
-                    disease: "(All)",
-                    overlay: "(None)",
+                    disease: "All",
+                    overlay: "None",
                     view: "month"
                 };
 
@@ -118,14 +123,14 @@ export default class PathogenTimeline {
 
                 // Build items
                 const diseaseItems = [
-                    { value: "(All)", label: "(All)" },
+                    { value: "All", label: "All" },
                     ...Object.entries(DISEASE_REGISTRY.diseases)
                         .sort(([, a], [, b]) => a.order - b.order)
                         .map(([key, d]) => ({ value: key, label: d.label }))
                 ];
 
                 const overlayItems = [
-                    { value: "(None)", label: "(None)" },
+                    { value: "None", label: "None" },
                     ...Object.entries(WASTEWATER_REGISTRY.wastewater_sources)
                         .sort(([, a], [, b]) => a.order - b.order)
                         .map(([key, w]) => ({ value: key, label: w.label }))
@@ -167,21 +172,6 @@ export default class PathogenTimeline {
 
                 self.config.displayEl.style.display = "block";
 
-                // Load wastewater
-                fetchWastewater("3/1/2020", "01/15/2026").then(data => {
-                    if (Array.isArray(data)) {
-                        self.wastewater = data;
-                    } else if (data?.data && Array.isArray(data.data)) {
-                        self.wastewater = data.data;
-                    } else if (data?.result && Array.isArray(data.result)) {
-                        self.wastewater = data.result;
-                    } else {
-                        console.warn("Unrecognized wastewater payload shape", data);
-                        self.wastewater = [];
-                    }
-                    self.update();
-                });
-
                 self.update();
             }).call(this);
 
@@ -212,8 +202,41 @@ export default class PathogenTimeline {
             const raw = this.data?.new?.result;
             if (!raw || raw.length === 0) return;
 
-            const selectedDisease = this.state?.disease || "(All)";
-            const selectedOverlay = this.state?.overlay || "(None)";
+            // ------------------------------------------------------------
+            // Wastewater fetch
+            // ------------------------------------------------------------
+            if (this._wwFetched === false) {
+                this.wwRequestRange = deriveWastewaterDateRangeFromBreakdown(this.data.new);
+
+                if (this.wwRequestRange && this.wwRequestRange.ok) {
+                    this._wwFetched = true;
+
+                    fetchWastewater(this.wwRequestRange.startStr, this.wwRequestRange.endStr).then(data => {
+                        if (Array.isArray(data)) {
+                            this.wastewater = data;
+                        } else if (data?.data && Array.isArray(data.data)) {
+                            this.wastewater = data.data;
+                        } else if (data?.result && Array.isArray(data.result)) {
+                            this.wastewater = data.result;
+                        } else {
+                            console.warn("Unrecognized wastewater payload shape", data);
+                            this.wastewater = [];
+                        }
+                        this.update(); // redraw once wastewater arrives
+                    });
+
+                } else {
+                    console.warn("[WASTEWATER] skipping fetch:", this.wwRequestRange ? this.wwRequestRange.reason : "no range");
+                    this._wwFetched = true;
+                    this.wastewater = [];
+                }
+            }
+
+            // If template/SVG not ready yet, bail without drawing (but wastewater fetch can still run above)
+            if (!this.svg || !this.controls || !this.state) return;
+
+            const selectedDisease = this.state?.disease || "All";
+            const selectedOverlay = this.state?.overlay || "None";
             const selectedView = this.state?.view || "month"; // "month" | "year"
 
             // IMPORTANT: filter by grain so month view doesn't accidentally include year rows (and vice versa)
@@ -221,7 +244,6 @@ export default class PathogenTimeline {
             const viewRows = raw.filter(r => (r.grain || "").toUpperCase() === viewGrain);
 
             const filtered = filterBreakdown(viewRows, selectedDisease);
-
 
             const diseasesInView = filtered.map(row => row.disease);
             const currentKeys = Array.from(new Set(diseasesInView));
@@ -240,7 +262,7 @@ export default class PathogenTimeline {
                 );
             });
 
-            const hasWastewater = (selectedOverlay !== "(None)");
+            const hasWastewater = (selectedOverlay !== "None");
             if (hasWastewater) {
                 const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
                 if (waterConfig) {
@@ -304,7 +326,7 @@ export default class PathogenTimeline {
         let wwPoints = [];
         let wwConfig = null;
 
-        if (selectedOverlay !== "(None)" && this.wastewater && this.wastewater.length > 0) {
+        if (selectedOverlay !== "None" && this.wastewater && this.wastewater.length > 0) {
             const overlayConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
             wwConfig = overlayConfig;
 
@@ -433,11 +455,11 @@ export default class PathogenTimeline {
             try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
 
             const x = -(height / 2);          // centered vertically
-            const y = -margin.left + 32;      // gutter position 
+            const y = -margin.left + 28;      // gutter position
 
-        d3.select(this)
-            .attr("x", x)
-            .attr("y", y);
+            d3.select(this)
+                .attr("x", x)
+                .attr("y", y);
         });
 
         // Right Y axis (wastewater)
@@ -590,7 +612,7 @@ let parseData = function (xmlData, advancedConfig) {
         if (!column) continue;
 
         // Expected format:
-        // Site ^ YYYY-MM-DD ^ YYYY Mon ^ Disease
+        // Grain ^ YYYY-MM-DD ^ YYYY Mon ^ Disease
         const parts = column.split("^");
         if (parts.length < 4) continue;
 
@@ -599,7 +621,6 @@ let parseData = function (xmlData, advancedConfig) {
         const label = parts[2].trim();
         const diseaseRaw = parts[3].trim();
         const disease = DISEASE_REGISTRY.canonicalize(diseaseRaw);
-
 
         // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
         const date = parseYMDLocal(dateStr);
@@ -633,7 +654,7 @@ let parseData = function (xmlData, advancedConfig) {
         if (!include) continue;
 
         breakdown.result.push({
-            grain,     
+            grain,
             disease,
             diseaseRaw,
             date,
@@ -641,7 +662,6 @@ let parseData = function (xmlData, advancedConfig) {
             value,
             display: rawText
         });
-
     }
 
     return breakdown;
@@ -656,7 +676,7 @@ function filterBreakdown(rows, diseaseFilter) {
     return rows.filter(row => {
         const diseaseOk =
             !diseaseFilter ||
-            diseaseFilter === "(All)" ||
+            diseaseFilter === "All" ||
             diseaseFilter === "ALL" ||
             row.disease === diseaseFilter;
         return diseaseOk;
@@ -761,28 +781,31 @@ function aggregatePatientsByView(records, view) {
     return out;
 }
 
+// ------------------------------------------------------------
+// Wastewater service plumbing
+// ------------------------------------------------------------
 const WASTEWATER_URLS = {
-  dev: "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
-  prod: "http://prod-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData"
+    dev: "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
+    prod: "http://prod-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData"
 };
 
 function detectEnv() {
-  const override = (window.PATHOGEN_TIMELINE_ENV || "").toLowerCase();
-  if (override === "dev" || override === "prod") return override;
+    const override = (window.PATHOGEN_TIMELINE_ENV || "").toLowerCase();
+    if (override === "dev" || override === "prod") return override;
 
-  const host = (window.location?.hostname || "").toLowerCase();
+    const host = (window.location?.hostname || "").toLowerCase();
 
-  // Local dev should use dev backend by default
-  if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return "dev";
+    // Local dev should use dev backend by default
+    if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return "dev";
 
-  if (host.includes("dev") || host.includes("catalyst")) return "dev";
+    if (host.includes("dev") || host.includes("catalyst")) return "dev";
 
-  return "prod";
+    return "prod";
 }
 
 function getWastewaterServiceUrl() {
-  const env = detectEnv();
-  return WASTEWATER_URLS[env] || WASTEWATER_URLS.prod;
+    const env = detectEnv();
+    return WASTEWATER_URLS[env] || WASTEWATER_URLS.prod;
 }
 
 async function fetchWastewater(startDate, endDate) {
@@ -845,4 +868,36 @@ async function fetchWastewater(startDate, endDate) {
         console.error("Failed to fetch wastewater data", err, "env:", detectEnv(), "redirect:", redirectUrl);
         return null;
     }
+}
+
+// ------------------------------------------------------------
+// Derive wastewater request date range from patient breakdown
+// ------------------------------------------------------------
+function deriveWastewaterDateRangeFromBreakdown(breakdown) {
+    if (!breakdown || !Array.isArray(breakdown.result) || breakdown.result.length === 0) {
+        return { ok: false, startStr: null, endStr: null, reason: "missing/empty breakdown.result" };
+    }
+
+    var minT = null, maxT = null;
+
+    for (var i = 0; i < breakdown.result.length; i++) {
+        var dt = breakdown.result[i] && breakdown.result[i].date;
+        if (!(dt instanceof Date)) continue;
+        var t = dt.getTime();
+        if (isNaN(t)) continue;
+
+        if (minT === null || t < minT) minT = t;
+        if (maxT === null || t > maxT) maxT = t;
+    }
+
+    if (minT === null || maxT === null || maxT < minT) {
+        return { ok: false, startStr: null, endStr: null, reason: "could not derive valid min/max dates" };
+    }
+
+    function toMDY(t) {
+        var d = new Date(t);
+        return (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+    }
+
+    return { ok: true, startStr: toMDY(minT), endStr: toMDY(maxT), reason: null };
 }
