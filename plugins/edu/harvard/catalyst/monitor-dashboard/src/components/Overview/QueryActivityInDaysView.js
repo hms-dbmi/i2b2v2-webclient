@@ -3,7 +3,7 @@ import {Box, CircularProgress, MenuItem, TextField, Typography} from "@mui/mater
 
 export const QueryActivityInDaysView = ({queryMetrics}) => {
     const [totalQueriesInDays, setTotalQueriesInDays] = React.useState(queryMetrics.queryActivityInDays.totalQuery1Days);
-    const [days, setDays] = React.useState("1");
+    const [days, setDays] = React.useState(1);
     const dayToTotalQuery = {
         1: queryMetrics.queryActivityInDays.totalQuery1Days,
         7: queryMetrics.queryActivityInDays.totalQuery7Days,
@@ -15,7 +15,7 @@ export const QueryActivityInDaysView = ({queryMetrics}) => {
     }
 
     useEffect(() => {
-        if(days === "1") {
+        if(days === 1) {
             setTotalQueriesInDays(queryMetrics.queryActivityInDays.totalQuery1Days);
         }
     }, [queryMetrics.queryActivityInDays.totalQuery1Days]);
@@ -42,9 +42,9 @@ export const QueryActivityInDaysView = ({queryMetrics}) => {
                     onChange={(event) => handleUpdateTotalQueries(event.target.value)}
                     variant="standard"
                 >
-                    <MenuItem value={"1"}>1 day</MenuItem>
-                    <MenuItem value={"7"}>7 days</MenuItem>
-                    <MenuItem value={"30"}>30 days</MenuItem>
+                    <MenuItem value={1}>1 day</MenuItem>
+                    <MenuItem value={7}>7 days</MenuItem>
+                    <MenuItem value={30}>30 days</MenuItem>
                 </TextField>
             </Box>
         </Typography>
