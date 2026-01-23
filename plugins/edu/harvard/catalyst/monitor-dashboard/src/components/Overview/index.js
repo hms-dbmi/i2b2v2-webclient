@@ -22,6 +22,7 @@ import {UserSessionView} from "./UserSessionView";
 import {NewUsersView} from "./NewUsersView";
 import {getNewUsers} from "../../reducers/newUsersSlice";
 import {TotalQueryView} from "./TotalQueryView";
+import {QueryActivityInDaysView} from "./QueryActivityInDaysView";
 import "./Overview.scss";
 
 export const Overview = () => {
@@ -158,6 +159,8 @@ export const Overview = () => {
                     <Card className={"ProjectOverviewInfo"}>
                         <CardContent className={"ProjectOverviewInfoContent"}>
                             {selectedProject.id === ALL_PROJECTS_ID && <UserSessionView userSessions={userSessions}/>}
+                            {selectedProject.id !== ALL_PROJECTS_ID && <QueryActivityInDaysView
+                                queryMetrics={queryMetrics}/>}
                         </CardContent>
                     </Card>
                 </Grid>
