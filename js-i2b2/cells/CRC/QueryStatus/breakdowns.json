@@ -75,7 +75,6 @@
     "TABLEBARCHART": {
       "forceInitialDisplay": true
     },
-    "BARS": true,
     "TABLE":true,
     "DOWNLOAD": true
   },
