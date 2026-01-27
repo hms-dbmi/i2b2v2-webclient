@@ -61,10 +61,10 @@
       "displayOrder": 500,
       "notInReport": true
     },
-    "ZIPCODEMAP": {
+    "MULTIZIPCODEMAP": {
       "name": "Map View",
-      "source": "ZipcodeMap/ZipcodeMap.js",
-      "CSS": "ZipcodeMap/ZipcodeMap.css",
+      "source": "MultiZipcodeMap/MultiZipcodeMap.js",
+      "CSS": "MultiZipcodeMap/MultiZipcodeMap.css",
       "iconClass": "bi bi-globe2"
     },
     "PATIENTCOUNTMAP": {
