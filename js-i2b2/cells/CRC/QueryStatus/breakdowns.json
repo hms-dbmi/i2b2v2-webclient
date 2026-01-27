@@ -90,7 +90,7 @@
   },
   "PATIENT_ZIP_COUNT_SHRINE_XML": {
     "TABLE": true,
-    "ZIPCODEMAP": {
+    "MULTIZIPCODEMAP": {
       "clickBox": {
         "options": {
           "closeButton": "true",
@@ -98,13 +98,13 @@
           "autoClose": false,
           "closeOnClick": false
         },
-        "template": "<b>[{{ZCTA5CE10}}] - {{name}}</b><br/>{{display}} patients"
+        "template": "<b>[{{zipcode}}] - {{name}}</b><br/>{{display}} patients"
       },
       "hoverBox": {
         "position": "topright",
         "className": "onhover-box",
         "default": "<h4>Patient Count</h4>Hover over an area",
-        "template": "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
+        "template": "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{zipcode}}</div><span>{{display}} patients</span>"
       },
       "legendBox": {
         "position": "bottomright",
@@ -123,8 +123,7 @@
         "tiles": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
         "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
         "maxZoom": 18,
-        "zipAttribName": "ZCTA5CE10",
-        "zipRegEx": "^([0-9]{5}) - (.*)$",
+        "aggKeyName": "aggKey",
         "colors": [
           {"color": "#d73027"},
           {"color": "#f46d43"},

@@ -1,0 +1,33 @@
+{{#if zoomList}}
+<div style="width: fit-content;">
+    <span class="map-nav-links-label zoom">Zoom:</span>
+    <ul class="map-nav-links zoom">
+        {{#each zoomList}}
+        <li><span class="map-nav-link zoom" data-index="{{@index}}" data-lat="{{lat}}" data-long="{{long}}" data-zoom="{{zoom}}" {{#if tooltip}}title="{{tooltip}}"{{/if}}>{{title}}</span></li>
+        {{/each}}
+    </ul>
+</div>
+{{/if}}
+{{#if aggregationList}}
+<div style="width: fit-content;">
+    <span class="map-nav-links-label agg">Aggregation Level:</span>
+    <ul class="map-nav-links agg">
+        {{#each aggregationList}}
+        <li><span class="map-nav-link agg {{#if selected}}selected{{/if}}" data-index="{{@index}}" data-agg-key="{{key}}" {{#if tooltip}}title="{{tooltip}}"{{/if}}>{{title}}</span></li>
+        {{/each}}
+    </ul>
+</div>
+{{/if}}
+{{#if normalizerList}}
+<div style="width: fit-content;">
+    <span class="map-nav-links-label agg">Normalization:</span>
+    <ul class="map-nav-links agg">
+        {{#each normalizerList}}
+        <li><span class="map-nav-link normzr {{#if selected}}selected{{/if}}" data-index="{{@index}}" data-norm-key="{{name}}" {{#if tooltip}}title="{{tooltip}}"{{/if}}>{{name}}</span></li>
+        {{/each}}
+    </ul>
+    {{#if currentNormalizer}}
+    <i class="bi bi-x-square clear-normalizer" title="Clear Normalization"></i>
+    {{/if}}
+</div>
+{{/if}}
