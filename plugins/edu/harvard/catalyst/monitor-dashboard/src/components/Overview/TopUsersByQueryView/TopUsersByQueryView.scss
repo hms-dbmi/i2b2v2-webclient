@@ -1,0 +1,15 @@
+.TopUsersByQueryView{
+
+  .TopUsersByQueryViewHeader {
+    margin-bottom: 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .TopUsersByQueryViewHeaderItems {
+    display: flex;
+    align-items: center;
+    gap: 0.9em;
+  }
+}

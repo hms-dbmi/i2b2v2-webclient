@@ -17,8 +17,6 @@ export const MonitorDashboard = () => {
     const ViewModeTypes = {
         OVERVIEW: "OVERVIEW",
         QUERY: "QUERY",
-        USERS: "USERS"
-
     };
     const [selectedTab, setSelectedTab] = useState(ViewModeTypes.OVERVIEW);
 
@@ -46,12 +44,10 @@ export const MonitorDashboard = () => {
                     value={selectedTab}
                     textColor="inherit"
                     onChange={handleTabChange}
-                    aria-label="admin tool navigation"
-
+                    aria-label="Monitor i2b2 activity"
                 >
                     <Tab value={ViewModeTypes.OVERVIEW} label="Overview"/>
                     <Tab value={ViewModeTypes.QUERY} label="Query" />
-                    <Tab value={ViewModeTypes.USERS} label="Users" />
                 </Tabs>
             </AppBar>
 

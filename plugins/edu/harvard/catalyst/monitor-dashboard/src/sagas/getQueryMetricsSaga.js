@@ -22,7 +22,10 @@ const parseQueryMetricsRequestXml = (queryMetricsRequestListXml) => {
         totalQuery1Days: null,
         totalQuery7Days: null,
         totalQuery30Days: null,
-        topUsers: []
+        topUsers: [],
+        topUsers1Day: [],
+        topUsers7Days: [],
+        topUsers30Days: [],
     };
 
     let crcXmlResult = queryMetricsRequestListXml.getElementsByTagName('crc_xml_result');
@@ -62,6 +65,37 @@ const parseQueryMetricsRequestXml = (queryMetricsRequestListXml) => {
                 }
                 if(column.toUpperCase() === "TOTAL_QUERIES" && type.toUpperCase() === "ADMIN_TOTAL_QUERY_30DAYS"){
                     queryMetrics.totalQuery30Days = dataValue;
+                }
+
+                if(type.toUpperCase() === "ADMIN_TOPUSERS"){
+                    console.log("found top user column=" + column);
+                    console.log("found top user datavalue=" + dataValue);
+
+                    queryMetrics.topUsers.push({
+                        name: column,
+                        value :  dataValue
+                    });
+                }
+
+                if(type.toUpperCase() === "ADMIN_TOPUSERS_1_DAY"){
+                    queryMetrics.topUsers1Day.push({
+                        name: column,
+                        value :  dataValue
+                    });
+                }
+
+                if(type.toUpperCase() === "ADMIN_TOPUSERS_7_DAYS"){
+                    queryMetrics.topUsers7Days.push({
+                        name: column,
+                        value :  dataValue
+                    });
+                }
+
+                if(type.toUpperCase() === "ADMIN_TOPUSERS_30_DAYS"){
+                    queryMetrics.topUsers30Days.push({
+                        name: column,
+                        value: dataValue
+                    });
                 }
             }
         }
