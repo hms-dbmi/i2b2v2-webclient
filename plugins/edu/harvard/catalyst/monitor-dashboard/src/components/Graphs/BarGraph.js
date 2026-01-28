@@ -48,14 +48,17 @@ export const BarGraph = ({ data }) => {
             .call(d3.axisBottom(x))
 
         //add x axis labels
-        x_axis.selectAll("text")
-            .text((d) => shortenLabel(d, 20))
+        x_axis.selectAll("text").data(data)
+            .text((d) => shortenLabel(d.name, 20))
             .attr("transform", "translate(-10,0)rotate(-45)")
             .classed("graphLabel", true)
             .attr("test", (x, y, z) => {
                 let h = z[y].getBoundingClientRect().height;
                 if (maxHeight < h) maxHeight = h;
                 return h;
+            }).append("title")
+            .text((d) => {
+                return d.name + ": " + d.value;
             });
 
         //add x-axis title
@@ -122,13 +125,18 @@ export const BarGraph = ({ data }) => {
             .remove();
 
         if(data.length === 0){
-            x_axis.append("text")
+            let noActivityText = x_axis.append("text")
                 .classed("nodata", true)
-                .text("No Data Found")
+                .text("No Query Activity Found ")
                 .attr("letter-spacing", "1.16")
                 .attr("text-anchor", "middle")
                 .attr("x", width/2)
-                .attr("y", (-height/2))
+                .attr("y", (-height/2));
+
+            noActivityText.append("tspan")
+                .text("In This Time Frame")
+                .attr("x", width/2)
+                .attr("dy", "1.5em");
         }
     }, [data]);
 

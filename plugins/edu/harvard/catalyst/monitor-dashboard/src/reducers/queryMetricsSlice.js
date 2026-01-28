@@ -23,16 +23,16 @@ export const queryMetricsSlice = createSlice({
 
             let topUsersByQuery = TopUsersByQuery();
             //only users with total queries > 0
-            let filteredUsersAndTotalQueries = queryMetrics.topUsers.filter(d => d.value > 0);
-            topUsersByQuery.usersAndTotalQueries= filteredUsersAndTotalQueries;
+            let filteredUsersAndTotalQueries = queryMetrics.topUsers.filter(d => d.value > 0).sort((a, b) => b.value - a.value);
+            topUsersByQuery.usersAndTotalQueries = filteredUsersAndTotalQueries;
 
-            filteredUsersAndTotalQueries =  queryMetrics.topUsers1Day.filter(d => d.value > 0);
+            filteredUsersAndTotalQueries =  queryMetrics.topUsers1Day.filter(d => d.value > 0).sort((a, b) => b.value - a.value);
             topUsersByQuery.usersAndTotalQueries1Day= filteredUsersAndTotalQueries;
 
-            filteredUsersAndTotalQueries =  queryMetrics.topUsers7Days.filter(d => d.value > 0);
+            filteredUsersAndTotalQueries =  queryMetrics.topUsers7Days.filter(d => d.value > 0).sort((a, b) => b.value - a.value);
             topUsersByQuery.usersAndTotalQueries7Days= filteredUsersAndTotalQueries;
 
-            filteredUsersAndTotalQueries =  queryMetrics.topUsers30Days.filter(d => d.value > 0);
+            filteredUsersAndTotalQueries =  queryMetrics.topUsers30Days.filter(d => d.value > 0).sort((a, b) => b.value - a.value);
             topUsersByQuery.usersAndTotalQueries30Days= filteredUsersAndTotalQueries;
 
             state.queryActivityInDays = queryActivityInDays;

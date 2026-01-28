@@ -68,9 +68,6 @@ const parseQueryMetricsRequestXml = (queryMetricsRequestListXml) => {
                 }
 
                 if(type.toUpperCase() === "ADMIN_TOPUSERS"){
-                    console.log("found top user column=" + column);
-                    console.log("found top user datavalue=" + dataValue);
-
                     queryMetrics.topUsers.push({
                         name: column,
                         value :  dataValue
