@@ -8,7 +8,7 @@ export const BarGraph = ({ data, xAxisTitle, yAxisTitle }) => {
     const svgRef = useRef();
     const height = 300;
     const width = 400;
-    const margin = {top: 10, right: 35, bottom: 70, left: 50};
+    const margin = {top: 10, right: 38, bottom: 70, left: 50};
 
     const shortenLabel = function(inText, maxLen) {
         if (inText.length > maxLen) {
@@ -70,7 +70,6 @@ export const BarGraph = ({ data, xAxisTitle, yAxisTitle }) => {
             .attr("x", width/2)
             .attr("y", 96)
 
-
         //------------------------
         let maxValue = Math.max(...data.map((d) => parseFloat(d.value)));
         let y = d3.scaleLinear()
@@ -88,8 +87,8 @@ export const BarGraph = ({ data, xAxisTitle, yAxisTitle }) => {
             .text(yAxisTitle)
             .attr("letter-spacing", "1.16")
             .attr("transform", (x, y, z) => {
-                let l = -margin.right;
-                let h = (height - z[0].getBoundingClientRect().width) / 2;
+                const l = -margin.right;
+                const h = (height / 2) - margin.bottom - margin.top;
                 return "translate(" + l + "," + h + ") rotate(-90) ";
             });
 

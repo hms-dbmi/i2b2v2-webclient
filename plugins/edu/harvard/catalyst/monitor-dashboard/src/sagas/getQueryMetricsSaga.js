@@ -90,7 +90,7 @@ const parseQueryMetricsRequestXml = (queryMetricsRequestListXml) => {
 
                 if(type.toUpperCase() === "ADMIN_TOPUSERS_30_DAYS"){
                     queryMetrics.topUsers30Days.push({
-                        name: column + "---" + column,
+                        name: column,
                         value: dataValue
                     });
                 }
