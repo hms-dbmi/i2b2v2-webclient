@@ -24,6 +24,7 @@ import {getNewUsers} from "../../reducers/newUsersSlice";
 import {TotalQueryView} from "./TotalQueryView";
 import {QueryActivityInDaysView} from "./QueryActivityInDaysView";
 import {TopUsersByQueryView} from "./TopUsersByQueryView";
+import {QueryActivityByMonthView} from "./QueryActivityByMonthView";
 import "./Overview.scss";
 
 export const Overview = () => {
@@ -169,6 +170,7 @@ export const Overview = () => {
             {   selectedProject.id !== ALL_PROJECTS_ID &&
                 <Grid className={"ProjectOverviewInfoGrid"} container spacing={5}>
                     <Grid size={6}>
+                        <QueryActivityByMonthView queryMetrics={queryMetrics}/>
                     </Grid>
                     <Grid size={6}>
                         <TopUsersByQueryView queryMetrics={queryMetrics}/>

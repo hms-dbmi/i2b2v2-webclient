@@ -20,3 +20,5 @@ export { NewUsers } from "./NewUsers";
 export { QueryMetrics } from "./QueryMetrics";
 export { QueryActivityInDays } from "./QueryActivityInDays";
 export { TopUsersByQuery } from "./TopUsersByQuery";
+export { QueryActivityByMonth } from "./QueryActivityByMonth";
+export { QueryActivityAndDate } from "./QueryActivityAndDate";

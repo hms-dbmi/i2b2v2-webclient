@@ -3,6 +3,7 @@ import {getQueryMetricsFailed, getQueryMetricsSucceeded} from "../reducers/query
 import {GET_QUERY_METRICS} from "../actions";
 import {parseXml} from "../utilities/parseXml";
 import {decode} from 'html-entities';
+import {DateTime} from "luxon";
 
 //a function that returns a promise
 const getQueryMetricsRequest = (projectId) => {
@@ -26,6 +27,7 @@ const parseQueryMetricsRequestXml = (queryMetricsRequestListXml) => {
         topUsers1Day: [],
         topUsers7Days: [],
         topUsers30Days: [],
+        queryActivityByMonth: []
     };
 
     let crcXmlResult = queryMetricsRequestListXml.getElementsByTagName('crc_xml_result');
@@ -91,6 +93,20 @@ const parseQueryMetricsRequestXml = (queryMetricsRequestListXml) => {
                 if(type.toUpperCase() === "ADMIN_TOPUSERS_30_DAYS"){
                     queryMetrics.topUsers30Days.push({
                         name: column,
+                        value: dataValue
+                    });
+                }
+
+                if(type.toUpperCase() === "ADMIN_TOPUSERS_30_DAYS"){
+                    queryMetrics.topUsers30Days.push({
+                        name: column,
+                        value: dataValue
+                    });
+                }
+
+                if(type.toUpperCase() === "ADMIN_COUNT"){
+                    queryMetrics.queryActivityByMonth.push({
+                        date: DateTime.fromISO(column).toJSDate(),
                         value: dataValue
                     });
                 }
