@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import * as d3 from "d3";
 import "./BarGraph.scss";
 
-export const BarGraph = ({ data }) => {
+export const BarGraph = ({ data, xAxisTitle, yAxisTitle }) => {
     const svgRef = useRef();
     const height = 300;
     const width = 400;
@@ -49,7 +49,7 @@ export const BarGraph = ({ data }) => {
 
         //add x axis labels
         x_axis.selectAll("text").data(data)
-            .text((d) => shortenLabel(d.name, 20))
+            .text((d) => shortenLabel(d.name, 18))
             .attr("transform", "translate(-10,0)rotate(-45)")
             .classed("graphLabel", true)
             .attr("test", (x, y, z) => {
@@ -64,11 +64,11 @@ export const BarGraph = ({ data }) => {
         //add x-axis title
         x_axis.append("text")
             .classed("x-title", true)
-            .text("User")
+            .text(xAxisTitle)
             .attr("letter-spacing", "1.16")
             .attr("text-anchor", "middle")
             .attr("x", width/2)
-            .attr("y", 105)
+            .attr("y", 96)
 
 
         //------------------------
@@ -85,7 +85,7 @@ export const BarGraph = ({ data }) => {
 
         y_axis.append("text")
             .classed("y-title", true)
-            .text("Query Volume")
+            .text(yAxisTitle)
             .attr("letter-spacing", "1.16")
             .attr("transform", (x, y, z) => {
                 let l = -margin.right;

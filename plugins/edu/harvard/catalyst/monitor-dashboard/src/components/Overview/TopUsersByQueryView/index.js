@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Box, IconButton, MenuItem, TextField, Tooltip} from "@mui/material";
+import {Box, CircularProgress, IconButton, MenuItem, TextField, Tooltip} from "@mui/material";
 import InfoIcon from '@mui/icons-material/Info';
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 import PropTypes from "prop-types";
@@ -10,7 +10,7 @@ import "./TopUsersByQueryView.scss";
 
 export const TopUsersByQueryView = ({queryMetrics}) => {
     const [chartData, setChartData] = React.useState([]);
-    const [days, setDays] = React.useState("1");
+    const [days, setDays] = React.useState("30");
     const daysToUserTotalQuery = {
         "all": queryMetrics.topUsersByQuery.usersAndTotalQueries,
         "1": queryMetrics.topUsersByQuery.usersAndTotalQueries1Day,
@@ -54,7 +54,12 @@ export const TopUsersByQueryView = ({queryMetrics}) => {
                 </Box>
             </Box>
             <Box>
-                <BarGraph data={chartData}/>
+                {queryMetrics.isFetching && (
+                    <Box className={"LoadingContent"}>
+                        <CircularProgress className={"ContentProgress"}/>
+                    </Box>
+                )}
+                <BarGraph data={chartData} xAxisTitle={"User"} yAxisTitle={"Query Volume"}/>
             </Box>
         </Box>
 

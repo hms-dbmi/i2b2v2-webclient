@@ -11,7 +11,7 @@
     }
 
     .x-title, .y-title {
-      font-size: 1.4em;
+      font-size: 1.5em;
       fill: #000000;
       font-weight: bold;
     }
@@ -21,6 +21,12 @@
       fill: rgb(39, 130, 163);
       transition: opacity 100ms;
     }
+
+    .graphbar:hover {
+      opacity: 1;
+      stroke: black;
+    }
+
     .nodata {
       font-size: 1.6em;
       fill: #000000;
