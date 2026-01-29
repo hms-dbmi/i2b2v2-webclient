@@ -19,3 +19,4 @@ export { Users } from "./Users";
 export { NewUsers } from "./NewUsers";
 export { QueryMetrics } from "./QueryMetrics";
 export { QueryActivityInDays } from "./QueryActivityInDays";
+export { TopUsersByQuery } from "./TopUsersByQuery";

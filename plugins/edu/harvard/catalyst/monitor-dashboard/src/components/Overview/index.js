@@ -23,6 +23,7 @@ import {NewUsersView} from "./NewUsersView";
 import {getNewUsers} from "../../reducers/newUsersSlice";
 import {TotalQueryView} from "./TotalQueryView";
 import {QueryActivityInDaysView} from "./QueryActivityInDaysView";
+import {TopUsersByQueryView} from "./TopUsersByQueryView";
 import "./Overview.scss";
 
 export const Overview = () => {
@@ -165,6 +166,15 @@ export const Overview = () => {
                     </Card>
                 </Grid>
             </Grid>
+            {   selectedProject.id !== ALL_PROJECTS_ID &&
+                <Grid className={"ProjectOverviewInfoGrid"} container spacing={5}>
+                    <Grid size={6}>
+                    </Grid>
+                    <Grid size={6}>
+                        <TopUsersByQueryView queryMetrics={queryMetrics}/>
+                    </Grid>
+                </Grid>
+            }
         </div>
     );
 };

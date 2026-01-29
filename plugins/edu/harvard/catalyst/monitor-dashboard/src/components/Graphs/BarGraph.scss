@@ -1,0 +1,39 @@
+.BarGraph {
+
+  svg {
+    text.graphLabel {
+      cursor: default;
+      text-anchor: end;
+    }
+
+    text.graphLabel:hover {
+      font-weight: bold;
+    }
+
+    .x-title, .y-title {
+      font-size: 1.5em;
+      fill: #000000;
+      font-weight: bold;
+    }
+
+    .graphbar {
+      opacity: 0.60;
+      fill: rgb(39, 130, 163);
+      transition: opacity 100ms;
+    }
+
+    .graphbar:hover {
+      opacity: 1;
+      stroke: black;
+    }
+
+    .nodata {
+      font-size: 1.6em;
+      fill: #000000;
+    }
+
+    .y-axis .tick text{
+      fill: #000000;
+    }
+  }
+}
