@@ -94,37 +94,7 @@ export default class MultiZipcodeMap {
 
                     $(`<div class="map-header"></div><div class="map-target"></div>`).appendTo(this.config.displayEl);
 
-                    // const headerEl = $('.map-header',this.config.displayEl);
-                    // $(this.config.template(renderdata)).appendTo(headerEl);
-                    //
-                    // // connect the zoom link click events
-                    // $('.map-nav-link.zoom', self.config.displayEl).on('click', (e)=>{
-                    //     let data = e.currentTarget.dataset;
-                    //     this.config.currentZoomLink = data.index;
-                    //     self.map.setView([data.lat, data.long], data.zoom);
-                    //     // delay by 50ms because we are going to lose the link as we just started a viewport change
-                    //     const closureEl = e.currentTarget;
-                    //     setTimeout(()=>{
-                    //         $(closureEl).addClass('selected');
-                    //     }, 50);
-                    // });
-
                     this.rerender();
-
-                    // // connect the aggregation links
-                    // if (typeof aggModule !== 'undefined') {
-                    //     $('.map-nav-link.agg', self.config.displayEl).on('click', ((e)=> {
-                    //         let aggKey = e.currentTarget.dataset.aggKey;
-                    //         if (this.config.aggregations.current !== aggKey) {
-                    //             this.config.aggregations.current = aggKey;
-                    //             // change styles
-                    //             $('.map-nav-link.agg.selected', self.config.displayEl).removeClass('selected');
-                    //             $(e.currentTarget).addClass('selected');
-                    //             // rerender
-                    //             this.rerender();
-                    //         }
-                    //     }).bind(this));
-                    // }
 
                     this.mapEl = $('.map-target', this.config.displayEl)[0];
                     this.config.displayEl.style.display = "block";
@@ -292,12 +262,6 @@ export default class MultiZipcodeMap {
                                     entriesHtml.push(func_processTemplate(legendConfig.templates[templateName], entryData));
                                 }
                             }
-                            //     if (typeof colorsConfig[0].min !== 'undefined' || typeof colorsConfig[0].max !== 'undefined') {
-                            //         let entries = colorsConfig.reduce((acc, d) => {
-                            //             return acc + " > " + d.color;
-                            //         }, '');
-                            //     }
-                            // }
                             if (entriesHtml.length > 0) {
                                 let entries = entriesHtml.join("\n");
                                 // we have info to display
@@ -466,44 +430,7 @@ export default class MultiZipcodeMap {
                 // only insert feature if we have some data for the zip code
                 let featureCopy = structuredClone(feature);
                 // copy over the data from the server
-                for (let attrib in validData[currentZip]) {
-                    let attribValue = validData[currentZip][attrib];
-                    featureCopy.properties[attrib] = attribValue;
-                    if (attrib === "count") {
-                        // special processing for the main count value from the server
-                        // if (colorBucketsAreRanged) {
-                        //     // the color buckets have min/max settings, use them
-                        //     for (let bucketData of this.config.advancedConfig.map.colors) {
-                        //         let matchCriteria = 0;
-                        //         if (bucketData.min) {
-                        //             if (attribValue >= bucketData.min) matchCriteria++;
-                        //         } else {
-                        //             matchCriteria++;
-                        //         }
-                        //         if (bucketData.max) {
-                        //             if (attribValue <= bucketData.max) matchCriteria++;
-                        //         } else {
-                        //             matchCriteria++;
-                        //         }
-                        //         if (matchCriteria === 2) {
-                        //             // value falls within the matching range
-                        //             featureCopy.properties.color = bucketData.color;
-                        //             break;
-                        //         }
-                        //     }
-                        // } else {
-                        //     // the color buckets have no range setting, base on equal
-                        //     let bucketIdx = Math.floor((attribValue - minCount) / rangeSize);
-                        //     if (isNaN(bucketIdx)) {
-                        //         featureCopy.properties.color = "none";
-                        //     } else {
-                        //         if (bucketIdx < 0) bucketIdx = 0;
-                        //         if (bucketIdx > this.config.advancedConfig.map.colors.length - 1) bucketIdx = this.config.advancedConfig.map.colors.length - 1;
-                        //         featureCopy.properties.color = this.config.advancedConfig.map.colors[bucketIdx].color;
-                        //     }
-                        // }
-                    }
-                }
+                featureCopy.properties = {...validData[currentZip]};
                 geoJSON.features.push(featureCopy);
             }
         });
@@ -656,7 +583,6 @@ export default class MultiZipcodeMap {
             }
             this.config.dataRanges = dataRanges;
 
-
             // go through the data again and calculate which color bucket it falls into
             const rangeBucketCount = this.config.advancedConfig.map.colors.length;
             for (const aggKey of Object.keys(validData)) {
@@ -697,155 +623,7 @@ export default class MultiZipcodeMap {
                 }
             }
 
-
-            // // handle legendbox update
-            // if (typeof this.legendbox !== 'undefined') {
-            //     let ranges = [];
-            //     if (!colorBucketsAreRanged) {
-            //         for (let i=0; i < this.config.advancedConfig.map.colors.length; i++) {
-            //             ranges.push({
-            //                 min: rangeSize * i + minCount,
-            //                 max: rangeSize * (i + 1) + minCount
-            //             });
-            //         }
-            //     }
-            //     this.legendbox.update(ranges);
-            // }
-
-
             this.rerender();
-
-            // // generate list of valid GeoJSON features
-            // let foundZips = Object.keys(validData);
-            // let featureZipAttribute = "";
-            // let geoJSON = {
-            //     type: "FeatureCollection",
-            //     features: []
-            // }
-            // i2b2.CRC.QueryStatus.model.MultiGeoJSON.data.features.forEach((feature) => {
-            //     const currentZip = feature.properties[this.aggKeyName];
-            //     if (typeof validData[currentZip] !== 'undefined') {
-            //         // only insert feature if we have some data for the zip code
-            //         let featureCopy = structuredClone(feature);
-            //         // copy over the data from the server
-            //         for (let attrib in validData[currentZip]) {
-            //             let attribValue = validData[currentZip][attrib];
-            //             featureCopy.properties[attrib] = attribValue;
-            //             if (attrib === "count") {
-            //                 // special processing for the main count value from the server
-            //                 if (colorBucketsAreRanged) {
-            //                     // the color buckets have min/max settings, use them
-            //                     for (let bucketData of this.config.advancedConfig.map.colors) {
-            //                         let matchCriteria = 0;
-            //                         if (bucketData.min) {
-            //                             if (attribValue >= bucketData.min) matchCriteria++;
-            //                         } else {
-            //                             matchCriteria++;
-            //                         }
-            //                         if (bucketData.max) {
-            //                             if (attribValue <= bucketData.max) matchCriteria++;
-            //                         } else {
-            //                             matchCriteria++;
-            //                         }
-            //                         if (matchCriteria === 2) {
-            //                             // value falls within the matching range
-            //                             featureCopy.properties.color = bucketData.color;
-            //                             break;
-            //                         }
-            //                     }
-            //                 } else {
-            //                     // the color buckets have no range setting, base on equal
-            //                     let bucketIdx = Math.floor((attribValue - minCount) / rangeSize);
-            //                     if (isNaN(bucketIdx)) {
-            //                         featureCopy.properties.color = "none";
-            //                     } else {
-            //                         if (bucketIdx < 0) bucketIdx = 0;
-            //                         if (bucketIdx > this.config.advancedConfig.map.colors.length - 1) bucketIdx = this.config.advancedConfig.map.colors.length - 1;
-            //                         featureCopy.properties.color = this.config.advancedConfig.map.colors[bucketIdx].color;
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //         geoJSON.features.push(featureCopy);
-            //     }
-            // });
-            //
-            // // interaction/helper functions
-            // // ---------------------------
-            // const func_StylingNorm = ((feature) => {
-            //     let ret = {
-            //         fillColor: feature.properties.color
-            //     };
-            //     // override styles if we have those options set
-            //     for (let attrib in this.config.advancedConfig.map?.styles.norm) {
-            //         ret[attrib] = this.config.advancedConfig.map?.styles.norm[attrib];
-            //     }
-            //     // remove highlighting in legendbox if it is active
-            //     if (typeof this.legendbox !== 'undefined') $("*.selected", this.legendbox._div).removeClass("selected");
-            //     return ret;
-            // }).bind(this);
-            // // ---------------------------
-            // const func_StylingHighlight = ((e) => {
-            //     let layer = e.target;
-            //     let style = {};
-            //     // override styles if we have those options set
-            //     for (let attrib in this.config.advancedConfig.map?.styles.hover) {
-            //         style[attrib] = this.config.advancedConfig.map?.styles.hover[attrib];
-            //     }
-            //     layer.setStyle(style);
-            //     layer.bringToFront();
-            //     // handle hoverover box
-            //     if (typeof this.hoverbox !== 'undefined') {
-            //         this.hoverbox.update(layer.feature.properties);
-            //     }
-            //     // add highlighting in legendbox if it is active
-            //     if (typeof this.legendbox !== 'undefined') {
-            //         let color = layer.feature?.properties.color;
-            //         if (typeof color !== 'undefined') $('*[data-color="' + color + '"]', this.legendbox._div).addClass('selected');
-            //     }
-            //
-            // }).bind(this);
-            // // ---------------------------
-            // const func_StylingReset = ((e) => {
-            //     // reset area styles
-            //     this.geojson.resetStyle(e.target);
-            //     // reset the hoverover box or hide it
-            //     if (typeof this.hoverbox !== 'undefined') {
-            //         this.hoverbox.update();
-            //     }
-            // }).bind(this);
-            // // ---------------------------
-            // const func_onClick = ((e) => {
-            //     if (typeof this.config.advancedConfig?.clickBox.template === 'undefined') return;
-            //
-            //     let data = e.target.feature.properties;
-            //
-            //     let options = {
-            //         content: func_processTemplate(this.config.advancedConfig.clickBox.template, data)
-            //     };
-            //     if (typeof this.config.advancedConfig?.clickBox.options !== 'undefined') options = {...options, ...this.config.advancedConfig.clickBox.options};
-            //     let popup = L.popup(e.latlng, options).openOn(this.map);
-            // }).bind(this);
-            // // ---------------------------
-            // const func_onEachFeature = ((feature, layer) => {
-            //     layer.on({
-            //         mouseover: func_StylingHighlight,
-            //         mouseout: func_StylingReset,
-            //         click: func_onClick
-            //     });
-            // }).bind(this);
-            //
-            // // render the geoJSON data
-            // if (geoJSON.features.length > 0) {
-            //     // delete existing features if they have already been populated
-            //     if (typeof this.geojson !== 'undefined') this.map.removeLayer(this.geojson);
-            //
-            //     // add the features to the map
-            //     this.geojson = L.geoJson(geoJSON, {
-            //         style: func_StylingNorm,
-            //         onEachFeature: func_onEachFeature
-            //     }).addTo(this.map);
-            // }
 
         } catch (e) {
             console.error("Error in QueryStatus:MultiZipcodeMap.update()");
@@ -1077,6 +855,18 @@ const func_processData = (xmlData) => {
             }
         }
     }
+
+    // calculate the normalized values
+    // ret[extractedData.$aggKey].normalizers[extractedData.$normalizer].$aggCount = ret[extractedData.$aggKey].count;
+    // let calcValue;
+    // try {
+    //     calcValue = ret[extractedData.$aggKey].count /
+    // } catch (e) {
+    //     calcValue = 0;
+    // }
+    // let calc = ret[extractedData.$aggKey].count;
+    // ret[extractedData.$aggKey].normalizers[extractedData.$normalizer].$nomalizedCalc = calcValue;
+
 
     return ret;
 };

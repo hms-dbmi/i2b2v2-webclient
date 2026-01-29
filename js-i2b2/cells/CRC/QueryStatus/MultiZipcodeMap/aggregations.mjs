@@ -9,30 +9,20 @@ export default {
                 attribs: [
                     ["stateCode", "text", "$aggKey"]
                 ],
+                // non-functioning example
                 clickBox: {
-                    options: {
-                        closeButton: "true",
-                        className: "onclick-box",
-                        autoClose: false,
-                        closeOnClick: false
-                    },
                     template: "<b>[{{ZCTA5CE10}}] - {{name}}</b><br/>{{display}} patients"
                 },
+                // non-functioning example
                 hoverBox: {
-                    position: "topright",
-                    className: "onhover-box",
                     default: "<h4>Patient Count</h4>Hover over an area",
                     template: "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
                 },
+                // non-functioning example
                 legendBox: {
-                    position: "bottomright",
-                    options: {},
                     templates: {
                         root: "<div class='map-title'><h4>Patient Count</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
-                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>",
-                        "min-max": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min}}&ndash;{{~max}}</span></div>",
-                        "no-min": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>&lt;{{~max}}</span></div>",
-                        "no-max": "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min}}+</span></div>"
+                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>"
                     }
                 }
             },
@@ -41,7 +31,23 @@ export default {
                 attribs: [
                     "$normalizer",
                     ["stateCode", "text", "$aggKey"]
-                ]
+                ],
+                // non-functioning example
+                clickBox: {
+                    template: "<b>[{{stateCode}}]</b><br/>{{count}} patients"
+                },
+                // non-functioning example
+                hoverBox: {
+                    default: "<h4>Patient Population %</h4>Hover over an area",
+                    template: "<h4>Patient Population %</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                },
+                // non-functioning example
+                legendBox: {
+                    templates: {
+                        root: "<div class='map-title'><h4>% of Population</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
+                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}%&ndash;{{~max|2}}%</span></div>"
+                    }
+                }
             }
         ]
     },
@@ -57,14 +63,45 @@ export default {
                     "$normalizer",
                     ["zip3code", "$aggKey"],
                     "text"
-                ]
+                ],
+                clickBox: {
+                    template: "<b>[{{ZCTA5CE10}}] - {{name}}</b><br/>{{display}} patients"
+                },
+                // non-functioning example
+                hoverBox: {
+                    default: "<h4>Patient Count</h4>Hover over an area",
+                    template: "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
+                },
+                // non-functioning example
+                legendBox: {
+                    templates: {
+                        root: "<div class='map-title'><h4>Patient Count</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
+                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>"
+                    }
+                }
             },
             {
                 regex: "^([0-9]{3}) - (.*)",
                 attribs: [
                     ["zip3code", "$aggKey"],
                     "text"
-                ]
+                ],
+                // non-functioning example
+                clickBox: {
+                    template: "<b>[{{stateCode}}]</b><br/>{{count}} patients"
+                },
+                // non-functioning example
+                hoverBox: {
+                    default: "<h4>Patient Population %</h4>Hover over an area",
+                    template: "<h4>Patient Population %</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                },
+                // non-functioning example
+                legendBox: {
+                    templates: {
+                        root: "<div class='map-title'><h4>% of Population</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
+                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}%&ndash;{{~max|2}}%</span></div>"
+                    }
+                }
             }
         ]
     },
@@ -78,7 +115,22 @@ export default {
                 attribs: [
                     ["zip5code", "$aggKey"],
                     "text"
-                ]
+                ],
+                clickBox: {
+                    template: "<b>[{{ZCTA5CE10}}] - {{name}}</b><br/>{{display}} patients"
+                },
+                // non-functioning example
+                hoverBox: {
+                    default: "<h4>Patient Count</h4>Hover over an area",
+                    template: "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
+                },
+                // non-functioning example
+                legendBox: {
+                    templates: {
+                        root: "<div class='map-title'><h4>Patient Count</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
+                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>"
+                    }
+                }
             },
             {
                 regex: "^\\[(.*)\\]([0-9]{5}) - (.*)",
@@ -86,7 +138,23 @@ export default {
                     "$normalizer",
                     ["zip5code", "$aggKey"],
                     "text"
-                ]
+                ],
+                // non-functioning example
+                clickBox: {
+                    template: "<b>[{{stateCode}}]</b><br/>{{count}} patients"
+                },
+                // non-functioning example
+                hoverBox: {
+                    default: "<h4>Patient Population %</h4>Hover over an area",
+                    template: "<h4>Patient Population %</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                },
+                // non-functioning example
+                legendBox: {
+                    templates: {
+                        root: "<div class='map-title'><h4>% of Population</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
+                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}%&ndash;{{~max|2}}%</span></div>"
+                    }
+                }
             }
         ]
     }
