@@ -24,7 +24,7 @@ export const BarGraph = ({ data, xAxisTitle, yAxisTitle }) => {
     };
 
     useEffect(() => {
-        d3.selectAll(".BarGraph svg > *").remove();
+        d3.select(svgRef.current).select("*").remove();
         const svg = d3.select(svgRef.current)
             .attr("width", "100%")
             .attr("height", height + margin.top + margin.bottom)
