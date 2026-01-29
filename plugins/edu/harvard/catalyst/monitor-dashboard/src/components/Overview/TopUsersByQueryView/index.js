@@ -23,6 +23,7 @@ export const TopUsersByQueryView = ({queryMetrics}) => {
     }
 
     useEffect(() => {
+        setDays("30");
         setChartData(daysToUserTotalQuery[days]);
     },[queryMetrics.topUsersByQuery]);
 
