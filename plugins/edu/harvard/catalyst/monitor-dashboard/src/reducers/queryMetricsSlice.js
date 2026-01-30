@@ -1,5 +1,12 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {QueryMetrics, QueryActivityInDays, StatusInfo, TopUsersByQuery, UserTotalQuery} from "../models";
+import {
+    QueryMetrics,
+    QueryActivityInDays,
+    StatusInfo,
+    TopUsersByQuery,
+    UserTotalQuery,
+    QueryActivityByMonth, QueryActivityAndDate
+} from "../models";
 import {QUERY_METRICS} from "../actions";
 import {defaultState} from "../defaultState";
 
@@ -35,8 +42,19 @@ export const queryMetricsSlice = createSlice({
             filteredUsersAndTotalQueries =  queryMetrics.topUsers30Days.filter(d => d.value > 0).sort((a, b) => b.value - a.value);
             topUsersByQuery.usersAndTotalQueries30Days= filteredUsersAndTotalQueries;
 
+            queryMetrics.queryActivityByMonth.sort((a, b) => b.date - a.date);
+            const queryActivityByMonth = QueryActivityByMonth({
+                activityByMonthList : queryMetrics.queryActivityByMonth.map(q => {
+                    return QueryActivityAndDate({
+                        date: q.date,
+                        queryActivity: q.value
+                    });
+                })
+            });
+
             state.queryActivityInDays = queryActivityInDays;
             state.topUsersByQuery = topUsersByQuery;
+            state.queryActivityByMonth = queryActivityByMonth;
             state.isFetching = false;
             state.statusInfo = StatusInfo({
                 status: "SUCCESS"

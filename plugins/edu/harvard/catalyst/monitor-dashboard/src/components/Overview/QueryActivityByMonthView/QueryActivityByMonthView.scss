@@ -1,15 +1,15 @@
-.TopUsersByQueryView{
+.QueryActivityByMonthView {
   position: relative;
   min-width: 30em;
 
-  .TopUsersByQueryViewHeader {
-    margin-bottom: 0.2em;
+  .QueryActivityByMonthViewHeader {
+    margin-bottom: 0.8em;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  .TopUsersByQueryViewHeaderItems {
+  .QueryActivityByMonthViewHeaderItems {
     display: flex;
     align-items: center;
     gap: 0.9em;

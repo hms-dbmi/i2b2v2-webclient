@@ -15,10 +15,9 @@ export const QueryActivityInDaysView = ({queryMetrics}) => {
     }
 
     useEffect(() => {
-        if(days === 1) {
-            setTotalQueriesInDays(queryMetrics.queryActivityInDays.totalQuery1Days);
-        }
-    }, [queryMetrics.queryActivityInDays.totalQuery1Days]);
+        setDays(1);
+        setTotalQueriesInDays(queryMetrics.queryActivityInDays.totalQuery1Days);
+    }, [queryMetrics.queryActivityInDays]);
 
     return (
         <Typography variant="body2" className={"ProjectOverviewInfoContentCentered"}>
