@@ -1,56 +1,30 @@
-<div class="container px-5 pt-3">
-  <div class="path-timeline-controls d-flex gap-3 align-items-end mb-3">
+<div class="container px-4 pt-3">
+  <div class="path-timeline-controls mb-3">
 
-    <div class="form-group">
-      <label class="form-label fw-bold">Infectious Disease</label>
-      <select class="form-select form-select-sm path-disease-select">
-        <option value="(All)">(All)</option>
-        <option value="COVID-19">COVID-19</option>
-        <option value="Influenza">Influenza</option>
-        <option value="RSV">RSV</option>
-      </select>
+    <div class="path-control-row">
+      <span class="path-links-label">Infectious Disease:</span>
+      <ul class="path-links path-disease-links"></ul>
     </div>
 
-    <div class="form-group">
-      <label class="form-label fw-bold">Overlay</label>
-      <select class="form-select form-select-sm path-overlay-select">
-        <option value="(None)">(None)</option>
-        <option value="mwra-north">Wastewater (MWRA-North)</option>
-        <option value="mwra-south">Wastewater (MWRA-South)</option>
-        <option value="mwra-combined">Wastewater (Combined)</option>
-      </select>
+    <div class="path-control-row">
+      <span class="path-links-label">Overlay:</span>
+      <ul class="path-links path-overlay-links"></ul>
     </div>
-    <!-- Legend -->
-    <div class="ms-auto">
-      <div class="fw-bold mb-1">Legend</div>
-      <div class="d-flex flex-column gap-1 small">
 
-        <div class="d-flex align-items-center gap-2">
-          <span class="legend-swatch" style="background:#1f77b4;"></span>
-          <span>COVID-19</span>
-        </div>
+    <div class="path-control-row">
+      <span class="path-links-label">View:</span>
+      <ul class="path-links path-view-links">
+        <li><span class="path-link selected" data-value="month">Month</span></li>
+        <li><span class="path-link" data-value="year">Year</span></li>
+      </ul>
+    </div>
 
-        <div class="d-flex align-items-center gap-2">
-          <span class="legend-swatch" style="background:#ff7f0e;"></span>
-          <span>Influenza</span>
-        </div>
-
-        <div class="d-flex align-items-center gap-2">
-          <span class="legend-swatch" style="background:#2ca02c;"></span>
-          <span>RSV</span>
-        </div>
-
-        <div class="d-flex align-items-center gap-2">
-          <span class="legend-swatch" style="background:#333;"></span>
-          <span>Wastewater</span>
-        </div>
-
-      </div>
+    <div class="path-legend-block">
+      <div class="path-links-label">Legend:</div>
+      <div class="path-legend-items"></div>
     </div>
 
   </div>
 </div>
-
-
 
 <div class="path-timeline-svg-container"></div>

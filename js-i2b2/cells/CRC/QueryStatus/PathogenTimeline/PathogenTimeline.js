@@ -1,12 +1,29 @@
-const margin = { top: 20, right: 80, bottom: 70, left: 60 };
-
-
-const DISEASE_COLORS = {
-    "COVID-19": "#1f77b4",        // blue
-    Influenza: "#ff7f0e",    // orange
-    RSV: "#2ca02c"           // green
+const DISEASE_REGISTRY = {
+    diseases: {
+        "COVID-19": { key: "COVID-19", label: "COVID-19", color: "#1f77b4", order: 1, aliases: ["COVID-19", "COVID19", "SARS-COV-2"] },
+        "Influenza": { key: "Influenza", label: "Influenza", color: "#ff7f0e", order: 2, aliases: ["INFLUENZA"] },
+        "RSV": { key: "RSV", label: "RSV", color: "#2ca02c", order: 3, aliases: ["RSV"] }
+    },
+    canonicalize(raw) {
+        const key = raw.trim().toUpperCase();
+        for (const disease of Object.values(this.diseases)) {
+            if (disease.aliases.includes(key)) {
+                return disease.key;
+            }
+        }
+        return raw.trim();
+    }
 };
 
+const WASTEWATER_REGISTRY = {
+    wastewater_sources: {
+        "mwra-north": { label: "Wastewater (MWRA-North)", color: "#333", order: 1, accessor: (row) => Number(row["Northern 7 day avg"]) },
+        "mwra-south": { label: "Wastewater (MWRA-South)", color: "#333", order: 2, accessor: (row) => Number(row["Southern 7 day avg"]) },
+        "mwra-combined": { label: "Wastewater (Combined)", color: "#333", order: 3, accessor: (row) => (Number(row["Northern 7 day avg"]) || 0) + (Number(row["Southern 7 day avg"]) || 0) }
+    }
+};
+
+const margin = { top: 20, right: 80, bottom: 70, left: 60 };
 
 export default class PathogenTimeline {
     constructor(componentConfig, qrsRecordInfo, qrsData) {
@@ -18,12 +35,17 @@ export default class PathogenTimeline {
             this.wastewater = null;
             this.isVisible = false;
 
+            // Wastewater fetch gating + computed range
+            this.wwRequestRange = null;
+            this._wwFetched = false;
+
             this.width = this.config.displayEl.parentElement.clientWidth;
             this.height = 400 - margin.top - margin.bottom;
 
             this.config.displayEl.style.display = "none";
             const self = this;
 
+            // Parse initial XML if present (often empty at constructor-time; update() will get real data later)
             if (
                 qrsData &&
                 typeof qrsData === "object" &&
@@ -35,7 +57,7 @@ export default class PathogenTimeline {
                     this.data.new = parseData(resultXML, this.config.advancedConfig);
                 }
             }
-            // Inject HTML template (ZipcodeMap pattern)-
+
             (async function () {
                 let response = await fetch(
                     i2b2.CRC.QueryStatus.baseURL + "PathogenTimeline/PathogenTimeline.html"
@@ -51,25 +73,94 @@ export default class PathogenTimeline {
 
                 $(self.config.template({})).appendTo(self.config.displayEl);
 
-                // Cache controls (SCOPED)
+                // Cache controls (SCOPED) - LINK STYLE CONTROLS
                 self.controls = {
-                    disease: $(".path-disease-select", self.config.displayEl)[0],
-                    overlay: $(".path-overlay-select", self.config.displayEl)[0]
+                    diseaseList: $(".path-disease-links", self.config.displayEl)[0],
+                    overlayList: $(".path-overlay-links", self.config.displayEl)[0],
+                    viewList: $(".path-view-links", self.config.displayEl)[0],
+                    legend: $(".path-legend-items", self.config.displayEl)[0],
                 };
 
-                if (self.controls.disease) {
-                    $(self.controls.disease).on("change", () => self.update());
+                // Internal state (update() reads from here)
+                self.state = {
+                    disease: "All",
+                    overlay: "None",
+                    view: "month"
+                };
+
+                // Helpers for link-style controls
+                function renderLinks(ulEl, items, selectedValue) {
+                    if (!ulEl) return;
+                    ulEl.innerHTML = "";
+                    items.forEach(({ value, label }) => {
+                        const li = document.createElement("li");
+                        const sp = document.createElement("span");
+                        sp.className = "path-link" + (value === selectedValue ? " selected" : "");
+                        sp.setAttribute("data-value", value);
+                        sp.textContent = label;
+                        li.appendChild(sp);
+                        ulEl.appendChild(li);
+                    });
                 }
 
-                if (self.controls.overlay) {
-                    $(self.controls.overlay).on("change", () => self.update());
+                function bindLinkClicks(ulEl, onPick) {
+                    if (!ulEl) return;
+                    ulEl.addEventListener("click", (e) => {
+                        const target = e.target;
+                        if (!(target instanceof HTMLElement)) return;
+                        if (!target.classList.contains("path-link")) return;
+
+                        const value = target.getAttribute("data-value");
+                        if (!value) return;
+
+                        // Toggle selected within this UL
+                        ulEl.querySelectorAll(".path-link.selected").forEach(n => n.classList.remove("selected"));
+                        target.classList.add("selected");
+
+                        onPick(value);
+                    });
                 }
 
-                // Create SVG inside template container
+                // Build items
+                const diseaseItems = [
+                    { value: "All", label: "All" },
+                    ...Object.entries(DISEASE_REGISTRY.diseases)
+                        .sort(([, a], [, b]) => a.order - b.order)
+                        .map(([key, d]) => ({ value: key, label: d.label }))
+                ];
+
+                const overlayItems = [
+                    { value: "None", label: "None" },
+                    ...Object.entries(WASTEWATER_REGISTRY.wastewater_sources)
+                        .sort(([, a], [, b]) => a.order - b.order)
+                        .map(([key, w]) => ({ value: key, label: w.label }))
+                ];
+
+                // Render initial lists
+                renderLinks(self.controls.diseaseList, diseaseItems, self.state.disease);
+                renderLinks(self.controls.overlayList, overlayItems, self.state.overlay);
+
+                // View list is in HTML; ensure we have a selected item + sync state
+                if (self.controls.viewList) {
+                    const selectedViewNode = self.controls.viewList.querySelector(".path-link.selected");
+                    if (selectedViewNode) {
+                        self.state.view = selectedViewNode.getAttribute("data-value") || "month";
+                    } else {
+                        // If HTML forgot to set selected, default to month
+                        const first = self.controls.viewList.querySelector(".path-link[data-value='month']");
+                        if (first) first.classList.add("selected");
+                        self.state.view = "month";
+                    }
+                }
+
+                // Bind clicks
+                bindLinkClicks(self.controls.diseaseList, (v) => { self.state.disease = v; self.update(); });
+                bindLinkClicks(self.controls.overlayList, (v) => { self.state.overlay = v; self.update(); });
+                bindLinkClicks(self.controls.viewList, (v) => { self.state.view = v; self.update(); });
+
+                // Create SVG
                 self.svgRoot = d3
-                    .select(
-                        $(".path-timeline-svg-container", self.config.displayEl)[0]
-                    )
+                    .select($(".path-timeline-svg-container", self.config.displayEl)[0])
                     .append("svg")
                     .attr("width", "100%")
                     .attr("height", self.height + margin.top + margin.bottom);
@@ -81,24 +172,6 @@ export default class PathogenTimeline {
 
                 self.config.displayEl.style.display = "block";
 
-
-                // Load wastewater
-                fetchWastewater("3/1/2020", "11/1/2025").then(data => {
-                    // NORMALIZE wastewater payload to array
-                    if (Array.isArray(data)) {
-                        self.wastewater = data;
-                    } else if (data?.data && Array.isArray(data.data)) {
-                        self.wastewater = data.data;
-                    } else if (data?.result && Array.isArray(data.result)) {
-                        self.wastewater = data.result;
-                    } else {
-                        console.warn("Unrecognized wastewater payload shape", data);
-                        self.wastewater = [];
-                    }
-                    self.update();
-                });
-
-
                 self.update();
             }).call(this);
 
@@ -107,8 +180,6 @@ export default class PathogenTimeline {
         }
     }
 
-
-    // ------------------------------------------------------------------
     destroy() {
         delete this.config.displayEl;
         delete this.config;
@@ -116,10 +187,8 @@ export default class PathogenTimeline {
         delete this.data;
     }
 
-    // ------------------------------------------------------------------
     update(inputData) {
         try {
-            // --- Load / refresh breakdown data ---
             if (typeof inputData !== "undefined") {
                 this.data.old = this.data.new;
 
@@ -133,18 +202,81 @@ export default class PathogenTimeline {
             const raw = this.data?.new?.result;
             if (!raw || raw.length === 0) return;
 
-            // --- Read current filter selections (with safe fallbacks) ---
-            const selectedDisease = this.controls.disease?.value || "(All)";
-            const selectedOverlay = this.controls.overlay?.value || "(None)";
+            // ------------------------------------------------------------
+            // Wastewater fetch
+            // ------------------------------------------------------------
+            if (this._wwFetched === false) {
+                this.wwRequestRange = deriveWastewaterDateRangeFromBreakdown(this.data.new);
 
+                if (this.wwRequestRange && this.wwRequestRange.ok) {
+                    this._wwFetched = true;
 
-            // --- Apply filtering ---
-            const filtered = filterBreakdown(raw, selectedDisease);
+                    fetchWastewater(this.wwRequestRange.startStr, this.wwRequestRange.endStr).then(data => {
+                        if (Array.isArray(data)) {
+                            this.wastewater = data;
+                        } else if (data?.data && Array.isArray(data.data)) {
+                            this.wastewater = data.data;
+                        } else if (data?.result && Array.isArray(data.result)) {
+                            this.wastewater = data.result;
+                        } else {
+                            console.warn("Unrecognized wastewater payload shape", data);
+                            this.wastewater = [];
+                        }
+                        this.update(); // redraw once wastewater arrives
+                    });
 
-            // --- Draw chart with filtered data ---
-            this.draw(filtered, selectedOverlay);
+                } else {
+                    console.warn("[WASTEWATER] skipping fetch:", this.wwRequestRange ? this.wwRequestRange.reason : "no range");
+                    this._wwFetched = true;
+                    this.wastewater = [];
+                }
+            }
 
-            // Resize container height to fit viz
+            // If template/SVG not ready yet, bail without drawing (but wastewater fetch can still run above)
+            if (!this.svg || !this.controls || !this.state) return;
+
+            const selectedDisease = this.state?.disease || "All";
+            const selectedOverlay = this.state?.overlay || "None";
+            const selectedView = this.state?.view || "month"; // "month" | "year"
+
+            // IMPORTANT: filter by grain so month view doesn't accidentally include year rows (and vice versa)
+            const viewGrain = (selectedView === "year") ? "Y" : "M";
+            const viewRows = raw.filter(r => (r.grain || "").toUpperCase() === viewGrain);
+
+            const filtered = filterBreakdown(viewRows, selectedDisease);
+
+            const diseasesInView = filtered.map(row => row.disease);
+            const currentKeys = Array.from(new Set(diseasesInView));
+
+            // Clear legend
+            if (this.controls?.legend) this.controls.legend.innerHTML = "";
+
+            currentKeys.forEach((key) => {
+                const diseaseConfig = DISEASE_REGISTRY.diseases[key];
+                if (!diseaseConfig) return;
+                $(this.controls.legend).append(
+                    `<span class="legend-row">
+                        <span class="legend-swatch" style="background:${diseaseConfig.color}"></span>
+                        <span>${diseaseConfig.label}</span>
+                    </span>`
+                );
+            });
+
+            const hasWastewater = (selectedOverlay !== "None");
+            if (hasWastewater) {
+                const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+                if (waterConfig) {
+                    $(this.controls.legend).append(
+                        `<span class="legend-row">
+                            <span class="legend-swatch" style="background:${waterConfig.color}"></span>
+                            <span>Wastewater</span>
+                        </span>`
+                    );
+                }
+            }
+
+            this.draw(filtered, selectedOverlay, selectedView);
+
             if (this.isVisible) {
                 this.config.displayEl.parentElement.style.height =
                     this.config.displayEl.scrollHeight + "px";
@@ -156,10 +288,7 @@ export default class PathogenTimeline {
         return true;
     }
 
-    // ------------------------------------------------------------------
-   
-    draw(records, selectedOverlay) {
- 
+    draw(records, selectedOverlay, selectedView) {
         if (!records || records.length === 0) {
             this.svg.selectAll("*").remove();
             return;
@@ -171,16 +300,22 @@ export default class PathogenTimeline {
         this.svg.selectAll("*").remove();
 
         // -----------------------------
-        // Group disease series
+        // Bucket + aggregate patient records by month/year
         // -----------------------------
-        const seriesByDisease = d3.group(records, d => d.disease);
+        const bucketedPatients = aggregatePatientsByView(records, selectedView);
 
-        // -----------------------------
+        // If (for some reason) nothing survived bucketing, bail cleanly
+        if (!bucketedPatients || bucketedPatients.length === 0) {
+            return;
+        }
+
+        // Group disease series
+        const seriesByDisease = d3.group(bucketedPatients, d => d.disease);
+
         // LEFT Y SCALE (patients)
-        // -----------------------------
-        const maxPatients = d3.max(records, d => d.value);
+        const maxPatients = d3.max(bucketedPatients, d => d.value);
         const yLeft = d3.scaleLinear()
-            .domain([0, maxPatients])
+            .domain([0, maxPatients || 0])
             .nice()
             .range([height, 0]);
 
@@ -189,76 +324,102 @@ export default class PathogenTimeline {
         // -----------------------------
         let yRight = null;
         let wwPoints = [];
+        let wwConfig = null;
 
-        if (selectedOverlay !== "(None)" && this.wastewater && this.wastewater.length > 0) {
+        if (selectedOverlay !== "None" && this.wastewater && this.wastewater.length > 0) {
+            const overlayConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+            wwConfig = overlayConfig;
 
-           const monthlyMap = d3.rollup(
-                this.wastewater,
-                rows => {
-                    const values = rows
-                        .map(d => {
-                            if (selectedOverlay === "mwra-north") {
-                                return Number(d["Northern 7 day avg"]);
-                            }
-                            if (selectedOverlay === "mwra-south") {
-                                return Number(d["Southern 7 day avg"]);
-                            }
-                            if (selectedOverlay === "mwra-combined") {
-                                const n = Number(d["Northern 7 day avg"]);
-                                const s = Number(d["Southern 7 day avg"]);
-                                return (isNaN(n) ? 0 : n) + (isNaN(s) ? 0 : s);
-                            }
-                            return NaN;
-                        })
-                        .filter(v => !isNaN(v));
+            if (!overlayConfig || typeof overlayConfig.accessor !== "function") {
+                console.warn("Unknown wastewater overlay:", selectedOverlay);
+                wwPoints = [];
+                yRight = null;
+            } else {
+                const wwRollup = d3.rollup(
+                    this.wastewater,
+                    rows => {
+                        const values = rows
+                            .map(row => overlayConfig.accessor(row))
+                            .filter(v => v !== null && v !== undefined && !isNaN(v));
+                        return values.length ? d3.mean(values) : null;
+                    },
+                    d => {
+                        // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
+                        const dt = parseYMDLocal(d["Sample Date"]);
+                        if (!dt) return null;
 
-                    return values.length
-                        ? d3.mean(values)
-                        : null;
-                },
-                d => {
-                    const dt = new Date(d["Sample Date"]);
-                    return isNaN(dt.getTime())
-                        ? null
-                        : `${dt.getFullYear()}-${dt.getMonth()}`;
+                        if (selectedView === "year") {
+                            return `${dt.getFullYear()}`;
+                        }
+                        // month (0-based month key, used consistently below)
+                        return `${dt.getFullYear()}-${dt.getMonth()}`;
+                    }
+                );
+
+                wwPoints = Array.from(wwRollup.entries())
+                    .filter(([k, v]) => k !== null && v !== null)
+                    .map(([key, value]) => {
+                        if (selectedView === "year") {
+                            const year = Number(key);
+                            const date = new Date(year, 0, 1);
+                            return { date, value };
+                        }
+                        const [year, month] = key.split("-").map(Number);
+                        const date = new Date(year, month, 1);
+                        return { date, value };
+                    })
+                    .filter(p => p.date instanceof Date && !isNaN(p.date.getTime()));
+
+                if (wwPoints.length > 0) {
+                    yRight = d3.scaleLinear()
+                        .domain([0, d3.max(wwPoints, d => d.value)])
+                        .nice()
+                        .range([height, 0]);
                 }
-            );
+            }
+        }
 
-            wwPoints = Array.from(monthlyMap.entries())
-                .filter(([k, v]) => k !== null && v !== null)
-                .map(([key, value]) => {
-                    const [year, month] = key.split("-").map(Number);
-                    return {
-                        date: new Date(year, month, 1),
-                        value
-                    };
-                });
+        // -----------------------------
+        // X SCALE (respect patient breakdown only)
+        // -----------------------------
+        const patientExtent = d3.extent(bucketedPatients, d => d.date);
 
+        // Guard: if extent is bad, bail
+        if (!patientExtent[0] || !patientExtent[1]) {
+            return;
+        }
 
+        const xScale = d3.scaleTime()
+            .domain(patientExtent)
+            .range([0, width]);
 
+        // Clip overlay points to patient domain so overlay can't expand x-axis earlier/later
+        if (wwPoints.length && patientExtent[0] && patientExtent[1]) {
+            const x0 = patientExtent[0].getTime();
+            const x1 = patientExtent[1].getTime();
+
+            wwPoints = wwPoints.filter(p => {
+                const t = p.date.getTime();
+                return t >= x0 && t <= x1;
+            });
+
+            // Recompute yRight after clipping (so right axis matches visible overlay)
             if (wwPoints.length > 0) {
                 yRight = d3.scaleLinear()
                     .domain([0, d3.max(wwPoints, d => d.value)])
                     .nice()
                     .range([height, 0]);
+            } else {
+                yRight = null;
             }
         }
 
         // -----------------------------
-        // X SCALE (patients + wastewater)
-        // -----------------------------
-        let allDates = records.map(d => d.date);
-        if (wwPoints.length) {
-            allDates = allDates.concat(wwPoints.map(d => d.date));
-        }
-
-        const xScale = d3.scaleTime()
-            .domain(d3.extent(allDates))
-            .range([0, width]);
-
-        // -----------------------------
         // AXES
         // -----------------------------
+        const tickFormat = (selectedView === "year")
+            ? d3.timeFormat("%Y")
+            : d3.timeFormat("%Y-%m");
 
         // X axis
         this.svg.append("g")
@@ -267,7 +428,7 @@ export default class PathogenTimeline {
             .call(
                 d3.axisBottom(xScale)
                     .ticks(10)
-                    .tickFormat(d3.timeFormat("%Y-%m"))
+                    .tickFormat(tickFormat)
             )
             .selectAll("text")
             .attr("transform", "rotate(-45)")
@@ -278,11 +439,28 @@ export default class PathogenTimeline {
             .classed("y-axis left", true)
             .call(d3.axisLeft(yLeft).tickFormat(d3.format(".2~s")));
 
-        yAxisLeft.append("text")
+        const yLabelText = "Number of Patients";
+
+        const yLabelLeft = yAxisLeft.append("text")
             .attr("class", "y-label")
+            .attr("fill", "currentColor")
+            .attr("letter-spacing", "1.16")
             .attr("text-anchor", "middle")
-            .attr("transform", `translate(${-40}, ${height / 2}) rotate(-90)`)
-            .text("Number of Patients");
+            .text(yLabelText)
+            .attr("transform", "rotate(-90)");
+
+        // After render, center it using SVG bbox
+        yLabelLeft.each(function () {
+            let w = 0;
+            try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
+
+            const x = -(height / 2);          // centered vertically
+            const y = -margin.left + 28;      // gutter position
+
+            d3.select(this)
+                .attr("x", x)
+                .attr("y", y);
+        });
 
         // Right Y axis (wastewater)
         if (yRight) {
@@ -294,6 +472,7 @@ export default class PathogenTimeline {
             yAxisRight.append("text")
                 .attr("class", "y-label")
                 .attr("text-anchor", "middle")
+                .attr("letter-spacing", "1.16")
                 .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
                 .text("Wastewater Level");
         }
@@ -316,7 +495,7 @@ export default class PathogenTimeline {
         // -----------------------------
         for (let [disease, rows] of seriesByDisease.entries()) {
             rows = rows.slice().sort((a, b) => a.date - b.date);
-            const color = DISEASE_COLORS[disease] || "#999";
+            const color = DISEASE_REGISTRY.diseases[disease]?.color || "#999";
 
             // Line
             this.svg.append("path")
@@ -338,9 +517,10 @@ export default class PathogenTimeline {
                 .attr("fill", color)
                 .attr("stroke", color)
                 .append("title")
-                .text(d =>
-                    `${d.diseaseRaw ?? d.disease} — ${d.dateStr}\n[ ${d.display ?? d.value} patients ]`
-                );
+                .text(d => {
+                    const label = tickFormat(d.date);
+                    return `${d.diseaseRaw ?? d.disease} — ${label}\n[ ${d.display ?? d.value} patients ]`;
+                });
         }
 
         // -----------------------------
@@ -353,7 +533,7 @@ export default class PathogenTimeline {
             this.svg.append("path")
                 .datum(wwPoints)
                 .attr("fill", "none")
-                .attr("stroke", "#333")
+                .attr("stroke", wwConfig.color)
                 .attr("stroke-width", 2)
                 .attr("stroke-dasharray", "4 3")
                 .attr("d", wastewaterLine);
@@ -367,22 +547,16 @@ export default class PathogenTimeline {
                 .attr("cx", d => xScale(d.date))
                 .attr("cy", d => yRight(d.value))
                 .attr("r", 3)
-                .attr("fill", "#333")
-                .attr("stroke", "#333")
+                .attr("fill", wwConfig.color)
+                .attr("stroke", wwConfig.color)
                 .append("title")
                 .text(d => {
-                    const dateStr = isNaN(d.date.getTime())
-                        ? "Invalid date"
-                        : d3.timeFormat("%Y-%m-%d")(d.date);
-                    return `Wastewater\n${dateStr}\n${d.value}`;
+                    const label = tickFormat(d.date);
+                    return `Wastewater\n${label}\n${d.value}`;
                 });
         }
     }
 
-
-
-
-    // ------------------------------------------------------------------
     redraw(width) {
         try {
             this.width = width;
@@ -392,7 +566,6 @@ export default class PathogenTimeline {
         }
     }
 
-    // ------------------------------------------------------------------
     show() {
         try {
             this.isVisible = true;
@@ -411,7 +584,6 @@ export default class PathogenTimeline {
         }
     }
 
-    // ------------------------------------------------------------------
     hide() {
         try {
             this.config.displayEl.style.display = "none";
@@ -440,36 +612,30 @@ let parseData = function (xmlData, advancedConfig) {
         if (!column) continue;
 
         // Expected format:
-        // Site ^ YYYY-MM-DD ^ YYYY Mon ^ Disease
+        // Grain ^ YYYY-MM-DD ^ YYYY Mon ^ Disease
         const parts = column.split("^");
         if (parts.length < 4) continue;
 
-        const site = parts[0].trim();
+        const grain = parts[0].trim().toUpperCase();
         const dateStr = parts[1].trim();
-        const label = parts[2].trim();   
+        const label = parts[2].trim();
         const diseaseRaw = parts[3].trim();
-        const disease = canonicalizeDisease(diseaseRaw);
+        const disease = DISEASE_REGISTRY.canonicalize(diseaseRaw);
 
+        // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
+        const date = parseYMDLocal(dateStr);
+        if (!date) continue;
 
-        const date = new Date(dateStr);
-        if (isNaN(date.getTime())) continue;
-
-        // Raw display value from server
         const rawText = p.textContent.trim();
 
-
         let value = NaN;
-
         const numberMatch = rawText.match(/\d+/);
         if (numberMatch) {
             value = parseInt(numberMatch[0], 10);
         }
-
         if (isNaN(value)) value = 0;
 
-        // Advanced filtering
         let include = true;
-
         if (advancedConfig) {
             if (advancedConfig.hideZeros === true && value === 0) {
                 include = false;
@@ -488,7 +654,7 @@ let parseData = function (xmlData, advancedConfig) {
         if (!include) continue;
 
         breakdown.result.push({
-            site,
+            grain,
             disease,
             diseaseRaw,
             date,
@@ -502,48 +668,21 @@ let parseData = function (xmlData, advancedConfig) {
 };
 
 // ======================================================================
-// Normalize Disease Keys
-// ======================================================================
-
-function canonicalizeDisease(raw) {
-    if (!raw) return raw;
-
-    const key = raw.trim().toUpperCase();
-
-    if (key === "COVID-19" || key === "COVID19" || key === "SARS-COV-2") {
-        return "COVID-19";
-    }
-    if (key === "INFLUENZA") {
-        return "Influenza";
-    }
-    if (key === "RSV") {
-        return "RSV";
-    }
-
-    // fallback: preserve original
-    return raw;
-}
-
-
-// ======================================================================
 // Helpers
 // ======================================================================
 
 function filterBreakdown(rows, diseaseFilter) {
     if (!rows) return [];
-
     return rows.filter(row => {
-        let diseaseOk =
+        const diseaseOk =
             !diseaseFilter ||
-            diseaseFilter === "(All)" ||
+            diseaseFilter === "All" ||
             diseaseFilter === "ALL" ||
             row.disease === diseaseFilter;
-
         return diseaseOk;
     });
 }
 
-// Make a string safe to use as a CSS class fragment
 function cssSafeKey(str) {
     return String(str)
         .toLowerCase()
@@ -551,27 +690,146 @@ function cssSafeKey(str) {
         .replace(/^-+|-+$/g, "");
 }
 
-async function fetchWastewater(startDate, endDate) {
-    const msg = `
-        <ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
-            <message_header>
-                <proxy>
-                    <redirect_url>
-                        http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData
-                    </redirect_url>
-                </proxy>
-            </message_header>
-            <message_body>
-                {&quot;Start Date&quot;:&quot;${startDate}&quot;, &quot;End Date&quot;:&quot;${endDate}&quot;}
-            </message_body>
-        </ns6:request>
-        `;
+/**
+ * Parse a date string into a LOCAL Date.
+ * Supports:
+ *  - "YYYY-MM-DD"
+ *  - "YYYY-MM-DDTHH:mm:ss..." (time portion ignored)
+ *  - "M/D/YYYY" or "MM/DD/YYYY"
+ */
+function parseYMDLocal(s) {
+    if (!s || typeof s !== "string") return null;
 
+    const raw = s.trim();
+
+    // Handle ISO-ish with time: "YYYY-MM-DDTHH:..."
+    const isoPrefix = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (isoPrefix) {
+        const year = Number(isoPrefix[1]);
+        const month = Number(isoPrefix[2]) - 1;
+        const day = Number(isoPrefix[3]);
+        const dt = new Date(year, month, day);
+        return isNaN(dt.getTime()) ? null : dt;
+    }
+
+    // Handle US format: "M/D/YYYY" or "MM/DD/YYYY"
+    const us = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (us) {
+        const month = Number(us[1]) - 1;
+        const day = Number(us[2]);
+        const year = Number(us[3]);
+        const dt = new Date(year, month, day);
+        return isNaN(dt.getTime()) ? null : dt;
+    }
+
+    return null;
+}
+
+/**
+ * Returns a Date snapped to the start of the bucket (month or year).
+ */
+function bucketDate(dt, view) {
+    if (!(dt instanceof Date) || isNaN(dt.getTime())) return null;
+    if (view === "year") {
+        return new Date(dt.getFullYear(), 0, 1);
+    }
+    return new Date(dt.getFullYear(), dt.getMonth(), 1);
+}
+
+/**
+ * Aggregate patient records to month/year buckets per disease.
+ * Sums values per (disease, bucket).
+ */
+function aggregatePatientsByView(records, view) {
+    const rolled = d3.rollup(
+        records,
+        rows => {
+            const sum = d3.sum(rows, r => Number(r.value) || 0);
+            return {
+                value: sum,
+                display: String(sum),
+                diseaseRaw: rows[0]?.diseaseRaw,
+                disease: rows[0]?.disease,
+                date: bucketDate(rows[0]?.date, view)
+            };
+        },
+        r => r.disease,
+        r => {
+            const b = bucketDate(r.date, view);
+            return b ? +b : null;
+        }
+    );
+
+    const out = [];
+    for (const [disease, dateMap] of rolled.entries()) {
+        for (const [dateKey, agg] of dateMap.entries()) {
+            if (dateKey === null) continue;
+
+            const date = new Date(Number(dateKey));
+            if (isNaN(date.getTime())) continue;
+
+            out.push({
+                disease,
+                diseaseRaw: agg.diseaseRaw,
+                date,
+                value: agg.value,
+                display: agg.display
+            });
+        }
+    }
+
+    return out;
+}
+
+// ------------------------------------------------------------
+// Wastewater service plumbing
+// ------------------------------------------------------------
+const WASTEWATER_URLS = {
+    dev: "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
+    prod: "http://prod-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData"
+};
+
+function detectEnv() {
+    const override = (window.PATHOGEN_TIMELINE_ENV || "").toLowerCase();
+    if (override === "dev" || override === "prod") return override;
+
+    const host = (window.location?.hostname || "").toLowerCase();
+
+    // Local dev should use dev backend by default
+    if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return "dev";
+
+    if (host.includes("dev") || host.includes("catalyst")) return "dev";
+
+    return "prod";
+}
+
+function getWastewaterServiceUrl() {
+    const env = detectEnv();
+    return WASTEWATER_URLS[env] || WASTEWATER_URLS.prod;
+}
+
+async function fetchWastewater(startDate, endDate) {
+    const redirectUrl = getWastewaterServiceUrl();
+    const env = detectEnv();
+    console.info(
+        `[WASTEWATER] ${env.toUpperCase()} detected; calling ${env.toUpperCase()} wastewater service`
+    );
+
+    const msg = `
+    <ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
+        <message_header>
+        <proxy>
+            <redirect_url>${redirectUrl}</redirect_url>
+        </proxy>
+        </message_header>
+        <message_body>
+        {&quot;Start Date&quot;:&quot;${startDate}&quot;, &quot;End Date&quot;:&quot;${endDate}&quot;}
+        </message_body>
+    </ns6:request>
+    `;
 
     try {
-        // --------------------------------------------------
-        // Preferred path (only if proxy helper exists)
-        // --------------------------------------------------
+        // Preferred proxy helper
         if (i2b2?.hive?.proxy?.handler) {
             const response = await i2b2.hive.proxy.handler({
                 url: "/~proxy",
@@ -587,20 +845,16 @@ async function fetchWastewater(startDate, endDate) {
             return bodyNode ? JSON.parse(bodyNode.nodeValue) : null;
         }
 
-        // --------------------------------------------------
-        // Fallback path: direct POST to /~proxy
-        // --------------------------------------------------
+        // Fallback direct POST to /~proxy
         const response = await fetch("/~proxy", {
             method: "POST",
-            headers: {
-                "Content-Type": "text/xml"
-            },
+            headers: { "Content-Type": "text/xml" },
             body: msg,
-            credentials: "include" // REQUIRED for i2b2 session
+            credentials: "include"
         });
 
         if (!response.ok) {
-            console.error("Wastewater /~proxy call failed:", response.status);
+            console.error("Wastewater /~proxy call failed:", response.status, "env:", detectEnv(), "redirect:", redirectUrl);
             return null;
         }
 
@@ -608,19 +862,42 @@ async function fetchWastewater(startDate, endDate) {
         const xml = new DOMParser().parseFromString(text, "text/xml");
         const bodyNode = xml.querySelector("message_body");
 
-
-            let parsed = null;
-
-            if (bodyNode) {
-                parsed = JSON.parse(bodyNode.textContent);
-            }
-            
-            return parsed;
-
+        return bodyNode ? JSON.parse(bodyNode.textContent) : null;
 
     } catch (err) {
-        console.error("Failed to fetch wastewater data", err);
+        console.error("Failed to fetch wastewater data", err, "env:", detectEnv(), "redirect:", redirectUrl);
         return null;
     }
 }
 
+// ------------------------------------------------------------
+// Derive wastewater request date range from patient breakdown
+// ------------------------------------------------------------
+function deriveWastewaterDateRangeFromBreakdown(breakdown) {
+    if (!breakdown || !Array.isArray(breakdown.result) || breakdown.result.length === 0) {
+        return { ok: false, startStr: null, endStr: null, reason: "missing/empty breakdown.result" };
+    }
+
+    var minT = null, maxT = null;
+
+    for (var i = 0; i < breakdown.result.length; i++) {
+        var dt = breakdown.result[i] && breakdown.result[i].date;
+        if (!(dt instanceof Date)) continue;
+        var t = dt.getTime();
+        if (isNaN(t)) continue;
+
+        if (minT === null || t < minT) minT = t;
+        if (maxT === null || t > maxT) maxT = t;
+    }
+
+    if (minT === null || maxT === null || maxT < minT) {
+        return { ok: false, startStr: null, endStr: null, reason: "could not derive valid min/max dates" };
+    }
+
+    function toMDY(t) {
+        var d = new Date(t);
+        return (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+    }
+
+    return { ok: true, startStr: toMDY(minT), endStr: toMDY(maxT), reason: null };
+}

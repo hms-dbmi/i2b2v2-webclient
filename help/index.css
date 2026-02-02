@@ -8,8 +8,19 @@
     padding-top:.5rem;
 }
 
+#i2b2-help {
+    margin: 1em 2.5em 4em 2.5em;
+}
+
+#i2b2-help .content-header{
+    color: #2666a1;
+    margin-top: 2em;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
 #i2b2-help .content {
-  margin: 0.8em 1.8em;
+  margin: 1.2em 0;
 }
 
 #i2b2-help .imgcontainer {
@@ -20,9 +31,5 @@
 }
 
 #i2b2-help img.logo {
-    width: 80%;
-}
-
-#i2b2-help .doc-description {
-   margin-top: 1.1em;
+    width: 25em;
 }

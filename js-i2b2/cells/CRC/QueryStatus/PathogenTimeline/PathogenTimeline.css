@@ -1,61 +1,149 @@
 /* ============================================================
-   InfectiousTimeline CSS — Full Corrected File
+   Pathogen Timeline CSS
    ============================================================ */
 
 /* Match BarGraph's y-label styling */
 .component-instance-viz.viztype-PATHOGENTIMELINE svg text.y-label {
-    fill: var(--text-primary-dark, #000);
-    font-size: 10px;
+  fill: var(--text-primary-dark, #000);
+  font-size: 10px;
 }
 
 /* -----------------------------------------------------------
    Hover bold for X-axis labels (match BarGraph behavior)
    ----------------------------------------------------------- */
 .component-instance-viz.viztype-PATHOGENTIMELINE svg .x-axis g.tick text:hover {
-    font-weight: bold;
-    cursor: default;
+  font-weight: bold;
+  cursor: default;
 }
-
 
 /* General text styling inside the chart */
 .component-instance-viz.viztype-PATHOGENTIMELINE svg text {
-    font-family: sans-serif;
-    fill: var(--text-primary-dark, #000);
+  font-family: sans-serif;
+  fill: var(--text-primary-dark, #000);
 }
 
 .component-instance-viz.viztype-PATHOGENTIMELINE,
 .component-instance-viz.viztype-PATHOGENTIMELINE * {
-    overflow: visible !important;
+  overflow: visible !important;
+}
+
+/* Pull controls container to the right edge (override px-5) */
+.component-instance-viz.viztype-PATHOGENTIMELINE .container.px-5.pt-3 {
+  padding-right: 0 !important;
 }
 
 /* SVG must explicitly allow overflow — Chrome collapses it otherwise */
 .component-instance-viz.viztype-PATHOGENTIMELINE svg {
-    overflow: visible !important;
+  overflow: visible !important;
 }
 
 .component-instance-viz.viztype-PATHOGENTIMELINE svg text.y-label {
-    display: inline !important;
+  display: inline !important;
 }
 
-.path-timeline-controls .form-label {
-    font-size: 0.85rem;
-}
-
-.path-timeline-controls {
-    flex-wrap: wrap; /* allows stacking on small screens */
-}
-
+/* Right Y axis styling */
 .y-axis.right text {
-    fill: #333;
+  fill: #333;
 }
 .y-axis.right path,
 .y-axis.right line {
-    stroke: #333;
+  stroke: #333;
 }
 
-.legend-swatch {
-  width: 14px;
-  height: 14px;
+/* -----------------------------------------------------------
+   CONTROLS: normalize to ZIPCODEMAP link-control style
+   ----------------------------------------------------------- */
+
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-timeline-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.175rem; /* reduced ~50% from earlier */
+}
+
+/* Each row behaves like "Label: <ul>" */
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-control-row {
+  width: fit-content;
+}
+
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-links-label {
+  font-weight: bold;
+  margin-left: 0.5rem;
+}
+
+/* Horizontal list */
+.component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links {
+  display: inline-block;
+  padding: 0;
+  margin: 0.25rem 0.5rem; /* tightened vertical spacing */
+}
+
+.component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links li {
+  display: inline;
+}
+
+/* Clickable link-like spans */
+.component-instance-viz.viztype-PATHOGENTIMELINE span.path-link {
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.component-instance-viz.viztype-PATHOGENTIMELINE span.path-link:hover {
+  border-bottom: 1px solid;
+}
+
+.component-instance-viz.viztype-PATHOGENTIMELINE span.path-link.selected {
+  border-bottom: 1px solid;
+}
+
+/* Mimic ZIPCODEMAP pseudo separator image */
+.component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links li:not(:last-child)::after {
+  content: " ";
+  letter-spacing: 1em;
+  background: center center no-repeat
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=);
+}
+
+/* -----------------------------------------------------------
+   LEGEND: stays in controls section, inline with label, wraps
+   ----------------------------------------------------------- */
+
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-block {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;      /* allow legend items to wrap to next line */
+  gap: 0.35rem 0.9rem;  /* row/col gap */
+
+  margin-top: 0;
+  margin-left: 0;       /* prevent double-indent vs other labels */
+}
+
+/* Keep "Legend:" aligned with the other row labels */
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-block .path-links-label {
+  margin-left: 0.5rem;
+}
+
+/* Horizontal, grows horizontally, wraps */
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  align-items: center;
+  margin-top: 0;        /* keep label + items on same line */
+}
+
+/* Each legend item is swatch + label */
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-items .legend-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Swatch styling (normalize similar to ZIPCODEMAP boxes) */
+.component-instance-viz.viztype-PATHOGENTIMELINE .legend-swatch {
+  width: 1rem;
+  height: 1rem;
   border-radius: 2px;
   display: inline-block;
+  outline: 1px solid #000;
+  outline-offset: -1px;
 }
