@@ -781,6 +781,34 @@ function aggregatePatientsByView(records, view) {
     return out;
 }
 
+function pivotToSeasonOutlookRows(aggregatedRecords){
+    if (!aggregatedRecords || !Array.isArray(aggregatedRecords) || aggregatedRecords.length === 0) {
+        return [];
+    } 
+
+    const out = [];
+
+    for (const row of aggregatedRecords) {
+        let date = row.date;
+
+        if (isNaN(date.getTime())) continue;
+
+        let year = date.getFullYear();
+        let monthIndex = date.getMonth();
+        let disease = row.disease;
+        let value = row.value;
+
+        out.push({
+            year,
+            monthIndex,
+            disease,
+            value
+        });
+    }
+
+}
+
+
 // ------------------------------------------------------------
 // Wastewater service plumbing
 // ------------------------------------------------------------
