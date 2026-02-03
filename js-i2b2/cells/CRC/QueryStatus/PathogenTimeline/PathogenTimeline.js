@@ -237,7 +237,13 @@ export default class PathogenTimeline {
 
             const selectedDisease = this.state?.disease || "All";
             const selectedOverlay = this.state?.overlay || "None";
-            const selectedView = this.state?.view || "month"; // "month" | "year"
+            const selectedView = this.state?.view || "month"; // "month" | "year" | "season"
+
+            // Branching to Season Outlook
+            if (selectedView === "season"){
+
+            }
+
 
             // IMPORTANT: filter by grain so month view doesn't accidentally include year rows (and vice versa)
             const viewGrain = (selectedView === "year") ? "Y" : "M";
@@ -791,7 +797,7 @@ function pivotToSeasonOutlookRows(aggregatedRecords){
     for (const row of aggregatedRecords) {
         let date = row.date;
 
-        if (isNaN(date.getTime())) continue;
+        if (!(date instanceof Date) || isNaN(date.getTime())) continue;
 
         let year = date.getFullYear();
         let monthIndex = date.getMonth();
@@ -805,7 +811,7 @@ function pivotToSeasonOutlookRows(aggregatedRecords){
             value
         });
     }
-
+    return out;
 }
 
 
