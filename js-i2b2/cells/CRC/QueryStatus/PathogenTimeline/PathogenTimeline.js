@@ -1,14 +1,14 @@
-const DISEASE_REGISTRY = {
-    diseases: {
+const DIAGNOSIS_REGISTRY = {
+    diagnosis: {
         "COVID-19": { key: "COVID-19", label: "COVID-19", color: "#1f77b4", order: 1, aliases: ["COVID-19", "COVID19", "SARS-COV-2"] },
         "Influenza": { key: "Influenza", label: "Influenza", color: "#ff7f0e", order: 2, aliases: ["INFLUENZA"] },
         "RSV": { key: "RSV", label: "RSV", color: "#2ca02c", order: 3, aliases: ["RSV"] }
     },
     canonicalize(raw) {
         const key = raw.trim().toUpperCase();
-        for (const disease of Object.values(this.diseases)) {
-            if (disease.aliases.includes(key)) {
-                return disease.key;
+        for (const diagnosis of Object.values(this.diagnosis)) {
+            if (diagnosis.aliases.includes(key)) {
+                return diagnosis.key;
             }
         }
         return raw.trim();
@@ -17,9 +17,7 @@ const DISEASE_REGISTRY = {
 
 const WASTEWATER_REGISTRY = {
     wastewater_sources: {
-        "mwra-north": { label: "Wastewater (MWRA-North)", color: "#333", order: 1, accessor: (row) => Number(row["Northern 7 day avg"]) },
-        "mwra-south": { label: "Wastewater (MWRA-South)", color: "#333", order: 2, accessor: (row) => Number(row["Southern 7 day avg"]) },
-        "mwra-combined": { label: "Wastewater (Combined)", color: "#333", order: 3, accessor: (row) => (Number(row["Northern 7 day avg"]) || 0) + (Number(row["Southern 7 day avg"]) || 0) }
+        "mwra-combined": { label: "Wastewater MWRA COVID-19", color: "#333", order: 3, accessor: (row) => (Number(row["Northern 7 day avg"]) || 0) + (Number(row["Southern 7 day avg"]) || 0) }
     }
 };
 
@@ -75,17 +73,17 @@ export default class PathogenTimeline {
 
                 // Cache controls (SCOPED) - LINK STYLE CONTROLS
                 self.controls = {
-                    diseaseList: $(".path-disease-links", self.config.displayEl)[0],
+                    diagnosisList: $(".path-diagnosis-links", self.config.displayEl)[0],
                     overlayList: $(".path-overlay-links", self.config.displayEl)[0],
-                    viewList: $(".path-view-links", self.config.displayEl)[0],
+                    aggregationList: $(".path-aggregation-links", self.config.displayEl)[0],
                     legend: $(".path-legend-items", self.config.displayEl)[0],
                 };
 
                 // Internal state (update() reads from here)
                 self.state = {
-                    disease: "All",
+                    diagnosis: "All",
                     overlay: "None",
-                    view: "month"
+                    aggregation: "month"
                 };
 
                 // Helpers for link-style controls
@@ -122,9 +120,9 @@ export default class PathogenTimeline {
                 }
 
                 // Build items
-                const diseaseItems = [
+                const diagnosisItems = [
                     { value: "All", label: "All" },
-                    ...Object.entries(DISEASE_REGISTRY.diseases)
+                    ...Object.entries(DIAGNOSIS_REGISTRY.diagnosis)
                         .sort(([, a], [, b]) => a.order - b.order)
                         .map(([key, d]) => ({ value: key, label: d.label }))
                 ];
@@ -137,26 +135,26 @@ export default class PathogenTimeline {
                 ];
 
                 // Render initial lists
-                renderLinks(self.controls.diseaseList, diseaseItems, self.state.disease);
+                renderLinks(self.controls.diagnosisList, diagnosisItems, self.state.diagnosis);
                 renderLinks(self.controls.overlayList, overlayItems, self.state.overlay);
 
-                // View list is in HTML; ensure we have a selected item + sync state
-                if (self.controls.viewList) {
-                    const selectedViewNode = self.controls.viewList.querySelector(".path-link.selected");
-                    if (selectedViewNode) {
-                        self.state.view = selectedViewNode.getAttribute("data-value") || "month";
+                // Aggregation list is in HTML; ensure we have a selected item + sync state
+                if (self.controls.aggregationList) {
+                    const selectedAggregationNode = self.controls.aggregationList.querySelector(".path-link.selected");
+                    if (selectedAggregationNode) {
+                        self.state.aggregation = selectedAggregationNode.getAttribute("data-value") || "month";
                     } else {
                         // If HTML forgot to set selected, default to month
-                        const first = self.controls.viewList.querySelector(".path-link[data-value='month']");
+                        const first = self.controls.aggregationList.querySelector(".path-link[data-value='month']");
                         if (first) first.classList.add("selected");
-                        self.state.view = "month";
+                        self.state.aggregation = "month";
                     }
                 }
 
                 // Bind clicks
-                bindLinkClicks(self.controls.diseaseList, (v) => { self.state.disease = v; self.update(); });
+                bindLinkClicks(self.controls.diagnosisList, (v) => { self.state.diagnosis = v; self.update(); });
                 bindLinkClicks(self.controls.overlayList, (v) => { self.state.overlay = v; self.update(); });
-                bindLinkClicks(self.controls.viewList, (v) => { self.state.view = v; self.update(); });
+                bindLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
 
                 // Create SVG
                 self.svgRoot = d3
@@ -235,35 +233,29 @@ export default class PathogenTimeline {
             // If template/SVG not ready yet, bail without drawing (but wastewater fetch can still run above)
             if (!this.svg || !this.controls || !this.state) return;
 
-            const selectedDisease = this.state?.disease || "All";
+            const selectedDiagnosis = this.state?.diagnosis || "All";
             const selectedOverlay = this.state?.overlay || "None";
-            const selectedView = this.state?.view || "month"; // "month" | "year" | "season"
+            const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year"
 
-            // Branching to Season Outlook
-            if (selectedView === "season"){
+            // IMPORTANT: filter by grain so month aggregation doesn't accidentally include year rows (and vice versa)
+            const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
+            const aggregationRows = raw.filter(r => (r.grain || "").toUpperCase() === aggregationGrain);
 
-            }
+            const filtered = filterBreakdown(aggregationRows, selectedDiagnosis);
 
-
-            // IMPORTANT: filter by grain so month view doesn't accidentally include year rows (and vice versa)
-            const viewGrain = (selectedView === "year") ? "Y" : "M";
-            const viewRows = raw.filter(r => (r.grain || "").toUpperCase() === viewGrain);
-
-            const filtered = filterBreakdown(viewRows, selectedDisease);
-
-            const diseasesInView = filtered.map(row => row.disease);
-            const currentKeys = Array.from(new Set(diseasesInView));
+            const diagnosisInAggregation = filtered.map(row => row.diagnosis);
+            const currentKeys = Array.from(new Set(diagnosisInAggregation));
 
             // Clear legend
             if (this.controls?.legend) this.controls.legend.innerHTML = "";
 
             currentKeys.forEach((key) => {
-                const diseaseConfig = DISEASE_REGISTRY.diseases[key];
-                if (!diseaseConfig) return;
+                const diagnosisConfig = DIAGNOSIS_REGISTRY.diagnosis[key];
+                if (!diagnosisConfig) return;
                 $(this.controls.legend).append(
                     `<span class="legend-row">
-                        <span class="legend-swatch" style="background:${diseaseConfig.color}"></span>
-                        <span>${diseaseConfig.label}</span>
+                        <span class="legend-swatch" style="background:${diagnosisConfig.color}"></span>
+                        <span>${diagnosisConfig.label}</span>
                     </span>`
                 );
             });
@@ -275,13 +267,13 @@ export default class PathogenTimeline {
                     $(this.controls.legend).append(
                         `<span class="legend-row">
                             <span class="legend-swatch" style="background:${waterConfig.color}"></span>
-                            <span>Wastewater</span>
+                            <span>${waterConfig.label}</span>
                         </span>`
                     );
                 }
             }
 
-            this.draw(filtered, selectedOverlay, selectedView);
+            this.draw(filtered, selectedOverlay, selectedAggregation);
 
             if (this.isVisible) {
                 this.config.displayEl.parentElement.style.height =
@@ -294,7 +286,7 @@ export default class PathogenTimeline {
         return true;
     }
 
-    draw(records, selectedOverlay, selectedView) {
+    draw(records, selectedOverlay, selectedAggregation) {
         if (!records || records.length === 0) {
             this.svg.selectAll("*").remove();
             return;
@@ -308,15 +300,15 @@ export default class PathogenTimeline {
         // -----------------------------
         // Bucket + aggregate patient records by month/year
         // -----------------------------
-        const bucketedPatients = aggregatePatientsByView(records, selectedView);
+        const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);
 
         // If (for some reason) nothing survived bucketing, bail cleanly
         if (!bucketedPatients || bucketedPatients.length === 0) {
             return;
         }
 
-        // Group disease series
-        const seriesByDisease = d3.group(bucketedPatients, d => d.disease);
+        // Group diagnosis series
+        const seriesByDiagnosis = d3.group(bucketedPatients, d => d.diagnosis);
 
         // LEFT Y SCALE (patients)
         const maxPatients = d3.max(bucketedPatients, d => d.value);
@@ -354,7 +346,7 @@ export default class PathogenTimeline {
                         const dt = parseYMDLocal(d["Sample Date"]);
                         if (!dt) return null;
 
-                        if (selectedView === "year") {
+                        if (selectedAggregation === "year") {
                             return `${dt.getFullYear()}`;
                         }
                         // month (0-based month key, used consistently below)
@@ -365,7 +357,7 @@ export default class PathogenTimeline {
                 wwPoints = Array.from(wwRollup.entries())
                     .filter(([k, v]) => k !== null && v !== null)
                     .map(([key, value]) => {
-                        if (selectedView === "year") {
+                        if (selectedAggregation === "year") {
                             const year = Number(key);
                             const date = new Date(year, 0, 1);
                             return { date, value };
@@ -423,7 +415,7 @@ export default class PathogenTimeline {
         // -----------------------------
         // AXES
         // -----------------------------
-        const tickFormat = (selectedView === "year")
+        const tickFormat = (selectedAggregation === "year")
             ? d3.timeFormat("%Y")
             : d3.timeFormat("%Y-%m");
 
@@ -497,11 +489,11 @@ export default class PathogenTimeline {
             : null;
 
         // -----------------------------
-        // DRAW DISEASE LINES + POINTS
+        // DRAW DIAGNOSIS LINES + POINTS
         // -----------------------------
-        for (let [disease, rows] of seriesByDisease.entries()) {
+        for (let [diagnosis, rows] of seriesByDiagnosis.entries()) {
             rows = rows.slice().sort((a, b) => a.date - b.date);
-            const color = DISEASE_REGISTRY.diseases[disease]?.color || "#999";
+            const color = DIAGNOSIS_REGISTRY.diagnosis[diagnosis]?.color || "#999";
 
             // Line
             this.svg.append("path")
@@ -512,11 +504,11 @@ export default class PathogenTimeline {
                 .attr("d", patientLine);
 
             // Points
-            this.svg.selectAll(`circle.${cssSafeKey(disease)}`)
+            this.svg.selectAll(`circle.${cssSafeKey(diagnosis)}`)
                 .data(rows)
                 .enter()
                 .append("circle")
-                .attr("class", `point ${cssSafeKey(disease)}`)
+                .attr("class", `point ${cssSafeKey(diagnosis)}`)
                 .attr("cx", d => xScale(d.date))
                 .attr("cy", d => yLeft(d.value))
                 .attr("r", 4)
@@ -525,7 +517,7 @@ export default class PathogenTimeline {
                 .append("title")
                 .text(d => {
                     const label = tickFormat(d.date);
-                    return `${d.diseaseRaw ?? d.disease} — ${label}\n[ ${d.display ?? d.value} patients ]`;
+                    return `${d.diagnosisRaw ?? d.diagnosis} — ${label}\n[ ${d.display ?? d.value} patients ]`;
                 });
         }
 
@@ -618,15 +610,15 @@ let parseData = function (xmlData, advancedConfig) {
         if (!column) continue;
 
         // Expected format:
-        // Grain ^ YYYY-MM-DD ^ YYYY Mon ^ Disease
+        // Grain ^ YYYY-MM-DD ^ YYYY Mon ^ Diagnosis
         const parts = column.split("^");
         if (parts.length < 4) continue;
 
         const grain = parts[0].trim().toUpperCase();
         const dateStr = parts[1].trim();
         const label = parts[2].trim();
-        const diseaseRaw = parts[3].trim();
-        const disease = DISEASE_REGISTRY.canonicalize(diseaseRaw);
+        const diagnosisRaw = parts[3].trim();
+        const diagnosis = DIAGNOSIS_REGISTRY.canonicalize(diagnosisRaw);
 
         // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
         const date = parseYMDLocal(dateStr);
@@ -649,7 +641,7 @@ let parseData = function (xmlData, advancedConfig) {
 
             if (Array.isArray(advancedConfig.hideEntries)) {
                 if (
-                    advancedConfig.hideEntries.includes(disease) ||
+                    advancedConfig.hideEntries.includes(diagnosis) ||
                     advancedConfig.hideEntries.includes(column)
                 ) {
                     include = false;
@@ -661,8 +653,8 @@ let parseData = function (xmlData, advancedConfig) {
 
         breakdown.result.push({
             grain,
-            disease,
-            diseaseRaw,
+            diagnosis,
+            diagnosisRaw,
             date,
             dateStr,
             value,
@@ -677,15 +669,15 @@ let parseData = function (xmlData, advancedConfig) {
 // Helpers
 // ======================================================================
 
-function filterBreakdown(rows, diseaseFilter) {
+function filterBreakdown(rows, diagnosisFilter) {
     if (!rows) return [];
     return rows.filter(row => {
-        const diseaseOk =
-            !diseaseFilter ||
-            diseaseFilter === "All" ||
-            diseaseFilter === "ALL" ||
-            row.disease === diseaseFilter;
-        return diseaseOk;
+        const diagnosisOk =
+            !diagnosisFilter ||
+            diagnosisFilter === "All" ||
+            diagnosisFilter === "ALL" ||
+            row.diagnosis === diagnosisFilter;
+        return diagnosisOk;
     });
 }
 
@@ -734,19 +726,19 @@ function parseYMDLocal(s) {
 /**
  * Returns a Date snapped to the start of the bucket (month or year).
  */
-function bucketDate(dt, view) {
+function bucketDate(dt, aggregation) {
     if (!(dt instanceof Date) || isNaN(dt.getTime())) return null;
-    if (view === "year") {
+    if (aggregation === "year") {
         return new Date(dt.getFullYear(), 0, 1);
     }
     return new Date(dt.getFullYear(), dt.getMonth(), 1);
 }
 
 /**
- * Aggregate patient records to month/year buckets per disease.
- * Sums values per (disease, bucket).
+ * Collect patient records to month/year buckets per diagnosis.
+ * Sums values per (diagnosis, bucket).
  */
-function aggregatePatientsByView(records, view) {
+function collectPatientsByAggregation(records, aggregation) {
     const rolled = d3.rollup(
         records,
         rows => {
@@ -754,20 +746,20 @@ function aggregatePatientsByView(records, view) {
             return {
                 value: sum,
                 display: String(sum),
-                diseaseRaw: rows[0]?.diseaseRaw,
-                disease: rows[0]?.disease,
-                date: bucketDate(rows[0]?.date, view)
+                diagnosisRaw: rows[0]?.diagnosisRaw,
+                diagnosis: rows[0]?.diagnosis,
+                date: bucketDate(rows[0]?.date, aggregation)
             };
         },
-        r => r.disease,
+        r => r.diagnosis,
         r => {
-            const b = bucketDate(r.date, view);
+            const b = bucketDate(r.date, aggregation);
             return b ? +b : null;
         }
     );
 
     const out = [];
-    for (const [disease, dateMap] of rolled.entries()) {
+    for (const [diagnosis, dateMap] of rolled.entries()) {
         for (const [dateKey, agg] of dateMap.entries()) {
             if (dateKey === null) continue;
 
@@ -775,8 +767,8 @@ function aggregatePatientsByView(records, view) {
             if (isNaN(date.getTime())) continue;
 
             out.push({
-                disease,
-                diseaseRaw: agg.diseaseRaw,
+                diagnosis,
+                diagnosisRaw: agg.diagnosisRaw,
                 date,
                 value: agg.value,
                 display: agg.display
