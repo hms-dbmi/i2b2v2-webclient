@@ -10,7 +10,7 @@
 {{/if}}
 {{#if aggregationList}}
 <div style="width: fit-content;">
-    <span class="map-nav-links-label agg">Aggregation Level:</span>
+    <span class="map-nav-links-label agg">Aggregation:</span>
     <ul class="map-nav-links agg">
         {{#each aggregationList}}
         <li><span class="map-nav-link agg {{#if selected}}selected{{/if}}" data-index="{{@index}}" data-agg-key="{{key}}" {{#if tooltip}}title="{{tooltip}}"{{/if}}>{{title}}</span></li>
