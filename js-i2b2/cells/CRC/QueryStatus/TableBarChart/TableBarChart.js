@@ -64,6 +64,10 @@ export default class TableBarChart {
                 }
             }
 
+            // only continue if we have data
+            console.log("this.data ", this.data);
+            if (typeof this.data !== 'object' || this.data === null || this.data.result.length === 0) return false;
+
             // select the previously created TABLE element
             let tbody = d3.select(this.config.displayEl).select('tbody');
 

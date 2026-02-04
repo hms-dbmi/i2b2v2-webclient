@@ -72,10 +72,7 @@
     "DOWNLOAD": true
   },
   "PATIENT_DIAG3_COUNT_SHRINE_XML": {
-    "TABLEBARCHART": {
-      "forceInitialDisplay": true
-    },
-    "BARS": true,
+    "TABLEBARCHART": true,
     "TABLE":true,
     "DOWNLOAD": true
   },
