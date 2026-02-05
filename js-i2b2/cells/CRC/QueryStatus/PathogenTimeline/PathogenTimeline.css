@@ -51,30 +51,49 @@
 }
 
 /* -----------------------------------------------------------
-   CONTROLS: normalize to ZIPCODEMAP link-control style
+   CONTROLS + LEGEND: unified row model (equal vertical spacing)
    ----------------------------------------------------------- */
 
 .component-instance-viz.viztype-PATHOGENTIMELINE .path-timeline-controls {
   display: flex;
   flex-direction: column;
-  gap: 0.175rem; /* reduced ~50% from earlier */
+  gap: 0; /* do NOT use gap for vertical rhythm */
 }
 
-/* Each row behaves like "Label: <ul>" */
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-control-row {
-  width: fit-content;
+/* Make ALL rows share the same structure */
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-control-row,
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-block {
+  display: flex;
+  align-items: baseline;      /* key: makes label + content sit on same baseline */
+  flex-wrap: wrap;
+
+  margin: 0;                  /* reset */
 }
 
+/* Use ONE vertical spacing mechanism: margin between rows */
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-control-row + .path-control-row,
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-control-row + .path-legend-block {
+  margin-top: 0.5rem;        /* <- ONLY knob. try 0.28rem if you want tighter */
+}
+
+/* Labels: make legend label behave like other labels */
 .component-instance-viz.viztype-PATHOGENTIMELINE .path-links-label {
   font-weight: bold;
-  margin-left: 0.5rem;
+  margin-left: 1rem;
+  display: inline-block;      /* prevent block-y weirdness */
+  line-height: 1.1;
 }
 
-/* Horizontal list */
+/* If legend label is a DIV in output, force it to behave inline */
+.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-block .path-links-label {
+  display: inline-block;
+}
+
+/* Horizontal list: remove vertical margins entirely */
 .component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links {
   display: inline-block;
   padding: 0;
-  margin: 0.25rem 0.5rem; /* tightened vertical spacing */
+  margin: 0 0.5rem;           /* horizontal indent only */
 }
 
 .component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links li {
@@ -87,15 +106,12 @@
   cursor: pointer;
 }
 
-.component-instance-viz.viztype-PATHOGENTIMELINE span.path-link:hover {
-  border-bottom: 1px solid;
-}
-
+.component-instance-viz.viztype-PATHOGENTIMELINE span.path-link:hover,
 .component-instance-viz.viztype-PATHOGENTIMELINE span.path-link.selected {
   border-bottom: 1px solid;
 }
 
-/* Mimic ZIPCODEMAP pseudo separator image */
+/* ZIPCODEMAP separator image */
 .component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links li:not(:last-child)::after {
   content: " ";
   letter-spacing: 1em;
@@ -103,42 +119,24 @@
     url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=);
 }
 
-/* -----------------------------------------------------------
-   LEGEND: stays in controls section, inline with label, wraps
-   ----------------------------------------------------------- */
-
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-block {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;      /* allow legend items to wrap to next line */
-  gap: 0.35rem 0.9rem;  /* row/col gap */
-
-  margin-top: 0;
-  margin-left: 0;       /* prevent double-indent vs other labels */
-}
-
-/* Keep "Legend:" aligned with the other row labels */
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-block .path-links-label {
-  margin-left: 0.5rem;
-}
-
-/* Horizontal, grows horizontally, wraps */
+/* Legend items container: treat like the UL (no vertical margin, same indent) */
 .component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-items {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem 0.9rem;
   align-items: center;
-  margin-top: 0;        /* keep label + items on same line */
+
+  margin: 0 0.5rem;           /* same horizontal indent as UL */
+  gap: 0.35rem 0.9rem;         /* spacing between legend items */
 }
 
-/* Each legend item is swatch + label */
+/* Legend row item */
 .component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-items .legend-row {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
 }
 
-/* Swatch styling (normalize similar to ZIPCODEMAP boxes) */
+/* Swatch */
 .component-instance-viz.viztype-PATHOGENTIMELINE .legend-swatch {
   width: 1rem;
   height: 1rem;
