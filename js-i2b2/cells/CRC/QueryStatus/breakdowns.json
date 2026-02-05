@@ -96,7 +96,7 @@
           "autoClose": false,
           "closeOnClick": false
         },
-        "template": "<b>[{{zipcode}}] - {{name}}</b><br/>{{display}} patients"
+        "template": "<b>[{{text}}] - {{name}}</b><br/>{{display}} patients"
       },
       "hoverBox": {
         "position": "topright",
