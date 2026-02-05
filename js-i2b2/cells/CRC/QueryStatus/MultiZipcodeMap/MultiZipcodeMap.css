@@ -21,31 +21,26 @@
 .viztype-MULTIZIPCODEMAP ul.map-nav-links.agg { margin-top: 0; }
 
 .viztype-MULTIZIPCODEMAP ul.map-nav-links li { display: inline; }
-.viztype-MULTIZIPCODEMAP span.map-nav-link {
+.viztype-MULTIZIPCODEMAP span.map-nav-link,
+.viztype-MULTIZIPCODEMAP span.clear-normalizer {
     white-space: nowrap;
     cursor: pointer;
 }
-.viztype-MULTIZIPCODEMAP span.map-nav-link:hover {
+.viztype-MULTIZIPCODEMAP span.map-nav-link:hover,
+.viztype-MULTIZIPCODEMAP span.clear-normalizer:hover {
     border-bottom: 1px solid;
 }
 
-.viztype-MULTIZIPCODEMAP span.map-nav-link.selected {
+.viztype-MULTIZIPCODEMAP span.map-nav-link.selected,
+.viztype-MULTIZIPCODEMAP span.clear-normalizer.selected {
     border-bottom: 1px solid;
 }
 
-.viztype-MULTIZIPCODEMAP ul.map-nav-links li:after {
+.viztype-MULTIZIPCODEMAP ul.map-nav-links li:after,
+.viztype-MULTIZIPCODEMAP ul.clear-normalizer li:after {
     content: " ";
     letter-spacing: 1em;
     background: center center no-repeat url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=);
-}
-
-.viztype-MULTIZIPCODEMAP .clear-normalizer {
-    cursor: pointer;
-    color: red;
-    XXXtransition: color .5s;
-}
-.viztype-MULTIZIPCODEMAP .clear-normalizer:hover {
-    color: red;
 }
 
 

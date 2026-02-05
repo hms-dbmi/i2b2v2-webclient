@@ -408,10 +408,12 @@ export default class MultiZipcodeMap {
                 $(e.currentTarget).addClass('selected');
                 // rerender
                 this.rerender();
+                $('.clear-normalizer').removeClass('selected');
             }
         }).bind(this));
         $('.clear-normalizer', this.config.displayEl).on('click', (e)=> {
             delete this.config.currentNormalizer;
+            $(e.currentTarget).addClass('selected');
             $('.map-nav-link.normzr.selected', this.config.displayEl).removeClass('selected');
             this.rerender();
         });
