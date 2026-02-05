@@ -22,12 +22,10 @@
 <div style="width: fit-content;">
     <span class="map-nav-links-label agg">Normalization:</span>
     <ul class="map-nav-links agg">
+        <li  title="Clear Normalization"><span class="clear-normalizer selected">None</span></li>
         {{#each normalizerList}}
         <li><span class="map-nav-link normzr {{#if selected}}selected{{/if}}" data-index="{{@index}}" data-norm-key="{{name}}" {{#if tooltip}}title="{{tooltip}}"{{/if}}>{{name}}</span></li>
         {{/each}}
     </ul>
-    {{#if currentNormalizer}}
-    <i class="bi bi-x-square clear-normalizer" title="Clear Normalization"></i>
-    {{/if}}
 </div>
 {{/if}}
