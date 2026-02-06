@@ -137,7 +137,6 @@ export default class MultiZipcodeMap {
                         }).addTo(this.map);
                     }
 
-                    //aggModule.
                     const currentAggModule = aggModule[this.config.aggregations.current];
                     if(currentAggModule && currentAggModule.extract?.length > 0){
                         let aggModuleContents = currentAggModule.extract[0];
@@ -184,112 +183,123 @@ export default class MultiZipcodeMap {
                         }
                     }
 
+                    if(currentAggModule && currentAggModule.extract?.length > 0) {
+                        let aggModuleContents = currentAggModule.extract[0];
+                        if (aggModuleContents && aggModuleContents.legendBox) {
+                            // create a legend control if it is configured
+                            if (typeof this.config.advancedConfig?.legendBox !== 'undefined') {
+                                // create a hoverbox control
+                                const legendConfig = self.config.advancedConfig.legendBox;
+                                let options = {};
+                                if (typeof legendConfig.position !== 'undefined') options.position = legendConfig.position;
+                                this.legendbox = L.control(options);
+                                this.legendbox.onAdd = (map) => {
+                                    let className = "legend-box";
+                                    if (typeof legendConfig.className !== 'undefined') className = className + ' ' + legendConfig.className;
+                                    self.legendbox._div = L.DomUtil.create('div', className);
+                                    self.legendbox._div.style.display = 'none';
+                                    self.legendbox.update();
+                                    self.legendbox._div.style.display = '';
+                                    return self.legendbox._div;
+                                };
+                                this.legendbox.update = (data) => {
+                                    if (typeof self.legendbox._div === 'undefined') return; // fixes race condition bug
+                                        let aggModuleLegendBox;
+                                    if(self.config.currentNormalizer){
+                                        aggModuleLegendBox = aggModule[this.config.aggregations.current].extract[1].legendBox;
+                                    }else{
+                                        aggModuleLegendBox = aggModule[this.config.aggregations.current].extract[0].legendBox;
+                                    }
 
-                    // create a legend control if it is configured
-                    if (typeof this.config.advancedConfig?.legendBox.templates !== 'undefined') {
-                        // create a hoverbox control
-                        const legendConfig = self.config.advancedConfig.legendBox;
-                        let options = {};
-                        if (typeof legendConfig.position !== 'undefined') options.position = legendConfig.position;
-                        this.legendbox = L.control(options);
-                        this.legendbox.onAdd = (map) => {
-                            let className = "legend-box";
-                            if (typeof legendConfig.className !== 'undefined') className = className + ' ' + legendConfig.className;
-                            self.legendbox._div = L.DomUtil.create('div', className);
-                            self.legendbox._div.style.display = 'none';
-                            self.legendbox.update();
-                            self.legendbox._div.style.display = '';
-                            return self.legendbox._div;
-                        };
-                        this.legendbox.update = (data) => {
-                            if (typeof self.legendbox._div === 'undefined') return; // fixes race condition bug
-                            const colorsConfig = self.config.advancedConfig.map.colors;
-                            let entriesHtml = [];
-                            if (data) {
-                                for (let i=0; i < data.length; i++) {
-                                    let entryData = {
-                                        color: colorsConfig[i].color,
-                                        min: data[i].min,
-                                        max: data[i].max
-                                    };
-                                    // figure out our default template to use
-                                    let templateName;
-                                    if (typeof legendConfig.templates["auto"] !== 'undefined') {
-                                        templateName = "auto";
-                                    } else if (typeof legendConfig.templates["min-max"] !== 'undefined') {
-                                        templateName = "min-max";
-                                    }
-                                    // see if we override based on min or max being set on the map's color config entry
-                                    if (typeof colorsConfig[i].min === 'undefined' && typeof colorsConfig[i].max === 'undefined') {
-                                        // switch to auto template if it exists
-                                        if (typeof legendConfig.templates["auto"] !== 'undefined') templateName = "auto";
-                                    } else if (typeof colorsConfig[i].min === 'undefined') {
-                                        // switch to no-min
-                                        if (typeof legendConfig.templates["no-min"] !== 'undefined') templateName = "no-min";
-                                        entryData.max = colorsConfig[i].max;
-                                    } else if (typeof colorsConfig[i].max === 'undefined') {
-                                        // switch to no-max
-                                        if (typeof legendConfig.templates["no-max"] !== 'undefined') templateName = "no-max";
-                                        entryData.min = colorsConfig[i].min;
+                                    const colorsConfig = self.config.advancedConfig.map.colors;
+                                    let entriesHtml = [];
+                                    if (data) {
+                                        for (let i=0; i < data.length; i++) {
+                                            let entryData = {
+                                                color: colorsConfig[i].color,
+                                                min: data[i].min,
+                                                max: data[i].max
+                                            };
+                                            // figure out our default template to use
+                                            let templateName;
+                                            if (typeof aggModuleLegendBox.templates["auto"] !== 'undefined') {
+                                                templateName = "auto";
+                                            } else if (typeof aggModuleLegendBox.templates["min-max"] !== 'undefined') {
+                                                templateName = "min-max";
+                                            }
+                                            // see if we override based on min or max being set on the map's color config entry
+                                            if (typeof colorsConfig[i].min === 'undefined' && typeof colorsConfig[i].max === 'undefined') {
+                                                // switch to auto template if it exists
+                                                if (typeof aggModuleLegendBox.templates["auto"] !== 'undefined') templateName = "auto";
+                                            } else if (typeof colorsConfig[i].min === 'undefined') {
+                                                // switch to no-min
+                                                if (typeof aggModuleLegendBox.templates["no-min"] !== 'undefined') templateName = "no-min";
+                                                entryData.max = colorsConfig[i].max;
+                                            } else if (typeof colorsConfig[i].max === 'undefined') {
+                                                // switch to no-max
+                                                if (typeof aggModuleContents.legendBox.templates["no-max"] !== 'undefined') templateName = "no-max";
+                                                entryData.min = colorsConfig[i].min;
+                                            } else {
+                                                // min and max are both defined
+                                                entryData.min = colorsConfig[i].min;
+                                                entryData.max = colorsConfig[i].max;
+                                                // switch to min-max template if it exists
+                                                if (typeof aggModuleLegendBox.templates["min-max"] !== 'undefined') templateName = "min-max";
+                                            }
+                                            // generate the templated output
+                                            entriesHtml.push(func_processTemplate(aggModuleLegendBox.templates[templateName], entryData));
+                                        }
                                     } else {
-                                        // min and max are both defined
-                                        entryData.min = colorsConfig[i].min;
-                                        entryData.max = colorsConfig[i].max;
-                                        // switch to min-max template if it exists
-                                        if (typeof legendConfig.templates["min-max"] !== 'undefined') templateName = "min-max";
+                                        for (let i = 0; i < colorsConfig.length; i++) {
+                                            let entryData = {color: colorsConfig[i].color};
+                                            // figure out our default template to use
+                                            let templateName;
+                                            if (typeof aggModuleLegendBox.templates["auto"] !== 'undefined') {
+                                                templateName = "auto";
+                                            } else if (typeof aggModuleLegendBox.templates["min-max"] !== 'undefined') {
+                                                templateName = "min-max";
+                                            }
+                                            // see if we override based on min or max being set on the map's color config entry
+                                            if (typeof colorsConfig[i].min === 'undefined' && typeof colorsConfig[i].max === 'undefined') {
+                                                // switch to auto template if it exists
+                                                if (typeof aggModuleLegendBox.templates["auto"] !== 'undefined') templateName = "auto";
+                                            } else if (typeof colorsConfig[i].min === 'undefined') {
+                                                // switch to no-min
+                                                if (typeof aggModuleLegendBox.templates["no-min"] !== 'undefined') templateName = "no-min";
+                                                entryData.max = colorsConfig[i].max;
+                                            } else if (typeof colorsConfig[i].max === 'undefined') {
+                                                // switch to no-max
+                                                if (typeof aggModuleLegendBox.templates["no-max"] !== 'undefined') templateName = "no-max";
+                                                entryData.min = colorsConfig[i].min;
+                                            } else {
+                                                // min and max are both defined
+                                                entryData.min = colorsConfig[i].min;
+                                                entryData.max = colorsConfig[i].max;
+                                                // switch to min-max template if it exists
+                                                if (typeof aggModuleLegendBox.templates["min-max"] !== 'undefined') templateName = "min-max";
+                                            }
+                                            // generate the templated output
+                                            entriesHtml.push(func_processTemplate(aggModuleLegendBox.templates[templateName], entryData));
+                                        }
                                     }
-                                    // generate the templated output
-                                    entriesHtml.push(func_processTemplate(legendConfig.templates[templateName], entryData));
-                                }
-                            } else {
-                                for (let i = 0; i < colorsConfig.length; i++) {
-                                    let entryData = {color: colorsConfig[i].color};
-                                    // figure out our default template to use
-                                    let templateName;
-                                    if (typeof legendConfig.templates["auto"] !== 'undefined') {
-                                        templateName = "auto";
-                                    } else if (typeof legendConfig.templates["min-max"] !== 'undefined') {
-                                        templateName = "min-max";
-                                    }
-                                    // see if we override based on min or max being set on the map's color config entry
-                                    if (typeof colorsConfig[i].min === 'undefined' && typeof colorsConfig[i].max === 'undefined') {
-                                        // switch to auto template if it exists
-                                        if (typeof legendConfig.templates["auto"] !== 'undefined') templateName = "auto";
-                                    } else if (typeof colorsConfig[i].min === 'undefined') {
-                                        // switch to no-min
-                                        if (typeof legendConfig.templates["no-min"] !== 'undefined') templateName = "no-min";
-                                        entryData.max = colorsConfig[i].max;
-                                    } else if (typeof colorsConfig[i].max === 'undefined') {
-                                        // switch to no-max
-                                        if (typeof legendConfig.templates["no-max"] !== 'undefined') templateName = "no-max";
-                                        entryData.min = colorsConfig[i].min;
+                                    if (entriesHtml.length > 0) {
+                                        let entries = entriesHtml.join("\n");
+                                        // we have info to display
+                                        if (aggModuleLegendBox.templates.root) {
+                                            // insert the entries into the root template (if it exists)
+                                            self.legendbox._div.innerHTML = func_processTemplate(aggModuleLegendBox.templates.root, {entries: entries});
+                                        } else {
+                                            self.legendbox._div.innerHTML = entries;
+                                        }
+                                        self.legendbox._div.style.opacity = 1;
                                     } else {
-                                        // min and max are both defined
-                                        entryData.min = colorsConfig[i].min;
-                                        entryData.max = colorsConfig[i].max;
-                                        // switch to min-max template if it exists
-                                        if (typeof legendConfig.templates["min-max"] !== 'undefined') templateName = "min-max";
+                                        // hide the legend box until we have data
+                                        self.hoverbox._div.style.opacity = 0;
                                     }
-                                    // generate the templated output
-                                    entriesHtml.push(func_processTemplate(legendConfig.templates[templateName], entryData));
-                                }
+                                };
+                                this.legendbox.addTo(this.map);
                             }
-                            if (entriesHtml.length > 0) {
-                                let entries = entriesHtml.join("\n");
-                                // we have info to display
-                                if (legendConfig.templates.root) {
-                                    // insert the entries into the root template (if it exists)
-                                    self.legendbox._div.innerHTML = func_processTemplate(legendConfig.templates.root, {entries: entries});
-                                } else {
-                                    self.legendbox._div.innerHTML = entries;
-                                }
-                                self.legendbox._div.style.opacity = 1;
-                            } else {
-                                // hide the legend box until we have data
-                                self.hoverbox._div.style.opacity = 0;
-                            }
-                        };
-                        this.legendbox.addTo(this.map);
+                        }
                     }
 
                     if (this.isVisible === true) this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
