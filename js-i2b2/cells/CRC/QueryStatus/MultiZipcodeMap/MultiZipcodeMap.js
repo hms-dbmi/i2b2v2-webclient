@@ -308,7 +308,7 @@ export default class MultiZipcodeMap {
                 }
             }).call(this);
         } catch(e) {
-            console.error("Error in QueryStatus:MultiZipcodeMap.constructor()");
+            console.error("Error in QueryStatus:MultiZipcodeMap.constructor(): ", e);
         }
     }
 
