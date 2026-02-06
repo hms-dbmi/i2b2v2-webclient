@@ -237,6 +237,58 @@ export default class PathogenTimeline {
             const selectedOverlay = this.state?.overlay || "None";
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year"
 
+            //console.log("printing raw");
+            //console.log(raw);
+            if (selectedAggregation === "yoy") {
+
+                const yoyRows = raw.filter(r => (r.grain || "").trim().toUpperCase() === "M");
+
+                let yoyFilteredRows = null;
+
+                if(selectedDiagnosis === "All"){
+                   yoyFilteredRows = yoyRows;
+                } else{
+                    yoyFilteredRows = yoyRows.filter(r => r.diagnosis === selectedDiagnosis);
+                }
+                
+                const yoyPivotRows = pivotToYOYRows(yoyFilteredRows);
+
+                const byDiagnosisYear = {};
+
+                for(const row of yoyPivotRows){
+
+                    //first I extract all the keys from yoyPivotRows
+                    let diagnosis = row.diagnosis;
+                    let year = row.year;
+                    let monthIndex = row.monthIndex;
+                    let value = row.value;
+                    
+                  
+                    //if a given diagnosis isn't defined, create the object
+                    if (byDiagnosisYear[diagnosis] === undefined){
+                        byDiagnosisYear[diagnosis] = {};
+                    }
+                    //if a given year isn't defined, create the array
+                    if (byDiagnosisYear[diagnosis][year] === undefined){
+                        byDiagnosisYear[diagnosis][year] = [];
+                    }
+
+                    //then I create an object combining the month index and the value
+                    let point = {"monthIndex": monthIndex, "value": value}
+
+                    //push the point into the year array for a given diagnosis
+                    byDiagnosisYear[diagnosis][year].push(point);
+
+                   
+
+                }
+                 console.log(Object.entries(byDiagnosisYear));
+                console.log("[YOY] Year Over Year aggregation selected; branching out of default draw pipeline.");
+
+                return;
+            }
+
+
             // IMPORTANT: filter by grain so month aggregation doesn't accidentally include year rows (and vice versa)
             const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
             const aggregationRows = raw.filter(r => (r.grain || "").toUpperCase() === aggregationGrain);
@@ -779,7 +831,7 @@ function collectPatientsByAggregation(records, aggregation) {
     return out;
 }
 
-function pivotToSeasonOutlookRows(aggregatedRecords){
+function pivotToYOYRows(aggregatedRecords){
     if (!aggregatedRecords || !Array.isArray(aggregatedRecords) || aggregatedRecords.length === 0) {
         return [];
     } 
@@ -793,13 +845,13 @@ function pivotToSeasonOutlookRows(aggregatedRecords){
 
         let year = date.getFullYear();
         let monthIndex = date.getMonth();
-        let disease = row.disease;
+        let diagnosis = row.diagnosis;
         let value = row.value;
 
         out.push({
             year,
             monthIndex,
-            disease,
+            diagnosis,
             value
         });
     }
