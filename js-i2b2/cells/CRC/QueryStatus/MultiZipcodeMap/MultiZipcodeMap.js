@@ -137,39 +137,51 @@ export default class MultiZipcodeMap {
                         }).addTo(this.map);
                     }
 
-
-                    // create a hover control if it is configured
-                    if (typeof this.config.advancedConfig?.hoverBox.template !== 'undefined') {
-                        // create a hoverbox control
-                        let options = {};
-                        if (typeof this.config.advancedConfig.hoverBox.position !== 'undefined') options.position = this.config.advancedConfig.hoverBox.position;
-                        this.hoverbox = L.control(options);
-                        this.hoverbox.onAdd = (map) => {
-                            let className = "hoverinfo-box";
-                            if (typeof self.config.advancedConfig.hoverBox.className !== 'undefined') className = className + ' ' + self.config.advancedConfig.hoverBox.className;
-                            self.hoverbox._div = L.DomUtil.create('div', className);
-                            self.hoverbox._div.style.display = 'none';
-                            self.hoverbox.update();
-                            self.hoverbox._div.style.display = '';
-                            return self.hoverbox._div;
-                        };
-                        this.hoverbox.update = (data) => {
-                            if (typeof self.hoverbox._div === 'undefined') return; // fixes race condition bug
-                            if (data) {
-                                self.hoverbox._div.innerHTML = func_processTemplate(self.config.advancedConfig.hoverBox.template, data);
-                                self.hoverbox._div.style.opacity = 1;
-                            } else {
-                                if (typeof self.config.advancedConfig.hoverBox.default !== 'undefined') {
-                                    // display default msg
-                                    self.hoverbox._div.innerHTML = self.config.advancedConfig.hoverBox.default;
-                                    self.hoverbox._div.style.opacity = 1;
-                                } else {
-                                    // hide the hover box
-                                    self.hoverbox._div.style.opacity = 0;
-                                }
+                    //aggModule.
+                    const currentAggModule = aggModule[this.config.aggregations.current];
+                    if(currentAggModule && currentAggModule.extract?.length > 0){
+                        let aggModuleContents = currentAggModule.extract[0];
+                        if(aggModuleContents && aggModuleContents.hoverBox){
+                            let aggModuleHoverBox = aggModuleContents.hoverBox;
+                            // create a hover control if it is configured
+                            if (typeof this.config.advancedConfig?.hoverBox !== 'undefined') {
+                                // create a hoverbox control
+                                let options = {};
+                                if (typeof this.config.advancedConfig.hoverBox.position !== 'undefined') options.position = this.config.advancedConfig.hoverBox.position;
+                                this.hoverbox = L.control(options);
+                                this.hoverbox.onAdd = (map) => {
+                                    let className = "hoverinfo-box";
+                                    if (typeof self.config.advancedConfig.hoverBox.className !== 'undefined') className = className + ' ' + self.config.advancedConfig.hoverBox.className;
+                                    self.hoverbox._div = L.DomUtil.create('div', className);
+                                    self.hoverbox._div.style.display = 'none';
+                                    self.hoverbox.update();
+                                    self.hoverbox._div.style.display = '';
+                                    return self.hoverbox._div;
+                                };
+                                this.hoverbox.update = (data) => {
+                                    if(self.config.currentNormalizer){
+                                        aggModuleHoverBox = aggModule[this.config.aggregations.current].extract[1].hoverBox;
+                                    }else{
+                                        aggModuleHoverBox = aggModule[this.config.aggregations.current].extract[0].hoverBox;
+                                    }
+                                    if (typeof self.hoverbox._div === 'undefined') return; // fixes race condition bug
+                                    if (data) {
+                                        self.hoverbox._div.innerHTML = func_processTemplate(aggModuleHoverBox.template, data);
+                                        self.hoverbox._div.style.opacity = 1;
+                                    } else {
+                                        if (typeof self.config.advancedConfig.hoverBox.default !== 'undefined') {
+                                            // display default msg
+                                            self.hoverbox._div.innerHTML = aggModuleHoverBox.default;
+                                            self.hoverbox._div.style.opacity = 1;
+                                        } else {
+                                            // hide the hover box
+                                            self.hoverbox._div.style.opacity = 0;
+                                        }
+                                    }
+                                };
+                                this.hoverbox.addTo(this.map);
                             }
-                        };
-                        this.hoverbox.addTo(this.map);
+                        }
                     }
 
 

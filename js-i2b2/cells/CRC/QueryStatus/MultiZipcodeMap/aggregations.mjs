@@ -38,8 +38,8 @@ export default {
                 },
                 // non-functioning example
                 hoverBox: {
-                    default: "<h4>Patient Population %</h4>Hover over an area",
-                    template: "<h4>Patient Population %</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                    default: "<h4>Patient Rate</h4>Hover over an area",
+                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
                 },
                 // non-functioning example
                 legendBox: {
@@ -92,8 +92,8 @@ export default {
                 },
                 // non-functioning example
                 hoverBox: {
-                    default: "<h4>Patient Population %</h4>Hover over an area",
-                    template: "<h4>Patient Population %</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                    default: "<h4>Patient Rate</h4>Hover over an area",
+                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
                 },
                 // non-functioning example
                 legendBox: {
@@ -145,8 +145,8 @@ export default {
                 },
                 // non-functioning example
                 hoverBox: {
-                    default: "<h4>Patient Population %</h4>Hover over an area",
-                    template: "<h4>Patient Population %</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                    default: "<h4>Patient Rate</h4>Hover over an area",
+                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
                 },
                 // non-functioning example
                 legendBox: {
