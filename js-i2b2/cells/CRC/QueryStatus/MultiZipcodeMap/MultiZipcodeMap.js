@@ -430,6 +430,9 @@ export default class MultiZipcodeMap {
             this.rerender();
         });
 
+        if($('.map-nav-link.normzr.selected').length === 0 ) {
+            $('.clear-normalizer').addClass("selected");
+        }
 
         // generate list of valid GeoJSON features
         let foundZips = Object.keys(validData);
