@@ -277,12 +277,15 @@ export default class PathogenTimeline {
                     let point = {"monthIndex": monthIndex, "value": value}
 
                     //push the point into the year array for a given diagnosis
-                    byDiagnosisYear[diagnosis][year].push(point);
-
+                    byDiagnosisYear[diagnosis][year].push(point);                 
                    
-
                 }
-                 console.log(Object.entries(byDiagnosisYear));
+                //sort the data --we could have used a nested for here, but that looked smelly
+                Object.values(byDiagnosisYear).flatMap(yearMap => Object.values(yearMap)).forEach(pointsArr => {pointsArr.sort((a, b) => a.monthIndex - b.monthIndex);});
+
+
+
+                console.log(Object.entries(byDiagnosisYear));
                 console.log("[YOY] Year Over Year aggregation selected; branching out of default draw pipeline.");
 
                 return;
