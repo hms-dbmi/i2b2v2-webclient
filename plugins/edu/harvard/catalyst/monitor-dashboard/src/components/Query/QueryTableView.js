@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {DataGrid, GridActionsCellItem} from "@mui/x-data-grid";
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-
+import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
 import "./QueryTableView.scss";
 import {getAllQueries} from "../../reducers/queriesSlice";
+import {getQueryRequestDetails} from "../../reducers/queryRequestDetailsSlice";
+import {QueryRequestDetailsView} from "./QueryRequestDetailsView";
+import {Box, Tooltip} from "@mui/material";
 
 export const QueryTableView = ({projectId, isObfuscated}) => {
     const dispatch = useDispatch();
     const queries  = useSelector((state) => state.queries);
     const [paginationModel, setPaginationModel] = useState({ pageSize: 100, page: 0});
+    const [showRequestDetails, setShowRequestDetails] = useState(false);
 
     useEffect(() => {
         dispatch(getAllQueries({projectId, isObfuscated}));
     }, [projectId]);
+
+    const handleShowQueryDetails = (queryMasterId) => () => {
+        dispatch(getQueryRequestDetails({queryMasterId}));
+        setShowRequestDetails(true);
+    }
 
     const columns = [
         {
@@ -32,7 +40,8 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             sortable: true,
             resizable: false,
             disableReorder: true,
-            minWidth: 210,
+            minWidth: 205,
+            flex: 1
         },
         {
             field: 'project',
@@ -41,6 +50,7 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             sortable: true,
             resizable: false,
             disableReorder: true,
+            flex: 1
         },
         {
             field: 'username',
@@ -49,6 +59,7 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             sortable: true,
             disableReorder: true,
             minWidth: 150,
+            flex: 1
         },
         {
             field: 'startDate',
@@ -56,8 +67,8 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             headerClassName: "header",
             sortable: true,
             disableReorder: true,
-            minWidth: 100,
-            maxWidth: 100,
+            minWidth: 110,
+            maxWidth: 110,
             valueGetter: (value) => {
                 if (!value) {
                     return value;
@@ -119,7 +130,7 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             sortable: true,
             resizable: true,
             disableReorder: true,
-            minWidth: 110,
+            minWidth: 100,
             valueGetter: (value, row) => {
                 let formattedValue = value?.length > 0 ? parseInt(value) : value;
                 let displayValue = formattedValue;
@@ -137,22 +148,21 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
-            minWidth: 80,
+            headerClassName: "header",
+            width: 70,
             cellClassName: 'actions',
             getActions: ({id, row}) => {
-                let infoAction = null;
-
-                const noEditModeActions = [
-                    <GridActionsCellItem
-                        icon={<TextSnippetIcon/>}
-                        label="SQL/Xml"
-                        className="textPrimary"
-                       // onClick={handleEditClick(id)}
-                        color="inherit"
-                    />
-                ];
-
-                return noEditModeActions;
+                return ([
+                    <Tooltip title="View XML/SQL">
+                        <GridActionsCellItem
+                            icon={<TextSnippetOutlinedIcon/>}
+                            label="SQL/Xml"
+                            className="textPrimary"
+                            onClick={handleShowQueryDetails(id)}
+                            color="inherit"
+                        />
+                    </Tooltip>
+                ]);
             },
         }
     ];
@@ -166,34 +176,43 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
         );
     };
 
+    const handleCloseRequestDetails = () => {
+        console.log("closing request details");
+        setShowRequestDetails(false);
+    }
     return(
-        <DataGrid
-            style={{background:"white"}}
-            className={"QueryTableView"}
-            rows={queries.queryList}
-            columns={columns}
-            showCellVerticalBorder={true}
-            density={'compact'}
-            disableRowSelectionOnClick
-            initialState={{
-                sorting: {
-                    sortModel: [{field:'id',sort:'desc'}]
-                }
-            }}
-            pageSizeOptions={[25, 50, 100]}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            loading={queries.isFetching}
-            slotProps={{
-                loadingOverlay: {
-                    variant: 'circular-progress',
-                    noRowsVariant: 'linear-progress',
-                },
-            }}
-            slots={{
-                noRowsOverlay: CustomNoRowsOverlay,
-            }}
-            getRowHeight={() => 'auto'}
-        />
+        <Box className={"QueryTableView"}>
+            <DataGrid
+                style={{background:"white"}}
+                className={"QueryTableViewGrid"}
+                rows={queries.queryList}
+                columns={columns}
+                showCellVerticalBorder={true}
+                density={'compact'}
+                disableRowSelectionOnClick
+                initialState={{
+                    sorting: {
+                        sortModel: [{field:'id',sort:'desc'}]
+                    }
+                }}
+                pageSizeOptions={[25, 50, 100]}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+                loading={queries.isFetching}
+                slotProps={{
+                    loadingOverlay: {
+                        variant: 'circular-progress',
+                        noRowsVariant: 'linear-progress',
+                    },
+                }}
+                slots={{
+                    noRowsOverlay: CustomNoRowsOverlay,
+                }}
+                getRowHeight={() => 'auto'}
+            />
+
+            {showRequestDetails && <QueryRequestDetailsView onClose={handleCloseRequestDetails}/>}
+
+        </Box>
     )
 }
