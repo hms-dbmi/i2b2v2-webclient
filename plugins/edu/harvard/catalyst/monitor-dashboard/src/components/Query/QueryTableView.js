@@ -41,6 +41,7 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             resizable: false,
             disableReorder: true,
             minWidth: 205,
+            flex: 1
         },
         {
             field: 'project',
@@ -49,6 +50,7 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             sortable: true,
             resizable: false,
             disableReorder: true,
+            flex: 1
         },
         {
             field: 'username',
@@ -57,6 +59,7 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             sortable: true,
             disableReorder: true,
             minWidth: 150,
+            flex: 1
         },
         {
             field: 'startDate',
