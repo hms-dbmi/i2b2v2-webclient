@@ -1,11 +1,13 @@
 .QueryTableView {
+  overflow: hidden;
+
   .listingStatusErrorMsg {
     color: red;
   }
 
-  .MuiDataGrid-columnHeaders{
+ /* .MuiDataGrid-columnHeaders{
     background-color: rgba(0, 0, 0, 0.12) !important;
-  }
+  }*/
 
   .MuiDataGrid-columnHeader, .MuiDataGrid-sortButton{
     background-color: transparent !important;
@@ -23,5 +25,13 @@
     .MuiDataGrid-columnHeaderTitleContainer{
       flex-direction: row !important;
     }
+  }
+
+  .header, .headerNumeric {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .MuiDataGrid-cell--textRight {
+    text-align: left !important;
   }
 }

@@ -9,6 +9,7 @@ export const USER_ROLE_COUNTS = "userRoleCounts";
 export const USERS = "users";
 export const NEW_USERS = "newUsers";
 export const QUERY_METRICS = "getQueryMetrics";
+export const QUERY_REQUEST_DETAILS = "queryRequestDetails";
 
 export const GET_ALL_PROJECTS = `${PROJECTS}/getAllProjects`;
 export const GET_USER_SESSIONS = `${USER_SESSIONS}/getUserSessions`;
@@ -20,3 +21,4 @@ export const GET_ALL_USER_ROLE_COUNTS = `${USER_ROLE_COUNTS}/getAllUserRoleCount
 export const GET_ALL_USERS = `${USERS}/getAllUsers`;
 export const GET_NEW_USERS = `${NEW_USERS}/getNewUsers`;
 export const GET_QUERY_METRICS = `${QUERY_METRICS}/getQueryMetrics`;
+export const GET_QUERY_REQUEST_DETAILS= `${QUERY_REQUEST_DETAILS}/getQueryRequestDetails`;

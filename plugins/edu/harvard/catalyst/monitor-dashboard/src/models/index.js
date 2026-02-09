@@ -22,3 +22,4 @@ export { QueryActivityInDays } from "./QueryActivityInDays";
 export { TopUsersByQuery } from "./TopUsersByQuery";
 export { QueryActivityByMonth } from "./QueryActivityByMonth";
 export { QueryActivityAndDate } from "./QueryActivityAndDate";
+export { QueryRequestDetails } from "./QueryRequestDetails";
