@@ -2,6 +2,7 @@ import { call, takeLatest, put} from "redux-saga/effects";
 import {GET_QUERY_REQUEST_DETAILS} from "../actions";
 import {parseXml} from "../utilities/parseXml";
 import {getQueryRequestDetailsFailed, getQueryRequestDetailsSucceeded} from "../reducers/queryRequestDetailsSlice";
+import xmlFormat from 'xml-formatter';
 
 //a function that returns a promise
 const getQueryRequestXmlRequest = (queryMasterId) => {
@@ -31,7 +32,7 @@ const parseQueryRequestXml = (queryRequestXml) => {
         && queryRequestXml.length > 0 && queryRequestXml[0].childNodes.length !== 0) {
             queryMasterId = queryMasterId[0].childNodes[0].nodeValue;
             queryName = queryName[0].childNodes[0].nodeValue;
-            queryRequestXml = queryRequestXml[0].innerHTML.trim();
+            queryRequestXml = xmlFormat(queryRequestXml[0].innerHTML.trim());
 
             queryRequest.queryMasterId = queryMasterId;
             queryRequest.queryName = queryName;

@@ -40,6 +40,7 @@
     "react-dom": "^19.2.0",
     "react-redux": "^9.2.0",
     "redux-saga": "^1.4.2",
-    "sass": "^1.94.1"
+    "sass": "^1.94.1",
+    "xml-formatter": "^3.6.7"
   }
 }
