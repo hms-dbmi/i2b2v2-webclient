@@ -43,9 +43,14 @@ export const QueryRequestDetailsView = ({onClose}) => {
             aria-describedby="query-request-details-description"
             fullWidth={true}
             maxWidth={'xl'}
+            PaperProps={{
+                sx: {
+                    minHeight: "95%",
+                },
+            }}
         >
             <DialogTitle id="query-request-details-title">
-                Query Run Details
+                Query Run Details for {queryRequestDetails.queryName}
             </DialogTitle>
             <DialogContent dividers>
                 <Typography>

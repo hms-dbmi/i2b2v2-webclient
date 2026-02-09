@@ -5,7 +5,7 @@ import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
 import "./QueryTableView.scss";
 import {getAllQueries} from "../../reducers/queriesSlice";
 import {getQueryRequestDetails} from "../../reducers/queryRequestDetailsSlice";
-import {QueryRequestDetailsView} from "./QueryReqestDetailsView";
+import {QueryRequestDetailsView} from "./QueryRequestDetailsView";
 import {Box} from "@mui/material";
 
 export const QueryTableView = ({projectId, isObfuscated}) => {
