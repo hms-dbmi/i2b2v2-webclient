@@ -34,6 +34,16 @@ export const QueryRequestDetailsView = ({onClose}) => {
         )
     }
 
+    const getSQLTab = () => {
+        return (
+            <Box>
+                <pre>
+                    {queryRequestDetails.queryRequestSQL}
+                </pre>
+            </Box>
+        )
+    }
+
     return(
         <Dialog
             className={"QueryRequestDetails"}
@@ -55,10 +65,15 @@ export const QueryRequestDetailsView = ({onClose}) => {
             <DialogContent dividers>
                 <Typography>
                     <CustomTabs tabData={
-                        [{
+                        [
+                            {
                             label: "XML",
                             content: getXmlTab()
-                        }]
+                            },
+                            {
+                                label: "SQL",
+                                content: getSQLTab()
+                            }]
                         }
                     />
                 </Typography>

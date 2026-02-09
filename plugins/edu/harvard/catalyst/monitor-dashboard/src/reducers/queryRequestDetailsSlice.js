@@ -20,7 +20,7 @@ export const queryRequestDetailsSlice = createSlice({
             state.queryMasterId = queryRequest.queryMasterId;
             state.queryName = queryRequest.queryName;
             state.queryRequestXml = queryRequest.queryRequestXml;
-            console.log("query request xml ", queryRequest.queryRequestXml);
+            state.queryRequestSQL = queryRequest.queryRequestSQL;
         },
 
         getQueryRequestDetailsFailed: (state, { payload: { errorMessage } }) => {

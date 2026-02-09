@@ -6,7 +6,7 @@ import "./QueryTableView.scss";
 import {getAllQueries} from "../../reducers/queriesSlice";
 import {getQueryRequestDetails} from "../../reducers/queryRequestDetailsSlice";
 import {QueryRequestDetailsView} from "./QueryRequestDetailsView";
-import {Box} from "@mui/material";
+import {Box, Tooltip} from "@mui/material";
 
 export const QueryTableView = ({projectId, isObfuscated}) => {
     const dispatch = useDispatch();
@@ -152,16 +152,16 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             width: 70,
             cellClassName: 'actions',
             getActions: ({id, row}) => {
-                let infoAction = null;
-
                 return ([
-                    <GridActionsCellItem
-                        icon={<TextSnippetOutlinedIcon/>}
-                        label="SQL/Xml"
-                        className="textPrimary"
-                        onClick={handleShowQueryDetails(id)}
-                        color="inherit"
-                    />
+                    <Tooltip title="View XML/SQL">
+                        <GridActionsCellItem
+                            icon={<TextSnippetOutlinedIcon/>}
+                            label="SQL/Xml"
+                            className="textPrimary"
+                            onClick={handleShowQueryDetails(id)}
+                            color="inherit"
+                        />
+                    </Tooltip>
                 ]);
             },
         }
