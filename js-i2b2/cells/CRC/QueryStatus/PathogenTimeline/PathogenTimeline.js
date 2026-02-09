@@ -257,36 +257,62 @@ export default class PathogenTimeline {
 
                 for(const row of yoyPivotRows){
 
-                    //first I extract all the keys from yoyPivotRows
                     let diagnosis = row.diagnosis;
                     let year = row.year;
                     let monthIndex = row.monthIndex;
-                    let value = row.value;
-                    
-                  
-                    //if a given diagnosis isn't defined, create the object
+                    let value = row.value;   
+
                     if (byDiagnosisYear[diagnosis] === undefined){
                         byDiagnosisYear[diagnosis] = {};
                     }
-                    //if a given year isn't defined, create the array
+                   
                     if (byDiagnosisYear[diagnosis][year] === undefined){
                         byDiagnosisYear[diagnosis][year] = [];
                     }
-
-                    //then I create an object combining the month index and the value
+                  
                     let point = {"monthIndex": monthIndex, "value": value}
 
-                    //push the point into the year array for a given diagnosis
                     byDiagnosisYear[diagnosis][year].push(point);                 
                    
                 }
-                //sort the data --we could have used a nested for here, but that looked smelly
-                Object.values(byDiagnosisYear).flatMap(yearMap => Object.values(yearMap)).forEach(pointsArr => {pointsArr.sort((a, b) => a.monthIndex - b.monthIndex);});
+                //sort the data --we could have used a nested for loop here, but that looked smelly (even though in this case it wouldn't be)
+                Object.values(byDiagnosisYear)
+                    .flatMap(yearMap => Object.values(yearMap))
+                    .forEach(pointsArr => {
+                        pointsArr.sort((a, b) => a.monthIndex - b.monthIndex);});
+               
+
+                const series = [];
+
+                for (const diagnosis in byDiagnosisYear) {
+                    
+                    for (const yearKey in byDiagnosisYear[diagnosis]) { 
+
+                        let year = Number(yearKey);
+
+                        const monthlyDataArray = byDiagnosisYear[diagnosis][yearKey];
+
+                        series.push({diagnosis, year, points:monthlyDataArray});                
+                        
+                    }
+                    
+                }
+               
+                // Order series by diagnosis registry order, then by ascending year
+                series.sort((a, b) => { 
+                    const orderA = DIAGNOSIS_REGISTRY.diagnosis?.[a.diagnosis]?.order ?? 9999;
+                    const orderB = DIAGNOSIS_REGISTRY.diagnosis?.[b.diagnosis]?.order ?? 9999;
+                    return (orderA - orderB) || (a.year - b.year);
+
+                })
 
 
 
-                console.log(Object.entries(byDiagnosisYear));
-                console.log("[YOY] Year Over Year aggregation selected; branching out of default draw pipeline.");
+
+                const yoyRenderModel = {
+                    "months" : {0: "Jan", 1:"Feb", 2:"Mar", 3:"Apr", 4:"May", 5:"Jun", 6:"Jul", 7:"Aug", 8:"Sep", 9:"Oct", 10:"Nov", 11:"Dec" },
+                    "series" : {series}
+                }
 
                 return;
             }
@@ -741,6 +767,29 @@ function cssSafeKey(str) {
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
+}
+
+function blendWithWhite(hexColor, t){
+    const hexCleaned = hexColor.startsWith('#') ? hexColor.slice(1) : hexColor;   
+
+    const r = parseInt(hexCleaned.slice(0, 2), 16); 
+    const g = parseInt(hexCleaned.slice(2, 4), 16);
+    const b = parseInt(hexCleaned.slice(4, 6), 16);    
+
+    const r2 = 255 - (255 - r) * t;
+    const g2 = 255 - (255 - g) * t; 
+    const b2 = 255 - (255 - b) * t;
+
+    const rI = Math.round(r2);
+    const gI = Math.round(g2);
+    const bI = Math.round(b2);
+
+    const rHex= rI.toString(16).padStart(2, "0")
+    const gHex= gI.toString(16).padStart(2, "0")
+    const bHex= bI.toString(16).padStart(2, "0")
+
+    const finalHex = "#" + rHex + gHex + bHex;
+    return finalHex;
 }
 
 /**
