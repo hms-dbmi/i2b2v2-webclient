@@ -97,12 +97,6 @@ const parseQueryMetricsRequestXml = (queryMetricsRequestListXml) => {
                     });
                 }
 
-                if(type.toUpperCase() === "ADMIN_TOPUSERS_30_DAYS"){
-                    queryMetrics.topUsers30Days.push({
-                        name: column,
-                        value: dataValue
-                    });
-                }
 
                 if(type.toUpperCase() === "ADMIN_COUNT"){
                     queryMetrics.queryActivityByMonth.push({
@@ -114,6 +108,7 @@ const parseQueryMetricsRequestXml = (queryMetricsRequestListXml) => {
         }
     }
 
+    console.log("queryMetrics ", JSON.stringify(queryMetrics));
     return queryMetrics;
 }
 
