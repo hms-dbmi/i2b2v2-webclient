@@ -7,8 +7,9 @@ import {
     GET_ALL_QUERIES
 } from "../actions";
 import {parseXml} from "../utilities/parseXml";
+import {DateTime} from "luxon";
 
-const getAllQueryListRequest = (projectId) => {
+const getAllQueryListRequest = (projectId, fetchSetting) => {
     let request_type = "CRC_QRY_getQueryMasterList_fromGroupId";
 
     let data = {
@@ -17,8 +18,17 @@ const getAllQueryListRequest = (projectId) => {
         sec_project: projectId,
         crc_user_by: '',
         include_query_instance: true,
-       master_type_cd_xml: ''
+        master_type_cd_xml: ''
     };
+
+    if(fetchSetting.type === "date") {
+        const now = DateTime.now();
+        const nDaysAgo = now.minus({ days: fetchSetting.value });
+    }
+
+    if(fetchSetting.type === "size"){
+        data.crc_max_records = fetchSetting.value;
+    }
 
     return i2b2.ajax.CRC.getQueryMasterList_fromUserId(data).then((xmlString) => parseXml(xmlString)).catch((err) => err);
 };
@@ -118,10 +128,10 @@ const parseAllQueryListXml = (queryListXml) => {
 }
 
 export function* doGetAllQueries(action) {
-    const { projectId, isObfuscated } = action.payload;
+    const { projectId, isObfuscated, fetchSetting } = action.payload;
 
     try {
-        let response = yield call(getAllQueryListRequest, projectId);
+        let response = yield call(getAllQueryListRequest, projectId, fetchSetting);
         if (!response.error) {
             let queryList = yield parseAllQueryListXml(response);
             if(isObfuscated) {

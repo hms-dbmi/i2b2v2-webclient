@@ -4,6 +4,7 @@
   .ViewProjectBtn {
     margin-top: 0.98em;
     vertical-align: bottom;
+    margin-left: 0;
   }
 
   .QueryHeader {
@@ -11,6 +12,24 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 3em;
+
+    .queryFetchSizeOptions {
+      margin-top: 1.1em;
+    }
+
+    .deletedQueriesOption{
+      margin-top: 1.2em;
+      .MuiFormControlLabel-label {
+        font-size: 0.9em;
+      }
+      margin-right: 0.3em;
+    }
+
+    .optionLinkText {
+      font-size: 1.0em;
+      font-weight: bold;
+      margin-top: 1.1em;
+    }
   }
 
   .ProjectSelection {

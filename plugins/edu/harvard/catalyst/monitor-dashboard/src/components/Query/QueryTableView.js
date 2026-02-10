@@ -1,22 +1,16 @@
-import React, { useEffect, useState } from "react";
-import {useSelector, useDispatch} from "react-redux";
+import React, { useState } from "react";
+import { useDispatch} from "react-redux";
 import {DataGrid, GridActionsCellItem} from "@mui/x-data-grid";
 import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
 import "./QueryTableView.scss";
-import {getAllQueries} from "../../reducers/queriesSlice";
 import {getQueryRequestDetails} from "../../reducers/queryRequestDetailsSlice";
 import {QueryRequestDetailsView} from "./QueryRequestDetailsView";
 import {Box, Tooltip} from "@mui/material";
 
-export const QueryTableView = ({projectId, isObfuscated}) => {
+export const QueryTableView = ({queries, isObfuscated}) => {
     const dispatch = useDispatch();
-    const queries  = useSelector((state) => state.queries);
     const [paginationModel, setPaginationModel] = useState({ pageSize: 100, page: 0});
     const [showRequestDetails, setShowRequestDetails] = useState(false);
-
-    useEffect(() => {
-        dispatch(getAllQueries({projectId, isObfuscated}));
-    }, [projectId]);
 
     const handleShowQueryDetails = (queryMasterId) => () => {
         dispatch(getQueryRequestDetails({queryMasterId}));
