@@ -47,6 +47,7 @@ export const queriesSlice = createSlice({
                     status: QueryStatus.convertI2b2Status(query.status),
                     username: query.userId,
                     obfuscatedPatientCountStr: query.obfuscatedPatientCountStr,
+                    project: query.projectId,
                     runTime: runTime,
                 }));
             });

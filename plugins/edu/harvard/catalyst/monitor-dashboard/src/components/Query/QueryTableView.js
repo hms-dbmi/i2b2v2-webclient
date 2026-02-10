@@ -39,7 +39,7 @@ export const QueryTableView = ({queries, isObfuscated}) => {
         },
         {
             field: 'project',
-            headerName: 'Project',
+            headerName: 'Project ID',
             headerClassName: "header",
             sortable: true,
             resizable: false,

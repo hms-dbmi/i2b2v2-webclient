@@ -54,13 +54,17 @@ const parseAllQueryListXml = (queryListXml) => {
         let queryName = query.getElementsByTagName('name');
         let userId = query.getElementsByTagName('user_id');
         let queryInstanceTypeList = query.getElementsByTagName('query_instance_type');
+        let projectId = query.getElementsByTagName('group_id');
         if(userId.length > 0 && userId[0].childNodes.length !== 0
             && queryId.length > 0 &&  queryId[0].childNodes.length !== 0
             && queryName.length > 0 && queryName[0].childNodes.length !== 0
-            && queryInstanceTypeList.length > 0 && queryInstanceTypeList[0].childNodes.length !== 0){
+            && queryInstanceTypeList.length > 0 && queryInstanceTypeList[0].childNodes.length !== 0
+            && projectId.length > 0 && projectId[0].childNodes.length !== 0){
             userId = userId[0].childNodes[0].nodeValue;
             queryId = queryId[0].childNodes[0].nodeValue;
             queryName = decode(queryName[0].childNodes[0].nodeValue);
+            projectId = projectId[0].childNodes[0].nodeValue;
+
             let status = '';
             let patientCount = null;
             let requestList = [];
@@ -120,7 +124,7 @@ const parseAllQueryListXml = (queryListXml) => {
                     }
                 }
             }
-            exportRequestList.push({id: queryId, queryName, queryInstanceId, startDate, endDate, status, patientCount, userId, dataRequests: requestList, resultInstanceId});
+            exportRequestList.push({id: queryId, queryName, queryInstanceId, startDate, endDate, status, patientCount, userId, dataRequests: requestList, resultInstanceId, projectId});
         }
     }
 
