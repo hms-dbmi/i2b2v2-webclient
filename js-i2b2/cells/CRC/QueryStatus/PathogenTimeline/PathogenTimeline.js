@@ -281,23 +281,15 @@ export default class PathogenTimeline {
                     .forEach(pointsArr => {
                         pointsArr.sort((a, b) => a.monthIndex - b.monthIndex);});
                
-
-                const series = [];
-
-                for (const diagnosis in byDiagnosisYear) {
-                    
-                    for (const yearKey in byDiagnosisYear[diagnosis]) { 
-
-                        let year = Number(yearKey);
-
-                        const monthlyDataArray = byDiagnosisYear[diagnosis][yearKey];
-
-                        series.push({diagnosis, year, points:monthlyDataArray});                
-                        
-                    }
-                    
-                }
-               
+                //create the series
+                const series = Object.entries(byDiagnosisYear).flatMap(([diagnosis, years]) => 
+                Object.entries(years).map(([yearKey, monthlyDataArray]) => ({
+                    diagnosis,
+                    year: Number(yearKey),
+                    points: monthlyDataArray
+                    }))
+                );
+                  
                 // Order series by diagnosis registry order, then by ascending year
                 series.sort((a, b) => { 
                     const orderA = DIAGNOSIS_REGISTRY.diagnosis?.[a.diagnosis]?.order ?? 9999;
@@ -305,14 +297,52 @@ export default class PathogenTimeline {
                     return (orderA - orderB) || (a.year - b.year);
 
                 })
+                // create a lookup for the min year and max year to draw offset color lines
+                const lookup = series.reduce((acc, { diagnosis: dx, year }) => {
+                const range = acc[dx];
 
+                    if (!range) {
+                        acc[dx] = { min: year, max: year };
+                    } else {
+                        range.min = Math.min(range.min, year);
+                        range.max = Math.max(range.max, year);
+                    }
 
+                    return acc;
+                }, {});
+         
+                // create an item.stroke value for the renderer
+                const T_MIN = 0.3;
 
+                series.forEach((item) => {
+                    const { diagnosis: dx, year } = item;
 
-                const yoyRenderModel = {
-                    "months" : {0: "Jan", 1:"Feb", 2:"Mar", 3:"Apr", 4:"May", 5:"Jun", 6:"Jul", 7:"Aug", 8:"Sep", 9:"Oct", 10:"Nov", 11:"Dec" },
-                    "series" : {series}
+                    const range = lookup[dx];
+                    if (!range) return;
+
+                    const { min, max } = range;
+
+                    const u = (min === max) ? 1 : (year - min) / (max - min);
+
+                    const t = T_MIN + u * (1 - T_MIN);
+
+                    const baseColor = DIAGNOSIS_REGISTRY.diagnosis?.[dx]?.color;
+                    if (!baseColor) return;
+
+                    item.stroke = blendWithWhite(baseColor, t);
+                });
+
+                //create a render model for drawing
+                const renderModel = {
+                    "months" : ["Jan","Feb", "Mar", "Apr","May","Jun","Jul","Aug","Sep","Oct", "Nov","Dec" ],
+                    "series" : series,
+                    "xDomain": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 
+                    "yLeftLabel": "Number of Patients"
+
                 }
+
+                console.log(renderModel.months.length);
+                console.log(renderModel.series.length);
 
                 return;
             }
