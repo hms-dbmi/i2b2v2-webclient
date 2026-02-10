@@ -140,7 +140,7 @@ export const Query = () => {
                             </Tooltip>
                         </Box>
 
-                        <Typography className={"optionLinkText"}> in last </Typography>
+                        <Typography className={"optionLinkText"}> last </Typography>
                         <TextField
                             select
                             value={fetchSetting}
