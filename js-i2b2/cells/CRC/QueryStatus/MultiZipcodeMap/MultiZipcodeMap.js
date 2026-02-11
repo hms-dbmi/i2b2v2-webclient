@@ -482,6 +482,10 @@ export default class MultiZipcodeMap {
         }).bind(this);
         // ---------------------------
         const func_StylingHighlight = ((e) => {
+            // reset the styles for all aggregation areas
+            this.geojson.resetStyle();
+
+            // process the highlighting of the current area
             let layer = e.target;
             let style = {};
             // override styles if we have those options set
