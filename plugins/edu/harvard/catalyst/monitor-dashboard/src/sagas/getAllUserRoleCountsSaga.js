@@ -13,7 +13,7 @@ const getAllUserRoleCountsListRequest = (projectId) => {
         data.project_id_xml = "<project_id>" + projectId + "</project_id>"
     }
 
-    return i2b2.ajax.PM.getAllRole(data).then((xmlString) => parseXml(xmlString)).catch((err) => err);
+    return i2b2.ajax.PM.getAllRoleCount(data).then((xmlString) => parseXml(xmlString)).catch((err) => err);
 };
 
 const parseUserRoleCountsXml = (userRoleXml, projectId) => {
