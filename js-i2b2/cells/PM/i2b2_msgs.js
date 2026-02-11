@@ -1124,6 +1124,7 @@ i2b2.PM.cfg.msgs.getAllRoleUser = '<?xml version="1.0" encoding="UTF-8" standalo
 '    <message_body>\n'+
 '        <pm:get_all_role>\n'+
 '            <user_name>{{{username}}}</user_name>\n'+
+'           <count>{{{count_type}}}</count>\n' +
 '            <project_id>{{{id}}}</project_id>\n'+
 '        </pm:get_all_role>\n'+
 '    </message_body>\n'+
@@ -2775,7 +2776,7 @@ i2b2.PM.cfg.msgs.logoutUser = '<?xml version="1.0" encoding="UTF-8" standalone="
 i2b2.PM.ajax._addFunctionCall("logoutUser", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.logoutUser, ['password']);
 
 // ================================================================================================== //
-i2b2.PM.cfg.msgs.getAllRole = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+i2b2.PM.cfg.msgs.getAllRoleCount = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
     '<i2b2:request xmlns:i2b2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/">\n'+
     '    <message_header>\n'+
     '        {{{proxy_info}}}\n'+
@@ -2818,11 +2819,31 @@ i2b2.PM.cfg.msgs.getAllRole = '<?xml version="1.0" encoding="UTF-8" standalone="
     '        <result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
     '    </request_header>\n'+
     '    <message_body>\n'+
-    '       <pm:get_all_role>\n' +
+    '       <pm:get_all_role>\n'+
     '           <count>{{{count_type}}}</count>\n' +
     '           {{{project_id_xml}}}\n' +
-    '       </pm:get_all_role>\n' +
+    '       </pm:get_all_role>\n'+
     '    </message_body>\n'+
     '</i2b2:request>';
-i2b2.PM.ajax._addFunctionCall("getAllRole", "{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllRole, ["project_id_xml"]);
+i2b2.PM.cfg.parsers.getAllRoleCount = function() {
+    if (!this.error) {
+        this.model = [];
+        // extract records from XML msg
+        var c = this.refXML.getElementsByTagName('role');
+        var l = c.length;
+        for (var i=0; i<l; i++) {
+            var tmpRec = {};
+            tmpRec.projectid = i2b2.h.getXNodeVal(c[i], "project_id");
+            tmpRec.role = i2b2.h.getXNodeVal(c[i], "role");
+            tmpRec.count = i2b2.h.getXNodeVal(c[i], "count");
+            this.model.push(tmpRec);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllRoleCount] Could not parse() data!");
+    }
+    return this;
+};
+i2b2.PM.ajax._addFunctionCall("getAllRoleCount","{{{URL}}}getServices", i2b2.PM.cfg.msgs.getAllRoleCount,null,i2b2.PM.cfg.parsers.getAllRoleCount)	;
+
 
