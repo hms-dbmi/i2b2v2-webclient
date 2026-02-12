@@ -150,17 +150,22 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
             width: 70,
             cellClassName: 'actions',
             getActions: ({id, row}) => {
-                return ([
-                    <Tooltip title="View XML/SQL">
-                        <GridActionsCellItem
-                            icon={<TextSnippetOutlinedIcon/>}
-                            label="SQL/Xml"
-                            className="textPrimary"
-                            onClick={handleShowQueryDetails(id)}
-                            color="inherit"
-                        />
-                    </Tooltip>
-                ]);
+                let actions = [];
+                if(!row.deleteDate){
+                    actions.push(
+                        <Tooltip title="View XML/SQL">
+                            <GridActionsCellItem
+                                icon={<TextSnippetOutlinedIcon/>}
+                                label="SQL/Xml"
+                                className="textPrimary"
+                                onClick={handleShowQueryDetails(id)}
+                                color="inherit"
+                            />
+                        </Tooltip>
+                    )
+                }
+
+                return actions;
             },
         }
     ];
