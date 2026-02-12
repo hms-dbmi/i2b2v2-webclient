@@ -62,7 +62,7 @@ export const Query = () => {
     const handleViewQueryTable = () => {
         setSelectedProjectId(project.id);
         dispatch(getAllQueries({
-            selectedProjectId: project.id,
+            projectId: project.id,
             isObfuscated,
             fetchSetting: selectedFetchSetting,
             showDeleted: includeDeletedQueries

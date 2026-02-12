@@ -15,7 +15,7 @@ const getAllQueryListRequest = (projectId, fetchSetting, showDeleted) => {
     let data = {
         crc_max_records: -1,
         crc_user_type: request_type,
-        sec_project: projectId,
+        group_id: projectId,
         crc_user_by: '',
         include_query_instance: true,
         master_type_cd_xml: '',
@@ -144,8 +144,10 @@ const parseAllQueryListXml = (queryListXml) => {
 }
 
 export function* doGetAllQueries(action) {
+    console.log("getting all queries...");
     const { projectId, isObfuscated, fetchSetting, showDeleted } = action.payload;
 
+    console.log("projectId ", projectId);
     try {
         let response = yield call(getAllQueryListRequest, projectId, fetchSetting, showDeleted);
         if (!response.error) {
