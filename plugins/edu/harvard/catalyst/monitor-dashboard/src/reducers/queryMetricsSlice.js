@@ -42,7 +42,6 @@ export const queryMetricsSlice = createSlice({
             filteredUsersAndTotalQueries =  queryMetrics.topUsers30Days.filter(d => d.value > 0).sort((a, b) => b.value - a.value);
             topUsersByQuery.usersAndTotalQueries30Days= filteredUsersAndTotalQueries;
 
-            queryMetrics.queryActivityByMonth.sort((a, b) => b.date - a.date);
             const queryActivityByMonth = QueryActivityByMonth({
                 activityByMonthList : queryMetrics.queryActivityByMonth.map(q => {
                     return QueryActivityAndDate({

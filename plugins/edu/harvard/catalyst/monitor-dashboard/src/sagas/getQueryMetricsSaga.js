@@ -108,7 +108,6 @@ const parseQueryMetricsRequestXml = (queryMetricsRequestListXml) => {
         }
     }
 
-    console.log("queryMetrics ", JSON.stringify(queryMetrics));
     return queryMetrics;
 }
 
