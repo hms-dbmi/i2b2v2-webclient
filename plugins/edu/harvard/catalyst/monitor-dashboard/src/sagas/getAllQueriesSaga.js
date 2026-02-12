@@ -149,15 +149,30 @@ const parseAllQueryListXml = (queryListXml) => {
     return exportRequestList;
 }
 
+Modifieconst hasXmlErrorStatus = (responseXml) => {
+    let hasErrors = false;
+    let condition = responseXml.getElementsByTagName('condition');
+    if(condition.length > 0 && condition[0].childNodes.length !== 0){
+        const type = condition[0].getAttribute('type');
+        if(type && type.toUpperCase() === "ERROR"){
+            hasErrors = true;
+            const errorMsg = condition[0].childNodes[0].nodeValue;
+            console.error("There was an error getting the list of queries: ", errorMsg);
+        }
+    }
+
+    return hasErrors
+}
+
 export function* doGetAllQueries(action) {
     console.log("getting all queries...");
     const { projectId, dataSource, isObfuscated, fetchSetting, showDeleted } = action.payload;
 
-    console.log("projectId ", projectId);
     try {
         let response = yield call(getAllQueryListRequest, projectId, dataSource, fetchSetting, showDeleted);
-        if (!response.error) {
+        if (!response.error && !hasXmlErrorStatus(response)) {
             let queryList = yield parseAllQueryListXml(response);
+
             if(isObfuscated) {
                 const getObfuscatedCountStringRequestList = queryList.map(query => call(getObfuscatedCountStringRequest, query));
                 const queriesWithObfuscatedCountString = yield all(getObfuscatedCountStringRequestList);
@@ -169,11 +184,20 @@ export function* doGetAllQueries(action) {
         }
         else {
             yield put(getAllQueriesFailed({errorMessage: "There was an error getting the list of queries for project ", projectId}));
-            console.error("There was an error getting the list queries for project ", projectId, " Error: " , response);
+            if(dataSource) {
+                console.error("There was an error getting the list of queries for datasource ", dataSource, ". Error: " , response);
+            }else{
+                console.error("There was an error getting the list queries for project ", projectId, ". Error: ", response);
+            }
         }
     } catch (error) {
         yield put(getAllQueriesFailed({errorMessage: "There was an error getting the list of queries for project ", projectId}));
-        console.error("There was an error getting the list of queries for project ", projectId, " Error: " , error);
+        if(dataSource)
+        {
+            console.error("There was an error getting the list of queries for datasource ", dataSource, ". Error: " , error);
+        }else{
+            console.error("There was an error getting the list of queries for project ", projectId, ". Error: " , error);
+        }
     }
 }
 
