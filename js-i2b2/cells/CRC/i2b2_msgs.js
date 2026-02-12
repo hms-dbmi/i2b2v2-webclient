@@ -1690,6 +1690,7 @@ i2b2.CRC.cfg.msgs.getFilteredQueryMasterList_fromUserId = '<?xml version="1.0" e
     '		<ns4:request xsi:type="ns4:user_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
     '			<user_id>{{{crc_user_by}}}</user_id>\n'+
     '			<group_id>{{{group_id}}}</group_id>\n'+
+    '			<datasource>{{{datasource}}}</datasource>\n'+
     '			<include_query_instance>{{{include_query_instance}}}</include_query_instance>\n' +
     '			<fetch_size>{{{crc_max_records}}}</fetch_size>\n'+
     '			{{{master_type_cd_xml}}}\n' +

@@ -47,9 +47,6 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
             flex: 1,
             valueGetter: (value) => {
                 const projectInfo = projectIdList.find(p => p.id === value );
-                console.log("projectIdList ", JSON.stringify(projectIdList));
-
-                console.log("value is ", value);
                 return projectInfo ? projectInfo.name: "";
             }
         },

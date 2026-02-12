@@ -19,8 +19,8 @@ import {getAllQueries} from "../../reducers/queriesSlice";
 export const Query = () => {
     const dispatch = useDispatch();
     const [dataSource, setDataSource] = React.useState("");
-    const ALL_PROJECTS = "@";
-    const allProjects = [{id: ALL_PROJECTS, name: "All Projects"}];
+    const ALL_PROJECTS_ID = "@";
+    const allProjects = [{id: ALL_PROJECTS_ID, name: "All Projects"}];
     const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
     const [project, setProject] = React.useState(allProjects[0]);
     const [selectedProjectId, setSelectedProjectId] = React.useState("");
@@ -61,8 +61,15 @@ export const Query = () => {
 
     const handleViewQueryTable = () => {
         setSelectedProjectId(project.id);
+        let selectedDataSource;
+
+        if(project.id === ALL_PROJECTS_ID){
+            selectedDataSource = dataSource.dbSchema;
+        }
+
         dispatch(getAllQueries({
             projectId: project.id,
+            dataSource: selectedDataSource,
             isObfuscated,
             fetchSetting: selectedFetchSetting,
             showDeleted: includeDeletedQueries

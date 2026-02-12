@@ -9,7 +9,7 @@ import {
 import {parseXml} from "../utilities/parseXml";
 import {DateTime} from "luxon";
 
-const getAllQueryListRequest = (projectId, fetchSetting, showDeleted) => {
+const getAllQueryListRequest = (projectId, dataSource, fetchSetting, showDeleted) => {
     let request_type = "CRC_QRY_getQueryMasterList_fromGroupId";
 
     let data = {
@@ -17,11 +17,17 @@ const getAllQueryListRequest = (projectId, fetchSetting, showDeleted) => {
         crc_user_type: request_type,
         group_id: projectId,
         crc_user_by: '',
+        datasource: '',
         include_query_instance: true,
         master_type_cd_xml: '',
         show_deleted: showDeleted,
         constrain_by_date_xml: ''
     };
+
+    if(dataSource){
+        data.group_id = '';
+        data.datasource = dataSource;
+    }
 
     switch (fetchSetting.type) {
         case "date": {
@@ -145,11 +151,11 @@ const parseAllQueryListXml = (queryListXml) => {
 
 export function* doGetAllQueries(action) {
     console.log("getting all queries...");
-    const { projectId, isObfuscated, fetchSetting, showDeleted } = action.payload;
+    const { projectId, dataSource, isObfuscated, fetchSetting, showDeleted } = action.payload;
 
     console.log("projectId ", projectId);
     try {
-        let response = yield call(getAllQueryListRequest, projectId, fetchSetting, showDeleted);
+        let response = yield call(getAllQueryListRequest, projectId, dataSource, fetchSetting, showDeleted);
         if (!response.error) {
             let queryList = yield parseAllQueryListXml(response);
             if(isObfuscated) {
