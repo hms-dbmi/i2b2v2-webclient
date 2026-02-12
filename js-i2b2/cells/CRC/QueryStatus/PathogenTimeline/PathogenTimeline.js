@@ -341,8 +341,9 @@ export default class PathogenTimeline {
 
                 }
 
-                console.log(renderModel.months.length);
-                console.log(renderModel.series.length);
+                this.drawYOY(renderModel);
+                // console.log(renderModel.months.length);
+                // console.log(renderModel.series.length);
 
                 return;
             }
@@ -396,6 +397,52 @@ export default class PathogenTimeline {
         }
         return true;
     }
+
+    drawYOY(renderModel){
+        if (!renderModel.series || renderModel.series === 0) {
+            this.svg.selectAll("*").remove();
+            return;
+        }
+
+        const width = this.width - margin.left - margin.right;
+        const height = this.height;
+
+        this.svg.selectAll("*").remove();
+
+        const xScale = d3.scaleLinear()
+            .domain([0, 11])
+            .range([0, width]);
+
+        const maxY = Math.max(...renderModel.series.flatMap(item => 
+            item.points.map(point => point.value)
+            ));
+
+        //console.log(maxY);
+
+        const yLeft = d3.scaleLinear()
+            .domain([0, maxY])
+            .nice()            
+            .range([height, 0]);
+
+       //Append to x axis
+
+        this.svg.append("g")
+            .classed("x-axis", true)
+            .attr("transform", `translate(0,${height})`)
+            .call(
+                d3.axisBottom(xScale)
+                    .ticks(11)
+                    .tickValues(renderModel.xDomain)
+                    .tickFormat(i => renderModel.months[i])
+            )
+
+
+
+
+  
+    }
+
+    
 
     draw(records, selectedOverlay, selectedAggregation) {
         if (!records || records.length === 0) {
