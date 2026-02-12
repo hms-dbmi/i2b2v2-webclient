@@ -1,6 +1,6 @@
 {
-  "title": "Monitor Dashboard",
-  "description": "This is a tool for monitoring i2b2",
+  "title": "Activity & Usage Monitoring ",
+  "description": "This is a tool for monitoring i2b2 usage",
   "category": ["admin"],
   "icons": { "size32x32": "exampleplugin_32x32.gif" },
   "assetDir": "dist/assets/images",

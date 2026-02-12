@@ -1,5 +1,5 @@
 {
-  "title": "Admin Dashboard",
+  "title": "Administration & Configuration",
   "description": "This is a tool for configuring and managing i2b2",
   "category": ["admin"],
   "icons": { "size32x32": "exampleplugin_32x32.gif" },
