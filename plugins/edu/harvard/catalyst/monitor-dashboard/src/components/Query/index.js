@@ -21,7 +21,6 @@ export const Query = () => {
     const [dataSource, setDataSource] = React.useState("");
     const ALL_PROJECTS = "@";
     const allProjects = [{id: ALL_PROJECTS, name: "All Projects"}];
-    const projects  = useSelector((state) => state.projects);
     const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
     const [project, setProject] = React.useState(allProjects[0]);
     const [selectedProjectId, setSelectedProjectId] = React.useState("");
@@ -32,6 +31,7 @@ export const Query = () => {
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
     const dataSources  = useSelector((state) => state.dataSources);
     const queries  = useSelector((state) => state.queries);
+    const projects  = useSelector((state) => state.projects);
 
     useEffect(() => {
         if (isI2b2LibLoaded) {
@@ -184,7 +184,7 @@ export const Query = () => {
                 }
             </Box>
             <Box>
-                {selectedProjectId && <QueryTableView queries={queries} isObfuscated={isObfuscated}/>}
+                {selectedProjectId && <QueryTableView queries={queries} isObfuscated={isObfuscated} projectIdList={projectListOptions}/>}
             </Box>
         </Box>
     )

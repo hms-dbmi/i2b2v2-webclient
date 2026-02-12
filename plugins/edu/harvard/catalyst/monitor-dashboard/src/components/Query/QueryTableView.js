@@ -7,7 +7,7 @@ import {getQueryRequestDetails} from "../../reducers/queryRequestDetailsSlice";
 import {QueryRequestDetailsView} from "./QueryRequestDetailsView";
 import {Box, Tooltip} from "@mui/material";
 
-export const QueryTableView = ({queries, isObfuscated}) => {
+export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
     const dispatch = useDispatch();
     const [paginationModel, setPaginationModel] = useState({ pageSize: 100, page: 0});
     const [showRequestDetails, setShowRequestDetails] = useState(false);
@@ -44,7 +44,11 @@ export const QueryTableView = ({queries, isObfuscated}) => {
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 1
+            flex: 1,
+            valueGetter: (value) => {
+                const projectInfo = projectIdList.find(p => p.id === value );
+                return projectInfo.name ? projectInfo.name: "";
+            }
         },
         {
             field: 'username',
