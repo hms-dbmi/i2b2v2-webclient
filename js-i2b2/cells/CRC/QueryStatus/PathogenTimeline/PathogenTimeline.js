@@ -436,7 +436,77 @@ export default class PathogenTimeline {
                     .tickFormat(i => renderModel.months[i])
             )
 
+        // append to Left Y 
+        const yAxisLeft = this.svg.append("g")
+            .classed("y-axis left", true)
+            .call(
+                d3.axisLeft(yLeft)
+                    .tickFormat(d3.format(".2~s")));
 
+        const yLabelText =  renderModel.yLeftLabel;
+
+        const yLabelLeft = yAxisLeft.append("text")
+            .attr("class", "y-label")
+            .attr("fill", "currentColor")
+            .attr("letter-spacing", "1.16")
+            .attr("text-anchor", "middle")
+            .text(yLabelText)
+            .attr("transform", "rotate(-90)");
+
+        // After render, center it using SVG bbox
+        yLabelLeft.each(function () {
+            let w = 0;
+            try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
+
+            const x = -(height / 2);          // centered vertically
+            const y = -margin.left + 28;      // gutter position
+
+            d3.select(this)
+                .attr("x", x)
+                .attr("y", y);
+        });
+
+
+  
+        // -----------------------------
+        // Line Gen
+        // -----------------------------
+
+        const patientLine = d3.line()
+            .x(point => xScale(point.monthIndex))
+            .y(point => yLeft(point.value));
+
+
+        // -----------------------------
+        // Draw diagnosis points
+        // -----------------------------
+        
+
+            // Line
+            this.svg.append("path")
+                .datum(rows)
+                .attr("fill", "none")
+                .attr("stroke", color)
+                .attr("stroke-width", 2)
+                .attr("d", patientLine);
+
+            // Points
+            this.svg.selectAll(`circle.${cssSafeKey(diagnosis)}`)
+                .data(rows)
+                .enter()
+                .append("circle")
+                .attr("class", `point ${cssSafeKey(diagnosis)}`)
+                .attr("cx", d => xScale(d.date))
+                .attr("cy", d => yLeft(d.value))
+                .attr("r", 4)
+                .attr("fill", color)
+                .attr("stroke", color)
+                .append("title")
+                .text(d => {
+                    const label = tickFormat(d.date);
+                    return `${d.diagnosisRaw ?? d.diagnosis} — ${label}\n[ ${d.display ?? d.value} patients ]`;
+                });
+       
 
 
   
