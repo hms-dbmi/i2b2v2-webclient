@@ -155,6 +155,7 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
 
             return SelectedProject({
                 ...state,
+                users: [],
                 project,
                 isFetchingUserRoles: true,
             });
