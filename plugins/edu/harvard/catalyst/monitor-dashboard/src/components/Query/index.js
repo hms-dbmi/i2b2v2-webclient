@@ -25,8 +25,8 @@ export const Query = () => {
     const [projectListOptions, setProjectListOptions  ] = React.useState(allProjects);
     const [project, setProject] = React.useState(allProjects[0]);
     const [selectedProjectId, setSelectedProjectId] = React.useState("");
-    const [selectedFetchSetting, setSelectedFetchSetting] = React.useState({});
     const [fetchSetting, setFetchSetting] = React.useState( 30);
+    const [selectedFetchSetting, setSelectedFetchSetting] = React.useState({type: "date", value: fetchSetting});
     const [includeDeletedQueries, setIncludeDeletedQueries] = React.useState(false);
     const {isObfuscated} = useSelector((state) => state.userInfo);
     const isI2b2LibLoaded  = useSelector((state) => state.isI2b2LibLoaded);
@@ -61,7 +61,12 @@ export const Query = () => {
 
     const handleViewQueryTable = () => {
         setSelectedProjectId(project.id);
-        dispatch(getAllQueries({selectedProjectId: project.id, isObfuscated, fetchSetting: selectedFetchSetting}));
+        dispatch(getAllQueries({
+            selectedProjectId: project.id,
+            isObfuscated,
+            fetchSetting: selectedFetchSetting,
+            showDeleted: includeDeletedQueries
+        }));
     }
 
     const handleIncludeDeletedQueriesChange = () => {

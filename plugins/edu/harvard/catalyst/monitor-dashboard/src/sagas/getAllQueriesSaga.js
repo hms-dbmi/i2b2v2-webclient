@@ -9,7 +9,7 @@ import {
 import {parseXml} from "../utilities/parseXml";
 import {DateTime} from "luxon";
 
-const getAllQueryListRequest = (projectId, fetchSetting) => {
+const getAllQueryListRequest = (projectId, fetchSetting, showDeleted) => {
     let request_type = "CRC_QRY_getQueryMasterList_fromGroupId";
 
     let data = {
@@ -18,19 +18,28 @@ const getAllQueryListRequest = (projectId, fetchSetting) => {
         sec_project: projectId,
         crc_user_by: '',
         include_query_instance: true,
-        master_type_cd_xml: ''
+        master_type_cd_xml: '',
+        show_deleted: showDeleted,
+        constrain_by_date_xml: ''
     };
 
-    if(fetchSetting.type === "date") {
-        const now = DateTime.now();
-        const nDaysAgo = now.minus({ days: fetchSetting.value });
+    switch (fetchSetting.type) {
+        case "date": {
+            const now = DateTime.now();
+            const nDaysAgo = now.minus({ days: fetchSetting.value });
+            data.constrain_by_date_xml = '<constrain_by_date><date_from>' + nDaysAgo.toISO() + '</date_from></constrain_by_date>';
+            break;
+        }
+        case "size": {
+            data.crc_max_records = fetchSetting.value;
+            break;
+        }
+        default: {
+            console.warn("Query fetch type ", fetchSetting.type, " not found");
+        }
     }
 
-    if(fetchSetting.type === "size"){
-        data.crc_max_records = fetchSetting.value;
-    }
-
-    return i2b2.ajax.CRC.getQueryMasterList_fromUserId(data).then((xmlString) => parseXml(xmlString)).catch((err) => err);
+    return i2b2.ajax.CRC.getFilteredQueryMasterList_fromUserId(data).then((xmlString) => parseXml(xmlString)).catch((err) => err);
 };
 
 const getObfuscatedCountStringRequest = (query) => {
@@ -55,6 +64,8 @@ const parseAllQueryListXml = (queryListXml) => {
         let userId = query.getElementsByTagName('user_id');
         let queryInstanceTypeList = query.getElementsByTagName('query_instance_type');
         let projectId = query.getElementsByTagName('group_id');
+        let deleteDate = query.getElementsByTagName('delete_date');
+
         if(userId.length > 0 && userId[0].childNodes.length !== 0
             && queryId.length > 0 &&  queryId[0].childNodes.length !== 0
             && queryName.length > 0 && queryName[0].childNodes.length !== 0
@@ -64,6 +75,7 @@ const parseAllQueryListXml = (queryListXml) => {
             queryId = queryId[0].childNodes[0].nodeValue;
             queryName = decode(queryName[0].childNodes[0].nodeValue);
             projectId = projectId[0].childNodes[0].nodeValue;
+            deleteDate = deleteDate.length > 0 && deleteDate[0].childNodes.length !== 0 ? deleteDate[0].childNodes[0].nodeValue : '';
 
             let status = '';
             let patientCount = null;
@@ -124,7 +136,7 @@ const parseAllQueryListXml = (queryListXml) => {
                     }
                 }
             }
-            exportRequestList.push({id: queryId, queryName, queryInstanceId, startDate, endDate, status, patientCount, userId, dataRequests: requestList, resultInstanceId, projectId});
+            exportRequestList.push({id: queryId, queryName, queryInstanceId, startDate, endDate, status, patientCount, userId, dataRequests: requestList, resultInstanceId, projectId, deleteDate});
         }
     }
 
@@ -132,10 +144,10 @@ const parseAllQueryListXml = (queryListXml) => {
 }
 
 export function* doGetAllQueries(action) {
-    const { projectId, isObfuscated, fetchSetting } = action.payload;
+    const { projectId, isObfuscated, fetchSetting, showDeleted } = action.payload;
 
     try {
-        let response = yield call(getAllQueryListRequest, projectId, fetchSetting);
+        let response = yield call(getAllQueryListRequest, projectId, fetchSetting, showDeleted);
         if (!response.error) {
             let queryList = yield parseAllQueryListXml(response);
             if(isObfuscated) {

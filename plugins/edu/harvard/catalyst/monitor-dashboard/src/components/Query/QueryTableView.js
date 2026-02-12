@@ -39,7 +39,7 @@ export const QueryTableView = ({queries, isObfuscated}) => {
         },
         {
             field: 'project',
-            headerName: 'Project ID',
+            headerName: 'Project',
             headerClassName: "header",
             sortable: true,
             resizable: false,
@@ -201,6 +201,12 @@ export const QueryTableView = ({queries, isObfuscated}) => {
                 }}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
+                }}
+                getRowClassName={(params) => {
+                    if (params.row.deleteDate) {
+                        return 'deletedRow';
+                    }
+                    return '';
                 }}
                 getRowHeight={() => 'auto'}
             />
