@@ -149,7 +149,7 @@ const parseAllQueryListXml = (queryListXml) => {
     return exportRequestList;
 }
 
-Modifieconst hasXmlErrorStatus = (responseXml) => {
+const hasXmlErrorStatus = (responseXml) => {
     let hasErrors = false;
     let condition = responseXml.getElementsByTagName('condition');
     if(condition.length > 0 && condition[0].childNodes.length !== 0){
