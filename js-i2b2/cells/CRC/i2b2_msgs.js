@@ -1637,3 +1637,103 @@ i2b2.CRC.ajax._addFunctionCall(	"runBreakdown",
     "{{{URL}}}breakdownrequest\n",
     i2b2.CRC.cfg.msgs.runBreakdown,
     ["psm_result_output"]);
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.getFilteredQueryMasterList_fromUserId = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_type>\n'+
+    '			<message_code>Q04</message_code>\n'+
+    '			<event_type>EQQ</event_type>\n'+
+    '		</message_type>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>AL</accept_acknowledgement_type>\n'+
+    '		<project_id>{{{sec_project}}}</project_id>\n'+
+    '		<country_code>US</country_code>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '		<ns4:psmheader>\n'+
+    '			<user login="{{{sec_user}}}">{{{sec_user}}}</user>\n'+
+    '			<patient_set_limit>0</patient_set_limit>\n'+
+    '			<estimated_time>0</estimated_time>\n'+
+    '			<request_type>{{{crc_user_type}}}</request_type>\n'+
+    '		</ns4:psmheader>\n'+
+    '		<ns4:request xsi:type="ns4:user_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
+    '			<user_id>{{{crc_user_by}}}</user_id>\n'+
+    '			<group_id>{{{group_id}}}</group_id>\n'+
+    '			<datasource>{{{datasource}}}</datasource>\n'+
+    '			<include_query_instance>{{{include_query_instance}}}</include_query_instance>\n' +
+    '			<fetch_size>{{{crc_max_records}}}</fetch_size>\n'+
+    '			{{{master_type_cd_xml}}}\n' +
+    '			<show_deleted>{{{show_deleted}}}</show_deleted>\n'+
+    '			{{{constrain_by_date_xml}}}\n' +
+    '		</ns4:request>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>\n';
+i2b2.CRC.cfg.parsers.getFilteredQueryMasterList_fromUserId = function() {
+    if (!this.error) {
+        this.model = [];
+        var qm = this.refXML.getElementsByTagName('query_master');
+        for(var i=0; i<1*qm.length; i++) {
+            var o = new Object;
+            o.xmlOrig = qm[i].outerHTML;
+            o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
+            o.name = i2b2.h.getXNodeVal(qm[i],'name');
+            o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
+            o.group = i2b2.h.getXNodeVal(qm[i],'group_id');
+            o.created = i2b2.h.getXNodeVal(qm[i],'create_date');
+            var dStr = '';
+            var d = o.created.match(/^[0-9\-]*/).toString();
+            if (d) {
+                d = d.replace(/-/g,'/');
+                d = new Date(Date.parse(d));
+                if (d) {
+                    dStr = ' [' + (d.getMonth()+1) + '-' + d.getDate() + '-' + d.getFullYear().toString() + ']';
+                }
+            }
+            o.name += dStr + ' ['+o.userid+']';
+            // encapsulate into an SDX package
+            var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QM',o);
+            this.model.push(sdxDataPack);
+        }
+    } else {
+        this.model = false;
+        console.error("[getFilteredQueryMasterList_fromUserId] Could not parse() data!");
+    }
+    return this;
+}
+i2b2.CRC.ajax._addFunctionCall(	"getFilteredQueryMasterList_fromUserId",
+    "{{{URL}}}request",
+    i2b2.CRC.cfg.msgs.getFilteredQueryMasterList_fromUserId,
+    ['master_type_cd_xml', 'constrain_by_date_xml'],
+    i2b2.CRC.cfg.parsers.getFilteredQueryMasterList_fromUserId);
+

@@ -23,6 +23,7 @@ export const queriesSlice = createSlice({
             queryList.map((query) => {
                 const status =QueryStatus.convertI2b2Status(query.status);
                 const startDate = DateTime.fromISO(query.startDate);
+                const deleteDate = query.deleteDate?.length > 0 ? DateTime.fromISO(query.deleteDate) : null;
 
                 let runTime = null;
                 if(status === QueryStatus.statuses.ERROR || status === QueryStatus.statuses.FINISHED){
@@ -43,10 +44,12 @@ export const queriesSlice = createSlice({
                         });
                     }),
                     startDate: startDate.toJSDate(),
+                    deleteDate: deleteDate,
                     patientCount: query.patientCount,
                     status: QueryStatus.convertI2b2Status(query.status),
                     username: query.userId,
                     obfuscatedPatientCountStr: query.obfuscatedPatientCountStr,
+                    project: query.projectId,
                     runTime: runTime,
                 }));
             });

@@ -7,20 +7,45 @@ import {
     GET_ALL_QUERIES
 } from "../actions";
 import {parseXml} from "../utilities/parseXml";
+import {DateTime} from "luxon";
 
-const getAllQueryListRequest = (projectId) => {
+const getAllQueryListRequest = (projectId, dataSource, fetchSetting, showDeleted) => {
     let request_type = "CRC_QRY_getQueryMasterList_fromGroupId";
 
     let data = {
         crc_max_records: -1,
         crc_user_type: request_type,
-        sec_project: projectId,
+        group_id: projectId,
         crc_user_by: '',
+        datasource: '',
         include_query_instance: true,
-       master_type_cd_xml: ''
+        master_type_cd_xml: '',
+        show_deleted: showDeleted,
+        constrain_by_date_xml: ''
     };
 
-    return i2b2.ajax.CRC.getQueryMasterList_fromUserId(data).then((xmlString) => parseXml(xmlString)).catch((err) => err);
+    if(dataSource){
+        data.group_id = '';
+        data.datasource = dataSource;
+    }
+
+    switch (fetchSetting.type) {
+        case "date": {
+            const now = DateTime.now();
+            const nDaysAgo = now.minus({ days: fetchSetting.value });
+            data.constrain_by_date_xml = '<constrain_by_date><date_from>' + nDaysAgo.toISO() + '</date_from></constrain_by_date>';
+            break;
+        }
+        case "size": {
+            data.crc_max_records = fetchSetting.value;
+            break;
+        }
+        default: {
+            console.warn("Query fetch type ", fetchSetting.type, " not found");
+        }
+    }
+
+    return i2b2.ajax.CRC.getFilteredQueryMasterList_fromUserId(data).then((xmlString) => parseXml(xmlString)).catch((err) => err);
 };
 
 const getObfuscatedCountStringRequest = (query) => {
@@ -44,13 +69,20 @@ const parseAllQueryListXml = (queryListXml) => {
         let queryName = query.getElementsByTagName('name');
         let userId = query.getElementsByTagName('user_id');
         let queryInstanceTypeList = query.getElementsByTagName('query_instance_type');
+        let projectId = query.getElementsByTagName('group_id');
+        let deleteDate = query.getElementsByTagName('delete_date');
+
         if(userId.length > 0 && userId[0].childNodes.length !== 0
             && queryId.length > 0 &&  queryId[0].childNodes.length !== 0
             && queryName.length > 0 && queryName[0].childNodes.length !== 0
-            && queryInstanceTypeList.length > 0 && queryInstanceTypeList[0].childNodes.length !== 0){
+            && queryInstanceTypeList.length > 0 && queryInstanceTypeList[0].childNodes.length !== 0
+            && projectId.length > 0 && projectId[0].childNodes.length !== 0){
             userId = userId[0].childNodes[0].nodeValue;
             queryId = queryId[0].childNodes[0].nodeValue;
             queryName = decode(queryName[0].childNodes[0].nodeValue);
+            projectId = projectId[0].childNodes[0].nodeValue;
+            deleteDate = deleteDate.length > 0 && deleteDate[0].childNodes.length !== 0 ? deleteDate[0].childNodes[0].nodeValue : '';
+
             let status = '';
             let patientCount = null;
             let requestList = [];
@@ -110,20 +142,37 @@ const parseAllQueryListXml = (queryListXml) => {
                     }
                 }
             }
-            exportRequestList.push({id: queryId, queryName, queryInstanceId, startDate, endDate, status, patientCount, userId, dataRequests: requestList, resultInstanceId});
+            exportRequestList.push({id: queryId, queryName, queryInstanceId, startDate, endDate, status, patientCount, userId, dataRequests: requestList, resultInstanceId, projectId, deleteDate});
         }
     }
 
     return exportRequestList;
 }
 
+const hasXmlErrorStatus = (responseXml) => {
+    let hasErrors = false;
+    let condition = responseXml.getElementsByTagName('condition');
+    if(condition.length > 0 && condition[0].childNodes.length !== 0){
+        const type = condition[0].getAttribute('type');
+        if(type && type.toUpperCase() === "ERROR"){
+            hasErrors = true;
+            const errorMsg = condition[0].childNodes[0].nodeValue;
+            console.error("There was an error getting the list of queries: ", errorMsg);
+        }
+    }
+
+    return hasErrors
+}
+
 export function* doGetAllQueries(action) {
-    const { projectId, isObfuscated } = action.payload;
+    console.log("getting all queries...");
+    const { projectId, dataSource, isObfuscated, fetchSetting, showDeleted } = action.payload;
 
     try {
-        let response = yield call(getAllQueryListRequest, projectId);
-        if (!response.error) {
+        let response = yield call(getAllQueryListRequest, projectId, dataSource, fetchSetting, showDeleted);
+        if (!response.error && !hasXmlErrorStatus(response)) {
             let queryList = yield parseAllQueryListXml(response);
+
             if(isObfuscated) {
                 const getObfuscatedCountStringRequestList = queryList.map(query => call(getObfuscatedCountStringRequest, query));
                 const queriesWithObfuscatedCountString = yield all(getObfuscatedCountStringRequestList);
@@ -135,11 +184,20 @@ export function* doGetAllQueries(action) {
         }
         else {
             yield put(getAllQueriesFailed({errorMessage: "There was an error getting the list of queries for project ", projectId}));
-            console.error("There was an error getting the list queries for project ", projectId, " Error: " , response);
+            if(dataSource) {
+                console.error("There was an error getting the list of queries for datasource ", dataSource, ". Error: " , response);
+            }else{
+                console.error("There was an error getting the list queries for project ", projectId, ". Error: ", response);
+            }
         }
     } catch (error) {
         yield put(getAllQueriesFailed({errorMessage: "There was an error getting the list of queries for project ", projectId}));
-        console.error("There was an error getting the list of queries for project ", projectId, " Error: " , error);
+        if(dataSource)
+        {
+            console.error("There was an error getting the list of queries for datasource ", dataSource, ". Error: " , error);
+        }else{
+            console.error("There was an error getting the list of queries for project ", projectId, ". Error: " , error);
+        }
     }
 }
 

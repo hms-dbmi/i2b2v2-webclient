@@ -30,4 +30,7 @@
   .MuiDataGrid-cell--textRight {
     text-align: left !important;
   }
+  .deletedRow {
+    background-color: rgba(190, 6, 38, 0.10);
+  }
 }

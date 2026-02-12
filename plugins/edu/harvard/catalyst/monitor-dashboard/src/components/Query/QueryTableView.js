@@ -1,22 +1,16 @@
-import React, { useEffect, useState } from "react";
-import {useSelector, useDispatch} from "react-redux";
+import React, { useState } from "react";
+import { useDispatch} from "react-redux";
 import {DataGrid, GridActionsCellItem} from "@mui/x-data-grid";
 import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
 import "./QueryTableView.scss";
-import {getAllQueries} from "../../reducers/queriesSlice";
 import {getQueryRequestDetails} from "../../reducers/queryRequestDetailsSlice";
 import {QueryRequestDetailsView} from "./QueryRequestDetailsView";
 import {Box, Tooltip} from "@mui/material";
 
-export const QueryTableView = ({projectId, isObfuscated}) => {
+export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
     const dispatch = useDispatch();
-    const queries  = useSelector((state) => state.queries);
     const [paginationModel, setPaginationModel] = useState({ pageSize: 100, page: 0});
     const [showRequestDetails, setShowRequestDetails] = useState(false);
-
-    useEffect(() => {
-        dispatch(getAllQueries({projectId, isObfuscated}));
-    }, [projectId]);
 
     const handleShowQueryDetails = (queryMasterId) => () => {
         dispatch(getQueryRequestDetails({queryMasterId}));
@@ -50,7 +44,11 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             sortable: true,
             resizable: false,
             disableReorder: true,
-            flex: 1
+            flex: 1,
+            valueGetter: (value) => {
+                const projectInfo = projectIdList.find(p => p.id === value );
+                return projectInfo ? projectInfo.name: "";
+            }
         },
         {
             field: 'username',
@@ -152,17 +150,22 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
             width: 70,
             cellClassName: 'actions',
             getActions: ({id, row}) => {
-                return ([
-                    <Tooltip title="View XML/SQL">
-                        <GridActionsCellItem
-                            icon={<TextSnippetOutlinedIcon/>}
-                            label="SQL/Xml"
-                            className="textPrimary"
-                            onClick={handleShowQueryDetails(id)}
-                            color="inherit"
-                        />
-                    </Tooltip>
-                ]);
+                let actions = [];
+                if(!row.deleteDate){
+                    actions.push(
+                        <Tooltip title="View XML/SQL">
+                            <GridActionsCellItem
+                                icon={<TextSnippetOutlinedIcon/>}
+                                label="SQL/Xml"
+                                className="textPrimary"
+                                onClick={handleShowQueryDetails(id)}
+                                color="inherit"
+                            />
+                        </Tooltip>
+                    )
+                }
+
+                return actions;
             },
         }
     ];
@@ -207,6 +210,12 @@ export const QueryTableView = ({projectId, isObfuscated}) => {
                 }}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
+                }}
+                getRowClassName={(params) => {
+                    if (params.row.deleteDate) {
+                        return 'deletedRow';
+                    }
+                    return '';
                 }}
                 getRowHeight={() => 'auto'}
             />
