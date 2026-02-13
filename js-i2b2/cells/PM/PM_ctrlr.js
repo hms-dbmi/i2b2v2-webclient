@@ -419,6 +419,7 @@ i2b2.PM.doLogout = function(allSessions) {
             }
             else{
                 alert("Error logging out user.");
+                window.location.reload();
             }
         }, i2b2.PM);
         let parameters = {
