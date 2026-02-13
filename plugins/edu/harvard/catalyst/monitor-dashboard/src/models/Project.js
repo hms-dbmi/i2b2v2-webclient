@@ -6,12 +6,14 @@ export const Project = ({
     description = "",
     key = "",
     path = "",
+    createDate = null
 } = {}) => ({
     id,
     name,
     description,
     key,
-    path
+    path,
+    createDate
 });
 
 Project.propTypes = {
@@ -20,4 +22,5 @@ Project.propTypes = {
     description: PropTypes.string,
     key: PropTypes.string,
     path: PropTypes.string.isRequired,
+    createDate: PropTypes.instanceOf(Date).isRequired,
 };

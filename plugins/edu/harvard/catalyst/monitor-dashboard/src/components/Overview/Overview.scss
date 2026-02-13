@@ -15,6 +15,15 @@
     display: flex;
     align-items: center;
     gap: 10px;
+
+    .ProjectDate {
+      margin-top: 0.8em;
+      margin-left: 0.8em;
+    }
+    .ProjectDateLabel {
+      font-weight: 600;
+      color: #0000009c;
+    }
   }
 
   .ProjectOverviewInfoGrid {

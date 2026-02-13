@@ -9,6 +9,7 @@ import {
     Paper,
     TextField,
     Tooltip,
+    Typography,
 } from "@mui/material";
 import {getAllProjects} from "../../reducers/projectsSlice";
 import {getUserSessions} from "../../reducers/userSessionsSlice";
@@ -127,7 +128,11 @@ export const Overview = () => {
                     />
                 </Tooltip>
                 <Button className={"ViewProjectBtn"} variant="contained" size="small" onClick={handleViewProjectOverview}>View</Button>
-                <div className={"ProjectOverviewCount"}>{getProjectCountText()}</div>
+                <div className={"ProjectOverviewCount"}>
+                    {getProjectCountText()}
+                </div>
+                {selectedProject.createDate && <Typography className={"ProjectDate"}><span className={"ProjectDateLabel"}>Date Created: </span> {selectedProject.createDate.toLocaleDateString()}</Typography>}
+
             </div>
             <Grid className={"ProjectOverviewInfoGrid"} container spacing={5}>
                 <Grid size={3}>
