@@ -23,6 +23,8 @@ const parseProjectsXml = (projectsXml) => {
         let description = project.getElementsByTagName('description');
         let key = project.getElementsByTagName('key');
         let path = project.getElementsByTagName('path');
+        let createDate = project.getElementsByTagName('entry_date');
+
         if(name){
             if(name.length !== 0 && name[0].childNodes.length !== 0){
                 name = name[0].childNodes[0].nodeValue;
@@ -40,9 +42,16 @@ const parseProjectsXml = (projectsXml) => {
                     key = "";
                 }
 
+                if(createDate.length !== 0 && createDate[0].childNodes.length  !== 0) {
+                    createDate = createDate[0].childNodes[0].nodeValue;
+                }
+                else{
+                    createDate = null;
+                }
+
                 if(path.length !== 0 && path[0].childNodes.length  !== 0) {
                     path = path[0].childNodes[0].nodeValue;
-                    projectsList.push({id, name, description, key, path});
+                    projectsList.push({id, name, description, key, path, createDate});
                 }
             }
         }

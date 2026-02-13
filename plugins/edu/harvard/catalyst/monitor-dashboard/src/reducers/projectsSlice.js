@@ -4,6 +4,7 @@ import {
 } from "../actions";
 import { defaultState } from '../defaultState';
 import { Project, StatusInfo } from "models";
+import {DateTime} from "luxon";
 
 export const projectsSlice = createSlice({
     name: PROJECTS,
@@ -21,11 +22,17 @@ export const projectsSlice = createSlice({
 
             let projects = [];
             projectList.map((project) => {
+                let createDate;
+                if(project.createDate) {
+                    createDate = DateTime.fromISO(project.createDate).toJSDate();
+                }
+
                 projects.push(Project({
                     id: project.id,
                     name: project.name,
                     description: project.description,
-                    path: project.path
+                    path: project.path,
+                    createDate: createDate
                 }));
             })
             projects.sort((a, b) => a.name.localeCompare(b.name));
