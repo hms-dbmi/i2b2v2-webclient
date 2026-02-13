@@ -434,7 +434,9 @@ export default class PathogenTimeline {
                     .ticks(11)
                     .tickValues(renderModel.xDomain)
                     .tickFormat(i => renderModel.months[i])
-            )
+            ).selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
 
         // append to Left Y 
         const yAxisLeft = this.svg.append("g")
@@ -472,40 +474,44 @@ export default class PathogenTimeline {
         // Line Gen
         // -----------------------------
 
-        const patientLine = d3.line()
+        const yoyPatientLine = d3.line()
             .x(point => xScale(point.monthIndex))
             .y(point => yLeft(point.value));
 
 
         // -----------------------------
-        // Draw diagnosis points
+        // Draw diagnosis lines
         // -----------------------------
-        
+            for(const seriesItem of renderModel.series){
+                this.svg.append("path")
+                    .datum(seriesItem.points)
+                    .attr("fill", "none")
+                    .attr("stroke", seriesItem.stroke)
+                    .attr("stroke-width", 2)
+                    .attr("d", yoyPatientLine).append("title")
+                    .text(`${seriesItem.diagnosis} — ${seriesItem.year}`);
+                  
+            }
 
             // Line
-            this.svg.append("path")
-                .datum(rows)
-                .attr("fill", "none")
-                .attr("stroke", color)
-                .attr("stroke-width", 2)
-                .attr("d", patientLine);
+            
 
-            // Points
-            this.svg.selectAll(`circle.${cssSafeKey(diagnosis)}`)
-                .data(rows)
-                .enter()
-                .append("circle")
-                .attr("class", `point ${cssSafeKey(diagnosis)}`)
-                .attr("cx", d => xScale(d.date))
-                .attr("cy", d => yLeft(d.value))
-                .attr("r", 4)
-                .attr("fill", color)
-                .attr("stroke", color)
-                .append("title")
-                .text(d => {
-                    const label = tickFormat(d.date);
-                    return `${d.diagnosisRaw ?? d.diagnosis} — ${label}\n[ ${d.display ?? d.value} patients ]`;
-                });
+            // // Points
+            // this.svg.selectAll(`circle.${cssSafeKey(diagnosis)}`)
+            //     .data(rows)
+            //     .enter()
+            //     .append("circle")
+            //     .attr("class", `point ${cssSafeKey(diagnosis)}`)
+            //     .attr("cx", d => xScale(d.date))
+            //     .attr("cy", d => yLeft(d.value))
+            //     .attr("r", 4)
+            //     .attr("fill", color)
+            //     .attr("stroke", color)
+            //     .append("title")
+            //     .text(d => {
+            //         const label = tickFormat(d.date);
+            //         return `${d.diagnosisRaw ?? d.diagnosis} — ${label}\n[ ${d.display ?? d.value} patients ]`;
+            //     });
        
 
 
