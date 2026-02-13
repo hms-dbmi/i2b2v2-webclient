@@ -460,8 +460,8 @@ export default class PathogenTimeline {
             let w = 0;
             try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
 
-            const x = -(height / 2);          // centered vertically
-            const y = -margin.left + 28;      // gutter position
+            const x = -(height / 2);        
+            const y = -margin.left + 28;      
 
             d3.select(this)
                 .attr("x", x)
@@ -480,7 +480,7 @@ export default class PathogenTimeline {
 
 
         // -----------------------------
-        // Draw diagnosis lines
+        // Draw diagnosis lines and points
         // -----------------------------
             for(const seriesItem of renderModel.series){
                 this.svg.append("path")
@@ -490,34 +490,31 @@ export default class PathogenTimeline {
                     .attr("stroke-width", 2)
                     .attr("d", yoyPatientLine).append("title")
                     .text(`${seriesItem.diagnosis} — ${seriesItem.year}`);
+
+                this.svg.selectAll
+                // Points
+                this.svg.selectAll(`circle.${cssSafeKey(seriesItem.diagnosis)}-${seriesItem.year}`)
+                    .data(seriesItem.points)
+                    .enter()
+                    .append("circle")
+                    .attr("class", `${cssSafeKey(seriesItem.diagnosis)}-${seriesItem.year}`)
+                    .attr("cx", point => xScale(point.monthIndex))
+                    .attr("cy", point => yLeft(point.value))
+                    .attr("r", 4)
+                    .attr("fill", seriesItem.stroke)
+                    .attr("stroke", seriesItem.stroke)
+                    .append("title")
+                    .text(point => {
+                        return `${seriesItem.diagnosis}\n${renderModel.months[point.monthIndex]}, ${seriesItem.year}\n[ ${point.value} patients ]`
+                    });                   
                   
-            }
-
-            // Line
-            
-
-            // // Points
-            // this.svg.selectAll(`circle.${cssSafeKey(diagnosis)}`)
-            //     .data(rows)
-            //     .enter()
-            //     .append("circle")
-            //     .attr("class", `point ${cssSafeKey(diagnosis)}`)
-            //     .attr("cx", d => xScale(d.date))
-            //     .attr("cy", d => yLeft(d.value))
-            //     .attr("r", 4)
-            //     .attr("fill", color)
-            //     .attr("stroke", color)
-            //     .append("title")
-            //     .text(d => {
-            //         const label = tickFormat(d.date);
-            //         return `${d.diagnosisRaw ?? d.diagnosis} — ${label}\n[ ${d.display ?? d.value} patients ]`;
-            //     });
-       
-
-
-  
+            }        
     }
-
+    // NEXT
+    //bold the proximal year
+    //wastewater draw
+    // phase 1 done //
+    //phase 2 refactor and see if we can merge both draw methods 
     
 
     draw(records, selectedOverlay, selectedAggregation) {
