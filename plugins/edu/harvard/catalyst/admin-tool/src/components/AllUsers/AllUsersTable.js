@@ -1,11 +1,9 @@
 import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import { getAllUsers, deleteUser, deleteUserStatusConfirmed } from "actions";
+import { getAllUsers } from "actions";
 import {EditUserDetails, Confirmation, StatusUpdate} from "components";
 import { User} from "../../models";
 import { DataGrid, GridActionsCellItem, gridClasses, useGridApiRef} from '@mui/x-data-grid';
@@ -21,16 +19,9 @@ export const AllUsersTable = ({paginationModel,
     const allUsers = useSelector((state) => state.allUsers );
     const isI2b2LibLoaded = useSelector((state) => state.isI2b2LibLoaded );
     const [userRows, setUserRows] = useState(allUsers.users);
-    const deletedUser = useSelector((state) => state.deletedUser );
     const[selectedUser, setSelectedUser] = useState(null);
     const[isEditingUser, setIsEditingUser] = useState(false);
     const[isCreatingUser, setIsCreatingUser] = useState(false);
-    const [showStatus, setShowStatus] = useState(false);
-    const [statusMsg, setStatusMsg] = useState("");
-    const [statusSeverity, setStatusSeverity] = useState("info");
-    const [showDeleteUserConfirm, setShowDeleteUserConfirm] = useState(false);
-    const [deleteUserConfirmMsg, setDeleteUserConfirmMsg] = useState("");
-    const [deleteUsername, setDeleteUsername] = useState("");
     const apiRef = useGridApiRef();
 
     const dispatch = useDispatch();
@@ -77,13 +68,7 @@ export const AllUsersTable = ({paginationModel,
                         className="textPrimary"
                         onClick={handleEditClick(id)}
                         color="inherit"
-                    />,
-                    <GridActionsCellItem
-                        icon={<DeleteIcon/>}
-                        label="Delete"
-                        onClick={confirmDelete(id)}
-                        color="inherit"
-                    />,
+                    />
                 ];
             },
         },
@@ -129,19 +114,6 @@ export const AllUsersTable = ({paginationModel,
         }
     };
 
-    const confirmDelete = (username) => () => {
-        setDeleteUsername(username);
-        setDeleteUserConfirmMsg("Are you sure you want to delete user " + username + "?");
-        setShowDeleteUserConfirm(true);
-    };
-
-    const handleDeleteClick = () => {
-        const user = userRows.filter((user) => user.username === deleteUsername).reduce((acc, item) => acc);
-        setDeleteUsername("");
-        setDeleteUserConfirmMsg("");
-        setShowDeleteUserConfirm(false);
-        dispatch(deleteUser({user}));
-    };
 
     const handleAddNewUser = () => {
         setSelectedUser(User());
@@ -152,9 +124,6 @@ export const AllUsersTable = ({paginationModel,
         if (reason === 'clickaway') {
             return;
         }
-
-        setStatusMsg("");
-        setShowStatus(false);
     };
 
     const statusUpdate = () => {
@@ -189,28 +158,6 @@ export const AllUsersTable = ({paginationModel,
         }
     }, [allUsers]);
 
-
-
-    useEffect(() => {
-        if(deletedUser.status === "SUCCESS") {
-            dispatch(deleteUserStatusConfirmed());
-            setStatusMsg("Deleted user " + deletedUser.user.username);
-            setShowStatus(true);
-            setStatusSeverity("success");
-
-            let filteredRows = userRows.filter((row) => row.username !== deletedUser.user.username);
-            setUserRows(filteredRows);
-        }
-
-        if(deletedUser.status === "FAIL") {
-            dispatch(deleteUserStatusConfirmed());
-            setStatusMsg("Error: There was an error deleting user " + deletedUser.user.username);
-            setShowStatus(true);
-            setStatusSeverity("success");
-        }
-    }, [deletedUser]);
-
-
     return (
         <div className="AllUsers">
             { allUsers.isFetching && <Loader/>}
@@ -221,15 +168,6 @@ export const AllUsersTable = ({paginationModel,
             }
             {!isEditingUser && !isCreatingUser && allUsers.users.length > 0 && displayUsersTable()}
             { (isEditingUser || isCreatingUser) && <EditUserDetails user={selectedUser} setIsEditingUser={setIsEditingUser}  setIsCreatingUser={setIsCreatingUser} isCreatingUser={isCreatingUser}/>}
-            {!isEditingUser && <StatusUpdate isOpen={showStatus} setIsOpen={setShowStatus} severity={statusSeverity} message={statusMsg}/>
-            }
-
-            { showDeleteUserConfirm && <Confirmation
-                text={deleteUserConfirmMsg}
-                onOk={handleDeleteClick}
-                onCancel={() => setShowDeleteUserConfirm(false)}
-            />}
-
         </div>
     );
 };

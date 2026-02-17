@@ -2,9 +2,9 @@ import { useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { User } from "models";
-import { ProjectUserInfo, EditProjectUserParameters } from "components";
+import {ProjectUserInfo, EditProjectUserParameters} from "components";
 import {
-    getAllProjectUserParams, saveProjectUserStatusConfirmed, saveProjectUserParam,
+    getAllProjectUserParams,
 } from "actions";
 import {Tab, Tabs} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
