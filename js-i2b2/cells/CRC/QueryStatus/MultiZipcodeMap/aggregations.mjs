@@ -39,12 +39,12 @@ export default {
                 // non-functioning example
                 hoverBox: {
                     default: "<h4>Patient Rate</h4>Hover over an area",
-                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of {{$normalizer}}: {{$normalizedValue}}</div><span>{{display}} patients</span>"
                 },
                 // non-functioning example
                 legendBox: {
                     templates: {
-                        root: "<div class='map-title'><h4>% of Population</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
+                        root: "<div class='map-title'><h4>% of {{$normalizer}}</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
                         auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}%&ndash;{{~max|2}}%</span></div>"
                     }
                 }
@@ -69,14 +69,14 @@ export default {
                 },
                 // non-functioning example
                 hoverBox: {
-                    default: "<h4>Patient Count</h4>Hover over an area",
-                    template: "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
+                    default: "<h4>Patient Rate</h4>Hover over an area",
+                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of {{$normalizer}}: {{$normalizedValue}}</div><span>{{display}} patients</span>"
                 },
                 // non-functioning example
                 legendBox: {
                     templates: {
-                        root: "<div class='map-title'><h4>Patient Count</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
-                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>"
+                        root: "<div class='map-title'><h4>% of {{$normalizer}}</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
+                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}%&ndash;{{~max|2}}%</span></div>"
                     }
                 }
             },
@@ -92,14 +92,14 @@ export default {
                 },
                 // non-functioning example
                 hoverBox: {
-                    default: "<h4>Patient Rate</h4>Hover over an area",
-                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                    default: "<h4>Patient Count</h4>Hover over an area",
+                    template: "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
                 },
                 // non-functioning example
                 legendBox: {
                     templates: {
-                        root: "<div class='map-title'><h4>% of Population</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
-                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}%&ndash;{{~max|2}}%</span></div>"
+                        root: "<div class='map-title'><h4>Patient Count</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
+                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>"
                     }
                 }
             }
@@ -146,12 +146,12 @@ export default {
                 // non-functioning example
                 hoverBox: {
                     default: "<h4>Patient Rate</h4>Hover over an area",
-                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of Population: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of {{$normalizer}}: {{$normalizedValue}}</div><span>{{display}} patients</span>"
                 },
                 // non-functioning example
                 legendBox: {
                     templates: {
-                        root: "<div class='map-title'><h4>% of Population</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
+                        root: "<div class='map-title'><h4>% of {{$normalizer}}</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
                         auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}%&ndash;{{~max|2}}%</span></div>"
                     }
                 }
