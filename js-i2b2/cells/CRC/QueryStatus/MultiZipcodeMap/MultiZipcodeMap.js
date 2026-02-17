@@ -204,22 +204,46 @@ export default class MultiZipcodeMap {
                                 };
                                 this.legendbox.update = (data) => {
                                     if (typeof self.legendbox._div === 'undefined') return; // fixes race condition bug
-                                        let aggModuleLegendBox;
-                                    if(self.config.currentNormalizer){
-                                        aggModuleLegendBox = aggModule[this.config.aggregations.current].extract[1].legendBox;
-                                    }else{
-                                        aggModuleLegendBox = aggModule[this.config.aggregations.current].extract[0].legendBox;
+                                    let aggModuleLegendBox;
+                                    if (self.config.currentNormalizer) {
+                                        data.forEach(x => {
+                                            x.$normalizer = self.config.currentNormalizer;
+                                        });
+                                        
+
+                                        // get the normalizer template via search of the extract array looking for attrib named '$normalizer'
+                                        aggModuleLegendBox = aggModule[this.config.aggregations.current].extract.filter(a =>
+                                            a.attribs.map(x => {
+                                                if (Array.isArray(x)) {
+                                                    return x.includes('$normalizer');
+                                                } else {
+                                                    return x === '$normalizer';
+                                                }
+                                            }).includes(true)
+                                        );
+                                    } else {
+                                        // get the normalizer template via search of the extract array looking for attrib named '$normalizer'
+                                        aggModuleLegendBox = aggModule[this.config.aggregations.current].extract.filter(a =>
+                                            !a.attribs.map(x => {
+                                                if (Array.isArray(x)) {
+                                                    return x.includes('$normalizer');
+                                                } else {
+                                                    return x === '$normalizer';
+                                                }
+                                            }).includes(true)
+                                        );
+                                    }
+                                    if (aggModuleLegendBox.length && aggModuleLegendBox[0].legendBox) {
+                                        aggModuleLegendBox = aggModuleLegendBox[0].legendBox;
+                                    } else {
+                                        aggModuleLegendBox = {templates: {}};
                                     }
 
                                     const colorsConfig = self.config.advancedConfig.map.colors;
                                     let entriesHtml = [];
                                     if (data) {
                                         for (let i=0; i < data.length; i++) {
-                                            let entryData = {
-                                                color: colorsConfig[i].color,
-                                                min: data[i].min,
-                                                max: data[i].max
-                                            };
+                                            let entryData = { ...data[i], color: colorsConfig[i].color };
                                             // figure out our default template to use
                                             let templateName;
                                             if (typeof aggModuleLegendBox.templates["auto"] !== 'undefined') {
@@ -287,7 +311,9 @@ export default class MultiZipcodeMap {
                                         // we have info to display
                                         if (aggModuleLegendBox.templates.root) {
                                             // insert the entries into the root template (if it exists)
-                                            self.legendbox._div.innerHTML = func_processTemplate(aggModuleLegendBox.templates.root, {entries: entries});
+                                            let templateVars = {entries: entries};
+                                            if (self.config.currentNormalizer) templateVars.$normalizer = self.config.currentNormalizer;
+                                            self.legendbox._div.innerHTML = func_processTemplate(aggModuleLegendBox.templates.root, templateVars);
                                         } else {
                                             self.legendbox._div.innerHTML = entries;
                                         }
