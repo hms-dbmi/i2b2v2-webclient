@@ -45,7 +45,7 @@ export default {
                 legendBox: {
                     templates: {
                         root: "<div class='map-title'><h4>% of {{$normalizer}}</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
-                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}%&ndash;{{~max|2}}%</span></div>"
+                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>"
                     }
                 }
             }
@@ -76,7 +76,7 @@ export default {
                 legendBox: {
                     templates: {
                         root: "<div class='map-title'><h4>% of {{$normalizer}}</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
-                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}%&ndash;{{~max|2}}%</span></div>"
+                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>"
                     }
                 }
             },
@@ -152,7 +152,7 @@ export default {
                 legendBox: {
                     templates: {
                         root: "<div class='map-title'><h4>% of {{$normalizer}}</h4></div><div class='map-entries'><div>{{entries}}</div></div>",
-                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}%&ndash;{{~max|2}}%</span></div>"
+                        auto: "<div data-color='{{color}}'><i style='background:{{color}}'></i><span>{{~min|2}}&ndash;{{~max|2}}</span></div>"
                     }
                 }
             }
