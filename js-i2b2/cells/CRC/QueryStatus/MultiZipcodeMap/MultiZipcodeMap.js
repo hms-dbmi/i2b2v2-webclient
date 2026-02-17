@@ -138,9 +138,9 @@ export default class MultiZipcodeMap {
                     }
 
                     const currentAggModule = aggModule[this.config.aggregations.current];
-                    if(currentAggModule && currentAggModule.extract?.length > 0){
+                    if (currentAggModule && currentAggModule.extract?.length > 0){
                         let aggModuleContents = currentAggModule.extract[0];
-                        if(aggModuleContents && aggModuleContents.hoverBox){
+                        if (aggModuleContents && aggModuleContents.hoverBox) {
                             let aggModuleHoverBox = aggModuleContents.hoverBox;
                             // create a hover control if it is configured
                             if (typeof this.config.advancedConfig?.hoverBox !== 'undefined') {
@@ -158,12 +158,38 @@ export default class MultiZipcodeMap {
                                     return self.hoverbox._div;
                                 };
                                 this.hoverbox.update = (data) => {
-                                    if(self.config.currentNormalizer){
-                                        aggModuleHoverBox = aggModule[this.config.aggregations.current].extract[1].hoverBox;
-                                    }else{
-                                        aggModuleHoverBox = aggModule[this.config.aggregations.current].extract[0].hoverBox;
-                                    }
                                     if (typeof self.hoverbox._div === 'undefined') return; // fixes race condition bug
+
+                                    const func_IsNormalizer = function(a) {
+                                        return a.attribs.map(x => {
+                                            if (Array.isArray(x)) {
+                                                return x.includes('$normalizer');
+                                            } else {
+                                                return x === '$normalizer';
+                                            }
+                                        })
+                                    };
+
+                                    let aggModuleHoverBox;
+                                    if (self.config.currentNormalizer) {
+                                        // get the normalizer template via search of the extract array looking for attrib named '$normalizer'
+                                        aggModuleHoverBox = aggModule[this.config.aggregations.current].extract.filter(a => func_IsNormalizer(a).includes(true));
+                                        // select the data if normalized
+                                        if (data && data.normalizers[self.config.currentNormalizer]) {
+                                            const normalizedValue = data.count / data.normalizers[self.config.currentNormalizer].count;
+                                            data = data.normalizers[self.config.currentNormalizer];
+                                            data.normalizedValue = normalizedValue;
+                                        }
+                                    } else {
+                                        // get the normalizer template via search of the extract array looking for attrib named '$normalizer'
+                                        aggModuleHoverBox = aggModule[this.config.aggregations.current].extract.filter(a => !func_IsNormalizer(a).includes(true));
+                                    }
+                                    if (aggModuleHoverBox.length && aggModuleHoverBox[0].hoverBox) {
+                                        aggModuleHoverBox = aggModuleHoverBox[0].hoverBox;
+                                    } else {
+                                        aggModuleHoverBox = {templates: {}};
+                                    }
+
                                     if (data) {
                                         self.hoverbox._div.innerHTML = func_processTemplate(aggModuleHoverBox.template, data);
                                         self.hoverbox._div.style.opacity = 1;

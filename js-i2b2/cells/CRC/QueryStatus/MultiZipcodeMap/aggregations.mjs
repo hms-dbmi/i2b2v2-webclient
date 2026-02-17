@@ -16,7 +16,7 @@ export default {
                 // non-functioning example
                 hoverBox: {
                     default: "<h4>Patient Count</h4>Hover over an area",
-                    template: "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
+                    template: "<h4>Patient Count</h4><div><b>{{stateCode}}</b></div><span>{{display}} patients</span>"
                 },
                 // non-functioning example
                 legendBox: {
@@ -39,7 +39,7 @@ export default {
                 // non-functioning example
                 hoverBox: {
                     default: "<h4>Patient Rate</h4>Hover over an area",
-                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of {{$normalizer}}: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of {{$normalizer}}: {{~normalizedValue|2}}</div>"
                 },
                 // non-functioning example
                 legendBox: {
@@ -70,7 +70,7 @@ export default {
                 // non-functioning example
                 hoverBox: {
                     default: "<h4>Patient Rate</h4>Hover over an area",
-                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of {{$normalizer}}: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                    template: "<h4>Patient Rate</h4><div><b>{{text}}</b></div><div>Zip Code: {{zip3code}}xx</div><div>% of {{$normalizer}}: {{~normalizedValue|2}}</div>"
                 },
                 // non-functioning example
                 legendBox: {
@@ -93,7 +93,7 @@ export default {
                 // non-functioning example
                 hoverBox: {
                     default: "<h4>Patient Count</h4>Hover over an area",
-                    template: "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
+                    template: "<h4>Patient Count</h4><div><b>{{text}}</b></div><div>Zip Code: {{zip3code}}xx</div><span>{{display}} patients</span>"
                 },
                 // non-functioning example
                 legendBox: {
@@ -122,7 +122,7 @@ export default {
                 // non-functioning example
                 hoverBox: {
                     default: "<h4>Patient Count</h4>Hover over an area",
-                    template: "<h4>Patient Count</h4><div><b>{{name}}</b></div><div>Zip Code: {{ZCTA5CE10}}</div><span>{{display}} patients</span>"
+                    template: "<h4>Patient Count</h4><div><b>{{text}}</b></div><div>Zip Code: {{zip5code}}</div><span>{{display}} patients</span>"
                 },
                 // non-functioning example
                 legendBox: {
@@ -146,7 +146,7 @@ export default {
                 // non-functioning example
                 hoverBox: {
                     default: "<h4>Patient Rate</h4>Hover over an area",
-                    template: "<h4>Patient Rate</h4><div><b>{{stateCode}}</b></div><div>% of {{$normalizer}}: {{$normalizedValue}}</div><span>{{display}} patients</span>"
+                    template: "<h4>Patient Rate</h4><div><b>{{text}}</b></div><div>Zip Code: {{zip5code}}</div><div>% of {{$normalizer}}: {{~normalizedValue|2}}</div>"
                 },
                 // non-functioning example
                 legendBox: {
