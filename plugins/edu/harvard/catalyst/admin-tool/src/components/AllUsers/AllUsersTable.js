@@ -48,6 +48,9 @@ export const AllUsersTable = ({paginationModel,
             headerName: 'Is Admin',
             flex: 1,
             editable: false,
+            valueGetter: (param) => {
+                return param.value ? param.value : "";
+            }
         },
         {
             field: 'actions',
