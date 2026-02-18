@@ -25,17 +25,17 @@
   }
 
   .EditUserActions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    column-gap: 4em;
+    margin-left: 0.5em;
   }
+
   .EditUserActionPrimary{
-    margin: 0.7em 20.5em 0.7em 0.7em;
+    margin: 0.7em 0.7em 0.7em 15em;
+    float: left;
   }
 
   .EditUserActionSecondary{
-    margin: 0.7em 0.7em 0.7em 20.5em;
+    margin: 0.7em 0.7em 0.7em 0;
+    float: left;
   }
 
   .ResetEditPage{
