@@ -1,7 +1,7 @@
 {
   "title": "Create data table for export",
   "description": "This plugin allows for defining the export of a data table",
-  "category": ["admin", "export"],
+  "category": ["export"],
   "icons": { "size32x32": "export-icon.png" },
   "assetDir": "build",
   "plugin_version" : "1.0",
