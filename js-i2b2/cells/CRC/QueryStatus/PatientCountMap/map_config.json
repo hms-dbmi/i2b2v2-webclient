@@ -27,15 +27,29 @@
   {
     "lat": 42.3399153151938,
     "long": -71.1049707233806,
-    "title": "Site 1",
+    "title": "shrine-masscpr-dev-node01",
     "createShortcut": false,
-    "tooltip": "Site 1 area"
+    "tooltip": "Mass General Brigham"
   },
   {
     "lat": 42.3615274684359,
     "long": -71.0688869733943,
-    "title": "Site 2",
+    "title": "shrine-masscpr-dev-node02",
     "createShortcut": false,
-    "tooltip": "Site 2 area"
+    "tooltip": "Beth Israel Lahey Health"
+  },
+  {
+    "lat": 42.3399153151938,
+    "long": -71.1049707233806,
+    "title": "Beth Israel Lahey Health",
+    "createShortcut": false,
+    "tooltip": "Beth Israel Lahey Health"
+  },
+  {
+    "lat": 42.3615274684359,
+    "long": -71.0688869733943,
+    "title": "Mass General Brigham",
+    "createShortcut": false,
+    "tooltip": "Mass General Brigham"
   }
 ]
