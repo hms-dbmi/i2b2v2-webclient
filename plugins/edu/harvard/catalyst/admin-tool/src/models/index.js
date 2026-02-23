@@ -18,5 +18,6 @@
  export { AuthenticationConfigs } from "./AuthenticationConfigs";
  export {AuthenticationConfigDomainOptions} from "./AuthenticationConfigDomainOptions";
  export {AuthenticationConfigLDAPOptions} from "./AuthenticationConfigLDAPOptions";
+ export {UserSession} from "./UserSession";
 
 

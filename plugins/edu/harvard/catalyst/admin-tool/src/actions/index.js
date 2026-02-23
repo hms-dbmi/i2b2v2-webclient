@@ -272,3 +272,9 @@ export const SAVE_HIVE_DOMAIN = `${ALL_HIVES}/saveHiveDomain`;
 export const GET_ALL_GLOBAL_PARAMS = `${ALL_HIVES}/getAllGlobalParams`;
 export const SAVE_GLOBAL_PARAM = `${ALL_HIVES}/saveGlobalParam`;
 export const DELETE_GLOBAL_PARAM = `${ALL_HIVES}/deleteGlobalParam`;
+
+
+//================================================================================================== //
+
+export const ALL_USERS = "allUsersInfo";
+export const GET_ALL_USERS = `${ALL_USERS}/getAllUsers`;

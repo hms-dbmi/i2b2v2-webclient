@@ -3,14 +3,15 @@ import React, { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { getAllUsers } from "actions";
-import {EditUserDetails, Confirmation, StatusUpdate} from "components";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
+import {EditUserDetails} from "components";
 import { User} from "../../models";
 import { DataGrid, GridActionsCellItem, gridClasses, useGridApiRef} from '@mui/x-data-grid';
 import { Loader } from "components";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import {getAllUsers} from "../../reducers/allUsersSlice.js";
 import "./AllUsersTable.scss";
+import {Tooltip} from "@mui/material";
 
 
 export const AllUsersTable = ({paginationModel,
@@ -53,26 +54,67 @@ export const AllUsersTable = ({paginationModel,
             }
         },
         {
+            field: 'session',
+            headerName: 'Session',
+            flex: 1,
+            editable: false,
+            valueGetter: (param) => {
+                let sessionItems = [];
+                if(param.value.isLockedOut){
+                    sessionItems.push("Locked")
+                }
+
+                if(param.value.isActive){
+                    sessionItems.push("Active");
+                }
+
+                return sessionItems.join(", ");
+            }
+        },
+        {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
             flex: 1,
             cellClassName: 'actions',
-            getActions: ({id}) => {
+            getActions: ({id, row}) => {
 
                 if(id === "AGG_SERVICE_ACCOUNT"){
                     return [];
                 }
 
-                return [
-                    <GridActionsCellItem
-                        icon={<EditIcon/>}
-                        label="Edit"
-                        className="textPrimary"
-                        onClick={handleEditClick(id)}
-                        color="inherit"
-                    />
+                let actions = [
+                    <Tooltip title="Edit user">
+                        <GridActionsCellItem
+                            icon={<EditIcon/>}
+                            label="Edit"
+                            className="textPrimary"
+                            onClick={handleEditClick(id)}
+                            color="inherit"
+                        />
+                    </Tooltip>,
+                    <Tooltip title="User details">
+                        <GridActionsCellItem
+                            icon={<InfoOutlinedIcon/>}
+                            label="Details"
+                            className="textPrimary"
+                            color="inherit"
+                        />
+                    </Tooltip>
                 ];
+
+                if(row.session.isActive){
+                    actions.push(
+                    <Tooltip title="Terminate user session">
+                            <GridActionsCellItem
+                            icon={<LoginOutlinedIcon/>}
+                            label="Terminate user session"
+                            className="textPrimary"
+                            color="inherit"
+                        />
+                    </Tooltip>);
+                }
+                return actions;
             },
         },
     ];
@@ -123,30 +165,6 @@ export const AllUsersTable = ({paginationModel,
         setIsCreatingUser(true);
     };
 
-    const handleCloseAlert = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-    };
-
-    const statusUpdate = () => {
-       return ( <Snackbar
-            open={showStatus}
-            autoHideDuration={4000}
-            anchorOrigin={{ vertical: 'top', horizontal : "center" }}
-            onClose={handleCloseAlert}
-           >
-            <Alert
-                onClose={handleCloseAlert}
-                severity={statusSeverity}
-                variant="filled"
-                sx={{ width: '100%' }}
-            >
-                {statusMsg}
-            </Alert>
-        </Snackbar>
-       );
-    }
 
     useEffect(() => {
         if(isI2b2LibLoaded && !isEditingUser) {

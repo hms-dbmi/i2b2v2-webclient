@@ -6,6 +6,10 @@ import {
     saveUserSucceeded,
     getAllUserParams
 } from "actions";
+import {
+    getAllUsers,
+} from "../reducers/allUsersSlice";
+
 import {AUTHENTICATION_METHODS} from "../models";
 import {saveParamRequest} from "./saveUserParamSaga";
 import {deleteParamRequest} from "./deleteUserParamSaga";
@@ -189,12 +193,14 @@ export function* doSaveUser(action) {
                         if (saveAuthParamsResults.length === 0) {
                             yield put(getAllUserParams({user}));
                             yield put(saveUserSucceeded({user}));
+                            yield put(getAllUsers({}));
                         } else {
                             yield put(saveUserFailed("An error occurred while updating user authentication parameters"));
                         }
                     }else {
                         yield put(getAllUserParams({user}));
                         yield put(saveUserSucceeded({user}));
+                        yield put(getAllUsers({}));
                     }
                 } else {
                     yield put(saveUserFailed("An error occurred while updating user authentication parameters"));
