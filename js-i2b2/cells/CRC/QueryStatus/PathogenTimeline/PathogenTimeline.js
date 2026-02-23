@@ -482,12 +482,24 @@ export default class PathogenTimeline {
         // -----------------------------
         // Draw diagnosis lines and points
         // -----------------------------
+            let maxYear = -Infinity;
+            
             for(const seriesItem of renderModel.series){
+                if (seriesItem.year > maxYear){
+                    maxYear = seriesItem.year;
+                }
+            }
+            console.log("YOY maxYear:", maxYear);
+          
+            for(const seriesItem of renderModel.series){
+                const isCurrentYear = seriesItem.year === maxYear;
+                const strokeWidth = isCurrentYear ? 4 : 2;
+
                 this.svg.append("path")
                     .datum(seriesItem.points)
                     .attr("fill", "none")
                     .attr("stroke", seriesItem.stroke)
-                    .attr("stroke-width", 2)
+                    .attr("stroke-width", strokeWidth)
                     .attr("d", yoyPatientLine).append("title")
                     .text(`${seriesItem.diagnosis} — ${seriesItem.year}`);
 
@@ -511,7 +523,6 @@ export default class PathogenTimeline {
             }        
     }
     // NEXT
-    //bold the proximal year
     //wastewater draw
     // phase 1 done //
     //phase 2 refactor and see if we can merge both draw methods 
