@@ -358,33 +358,7 @@ export default class PathogenTimeline {
             const diagnosisInAggregation = filtered.map(row => row.diagnosis);
             const currentKeys = Array.from(new Set(diagnosisInAggregation));
 
-            // Clear legend
-            if (this.controls?.legend) this.controls.legend.innerHTML = "";
-
-            currentKeys.forEach((key) => {
-                const diagnosisConfig = DIAGNOSIS_REGISTRY.diagnosis[key];
-                if (!diagnosisConfig) return;
-                $(this.controls.legend).append(
-                    `<span class="legend-row">
-                        <span class="legend-swatch" style="background:${diagnosisConfig.color}"></span>
-                        <span>${diagnosisConfig.label}</span>
-                    </span>`
-                );
-            });
-
-            const hasWastewater = (selectedOverlay !== "None");
-            if (hasWastewater) {
-                const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
-                if (waterConfig) {
-                    $(this.controls.legend).append(
-                        `<span class="legend-row">
-                            <span class="legend-swatch" style="background:${waterConfig.color}"></span>
-                            <span>${waterConfig.label}</span>
-                        </span>`
-                    );
-                }
-            }
-
+            updateLegend(this.controls, currentKeys, selectedOverlay);
             this.draw(filtered, selectedOverlay, selectedAggregation);
 
             if (this.isVisible) {
@@ -402,12 +376,18 @@ export default class PathogenTimeline {
         if (!renderModel.series || renderModel.series === 0) {
             this.svg.selectAll("*").remove();
             return;
-        }
+        }        
 
+        const selectedOverlay = "None";
+        
         const width = this.width - margin.left - margin.right;
         const height = this.height;
 
         this.svg.selectAll("*").remove();
+
+        const currentKeys = [...new Set(renderModel.series.map(item => item.diagnosis))];
+
+        updateLegend(this.controls, currentKeys, selectedOverlay);
 
         const xScale = d3.scaleLinear()
             .domain([0, 11])
@@ -489,8 +469,7 @@ export default class PathogenTimeline {
                     maxYear = seriesItem.year;
                 }
             }
-            console.log("YOY maxYear:", maxYear);
-          
+               
             for(const seriesItem of renderModel.series){
                 const isCurrentYear = seriesItem.year === maxYear;
                 const strokeWidth = isCurrentYear ? 4 : 2;
@@ -921,6 +900,39 @@ function filterBreakdown(rows, diagnosisFilter) {
             row.diagnosis === diagnosisFilter;
         return diagnosisOk;
     });
+}
+
+
+function updateLegend(controls, currentKeys, selectedOverlay){
+
+     // Clear legend
+    if (controls?.legend) controls.legend.innerHTML = "";
+
+    currentKeys.forEach((key) => {
+        const diagnosisConfig = DIAGNOSIS_REGISTRY.diagnosis[key];
+
+        if (!diagnosisConfig) return;
+        $(controls.legend).append(
+            `<span class="legend-row">
+                <span class="legend-swatch" style="background:${diagnosisConfig.color}"></span>
+                <span>${diagnosisConfig.label}</span>
+            </span>`
+        );
+    });
+
+    const hasWastewater = (selectedOverlay !== "None");
+    if (hasWastewater) {
+        const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+        if (waterConfig) {
+            $(controls.legend).append(
+                `<span class="legend-row">
+                    <span class="legend-swatch" style="background:${waterConfig.color}"></span>
+                    <span>${waterConfig.label}</span>
+                </span>`
+            );
+        }
+    }
+
 }
 
 function cssSafeKey(str) {
