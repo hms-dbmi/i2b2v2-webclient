@@ -16,14 +16,14 @@ export const allUsersSlice = createSlice({
             //Extract each user data into User model and return an array of Users
             let users = [];
             allUsers.map((user) => {
-                console.log("user is action ", JSON.stringify(user));
                 users.push(User({
                     username: user.username,
                     fullname: user.fullname,
                     email: user.email,
                     isAdmin: user.isAdmin,
                     session: UserSession({
-                        isActive: user.isActive
+                        isActive: user.isActive,
+                        isLockedOut: user.isLockedOut
                     })
                 }));
             })

@@ -10,7 +10,7 @@ import {parseXml} from "../utilities/parseXml";
 //a function that returns a promise
 const getAllUsersRequest = () => i2b2.ajax.PM.getAllUser({}).then((xmlString) => new XMLParser().parseFromString(xmlString));
 
-const parseUsersXml = (allUsersXml, usersSessions) => {
+const parseUsersXml = (allUsersXml, usersSessions, lockedUsers) => {
     let users = allUsersXml.getElementsByTagName('user');
     let usersList = [];
     users.forEach(user => {
@@ -30,7 +30,8 @@ const parseUsersXml = (allUsersXml, usersSessions) => {
                 if(isAdmin.length !== 0){
                     isAdmin = isAdmin[0].value === "true";
                     const isActive = usersSessions[username] !== undefined;
-                    usersList.push({username, fullname, email, isAdmin, isActive});
+                    const isLockedOut = lockedUsers[username] !== undefined;
+                    usersList.push({username, fullname, email, isAdmin, isActive, isLockedOut});
                 }
             }
         }
@@ -39,7 +40,7 @@ const parseUsersXml = (allUsersXml, usersSessions) => {
     return usersList;
 }
 
-const getUserSessionsRequest = () => i2b2.ajax.PM.getUserSession({}).then((xmlString) => parseXml(xmlString));
+const getUserSessionsRequest = () => i2b2.ajax.PM.getUserSession({entry_date_xml: ""}).then((xmlString) => parseXml(xmlString));
 
 const parseUserSessionsXml = (userSessionsXml) => {
     let sessions = userSessionsXml.getElementsByTagName('user_login');
@@ -49,7 +50,7 @@ const parseUserSessionsXml = (userSessionsXml) => {
         let id = session.attributes['id'].nodeValue;
         let name = session.getElementsByTagName('user_name');
         let entryDate = session.getElementsByTagName('entry_date');
-        let expireDate = session.getElementsByTagName('expire_date');
+        //let expireDate = session.getElementsByTagName('expire_date');
         if(name){
             if((name.length !== 0 && name[0].childNodes.length !== 0)
                 && (entryDate.length !== 0 && entryDate[0].childNodes.length !== 0)){
@@ -67,17 +68,46 @@ const parseUserSessionsXml = (userSessionsXml) => {
     return sessionsObj;
 }
 
+const getLockedUsersRequest = () => i2b2.ajax.PM.getLockUser({}).then((xmlString) => parseXml(xmlString));
+
+const parseLockedUsersXml = (lockedUsersXml) => {
+    let lockedUsers = lockedUsersXml.getElementsByTagName('user');
+    let lockedUsersObj = {};
+    for (let i = 0; i < lockedUsers.length; i++) {
+        const lockedUser = lockedUsers[i];
+        let fullname = lockedUser.getElementsByTagName('full_name');
+        let username = lockedUser.getElementsByTagName('user_name');
+        if(username){
+            if(username.length !== 0 && username[0].childNodes.length !== 0){
+                username = username[0].childNodes[0].nodeValue;
+
+                if(lockedUsersObj[username]) {
+                    lockedUsersObj[username].push({fullname});
+                }else{
+                    lockedUsersObj[username] = [{fullname}];
+                }
+                console.log("locked username", username);
+            }
+        }
+    }
+
+    return lockedUsersObj;
+}
+
 export function* doGetAllUsers(action) {
     console.log("getting all users...");
     try {
-        const [allUsersResponse, allUserSessionsResponse] = yield all([
+        const [allUsersResponse, allUserSessionsResponse, lockedUsersResponse] = yield all([
             call(getAllUsersRequest),
             call(getUserSessionsRequest),
+            call(getLockedUsersRequest),
         ]);
 
-        if(allUsersResponse && allUserSessionsResponse) {
+        if(allUsersResponse && allUserSessionsResponse && lockedUsersResponse) {
             let userSessions = parseUserSessionsXml(allUserSessionsResponse);
-            let usersList = parseUsersXml(allUsersResponse, userSessions);
+            let lockedUsers = parseLockedUsersXml(lockedUsersResponse);
+
+            let usersList = parseUsersXml(allUsersResponse, userSessions, lockedUsers);
 
             yield put(getAllUsersSucceeded(usersList));
         }else{

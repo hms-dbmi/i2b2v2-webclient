@@ -12,7 +12,7 @@ import { Loader } from "components";
 import {getAllUsers} from "../../reducers/allUsersSlice.js";
 import "./AllUsersTable.scss";
 import {Tooltip} from "@mui/material";
-
+import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 
 export const AllUsersTable = ({paginationModel,
                                setPaginationModel
@@ -36,7 +36,7 @@ export const AllUsersTable = ({paginationModel,
         },
         { field: 'fullname',
             headerName: 'Full Name',
-            flex: 2,
+            flex: 1,
         },
         {
             field: 'email',
@@ -60,12 +60,12 @@ export const AllUsersTable = ({paginationModel,
             editable: false,
             valueGetter: (param) => {
                 let sessionItems = [];
-                if(param.value.isLockedOut){
-                    sessionItems.push("Locked")
-                }
-
                 if(param.value.isActive){
                     sessionItems.push("Active");
+                }
+
+                if(param.value.isLockedOut){
+                    sessionItems.push("Locked")
                 }
 
                 return sessionItems.join(", ");
@@ -75,7 +75,7 @@ export const AllUsersTable = ({paginationModel,
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
-            flex: 1,
+            width: 130,
             cellClassName: 'actions',
             getActions: ({id, row}) => {
 
@@ -86,7 +86,7 @@ export const AllUsersTable = ({paginationModel,
                 let actions = [
                     <Tooltip title="Edit user">
                         <GridActionsCellItem
-                            icon={<EditIcon/>}
+                            icon={<EditIcon sx={{ fontSize: 20 }} />}
                             label="Edit"
                             className="textPrimary"
                             onClick={handleEditClick(id)}
@@ -95,7 +95,7 @@ export const AllUsersTable = ({paginationModel,
                     </Tooltip>,
                     <Tooltip title="User details">
                         <GridActionsCellItem
-                            icon={<InfoOutlinedIcon/>}
+                            icon={<InfoOutlinedIcon sx={{ fontSize: 20 }}  />}
                             label="Details"
                             className="textPrimary"
                             color="inherit"
@@ -107,12 +107,24 @@ export const AllUsersTable = ({paginationModel,
                     actions.push(
                     <Tooltip title="Terminate user session">
                             <GridActionsCellItem
-                            icon={<LoginOutlinedIcon/>}
+                            icon={<LoginOutlinedIcon sx={{ fontSize: 20 }} />}
                             label="Terminate user session"
                             className="textPrimary"
                             color="inherit"
                         />
                     </Tooltip>);
+                }
+
+                if(row.session.isLockedOut){
+                    actions.push(
+                        <Tooltip title="Unlock user">
+                            <GridActionsCellItem
+                                icon={<LockOpenOutlinedIcon sx={{ fontSize: 20 }} />}
+                                label="Unlock user"
+                                className="textPrimary"
+                                color="inherit"
+                            />
+                        </Tooltip>);
                 }
                 return actions;
             },
@@ -132,6 +144,11 @@ export const AllUsersTable = ({paginationModel,
                 onPaginationModelChange={setPaginationModel}
                 onSortModelChange={(model) => {
                     apiRef.current.setPage(0);
+                }}
+                initialState={{
+                    sorting: {
+                        sortModel: [{field:'username',sort:'asc'}]
+                    },
                 }}
                 pageSizeOptions={[25, 50, 100]}
                 sx={{
