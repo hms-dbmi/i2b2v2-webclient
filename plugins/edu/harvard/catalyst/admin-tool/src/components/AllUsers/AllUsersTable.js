@@ -75,8 +75,9 @@ export const AllUsersTable = ({paginationModel,
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
-            width: 130,
+            width: 150,
             cellClassName: 'actions',
+            align: 'left',
             getActions: ({id, row}) => {
 
                 if(id === "AGG_SERVICE_ACCOUNT"){
