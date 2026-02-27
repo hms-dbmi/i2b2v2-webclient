@@ -237,8 +237,7 @@ export default class PathogenTimeline {
             const selectedOverlay = this.state?.overlay || "None";
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year"
 
-            //console.log("printing raw");
-            //console.log(raw);
+            
             if (selectedAggregation === "yoy") {
 
                 const yoyRows = raw.filter(r => (r.grain || "").trim().toUpperCase() === "M");
@@ -339,11 +338,46 @@ export default class PathogenTimeline {
                     "xDomain": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 
                     "yLeftLabel": "Number of Patients"
 
-                }
+                }   
 
-                this.drawYOY(renderModel);
-                // console.log(renderModel.months.length);
-                // console.log(renderModel.series.length);
+                if(selectedOverlay == "None"){
+                    console.log("selected overlay is none, skipping wwYOY parse"); 
+                } else{
+                    const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+                    const wwByYear = {};
+
+                    if(waterConfig === undefined){
+                        console.log("water config is not defined")
+                    }else {
+
+                        for (const row of this.wastewater){
+                            const d = new Date(row["Sample Date"]);
+                            if (!(d instanceof Date) || isNaN(d.getTime())){
+                            continue;
+                            }
+
+                            const year = d.getFullYear();
+                            const monthIndex = d.getMonth();
+
+                            const value = waterConfig.accessor(row);
+                            if (value === 0){
+                            continue;
+                            }
+
+                            if (wwByYear[year] === undefined){
+                                wwByYear[year] = [];
+                            }
+                            wwByYear[year].push({ monthIndex, value });
+                
+                        }
+                        console.log("wwByYear years:", Object.keys(wwByYear).slice(0,5), "count:", Object.keys(wwByYear).length);
+                }
+                    }
+                     
+                
+               
+
+                this.drawYOY(renderModel, selectedOverlay);
 
                 return;
             }
@@ -372,13 +406,12 @@ export default class PathogenTimeline {
         return true;
     }
 
-    drawYOY(renderModel){
+    drawYOY(renderModel, selectedOverlay){
         if (!renderModel.series || renderModel.series === 0) {
             this.svg.selectAll("*").remove();
             return;
-        }        
+        }     
 
-        const selectedOverlay = "None";
         
         const width = this.width - margin.left - margin.right;
         const height = this.height;
