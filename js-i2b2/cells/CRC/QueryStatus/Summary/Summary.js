@@ -18,7 +18,6 @@ export default class Summary {
 
                     // display the initial info that was passed (if we are ready)
                     if (typeof thisClassInstance.record !== "undefined") thisClassInstance.update(thisClassInstance.record);
-                    //
                     // // make sure we are visible
                     // thisClassInstance.show();
                 },
@@ -44,7 +43,8 @@ export default class Summary {
             if (typeof this.template !== 'undefined') {
                 // update the display
                 $(this.config.displayEl).empty();
-                $(this.template(this.record)).appendTo(this.config.displayEl);
+                const renderData = {...this.record, showQueryButton: this.config.definition.showQueryButton};
+                $(this.template(renderData)).appendTo(this.config.displayEl);
             }
             return true;
         } catch(e) {
