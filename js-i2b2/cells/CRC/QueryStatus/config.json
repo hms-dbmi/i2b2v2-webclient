@@ -5,7 +5,8 @@
       "CSS": "Summary/Summary.css",
       "alwaysShow": true,
       "noFrameTemplate": true,
-      "notInReport": true
+      "notInReport": true,
+      "showQueryButton": false
     },
     "COUNT": {
       "source": "Count/Count.js",
