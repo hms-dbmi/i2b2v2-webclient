@@ -3,15 +3,16 @@ import React, { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { getAllUsers } from "actions";
-import {EditUserDetails, Confirmation, StatusUpdate} from "components";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
+import {EditUserDetails} from "components";
 import { User} from "../../models";
 import { DataGrid, GridActionsCellItem, gridClasses, useGridApiRef} from '@mui/x-data-grid';
 import { Loader } from "components";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import {getAllUsers} from "../../reducers/allUsersSlice.js";
 import "./AllUsersTable.scss";
-
+import {Tooltip} from "@mui/material";
+import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 
 export const AllUsersTable = ({paginationModel,
                                setPaginationModel
@@ -35,7 +36,7 @@ export const AllUsersTable = ({paginationModel,
         },
         { field: 'fullname',
             headerName: 'Full Name',
-            flex: 2,
+            flex: 1,
         },
         {
             field: 'email',
@@ -53,26 +54,80 @@ export const AllUsersTable = ({paginationModel,
             }
         },
         {
+            field: 'session',
+            headerName: 'Session',
+            flex: 1,
+            editable: false,
+            valueGetter: (param) => {
+                let sessionItems = [];
+                if(param.value.isActive){
+                    sessionItems.push("Active");
+                }
+
+                if(param.value.isLockedOut){
+                    sessionItems.push("Locked")
+                }
+
+                return sessionItems.join(", ");
+            }
+        },
+        {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
-            flex: 1,
+            width: 150,
             cellClassName: 'actions',
-            getActions: ({id}) => {
+            align: 'left',
+            getActions: ({id, row}) => {
 
                 if(id === "AGG_SERVICE_ACCOUNT"){
                     return [];
                 }
 
-                return [
-                    <GridActionsCellItem
-                        icon={<EditIcon/>}
-                        label="Edit"
-                        className="textPrimary"
-                        onClick={handleEditClick(id)}
-                        color="inherit"
-                    />
+                let actions = [
+                    <Tooltip title="Edit user">
+                        <GridActionsCellItem
+                            icon={<EditIcon sx={{ fontSize: 20 }} />}
+                            label="Edit"
+                            className="textPrimary"
+                            onClick={handleEditClick(id)}
+                            color="inherit"
+                        />
+                    </Tooltip>,
+                    <Tooltip title="User details">
+                        <GridActionsCellItem
+                            icon={<InfoOutlinedIcon sx={{ fontSize: 20 }}  />}
+                            label="Details"
+                            className="textPrimary"
+                            color="inherit"
+                        />
+                    </Tooltip>
                 ];
+
+                if(row.session.isActive){
+                    actions.push(
+                    <Tooltip title="Terminate user session">
+                            <GridActionsCellItem
+                            icon={<LoginOutlinedIcon sx={{ fontSize: 20 }} />}
+                            label="Terminate user session"
+                            className="textPrimary"
+                            color="inherit"
+                        />
+                    </Tooltip>);
+                }
+
+                if(row.session.isLockedOut){
+                    actions.push(
+                        <Tooltip title="Unlock user">
+                            <GridActionsCellItem
+                                icon={<LockOpenOutlinedIcon sx={{ fontSize: 20 }} />}
+                                label="Unlock user"
+                                className="textPrimary"
+                                color="inherit"
+                            />
+                        </Tooltip>);
+                }
+                return actions;
             },
         },
     ];
@@ -90,6 +145,11 @@ export const AllUsersTable = ({paginationModel,
                 onPaginationModelChange={setPaginationModel}
                 onSortModelChange={(model) => {
                     apiRef.current.setPage(0);
+                }}
+                initialState={{
+                    sorting: {
+                        sortModel: [{field:'username',sort:'asc'}]
+                    },
                 }}
                 pageSizeOptions={[25, 50, 100]}
                 sx={{
@@ -123,30 +183,6 @@ export const AllUsersTable = ({paginationModel,
         setIsCreatingUser(true);
     };
 
-    const handleCloseAlert = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-    };
-
-    const statusUpdate = () => {
-       return ( <Snackbar
-            open={showStatus}
-            autoHideDuration={4000}
-            anchorOrigin={{ vertical: 'top', horizontal : "center" }}
-            onClose={handleCloseAlert}
-           >
-            <Alert
-                onClose={handleCloseAlert}
-                severity={statusSeverity}
-                variant="filled"
-                sx={{ width: '100%' }}
-            >
-                {statusMsg}
-            </Alert>
-        </Snackbar>
-       );
-    }
 
     useEffect(() => {
         if(isI2b2LibLoaded && !isEditingUser) {
