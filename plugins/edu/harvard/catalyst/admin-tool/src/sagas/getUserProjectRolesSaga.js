@@ -24,8 +24,7 @@ const parseUserProjectRolesXml = (userRoleXml, username) => {
         let createDate = userRole.getElementsByTagName('create_date');
 
         if(usernameElem && projectId){
-            if((usernameElem.length !== 0 && usernameElem[0].childNodes.length !== 0
-                    && usernameElem[0].childNodes[0].nodeValue === username)
+            if((usernameElem.length !== 0 && usernameElem[0].childNodes.length !== 0)
                 && (projectId.length !== 0 && projectId[0].childNodes.length !== 0)
                 && (role.length !== 0 && role[0].childNodes.length !== 0)
             ){
