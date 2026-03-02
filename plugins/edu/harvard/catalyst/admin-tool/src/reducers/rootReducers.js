@@ -7,6 +7,7 @@ import {editUserReducer} from "./editUserReducer";
 import allAuthenticationConfigsReducer from "./allAuthenticationConfigsSlice";
 import allHivesReducer from "./allHivesSlice";
 import allUsersReducer from "./allUsersSlice";
+import userProjectRolesReducer from "./userProjectRolesSlice";
 
 const rootReducers = {
     allHives: allHivesReducer,
@@ -18,6 +19,7 @@ const rootReducers = {
     deletedUser: deleteUserReducer,
     isI2b2LibLoaded: i2b2LibLoadedReducer,
     allAuthenticationConfigs: allAuthenticationConfigsReducer,
+    userProjectRoles: userProjectRolesReducer
 };
 
 export default rootReducers;
