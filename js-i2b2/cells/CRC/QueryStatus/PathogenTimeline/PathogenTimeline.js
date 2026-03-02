@@ -397,6 +397,12 @@ export default class PathogenTimeline {
                             };
                         });
 
+                        const yearsList = wwSeries.map(item => item.year);
+                        const min = Math.min(...yearsList);
+                        const max = Math.max(...yearsList); 
+                        
+                        console.log(`Min value: ${min}, Max value: ${max}`);
+
                         renderModel.wwSeries = wwSeries;
                     }
                 }
