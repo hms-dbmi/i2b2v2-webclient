@@ -17,7 +17,7 @@ const DIAGNOSIS_REGISTRY = {
 
 const WASTEWATER_REGISTRY = {
     wastewater_sources: {
-        "mwra-combined": { label: "Wastewater MWRA COVID-19", color: "#333", order: 3, accessor: (row) => (Number(row["Northern 7 day avg"]) || 0) + (Number(row["Southern 7 day avg"]) || 0) }
+        "mwra-combined": { label: "Wastewater MWRA COVID-19", color: "#333333", order: 3, accessor: (row) => (Number(row["Northern 7 day avg"]) || 0) + (Number(row["Southern 7 day avg"]) || 0) }
     }
 };
 
@@ -237,6 +237,192 @@ export default class PathogenTimeline {
             const selectedOverlay = this.state?.overlay || "None";
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year"
 
+            
+            if (selectedAggregation === "yoy") {
+
+                const yoyRows = raw.filter(r => (r.grain || "").trim().toUpperCase() === "M");
+
+                let yoyFilteredRows = null;
+
+                if(selectedDiagnosis === "All"){
+                   yoyFilteredRows = yoyRows;
+                } else{
+                    yoyFilteredRows = yoyRows.filter(r => r.diagnosis === selectedDiagnosis);
+                }
+                
+                const yoyPivotRows = pivotToYOYRows(yoyFilteredRows);
+
+                const byDiagnosisYear = {};
+
+                for(const row of yoyPivotRows){
+
+                    let diagnosis = row.diagnosis;
+                    let year = row.year;
+                    let monthIndex = row.monthIndex;
+                    let value = row.value;   
+
+                    if (byDiagnosisYear[diagnosis] === undefined){
+                        byDiagnosisYear[diagnosis] = {};
+                    }
+                   
+                    if (byDiagnosisYear[diagnosis][year] === undefined){
+                        byDiagnosisYear[diagnosis][year] = [];
+                    }
+                  
+                    let point = {"monthIndex": monthIndex, "value": value}
+
+                    byDiagnosisYear[diagnosis][year].push(point);                 
+                   
+                }
+                //sort the data --we could have used a nested for loop here, but that looked smelly (even though in this case it wouldn't be)
+                Object.values(byDiagnosisYear)
+                    .flatMap(yearMap => Object.values(yearMap))
+                    .forEach(pointsArr => {
+                        pointsArr.sort((a, b) => a.monthIndex - b.monthIndex);});
+               
+                //create the series
+                const series = Object.entries(byDiagnosisYear).flatMap(([diagnosis, years]) => 
+                Object.entries(years).map(([yearKey, monthlyDataArray]) => ({
+                    diagnosis,
+                    year: Number(yearKey),
+                    points: monthlyDataArray
+                    }))
+                );
+                                 
+                // Order series by diagnosis registry order, then by ascending year
+                series.sort((a, b) => { 
+                    const orderA = DIAGNOSIS_REGISTRY.diagnosis?.[a.diagnosis]?.order ?? 9999;
+                    const orderB = DIAGNOSIS_REGISTRY.diagnosis?.[b.diagnosis]?.order ?? 9999;
+                    return (orderA - orderB) || (a.year - b.year);
+
+                })
+                // create a lookup for the min year and max year to draw offset color lines
+                const lookup = series.reduce((acc, { diagnosis: dx, year }) => {
+                const range = acc[dx];
+
+                    if (!range) {
+                        acc[dx] = { min: year, max: year };
+                    } else {
+                        range.min = Math.min(range.min, year);
+                        range.max = Math.max(range.max, year);
+                    }
+
+                    return acc;
+                }, {});
+         
+                // create an item.stroke value for the renderer
+                const T_MIN = 0.3;
+
+                series.forEach((item) => {
+                    const { diagnosis: dx, year } = item;
+
+                    const range = lookup[dx];
+                    if (!range) return;
+
+                    const { min, max } = range;
+
+                    const u = (min === max) ? 1 : (year - min) / (max - min);
+
+                    const t = T_MIN + u * (1 - T_MIN);
+
+                    const baseColor = DIAGNOSIS_REGISTRY.diagnosis?.[dx]?.color;
+                    if (!baseColor) return;
+
+                    item.stroke = blendWithWhite(baseColor, t);
+                });
+
+                //create a render model for drawing
+                const renderModel = {
+                    "months" : ["Jan","Feb", "Mar", "Apr","May","Jun","Jul","Aug","Sep","Oct", "Nov","Dec" ],
+                    "series" : series,
+                    "xDomain": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 
+                    "yLeftLabel": "Number of Patients",
+                    "wwSeries": [],
+                    "yRightLabel" : "Wastewater Level"
+
+                }   
+
+                if (selectedOverlay == "None") {
+                    console.log("selected overlay is none, skipping wwYOY parse");
+                } else {
+                    const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+                    const wwByYear = {};
+
+                    if (waterConfig === undefined) {
+                        console.log("water config is not defined");
+                    } else {
+
+                        for (const row of this.wastewater) {
+                            const d = new Date(row["Sample Date"]);
+                            if (!(d instanceof Date) || isNaN(d.getTime())) {
+                                continue;
+                            }
+
+                            const year = d.getFullYear();
+                            const monthIndex = d.getMonth();
+
+                            const value = waterConfig.accessor(row);
+
+                            // Skip missing/invalid values (prefer this over value === 0)
+                            if (value === null || value === undefined || Number.isNaN(value)) {
+                                continue;
+                            }
+
+                            // Bucket by year -> month -> [values...]
+                            if (wwByYear[year] === undefined) {
+                                wwByYear[year] = {};
+                            }
+                            if (wwByYear[year][monthIndex] === undefined) {
+                                wwByYear[year][monthIndex] = [];
+                            }
+                            wwByYear[year][monthIndex].push(value);
+                        }
+
+                        console.log(wwByYear);
+
+                        // Create the series: one aggregated point per (year, month)
+                        const wwSeries = Object.entries(wwByYear).map(([yearKey, monthBuckets]) => {
+                            const pointsArray = Object.entries(monthBuckets).map(([monthKey, values]) => {
+                                const sum = values.reduce((acc, v) => acc + v, 0);
+                                const avg = values.length ? (sum / values.length) : 0;
+                                return { monthIndex: Number(monthKey), value: avg };
+                            });
+
+                            pointsArray.sort((a, b) => a.monthIndex - b.monthIndex);
+
+                            return {
+                                year: Number(yearKey),
+                                points: pointsArray
+                            };
+                        });
+                        const T_MIN = 0.3;
+                        const yearsList = wwSeries.map(item => item.year);
+                        const min = Math.min(...yearsList);
+                        const max = Math.max(...yearsList); 
+
+                        wwSeries.forEach((item) => {
+                            const year = item.year;
+ 
+                            const u = (min === max) ? 1 : (year - min) / (max - min);
+
+                            const t = T_MIN + u * (1 - T_MIN);
+
+                            const baseColor = waterConfig.color;
+                            if (!baseColor) return;
+
+                            item.stroke = blendWithWhite(baseColor, t);
+                        });
+                        
+                        renderModel.wwSeries = wwSeries;
+                    }
+                }                          
+
+                this.drawYOY(renderModel, selectedOverlay);
+
+                return;
+            }
+
+
             // IMPORTANT: filter by grain so month aggregation doesn't accidentally include year rows (and vice versa)
             const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
             const aggregationRows = raw.filter(r => (r.grain || "").toUpperCase() === aggregationGrain);
@@ -246,33 +432,7 @@ export default class PathogenTimeline {
             const diagnosisInAggregation = filtered.map(row => row.diagnosis);
             const currentKeys = Array.from(new Set(diagnosisInAggregation));
 
-            // Clear legend
-            if (this.controls?.legend) this.controls.legend.innerHTML = "";
-
-            currentKeys.forEach((key) => {
-                const diagnosisConfig = DIAGNOSIS_REGISTRY.diagnosis[key];
-                if (!diagnosisConfig) return;
-                $(this.controls.legend).append(
-                    `<span class="legend-row">
-                        <span class="legend-swatch" style="background:${diagnosisConfig.color}"></span>
-                        <span>${diagnosisConfig.label}</span>
-                    </span>`
-                );
-            });
-
-            const hasWastewater = (selectedOverlay !== "None");
-            if (hasWastewater) {
-                const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
-                if (waterConfig) {
-                    $(this.controls.legend).append(
-                        `<span class="legend-row">
-                            <span class="legend-swatch" style="background:${waterConfig.color}"></span>
-                            <span>${waterConfig.label}</span>
-                        </span>`
-                    );
-                }
-            }
-
+            updateLegend(this.controls, currentKeys, selectedOverlay);
             this.draw(filtered, selectedOverlay, selectedAggregation);
 
             if (this.isVisible) {
@@ -285,6 +445,213 @@ export default class PathogenTimeline {
         }
         return true;
     }
+
+    drawYOY(renderModel, selectedOverlay){
+        if (!renderModel.series || renderModel.series.length === 0) {
+            this.svg.selectAll("*").remove();
+            return;
+        }     
+
+        
+        const width = this.width - margin.left - margin.right;
+        const height = this.height;
+
+        this.svg.selectAll("*").remove();
+
+        const currentKeys = [...new Set(renderModel.series.map(item => item.diagnosis))];
+
+        updateLegend(this.controls, currentKeys, selectedOverlay);
+
+        const xScale = d3.scaleLinear()
+            .domain([0, 11])
+            .range([0, width]);
+
+        const maxY = Math.max(0, ...renderModel.series.flatMap(item => 
+            item.points.map(point => point.value)
+            ));
+
+        //console.log(maxY);
+
+        const yLeft = d3.scaleLinear()
+            .domain([0, maxY])
+            .nice()            
+            .range([height, 0]);
+
+       //Append to x axis
+
+        this.svg.append("g")
+            .classed("x-axis", true)
+            .attr("transform", `translate(0,${height})`)
+            .call(
+                d3.axisBottom(xScale)
+                    .ticks(11)
+                    .tickValues(renderModel.xDomain)
+                    .tickFormat(i => renderModel.months[i])
+            ).selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+
+        // append to Left Y 
+        const yAxisLeft = this.svg.append("g")
+            .classed("y-axis left", true)
+            .call(
+                d3.axisLeft(yLeft)
+                    .tickFormat(d3.format(".2~s")));
+
+        const yLabelText =  renderModel.yLeftLabel;
+
+        const yLabelLeft = yAxisLeft.append("text")
+            .attr("class", "y-label")
+            .attr("fill", "currentColor")
+            .attr("letter-spacing", "1.16")
+            .attr("text-anchor", "middle")
+            .text(yLabelText)
+            .attr("transform", "rotate(-90)");
+
+        // After render, center it using SVG bbox
+        yLabelLeft.each(function () {
+            let w = 0;
+            try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
+
+            const x = -(height / 2);        
+            const y = -margin.left + 28;      
+
+            d3.select(this)
+                .attr("x", x)
+                .attr("y", y);
+        });
+
+
+  
+        // -----------------------------
+        // Line Gen
+        // -----------------------------
+
+        const yoyPatientLine = d3.line()
+            .x(point => xScale(point.monthIndex))
+            .y(point => yLeft(point.value));
+
+
+        // -----------------------------
+        // Draw diagnosis lines and points
+        // -----------------------------
+        let maxYear = -Infinity;
+            
+        for(const seriesItem of renderModel.series){
+            if (seriesItem.year > maxYear){
+                maxYear = seriesItem.year;
+            }
+        }
+            
+        for(const seriesItem of renderModel.series){
+            const isCurrentYear = seriesItem.year === maxYear;
+            const strokeWidth = isCurrentYear ? 4 : 2;
+
+            this.svg.append("path")
+                .datum(seriesItem.points)
+                .attr("fill", "none")
+                .attr("stroke", seriesItem.stroke)
+                .attr("stroke-width", strokeWidth)
+                .attr("d", yoyPatientLine).append("title")
+                .text(`${seriesItem.diagnosis} — ${seriesItem.year}`);
+
+            // Points
+            this.svg.selectAll(`circle.${cssSafeKey(seriesItem.diagnosis)}-${seriesItem.year}`)
+                .data(seriesItem.points)
+                .enter()
+                .append("circle")
+                .attr("class", `${cssSafeKey(seriesItem.diagnosis)}-${seriesItem.year}`)
+                .attr("cx", point => xScale(point.monthIndex))
+                .attr("cy", point => yLeft(point.value))
+                .attr("r", 4)
+                .attr("fill", seriesItem.stroke)
+                .attr("stroke", seriesItem.stroke)
+                .append("title")
+                .text(point => {
+                    return `${seriesItem.diagnosis}\n${renderModel.months[point.monthIndex]}, ${seriesItem.year}\n[ ${point.value} patients ]`
+                });                   
+                
+        }
+        
+        if (!renderModel.wwSeries || renderModel.wwSeries.length === 0) {
+           console.log("wwSeries is empty.")
+        } else {
+            const maxWW = Math.max(0, ...renderModel.wwSeries.flatMap(item => 
+            item.points.map(point => point.value)
+            ));
+
+            const yRight = d3.scaleLinear()
+            .domain([0, maxWW])
+            .nice()            
+            .range([height, 0]);
+
+            // append to Right Y 
+            const yAxisRight = this.svg.append("g")
+                .classed("y-axis right", true)
+                .attr("transform", `translate(${width}, 0)`)
+                .call(d3.axisRight(yRight).tickFormat(d3.format(",")))
+
+            const yoyWWLine = d3.line()
+                .x(point => xScale(point.monthIndex))
+                .y(point => yRight(point.value));
+
+            let maxYear = -Infinity;
+
+            for(const seriesItem of renderModel.wwSeries){
+                if (seriesItem.year > maxYear){
+                    maxYear = seriesItem.year;
+                }
+            }
+            
+            for(const seriesItem of renderModel.wwSeries){
+                const isCurrentYear = seriesItem.year === maxYear;
+                const strokeWidth = isCurrentYear ? 4 : 2;
+
+                this.svg.append("path")
+                    .datum(seriesItem.points)
+                    .attr("fill", "none")
+                    .attr("stroke", seriesItem.stroke)
+                    .attr("stroke-dasharray", "4 3")
+                    .attr("stroke-width", strokeWidth)
+                    .attr("d", yoyWWLine).append("title")
+                    .text(`${seriesItem.year}`);
+
+                // Points
+                this.svg.selectAll(`circle.Wastewater-${seriesItem.year}`)
+                    .data(seriesItem.points)
+                    .enter()
+                    .append("circle")
+                    .attr("class", `Wastewater-${seriesItem.year}`)
+                    .attr("cx", point => xScale(point.monthIndex))
+                    .attr("cy", point => yRight(point.value))
+                    .attr("r", 4)
+                    .attr("fill", seriesItem.stroke)
+                    .attr("stroke", seriesItem.stroke)
+                    .append("title")
+                    .text(point => {
+                        return `${renderModel.months[point.monthIndex]}, ${seriesItem.year}\n[ ${point.value}]`
+                    });                   
+                    
+            }
+
+
+            const yLabelRightText =  renderModel.yRightLabel;
+
+            yAxisRight.append("text")
+                .attr("class", "y-label")
+                .attr("text-anchor", "middle")
+                .attr("letter-spacing", "1.16")
+                .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
+                .text(renderModel.yRightLabel);
+
+           
+
+        } 
+            
+        
+    }
+ 
+    
 
     draw(records, selectedOverlay, selectedAggregation) {
         if (!records || records.length === 0) {
@@ -681,11 +1048,67 @@ function filterBreakdown(rows, diagnosisFilter) {
     });
 }
 
+
+function updateLegend(controls, currentKeys, selectedOverlay){
+
+     // Clear legend
+    if (controls?.legend) controls.legend.innerHTML = "";
+
+    currentKeys.forEach((key) => {
+        const diagnosisConfig = DIAGNOSIS_REGISTRY.diagnosis[key];
+
+        if (!diagnosisConfig) return;
+        $(controls.legend).append(
+            `<span class="legend-row">
+                <span class="legend-swatch" style="background:${diagnosisConfig.color}"></span>
+                <span>${diagnosisConfig.label}</span>
+            </span>`
+        );
+    });
+
+    const hasWastewater = (selectedOverlay !== "None");
+    if (hasWastewater) {
+        const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+        if (waterConfig) {
+            $(controls.legend).append(
+                `<span class="legend-row">
+                    <span class="legend-swatch" style="background:${waterConfig.color}"></span>
+                    <span>${waterConfig.label}</span>
+                </span>`
+            );
+        }
+    }
+
+}
+
 function cssSafeKey(str) {
     return String(str)
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
+}
+
+function blendWithWhite(hexColor, t){
+    const hexCleaned = hexColor.startsWith('#') ? hexColor.slice(1) : hexColor;   
+
+    const r = parseInt(hexCleaned.slice(0, 2), 16); 
+    const g = parseInt(hexCleaned.slice(2, 4), 16);
+    const b = parseInt(hexCleaned.slice(4, 6), 16);    
+
+    const r2 = 255 - (255 - r) * t;
+    const g2 = 255 - (255 - g) * t; 
+    const b2 = 255 - (255 - b) * t;
+
+    const rI = Math.round(r2);
+    const gI = Math.round(g2);
+    const bI = Math.round(b2);
+
+    const rHex= rI.toString(16).padStart(2, "0")
+    const gHex= gI.toString(16).padStart(2, "0")
+    const bHex= bI.toString(16).padStart(2, "0")
+
+    const finalHex = "#" + rHex + gHex + bHex;
+    return finalHex;
 }
 
 /**
@@ -778,6 +1201,34 @@ function collectPatientsByAggregation(records, aggregation) {
 
     return out;
 }
+
+function pivotToYOYRows(aggregatedRecords){
+    if (!aggregatedRecords || !Array.isArray(aggregatedRecords) || aggregatedRecords.length === 0) {
+        return [];
+    } 
+
+    const out = [];
+
+    for (const row of aggregatedRecords) {
+        let date = row.date;
+
+        if (!(date instanceof Date) || isNaN(date.getTime())) continue;
+
+        let year = date.getFullYear();
+        let monthIndex = date.getMonth();
+        let diagnosis = row.diagnosis;
+        let value = row.value;
+
+        out.push({
+            year,
+            monthIndex,
+            diagnosis,
+            value
+        });
+    }
+    return out;
+}
+
 
 // ------------------------------------------------------------
 // Wastewater service plumbing
