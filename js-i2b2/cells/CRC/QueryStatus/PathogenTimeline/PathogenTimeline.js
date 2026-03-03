@@ -17,7 +17,7 @@ const DIAGNOSIS_REGISTRY = {
 
 const WASTEWATER_REGISTRY = {
     wastewater_sources: {
-        "mwra-combined": { label: "Wastewater MWRA COVID-19", color: "#333", order: 3, accessor: (row) => (Number(row["Northern 7 day avg"]) || 0) + (Number(row["Southern 7 day avg"]) || 0) }
+        "mwra-combined": { label: "Wastewater MWRA COVID-19", color: "#333333", order: 3, accessor: (row) => (Number(row["Northern 7 day avg"]) || 0) + (Number(row["Southern 7 day avg"]) || 0) }
     }
 };
 
@@ -392,23 +392,30 @@ export default class PathogenTimeline {
 
                             return {
                                 year: Number(yearKey),
-                                points: pointsArray,
-                                stroke: waterConfig.color
+                                points: pointsArray
                             };
                         });
-
+                        const T_MIN = 0.3;
                         const yearsList = wwSeries.map(item => item.year);
                         const min = Math.min(...yearsList);
                         const max = Math.max(...yearsList); 
-                        
-                        console.log(`Min value: ${min}, Max value: ${max}`);
 
+                        wwSeries.forEach((item) => {
+                            const year = item.year;
+ 
+                            const u = (min === max) ? 1 : (year - min) / (max - min);
+
+                            const t = T_MIN + u * (1 - T_MIN);
+
+                            const baseColor = waterConfig.color;
+                            if (!baseColor) return;
+
+                            item.stroke = blendWithWhite(baseColor, t);
+                        });
+                        
                         renderModel.wwSeries = wwSeries;
                     }
-                }
-
-                console.log("renderModel.wwSeries?", renderModel.wwSeries?.length);
-                            
+                }                          
 
                 this.drawYOY(renderModel, selectedOverlay);
 
