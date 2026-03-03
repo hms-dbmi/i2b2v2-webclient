@@ -278,3 +278,9 @@ export const DELETE_GLOBAL_PARAM = `${ALL_HIVES}/deleteGlobalParam`;
 
 export const ALL_USERS = "allUsersInfo";
 export const GET_ALL_USERS = `${ALL_USERS}/getAllUsers`;
+
+//================================================================================================== //
+
+export const USER_PROJECT_ROLES = "userProjectRolesInfo";
+export const GET_USER_PROJECT_ROLES = `${USER_PROJECT_ROLES}/getUserProjectRoles`;
+

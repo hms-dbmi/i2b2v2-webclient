@@ -12,7 +12,11 @@ import { Loader } from "components";
 import {getAllUsers} from "../../reducers/allUsersSlice.js";
 import "./AllUsersTable.scss";
 import {Tooltip} from "@mui/material";
+import {getUserProjectRoles} from "../../reducers/userProjectRolesSlice";
+import {UserProjectRolesView} from "./UserProjectRolesView";
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
+import {getAllProjects} from "../../actions";
+
 
 export const AllUsersTable = ({paginationModel,
                                setPaginationModel
@@ -23,6 +27,8 @@ export const AllUsersTable = ({paginationModel,
     const[selectedUser, setSelectedUser] = useState(null);
     const[isEditingUser, setIsEditingUser] = useState(false);
     const[isCreatingUser, setIsCreatingUser] = useState(false);
+    const[showUserProjectRoles, setShowUserProjectRoles] = useState(false);
+
     const apiRef = useGridApiRef();
 
     const dispatch = useDispatch();
@@ -94,11 +100,12 @@ export const AllUsersTable = ({paginationModel,
                             color="inherit"
                         />
                     </Tooltip>,
-                    <Tooltip title="User details">
+                    <Tooltip title="User project roles details">
                         <GridActionsCellItem
                             icon={<InfoOutlinedIcon sx={{ fontSize: 20 }}  />}
                             label="Details"
                             className="textPrimary"
+                            onClick={handleInfoClick(id)}
                             color="inherit"
                         />
                     </Tooltip>
@@ -177,6 +184,13 @@ export const AllUsersTable = ({paginationModel,
         }
     };
 
+    const handleInfoClick = (username) => () => {
+        let user = allUsers.users.filter((user) => user.username === username);
+        if(user.length === 1) {
+            dispatch(getUserProjectRoles({user: user[0]}));
+            setShowUserProjectRoles(true);
+        }
+    };
 
     const handleAddNewUser = () => {
         setSelectedUser(User());
@@ -186,9 +200,17 @@ export const AllUsersTable = ({paginationModel,
 
     useEffect(() => {
         if(isI2b2LibLoaded && !isEditingUser) {
+            dispatch(getAllProjects({}));
             dispatch(getAllUsers({}));
         }
     }, [isI2b2LibLoaded, isEditingUser]);
+
+
+    useEffect(() => {
+        if(isI2b2LibLoaded) {
+            dispatch(getAllProjects({}));
+        }
+    }, [isI2b2LibLoaded]);
 
     useEffect(() => {
 
@@ -207,6 +229,7 @@ export const AllUsersTable = ({paginationModel,
             }
             {!isEditingUser && !isCreatingUser && allUsers.users.length > 0 && displayUsersTable()}
             { (isEditingUser || isCreatingUser) && <EditUserDetails user={selectedUser} setIsEditingUser={setIsEditingUser}  setIsCreatingUser={setIsCreatingUser} isCreatingUser={isCreatingUser}/>}
+            {showUserProjectRoles && <UserProjectRolesView onClose={ () => setShowUserProjectRoles(false)}/>}
         </div>
     );
 };

@@ -19,5 +19,7 @@
  export {AuthenticationConfigDomainOptions} from "./AuthenticationConfigDomainOptions";
  export {AuthenticationConfigLDAPOptions} from "./AuthenticationConfigLDAPOptions";
  export {UserSession} from "./UserSession";
-
+ export {UserProjectRole} from "./UserProjectRole";
+ export {UserProjectRoles} from "./UserProjectRoles";
+ export { StatusInfo } from "./StatusInfo";
 

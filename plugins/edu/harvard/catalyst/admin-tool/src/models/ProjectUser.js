@@ -43,7 +43,7 @@ export const DATA_ROLES = {
     DATA_OBFSC: {
         name: "DATA_OBFSC",
         order: 5
-    }
+    },
 };
 
 export const EDITOR_ROLE = "EDITOR";

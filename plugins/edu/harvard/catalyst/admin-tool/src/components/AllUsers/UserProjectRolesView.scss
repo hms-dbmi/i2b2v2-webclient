@@ -1,0 +1,17 @@
+.UserProjectRolesView {
+  .UserDetail {
+    margin-bottom: 0.4em;
+  }
+
+  .UserProjectRolesViewTable {
+    margin-top: 0.7em;
+  }
+
+  .MuiDataGrid-columnHeaders{
+    background-color:   rgba(0, 0, 0, 0.12);
+  }
+
+  .MuiDataGrid-virtualScroller {
+    min-height: 10em;
+  }
+}
