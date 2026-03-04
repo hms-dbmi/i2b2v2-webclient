@@ -366,6 +366,16 @@ export default class MultiZipcodeMap {
 
     rerender() {
         if (typeof this.mapEl === 'undefined') return;
+
+        // remove old popup elements if any exist
+        this.map.eachLayer(((layer) => {
+            if (layer._contentNode) {
+                if (layer._contentNode.classList.contains('leaflet-popup-content')) this.map.removeLayer(layer);
+            }
+        }).bind(this));
+
+
+
         // get list of valid zip codes that we care about and collect min/max patient counts while at it
         let validData = {};
         let validNormalizers = new Set();
