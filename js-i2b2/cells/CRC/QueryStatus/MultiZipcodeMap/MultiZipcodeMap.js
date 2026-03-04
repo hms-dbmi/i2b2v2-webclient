@@ -620,7 +620,20 @@ export default class MultiZipcodeMap {
                 content: func_processTemplate(aggModuleClickBox.template, data)
             };
             if (typeof this.config.advancedConfig?.clickBox.options !== 'undefined') options = {...options, ...this.config.advancedConfig.clickBox.options};
-            let popup = L.popup(e.latlng, options).openOn(this.map);
+
+            // see if the new popup would be a duplicate or not
+            let dup = false;
+            this.map.eachLayer(((layer) => {
+                if (layer._contentNode &&
+                    layer._contentNode.classList.contains('leaflet-popup-content') &&
+                    layer._content === options.content )
+                {
+                    dup = true
+                }
+            }).bind(this));
+
+            // only add the popup if it is not a duplicate
+            if (!dup) L.popup(e.latlng, options).openOn(this.map);
         }).bind(this);
         // ---------------------------
         const func_onEachFeature = ((feature, layer) => {
