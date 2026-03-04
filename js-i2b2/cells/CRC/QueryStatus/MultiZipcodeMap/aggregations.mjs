@@ -11,7 +11,7 @@ export default {
                 ],
                 // non-functioning example
                 clickBox: {
-                    template: "<b>[{{ZCTA5CE10}}] - {{name}}</b><br/>{{display}} patients"
+                    template: "<b>[{{stateCode}}]</b><br/>{{display}} patients"
                 },
                 // non-functioning example
                 hoverBox: {
@@ -34,7 +34,7 @@ export default {
                 ],
                 // non-functioning example
                 clickBox: {
-                    template: "<b>[{{stateCode}}]</b><br/>{{count}} patients"
+                    template: "<b>[{{stateCode}}]</b><br/><span>Rate: {{~normalizedValue|2}}</span>"
                 },
                 // non-functioning example
                 hoverBox: {
@@ -65,12 +65,12 @@ export default {
                     "text"
                 ],
                 clickBox: {
-                    template: "<b>[{{ZCTA5CE10}}] - {{name}}</b><br/>{{display}} patients"
+                    template: "<b>[{{zip3code}}xx] - {{text}}</b><br/>Rate: {{~normalizedValue|2}}"
                 },
                 // non-functioning example
                 hoverBox: {
                     default: "<h4>Patient Rate</h4>Hover over an area",
-                    template: "<h4>Patient Rate</h4><div><b>{{text}}</b></div><div>Zip Code: {{zip3code}}xx</div><div>% of {{$normalizer}}: {{~normalizedValue|2}}</div>"
+                    template: "<h4>Patient Rate</h4><div><b>{{text}}</b></div><div>Zip Code: {{zip3code}}xx</div><div>Rate: {{~normalizedValue|2}}</div>"
                 },
                 // non-functioning example
                 legendBox: {
@@ -88,7 +88,7 @@ export default {
                 ],
                 // non-functioning example
                 clickBox: {
-                    template: "<b>[{{stateCode}}]</b><br/>{{count}} patients"
+                    template: "<b>[{{zip3code}}xx] - {{text}}</b><br/><span>{{display}} patients</span>"
                 },
                 // non-functioning example
                 hoverBox: {
@@ -117,7 +117,7 @@ export default {
                     "text"
                 ],
                 clickBox: {
-                    template: "<b>[{{ZCTA5CE10}}] - {{name}}</b><br/>{{display}} patients"
+                    template: "<b>[{{zip5code}}] - {{text}}</b><br/>{{display}} patients"
                 },
                 // non-functioning example
                 hoverBox: {
@@ -141,12 +141,12 @@ export default {
                 ],
                 // non-functioning example
                 clickBox: {
-                    template: "<b>[{{stateCode}}]</b><br/>{{count}} patients"
+                    template: "<b>[{{zip5code}}] - {{text}}</b><br/>Rate: {{~normalizedValue|2}}"
                 },
                 // non-functioning example
                 hoverBox: {
                     default: "<h4>Patient Rate</h4>Hover over an area",
-                    template: "<h4>Patient Rate</h4><div><b>{{text}}</b></div><div>Zip Code: {{zip5code}}</div><div>% of {{$normalizer}}: {{~normalizedValue|2}}</div>"
+                    template: "<h4>Patient Rate</h4><div><b>{{text}}</b></div><div>Zip Code: {{zip5code}}</div><div>Rate: {{~normalizedValue|2}}</div>"
                 },
                 // non-functioning example
                 legendBox: {

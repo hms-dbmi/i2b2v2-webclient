@@ -209,7 +209,7 @@ export default class MultiZipcodeMap {
                         }
                     }
 
-                    if(currentAggModule && currentAggModule.extract?.length > 0) {
+                    if (currentAggModule && currentAggModule.extract?.length > 0) {
                         let aggModuleContents = currentAggModule.extract[0];
                         if (aggModuleContents && aggModuleContents.legendBox) {
                             // create a legend control if it is configured
@@ -572,12 +572,42 @@ export default class MultiZipcodeMap {
         }).bind(this);
         // ---------------------------
         const func_onClick = ((e) => {
-            if (typeof this.config.advancedConfig?.clickBox.template === 'undefined') return;
-
             let data = e.target.feature.properties;
+            const func_IsNormalizer = function(a) {
+                return a.attribs.map(x => {
+                    if (Array.isArray(x)) {
+                        return x.includes('$normalizer');
+                    } else {
+                        return x === '$normalizer';
+                    }
+                })
+            };
+
+            let aggModuleClickBox;
+            if (this.config.currentNormalizer) {
+                const currentNormalizer = this.config.currentNormalizer;
+                // get the normalizer template via search of the extract array looking for attrib named '$normalizer'
+                aggModuleClickBox = aggModule[this.config.aggregations.current].extract.filter(a => func_IsNormalizer(a).includes(true));
+                // select the data if normalized
+                if (data && data.normalizers && data.normalizers[currentNormalizer]) {
+                    const normalizedValue = data.count / data.normalizers[currentNormalizer].count;
+                    data = data.normalizers[currentNormalizer];
+                    data.normalizedValue = normalizedValue;
+                }
+            } else {
+                // get the normalizer template via search of the extract array looking for attrib named '$normalizer'
+                aggModuleClickBox = aggModule[this.config.aggregations.current].extract.filter(a => !func_IsNormalizer(a).includes(true));
+            }
+            if (aggModuleClickBox.length && aggModuleClickBox[0].clickBox) {
+                aggModuleClickBox = aggModuleClickBox[0].clickBox;
+            } else {
+                aggModuleClickBox = this.config.advancedConfig.clickBox;
+            }
+
+            if (!aggModuleClickBox || !aggModuleClickBox.template) return;
 
             let options = {
-                content: func_processTemplate(this.config.advancedConfig.clickBox.template, data)
+                content: func_processTemplate(aggModuleClickBox.template, data)
             };
             if (typeof this.config.advancedConfig?.clickBox.options !== 'undefined') options = {...options, ...this.config.advancedConfig.clickBox.options};
             let popup = L.popup(e.latlng, options).openOn(this.map);
