@@ -39,90 +39,762 @@ i2b2.Plugin = {
         "template": ""
     }
 };
-// ---------------------------------------------------------------------------------------
-i2b2.Plugin.itemDropped = function(sdxData, e) {
-    const targetId = e.target.id;
 
-    // analyze the data and make sure that it is the proper type "PATIENT_ZIP_COUNT*"
-    const regExPatientZip = /patient_zip_count/i;
-    if (!regExPatientZip.test(sdxData.origData.result_type)) {
-        // this is the wrong breakdown type
-        indicateBadDrop(targetId);
-        delete i2b2.model[targetId];
-        func_ClearExistingData();
+// ============================================================================
+// Core constants and shared utilities
+// ============================================================================
+function parseXmlResponse(response) {
+    if (!response) return null;
+    if (typeof response === 'string') {
+        return (new DOMParser()).parseFromString(response, "application/xml");
+    }
+    if (response.refXML) return response.refXML;
+    if (response.msgResponse) {
+        return (new DOMParser()).parseFromString(response.msgResponse, "application/xml");
+    }
+    return null;
+}
+
+const GEO_VIEWS = Object.freeze({
+    ZIP5: 'zip5',
+    ZIP3: 'zip3',
+    STATE: 'state'
+});
+const DATASET_SLOT_IDS = Object.freeze(["dataset1", "dataset2"]);
+
+// ============================================================================
+// UI state helpers (view switch, flow hint, loading indicators)
+// ============================================================================
+function getActiveGeoView() {
+    const current = i2b2.model && i2b2.model.settings ? i2b2.model.settings.geoView : null;
+    return current || GEO_VIEWS.ZIP5;
+}
+
+function updateGeoViewButtons() {
+    const current = getActiveGeoView();
+    document.querySelectorAll('.geo-view-btn').forEach(function(btn) {
+        const isActive = btn.dataset && btn.dataset.view === current;
+        btn.classList.toggle('active', !!isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+}
+
+function updateViewHelperText() {
+    const el = document.getElementById('view-helper-text');
+    if (!el) return;
+    const view = getActiveGeoView();
+    if (view === GEO_VIEWS.STATE) {
+        el.textContent = 'Nationwide state-level aggregation.';
+    } else if (view === GEO_VIEWS.ZIP3) {
+        el.textContent = 'Aggregated by first 3 ZIP digits (regional coverage).';
+    } else {
+        el.textContent = 'Detailed ZIP-level map (regional coverage).';
+    }
+}
+
+function updateFlowHint() {
+    const flow = document.getElementById('flow-hint');
+    if (!flow) return;
+    const steps = flow.querySelectorAll('.flow-step');
+    if (!steps || steps.length < 4) return;
+    const count = getFilledDatasetCount();
+    const activeIdx = count >= 2 ? 3 : Math.min(2, count);
+    steps.forEach(function(step, idx) {
+        step.classList.toggle('is-active', idx === activeIdx);
+    });
+}
+
+function setLoadMapButtonLoading(isLoading) {
+    const btn = document.getElementById('load-map-btn');
+    if (!btn) return;
+    btn.classList.toggle('is-loading', !!isLoading);
+}
+
+function refreshDatasetCohortLabels() {
+    const list = (i2b2.model && Array.isArray(i2b2.model.datasets)) ? i2b2.model.datasets : [];
+    list.forEach(function(entry) {
+        const li = document.getElementById(entry.id);
+        if (!li) return;
+        const label = li.querySelector('.cohort-label');
+        const chip = li.querySelector('.cohort-chip');
+        const isSlot1 = entry.slotId === DATASET_SLOT_IDS[0];
+        const cohortText = isSlot1 ? '1' : '2';
+        if (label) label.textContent = cohortText;
+        if (chip) {
+            chip.classList.remove('cohort-a', 'cohort-b');
+            chip.classList.add(isSlot1 ? 'cohort-a' : 'cohort-b');
+        }
+    });
+}
+
+function detectGeoViewFromResultType(typeName) {
+    const t = String(typeName || '').toLowerCase();
+    if (!t) return null;
+    if (t.includes('state')) return GEO_VIEWS.STATE;
+    if (t.includes('zip3') || t.includes('zip_3') || t.includes('3zip') || t.includes('3_digit') || t.includes('3digit')) return GEO_VIEWS.ZIP3;
+    if (t.includes('zip')) return GEO_VIEWS.ZIP5;
+    return null;
+}
+
+function getResultInstanceIdForView(dataset, viewKey) {
+    if (!dataset || !dataset.sdx) return null;
+    const ids = dataset.sdx.origData && dataset.sdx.origData.map_result_instance_ids ? dataset.sdx.origData.map_result_instance_ids : {};
+    const fallback = dataset.sdx.sdxInfo && dataset.sdx.sdxInfo.sdxKeyValue ? String(dataset.sdx.sdxInfo.sdxKeyValue).trim() : null;
+    const viewId = ids && ids[viewKey] ? String(ids[viewKey]).trim() : null;
+    if (viewId) return viewId;
+    if (ids && ids[GEO_VIEWS.ZIP5]) return String(ids[GEO_VIEWS.ZIP5]).trim();
+    return fallback;
+}
+
+// ============================================================================
+// Query result parsing helpers (table rows -> area keys/counts)
+// ============================================================================
+function stripPopulationPrefix(columnText) {
+    return String(columnText || '').replace(/^\s*\[POPULATION\]\s*/i, '').trim();
+}
+
+function parseCountValue(rawValue) {
+    const raw = String(rawValue == null ? '' : rawValue).trim();
+    if (!raw) return null;
+    const less = raw.match(/less\s+than\s+([0-9,]+)/i);
+    if (less) {
+        const n = parseInt(String(less[1]).replace(/,/g, ''), 10);
+        return isNaN(n) ? null : Math.max(0, n - 1);
+    }
+    const num = raw.match(/([0-9][0-9,]*)/);
+    if (!num) return null;
+    const v = parseInt(String(num[1]).replace(/,/g, ''), 10);
+    return isNaN(v) ? null : v;
+}
+
+function rowHasExplicitZip5(columnText) {
+    const c = stripPopulationPrefix(columnText);
+    return /^[0-9]{5}(?![0-9])\s*-/.test(c);
+}
+
+function rowHasExplicitZip3(columnText) {
+    const c = stripPopulationPrefix(columnText);
+    return /^[0-9]{3}(?![0-9])\s*-/.test(c);
+}
+
+function rowHasExplicitState(columnText) {
+    const c = stripPopulationPrefix(columnText);
+    return /^[A-Za-z]{2}$/.test(c) || /^[A-Za-z]{2}\s*-/.test(c);
+}
+
+function parseAreaFromColumn(columnText, viewKey, zipRegEx) {
+    const col = String(columnText || '').trim();
+    const clean = stripPopulationPrefix(col);
+    if (!col) return null;
+
+    if (viewKey === GEO_VIEWS.ZIP3) {
+        const m3 = clean.match(/^([0-9]{3})(?![0-9])\s*-\s*(.*)$/) || clean.match(/^([0-9]{3})(?![0-9])$/);
+        if (m3) {
+            const key = String(m3[1]).trim();
+            return { key: key, text: clean, label: (m3[2] || '').trim() };
+        }
+        const m5 = clean.match(/^([0-9]{5})(?![0-9])\s*-\s*(.*)$/) || clean.match(/^([0-9]{5})(?![0-9])$/);
+        if (m5) {
+            const key5 = String(m5[1]).trim();
+            return { key: key5.substring(0, 3), text: clean, label: (m5[2] || '').trim() };
+        }
+        return null;
+    }
+
+    if (viewKey === GEO_VIEWS.STATE) {
+        // Strict mode: state values are expected as 2-letter abbreviations only (e.g., MA or MA - label)
+        const mAbbr = clean.match(/^([A-Za-z]{2})(?:\s*-\s*(.*))?$/);
+        if (mAbbr) {
+            const abbr = String(mAbbr[1]).toUpperCase();
+            return { key: abbr, text: clean, label: (mAbbr[2] || '').trim() };
+        }
+        return null;
+    }
+
+    // ZIP5 view: support strict regex, plain "02139 - ...", and prefixed rows with embedded ZIP5 code
+    const mZip5 = clean.match(zipRegEx) || clean.match(/^([0-9]{5})(?![0-9])\s*-\s*(.*)$/) || clean.match(/^([0-9]{5})(?![0-9])$/);
+    if (!mZip5) return null;
+    const key5 = String(mZip5[1]).trim();
+    return { key: key5, text: clean, label: (mZip5[2] || clean).trim() };
+}
+
+function normalizeZip5(value) {
+    const v = value == null ? '' : String(value).trim();
+    return /^[0-9]{5}$/.test(v) ? v : '';
+}
+
+function normalizeZip3(value) {
+    const v = value == null ? '' : String(value).trim();
+    return /^[0-9]{3}$/.test(v) ? v : '';
+}
+
+function normalizeStateAbbr(value) {
+    const v = value == null ? '' : String(value).trim().toUpperCase();
+    return /^[A-Z]{2}$/.test(v) ? v : '';
+}
+
+// ============================================================================
+// GeoJSON feature keying and per-view filtering
+// ============================================================================
+function getFeatureGeoCodes(feature, zipAttribName) {
+    const props = feature && feature.properties ? feature.properties : {};
+    const aggLevelRaw = props.aggLevel != null ? String(props.aggLevel).trim().toUpperCase() : '';
+    const aggKeyRaw = props.aggKey != null ? String(props.aggKey).trim() : '';
+
+    const zip5 = normalizeZip5(
+        props[zipAttribName] != null ? props[zipAttribName] :
+        (props.ZCTA5CE10 != null ? props.ZCTA5CE10 :
+        (props.zip5code != null ? props.zip5code :
+        (props.zipcode != null ? props.zipcode :
+        ((aggLevelRaw === 'ZIP5') ? aggKeyRaw : ''))))
+    );
+
+    const zip3 = normalizeZip3(
+        props.zip3code != null ? props.zip3code :
+        ((aggLevelRaw === 'ZIP3') ? aggKeyRaw :
+        (zip5 ? zip5.substring(0, 3) : ''))
+    );
+
+    let state = normalizeStateAbbr(
+        props.abbr != null ? props.abbr :
+        (props.stateCode != null ? props.stateCode :
+        ((aggLevelRaw === 'STATE') ? aggKeyRaw : ''))
+    );
+    if (!state) {
+        const stateId = feature && feature.id != null ? normalizeStateAbbr(feature.id) : '';
+        if (stateId) state = stateId;
+    }
+
+    return {
+        aggLevel: aggLevelRaw,
+        zip5: zip5,
+        zip3: zip3,
+        state: state
+    };
+}
+
+function featureMatchesView(feature, viewKey, zipAttribName) {
+    const codes = getFeatureGeoCodes(feature, zipAttribName);
+    const level = codes.aggLevel;
+    if (viewKey === GEO_VIEWS.ZIP5) {
+        if (level && level !== 'ZIP5') return false;
+        return !!codes.zip5;
+    }
+    if (viewKey === GEO_VIEWS.ZIP3) {
+        // Prefer explicit ZIP3 geometries when present, but allow ZIP5 fallback on legacy files.
+        if (level && level !== 'ZIP3' && level !== 'ZIP5') return false;
+        return !!codes.zip3;
+    }
+    if (level && level !== 'STATE') return false;
+    return !!codes.state;
+}
+
+function getFeatureAreaKey(feature, viewKey, zipAttribName) {
+    const codes = getFeatureGeoCodes(feature, zipAttribName);
+    if (viewKey === GEO_VIEWS.STATE) return codes.state || null;
+    if (viewKey === GEO_VIEWS.ZIP3) return codes.zip3 || null;
+    return codes.zip5 || null;
+}
+
+// ============================================================================
+// GeoJSON build/zoom helpers for Leaflet rendering
+// ============================================================================
+function buildWorkingGeoJSON(geoFeatures, mainData, viewKey, zipAttribName) {
+    const dataIdX = i2b2.Plugin.dataIds[0];
+    const dataIdY = i2b2.Plugin.dataIds[1];
+    const out = { type: "FeatureCollection", features: [] };
+    const safeMainData = (mainData && typeof mainData === 'object') ? mainData : {};
+    const hasNativeZip3Geometry = viewKey === GEO_VIEWS.ZIP3 && geoFeatures.some(function(feature) {
+        const codes = getFeatureGeoCodes(feature, zipAttribName);
+        return codes.aggLevel === 'ZIP3' && !!codes.zip3;
+    });
+
+    if (viewKey === GEO_VIEWS.ZIP5) {
+        geoFeatures.forEach((feature) => {
+            if (!featureMatchesView(feature, viewKey, zipAttribName)) return;
+            const areaKey = getFeatureAreaKey(feature, viewKey, zipAttribName);
+            const mainDataLookup = areaKey && safeMainData[areaKey];
+            if (!mainDataLookup || typeof mainDataLookup !== 'object') return;
+            const featureCopy = structuredClone(feature);
+            for (let attrib in mainDataLookup) featureCopy.properties[attrib] = mainDataLookup[attrib];
+            featureCopy.properties.geo_view = viewKey;
+            featureCopy.properties.geo_key = areaKey;
+            const bucketX = i2b2.Plugin.toBucket(dataIdX, mainDataLookup[dataIdX]);
+            const bucketY = i2b2.Plugin.toBucket(dataIdY, mainDataLookup[dataIdY]);
+            if (isNaN(bucketX) || isNaN(bucketY)) {
+                featureCopy.properties.color = "url(#error-pattern)";
+            } else {
+                featureCopy.properties.color = i2b2.model.activeColors[bucketY][bucketX];
+                featureCopy.properties.buckets = [bucketY, bucketX];
+            }
+            out.features.push(featureCopy);
+        });
+        return out;
+    }
+
+    if (viewKey === GEO_VIEWS.STATE) {
+        geoFeatures.forEach((feature) => {
+            if (!featureMatchesView(feature, viewKey, zipAttribName)) return;
+            const areaKey = getFeatureAreaKey(feature, viewKey, zipAttribName);
+            const mainDataLookup = areaKey && safeMainData[areaKey];
+            if (!areaKey || !mainDataLookup || typeof mainDataLookup !== 'object') return;
+            const featureCopy = structuredClone(feature);
+            for (let attrib in mainDataLookup) featureCopy.properties[attrib] = mainDataLookup[attrib];
+            featureCopy.properties.geo_view = viewKey;
+            featureCopy.properties.geo_key = areaKey;
+            const bucketX = i2b2.Plugin.toBucket(dataIdX, mainDataLookup[dataIdX]);
+            const bucketY = i2b2.Plugin.toBucket(dataIdY, mainDataLookup[dataIdY]);
+            if (isNaN(bucketX) || isNaN(bucketY)) {
+                featureCopy.properties.color = "url(#error-pattern)";
+            } else {
+                featureCopy.properties.color = i2b2.model.activeColors[bucketY][bucketX];
+                featureCopy.properties.buckets = [bucketY, bucketX];
+            }
+            out.features.push(featureCopy);
+        });
+        return out;
+    }
+
+    // Aggregate geometries by area key so hover/buckets are per geographic bucket.
+    const grouped = {};
+    geoFeatures.forEach((feature) => {
+        if (!featureMatchesView(feature, viewKey, zipAttribName)) return;
+        if (viewKey === GEO_VIEWS.ZIP3 && hasNativeZip3Geometry) {
+            const codes = getFeatureGeoCodes(feature, zipAttribName);
+            if (codes.aggLevel !== 'ZIP3') return;
+        }
+        const areaKey = getFeatureAreaKey(feature, viewKey, zipAttribName);
+        const mainDataLookup = areaKey && safeMainData[areaKey];
+        if (!areaKey || !mainDataLookup || typeof mainDataLookup !== 'object') return;
+        if (!grouped[areaKey]) {
+            grouped[areaKey] = {
+                props: structuredClone(mainDataLookup),
+                geometries: []
+            };
+        }
+        grouped[areaKey].geometries.push(structuredClone(feature.geometry));
+    });
+
+    Object.keys(grouped).forEach((areaKey) => {
+        const g = grouped[areaKey];
+        const props = g && g.props ? g.props : null;
+        if (!props || typeof props !== 'object') return;
+        props.geo_view = viewKey;
+        props.geo_key = areaKey;
+        const bucketX = i2b2.Plugin.toBucket(dataIdX, props[dataIdX]);
+        const bucketY = i2b2.Plugin.toBucket(dataIdY, props[dataIdY]);
+        if (isNaN(bucketX) || isNaN(bucketY)) {
+            props.color = "url(#error-pattern)";
+        } else {
+            props.color = i2b2.model.activeColors[bucketY][bucketX];
+            props.buckets = [bucketY, bucketX];
+        }
+
+        let geometry;
+        if (g.geometries.length === 1) {
+            geometry = g.geometries[0];
+        } else {
+            geometry = {
+                type: "GeometryCollection",
+                geometries: g.geometries
+            };
+        }
+
+        out.features.push({
+            type: "Feature",
+            properties: props,
+            geometry: geometry
+        });
+    });
+
+    return out;
+}
+
+function applyGeoViewZoom(viewKey, geoJsonLayer) {
+    if (!i2b2.Plugin.map || !geoJsonLayer || typeof geoJsonLayer.getBounds !== 'function') return;
+    if (viewKey === GEO_VIEWS.STATE) {
+        i2b2.Plugin.map.setView([39.8, -98.6], 4);
+        document.querySelectorAll('.zoom-link').forEach((el) => el.classList.remove('selected'));
+        return;
+    }
+    const bounds = geoJsonLayer.getBounds();
+    if (!bounds || !bounds.isValid || !bounds.isValid()) return;
+
+    let maxZoom;
+    let padding;
+    if (viewKey === GEO_VIEWS.STATE) {
+        maxZoom = 6;
+        padding = [20, 20];
+    } else if (viewKey === GEO_VIEWS.ZIP3) {
+        maxZoom = 8;
+        padding = [20, 20];
+    } else {
+        maxZoom = 11;
+        padding = [16, 16];
+    }
+
+    i2b2.Plugin.map.fitBounds(bounds, {
+        padding: padding,
+        maxZoom: maxZoom
+    });
+    document.querySelectorAll('.zoom-link').forEach((el) => el.classList.remove('selected'));
+}
+
+function setMapLoading(isLoading, text) {
+    const el = document.getElementById('map-loading');
+    if (!el) return;
+    const txt = el.querySelector('.map-loading-text');
+    if (txt && text) txt.textContent = text;
+    el.classList.toggle('hidden', !isLoading);
+}
+
+// ============================================================================
+// SDX/query resolution helpers (QM/QI -> PRC ZIP breakdowns)
+// ============================================================================
+// Resolve query master id from PRC origData (QI uses QM_id; some paths use query_master_id)
+function getQueryMasterId(origData) {
+    return origData["QM_id"] != null ? String(origData["QM_id"]) : (origData["query_master_id"] != null ? String(origData["query_master_id"]) : null);
+}
+
+// Extract query name from getRequestXml API result (may be { refXML, msgResponse } or raw XML string)
+function getQueryNameFromRequestResult(result) {
+    if (result == null) return '';
+    let xmlDoc = parseXmlResponse(result);
+    if (!xmlDoc) {
+        return (result.title != null ? result.title : '') || (result.name != null ? result.name : '') || '';
+    }
+    try {
+        const context = xmlDoc.nodeType === 9 ? xmlDoc : xmlDoc.documentElement || xmlDoc;
+        const xpathResult = xmlDoc.evaluate("//query_name", context, null, XPathResult.STRING_TYPE, null);
+        return (xpathResult && xpathResult.stringValue) ? String(xpathResult.stringValue).trim() : '';
+    } catch (e) {
+        return '';
+    }
+}
+
+// ---------------------------------------------------------------------------------------
+function showValidationMessage(text) {
+    const el = document.getElementById('bivariate-validation-msg');
+    if (el) {
+        el.textContent = text;
+        el.className = 'bivariate-validation-msg visible error';
+    }
+}
+function clearValidationMessage() {
+    const el = document.getElementById('bivariate-validation-msg');
+    if (el) {
+        el.textContent = '';
+        el.className = 'bivariate-validation-msg';
+    }
+}
+
+function resolveQMtoZipPRC(qmSdx) {
+    const qmId = qmSdx.sdxInfo && qmSdx.sdxInfo.sdxKeyValue;
+    if (!qmId) return Promise.reject(new Error('Invalid query master'));
+
+    return i2b2.ajax.CRC.getQueryInstanceList_fromQueryMasterId({ qm_key_value: qmId }).then(function(qiResponse) {
+        let xmlDoc = parseXmlResponse(qiResponse);
+        if (!xmlDoc) return Promise.reject(new Error('No QI response'));
+        const qiNodes = xmlDoc.getElementsByTagName('query_instance');
+        if (qiNodes.length === 0) return Promise.reject(new Error('NO_ZIP'));
+        // Try each query instance until one has a ZIP result (first QI may be an older run without ZIP)
+        function tryNextQi(idx) {
+            if (idx >= qiNodes.length) return Promise.reject(new Error('NO_ZIP'));
+            const idEl = qiNodes[idx].getElementsByTagName('query_instance_id')[0];
+            if (!idEl || !idEl.childNodes.length) return tryNextQi(idx + 1);
+            const qid = (idEl.childNodes[0].nodeValue || '').trim();
+            if (!qid) return tryNextQi(idx + 1);
+            const qiSdx = {
+                sdxInfo: { sdxType: 'QI', sdxKeyValue: qid, sdxDisplayName: (qmSdx.sdxInfo && qmSdx.sdxInfo.sdxDisplayName) || '' },
+                origData: { query_master_id: qmId, QM_id: qmId }
+            };
+            return resolveQItoZipPRC(qiSdx).catch(function (err) { return tryNextQi(idx + 1); });
+        }
+        return tryNextQi(0);
+    });
+}
+
+// Resolve a dropped QI (Query Instance, e.g. "Results of Female@8:28:10") to a PRC for ZIP Code breakdown if one exists
+function resolveQItoZipPRC(qiSdx) {
+    const raw = qiSdx.sdxInfo && qiSdx.sdxInfo.sdxKeyValue;
+    const qiId = raw ? String(raw).trim() : null;
+    const qmId = getQueryMasterId(qiSdx.origData);
+    if (!qiId) return Promise.reject(new Error('Invalid query'));
+
+    return i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryInstanceId({ qi_key_value: qiId }).then(function(response) {
+        let xmlDoc = parseXmlResponse(response);
+        if (!xmlDoc) return Promise.reject(new Error('No response'));
+
+        const instances = xmlDoc.getElementsByTagName('query_result_instance');
+        const mapResultIds = {};
+        let firstTitle = (qiSdx.sdxInfo && qiSdx.sdxInfo.sdxDisplayName) || '';
+        for (let i = 0; i < instances.length; i++) {
+            const node = instances[i];
+            let typeName = '';
+            try {
+                const typeEl = node.getElementsByTagName('query_result_type')[0];
+                if (typeEl) {
+                    const nameEl = typeEl.getElementsByTagName('name')[0];
+                    if (nameEl && nameEl.childNodes.length) typeName = nameEl.childNodes[0].nodeValue || '';
+                }
+            } catch (e) {}
+            const viewKey = detectGeoViewFromResultType(typeName);
+            if (!viewKey) continue;
+
+            let rawId = (node.getElementsByTagName('result_instance_id')[0] || {}).childNodes && node.getElementsByTagName('result_instance_id')[0].childNodes[0] ? node.getElementsByTagName('result_instance_id')[0].childNodes[0].nodeValue : null;
+            const resultInstanceId = rawId ? String(rawId).trim() : null;
+            if (!resultInstanceId) continue;
+            if (!mapResultIds[viewKey]) mapResultIds[viewKey] = resultInstanceId;
+
+            try {
+                const descEl = node.getElementsByTagName('description')[0];
+                if (descEl && descEl.childNodes.length && !firstTitle) firstTitle = descEl.childNodes[0].nodeValue || firstTitle;
+            } catch (e) {}
+        }
+        const primaryId = mapResultIds[GEO_VIEWS.ZIP5] || mapResultIds[GEO_VIEWS.ZIP3] || mapResultIds[GEO_VIEWS.STATE];
+        if (!primaryId) return Promise.reject(new Error('NO_ZIP'));
+
+        const title = firstTitle || (qiSdx.sdxInfo && qiSdx.sdxInfo.sdxDisplayName) || '';
+        const origData = {
+            QM_id: qmId,
+            query_master_id: qmId,
+            result_type: 'PATIENT_GEO_BREAKDOWN',
+            PRC_id: primaryId,
+            result_instance_id: primaryId,
+            map_result_instance_ids: mapResultIds,
+            title: title
+        };
+        const prcSdx = {
+            sdxInfo: {
+                sdxType: 'PRC',
+                sdxKeyName: 'result_instance_id',
+                sdxKeyValue: primaryId,
+                sdxDisplayName: title
+            },
+            origData: origData
+        };
+        return Promise.resolve(prcSdx);
+    });
+}
+
+// ============================================================================
+// Drag/drop dataset list management
+// ============================================================================
+i2b2.Plugin.itemDropped = function(sdxData, e) {
+    const dropZone = e.target.closest && e.target.closest('.drop-slot-box');
+    const slotId = dropZone && dropZone.dataset ? dropZone.dataset.slotId : null;
+    const isListDrop = !!slotId;
+
+    clearValidationMessage();
+
+    // If dropped item is QM (top-level master query, e.g. "Female@8:28:10"), resolve to ZIP PRC
+    if (sdxData.sdxInfo && sdxData.sdxInfo.sdxType === 'QM' && isListDrop) {
+        resolveQMtoZipPRC(sdxData).then(function(prcSdx) {
+            appendDatasetToSlot(prcSdx, slotId);
+        }).catch(function(err) {
+            if (err && err.message === 'NO_ZIP') {
+                showValidationMessage('This query does not include a ZIP Code breakdown. Run the query with "Demographic Distribution by Zip Code" as a result option, then drop the master query again.');
+            } else {
+                showValidationMessage('Could not load query results. Please try again.');
+            }
+            indicateBadDropList(slotId);
+        });
         return;
     }
 
-    // mark target as now being set
-    indicateGoodDrop(targetId);
-
-    // get our target ID and save it in our state
-    if (i2b2.model[targetId]) {
-        // see if it is a different entry from what is currently specified (short circuit out of function if the same)
-        if (sdxData.sdxInfo.sdxKeyValue === i2b2.model[targetId].sdx.sdxInfo.sdxKeyValue) return;
-        // save the new information
-        i2b2.model[targetId].buckets = 5;
-        i2b2.model[targetId].sdx = sdxData;
-        delete i2b2.model[targetId].dataXML;
-        i2b2.model[targetId].dirty = true;
-        // delete existing features if they have already been populated
-        func_ClearExistingData();
-    } else {
-        i2b2.model[targetId] = {
-            sdx: sdxData,
-            buckets: 5,
-            dirty: true
-        }
+    // If dropped item is QI ("Results of..."), resolve to ZIP PRC
+    if (sdxData.sdxInfo && sdxData.sdxInfo.sdxType === 'QI' && isListDrop) {
+        resolveQItoZipPRC(sdxData).then(function(prcSdx) {
+            appendDatasetToSlot(prcSdx, slotId);
+        }).catch(function(err) {
+            if (err && err.message === 'NO_ZIP') {
+                showValidationMessage('This query does not include a ZIP Code breakdown. Run the query with "Demographic Distribution by Zip Code" as a result option.');
+            } else {
+                showValidationMessage('Could not load query results. Please try again.');
+            }
+            indicateBadDropList(slotId);
+        });
+        return;
     }
-    i2b2.model.dirtyData = true;
 
-
-
-
-    // get the query name from the query master
-    const reqVars = {qm_key_value: sdxData.origData["QM_id"]};
-    i2b2.ajax.CRC.getRequestXml_fromQueryMasterId(reqVars).then((result) => {
-        i2b2.model[targetId].queryDefinition = result;
-
-        // extract the data from the XML string
-        const xmlDoc = (new DOMParser()).parseFromString(result, "application/xml");
-        let xpathResult = xmlDoc.evaluate("//query_name", xmlDoc, null, XPathResult.STRING_TYPE, null);
-        i2b2.model[targetId].title = xpathResult.stringValue;
-
-        // save the retrieved info
-        i2b2.state.save();
-
-        // display our entry's data
-        i2b2.Plugin.renderDatasetInfo(targetId);
-
-        // DEBUG: WHAT IS THIS FOR? WHY WOULD I NEED THIS HERE?
-        // const reqVars = { "qr_key_value": sdxData.sdxInfo.sdxKeyValue };
-        // i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryResultInstanceId(reqVars).then((breakdownXML) => {
-        //     console.log(breakdownXML);
-        // });
-
-
-    }).catch((e) => {
-        indicateBadDrop(targetId);
-        delete i2b2.model[targetId];
-        i2b2.state.save();
-    });
-
-    // process if 2 datasets have been set
-    let setDatasets = document.querySelectorAll(".dataset.isSet");
-    if (setDatasets.length == 2) {
-        // unlock menu if both datasets have been set
-        document.getElementById("header").classList.remove("locked");
+    // Accept PRC directly (e.g., individual "Demographic Distribution by Zip Code" result)
+    if (sdxData.sdxInfo && sdxData.sdxInfo.sdxType === 'PRC' && isListDrop) {
+        appendDatasetToSlot(sdxData, slotId);
+        return;
     }
+    if (isListDrop) return;
 };
 
+function getDatasetKey(sdxData) {
+    if (!sdxData) return '';
+    if (sdxData.sdxInfo && sdxData.sdxInfo.sdxKeyValue) return String(sdxData.sdxInfo.sdxKeyValue).trim();
+    if (sdxData.origData && sdxData.origData.result_instance_id) return String(sdxData.origData.result_instance_id).trim();
+    if (sdxData.origData && sdxData.origData.PRC_id) return String(sdxData.origData.PRC_id).trim();
+    return '';
+}
 
-// ---------------------------------------------------------------------------------------
+function getNextDatasetId() {
+    if (!i2b2.model.datasetIdCounter) i2b2.model.datasetIdCounter = 0;
+    i2b2.model.datasetIdCounter += 1;
+    return 'ds-' + i2b2.model.datasetIdCounter;
+}
+
+function getDatasetBySlot(slotId) {
+    const list = (i2b2.model && Array.isArray(i2b2.model.datasets)) ? i2b2.model.datasets : [];
+    return list.find(function(entry) { return entry.slotId === slotId; }) || null;
+}
+
+function getFilledDatasetCount() {
+    const list = (i2b2.model && Array.isArray(i2b2.model.datasets)) ? i2b2.model.datasets : [];
+    return list.length;
+}
+
+function getDatasetPairForRender() {
+    const dataset1 = getDatasetBySlot(DATASET_SLOT_IDS[0]);
+    const dataset2 = getDatasetBySlot(DATASET_SLOT_IDS[1]);
+    return { dataset1: dataset1, dataset2: dataset2 };
+}
+
+function appendDatasetToSlot(sdxData, slotId) {
+    if (!slotId || !DATASET_SLOT_IDS.includes(slotId)) return;
+    if (!i2b2.model.datasets) i2b2.model.datasets = [];
+    const list = i2b2.model.datasets;
+    const existingInSlot = getDatasetBySlot(slotId);
+    if (existingInSlot) {
+        showValidationMessage((slotId === DATASET_SLOT_IDS[0] ? 'Query 1' : 'Query 2') + ' is already set. Remove it to replace.');
+        indicateBadDropList(slotId);
+        return;
+    }
+    const newKey = getDatasetKey(sdxData);
+    const dup = list.some(function(d) {
+        const key = getDatasetKey(d.sdx);
+        return (newKey && key && newKey === key);
+    });
+    if (dup) {
+        showValidationMessage('That query is already in the list.');
+        indicateBadDropList(slotId);
+        return;
+    }
+    const id = getNextDatasetId();
+    const entry = {
+        id,
+        slotId: slotId,
+        sdx: sdxData,
+        buckets: 5,
+        dirty: true
+    };
+    const listEl = document.getElementById('bivariate-' + slotId + '-list');
+    const boxEl = document.getElementById('bivariate-' + slotId + '-drop');
+    if (!listEl || !boxEl) return;
+    i2b2.model.datasets.push(entry);
+    i2b2.model.dirtyData = true;
+    const li = document.createElement('li');
+    li.id = id;
+    li.className = 'dataset isSet';
+    const chip = document.createElement('span');
+    chip.className = 'cohort-chip ' + (slotId === DATASET_SLOT_IDS[0] ? 'cohort-a' : 'cohort-b');
+    chip.setAttribute('aria-hidden', 'true');
+    li.appendChild(chip);
+    const cohortLabel = document.createElement('span');
+    cohortLabel.className = 'cohort-label';
+    cohortLabel.textContent = slotId === DATASET_SLOT_IDS[0] ? '1' : '2';
+    li.appendChild(cohortLabel);
+    const span = document.createElement('span');
+    span.className = 'slot-text';
+    span.textContent = 'Loading…';
+    li.appendChild(span);
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'bivariate-list-remove';
+    removeBtn.title = 'Remove from list';
+    removeBtn.setAttribute('aria-label', 'Remove query from list');
+    removeBtn.setAttribute('draggable', 'false');
+    removeBtn.textContent = '×';
+    removeBtn.addEventListener('click', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        removeDatasetFromList(id);
+    });
+    li.appendChild(removeBtn);
+    listEl.appendChild(li);
+    if (boxEl) boxEl.classList.remove('empty');
+    refreshDatasetCohortLabels();
+    updateFlowHint();
+
+    const qmKey = getQueryMasterId(sdxData.origData);
+    if (!qmKey) {
+        entry.title = (sdxData.sdxInfo && sdxData.sdxInfo.sdxDisplayName) || 'Query';
+        i2b2.Plugin.renderDatasetInfo(id);
+        i2b2.Plugin.updateLoadMapButton();
+        return;
+    }
+    const reqVars = { qm_key_value: qmKey };
+    i2b2.ajax.CRC.getRequestXml_fromQueryMasterId(reqVars).then((result) => {
+        entry.queryDefinition = result;
+        entry.title = getQueryNameFromRequestResult(result) || (sdxData.sdxInfo && sdxData.sdxInfo.sdxDisplayName) || 'Query';
+        i2b2.state.save();
+        i2b2.Plugin.renderDatasetInfo(id);
+        i2b2.Plugin.updateLoadMapButton();
+    }).catch((e) => {
+        // Keep the item so the drop still counts; use display name so user can still load map
+        entry.title = (sdxData.sdxInfo && sdxData.sdxInfo.sdxDisplayName) || 'Query (name unavailable)';
+        entry.queryDefinition = null;
+        i2b2.state.save();
+        i2b2.Plugin.renderDatasetInfo(id);
+        i2b2.Plugin.updateLoadMapButton();
+    });
+}
+
+function indicateBadDropList(slotId) {
+    const targets = slotId
+        ? [document.getElementById('bivariate-' + slotId + '-drop')]
+        : [document.getElementById('bivariate-dataset1-drop'), document.getElementById('bivariate-dataset2-drop')];
+    targets.forEach(function(box) {
+        if (!box) return;
+        box.style.backgroundColor = '#ffebee';
+        setTimeout(() => { box.style.backgroundColor = ''; }, 800);
+    });
+}
+
+function removeDatasetFromList(id) {
+    if (!i2b2.model.datasets || !Array.isArray(i2b2.model.datasets)) return;
+    const idx = i2b2.model.datasets.findIndex(function(d) { return d.id === id; });
+    if (idx === -1) return;
+    const removed = i2b2.model.datasets[idx];
+    i2b2.model.datasets.splice(idx, 1);
+    const li = document.getElementById(id);
+    if (li) li.remove();
+    const boxEl = removed && removed.slotId ? document.getElementById('bivariate-' + removed.slotId + '-drop') : null;
+    if (boxEl) boxEl.classList.add('empty');
+    refreshDatasetCohortLabels();
+    updateFlowHint();
+    i2b2.Plugin.updateLoadMapButton();
+    clearValidationMessage();
+}
+
+// ============================================================================
+// Dataset UI rendering and color matrix calculations
+// ============================================================================
 i2b2.Plugin.renderDatasetInfo = function(datasetId) {
     const targetDatasetEl = document.getElementById(datasetId);
     if (!targetDatasetEl) return;
 
-    targetDatasetEl.textContent = i2b2.model[datasetId].title;
+    let title = '';
+    if (i2b2.model[datasetId] && i2b2.model[datasetId].title !== undefined) {
+        title = i2b2.model[datasetId].title;
+    } else if (i2b2.model.datasets && Array.isArray(i2b2.model.datasets)) {
+        const entry = i2b2.model.datasets.find(function(d) { return d.id === datasetId; });
+        if (entry && entry.title !== undefined) title = entry.title;
+    }
+
+    const slotText = targetDatasetEl.querySelector('.slot-text');
+    if (slotText) {
+        slotText.textContent = title;
+        slotText.title = title;
+    } else {
+        targetDatasetEl.textContent = title;
+        targetDatasetEl.title = title;
+    }
 };
 
 
@@ -228,7 +900,9 @@ i2b2.Plugin.recalculateColors = function() {
 };
 
 
-// ---------------------------------------------------------------------------------------
+// ============================================================================
+// Geometry acquisition helpers (QueryStatus model/tunnel/direct fetch)
+// ============================================================================
 i2b2.Plugin.toBucket = function(datasetName, value) {
     if (typeof i2b2.model[datasetName] !== 'object') return NaN;
     // bucketing function for the map variable
@@ -239,234 +913,499 @@ i2b2.Plugin.toBucket = function(datasetName, value) {
 };
 
 
-// ---------------------------------------------------------------------------------------
+function getZipGeoJSONFromQueryStatusModel() {
+    const model = i2b2
+        && i2b2.CRC
+        && i2b2.CRC.QueryStatus
+        && i2b2.CRC.QueryStatus.model
+        ? i2b2.CRC.QueryStatus.model
+        : null;
+    if (!model) return null;
+    const geo = model.MultiGeoJSON || model.GeoJSON || null;
+    if (geo && geo.data && Array.isArray(geo.data.features)) return geo;
+    return null;
+}
+
+function normalizeBaseUrl(base) {
+    if (!base) return null;
+    return /\/$/.test(base) ? base : (base + '/');
+}
+
+function fetchZipGeoJSONManifest(baseUrl, mapFolder) {
+    const safeBase = normalizeBaseUrl(baseUrl);
+    if (!safeBase) return Promise.reject(new Error("Missing QueryStatus base URL"));
+    const loadListUrl = safeBase + mapFolder + "/GeoJSON/load_list.json";
+    const zoomListUrl = safeBase + mapFolder + "/zoom_list.json";
+    return fetch(loadListUrl).then(function(resp) {
+        if (!resp.ok) throw new Error("Failed to load " + mapFolder + " load list: " + resp.status);
+        return resp.json();
+    }).then(function(loadList) {
+        const files = Array.isArray(loadList) ? loadList : [];
+        if (files.length === 0) throw new Error("No GeoJSON files listed for " + mapFolder);
+        const fetches = files.map(function(fileName) {
+            return fetch(safeBase + mapFolder + "/GeoJSON/" + fileName).then(function(resp) {
+                if (!resp.ok) throw new Error("Failed to load " + mapFolder + " GeoJSON file: " + fileName + " (" + resp.status + ")");
+                return resp.json();
+            });
+        });
+        return Promise.all(fetches).then(function(parts) {
+            const merged = { type: "FeatureCollection", features: [] };
+            parts.forEach(function(part) {
+                if (part && Array.isArray(part.features)) {
+                    part.features.forEach(function(feature) {
+                        merged.features.push(feature);
+                    });
+                }
+            });
+            return fetch(zoomListUrl).then(function(resp) {
+                if (!resp.ok) return [];
+                return resp.json();
+            }).catch(function() {
+                return [];
+            }).then(function(zooms) {
+                return { data: merged, zooms: Array.isArray(zooms) ? zooms : [] };
+            });
+        });
+    });
+}
+
+function ensureZipGeoJSONByDirectLoad() {
+    if (i2b2.Plugin.GeoJSONPromise) return i2b2.Plugin.GeoJSONPromise;
+    const candidateBases = [];
+    const queryStatusBase = i2b2 && i2b2.CRC && i2b2.CRC.QueryStatus ? i2b2.CRC.QueryStatus.baseURL : null;
+    if (queryStatusBase) candidateBases.push(queryStatusBase);
+    candidateBases.push("js-i2b2/cells/CRC/QueryStatus/");
+    candidateBases.push("/js-i2b2/cells/CRC/QueryStatus/");
+    const mapFolders = ["MultiZipcodeMap", "ZipcodeMap"];
+
+    let chain = Promise.reject(new Error("No direct ZIP geometry source available"));
+    candidateBases.forEach(function(base) {
+        mapFolders.forEach(function(folder) {
+            chain = chain.catch(function() {
+                return fetchZipGeoJSONManifest(base, folder);
+            });
+        });
+    });
+
+    i2b2.Plugin.GeoJSONPromise = chain.then(function(geo) {
+        i2b2.Plugin.GeoJSONPromise = null;
+        if (geo && geo.data && Array.isArray(geo.data.features) && geo.data.features.length > 0) {
+            i2b2.Plugin.GeoJSON = geo;
+            return i2b2.Plugin.GeoJSON;
+        }
+        return null;
+    }).catch(function(err) {
+        i2b2.Plugin.GeoJSONPromise = null;
+        console.error("[Bivariate map] direct ZIP geometry load failed", err);
+        return null;
+    });
+    return i2b2.Plugin.GeoJSONPromise;
+}
+
+function readZipGeoJSONFromTunnel() {
+    if (typeof i2b2.authorizedTunnel === 'undefined' || !i2b2.authorizedTunnel.variable) {
+        return Promise.resolve(null);
+    }
+    const tunnelPaths = [
+        "i2b2.CRC.QueryStatus.model.MultiGeoJSON", // RC3+
+        "i2b2.CRC.QueryStatus.model.GeoJSON"       // legacy branches
+    ];
+    let chain = Promise.resolve(null);
+    tunnelPaths.forEach(function(path) {
+        chain = chain.then(function(found) {
+            if (found && found.data && Array.isArray(found.data.features)) return found;
+            let p;
+            try {
+                p = i2b2.authorizedTunnel.variable[path];
+            } catch (err) {
+                return null;
+            }
+            if (!p || typeof p.then !== 'function') return null;
+            return Promise.resolve(p).then(function(data) {
+                if (data && data.data && Array.isArray(data.data.features)) return data;
+                return null;
+            }).catch(function() {
+                return null;
+            });
+        });
+    });
+    return chain;
+}
+
+// Resolve with QueryStatus GeoJSON (ZIP + STATE) using model/tunnel/direct load fallback.
+function ensureGeoJSON() {
+    if (i2b2.Plugin.GeoJSON && i2b2.Plugin.GeoJSON.data && Array.isArray(i2b2.Plugin.GeoJSON.data.features)) {
+            return Promise.resolve(i2b2.Plugin.GeoJSON);
+    }
+    const qsGeo = getZipGeoJSONFromQueryStatusModel();
+    if (qsGeo) {
+        i2b2.Plugin.GeoJSON = qsGeo;
+        return Promise.resolve(i2b2.Plugin.GeoJSON);
+    }
+    return readZipGeoJSONFromTunnel().then(function(data) {
+        if (data && data.data && Array.isArray(data.data.features)) {
+            i2b2.Plugin.GeoJSON = data;
+            return i2b2.Plugin.GeoJSON;
+        }
+        return ensureZipGeoJSONByDirectLoad();
+    }).catch(function(err) {
+        return ensureZipGeoJSONByDirectLoad();
+    });
+}
+
+function ensureRenderSettings() {
+    if (!i2b2.model.settings) i2b2.model.settings = {};
+    if (!i2b2.model.settings.zipRegEx) i2b2.model.settings.zipRegEx = /^([0-9]{5}) - (.*)$/;
+    if (!i2b2.model.settings.zipAttribName) i2b2.model.settings.zipAttribName = "ZCTA5CE10";
+}
+
+function setRenderBusyState(isBusy, activeGeoView) {
+    i2b2.model.isMapLoading = !!isBusy;
+    setLoadMapButtonLoading(!!isBusy);
+    i2b2.Plugin.updateLoadMapButton();
+    if (isBusy) {
+        document.body.classList.add("working");
+        setMapLoading(true, activeGeoView === GEO_VIEWS.STATE ? "Loading nationwide state geometry..." : "Loading map data...");
+    } else {
+        document.body.classList.remove("working");
+        setMapLoading(false);
+    }
+}
+
+function buildResultRequestPlan(activeGeoView) {
+    const promiseList = [];
+    const requestTargets = [];
+    for (const targetId of i2b2.Plugin.dataIds) {
+        const dataset = i2b2.model[targetId];
+        if (!dataset) continue;
+        if (!dataset.dataXMLByView) dataset.dataXMLByView = {};
+        if (dataset.dataXMLByView[activeGeoView] !== undefined) {
+            dataset.dataXML = dataset.dataXMLByView[activeGeoView];
+            continue;
+        }
+        const resultInstanceId = getResultInstanceIdForView(dataset, activeGeoView);
+        if (!resultInstanceId) continue;
+        requestTargets.push(targetId);
+        promiseList.push(
+            i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryResultInstanceId({"qr_key_value": String(resultInstanceId).trim()})
+        );
+    }
+    return { promiseList: promiseList, requestTargets: requestTargets };
+}
+
+function cacheViewXmlResponses(requestTargets, resultsList, activeGeoView) {
+    let resultIndex = 0;
+    for (const targetId of requestTargets) {
+        const xml = resultsList[resultIndex++];
+        i2b2.model[targetId].dataXML = xml;
+        if (!i2b2.model[targetId].dataXMLByView) i2b2.model[targetId].dataXMLByView = {};
+        i2b2.model[targetId].dataXMLByView[activeGeoView] = xml;
+    }
+}
+
+function aggregateAreaCountsFromXml(innerXml, activeGeoView, zipRegEx) {
+    const params = getXPath(innerXml, 'descendant::data[@column]/text()/..');
+    const hasExplicitZip3 = params.some(function(p) {
+        const c = p.getAttribute("column");
+        return c && !/^\s*\[POPULATION\]/i.test(c) && rowHasExplicitZip3(c);
+    });
+    const hasExplicitState = params.some(function(p) {
+        const c = p.getAttribute("column");
+        return c && !/^\s*\[POPULATION\]/i.test(c) && rowHasExplicitState(c);
+    });
+    const aggregated = {};
+    const labels = {};
+    for (let i = 0; i < params.length; i++) {
+        const zipData = params[i].getAttribute("column");
+        if (zipData && /^\s*\[POPULATION\]/i.test(zipData)) continue;
+        if (activeGeoView === GEO_VIEWS.ZIP3 && hasExplicitZip3 && rowHasExplicitZip5(zipData)) continue;
+        if (activeGeoView === GEO_VIEWS.STATE && hasExplicitState && (rowHasExplicitZip5(zipData) || rowHasExplicitZip3(zipData))) continue;
+        const area = parseAreaFromColumn(zipData, activeGeoView, zipRegEx);
+        if (!area) continue;
+        const areaKey = area.key;
+        if (!labels[areaKey]) labels[areaKey] = { text: area.text, label: area.label };
+        const countRaw = params[i].firstChild ? params[i].firstChild.nodeValue : 0;
+        const count = parseCountValue(countRaw);
+        if (count == null) continue;
+        aggregated[areaKey] = (aggregated[areaKey] || 0) + count;
+    }
+    return { aggregated: aggregated, labels: labels };
+}
+
+function mergeAggregatedCountsIntoModel(targetId, aggregated, labels) {
+    let minCount = Infinity;
+    let maxCount = -Infinity;
+    Object.keys(aggregated).forEach(function(areaKey) {
+        if (typeof i2b2.model.mainData[areaKey] === 'undefined') {
+            const labelData = labels[areaKey] || { text: areaKey, label: areaKey };
+            i2b2.model.mainData[areaKey] = { text: labelData.text, label: labelData.label };
+        }
+        const count = aggregated[areaKey];
+        i2b2.model.mainData[areaKey][targetId] = count;
+        minCount = Math.min(count, minCount);
+        maxCount = Math.max(count, maxCount);
+    });
+    i2b2.model[targetId].min = minCount;
+    i2b2.model[targetId].max = maxCount;
+    if (minCount === maxCount) i2b2.model[targetId].buckets = 1;
+}
+
+function getViewOutline(activeGeoView) {
+    if (activeGeoView === GEO_VIEWS.STATE) return { weight: 0.9, opacity: 0.55, color: "#4f6170" };
+    if (activeGeoView === GEO_VIEWS.ZIP3) return { weight: 0.85, opacity: 0.82, color: "#2f3d4a" };
+    return { weight: 0.45, opacity: 0.34, color: "#667782" };
+}
+
+function buildLayerStyleHandlers(activeGeoView, viewOutline) {
+    const func_StylingNorm = function(feat) {
+        const confStyles = (i2b2.model.settings && i2b2.model.settings.styles) ? i2b2.model.settings.styles : {};
+        const ret = { fillColor: feat.properties.color };
+        for (let attrib in confStyles.norm) ret[attrib] = confStyles.norm[attrib];
+        ret.weight = viewOutline.weight;
+        ret.opacity = viewOutline.opacity;
+        ret.color = viewOutline.color;
+        if (activeGeoView !== GEO_VIEWS.ZIP5 && ret.fillOpacity == null) ret.fillOpacity = 0.78;
+        return ret;
+    };
+    const func_StylingHighlight = function(e) {
+        const confStyles = (i2b2.model.settings && i2b2.model.settings.styles) ? i2b2.model.settings.styles : {};
+        const layer = e.target;
+        const style = {};
+        for (let attrib in confStyles.hover) style[attrib] = confStyles.hover[attrib];
+        const hoverColor = String(style.color || '').toLowerCase();
+        if (!hoverColor || hoverColor === '#f00' || hoverColor === '#ff0000' || hoverColor === 'red') style.color = "#455a64";
+        const baseWeight = (typeof layer.options.weight === 'number') ? layer.options.weight : viewOutline.weight;
+        if (activeGeoView === GEO_VIEWS.ZIP3) {
+            style.weight = Math.max(1.6, baseWeight + 0.8, style.weight || 0);
+            style.opacity = 1;
+        } else {
+            style.weight = Math.max(3, baseWeight + 2.2, style.weight || 0);
+            style.opacity = 1;
+        }
+        style.color = style.color || "#455a64";
+        style.fillOpacity = (typeof layer.options.fillOpacity === 'number') ? layer.options.fillOpacity : undefined;
+        layer.setStyle(style);
+        layer.bringToFront();
+        if (typeof i2b2.Plugin.hoverbox !== 'undefined') i2b2.Plugin.hoverbox.update(layer.feature.properties);
+        const buckets = layer.feature.properties.buckets;
+        if (buckets) i2b2.Plugin.legend.hover(buckets[0], buckets[1]);
+    };
+    const func_StylingReset = function(e) {
+        i2b2.Plugin.geojson.resetStyle(e.target);
+        if (typeof i2b2.Plugin.hoverbox !== 'undefined') i2b2.Plugin.hoverbox.update();
+        i2b2.Plugin.legend.hover();
+    };
+    return {
+        style: func_StylingNorm,
+        onEachFeature: function(feature, layer) {
+            layer.on({ mouseover: func_StylingHighlight, mouseout: func_StylingReset });
+        }
+    };
+}
+
+function renderGeoLayer(workingGeoJSON, activeGeoView, styleOptions) {
+    if (i2b2.Plugin.map && typeof i2b2.Plugin.geojson !== 'undefined') {
+        i2b2.Plugin.map.removeLayer(i2b2.Plugin.geojson);
+        i2b2.Plugin.geojson = undefined;
+    }
+    if (workingGeoJSON.features.length > 0 && i2b2.Plugin.map) {
+        i2b2.Plugin.geojson = L.geoJson(workingGeoJSON, styleOptions).addTo(i2b2.Plugin.map);
+        applyGeoViewZoom(activeGeoView, i2b2.Plugin.geojson);
+        const pane = document.querySelector('.leaflet-overlay-pane');
+        if (pane) pane.classList.remove('hidden');
+    }
+    clearValidationMessage();
+}
+
+// ============================================================================
+// Main map render pipeline
+// ============================================================================
 i2b2.Plugin.renderMap = function() {
     if (!i2b2.model.dirtyData) return;
-
-    // show that we are processing
-    document.body.classList.add("working");
-
-    // get data for the zipcode maps if needed
-    let promiseList = [];
-    for (const targetId of i2b2.Plugin.dataIds) {
-        if (typeof i2b2.model[targetId].dataXML === 'undefined')
-            promiseList.push(
-                i2b2.ajax.CRC.getQueryResultInstanceList_fromQueryResultInstanceId({"qr_key_value": i2b2.model[targetId].sdx.sdxInfo.sdxKeyValue})
-            );
+    if (!i2b2.model.dataset1 || !i2b2.model.dataset2 || !i2b2.model.dataset1.sdx || !i2b2.model.dataset2.sdx) {
+        return;
     }
-    Promise.all(promiseList).then((resultsList) => {
-        i2b2.model.mainData = {};
-        // save the data's raw XML string
-        for (const targetId of i2b2.Plugin.dataIds) {
-            if (typeof i2b2.model[targetId].dataXML === 'undefined') {
-                // save the XML
-                i2b2.model[targetId].dataXML = resultsList.pop();
-            }
-        }
 
-        // rebuild the main data structure using our (re)loaded XML data
+    ensureRenderSettings();
+    const activeGeoView = getActiveGeoView();
+    setRenderBusyState(true, activeGeoView);
+    const requestPlan = buildResultRequestPlan(activeGeoView);
+    const promiseList = requestPlan.promiseList;
+    const requestTargets = requestPlan.requestTargets;
+
+    const finishWithError = (err) => {
+        setRenderBusyState(false, activeGeoView);
+        console.error("[Bivariate map] renderMap error", err);
+        showValidationMessage('Could not load map data. ' + ((err && err.message) ? err.message : 'Please try again.'));
+        i2b2.model.dirtyData = true;
+    };
+
+    let activeGeoData = null;
+    const preGeoPromise = ensureGeoJSON();
+    Promise.all([preGeoPromise, Promise.all(promiseList)]).then((preResults) => {
+        activeGeoData = preResults[0] || null;
+        if (activeGeoData) i2b2.Plugin.GeoJSON = activeGeoData;
+        const resultsList = preResults[1] || [];
+        i2b2.model.mainData = {};
+        const handleMissingZip = () => {
+            showValidationMessage('ZIP Code breakdown data could not be loaded. Please try again.');
+            indicateBadDropList();
+            func_ClearExistingData();
+        };
+        cacheViewXmlResponses(requestTargets, resultsList, activeGeoView);
+
         for (const targetId of i2b2.Plugin.dataIds) {
             let resultXML = getXPath(i2b2.model[targetId].dataXML, "//xml_value");
             if (resultXML.length === 0) {
-                // XML does not contain the breakdown info
-                indicateBadDrop(targetId);
                 delete i2b2.model[targetId].dataXML;
-                func_ClearExistingData();
+                handleMissingZip();
             } else {
-                resultXML = resultXML[0].firstChild.nodeValue;
-                let minCount = Infinity;
-                let maxCount = -Infinity;
-                // parse the data and put the results into the new data slot
-                let params = getXPath(resultXML, 'descendant::data[@column]/text()/..');
-                for (let i = 0; i < params.length; i++) {
-                    const zipData = params[i].getAttribute("column");
-                    let zipSearch = zipData.match(i2b2.model.settings.zipRegEx);
-                    if (zipSearch !== null && zipSearch.length > 0) {
-                        const zipCode = zipSearch[1].trim();
-                        if (typeof i2b2.model.mainData[zipCode] === 'undefined') {
-                            // initial creation the ZIP Code record
-                            i2b2.model.mainData[zipCode] = {
-                                text: zipSearch[0],
-                                label: zipSearch[2]
-                            };
-                        }
-                        // save the count value of the ZIP Code for the dataset
-                        let count = params[i].firstChild.nodeValue;
-                        i2b2.model.mainData[zipCode][targetId] = count;
-                        // update the dataset's min/max values
-                        minCount = Math.min(count, minCount);
-                        maxCount = Math.max(count, maxCount);
-                    }
+                let inner = resultXML[0].firstChild;
+                let innerXml = (inner && inner.nodeValue) ? inner.nodeValue : (resultXML[0].textContent || '');
+                if (!innerXml.trim()) {
+                    delete i2b2.model[targetId].dataXML;
+                    handleMissingZip();
+                    continue;
                 }
-                // save the data's min/max values
-                i2b2.model[targetId].min = minCount;
-                i2b2.model[targetId].max = maxCount;
-                // resize us to only 1 bucket if only one value is present
-                if (minCount === maxCount) i2b2.model[targetId].buckets = 1;
+                const zipRegEx = i2b2.model.settings.zipRegEx;
+                const aggregatedInfo = aggregateAreaCountsFromXml(innerXml, activeGeoView, zipRegEx);
+                mergeAggregatedCountsIntoModel(targetId, aggregatedInfo.aggregated, aggregatedInfo.labels);
             }
         }
 
-        // recalculate the map variables
         i2b2.Plugin.recalculateColors();
-
-        // redisplay the legend
         i2b2.Plugin.legend.update();
+        return ensureGeoJSON();
+    }).then((geo) => {
+        activeGeoData = geo || activeGeoData;
+        if (activeGeoData) i2b2.Plugin.GeoJSON = activeGeoData;
 
-        // copy the data onto the mapping info
-        let workingGeoJSON = {
-            type: "FeatureCollection",
-            features: []
-        }
-        i2b2.Plugin.GeoJSON.data.features.forEach((feature) => {
-            const dataIdX = i2b2.Plugin.dataIds[0];
-            const dataIdY = i2b2.Plugin.dataIds[1];
-            const currentZip = feature.properties[i2b2.model.settings.zipAttribName];
-            const mainDataLookup = i2b2.model.mainData[currentZip];
-            if (typeof mainDataLookup !== 'undefined') {
-                // only insert feature if we have some data for the zip code
-                let featureCopy = structuredClone(feature);
-                // copy over the data from the server
-                for (let attrib in mainDataLookup) {
-                    let attribValue = mainDataLookup[attrib];
-                    featureCopy.properties[attrib] = attribValue;
-                }
-                // lookup the color from the color matrix
-                const bucketX = i2b2.Plugin.toBucket(dataIdX, mainDataLookup[dataIdX]);
-                const bucketY = i2b2.Plugin.toBucket(dataIdY, mainDataLookup[dataIdY]);
-                if (isNaN(bucketX) || isNaN(bucketY)) {
-                    featureCopy.properties.color = "url(#error-pattern)";
-                } else {
-                    featureCopy.properties.color = i2b2.model.activeColors[bucketY][bucketX];
-                    featureCopy.properties.buckets = [bucketY, bucketX];
-                }
-                workingGeoJSON.features.push(featureCopy);
-            }
-        });
+        let workingGeoJSON = { type: "FeatureCollection", features: [] };
+        const sourceGeo = activeGeoData || i2b2.Plugin.GeoJSON;
+        const rawFeatures = sourceGeo && sourceGeo.data && sourceGeo.data.features;
+        const geoFeatures = Array.isArray(rawFeatures) ? rawFeatures : [];
+        const zipAttribName = i2b2.model.settings.zipAttribName || "ZCTA5CE10";
+        workingGeoJSON = buildWorkingGeoJSON(geoFeatures, i2b2.model.mainData, activeGeoView, zipAttribName);
+        const viewOutline = getViewOutline(activeGeoView);
+        const styleHandlers = buildLayerStyleHandlers(activeGeoView, viewOutline);
+        renderGeoLayer(workingGeoJSON, activeGeoView, styleHandlers);
 
-
-
-        // interaction/helper functions
-        // ---------------------------
-        const func_StylingNorm = (feat) => {
-            const confStyles = i2b2.model.settings.styles;
-            let ret = {
-                fillColor: feat.properties.color
-            };
-            // override styles if we have those options set
-            for (let attrib in confStyles?.norm) {
-                ret[attrib] = confStyles.norm[attrib];
-            }
-            // // remove highlighting in legendbox if it is active
-            // if (typeof this.legendbox !== 'undefined') $("*.selected", this.legendbox._div).removeClass("selected");
-            return ret;
-        };
-        // ---------------------------
-        const func_StylingHighlight = (e) => {
-            const confStyles = i2b2.model.settings.styles;
-            let layer = e.target;
-            let style = {};
-            // override styles if we have those options set
-            for (let attrib in confStyles?.hover) {
-                style[attrib] = confStyles?.hover[attrib];
-            }
-            layer.setStyle(style);
-            layer.bringToFront();
-            // handle hoverover box
-            if (typeof i2b2.Plugin.hoverbox !== 'undefined') {
-                i2b2.Plugin.hoverbox.update(layer.feature.properties);
-            }
-            // add selection to legend
-            const buckets = layer.feature.properties.buckets;
-            i2b2.Plugin.legend.hover(buckets[0],buckets[1]);
-        };
-        // ---------------------------
-        const func_StylingReset = (e) => {
-            // reset area styles
-            i2b2.Plugin.geojson.resetStyle(e.target);
-            // reset the hoverover box or hide it
-            if (typeof i2b2.Plugin.hoverbox !== 'undefined') {
-                i2b2.Plugin.hoverbox.update();
-            }
-            // remove selection in legend
-            i2b2.Plugin.legend.hover();
-        };
-        // ---------------------------
-        const func_onEachFeature = ((feature, layer) => {
-            layer.on({
-                mouseover: func_StylingHighlight,
-                mouseout: func_StylingReset
-            });
-        }).bind(this);
-        // ---------------------------
-
-
-
-        // render the geoJSON data
-        if (workingGeoJSON.features.length > 0) {
-            // delete existing features if they have already been populated
-            if (typeof i2b2.Plugin.geojson !== 'undefined') i2b2.Plugin.map.removeLayer(i2b2.Plugin.geojson);
-
-            // add the features to the map
-            i2b2.Plugin.geojson = L.geoJson(workingGeoJSON, {
-                style: func_StylingNorm,
-                onEachFeature: func_onEachFeature
-            }).addTo(i2b2.Plugin.map);
-
-            // display the map if hidden
-            document.querySelector('.leaflet-overlay-pane').classList.remove('hidden');
-        }
-
-        // show that we are no longer processing
-        document.body.classList.remove("working");
-    });
-
-    // reset dirty data flag
-    i2b2.model.dirtyData = false;
-    i2b2.state.save();
+        i2b2.model.dirtyData = false;
+        i2b2.state.save();
+        setRenderBusyState(false, activeGeoView);
+    }).catch(finishWithError);
 };
 
 
+
+// ============================================================================
+// Button state and plugin bootstrap wiring
+// ============================================================================
+i2b2.Plugin.updateLoadMapButton = function() {
+    const btn = document.getElementById('load-map-btn');
+    if (!btn) return;
+    const labelEl = btn.querySelector('.btn-label');
+    const datasetPair = getDatasetPairForRender();
+    const count = (datasetPair.dataset1 ? 1 : 0) + (datasetPair.dataset2 ? 1 : 0);
+    const isLoading = !!(i2b2.model && i2b2.model.isMapLoading);
+    if (isLoading) {
+        btn.disabled = true;
+        if (labelEl) labelEl.textContent = 'Loading…';
+        btn.title = 'Rendering map';
+    } else if (count === 0) {
+        btn.disabled = true;
+        if (labelEl) labelEl.textContent = 'Drop Query 1 and Query 2';
+        btn.title = 'Drop queries in both boxes to enable map rendering';
+    } else if (count === 1) {
+        btn.disabled = true;
+        if (labelEl) labelEl.textContent = 'Drop 1 more query';
+        btn.title = 'Drop a query in the empty box to enable map rendering';
+    } else {
+        btn.disabled = false;
+        if (labelEl) labelEl.textContent = 'Load map';
+        btn.title = 'Load map';
+    }
+    updateFlowHint();
+};
 
 // ---------------------------------------------------------------------------------------
 window.addEventListener("I2B2_READY", ()=> {
     // the i2b2 framework is loaded and ready (including population of i2b2.model namespace)
 
-    // configure i2b2 drop targets
-    for (const targEl of i2b2.Plugin.dataIds) {
-        // drop event handlers used by this plugin
-        i2b2.sdx.AttachType(targEl, "PRC");
-        i2b2.sdx.setHandlerCustom(targEl, "PRC", "DropHandler", i2b2.Plugin.itemDropped);
+    // per-slot drop targets: accept PRC (ZIP result) or QI/QM (resolve to ZIP PRC)
+    if (!i2b2.model.datasets) i2b2.model.datasets = [];
+    ["bivariate-dataset1-drop", "bivariate-dataset2-drop"].forEach(function(dropId) {
+        i2b2.sdx.AttachType(dropId, "QM");
+        i2b2.sdx.setHandlerCustom(dropId, "QM", "DropHandler", i2b2.Plugin.itemDropped);
+        i2b2.sdx.AttachType(dropId, "PRC");
+        i2b2.sdx.setHandlerCustom(dropId, "PRC", "DropHandler", i2b2.Plugin.itemDropped);
+        i2b2.sdx.AttachType(dropId, "QI");
+        i2b2.sdx.setHandlerCustom(dropId, "QI", "DropHandler", i2b2.Plugin.itemDropped);
+    });
+    // Sync handlers to the key hive_SDX reads (i2b2DragdropEvents) so drops work without modifying hive
+    (function syncDropEventsToHiveKey() {
+        if (typeof $ === "undefined") return;
+        ["bivariate-dataset1-drop", "bivariate-dataset2-drop"].forEach(function(dropId) {
+            var el = document.getElementById(dropId);
+            if (!el) return;
+            var from = $(el).data("i2b2-dragdrop-events");
+            if (from) $(el).data("i2b2DragdropEvents", from);
+        });
+    })();
+
+    // Load map button: build map from the two queries in the list
+    const loadMapBtn = document.getElementById('load-map-btn');
+    if (loadMapBtn) {
+        loadMapBtn.addEventListener('click', () => {
+            const pair = getDatasetPairForRender();
+            if (!pair.dataset1 || !pair.dataset2) return;
+            i2b2.model.isMapLoading = true;
+            setLoadMapButtonLoading(true);
+            i2b2.Plugin.updateLoadMapButton();
+            i2b2.model.dataset1 = pair.dataset1;
+            i2b2.model.dataset2 = pair.dataset2;
+            delete i2b2.model.dataset1.dataXML;
+            delete i2b2.model.dataset2.dataXML;
+            i2b2.model.dirtyData = true;
+            i2b2.Plugin.renderMap();
+            if (i2b2.Plugin.map) i2b2.Plugin.map.invalidateSize();
+        });
     }
 
-    // attach UI event handlers
-    document.getElementsByClassName("hide-show")[0].addEventListener('click', (e) => {
-        const header = document.getElementById("header");
-        if (header.classList.contains("locked")) return;
-        if (header.classList.contains("dropped")) {
-            // we are hiding the menu
-            header.classList.remove("dropped");
-            // see if we need to rerender the map
-            if (i2b2.model.dirtyData) {
+    // Geography switch (ZIP5 / ZIP3 / State): rerender current pair instantly
+    if (!i2b2.model.settings) i2b2.model.settings = {};
+    if (!i2b2.model.settings.geoView) i2b2.model.settings.geoView = GEO_VIEWS.ZIP5;
+    updateGeoViewButtons();
+    updateViewHelperText();
+    document.querySelectorAll('.geo-view-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const nextView = btn.dataset && btn.dataset.view ? btn.dataset.view : GEO_VIEWS.ZIP5;
+            if (nextView === i2b2.model.settings.geoView) return;
+            i2b2.model.settings.geoView = nextView;
+            updateGeoViewButtons();
+            updateViewHelperText();
+            const pair = getDatasetPairForRender();
+            if (pair.dataset1 && pair.dataset2) {
+                i2b2.model.dataset1 = pair.dataset1;
+                i2b2.model.dataset2 = pair.dataset2;
+                i2b2.model.dirtyData = true;
                 i2b2.Plugin.renderMap();
+                if (i2b2.Plugin.map) i2b2.Plugin.map.invalidateSize();
             }
-        } else {
-            header.classList.add("dropped");
-        }
+            if (i2b2.state) i2b2.state.save();
+        });
     });
+    i2b2.Plugin.updateLoadMapButton();
 
-    document.getElementsByClassName("instructions-icon")[0].addEventListener('click', (e) => {
-        alert("display instructions modal window");
-    });
-
-
-
+    // Do not warm tunnel on init; fetch geometry lazily during render to avoid
+    // "I am not done yet" console errors before users click Load map.
     // get the zoom settings from the main UI's QueryStatus model
     i2b2.model.dirtyData = true;
-    i2b2.authorizedTunnel.variable["i2b2.CRC.QueryStatus.model.GeoJSON"].then((data) => {
+    ensureGeoJSON().then((data) => {
+        if (!data) return;
         // save all the data
         i2b2.Plugin.GeoJSON = data;
 
-        // TODO: extract and process the zooms data
         if (data.zooms) {
             if (data.zooms.length > 0) {
                 const ulZoomList = document.getElementById("zoom-list");
@@ -565,18 +1504,37 @@ window.addEventListener("I2B2_READY", ()=> {
         const self = i2b2.Plugin.hoverbox;
         if (typeof self._div === 'undefined') return; // fixes race condition bug
         if (data) {
-            // lookup the data for the ZIP Code
-            const lookupData = {
-                "dataY-text": i2b2.model[i2b2.Plugin.dataIds[0]].title,
-                "dataX-text": i2b2.model[i2b2.Plugin.dataIds[1]].title,
-                "dataY-count": data[i2b2.Plugin.dataIds[0]],
-                "dataX-count": data[i2b2.Plugin.dataIds[1]]
+            const activeGeoView = getActiveGeoView();
+            const geoLabel = activeGeoView === GEO_VIEWS.STATE ? 'State' : (activeGeoView === GEO_VIEWS.ZIP3 ? 'ZIP3' : 'ZIP5');
+            const geoKey = data && data.geo_key ? String(data.geo_key).trim() : '';
+            const rawLabel = data && data.label ? String(data.label).trim() : '';
+            const rawText = data && data.text ? String(data.text).trim() : '';
+            let geoValue = '(unknown)';
+            if (activeGeoView === GEO_VIEWS.ZIP3 || activeGeoView === GEO_VIEWS.ZIP5) {
+                const labelText = rawLabel || rawText;
+                if (geoKey && labelText) {
+                    const startsWithKey = labelText.toUpperCase().startsWith(geoKey.toUpperCase() + ' -');
+                    geoValue = startsWithKey ? labelText : (geoKey + ' - ' + labelText);
+                } else if (geoKey) {
+                    geoValue = geoKey;
+                } else if (labelText) {
+                    geoValue = labelText;
+                }
+            } else {
+                geoValue = rawLabel || rawText || geoKey || '(unknown)';
             }
-            if (typeof lookupData['dataX-count'] === 'undefined') lookupData['dataX-count'] = "(unknown)";
-            if (typeof lookupData['dataY-count'] === 'undefined') lookupData['dataY-count'] = "(unknown)";
-            const allData = {...data, ...lookupData};
-
-            self._div.innerHTML = processTemplate(settings.hoverBox.template, allData);
+            const cohortA = 'Cohort 1';
+            const cohortB = 'Cohort 2';
+            const formatCount = function(v) {
+                const n = Number(v);
+                return Number.isFinite(n) ? n.toLocaleString() : '(unknown)';
+            };
+            const countA = formatCount(data[i2b2.Plugin.dataIds[0]]);
+            const countB = formatCount(data[i2b2.Plugin.dataIds[1]]);
+            self._div.innerHTML = '<h4>Patient Counts</h4>'
+                + '<div class="geo-line">' + geoLabel + ': <strong>' + geoValue + '</strong></div>'
+                + '<div>' + cohortA + '<span class="counts">' + countA + ' patients</span></div>'
+                + '<div>' + cohortB + '<span class="counts">' + countB + ' patients</span></div>';
             self._div.style.opacity = 1;
         } else {
             if (typeof settings.hoverBox.default !== 'undefined') {
@@ -611,6 +1569,8 @@ window.addEventListener("I2B2_READY", ()=> {
         const self = i2b2.Plugin.legend;
         for (let temp of self._svg.querySelectorAll('rect')) {
             temp.setAttribute("stroke", "#fff");
+            temp.setAttribute("stroke-width", "1");
+            temp.setAttribute("opacity", (typeof x === 'undefined') ? "1" : "0.6");
         }
         if (typeof x === 'undefined') return;
 
@@ -626,7 +1586,11 @@ window.addEventListener("I2B2_READY", ()=> {
             highlightColor = RGBvalues.toHTML(inverseColor.r, inverseColor.g, inverseColor.b);
         }
         let target = self._svg.querySelector(`rect[data-coordinate="${x}-${y}"]`);
-        if (target) target.setAttribute("stroke", highlightColor);
+        if (target) {
+            target.setAttribute("stroke", highlightColor);
+            target.setAttribute("stroke-width", "2.5");
+            target.setAttribute("opacity", "1");
+        }
     };
     legendbox.update = (data) => {
         const self = i2b2.Plugin.legend;
@@ -696,52 +1660,51 @@ window.addEventListener("I2B2_READY", ()=> {
             }
         }
 
-        // add "low" text
-        const textLow = document.createElementNS(svgNS, "text");
-        textLow.textContent = "Low";
-        textLow.setAttribute("x", 0);
-        textLow.setAttribute("y", 0);
-        textLow.setAttribute("fill", "#000");
-        textLow.setAttribute("font-size", "14");
-        textLow.setAttribute("transform", "rotate(-45)");
-        svg.appendChild(textLow);
-        // find our placement
-        const textLowSize = textLow.getBBox();
-        const textLowX = 5;
-        const textLowY = (rows * blockWithSpacing) + textLow.scrollHeight;
-        height = textLowY;
-        textLow.setAttribute("transform", `translate(7, ${textLowY}) rotate(-45)`);
+        const leftPad = 48;
+        const bottomPad = 42;
+        matrixGroup.setAttribute("transform", `translate(${leftPad}, 0)`);
 
-        // shift the location of the matrix to adjust for the new text
-        matrixGroup.setAttribute("transform", `translate(${textLow.scrollWidth}, 0)`);
+        const cohortY = 'Cohort 1';
+        const cohortX = 'Cohort 2';
 
+        // Y axis cohort label
+        const textCohortY = document.createElementNS(svgNS, "text");
+        textCohortY.textContent = cohortY;
+        textCohortY.setAttribute("fill", "#111");
+        textCohortY.setAttribute("font-size", "12");
+        textCohortY.setAttribute("font-weight", "700");
+        svg.appendChild(textCohortY);
+        textCohortY.setAttribute("transform", `translate(14, ${(rows * blockWithSpacing)}) rotate(-90)`);
 
-        // add "Cohort 1" text
-        const textCohort1 = document.createElementNS(svgNS, "text");
-        textCohort1.textContent = "Cohort 1";
-        textCohort1.setAttribute("x", 0);
-        textCohort1.setAttribute("y", 0);
-        textCohort1.setAttribute("fill", "#000");
-        textCohort1.setAttribute("font-size", "16");
-        textCohort1.setAttribute("font-weight", "bold");
-        svg.appendChild(textCohort1);
-        textCohort1.setAttribute("transform", `translate (16, ${height - 40}) rotate(-90)`);
+        // X axis cohort label
+        const textCohortX = document.createElementNS(svgNS, "text");
+        textCohortX.textContent = cohortX;
+        textCohortX.setAttribute("fill", "#111");
+        textCohortX.setAttribute("font-size", "12");
+        textCohortX.setAttribute("font-weight", "700");
+        textCohortX.setAttribute("x", leftPad + 6);
+        textCohortX.setAttribute("y", (rows * blockWithSpacing) + 30);
+        svg.appendChild(textCohortX);
 
-        // add "Cohort 2" text
-        const textCohort2 = document.createElementNS(svgNS, "text");
-        textCohort2.textContent = "Cohort 2";
-        textCohort2.setAttribute("x", 0);
-        textCohort2.setAttribute("y", 0);
-        textCohort2.setAttribute("fill", "#000");
-        textCohort2.setAttribute("font-size", "16");
-        textCohort2.setAttribute("font-weight", "bold");
-        svg.appendChild(textCohort2);
-        textCohort2.setAttribute("transform", `translate (40, ${height})`);
+        // Direction hints (Low -> High)
+        const xHint = document.createElementNS(svgNS, "text");
+        xHint.textContent = "Low -> High";
+        xHint.setAttribute("fill", "#4b5563");
+        xHint.setAttribute("font-size", "10");
+        xHint.setAttribute("x", leftPad + 6);
+        xHint.setAttribute("y", (rows * blockWithSpacing) + 14);
+        svg.appendChild(xHint);
 
+        const yHint = document.createElementNS(svgNS, "text");
+        yHint.textContent = "Low -> High";
+        yHint.setAttribute("fill", "#4b5563");
+        yHint.setAttribute("font-size", "10");
+        svg.appendChild(yHint);
+        yHint.setAttribute("transform", `translate(34, ${(rows * blockWithSpacing) - 4}) rotate(-90)`);
 
         // recalculate the SVG size and viewport
-        width = cols * blockWithSpacing - spacing + textLow.scrollWidth;
-        height = rows * blockWithSpacing - spacing + textLow.scrollHeight + 5;
+        width = leftPad + (cols * blockWithSpacing - spacing) + 8;
+        height = (rows * blockWithSpacing - spacing) + bottomPad;
         svg.setAttribute('width', width);
         svg.setAttribute('height', height);
         svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
@@ -796,56 +1759,6 @@ const processTemplate = (template, data) => {
         }
     }
     return ret;
-};
-
-
-// ---------------------------------------------------------------------------------------
-const indicateBadDrop = (datasetId) => {
-    const targetEl = document.getElementById(datasetId);
-    if (!targetEl) return;
-    targetEl.classList.remove("isSet");
-    targetEl.classList.remove("dragging");
-    targetEl.style.backgroundColor = "#F00";
-    setTimeout(() => {
-        targetEl.style.transition = "background-color 0.3s ease-in-out";
-        targetEl.style.backgroundColor = "";
-    }, 10);
-    setTimeout(() => {
-        targetEl.style.transition = "";
-    }, 750);
-    if (i2b2.Plugin.dataIds.indexOf(datasetId) === 0) {
-        targetEl.innerText = 'Drag and drop here a 1st ZIP Code breakdown';
-    } else {
-        targetEl.innerText = 'Drag and drop here a 2nd ZIP Code breakdown';
-    }
-
-
-
-    document.querySelector('#header').classList.add('locked');
-    const applyButton = document.querySelector('#header .hide-show')
-    applyButton.classList.add('hidden');
-    setTimeout(()=>{
-        applyButton.classList.remove('hidden');
-    },1000);
-
-
-};
-
-
-// ---------------------------------------------------------------------------------------
-const indicateGoodDrop = (datasetId) => {
-    const targetEl = document.getElementById(datasetId);
-    if (!targetEl) return;
-    targetEl.classList.add("isSet");
-    targetEl.classList.remove("dragging");
-    targetEl.style.backgroundColor = "#0F0";
-    setTimeout(() => {
-        targetEl.style.transition = "background-color 0.3s ease-in-out";
-        targetEl.style.backgroundColor = "";
-    }, 10);
-    setTimeout(() => {
-        targetEl.style.transition = "";
-    }, 750);
 };
 
 
@@ -958,7 +1871,7 @@ const RGBvalues = (function() {
         } else if (slc.toLowerCase() === 'r') {
             return _splitRGB(col);
         } else {
-            console.log('!Ooops! RGBvalues.color('+col+') : HEX, RGB, or RGBa strings only');
+            console.warn('RGBvalues.toColor(' + col + '): HEX, RGB, or RGBA strings only');
         }
     };
 
