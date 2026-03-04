@@ -49,7 +49,7 @@
    },
   "authorizedTunnel": {
     "variables": {
-      "i2b2.CRC.QueryStatus.model.GeoJSON": "RO"
+      "i2b2.CRC.QueryStatus.model.MultiGeoJSON": "RO"
     }
   }
 }
