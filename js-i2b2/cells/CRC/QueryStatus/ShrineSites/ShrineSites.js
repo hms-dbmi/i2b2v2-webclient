@@ -170,7 +170,8 @@ export default class ShrineSites {
                                     rec.class = "status-good";
                                     break;
                                 case "DELAYED AT SITE":
-                                    rec.class = "status-warn";
+                                    // rec.class = "status-warn"; Changed 2/2026 per Griffin
+                                    rec.class = "status-good";
                                     break;
                                 default:
                                     rec.class = "status-unknown";
