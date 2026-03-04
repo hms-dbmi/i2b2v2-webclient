@@ -101,7 +101,7 @@ export default class NihEnrollTable {
                         totalEthnicSex[colIdx] += parseInt(dataTree[race][sexKey][ethnicityKey].value);
                     }
                 }
-                renderArray[idx][9] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count);
+                renderArray[idx][9] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count, 0 , 0);
             }
 
             // update the grand total on the last row
@@ -109,7 +109,7 @@ export default class NihEnrollTable {
 
             // place the updated totals on last row
             for (let idx = 0; idx < 10; idx++) {
-                totalEthnicSex[idx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(totalEthnicSex[idx]);
+                totalEthnicSex[idx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(totalEthnicSex[idx], 0, 0);
             }
             renderArray[7] = totalEthnicSex;
 
