@@ -16,13 +16,14 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { InputAdornment} from "@mui/material";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import {deleteUser, deleteUserStatusConfirmed, saveUser, saveUserStatusConfirmed} from "actions";
+import {deleteUser, deleteUserStatusConfirmed} from "actions";
 
 import { SelectedUser } from "models";
 import {getAllAuthConfigs} from "../../reducers/allAuthenticationConfigsSlice";
 import "./UserInfo.scss";
 import {AUTHENTICATION_METHODS} from "../../models";
 import {Confirmation} from "../index";
+import {saveUser, saveUserStatusConfirmed} from "../../reducers/editUserInfoSlice";
 
 export const UserInfo = ({selectedUser, cancelEdit, updateUser, updatedUser, isNewUser}) => {
     const allUsers = useSelector((state) => state.allUsers );

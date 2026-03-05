@@ -1,14 +1,15 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, { useState, useEffect } from "react";
-import {
-    saveUserParam, saveUserParamStatusConfirmed,
-    getAllUserParamsStatusConfirmed,
-} from "../../actions";
 import {EditParameters} from "../EditParameters";
 
 import "./EditUserParameters.scss";
 import {DataType} from "../../models";
 import {getAllGlobalParams} from "../../reducers/allHivesSlice";
+import {
+    getAllUserParamsStatusConfirmed,
+    saveUserParam,
+    saveUserParamStatusConfirmed
+} from "../../reducers/editUserInfoSlice";
 
 export const EditUserParameters = ({selectedUser,
                                    updatedParams,

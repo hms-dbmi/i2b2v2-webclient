@@ -1,11 +1,6 @@
 import {call, takeLatest, put, all} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
-import {
-    SAVE_USER_ACTION,
-    saveUserFailed,
-    saveUserSucceeded,
-    getAllUserParams
-} from "actions";
+
 import {
     getAllUsers,
 } from "../reducers/allUsersSlice";
@@ -13,6 +8,8 @@ import {
 import {AUTHENTICATION_METHODS} from "../models";
 import {saveParamRequest} from "./saveUserParamSaga";
 import {deleteParamRequest} from "./deleteUserParamSaga";
+import {SAVE_USER} from "../actions";
+import {getAllUserParams, saveUserFailed, saveUserSucceeded} from "../reducers/editUserInfoSlice";
 
 
 //a function that returns a promise
@@ -222,5 +219,5 @@ export function* doSaveUser(action) {
 }
 
 export function* saveUserSaga() {
-    yield takeLatest(SAVE_USER_ACTION.SAVE_USER, doSaveUser);
+    yield takeLatest(SAVE_USER, doSaveUser);
 }

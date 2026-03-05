@@ -5,11 +5,11 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
-import {EditUserDetails} from "components";
+import {Confirmation, EditUserDetails} from "components";
 import { User} from "../../models";
 import { DataGrid, GridActionsCellItem, gridClasses, useGridApiRef} from '@mui/x-data-grid';
 import { Loader } from "components";
-import {getAllUsers} from "../../reducers/allUsersSlice.js";
+import {getAllUsers, terminateUserSession} from "../../reducers/allUsersSlice.js";
 import "./AllUsersTable.scss";
 import {Tooltip} from "@mui/material";
 import {getUserProjectRoles} from "../../reducers/userProjectRolesSlice";
@@ -28,6 +28,9 @@ export const AllUsersTable = ({paginationModel,
     const[isEditingUser, setIsEditingUser] = useState(false);
     const[isCreatingUser, setIsCreatingUser] = useState(false);
     const[showUserProjectRoles, setShowUserProjectRoles] = useState(false);
+    const [showTerminateUserSessionConfirm, setShowTerminateUserSessionConfirm] = useState(false);
+    const [terminateUserSessionConfirmMsg, setTerminateUserSessionConfirmMsg] = useState("");
+    const [terminateUser, setTerminateUser] = useState(null);
 
     const apiRef = useGridApiRef();
 
@@ -118,6 +121,7 @@ export const AllUsersTable = ({paginationModel,
                             icon={<LoginOutlinedIcon sx={{ fontSize: 20 }} />}
                             label="Terminate user session"
                             className="textPrimary"
+                            onClick={confirmTerminateUserSession(id)}
                             color="inherit"
                         />
                     </Tooltip>);
@@ -192,6 +196,22 @@ export const AllUsersTable = ({paginationModel,
         }
     };
 
+    const handleTerminateUserSession = () => {
+        setTerminateUser(null);
+        setTerminateUserSessionConfirmMsg("");
+        setShowTerminateUserSessionConfirm(false);
+        dispatch(terminateUserSession({user: terminateUser}));
+    };
+
+    const confirmTerminateUserSession = (username) => () => {
+        let user = allUsers.users.filter((user) => user.username === username);
+        if(user.length === 1) {
+            setTerminateUser(user[0]);
+            setTerminateUserSessionConfirmMsg("Are you sure you want to terminate sessions for user " + user[0].username + "?");
+            setShowTerminateUserSessionConfirm(true);
+        }
+    };
+
     const handleAddNewUser = () => {
         setSelectedUser(User());
         setIsCreatingUser(true);
@@ -200,7 +220,6 @@ export const AllUsersTable = ({paginationModel,
 
     useEffect(() => {
         if(isI2b2LibLoaded && !isEditingUser) {
-            dispatch(getAllProjects({}));
             dispatch(getAllUsers({}));
         }
     }, [isI2b2LibLoaded, isEditingUser]);
@@ -229,7 +248,13 @@ export const AllUsersTable = ({paginationModel,
             }
             {!isEditingUser && !isCreatingUser && allUsers.users.length > 0 && displayUsersTable()}
             { (isEditingUser || isCreatingUser) && <EditUserDetails user={selectedUser} setIsEditingUser={setIsEditingUser}  setIsCreatingUser={setIsCreatingUser} isCreatingUser={isCreatingUser}/>}
-            {showUserProjectRoles && <UserProjectRolesView onClose={ () => setShowUserProjectRoles(false)}/>}
+            {showUserProjectRoles && <UserProjectRolesView onClose={ () => setShowUserProjectRoles(false)} />}
+
+            { showTerminateUserSessionConfirm && <Confirmation
+                text={terminateUserSessionConfirmMsg}
+                onOk={handleTerminateUserSession}
+                onCancel={() => setShowTerminateUserSessionConfirm(false)}
+            />}
         </div>
     );
 };

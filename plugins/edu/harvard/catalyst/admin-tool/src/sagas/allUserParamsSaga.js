@@ -1,14 +1,11 @@
 import { call, takeLatest, put} from "redux-saga/effects";
-import {
-    GET_ALL_USER_PARAMS_ACTION,
-    getAllUserParamsFailed,
-    getAllUserParamsSucceeded,
-} from "actions";
 import {decodeHTML} from "../utilities";
 
 import { DataType } from "models";
 import {parseXml} from "../utilities/parseXml";
 import {ParamStatus} from "../models";
+import {getAllUserParamsFailed, getAllUserParamsSucceeded} from "../reducers/editUserInfoSlice";
+import {GET_ALL_USER_PARAMS} from "../actions";
 
 //a function that returns a promise
 const getAllUserParamsRequest = (username) => {
@@ -78,5 +75,5 @@ export function* doGetAllUserParameters(action) {
 }
 
 export function* allUserParamsSaga() {
-    yield takeLatest(GET_ALL_USER_PARAMS_ACTION.GET_ALL_USER_PARAMS, doGetAllUserParameters);
+    yield takeLatest(GET_ALL_USER_PARAMS, doGetAllUserParameters);
 }

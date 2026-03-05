@@ -1,13 +1,11 @@
 import { call, takeLatest, put} from "redux-saga/effects";
-import {
-    GET_ALL_PROJECT_USER_PARAMS_ACTION,
-    getAllProjectUserParamsFailed,
-    getAllProjectUserParamsSucceeded,
-} from "actions";
+
 
 import {DataType, ParamStatus} from "models";
 import {decodeHTML} from "../utilities";
 import {parseXml} from "../utilities/parseXml";
+import {getAllProjectUserParamsFailed, getAllProjectUserParamsSucceeded} from "../reducers/editUserInfoSlice";
+import {GET_ALL_PROJECT_USER_PARAMS} from "../actions";
 
 const getAllProjectUserParamsRequest = (projectId, user) => {
     let data = {
@@ -74,5 +72,5 @@ export function* doGetAllProjectUserParameters(action) {
 }
 
 export function* allProjectUserParamsSaga() {
-    yield takeLatest(GET_ALL_PROJECT_USER_PARAMS_ACTION.GET_ALL_PROJECT_USER_PARAMS, doGetAllProjectUserParameters);
+    yield takeLatest(GET_ALL_PROJECT_USER_PARAMS, doGetAllProjectUserParameters);
 }
