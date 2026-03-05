@@ -34,8 +34,13 @@ export const allUsersSlice = createSlice({
         getAllUsersFailed: state => {
             state.isFetching = false;
         },
+        terminateUserSession: (state, {payload:  {user} }) => {
+            //Extract each user data into User model and return an array of Users
+            const foundUser = state.users.find(curUser => curUser.username === user.username);
 
-        terminateUserSession: state => {
+            if (foundUser) {
+                foundUser.session.isTerminatingSession = true;
+            }
         },
         terminateUserSessionSucceeded: (state, {payload:  {user} }) => {
             //Extract each user data into User model and return an array of Users
@@ -43,9 +48,16 @@ export const allUsersSlice = createSlice({
 
             if (foundUser) {
                 foundUser.session.isActive = false;
+                foundUser.session.isTerminatingSession = false;
             }
         },
-        terminateUserSessionFailed: state => {
+        terminateUserSessionFailed: (state, {payload:  {user} }) => {
+            //Extract each user data into User model and return an array of Users
+            const foundUser = state.users.find(curUser => curUser.username === user.username);
+
+            if (foundUser) {
+                foundUser.session.isTerminatingSession = false;
+            }
         },
     }
 })
