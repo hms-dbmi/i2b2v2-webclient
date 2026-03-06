@@ -1,10 +1,7 @@
-import { all, call, takeLatest, put} from "redux-saga/effects";
+import { call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
-import {
-    DELETE_USER_PARAM_ACTION,
-    deleteUserParamFailed,
-    deleteUserParamSucceeded,
-} from "actions";
+import {deleteUserParamFailed, deleteUserParamSucceeded} from "../reducers/editUserInfoSlice";
+import {DELETE_USER_PARAM} from "../actions";
 
 export const deleteParamRequest = (param) => {
 
@@ -40,5 +37,5 @@ export function* doDeleteUserParam(action) {
 }
 
 export function* deleteUserParamSaga() {
-    yield takeLatest(DELETE_USER_PARAM_ACTION.DELETE_USER_PARAM, doDeleteUserParam);
+    yield takeLatest(DELETE_USER_PARAM, doDeleteUserParam);
 }

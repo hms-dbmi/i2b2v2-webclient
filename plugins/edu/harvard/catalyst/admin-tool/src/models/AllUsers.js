@@ -4,9 +4,11 @@ import {User} from "./User";
 export const AllUsers = ({
     users = [],
     isFetching= false,
+    isTerminatingSession = false,
  } = {}) => ({
     users,
-    isFetching
+    isFetching,
+    isTerminatingSession
 });
 
 AllUsers.propTypes = {
