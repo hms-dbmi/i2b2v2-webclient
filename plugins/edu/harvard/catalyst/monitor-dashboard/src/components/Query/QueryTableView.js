@@ -67,7 +67,8 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
             disableReorder: true,
             minWidth: 110,
             maxWidth: 110,
-            valueGetter: (value) => {
+            type: 'dateTime',
+            valueFormatter: (value) => {
                 if (!value) {
                     return value;
                 }
@@ -84,7 +85,8 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
             headerClassName: "header",
             sortable: true,
             disableReorder: true,
-            valueGetter: (value) => {
+            type: 'number',
+            valueFormatter: (value) => {
                 return value ? value + " secs" : "";
             }
         },
