@@ -221,7 +221,6 @@ export const AllUsersTable = ({paginationModel,
         setUnlockOutUserName(null);
         setUnlockOutUserConfirmMsg("");
         setShowUnlockOutUserConfirm(false);
-        console.log("dispatch unlock out user");
         dispatch(unlockOutUser({user: unlockOutUserName}));
     };
 
