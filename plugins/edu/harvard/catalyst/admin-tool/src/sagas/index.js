@@ -26,3 +26,4 @@ export { deleteProjectParamSaga } from "./deleteProjectParamSaga";
 export { getAllAuthConfigsSaga } from "./getAllAuthConfigsSaga";
 export { getUserProjectRolesSaga } from "./getUserProjectRolesSaga";
 export { terminateUserSessionSaga } from "./terminateUserSessionSaga";
+export { unlockOutUserSaga } from "./unlockOutUserSaga";
