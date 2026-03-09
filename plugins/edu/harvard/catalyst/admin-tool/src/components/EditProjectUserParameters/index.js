@@ -1,12 +1,12 @@
 import { useDispatch } from "react-redux";
 import React, { useState, useEffect } from "react";
 import {
-    getAllProjectUserParamsStatusConfirmed,
     saveProjectUserParam,
     saveProjectUserParamStatusConfirmed,
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 import "./EditProjectUserParameters.scss";
+import {getAllProjectUserParamsStatusConfirmed} from "../../reducers/editUserInfoSlice";
 
 export const EditProjectUserParameters = ({selectedProject,
                                           projectUser,

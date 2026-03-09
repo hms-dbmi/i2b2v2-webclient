@@ -1,12 +1,12 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
-    getAllProjectUserParams,
     SAVE_PROJECT_USER_PARAM_ACTION,
     saveProjectUserParamFailed,
     saveProjectUserParamSucceeded,
 } from "actions";
 import {encodeHTML} from "../utilities";
+import {getAllProjectUserParams} from "../reducers/editUserInfoSlice";
 
 const saveParamRequest = (project, user, param) => {
 

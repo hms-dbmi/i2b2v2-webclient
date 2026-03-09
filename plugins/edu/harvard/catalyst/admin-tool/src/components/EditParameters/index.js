@@ -23,14 +23,10 @@ import {
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import PreviewIcon from '@mui/icons-material/Preview';
-import InputAdornment from '@mui/material/InputAdornment';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import Box from '@mui/material/Box';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import ExpandSharpIcon from '@mui/icons-material/ExpandSharp';
 import "./EditParameters.scss";
 
 
@@ -385,10 +381,13 @@ export const EditParameters = ({
         if(newRow.name.length > 0 && newRow.value.length > 0){
             const updatedRow = {...newRow, isNew: false};
 
-            const predefParam = predefinedParams.find(p => {
-                const name = p.label ? p.label: p;
-                return name === newRow.name
-            });
+            let predefParam = null;
+            if(predefinedParams){
+                predefParam = predefinedParams.find(p => {
+                    const name = p.label ? p.label : p;
+                    return name === newRow.name
+                });
+            }
 
             if(predefParam && predefParam.dataType){
                 const dataType = DataType[predefParam.dataType];

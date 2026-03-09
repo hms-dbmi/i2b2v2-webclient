@@ -3,8 +3,9 @@ import XMLParser from 'react-xml-parser';
 import {
     DELETE_PROJECT_USER_PARAM_ACTION,
     deleteProjectUserParamFailed,
-    deleteProjectUserParamSucceeded, getAllProjectUserParams,
+    deleteProjectUserParamSucceeded,
 } from "actions";
+import {getAllProjectUserParams} from "../reducers/editUserInfoSlice";
 
 const deleteParamRequest = (param) => {
 

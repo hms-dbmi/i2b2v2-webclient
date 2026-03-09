@@ -6,11 +6,8 @@ import { User } from "models";
 import { UserInfo, EditUserParameters } from "components";
 
 import "./EditUserDetails.scss";
-import {
-    clearSelectedUser,
-    getAllUserParams,
-} from "actions";
 import {Tab, Tabs} from "@mui/material";
+import {clearSelectedUser, getAllUserParams} from "../../reducers/editUserInfoSlice";
 
 
 export const EditUserDetails = ({user, setIsEditingUser, setIsCreatingUser, isCreatingUser}) => {

@@ -1,12 +1,8 @@
 import { all, call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
-import {
-    getAllUserParams,
-    SAVE_USER_PARAM_ACTION,
-    saveUserParamFailed,
-    saveUserParamSucceeded,
-} from "actions";
 import {encodeHTML} from "../utilities";
+import {SAVE_USER_PARAM} from "../actions";
+import {getAllUserParams, saveUserParamFailed, saveUserParamSucceeded} from "../reducers/editUserInfoSlice";
 
 export const saveParamRequest = (username, param) => {
 
@@ -54,5 +50,5 @@ export function* doSaveUserParam(action) {
 }
 
 export function* saveUserParamSaga() {
-    yield takeLatest(SAVE_USER_PARAM_ACTION.SAVE_USER_PARAM, doSaveUserParam);
+    yield takeLatest(SAVE_USER_PARAM, doSaveUserParam);
 }

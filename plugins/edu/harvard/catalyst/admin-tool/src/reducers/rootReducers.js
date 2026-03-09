@@ -3,16 +3,16 @@ import {allProjectsReducer} from "./allProjectsReducer";
 import {deleteProjectReducer} from "./deleteProjectReducer";
 import {i2b2LibLoadedReducer} from "./i2b2LibLoadedReducer";
 import {deleteUserReducer} from "./deleteUserReducer";
-import {editUserReducer} from "./editUserReducer";
 import allAuthenticationConfigsReducer from "./allAuthenticationConfigsSlice";
 import allHivesReducer from "./allHivesSlice";
 import allUsersReducer from "./allUsersSlice";
 import userProjectRolesReducer from "./userProjectRolesSlice";
+import editUserInfoReducer from "./editUserInfoSlice";
 
 const rootReducers = {
     allHives: allHivesReducer,
     selectedProject: editProjectReducer,
-    selectedUser: editUserReducer,
+    selectedUser: editUserInfoReducer,
     allProjects : allProjectsReducer,
     allUsers: allUsersReducer,
     deletedProject: deleteProjectReducer,
