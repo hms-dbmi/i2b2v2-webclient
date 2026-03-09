@@ -1,4 +1,4 @@
-import { all, call, takeLatest, put} from "redux-saga/effects";
+import { call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
     UNLOCK_OUT_USER,
