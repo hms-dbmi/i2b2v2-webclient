@@ -9,7 +9,7 @@ import {Confirmation, EditUserDetails} from "components";
 import { User} from "../../models";
 import { DataGrid, GridActionsCellItem, gridClasses, useGridApiRef} from '@mui/x-data-grid';
 import { Loader } from "components";
-import {getAllUsers, terminateUserSession} from "../../reducers/allUsersSlice.js";
+import {getAllUsers, terminateUserSession, unlockOutUser} from "../../reducers/allUsersSlice.js";
 import "./AllUsersTable.scss";
 import {Tooltip} from "@mui/material";
 import {getUserProjectRoles} from "../../reducers/userProjectRolesSlice";
@@ -31,6 +31,10 @@ export const AllUsersTable = ({paginationModel,
     const [showTerminateUserSessionConfirm, setShowTerminateUserSessionConfirm] = useState(false);
     const [terminateUserSessionConfirmMsg, setTerminateUserSessionConfirmMsg] = useState("");
     const [terminateUser, setTerminateUser] = useState(null);
+
+    const [showUnlockOutUserConfirm, setShowUnlockOutUserConfirm] = useState(false);
+    const [unlockOutUserConfirmMsg, setUnlockOutUserConfirmMsg] = useState("");
+    const [unlockOutUserName, setUnlockOutUserName] = useState(null);
 
     const apiRef = useGridApiRef();
 
@@ -134,6 +138,7 @@ export const AllUsersTable = ({paginationModel,
                                 icon={<LockOpenOutlinedIcon sx={{ fontSize: 20 }} />}
                                 label="Unlock user"
                                 className="textPrimary"
+                                onClick={confirmUnlockOutUser(id)}
                                 color="inherit"
                             />
                         </Tooltip>);
@@ -212,6 +217,23 @@ export const AllUsersTable = ({paginationModel,
         }
     };
 
+    const handleUnlockOutUser = () => {
+        setUnlockOutUserName(null);
+        setUnlockOutUserConfirmMsg("");
+        setShowUnlockOutUserConfirm(false);
+        console.log("dispatch unlock out user");
+        dispatch(unlockOutUser({user: unlockOutUserName}));
+    };
+
+    const confirmUnlockOutUser = (username) => () => {
+        let user = allUsers.users.filter((user) => user.username === username);
+        if(user.length === 1) {
+            setUnlockOutUserName(user[0]);
+            setUnlockOutUserConfirmMsg("Are you sure you want to unlock user " + user[0].username + " from all projects?");
+            setShowUnlockOutUserConfirm(true);
+        }
+    };
+
     const handleAddNewUser = () => {
         setSelectedUser(User());
         setIsCreatingUser(true);
@@ -254,6 +276,12 @@ export const AllUsersTable = ({paginationModel,
                 text={terminateUserSessionConfirmMsg}
                 onOk={handleTerminateUserSession}
                 onCancel={() => setShowTerminateUserSessionConfirm(false)}
+            />}
+
+            { showUnlockOutUserConfirm && <Confirmation
+                text={unlockOutUserConfirmMsg}
+                onOk={handleUnlockOutUser}
+                onCancel={() => setShowUnlockOutUserConfirm(false)}
             />}
         </div>
     );

@@ -11,6 +11,8 @@ export const User = ({
     authMethod= AUTHENTICATION_METHODS.I2B2.value,
     password= "",
     passwordVerify= "",
+    isTerminatingSession = false,
+    isUnlockingOutUser = false,
 } = {}) => ({
     username,
     fullname,

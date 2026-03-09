@@ -212,6 +212,8 @@ export const DELETE_GLOBAL_PARAM = `${ALL_HIVES}/deleteGlobalParam`;
 export const ALL_USERS = "allUsersInfo";
 export const GET_ALL_USERS = `${ALL_USERS}/getAllUsers`;
 export const TERMINATE_USER_SESSION = `${ALL_USERS}/terminateUserSession`;
+export const UNLOCK_OUT_USER = `${ALL_USERS}/unlockOutUser`;
+
 //================================================================================================== //
 
 export const USER_PROJECT_ROLES = "userProjectRolesInfo";

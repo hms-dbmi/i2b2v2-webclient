@@ -59,6 +59,31 @@ export const allUsersSlice = createSlice({
                 foundUser.session.isTerminatingSession = false;
             }
         },
+        unlockOutUser: (state, {payload:  {user} }) => {
+            //Extract each user data into User model and return an array of Users
+            const foundUser = state.users.find(curUser => curUser.username === user.username);
+
+            if (foundUser) {
+                foundUser.session.isUnlockingOutUser = true;
+            }
+        },
+        unlockOutUserSucceeded: (state, {payload:  {user} }) => {
+            //Extract each user data into User model and return an array of Users
+            const foundUser = state.users.find(curUser => curUser.username === user.username);
+
+            if (foundUser) {
+                foundUser.session.isLockedOut = false;
+                foundUser.session.isUnlockingOutUser = false;
+            }
+        },
+        unlockOutUserFailed:(state, {payload:  {user} }) => {
+            //Extract each user data into User model and return an array of Users
+            const foundUser = state.users.find(curUser => curUser.username === user.username);
+
+            if (foundUser) {
+                foundUser.session.isUnlockingOutUser = false;
+            }
+        },
     }
 })
 
@@ -68,7 +93,10 @@ export const {
     getAllUsersFailed,
     terminateUserSession,
     terminateUserSessionSucceeded,
-    terminateUserSessionFailed
+    terminateUserSessionFailed,
+    unlockOutUser,
+    unlockOutUserSucceeded,
+    unlockOutUserFailed
 } = allUsersSlice.actions
 
 
