@@ -192,7 +192,7 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
                 <div className={"mainField customRoles"}>
                     <TextField
                         className="inputField customRoles"
-                        label="Delete Custom Roles"
+                        label="Delete Custom Role"
                         value={customRoleToDelete}
                         onChange={(event) => handleUpdateCustomRoleToDelete( event.target.value)}
                         variant="standard"
