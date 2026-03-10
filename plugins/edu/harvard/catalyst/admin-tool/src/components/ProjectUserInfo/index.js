@@ -189,7 +189,7 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
                 </div>
 
 
-                <div className={"mainField"}>
+                <div className={"mainField customRoles"}>
                     <TextField
                         className="inputField customRoles"
                         label="Delete Custom Roles"
