@@ -169,7 +169,8 @@ export const editProjectReducer = (state = defaultState.selectedProject, action)
                     username: user.username,
                     adminPath: user.adminPath,
                     dataPath: user.dataPath,
-                    editorPath: user.editorPath
+                    editorPath: user.editorPath,
+                    customRoles: user.customRoles
                 });
             });
 

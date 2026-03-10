@@ -23,12 +23,20 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
     const [showSaveStatus, setShowSaveStatus] = useState(false);
     const [saveStatusMsg, setSaveStatusMsg] = useState("");
     const [saveStatusSeverity, setSaveStatusSeverity] = useState("info");
+    const [customRoleToDelete, setCustomRoleToDelete] = useState("");
+    const [customRole, setCustomRole] = useState("");
+
     const dispatch = useDispatch();
 
 
     const saveProjectUserInfo = () => {
         setShowSaveBackdrop(true);
-        dispatch(saveProjectUser({user: updatedUser, selectedProject, isEditor: selectedUser.user.editorPath.length > 0}));
+        dispatch(saveProjectUser({user: updatedUser,
+            selectedProject,
+            isEditor: selectedUser.user.editorPath.length > 0,
+            customRole,
+            customRoleToDelete
+        }));
     };
 
     const handleUpdate = (field, value) => {
@@ -52,6 +60,21 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
         }else{
             setIsDirty(false);
         }
+    }
+
+    const handleUpdateCustomRoleToDelete = (value) => {
+        if(value.length > 0){
+            setIsDirty(true);
+        }
+        setCustomRoleToDelete(value);
+    }
+
+    const handleUpdateCustomRole = (value) => {
+        if(value.length > 0){
+            setIsDirty(true);
+        }
+
+        setCustomRole(value);
     }
 
     const handleResetUserDetails = () => {
@@ -151,6 +174,30 @@ export const ProjectUserInfo = ({selectedUser, selectedProject, cancelEdit, upda
                         <MenuItem value={"true"}>Yes</MenuItem>
                         <MenuItem value={"false"}>No</MenuItem>
                     </TextField>
+                </div>
+
+                <div className={"mainField"}>
+                    <TextField
+                        className="inputField customRoles"
+                        label="Add Custom Role"
+                        helperText={updatedUser.customRoles.join(", ")}
+                        value={customRole}
+                        onChange={(event) => handleUpdateCustomRole(event.target.value)}
+                        variant="standard"
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </div>
+
+
+                <div className={"mainField"}>
+                    <TextField
+                        className="inputField customRoles"
+                        label="Delete Custom Roles"
+                        value={customRoleToDelete}
+                        onChange={(event) => handleUpdateCustomRoleToDelete( event.target.value)}
+                        variant="standard"
+                        InputLabelProps={{ shrink: true }}
+                    />
                 </div>
             </Stack>
             <div className="EditUserActionPrimary">

@@ -28,7 +28,8 @@ const parseUserRolesXml = (xml) => {
             username = username[0].value;
             if (userRolesMap[username] === undefined){
                 userRolesMap[username] = {
-                    editorRole: false
+                    editorRole: false,
+                    customRoles: []
                 };
             }
             if (role.length > 1) {
@@ -43,8 +44,7 @@ const parseUserRolesXml = (xml) => {
                         userRolesMap[username].adminRole = ADMIN_ROLES[role];
                     }
                 }
-
-                if(role === DATA_ROLES.DATA_PROT.name
+                else if(role === DATA_ROLES.DATA_PROT.name
                     ||  role === DATA_ROLES.DATA_DEID.name
                     ||  role === DATA_ROLES.DATA_LDS.name
                     ||  role === DATA_ROLES.DATA_AGG.name
@@ -53,6 +53,8 @@ const parseUserRolesXml = (xml) => {
                         || userRolesMap[username].dataRole.order > DATA_ROLES[role].order) {
                         userRolesMap[username].dataRole = DATA_ROLES[role];
                     }
+                }else{
+                    userRolesMap[username].customRoles.push(role);
                 }
             }
 
@@ -73,7 +75,8 @@ const parseUserRolesXml = (xml) => {
             username: username,
             adminPath: roles.adminRole,
             dataPath: roles.dataRole,
-            editorPath: roles.editorRole
+            editorPath: roles.editorRole,
+            customRoles: roles.customRoles,
         }
     });
 
