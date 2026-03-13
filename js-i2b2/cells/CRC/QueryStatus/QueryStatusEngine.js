@@ -417,32 +417,37 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     for (let code of newEntries) {
         qrs_entries[code].componentInstances = [];
         // create a list of references to QRS's valid visualizations
-        let validComponents = componentKeys.filter((k) => {
+        let matchingComponents = componentKeys.map((k) => {
             let ret = false;
-            if (typeof i2b2.CRC.QueryStatus.breakdownConfig[code] !== 'undefined') {
-                ret = (Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[code]).includes(k) && i2b2.CRC.QueryStatus.breakdownConfig[code][k] !== false);
+            if (typeof i2b2.CRC.QueryStatus.breakdownConfig[code] !== 'undefined' && Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[code]).includes(k)) {
+                ret = [k, i2b2.CRC.QueryStatus.breakdownConfig[code][k]];
             }
             if (ret === false) {
                 // check for RegEx matches
                 let regexList = Object.keys(i2b2.CRC.QueryStatus.breakdownConfig).filter((rx) => rx.substring(0,1) === '/');
                 for (let rx of regexList) {
                     let testRegEx = i2b2.CRC.QueryStatus._generateRegEx(rx);
-                    if (testRegEx.test(code) && Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[rx]).includes(k) && i2b2.CRC.QueryStatus.breakdownConfig[rx][k] !== false) {
-                        ret = true;
+                    if (testRegEx.test(code) && Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[rx]).includes(k)) {
+                        ret = [k, i2b2.CRC.QueryStatus.breakdownConfig[rx][k]];
                         break;
                     }
                 }
             }
             return ret;
-        }).map((b) => refDisplayComponents[b]);
+        }).filter((r) => r !== false);
+        // matchingComponents contains a list of configured components for a data result (along with boolean if it is
+        // configured for display or not).
+        let validComponents = matchingComponents.filter((r) => r[1]).map((c) => refDisplayComponents[c[0]]);
 
-        if (validComponents.length === 0) {
+        // !!! only process this next logic if we have no matching viz components configured
+        // if we have matching components that are disabled (by === false) then we do not count this as being unregistered
+        if (matchingComponents.length === 0) {
             // see if there are any default viz modules configured to capture unregistered breakdowns
             validComponents = Object.values(refDisplayComponents).filter((x) => x.displayForUnregistered === true);
+        }
             if (validComponents.length === 0) {
                 // short circuit if no components are configured for unregistered components
                 continue;
-            }
         }
 
         // sort by component displayOrder
@@ -484,7 +489,6 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
             if (instantiationResults === false) {
                 console.error("Failed to Instantiate viz module");
             }
-
         } else {
             // this is a QRS type that may have many visualization components
             if (validComponents.length === 0) {
