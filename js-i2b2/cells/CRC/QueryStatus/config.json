@@ -47,6 +47,17 @@
       "displayOrder": 100,
       "displayForUnregistered": false
     },
+    "DATAREQUESTSUPER": {
+      "name": "Data Request",
+      "source": "DataRequestSuper/DataRequestSuper.js",
+      "CSS": "DataRequestSuper/DataRequestSuper.css",
+      "iconClass": "bi bi-table",
+      "displayOrder": 100,
+      "displayForUnregistered": false,
+      "superModule": {
+        "capture": ["/^RPDO_/"]
+      }
+    },
     "DOWNLOAD": {
       "name": "CSV Download",
       "source": "Download/Download.js",
