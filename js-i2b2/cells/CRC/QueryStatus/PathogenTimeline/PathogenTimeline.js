@@ -36,7 +36,7 @@ export default class PathogenTimeline {
             // Wastewater fetch gating + computed range
             this.wwRequestRange = null;
             this._wwFetched = false;
-
+        
             this.width = this.config.displayEl.parentElement.clientWidth;
             this.height = 400 - margin.top - margin.bottom;
 
@@ -55,6 +55,7 @@ export default class PathogenTimeline {
                     this.data.new = parseData(resultXML, this.config.advancedConfig);
                 }
             }
+
 
             (async function () {
                 let response = await fetch(
@@ -237,6 +238,7 @@ export default class PathogenTimeline {
             const selectedOverlay = this.state?.overlay || "None";
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year"
 
+
             
             if (selectedAggregation === "yoy") {
 
@@ -274,6 +276,9 @@ export default class PathogenTimeline {
                     byDiagnosisYear[diagnosis][year].push(point);                 
                    
                 }
+
+                console.log("diagby year");
+                console.log(byDiagnosisYear);
                 //sort the data --we could have used a nested for loop here, but that looked smelly (even though in this case it wouldn't be)
                 Object.values(byDiagnosisYear)
                     .flatMap(yearMap => Object.values(yearMap))
@@ -288,6 +293,9 @@ export default class PathogenTimeline {
                     points: monthlyDataArray
                     }))
                 );
+
+                console.log("series");
+                console.log(series);
                                  
                 // Order series by diagnosis registry order, then by ascending year
                 series.sort((a, b) => { 
@@ -1035,6 +1043,166 @@ let parseData = function (xmlData, advancedConfig) {
 // ======================================================================
 // Helpers
 // ======================================================================
+
+
+function buildYOYDxSeries(rawData, selectedDiagnosis){
+    //take the raw data and if needed, filter it by diagnosis to do the row pivot
+    const yoyRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "M");
+
+    let yoyFilteredRows = null;
+
+    if(selectedDiagnosis === "All"){
+        yoyFilteredRows = yoyRows;
+    } else{
+        yoyFilteredRows = yoyRows.filter(r => r.diagnosis === selectedDiagnosis);
+    }
+
+    const yoyPivotRows = pivotToYOYRows(yoyFilteredRows); 
+    
+    //Take the pivoted rows and push them into an object organized by diagnosis
+    const byDiagnosisYear = {};
+
+    for(const row of yoyPivotRows){
+
+        let diagnosis = row.diagnosis;
+        let year = row.year;
+        let monthIndex = row.monthIndex;
+        let value = row.value;   
+
+        if (byDiagnosisYear[diagnosis] === undefined){
+            byDiagnosisYear[diagnosis] = {};
+        }
+        
+        if (byDiagnosisYear[diagnosis][year] === undefined){
+            byDiagnosisYear[diagnosis][year] = {
+                points: [],
+                stroke: null
+            };
+        }
+        
+        let point = {x: monthIndex, y: value};
+   
+        byDiagnosisYear[diagnosis][year].points.push(point);                
+        
+    }
+    //sort the data 
+    Object.values(byDiagnosisYear)
+        .flatMap(yearMap => Object.values(yearMap))
+        .forEach(pointsArr => {
+            pointsArr.sort((a, b) => a.x - b.y);});
+
+    const lookup ={}
+
+    Object.keys(byDiagnosisYear).forEach((dx) => {
+        const years = Object.keys(byDiagnosisYear[dx]).map(Number);
+
+        lookup[dx] = {
+            min: Math.min(...years),
+            max: Math.max(...years)
+        }
+    });
+    
+    const T_MIN = 0.3;
+   
+    Object.keys(byDiagnosisYear).forEach((dx) => {
+        const years = Object.keys(byDiagnosisYear[dx]).map(Number);
+
+        years.forEach((year)=>{
+            const range = lookup[dx];
+            if (!range) return;
+
+            const { min, max } = range;
+
+            const u = (min === max) ? 1 : (year - min) / (max - min);
+
+            const t = T_MIN + u * (1 - T_MIN);
+
+            const baseColor = DIAGNOSIS_REGISTRY.diagnosis?.[dx]?.color;
+            if (!baseColor) return;
+
+            computedStroke = blendWithWhite(baseColor, t);
+
+            byDiagnosisYear[diagnosis][year].push(computedStroke);
+
+        });
+       
+    });
+
+    // byDiagnosisYear.forEach((item) => {
+    //     const { diagnosis: dx, year } = item;
+
+    //     const range = lookup[dx];
+    //     if (!range) return;
+
+    //     const { min, max } = range;
+
+    //     const u = (min === max) ? 1 : (year - min) / (max - min);
+
+    //     const t = T_MIN + u * (1 - T_MIN);
+
+    //     const baseColor = DIAGNOSIS_REGISTRY.diagnosis?.[dx]?.color;
+    //     if (!baseColor) return;
+
+    //     computedStroke = blendWithWhite(baseColor, t);
+    // });
+    
+  //create the series
+    const series = Object.entries(byDiagnosisYear).flatMap(([diagnosis, years]) => 
+    Object.entries(years).map(([yearKey, monthlyDataArray, computedStroke]) => ({
+        diagnosis,
+        year: Number(yearKey),
+        points: monthlyDataArray,
+        stroke: computedStroke
+        }))
+    );
+                                 
+    // Order series by diagnosis registry order, then by ascending year
+    series.sort((a, b) => { 
+        const orderA = DIAGNOSIS_REGISTRY.diagnosis?.[a.diagnosis]?.order ?? 9999;
+        const orderB = DIAGNOSIS_REGISTRY.diagnosis?.[b.diagnosis]?.order ?? 9999;
+        return (orderA - orderB) || (a.year - b.year);
+
+    })
+    // create a lookup for the min year and max year to draw offset color lines
+    // const lookup = series.reduce((acc, { diagnosis: dx, year }) => {
+    // const range = acc[dx];
+
+    //     if (!range) {
+    //         acc[dx] = { min: year, max: year };
+    //     } else {
+    //         range.min = Math.min(range.min, year);
+    //         range.max = Math.max(range.max, year);
+    //     }
+
+    //     return acc;
+    // }, {});
+         
+    // create an item.stroke value for the renderer
+    // const T_MIN = 0.3;
+
+    // series.forEach((item) => {
+    //     const { diagnosis: dx, year } = item;
+
+    //     const range = lookup[dx];
+    //     if (!range) return;
+
+    //     const { min, max } = range;
+
+    //     const u = (min === max) ? 1 : (year - min) / (max - min);
+
+    //     const t = T_MIN + u * (1 - T_MIN);
+
+    //     const baseColor = DIAGNOSIS_REGISTRY.diagnosis?.[dx]?.color;
+    //     if (!baseColor) return;
+
+    //     item.stroke = blendWithWhite(baseColor, t);
+    // });
+
+
+    return series;
+
+
+}
 
 function filterBreakdown(rows, diagnosisFilter) {
     if (!rows) return [];
