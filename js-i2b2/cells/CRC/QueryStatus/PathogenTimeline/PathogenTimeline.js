@@ -258,80 +258,8 @@ export default class PathogenTimeline {
                 if (selectedOverlay == "None") {
                     console.log("selected overlay is none, skipping wwYOY parse");
                 } else {
-                    const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
-                    const wwByYear = {};
-
-                    if (waterConfig === undefined) {
-                        console.log("water config is not defined");
-                    } else {
-
-                        renderModel.wwSeries = buildYOYWWSeries(this.wastewater, selectedOverlay);
-
-                        // for (const row of this.wastewater) {
-                        //     const d = new Date(row["Sample Date"]);
-                        //     if (!(d instanceof Date) || isNaN(d.getTime())) {
-                        //         continue;
-                        //     }
-
-                        //     const year = d.getFullYear();
-                        //     const monthIndex = d.getMonth();
-
-                        //     const value = waterConfig.accessor(row);
-
-                        //     // Skip missing/invalid values (prefer this over value === 0)
-                        //     if (value === null || value === undefined || Number.isNaN(value)) {
-                        //         continue;
-                        //     }
-
-                        //     // Bucket by year -> month -> [values...]
-                        //     if (wwByYear[year] === undefined) {
-                        //         wwByYear[year] = {};
-                        //     }
-                        //     if (wwByYear[year][monthIndex] === undefined) {
-                        //         wwByYear[year][monthIndex] = [];
-                        //     }
-                        //     wwByYear[year][monthIndex].push(value);
-                        // }
-
-                        // console.log(wwByYear);
-
-                        // // Create the series: one aggregated point per (year, month)
-                        // const wwSeries = Object.entries(wwByYear).map(([yearKey, monthBuckets]) => {
-                        //     const pointsArray = Object.entries(monthBuckets).map(([monthKey, values]) => {
-                        //         const sum = values.reduce((acc, v) => acc + v, 0);
-                        //         const avg = values.length ? (sum / values.length) : 0;
-                        //         return { monthIndex: Number(monthKey), value: avg };
-                        //     });
-
-                        //     pointsArray.sort((a, b) => a.monthIndex - b.monthIndex);
-
-                        //     return {
-                        //         year: Number(yearKey),
-                        //         points: pointsArray
-                        //     };
-                        // });
-                        // const T_MIN = 0.3;
-                        // const yearsList = wwSeries.map(item => item.year);
-                        // const min = Math.min(...yearsList);
-                        // const max = Math.max(...yearsList); 
-
-                        // wwSeries.forEach((item) => {
-                        //     const year = item.year;
- 
-                        //     const u = (min === max) ? 1 : (year - min) / (max - min);
-
-                        //     const t = T_MIN + u * (1 - T_MIN);
-
-                        //     const baseColor = waterConfig.color;
-                        //     if (!baseColor) return;
-
-                        //     item.stroke = blendWithWhite(baseColor, t);
-                        // });
-                        
-                        // renderModel.wwSeries = wwSeries;
-
-                        
-                    }
+                    renderModel.wwSeries = buildYOYWWSeries(this.wastewater, selectedOverlay);
+                   
                 }                          
 
                 this.drawYOY(renderModel, selectedOverlay);
@@ -1065,8 +993,76 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
 }
 
 function buildYOYWWSeries(wastewater, selectedOverlay) {
-    console.log(wastewater);
-    console.log(selectedOverlay);
+    const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+    const wwByYear = {};
+
+    if (waterConfig === undefined) {
+        console.log("water config is not defined");
+    } else {                       
+
+            for (const row of wastewater) {
+                const d = new Date(row["Sample Date"]);
+                if (!(d instanceof Date) || isNaN(d.getTime())) {
+                    continue;
+                }
+
+                const year = d.getFullYear();
+                const monthIndex = d.getMonth();
+
+                const value = waterConfig.accessor(row);
+
+                // Skip missing/invalid values (prefer this over value === 0)
+                if (value === null || value === undefined || Number.isNaN(value)) {
+                    continue;
+                }
+
+                // Bucket by year -> month -> [values...]
+                if (wwByYear[year] === undefined) {
+                    wwByYear[year] = {};
+                }
+                if (wwByYear[year][monthIndex] === undefined) {
+                    wwByYear[year][monthIndex] = [];
+                }
+                wwByYear[year][monthIndex].push(value);
+            }
+
+            console.log(wwByYear);
+
+            // Create the series: one aggregated point per (year, month)
+            const wwSeries = Object.entries(wwByYear).map(([yearKey, monthBuckets]) => {
+                const pointsArray = Object.entries(monthBuckets).map(([monthKey, values]) => {
+                    const sum = values.reduce((acc, v) => acc + v, 0);
+                    const avg = values.length ? (sum / values.length) : 0;
+                    return { monthIndex: Number(monthKey), value: avg };
+                });
+
+                pointsArray.sort((a, b) => a.monthIndex - b.monthIndex);
+
+                return {
+                    year: Number(yearKey),
+                    points: pointsArray
+                };
+            });
+            const T_MIN = 0.3;
+            const yearsList = wwSeries.map(item => item.year);
+            const min = Math.min(...yearsList);
+            const max = Math.max(...yearsList); 
+
+            wwSeries.forEach((item) => {
+                const year = item.year;
+
+                const u = (min === max) ? 1 : (year - min) / (max - min);
+
+                const t = T_MIN + u * (1 - T_MIN);
+
+                const baseColor = waterConfig.color;
+                if (!baseColor) return;
+
+                item.stroke = blendWithWhite(baseColor, t);
+            });
+           return wwSeries;
+        }
+        
 }
 
 
