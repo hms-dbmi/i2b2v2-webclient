@@ -242,103 +242,8 @@ export default class PathogenTimeline {
             
             if (selectedAggregation === "yoy") {
 
-                const yoyRows = raw.filter(r => (r.grain || "").trim().toUpperCase() === "M");
-
-                let yoyFilteredRows = null;
-
-                if(selectedDiagnosis === "All"){
-                   yoyFilteredRows = yoyRows;
-                } else{
-                    yoyFilteredRows = yoyRows.filter(r => r.diagnosis === selectedDiagnosis);
-                }
+                const series = buildYOYDxSeries(raw, selectedDiagnosis);
                 
-                const yoyPivotRows = pivotToYOYRows(yoyFilteredRows);
-
-                const byDiagnosisYear = {};
-
-                for(const row of yoyPivotRows){
-
-                    let diagnosis = row.diagnosis;
-                    let year = row.year;
-                    let monthIndex = row.monthIndex;
-                    let value = row.value;   
-
-                    if (byDiagnosisYear[diagnosis] === undefined){
-                        byDiagnosisYear[diagnosis] = {};
-                    }
-                   
-                    if (byDiagnosisYear[diagnosis][year] === undefined){
-                        byDiagnosisYear[diagnosis][year] = [];
-                    }
-                  
-                    let point = {"monthIndex": monthIndex, "value": value}
-
-                    byDiagnosisYear[diagnosis][year].push(point);                 
-                   
-                }
-
-                console.log("diagby year");
-                console.log(byDiagnosisYear);
-                //sort the data --we could have used a nested for loop here, but that looked smelly (even though in this case it wouldn't be)
-                Object.values(byDiagnosisYear)
-                    .flatMap(yearMap => Object.values(yearMap))
-                    .forEach(pointsArr => {
-                        pointsArr.sort((a, b) => a.monthIndex - b.monthIndex);});
-               
-                //create the series
-                const series = Object.entries(byDiagnosisYear).flatMap(([diagnosis, years]) => 
-                Object.entries(years).map(([yearKey, monthlyDataArray]) => ({
-                    diagnosis,
-                    year: Number(yearKey),
-                    points: monthlyDataArray
-                    }))
-                );
-
-                console.log("series");
-                console.log(series);
-                                 
-                // Order series by diagnosis registry order, then by ascending year
-                series.sort((a, b) => { 
-                    const orderA = DIAGNOSIS_REGISTRY.diagnosis?.[a.diagnosis]?.order ?? 9999;
-                    const orderB = DIAGNOSIS_REGISTRY.diagnosis?.[b.diagnosis]?.order ?? 9999;
-                    return (orderA - orderB) || (a.year - b.year);
-
-                })
-                // create a lookup for the min year and max year to draw offset color lines
-                const lookup = series.reduce((acc, { diagnosis: dx, year }) => {
-                const range = acc[dx];
-
-                    if (!range) {
-                        acc[dx] = { min: year, max: year };
-                    } else {
-                        range.min = Math.min(range.min, year);
-                        range.max = Math.max(range.max, year);
-                    }
-
-                    return acc;
-                }, {});
-         
-                // create an item.stroke value for the renderer
-                const T_MIN = 0.3;
-
-                series.forEach((item) => {
-                    const { diagnosis: dx, year } = item;
-
-                    const range = lookup[dx];
-                    if (!range) return;
-
-                    const { min, max } = range;
-
-                    const u = (min === max) ? 1 : (year - min) / (max - min);
-
-                    const t = T_MIN + u * (1 - T_MIN);
-
-                    const baseColor = DIAGNOSIS_REGISTRY.diagnosis?.[dx]?.color;
-                    if (!baseColor) return;
-
-                    item.stroke = blendWithWhite(baseColor, t);
-                });
-
                 //create a render model for drawing
                 const renderModel = {
                     "months" : ["Jan","Feb", "Mar", "Apr","May","Jun","Jul","Aug","Sep","Oct", "Nov","Dec" ],
@@ -360,68 +265,72 @@ export default class PathogenTimeline {
                         console.log("water config is not defined");
                     } else {
 
-                        for (const row of this.wastewater) {
-                            const d = new Date(row["Sample Date"]);
-                            if (!(d instanceof Date) || isNaN(d.getTime())) {
-                                continue;
-                            }
+                        renderModel.wwSeries = buildYOYWWSeries(this.wastewater, selectedOverlay);
 
-                            const year = d.getFullYear();
-                            const monthIndex = d.getMonth();
+                        // for (const row of this.wastewater) {
+                        //     const d = new Date(row["Sample Date"]);
+                        //     if (!(d instanceof Date) || isNaN(d.getTime())) {
+                        //         continue;
+                        //     }
 
-                            const value = waterConfig.accessor(row);
+                        //     const year = d.getFullYear();
+                        //     const monthIndex = d.getMonth();
 
-                            // Skip missing/invalid values (prefer this over value === 0)
-                            if (value === null || value === undefined || Number.isNaN(value)) {
-                                continue;
-                            }
+                        //     const value = waterConfig.accessor(row);
 
-                            // Bucket by year -> month -> [values...]
-                            if (wwByYear[year] === undefined) {
-                                wwByYear[year] = {};
-                            }
-                            if (wwByYear[year][monthIndex] === undefined) {
-                                wwByYear[year][monthIndex] = [];
-                            }
-                            wwByYear[year][monthIndex].push(value);
-                        }
+                        //     // Skip missing/invalid values (prefer this over value === 0)
+                        //     if (value === null || value === undefined || Number.isNaN(value)) {
+                        //         continue;
+                        //     }
 
-                        console.log(wwByYear);
+                        //     // Bucket by year -> month -> [values...]
+                        //     if (wwByYear[year] === undefined) {
+                        //         wwByYear[year] = {};
+                        //     }
+                        //     if (wwByYear[year][monthIndex] === undefined) {
+                        //         wwByYear[year][monthIndex] = [];
+                        //     }
+                        //     wwByYear[year][monthIndex].push(value);
+                        // }
 
-                        // Create the series: one aggregated point per (year, month)
-                        const wwSeries = Object.entries(wwByYear).map(([yearKey, monthBuckets]) => {
-                            const pointsArray = Object.entries(monthBuckets).map(([monthKey, values]) => {
-                                const sum = values.reduce((acc, v) => acc + v, 0);
-                                const avg = values.length ? (sum / values.length) : 0;
-                                return { monthIndex: Number(monthKey), value: avg };
-                            });
+                        // console.log(wwByYear);
 
-                            pointsArray.sort((a, b) => a.monthIndex - b.monthIndex);
+                        // // Create the series: one aggregated point per (year, month)
+                        // const wwSeries = Object.entries(wwByYear).map(([yearKey, monthBuckets]) => {
+                        //     const pointsArray = Object.entries(monthBuckets).map(([monthKey, values]) => {
+                        //         const sum = values.reduce((acc, v) => acc + v, 0);
+                        //         const avg = values.length ? (sum / values.length) : 0;
+                        //         return { monthIndex: Number(monthKey), value: avg };
+                        //     });
 
-                            return {
-                                year: Number(yearKey),
-                                points: pointsArray
-                            };
-                        });
-                        const T_MIN = 0.3;
-                        const yearsList = wwSeries.map(item => item.year);
-                        const min = Math.min(...yearsList);
-                        const max = Math.max(...yearsList); 
+                        //     pointsArray.sort((a, b) => a.monthIndex - b.monthIndex);
 
-                        wwSeries.forEach((item) => {
-                            const year = item.year;
+                        //     return {
+                        //         year: Number(yearKey),
+                        //         points: pointsArray
+                        //     };
+                        // });
+                        // const T_MIN = 0.3;
+                        // const yearsList = wwSeries.map(item => item.year);
+                        // const min = Math.min(...yearsList);
+                        // const max = Math.max(...yearsList); 
+
+                        // wwSeries.forEach((item) => {
+                        //     const year = item.year;
  
-                            const u = (min === max) ? 1 : (year - min) / (max - min);
+                        //     const u = (min === max) ? 1 : (year - min) / (max - min);
 
-                            const t = T_MIN + u * (1 - T_MIN);
+                        //     const t = T_MIN + u * (1 - T_MIN);
 
-                            const baseColor = waterConfig.color;
-                            if (!baseColor) return;
+                        //     const baseColor = waterConfig.color;
+                        //     if (!baseColor) return;
 
-                            item.stroke = blendWithWhite(baseColor, t);
-                        });
+                        //     item.stroke = blendWithWhite(baseColor, t);
+                        // });
                         
-                        renderModel.wwSeries = wwSeries;
+                        // renderModel.wwSeries = wwSeries;
+
+                        
                     }
                 }                          
 
@@ -1080,16 +989,18 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
             };
         }
         
-        let point = {x: monthIndex, y: value};
+        let point = {monthIndex, value};
    
         byDiagnosisYear[diagnosis][year].points.push(point);                
         
     }
     //sort the data 
-    Object.values(byDiagnosisYear)
-        .flatMap(yearMap => Object.values(yearMap))
-        .forEach(pointsArr => {
-            pointsArr.sort((a, b) => a.x - b.y);});
+    
+    Object.values(byDiagnosisYear).forEach((yearMap) => {
+        Object.values(yearMap).forEach((pointsArr) => {
+            pointsArr.points.sort((a, b) => a.monthIndex - b.monthIndex);
+        });
+    }); 
 
     const lookup ={}
 
@@ -1106,6 +1017,7 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
    
     Object.keys(byDiagnosisYear).forEach((dx) => {
         const years = Object.keys(byDiagnosisYear[dx]).map(Number);
+        let computedStroke = null;
 
         years.forEach((year)=>{
             const range = lookup[dx];
@@ -1122,37 +1034,20 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
 
             computedStroke = blendWithWhite(baseColor, t);
 
-            byDiagnosisYear[diagnosis][year].push(computedStroke);
+            byDiagnosisYear[dx][year].stroke = computedStroke;
 
         });
        
     });
 
-    // byDiagnosisYear.forEach((item) => {
-    //     const { diagnosis: dx, year } = item;
-
-    //     const range = lookup[dx];
-    //     if (!range) return;
-
-    //     const { min, max } = range;
-
-    //     const u = (min === max) ? 1 : (year - min) / (max - min);
-
-    //     const t = T_MIN + u * (1 - T_MIN);
-
-    //     const baseColor = DIAGNOSIS_REGISTRY.diagnosis?.[dx]?.color;
-    //     if (!baseColor) return;
-
-    //     computedStroke = blendWithWhite(baseColor, t);
-    // });
-    
+  
   //create the series
     const series = Object.entries(byDiagnosisYear).flatMap(([diagnosis, years]) => 
-    Object.entries(years).map(([yearKey, monthlyDataArray, computedStroke]) => ({
+    Object.entries(years).map(([yearKey, monthlyDataObj]) => ({
         diagnosis,
         year: Number(yearKey),
-        points: monthlyDataArray,
-        stroke: computedStroke
+        points: monthlyDataObj.points,
+        stroke: monthlyDataObj.stroke
         }))
     );
                                  
@@ -1163,46 +1058,17 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
         return (orderA - orderB) || (a.year - b.year);
 
     })
-    // create a lookup for the min year and max year to draw offset color lines
-    // const lookup = series.reduce((acc, { diagnosis: dx, year }) => {
-    // const range = acc[dx];
-
-    //     if (!range) {
-    //         acc[dx] = { min: year, max: year };
-    //     } else {
-    //         range.min = Math.min(range.min, year);
-    //         range.max = Math.max(range.max, year);
-    //     }
-
-    //     return acc;
-    // }, {});
-         
-    // create an item.stroke value for the renderer
-    // const T_MIN = 0.3;
-
-    // series.forEach((item) => {
-    //     const { diagnosis: dx, year } = item;
-
-    //     const range = lookup[dx];
-    //     if (!range) return;
-
-    //     const { min, max } = range;
-
-    //     const u = (min === max) ? 1 : (year - min) / (max - min);
-
-    //     const t = T_MIN + u * (1 - T_MIN);
-
-    //     const baseColor = DIAGNOSIS_REGISTRY.diagnosis?.[dx]?.color;
-    //     if (!baseColor) return;
-
-    //     item.stroke = blendWithWhite(baseColor, t);
-    // });
-
-
+    
     return series;
 
 
 }
+
+function buildYOYWWSeries(wastewater, selectedOverlay) {
+    console.log(wastewater);
+    console.log(selectedOverlay);
+}
+
 
 function filterBreakdown(rows, diagnosisFilter) {
     if (!rows) return [];
