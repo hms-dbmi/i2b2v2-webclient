@@ -239,6 +239,8 @@ export default class PathogenTimeline {
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year"
 
 
+            const yearDxSeries = buildYearDxSeries(raw, selectedDiagnosis, selectedAggregation);
+
             
             if (selectedAggregation === "yoy") {
 
@@ -521,6 +523,8 @@ export default class PathogenTimeline {
 
         // Group diagnosis series
         const seriesByDiagnosis = d3.group(bucketedPatients, d => d.diagnosis);
+        console.log("series by diag coming up");
+        console.log(seriesByDiagnosis);
 
         // LEFT Y SCALE (patients)
         const maxPatients = d3.max(bucketedPatients, d => d.value);
@@ -881,18 +885,34 @@ let parseData = function (xmlData, advancedConfig) {
 // Helpers
 // ======================================================================
 
+function buildYearDxSeries(rawData, selectedDiagnosis, selectedAggregation) {
+    // get the raw data by aggregation grain
+    const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "Y");
+
+    let yearFilteredRows = filterBreakdown(yearRows, selectedDiagnosis);
+    const bucketedPatients = collectPatientsByAggregation(yearFilteredRows, selectedAggregation);
+
+    // If (for some reason) nothing survived bucketing, bail cleanly
+    if (!bucketedPatients || bucketedPatients.length === 0) {
+        return;
+    }
+
+    const diagVals = Object.values(bucketedPatients);
+    console.log("object dot vals bucketed");
+    console.log(diagVals);
+        
+
+}
+
+function buildMonthDxSeries(raw, selectedDiagnosis) {
+    console.log("hiee")
+}
 
 function buildYOYDxSeries(rawData, selectedDiagnosis){
     //take the raw data and if needed, filter it by diagnosis to do the row pivot
     const yoyRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "M");
 
-    let yoyFilteredRows = null;
-
-    if(selectedDiagnosis === "All"){
-        yoyFilteredRows = yoyRows;
-    } else{
-        yoyFilteredRows = yoyRows.filter(r => r.diagnosis === selectedDiagnosis);
-    }
+    let yoyFilteredRows = filterBreakdown(yoyRows, selectedDiagnosis);
 
     const yoyPivotRows = pivotToYOYRows(yoyFilteredRows); 
     
