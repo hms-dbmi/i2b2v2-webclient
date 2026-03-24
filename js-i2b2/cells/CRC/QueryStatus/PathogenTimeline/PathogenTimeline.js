@@ -239,7 +239,7 @@ export default class PathogenTimeline {
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year"
 
 
-            const yearDxSeries = buildYearDxSeries(raw, selectedDiagnosis, selectedAggregation);
+            const yearDxSeries = buildMonthDxSeries(raw, selectedDiagnosis, selectedAggregation);
 
             
             if (selectedAggregation === "yoy") {
@@ -523,8 +523,6 @@ export default class PathogenTimeline {
 
         // Group diagnosis series
         const seriesByDiagnosis = d3.group(bucketedPatients, d => d.diagnosis);
-        console.log("series by diag coming up");
-        console.log(seriesByDiagnosis);
 
         // LEFT Y SCALE (patients)
         const maxPatients = d3.max(bucketedPatients, d => d.value);
@@ -885,6 +883,65 @@ let parseData = function (xmlData, advancedConfig) {
 // Helpers
 // ======================================================================
 
+function generateXDomain(selectedAggregation) {
+    let xdomain = null; 
+    if (selectedAggregation === "Month"){
+        console.log("can't wait to see how this turns out");
+    } else if (selectedAggregation ==="Year"){
+        console.log("hiee");
+    } else {
+        xdomain = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+    }
+    return xdomain
+}
+
+function buildMonthDxSeries(rawData, selectedDiagnosis, selectedAggregation) {
+    // get the raw data by aggregation grain
+    const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "M");
+
+    let monthFilteredRows = filterBreakdown(yearRows, selectedDiagnosis);
+    const bucketedPatients = collectPatientsByAggregation(monthFilteredRows, selectedAggregation);
+
+    // If (for some reason) nothing survived bucketing, bail cleanly
+    if (!bucketedPatients || bucketedPatients.length === 0) {
+        return;
+    }
+   
+    const groupDxMonth = {}
+    for (const row of bucketedPatients) {
+        let diagnosis = row.diagnosis;
+        let date = row.date;
+        let value = row.value;
+        
+        console.log(row.diagnosis);
+        if (groupDxMonth[diagnosis] === undefined){
+            groupDxMonth[diagnosis] = {
+                points: [],
+            };
+        }
+                
+        let point = {date, value};
+   
+        groupDxMonth[diagnosis].points.push(point);
+    }  
+
+    //sort the dates just in case in the points array
+    Object.values(groupDxMonth).forEach((pointsArr) => {
+        pointsArr.points.sort((a, b) => a.date - b.date);
+        });
+
+
+    const series = Object.entries(groupDxMonth).map(([diagnosis, data]) => ({
+        diagnosis,
+        points: data.points
+    }));
+    
+    console.log("month series coming up");
+    console.log(series);
+    return series;   
+ 
+}
+
 function buildYearDxSeries(rawData, selectedDiagnosis, selectedAggregation) {
     // get the raw data by aggregation grain
     const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "Y");
@@ -896,16 +953,38 @@ function buildYearDxSeries(rawData, selectedDiagnosis, selectedAggregation) {
     if (!bucketedPatients || bucketedPatients.length === 0) {
         return;
     }
-
-    const diagVals = Object.values(bucketedPatients);
-    console.log("object dot vals bucketed");
-    console.log(diagVals);
+   
+    const groupDxYear = {}
+    for (const row of bucketedPatients) {
+        let diagnosis = row.diagnosis;
+        let date = row.date;
+        let value = row.value;
         
+        console.log(row.diagnosis);
+        if (groupDxYear[diagnosis] === undefined){
+            groupDxYear[diagnosis] = {
+                points: [],
+            };
+        }
+                
+        let point = {date, value};
+   
+        groupDxYear[diagnosis].points.push(point);
+    }  
 
-}
+    //sort the dates just in case in the points array
+    Object.values(groupDxYear).forEach((pointsArr) => {
+        pointsArr.points.sort((a, b) => a.date - b.date);
+        });
 
-function buildMonthDxSeries(raw, selectedDiagnosis) {
-    console.log("hiee")
+
+    const series = Object.entries(groupDxYear).map(([diagnosis, data]) => ({
+        diagnosis,
+        points: data.points
+    }));
+    
+    return series;   
+ 
 }
 
 function buildYOYDxSeries(rawData, selectedDiagnosis){
