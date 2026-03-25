@@ -239,7 +239,9 @@ export default class PathogenTimeline {
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year"
 
 
-            const yearDxSeries = buildMonthDxSeries(raw, selectedDiagnosis, selectedAggregation);
+            //const yearDxSeries = buildMonthDxSeries(raw, selectedDiagnosis, selectedAggregation);
+
+            const WWSeries = buildMonthYearWWSeries(this.wastewater, selectedOverlay, selectedAggregation);
 
             
             if (selectedAggregation === "yoy") {
@@ -896,6 +898,10 @@ function generateXDomain(selectedAggregation) {
 }
 
 function buildMonthDxSeries(rawData, selectedDiagnosis, selectedAggregation) {
+
+    //we're going to hold off using agg grain for the moment, we're keeping this here for now
+    //const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
+
     // get the raw data by aggregation grain
     const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "M");
 
@@ -943,6 +949,9 @@ function buildMonthDxSeries(rawData, selectedDiagnosis, selectedAggregation) {
 }
 
 function buildYearDxSeries(rawData, selectedDiagnosis, selectedAggregation) {
+    //we're going to hold off using agg grain for the moment, we're keeping this here for now
+    //const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
+
     // get the raw data by aggregation grain
     const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "Y");
 
@@ -1091,6 +1100,19 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
 
 }
 
+function buildMonthYearWWSeries(wastewater, selectedOverlay, selectedAggregation) {
+
+    const bucketedWW = collectWastewaterByAggregation(wastewater, selectedOverlay, selectedAggregation);
+
+    let monthYearWWSeries = [];
+
+    monthYearWWSeries.push({
+        points: bucketedWW
+    });
+
+    return monthYearWWSeries;
+}
+
 function buildYOYWWSeries(wastewater, selectedOverlay) {
     const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
     const wwByYear = {};
@@ -1163,7 +1185,6 @@ function buildYOYWWSeries(wastewater, selectedOverlay) {
         }
         
 }
-
 
 function filterBreakdown(rows, diagnosisFilter) {
     if (!rows) return [];
@@ -1329,6 +1350,60 @@ function collectPatientsByAggregation(records, aggregation) {
     }
 
     return out;
+}
+
+function collectWastewaterByAggregation(wastewater, selectedOverlay, selectedAggregation){
+    let wwPoints = [];
+    let wwConfig = null;
+
+    if (selectedOverlay !== "None" && wastewater && wastewater.length > 0) {
+        const overlayConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+        wwConfig = overlayConfig;
+
+        if (!overlayConfig || typeof overlayConfig.accessor !== "function") {
+            console.warn("Unknown wastewater overlay:", selectedOverlay);
+            wwPoints = [];
+            yRight = null;
+        } else {
+            const wwRollup = d3.rollup(
+                wastewater,
+                rows => {
+                    const values = rows
+                        .map(row => overlayConfig.accessor(row))
+                        .filter(v => v !== null && v !== undefined && !isNaN(v));
+                    return values.length ? d3.mean(values) : null;
+                },
+                d => {
+                    // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
+                    const dt = parseYMDLocal(d["Sample Date"]);
+                    if (!dt) return null;
+
+                    if (selectedAggregation === "year") {
+                        return `${dt.getFullYear()}`;
+                    }
+                    // month (0-based month key, used consistently below)
+                    return `${dt.getFullYear()}-${dt.getMonth()}`;
+                }
+            );
+
+            wwPoints = Array.from(wwRollup.entries())
+                .filter(([k, v]) => k !== null && v !== null)
+                .map(([key, value]) => {
+                    if (selectedAggregation === "year") {
+                        const year = Number(key);
+                        const date = new Date(year, 0, 1);
+                        return { date, value };
+                    }
+                    const [year, month] = key.split("-").map(Number);
+                    const date = new Date(year, month, 1);
+                    return { date, value };
+                })
+                .filter(p => p.date instanceof Date && !isNaN(p.date.getTime()));
+
+            return wwPoints;
+        }
+    }
+
 }
 
 function pivotToYOYRows(aggregatedRecords){
