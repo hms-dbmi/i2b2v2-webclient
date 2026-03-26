@@ -241,7 +241,9 @@ export default class PathogenTimeline {
 
             //const yearDxSeries = buildMonthDxSeries(raw, selectedDiagnosis, selectedAggregation);
 
-            const WWSeries = buildMonthYearWWSeries(this.wastewater, selectedOverlay, selectedAggregation);
+            //const WWSeries = buildMonthYearWWSeries(this.wastewater, selectedOverlay, selectedAggregation);
+
+            const xdomain = generateXDomain(raw, selectedAggregation);
 
             
             if (selectedAggregation === "yoy") {
@@ -885,16 +887,25 @@ let parseData = function (xmlData, advancedConfig) {
 // Helpers
 // ======================================================================
 
-function generateXDomain(selectedAggregation) {
+
+
+
+function generateXDomain(records, selectedAggregation) {
     let xdomain = null; 
-    if (selectedAggregation === "Month"){
-        console.log("can't wait to see how this turns out");
-    } else if (selectedAggregation ==="Year"){
-        console.log("hiee");
+    if (selectedAggregation === "month" || selectedAggregation === "year"){
+        const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);        
+
+        xdomain = d3.extent(bucketedPatients, d => d.date);
+
+        // Guard: if extent is bad, bail
+        if (!xdomain[0] || !xdomain[1]) {
+            console.log("xdomain extent issue; bailing on generating xdomain.")
+            return [];
+        }
     } else {
         xdomain = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
     }
-    return xdomain
+    return xdomain;
 }
 
 function buildMonthDxSeries(rawData, selectedDiagnosis, selectedAggregation) {
