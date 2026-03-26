@@ -243,7 +243,9 @@ export default class PathogenTimeline {
 
             //const WWSeries = buildMonthYearWWSeries(this.wastewater, selectedOverlay, selectedAggregation);
 
-            const xdomain = generateXDomain(raw, selectedAggregation);
+            //const xdomain = generateXDomain(raw, selectedAggregation);
+
+            const renderModel = buildRenderModel(raw, this.wastewater, selectedDiagnosis, selectedAggregation, selectedOverlay);
 
             
             if (selectedAggregation === "yoy") {
@@ -886,6 +888,47 @@ let parseData = function (xmlData, advancedConfig) {
 // ======================================================================
 // Helpers
 // ======================================================================
+
+function buildRenderModel(records, wastewater, selectedDiagnosis, selectedAggregation, selectedOverlay) {
+
+    let renderModel;
+
+    if (selectedAggregation === "month"){
+        renderModel = { 
+            "aggregateType": selectedAggregation,
+            "series" : buildMonthDxSeries(records, selectedDiagnosis, selectedAggregation), 
+            "xDomain": generateXDomain(records, selectedAggregation), 
+            "yLeftLabel": "Number of Patients", 
+            "wwSeries": buildMonthYearWWSeries(wastewater, selectedOverlay, selectedAggregation), 
+            "yRightLabel" : "Wastewater Level" 
+        }      
+    } else if (selectedAggregation === "year"){
+        renderModel = { 
+            "aggregateType": selectedAggregation,
+            "series" : buildYearDxSeries(records, selectedDiagnosis, selectedAggregation), 
+            "xDomain": generateXDomain(records, selectedAggregation), 
+            "yLeftLabel": "Number of Patients", 
+            "wwSeries": buildMonthYearWWSeries(wastewater, selectedOverlay, selectedAggregation), 
+            "yRightLabel" : "Wastewater Level" 
+        }        
+    } else{
+        renderModel = { 
+            "aggregateType": selectedAggregation,
+            "series" : buildYOYDxSeries(records, selectedDiagnosis, selectedAggregation), 
+            "xDomain": generateXDomain(records, selectedAggregation), 
+            "yLeftLabel": "Number of Patients", 
+            "wwSeries": buildYOYWWSeries(wastewater, selectedOverlay, selectedAggregation), 
+            "yRightLabel" : "Wastewater Level" 
+        }
+    }
+
+    console.log("renderModel");
+    console.log(renderModel);
+    return renderModel;
+
+
+}
+
 
 
 
