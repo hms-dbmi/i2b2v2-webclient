@@ -525,6 +525,17 @@ export default class PathogenTimeline {
         const seriesByDiagnosis = d3.group(bucketedPatients, d => d.diagnosis);
 
         // LEFT Y SCALE (patients)
+
+        // unifid yLeft using renderModel
+        // const maxY = Math.max(0, ...renderModel.series.flatMap(item => 
+        //     item.points.map(point => point.value)
+        //     ));
+        // const yLeft = d3.scaleLinear()
+        //     .domain([0, maxY])
+        //     .nice()            
+        //     .range([height, 0]);
+        
+
         const maxPatients = d3.max(bucketedPatients, d => d.value);
         const yLeft = d3.scaleLinear()
             .domain([0, maxPatients || 0])
@@ -600,6 +611,11 @@ export default class PathogenTimeline {
         if (!patientExtent[0] || !patientExtent[1]) {
             return;
         }
+
+        //unified xScale using renderModel
+        // const xScale = d3.scaleTime()
+        //     .domain(renderModel.xDomain)
+        //     .range([0, width]);
 
         const xScale = d3.scaleTime()
             .domain(patientExtent)
@@ -712,7 +728,7 @@ export default class PathogenTimeline {
         // DRAW DIAGNOSIS LINES + POINTS
         // -----------------------------
 
-        
+
         // unified dx series loop
         // for (const seriesItem of renderModel.series){
         //     // Line
@@ -966,7 +982,8 @@ function generateXDomain(records, selectedAggregation) {
             return [];
         }
     } else {
-        xdomain = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+        //unify: we're changing the tick format stuff later
+        xdomain = [0, 11];
     }
     return xdomain;
 }
