@@ -692,6 +692,12 @@ export default class PathogenTimeline {
         // -----------------------------
         // LINE GENERATORS
         // -----------------------------
+
+        //unified patient line
+        // const patientLine = d3.line()
+        //     .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+        //     .y(point => yLeft(point.value));   
+
         const patientLine = d3.line()
             .x(d => xScale(d.date))
             .y(d => yLeft(d.value));
