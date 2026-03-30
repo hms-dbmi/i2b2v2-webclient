@@ -58,6 +58,8 @@ export default class Count {
             title = title[0].firstChild.nodeValue;
 
             const count = i2b2.h.XPath(data, "//query_result_instance/set_size")[0].firstChild.nodeValue;
+            // do not display if we have invalid data
+            if (count === -1) return false;
 
             // display the info
             this.config.displayEl.innerHTML = this.dispTemplate;
