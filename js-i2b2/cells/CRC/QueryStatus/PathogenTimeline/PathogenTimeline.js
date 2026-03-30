@@ -711,6 +711,36 @@ export default class PathogenTimeline {
         // -----------------------------
         // DRAW DIAGNOSIS LINES + POINTS
         // -----------------------------
+
+        
+        // unified dx series loop
+        // for (const seriesItem of renderModel.series){
+        //     // Line
+        //     this.svg.append("path")
+        //         .datum(seriesItem.points)
+        //         .attr("fill", "none")
+        //         .attr("stroke",  seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
+        //         .attr("stroke-width", 2)
+        //         .attr("d", patientLine);
+
+        //     // Points
+        //     this.svg.selectAll(`circle.${cssSafeKey(seriesItem.diagnosis)}`)
+        //         .data(seriesItem.points)
+        //         .enter()
+        //         .append("circle")
+        //         .attr("class", `point ${cssSafeKey(seriesItem.diagnosis)}`)
+        //         .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+        //         .attr("cy", point => yLeft(point.value))
+        //         .attr("r", 4)
+        //         .attr("fill", seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
+        //         .attr("stroke", seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
+        //         .append("title")
+        //         .text(d => {
+        //             const label = tickFormat(d.date);
+        //             return `${seriesItem.diagnosis} — ${label}\n[ ${d.value} patients ]`;
+        //         });
+        // }
+
         for (let [diagnosis, rows] of seriesByDiagnosis.entries()) {
             rows = rows.slice().sort((a, b) => a.date - b.date);
             const color = DIAGNOSIS_REGISTRY.diagnosis[diagnosis]?.color || "#999";
