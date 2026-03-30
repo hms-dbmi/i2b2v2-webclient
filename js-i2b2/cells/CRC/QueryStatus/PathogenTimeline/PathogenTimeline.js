@@ -731,6 +731,9 @@ export default class PathogenTimeline {
                 .attr("class", `point ${cssSafeKey(diagnosis)}`)
                 .attr("cx", d => xScale(d.date))
                 .attr("cy", d => yLeft(d.value))
+                //unified cx and cy computed
+                // .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                //.attr("cy", point => yLeft(point.value))
                 .attr("r", 4)
                 .attr("fill", color)
                 .attr("stroke", color)
