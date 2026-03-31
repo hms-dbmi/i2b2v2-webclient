@@ -293,6 +293,221 @@ export default class PathogenTimeline {
         return true;
     }
 
+ drawUnified(records, selectedOverlay, selectedAggregation) {
+        if (!records || records.length === 0) {
+            this.svg.selectAll("*").remove();
+            return;
+        }
+
+        const width = this.width - margin.left - margin.right;
+        const height = this.height;
+
+        this.svg.selectAll("*").remove();
+
+        // -----------------------------
+        // LEFT Y SCALE (patients)
+        // -----------------------------
+
+        const maxY = Math.max(0, ...renderModel.series.flatMap(item => 
+            item.points.map(point => point.value)
+            ));
+        const yLeft = d3.scaleLinear()
+            .domain([0, maxY])
+            .nice()            
+            .range([height, 0]);
+
+
+        // -----------------------------
+        // RIGHT Y SCALE (wastewater)
+        // -----------------------------
+
+        let yRight = null;
+
+        if (selectedOverlay !== "None" && renderModel.wwSeries && renderModel.wwSeries.length > 0) {
+            const maxWW = Math.max(0, ...renderModel.wwSeries.flatMap(item => 
+            item.points.map(point => point.value)
+            ));
+            yRight = d3.scaleLinear()
+                .domain([0, maxWW])
+                .nice()            
+                .range([height, 0]);
+        } else{
+            console.log("wwSeries is empty, or selectedOverlay is None.")  
+        }
+
+
+        // -----------------------------
+        // X SCALE (respect patient breakdown only)
+        // -----------------------------
+
+        const xScale = (selectedAggregation === "yoy" ? d3.scaleLinear() : d3.scaleTime())
+            .domain(renderModel.xDomain)
+            .range([0, width]);
+       
+        // -----------------------------
+        // AXES
+        // -----------------------------
+
+        // X axis
+
+        let tickFormat;
+
+        if (selectedAggregation === "yoy") {
+            tickFormat = i => renderModel.months[i];
+        } else if (selectedAggregation === "year"){
+            tickFormat = d3.timeFormat("%Y");
+        } else {
+            tickFormat = d3.timeFormat("%Y-%m")
+        }
+
+        const axis = d3.axisBottom(xScale)
+            .ticks(selectedAggregation === "yoy" ? 11 : 10)
+            .tickFormat(tickFormat)
+
+        if (selectedAggregation === "yoy") {
+            axis.tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+        }
+
+        this.svg.append("g")
+            .classed("x-axis", true)
+            .attr("transform", `translate(0,${height})`)
+            .call(axis)
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+
+
+
+        // Left Y axis
+
+        const yAxisLeft = this.svg.append("g")
+            .classed("y-axis left", true)
+            .call(
+                d3.axisLeft(yLeft)
+                    .tickFormat(d3.format(".2~s")));
+
+        const yLabelText =  renderModel.yLeftLabel;
+
+        const yLabelLeft = yAxisLeft.append("text")
+            .attr("class", "y-label")
+            .attr("fill", "currentColor")
+            .attr("letter-spacing", "1.16")
+            .attr("text-anchor", "middle")
+            .text(yLabelText)
+            .attr("transform", "rotate(-90)");
+
+        // After render, center it using SVG bbox
+        yLabelLeft.each(function () {
+            let w = 0;
+            try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
+
+            const x = -(height / 2);        
+            const y = -margin.left + 28;      
+
+            d3.select(this)
+                .attr("x", x)
+                .attr("y", y);
+        });
+
+
+        // Right Y axis (wastewater)
+        if (yRight) {
+            const yAxisRight = this.svg.append("g")
+                .classed("y-axis right", true)
+                .attr("transform", `translate(${width},0)`)
+                .call(d3.axisRight(yRight).tickFormat(d3.format(",")))
+
+            const yLabelRightText =  renderModel.yRightLabel;
+
+            yAxisRight.append("text")
+                .attr("class", "y-label")
+                .attr("text-anchor", "middle")
+                .attr("letter-spacing", "1.16")
+                .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
+                .text(renderModel.yRightLabel);
+
+        }
+
+        // -----------------------------
+        // LINE GENERATORS
+        // -----------------------------
+
+        const patientLine = d3.line()
+            .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+            .y(point => yLeft(point.value));   
+
+
+        const wastewaterLine = yRight ? d3.line()
+            .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+            .y(point => yRight(point.value)) : null;
+
+        // -----------------------------
+        // DRAW DIAGNOSIS LINES + POINTS
+        // -----------------------------
+
+        for (const seriesItem of renderModel.series){
+            // Line
+            this.svg.append("path")
+                .datum(seriesItem.points)
+                .attr("fill", "none")
+                .attr("stroke",  seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
+                .attr("stroke-width", 2)
+                .attr("d", patientLine);
+
+            // Points
+            this.svg.selectAll(`circle.${cssSafeKey(seriesItem.diagnosis)}`)
+                .data(seriesItem.points)
+                .enter()
+                .append("circle")
+                .attr("class", `point ${cssSafeKey(seriesItem.diagnosis)}`)
+                .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                .attr("cy", point => yLeft(point.value))
+                .attr("r", 4)
+                .attr("fill", seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
+                .attr("stroke", seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
+                .append("title")
+                .text(d => {
+                    const label = tickFormat(d.date);
+                    return `${seriesItem.diagnosis} — ${label}\n[ ${d.value} patients ]`;
+                });
+        }
+
+        // -----------------------------
+        // DRAW WASTEWATER OVERLAY
+        // -----------------------------
+
+        //NU
+        if (wastewaterLine && wwPoints.length) {
+            wwPoints.sort((a, b) => a.date - b.date);
+
+            // Line
+            this.svg.append("path")
+                .datum(wwPoints)
+                .attr("fill", "none")
+                .attr("stroke", wwConfig.color)
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "4 3")
+                .attr("d", wastewaterLine);
+
+            // Points
+            this.svg.selectAll(".ww-point")
+                .data(wwPoints)
+                .enter()
+                .append("circle")
+                .attr("class", "ww-point")
+                .attr("cx", d => xScale(d.date))
+                .attr("cy", d => yRight(d.value))
+                .attr("r", 3)
+                .attr("fill", wwConfig.color)
+                .attr("stroke", wwConfig.color)
+                .append("title")
+                .text(d => {
+                    const label = tickFormat(d.date);
+                    return `Wastewater\n${label}\n${d.value}`;
+                });
+        }
+    }
+
     drawYOY(renderModel, selectedOverlay){
         if (!renderModel.series || renderModel.series.length === 0) {
             this.svg.selectAll("*").remove();
@@ -496,9 +711,7 @@ export default class PathogenTimeline {
         } 
             
         
-    }
- 
-    
+    }    
 
     draw(records, selectedOverlay, selectedAggregation) {
         if (!records || records.length === 0) {
@@ -526,7 +739,7 @@ export default class PathogenTimeline {
 
         // LEFT Y SCALE (patients)
 
-        // unifid yLeft using renderModel
+        // unified yLeft using renderModel
         // const maxY = Math.max(0, ...renderModel.series.flatMap(item => 
         //     item.points.map(point => point.value)
         //     ));
@@ -545,6 +758,22 @@ export default class PathogenTimeline {
         // -----------------------------
         // RIGHT Y SCALE (wastewater)
         // -----------------------------
+
+        //unified yRight scale
+        // let yRight = null;
+
+        // if (selectedOverlay !== "None" && renderModel.wwSeries && renderModel.wwSeries.length > 0) {
+        //     const maxWW = Math.max(0, ...renderModel.wwSeries.flatMap(item => 
+        //     item.points.map(point => point.value)
+        //     ));
+        //     yRight = d3.scaleLinear()
+        //     .domain([0, maxWW])
+        //     .nice()            
+        //     .range([height, 0]);
+        // } else{
+        //   console.log("wwSeries is empty, or selectedOverlay is None.")  
+        // }
+
         let yRight = null;
         let wwPoints = [];
         let wwConfig = null;
@@ -691,6 +920,37 @@ export default class PathogenTimeline {
             .style("text-anchor", "end");
 
         // Left Y axis
+
+        //unified y left axis
+        // const yAxisLeft = this.svg.append("g")
+        //     .classed("y-axis left", true)
+        //     .call(
+        //         d3.axisLeft(yLeft)
+        //             .tickFormat(d3.format(".2~s")));
+
+        // const yLabelText =  renderModel.yLeftLabel;
+
+        // const yLabelLeft = yAxisLeft.append("text")
+        //     .attr("class", "y-label")
+        //     .attr("fill", "currentColor")
+        //     .attr("letter-spacing", "1.16")
+        //     .attr("text-anchor", "middle")
+        //     .text(yLabelText)
+        //     .attr("transform", "rotate(-90)");
+
+        // // After render, center it using SVG bbox
+        // yLabelLeft.each(function () {
+        //     let w = 0;
+        //     try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
+
+        //     const x = -(height / 2);        
+        //     const y = -margin.left + 28;      
+
+        //     d3.select(this)
+        //         .attr("x", x)
+        //         .attr("y", y);
+        // });
+
         const yAxisLeft = this.svg.append("g")
             .classed("y-axis left", true)
             .call(d3.axisLeft(yLeft).tickFormat(d3.format(".2~s")));
