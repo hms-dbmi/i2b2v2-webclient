@@ -47,9 +47,13 @@ export default class Count {
             }
 
             // only continue if we have the template loaded (bugfix: race condition)
-            if (typeof this.dispTemplate === 'undefined') return false;
+            if (typeof this.dispTemplate === "undefined") return false;
 
-            // extract the info from the XML
+            // bail out if the results are an error
+            const status = i2b2.h.XPath(data, "//query_result_instance/query_status_type/name");
+            if (status.length > 0 && ["ERROR"].includes(status[0].firstChild.nodeValue)) return false;
+
+           // extract the info from the XML
             let title = i2b2.h.XPath(data, "//query_result_instance/description");
             if (title.length === 0) {
                 // deal with PATIENT_COUNT_SHRINE_XML which is different

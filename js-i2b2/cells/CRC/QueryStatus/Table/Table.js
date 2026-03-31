@@ -45,14 +45,18 @@ export default class Table {
                 // no data has been set... exit
                 if (this.data === null || Object.keys(this.data).length === 0) return false;
             } else {
-                // get the breakdown data information (if present)
-                let resultXML = i2b2.h.XPath(inputData, "//xml_value");
-                if (resultXML.length > 0) {
-                    resultXML = resultXML[0].firstChild.nodeValue;
-                    // parse the data and put the results into the new data slot
-                    this.data = parseData(resultXML);
-                    if (typeof this.data === 'undefined') return false;
-                }
+              // bail out if the results are an error
+              const status = i2b2.h.XPath(inputData,"//query_result_instance/query_status_type/name");
+              if (status.length > 0 && ["ERROR"].includes(status[0].firstChild.nodeValue)) return false;
+
+              // get the breakdown data information (if present)
+              let resultXML = i2b2.h.XPath(inputData, "//xml_value");
+              if (resultXML.length > 0) {
+                resultXML = resultXML[0].firstChild.nodeValue;
+                // parse the data and put the results into the new data slot
+                this.data = parseData(resultXML);
+                if (typeof this.data === "undefined") return false;
+              }
             }
 
             // select the previously created TABLE element

@@ -64,6 +64,10 @@ export default class BarGraph {
                 // no data has been set... exit
                 if (Object.keys(this.data.new).length === 0) return false;
             } else {
+                // bail out if the results are an error
+                const status = i2b2.h.XPath(inputData,"//query_result_instance/query_status_type/name");
+                if (status.length > 0 && ["ERROR"].includes(status[0].firstChild.nodeValue)) return false;
+
                 // shift previous data into the old data slot
                 this.data.old = this.data.new;
 

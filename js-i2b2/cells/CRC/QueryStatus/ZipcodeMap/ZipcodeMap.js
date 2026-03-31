@@ -286,6 +286,9 @@ export default class ZipcodeMap {
     update(inputData) {
         if (this.errors || typeof inputData === 'undefined') return false; // don't display (no data yet)
         try {
+            // bail out if the results are an error
+            const status = i2b2.h.XPath(inputData,"//query_result_instance/query_status_type/name");
+            if (status.length > 0 && ["ERROR"].includes(status[0].firstChild.nodeValue)) return false;
 
             // get the breakdown data information (if present)
             let resultXML = i2b2.h.XPath(inputData, "//xml_value");
