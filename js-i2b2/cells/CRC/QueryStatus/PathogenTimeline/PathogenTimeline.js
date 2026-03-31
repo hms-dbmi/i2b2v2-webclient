@@ -613,7 +613,7 @@ export default class PathogenTimeline {
         }
 
         //unified xScale using renderModel
-        // const xScale = d3.scaleTime()
+        // const xScale = (selectedAggregation === "yoy" ? d3.scaleLinear() : d3.scaleTime())
         //     .domain(renderModel.xDomain)
         //     .range([0, width]);
 
@@ -650,6 +650,34 @@ export default class PathogenTimeline {
             : d3.timeFormat("%Y-%m");
 
         // X axis
+
+        //unified x-axis
+        // let tickFormat;
+
+        // if (selectedAggregation === "yoy") {
+        //     tickFormat = i => renderModel.months[i];
+        // } else if (selectedAggregation === "year"){
+        //     tickFormat = d3.timeFormat("%Y");
+        // } else {
+        //     tickFormat = d3.timeFormat("%Y-%m")
+        // }
+
+        // const axis = d3.axisBottom(xScale)
+        //     .ticks(selectedAggregation === "yoy" ? 11 : 10)
+        //     .tickFormat(tickFormat)
+
+        // if (selectedAggregation === "yoy") {
+        //     axis.tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+        // }
+
+        // this.svg.append("g")
+        //     .classed("x-axis", true)
+        //     .attr("transform", `translate(0,${height})`)
+        //     .call(axis)
+        //     .selectAll("text")
+        //     .attr("transform", "rotate(-45)")
+        //     .style("text-anchor", "end");
+
         this.svg.append("g")
             .classed("x-axis", true)
             .attr("transform", `translate(0,${height})`)
