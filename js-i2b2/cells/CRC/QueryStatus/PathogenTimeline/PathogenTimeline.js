@@ -242,6 +242,9 @@ export default class PathogenTimeline {
             console.log("renderModel.series");
             console.log(renderModel.series);
 
+            const currentKeys = [...new Set(renderModel.series.map(item => item.diagnosis))];
+            updateLegend(this.controls, currentKeys, selectedOverlay);
+
             this.drawUnified(renderModel, selectedOverlay, selectedAggregation);
             
             // LEGACY DRAW PATH (inactive
