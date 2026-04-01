@@ -41,6 +41,12 @@
         "shibboleth": null,
         "okta": null
       }
+    }, {
+      "domain": "shrine-masscpr-dev-hub",
+      "name": "SHRINE Demo",
+      "urlCellPM": "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/PMService/",
+      "allowAnalysis": true,
+      "debug": false
     }
   ],
   "loginTimeout": 5

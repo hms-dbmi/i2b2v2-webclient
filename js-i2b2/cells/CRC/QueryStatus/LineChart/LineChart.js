@@ -55,6 +55,10 @@ export default class LineChart {
         if (typeof inputData === "undefined") {
             if (Object.keys(this.data.new).length === 0) return;
         } else {
+            // bail out if the results are an error
+            const status = i2b2.h.XPath(inputData,"//query_result_instance/query_status_type/name");
+            if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) return false;
+
             this.data.old = this.data.new;
 
             let resultXML = i2b2.h.XPath(inputData, "//xml_value");

@@ -17,6 +17,25 @@ export default class BarGraph {
             this.isVisible = false;
 
             if (typeof this.width === 'undefined') this.width = this.config.displayEl.parentElement.clientWidth;
+            if (this.config.advancedConfig?.maxLabelLength) {
+                this.maxLabelLength = parseInt(this.config.advancedConfig.maxLabelLength);
+            } else {
+                this.maxLabelLength = 150;
+            }
+            if (this.config.advancedConfig?.textColor) {
+                this.textColor = this.config.advancedConfig.textColor;
+            } else {
+                this.textColor = "var(--text-primary-dark)";
+            }
+            if (this.config.advancedConfig?.barColor) {
+                this.barColor = this.config.advancedConfig.barColor;
+            } else {
+                this.barColor = false;
+            }
+
+
+
+
 
             // create the SVG element
             this.height = 400 - margin.top - margin.bottom;
@@ -45,6 +64,10 @@ export default class BarGraph {
                 // no data has been set... exit
                 if (Object.keys(this.data.new).length === 0) return false;
             } else {
+                // bail out if the results are an error
+                const status = i2b2.h.XPath(inputData,"//query_result_instance/query_status_type/name");
+                if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) return false;
+
                 // shift previous data into the old data slot
                 this.data.old = this.data.new;
 
@@ -84,8 +107,9 @@ export default class BarGraph {
                 .attr("transform", "translate(0," + this.height + ")")
                 .call(d3.axisBottom(x))
                 .selectAll("text")
-                .text((d)=>shortenLabel(d, i2b2.CRC.cfg.params.maxBarLabelLength))
+                .text((d) => shortenLabel(d, this.maxLabelLength))
                 .attr("transform", "translate(-10,0)rotate(-45)")
+                .attr("fill", this.textColor)
                 .classed("graphLabel", true)
                 .attr("test", (x, y, z) => {
                     let h = z[y].getBoundingClientRect().height;
@@ -94,8 +118,8 @@ export default class BarGraph {
                 })
                 .append("title")
                 .text((t, i) => {
-                    // TODO: handle Sketches
-                    let val = data[i].value;
+                    // TODO: handle Obfuscation and Sketches
+                    let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(data[i].value);
                     if (data[i].display) val = data[i].display;
                     return t + "\n[ "+ val + " patients ]";
                 });
@@ -117,7 +141,7 @@ export default class BarGraph {
                 .classed("y-axis", true)
                 .call(d3.axisLeft(y).tickFormat(d3.format(".2~s")));
             y_axis.append("text")
-                .attr("fill","currentColor")
+                .attr("fill", this.textColor)
                 .text("Number of Patients")
                 .classed("y-label", true)
                 .attr("letter-spacing", "1.16")
@@ -126,6 +150,9 @@ export default class BarGraph {
                     let h = (height - z[0].getBoundingClientRect().width) / 2;
                     return "translate(" + l + "," + h + ") rotate(-90) ";
                 });
+            svg.selectAll(".y-axis .tick text").attr("fill", this.textColor);
+
+
 
 
             // Bars selection and updating
@@ -141,8 +168,8 @@ export default class BarGraph {
                 .attr("height", function(d) { return height - y(d.value); })
                 .select('title')
                 .text((d) => {
-                        // TODO: handle Sketches
-                        let val = d.value;
+                        // TODO: handle Obfuscation and Sketches
+                        let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(d.value);
                         if (d.display) val = d.display;
                         return "[ " + val + " patients ]\n" + d.name.trim()
                 });
@@ -156,8 +183,8 @@ export default class BarGraph {
                 .attr("height", function(d) { return height - y(d.value); })
                 .append("title")
                 .text((d) => {
-                    // TODO: handle Sketches
-                    let val = d.value;
+                    // TODO: handle Obfuscation and Sketches
+                    let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(d.value);
                     if (d.display) val = d.display;
                     return "[ " + val + " patients ]\n" + d.name.trim()
                   });
@@ -247,12 +274,30 @@ let parseData = function(xmlData) {
         let entryRecord = {}
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text();
         entryRecord.value = params[i2].firstChild.nodeValue;
-        const floorThreshold = params[i2].getAttribute("floorThresholdNumber");
-        const obfuscateNumber = params[i2].getAttribute("obfuscatedDisplayNumber");
-        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, floorThreshold, obfuscateNumber);
+
+        // bail out if we get a -1 back from the server. This means the data is not valid.
+        if (entryRecord.value === -1) return;
+
+        // apply obfuscation
+        if (i2b2.PM.model.isObfuscated) {
+            const nodeValue = parseInt(params[i2].firstChild.nodeValue);
+            if (!isNaN(nodeValue) && nodeValue < 4) {
+                entryRecord.display = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+            }
+            if (isNaN(nodeValue) || entryRecord.name === 'QueryMasterID') {
+                entryRecord.display = params[i2].firstChild.nodeValue;
+            } else {
+                entryRecord.display = params[i2].firstChild.nodeValue + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
+            }
+        }
+        if (i2b2.UI.cfg.useFloorThreshold) {
+            if (params[i2].firstChild.nodeValue < i2b2.UI.cfg.floorThresholdNumber) {
+                entryRecord.display = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber.toString();
+            }
+        }
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
-            entryRecord.value = $('<div>').html(params[i2].textContent).text();
+            entryRecord.value = i2b2.h.Unescape(entryRecord.value);
             entryRecord.display = params[i2].attributes.display.textContent;
         }
         breakdown.result.push(entryRecord);
@@ -279,8 +324,7 @@ let parseData = function(xmlData) {
                 for (let siteresult of siteResults) {
                     siteData.results.push({
                         name: $('<div>').html(siteresult.getAttribute('column')).text(),
-                        value: parseInt(siteresult.textContent),
-                        display: i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(siteresult.textContent, siteData.floorThresholdNumber, siteData.obfuscatedDisplayNumber)
+                        value: parseInt(siteresult.textContent)
                     });
                 }
             }
