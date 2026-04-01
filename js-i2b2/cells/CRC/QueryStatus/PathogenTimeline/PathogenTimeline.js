@@ -241,46 +241,49 @@ export default class PathogenTimeline {
             const renderModel = buildRenderModel(raw, this.wastewater, selectedDiagnosis, selectedAggregation, selectedOverlay);
             console.log("renderModel.series");
             console.log(renderModel.series);
+
+            this.drawUnified(renderModel, selectedOverlay, selectedAggregation);
             
-            if (selectedAggregation === "yoy") {
+            // LEGACY DRAW PATH (inactive
+            // if (selectedAggregation === "yoy") {
 
-                const series = buildYOYDxSeries(raw, selectedDiagnosis);
+            //     const series = buildYOYDxSeries(raw, selectedDiagnosis);
                 
-                //create a render model for drawing
-                const renderModel = {
-                    "months" : ["Jan","Feb", "Mar", "Apr","May","Jun","Jul","Aug","Sep","Oct", "Nov","Dec" ],
-                    "series" : series,
-                    "xDomain": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 
-                    "yLeftLabel": "Number of Patients",
-                    "wwSeries": [],
-                    "yRightLabel" : "Wastewater Level"
+            //     //create a render model for drawing
+            //     const renderModel = {
+            //         "months" : ["Jan","Feb", "Mar", "Apr","May","Jun","Jul","Aug","Sep","Oct", "Nov","Dec" ],
+            //         "series" : series,
+            //         "xDomain": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 
+            //         "yLeftLabel": "Number of Patients",
+            //         "wwSeries": [],
+            //         "yRightLabel" : "Wastewater Level"
 
-                }   
+            //     }   
 
-                if (selectedOverlay == "None") {
-                    console.log("selected overlay is none, skipping wwYOY parse");
-                } else {
-                    renderModel.wwSeries = buildYOYWWSeries(this.wastewater, selectedOverlay);
+            //     if (selectedOverlay == "None") {
+            //         console.log("selected overlay is none, skipping wwYOY parse");
+            //     } else {
+            //         renderModel.wwSeries = buildYOYWWSeries(this.wastewater, selectedOverlay);
                    
-                }                          
+            //     }                          
 
-                this.drawYOY(renderModel, selectedOverlay);
+            //     this.drawYOY(renderModel, selectedOverlay);
 
-                return;
-            }
+            //     return;
+            // }
 
             
 
             // IMPORTANT: filter by grain so month aggregation doesn't accidentally include year rows (and vice versa)
-            const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
-            const aggregationRows = raw.filter(r => (r.grain || "").toUpperCase() === aggregationGrain);
+            // const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
+            // const aggregationRows = raw.filter(r => (r.grain || "").toUpperCase() === aggregationGrain);
 
-            const filtered = filterBreakdown(aggregationRows, selectedDiagnosis);
+            // const filtered = filterBreakdown(aggregationRows, selectedDiagnosis);
 
-            const currentKeys = [...new Set(renderModel.series.map(item => item.diagnosis))];
-            updateLegend(this.controls, currentKeys, selectedOverlay);
+            // const currentKeys = [...new Set(renderModel.series.map(item => item.diagnosis))];
+            // updateLegend(this.controls, currentKeys, selectedOverlay);
             
-            this.draw(filtered, selectedOverlay, selectedAggregation);
+            // this.draw(filtered, selectedOverlay, selectedAggregation);
 
             if (this.isVisible) {
                 this.config.displayEl.parentElement.style.height =
@@ -292,8 +295,9 @@ export default class PathogenTimeline {
         }
         return true;
     }
-    drawUnified(records, selectedOverlay, selectedAggregation) {
-            if (!records || records.length === 0) {
+    drawUnified(renderModel, selectedOverlay, selectedAggregation) {
+            console.log("we're in drawUnified");
+            if (!renderModel || renderModel.length === 0) {
                 this.svg.selectAll("*").remove();
                 return;
             }
@@ -479,6 +483,7 @@ export default class PathogenTimeline {
             if (wastewaterLine && renderModel.wwSeries.length) {
                 
                 const wwConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+                let maxYear = -Infinity;
                 
                 for(const seriesItem of renderModel.wwSeries){
                     const isCurrentYear = seriesItem.year === maxYear;
@@ -1113,7 +1118,8 @@ function buildRenderModel(records, wastewater, selectedDiagnosis, selectedAggreg
         renderModel = { 
             "aggregateType": selectedAggregation,
             "series" : buildYOYDxSeries(records, selectedDiagnosis, selectedAggregation), 
-            "xDomain": generateXDomain(records, selectedAggregation), 
+            "xDomain": generateXDomain(records, selectedAggregation),
+            "months": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
             "yLeftLabel": "Number of Patients", 
             "wwSeries": buildYOYWWSeries(wastewater, selectedOverlay, selectedAggregation), 
             "yRightLabel" : "Wastewater Level" 
