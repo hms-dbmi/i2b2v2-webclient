@@ -206,7 +206,7 @@ export default class ShrineSites {
             return false;
         }
         // only display if we have rows returned
-        if (Object.keys(this.data).length > 0) {
+        if (Object.keys(this.data).length > 0 && this.isVisible) {
             this.config.displayEl.style.display = "block";
             this.config.displayEl.parentElement.style.height = this.config.displayEl.scrollHeight + "px";
             return true;
