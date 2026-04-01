@@ -50,8 +50,8 @@ export default class Count {
             if (typeof this.dispTemplate === "undefined") return false;
 
             // bail out if the results are an error
-            const status = i2b2.h.XPath(data, "//query_result_instance/query_status_type/name");
-            if (status.length > 0 && ["ERROR"].includes(status[0].firstChild.nodeValue)) return false;
+            const status = i2b2.h.XPath(data,"//query_result_instance/query_status_type/name");
+            if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) return false;
 
            // extract the info from the XML
             let title = i2b2.h.XPath(data, "//query_result_instance/description");

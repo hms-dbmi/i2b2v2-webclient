@@ -57,7 +57,7 @@ export default class LineChart {
         } else {
             // bail out if the results are an error
             const status = i2b2.h.XPath(inputData,"//query_result_instance/query_status_type/name");
-            if (status.length > 0 && ["ERROR"].includes(status[0].firstChild.nodeValue)) return false;
+            if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) return false;
 
             this.data.old = this.data.new;
 
