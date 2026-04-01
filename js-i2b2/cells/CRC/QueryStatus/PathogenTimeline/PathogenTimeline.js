@@ -449,8 +449,12 @@ export default class PathogenTimeline {
             // -----------------------------
 
             for (const seriesItem of renderModel.series){
+
+                // group
+                const group = this.svg.append("g");
+
                 // Line
-                this.svg.append("path")
+                group.append("path")
                     .datum(seriesItem.points)
                     .attr("fill", "none")
                     .attr("stroke",  seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
@@ -458,7 +462,7 @@ export default class PathogenTimeline {
                     .attr("d", patientLine);
 
                 // Points
-                this.svg.selectAll(`circle.${cssSafeKey(seriesItem.diagnosis)}`)
+                group.selectAll(`circle.${cssSafeKey(seriesItem.diagnosis)}`)
                     .data(seriesItem.points)
                     .enter()
                     .append("circle")
@@ -479,7 +483,6 @@ export default class PathogenTimeline {
             // DRAW WASTEWATER OVERLAY
             // -----------------------------
 
-            //CANDIDATE
             if (wastewaterLine && renderModel.wwSeries.length) {
                 
                 const wwConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
@@ -488,10 +491,11 @@ export default class PathogenTimeline {
                 for(const seriesItem of renderModel.wwSeries){
                     const isCurrentYear = seriesItem.year === maxYear;
                     const strokeWidth = isCurrentYear ? 4 : 2;                
-                    const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+                    // group
+                    const group = this.svg.append("g");
 
                     // Line
-                    this.svg.append("path")
+                    group.append("path")
                         .datum(seriesItem.points)
                         .attr("fill", "none")
                         .attr("stroke", seriesItem.stroke || wwConfig.color)
@@ -501,7 +505,7 @@ export default class PathogenTimeline {
                         .text("Wastewater Line"); 
 
                     // Points
-                    this.svg.selectAll(".ww-point")
+                    group.selectAll(".ww-point")
                         .data(seriesItem.points)
                         .enter()
                         .append("circle")
