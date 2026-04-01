@@ -1146,7 +1146,7 @@ function buildRenderModel(records, wastewater, selectedDiagnosis, selectedAggreg
             "series" : buildMonthYearDxSeries(records, selectedDiagnosis, selectedAggregation), 
             "xDomain": generateXDomain(records, selectedAggregation), 
             "yLeftLabel": "Number of Patients", 
-            "wwSeries": buildMonthYearWWSeries(wastewater, selectedOverlay, selectedAggregation), 
+            "wwSeries": buildMonthYearWWSeries(wastewater, records, selectedOverlay, selectedAggregation), 
             "yRightLabel" : "Wastewater Level" 
         }        
     } 
@@ -1331,14 +1331,21 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
 
 }
 
-function buildMonthYearWWSeries(wastewater, selectedOverlay, selectedAggregation) {
+function buildMonthYearWWSeries(wastewater, records, selectedOverlay, selectedAggregation) {
 
-    const bucketedWW = collectWastewaterByAggregation(wastewater, selectedOverlay, selectedAggregation);
+    const bucketedWW = collectWastewaterByAggregation(wastewater, selectedOverlay, selectedAggregation) ?? [];
+    const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);      
+
+    const domain = d3.extent(bucketedPatients, d => d.date);
+    const filteredWW = (domain?.[0] && domain?.[1])
+    ? bucketedWW.filter(d => d.date >= domain[0] && d.date <= domain[1])
+    : bucketedWW;
+
 
     let monthYearWWSeries = [];
 
     monthYearWWSeries.push({
-        points: bucketedWW
+        points: filteredWW
     });
 
     return monthYearWWSeries;
