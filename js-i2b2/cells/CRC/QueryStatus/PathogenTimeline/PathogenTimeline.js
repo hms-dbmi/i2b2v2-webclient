@@ -445,10 +445,22 @@ export default class PathogenTimeline {
                 .y(point => yRight(point.value)) : null;
 
             // -----------------------------
+            // CALCULATE MAX YEARS PER DATA SET, IF APPLICABLE
+            // -----------------------------
+
+            const hasDxYears = renderModel?.series?.some(item => Object.hasOwn(item, "year"));
+            const hasWWYears = renderModel?.wwSeries?.some(item => Object.hasOwn(item, "year"));
+            const maxDxYear = hasDxYears ? Math.max(...renderModel.series.map(o => o.year)) : null;
+            const maxWWYear = hasWWYears ? Math.max(...renderModel.wwSeries.map(o => o.year)) : null;
+
+            // -----------------------------
             // DRAW DIAGNOSIS LINES + POINTS
             // -----------------------------
 
             for (const seriesItem of renderModel.series){
+
+                const isMaxYear = seriesItem.year === maxDxYear;
+                const strokeWidth = isMaxYear ? 4 : 2; 
 
                 // group
                 const group = this.svg.append("g");
@@ -458,7 +470,7 @@ export default class PathogenTimeline {
                     .datum(seriesItem.points)
                     .attr("fill", "none")
                     .attr("stroke",  seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
-                    .attr("stroke-width", 2)
+                    .attr("stroke-width", strokeWidth)
                     .attr("d", patientLine);
 
                 // Points
@@ -486,11 +498,11 @@ export default class PathogenTimeline {
             if (wastewaterLine && renderModel.wwSeries.length) {
                 
                 const wwConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
-                let maxYear = -Infinity;
                 
                 for(const seriesItem of renderModel.wwSeries){
-                    const isCurrentYear = seriesItem.year === maxYear;
-                    const strokeWidth = isCurrentYear ? 4 : 2;                
+                    const isMaxYear = seriesItem.year === maxWWYear;
+                    const strokeWidth = isMaxYear ? 4 : 2;               
+                    
                     // group
                     const group = this.svg.append("g");
 
