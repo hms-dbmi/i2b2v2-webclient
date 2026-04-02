@@ -247,7 +247,7 @@ export default class PathogenTimeline {
 
             this.drawUnified(renderModel, selectedOverlay, selectedAggregation);
             
-            // LEGACY DRAW PATH (inactive
+            // // LEGACY DRAW PATH (inactive
             // if (selectedAggregation === "yoy") {
 
             //     const series = buildYOYDxSeries(raw, selectedDiagnosis);
@@ -519,8 +519,8 @@ export default class PathogenTimeline {
 
                     // point label
                     const pointLabel = selectedAggregation === "yoy" 
-                        ? d => `${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value}]`
-                        : d => `Wastewater\n${tickFormat(d.date)}\n[ ${d.value}]`;                
+                        ? d => `Wastewater\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} ]`
+                        : d => `Wastewater\n${tickFormat(d.date)}\n[ ${d.value} ]`;                
                 
 
                     // Line
@@ -555,6 +555,7 @@ export default class PathogenTimeline {
     }
 
     drawYOY(renderModel, selectedOverlay){
+        console.log("we're in old draw yoy");
         if (!renderModel.series || renderModel.series.length === 0) {
             this.svg.selectAll("*").remove();
             return;
@@ -760,6 +761,7 @@ export default class PathogenTimeline {
     }    
 
     draw(records, selectedOverlay, selectedAggregation) {
+        console.log("we're in old draw");
         if (!records || records.length === 0) {
             this.svg.selectAll("*").remove();
             return;
