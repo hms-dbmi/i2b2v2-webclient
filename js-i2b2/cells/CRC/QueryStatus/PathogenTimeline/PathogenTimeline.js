@@ -85,40 +85,7 @@ export default class PathogenTimeline {
                     diagnosis: "All",
                     overlay: "None",
                     aggregation: "month"
-                };
-
-                // Helpers for link-style controls
-                function renderLinks(ulEl, items, selectedValue) {
-                    if (!ulEl) return;
-                    ulEl.innerHTML = "";
-                    items.forEach(({ value, label }) => {
-                        const li = document.createElement("li");
-                        const sp = document.createElement("span");
-                        sp.className = "path-link" + (value === selectedValue ? " selected" : "");
-                        sp.setAttribute("data-value", value);
-                        sp.textContent = label;
-                        li.appendChild(sp);
-                        ulEl.appendChild(li);
-                    });
-                }
-
-                function bindLinkClicks(ulEl, onPick) {
-                    if (!ulEl) return;
-                    ulEl.addEventListener("click", (e) => {
-                        const target = e.target;
-                        if (!(target instanceof HTMLElement)) return;
-                        if (!target.classList.contains("path-link")) return;
-
-                        const value = target.getAttribute("data-value");
-                        if (!value) return;
-
-                        // Toggle selected within this UL
-                        ulEl.querySelectorAll(".path-link.selected").forEach(n => n.classList.remove("selected"));
-                        target.classList.add("selected");
-
-                        onPick(value);
-                    });
-                }
+                };                
 
                 // Build items
                 const diagnosisItems = [
@@ -239,8 +206,6 @@ export default class PathogenTimeline {
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year" | "yoy"
 
             const renderModel = buildRenderModel(raw, this.wastewater, selectedDiagnosis, selectedAggregation, selectedOverlay);
-            console.log("renderModel.series");
-            console.log(renderModel.series);
 
             const currentKeys = [...new Set(renderModel.series.map(item => item.diagnosis))];
             updateLegend(this.controls, currentKeys, selectedOverlay);
@@ -258,7 +223,7 @@ export default class PathogenTimeline {
         return true;
     }
     draw(renderModel, selectedOverlay, selectedAggregation) {
-            console.log("we're in drawUnified");
+
             if (!renderModel || renderModel.length === 0) {
                 this.svg.selectAll("*").remove();
                 return;
@@ -652,8 +617,6 @@ function buildRenderModel(records, wastewater, selectedDiagnosis, selectedAggreg
         }        
     } 
 
-    console.log("renderModel");
-    console.log(renderModel);
     return renderModel;
 
 
@@ -699,7 +662,6 @@ function buildMonthYearDxSeries(rawData, selectedDiagnosis, selectedAggregation)
         let date = row.date;
         let value = row.value;
         
-        console.log(row.diagnosis);
         if (groupDxMonthYear[diagnosis] === undefined){
             groupDxMonthYear[diagnosis] = {
                 points: [],
@@ -722,8 +684,6 @@ function buildMonthYearDxSeries(rawData, selectedDiagnosis, selectedAggregation)
         points: data.points
     }));
     
-    console.log(`${aggregationGrain} series coming up`);
-    console.log(series);
     return series;   
  
 }
@@ -886,8 +846,7 @@ function buildYOYWWSeries(wastewater, selectedOverlay) {
                 wwByYear[year][monthIndex].push(value);
             }
 
-            console.log(wwByYear);
-
+            
             // Create the series: one aggregated point per (year, month)
             const wwSeries = Object.entries(wwByYear).map(([yearKey, monthBuckets]) => {
                 const pointsArray = Object.entries(monthBuckets).map(([monthKey, values]) => {
@@ -934,6 +893,38 @@ function filterBreakdown(rows, diagnosisFilter) {
             diagnosisFilter === "ALL" ||
             row.diagnosis === diagnosisFilter;
         return diagnosisOk;
+    });
+}
+
+function renderLinks(ulEl, items, selectedValue) {
+    if (!ulEl) return;
+    ulEl.innerHTML = "";
+    items.forEach(({ value, label }) => {
+        const li = document.createElement("li");
+        const sp = document.createElement("span");
+        sp.className = "path-link" + (value === selectedValue ? " selected" : "");
+        sp.setAttribute("data-value", value);
+        sp.textContent = label;
+        li.appendChild(sp);
+        ulEl.appendChild(li);
+    });
+}
+
+function bindLinkClicks(ulEl, onPick) {
+    if (!ulEl) return;
+    ulEl.addEventListener("click", (e) => {
+        const target = e.target;
+        if (!(target instanceof HTMLElement)) return;
+        if (!target.classList.contains("path-link")) return;
+
+        const value = target.getAttribute("data-value");
+        if (!value) return;
+
+        // Toggle selected within this UL
+        ulEl.querySelectorAll(".path-link.selected").forEach(n => n.classList.remove("selected"));
+        target.classList.add("selected");
+
+        onPick(value);
     });
 }
 
