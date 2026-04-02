@@ -103,8 +103,8 @@ export default class PathogenTimeline {
                 ];
 
                 // Render initial lists
-                renderLinks(self.controls.diagnosisList, diagnosisItems, self.state.diagnosis);
-                renderLinks(self.controls.overlayList, overlayItems, self.state.overlay);
+                renderControlLinks(self.controls.diagnosisList, diagnosisItems, self.state.diagnosis);
+                renderControlLinks(self.controls.overlayList, overlayItems, self.state.overlay);
 
                 // Aggregation list is in HTML; ensure we have a selected item + sync state
                 if (self.controls.aggregationList) {
@@ -120,9 +120,9 @@ export default class PathogenTimeline {
                 }
 
                 // Bind clicks
-                bindLinkClicks(self.controls.diagnosisList, (v) => { self.state.diagnosis = v; self.update(); });
-                bindLinkClicks(self.controls.overlayList, (v) => { self.state.overlay = v; self.update(); });
-                bindLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
+                bindControlLinkClicks(self.controls.diagnosisList, (v) => { self.state.diagnosis = v; self.update(); });
+                bindControlLinkClicks(self.controls.overlayList, (v) => { self.state.overlay = v; self.update(); });
+                bindControlLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
 
                 // Create SVG
                 self.svgRoot = d3
@@ -896,7 +896,7 @@ function filterBreakdown(rows, diagnosisFilter) {
     });
 }
 
-function renderLinks(ulEl, items, selectedValue) {
+function renderControlLinks(ulEl, items, selectedValue) {
     if (!ulEl) return;
     ulEl.innerHTML = "";
     items.forEach(({ value, label }) => {
@@ -910,7 +910,7 @@ function renderLinks(ulEl, items, selectedValue) {
     });
 }
 
-function bindLinkClicks(ulEl, onPick) {
+function bindControlLinkClicks(ulEl, onPick) {
     if (!ulEl) return;
     ulEl.addEventListener("click", (e) => {
         const target = e.target;
