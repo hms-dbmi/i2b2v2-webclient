@@ -475,12 +475,17 @@ export default class PathogenTimeline {
                     : d => `${seriesItem.diagnosis} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
 
                 // Line
-                group.append("path")
+                const dxPath = group.append("path")
                     .datum(seriesItem.points)
                     .attr("fill", "none")
                     .attr("stroke",  seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
                     .attr("stroke-width", strokeWidth)
                     .attr("d", patientLine);
+
+                if (selectedAggregation === "yoy") {
+                    dxPath.append("title")
+                    .text(`${seriesItem.diagnosis} \n${seriesItem.year}`);
+                }
 
                 // Points
                 group.selectAll(`circle.${cssSafeKey(seriesItem.diagnosis)}`)
@@ -519,14 +524,18 @@ export default class PathogenTimeline {
                 
 
                     // Line
-                    group.append("path")
+                    const wwPath= group.append("path")
                         .datum(seriesItem.points)
                         .attr("fill", "none")
                         .attr("stroke", seriesItem.stroke || wwConfig.color)
                         .attr("stroke-width", strokeWidth)
                         .attr("stroke-dasharray", "4 3") 
-                        .attr("d", wastewaterLine).append("title")
-                        .text("Wastewater Line"); 
+                        .attr("d", wastewaterLine);
+                    
+                    if (selectedAggregation === "yoy") {
+                        wwPath.append("title")
+                        .text(`Wastewater \n ${seriesItem.year}`);
+                    } 
 
                     // Points
                     group.selectAll(".ww-point")
