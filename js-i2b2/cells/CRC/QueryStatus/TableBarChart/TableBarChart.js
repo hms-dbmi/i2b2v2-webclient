@@ -54,6 +54,10 @@ export default class TableBarChart {
                 // no data has been set... exit
                 if (this.data === null || Object.keys(this.data).length === 0) return false;
             } else {
+                // bail out if the results are an error
+                const status = i2b2.h.XPath(inputData,"//query_result_instance/query_status_type/name");
+                if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) return false;
+
                 // get the breakdown data information (if present)
                 let resultXML = i2b2.h.XPath(inputData, "//xml_value");
                 if (resultXML.length > 0) {

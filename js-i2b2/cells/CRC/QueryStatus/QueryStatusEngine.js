@@ -764,6 +764,7 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
         i2b2.CRC.QueryStatus.displayComponents = config.displayComponents;
         i2b2.CRC.QueryStatus.displayOrder = config.displayOrder;
         i2b2.CRC.QueryStatus.haltOnStatus = config.haltPollingOnStatus;
+        i2b2.CRC.QueryStatus.hideVisualizationsOn = config.hideVisualizationsOn;
 
         // load breakdowns.json
         response = await fetch(i2b2.CRC.QueryStatus.baseURL + "breakdowns.json");
