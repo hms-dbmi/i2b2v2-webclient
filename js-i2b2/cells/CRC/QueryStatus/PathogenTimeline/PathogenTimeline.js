@@ -468,6 +468,12 @@ export default class PathogenTimeline {
                 // group
                 const group = this.svg.append("g");
 
+                // point label
+
+                const pointLabel = selectedAggregation === "yoy" 
+                    ? d => `${seriesItem.diagnosis}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
+                    : d => `${seriesItem.diagnosis} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
+
                 // Line
                 group.append("path")
                     .datum(seriesItem.points)
@@ -488,10 +494,7 @@ export default class PathogenTimeline {
                     .attr("fill", seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
                     .attr("stroke", seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
                     .append("title")
-                    .text(d => {
-                        const label = tickFormat(d.date);
-                        return `${seriesItem.diagnosis} — ${label}\n[ ${d.value} patients ]`;
-                    });
+                    .text(pointLabel);
             }
 
             // -----------------------------
@@ -508,6 +511,12 @@ export default class PathogenTimeline {
                     
                     // group
                     const group = this.svg.append("g");
+
+                    // point label
+                    const pointLabel = selectedAggregation === "yoy" 
+                        ? d => `${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value}]`
+                        : d => `Wastewater\n${tickFormat(d.date)}\n[ ${d.value}]`;                
+                
 
                     // Line
                     group.append("path")
@@ -531,7 +540,7 @@ export default class PathogenTimeline {
                         .attr("fill", seriesItem.stroke || wwConfig.color)
                         .attr("stroke", seriesItem.stroke || wwConfig.color)
                         .append("title")
-                        .text("Wastewater Point");  
+                        .text(pointLabel);  
                 }
             }
     }
