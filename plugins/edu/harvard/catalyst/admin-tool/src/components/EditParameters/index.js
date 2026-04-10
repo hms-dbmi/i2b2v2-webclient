@@ -294,25 +294,27 @@ export const EditParameters = ({
             filterable: false,
             type: 'singleSelect',
             valueOptions: (params) => {
-                if(params.row?.name !== '' && params.row?.dataType === DataType.B){
+                const predefParam = predefinedParams && params.row && predefinedParams.find(p => p.label === params.row.name);
+
+                if(predefParam && params.row?.dataType === DataType.B){
                     return  [{
                         label: 'Boolean',
                         value: DataType.B
                     }]
                 }
-                else if(params.row?.name !== '' && params.row?.dataType === DataType.T){
+                else if(predefParam && params.row?.dataType === DataType.T){
                     return  [{
                         label: 'Text',
                         value: DataType.T
                     }]
                 }
-                else if(params.row?.name !== '' && params.row?.dataType === DataType.N){
+                else if(predefParam && params.row?.dataType === DataType.N){
                     return  [{
                         label: 'Numeric',
                         value: DataType.N
                     }]
                 }
-                else if(params.row?.name !== '' && params.row?.dataType === DataType.I){
+                else if(predefParam && params.row?.dataType === DataType.I){
                     return  [{
                         label: 'Integer',
                         value: DataType.I
