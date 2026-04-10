@@ -6,7 +6,7 @@ import {
 } from "../../actions";
 import {EditParameters} from "../EditParameters";
 import "./EditProjectParameters.scss";
-import {DataType} from "models";
+import {DataType, ParamStatus} from "models";
 import {getAllGlobalParams} from "../../reducers/allHivesSlice";
 
 export const EditProjectParameters = ({selectedProject,
@@ -109,18 +109,18 @@ export const EditProjectParameters = ({selectedProject,
     useEffect(() => {
         let updatedPredefParams = ONT_PREDEFINED_PARAMS;
         if(allGlobalParams && allGlobalParams.length > 0){
-            const projPredefinedParamsJson = allGlobalParams.find(g => g.name === "Predefined Project Params");
-            if(projPredefinedParamsJson) {
-                const projPredefinedParams = JSON.parse(projPredefinedParamsJson.value);
+            const projPredefinedParamsJsonList = allGlobalParams.filter(g => g.name === "Predefined Project Params" && g.status === ParamStatus.A);
 
+            projPredefinedParamsJsonList.forEach(projPredefinedParamsJson => {
+                const projPredefinedParams = JSON.parse(projPredefinedParamsJson.value);
                 projPredefinedParams.forEach(param => {
                     param.dataType= DataType[param.dataType];
                     updatedPredefParams.push(param);
                 });
-            }
-        }
-        setPredefinedParams(updatedPredefParams);
+            });
 
+            setPredefinedParams(updatedPredefParams);
+        }
     }, [allGlobalParams]);
 
     return (

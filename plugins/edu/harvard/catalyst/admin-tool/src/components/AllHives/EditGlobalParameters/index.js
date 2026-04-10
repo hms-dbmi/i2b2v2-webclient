@@ -9,7 +9,7 @@ import {
 import {EditParameters} from "../../EditParameters";
 import {AuthenticationConfigModal} from "./AuthenticationConfigModal";
 import "./EditGlobalParameters.scss";
-import {DataType} from "models";
+import {DataType, ParamStatus} from "models";
 
 export const EditGlobalParameters = ({allHives,
                                      updatedParams,
@@ -52,16 +52,19 @@ export const EditGlobalParameters = ({allHives,
 
     useEffect(() => {
         if(allGlobalParams && allGlobalParams.length > 0){
-            const userPredefinedParamsJson = allGlobalParams.find(g => g.name === "Predefined Global Params");
-            if(userPredefinedParamsJson) {
-                const globalPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
-                const mappedPredefParams = globalPredefinedParams.map(param => {
+            const globalPredefinedParamsJsonList = allGlobalParams.filter(g => g.name === "Predefined Global Params" && g.status === ParamStatus.A);
+
+            const mappedGlobalDefParams = globalPredefinedParamsJsonList.map(globalPredefinedParamsJson => {
+                const globalPredefinedParams = JSON.parse(globalPredefinedParamsJson.value);
+                const mappedGlobalDefParams = globalPredefinedParams.map(param => {
                     param.dataType= DataType[param.dataType];
                     return param;
                 });
 
-                setPredefinedParams(mappedPredefParams);
-            }
+                return mappedGlobalDefParams;
+            });
+
+            setPredefinedParams(mappedGlobalDefParams.flat());
         }
     }, [allGlobalParams]);
 

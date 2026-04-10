@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import {EditParameters} from "../EditParameters";
 
 import "./EditUserParameters.scss";
-import {DataType} from "../../models";
+import {DataType, ParamStatus} from "../../models";
 import {getAllGlobalParams} from "../../reducers/allHivesSlice";
 import {
     getAllUserParamsStatusConfirmed,
@@ -56,16 +56,19 @@ export const EditUserParameters = ({selectedUser,
 
     useEffect(() => {
        if(allGlobalParams && allGlobalParams.length > 0){
-           const userPredefinedParamsJson = allGlobalParams.find(g => g.name === "Predefined User Params");
-           if(userPredefinedParamsJson) {
+           const userPredefinedParamsJsonList = allGlobalParams.filter(g => g.name === "Predefined User Params" && g.status === ParamStatus.A);
+
+           const mappedUserDefParams = userPredefinedParamsJsonList.map(userPredefinedParamsJson => {
                const userPredefinedParams = JSON.parse(userPredefinedParamsJson.value);
                const mappedUserDefParams = userPredefinedParams.map(param => {
                    param.dataType= DataType[param.dataType];
                    return param;
                });
 
-               setPredefinedParams(mappedUserDefParams);
-           }
+               return mappedUserDefParams;
+           });
+
+           setPredefinedParams(mappedUserDefParams.flat());
        }
     }, [allGlobalParams]);
 
