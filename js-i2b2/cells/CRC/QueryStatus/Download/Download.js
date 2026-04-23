@@ -169,6 +169,8 @@ let parseData = function(xmlData) {
         entryRecord.floorThreshold = params[i2].getAttribute("floorThresholdNumber");
         entryRecord.obfuscateNumber = params[i2].getAttribute("obfuscatedDisplayNumber");
         entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, entryRecord.floorThreshold, entryRecord.obfuscateNumber);
+        // fix issues with MS Excel's use of Microsoft-codepages
+        entryRecord.display = entryRecord.display.replaceAll('±', ' +/- ');
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
             entryRecord.value = i2b2.h.Unescape(entryRecord.value);

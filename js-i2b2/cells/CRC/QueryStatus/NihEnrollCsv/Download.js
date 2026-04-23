@@ -99,7 +99,9 @@ export default class NihEnrollCsv {
                         const ethnicityKey = treeStruct[2][ethnicityIdx];
                         colIdx = parseInt(ethnicityIdx * 3) + parseInt(sexIdx);
                         // cell value
-                        renderArray[idx][colIdx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(dataTree[race][sexKey][ethnicityKey].value);
+                        renderArray[idx][colIdx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(dataTree[race][sexKey][ethnicityKey].value)
+                        // fix issues with MS Excel's use of Microsoft-codepages
+                        renderArray[idx][colIdx] = renderArray[idx][colIdx].replaceAll('±', ' +/- ');
                         // increment row value
                         count += parseInt(dataTree[race][sexKey][ethnicityKey].value);
                         // increment column value
@@ -107,6 +109,9 @@ export default class NihEnrollCsv {
                     }
                 }
                 renderArray[idx][9] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count);
+                // fix issues with MS Excel's use of Microsoft-codepages
+                renderArray[idx][9] = renderArray[idx][9].replaceAll('±', ' +/- ');
+
             }
 
             // update the grand total on the last row
@@ -115,6 +120,8 @@ export default class NihEnrollCsv {
             // place the updated totals on last row
             for (let idx = 0; idx < 10; idx++) {
                 totalEthnicSex[idx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(totalEthnicSex[idx]);
+                // fix issues with MS Excel's use of Microsoft-codepages
+                totalEthnicSex[idx] = totalEthnicSex[idx].replaceAll('±', ' +/- ');
             }
             renderArray[7] = totalEthnicSex;
 
@@ -172,73 +179,6 @@ export default class NihEnrollCsv {
 }
 
 // =======================================================================================================================
-
-let generateCSV = (inputData) => {
-    let line, csv;
-
-    let siteCnt = 0;
-    if (typeof inputData.SHRINE !== 'undefined') siteCnt = inputData.SHRINE.sites.length;
-
-    const func_ProcessLine = (lineArray) => {
-        let line = lineArray.map((x) => x.trim().replaceAll(`"`, `'`));
-        line = line.map((x) => `"` + x + `"`);
-        return line.join(',') + `\n`;
-    };
-
-    // title line
-    line = [inputData.title];
-    line.push("");
-    for (let i=0; i<siteCnt; i++) line.push("");
-    csv = func_ProcessLine(line);
-
-    // column header line
-    line = ["Breakdown Group"];
-    if (siteCnt > 0) {
-        for (let i=0; i<siteCnt; i++) line.push(inputData.SHRINE.sites[i].name);
-    }
-    line.push("Total");
-    csv = csv + func_ProcessLine(line);
-
-    // // add the "All Patients" line if we have SHRINE data
-    // if (siteCnt > 0) {
-    //     line = ["All Patients"];
-    //     let total = 0;
-    //     for (let i=0; i<siteCnt; i++) {
-    //         let subtotal = inputData.SHRINE.sites[i].results.map((t) => t.value).reduce((parialSum, a) => parialSum + a, 0);
-    //         total = total + subtotal;
-    //         line.push(String(subtotal));
-    //     }
-    //     line.push(String(total));
-    //     csv = csv + func_ProcessLine(line);
-    // }
-
-    for (let grouping of inputData.result) {
-        line = [grouping.name];
-        if (siteCnt > 0) {
-            for (let i=0; i<siteCnt; i++) {
-                let temp = [];
-                if (typeof inputData.SHRINE.sites[i].results !== "undefined") {
-                    temp = inputData.SHRINE.sites[i].results.filter((t) => t.name === grouping.name);
-                }
-                if (temp.length > 0) {
-                    if (typeof temp[0].display !== "undefined") {
-                        line.push(temp[0].display);
-                    } else {
-                        line.push(String(temp[0].value));
-                    }
-                } else {
-                    line.push('');
-                }
-            }
-        }
-        line.push(grouping.display) // total column value
-        csv = csv + func_ProcessLine(line);
-    }
-    return csv;
-};
-
-
-
 let parseData = function(xmlData) {
     let breakdown = {};
     breakdown.result = [];
