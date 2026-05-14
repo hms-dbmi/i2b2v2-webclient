@@ -6,6 +6,12 @@
       "name": "i2b2.org Demo",
       "urlCellPM": "http://services.i2b2.org/i2b2/services/PMService/",
       "allowAnalysis": true,
+      "ignorePasswordMgrs": true,
+      "debug": false
+    }, { "domain": "shrine-masscpr-dev-node01",
+      "name": "shrine-masscpr-dev-node01",
+      "urlCellPM": "http://shrine-masscpr-dev-node01-i2b2.catalyst.harvard.edu:9090/i2b2/services/PMService/",
+      "allowAnalysis": true,
       "debug": false
     }, {
       "domain": "shrine-masscpr-dev-hub",

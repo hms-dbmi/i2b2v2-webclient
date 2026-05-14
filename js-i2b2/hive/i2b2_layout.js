@@ -10,6 +10,26 @@ i2b2.layout = {
     __regCallbacks: {},
     registerWindowHandler: function (windowKey, callback) {
         i2b2.layout.__regCallbacks[windowKey] = callback;
+    },
+    getTabTitle: function(componentName) {
+        const recursiveComponentFind = function(refGL) {
+            if (refGL.componentName === componentName) {
+                return refGL;
+            } else {
+                let l = refGL.contentItems.length;
+                for (let i=0; i<l; i++) {
+                    let result = recursiveComponentFind(refGL.contentItems[i], componentName);
+                    if (result !== false) return result;
+                }
+                return false;
+            }
+        };
+
+        let tmp;
+        tmp = recursiveComponentFind(i2b2.layout.gl_instances.leftCol.root);
+        if (tmp === false) tmp = recursiveComponentFind(i2b2.layout.gl_instances.rightCol.root);
+        if (tmp !== false) return tmp.config.title;
+        return false;
     }
 };
 
@@ -114,8 +134,8 @@ i2b2.layout.init = function () {
     // Wrapper layout
     i2b2.layout.gl_instances.main = new GoldenLayout(i2b2.layout.gl_configs.main, '#goldenLayoutId1' );
     i2b2.layout.gl_instances.main.registerComponent('goldenLayoutLeftColFrame', function(container,state) {
-        container.getElement().innerHTML = '<div id="goldenLayoutColId1" class="goldenLayoutCol"></div>';
-        container.on('resize',function() {
+        container.getElement().html('<div id="goldenLayoutColId1" class="goldenLayoutCol"></div>');
+        container.on('resize', () => {
             $(window).trigger('resize');
         });
     });

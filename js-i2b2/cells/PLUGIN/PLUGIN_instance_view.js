@@ -72,17 +72,13 @@ i2b2.events.afterCellInit.add((cell) => {
                     // this can only be run after a bit when the tab has been created in the DOM
                     this.tab.element[0].title = title;
                     this.tab.element[0].classList.add('active-plugin');
-                         
-                    
                 }).bind(container, windowEntry.title);
-
-                           
-
                 container.on("titleChanged", funcRetitle);
                 container.on("tab", funcRetitle);
 
-                container.on( 'tab', function( tab ){
-                    if($(tab.element).hasClass('active-plugin')) {                                          
+
+                container.on( 'tab', (tab) => {
+                    if ($(tab.element).hasClass('active-plugin')) {
 
                         let optionsBtn = $('<div id="activePluginOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Plugin Options"></i></div>');
                         $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));   
@@ -98,8 +94,6 @@ i2b2.events.afterCellInit.add((cell) => {
                                 }
                             }
                         });
-
-                        
                     }
                 });
 
@@ -124,8 +118,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                             </div>
                                         </div>`;
 
-              
-                $(container.element).append(exitPluginModalHTML);
+                $(container._contentElement).append(exitPluginModalHTML);
 
 
             }).bind(this)
