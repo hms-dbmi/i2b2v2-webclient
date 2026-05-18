@@ -74,17 +74,10 @@
       /******************** INITIALIZE ********************/
       /****************************************************/
       $(document).ready(function() {
-        if (typeof jQuery !== 'undefined' && !jQuery.trim) {
-          jQuery.trim = function(value) {
-            return value == null ? "" : (value + "").trim();
-          };
-        }
-
         // put any pre-i2b2 initialization code here...
 
         // ...then initialize the i2b2 framework
         i2b2.Init();
-
       });
     </script>
   </head>
