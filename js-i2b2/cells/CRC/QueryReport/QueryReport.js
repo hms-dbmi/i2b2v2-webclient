@@ -65,6 +65,34 @@ i2b2.CRC.QueryReport.generateReport = () => {
         });
     });
 
+    const func_getConceptEntry = (panelConcept) => {
+        for (const group of i2b2.CRC.model.query.groups) {
+            for (const event of group.events) {
+                for (const concept of event.concepts) {
+                    // check for matching concept
+                    if (concept.sdxInfo.sdxKeyValue === panelConcept.key) {
+                        // check for matching lab values
+                        if (concept.LabValues) {
+                            let isMatch = true;
+                            if (concept.LabValues.ValueOperator !== panelConcept.ValueOperator) isMatch = false;
+                            if (concept.LabValues.ValueType !== panelConcept.ValueType) isMatch = false;
+                            if (concept.LabValues.ValueUnit !== panelConcept.ValueUnit) isMatch = false;
+                            if (concept.LabValues.ValueFlag && concept.LabValues.ValueFlag !== panelConcept.ValueFlag) isMatch = false;
+                            if (concept.LabValues.ValueHigh && concept.LabValues.ValueHigh !== panelConcept.ValueHigh) isMatch = false;
+                            if (concept.LabValues.ValueLow && concept.LabValues.ValueLow !== panelConcept.ValueLow) isMatch = false;
+                            if (concept.LabValues.Value && concept.LabValues.Value !== panelConcept.Value) isMatch = false;
+                            if (isMatch) return concept;
+                        } else {
+                            return concept;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+
+
     // function for expanding the panel items
     let func_expandConcept = function(panelItem, panel) {
         if (panelItem.key.indexOf(':') !== -1 && panelItem.key.substr(0,2) !== "\\\\") {
@@ -83,7 +111,7 @@ i2b2.CRC.QueryReport.generateReport = () => {
             if (panelItem.modKey) {
                 panelItem.moreInfo = modifiers[conceptKey][panelItem.modKey];
             } else {
-                panelItem.moreInfo = concepts[conceptKey];
+                panelItem.moreInfo = func_getConceptEntry(panelItem);
             }
             // deal with dates
             if (panelItem.moreInfo.dateRange?.start === undefined || panelItem.moreInfo.dateRange?.start === "") {
