@@ -69,7 +69,7 @@ export function* doGetAllProjects(action) {
             let projectsList = parseProjectsXml(response);
             yield put(getAllProjectsSucceeded(projectsList));
         }else{
-            yield put(getAllProjectsFailed({errorMessage: "Error retrieving projects."}));
+            yield put(getAllProjectsFailed(response));
         }
     }catch(e){
         console.error("Error retrieving projects. ", e);

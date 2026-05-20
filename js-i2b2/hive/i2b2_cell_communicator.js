@@ -28,7 +28,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
             console.error("Attempt to build communicator call [" + name + "] failed because it is a protected name");
             return false;
         }
-        if (!$.isArray(escapeless_params)) { escapeless_params = []; }
+        if (!Array.isArray(escapeless_params)) { escapeless_params = []; }
         escapeless_params.push("proxy_info");
         escapeless_params.push("sec_pass_node");
         this._commData[name] = {

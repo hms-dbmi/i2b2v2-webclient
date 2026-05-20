@@ -5,7 +5,6 @@ import {getQueryRequestDetailsFailed, getQueryRequestDetailsSucceeded} from "../
 import xmlFormat from 'xml-formatter';
 import {decode} from 'html-entities';
 import {DateTime} from "luxon";
-import {getAllUserRoleCountsFailed} from "../reducers/userRoleCountsSlice";
 
 //a function that returns a promise
 const getQueryRequestXmlRequest = (queryMasterId) => {
@@ -344,12 +343,9 @@ export function* doGetQueryRequestDetails(action) {
 
             yield put(getQueryRequestDetailsSucceeded(queryRequest));
         }else{
-            yield put(getQueryRequestDetailsFailed({errorMessage: "Error retrieving query request details."}));
+            yield put(getQueryRequestDetailsFailed(response));
         }
-    } catch(e){
-        console.error("Error retrieving query request details. ", e);
-        yield put(getQueryRequestDetailsFailed({errorMessage: "Error retrieving query request details. " + e}));
-    }finally {
+    } finally {
         const msg = `get query request details thread closed`;
         yield msg;
     }

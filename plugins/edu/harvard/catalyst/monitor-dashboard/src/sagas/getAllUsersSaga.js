@@ -2,7 +2,6 @@ import { call, takeLatest, put} from "redux-saga/effects";
 import {getAllUsersFailed, getAllUsersSucceeded} from "../reducers/usersSlice";
 import {GET_ALL_USERS} from "../actions";
 import {parseXml} from "../utilities/parseXml";
-import {getQueryRequestDetailsFailed} from "../reducers/queryRequestDetailsSlice";
 
 //a function that returns a promise
 const getAllUsersRequest = (projectId) => {
@@ -52,12 +51,9 @@ export function* doGetAllUsers(action) {
             let userList = parseUsersXml(response);
             yield put(getAllUsersSucceeded(userList));
         }else{
-            yield put(getAllUsersFailed({errorMessage: "Error retrieving all users."}));
+            yield put(getAllUsersFailed(response));
         }
-    } catch(e){
-        console.error("Error getting all users. ", e);
-        yield put(getAllUsersFailed({errorMessage: "Error retrieving all users. " + e}));
-    }finally {
+    } finally {
         const msg = `get all users thread closed`;
         yield msg;
     }
