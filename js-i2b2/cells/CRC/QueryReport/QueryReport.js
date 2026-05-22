@@ -75,16 +75,20 @@ i2b2.CRC.QueryReport.generateReport = () => {
                         if (concept.LabValues) {
                             let isMatch = true;
                             if (concept.LabValues.ValueOperator !== panelConcept.ValueOperator) isMatch = false;
-                            if (concept.LabValues.ValueType !== panelConcept.ValueType) isMatch = false;
-                            if (concept.LabValues.ValueUnit !== panelConcept.ValueUnit) isMatch = false;
-                            if (concept.LabValues.ValueFlag && concept.LabValues.ValueFlag !== panelConcept.Value) isMatch = false;
-                            if (concept.LabValues.ValueHigh && concept.LabValues.ValueLow) {
+                            if (isMatch && concept.LabValues.ValueType !== panelConcept.ValueType) isMatch = false;
+                            if (isMatch && concept.LabValues.ValueUnit !== panelConcept.ValueUnit) isMatch = false;
+                            if (isMatch && concept.LabValues.ValueOperator === "BETWEEN") {
                                 if (panelConcept.Value.replaceAll(" and ", "-") !== concept.LabValues.ValueLow + "-" + concept.LabValues.ValueHigh) isMatch = false;
+                            } else {
+                                if (panelConcept.ValueType === "FLAG") {
+                                    if (concept.LabValues.ValueFlag && concept.LabValues.ValueFlag !== panelConcept.Value) isMatch = false;
+                                } else {
+                                    if (concept.LabValues.Value && concept.LabValues.Value !== panelConcept.Value) isMatch = false;
+                                }
                             }
-                            if (concept.LabValues.Value && concept.LabValues.Value !== panelConcept.Value) isMatch = false;
                             if (isMatch) return concept;
                         } else {
-                            // make sure we don't have lab values
+                            // make sure we don't have lab values set in the passed concept
                             if (!panelConcept.ValueOperator) return concept;
                         }
                     }
