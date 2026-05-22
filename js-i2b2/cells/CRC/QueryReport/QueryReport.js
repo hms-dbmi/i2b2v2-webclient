@@ -77,13 +77,15 @@ i2b2.CRC.QueryReport.generateReport = () => {
                             if (concept.LabValues.ValueOperator !== panelConcept.ValueOperator) isMatch = false;
                             if (concept.LabValues.ValueType !== panelConcept.ValueType) isMatch = false;
                             if (concept.LabValues.ValueUnit !== panelConcept.ValueUnit) isMatch = false;
-                            if (concept.LabValues.ValueFlag && concept.LabValues.ValueFlag !== panelConcept.ValueFlag) isMatch = false;
-                            if (concept.LabValues.ValueHigh && concept.LabValues.ValueHigh !== panelConcept.ValueHigh) isMatch = false;
-                            if (concept.LabValues.ValueLow && concept.LabValues.ValueLow !== panelConcept.ValueLow) isMatch = false;
+                            if (concept.LabValues.ValueFlag && concept.LabValues.ValueFlag !== panelConcept.Value) isMatch = false;
+                            if (concept.LabValues.ValueHigh && concept.LabValues.ValueLow) {
+                                if (panelConcept.Value.replaceAll(" and ", "-") !== concept.LabValues.ValueLow + "-" + concept.LabValues.ValueHigh) isMatch = false;
+                            }
                             if (concept.LabValues.Value && concept.LabValues.Value !== panelConcept.Value) isMatch = false;
                             if (isMatch) return concept;
                         } else {
-                            return concept;
+                            // make sure we don't have lab values
+                            if (!panelConcept.ValueOperator) return concept;
                         }
                     }
                 }
