@@ -34,6 +34,7 @@ Query.propTypes = {
     id: PropTypes.number.isRequired,
     queryInstanceId: PropTypes.number.isRequired,
     name:  PropTypes.string.isRequired,
+    project: PropTypes.number.isRequired,
     dataRequests: PropTypes.arrayOf(ExportRequest).isRequired,
     startDate: PropTypes.instanceOf(Date).isRequired,
     deleteDate: PropTypes.instanceOf(Date).isRequired,
