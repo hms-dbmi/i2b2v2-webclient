@@ -17,6 +17,7 @@ i2b2.PM.setUserAccountInfo = function(){
     userInfo.find(".project").text(i2b2.PM.model.login_projectname);
     userInfo.find(".userRole").text(i2b2.PM.model.userRoles.join(", "));
     userInfo.find(".versionNum").text(i2b2.ClientVersion);
+    userInfo.find(".serverVersionNum").text(i2b2.ServerVersion);
 
     if (!i2b2.PM.model.otherAuthMethod) {
         $('#changePasswordLink').removeClass("hidden").prev().removeClass("hidden");
