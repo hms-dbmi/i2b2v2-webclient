@@ -1,6 +1,7 @@
 import {useSelector, useDispatch} from "react-redux";
 import React, { useState, useEffect } from "react";
-import { Tabs, Tab } from "@mui/material";
+import { IconButton, Tabs, Tab } from "@mui/material";
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import {updateI2b2LibLoaded} from "../../reducers/i2b2LibLoadedSlice";
 import {getUserInfo} from "../../reducers/userInfoSlice";
 
@@ -48,6 +49,9 @@ export const MonitorDashboard = () => {
                 >
                     <Tab value={ViewModeTypes.OVERVIEW} label="Overview"/>
                     <Tab value={ViewModeTypes.QUERY} label="Query" />
+                    <IconButton className={"help"} href="assets/i2B2_Admin_Help_Documentation_06_04_2026.pdf" target="_blank" variant="contained">
+                        <HelpOutlineOutlinedIcon />
+                    </IconButton>
                 </Tabs>
             </AppBar>
 
