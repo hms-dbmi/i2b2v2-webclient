@@ -1,10 +1,9 @@
 import {useSelector, useDispatch} from "react-redux";
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { Tabs, Tab } from "@mui/material";
-
+import {Tabs, Tab, IconButton} from "@mui/material";
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import { Loader, AllUsers, AllProjects, AllHives } from "components";
-import { getAllUsers, getAllProjects, getAllHives, i2b2LibLoaded } from "actions";
+import { i2b2LibLoaded } from "actions";
 import "./Header.scss";
 
 //load the i2b2 plugin library
@@ -52,6 +51,9 @@ export const Header = () => {
                     <Tab value={ViewModeTypes.USERS} label="Users"/>
                     <Tab value={ViewModeTypes.PROJECTS} label="Projects" />
                     <Tab value={ViewModeTypes.HIVES} label="Hive" />
+                    <IconButton className={"help"} href="assets/i2B2_Admin_Help_Documentation_06_04_2026.pdf" target="_blank" variant="contained">
+                        <HelpOutlineOutlinedIcon />
+                    </IconButton>
                 </Tabs>
             </AppBar>
 

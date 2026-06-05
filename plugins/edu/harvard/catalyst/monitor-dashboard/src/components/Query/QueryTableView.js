@@ -15,7 +15,7 @@ export const QueryTableView = ({queries, projectIdList, isObfuscated}) => {
     const [selectedRow, setSelectedRow] = useState(false);
 
     const handleShowQueryDetails = (queryMasterId, row) => () => {
-        dispatch(getQueryRequestDetails({queryMasterId}));
+        dispatch(getQueryRequestDetails({queryMasterId, groupId: row.project}));
         setShowRequestDetails(true);
         setSelectedRow(row);
     }

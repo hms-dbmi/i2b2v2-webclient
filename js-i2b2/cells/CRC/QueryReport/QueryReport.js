@@ -65,6 +65,40 @@ i2b2.CRC.QueryReport.generateReport = () => {
         });
     });
 
+    const func_getConceptEntry = (panelConcept) => {
+        for (const group of i2b2.CRC.model.query.groups) {
+            for (const event of group.events) {
+                for (const concept of event.concepts) {
+                    // check for matching concept
+                    if (concept.sdxInfo.sdxKeyValue === panelConcept.key) {
+                        // check for matching lab values
+                        if (concept.LabValues) {
+                            let isMatch = true;
+                            if (concept.LabValues.ValueOperator !== panelConcept.ValueOperator) isMatch = false;
+                            if (isMatch && concept.LabValues.ValueType !== panelConcept.ValueType) isMatch = false;
+                            if (isMatch && concept.LabValues.ValueUnit !== panelConcept.ValueUnit) isMatch = false;
+                            if (isMatch && concept.LabValues.ValueOperator === "BETWEEN") {
+                                if (panelConcept.Value.replaceAll(" and ", "-") !== concept.LabValues.ValueLow + "-" + concept.LabValues.ValueHigh) isMatch = false;
+                            } else {
+                                if (panelConcept.ValueType === "FLAG") {
+                                    if (concept.LabValues.ValueFlag && concept.LabValues.ValueFlag !== panelConcept.Value) isMatch = false;
+                                } else {
+                                    if (concept.LabValues.Value && concept.LabValues.Value !== panelConcept.Value) isMatch = false;
+                                }
+                            }
+                            if (isMatch) return concept;
+                        } else {
+                            // make sure we don't have lab values set in the passed concept
+                            if (!panelConcept.ValueOperator) return concept;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+
+
     // function for expanding the panel items
     let func_expandConcept = function(panelItem, panel) {
         if (panelItem.key.indexOf(':') !== -1 && panelItem.key.substr(0,2) !== "\\\\") {
@@ -83,7 +117,7 @@ i2b2.CRC.QueryReport.generateReport = () => {
             if (panelItem.modKey) {
                 panelItem.moreInfo = modifiers[conceptKey][panelItem.modKey];
             } else {
-                panelItem.moreInfo = concepts[conceptKey];
+                panelItem.moreInfo = func_getConceptEntry(panelItem);
             }
             // deal with dates
             if (panelItem.moreInfo.dateRange?.start === undefined || panelItem.moreInfo.dateRange?.start === "") {

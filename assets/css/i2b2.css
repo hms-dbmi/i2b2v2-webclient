@@ -634,3 +634,15 @@ body.pendingRequest *{
 	padding-top: 0.5em;
 	padding-bottom: 0;
 }
+
+.versionData {
+	display: flex;
+	justify-content: flex-start;
+	gap: 20px;
+}
+
+.clientVersion, .serverVersion{
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}

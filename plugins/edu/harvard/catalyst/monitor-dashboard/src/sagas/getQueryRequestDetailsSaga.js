@@ -7,12 +7,13 @@ import {decode} from 'html-entities';
 import {DateTime} from "luxon";
 
 //a function that returns a promise
-const getQueryRequestXmlRequest = (queryMasterId) => {
+const getQueryRequestXmlRequest = (queryMasterId, groupId) => {
     let data = {
         qm_key_value: queryMasterId,
+        group_id: groupId
     };
 
-    return i2b2.ajax.CRC.getRequestXml_fromQueryMasterId(data).then((xmlString) => parseXml(xmlString));
+    return i2b2.ajax.CRC.getRequestXml_fromQueryMasterIdAndGroupId(data).then((xmlString) => parseXml(xmlString));
 }
 
 const extractPanelList = (panels) => {
@@ -333,10 +334,10 @@ const parseQueryRequestXml = (queryRequestXml) => {
 
 export function* doGetQueryRequestDetails(action) {
     console.log("getting query request xml...");
-    const { queryMasterId } = action.payload;
+    const { queryMasterId, groupId } = action.payload;
 
     try {
-        const response = yield call(getQueryRequestXmlRequest, queryMasterId);
+        const response = yield call(getQueryRequestXmlRequest, queryMasterId, groupId);
 
         if(response) {
             let queryRequest = parseQueryRequestXml(response);

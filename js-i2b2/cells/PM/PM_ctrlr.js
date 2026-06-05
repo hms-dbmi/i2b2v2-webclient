@@ -114,6 +114,7 @@ i2b2.PM.ctrlr.SamlLogin = function(username, session, isPassword) {
         project: i2b2.PM.model.login_project
     };
     i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
+    i2b2.PM.ajax.geti2b2Version("PM:Version", parameters, new i2b2_scopedCallback(i2b2.PM._setServerVersion, i2b2.PM), transportOptions);
 };
 
 // ================================================================================================== //
@@ -176,12 +177,20 @@ i2b2.PM.doLogin = function() {
     };
     if(!input_errors){
         i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
+        i2b2.PM.ajax.geti2b2Version("PM:Version", parameters, new i2b2_scopedCallback(i2b2.PM._setServerVersion, i2b2.PM), transportOptions);
     } else {
         alert(e);
     }
 };
-
-
+// ================================================================================================== //
+i2b2.PM._setServerVersion = function(data) {
+    let xml = data.refXML;
+    let s = i2b2.h.XPath(xml, 'descendant::i2b2_version');
+    if (s.length > 0) {
+        s = s[0].firstChild.nodeValue;
+        i2b2.ServerVersion = s;
+    }
+}
 // ================================================================================================== //
 i2b2.PM._processUserConfig = function (data) {
     // clear the UX treatment 6 seconds after the login button was clicked
