@@ -8,6 +8,7 @@ import {
     getUserSessionsSucceeded,
 } from "../reducers/userSessionsSlice";
 import {parseXml} from "../utilities/parseXml";
+import {getQueryMetricsFailed} from "../reducers/queryMetricsSlice";
 
 //a function that returns a promise
 const getUserSessionsRequest = () => i2b2.ajax.PM.getUserSession({}).then((xmlString) => parseXml(xmlString));
@@ -53,9 +54,12 @@ export function* doGetUserSessions(action) {
             let userSessionList = parseUserSessionsXml(response);
             yield put(getUserSessionsSucceeded(userSessionList));
         }else{
-            yield put(getUserSessionsFailed(response));
+            yield put(getUserSessionsFailed({errorMessage: "Error retrieving user sessions."}));
         }
-    } finally {
+    } catch(e){
+        console.error("Error retrieving user sessions. ", e);
+        yield put(getUserSessionsFailed({errorMessage: "Error retrieving user sessions. " + e}));
+    }finally {
         const msg = `get user sessions thread closed`;
         yield msg;
     }

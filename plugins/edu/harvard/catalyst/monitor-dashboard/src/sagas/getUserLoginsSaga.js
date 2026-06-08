@@ -64,11 +64,11 @@ export function* doGetUserLogins(action) {
             yield put(getUserLoginsSucceeded(userLoginList));
         }else{
             console.log("failed login " + response);
-            yield put(getUserLoginsFailed(response));
+            yield put(getUserLoginsFailed({errorMessage: "There was an error getting user logins."}));
         }
     } catch(e) {
         console.error("Error getting user logins! Message: " + e);
-        yield put(getUserLoginsFailed({errorMessage: "There was an error getting user logins."}));
+        yield put(getUserLoginsFailed({errorMessage: "There was an error getting user logins. ", e}));
     }
     finally {
         const msg = `get user logins thread closed`;

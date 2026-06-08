@@ -206,12 +206,14 @@ export function* doGetAllQueries(action) {
         }
     } catch (error) {
         yield put(getAllQueriesFailed({errorMessage: "There was an error getting the list of queries for project ", projectId}));
-        if(dataSource)
-        {
+        if(dataSource) {
             console.error("There was an error getting the list of queries for datasource ", dataSource, ". Error: " , error);
         }else{
             console.error("There was an error getting the list of queries for project ", projectId, ". Error: " , error);
         }
+    } finally {
+        const msg = `get all queries thread closed`;
+        yield msg;
     }
 }
 

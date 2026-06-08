@@ -54,7 +54,7 @@ export function* doGetAllUserRoleCounts(action) {
             yield put(getAllUserRoleCountsSucceeded({userRoleCountsList, projectId}));
         }else{
             console.error("Error retrieving user role counts. ");
-            yield put(getAllUserRoleCountsFailed(response));
+            yield put(getAllUserRoleCountsFailed({errorMessage: "Error retrieving user role counts."}));
         }
     }catch(e){
         console.error("Error retrieving user role counts. ", e);

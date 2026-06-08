@@ -4,6 +4,7 @@ import {GET_QUERY_METRICS} from "../actions";
 import {parseXml} from "../utilities/parseXml";
 import {decode} from 'html-entities';
 import {DateTime} from "luxon";
+import {getQueryRequestDetailsFailed} from "../reducers/queryRequestDetailsSlice";
 
 //a function that returns a promise
 const getQueryMetricsRequest = (projectId) => {
@@ -122,9 +123,12 @@ export function* doGetQueryMetrics(action) {
             let queryMetrics = parseQueryMetricsRequestXml(response);
             yield put(getQueryMetricsSucceeded(queryMetrics));
         }else{
-            yield put(getQueryMetricsFailed(response));
+            yield put(getQueryMetricsFailed({errorMessage: "Error retrieving query metrics."}));
         }
-    } finally {
+    } catch(e){
+        console.error("Error retrieving query metrics. ", e);
+        yield put(getQueryMetricsFailed({errorMessage: "Error retrieving query metrics. " + e}));
+    }finally {
         const msg = `get query metrics thread closed`;
         yield msg;
     }

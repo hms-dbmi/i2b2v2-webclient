@@ -192,7 +192,11 @@
   </div>
   {{/each}}
 {{else}}
-  <div>Not Complete</div>
+  {{#if hasError}}
+    <div>The query has encountered an error.</div>
+  {{else}}
+    <div>Not Complete</div>
+  {{/if}}
 {{/if}}
 </body>
 </html>

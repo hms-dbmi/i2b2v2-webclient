@@ -3,6 +3,7 @@ import {getNewUsersFailed, getNewUsersSucceeded} from "../reducers/newUsersSlice
 import {GET_NEW_USERS} from "../actions";
 import {parseXml} from "../utilities/parseXml";
 import {DateTime} from "luxon";
+import {getQueryMetricsFailed} from "../reducers/queryMetricsSlice";
 
 //a function that returns a promise
 const getAllUsersRequest = (newUsersSinceInDays, projectId) => {
@@ -57,9 +58,12 @@ export function* doGetNewUsers(action) {
             let userList = parseUsersXml(response);
             yield put(getNewUsersSucceeded(userList));
         }else{
-            yield put(getNewUsersFailed(response));
+            yield put(getNewUsersFailed({errorMessage: "Error retrieving new user. "}));
         }
-    } finally {
+    } catch(e){
+        console.error("Error retrieving new users. ", e);
+        yield put(getNewUsersFailed({errorMessage: "Error retrieving new user. " + e}));
+    }finally {
         const msg = `get new users thread closed`;
         yield msg;
     }
