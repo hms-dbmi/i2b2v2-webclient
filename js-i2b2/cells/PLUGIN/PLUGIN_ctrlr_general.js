@@ -380,7 +380,7 @@ i2b2.events.afterAllCellsLoaded.add((function() {
             // TODO: find out which window the message came from (ignore if unknown)
             let foundInstance = undefined;
             for (let i in i2b2.PLUGIN.view.windows) {
-                let iframe = $("iframe", i2b2.PLUGIN.view.windows[i].lm_view._contentElement);
+                let iframe = $("iframe", i2b2.PLUGIN.view.windows[i].lm_view.getElement());
                 if (iframe.length > 0) {
                     if (iframe[0].contentWindow === event.source) {
                         foundInstance = i2b2.PLUGIN.view.windows[i];

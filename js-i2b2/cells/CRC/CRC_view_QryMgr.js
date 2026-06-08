@@ -56,7 +56,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QueryMgr.lm_view = container;
 
                     // add the root DIV for display
-                    cell.view.QueryMgr.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(container._contentElement);
+                    cell.view.QueryMgr.containerDiv = $('<div class="CRC_QS_view"></div>').appendTo(container.getElement());
                 }).bind(this)
             );
         }

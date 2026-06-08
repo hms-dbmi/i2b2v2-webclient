@@ -26,9 +26,14 @@
     <script type="text/javascript" src="js-ext/jquery/4.0.0/jquery-migrate.min.js" ></script><!-- needed to restore deprecated functions in 4.0.0 -->
 
     <!-- LOAD Golden-Layout FROM local server -->
-    <script type="text/javascript" src="js-ext/goldenlayout/1.5.9/goldenlayout.min.js" ></script>
-    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/1.5.9/goldenlayout-base.css">
-    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/1.5.9/goldenlayout-light-theme.css">
+    <script type="module" >
+      import { GoldenLayout, ComponentItem } from './js-ext/goldenlayout/2.6.0/js/golden-layout.min.js';
+      window.ComponentItem = ComponentItem;
+      window.GoldenLayout = GoldenLayout;
+    </script>
+    <script type="module" src="js-ext/goldenlayout/2.6.0/js/golden-layout.min.js" ></script>
+    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/2.6.0/css/goldenlayout-base.css">
+    <link rel="stylesheet" type="text/css" href="js-ext/goldenlayout/2.6.0/css/themes/goldenlayout-light-theme.css">
 
     <!-- LOAD Bootstrap FROM local server -->
     <script type="text/javascript" src="js-ext/bootstrap/5.3.8/js/bootstrap.bundle.min.js" ></script>

@@ -91,7 +91,7 @@ i2b2.CRC.view.history.loadChildren = function(ev, nodeData) {
 //================================================================================================== //
 i2b2.CRC.view.history.treeRedraw = function(ev, b) {
     // attach drag drop attribute
-    i2b2.CRC.view.history.lm_view._contentElement.find('li:not(:has(span.tvRoot))').attr("draggable", true);
+    $(i2b2.CRC.view.history.lm_view.getElement()).find('li:not(:has(span.tvRoot))').attr("draggable", true);
 };
 
 //================================================================================================== //
@@ -582,7 +582,7 @@ i2b2.events.afterCellInit.add((cell) => {
                         success: (template) => {
                             cell.view.history.template.finder = Handlebars.compile(template);
                             // Render the template into place
-                            $(cell.view.history.template.finder({})).prependTo(container._contentElement);
+                            $(cell.view.history.template.finder({})).prependTo(container.getElement());
 
                             //init search result tooltip
                             $(".qHTooltip").tooltip();
@@ -653,10 +653,10 @@ i2b2.events.afterCellInit.add((cell) => {
                         error: (error) => { console.error("Could not retrieve template: QueryHistoryBar.html"); }
                     });
 
-                    $('<div id="i2b2QueryHistoryFinderMessage"></div>').prependTo(container._contentElement).hide();
+                    $('<div id="i2b2QueryHistoryFinderMessage"></div>').prependTo(container.getElement()).hide();
 
                     // add the status DIV
-                    $('<div id="i2b2QueryHistoryFinderStatus"></div>').prependTo(container._contentElement).hide();
+                    $('<div id="i2b2QueryHistoryFinderStatus"></div>').prependTo(container.getElement()).hide();
 
                     // create an empty Navigation treeview
                     let treeRoot = $(`
@@ -666,7 +666,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 <div class="history-more-bar">Load more...<i class="bi bi-arrow-repeat d-none"></i></div>
                             </div>
                         </div>
-                    `).appendTo(container._contentElement);
+                    `).appendTo(container.getElement());
                     $('.history-more-bar', treeRoot).on('click', i2b2.CRC.view.history.loadMore);
                     let treeTargetNav = $('.history-tv', treeRoot);
                     i2b2.CRC.view.history.treeview = $(treeTargetNav).treeview({
@@ -689,7 +689,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                 <div class="datelist-more-bar">Load more...<i class="bi bi-arrow-repeat d-none"></i></div>
                             </div>
                         </div>
-                    `).appendTo(container._contentElement);
+                    `).appendTo(container.getElement());
                     treeTargetFinder.hide();
                     $('.datelist-more-bar', treeTargetFinder).on('click', i2b2.CRC.view.history.loadMoreDates);
                     i2b2.CRC.view.history.treeviewFinder = $(".datelist-tv", treeTargetFinder).treeview({
@@ -785,6 +785,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     $("body").append(crcHistoryOptionsModal);
                     crcHistoryOptionsModal.load('js-i2b2/cells/CRC/assets/modalOptionsHistory.html', function () {
                         $("body #crcHistoryOptionsModal button.options-save").click(function () {
+                            let tmpValue;
                             let value = $('#HISTMaxQryDisp').val();
                             let userValue = $('#HISTUser').val();
                             if(!isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10))){
@@ -853,7 +854,7 @@ i2b2.events.afterCellInit.add((cell) => {
                             let elemId = "queryHistoryTab";
                             $(tab.element).attr("id", elemId);
 
-                            let title = tab.contentItem.config.title;
+                            let title = tab.contentItem.title;
                             let optionsBtn = $('<div id="queryHistoryOptions" class="menuOptions"><i class="bi bi-chevron-down" title="' + title + ' Options"></i></div>');
                             $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 

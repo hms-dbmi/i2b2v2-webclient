@@ -246,7 +246,7 @@ i2b2.events.afterCellInit.add((cell) => {
             (function (container, scope) {
                 // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE Analysis Tools
                 let mainDiv = $("<div class='cellWhite' id='pluginListView'></div>");
-                container.getElement().append(mainDiv);
+                $(container.getElement()).append(mainDiv);
 
                 $.ajax("js-i2b2/cells/PLUGIN/templates/PluginListingContainer.html", {
                     success: (template) => {

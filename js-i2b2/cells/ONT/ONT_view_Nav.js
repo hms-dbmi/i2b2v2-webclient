@@ -198,7 +198,7 @@ i2b2.events.afterCellInit.add((cell) => {
                 i2b2.ONT.view.nav.lm_view = container;
 
                 // add the cellWhite flare
-                let treeEl = $('<div class="cellWhite" id="i2b2TreeviewOntNav"></div>').appendTo(container._contentElement);
+                let treeEl = $('<div class="cellWhite" id="i2b2TreeviewOntNav"></div>').appendTo(container.getElement());
 
                 // create an empty treeview for navigation
                 let treeRef = $(treeEl).treeview({
@@ -225,7 +225,7 @@ i2b2.events.afterCellInit.add((cell) => {
                 i2b2.ONT.ctrlr.gen.loadCategories.call(i2b2.ONT.model.Categories);	// load categories into the data model
                 i2b2.ONT.ctrlr.gen.loadSchemes.call(i2b2.ONT.model.Schemes);		// load categories into the data model
 
-                i2b2.ONT.view.search.initSearch(container._contentElement);
+                i2b2.ONT.view.search.initSearch(container.getElement());
 
                 // -------------------- setup context menu --------------------
                 i2b2.ONT.view.nav.ContextMenu =  i2b2.ONT.view.nav.createContextMenu('i2b2TreeviewOntNav',i2b2.ONT.view.nav.treeview);
@@ -261,7 +261,7 @@ i2b2.events.afterCellInit.add((cell) => {
                         let elemId = "ontologyTermTab";
                         $(tab.element).attr("id", elemId);
 
-                        let title = tab.contentItem.config.title;
+                        let title = tab.contentItem.title;
                         let optionsBtn = $('<div id="termOptions" class="menuOptions"><i class="bi bi-chevron-down" title="'+ title +' Options"></i></div>');
                         $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 
