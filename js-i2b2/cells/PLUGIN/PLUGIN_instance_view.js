@@ -13,7 +13,7 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
 
     let componentName = 'i2b2.PLUGIN.view';
     let pluginTitle = pluginData.title;
-    //"myPluginComponent",//componentName,
+
     // create the new tab configuration
     let newPluginWindow = {
         type: "component",
