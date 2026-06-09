@@ -14,20 +14,6 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
     let componentName = 'i2b2.PLUGIN.view';
     let pluginTitle = pluginData.title;
 
-    // create the new tab configuration
-    let newPluginWindow = {
-        type: "component",
-        isClosable: true,
-        isComponent: true,
-        componentName: componentName,
-        componentType: "i2b2.PLUGIN.view",
-        componentPlugin: pluginData,
-        componentPluginCode: pluginId,
-        componentState: { componentPluginCode: pluginId, componentPlugin: pluginData },
-        title: pluginTitle,
-        content: []
-    };
-
     // remove any previously existing instance of a plugin window
     let tempRef = i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems;
     if (tempRef.length > 2) {
@@ -47,11 +33,9 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
         }
     }
     const stack = i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0];
-    //stack.addChild(newPluginWindow, tabidx);
     stack.addChild(new ComponentItem(i2b2.layout.gl_instances.rightCol, {
         type: "component",
         isClosable: true,
-        isComponent: true,
         componentName: componentName,
         componentType: "i2b2.PLUGIN.view",
         componentPlugin: pluginData,
