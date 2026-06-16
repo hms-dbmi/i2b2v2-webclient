@@ -123,11 +123,6 @@ i2b2.layout.init = function () {
         container.getElement().innerHTML='<div id="goldenLayoutColId2" class="goldenLayoutCol" style="left:3px"></div>';
     });
     i2b2.layout.gl_instances.main.loadLayout(i2b2.layout.gl_configs.main);
-    i2b2.layout.gl_instances.main.on("stateChanged", (obj) => {
-        // HACK so that layout renders in Safari on initial load
-        i2b2.layout.gl_instances.main.updateSize();
-        //i2b2.layout.gl_instances.main.off("stateChanged");
-    });
 
     // Zoom layout
     i2b2.layout.gl_instances.Zoom = new GoldenLayout( i2b2.layout.gl_configs.fullZoom, document.getElementById('goldenLayoutId2'));
