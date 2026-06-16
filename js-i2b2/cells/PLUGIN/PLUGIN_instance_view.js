@@ -28,7 +28,7 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
     let tabidx = tempRef.length;
     for (let idx in tempRef) {
         if (tempRef[idx].componentName === "i2b2.PLUGIN.view.list") {
-            tabidx = parseInt(idx) + 1;2
+            tabidx = parseInt(idx) + 1;
             break;
         }
     }
