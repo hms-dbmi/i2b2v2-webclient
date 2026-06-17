@@ -92,6 +92,7 @@ i2b2.ONT.view.info = {
             hasValues: hasMetadataValues
         };
         i2b2.ONT.view.info.model.displayData = displayData;
+        i2b2.ONT.view.info.model.lm_view.trigger("titleChanged");
 
         // get the children of the node
         if (!noChildren) {
@@ -200,14 +201,15 @@ i2b2.events.afterCellInit.add((cell) => {
                 i2b2.ONT.view.info.model.lm_view = container;
 
                 // change the tab's hover over to be the name of the term
-                let funcRetitle = (function(sdxData) {
+                let funcRetitle = (function(model) {
                     // this can only be run after a bit when the tab has been created in the DOM
-                    //this.tab.element[0].title = "title";
-                }).bind(container, i2b2.ONT.view.info.model.sdxData);
+                    if(model.displayData?.title) {
+                        this.tab._element.title = model.displayData.title;
+                    }
+                }).bind(container, i2b2.ONT.view.info.model);
 
                 container.on("titleChanged", funcRetitle);
                 container.on("tab", funcRetitle);
-
 
                 $.ajax("js-i2b2/cells/ONT/templates/OntologyTermInfo.html", {
                     success: (template) => {
