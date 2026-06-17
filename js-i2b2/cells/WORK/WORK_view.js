@@ -189,7 +189,7 @@ i2b2.WORK.view.main.DropChecker = function(targetEl, ev, parentEl) {
 // ==================================================================================================
 i2b2.WORK.view.main.treeRedraw = function() {
     // attach HTML5 drag drop attribute
-    i2b2.WORK.view.main.lm_view._contentElement.find('li:not(:has(span.tv-depth-1))').attr("draggable", true);
+    $(i2b2.WORK.view.main.lm_view.getElement()).find('li:not(:has(span.tv-depth-1))').attr("draggable", true);
     i2b2.WORK.view.main.treeview.treeview('getNodes', function() { return true }).forEach((treeItem) => {
         let treeview = $(treeItem.el_Node);
         if (treeItem.el_Node.hasClass("i2b2DropPrep") || treeItem.el_Node.hasClass("i2b2DropTarget")) return;
@@ -365,7 +365,7 @@ i2b2.events.afterCellInit.add((cell) => {
                 i2b2.WORK.view.main.lm_view = container;
 
                 // add the cellWhite flare
-                let treeTarget = $('<div class="cellWhite" id="i2b2TreeviewWork"></div>').appendTo(container._contentElement);
+                let treeTarget = $('<div class="cellWhite" id="i2b2TreeviewWork"></div>').appendTo(container.getElement());
 
                 // create an empty treeview
                 i2b2.WORK.view.main.treeview = $(treeTarget).treeview({
@@ -487,7 +487,7 @@ i2b2.events.afterCellInit.add((cell) => {
                         let elemId = "workplaceTab";
                         $(tab.element).attr("id", elemId);
 
-                        let title = tab.contentItem.config.title;
+                        let title = tab.contentItem.title;
                         let optionsBtn = $('<div id="workplaceOptions" class="menuOptions"><i class="bi bi-chevron-down" title="' + title + ' Options"></i></div>');
                         $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 

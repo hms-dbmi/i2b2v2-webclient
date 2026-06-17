@@ -18,9 +18,9 @@ i2b2.layout = {
 i2b2.layout.resize = function() {
     // resize handler
     i2b2.layout.gl_instances.main.updateSize();
-    let y = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutLeftColFrame")[0].container.height;
-    let w1 = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutLeftColFrame")[0].container.width;
-    let w2 = i2b2.layout.gl_instances.main.root.getItemsById("goldenLayoutRightColFrame")[0].container.width;
+    let y = i2b2.layout.gl_instances.main.findFirstComponentItemById("goldenLayoutLeftColFrame").container.height;
+    let w1 = i2b2.layout.gl_instances.main.findFirstComponentItemById("goldenLayoutLeftColFrame").container.width;
+    let w2 = i2b2.layout.gl_instances.main.findFirstComponentItemById("goldenLayoutRightColFrame").container.width;
     i2b2.layout.gl_instances.leftCol.updateSize(w1 - 5, y - 22);
     i2b2.layout.gl_instances.rightCol.updateSize(w2 - 8, y - 22);
     if (i2b2.layout.gl_instances.Zoom.root) {
@@ -112,25 +112,20 @@ i2b2.layout.init = function () {
     //////////////////////////////////////////
 
     // Wrapper layout
-    i2b2.layout.gl_instances.main = new GoldenLayout(i2b2.layout.gl_configs.main, '#goldenLayoutId1' );
+    i2b2.layout.gl_instances.main = new GoldenLayout(document.querySelector('#goldenLayoutId1'));
     i2b2.layout.gl_instances.main.registerComponent('goldenLayoutLeftColFrame', function(container,state) {
-        container.getElement().html('<div id="goldenLayoutColId1" class="goldenLayoutCol"></div>');
+        container.getElement().innerHTML='<div id="goldenLayoutColId1" class="goldenLayoutCol"></div>';
         container.on('resize',function() {
             $(window).trigger('resize');
         });
     });
     i2b2.layout.gl_instances.main.registerComponent('goldenLayoutRightColFrame', function(container,state) {
-        container.getElement().html('<div id="goldenLayoutColId2" class="goldenLayoutCol" style="left:3px"></div>');
+        container.getElement().innerHTML='<div id="goldenLayoutColId2" class="goldenLayoutCol" style="left:3px"></div>';
     });
-    i2b2.layout.gl_instances.main.init();
-    i2b2.layout.gl_instances.main.on("stateChanged", (obj) => {
-        // HACK so that layout renders in Safari on initial load
-        i2b2.layout.gl_instances.main.updateSize();
-        i2b2.layout.gl_instances.main.off("stateChanged")
-    });
+    i2b2.layout.gl_instances.main.loadLayout(i2b2.layout.gl_configs.main);
 
     // Zoom layout
-    i2b2.layout.gl_instances.Zoom = new GoldenLayout( i2b2.layout.gl_configs.fullZoom, '#goldenLayoutId2' );
+    i2b2.layout.gl_instances.Zoom = new GoldenLayout( i2b2.layout.gl_configs.fullZoom, document.getElementById('goldenLayoutId2'));
     i2b2.layout.gl_instances.Zoom.registerComponent('emptyComponent', function() {});
     i2b2.layout.gl_instances.Zoom.on('initialised', () => {
         // remove the placeholder component
@@ -174,8 +169,8 @@ i2b2.layout.init = function () {
         func_processCol(i2b2.layout.gl_configs.rightCol, layoutConfig['right-column']);
 
         // Create the column layouts
-        i2b2.layout.gl_instances.leftCol = new GoldenLayout( i2b2.layout.gl_configs.leftCol, '#goldenLayoutColId1' );
-        i2b2.layout.gl_instances.rightCol = new GoldenLayout( i2b2.layout.gl_configs.rightCol, '#goldenLayoutColId2' );
+        i2b2.layout.gl_instances.leftCol = new GoldenLayout(document.getElementById('goldenLayoutColId1'));
+        i2b2.layout.gl_instances.rightCol = new GoldenLayout(document.getElementById('goldenLayoutColId2'));
 
         // ========== MAGIC TRICK ==========
         // delayed calling of all the registration callbacks registered by cells during their initialization
@@ -185,25 +180,48 @@ i2b2.layout.init = function () {
         }
 
         // initialize the main display
-        i2b2.layout.gl_instances.leftCol.init();
-        i2b2.layout.gl_instances.rightCol.init();
+        i2b2.layout.gl_instances.leftCol.loadLayout(i2b2.layout.gl_configs.leftCol);
+        i2b2.layout.gl_instances.rightCol.loadLayout(i2b2.layout.gl_configs.rightCol);
 
         // this is the master load signal for all cells to begin operations
         i2b2.events.afterHiveInit.fire();
     });
-
-
 };
+// ================================================================================================== //
+i2b2.layout.getItemsByComponentName = function(layout, componentName) {
+    const foundComponents = [];
+
+    function traverse(item) {
+        if (!item) return;
+
+        // In v2+, check if the item type is a component
+        if (item.type === 'component') {
+            // Adjust property path based on your specific Golden Layout version setup
+            if (item.componentName === componentName) {
+                foundComponents.push(item);
+            }
+        }
+
+        // Recursively traverse children if they exist
+        if (item.contentItems && item.contentItems.length > 0) {
+            item.contentItems.forEach(traverse);
+        }
+    }
+
+    // Start traversing from the layout root
+    traverse(layout.rootItem || layout.root);
+    return foundComponents;
+}
 // ================================================================================================== //
 
 i2b2.layout.selectTab = function (componentName) {
-    let rightColTab = i2b2.layout.gl_instances.rightCol.root.getItemsByFilter((a) => { return a.componentName === componentName; } );
+    let rightColTab =  i2b2.layout.getItemsByComponentName(i2b2.layout.gl_instances.rightCol, componentName);
     if (rightColTab.length > 0) {
         rightColTab = rightColTab[0];
         rightColTab.parent.setActiveContentItem(rightColTab);
     }
 
-    let leftColTab = i2b2.layout.gl_instances.leftCol.root.getItemsByFilter((a) => { return a.componentName === componentName; } );
+    let leftColTab =  i2b2.layout.getItemsByComponentName(i2b2.layout.gl_instances.leftCol, componentName);
     if (leftColTab.length > 0) {
         leftColTab = leftColTab[0];
         leftColTab.parent.setActiveContentItem(leftColTab);

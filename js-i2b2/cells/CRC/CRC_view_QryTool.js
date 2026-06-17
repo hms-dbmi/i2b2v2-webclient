@@ -315,8 +315,9 @@ i2b2.CRC.view.QT.showRun = function() {
                 // start the query run
                 i2b2.CRC.ctrlr.QueryMgr.startQuery(queryName, reqResultTypes, reqExecutionMethod, emailAndComments);
                 // make sure that the Query Status window is visible
-                let QueryStatusTab = i2b2.layout.gl_instances.rightCol.root.getItemsByFilter((a) => { return a.componentName === 'i2b2.CRC.view.QueryMgr'; } )[0];
-                QueryStatusTab.parent.setActiveContentItem(QueryStatusTab)
+                let QueryStatusTab =  i2b2.layout.getItemsByComponentName(i2b2.layout.gl_instances.rightCol, 'i2b2.CRC.view.QueryMgr')[0];
+
+                QueryStatusTab.parent.setActiveContentItem(QueryStatusTab);
                 // close the modal
                 $('body #crcModal div:eq(0)').modal('hide');
             } else {
@@ -1845,7 +1846,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     cell.view.QT.lm_view = container;
 
                     // add the cellWhite flare
-                    cell.view.QT.containerRoot = $('<div class="CRC_QT_view"></div>').appendTo(cell.view.QT.lm_view._contentElement);
+                    cell.view.QT.containerRoot = $('<div class="CRC_QT_view"></div>').appendTo(cell.view.QT.lm_view.getElement());
                     let runBar = $('<div class="CRC_QT_runbar">' +
                             '<div class="left">' +
                                 '<label>Name:</label>' +

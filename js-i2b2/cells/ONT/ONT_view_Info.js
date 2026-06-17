@@ -92,6 +92,7 @@ i2b2.ONT.view.info = {
             hasValues: hasMetadataValues
         };
         i2b2.ONT.view.info.model.displayData = displayData;
+        i2b2.ONT.view.info.model.lm_view.trigger("titleChanged");
 
         // get the children of the node
         if (!noChildren) {
@@ -200,24 +201,25 @@ i2b2.events.afterCellInit.add((cell) => {
                 i2b2.ONT.view.info.model.lm_view = container;
 
                 // change the tab's hover over to be the name of the term
-                let funcRetitle = (function(sdxData) {
+                let funcRetitle = (function(model) {
                     // this can only be run after a bit when the tab has been created in the DOM
-                    this.tab.element[0].title = "title";
-                }).bind(container, i2b2.ONT.view.info.model.sdxData);
+                    if(model.displayData?.title) {
+                        this.tab._element.title = model.displayData.title;
+                    }
+                }).bind(container, i2b2.ONT.view.info.model);
 
                 container.on("titleChanged", funcRetitle);
                 container.on("tab", funcRetitle);
-
 
                 $.ajax("js-i2b2/cells/ONT/templates/OntologyTermInfo.html", {
                     success: (template) => {
                         i2b2.ONT.view.info.model.template = Handlebars.compile(template);
                         $(container).empty();
-                        $(i2b2.ONT.view.info.model.template({})).appendTo($('.i2b2OntInfo', container._contentElement)[0]);
+                        $(i2b2.ONT.view.info.model.template({})).appendTo($('.i2b2OntInfo', container.getElement())[0]);
                     },
                     error: (error) => { console.error("Could not retrieve template: OntologyTermInfo.html"); }
                 });
-                i2b2.ONT.view.info.model.viewport = $('<div class="i2b2OntInfo"></div>').appendTo(container._contentElement);
+                i2b2.ONT.view.info.model.viewport = $('<div class="i2b2OntInfo"></div>').appendTo(container.getElement());
             }).bind(this)
         );
     }

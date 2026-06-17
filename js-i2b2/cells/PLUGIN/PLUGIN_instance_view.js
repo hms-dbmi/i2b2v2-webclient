@@ -14,26 +14,17 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
     let componentName = 'i2b2.PLUGIN.view';
     let pluginTitle = pluginData.title;
 
-    // create the new tab configuration
-    let newPluginWindow = {
-        type:'component',
-        isClosable: true,
-        componentName: componentName,
-        componentPlugin: pluginData,
-        componentPluginCode: pluginId,
-        title: pluginTitle
-    };
     // remove any previously existing instance of a plugin window
     let tempRef = i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].contentItems;
     if (tempRef.length > 2) {
         for (let idx in tempRef) {
-            if (tempRef[idx].componentName === "i2b2.PLUGIN.view") {
+            if (tempRef[idx].type === 'component' && tempRef[idx].componentName === "i2b2.PLUGIN.view") {
                 tempRef[idx].close();
                 break;
             }
         }
     }
-    // insert the plugin tab after the "Analysis Tools" tab
+    // insert the plugin tab after the "Tools" tab
     let tabidx = tempRef.length;
     for (let idx in tempRef) {
         if (tempRef[idx].componentName === "i2b2.PLUGIN.view.list") {
@@ -41,7 +32,17 @@ i2b2.PLUGIN.view.newInstance = function(pluginId, initializationData) {
             break;
         }
     }
-    i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0].addChild(newPluginWindow, tabidx);
+    const stack = i2b2.layout.gl_instances.rightCol.root.contentItems[0].contentItems[0];
+    stack.addChild(new ComponentItem(i2b2.layout.gl_instances.rightCol, {
+        type: "component",
+        isClosable: true,
+        componentName: componentName,
+        componentType: "i2b2.PLUGIN.view",
+        componentPlugin: pluginData,
+        componentPluginCode: pluginId,
+        title: pluginTitle,
+        content: []
+    }), tabidx)
 };
 
 //================================================================================================== //
@@ -52,7 +53,7 @@ i2b2.events.afterCellInit.add((cell) => {
         // ___ Register this view with the layout manager ____________________
         i2b2.layout.registerWindowHandler("i2b2.PLUGIN.view",
             (function (container, scope) {
-                // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE WORK CELL'S MAIN VIEW
+                // THIS IS THE MASTER FUNCTION THAT IS USED TO INITIALIZE THE PLUGIN CELL'S MAIN VIEW
                 let windowEntry = {
                     lm_view: container,
                     data: container._config.componentPlugin,
@@ -67,8 +68,8 @@ i2b2.events.afterCellInit.add((cell) => {
                 // change the tab's hover over to be the name of the plugin and add an id of activePlugin
                 let funcRetitle = (function(title) {
                     // this can only be run after a bit when the tab has been created in the DOM
-                    this.tab.element[0].title = title;
-                    this.tab.element[0].classList.add('active-plugin');
+                    this.tab.element.title = title;
+                    this.tab.element.classList.add('active-plugin');
                 }).bind(container, windowEntry.title);
                 container.on("titleChanged", funcRetitle);
                 container.on("tab", funcRetitle);
@@ -95,7 +96,7 @@ i2b2.events.afterCellInit.add((cell) => {
                 });
 
                 // create the iframe and load the plugin into it
-                let iframeTarget = $('<iframe class="i2b2PluginIFrame" src="'+windowEntry.data.url+'" title="'+windowEntry.data.title+'"></iframe>').appendTo(container._contentElement)[0];
+                let iframeTarget = $('<iframe class="i2b2PluginIFrame" src="'+windowEntry.data.url+'" title="'+windowEntry.data.title+'"></iframe>').appendTo($(container.getElement()))[0];
                 let exitPluginModalHTML = `<div class="modal fade" id="exitPluginModal" tabindex="-1" aria-labelledby="exitPluginModalLabel" aria-hidden="true" data-bs-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -113,7 +114,7 @@ i2b2.events.afterCellInit.add((cell) => {
                                                 </div>
                                             </div>
                                         </div>`;
-                $(container._contentElement).append(exitPluginModalHTML);
+                $(container.getElement()).append(exitPluginModalHTML);
 
             }).bind(this)
         );
