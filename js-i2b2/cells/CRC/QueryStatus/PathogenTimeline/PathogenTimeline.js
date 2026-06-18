@@ -36,7 +36,7 @@ export default class PathogenTimeline {
             // Wastewater fetch gating + computed range
             this.wwRequestRange = null;
             this._wwFetched = false;
-
+        
             this.width = this.config.displayEl.parentElement.clientWidth;
             this.height = 400 - margin.top - margin.bottom;
 
@@ -55,6 +55,7 @@ export default class PathogenTimeline {
                     this.data.new = parseData(resultXML, this.config.advancedConfig);
                 }
             }
+
 
             (async function () {
                 let response = await fetch(
@@ -84,40 +85,7 @@ export default class PathogenTimeline {
                     diagnosis: "All",
                     overlay: "None",
                     aggregation: "month"
-                };
-
-                // Helpers for link-style controls
-                function renderLinks(ulEl, items, selectedValue) {
-                    if (!ulEl) return;
-                    ulEl.innerHTML = "";
-                    items.forEach(({ value, label }) => {
-                        const li = document.createElement("li");
-                        const sp = document.createElement("span");
-                        sp.className = "path-link" + (value === selectedValue ? " selected" : "");
-                        sp.setAttribute("data-value", value);
-                        sp.textContent = label;
-                        li.appendChild(sp);
-                        ulEl.appendChild(li);
-                    });
-                }
-
-                function bindLinkClicks(ulEl, onPick) {
-                    if (!ulEl) return;
-                    ulEl.addEventListener("click", (e) => {
-                        const target = e.target;
-                        if (!(target instanceof HTMLElement)) return;
-                        if (!target.classList.contains("path-link")) return;
-
-                        const value = target.getAttribute("data-value");
-                        if (!value) return;
-
-                        // Toggle selected within this UL
-                        ulEl.querySelectorAll(".path-link.selected").forEach(n => n.classList.remove("selected"));
-                        target.classList.add("selected");
-
-                        onPick(value);
-                    });
-                }
+                };                
 
                 // Build items
                 const diagnosisItems = [
@@ -135,8 +103,8 @@ export default class PathogenTimeline {
                 ];
 
                 // Render initial lists
-                renderLinks(self.controls.diagnosisList, diagnosisItems, self.state.diagnosis);
-                renderLinks(self.controls.overlayList, overlayItems, self.state.overlay);
+                renderControlLinks(self.controls.diagnosisList, diagnosisItems, self.state.diagnosis);
+                renderControlLinks(self.controls.overlayList, overlayItems, self.state.overlay);
 
                 // Aggregation list is in HTML; ensure we have a selected item + sync state
                 if (self.controls.aggregationList) {
@@ -152,9 +120,9 @@ export default class PathogenTimeline {
                 }
 
                 // Bind clicks
-                bindLinkClicks(self.controls.diagnosisList, (v) => { self.state.diagnosis = v; self.update(); });
-                bindLinkClicks(self.controls.overlayList, (v) => { self.state.overlay = v; self.update(); });
-                bindLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
+                bindControlLinkClicks(self.controls.diagnosisList, (v) => { self.state.diagnosis = v; self.update(); });
+                bindControlLinkClicks(self.controls.overlayList, (v) => { self.state.overlay = v; self.update(); });
+                bindControlLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
 
                 // Create SVG
                 self.svgRoot = d3
@@ -239,206 +207,15 @@ export default class PathogenTimeline {
 
             const selectedDiagnosis = this.state?.diagnosis || "All";
             const selectedOverlay = this.state?.overlay || "None";
-            const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year"
+            const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year" | "yoy"
 
-            
-            if (selectedAggregation === "yoy") {
+            const renderModel = buildRenderModel(raw, this.wastewater, selectedDiagnosis, selectedAggregation, selectedOverlay);
 
-                const yoyRows = raw.filter(r => (r.grain || "").trim().toUpperCase() === "M");
-
-                let yoyFilteredRows = null;
-
-                if(selectedDiagnosis === "All"){
-                   yoyFilteredRows = yoyRows;
-                } else{
-                    yoyFilteredRows = yoyRows.filter(r => r.diagnosis === selectedDiagnosis);
-                }
-                
-                const yoyPivotRows = pivotToYOYRows(yoyFilteredRows);
-
-                const byDiagnosisYear = {};
-
-                for(const row of yoyPivotRows){
-
-                    let diagnosis = row.diagnosis;
-                    let year = row.year;
-                    let monthIndex = row.monthIndex;
-                    let value = row.value;   
-
-                    if (byDiagnosisYear[diagnosis] === undefined){
-                        byDiagnosisYear[diagnosis] = {};
-                    }
-                   
-                    if (byDiagnosisYear[diagnosis][year] === undefined){
-                        byDiagnosisYear[diagnosis][year] = [];
-                    }
-                  
-                    let point = {"monthIndex": monthIndex, "value": value}
-
-                    byDiagnosisYear[diagnosis][year].push(point);                 
-                   
-                }
-                //sort the data --we could have used a nested for loop here, but that looked smelly (even though in this case it wouldn't be)
-                Object.values(byDiagnosisYear)
-                    .flatMap(yearMap => Object.values(yearMap))
-                    .forEach(pointsArr => {
-                        pointsArr.sort((a, b) => a.monthIndex - b.monthIndex);});
-               
-                //create the series
-                const series = Object.entries(byDiagnosisYear).flatMap(([diagnosis, years]) => 
-                Object.entries(years).map(([yearKey, monthlyDataArray]) => ({
-                    diagnosis,
-                    year: Number(yearKey),
-                    points: monthlyDataArray
-                    }))
-                );
-                                 
-                // Order series by diagnosis registry order, then by ascending year
-                series.sort((a, b) => { 
-                    const orderA = DIAGNOSIS_REGISTRY.diagnosis?.[a.diagnosis]?.order ?? 9999;
-                    const orderB = DIAGNOSIS_REGISTRY.diagnosis?.[b.diagnosis]?.order ?? 9999;
-                    return (orderA - orderB) || (a.year - b.year);
-
-                })
-                // create a lookup for the min year and max year to draw offset color lines
-                const lookup = series.reduce((acc, { diagnosis: dx, year }) => {
-                const range = acc[dx];
-
-                    if (!range) {
-                        acc[dx] = { min: year, max: year };
-                    } else {
-                        range.min = Math.min(range.min, year);
-                        range.max = Math.max(range.max, year);
-                    }
-
-                    return acc;
-                }, {});
-         
-                // create an item.stroke value for the renderer
-                const T_MIN = 0.3;
-
-                series.forEach((item) => {
-                    const { diagnosis: dx, year } = item;
-
-                    const range = lookup[dx];
-                    if (!range) return;
-
-                    const { min, max } = range;
-
-                    const u = (min === max) ? 1 : (year - min) / (max - min);
-
-                    const t = T_MIN + u * (1 - T_MIN);
-
-                    const baseColor = DIAGNOSIS_REGISTRY.diagnosis?.[dx]?.color;
-                    if (!baseColor) return;
-
-                    item.stroke = blendWithWhite(baseColor, t);
-                });
-
-                //create a render model for drawing
-                const renderModel = {
-                    "months" : ["Jan","Feb", "Mar", "Apr","May","Jun","Jul","Aug","Sep","Oct", "Nov","Dec" ],
-                    "series" : series,
-                    "xDomain": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 
-                    "yLeftLabel": "Number of Patients",
-                    "wwSeries": [],
-                    "yRightLabel" : "Wastewater Level"
-
-                }   
-
-                if (selectedOverlay == "None") {
-                    console.log("selected overlay is none, skipping wwYOY parse");
-                } else {
-                    const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
-                    const wwByYear = {};
-
-                    if (waterConfig === undefined) {
-                        console.log("water config is not defined");
-                    } else {
-
-                        for (const row of this.wastewater) {
-                            const d = new Date(row["Sample Date"]);
-                            if (!(d instanceof Date) || isNaN(d.getTime())) {
-                                continue;
-                            }
-
-                            const year = d.getFullYear();
-                            const monthIndex = d.getMonth();
-
-                            const value = waterConfig.accessor(row);
-
-                            // Skip missing/invalid values (prefer this over value === 0)
-                            if (value === null || value === undefined || Number.isNaN(value)) {
-                                continue;
-                            }
-
-                            // Bucket by year -> month -> [values...]
-                            if (wwByYear[year] === undefined) {
-                                wwByYear[year] = {};
-                            }
-                            if (wwByYear[year][monthIndex] === undefined) {
-                                wwByYear[year][monthIndex] = [];
-                            }
-                            wwByYear[year][monthIndex].push(value);
-                        }
-
-                        console.log(wwByYear);
-
-                        // Create the series: one aggregated point per (year, month)
-                        const wwSeries = Object.entries(wwByYear).map(([yearKey, monthBuckets]) => {
-                            const pointsArray = Object.entries(monthBuckets).map(([monthKey, values]) => {
-                                const sum = values.reduce((acc, v) => acc + v, 0);
-                                const avg = values.length ? (sum / values.length) : 0;
-                                return { monthIndex: Number(monthKey), value: avg };
-                            });
-
-                            pointsArray.sort((a, b) => a.monthIndex - b.monthIndex);
-
-                            return {
-                                year: Number(yearKey),
-                                points: pointsArray
-                            };
-                        });
-                        const T_MIN = 0.3;
-                        const yearsList = wwSeries.map(item => item.year);
-                        const min = Math.min(...yearsList);
-                        const max = Math.max(...yearsList); 
-
-                        wwSeries.forEach((item) => {
-                            const year = item.year;
- 
-                            const u = (min === max) ? 1 : (year - min) / (max - min);
-
-                            const t = T_MIN + u * (1 - T_MIN);
-
-                            const baseColor = waterConfig.color;
-                            if (!baseColor) return;
-
-                            item.stroke = blendWithWhite(baseColor, t);
-                        });
-                        
-                        renderModel.wwSeries = wwSeries;
-                    }
-                }                          
-
-                this.drawYOY(renderModel, selectedOverlay);
-
-                return;
-            }
-
-
-            // IMPORTANT: filter by grain so month aggregation doesn't accidentally include year rows (and vice versa)
-            const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
-            const aggregationRows = raw.filter(r => (r.grain || "").toUpperCase() === aggregationGrain);
-
-            const filtered = filterBreakdown(aggregationRows, selectedDiagnosis);
-
-            const diagnosisInAggregation = filtered.map(row => row.diagnosis);
-            const currentKeys = Array.from(new Set(diagnosisInAggregation));
-
+            const currentKeys = [...new Set(renderModel.series.map(item => item.diagnosis))];
             updateLegend(this.controls, currentKeys, selectedOverlay);
-            this.draw(filtered, selectedOverlay, selectedAggregation);
 
+            this.draw(renderModel, selectedOverlay, selectedAggregation);           
+           
             if (this.isVisible) {
                 this.config.displayEl.parentElement.style.height =
                     this.config.displayEl.scrollHeight + "px";
@@ -449,481 +226,260 @@ export default class PathogenTimeline {
         }
         return true;
     }
+    draw(renderModel, selectedOverlay, selectedAggregation) {
 
-    drawYOY(renderModel, selectedOverlay){
-        if (!renderModel.series || renderModel.series.length === 0) {
+            if (!renderModel || renderModel.length === 0) {
+                this.svg.selectAll("*").remove();
+                return;
+            }
+
+            const width = this.width - margin.left - margin.right;
+            const height = this.height;
+
             this.svg.selectAll("*").remove();
-            return;
-        }     
 
-        
-        const width = this.width - margin.left - margin.right;
-        const height = this.height;
+            // -----------------------------
+            // LEFT Y SCALE (patients)
+            // -----------------------------
 
-        this.svg.selectAll("*").remove();
-
-        const currentKeys = [...new Set(renderModel.series.map(item => item.diagnosis))];
-
-        updateLegend(this.controls, currentKeys, selectedOverlay);
-
-        const xScale = d3.scaleLinear()
-            .domain([0, 11])
-            .range([0, width]);
-
-        const maxY = Math.max(0, ...renderModel.series.flatMap(item => 
-            item.points.map(point => point.value)
-            ));
-
-        //console.log(maxY);
-
-        const yLeft = d3.scaleLinear()
-            .domain([0, maxY])
-            .nice()            
-            .range([height, 0]);
-
-       //Append to x axis
-
-        this.svg.append("g")
-            .classed("x-axis", true)
-            .attr("transform", `translate(0,${height})`)
-            .call(
-                d3.axisBottom(xScale)
-                    .ticks(11)
-                    .tickValues(renderModel.xDomain)
-                    .tickFormat(i => renderModel.months[i])
-            ).selectAll("text")
-            .attr("transform", "rotate(-45)")
-            .style("text-anchor", "end");
-
-        // append to Left Y 
-        const yAxisLeft = this.svg.append("g")
-            .classed("y-axis left", true)
-            .call(
-                d3.axisLeft(yLeft)
-                    .tickFormat(d3.format(".2~s")));
-
-        const yLabelText =  renderModel.yLeftLabel;
-
-        const yLabelLeft = yAxisLeft.append("text")
-            .attr("class", "y-label")
-            .attr("fill", "currentColor")
-            .attr("letter-spacing", "1.16")
-            .attr("text-anchor", "middle")
-            .text(yLabelText)
-            .attr("transform", "rotate(-90)");
-
-        // After render, center it using SVG bbox
-        yLabelLeft.each(function () {
-            let w = 0;
-            try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
-
-            const x = -(height / 2);        
-            const y = -margin.left + 28;      
-
-            d3.select(this)
-                .attr("x", x)
-                .attr("y", y);
-        });
+            const maxY = Math.max(0, ...renderModel.series.flatMap(item => 
+                item.points.map(point => point.value)
+                ));
+            const yLeft = d3.scaleLinear()
+                .domain([0, maxY])
+                .nice()            
+                .range([height, 0]);
 
 
-  
-        // -----------------------------
-        // Line Gen
-        // -----------------------------
+            // -----------------------------
+            // RIGHT Y SCALE (wastewater)
+            // -----------------------------
 
-        const yoyPatientLine = d3.line()
-            .x(point => xScale(point.monthIndex))
-            .y(point => yLeft(point.value));
+            let yRight = null;
 
-
-        // -----------------------------
-        // Draw diagnosis lines and points
-        // -----------------------------
-        let maxYear = -Infinity;
-            
-        for(const seriesItem of renderModel.series){
-            if (seriesItem.year > maxYear){
-                maxYear = seriesItem.year;
+            if (selectedOverlay !== "None" && renderModel.wwSeries && renderModel.wwSeries.length > 0) {
+                const maxWW = Math.max(0, ...renderModel.wwSeries.flatMap(item => 
+                item.points.map(point => point.value)
+                ));
+                yRight = d3.scaleLinear()
+                    .domain([0, maxWW])
+                    .nice()            
+                    .range([height, 0]);
+            } else{
+                console.log("wwSeries is empty, or selectedOverlay is None.")  
             }
-        }
-            
-        for(const seriesItem of renderModel.series){
-            const isCurrentYear = seriesItem.year === maxYear;
-            const strokeWidth = isCurrentYear ? 4 : 2;
 
-            this.svg.append("path")
-                .datum(seriesItem.points)
-                .attr("fill", "none")
-                .attr("stroke", seriesItem.stroke)
-                .attr("stroke-width", strokeWidth)
-                .attr("d", yoyPatientLine).append("title")
-                .text(`${seriesItem.diagnosis} — ${seriesItem.year}`);
 
-            // Points
-            this.svg.selectAll(`circle.${cssSafeKey(seriesItem.diagnosis)}-${seriesItem.year}`)
-                .data(seriesItem.points)
-                .enter()
-                .append("circle")
-                .attr("class", `${cssSafeKey(seriesItem.diagnosis)}-${seriesItem.year}`)
-                .attr("cx", point => xScale(point.monthIndex))
-                .attr("cy", point => yLeft(point.value))
-                .attr("r", 4)
-                .attr("fill", seriesItem.stroke)
-                .attr("stroke", seriesItem.stroke)
-                .append("title")
-                .text(point => {
-                    return `${seriesItem.diagnosis}\n${renderModel.months[point.monthIndex]}, ${seriesItem.year}\n[ ${point.value} patients ]`
-                });                   
-                
-        }
+            // -----------------------------
+            // X SCALE (respect patient breakdown only)
+            // -----------------------------
+
+            const xScale = (selectedAggregation === "yoy" ? d3.scaleLinear() : d3.scaleTime())
+                .domain(renderModel.xDomain)
+                .range([0, width]);
         
-        if (!renderModel.wwSeries || renderModel.wwSeries.length === 0) {
-           console.log("wwSeries is empty.")
-        } else {
-            const maxWW = Math.max(0, ...renderModel.wwSeries.flatMap(item => 
-            item.points.map(point => point.value)
-            ));
+            // -----------------------------
+            // AXES
+            // -----------------------------
 
-            const yRight = d3.scaleLinear()
-            .domain([0, maxWW])
-            .nice()            
-            .range([height, 0]);
+            // X axis
 
-            // append to Right Y 
-            const yAxisRight = this.svg.append("g")
-                .classed("y-axis right", true)
-                .attr("transform", `translate(${width}, 0)`)
-                .call(d3.axisRight(yRight).tickFormat(d3.format(",")))
+            let tickFormat;
 
-            const yoyWWLine = d3.line()
-                .x(point => xScale(point.monthIndex))
-                .y(point => yRight(point.value));
-
-            let maxYear = -Infinity;
-
-            for(const seriesItem of renderModel.wwSeries){
-                if (seriesItem.year > maxYear){
-                    maxYear = seriesItem.year;
-                }
+            if (selectedAggregation === "yoy") {
+                tickFormat = i => renderModel.months[i];
+            } else if (selectedAggregation === "year"){
+                tickFormat = d3.timeFormat("%Y");
+            } else {
+                tickFormat = d3.timeFormat("%Y-%m")
             }
-            
-            for(const seriesItem of renderModel.wwSeries){
-                const isCurrentYear = seriesItem.year === maxYear;
-                const strokeWidth = isCurrentYear ? 4 : 2;
 
-                this.svg.append("path")
+            const axis = d3.axisBottom(xScale)
+                .ticks(selectedAggregation === "yoy" ? 11 : 10)
+                .tickFormat(tickFormat)
+
+            if (selectedAggregation === "yoy") {
+                axis.tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+            }
+
+            this.svg.append("g")
+                .classed("x-axis", true)
+                .attr("transform", `translate(0,${height})`)
+                .call(axis)
+                .selectAll("text")
+                .attr("transform", "rotate(-45)")
+                .style("text-anchor", "end");
+
+
+
+            // Left Y axis
+
+            const yAxisLeft = this.svg.append("g")
+                .classed("y-axis left", true)
+                .call(
+                    d3.axisLeft(yLeft)
+                        .tickFormat(d3.format(".2~s")));
+
+            const yLabelText =  renderModel.yLeftLabel;
+
+            const yLabelLeft = yAxisLeft.append("text")
+                .attr("class", "y-label")
+                .attr("fill", "currentColor")
+                .attr("letter-spacing", "1.16")
+                .attr("text-anchor", "middle")
+                .text(yLabelText)
+                .attr("transform", "rotate(-90)");
+
+            // After render, center it using SVG bbox
+            yLabelLeft.each(function () {
+                let w = 0;
+                try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
+
+                const x = -(height / 2);        
+                const y = -margin.left + 28;      
+
+                d3.select(this)
+                    .attr("x", x)
+                    .attr("y", y);
+            });
+
+
+            // Right Y axis (wastewater)
+            if (yRight) {
+                const yAxisRight = this.svg.append("g")
+                    .classed("y-axis right", true)
+                    .attr("transform", `translate(${width},0)`)
+                    .call(d3.axisRight(yRight).tickFormat(d3.format(",")))
+
+                const yLabelRightText =  renderModel.yRightLabel;
+
+                yAxisRight.append("text")
+                    .attr("class", "y-label")
+                    .attr("text-anchor", "middle")
+                    .attr("letter-spacing", "1.16")
+                    .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
+                    .text(renderModel.yRightLabel);
+
+            }
+
+            // -----------------------------
+            // LINE GENERATORS
+            // -----------------------------
+
+            const patientLine = d3.line()
+                .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                .y(point => yLeft(point.value));   
+
+
+            const wastewaterLine = yRight ? d3.line()
+                .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                .y(point => yRight(point.value)) : null;
+
+            // -----------------------------
+            // CALCULATE MAX YEARS PER DATA SET, IF APPLICABLE
+            // -----------------------------
+
+            const hasDxYears = renderModel?.series?.some(item => Object.hasOwn(item, "year"));
+            const hasWWYears = renderModel?.wwSeries?.some(item => Object.hasOwn(item, "year"));
+            const maxDxYear = hasDxYears ? Math.max(...renderModel.series.map(o => o.year)) : null;
+            const maxWWYear = hasWWYears ? Math.max(...renderModel.wwSeries.map(o => o.year)) : null;
+
+            // -----------------------------
+            // DRAW DIAGNOSIS LINES + POINTS
+            // -----------------------------
+
+            for (const seriesItem of renderModel.series){
+
+                const isMaxYear = seriesItem.year === maxDxYear;
+                const strokeWidth = isMaxYear ? 4 : 2; 
+
+                // group
+                const group = this.svg.append("g");
+
+                // point label
+
+                const pointLabel = selectedAggregation === "yoy" 
+                    ? d => `${seriesItem.diagnosis}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
+                    : d => `${seriesItem.diagnosis} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
+
+                // Line
+                const dxPath = group.append("path")
                     .datum(seriesItem.points)
                     .attr("fill", "none")
-                    .attr("stroke", seriesItem.stroke)
-                    .attr("stroke-dasharray", "4 3")
+                    .attr("stroke",  seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
                     .attr("stroke-width", strokeWidth)
-                    .attr("d", yoyWWLine).append("title")
-                    .text(`${seriesItem.year}`);
+                    .attr("d", patientLine);
+
+                if (selectedAggregation === "yoy") {
+                    dxPath.append("title")
+                    .text(`${seriesItem.diagnosis} \n${seriesItem.year}`);
+                }
 
                 // Points
-                this.svg.selectAll(`circle.Wastewater-${seriesItem.year}`)
+                group.selectAll(`circle.${cssSafeKey(seriesItem.diagnosis)}`)
                     .data(seriesItem.points)
                     .enter()
                     .append("circle")
-                    .attr("class", `Wastewater-${seriesItem.year}`)
-                    .attr("cx", point => xScale(point.monthIndex))
-                    .attr("cy", point => yRight(point.value))
+                    .attr("class", `point ${cssSafeKey(seriesItem.diagnosis)}`)
+                    .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                    .attr("cy", point => yLeft(point.value))
                     .attr("r", 4)
-                    .attr("fill", seriesItem.stroke)
-                    .attr("stroke", seriesItem.stroke)
+                    .attr("fill", seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
+                    .attr("stroke", seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
                     .append("title")
-                    .text(point => {
-                        return `${renderModel.months[point.monthIndex]}, ${seriesItem.year}\n[ ${point.value}]`
-                    });                   
-                    
+                    .text(pointLabel);
             }
 
+            // -----------------------------
+            // DRAW WASTEWATER OVERLAY
+            // -----------------------------
 
-            const yLabelRightText =  renderModel.yRightLabel;
+            if (wastewaterLine && renderModel.wwSeries.length) {
+                
+                const wwConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+                
+                for(const seriesItem of renderModel.wwSeries){
+                    const isMaxYear = seriesItem.year === maxWWYear;
+                    const strokeWidth = isMaxYear ? 4 : 2;               
+                    
+                    // group
+                    const group = this.svg.append("g");
 
-            yAxisRight.append("text")
-                .attr("class", "y-label")
-                .attr("text-anchor", "middle")
-                .attr("letter-spacing", "1.16")
-                .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
-                .text(renderModel.yRightLabel);
+                    // point label
+                    const pointLabel = selectedAggregation === "yoy" 
+                        ? d => `Wastewater\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} ]`
+                        : d => `Wastewater\n${tickFormat(d.date)}\n[ ${d.value} ]`;                
+                
 
-           
+                    // Line
+                    const wwPath= group.append("path")
+                        .datum(seriesItem.points)
+                        .attr("fill", "none")
+                        .attr("stroke", seriesItem.stroke || wwConfig.color)
+                        .attr("stroke-width", strokeWidth)
+                        .attr("stroke-dasharray", "4 3") 
+                        .attr("d", wastewaterLine);
+                    
+                    if (selectedAggregation === "yoy") {
+                        wwPath.append("title")
+                        .text(`Wastewater \n ${seriesItem.year}`);
+                    } 
 
-        } 
-            
-        
-    }
- 
-    
-
-    draw(records, selectedOverlay, selectedAggregation) {
-        if (!records || records.length === 0) {
-            this.svg.selectAll("*").remove();
-            return;
-        }
-
-        const width = this.width - margin.left - margin.right;
-        const height = this.height;
-
-        this.svg.selectAll("*").remove();
-
-        // -----------------------------
-        // Bucket + aggregate patient records by month/year
-        // -----------------------------
-        const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);
-
-        // If (for some reason) nothing survived bucketing, bail cleanly
-        if (!bucketedPatients || bucketedPatients.length === 0) {
-            return;
-        }
-
-        // Group diagnosis series
-        const seriesByDiagnosis = d3.group(bucketedPatients, d => d.diagnosis);
-
-        // LEFT Y SCALE (patients)
-        const maxPatients = d3.max(bucketedPatients, d => d.value);
-        const yLeft = d3.scaleLinear()
-            .domain([0, maxPatients || 0])
-            .nice()
-            .range([height, 0]);
-
-        // -----------------------------
-        // RIGHT Y SCALE (wastewater)
-        // -----------------------------
-        let yRight = null;
-        let wwPoints = [];
-        let wwConfig = null;
-
-        if (selectedOverlay !== "None" && this.wastewater && this.wastewater.length > 0) {
-            const overlayConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
-            wwConfig = overlayConfig;
-
-            if (!overlayConfig || typeof overlayConfig.accessor !== "function") {
-                console.warn("Unknown wastewater overlay:", selectedOverlay);
-                wwPoints = [];
-                yRight = null;
-            } else {
-                const wwRollup = d3.rollup(
-                    this.wastewater,
-                    rows => {
-                        const values = rows
-                            .map(row => overlayConfig.accessor(row))
-                            .filter(v => v !== null && v !== undefined && !isNaN(v));
-                        return values.length ? d3.mean(values) : null;
-                    },
-                    d => {
-                        // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
-                        const dt = parseYMDLocal(d["Sample Date"]);
-                        if (!dt) return null;
-
-                        if (selectedAggregation === "year") {
-                            return `${dt.getFullYear()}`;
-                        }
-                        // month (0-based month key, used consistently below)
-                        return `${dt.getFullYear()}-${dt.getMonth()}`;
-                    }
-                );
-
-                wwPoints = Array.from(wwRollup.entries())
-                    .filter(([k, v]) => k !== null && v !== null)
-                    .map(([key, value]) => {
-                        if (selectedAggregation === "year") {
-                            const year = Number(key);
-                            const date = new Date(year, 0, 1);
-                            return { date, value };
-                        }
-                        const [year, month] = key.split("-").map(Number);
-                        const date = new Date(year, month, 1);
-                        return { date, value };
-                    })
-                    .filter(p => p.date instanceof Date && !isNaN(p.date.getTime()));
-
-                if (wwPoints.length > 0) {
-                    yRight = d3.scaleLinear()
-                        .domain([0, d3.max(wwPoints, d => d.value)])
-                        .nice()
-                        .range([height, 0]);
+                    // Points
+                    group.selectAll(".ww-point")
+                        .data(seriesItem.points)
+                        .enter()
+                        .append("circle")
+                        .attr("class", "ww-point")
+                        .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                        .attr("cy", point => yRight(point.value))
+                        .attr("r", 3)
+                        .attr("fill", seriesItem.stroke || wwConfig.color)
+                        .attr("stroke", seriesItem.stroke || wwConfig.color)
+                        .append("title")
+                        .text(pointLabel);  
                 }
             }
-        }
-
-        // -----------------------------
-        // X SCALE (respect patient breakdown only)
-        // -----------------------------
-        const patientExtent = d3.extent(bucketedPatients, d => d.date);
-
-        // Guard: if extent is bad, bail
-        if (!patientExtent[0] || !patientExtent[1]) {
-            return;
-        }
-
-        const xScale = d3.scaleTime()
-            .domain(patientExtent)
-            .range([0, width]);
-
-        // Clip overlay points to patient domain so overlay can't expand x-axis earlier/later
-        if (wwPoints.length && patientExtent[0] && patientExtent[1]) {
-            const x0 = patientExtent[0].getTime();
-            const x1 = patientExtent[1].getTime();
-
-            wwPoints = wwPoints.filter(p => {
-                const t = p.date.getTime();
-                return t >= x0 && t <= x1;
-            });
-
-            // Recompute yRight after clipping (so right axis matches visible overlay)
-            if (wwPoints.length > 0) {
-                yRight = d3.scaleLinear()
-                    .domain([0, d3.max(wwPoints, d => d.value)])
-                    .nice()
-                    .range([height, 0]);
-            } else {
-                yRight = null;
-            }
-        }
-
-        // -----------------------------
-        // AXES
-        // -----------------------------
-        const tickFormat = (selectedAggregation === "year")
-            ? d3.timeFormat("%Y")
-            : d3.timeFormat("%Y-%m");
-
-        // X axis
-        this.svg.append("g")
-            .classed("x-axis", true)
-            .attr("transform", `translate(0,${height})`)
-            .call(
-                d3.axisBottom(xScale)
-                    .ticks(10)
-                    .tickFormat(tickFormat)
-            )
-            .selectAll("text")
-            .attr("transform", "rotate(-45)")
-            .style("text-anchor", "end");
-
-        // Left Y axis
-        const yAxisLeft = this.svg.append("g")
-            .classed("y-axis left", true)
-            .call(d3.axisLeft(yLeft).tickFormat(d3.format(".2~s")));
-
-        const yLabelText = "Number of Patients";
-
-        const yLabelLeft = yAxisLeft.append("text")
-            .attr("class", "y-label")
-            .attr("fill", "currentColor")
-            .attr("letter-spacing", "1.16")
-            .attr("text-anchor", "middle")
-            .text(yLabelText)
-            .attr("transform", "rotate(-90)");
-
-        // After render, center it using SVG bbox
-        yLabelLeft.each(function () {
-            let w = 0;
-            try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
-
-            const x = -(height / 2);          // centered vertically
-            const y = -margin.left + 28;      // gutter position
-
-            d3.select(this)
-                .attr("x", x)
-                .attr("y", y);
-        });
-
-        // Right Y axis (wastewater)
-        if (yRight) {
-            const yAxisRight = this.svg.append("g")
-                .classed("y-axis right", true)
-                .attr("transform", `translate(${width},0)`)
-                .call(d3.axisRight(yRight));
-
-            yAxisRight.append("text")
-                .attr("class", "y-label")
-                .attr("text-anchor", "middle")
-                .attr("letter-spacing", "1.16")
-                .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
-                .text("Wastewater Level");
-        }
-
-        // -----------------------------
-        // LINE GENERATORS
-        // -----------------------------
-        const patientLine = d3.line()
-            .x(d => xScale(d.date))
-            .y(d => yLeft(d.value));
-
-        const wastewaterLine = yRight
-            ? d3.line()
-                .x(d => xScale(d.date))
-                .y(d => yRight(d.value))
-            : null;
-
-        // -----------------------------
-        // DRAW DIAGNOSIS LINES + POINTS
-        // -----------------------------
-        for (let [diagnosis, rows] of seriesByDiagnosis.entries()) {
-            rows = rows.slice().sort((a, b) => a.date - b.date);
-            const color = DIAGNOSIS_REGISTRY.diagnosis[diagnosis]?.color || "#999";
-
-            // Line
-            this.svg.append("path")
-                .datum(rows)
-                .attr("fill", "none")
-                .attr("stroke", color)
-                .attr("stroke-width", 2)
-                .attr("d", patientLine);
-
-            // Points
-            this.svg.selectAll(`circle.${cssSafeKey(diagnosis)}`)
-                .data(rows)
-                .enter()
-                .append("circle")
-                .attr("class", `point ${cssSafeKey(diagnosis)}`)
-                .attr("cx", d => xScale(d.date))
-                .attr("cy", d => yLeft(d.value))
-                .attr("r", 4)
-                .attr("fill", color)
-                .attr("stroke", color)
-                .append("title")
-                .text(d => {
-                    const label = tickFormat(d.date);
-                    return `${d.diagnosisRaw ?? d.diagnosis} — ${label}\n[ ${d.display ?? d.value} patients ]`;
-                });
-        }
-
-        // -----------------------------
-        // DRAW WASTEWATER OVERLAY
-        // -----------------------------
-        if (wastewaterLine && wwPoints.length) {
-            wwPoints.sort((a, b) => a.date - b.date);
-
-            // Line
-            this.svg.append("path")
-                .datum(wwPoints)
-                .attr("fill", "none")
-                .attr("stroke", wwConfig.color)
-                .attr("stroke-width", 2)
-                .attr("stroke-dasharray", "4 3")
-                .attr("d", wastewaterLine);
-
-            // Points
-            this.svg.selectAll(".ww-point")
-                .data(wwPoints)
-                .enter()
-                .append("circle")
-                .attr("class", "ww-point")
-                .attr("cx", d => xScale(d.date))
-                .attr("cy", d => yRight(d.value))
-                .attr("r", 3)
-                .attr("fill", wwConfig.color)
-                .attr("stroke", wwConfig.color)
-                .append("title")
-                .text(d => {
-                    const label = tickFormat(d.date);
-                    return `Wastewater\n${label}\n${d.value}`;
-                });
-        }
     }
 
     redraw(width) {
@@ -1040,6 +596,298 @@ let parseData = function (xmlData, advancedConfig) {
 // Helpers
 // ======================================================================
 
+function buildRenderModel(records, wastewater, selectedDiagnosis, selectedAggregation, selectedOverlay) {
+
+    let renderModel;
+
+    if (selectedAggregation === "yoy"){
+        renderModel = { 
+            "aggregateType": selectedAggregation,
+            "series" : buildYOYDxSeries(records, selectedDiagnosis, selectedAggregation), 
+            "xDomain": generateXDomain(records, selectedAggregation),
+            "months": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+            "yLeftLabel": "Number of Patients", 
+            "wwSeries": buildYOYWWSeries(wastewater, selectedOverlay, selectedAggregation), 
+            "yRightLabel" : "Wastewater Level" 
+        }      
+    } else {
+        renderModel = { 
+            "aggregateType": selectedAggregation,
+            "series" : buildMonthYearDxSeries(records, selectedDiagnosis, selectedAggregation), 
+            "xDomain": generateXDomain(records, selectedAggregation), 
+            "yLeftLabel": "Number of Patients", 
+            "wwSeries": buildMonthYearWWSeries(wastewater, records, selectedOverlay, selectedAggregation), 
+            "yRightLabel" : "Wastewater Level" 
+        }        
+    } 
+
+    return renderModel;
+
+
+}
+
+function generateXDomain(records, selectedAggregation) {
+    let xdomain = null; 
+    if (selectedAggregation === "month" || selectedAggregation === "year"){
+        const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);        
+
+        xdomain = d3.extent(bucketedPatients, d => d.date);
+
+        // Guard: if extent is bad, bail
+        if (!xdomain[0] || !xdomain[1]) {
+            console.log("xdomain extent issue; bailing on generating xdomain.")
+            return [];
+        }
+    } else {
+        //unify: we're changing the tick format stuff later
+        xdomain = [0, 11];
+    }
+    return xdomain;
+}
+
+function buildMonthYearDxSeries(rawData, selectedDiagnosis, selectedAggregation) {
+
+    const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
+
+    // get the raw data by aggregation grain
+    const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === aggregationGrain);
+
+    let filteredRows = filterBreakdown(yearRows, selectedDiagnosis);
+    const bucketedPatients = collectPatientsByAggregation(filteredRows, selectedAggregation);
+
+    // If (for some reason) nothing survived bucketing, bail cleanly
+    if (!bucketedPatients || bucketedPatients.length === 0) {
+        return;
+    }
+   
+    const groupDxMonthYear = {}
+    for (const row of bucketedPatients) {
+        let diagnosis = row.diagnosis;
+        let date = row.date;
+        let value = row.value;
+        
+        if (groupDxMonthYear[diagnosis] === undefined){
+            groupDxMonthYear[diagnosis] = {
+                points: [],
+            };
+        }
+                
+        let point = {date, value};
+   
+        groupDxMonthYear[diagnosis].points.push(point);
+    }  
+
+    //sort the dates just in case in the points array
+    Object.values(groupDxMonthYear).forEach((pointsArr) => {
+        pointsArr.points.sort((a, b) => a.date - b.date);
+        });
+
+
+    const series = Object.entries(groupDxMonthYear).map(([diagnosis, data]) => ({
+        diagnosis,
+        points: data.points
+    }));
+    
+    return series;   
+ 
+}
+
+function buildYOYDxSeries(rawData, selectedDiagnosis){
+    //take the raw data and if needed, filter it by diagnosis to do the row pivot
+    const yoyRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "M");
+
+    let yoyFilteredRows = filterBreakdown(yoyRows, selectedDiagnosis);
+
+    const yoyPivotRows = pivotToYOYRows(yoyFilteredRows); 
+    
+    //Take the pivoted rows and push them into an object organized by diagnosis
+    const byDiagnosisYear = {};
+
+    for(const row of yoyPivotRows){
+
+        let diagnosis = row.diagnosis;
+        let year = row.year;
+        let monthIndex = row.monthIndex;
+        let value = row.value;   
+
+        if (byDiagnosisYear[diagnosis] === undefined){
+            byDiagnosisYear[diagnosis] = {};
+        }
+        
+        if (byDiagnosisYear[diagnosis][year] === undefined){
+            byDiagnosisYear[diagnosis][year] = {
+                points: [],
+                stroke: null
+            };
+        }
+        
+        let point = {monthIndex, value};
+   
+        byDiagnosisYear[diagnosis][year].points.push(point);                
+        
+    }
+    //sort the data 
+    
+    Object.values(byDiagnosisYear).forEach((yearMap) => {
+        Object.values(yearMap).forEach((pointsArr) => {
+            pointsArr.points.sort((a, b) => a.monthIndex - b.monthIndex);
+        });
+    }); 
+
+    const lookup ={}
+
+    Object.keys(byDiagnosisYear).forEach((dx) => {
+        const years = Object.keys(byDiagnosisYear[dx]).map(Number);
+
+        lookup[dx] = {
+            min: Math.min(...years),
+            max: Math.max(...years)
+        }
+    });
+    
+    const T_MIN = 0.3;
+   
+    Object.keys(byDiagnosisYear).forEach((dx) => {
+        const years = Object.keys(byDiagnosisYear[dx]).map(Number);
+        let computedStroke = null;
+
+        years.forEach((year)=>{
+            const range = lookup[dx];
+            if (!range) return;
+
+            const { min, max } = range;
+
+            const u = (min === max) ? 1 : (year - min) / (max - min);
+
+            const t = T_MIN + u * (1 - T_MIN);
+
+            const baseColor = DIAGNOSIS_REGISTRY.diagnosis?.[dx]?.color;
+            if (!baseColor) return;
+
+            computedStroke = blendWithWhite(baseColor, t);
+
+            byDiagnosisYear[dx][year].stroke = computedStroke;
+
+        });
+       
+    });
+
+  
+  //create the series
+    const series = Object.entries(byDiagnosisYear).flatMap(([diagnosis, years]) => 
+    Object.entries(years).map(([yearKey, monthlyDataObj]) => ({
+        diagnosis,
+        year: Number(yearKey),
+        points: monthlyDataObj.points,
+        stroke: monthlyDataObj.stroke
+        }))
+    );
+                                 
+    // Order series by diagnosis registry order, then by ascending year
+    series.sort((a, b) => { 
+        const orderA = DIAGNOSIS_REGISTRY.diagnosis?.[a.diagnosis]?.order ?? 9999;
+        const orderB = DIAGNOSIS_REGISTRY.diagnosis?.[b.diagnosis]?.order ?? 9999;
+        return (orderA - orderB) || (a.year - b.year);
+
+    })
+    
+    return series;
+
+
+}
+
+function buildMonthYearWWSeries(wastewater, records, selectedOverlay, selectedAggregation) {
+
+    const bucketedWW = collectWastewaterByAggregation(wastewater, selectedOverlay, selectedAggregation) ?? [];
+    const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);      
+
+    const domain = d3.extent(bucketedPatients, d => d.date);
+    const filteredWW = (domain?.[0] && domain?.[1])
+    ? bucketedWW.filter(d => d.date >= domain[0] && d.date <= domain[1])
+    : bucketedWW;
+
+
+    let monthYearWWSeries = [];
+
+    monthYearWWSeries.push({
+        points: filteredWW
+    });
+
+    return monthYearWWSeries;
+}
+
+function buildYOYWWSeries(wastewater, selectedOverlay) {
+    const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+    const wwByYear = {};
+
+    if (waterConfig === undefined) {
+        console.log("water config is not defined");
+    } else {                       
+
+            for (const row of wastewater) {
+                const d = new Date(row["Sample Date"]);
+                if (!(d instanceof Date) || isNaN(d.getTime())) {
+                    continue;
+                }
+
+                const year = d.getFullYear();
+                const monthIndex = d.getMonth();
+
+                const value = waterConfig.accessor(row);
+
+                // Skip missing/invalid values (prefer this over value === 0)
+                if (value === null || value === undefined || Number.isNaN(value)) {
+                    continue;
+                }
+
+                // Bucket by year -> month -> [values...]
+                if (wwByYear[year] === undefined) {
+                    wwByYear[year] = {};
+                }
+                if (wwByYear[year][monthIndex] === undefined) {
+                    wwByYear[year][monthIndex] = [];
+                }
+                wwByYear[year][monthIndex].push(value);
+            }
+
+            
+            // Create the series: one aggregated point per (year, month)
+            const wwSeries = Object.entries(wwByYear).map(([yearKey, monthBuckets]) => {
+                const pointsArray = Object.entries(monthBuckets).map(([monthKey, values]) => {
+                    const sum = values.reduce((acc, v) => acc + v, 0);
+                    const avg = values.length ? (sum / values.length) : 0;
+                    return { monthIndex: Number(monthKey), value: avg };
+                });
+
+                pointsArray.sort((a, b) => a.monthIndex - b.monthIndex);
+
+                return {
+                    year: Number(yearKey),
+                    points: pointsArray
+                };
+            });
+            const T_MIN = 0.3;
+            const yearsList = wwSeries.map(item => item.year);
+            const min = Math.min(...yearsList);
+            const max = Math.max(...yearsList); 
+
+            wwSeries.forEach((item) => {
+                const year = item.year;
+
+                const u = (min === max) ? 1 : (year - min) / (max - min);
+
+                const t = T_MIN + u * (1 - T_MIN);
+
+                const baseColor = waterConfig.color;
+                if (!baseColor) return;
+
+                item.stroke = blendWithWhite(baseColor, t);
+            });
+           return wwSeries;
+        }
+        
+}
+
 function filterBreakdown(rows, diagnosisFilter) {
     if (!rows) return [];
     return rows.filter(row => {
@@ -1052,6 +900,37 @@ function filterBreakdown(rows, diagnosisFilter) {
     });
 }
 
+function renderControlLinks(ulEl, items, selectedValue) {
+    if (!ulEl) return;
+    ulEl.innerHTML = "";
+    items.forEach(({ value, label }) => {
+        const li = document.createElement("li");
+        const sp = document.createElement("span");
+        sp.className = "path-link" + (value === selectedValue ? " selected" : "");
+        sp.setAttribute("data-value", value);
+        sp.textContent = label;
+        li.appendChild(sp);
+        ulEl.appendChild(li);
+    });
+}
+
+function bindControlLinkClicks(ulEl, onPick) {
+    if (!ulEl) return;
+    ulEl.addEventListener("click", (e) => {
+        const target = e.target;
+        if (!(target instanceof HTMLElement)) return;
+        if (!target.classList.contains("path-link")) return;
+
+        const value = target.getAttribute("data-value");
+        if (!value) return;
+
+        // Toggle selected within this UL
+        ulEl.querySelectorAll(".path-link.selected").forEach(n => n.classList.remove("selected"));
+        target.classList.add("selected");
+
+        onPick(value);
+    });
+}
 
 function updateLegend(controls, currentKeys, selectedOverlay){
 
@@ -1204,6 +1083,60 @@ function collectPatientsByAggregation(records, aggregation) {
     }
 
     return out;
+}
+
+function collectWastewaterByAggregation(wastewater, selectedOverlay, selectedAggregation){
+    let wwPoints = [];
+    let wwConfig = null;
+
+    if (selectedOverlay !== "None" && wastewater && wastewater.length > 0) {
+        const overlayConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
+        wwConfig = overlayConfig;
+
+        if (!overlayConfig || typeof overlayConfig.accessor !== "function") {
+            console.warn("Unknown wastewater overlay:", selectedOverlay);
+            wwPoints = [];
+            yRight = null;
+        } else {
+            const wwRollup = d3.rollup(
+                wastewater,
+                rows => {
+                    const values = rows
+                        .map(row => overlayConfig.accessor(row))
+                        .filter(v => v !== null && v !== undefined && !isNaN(v));
+                    return values.length ? d3.mean(values) : null;
+                },
+                d => {
+                    // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
+                    const dt = parseYMDLocal(d["Sample Date"]);
+                    if (!dt) return null;
+
+                    if (selectedAggregation === "year") {
+                        return `${dt.getFullYear()}`;
+                    }
+                    // month (0-based month key, used consistently below)
+                    return `${dt.getFullYear()}-${dt.getMonth()}`;
+                }
+            );
+
+            wwPoints = Array.from(wwRollup.entries())
+                .filter(([k, v]) => k !== null && v !== null)
+                .map(([key, value]) => {
+                    if (selectedAggregation === "year") {
+                        const year = Number(key);
+                        const date = new Date(year, 0, 1);
+                        return { date, value };
+                    }
+                    const [year, month] = key.split("-").map(Number);
+                    const date = new Date(year, month, 1);
+                    return { date, value };
+                })
+                .filter(p => p.date instanceof Date && !isNaN(p.date.getTime()));
+
+            return wwPoints;
+        }
+    }
+
 }
 
 function pivotToYOYRows(aggregatedRecords){
