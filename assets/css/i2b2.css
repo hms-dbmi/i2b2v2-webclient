@@ -30,38 +30,61 @@ a:focus-visible {
 	box-shadow: 0 0 0 .25rem var(--focus-shadow) !important;
 	border-color: var(--focus-border) !important;
 }
+/* </keyboard focus border> */
 
-.sso-button {
-	border: 1px solid grey;
-	padding: 0;
-	width: 100%;
-	position: relative;
-	margin-bottom: 0.5rem;
+
+/* <general settings> */
+button.invert {
+	color: #0d6efd;
+	background: #FFFFFF;
 }
 
-.sso-button img {
-	height: 4.6em;
-	width: 4.6em;
-	float: left;
-	border-right: 1px solid grey;
-	border-bottom-left-radius: 2px;
-	border-top-left-radius: 2px;
+button.invert:hover {
+	opacity: 0.7;
 }
 
-.sso-button div {
-	width: 100%;
-	padding-left: 4.6em;
-	position: absolute;
-	margin:0;
-	top: 35%;
+.btn-secondary:not(:disabled):not(.disabled).active,
+.show > .btn-secondary.dropdown-toggle {
+	background: #007bff;
+	color: #82a6b2;
 }
+
+
+.hidden {
+	display: none;
+}
+
+.textRight {
+	text-align: right;
+}
+
+.textLeft {
+	text-align: left;
+}
+
+.clear {
+	clear: both;
+}
+
+.tooltip-inner {
+	background-color: #fff !important;
+	color: #000 !important;
+	border: 1px solid #c8cdce;
+}
+
+.tooltip-inner ul {
+	text-align: left !important;
+	margin-bottom: 0 !important;
+
+}
+/* </general settings> */
+
 
 
 /* === Start Page Header === */
 #top-bar {
 	height:45px;
-	padding:0px 20px 0px 10px;
-	/*background-color: #2782a3;*/
+	padding:0 20px 0 10px;
 	background-color: var(--head-foot-background);
 }
 
@@ -87,7 +110,7 @@ a:focus-visible {
 	position:relative;
 	width: 100%;
 	height: 100%;
-	border-spacing: 0px;
+	border-spacing: 0;
 }
 
 #topBarTable .logo {
@@ -126,7 +149,7 @@ a:focus-visible {
 }
 
 #headerOptions a {
-	color: var(--head-foot-icons) !important;
+	color: var(--tabs-text) !important;
 	margin-left: 12px;
 	text-decoration: none;
 	outline: none;
@@ -142,6 +165,9 @@ a:focus-visible {
 	box-sizing: border-box;
 }
 
+#headerOptions a i {
+	color: var(--head-foot-icon);
+}
 
 #headerOptions a:focus i {
 	color: var(--head-foot-icon-select) !important;
@@ -153,8 +179,8 @@ a:focus-visible {
 
 #userInfo {
 	padding-bottom: 0;
-	min-width: 12em;
 	z-index: 10000;
+	min-width: 12em;
 }
 
 .userRole {
@@ -207,7 +233,9 @@ a:focus-visible {
 #userInfo a:hover {
 	color: blue;
 	text-decoration: underline;
-	background: none;
+	background: none !important;
+	box-sizing: border-box;
+	border: 1px dotted;
 }
 
 #userInfo a:active {
@@ -215,145 +243,16 @@ a:focus-visible {
 	text-decoration: underline;
 }
 
-#userInfo .logout:active {
-	opacity: 1;
-	color: #fff;
-}
-
-#userInfo .dropdown-divider{
+#userInfo .dropdown-divider {
 	margin: 0;
 }
 
-#userInfo .hidden{
+#userInfo .hidden {
 	display: none;
 }
 
 /* === End Page Header === */
 
-.xmlMsg {
-	background:#FFFFFF none repeat scroll 0%;
-	border:1px solid #000000;
-	height: 100%;
-	width: 100%;
-	overflow: scroll;
-}
-
-A.selectedView { font-weight:bold; }
-
-#screenQueryData {
-	padding: 4px 0px 0px;
-}
-
-
-
-/* function buttons on right of tabs */
-DIV.opXML {
-	position: relative;
-	float: right;
-	padding: 6px 10px 0px 0px;
-	overflow: hidden;
-}
-
-/* <standarized main tab style> */
-DIV.TopTabs {
-	height:30px;
-	position:relative;
-	z-index:100 !important;
-	overflow:hidden;
-}
-
-
-DIV.tabBox {
-	background: var(--text-light) none repeat scroll 0;
-	border-color: var(--text-dark);
-	border-style:solid solid none;
-	border-width:1px;
-	cursor:pointer;
-	float:left;
-	height:19px;
-	margin-right:5px;
-	padding:5px 5px 0px;
-}
-
-DIV.tabBox DIV {
-	padding: 0px 5px;
-	display:inline;
-}
-
-DIV.tabBox > DIV {
-	color:#445588;
-	font-weight:bold;
-	font-family:arial,helvetica;
-	font-size:12px;
-	height:18px;
-	line-height:17px;
-	text-align:center;
-	padding: 0px 5px;
-	display:block;
-}
-
-
-DIV.tabBox.active {
-	background: var(--text-light) none repeat scroll 0 50%;
-	border-color: var(--text-dark);
-	border-style:solid solid none;
-	border-width:1px;
-	margin-right:5px;
-	height:20px;
-}
-
-DIV.tabBox.active DIV {
-	background:#6677AA;
-	border:1px solid #667788;
-	color:#FFFFFF;
-	font-weight:bold;
-	font-family:arial,helvetica;
-	font-size:12px;
-}
-
-DIV.tabTextBox {
-	background: var(--text-light) none repeat scroll 0% 50%;
-	border-color: var(--text-dark);
-	border-style:solid solid none;
-	border-width:1px;
-	cursor:pointer;
-	float:left;
-	height:20px;
-	margin-right:5px;
-	padding:5px 5px 0px;
-	position:relative;
-	width:136px;
-	z-index:10;
-}
-
-DIV.tabTextBox DIV {
-	background: #6677AA none repeat scroll 0%;
-	border: 1px solid #667788;
-	color: #FFFFFF;
-	font-family: arial,helvetica;
-	font-size: 12px;
-	font-weight: bold;
-	height: 18px;
-	line-height: 17px;
-	text-align: center;
-	padding: 0px 8px;
-}
-
-DIV.tabText {}
-/* </standarized main tab style> */
-
-
-.pageMask {
-	background:#000;
-	opacity: 0.25;
-	filter:alpha(opacity=25);
-	-moz-opacity:0.25;
-	position:absolute;
-	top:0px;
-	left:0px;
-	width:100%;
-	z-index:500;
-}
 
 
 #footer-bar {
@@ -365,7 +264,6 @@ DIV.tabText {}
 
 
 /* === Start Golden Layout === */
-
 .goldenLayout {
 	margin-right:10px;
 	margin-left:10px;
@@ -573,6 +471,10 @@ DIV.tabText {}
 	user-select: none;
 }
 
+.treeview .list-group {
+	border-radius: 0;
+}
+
 .treeview .list-group-item {
 	padding: 0.05rem 0.5rem;
 }
@@ -584,8 +486,7 @@ textarea {
 	height:50px;
 }
 
-.goldenLayout div.pluginCellMain
-{
+.goldenLayout div.pluginCellMain {
  	border: 1px solid #678;
 }
 
@@ -597,17 +498,35 @@ iframe.pluginCell {
 	width: 100%;
 }
 
-#PM-login-modal .form-group label {
-	margin-bottom: 8px;
+/* modal dialog box */
+.modal .modal-header,
+.modal .modal-footer {
+	background-color: var(--modal-header-bg);
 }
 
-#PM-login-modal .form-group input {
-	margin-bottom: 14px;
+.modal-header {
+	font-weight: bold;
+	font-size: 1.1em;
 }
+.modal-header h5 {
+	font-size: 1.1rem;
+	line-height: 1rem;
+}
+
+
+
+
+
 
 .form-group select {
 	margin-bottom: 14px;
 }
+
+
+.treeview .list-group li.list-group-item:hover {
+	background-color: var(--treeview-hover-background) !important;
+}
+
 
 /* === Start BOOTSTRAP MENU === */
 .bootstrapMenu > .dropdown-menu > li > a {
@@ -618,6 +537,39 @@ iframe.pluginCell {
 	-webkit-user-drag: none;
 	text-decoration: none;
 }
+
+@media all and (min-width: 992px) {
+	.dropdown-menu li {
+		position: relative;
+	}
+	.nav-item .submenu {
+		display: none;
+		position: absolute;
+		top: -0.2em;
+		padding-right: 0.2em;
+	}
+	.nav-item .submenu-left {
+		right: 100%;
+		left: auto;
+	}
+	.dropdown-menu > li > a:hover,
+	.dropdown-menu > .dropdown-item:hover {
+		background-color: var(--dropdown-menu-hover) !important;
+	}
+}
+/* ============ desktop view .end// ============ */
+
+/* ============ small devices ============ */
+@media (max-width: 991px) {
+	.dropdown-menu .dropdown-menu {
+		margin-left:0.7rem;
+		margin-right:0.7rem;
+		margin-bottom: .5rem;
+	}
+}
+/* ============ small devices .end// ============ */
+
+
 /* === End BOOTSTRAP MENU === */
 
 

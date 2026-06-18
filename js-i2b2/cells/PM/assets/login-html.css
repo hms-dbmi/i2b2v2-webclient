@@ -149,6 +149,14 @@
     transition: all .25s ease-out;
 }
 
+.sso-button div {
+    width: 100%;
+    padding-left: 4.6em;
+    position: absolute;
+    margin:0;
+    top: 35%;
+}
+
 #PM-login-modal .sso-button:hover,
 #PM-login-modal .sso-button:focus,
 #PM-login-modal .sso-button.clicked {

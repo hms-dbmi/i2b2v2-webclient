@@ -44,11 +44,11 @@
 }
 
 .changePasswordModal .errorMsg {
-    color: #f44336;
+    color: var(--error-text-light);
 }
 
 .changePasswordModal .error {
-    border: 2px solid #f44336;
+    border: 2px solid var(--error-border);
 }
 
 .changePasswordModal .pwd-ins .list-group-item {
@@ -60,4 +60,21 @@
 
 .changePasswordModal .eye-btn {
     border: 1px solid #ced4da;
+}
+
+.formattedParamValue {
+    white-space: pre-line;
+}
+
+#PMAnnouncementDialog .announcementList {
+    max-height: 20em;
+    overflow: auto;
+}
+
+#PMAnnouncementDialog .announcementList .projAnnTitle {
+    font-weight: bold;
+}
+
+#PMAnnouncementDialog .announcement{
+    margin-bottom: 0.9em;
 }
