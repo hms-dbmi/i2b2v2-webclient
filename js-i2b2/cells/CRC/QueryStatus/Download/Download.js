@@ -41,7 +41,7 @@ export default class Download {
                 }
             }
         } catch(e) {
-            console.error("Error in QueryStatus:Download.update()");
+            console.error("Error in QueryStatus:Download.update().", e);
         }
         return false;
     }
@@ -73,7 +73,7 @@ export default class Download {
             this.isVisible = false;
             return false;
         } catch(e) {
-            console.error("Error in QueryStatus:Download.show()");
+            console.error("Error in QueryStatus:Download.show().", e);
         }
     }
 
@@ -113,6 +113,11 @@ let generateCSV = (inputData) => {
         for (let i=0; i<siteCnt; i++) line.push(inputData.SHRINE.sites[i].name);
     }
     line.push("Total");
+
+    if(inputData.isObfuscated) {
+        line.push("Total Obfuscation Noise Clamp");
+    }
+
     csv = csv + func_ProcessLine(line);
 
     // // add the "All Patients" line if we have SHRINE data
@@ -147,7 +152,20 @@ let generateCSV = (inputData) => {
                 }
             }
         }
-        line.push(grouping.display) // total column value
+
+        if(inputData.isObfuscated){
+            const indexOfObfuscation = grouping.display.indexOf("+/-");
+            if(indexOfObfuscation !== -1){
+                const displayValue = grouping.display.substring(0, indexOfObfuscation).trim();
+                line.push(displayValue.replaceAll(",", ""));
+                line.push(grouping.display.substring(indexOfObfuscation));
+            }else{
+                line.push(grouping.display.replaceAll(",", ""));
+            }
+        }else{
+            line.push(grouping.display.replaceAll(",", ""));
+        }
+
         csv = csv + func_ProcessLine(line);
     }
     return csv;
@@ -158,6 +176,7 @@ let generateCSV = (inputData) => {
 let parseData = function(xmlData) {
     let breakdown = {};
     breakdown.result = [];
+    breakdown.isObfuscated = false;
     // process "normal" data
     let params = i2b2.h.XPath(xmlData, 'descendant::data[@column]/text()/..');
     // short circuit exit because there is no data
@@ -169,6 +188,11 @@ let parseData = function(xmlData) {
         entryRecord.floorThreshold = params[i2].getAttribute("floorThresholdNumber");
         entryRecord.obfuscateNumber = params[i2].getAttribute("obfuscatedDisplayNumber");
         entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, entryRecord.floorThreshold, entryRecord.obfuscateNumber);
+
+        if(entryRecord.display.indexOf("±") !== -1){
+            breakdown.isObfuscated = true;
+        }
+
         // fix issues with MS Excel's use of Microsoft-codepages
         entryRecord.display = entryRecord.display.replaceAll('±', ' +/- ');
         // Override the display value if specified by server setting the "display" attribute
@@ -212,36 +236,3 @@ let parseData = function(xmlData) {
 
     return breakdown;
 }
-
-
-// <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-// <ns10:i2b2_result_envelope>
-//     <body>
-//         <ns10:result name="PATIENT_SEX_COUNT_SHRINE_XML">
-//             <data column="Ambiguous" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
-//             <data column="Female" floorThresholdNumber="20" obfuscatedDisplayNumber="6">38350</data>
-//             <data column="Male" floorThresholdNumber="20" obfuscatedDisplayNumber="6">37360</data>
-//             <data column="No Infomation" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
-//             <data column="Other" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
-//             <data column="X (Eg. Nonbinary, AGender, etc)" floorThresholdNumber="20" obfuscatedDisplayNumber="10">0</data>
-//         </ns10:result>
-//         <SHRINE sites="2" complete="2" error="0">
-//             <site name="Site 1" status="Completed" binsize="5" stdDev="6.500000000000000e+000" obfuscatedDisplayNumber="10" floorThresholdNumber="10">
-//                 <siteresult column="No Infomation" type="int">0</siteresult>
-//                 <siteresult column="Female" type="int">19180</siteresult>
-//                 <siteresult column="X (Eg. Nonbinary, AGender, etc)" type="int">0</siteresult>
-//                 <siteresult column="Other" type="int">0</siteresult>
-//                 <siteresult column="Male" type="int">18680</siteresult>
-//                 <siteresult column="Ambiguous" type="int">0</siteresult>
-//             </site>
-//             <site name="Site 2" status="Completed" binsize="5" stdDev="6.500000000000000e+000" obfuscatedDisplayNumber="10" floorThresholdNumber="10">
-//                 <siteresult column="No Infomation" type="int">0</siteresult>
-//                 <siteresult column="Female" type="int">19170</siteresult>
-//                 <siteresult column="X (Eg. Nonbinary, AGender, etc)" type="int">0</siteresult>
-//                 <siteresult column="Other" type="int">0</siteresult>
-//                 <siteresult column="Male" type="int">18680</siteresult>
-//                 <siteresult column="Ambiguous" type="int">0</siteresult>
-//             </site>
-//         </SHRINE>
-//     </body>
-// </ns10:i2b2_result_envelope>

@@ -7,6 +7,8 @@ i2b2.CRC.QueryStatus = {
     currentQueryInstanceId: false,
     displayEl: false,
     resizeObserver: false,
+    haltPolling: false,
+    realtimePolling: false,
     model: {
         QRS: {},
         visualizations: {}
@@ -58,36 +60,72 @@ i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber = function(number, floorValue, 
     return parseInt(number).toLocaleString();
 };
 
+i2b2.CRC.QueryStatus.obfuscateValue = function(obfuscateValue) {
+    // apply obfuscation value
+    if (typeof obfuscateValue === "undefined" || (!obfuscateValue && obfuscateValue !== 0)) {
+        // deal with the obfuscate number
+        if (i2b2.PM.model.isObfuscated && i2b2.UI?.cfg?.obfuscatedDisplayNumber) {
+            return  "±" + parseInt(i2b2.UI.cfg.obfuscatedDisplayNumber).toLocaleString();
+        } else {
+            return "";
+        }
+    } else if (typeof obfuscateValue === "number" && obfuscateValue > 0) {
+        return "±" + parseInt(obfuscateValue).toLocaleString();
+    }
+    return "";
+};
+
+i2b2.CRC.QueryStatus.stopPolling = function() {
+    i2b2.CRC.QueryStatus.haltPolling = true;
+};
+
 i2b2.CRC.QueryStatus.clear = function() {
     // remove resize observer
     if (i2b2.CRC.QueryStatus.resizeObserver) i2b2.CRC.QueryStatus.resizeObserver.disconnect();
 
+    const func_DestroyViz = (breakdownVizComponent) => {
+        try {
+            if (!breakdownVizComponent.visualization) return;
+            i2b2.CRC.QueryStatus.resizeObserver.unobserve(breakdownVizComponent.displayEl);
+            if (typeof breakdownVizComponent.visualization.destroy === 'function') breakdownVizComponent.visualization.destroy();
+            delete breakdownVizComponent.visualization;
+        } catch(e) {
+            console.warn("QueryStatus: Error while destroying visualization component: " + breakdownCode + ":" + breakdownVizComponent.definition.componentCode);
+        }
+    };
+
     // destroy the previous display module instances
     Object.keys(i2b2.CRC.QueryStatus.model.visualizations).forEach((breakdownCode) => {
         const breakdown = i2b2.CRC.QueryStatus.model.visualizations[breakdownCode];
-        breakdown.componentInstances.forEach((breakdownVizComponent) => {
-            try {
-                i2b2.CRC.QueryStatus.resizeObserver.unobserve(breakdownVizComponent.displayEl);
-                if (typeof breakdownVizComponent.visualization.destroy === 'function') breakdownVizComponent.visualization.destroy();
-                delete breakdownVizComponent.visualization;
-            } catch(e) {
-                console.warn("QueryStatus: Error while destroying visualization component: " + breakdownCode + ":" + breakdownVizComponent.definition.componentCode);
-            }
-        });
-        // clear the component's element
-        let mainEl = i2b2.CRC.QueryStatus.displayEl;
-        if (typeof mainEl !== 'undefined') {
-            while (mainEl.children.length > 0) mainEl.removeChild(mainEl.children[0]);
-        }
-
+        breakdown.componentInstances.forEach(func_DestroyViz);
         delete i2b2.CRC.QueryStatus.model.visualizations[breakdownCode];
     });
+
+
+    // destroy the previous super modules instance
+    if (i2b2.CRC.QueryStatus.model.superModules) {
+        while (i2b2.CRC.QueryStatus.model.superModules.length > 0) {
+            const currentModule = i2b2.CRC.QueryStatus.model.superModules.pop();
+            func_DestroyViz(currentModule.visualization);
+        }
+    }
+
+
+    // clear the components' elements
+    let mainEl = i2b2.CRC.QueryStatus.displayEl;
+    if (typeof mainEl !== 'undefined' && mainEl.children) {
+        while (mainEl.children.length > 0) mainEl.removeChild(mainEl.children[0]);
+    }
+
+    // clear the data from the model
     i2b2.CRC.QueryStatus.model.QRS = {};
 };
 
 i2b2.CRC.QueryStatus.start = function(queryInstanceId, mainEl) {
     // restart process only when new query instance id is given
     if (i2b2.CRC.QueryStatus.currentQueryInstanceId !== queryInstanceId) {
+
+        i2b2.CRC.QueryStatus.haltPolling = false;
 
         i2b2.CRC.QueryStatus.model.QRS = {};
         if (typeof i2b2.CRC.QueryStatus.model.visualizations === 'undefined') i2b2.CRC.QueryStatus.model.visualizations = {};
@@ -110,6 +148,12 @@ i2b2.CRC.QueryStatus.start = function(queryInstanceId, mainEl) {
                                 if (vizComponent.displayEl === entry.target) vizComponent.visualization.redraw(width);
                             });
                         });
+                        // do super modules too
+                        if (i2b2.CRC.QueryStatus.model.superModules && i2b2.CRC.QueryStatus.model.superModules.length) {
+                            i2b2.CRC.QueryStatus.model.superModules.forEach((vizComponent) => {
+                                if (vizComponent.displayEl === entry.target) vizComponent.visualization.redraw(width);
+                            });
+                        }
                     }
                 }
             });
@@ -297,6 +341,17 @@ i2b2.CRC.QueryStatus._getTitle = function(resultType, oRecord, oXML) {
     return title;
 }
 
+i2b2.CRC.QueryStatus._generateRegEx = function(regexStr) {
+    if (regexStr.substring(0,1) !== '/') return false;
+    let lastSlash = regexStr.lastIndexOf('/');
+    if (lastSlash < regexStr.length - 1) {
+        // we have modifier(s)
+        let modifiers = regexStr.substring(lastSlash + 1);
+        return new RegExp(regexStr.substring(1,lastSlash), modifiers);
+    } else {
+        return new RegExp(regexStr.substring(1,lastSlash));
+    }
+}
 
 
 
@@ -311,9 +366,22 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     // find the expressly display-ranked results set(s)
     let currentIndex = 0;
     for (let codeRank of i2b2.CRC.QueryStatus.displayOrder) {
-        if (qrs_entries[codeRank] === undefined && qrsCodesFound.includes(codeRank)) {
-            qrs_entries[codeRank] = {"displayRank": currentIndex};
-            currentIndex++;
+        if (codeRank.substring(0,1) === '/') {
+            // handles regex mapping
+            let currentRegEx = i2b2.CRC.QueryStatus._generateRegEx(codeRank);
+            let matchingBreakdowns = qrsCodesFound.filter((x) => currentRegEx.test(x));
+            for (let currentBreakdown of matchingBreakdowns) {
+                if (qrs_entries[currentBreakdown] === undefined) {
+                    qrs_entries[currentBreakdown] = {"displayRank": currentIndex};
+                    currentIndex++;
+                }
+            }
+        } else {
+            // non-regex mappings
+            if (qrs_entries[codeRank] === undefined && qrsCodesFound.includes(codeRank)) {
+                qrs_entries[codeRank] = {"displayRank": currentIndex};
+                currentIndex++;
+            }
         }
     }
 
@@ -392,24 +460,38 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
 
     for (let code of newEntries) {
         qrs_entries[code].componentInstances = [];
-
         // create a list of references to QRS's valid visualizations
-//        let validComponents = componentKeys.filter((k) => refDisplayComponents[k].results.includes(code)).map((b) => refDisplayComponents[b]);
-        let validComponents = componentKeys.filter((k) => {
-            if (typeof i2b2.CRC.QueryStatus.breakdownConfig[code] !== 'undefined') {
-                return (Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[code]).includes(k) && i2b2.CRC.QueryStatus.breakdownConfig[code][k] !== false);
-            } else {
-                return false;
+        let matchingComponents = componentKeys.map((k) => {
+            let ret = false;
+            if (typeof i2b2.CRC.QueryStatus.breakdownConfig[code] !== 'undefined' && Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[code]).includes(k)) {
+                ret = [k, i2b2.CRC.QueryStatus.breakdownConfig[code][k]];
             }
-        }).map((b) => refDisplayComponents[b]);
+            if (ret === false) {
+                // check for RegEx matches
+                let regexList = Object.keys(i2b2.CRC.QueryStatus.breakdownConfig).filter((rx) => rx.substring(0,1) === '/');
+                for (let rx of regexList) {
+                    let testRegEx = i2b2.CRC.QueryStatus._generateRegEx(rx);
+                    if (testRegEx.test(code) && Object.keys(i2b2.CRC.QueryStatus.breakdownConfig[rx]).includes(k)) {
+                        ret = [k, i2b2.CRC.QueryStatus.breakdownConfig[rx][k]];
+                        break;
+                    }
+                }
+            }
+            return ret;
+        }).filter((r) => r !== false);
+        // matchingComponents contains a list of configured components for a data result (along with boolean if it is
+        // configured for display or not).
+        let validComponents = matchingComponents.filter((r) => r[1]).map((c) => refDisplayComponents[c[0]]);
 
-        if (validComponents.length === 0) {
+        // !!! only process this next logic if we have no matching viz components configured
+        // if we have matching components that are disabled (by === false) then we do not count this as being unregistered
+        if (matchingComponents.length === 0) {
             // see if there are any default viz modules configured to capture unregistered breakdowns
             validComponents = Object.values(refDisplayComponents).filter((x) => x.displayForUnregistered === true);
-            if (validComponents.length === 0) {
-                // short circuit if no components are configured for unregistered components
-                continue;
-            }
+        }
+        if (validComponents.length === 0) {
+            // short circuit if no components are configured for unregistered components
+            continue;
         }
 
         // sort by component displayOrder
@@ -451,7 +533,6 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
             if (instantiationResults === false) {
                 console.error("Failed to Instantiate viz module");
             }
-
         } else {
             // this is a QRS type that may have many visualization components
             if (validComponents.length === 0) {
@@ -563,6 +644,40 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
         }
     }
 
+    // TODO: Instantiate Super-modules (only runs once! and only after we get more than just the SUMMARY viz is built)
+    if (typeof i2b2.CRC.QueryStatus.model.superModules === 'undefined') i2b2.CRC.QueryStatus.model.superModules = [];
+    if (i2b2.CRC.QueryStatus.model.superModules.length === 0 && Object.keys(i2b2.CRC.QueryStatus.model.visualizations).length >= 1) {
+        Object.entries(i2b2.CRC.QueryStatus.displayComponents).forEach(([code, module]) => {
+            if (typeof module.superModule !== 'undefined') {
+                // create the frameless display div
+                const componentEl = document.createElement("div");
+                componentEl.classList.add("QueryStatusComponent", "frameless", "viz-window", "viztype-" + module.componentCode);
+                if (module.class !== undefined) componentEl.classList.add(module.class);
+                componentEl.style.display = 'none';
+                i2b2.CRC.QueryStatus.displayEl.appendChild(componentEl);
+                i2b2.CRC.QueryStatus.resizeObserver.observe(componentEl);
+                // add references to our entries
+                let componentInstanceObj = {
+                    "definition": module,
+                    "parentDisplayEl": componentEl,
+                    "displayEl": componentEl
+                }
+
+                // <MORE-MAGIC> (http://catb.org/jargon/html/magic-story.html)
+                //      CHROME MAGIC (we need to push the object into the superModules array NOW before viz module
+                //      instantiation -- otherwise it will softcrash the browser (in breakpoint mode?)
+                i2b2.CRC.QueryStatus.model.superModules.push(componentInstanceObj);
+                // </MORE-MAGIC>
+
+                // instantiate visualization
+                let instantiationResults = functInstantiateViz(code, module, componentInstanceObj);
+                if (instantiationResults === false) {
+                    console.error("Failed to instantiate viz super-module");
+                }
+            }
+        });
+    }
+
     // save all that we have done for the visualizations to the main namespace
     for (let code of Object.keys(qrs_entries)) {
         i2b2.CRC.QueryStatus.model.visualizations[code] = qrs_entries[code];
@@ -572,9 +687,10 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
 
 
 
-
-
 i2b2.CRC.QueryStatus._handleQueryResultSet = function(results) {
+    // see if polling has been halted or not
+    if (i2b2.CRC.QueryStatus.haltPolling) return;
+
     if (results.error) {
         alert(results.errorMsg);
         return;
@@ -646,6 +762,9 @@ i2b2.CRC.QueryStatus._handleQueryResultSet = function(results) {
 
 
 i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
+    // see if polling has been halted or not
+    if (i2b2.CRC.QueryStatus.haltPolling) return;
+
     if (results.error) {
         console.error("Failed to update " + this.code + " query result instance ID=" + this.id + "! : " + results.errorMsg);
         alert("Failed to get data for Query Result Instance " + this.id + "  of type " + this.type + "!");
@@ -710,7 +829,34 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
             this.reference.componentInstances[0].parentDisplayEl.style.display = '';
         }
 
-        const validComponentCount = this.reference.componentInstances.filter((vizComponent) => typeof vizComponent.visualization !== 'undefined').length;
+        let validComponentCount = this.reference.componentInstances.filter((vizComponent) => typeof vizComponent.visualization !== 'undefined').length;
+
+        // fire off data update calls to any super-modules which may be capturing this QRI type
+        for (const currentModule of i2b2.CRC.QueryStatus.model.superModules) {
+            if (!currentModule.definition.superModule.capture) {
+                // this super module is capturing everything
+                validComponentCount++;
+                if (typeof currentModule.visualization !== 'undefined') if (currentModule.visualization.update(results.refXML) === true) validComponentCount++;
+            } else {
+                for (const QriType of currentModule.definition.superModule.capture) {
+                    if (QriType.substring(0,1) === '/') {
+                        // handles regex matching
+                        let currentRegEx = i2b2.CRC.QueryStatus._generateRegEx(QriType);
+                        if (currentRegEx.test(rec.QRS_Type)) {
+                            if (typeof currentModule.visualization !== 'undefined') if (currentModule.visualization.update(results.refXML) === true) validComponentCount++;
+                        }
+                    } else {
+                        // non-regex matching
+                        if (rec.QRS_Type === QriType) {
+                            if (typeof currentModule.visualization !== 'undefined') if (currentModule.visualization.update(results.refXML) === true) validComponentCount++;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
 
         // see if we still need to continue polling
         if (!i2b2.CRC.QueryStatus.haltOnStatus.includes(rec.QRS_Status) && validComponentCount > 0) {
@@ -735,7 +881,7 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
                         break;
                     }
                 }
-                if (hide) this.reference.componentInstances[0].parentDisplayEl.style.display = "none";
+                if (hide && this.reference.componentInstances.length) this.reference.componentInstances[0].parentDisplayEl.style.display = "none";
             }
         }
     } else {
@@ -759,16 +905,17 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
     try {
         // load config.json
         let response = await fetch(i2b2.CRC.QueryStatus.baseURL + "config.json");
-        if (!response.ok) throw new Error(`Failed to retreve QueryStatus config.json file: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to retrieve QueryStatus config.json file: ${response.status}`);
         const config = await response.json();
         i2b2.CRC.QueryStatus.displayComponents = config.displayComponents;
         i2b2.CRC.QueryStatus.displayOrder = config.displayOrder;
         i2b2.CRC.QueryStatus.haltOnStatus = config.haltPollingOnStatus;
         i2b2.CRC.QueryStatus.hideVisualizationsOn = config.hideVisualizationsOn;
+        i2b2.CRC.QueryStatus.realtimePolling = config.realtimePolling;
 
         // load breakdowns.json
         response = await fetch(i2b2.CRC.QueryStatus.baseURL + "breakdowns.json");
-        if (!response.ok) throw new Error(`Failed to retreve QueryStatus breakdowns.json file: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to retrieve QueryStatus breakdowns.json file: ${response.status}`);
         i2b2.CRC.QueryStatus.breakdownConfig = await response.json();
 
         // save component keys into component objects

@@ -49,14 +49,14 @@ export default class Table {
                 const status = i2b2.h.XPath(inputData,"//query_result_instance/query_status_type/name");
                 if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) return false;
 
-              // get the breakdown data information (if present)
-              let resultXML = i2b2.h.XPath(inputData, "//xml_value");
-              if (resultXML.length > 0) {
-                resultXML = resultXML[0].firstChild.nodeValue;
-                // parse the data and put the results into the new data slot
-                this.data = parseData(resultXML);
-                if (typeof this.data === "undefined") return false;
-              }
+                // get the breakdown data information (if present)
+                let resultXML = i2b2.h.XPath(inputData, "//xml_value");
+                if (resultXML.length > 0) {
+                    resultXML = resultXML[0].firstChild.nodeValue;
+                    // parse the data and put the results into the new data slot
+                    this.data = parseData(resultXML);
+                    if (typeof this.data === 'undefined') return false;
+                }
             }
 
             // select the previously created TABLE element
@@ -67,7 +67,7 @@ export default class Table {
             let newRows = rows.enter().append('tr');
             let tds = newRows.selectAll('td')
                 .data((row) => {
-                    return [row.name, row.value];
+                    return [row.name, row.display];
                 })
                 .enter()
                 .append('td')
@@ -143,10 +143,13 @@ let parseData = function(xmlData) {
       // create the entry record
       let entryRecord = {}
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text();
-        entryRecord.value = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(params[i2].firstChild.nodeValue);
+        entryRecord.value = parseInt(params[i2].textContent);
+        const floorThreshold = params[i2].getAttribute("floorThresholdNumber");
+        const obfuscateNumber = params[i2].getAttribute("obfuscatedDisplayNumber");
+        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, floorThreshold, obfuscateNumber);
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
-            entryRecord.value = i2b2.h.Unescape(entryRecord.value);
+            entryRecord.value = $('<div>').html(params[i2].textContent).text();
             entryRecord.display = params[i2].attributes.display.textContent;
         }
         breakdown.result.push(entryRecord);
@@ -173,7 +176,8 @@ let parseData = function(xmlData) {
                 for (let siteresult of siteResults) {
                     siteData.results.push({
                         name: $('<div>').html(siteresult.getAttribute('column')).text(),
-                        value: parseInt(siteresult.textContent).toLocaleString()
+                        value: parseInt(siteresult.textContent),
+                        display: i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(siteresult.textContent, siteData.floorThresholdNumberX, siteData.obfuscatedDisplayNumber)
                     });
                 }
             }

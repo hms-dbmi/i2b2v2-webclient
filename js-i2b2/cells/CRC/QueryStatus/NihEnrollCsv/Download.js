@@ -87,6 +87,7 @@ export default class NihEnrollCsv {
 
             // create the totals arrays (and populate the render array)
             let renderArray = [];
+            let obfuscateValues = new Array(10).fill(0);
             let totalEthnicSex = new Array(10).fill(0);
             for (const idx in treeStruct[0]) {
                 const race = treeStruct[0][idx];
@@ -99,7 +100,7 @@ export default class NihEnrollCsv {
                         const ethnicityKey = treeStruct[2][ethnicityIdx];
                         colIdx = parseInt(ethnicityIdx * 3) + parseInt(sexIdx);
                         // cell value
-                        renderArray[idx][colIdx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(dataTree[race][sexKey][ethnicityKey].value)
+                        renderArray[idx][colIdx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(dataTree[race][sexKey][ethnicityKey].value, 0, 0)
                         // fix issues with MS Excel's use of Microsoft-codepages
                         renderArray[idx][colIdx] = renderArray[idx][colIdx].replaceAll('±', ' +/- ');
                         // increment row value
@@ -108,10 +109,10 @@ export default class NihEnrollCsv {
                         totalEthnicSex[colIdx] += parseInt(dataTree[race][sexKey][ethnicityKey].value);
                     }
                 }
-                renderArray[idx][9] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count);
+                obfuscateValues[idx] = i2b2.CRC.QueryStatus.obfuscateValue().replaceAll('±', ' +/- ');
+                renderArray[idx][9] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count, 0, 0);
                 // fix issues with MS Excel's use of Microsoft-codepages
                 renderArray[idx][9] = renderArray[idx][9].replaceAll('±', ' +/- ');
-
             }
 
             // update the grand total on the last row
@@ -119,20 +120,21 @@ export default class NihEnrollCsv {
 
             // place the updated totals on last row
             for (let idx = 0; idx < 10; idx++) {
-                totalEthnicSex[idx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(totalEthnicSex[idx]);
+                totalEthnicSex[idx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(totalEthnicSex[idx], 0, 0);
                 // fix issues with MS Excel's use of Microsoft-codepages
                 totalEthnicSex[idx] = totalEthnicSex[idx].replaceAll('±', ' +/- ');
             }
             renderArray[7] = totalEthnicSex;
-
+            obfuscateValues[7] = i2b2.CRC.QueryStatus.obfuscateValue().replaceAll('±', ' +/- ');;
             // ==================================================================
             // render the template using the data
             if (typeof this.renderTemplate === 'undefined') return false;
             const qmTitle = i2b2.CRC.model.runner.name.trim().replaceAll(`"`,`'`);
-            this.csv = this.renderTemplate({title: qmTitle , data: renderArray});
+            this.csv = this.renderTemplate({title: qmTitle , data: renderArray,
+                obfuscateData: {title: obfuscateValues[0] !== "" ? "Total Obfuscation Noise Clamp Per Value": "", values: obfuscateValues}});
 
         } catch(e) {
-            console.error("Error in QueryStatus:NihEnrollCsv.update()");
+            console.error("Error in QueryStatus:NihEnrollCsv.update()", e);
         }
         return false;
     }

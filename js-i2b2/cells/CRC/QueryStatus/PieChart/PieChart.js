@@ -127,7 +127,7 @@ export default class PieChart {
                     return function(t) {
                         var d2 = interpolate(t);
                         var pos = outerArc.centroid(d2);
-                        pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
+                        pos[0] = radius * 0.88 * (midAngle(d2) < Math.PI ? 1 : -1);
                         return "translate("+ pos +")";
                     };
                 })
@@ -168,7 +168,7 @@ export default class PieChart {
                 return function(t) {
                     var d2 = interpolate(t);
                     var pos = outerArc.centroid(d2);
-                    pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+                    pos[0] = radius * 0.85 * (midAngle(d2) < Math.PI ? 1 : -1);
                     return [arc.centroid(d2), outerArc.centroid(d2), pos];
                 };
             });

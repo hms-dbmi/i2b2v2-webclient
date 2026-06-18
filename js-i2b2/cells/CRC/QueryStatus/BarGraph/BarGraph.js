@@ -297,7 +297,7 @@ let parseData = function(xmlData) {
         }
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
-            entryRecord.value = i2b2.h.Unescape(entryRecord.value);
+            entryRecord.value = $('<div>').html(params[i2].textContent).text();
             entryRecord.display = params[i2].attributes.display.textContent;
         }
         breakdown.result.push(entryRecord);

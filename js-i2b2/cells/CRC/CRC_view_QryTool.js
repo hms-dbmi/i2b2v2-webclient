@@ -85,12 +85,14 @@ i2b2.CRC.view.QT.validateQuery = function() {
 // ================================================================================================== //
 i2b2.CRC.view.QT.showRun = function() {
 
+    $(".CRC_QT_runbar .button-run").prop("disabled", false);
     // show the options modal screen
     if ($('body #crcModal').length === 0) {
         $('body').append("<div id='crcModal'/>");
 
         // if the user presses enter in one of the input fields on the crcModal form then run the query
         $("#crcModal").submit(function(evt) {
+        $(".CRC_QT_runbar .button-run").prop("disabled", false);
             $('body #crcModal button.i2b2-save').click();
             evt.preventDefault();
         });
@@ -1712,6 +1714,7 @@ i2b2.events.afterCellInit.add((cell) => {
                         $(".CRC_QT_runbar .button-run", cell.view.QT.containerRoot).on("click", (evt)=> {
                             //check if this a valid query
                             if(i2b2.CRC.view.QT.validateQuery()) {// run the query
+                                $(".CRC_QT_runbar .button-run").prop("disabled", true);
                                 evt.target.blur();
                                 // only run if the query has entries
                                 if (i2b2.CRC.model.query.groups.length > 0) i2b2.CRC.view.QT.showRun();

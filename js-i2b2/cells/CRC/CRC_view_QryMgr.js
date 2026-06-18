@@ -34,6 +34,11 @@ i2b2.CRC.view.QueryMgr.clearStatus = function() {
         i2b2.CRC.ctrlr.QueryMgr.tick();
     }
 
+    // deal with hiding cancel and showing run buttons
+    $(".CRC_QT_runbar .button-run").show();
+    $(".CRC_QT_runbar .button-cancel").hide();
+
+
     // clear the query status window
     i2b2.CRC.QueryStatus.clear();
 }

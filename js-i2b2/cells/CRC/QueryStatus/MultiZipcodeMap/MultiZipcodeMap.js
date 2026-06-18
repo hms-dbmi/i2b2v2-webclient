@@ -866,11 +866,11 @@ const func_processTemplate = (template, data) => {
     try {
         // load GeoJSON data
         let response = await fetch(i2b2.CRC.QueryStatus.baseURL + "MultiZipcodeMap/GeoJSON/load_list.json");
-        if (!response.ok) throw new Error(`Failed to retreve MultiZipcodeMap/GeoJSON/load_list.json file: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to retrieve MultiZipcodeMap/GeoJSON/load_list.json file: ${response.status}`);
         const geojsonFiles = await response.json();
 
         response = await fetch(i2b2.CRC.QueryStatus.baseURL + "MultiZipcodeMap/zoom_list.json");
-        if (!response.ok) throw new Error(`Failed to retreve MultiZipcodeMap/zoom_list.json file: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to retrieve MultiZipcodeMap/zoom_list.json file: ${response.status}`);
         const zoomLinks = await response.json();
 
         i2b2.CRC.QueryStatus.model.MultiGeoJSON = {
@@ -901,7 +901,7 @@ const func_processTemplate = (template, data) => {
             for (let idx in results) {
                 const entry = results[idx];
                 if (entry.status !== 'fulfilled') {
-                    console.error("Error while retreving GeoJSON/" + i2b2.CRC.QueryStatus.model.MultiGeoJSON.loadList[idx]);
+                    console.error("Error while retrieving GeoJSON/" + i2b2.CRC.QueryStatus.model.MultiGeoJSON.loadList[idx]);
                     console.dir(entry);
                 } else {
                     if (i2b2.CRC.QueryStatus.model.MultiGeoJSON.data === false) {
