@@ -191,6 +191,7 @@ i2b2.PM._processUserConfig = function (data) {
             el.classList.remove("clicked");
         });
     }, 5000);
+    $("#PM-login-modal .login-button").removeClass("disabled");
 
     console.group("PROCESS Login XML");
     console.debug(" === run the following command in console to view message sniffer: i2b2.hive.MsgSniffer.show() ===");
@@ -207,6 +208,7 @@ i2b2.PM._processUserConfig = function (data) {
         if (ua.indexOf("Trident/4.0") > -1) ieInCompatibilityMode = true;
     }
     if (!(window.ActiveXObject) && "ActiveXObject" in window) browserIsIE11 = true;
+
 
     let xml = data.refXML;
     if (data.error === true) {

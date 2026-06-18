@@ -28,7 +28,7 @@ i2b2.sdx.TypeControllers.WRK.getEncapsulateInfo = function() {
 // *********************************************************************************
 i2b2.sdx.TypeControllers.WRK.RenderData = function(sdxData, options) {
     // this function extracts the datatype from the SDX's original XML object and relies upon it's
-    // original SDX type controller to retreve the render data
+    // original SDX type controller to retrieve the render data
     let sdxCode = false;
     let subclassData = {};
     let sdxDataNode;

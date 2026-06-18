@@ -4,7 +4,7 @@
  * upon iframe movement within the DOM (as performed by Golden Layout)
  **/
 
-if (i2b2 === undefined) i2b2 = {};
+if (typeof i2b2 === 'undefined') i2b2 = {};
 // ----- Magic Strings -----
 if (i2b2.MSG_TYPES === undefined) i2b2.MSG_TYPES = {};
 i2b2.MSG_TYPES.STATE = {};
