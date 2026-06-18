@@ -125,7 +125,7 @@ i2b2.hive.communicatorFactory = function(cellCode){
         }
         if (commOptions.project !== undefined) {
             sMsgValues.sec_project = commOptions.project;
-        } else {
+        }  else if (sMsgValues.sec_project === undefined) {
             sMsgValues.sec_project = i2b2.h.getProject();
         }
         if (commOptions.msg_id !== undefined) {
@@ -213,12 +213,17 @@ i2b2.hive.communicatorFactory = function(cellCode){
                           $("body").removeClass("pendingRequest");
                       }
                       // Message logging for debug purposes
+                      const responseText = xhr.responseText !== undefined ? String(xhr.responseText) : String(o.responseText);
+
                       snifferPackage.status = xhr.status;
                       snifferPackage.msgRecv = {
                           when: new Date(),
-                          msg: String(xhr.responseText)
+                          msg: responseText,
+                          hasErrors: i2b2.h.checkXmlResponseForErrors(responseText, true)
                       }
+
                       if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
+                      i2b2.hive.errorMsgDisplay.show(snifferPackage);
 
                       if (typeof o !== "object") {
                           /* error handler code */
@@ -247,12 +252,16 @@ i2b2.hive.communicatorFactory = function(cellCode){
                           $("body").removeClass("pendingRequest");
                       }
                       // Message logging for debug purposes
+                      const responseText = xhr.responseText !== undefined ? String(xhr.responseText) : String(o.responseText);
+
                       snifferPackage.status = xhr.status;
                       snifferPackage.msgRecv = {
                           when: new Date(),
-                          msg: String(xhr.responseText)
+                          msg: responseText,
+                          hasErrors: i2b2.h.checkXmlResponseForErrors(responseText, true)
                       }
                       if (i2b2.hive.msgSniffer) i2b2.hive.msgSniffer.add(snifferPackage);
+                      i2b2.hive.errorMsgDisplay.show(snifferPackage);
 
                       /* failure handler code */
                       o.request = {};

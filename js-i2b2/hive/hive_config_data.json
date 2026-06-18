@@ -5,6 +5,7 @@
     "i2b2_layout.js",
     "hive_SDX.js",
     "hive_msg_sniffer.js",
+    "error_msg_display/hive_error_msg_display.js",
     "i2b2_cell_communicator.js"
   ],
   "config": {}

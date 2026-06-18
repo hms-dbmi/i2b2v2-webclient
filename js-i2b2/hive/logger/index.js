@@ -111,6 +111,7 @@ function appendLogItem(msg, index){
     let logItem = $("<div class='logItem'></button>");
     let msgTypes = $("<div></div>").addClass("msgTypes");
     let sendMsgType = $("<div>sent</div>").addClass("sentStatus").appendTo(msgTypes);
+
     sendMsgType.on("click", function(event){
         event.stopPropagation();
         displayLogItem($(this).parents(".logItem"), true, false);
@@ -125,6 +126,12 @@ function appendLogItem(msg, index){
     logItem.append(msgTypes);
 
     let msgData = $("<div></div>").addClass("msgData");
+
+    let msgLogItem = msgLog[index];
+    if(msgLogItem.msgRecv?.hasErrors){
+        msgData.addClass("hasErrors");
+    }
+
     msgData.append("<div style='display:inline-block;float:left'>" + msg.function + "</div>"
         + "<div style='display:inline-block;float:right'>" + msg.cell + "</div>"
         + "<div style='clear:both'> called by " + msg.requester + "</div><div>" + msg.msgSent.when.toLocaleString() + "</div>");

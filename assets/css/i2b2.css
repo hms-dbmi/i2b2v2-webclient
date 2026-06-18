@@ -637,3 +637,30 @@ iframe.pluginCell {
 body.pendingRequest *{
 	cursor: progress !important;
 }
+
+.toast, .toast-header {
+	background-color: rgb(242, 244, 246);
+}
+
+.toast {
+	margin: 0.6em 0.5em 0 0 ;
+	opacity: 1 !important;
+	z-index: 100;
+}
+
+.toast-body {
+	padding-top: 0.5em;
+	padding-bottom: 0;
+}
+
+.versionData {
+	display: flex;
+	justify-content: flex-start;
+	gap: 20px;
+}
+
+.clientVersion, .serverVersion{
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}

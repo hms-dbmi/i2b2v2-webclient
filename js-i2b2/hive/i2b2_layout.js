@@ -194,8 +194,8 @@ i2b2.layout.init = function () {
 
 
 };
-
 // ================================================================================================== //
+
 i2b2.layout.selectTab = function (componentName) {
     let rightColTab = i2b2.layout.gl_instances.rightCol.root.getItemsByFilter((a) => { return a.componentName === componentName; } );
     if (rightColTab.length > 0) {
@@ -209,7 +209,6 @@ i2b2.layout.selectTab = function (componentName) {
         leftColTab.parent.setActiveContentItem(leftColTab);
     }
 }
-
 // ================================================================================================== //
 i2b2.events.afterLogin.add(
     (function() {
