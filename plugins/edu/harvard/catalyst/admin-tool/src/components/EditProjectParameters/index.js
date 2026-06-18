@@ -1,0 +1,152 @@
+import React, { useState, useEffect } from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    saveProjectParam, saveProjectParamStatusConfirmed,
+    getAllProjectParamsStatusConfirmed,
+} from "../../actions";
+import {EditParameters} from "../EditParameters";
+import "./EditProjectParameters.scss";
+import {DataType, ParamStatus} from "models";
+import {getAllGlobalParams} from "../../reducers/allHivesSlice";
+
+export const EditProjectParameters = ({selectedProject,
+                                          updatedParams,
+                                          updateParams,
+                                          projectParamStatus,
+                                          doSave,
+                                          setSaveCompleted,
+                                          paginationModel,
+                                          setPaginationModel,
+                                          showDeletedParams,
+                                          setShowDeletedParams
+                                         }) => {
+    const allGlobalParams = useSelector((state) => state.allHives?.params );
+    const [saveStatus, setSaveStatus] = useState("");
+    const [predefinedParams, setPredefinedParams] = useState([]);
+
+    const ONT_PREDEFINED_PARAMS = [
+        {
+            label: "Terms Options: Disable Modifiers",
+            dataType: "B",
+            description: "Whether to disable modifiers in ontology"
+        },
+        {
+            label: "Terms Options: Enable Patient Counts",
+            dataType: "B",
+            defaultValue: "true",
+            description: "Whether to enable patient counts in the ontology"
+        },
+        {
+            label: "Terms Options: Show Synonymous Terms",
+            dataType: "B",
+            description: "Whether to show synonymous terms the ontology"
+        },
+        {
+            label: "Terms Options: Show Hidden Terms",
+            dataType: "B",
+            description: "Whether to show hidden terms in the ontology"
+        },
+        {
+            label: "Terms Options: Show Concept Codes in Tooltips",
+            dataType: "B",
+            description: "Whether to show concept codes in tooltips in the ontology"
+        },
+        {
+            label: "Terms Options: Use Short Tooltips",
+            dataType: "B",
+            description: "Whether to use short tooltips in the ontology"
+        },
+        {
+            label: "Terms Options: Disable Optimized Search",
+            dataType: "B",
+            description: "Whether to disable optimized search in the ontology"
+        },
+        {
+            label: "Terms Options: Max Display",
+            dataType: "N",
+            defaultValue: "200",
+            description: "The maximum number of children to display in the ontology"
+        }
+    ]
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if(doSave){
+            setSaveCompleted(true);
+        }
+    }, [doSave]);
+
+    const saveParam = (param) => {
+        if(param && param.name.length > 0) {
+            dispatch(saveProjectParam({project: selectedProject.project, param}));
+        }
+    };
+
+    const saveStatusConfirm = () =>{
+        dispatch(saveProjectParamStatusConfirmed());
+    }
+
+    const allParamsStatusConfirm = () =>{
+        dispatch(getAllProjectParamsStatusConfirmed());
+    }
+
+    useEffect(() => {
+        if(selectedProject.paramStatus.status === "SAVE_SUCCESS"){
+            setSaveStatus(selectedProject.paramStatus);
+        }
+        if(selectedProject.paramStatus.status === "SAVE_FAIL"){
+            setSaveStatus(selectedProject.paramStatus);
+        }
+
+    }, [selectedProject]);
+
+
+    useEffect(() => {
+        dispatch(getAllGlobalParams());
+    }, []);
+
+    useEffect(() => {
+        let updatedPredefParams = ONT_PREDEFINED_PARAMS;
+        if(allGlobalParams && allGlobalParams.length > 0){
+            const projPredefinedParamsJsonList = allGlobalParams.filter(g => g.name === "Predefined Project Params" && g.status === ParamStatus.A);
+
+            projPredefinedParamsJsonList.forEach(projPredefinedParamsJson => {
+                try {
+                    const projPredefinedParams = JSON.parse(projPredefinedParamsJson.value);
+                    projPredefinedParams.forEach(param => {
+                        param.dataType = DataType[param.dataType];
+                        updatedPredefParams.push(param);
+                    });
+                }catch(e){
+                    console.error("Error parsing Project Predefined Params ", projPredefinedParamsJson.value);
+                }
+            });
+
+            setPredefinedParams(updatedPredefParams);
+        }
+    }, [allGlobalParams]);
+
+    return (
+        <div className="EditProjectParameters" >
+            <EditParameters
+                rows={updatedParams}
+                updateParams={updateParams}
+                title={selectedProject.project.name + " - Parameters"}
+                saveParam={saveParam}
+                saveStatus={saveStatus}
+                allParamStatus={projectParamStatus}
+                saveStatusConfirm={saveStatusConfirm}
+                paginationModel={paginationModel}
+                setPaginationModel={setPaginationModel}
+                predefinedParams={predefinedParams}
+                paramTableName={"PM_PROJECT_PARAMS"}
+                showDeletedParams = {showDeletedParams}
+                setShowDeletedParams = {setShowDeletedParams}
+            />
+        </div>
+    );
+
+};
+
+EditProjectParameters.propTypes = {};

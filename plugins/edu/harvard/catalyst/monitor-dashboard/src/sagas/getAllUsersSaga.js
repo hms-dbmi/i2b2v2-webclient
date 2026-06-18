@@ -1,0 +1,68 @@
+import { call, takeLatest, put} from "redux-saga/effects";
+import {getAllUsersFailed, getAllUsersSucceeded} from "../reducers/usersSlice";
+import {GET_ALL_USERS} from "../actions";
+import {parseXml} from "../utilities/parseXml";
+import {getQueryRequestDetailsFailed} from "../reducers/queryRequestDetailsSlice";
+
+//a function that returns a promise
+const getAllUsersRequest = (projectId) => {
+    const data = {
+        entry_date_xml: "",
+        project_id_xml: ""
+    };
+
+    if(projectId){
+        data.project_id_xml = "<project_id>" + projectId + "</project_id>";
+    }
+
+    return i2b2.ajax.PM.getAllUser(data).then((xmlString) => parseXml(xmlString));
+}
+
+const parseUsersXml = (allUsersXml) => {
+    let users = allUsersXml.getElementsByTagName('user');
+    let usersList = [];
+    for (let i = 0; i < users.length; i++) {
+        const user = users[i];
+        let username = user.getElementsByTagName('user_name');
+        let fullname = user.getElementsByTagName('full_name');
+        let email = user.getElementsByTagName('email');
+        let isAdmin = user.getElementsByTagName('is_admin');
+        if((username.length !== 0 && username[0].childNodes.length !== 0)
+            && (fullname.length !== 0 && fullname[0].childNodes.length !== 0)
+            && (isAdmin.length !== 0 && isAdmin[0].childNodes.length))
+        {
+            username = username[0].childNodes[0].nodeValue;
+            fullname = fullname[0].childNodes[0].nodeValue;
+            isAdmin = isAdmin[0].childNodes[0].nodeValue;
+            usersList.push({username, fullname, email, isAdmin});
+        }
+    }
+
+    return usersList;
+}
+
+export function* doGetAllUsers(action) {
+    console.log("getting all users...");
+    const { projectId } = action.payload;
+
+    try {
+        const response = yield call(getAllUsersRequest, projectId);
+
+        if(response) {
+            let userList = parseUsersXml(response);
+            yield put(getAllUsersSucceeded(userList));
+        }else{
+            yield put(getAllUsersFailed({errorMessage: "Error retrieving all users."}));
+        }
+    } catch(e){
+        console.error("Error getting all users. ", e);
+        yield put(getAllUsersFailed({errorMessage: "Error retrieving all users. " + e}));
+    }finally {
+        const msg = `get all users thread closed`;
+        yield msg;
+    }
+}
+
+export function* getAllUsersSaga() {
+    yield takeLatest(GET_ALL_USERS, doGetAllUsers);
+}
