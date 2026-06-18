@@ -118,8 +118,8 @@ export default class BarGraph {
                 })
                 .append("title")
                 .text((t, i) => {
-                    // TODO: handle Obfuscation and Sketches
-                    let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(data[i].value);
+                    // TODO: handle Sketches
+                    let val = data[i].value;
                     if (data[i].display) val = data[i].display;
                     return t + "\n[ "+ val + " patients ]";
                 });
@@ -168,8 +168,8 @@ export default class BarGraph {
                 .attr("height", function(d) { return height - y(d.value); })
                 .select('title')
                 .text((d) => {
-                        // TODO: handle Obfuscation and Sketches
-                        let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(d.value);
+                        // TODO: handle Sketches
+                        let val = d.value;
                         if (d.display) val = d.display;
                         return "[ " + val + " patients ]\n" + d.name.trim()
                 });
@@ -183,8 +183,8 @@ export default class BarGraph {
                 .attr("height", function(d) { return height - y(d.value); })
                 .append("title")
                 .text((d) => {
-                    // TODO: handle Obfuscation and Sketches
-                    let val = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(d.value);
+                    // TODO: handle Sketches
+                    let val = d.value;
                     if (d.display) val = d.display;
                     return "[ " + val + " patients ]\n" + d.name.trim()
                   });
@@ -279,22 +279,9 @@ let parseData = function(xmlData) {
         if (entryRecord.value === -1) return;
 
         // apply obfuscation
-        if (i2b2.PM.model.isObfuscated) {
-            const nodeValue = parseInt(params[i2].firstChild.nodeValue);
-            if (!isNaN(nodeValue) && nodeValue < 4) {
-                entryRecord.display = "< " + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-            }
-            if (isNaN(nodeValue) || entryRecord.name === 'QueryMasterID') {
-                entryRecord.display = params[i2].firstChild.nodeValue;
-            } else {
-                entryRecord.display = params[i2].firstChild.nodeValue + "±" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString();
-            }
-        }
-        if (i2b2.UI.cfg.useFloorThreshold) {
-            if (params[i2].firstChild.nodeValue < i2b2.UI.cfg.floorThresholdNumber) {
-                entryRecord.display = i2b2.UI.cfg.floorThresholdText + i2b2.UI.cfg.floorThresholdNumber.toString();
-            }
-        }
+        const floorThreshold = params[i2].getAttribute("floorThresholdNumber");
+        const obfuscateNumber = params[i2].getAttribute("obfuscatedDisplayNumber");
+        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, floorThreshold, obfuscateNumber);
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
             entryRecord.value = $('<div>').html(params[i2].textContent).text();
@@ -324,7 +311,8 @@ let parseData = function(xmlData) {
                 for (let siteresult of siteResults) {
                     siteData.results.push({
                         name: $('<div>').html(siteresult.getAttribute('column')).text(),
-                        value: parseInt(siteresult.textContent)
+                        value: parseInt(siteresult.textContent),
+                        display: i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(siteresult.textContent, siteData.floorThresholdNumber, siteData.obfuscatedDisplayNumber)
                     });
                 }
             }

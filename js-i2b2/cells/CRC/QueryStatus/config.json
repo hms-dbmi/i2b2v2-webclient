@@ -46,6 +46,26 @@
       "displayOrder": 100,
       "displayForUnregistered": true
     },
+    "TABLEBARCHART": {
+      "name": "Table Bar Chart",
+      "source": "TableBarChart/TableBarChart.js",
+      "CSS": "TableBarChart/TableBarChart.css",
+      "iconClass": "bi bi-bar-chart-steps",
+      "displayOrder": 10,
+      "displayForUnregistered": true,
+      "notInReport": true
+    },
+    "DATAREQUESTSUPER": {
+      "name": "Data Request",
+      "source": "DataRequestSuper/DataRequestSuper.js",
+      "CSS": "DataRequestSuper/DataRequestSuper.css",
+      "iconClass": "bi bi-table",
+      "displayOrder": 100,
+      "displayForUnregistered": false,
+      "superModule": {
+        "capture": ["/^RPDO_/", "/_REQUEST$/"]
+      }
+    },
     "DOWNLOAD": {
       "name": "CSV Download",
       "source": "Download/Download.js",
@@ -85,14 +105,14 @@
       "displayForUnregistered": false
     },
     "PATHOGENTIMELINE": {
-    "name": "Pathogen Timeline",
-    "source": "PathogenTimeline/PathogenTimeline.js",
-    "CSS": "PathogenTimeline/PathogenTimeline.css",
-    "iconClass": "bi-graph-up-arrow",
-    "displayOrder": 3,
-    "class": "pathogen-timeline",
-    "displayForUnregistered": false
-    }, 
+      "name": "Pathogen Timeline",
+      "source": "PathogenTimeline/PathogenTimeline.js",
+      "CSS": "PathogenTimeline/PathogenTimeline.css",
+      "iconClass": "bi-graph-up-arrow",
+      "displayOrder": 3,
+      "class": "pathogen-timeline",
+      "displayForUnregistered": false
+    },
     "NIHENROLLTABLE": {
       "name": "Enrollment Form",
       "source": "NihEnrollTable/Table.js",
@@ -106,14 +126,6 @@
       "iconClass": "bi bi-filetype-csv",
       "displayOrder": 100,
       "notInReport": true
-    },
-    "TABLEBARCHART": {
-      "name": "Table Bar Chart",
-      "source": "TableBarChart/TableBarChart.js",
-      "CSS": "TableBarChart/TableBarChart.css",
-      "iconClass": "bi bi-bar-chart-steps",
-      "displayOrder": 10,
-      "displayForUnregistered": true
     }
   },
   "displayOrder": [
