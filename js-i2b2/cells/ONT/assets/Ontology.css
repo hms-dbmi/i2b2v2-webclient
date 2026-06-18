@@ -121,20 +121,7 @@ i.srTooltip.warn {
     background: transparent;
 }
 
-button.invert{
-    color: #0d6efd;
-    background: #FFFFFF;
-}
-
-button.invert:hover{
-    opacity: 0.7;
-}
-
-.hidden{
-    display: none;
-}
-
-#i2b2FinderOnt .form-select-sm{
+#i2b2FinderOnt .form-select-sm {
     font-size: 0.84em;
 }
 
@@ -184,36 +171,6 @@ button.invert:hover{
     margin-right: 0.5em;
 }
 
-@media all and (min-width: 992px) {
-    .dropdown-menu li {
-        position: relative;
-    }
-    .nav-item .submenu {
-        display: none;
-        position: absolute;
-        top: -0.2em;
-        padding-right: 0.2em;
-    }
-    .nav-item .submenu-left {
-        right: 100%;
-        left: auto;
-    }
-    .dropdown-menu > li:hover {
-        background-color: #f1f1f1
-    }
-}
-/* ============ desktop view .end// ============ */
-
-/* ============ small devices ============ */
-@media (max-width: 991px) {
-    .dropdown-menu .dropdown-menu{
-        margin-left:0.7rem;
-        margin-right:0.7rem;
-        margin-bottom: .5rem;
-    }
-}
-/* ============ small devices .end// ============ */
-
 #i2b2FinderOnt .highlight-menu-item {
     background-color: #f1f1f1;
 }
@@ -231,41 +188,32 @@ button.invert:hover{
 #i2b2FinderOnt .searchBtn {
     font-size: 1.4em !important;
     margin-left: 0;
-    border-color: #474849 !important;
-    border-width: 0.10em !important;
 }
 
-#i2b2FinderOnt .searchBtn:hover:enabled{
-    background-color: #6c757d;
-    border-color: #797a7c !important;
+#i2b2FinderOnt .searchBtn:hover:enabled,
+#i2b2FinderOnt .searchBtn:focus-visible {
+    background-color: rgba(from var(--text-primary-dark) r g b / .5);
+    box-shadow: none !important;
+    color: var(--text-primary-light) !important;
 }
 
-#i2b2FinderOnt .searchBtn:enabled{
-    opacity: 0.65;
-}
-
-#i2b2FinderOnt .clearIcon {
-    margin-right: 0;
-    margin-left: 0;
-    border-color: #797a7c !important;
-}
-
-#i2b2FinderOnt .clearIcon:hover {
-    border-radius: 3px;
+#i2b2FinderOnt .searchBtn:enabled {
+    opacity: .75;
 }
 
 #i2b2FinderOnt .invisible {
     visibility: hidden;
 }
 
-.tooltip-inner {
-    background-color: #fff !important;
-    color: #000 !important;
-    border: 1px solid #c8cdce;
-}
-
 .srTooltip, .dcTooltip {
     color: #87898a;
+}
+
+
+#i2b2FinderOnt .searchTermMain {
+    flex-grow: 1;
+    min-width: 6.5rem;
+    margin-top: 0.1em;
 }
 
 #i2b2FinderOnt .searchTermMain .input-group {
