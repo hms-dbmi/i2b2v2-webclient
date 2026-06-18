@@ -849,11 +849,12 @@ i2b2.events.afterCellInit.add((cell) => {
                     });
                     container.on('tab', (tab) => {
                         if (tab.contentItem.componentName === "i2b2.CRC.view.history") {
-                            //add unique id to the term tab
+                            // add unique id to the term tab [TECH DEBT: is this used?]
                             let elemId = "queryHistoryTab";
                             $(tab.element).attr("id", elemId);
 
-                            let optionsBtn = $('<div id="queryHistoryOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Query History Options"></i></div>');
+                            let title = tab.contentItem.config.title;
+                            let optionsBtn = $('<div id="queryHistoryOptions" class="menuOptions"><i class="bi bi-chevron-down" title="' + title + ' Options"></i></div>');
                             $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 
                             i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#queryHistoryOptions", {
