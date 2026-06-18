@@ -3,7 +3,7 @@
  * @inherits 	i2b2.ONT.ctrlr
  * @namespace	i2b2.ONT.ctrlr.Search
  * @author		Nick Benik, Griffin Weber MD PhD
- * @version 	1.7.12
+ * @version 	1.8.2
  * ----------------------------------------------------------------------------------------
  * updated 9-15-08: RC4 launch [Nick Benik]
  * updated 01-12-18: Mauro Bucalo

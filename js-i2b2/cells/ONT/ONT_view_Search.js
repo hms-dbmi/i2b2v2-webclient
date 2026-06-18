@@ -87,6 +87,8 @@ i2b2.ONT.view.search.initSearch = function(container){
 
             //init search result tooltip
             $(".srTooltip").tooltip();
+            let temp = "A maximum of " + i2b2.ONT.view.nav.params.max + " records per category will be returned.";
+            $('.srTooltip').attr('data-bs-original-title', temp);
         },
         error: (error) => { console.error("Could not retrieve template: OntologyFinder.html"); }
     });

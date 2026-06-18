@@ -29,10 +29,14 @@
     },
     "category": ["core","cell"],
     "paramTranslation": [
-      {"xmlName": "OntMax", "thinClientName": "max", "defaultValue": 200},
-      {"xmlName": "OntHiddens", "thinClientName": "hiddens", "defaultValue": false},
-      {"xmlName": "OntSynonyms", "thinClientName": "synonyms", "defaultValue": true},
-      {"xmlName": "OntDisableModifiers", "thinClientName": "modifiers", "defaultValue": false}
+      {"xmlName": "Terms Options: Max Display", "thinClientName": "max", "defaultValue": 200},
+      {"xmlName": "Terms Options: Show Hidden Terms", "thinClientName": "hiddens", "defaultValue": false},
+      {"xmlName": "Terms Options: Show Synonymous Terms", "thinClientName": "synonyms", "defaultValue": false},
+      {"xmlName": "Terms Options: Enable Patient Counts", "thinClientName": "patientCounts", "defaultValue": true},
+      {"xmlName": "Terms Options: Use Short Tooltips", "thinClientName": "showShortTooltips", "defaultValue": false},
+      {"xmlName": "Terms Options: Show Concept Codes in Tooltips", "thinClientName": "showConceptCode", "defaultValue": false},
+      {"xmlName": "Terms Options: Disable Modifiers", "thinClientName": "modifiers", "defaultValue": false},
+      {"xmlName": "Terms Options: Disable Optimized Search", "thinClientName": "fullSearch", "defaultValue": false}
     ]
   }
 }
