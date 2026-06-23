@@ -65,6 +65,40 @@ i2b2.CRC.QueryReport.generateReport = () => {
         });
     });
 
+    const func_getConceptEntry = (panelConcept) => {
+        for (const group of i2b2.CRC.model.query.groups) {
+            for (const event of group.events) {
+                for (const concept of event.concepts) {
+                    // check for matching concept
+                    if (concept.sdxInfo.sdxKeyValue === panelConcept.key) {
+                        // check for matching lab values
+                        if (concept.LabValues) {
+                            let isMatch = true;
+                            if (concept.LabValues.ValueOperator !== panelConcept.ValueOperator) isMatch = false;
+                            if (isMatch && concept.LabValues.ValueType !== panelConcept.ValueType) isMatch = false;
+                            if (isMatch && concept.LabValues.ValueUnit !== panelConcept.ValueUnit) isMatch = false;
+                            if (isMatch && concept.LabValues.ValueOperator === "BETWEEN") {
+                                if (panelConcept.Value.replaceAll(" and ", "-") !== concept.LabValues.ValueLow + "-" + concept.LabValues.ValueHigh) isMatch = false;
+                            } else {
+                                if (panelConcept.ValueType === "FLAG") {
+                                    if (concept.LabValues.ValueFlag && concept.LabValues.ValueFlag !== panelConcept.Value) isMatch = false;
+                                } else {
+                                    if (concept.LabValues.Value && concept.LabValues.Value !== panelConcept.Value) isMatch = false;
+                                }
+                            }
+                            if (isMatch) return concept;
+                        } else {
+                            // make sure we don't have lab values set in the passed concept
+                            if (!panelConcept.ValueOperator) return concept;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+
+
     // function for expanding the panel items
     let func_expandConcept = function(panelItem, panel) {
         if (panelItem.key.indexOf(':') !== -1 && panelItem.key.substr(0,2) !== "\\\\") {
@@ -83,7 +117,7 @@ i2b2.CRC.QueryReport.generateReport = () => {
             if (panelItem.modKey) {
                 panelItem.moreInfo = modifiers[conceptKey][panelItem.modKey];
             } else {
-                panelItem.moreInfo = concepts[conceptKey];
+                panelItem.moreInfo = func_getConceptEntry(panelItem);
             }
             // deal with dates
             if (panelItem.moreInfo.dateRange?.start === undefined || panelItem.moreInfo.dateRange?.start === "") {
@@ -170,7 +204,7 @@ i2b2.CRC.QueryReport.generateReport = () => {
     let stylesheets = [];
     for (let code in i2b2.CRC.QueryStatus.displayComponents) {
         const componentInfo = i2b2.CRC.QueryStatus.displayComponents[code];
-        if (componentInfo.CSS && !componentInfo.noReport) stylesheets.push(i2b2.CRC.QueryStatus.baseURL + componentInfo.CSS);
+        if (componentInfo.CSS && !componentInfo.notInReport) stylesheets.push(i2b2.CRC.QueryStatus.baseURL + componentInfo.CSS);
     }
     reportData.stylesheets = stylesheets;
 
@@ -180,21 +214,60 @@ i2b2.CRC.QueryReport.generateReport = () => {
     const configuredBreakdownCodes = Object.keys(i2b2.CRC.QueryReport.displayConfig);
     for (let qrsCode of configuredBreakdownCodes) {
         // get the data entry
-        let qrsData = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => x.QRS_Type === qrsCode);
+        let qrsData = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => {
+            if (x.QRS_DisplayType !== "CATNUM") return false;
+            if (i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(x.QRS_Status)) return false;
+            let hasMatches = false;
+            if (x.QRS_Type === qrsCode) hasMatches = true;
+            if (qrsCode.substring(0,1) === '/') {
+                // regex processing
+                let testRegEx = i2b2.CRC.QueryStatus._generateRegEx(qrsCode);
+                if (testRegEx.test(x.QRS_Type)) hasMatches = true;
+            }
+            if (hasMatches) {
+                const activeModules = Object.entries(i2b2.CRC.QueryReport.displayConfig[qrsCode]).filter((e) => {
+                    if (e[1] !== false) return true;
+                });
+                if (activeModules.length > 0) return true;
+            }
+            return false;
+        });
+        // if we have data for displaying the breakdown
         if (qrsData.length > 0) {
             qrsData = qrsData[0];
             let visualizationGroup = [];
-            // we are displaying this breakdown, run through the viz modules
-            for (let vizCode in i2b2.CRC.QueryReport.displayConfig[qrsCode]) {
-                if (i2b2.CRC.QueryStatus.displayComponents[vizCode] !== undefined) {
-                    // valid visualization
-                    visualizationGroup.push({
-                        "codeViz": vizCode,
-                        "codeQRS": qrsCode,
-                        "module": i2b2.CRC.QueryStatus.displayComponents[vizCode],
-                        "data": qrsData,
-                        "config": i2b2.CRC.QueryReport.displayConfig[qrsCode][vizCode]
-                    });
+            // we are displaying this breakdown, find its definition(s)
+            let displayConfigEntries = [];
+            if (i2b2.CRC.QueryReport.displayConfig[qrsCode]) {
+                // via literal mapping
+                displayConfigEntries.push(i2b2.CRC.QueryReport.displayConfig[qrsCode]);
+            } else {
+                // via regex mapping
+                Object.entries(i2b2.CRC.QueryReport.displayConfig).forEach((e) => {
+                    if (e[0].substring(0,1) === '/') {
+                        let testRegEx = i2b2.CRC.QueryStatus._generateRegEx(e[0]);
+                        if (testRegEx.test(qrsCode)) displayConfigEntries.push(e[1]);
+                    }
+                });
+            }
+
+            // run through the matching definitions
+            for (let currentDef of displayConfigEntries) {
+                // run through the definition's viz modules
+                for (let vizCode in currentDef) {
+                    let showViz = true;
+                    if (typeof i2b2.CRC.QueryStatus.displayComponents[vizCode] === "undefined") showViz = false;
+                    if (currentDef[vizCode] === false) showViz = false;
+                    if (showViz) {
+                        // valid visualization
+                        visualizationGroup.push({
+                            "codeViz": vizCode,
+                            "codeQRS": qrsCode,
+                            "module": i2b2.CRC.QueryStatus.displayComponents[vizCode],
+                            "data": qrsData,
+                            "config": i2b2.CRC.QueryReport.displayConfig[qrsCode][vizCode]
+                        });
+                    }
                 }
             }
             if (visualizationGroup.length > 0) visualizations.push({
@@ -205,7 +278,24 @@ i2b2.CRC.QueryReport.generateReport = () => {
     }
     // display any non-configured breakdowns not defined in the JSON
     let definedBreakdowns = visualizations.map((x) => x.visualizations[0].codeQRS);
-    let todoBreakdowns = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => !definedBreakdowns.includes(x.QRS_Type) && x.QRS_Type !== 'INTERNAL_SUMMARY');
+    let todoBreakdowns = Object.values(i2b2.CRC.QueryStatus.model.QRS).filter((x) => {
+        if (x.QRS_DisplayType !== "CATNUM") return false;
+        if (i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(x.QRS_Status)) return false;
+        if (definedBreakdowns.includes(x.QRS_Type) || x.QRS_Type === 'INTERNAL_SUMMARY') return false;
+        const isCapturedBySuperModule = Object.values(i2b2.CRC.QueryStatus.displayComponents).some((moduleDef) => {
+            if (typeof moduleDef.superModule === 'undefined' || moduleDef.notInReport === true) return false;
+            return i2b2.CRC.QueryStatus.qrsMatchesCapture(x.QRS_Type, moduleDef.superModule.capture);
+        });
+        if (isCapturedBySuperModule) return false;
+        // see if the breakdown matches a regex
+        const regExList = configuredBreakdownCodes.filter((y) => y.substring(0,1) === '/');
+        let anyRegexMatch = regExList.every((y) => !i2b2.CRC.QueryStatus._generateRegEx(y).test(x.QRS_Type));
+        // if a breakdown matches any regular expression than assume it was correctly filtered out on purpose
+        // at an earlier phase - do not read
+        if (!anyRegexMatch) return false;
+        // if this breakdown is not in the mapping config then consider it an unmapped file
+        return !configuredBreakdownCodes.includes(x.QRS_Type);
+    });
     let targetVizModules = Object.values(i2b2.CRC.QueryStatus.displayComponents).filter((x) => x.displayForUnregistered === true && x.notInReport !== true).sort((a, b) => (a.displayOrderx || -Infinity) - (b.displayOrder || -Infinity))
     for (let undefinedBreakdown of todoBreakdowns) {
         let visualizationGroup = [];
@@ -228,6 +318,29 @@ i2b2.CRC.QueryReport.generateReport = () => {
 
     if (visualizations.length > 0) reportData.visualizations = visualizations;
 
+    // discover supermodules — included automatically when matching breakdowns exist
+    let superModules = [];
+    Object.entries(i2b2.CRC.QueryStatus.displayComponents).forEach(([codeViz, moduleDef]) => {
+        if (typeof moduleDef.superModule === 'undefined' || moduleDef.notInReport === true) return;
+        const matchingQrsRecords = i2b2.CRC.QueryStatus.getMatchingQrsForSuperModule(moduleDef);
+        if (matchingQrsRecords.length === 0) return;
+        superModules.push({
+            codeViz: codeViz,
+            module: moduleDef,
+            moduleClass: moduleDef.class,
+            matchingQrsRecords: matchingQrsRecords,
+            config: {}
+        });
+    });
+    superModules.sort((a, b) => {
+        let av = a.module.displayOrder;
+        let bv = b.module.displayOrder;
+        if (av === undefined) av = 50;
+        if (bv === undefined) bv = 50;
+        return av - bv;
+    });
+    if (superModules.length > 0) reportData.superModules = superModules;
+
     const reportHtml = i2b2.CRC.QueryReport.templates.queryReport(reportData);
     const reportDocument = $('#queryReportWindow')[0].contentWindow.document;
     reportDocument.open();
@@ -238,8 +351,8 @@ i2b2.CRC.QueryReport.generateReport = () => {
     $("#queryReportModal div:eq(0)").modal('show');
 
     // now attach and render the visualization modules
-    if (reportData.visualizations.length > 0) {
-        let targetDivs = Object.values(reportDocument.documentElement.querySelectorAll(".QueryStatusComponent"));
+    if (reportData.visualizations?.length > 0) {
+        let targetDivs = Object.values(reportDocument.documentElement.querySelectorAll(".QueryStatusComponent:not(.QueryStatusSuperModule)"));
         for (let groupViz of reportData.visualizations) {
             for (let singleViz of groupViz.visualizations) {
                 let componentEl = targetDivs.shift();
@@ -280,6 +393,30 @@ i2b2.CRC.QueryReport.generateReport = () => {
             }
         }
     }
+
+    // render supermodules after all regular visualizations
+    if (reportData.superModules?.length > 0) {
+        let superModuleDivs = Object.values(reportDocument.documentElement.querySelectorAll(".QueryStatusSuperModule"));
+        for (let singleSuper of reportData.superModules) {
+            let componentEl = superModuleDivs.shift();
+            let componentInstanceObj = {
+                "definition": singleSuper.module,
+                "parentDisplayEl": componentEl,
+                "displayEl": componentEl
+            };
+            if (singleSuper.module.class !== undefined) componentInstanceObj.displayEl.classList.add(singleSuper.module.class);
+
+            const visualizationInstance = new singleSuper.module.implementation(componentInstanceObj, null, null);
+            componentInstanceObj.visualization = visualizationInstance;
+            setTimeout(() => {
+                for (let qrsRecord of singleSuper.matchingQrsRecords) {
+                    if (qrsRecord.data) visualizationInstance.update(qrsRecord.data);
+                }
+                visualizationInstance.show();
+                visualizationInstance.redraw(componentInstanceObj.displayEl.offsetWidth);
+            }, 100);
+        }
+    }
 };
 
 
@@ -289,13 +426,13 @@ i2b2.CRC.QueryReport.generateReport = () => {
     try {
         // load ReportConfig.json
         let response = await fetch(i2b2.CRC.QueryReport.baseURL + "ReportConfig.json");
-        if (!response.ok) throw new Error(`Failed to retreve QueryReport ReportConfig.json file: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to retrieve QueryReport ReportConfig.json file: ${response.status}`);
         const config = await response.json();
         i2b2.CRC.QueryReport.displayConfig = config;
 
         // load QueryReport template
         response = await fetch(i2b2.CRC.QueryReport.baseURL + "QueryReport.html");
-        if (!response.ok) throw new Error(`Failed to retreve QueryReport.html template: ${response.status}`);
+        if (!response.ok) throw new Error(`Failed to retrieve QueryReport.html template: ${response.status}`);
         const template = await response.text();
         i2b2.CRC.QueryReport.templates.queryReport = Handlebars.compile(template);
 

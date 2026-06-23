@@ -241,7 +241,8 @@ i2b2.CRC.view.history.clickSearchName = function() {
         crc_find_category: crc_find_category,
         crc_find_strategy: crc_find_strategy,
         crc_create_date: "",
-        crc_find_string: $("#querySearchTermText").val()
+        crc_find_string: $("#querySearchTermText").val(),
+        master_type_cd_xml: ""
     };
     i2b2.CRC.ajax.getNameInfo("CRC:History", options, scopeCB);
 };
@@ -410,7 +411,9 @@ i2b2.CRC.view.history.LoadQueryMasters = function(maxRecords) {
     let options = {
         crc_max_records: max + 1,
         crc_user_type: request_type,
-        crc_user_by: user_type
+        crc_user_by: user_type,
+        include_query_instance: false,
+        master_type_cd_xml: ""
     };
     i2b2.CRC.ajax.getQueryMasterList_fromUserId("CRC:History", options,  scopedCallback);
 };
@@ -846,11 +849,12 @@ i2b2.events.afterCellInit.add((cell) => {
                     });
                     container.on('tab', (tab) => {
                         if (tab.contentItem.componentName === "i2b2.CRC.view.history") {
-                            //add unique id to the term tab
+                            // add unique id to the term tab [TECH DEBT: is this used?]
                             let elemId = "queryHistoryTab";
                             $(tab.element).attr("id", elemId);
 
-                            let optionsBtn = $('<div id="queryHistoryOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Query History Options"></i></div>');
+                            let title = tab.contentItem.config.title;
+                            let optionsBtn = $('<div id="queryHistoryOptions" class="menuOptions"><i class="bi bi-chevron-down" title="' + title + ' Options"></i></div>');
                             $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 
                             i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#queryHistoryOptions", {

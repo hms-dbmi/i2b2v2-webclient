@@ -148,3 +148,7 @@ body {
 .MessageLog #clearLog {
     margin-left: 0.5em;
 }
+
+.MessageLog .hasErrors {
+    color: #E32012FF;
+}

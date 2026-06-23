@@ -1,3 +1,5 @@
 [
-  "edu.harvard.weberlab.bivariate-choropleth-map"
+  "edu.harvard.weberlab.bivariate-choropleth-map",
+  "edu.harvard.catalyst.monitor-dashboard",
+  "edu.harvard.catalyst.admin-tool"
 ]

@@ -74,6 +74,15 @@ i2b2.PLUGIN.view.list.buildListData = function(mode, category, searchString) {
         }
     }
 
+    pluginsListData.sort((a,b) => {
+        if(a.title && b.title){
+            return a.title.localeCompare(b.title);
+        }
+        else {
+            return 0;
+        }
+    });
+
     return pluginsListData;
 };
 
@@ -115,14 +124,20 @@ i2b2.PLUGIN.view.list.initialCategory = function() {
     if (i2b2.hive.model.globalParams[param_config_name]) initialCategory = i2b2.hive.model.globalParams[param_config_name].innerHTML;
     if (i2b2.PM.model.projects[i2b2.PM.model.login_project].details[param_config_name]) initialCategory = i2b2.PM.model.projects[i2b2.PM.model.login_project].details[param_config_name];
     initialCategory = initialCategory.toUpperCase();
+    let selectedCategory;
     // make sure the category exists, if so then set it
     for (let t of $("#pluginCategory")[0].options) {
-        if (t.value.toUpperCase() === initialCategory) {
-            $("#pluginCategory").val(t.value);
-            i2b2.PLUGIN.view.list.renderList(i2b2.PLUGIN.view.list.mode.DETAIL, t.value);
+        if(i2b2.PM.model.isAdmin && t.value.toUpperCase() === 'ADMIN') {
+            selectedCategory = t.value;
             break;
         }
+        else if (!selectedCategory && t.value.toUpperCase() === initialCategory) {
+            selectedCategory = t.value;
+        }
     }
+
+    $("#pluginCategory").val(selectedCategory);
+    i2b2.PLUGIN.view.list.renderList(i2b2.PLUGIN.view.list.mode.DETAIL, selectedCategory);
 };
 
 

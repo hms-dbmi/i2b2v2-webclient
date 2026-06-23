@@ -1,0 +1,36 @@
+.QueryTableView {
+  overflow: hidden;
+
+  .listingStatusErrorMsg {
+    color: red;
+  }
+
+  .MuiDataGrid-columnHeader, .MuiDataGrid-sortButton{
+    background-color: transparent !important;
+  }
+
+  .MuiDataGrid-columnHeaderTitle {
+    white-space: normal
+  }
+
+  .headerNumeric {
+   .MuiDataGrid-columnHeaderDraggableContainer {
+      flex-direction: row !important;
+    }
+
+    .MuiDataGrid-columnHeaderTitleContainer{
+      flex-direction: row !important;
+    }
+  }
+
+  .header, .headerNumeric {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .MuiDataGrid-cell--textRight {
+    text-align: left !important;
+  }
+  .deletedRow {
+    background-color: rgba(190, 6, 38, 0.10);
+  }
+}

@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="{{this}}">
   {{/each}}
 </head>
-<body>
+<body class="query-report">
 <h1 class="main-title">Query Report</h1>
 {{#if hasError}}
   The query entitled "{{name}}" submitted on <span class="no-break">{{submittedAt}}</span>.
@@ -191,8 +191,22 @@
     {{/each}}
   </div>
   {{/each}}
-{{else}}
-  <div>Not Complete</div>
 {{/if}}
+{{#if superModules}}
+  <div class="results-group">
+    {{#each superModules}}
+      <div class="QueryStatusComponent QueryStatusSuperModule frameless viz-window viztype-{{this.codeViz}}{{#if this.moduleClass}} {{this.moduleClass}}{{/if}}"></div>
+    {{/each}}
+  </div>
+{{/if}}
+{{#unless visualizations}}
+  {{#unless superModules}}
+    {{#if hasError}}
+      <div>The query has encountered an error.</div>
+    {{else}}
+      <div>Not Complete</div>
+    {{/if}}
+  {{/unless}}
+{{/unless}}
 </body>
 </html>

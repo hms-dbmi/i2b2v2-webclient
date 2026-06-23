@@ -119,15 +119,17 @@ i2b2.ONT.view.nav.loadChildren =  function(nodeData, onComplete) {
         // push new nodes into the treeview
         i2b2.ONT.view.nav.treeview.treeview('addNodes', [
             newNodes,
-            function(parent, child){ return (parent.key === child.parentKey) && (parent.text === child.parentText) },
+            function(parent, child){
+                return (parent.key === child.parentKey) && (parent.text === child.parentText) && nodeData.parentKey === parent.parentKey
+            },
             false
         ]);
 
         // change the treeview icon to show it is no longer loading
         if (!wasCancelled) {
-            loadedParents.push({key: nodeData.key, text: nodeData.text}); // make sure we have the orignal node that the load request was fired on
+            loadedParents.push({key: nodeData.key, text: nodeData.text, parentKey: nodeData.parentKey}); // make sure we have the orignal node that the load request was fired on
             i2b2.ONT.view.nav.treeview.treeview('setNodeLoaded', [
-                function(node, parentNodes){ return (parentNodes.filter((d) => (node.key === d.key && node.text === d.text)).length > 0) },
+                function(node, parentNodes){ return (parentNodes.filter((d) => (node.key === d.key && node.text === d.text && node.parentKey === d.parentKey)).length > 0 ) },
                 loadedParents
             ]);
         }
@@ -232,7 +234,6 @@ i2b2.events.afterCellInit.add((cell) => {
                 $("body").append(optionsDialogModal);
                 optionsDialogModal.load('js-i2b2/cells/ONT/assets/modalOptionsONT.html', function () {
                     //enable patient counts by default
-                    i2b2.ONT.view.nav.params.patientCounts = true;
                     $("body #ontOptionsModal button.options-save").click(function () {
                         // deal with limiting max records
                         i2b2.ONT.view.nav.params.max = parseInt($('#ONTNAVMaxQryDisp').val(), 10);
@@ -256,12 +257,12 @@ i2b2.events.afterCellInit.add((cell) => {
 
                 container.on('tab', (tab) => {
                     if (tab.contentItem.componentName === "i2b2.ONT.view.nav") {
-                        //add unique id to the term tab
+                        // add unique id to the term tab [TECH DEBT: is this used?]
                         let elemId = "ontologyTermTab";
-
                         $(tab.element).attr("id", elemId);
 
-                        let optionsBtn = $('<div id="termOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Set Terms Options"></i></div>');
+                        let title = tab.contentItem.config.title;
+                        let optionsBtn = $('<div id="termOptions" class="menuOptions"><i class="bi bi-chevron-down" title="'+ title +' Options"></i></div>');
                         $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 
                         i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#termOptions", {
@@ -402,8 +403,13 @@ i2b2.ONT.view.nav.viewInTreeFromId = function(sdx) {
                 func_HighlightNode(n);
             } else {
                 n.state.requested = true;
-                i2b2.ONT.view.nav.treeview.treeview('redraw', []);
-                i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
+                if(!n.state.loaded) {
+                    i2b2.ONT.view.nav.treeview.treeview('redraw', []);
+                    i2b2.ONT.view.nav.loadChildren(n, onLoadChildrenComplete);
+                }
+                else {
+                    onLoadChildrenComplete(n);
+                }
             }
             break;
         }

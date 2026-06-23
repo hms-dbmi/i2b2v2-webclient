@@ -1,0 +1,24 @@
+{
+  "title": "Activity & Usage Monitoring ",
+  "description": "This is a tool for monitoring i2b2 usage",
+  "category": ["admin"],
+  "icons": { "size32x32": "multi_gear_icon_outline.png" },
+  "assetDir": "dist/assets/images",
+  "plugin_version" : "1.0",
+  "i2b2_version" : "1.8.3",
+  "base": "dist/index.html",
+  "sandbox": true,
+  "admin_only": true,
+  "authorizedTunnel": {
+    "variables" :{
+      "i2b2.UI.cfg.floorThresholdNumber" : "R",
+      "i2b2.UI.cfg.floorThresholdText" : "R",
+      "i2b2.PM.model.login_username": "R",
+      "i2b2.PM.model.userRoles": "RO",
+      "i2b2.PM.model.isAdmin": "R"
+    },
+    "functions" : [
+    "i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber"
+    ]
+  }
+}

@@ -47,13 +47,13 @@ export default class Count {
             }
 
             // only continue if we have the template loaded (bugfix: race condition)
-            if (typeof this.dispTemplate === "undefined") return false;
+            if (typeof this.dispTemplate === 'undefined') return false;
 
             // bail out if the results are an error
             const status = i2b2.h.XPath(data,"//query_result_instance/query_status_type/name");
             if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) return false;
 
-           // extract the info from the XML
+            // extract the info from the XML
             let title = i2b2.h.XPath(data, "//query_result_instance/description");
             if (title.length === 0) {
                 // deal with PATIENT_COUNT_SHRINE_XML which is different
@@ -84,7 +84,12 @@ export default class Count {
                     return false;
                 }
                 let sitesDone = parseInt(i2b2.h.XPath(xmlSHRINE, "//SHRINE/@complete")[0].nodeValue).toLocaleString();
-                let status = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@status")[0].textContent;
+                let status;
+                try {
+                    status = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@status")[0].textContent;
+                } catch(e) {
+                    status = "Unknown";
+                }
                 let obfuscateFloor = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@floorThresholdNumber");
                 if (obfuscateFloor.length > 0) {
                     obfuscateFloor = parseInt(obfuscateFloor[0].nodeValue);

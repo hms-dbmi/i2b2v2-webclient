@@ -1,0 +1,41 @@
+.viz-window.viztype-DATAREQUESTSUPER {
+    overflow: hidden;
+}
+
+.viz-window.viztype-DATAREQUESTSUPER .DataRequest {
+    padding: 0rem 2rem;
+}
+
+.viz-window.viztype-DATAREQUESTSUPER .requestTypes {
+    margin: 0;
+}
+
+.viz-window.viztype-DATAREQUESTSUPER td {
+    padding: 0.3em;
+}
+.viz-window.viztype-DATAREQUESTSUPER .breakdownValue {
+    border-top: 1px #ccc solid;
+}
+
+.viz-window.viztype-DATAREQUESTSUPER .dataExportInfo {
+   margin-top: 0.3em;
+}
+
+.viz-window.viztype-DATAREQUESTSUPER .dataExportInfoName {
+    min-width: 10em;
+}
+
+
+
+.query-report .viz-window.viztype-DATAREQUESTSUPER .viz-dropdown-select {
+    display: none;
+}
+
+.query-report .viz-window.viztype-DATAREQUESTSUPER .header .title {
+    text-align: left;
+    margin-left: -1.5rem;
+    font-weight: bold;
+    line-height: 3rem;
+    break-after: avoid-page;
+    border-bottom: 1px #ccc solid;
+}

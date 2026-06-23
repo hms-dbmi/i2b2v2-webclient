@@ -1,0 +1,38 @@
+<div class="header">
+    <div class="title">Data Export Requests</div>
+    <ul class="viz-dropdown-select" style="padding: .2rem .2rem .2rem .4rem">
+        <li tabindex="0" class="viz-dropdown-item" style=""><i class="bi bi-table"></i><span class="label">Data Request</span></li>
+    </ul>
+</div>
+<div class="DataRequest">
+    <div id="dataExportDetails" data-bs-toggle="collapse" class="accordion-collapse collapse show">
+        <div class="dataExportInfo">
+            <table>
+                {{#if requestMsg.name}}
+                <tr>
+                    <td class="dataExportInfoName">{{requestMsg.name}}</td>
+                    <td class="breakdownValue" style="border-top:none">{{requestMsg.value}}</td>
+                </tr>
+                {{/if}}
+                {{#if requesterEmail.name}}
+                <tr>
+                    <td class="dataExportInfoName">{{requesterEmail.name}}</td>
+                    <td class="breakdownValue">{{requesterEmail.value}}</td>
+                </tr>
+                {{/if}}
+                {{#if requestStatus}}
+                <tr>
+                    <td class="dataExportInfoName">Request Type(s)</td>
+                    <td class="breakdownValue">
+                        <ol class="requestTypes">
+                            {{#each requestStatus}}
+                                <li>{{name}}</li>
+                            {{/each}}
+                        </ol>
+                    </td>
+                </tr>
+                {{/if}}
+            </table>
+        </div>
+    </div>
+</div>

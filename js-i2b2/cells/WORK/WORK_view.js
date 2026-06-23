@@ -483,11 +483,12 @@ i2b2.events.afterCellInit.add((cell) => {
 
                 container.on('tab', (tab) => {
                     if (tab.contentItem.componentName === "i2b2.WORK.view.main") {
-                        //add unique id to the term tab
+                        // add unique id to the term tab [TECH DEBT: is this used?]
                         let elemId = "workplaceTab";
                         $(tab.element).attr("id", elemId);
 
-                        let optionsBtn = $('<div id="workplaceOptions" class="menuOptions"><i class="bi bi-chevron-down" title="Workplace Options"></i></div>');
+                        let title = tab.contentItem.config.title;
+                        let optionsBtn = $('<div id="workplaceOptions" class="menuOptions"><i class="bi bi-chevron-down" title="' + title + ' Options"></i></div>');
                         $(optionsBtn).insertAfter($(tab.element).find(".lm_title"));
 
                         i2b2.ONT.view.nav.options.ContextMenu = new BootstrapMenu("#workplaceOptions", {

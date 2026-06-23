@@ -16,17 +16,14 @@ DIV#PluginListBox {
     overflow: hidden;
 }
 
-#pluginListView{
+#pluginListView {
     padding: 1.1em 0.8em 0.8em 0.8em;
 }
 
 DIV#PluginListBox A.pluginRecordBox {
-    border-top: 1px solid #667788;
-    border-left: 1px solid #667788;
-    border-right: 1px solid #667788;
-    border-bottom: 1px solid #667788;
+    border: 1px solid #667788;
     padding: 14px 3px 14px 4px;
-    margin:0 0 0.7em 0;
+    margin: 0 0 0.7em 0;
     display: block;
     cursor: pointer;
     background: white;
@@ -39,7 +36,7 @@ DIV#PluginListBox A.pluginRecordBox {
 }
 
 DIV#PluginListBox A.pluginRecordBox:hover {
-    background-color:#FFFFCC;
+    background-color: var(--plugin-list-hover);
     box-shadow: rgb(60 64 67 / 60%) 0 4px 5px 0, rgb(60 64 67 / 30%) 0 4px 8px 5px;
     transition: box-shadow 100ms ease;
 }
@@ -47,7 +44,6 @@ DIV#PluginListBox A.pluginRecordBox:hover {
 DIV#PluginListBox A.pluginRecordBox DIV.Icon {
     float: left;
     background: #ffffff;
-    /* border: solid 1px #678; */
     margin: 0 0.3rem;
 }
 
@@ -57,7 +53,7 @@ DIV#PluginListBox A.pluginRecordBox DIV.Icon img {
 }
 
 DIV#PluginListBox A.pluginRecordBox DIV.Name {
-    font-family: arial,helvetica;
+    font-family: arial, helvetica;
     font-size: 0.51em;
     font-weight: bold;
     line-height: 12px;
@@ -66,7 +62,7 @@ DIV#PluginListBox A.pluginRecordBox DIV.Name {
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.txtBoundBox {
     padding: 0 2px;
-    margin: 0px 21px 0px 28px;
+    margin: 0 21px 0 28px;
     text-align: left;
     font-size: 2em;
 }
@@ -77,7 +73,7 @@ DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Name {
 }
 
 DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Descript {
-    font-family: arial,helvetica;
+    font-family: arial, helvetica;
     font-size: 0.43em;
     line-height: 11px;
     margin-left: 0.5em;
@@ -90,7 +86,7 @@ DIV#PluginListBox A.pluginRecordBox.DETAIL DIV.Icon img {
 }
 
 DIV#PluginListBox A.pluginRecordBox.SUMMARY {
-    padding: 0.2em 6px 0em 6px;
+    padding: 0.2em 6px 0 6px;
     height: 1.5em;
     overflow: hidden;
 }
@@ -113,16 +109,16 @@ DIV#PluginListBox A.pluginRecordBox.SUMMARY DIV.Icon {
     margin-bottom: 0.9em
 }
 
-#pluginList{
+#pluginList {
     margin: 2.3em;
 }
 
 .pluginMenu {
     width: 600px;
-    margin:auto;
+    margin: auto;
 }
 
-#activePluginOptions{
+#activePluginOptions {
     font-size: 1.25em;
     width: 1.1em;
     height: 1.1em;

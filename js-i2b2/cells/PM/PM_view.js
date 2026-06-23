@@ -55,6 +55,53 @@ i2b2.PM.doLoginDialog = function() {
             $("#PM-login-modal input[name='loginpass']").val(i2b2.UI.cfg.loginDefaultPassword);
         } catch(e) {}
 
+        try {
+            $("#PM-login-modal #loginmessage").text(i2b2.UI.cfg.loginDefaultMessage);
+        } catch(e) {}
+
+        $("#PM-login-modal .showLoginPwd").click(function(){
+            const showPasswordLink = $("#PM-login-modal .showLoginPwd");
+            const hidePasswordLink = $("#PM-login-modal .hideLoginPwd");
+            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+
+            if (showPasswordLink.is(':visible')) {
+                $("#loginpass").prop('type', 'text');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
+                }
+            } else {
+                $("#loginpass").prop('type', 'password');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").addClass("ignorePasswordMgrs");
+                }
+            }
+
+            showPasswordLink.toggle();
+            hidePasswordLink.toggle();
+        });
+
+        $("#PM-login-modal .hideLoginPwd").click(function(){
+            const showPasswordLink = $("#PM-login-modal .showLoginPwd");
+            const hidePasswordLink = $("#PM-login-modal .hideLoginPwd");
+            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+
+
+            if (showPasswordLink.is(':visible')) {
+                $("#loginpass").prop('type', 'text');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
+                }
+            } else {
+                $("#loginpass").prop('type', 'password');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").addClass("ignorePasswordMgrs");
+                }
+            }
+
+            showPasswordLink.toggle();
+            hidePasswordLink.toggle();
+        }).hide();
+
         // clear any domains
         $('#logindomain option').remove();
         // load the domains into dropdown
@@ -117,13 +164,30 @@ i2b2.PM.view.updateProjectSelection = function(projectSelElem){
 
     let project = $(projectSelElem).val();
     $("#projectSelectionDetails").empty();
+    let details = Object.fromEntries(Object.entries(i2b2.PM.model.projects[project].details)
+        .filter(([key, detail]) => detail.status !== 'H' && detail.name.toUpperCase() !== "ANNOUNCEMENT"));
     let projectDetails = {
-        projectDetails: i2b2.PM.model.projects[project].details
+        projectDetails: details
     }
 
     $((Handlebars.compile("{{> ProjectSelectionDetail }}"))(projectDetails)).appendTo("#projectSelectionDetails");
 }
 // ================================================================================================== //
+
+i2b2.PM.view.showAnnouncements = function() {
+    try {
+        let announcements = Object.entries(i2b2.PM.model.projects[i2b2.PM.model.login_project].details)
+            .filter(([key, detail]) => (detail.name.toUpperCase() === "ANNOUNCEMENT" && detail.status === 'A'))
+            .map(ann => ann.length > 1 ? ann[1].value : "");
+        if (announcements.length > 0) {
+            i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcements);
+            return;
+        }
+    } catch(e) {
+        console.warn("Error in processing announcement. ", e);
+    }
+    i2b2.PM._processLaunchFramework();
+}
 
 i2b2.PM.view.showProjectSelectionModal = function(){
 
@@ -131,10 +195,13 @@ i2b2.PM.view.showProjectSelectionModal = function(){
 
     let projects = [];
     for (let code in i2b2.PM.model.projects) {
+        let details = Object.fromEntries(Object.entries( i2b2.PM.model.projects[code].details)
+            .filter(([key, detail]) => detail.status !== 'H' && detail.name.toUpperCase() !== "ANNOUNCEMENT"));
+
         projects.push({
             name : i2b2.PM.model.projects[code].name,
             value: code,
-            details:  i2b2.PM.model.projects[code].details
+            details:  details
         });
     }
 
@@ -153,7 +220,8 @@ i2b2.PM.view.showProjectSelectionModal = function(){
                 if (ProjId !== 'admin_HY!5Axu&') {
                     i2b2.PM.model.login_project = ProjId;
                     i2b2.PM.model.login_projectname = ProjName;
-                    i2b2.PM._processLaunchFramework();
+                    i2b2.PM.view.showAnnouncements();
+                    //i2b2.PM._processLaunchFramework();
                 }
 
                 $("#projectSelection div").eq(0).modal("hide");
@@ -175,11 +243,16 @@ i2b2.PM.doChangeDomain = function() {
         $("#PM-login-modal input[name='loginpass']").attr('type', 'text');
         $("#PM-login-modal input[name='loginpass']").attr('autocomplete', 'off');
         $("#PM-login-modal input[name='loginusr']").attr('autocomplete', 'off');
+        $("#PM-login-modal input[name='loginpass']").addClass("ignorePasswordMgrs");
     } else {
         $("#PM-login-modal input[name='loginpass']").attr('type', 'password');
         $("#PM-login-modal input[name='loginpass']").removeAttr('autocomplete', '');
         $("#PM-login-modal input[name='loginusr']").removeAttr('autocomplete', '');
+        $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
     }
+
+    $("#PM-login-modal .showLoginPwd").show();
+    $("#PM-login-modal .hideLoginPwd").hide();
 
     let loginElements = $(".login-user, .login-password, .login-button");
     if (selectedDomain.saml !== undefined) {
@@ -195,7 +268,7 @@ i2b2.PM.doChangeDomain = function() {
 };
 // ================================================================================================== //
 i2b2.PM.view.modal.announcementDialog = {
-    showAnnouncement: function(msg) {
+    showAnnouncement: function(msgs) {
         let pmAnnouncementMsgDialogModal = $("#pmAnnouncementMsgDialogModal");
         if (pmAnnouncementMsgDialogModal.length === 0) {
             $("body").append("<div id='pmAnnouncementMsgDialogModal'/>");
@@ -205,7 +278,7 @@ i2b2.PM.view.modal.announcementDialog = {
 
         let data = {
             "title": i2b2.PM.model.login_project + " Announcements",
-            "msg": msg,
+            "msgs": msgs,
         };
         $(i2b2.PM.view.template.announcementMsgDialog(data)).appendTo(pmAnnouncementMsgDialogModal);
         $("#pmAnnouncementMsgDialogModal div:eq(0)").modal('show');
@@ -276,6 +349,10 @@ i2b2.PM.view.changePassword = {
         }
         i2b2.PM.view.changePassword.onSuccess = successCallback;
         changePasswordModal.load('js-i2b2/cells/PM/assets/modalChangePassword.html', function(){
+            $(".changePasswordModal .btn-primary").keydown(function(e) {
+                if (e.keyCode == 27) return false;
+            });
+
             if(disableCancel){
                 $(".changePasswordModal .btn-cancel").hide();
             }
@@ -301,8 +378,14 @@ i2b2.PM.view.changePassword = {
             let curpass = $('#curpass').val();
             let newpass = $('#newpass').val();
             let retypepass = $('#retypepass').val();
+            $(".changePasswordModal .curpass").removeClass("error");
+            $(".changePasswordModal .newpass").removeClass("error");
 
-            if(!newpass){
+            if(!curpass){
+                $(".changePasswordModal .errorMsg").text("Current password cannot be blank");
+                $(".changePasswordModal .curpass").addClass("error");
+            }
+            else if(!newpass){
                 $(".changePasswordModal .errorMsg").text("New password cannot be blank");
                 $(".changePasswordModal .newpass").addClass("error");
             }

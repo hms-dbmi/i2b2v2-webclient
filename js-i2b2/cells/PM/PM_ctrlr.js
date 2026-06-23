@@ -114,6 +114,7 @@ i2b2.PM.ctrlr.SamlLogin = function(username, session, isPassword) {
         project: i2b2.PM.model.login_project
     };
     i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
+    i2b2.PM.ajax.geti2b2Version("PM:Version", parameters, new i2b2_scopedCallback(i2b2.PM._setServerVersion, i2b2.PM), transportOptions);
 };
 
 // ================================================================================================== //
@@ -176,12 +177,20 @@ i2b2.PM.doLogin = function() {
     };
     if(!input_errors){
         i2b2.PM.ajax.getUserAuth("PM:Login", parameters, callback, transportOptions);
+        i2b2.PM.ajax.geti2b2Version("PM:Version", parameters, new i2b2_scopedCallback(i2b2.PM._setServerVersion, i2b2.PM), transportOptions);
     } else {
         alert(e);
     }
 };
-
-
+// ================================================================================================== //
+i2b2.PM._setServerVersion = function(data) {
+    let xml = data.refXML;
+    let s = i2b2.h.XPath(xml, 'descendant::i2b2_version');
+    if (s.length > 0) {
+        s = s[0].firstChild.nodeValue;
+        i2b2.ServerVersion = s;
+    }
+}
 // ================================================================================================== //
 i2b2.PM._processUserConfig = function (data) {
     // clear the UX treatment 6 seconds after the login button was clicked
@@ -191,6 +200,7 @@ i2b2.PM._processUserConfig = function (data) {
             el.classList.remove("clicked");
         });
     }, 5000);
+    $("#PM-login-modal .login-button").removeClass("disabled");
 
     console.group("PROCESS Login XML");
     console.debug(" === run the following command in console to view message sniffer: i2b2.hive.MsgSniffer.show() ===");
@@ -207,6 +217,7 @@ i2b2.PM._processUserConfig = function (data) {
         if (ua.indexOf("Trident/4.0") > -1) ieInCompatibilityMode = true;
     }
     if (!(window.ActiveXObject) && "ActiveXObject" in window) browserIsIE11 = true;
+
 
     let xml = data.refXML;
     if (data.error === true) {
@@ -261,6 +272,11 @@ i2b2.PM._processUserConfig = function (data) {
         }
     } catch(e) {}
 
+    try {
+        const email = i2b2.h.XPath(data.refXML, '//user/email')[0];
+        i2b2.PM.model.email = i2b2.h.getXNodeVal(email, 'email');
+    } catch(e) {}
+
     i2b2.PM.model.login_domain = data.msgParams.sec_domain;
     i2b2.PM.model.shrine_domain = Boolean.parseTo(data.msgParams.is_shrine);
     i2b2.PM.model.login_project = data.msgParams.sec_project;
@@ -300,16 +316,29 @@ i2b2.PM._processUserConfig = function (data) {
         let projdetails = i2b2.h.XPath(projs[i], 'descendant-or-self::param[@name]');
         i2b2.PM.model.projects[code].details = {};
         for (let d=0; d<projdetails.length; d++) {
+            let paramId = projdetails[d].getAttribute('id');
             let paramName = projdetails[d].getAttribute('name');
             // BUG FIX - Firefox splits large values into multiple 4k text nodes... use Firefox-specific function to read concatenated value
             if (projdetails[d].textContent) {
-                i2b2.PM.model.projects[code].details[paramName] = projdetails[d].textContent;
+                i2b2.PM.model.projects[code].details[paramId] = {
+                    name: paramName,
+                    status: projdetails[d].getAttribute('status'),
+                    value: projdetails[d].textContent
+                };
             } else if (projdetails[d].firstChild) {
                 // BUG FIX - WEBCLIENT-118
                 if(((browserIsIE8 && ieInCompatibilityMode) || browserIsIE11) && paramName === "announcement")
-                    i2b2.PM.model.projects[code].details[paramName] = projdetails[d].firstChild.nodeValue;
+                    i2b2.PM.model.projects[code].details[paramId] = {
+                        name: paramName,
+                        status: projdetails[d].getAttribute('status'),
+                        value: projdetails[d].firstChild.nodeValue
+                    };
                 else
-                    i2b2.PM.model.projects[code].details[paramName] = projdetails[d].firstChild.nodeValue.unescapeHTML();
+                    i2b2.PM.model.projects[code].details[paramId] = {
+                        name: paramName,
+                        status: projdetails[d].getAttribute('status'),
+                        value: projdetails[d].firstChild.nodeValue.unescapeHTML()
+                    };
             }
         }
     }
@@ -358,14 +387,7 @@ i2b2.PM._processUserConfig = function (data) {
         // default to the only project the user has access to
         i2b2.PM.model.login_project = i2b2.h.XPath(projs[0], 'attribute::id')[0].nodeValue;
         i2b2.PM.model.login_projectname = i2b2.h.getXNodeVal(projs[0], "name");
-        try {
-            let announcement = i2b2.PM.model.projects[i2b2.PM.model.login_project].details.announcement;
-            if (announcement) {
-                i2b2.PM.view.modal.announcementDialog.showAnnouncement(announcement);
-                return;
-            }
-        } catch(e) {}
-        i2b2.PM._processLaunchFramework();
+         i2b2.PM.view.showAnnouncements();
     } else {
         // display list of possible projects for the user to select
         i2b2.PM.view.showProjectSelectionModal();
@@ -398,11 +420,30 @@ i2b2.PM.extendUserSession = function() {
 };
 
 // ================================================================================================== //
-i2b2.PM.doLogout = function() {
+i2b2.PM.doLogout = function(allSessions) {
     // must reload page to avoid dirty data from lingering
     const logoutUri = i2b2.PM.model?.samlConfig?.logout;
     if (logoutUri === undefined) {
-        window.location.reload();
+        let callback = new i2b2_scopedCallback(function(response){
+            if(!response.error) {
+                window.location.reload();
+            }
+            else{
+                console.error("Error logging out user.");
+                window.location.reload();
+            }
+        }, i2b2.PM);
+        let parameters = {
+            username: i2b2.PM.model.login_username,
+        };
+
+        if(allSessions){
+            parameters.password = `<password>@</password>`;
+        }else{
+            parameters.password = i2b2.PM.model.login_password ;
+        }
+
+        i2b2.PM.ajax.logoutUser("PM:Logout", parameters, callback);
     } else {
         window.location.href = logoutUri;
     }

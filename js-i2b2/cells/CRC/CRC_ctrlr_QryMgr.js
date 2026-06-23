@@ -102,7 +102,7 @@ i2b2.CRC.ctrlr.QueryMgr.generateQueryName = function() {
 
 
 // ================================================================================================== //
-i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, queryExecutionMethod) {
+i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, queryExecutionMethod, emailAndMessage) {
     // clear any old results
     i2b2.CRC.model.runner.isLoading = true;
     i2b2.CRC.view.QueryMgr.clearStatus();
@@ -112,6 +112,8 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
 
     i2b2.CRC.ctrlr.QueryMgr._processModel();
     i2b2.CRC.model.transformedQuery.name = queryName; // i2b2.h.Escape(queryName);
+    i2b2.CRC.model.transformedQuery.email = emailAndMessage.email;
+    i2b2.CRC.model.transformedQuery.message = emailAndMessage.message;
 
     let params = {
         result_wait_time: i2b2.CRC.view.QT.params.queryTimeout,
@@ -163,7 +165,13 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
 
     // show run status HTML
     i2b2.CRC.view.QueryMgr.updateStatus(); // we need to pass the query runner status over first!
-    i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
+    let queryInstanceId = i2b2.CRC.model.runner.idQueryInstance;
+    //TODO: set a specific value for query instance id in order to catch the error later
+    //until the error with sending an undefined query instance id is addressed
+    if(!queryInstanceId){
+        queryInstanceId = "QUERY_INSTANCE_ID_UNKNOWN";
+    }
+    i2b2.CRC.QueryStatus.start(queryInstanceId, $(".CRC_QS_view")[0]);//
 
     // run query and get back the query master ID
     i2b2.CRC.ajax.runQueryInstance_fromQueryDefinition("CRC:QueryManager", params, i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster);
@@ -216,8 +224,7 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
     i2b2.CRC.ajax.getQueryInstanceList_fromQueryMasterId("CRC:QueryMgr:loadQuery", {qm_key_value: idQueryMaster}, cb);
 
     // make sure that the Query Status window is visible
-    let QueryStatusTab = i2b2.layout.gl_instances.rightCol.root.getItemsByFilter((a) => { return a.componentName === 'i2b2.CRC.view.QueryMgr'; } )[0];
-    QueryStatusTab.parent.setActiveContentItem(QueryStatusTab)
+    i2b2.layout.selectTab('i2b2.CRC.view.QueryMgr');
 };
 
 
@@ -227,6 +234,9 @@ i2b2.CRC.ctrlr.QueryMgr.cancelQuery = function() {
     i2b2.CRC.model.runner.deleteCurrentQuery = true;
     i2b2.CRC.ctrlr.QueryMgr.stopQuery();
     i2b2.CRC.model.runner.queued = false;
+
+    // stop the Query Status subsystem from polling
+    i2b2.CRC.QueryStatus.stopPolling();
 
     // update the screen to show status as cancelled
     $("#infoQueryStatusText .statusButtons").removeClass("running").addClass("cancelled");
@@ -241,6 +251,9 @@ i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     i2b2.CRC.model.runner.isCancelled = true;
     i2b2.CRC.model.runner.finished = true;
     i2b2.CRC.model.runner.queued = true;
+
+    // stop the Query Status subsystem from polling
+    i2b2.CRC.QueryStatus.stopPolling();
 
     if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
         clearInterval(i2b2.CRC.model.runner.intervalTimer);
@@ -361,8 +374,8 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
             i2b2.CRC.model.runner.queued = true;
         }
 
-        // Start the query status panel!
-        i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
+        // Start the query status panel (but only if real-time polling is enabled)!
+        if (!i2b2.CRC.model.runner.isCancelled && i2b2.CRC.QueryStatus.realtimePolling) i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
     }
 };
 
@@ -400,6 +413,7 @@ i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll = function() {
         if (typeof i2b2.CRC.model.runner.idQueryInstance === 'undefined') {
             showStatus = false;
         } else {
+            // this is the location that QueryStatus will be updated if real-time polling is turned off
             i2b2.CRC.QueryStatus.start(i2b2.CRC.model.runner.idQueryInstance, $(".CRC_QS_view")[0]);
         }
     }
@@ -451,11 +465,15 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryStatus.callback = function(results) {
             i2b2.CRC.model.runner.patientCount = pCount
         } catch(e) {}
     }
+
+    // check for errors
+    if (typeof stats["ERROR"] !== "undefined") i2b2.CRC.model.runner.hasError = true;
+
     i2b2.CRC.model.runner.queryResultInstances = idQRI;
     i2b2.CRC.model.runner.progress = stats;
 
     // see if all processing is done
-    if (Object.keys(stats).length === 1 && stats["FINISHED"]) {
+    if (Object.keys(stats).length === 1 && (stats["FINISHED"] || stats["ERROR"])) {
         i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
     } else {
         i2b2.CRC.model.runner.isPolling = false;

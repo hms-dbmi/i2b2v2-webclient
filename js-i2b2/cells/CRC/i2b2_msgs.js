@@ -68,7 +68,9 @@ i2b2.CRC.cfg.msgs.getQueryMasterList_fromUserId = '<?xml version="1.0" encoding=
 '		<ns4:request xsi:type="ns4:user_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
 '			<user_id>{{{crc_user_by}}}</user_id>\n'+
 '			<group_id>{{{sec_project}}}</group_id>\n'+
+'			<include_query_instance>{{{include_query_instance}}}</include_query_instance>\n' +
 '			<fetch_size>{{{crc_max_records}}}</fetch_size>\n'+
+'			{{{master_type_cd_xml}}}\n'+
 '		</ns4:request>\n'+
 '	</message_body>\n'+
 '</ns6:request>\n';
@@ -107,7 +109,7 @@ i2b2.CRC.cfg.parsers.getQueryMasterList_fromUserId = function() {
 i2b2.CRC.ajax._addFunctionCall(	"getQueryMasterList_fromUserId",
                                 "{{{URL}}}request",
                                 i2b2.CRC.cfg.msgs.getQueryMasterList_fromUserId,
-                                null,
+                                ['master_type_cd_xml'],
                                 i2b2.CRC.cfg.parsers.getQueryMasterList_fromUserId);
 
 
@@ -1076,3 +1078,659 @@ i2b2.CRC.ajax._addFunctionCall(	"getQRY_getResultType",
                                 i2b2.CRC.cfg.msgs.getQRY_getResultType,
                                 ["Request"],
                                 i2b2.CRC.cfg.parsers.getQRY_getResultType);
+
+
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.getTable = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>AL</accept_acknowledgement_type>\n'+
+    '		<project_id>{{{sec_project}}}</project_id>\n'+
+    '		<country_code>US</country_code>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '   	<ns3:rpdos>\n'+
+    '      		<rpdo id="{{{tableId}}}">\n'+
+    '      		</rpdo>\n'+
+    '   	</ns3:rpdos>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>\n';
+i2b2.CRC.cfg.parsers.getTable = function() {
+    if (!this.error) {
+        this.model = {
+            concepts: [],
+            title: null,
+            creator_id: null,
+            shared: null
+        };
+        this.model.title = i2b2.h.getXNodeVal(this.refXML,'title');
+        this.model.creator_id = i2b2.h.getXNodeVal(this.refXML,'creator_id');
+        this.model.shared = i2b2.h.getXNodeVal(this.refXML,'shared');
+
+        let concepts = this.refXML.getElementsByTagName('concept');
+        for(let i=0; i<1*concepts.length; i++) {
+            let o = new Object;
+            o.name = i2b2.h.getXNodeVal(concepts[i],'name');
+            o.display = i2b2.h.getXNodeVal(concepts[i],'display');
+            o.required = i2b2.h.getXNodeVal(concepts[i],'required');
+            o.locked = i2b2.h.getXNodeVal(concepts[i],'locked');
+
+            const dataXml = i2b2.h.getXNodeVal(concepts[i],'data');
+            if(dataXml) {
+                let data = JSON.parse(dataXml);
+                if(data.length > 0) {
+                    data = data[0];
+                    o.dataOption = data.dataOption;
+                    o.sdxData = data.sdxData;
+                }
+            }
+            this.model.concepts.push(o);
+        }
+    } else {
+        this.model = false;
+        console.error("[getTable] Could not parse() data!");
+    }
+    return this;
+}
+i2b2.CRC.ajax._addFunctionCall(	"getTable",
+    "{{{URL}}}getTable",
+    i2b2.CRC.cfg.msgs.getTable,
+    null,
+    i2b2.CRC.cfg.parsers.getTable);
+
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.getAllTablesList = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>AL</accept_acknowledgement_type>\n'+
+    '		<project_id>{{{sec_project}}}</project_id>\n'+
+    '		<country_code>US</country_code>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>\n';
+i2b2.CRC.cfg.parsers.getAllTablesList = function() {
+    if (!this.error) {
+        this.model = {
+            tables: [],
+        };
+        let tables = this.refXML.getElementsByTagName('rpdo');
+        for(let i=0; i<1*tables.length; i++) {
+            let o = new Object;
+            o.id = tables[i].attributes['id'].value;
+            o.title = i2b2.h.getXNodeVal(tables[i],'title');
+            o.creator_id = i2b2.h.getXNodeVal(tables[i],'creator_id');
+            o.shared = i2b2.h.getXNodeVal(tables[i],'shared');
+            o.create_date = i2b2.h.getXNodeVal(tables[i],'create_date');
+            o.column_count = i2b2.h.getXNodeVal(tables[i],'column_count');
+            o.visible = i2b2.h.getXNodeVal(tables[i],'visible');
+            this.model.tables.push(o);
+        }
+    } else {
+        this.model = false;
+        console.error("[getAllTablesList] Could not parse() data!");
+    }
+    return this;
+}
+i2b2.CRC.ajax._addFunctionCall(	"getAllTablesList",
+    "{{{URL}}}getAllTablesList",
+    i2b2.CRC.cfg.msgs.getAllTablesList,
+    null,
+    i2b2.CRC.cfg.parsers.getAllTablesList);
+
+// ================================================================================================== //
+
+i2b2.CRC.cfg.msgs.setTable = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>AL</accept_acknowledgement_type>\n'+
+    '		<project_id>{{{sec_project}}}</project_id>\n'+
+    '		<country_code>US</country_code>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '   	<ns3:rpdos>\n'+
+    '      	    <rpdo {{{table_id_attr}}}>\n'+
+    '      		    <title>{{{title}}}</title>\n'+
+    '      		    <creator_id>{{{creator_id}}}</creator_id>\n'+
+    '      		    <shared>{{{shared}}}</shared>\n'+
+    '      		    <cohort>true</cohort>\n'+
+    '      		    {{{concepts}}}\n'+
+    '      		</rpdo>\n'+
+    '   	</ns3:rpdos>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>\n';
+i2b2.CRC.cfg.parsers.setTable = function() {
+    if (!this.error) {
+        this.model = {
+            table: {}
+        };
+        let table = this.refXML.getElementsByTagName('rpdo');
+        if(table.length === 1) {
+            this.model.table.id = table[0].attributes['id'].value;
+        }
+
+    } else {
+        this.model = false;
+        console.error("[setTable] Could not parse() data!");
+    }
+    return this;
+}
+i2b2.CRC.ajax._addFunctionCall(	"setTable",
+    "{{{URL}}}setTable",
+    i2b2.CRC.cfg.msgs.setTable,
+    ['concepts', 'create_date_xml', 'update_date_xml'],
+    i2b2.CRC.cfg.parsers.setTable);
+
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.deleteTable = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>AL</accept_acknowledgement_type>\n'+
+    '		<project_id>{{{sec_project}}}</project_id>\n'+
+    '		<country_code>US</country_code>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '   	<ns3:rpdos>\n'+
+    '      		<rpdo id="{{{tableId}}}">\n'+
+    '      		</rpdo>\n'+
+    '   	</ns3:rpdos>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>\n';
+i2b2.CRC.ajax._addFunctionCall(	"deleteTable",
+    "{{{URL}}}deleteTable",
+    i2b2.CRC.cfg.msgs.deleteTable,
+);
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.renameTable = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>AL</accept_acknowledgement_type>\n'+
+    '		<project_id>{{{sec_project}}}</project_id>\n'+
+    '		<country_code>US</country_code>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '   	<ns3:rpdos>\n'+
+    '      		<rpdo id="{{{tableId}}}">\n'+
+    '      		    <title>{{{title}}}</title>\n'+
+    '      		</rpdo>\n'+
+    '   	</ns3:rpdos>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>\n';
+i2b2.CRC.ajax._addFunctionCall(	"renameTable",
+    "{{{URL}}}renameTable",
+    i2b2.CRC.cfg.msgs.renameTable
+);
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.updateQueryInstanceMessage = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_type>\n'+
+    '			<message_code>Q04</message_code>\n'+
+    '			<event_type>EQQ</event_type>\n'+
+    '		</message_type>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>messageId</accept_acknowledgement_type>\n'+
+    '			<project_id>{{{sec_project}}}</project_id>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '		<ns4:psmheader>\n'+
+    '			<user login="{{{sec_user}}}">{{{sec_user}}}</user>\n'+
+    '			<patient_set_limit>0</patient_set_limit>\n'+
+    '			<estimated_time>0</estimated_time>\n'+
+    '			<request_type>CRC_QRY_updateQueryInstanceMessage</request_type>\n'+
+    '		</ns4:psmheader>\n'+
+    '		<ns4:request xsi:type="ns4:instance_message_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
+    '			<user_id>{{{user_id}}}</user_id>\n'+
+    '			<query_instance_id>{{{query_instance_id}}}</query_instance_id>\n'+
+    '			<message>{{{query_instance_message}}}</message>\n'+
+    '		</ns4:request>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>';
+i2b2.CRC.ajax._addFunctionCall("updateQueryInstanceMessage","{{{URL}}}request", i2b2.CRC.cfg.msgs.updateQueryInstanceMessage);
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.setQueryInstanceStatus = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_type>\n'+
+    '			<message_code>Q04</message_code>\n'+
+    '			<event_type>EQQ</event_type>\n'+
+    '		</message_type>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>messageId</accept_acknowledgement_type>\n'+
+    '			<project_id>{{{sec_project}}}</project_id>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '		<ns4:psmheader>\n'+
+    '			<user login="{{{sec_user}}}">{{{sec_user}}}</user>\n'+
+    '			<patient_set_limit>0</patient_set_limit>\n'+
+    '			<estimated_time>0</estimated_time>\n'+
+    '			<request_type>CRC_QRY_setQueryInstanceStatus</request_type>\n'+
+    '		</ns4:psmheader>\n'+
+    '		<ns4:request xsi:type="ns4:instance_status_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
+    '			<user_id>{{{user_id}}}</user_id>\n'+
+    '			<query_instance_id>{{{query_instance_id}}}</query_instance_id>\n'+
+    '			<status_name>{{{status_name}}}</status_name>\n'+
+    '		</ns4:request>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>';
+i2b2.CRC.ajax._addFunctionCall("setQueryInstanceStatus","{{{URL}}}request", i2b2.CRC.cfg.msgs.setQueryInstanceStatus);
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.runExport_fromQueryInstanceId = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_type>\n'+
+    '			<message_code>Q04</message_code>\n'+
+    '			<event_type>EQQ</event_type>\n'+
+    '		</message_type>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>messageId</accept_acknowledgement_type>\n'+
+    '			<project_id>{{{sec_project}}}</project_id>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '		<ns4:psmheader>\n'+
+    '			<user login="{{{sec_user}}}">{{{sec_user}}}</user>\n'+
+    '			<patient_set_limit>0</patient_set_limit>\n'+
+    '			<estimated_time>0</estimated_time>\n'+
+    '			<request_type>CRC_QRY_runExport_fromQueryInstanceId</request_type>\n'+
+    '		</ns4:psmheader>\n'+
+    '		<ns4:request xsi:type="ns4:instance_message_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
+    '			<query_instance_id>{{{query_instance_id}}}</query_instance_id>\n'+
+    '		</ns4:request>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>';
+i2b2.CRC.ajax._addFunctionCall("runExport_fromQueryInstanceId","{{{URL}}}request", i2b2.CRC.cfg.msgs.runExport_fromQueryInstanceId);
+
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.runBreakdown = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_type>\n'+
+    '			<message_code>Q04</message_code>\n'+
+    '			<event_type>EQQ</event_type>\n'+
+    '		</message_type>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>messageId</accept_acknowledgement_type>\n'+
+    '		<project_id>{{{sec_project}}}</project_id>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '		<ns4:request xsi:type="ns4:query_definition_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
+    '			{{{psm_result_output}}}\n'+
+    '		</ns4:request>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>\n';
+i2b2.CRC.ajax._addFunctionCall(	"runBreakdown", "{{{URL}}}breakdownrequest", i2b2.CRC.cfg.msgs.runBreakdown, ["psm_result_output"]);
+// ================================================================================================== //
+i2b2.CRC.cfg.msgs.getFilteredQueryMasterList_fromUserId = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'+
+    '<ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">\n'+
+    '	<message_header>\n'+
+    '		{{{proxy_info}}}\n'+
+    '		<sending_application>\n'+
+    '			<application_name>i2b2_QueryTool</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</sending_application>\n'+
+    '		<sending_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</sending_facility>\n'+
+    '		<receiving_application>\n'+
+    '			<application_name>i2b2_DataRepositoryCell</application_name>\n'+
+    '			<application_version>' + i2b2.ClientVersion + '</application_version>\n'+
+    '		</receiving_application>\n'+
+    '		<receiving_facility>\n'+
+    '			<facility_name>PHS</facility_name>\n'+
+    '		</receiving_facility>\n'+
+    '		<security>\n'+
+    '			<domain>{{{sec_domain}}}</domain>\n'+
+    '			<username>{{{sec_user}}}</username>\n'+
+    '			{{{sec_pass_node}}}\n'+
+    '		</security>\n'+
+    '		<message_type>\n'+
+    '			<message_code>Q04</message_code>\n'+
+    '			<event_type>EQQ</event_type>\n'+
+    '		</message_type>\n'+
+    '		<message_control_id>\n'+
+    '			<message_num>{{{header_msg_id}}}</message_num>\n'+
+    '			<instance_num>0</instance_num>\n'+
+    '		</message_control_id>\n'+
+    '		<processing_id>\n'+
+    '			<processing_id>P</processing_id>\n'+
+    '			<processing_mode>I</processing_mode>\n'+
+    '		</processing_id>\n'+
+    '		<accept_acknowledgement_type>AL</accept_acknowledgement_type>\n'+
+    '		<project_id>{{{sec_project}}}</project_id>\n'+
+    '		<country_code>US</country_code>\n'+
+    '	</message_header>\n'+
+    '	<request_header>\n'+
+    '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
+    '	</request_header>\n'+
+    '	<message_body>\n'+
+    '		<ns4:psmheader>\n'+
+    '			<user login="{{{sec_user}}}">{{{sec_user}}}</user>\n'+
+    '			<patient_set_limit>0</patient_set_limit>\n'+
+    '			<estimated_time>0</estimated_time>\n'+
+    '			<request_type>{{{crc_user_type}}}</request_type>\n'+
+    '		</ns4:psmheader>\n'+
+    '		<ns4:request xsi:type="ns4:user_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'+
+    '			<user_id>{{{crc_user_by}}}</user_id>\n'+
+    '			<group_id>{{{group_id}}}</group_id>\n'+
+    '			<datasource>{{{datasource}}}</datasource>\n'+
+    '			<include_query_instance>{{{include_query_instance}}}</include_query_instance>\n' +
+    '			<fetch_size>{{{crc_max_records}}}</fetch_size>\n'+
+    '			{{{master_type_cd_xml}}}\n' +
+    '			<show_deleted>{{{show_deleted}}}</show_deleted>\n'+
+    '			{{{constrain_by_date_xml}}}\n' +
+    '		</ns4:request>\n'+
+    '	</message_body>\n'+
+    '</ns6:request>\n';
+i2b2.CRC.cfg.parsers.getFilteredQueryMasterList_fromUserId = function() {
+    if (!this.error) {
+        this.model = [];
+        var qm = this.refXML.getElementsByTagName('query_master');
+        for(var i=0; i<1*qm.length; i++) {
+            var o = new Object;
+            o.xmlOrig = qm[i].outerHTML;
+            o.id = i2b2.h.getXNodeVal(qm[i],'query_master_id');
+            o.name = i2b2.h.getXNodeVal(qm[i],'name');
+            o.userid = i2b2.h.getXNodeVal(qm[i],'user_id');
+            o.group = i2b2.h.getXNodeVal(qm[i],'group_id');
+            o.created = i2b2.h.getXNodeVal(qm[i],'create_date');
+            var dStr = '';
+            var d = o.created.match(/^[0-9\-]*/).toString();
+            if (d) {
+                d = d.replace(/-/g,'/');
+                d = new Date(Date.parse(d));
+                if (d) {
+                    dStr = ' [' + (d.getMonth()+1) + '-' + d.getDate() + '-' + d.getFullYear().toString() + ']';
+                }
+            }
+            o.name += dStr + ' ['+o.userid+']';
+            // encapsulate into an SDX package
+            var sdxDataPack = i2b2.sdx.Master.EncapsulateData('QM',o);
+            this.model.push(sdxDataPack);
+        }
+    } else {
+        this.model = false;
+        console.error("[getFilteredQueryMasterList_fromUserId] Could not parse() data!");
+    }
+    return this;
+}
+i2b2.CRC.ajax._addFunctionCall(	"getFilteredQueryMasterList_fromUserId",
+    "{{{URL}}}request",
+    i2b2.CRC.cfg.msgs.getFilteredQueryMasterList_fromUserId,
+    ['master_type_cd_xml', 'constrain_by_date_xml'],
+    i2b2.CRC.cfg.parsers.getFilteredQueryMasterList_fromUserId);
+

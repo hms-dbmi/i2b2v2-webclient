@@ -1,0 +1,90 @@
+.EditParameters{
+  flex-grow: 1;
+  width: 100%;
+  .AddParam {
+    margin-top: 0.7em;
+    margin-bottom: 0.7em;
+    float: left;
+  }
+
+  .MuiDataGrid-columnHeaders{
+    background-color:   rgba(0, 0, 0, 0.12);
+  }
+
+  .MuiDataGrid-cell--editing {
+    border: 1px solid  rgba(85, 108, 214) !important;
+  }
+
+  .MuiDataGrid-cell.MuiDataGrid-cell--editing:focus-within.missing {
+    border: 1px solid  red !important;
+    outline: 1px solid  red;
+  }
+
+  .MuiDataGrid-cell--editing.missing {
+    border: 1px solid  red !important;
+  }
+
+  .missing {
+    border: 1px solid  red !important;
+  }
+
+  .ParameterValueTextField {
+    width: 100%;
+    border: none;
+    .MuiInputBase-root {
+      outline: none;
+    }
+    .MuiOutlinedInput-notchedOutline {
+      outline: none;
+      border: none;
+    }
+    .MuiOutlinedInput-input {
+      height: auto !important;
+    }
+  }
+
+  .ParameterValueTextField:focus-visible {
+    outline: none;
+  }
+
+  .MuiDataGrid-cell--editing:focus-visible {
+    outline: none;
+  }
+
+  .tableListingOverlay{
+    padding: 0.6em;
+  }
+
+  .ParameterOptions {
+    float: right;
+    margin-top: 1.2em;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .ParametersTable {
+    clear: both;
+  }
+}
+
+.ParamValuePreview {
+  pre {
+    font-family: "Arial", Courier, monospace;
+    color: black;
+  }
+
+  .ParamValuePreviewContent {
+    padding: 0.4em;
+    padding-top: 0;
+  }
+
+  .MuiDialogContent-root {
+    padding-top: 0;
+  }
+}
+
+.ParameterNameAutoSuggest {
+  background-color: #f8f8fa !important;
+  border: 1px solid blue;
+}

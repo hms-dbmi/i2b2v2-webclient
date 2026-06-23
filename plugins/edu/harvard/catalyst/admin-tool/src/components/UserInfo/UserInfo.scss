@@ -1,0 +1,44 @@
+.UserInfo {
+  background-color: rgba(224, 227, 231, 0.27);
+  height: 100%;
+
+  margin: 0.2em 0 4.5em 0;
+  padding: 0.5em;
+
+  .UserInfoForm {
+    margin: 0.7em;
+  }
+
+  .inputField {
+    width: 100%;
+  }
+
+  .mainField {
+    width: 30%;
+  }
+
+  .passwordFields {
+    width: 100%;
+    .mainField {
+      margin-bottom: 1.4em;
+    }
+  }
+
+  .EditUserActions {
+    margin-left: 0.5em;
+  }
+
+  .EditUserActionPrimary{
+    margin: 0.7em 0.7em 0.7em 15em;
+    float: left;
+  }
+
+  .EditUserActionSecondary{
+    margin: 0.7em 0.7em 0.7em 0;
+    float: left;
+  }
+
+  .ResetEditPage{
+    float: right;
+  }
+}
