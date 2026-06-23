@@ -25,3 +25,17 @@
     min-width: 10em;
 }
 
+
+
+.query-report .viz-window.viztype-DATAREQUESTSUPER .viz-dropdown-select {
+    display: none;
+}
+
+.query-report .viz-window.viztype-DATAREQUESTSUPER .header .title {
+    text-align: left;
+    margin-left: -1.5rem;
+    font-weight: bold;
+    line-height: 3rem;
+    break-after: avoid-page;
+    border-bottom: 1px #ccc solid;
+}

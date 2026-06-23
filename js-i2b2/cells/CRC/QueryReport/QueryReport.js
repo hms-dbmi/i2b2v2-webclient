@@ -282,6 +282,11 @@ i2b2.CRC.QueryReport.generateReport = () => {
         if (x.QRS_DisplayType !== "CATNUM") return false;
         if (i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(x.QRS_Status)) return false;
         if (definedBreakdowns.includes(x.QRS_Type) || x.QRS_Type === 'INTERNAL_SUMMARY') return false;
+        const isCapturedBySuperModule = Object.values(i2b2.CRC.QueryStatus.displayComponents).some((moduleDef) => {
+            if (typeof moduleDef.superModule === 'undefined' || moduleDef.notInReport === true) return false;
+            return i2b2.CRC.QueryStatus.qrsMatchesCapture(x.QRS_Type, moduleDef.superModule.capture);
+        });
+        if (isCapturedBySuperModule) return false;
         // see if the breakdown matches a regex
         const regExList = configuredBreakdownCodes.filter((y) => y.substring(0,1) === '/');
         let anyRegexMatch = regExList.every((y) => !i2b2.CRC.QueryStatus._generateRegEx(y).test(x.QRS_Type));
@@ -313,6 +318,29 @@ i2b2.CRC.QueryReport.generateReport = () => {
 
     if (visualizations.length > 0) reportData.visualizations = visualizations;
 
+    // discover supermodules — included automatically when matching breakdowns exist
+    let superModules = [];
+    Object.entries(i2b2.CRC.QueryStatus.displayComponents).forEach(([codeViz, moduleDef]) => {
+        if (typeof moduleDef.superModule === 'undefined' || moduleDef.notInReport === true) return;
+        const matchingQrsRecords = i2b2.CRC.QueryStatus.getMatchingQrsForSuperModule(moduleDef);
+        if (matchingQrsRecords.length === 0) return;
+        superModules.push({
+            codeViz: codeViz,
+            module: moduleDef,
+            moduleClass: moduleDef.class,
+            matchingQrsRecords: matchingQrsRecords,
+            config: {}
+        });
+    });
+    superModules.sort((a, b) => {
+        let av = a.module.displayOrder;
+        let bv = b.module.displayOrder;
+        if (av === undefined) av = 50;
+        if (bv === undefined) bv = 50;
+        return av - bv;
+    });
+    if (superModules.length > 0) reportData.superModules = superModules;
+
     const reportHtml = i2b2.CRC.QueryReport.templates.queryReport(reportData);
     const reportDocument = $('#queryReportWindow')[0].contentWindow.document;
     reportDocument.open();
@@ -323,8 +351,8 @@ i2b2.CRC.QueryReport.generateReport = () => {
     $("#queryReportModal div:eq(0)").modal('show');
 
     // now attach and render the visualization modules
-    if (reportData.visualizations.length > 0) {
-        let targetDivs = Object.values(reportDocument.documentElement.querySelectorAll(".QueryStatusComponent"));
+    if (reportData.visualizations?.length > 0) {
+        let targetDivs = Object.values(reportDocument.documentElement.querySelectorAll(".QueryStatusComponent:not(.QueryStatusSuperModule)"));
         for (let groupViz of reportData.visualizations) {
             for (let singleViz of groupViz.visualizations) {
                 let componentEl = targetDivs.shift();
@@ -363,6 +391,30 @@ i2b2.CRC.QueryReport.generateReport = () => {
                     visualizationInstance.redraw(componentInstanceObj.displayEl.offsetWidth);
                 }, 100);
             }
+        }
+    }
+
+    // render supermodules after all regular visualizations
+    if (reportData.superModules?.length > 0) {
+        let superModuleDivs = Object.values(reportDocument.documentElement.querySelectorAll(".QueryStatusSuperModule"));
+        for (let singleSuper of reportData.superModules) {
+            let componentEl = superModuleDivs.shift();
+            let componentInstanceObj = {
+                "definition": singleSuper.module,
+                "parentDisplayEl": componentEl,
+                "displayEl": componentEl
+            };
+            if (singleSuper.module.class !== undefined) componentInstanceObj.displayEl.classList.add(singleSuper.module.class);
+
+            const visualizationInstance = new singleSuper.module.implementation(componentInstanceObj, null, null);
+            componentInstanceObj.visualization = visualizationInstance;
+            setTimeout(() => {
+                for (let qrsRecord of singleSuper.matchingQrsRecords) {
+                    if (qrsRecord.data) visualizationInstance.update(qrsRecord.data);
+                }
+                visualizationInstance.show();
+                visualizationInstance.redraw(componentInstanceObj.displayEl.offsetWidth);
+            }, 100);
         }
     }
 };

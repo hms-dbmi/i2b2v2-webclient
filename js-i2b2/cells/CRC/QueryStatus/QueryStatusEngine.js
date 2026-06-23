@@ -371,6 +371,29 @@ i2b2.CRC.QueryStatus._generateRegEx = function(regexStr) {
     }
 }
 
+i2b2.CRC.QueryStatus.qrsMatchesCapture = function(qrsType, captureArray) {
+    if (typeof captureArray === 'undefined') return true;
+    for (const QriType of captureArray) {
+        if (QriType.substring(0, 1) === '/') {
+            const currentRegEx = i2b2.CRC.QueryStatus._generateRegEx(QriType);
+            if (currentRegEx && currentRegEx.test(qrsType)) return true;
+        } else if (qrsType === QriType) {
+            return true;
+        }
+    }
+    return false;
+};
+
+i2b2.CRC.QueryStatus.getMatchingQrsForSuperModule = function(superModuleDef, qrsRecords) {
+    if (typeof qrsRecords === 'undefined') qrsRecords = Object.values(i2b2.CRC.QueryStatus.model.QRS);
+    const capture = superModuleDef.superModule?.capture;
+    return qrsRecords.filter((rec) => {
+        if (rec.QRS_DisplayType !== "CATNUM") return false;
+        if (i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(rec.QRS_Status)) return false;
+        if (rec.QRS_Type === 'INTERNAL_SUMMARY' || rec.QRS_Type.indexOf("INTERNAL") !== -1) return false;
+        return i2b2.CRC.QueryStatus.qrsMatchesCapture(rec.QRS_Type, capture);
+    }).sort((a, b) => a.QRS_Type.localeCompare(b.QRS_Type));
+};
 
 
 i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
