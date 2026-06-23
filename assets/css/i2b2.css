@@ -203,7 +203,7 @@ button.invert:hover {
 }
 
 #headerOptions a:hover i {
-	color: var(--head-foot-icons-hover) !important;
+	color: var(--head-foot-icon-select) !important;
 }
 
 #headerOptions a:focus {

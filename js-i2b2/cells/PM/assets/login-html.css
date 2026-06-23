@@ -38,6 +38,10 @@
     padding: 16px;
 }
 
+#PM-login-modal .form-group label {
+    margin-bottom: 8px;
+}
+
 #PM-login-modal .classic {
     padding: 15px 16px 16px 0px;
 }
@@ -59,7 +63,6 @@
 #PM-login-modal .login-host {
     _display: none;
 }
-
 
 /* The Modal (background) */
 #PM-login-modal.modal {
@@ -186,6 +189,10 @@
 
 #PM-login-modal .input-group input {
     margin-bottom: 0px;
+}
+
+#PM-login-modal .form-group {
+    margin-bottom: 14px;
 }
 
 /* Login password box (for disabling of password warning) */
