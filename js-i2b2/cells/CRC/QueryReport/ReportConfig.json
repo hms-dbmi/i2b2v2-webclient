@@ -57,19 +57,22 @@
     "TABLE": true
   },
   "PATIENT_TOP20MEDS_XML": {
-    "TABLE": {
-      "forceInitialDisplay": true
-    },
+    "TABLE": true,
     "BARS": true
   },
   "PATIENT_TOP20DIAG_XML": {
-    "TABLE": {
-      "forceInitialDisplay": true
-    },
+    "TABLE": true,
     "BARS": true
   },
   "PATIENT_INOUT_XML": {
     "TABLE": true,
     "BARS": true
-  }
+  },
+  "PATIENT_NIH_ENROLLMENT_XML": {
+    "NIHENROLLTABLE": true
+  },
+  "PATIENT_PATHOGEN_TIMELINE_XML": {
+    "PATHOGENTIMELINE": true
+  },
+  "PATIENT_ZIP_COUNT_XML": {}
 }

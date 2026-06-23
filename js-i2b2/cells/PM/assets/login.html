@@ -3,7 +3,7 @@
 <body>
 <div id="PM-login-modal" class="modal">
     <form class="modal-content" method="post" style="min-width: 630px">
-        <div class="container header">
+        <div class="container modal-header">
             <div>MassCPR Federated Data Network Login</div>
         </div>
         <div class="imgcontainer">
@@ -36,8 +36,14 @@
             </div>
             <div class="form-group login-password">
                 <label for="loginpass"><b>Password</b></label>
+                <div class="input-group mb-3">
                 <input type="password" placeholder="Enter Password" name="loginpass" id="loginpass" required class="form-control">
+                <span class="input-group-text">
+                	<a href="#"><i class="hideLoginPwd bi bi-eye-fill"></i></a>
+                    <a href="#"><i class="showLoginPwd bi bi-eye-slash-fill"></i></a>
+                </span>
             </div>
+		</div>
 
             <button type="submit" class="btn btn-secondary btn-sm login-button">Login</button>
 
@@ -57,6 +63,5 @@
         </div>
     </form>
 </div>
-
 </body>
 </html>

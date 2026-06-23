@@ -149,14 +149,6 @@
     transition: all .25s ease-out;
 }
 
-.sso-button div {
-    width: 100%;
-    padding-left: 4.6em;
-    position: absolute;
-    margin:0;
-    top: 35%;
-}
-
 #PM-login-modal .sso-button:hover,
 #PM-login-modal .sso-button:focus,
 #PM-login-modal .sso-button.clicked {
@@ -178,9 +170,23 @@
     border-top-left-radius: 2px;
 }
 
+#PM-login-modal .sso-button div {
+    width: 100%;
+    padding-left: 4.6em;
+    position: absolute;
+    margin:0;
+    top: 35%;
+}
 
 
+#PM-login-modal .showLoginPwd, #PM-login-modal .hideLoginPwd {
+    margin-left: 0.2em;
+    margin-top: 0.1em;
+}
 
+#PM-login-modal .input-group input {
+    margin-bottom: 0px;
+}
 
 /* Login password box (for disabling of password warning) */
 @font-face {
@@ -190,6 +196,8 @@
     url('../../../../../assets/fonts/password.woff') format('woff'); /* Pretty Modern Browsers */
 }
 
-#PM-login-modal #loginpass {
+#PM-login-modal .ignorePasswordMgrs {
     font-family: password, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.15em;
 }

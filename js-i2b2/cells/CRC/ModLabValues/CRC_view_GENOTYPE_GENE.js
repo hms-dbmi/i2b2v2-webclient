@@ -232,9 +232,12 @@ i2b2.CRC.view.GENOTYPE_GENE = {
                             autocompleteTrgt.empty();
                             let genes = JSON.parse(result);
                             for (let gene of genes) {
-                                let entry = $('<div><strong>'+gene.symbol+'</strong> - '+gene.name+'<input type="hidden" value="'+gene.symbol+'"></div>');
-                                entry.data("geneSymbol", gene.symbol);
-                                entry.data("geneName", gene.name);
+                                const filteredName = gene.name.replace(/[^a-zA-Z0-9.\-_:]/g, "");
+                                const filteredSymbol = gene.symbol.replace(/[^a-zA-Z0-9.\-_]/g, "");
+
+                                let entry = $('<div><strong>'+filteredSymbol+'</strong> - '+filteredName+'<input type="hidden" value="'+filteredSymbol+'"></div>');
+                                entry.data("geneSymbol", filteredSymbol);
+                                entry.data("geneName", filteredName);
                                 autocompleteTrgt.append(entry);
                             }
                             $('#geneAutocomplete-list div').on('mousedown', func_click_gene);

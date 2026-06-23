@@ -153,18 +153,6 @@
 #i2b2QueryHistoryBar .qHTooltip {
   color:   #87898a
 }
-button.invert{
-    color: #0d6efd;
-    background: #FFFFFF;
-}
-
-button.invert:hover{
-    opacity: 0.7;
-}
-
-.hidden{
-    display: none;
-}
 
 #i2b2QueryHistoryBar .form-select-sm {
     font-size: 0.84em;
@@ -216,36 +204,6 @@ button.invert:hover{
     margin-right: 0.5em;
 }
 
-@media all and (min-width: 992px) {
-    .dropdown-menu li {
-        position: relative;
-    }
-    .nav-item .submenu {
-        display: none;
-        position: absolute;
-        top: -0.2em;
-        padding-right: 0.2em;
-    }
-    .nav-item .submenu-left {
-        right: 100%;
-        left: auto;
-    }
-    .dropdown-menu > li:hover {
-        background-color: #f1f1f1
-    }
-}
-/* ============ desktop view .end// ============ */
-
-/* ============ small devices ============ */
-@media (max-width: 991px) {
-    .dropdown-menu .dropdown-menu{
-        margin-left:0.7rem;
-        margin-right:0.7rem;
-        margin-bottom: .5rem;
-    }
-}
-/* ============ small devices .end// ============ */
-
 #i2b2QueryHistoryBar .highlight-menu-item {
     background-color: var(--focus-shadow);
 }
@@ -267,13 +225,19 @@ button.invert:hover{
     border-width: 0.10em !important;
 }
 
-#i2b2QueryHistoryBar .searchBtn:hover:enabled{
-    background-color: #6c757d;
-    border-color: #797a7c !important;
+#i2b2QueryHistoryBar .searchBtn:disabled {
+    opacity: .4;
 }
 
-#i2b2QueryHistoryBar .searchBtn:enabled{
-    opacity: 0.65;
+#i2b2QueryHistoryBar .searchBtn:enabled {
+    opacity: 0.75;
+}
+
+#i2b2QueryHistoryBar .searchBtn:hover:enabled,
+#i2b2QueryHistoryBar .searchBtn:focus-visible {
+    background-color: rgba(from var(--text-primary-dark) r g b / .5);
+    box-shadow: none !important;
+    color: var(--text-primary-light) !important;
 }
 
 #i2b2QueryHistoryBar .searchActions {
@@ -284,11 +248,7 @@ button.invert:hover{
     color: var(--text-primary-dark);
     padding: 0.05em 0.55em;
     margin-top: 0.7em;
-}
-
-#i2b2QueryHistoryBar .searchActions .btn:hover {
-    padding: 0.05em 0.55em;
-    margin-top: 0.7em;
+    border-radius: 6px;
 }
 
 #i2b2QueryHistoryBar .clearIcon {
@@ -306,7 +266,12 @@ button.invert:hover{
     border-width: 0 0 2px 0 !important;
 }
 
-#queryHistoryOptionsFields .form-check-label{
+#i2b2QueryHistoryBar .searchTermMain .input-group input:focus {
+    box-shadow: none !important;
+}
+
+
+#queryHistoryOptionsFields .form-check-label {
     margin-top: 0.15em;
 }
 
