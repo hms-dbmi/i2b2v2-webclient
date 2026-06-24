@@ -47,7 +47,7 @@ i2b2.layout.init = function () {
                         type: 'component',
                         id:'goldenLayoutLeftColFrame',
                         componentName: 'goldenLayoutLeftColFrame',
-                        width:35
+                        width: 20
                     },{
                         type: 'component',
                         id:'goldenLayoutRightColFrame',
