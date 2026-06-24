@@ -1172,19 +1172,20 @@ function pivotToYOYRows(aggregatedRecords){
 // ------------------------------------------------------------
 const WASTEWATER_URLS = {
     dev: "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
-    prod: "http://prod-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData"
+    prod: "http://prod-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
+    demo: "http://demo-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData"
 };
 
 function detectEnv() {
     const override = (window.PATHOGEN_TIMELINE_ENV || "").toLowerCase();
-    if (override === "dev" || override === "prod") return override;
+    if (override === "dev" || override === "prod" || override === "demo") return override;
 
     const host = (window.location?.hostname || "").toLowerCase();
 
+    if (host.includes("demo")) return "demo";
+    if (host.includes("dev")) return "dev";
     // Local dev should use dev backend by default
-    if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return "dev";
-
-    if (host.includes("dev") || host.includes("catalyst")) return "dev";
+    if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return "dev";  
 
     return "prod";
 }
