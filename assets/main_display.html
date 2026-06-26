@@ -27,7 +27,16 @@
                                 <div class="userRole"></div>
                             </li>
                             <li class="dropdown-item static" style="display:none;">
-                                <span class="versionNum"></span>
+                                <div class="versionData">
+                                    <div class="clientVersion">
+                                        <div>Version</div>
+                                        <div class="versionNum"></div>
+                                    </div>
+                                    <div class="serverVersion">
+                                        <div>Server</div>
+                                        <div class="serverVersionNum"></div>
+                                    </div>
+                                </div>
                             </li>
                             <li class="center">
                                 <a href="Javascript:void(0)" title="Query Options" class="queryOptions" onclick="i2b2.CRC.view.QT.showOptions();">Query Options</a>
@@ -50,6 +59,19 @@
 
 <div class="goldenLayout" id="goldenLayoutId1"></div>
 <div class="goldenLayout goldenLayoutCol" id="goldenLayoutId2"></div>
+
+<div class="toast position-fixed top-0 end-0 p-3" data-bs-delay="10000" role="alert" aria-live="assertive" aria-atomic="true" >
+    <div class="toast-header">
+        <strong class="me-auto header-title">[i2b2-url] says:</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+        <p>An error has occurred.</p>
+        <div>Click  <a href="#" title="Message Log" class="messageLogLnk" onclick="i2b2.hive.msgSniffer.show();">here</a>
+            to view the message log for details.</div>
+    </div>
+</div>
+
 <div id="footer-bar"></div>
 </body>
 </html>

@@ -116,8 +116,6 @@
         }
       },
       "map": {
-        "_tiles": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-        "_labelTiles": "https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png",
         "tiles": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
         "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
         "maxZoom": 18,
@@ -156,5 +154,4 @@
     "NIHENROLLCSV": true,
     "DOWNLOAD": true
   }
-
 }

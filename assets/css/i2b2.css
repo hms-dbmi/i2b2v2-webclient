@@ -77,6 +77,52 @@ button.invert:hover {
 	margin-bottom: 0 !important;
 
 }
+
+.hoverover {
+	display: none;
+}
+.expander {
+	max-height: 1000px;
+	transition: max-height 0.75s cubic-bezier(0.075, 0.82, 0.165, 1);
+	overflow: hidden;
+}
+.expander.hidden {
+	max-height: 0 !important;
+}
+
+
+.fine-print {
+	font-size: .75rem !important;
+}
+
+.muted-small {
+	color:#757575 !important;
+}
+
+.date-w-11 {
+	width: 11em !important;
+}
+
+.btn-ref-max-w {
+	max-width: 3em !important;
+}
+
+.gj-datepicker {
+	border-radius: 4px;
+	border-width: 2px !important;
+	border-color: var(--error-text-light) !important;
+}
+
+.gj-datepicker .btn-outline-secondary {
+	height: 100%;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.gj-icon {
+	top: 5px !important;
+	left: 8px !important;
+}
 /* </general settings> */
 
 
@@ -157,7 +203,7 @@ button.invert:hover {
 }
 
 #headerOptions a:hover i {
-	color: var(--head-foot-icons-hover) !important;
+	color: var(--head-foot-icon-select) !important;
 }
 
 #headerOptions a:focus {
