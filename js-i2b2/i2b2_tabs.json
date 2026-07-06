@@ -2,7 +2,7 @@
   "left-column": {
     "content": [
       {
-        "height":40,
+        "height":66,
         "title":"Terms",
         "componentName": "i2b2.ONT.view.nav"
       },{
