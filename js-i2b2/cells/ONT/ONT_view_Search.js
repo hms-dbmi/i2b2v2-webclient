@@ -367,6 +367,104 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     // enter key was pressed while in the search term entry box
                     if ($("#submitTermSearch").attr('disabled') === undefined) i2b2.ONT.ctrlr.Search.clickSearch();
                 }
+            }).on('input', function(e) {
+                if(e.target.value.length >= 4){
+                    console.log('searchTermText target value is ' + e.target.value);
+                    let search_info = {};
+                    search_info.Category = "ACT_DX_ICD10_2018_V42";
+                    search_info.Strategy = "contains";
+                    search_info.searchStr = e.target.value;
+                    const suggestList = $("#suggestion-list").empty();
+
+                    let scopedCallback = new i2b2_scopedCallback();
+                    scopedCallback.scope = this;
+                    // define our callback function
+                    scopedCallback.callback = function(results) {
+                        // extract any returned info
+                        let hasError = false;
+                        if (results.error) {
+                                hasError = true;
+                        }
+                        if (!hasError) {
+                            let c = results.refXML.getElementsByTagName('concept');
+                            const conceptMatch = [];
+                            const patientMatch = [];
+                            for (let i=0; i<1*c.length; i++) {
+                                const name = i2b2.h.getXNodeVal(c[i], 'name');
+                                const level = i2b2.h.getXNodeVal(c[i], 'level');
+                                const table_name = i2b2.h.getXNodeVal(c[i], 'tablename');
+                                const basecode = i2b2.h.getXNodeVal(c[i], 'basecode');
+
+                                let matchLabel = "Concepts";
+                                if(basecode){
+                                    matchLabel = "Patients";
+                                }
+                                const label = name + (table_name ? "-" +  table_name : "") + " (" +  level + ( " " + matchLabel)  + ")";
+                                const listItem = $('<li><a class="dropdown-item" href="#">' + label + '</li>');
+                                listItem.data("category", table_name);
+                                listItem.data("name", name);
+
+                                listItem.on("click", function(e){
+                                    let parent =$(e.target).parent();
+                                    let name = parent.data("name");
+                                    $("#searchTermText").val(name);
+
+                                    let category = parent.data("category");
+                                    if(category) {
+                                        $("#liCat").find('button[data-search-filter-value="' + category +'"]').click();
+                                        i2b2.ONT.ctrlr.Search.clickSearch();
+                                    }else{
+                                        $("#liCat").find('button[data-search-filter-value="' + 'ANY' +'"]').click();
+                                    }
+
+                                    suggestList.addClass('d-none');
+                                });
+
+                                if(matchLabel === "Concepts"){
+                                    conceptMatch.push(listItem);
+                                }else{
+                                    patientMatch.push(listItem);
+                                }
+                            }
+                            if(patientMatch.length > 0) {
+                                suggestList.append('<li><h6 class="dropdown-header fw-bold text-uppercase">Patients</h6></li>');
+                                patientMatch.map(p => {
+                                    suggestList.append(p);
+                                });
+                            }
+                            if(conceptMatch.length > 0) {
+                                if(patientMatch.length > 0) {
+                                    suggestList.append('<li><hr class="dropdown-divider"></li>');
+                                }
+                                suggestList.append('<li><h6 class="dropdown-header fw-bold text-uppercase">Concepts</h6></li>');
+                                conceptMatch.map(p => {
+                                    suggestList.append(p);
+                                });
+                            }
+
+                            if(c.length > 0){
+                                let dropdownElement = document.getElementById('searchTerm');
+                                let bsDropdown = new bootstrap.Dropdown(dropdownElement);
+                                bsDropdown.show();
+                                suggestList.removeClass('d-none');
+                            }
+                        } else {
+                            console.log("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
+                        }
+                    };
+                    // add AJAX options
+                    let searchOptions = {};
+                    searchOptions.ont_max_records = "max='200'";
+                    searchOptions.ont_synonym_records = false;
+                    searchOptions.ont_hidden_records = false;
+                    searchOptions.ont_reduce_results = false;
+                    searchOptions.ont_hierarchy = false;
+                    searchOptions.ont_search_strategy = search_info.Strategy;
+                    searchOptions.ont_search_string = search_info.searchStr;
+                    searchOptions.ont_category = "";
+
+                    i2b2.ONT.ajax.FindDocuments("ONT:AutoSuggest", searchOptions, scopedCallback);
+                }
             });
 
         },
