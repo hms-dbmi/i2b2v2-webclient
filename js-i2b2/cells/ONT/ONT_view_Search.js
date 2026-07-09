@@ -368,13 +368,15 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     if ($("#submitTermSearch").attr('disabled') === undefined) i2b2.ONT.ctrlr.Search.clickSearch();
                 }
             }).on('input', function(e) {
+                const suggestList = $("#suggestion-list").empty();
+                suggestList.addClass('d-none');
+
                 if(e.target.value.length >= 4){
                     console.log('searchTermText target value is ' + e.target.value);
                     let search_info = {};
                     search_info.Category = "ACT_DX_ICD10_2018_V42";
                     search_info.Strategy = "contains";
                     search_info.searchStr = e.target.value;
-                    const suggestList = $("#suggestion-list").empty();
 
                     let scopedCallback = new i2b2_scopedCallback();
                     scopedCallback.scope = this;
@@ -399,7 +401,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                 if(basecode){
                                     matchLabel = "Patients";
                                 }
-                                const label = name + (table_name ? "-" +  table_name : "") + " (" +  level + ( " " + matchLabel)  + ")";
+                                const label = name + (table_name ? "-" +  table_name : "") + "<b> (" +  level + ( " " + matchLabel)  + ")</b>";
                                 const listItem = $('<li><a class="dropdown-item" href="#">' + label + '</li>');
                                 listItem.data("category", table_name);
                                 listItem.data("name", name);
@@ -454,7 +456,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     };
                     // add AJAX options
                     let searchOptions = {};
-                    searchOptions.ont_max_records = "max='200'";
+                    searchOptions.ont_max_records = "max='10'";
                     searchOptions.ont_synonym_records = false;
                     searchOptions.ont_hidden_records = false;
                     searchOptions.ont_reduce_results = false;
