@@ -8,9 +8,12 @@ i2b2.hive.errorMsgDisplay = {
                 const DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME = "Disable Global Error Message";
 
                 const projectParamsArr = Object.entries(i2b2.PM.model.projects[i2b2.PM.model.login_project].details);
+
                 const projectLevelEnabled = projectParamsArr.filter(param => param.length > 1
-                    &&  param[1].name === DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME
-                    && param[1].value !== "true").length !== 0;
+                    &&  ((param[1].name === DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME
+                            && param[1].value === "false")
+                        || (param[1].name === GLOBAL_ERROR_MESSAGE_PARAM_NAME &&  param[1].value.length > 0))).length !== 0;
+
                 const projectLevelDisabled = projectParamsArr.filter(param => param.length > 1
                     &&  param[1].name === DISABLE_GLOBAL_ERROR_MESSAGE_PARAM_NAME
                     && param[1].value === "true").length !== 0;
