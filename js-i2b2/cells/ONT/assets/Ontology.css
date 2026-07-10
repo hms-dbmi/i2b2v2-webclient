@@ -278,4 +278,13 @@ i.srTooltip.warn {
     padding-right: 0.6em;
 }
 
+#i2b2FinderOnt .autosuggestCountHighlight {
+    font-weight: bold;
+    color: #61a4d3;
+}
+
+#i2b2FinderOnt .autosuggestMatchHighlight {
+    font-weight: bold;
+}
+
 

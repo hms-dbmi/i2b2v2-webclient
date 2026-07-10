@@ -401,7 +401,15 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                 if(basecode){
                                     matchLabel = "Patients";
                                 }
-                                const label = name + (table_name ? "-" +  table_name : "") + "<b> (" +  level + ( " " + matchLabel)  + ")</b>";
+
+                                const caseInsensitiveRegex = new RegExp(search_info.searchStr, "gi");
+                                let highlightedName = name;
+                                const matches = highlightedName.match(caseInsensitiveRegex);
+                                matches.forEach(searchMatch => {
+                                    highlightedName = highlightedName.replaceAll(searchMatch, "<span class='autosuggestMatchHighlight'>" + searchMatch + "</span>");
+                                })
+
+                                const label = highlightedName + (table_name ? "-" +  table_name : "") + "<span class='autosuggestCountHighlight'> (" +  level + ( " " + matchLabel)  + ")</span>";
                                 const listItem = $('<li><a class="dropdown-item" href="#">' + label + '</li>');
                                 listItem.data("category", table_name);
                                 listItem.data("name", name);
