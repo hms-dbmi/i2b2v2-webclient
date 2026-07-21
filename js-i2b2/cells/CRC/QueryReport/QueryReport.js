@@ -70,10 +70,11 @@ i2b2.CRC.QueryReport.generateReport = () => {
             for (const event of group.events) {
                 for (const concept of event.concepts) {
                     // check for matching concept
-                    if (concept.sdxInfo.sdxKeyValue === panelConcept.key) {
+                    if (concept.sdxInfo.sdxKeyValue === i2b2.h.Unescape(panelConcept.key)) {
                         // check for matching lab values
                         if (concept.LabValues) {
                             let isMatch = true;
+                            const panelConceptValue = i2b2.h.Unescape(panelConcept.Value);
                             if (concept.LabValues.ValueOperator !== panelConcept.ValueOperator) isMatch = false;
                             if (isMatch && concept.LabValues.ValueType !== panelConcept.ValueType) isMatch = false;
                             if (isMatch && concept.LabValues.ValueUnit !== panelConcept.ValueUnit) isMatch = false;
@@ -81,9 +82,9 @@ i2b2.CRC.QueryReport.generateReport = () => {
                                 if (panelConcept.Value.replaceAll(" and ", "-") !== concept.LabValues.ValueLow + "-" + concept.LabValues.ValueHigh) isMatch = false;
                             } else {
                                 if (panelConcept.ValueType === "FLAG") {
-                                    if (concept.LabValues.ValueFlag && concept.LabValues.ValueFlag !== panelConcept.Value) isMatch = false;
+                                    if (concept.LabValues.ValueFlag && concept.LabValues.ValueFlag !== panelConceptValue) isMatch = false;
                                 } else {
-                                    if (concept.LabValues.Value && concept.LabValues.Value !== panelConcept.Value) isMatch = false;
+                                    if (concept.LabValues.Value && concept.LabValues.Value !== panelConceptValue) isMatch = false;
                                 }
                             }
                             if (isMatch) return concept;
