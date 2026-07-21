@@ -418,7 +418,7 @@ function QueryToolController() {
             ValueUnit: null
         };
 
-        let valueConstraint = i2b2.h.getXNodeVal(lvd, "value_constraint");
+        let valueConstraint = i2b2.h.Unescape(i2b2.h.getXNodeVal(lvd, "value_constraint"));
         labValues.ValueOperator = i2b2.h.getXNodeVal(lvd, "value_operator");
         let rawValueType = i2b2.h.getXNodeVal(lvd, "value_type");
         switch (rawValueType) {
