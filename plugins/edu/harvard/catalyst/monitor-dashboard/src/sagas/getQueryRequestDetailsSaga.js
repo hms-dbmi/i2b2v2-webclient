@@ -107,6 +107,8 @@ const extractPanelList = (panels) => {
 
                 let valueConstraint = constrainByValueElem.getElementsByTagName("value_constraint");
                 valueConstraint =valueConstraint.length > 0 && valueConstraint[0].childNodes.length > 0 ? valueConstraint[0].childNodes[0].nodeValue: "";
+                //TODO - needs to be decoded twice until issue resolved in the query running process
+                valueConstraint = decode(decode(valueConstraint));
 
                 let valueType = constrainByValueElem.getElementsByTagName("value_type");
                 valueType = valueType.length > 0 && valueType[0].childNodes.length > 0 ? valueType[0].childNodes[0].nodeValue: "";
