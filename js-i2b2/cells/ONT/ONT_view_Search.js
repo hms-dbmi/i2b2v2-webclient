@@ -374,7 +374,6 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                 suggestList.addClass('d-none');
 
                 if(e.target.value.length >= 4){
-                    console.log('searchTermText target value is ' + e.target.value);
                     let search_info = {};
                     search_info.Category = "ACT_DX_ICD10_2018_V42";
                     search_info.Strategy = "contains";
@@ -406,7 +405,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
 
                                 const caseInsensitiveRegex = new RegExp(search_info.searchStr, "gi");
                                 let highlightedName = name;
-                                const matches = highlightedName.match(caseInsensitiveRegex);
+                                const matches = highlightedName.matchAll(caseInsensitiveRegex);
                                 matches.forEach(searchMatch => {
                                     highlightedName = highlightedName.replaceAll(searchMatch, "<span class='autosuggestMatchHighlight'>" + searchMatch + "</span>");
                                 })
@@ -469,11 +468,11 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     searchOptions.ont_max_records = "max='10'";
                     searchOptions.ont_synonym_records = false;
                     searchOptions.ont_hidden_records = false;
-                    searchOptions.ont_reduce_results = false;
+                    searchOptions.ont_reduce_results = true;
                     searchOptions.ont_hierarchy = false;
                     searchOptions.ont_search_strategy = search_info.Strategy;
                     searchOptions.ont_search_string = search_info.searchStr;
-                    searchOptions.ont_category = "";
+                    searchOptions.ont_category = "@";
 
                     i2b2.ONT.ajax.FindDocuments("ONT:AutoSuggest", searchOptions, scopedCallback);
                 }
