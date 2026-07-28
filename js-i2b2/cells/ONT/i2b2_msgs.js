@@ -757,7 +757,7 @@ i2b2.ONT.cfg.msgs.findDocuments = '<?xml version="1.0" encoding="UTF-8" standalo
     '        <result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
     '    </request_header>\n'+
     '    <message_body>\n'+
-    '        <ns4:get_name_info blob="true" type="core" reducedResults="false" keyname="true" {{{ont_max_records}}} hiddens="{{{ont_hidden_records}}}" synonyms="{{{ont_synonym_records}}}" category="{{{ont_category}}}">\n'+
+    '        <ns4:get_name_info blob="true" type="core" reducedResults="true" keyname="true" {{{ont_max_records}}} hiddens="{{{ont_hidden_records}}}" synonyms="{{{ont_synonym_records}}}" category="{{{ont_category}}}">\n'+
     '            <match_str strategy="{{{ont_search_strategy}}}">{{{ont_search_string}}}</match_str>\n'+
     '        </ns4:get_name_info>\n'+
     '    </message_body>\n'+

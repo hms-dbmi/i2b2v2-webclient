@@ -397,6 +397,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                 const level = i2b2.h.getXNodeVal(c[i], 'level');
                                 const table_name = i2b2.h.getXNodeVal(c[i], 'tablename');
                                 const basecode = i2b2.h.getXNodeVal(c[i], 'basecode');
+                                const visAttr = i2b2.h.getXNodeVal(c[i], 'visualattributes') || "";
 
                                 let matchLabel = "Concepts";
                                 if(basecode){
@@ -410,8 +411,15 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                     highlightedName = highlightedName.replaceAll(searchMatch, "<span class='autosuggestMatchHighlight'>" + searchMatch + "</span>");
                                 })
 
+                                let visAttrClass = "";
+                                if(visAttr.startsWith("L")){
+                                    visAttrClass = "sdxStyleONT-CONCPT tvLeaf";
+                                }
+                                if(visAttr.startsWith("F")){
+                                    visAttrClass = "sdxStyleONT-CONCPT tvBranch";
+                                }
                                 const label = highlightedName + (table_name ? "-" +  table_name : "") + "<span class='autosuggestCountHighlight'> (" +  level + ( " " + matchLabel)  + ")</span>";
-                                const listItem = $('<li><a class="dropdown-item" href="#">' + label + '</li>');
+                                const listItem = $('<li><span class="'+ visAttrClass + '"><a class="dropdown-item" href="#">' + label + '</span></li>');
                                 listItem.data("category", table_name);
                                 listItem.data("name", name);
 
@@ -465,7 +473,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     };
                     // add AJAX options
                     let searchOptions = {};
-                    searchOptions.ont_max_records = "max='10'";
+                    searchOptions.ont_max_records = "max='10000'";
                     searchOptions.ont_synonym_records = false;
                     searchOptions.ont_hidden_records = false;
                     searchOptions.ont_reduce_results = true;

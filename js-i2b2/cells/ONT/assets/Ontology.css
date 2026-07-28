@@ -287,4 +287,14 @@ i.srTooltip.warn {
     font-weight: bold;
 }
 
+#suggestion-list li {
+    padding-left: 0.6em;
+}
+
+#suggestion-list .dropdown-item {
+    width: 80%;
+    padding-left: 0.4em;
+    display: inline-block;
+}
+
 
