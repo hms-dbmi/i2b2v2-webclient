@@ -424,7 +424,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                 listItem.data("name", name);
 
                                 listItem.on("click", function(e){
-                                    let parent =$(e.target).parent();
+                                    let parent =$(e.target).parents("li").first();
                                     let name = parent.data("name");
                                     $("#searchTermText").val(name);
 
@@ -473,7 +473,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     };
                     // add AJAX options
                     let searchOptions = {};
-                    searchOptions.ont_max_records = "max='100'";
+                    searchOptions.ont_max_records = "max='10'";
                     searchOptions.ont_synonym_records = false;
                     searchOptions.ont_hidden_records = false;
                     searchOptions.ont_reduce_results = true;
