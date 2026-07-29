@@ -14,7 +14,6 @@ The module is designed to display the `PATIENT_PATHOGEN_TIMELINE_SHRINE_XML` bre
 | `PathogenTimeline.js` | Main visualization module class |
 | `PathogenTimeline.html` | Template for the filter bar controls |
 | `PathogenTimeline.css` | Styles scoped to `.viztype-PATHOGENTIMELINE` |
-| `demo_wastewater.json` | Demo file of wastewater data for experimentation |
 
 
 ### Definition within `breakdowns.json`
@@ -63,6 +62,18 @@ const WASTEWATER_REGISTRY = {
 ```
 
 
-### Demo Wastewater Data
+### Wastewater Data
 
-As described above, this module comes with a sample file of wastewater data. The code also contains example functions used to fetch the wastewater data through an endpoint.
+Prior to loading, the wastewater data is scraped from a PDF found on the MWRA website. The data is then cleaned with these standards requested by leadership:
+
+#### Find the first row
+If the date is before 3/10/2020, drop the row. This is our first row. 
+
+#### Find the last row
+Find the last row with data in columns beyond "Sample Date" and treat that as the last row. Drop all other rows beyond that. 
+
+#### Use Southern 7 day avg value or last reported Southern (copies/mL)
+For any "Sample Date" row, if there is null, blank, or NaN (ns, ND, etc.) in "Southern (copies/mL)", use the value of "Southern 7 day avg"; if there is no "Southern 7 day avg" for that "Sample Date" row, use the last "Southern 7 day avg" value reported, no matter how many days in the past it was. 
+
+#### Use Northern 7 day avg value or last reported Northern (copies/mL)
+For any "Sample Date" row, if there is null, blank, or NaN (ns, ND, etc.) in "Northern (copies/mL)", use the value of "Northern 7 day avg"; if there is no "Northern 7 day avg" for that "Sample Date" row, use the last "Northern 7 day avg" value reported, no matter how many days in the past it was. 
