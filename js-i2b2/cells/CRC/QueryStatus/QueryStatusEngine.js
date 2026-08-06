@@ -404,9 +404,26 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     let qrs_entries = {};
     let qrsCodesFound = Object.keys(i2b2.CRC.QueryStatus.model.QRS).map((a) => i2b2.CRC.QueryStatus.model.QRS[a].QRS_Type);
 
-    // find the expressly display-ranked results set(s)
+    // build the unified ordered slot list: each slot is either a QRS visualization placement or a
+    // supermodule placement, laid out in the order given by the top-level displayOrder list. A
+    // displayOrder entry names a supermodule when it matches a displayComponents key that has a
+    // "superModule" definition; otherwise it is treated as a QRS type literal or /regex/ pattern.
+    let orderedSlots = [];
     let currentIndex = 0;
-    for (let codeRank of i2b2.CRC.QueryStatus.displayOrder) {
+    i2b2.CRC.QueryStatus.displayOrder.forEach((codeRank, orderIndex) => {
+        const possibleSuperModuleDef = i2b2.CRC.QueryStatus.displayComponents[codeRank];
+        if (possibleSuperModuleDef && typeof possibleSuperModuleDef.superModule !== 'undefined') {
+            // this displayOrder entry names a supermodule component
+            orderedSlots.push({
+                kind: "super",
+                code: codeRank,
+                definition: possibleSuperModuleDef,
+                slotId: "listed:" + orderIndex,
+                displayRank: currentIndex
+            });
+            currentIndex++;
+            return;
+        }
         if (codeRank.substring(0,1) === '/') {
             // handles regex mapping
             let currentRegEx = i2b2.CRC.QueryStatus._generateRegEx(codeRank);
@@ -414,6 +431,7 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
             for (let currentBreakdown of matchingBreakdowns) {
                 if (qrs_entries[currentBreakdown] === undefined) {
                     qrs_entries[currentBreakdown] = {"displayRank": currentIndex};
+                    orderedSlots.push({kind: "qrs", code: currentBreakdown, displayRank: currentIndex});
                     currentIndex++;
                 }
             }
@@ -421,10 +439,11 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
             // non-regex mappings
             if (qrs_entries[codeRank] === undefined && qrsCodesFound.includes(codeRank)) {
                 qrs_entries[codeRank] = {"displayRank": currentIndex};
+                orderedSlots.push({kind: "qrs", code: codeRank, displayRank: currentIndex});
                 currentIndex++;
             }
         }
-    }
+    });
 
     // remove the placed codes from the working list
     let codesToRemove = Object.keys(qrs_entries);
@@ -435,8 +454,27 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     for (let codeInstance of qrsCodesFound) {
         // create the initial record with display rank
         qrs_entries[codeInstance] = {"displayRank": currentIndex};
+        orderedSlots.push({kind: "qrs", code: codeInstance, displayRank: currentIndex});
         currentIndex++;
     }
+
+    // append any supermodules not named anywhere in displayOrder, in displayComponents declaration
+    // order, to the end of the slot list. Their instantiation stays gated on having at least one
+    // matching QRS record (handled below), same as before this change.
+    const listedSuperModuleCodes = orderedSlots.filter((s) => s.kind === "super").map((s) => s.code);
+    Object.keys(i2b2.CRC.QueryStatus.displayComponents).forEach((code) => {
+        const def = i2b2.CRC.QueryStatus.displayComponents[code];
+        if (typeof def.superModule !== 'undefined' && !listedSuperModuleCodes.includes(code)) {
+            orderedSlots.push({
+                kind: "super",
+                code: code,
+                definition: def,
+                slotId: "unlisted:" + code,
+                displayRank: currentIndex
+            });
+            currentIndex++;
+        }
+    });
 
     // link record data into the component entries
     Object.keys(qrs_entries).forEach((codeInstance) => {
@@ -448,12 +486,19 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     // now create the visualization instances
     const componentKeys = Object.keys(i2b2.CRC.QueryStatus.displayComponents);
     const refDisplayComponents = i2b2.CRC.QueryStatus.displayComponents;
-    let orderedEntries = Object.keys(qrs_entries);
-    orderedEntries.sort((a,b) => qrs_entries[a].displayRank - qrs_entries[b].displayRank);
 
-    // but only for NEW visualizations
+    // determine which slots (QRS visualizations or supermodules) are already instantiated, so that
+    // only NEW slots are processed below. Supermodules are tracked by slotId in model.superModules;
+    // QRS visualizations are tracked by QRS type code in model.visualizations. Filtering orderedSlots
+    // (rather than instantiating QRS and supermodule slots in two separate passes) is what guarantees
+    // the DOM insertion order matches the interleaved QRS+supermodule ordering from displayOrder.
     const existingViz = Object.keys(i2b2.CRC.QueryStatus.model.visualizations);
-    const newEntries = orderedEntries.filter((a) => !existingViz.includes(a));
+    if (typeof i2b2.CRC.QueryStatus.model.superModules === 'undefined') i2b2.CRC.QueryStatus.model.superModules = [];
+    const instantiatedSuperSlotIds = i2b2.CRC.QueryStatus.model.superModules.map((m) => m.slotId);
+    const newSlots = orderedSlots.filter((slot) => {
+        if (slot.kind === "super") return !instantiatedSuperSlotIds.includes(slot.slotId);
+        return !existingViz.includes(slot.code);
+    });
     // remove entries that are already placed
     for (let code of Object.keys(qrs_entries)) {
         if (existingViz.includes(code)) delete qrs_entries[code];
@@ -499,7 +544,49 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
     };
 
 
-    for (let code of newEntries) {
+    for (let slot of newSlots) {
+        if (slot.kind === "super") {
+            // Instantiate a super-module slot (either explicitly positioned via displayOrder, or
+            // appended at the end if unlisted). Gated on having at least one matching QRS result for
+            // its capture configuration; this gate is re-checked on every call to this function so
+            // that a supermodule whose matching QRS type arrives later still gets created. Processing
+            // this in the same loop (interleaved with QRS slots, in orderedSlots order) rather than in
+            // a separate pass is what keeps the DOM insertion order correct relative to displayOrder.
+            const module = slot.definition;
+            const matchingQrs = i2b2.CRC.QueryStatus.getMatchingQrsForSuperModule(module);
+            if (matchingQrs.length === 0) continue; // no matching results yet -- do not instantiate
+
+            // create the frameless display div
+            const componentEl = document.createElement("div");
+            componentEl.classList.add("QueryStatusComponent", "frameless", "viz-window", "viztype-" + module.componentCode);
+            if (module.class !== undefined) componentEl.classList.add(module.class);
+            componentEl.style.display = 'none';
+            i2b2.CRC.QueryStatus.displayEl.appendChild(componentEl);
+            i2b2.CRC.QueryStatus.resizeObserver.observe(componentEl);
+            // add references to our entries
+            let componentInstanceObj = {
+                "definition": module,
+                "parentDisplayEl": componentEl,
+                "displayEl": componentEl,
+                "slotId": slot.slotId
+            }
+
+            // <MORE-MAGIC> (http://catb.org/jargon/html/magic-story.html)
+            //      CHROME MAGIC (we need to push the object into the superModules array NOW before viz module
+            //      instantiation -- otherwise it will softcrash the browser (in breakpoint mode?)
+            i2b2.CRC.QueryStatus.model.superModules.push(componentInstanceObj);
+            // </MORE-MAGIC>
+
+            // instantiate visualization
+            let instantiationResults = functInstantiateViz(slot.code, module, componentInstanceObj);
+            if (instantiationResults === false) {
+                console.error("Failed to instantiate viz super-module");
+            }
+            continue;
+        }
+
+        // slot.kind === "qrs"
+        const code = slot.code;
         qrs_entries[code].componentInstances = [];
         // create a list of references to QRS's valid visualizations
         let matchingComponents = componentKeys.map((k) => {
@@ -683,40 +770,6 @@ i2b2.CRC.QueryStatus.createVisualizationsFromList = function() {
                 }
             }
         }
-    }
-
-    // TODO: Instantiate Super-modules (only runs once! and only after we get more than just the SUMMARY viz is built)
-    if (typeof i2b2.CRC.QueryStatus.model.superModules === 'undefined') i2b2.CRC.QueryStatus.model.superModules = [];
-    if (i2b2.CRC.QueryStatus.model.superModules.length === 0 && Object.keys(i2b2.CRC.QueryStatus.model.visualizations).length >= 1) {
-        Object.entries(i2b2.CRC.QueryStatus.displayComponents).forEach(([code, module]) => {
-            if (typeof module.superModule !== 'undefined') {
-                // create the frameless display div
-                const componentEl = document.createElement("div");
-                componentEl.classList.add("QueryStatusComponent", "frameless", "viz-window", "viztype-" + module.componentCode);
-                if (module.class !== undefined) componentEl.classList.add(module.class);
-                componentEl.style.display = 'none';
-                i2b2.CRC.QueryStatus.displayEl.appendChild(componentEl);
-                i2b2.CRC.QueryStatus.resizeObserver.observe(componentEl);
-                // add references to our entries
-                let componentInstanceObj = {
-                    "definition": module,
-                    "parentDisplayEl": componentEl,
-                    "displayEl": componentEl
-                }
-
-                // <MORE-MAGIC> (http://catb.org/jargon/html/magic-story.html)
-                //      CHROME MAGIC (we need to push the object into the superModules array NOW before viz module
-                //      instantiation -- otherwise it will softcrash the browser (in breakpoint mode?)
-                i2b2.CRC.QueryStatus.model.superModules.push(componentInstanceObj);
-                // </MORE-MAGIC>
-
-                // instantiate visualization
-                let instantiationResults = functInstantiateViz(code, module, componentInstanceObj);
-                if (instantiationResults === false) {
-                    console.error("Failed to instantiate viz super-module");
-                }
-            }
-        });
     }
 
     // save all that we have done for the visualizations to the main namespace
