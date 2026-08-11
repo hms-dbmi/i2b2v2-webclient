@@ -227,21 +227,6 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
     i2b2.layout.selectTab('i2b2.CRC.view.QueryMgr');
 };
 
-
-// ================================================================================================== //
-i2b2.CRC.ctrlr.QueryMgr.cancelQuery = function() {
-    // Aborts a running query
-    i2b2.CRC.model.runner.deleteCurrentQuery = true;
-    i2b2.CRC.ctrlr.QueryMgr.stopQuery();
-    i2b2.CRC.model.runner.queued = false;
-
-    // stop the Query Status subsystem from polling
-    i2b2.CRC.QueryStatus.stopPolling();
-
-    // update the screen to show status as cancelled
-    $("#infoQueryStatusText .statusButtons").removeClass("running").addClass("cancelled");
-}
-
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     if (i2b2.CRC.model.runner.isLoading) return;
