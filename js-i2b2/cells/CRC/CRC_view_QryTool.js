@@ -1858,7 +1858,7 @@ i2b2.events.afterCellInit.add((cell) => {
                     $('<div class="center"></div>').append(queryName).appendTo(runBar);
                     runBar.append('<div class="right">' +
                         '<button type="button" class="btn btn-primary btn-sm button-run">Find Patients</button>' +
-                        '<button type="button" class="btn btn-danger btn-sm button-cancel" onmousedown="i2b2.CRC.ctrlr.QueryMgr.cancelQuery();">Cancel</button>' +
+                        '<button type="button" class="btn btn-danger btn-sm button-query-running" disabled title="Modify or clear the query to run another query without waiting.">Running</button>' +
                         '<button type="button" class="btn btn-primary btn-sm button-clear">Clear All</button>' +
                         '</div>');
 
