@@ -119,12 +119,14 @@
     border-color: var(--text-secondary-dark);
 }
 
-.CRC_QT_runbar .button-cancel{
+.CRC_QT_runbar .button-query-running{
     padding: 0.22rem 0.4rem;
     line-height: 1.5em;
     margin-top: -0.1em;
     margin-right: 0.8em;
     display: none;
+    cursor: default;
+    pointer-events: none;
 }
 
 
