@@ -375,7 +375,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
 
                 if(e.target.value.length >= 4){
                     let search_info = {};
-                    search_info.Category = "ACT_DX_ICD10_2018_V42";
+                    search_info.Category = "@";
                     search_info.Strategy = "contains";
                     search_info.searchStr = e.target.value;
 
@@ -418,10 +418,21 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                 if(visAttr.startsWith("F")){
                                     visAttrClass = "sdxStyleONT-CONCPT tvBranch";
                                 }
-                                const label = highlightedName + (table_name ? "-" +  table_name : "") + "<span class='autosuggestCountHighlight'> (" +  level + ( " " + matchLabel)  + ")</span>";
+
+                                let categoryDisplayName = $("#liCat").find('button[data-search-filter-value="' + table_name +'"]');
+                                if(categoryDisplayName){
+                                    categoryDisplayName = categoryDisplayName.text();
+                                }
+                                else{
+                                    categoryDisplayName = table_name;
+                                }
+
+                                const label = highlightedName + (categoryDisplayName ? " - " +  categoryDisplayName : "") + "<span class='autosuggestCountHighlight'> (" +  level + ( " " + matchLabel)  + ")</span>";
                                 const listItem = $('<li><span class="'+ visAttrClass + '"><a class="dropdown-item" href="#">' + label + '</span></li>');
-                                listItem.data("category", table_name);
                                 listItem.data("name", name);
+                                listItem.data("category", table_name);
+
+
 
                                 listItem.on("click", function(e){
                                     let parent =$(e.target).parents("li").first();
