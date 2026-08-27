@@ -97,12 +97,12 @@
       "notInReport": true
     },
     "PATHOGENTIMELINE": {
-      "name": "Pathogen Timeline",
-      "source": "PathogenTimeline/PathogenTimeline.js",
-      "CSS": "PathogenTimeline/PathogenTimeline.css",
+      "name": "Concept Overlay Timeline",
+      "source": "ConceptOverlayTimeline/ConceptOverlayTimeline.js",
+      "CSS": "ConceptOverlayTimeline/ConceptOverlayTimeline.css",
       "iconClass": "bi-graph-up-arrow",
       "displayOrder": 3,
-      "class": "pathogen-timeline",
+      "class": "concept-overlay-timeline",
       "displayForUnregistered": false
     },
     "NIHENROLLTABLE": {
