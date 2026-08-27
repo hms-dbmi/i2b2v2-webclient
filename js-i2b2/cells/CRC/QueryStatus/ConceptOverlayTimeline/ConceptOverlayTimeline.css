@@ -1,0 +1,147 @@
+/* ============================================================
+  Concept Overlay Timeline CSS
+   ============================================================ */
+
+/* Match BarGraph's y-label styling */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE svg text.y-label {
+  fill: var(--text-primary-dark, #000);
+  font-size: 10px;
+}
+
+/* -----------------------------------------------------------
+   Hover bold for X-axis labels (match BarGraph behavior)
+   ----------------------------------------------------------- */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE svg .x-axis g.tick text:hover {
+  font-weight: bold;
+  cursor: default;
+}
+
+/* General text styling inside the chart */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE svg text {
+  font-family: sans-serif;
+  fill: var(--text-primary-dark, #000);
+}
+
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE * {
+  overflow: visible !important;
+}
+
+/* Pull controls container to the right edge (override px-5) */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .container.px-5.pt-3 {
+  padding-right: 0 !important;
+}
+
+/* SVG must explicitly allow overflow — Chrome collapses it otherwise */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE svg {
+  overflow: visible !important;
+}
+
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE svg text.y-label {
+  display: inline !important;
+}
+
+/* Right Y axis styling */
+.y-axis.right text {
+  fill: #333;
+}
+.y-axis.right path,
+.y-axis.right line {
+  stroke: #333;
+}
+
+/* -----------------------------------------------------------
+   CONTROLS + LEGEND: unified row model (equal vertical spacing)
+   ----------------------------------------------------------- */
+
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-timeline-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* do NOT use gap for vertical rhythm */
+}
+
+/* Make ALL rows share the same structure */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-control-row,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-legend-block {
+  display: flex;
+  align-items: baseline;      /* key: makes label + content sit on same baseline */
+  flex-wrap: wrap;
+
+  margin: 0;                  /* reset */
+}
+
+/* Use ONE vertical spacing mechanism: margin between rows */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-control-row + .cot-control-row,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-control-row + .cot-legend-block {
+  margin-top: 0.5rem;        /* <- ONLY knob. try 0.28rem if you want tighter */
+}
+
+/* Labels: make legend label behave like other labels */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-links-label {
+  font-weight: bold;
+  margin-left: 1rem;
+  display: inline-block;      /* prevent block-y weirdness */
+  line-height: 1.1;
+}
+
+/* If legend label is a DIV in output, force it to behave inline */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-legend-block .cot-links-label {
+  display: inline-block;
+}
+
+/* Horizontal list: remove vertical margins entirely */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE ul.cot-links {
+  display: inline-block;
+  padding: 0;
+  margin: 0 0.5rem;           /* horizontal indent only */
+}
+
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE ul.cot-links li {
+  display: inline;
+}
+
+/* Clickable link-like spans */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE span.cot-link {
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE span.cot-link:hover,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE span.cot-link.selected {
+  border-bottom: 1px solid;
+}
+
+/* ZIPCODEMAP separator image */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE ul.cot-links li:not(:last-child)::after {
+  content: " ";
+  letter-spacing: 1em;
+  background: center center no-repeat
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=);
+}
+
+/* Legend items container: treat like the UL (no vertical margin, same indent) */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  margin: 0 0.5rem;           /* same horizontal indent as UL */
+  gap: 0.35rem 0.9rem;         /* spacing between legend items */
+}
+
+/* Legend row item */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-legend-items .legend-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Swatch */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .legend-swatch {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 2px;
+  display: inline-block;
+  outline: 1px solid #000;
+  outline-offset: -1px;
+}
