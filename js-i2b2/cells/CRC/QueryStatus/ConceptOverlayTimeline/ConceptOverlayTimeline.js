@@ -144,28 +144,36 @@ export default class ConceptOverlayTimeline {
         delete this.data;
     }
 
-    update(inputData) {
-        try {
-            if (typeof inputData === "undefined") {
-                // No new payload; only stay visible if we already have some rows
-                const rawExists = this.data?.new?.result;
-                if (!rawExists || rawExists.length === 0) return false;
-            } else {
-                // bail out if the results are an error (config-driven)
-                const status = i2b2.h.XPath(inputData,"//query_result_instance/query_status_type/name");
-                if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) return false;
+    
 
+    update(inputData) {
+    try {
+        if (typeof inputData === "undefined") {
+            // No new payload; only stay visible if we already have some rows
+            const rawExists = this.data?.new?.result;
+            if (!rawExists || rawExists.length === 0) return false;
+            } else {
                 this.data.old = this.data.new;
 
-                // get the breakdown data information (if present)
+                // Always attempt to parse breakdown data first, regardless of status.
+                // Some responses carry usable data even when status is "ERROR"
                 let resultXML = i2b2.h.XPath(inputData, "//xml_value");
-                if (resultXML.length > 0) {
-                    resultXML = resultXML[0].firstChild.nodeValue;
-                    this.data.new = parseData(resultXML, this.config.advancedConfig);
-                    if (!this.data.new) return false;
-                }
+            if (resultXML.length > 0) {
+                resultXML = resultXML[0].firstChild.nodeValue;
+                this.data.new = parseData(resultXML, this.config.advancedConfig);
             }
 
+            // Only bail on status if we truly ended up with nothing to show
+            const hasUsableData = this.data?.new?.result && this.data.new.result.length > 0;
+            if (!hasUsableData) {
+                const status = i2b2.h.XPath(inputData, "//query_result_instance/query_status_type/name");
+                if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) {
+                    return false;
+                }
+            }
+        }
+
+            // Common path: use whatever is in this.data.new to render
             const raw = this.data?.new?.result;
             if (!raw || raw.length === 0) return;
 
