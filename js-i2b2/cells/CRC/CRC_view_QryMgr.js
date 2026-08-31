@@ -17,13 +17,13 @@ i2b2.CRC.view.QueryMgr.updateStatus = function() {
     // update the INTERNAL_SUMMARY data and update display of the Query Summary visualization module in the QueryStatus engine
     i2b2.CRC.QueryStatus.updateFromQueryMgr();
 
-    // in the Query Tool: hide/show run and cancel buttons
+    // in the Query Tool: hide/show run button and running indicator
     if (i2b2.CRC.model.runner.finished || i2b2.CRC.model.runner.queued) {
         $(".CRC_QT_runbar .button-run").show();
-        $(".CRC_QT_runbar .button-cancel").hide();
+        $(".CRC_QT_runbar .button-query-running").hide();
     } else if (i2b2.CRC.model.runner.isRunning) {
         $(".CRC_QT_runbar .button-run").hide();
-        $(".CRC_QT_runbar .button-cancel").show();
+        $(".CRC_QT_runbar .button-query-running").show();
     }
 };
 
@@ -34,9 +34,9 @@ i2b2.CRC.view.QueryMgr.clearStatus = function() {
         i2b2.CRC.ctrlr.QueryMgr.tick();
     }
 
-    // deal with hiding cancel and showing run buttons
+    // deal with hiding the running indicator and showing the run button
     $(".CRC_QT_runbar .button-run").show();
-    $(".CRC_QT_runbar .button-cancel").hide();
+    $(".CRC_QT_runbar .button-query-running").hide();
 
 
     // clear the query status window
