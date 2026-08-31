@@ -21,6 +21,8 @@ const WASTEWATER_REGISTRY = {
     }
 };
 
+
+
 const margin = { top: 20, right: 80, bottom: 70, left: 60 };
 
 export default class ConceptOverlayTimeline {
@@ -30,8 +32,16 @@ export default class ConceptOverlayTimeline {
             this.record = qrsRecordInfo;
 
             this.data = { old: {}, new: {} };
+            
             this.wastewater = null;
             this.isVisible = false;
+
+            this.conceptRegistry = {};
+            this.colorsInUse = [];
+            this.customizeConceptRegistry = this.config.advancedConfig.customizeConceptRegistry;
+            this.cannonicalHexes = this.config.advancedConfig.cannonicalHexes;
+
+
 
             // Wastewater fetch gating + computed range
             this.wwRequestRange = null;
@@ -43,19 +53,7 @@ export default class ConceptOverlayTimeline {
             this.config.displayEl.style.display = "none";
             const self = this;
 
-            // Parse initial XML if present (often empty at constructor-time; update() will get real data later)
-            if (
-                qrsData &&
-                typeof qrsData === "object" &&
-                qrsData.constructor.name === "XMLDocument"
-            ) {
-                let resultXML = i2b2.h.XPath(qrsData, "//xml_value");
-                if (resultXML.length > 0) {
-                    resultXML = resultXML[0].firstChild.nodeValue;
-                    this.data.new = parseData(resultXML, this.config.advancedConfig);
-                }
-            }
-
+            // parse is done in update(); we're no longer doing it here.
 
             (async function () {
                 let response = await fetch(
@@ -74,7 +72,7 @@ export default class ConceptOverlayTimeline {
 
                 // Cache controls (SCOPED) - LINK STYLE CONTROLS
                 self.controls = {
-                    diagnosisList: $(".cot-diagnosis-links", self.config.displayEl)[0],
+                    conceptList: $(".cot-concept-links", self.config.displayEl)[0],
                     overlayList: $(".cot-overlay-links", self.config.displayEl)[0],
                     aggregationList: $(".cot-aggregation-links", self.config.displayEl)[0],
                     legend: $(".cot-legend-items", self.config.displayEl)[0],
@@ -82,19 +80,12 @@ export default class ConceptOverlayTimeline {
 
                 // Internal state (update() reads from here)
                 self.state = {
-                    diagnosis: "All",
+                    concept: "All",
                     overlay: "None",
                     aggregation: "month"
                 };                
 
-                // Build items
-                const diagnosisItems = [
-                    { value: "All", label: "All" },
-                    ...Object.entries(DIAGNOSIS_REGISTRY.diagnosis)
-                        .sort(([, a], [, b]) => a.order - b.order)
-                        .map(([key, d]) => ({ value: key, label: d.label }))
-                ];
-
+           
                 const overlayItems = [
                     { value: "None", label: "None" },
                     ...Object.entries(WASTEWATER_REGISTRY.wastewater_sources)
@@ -103,7 +94,7 @@ export default class ConceptOverlayTimeline {
                 ];
 
                 // Render initial lists
-                renderControlLinks(self.controls.diagnosisList, diagnosisItems, self.state.diagnosis);
+                
                 renderControlLinks(self.controls.overlayList, overlayItems, self.state.overlay);
 
                 // Aggregation list is in HTML; ensure we have a selected item + sync state
@@ -120,7 +111,7 @@ export default class ConceptOverlayTimeline {
                 }
 
                 // Bind clicks
-                bindControlLinkClicks(self.controls.diagnosisList, (v) => { self.state.diagnosis = v; self.update(); });
+                bindControlLinkClicks(self.controls.conceptList, (v) => { self.state.concept = v; self.update(); });
                 bindControlLinkClicks(self.controls.overlayList, (v) => { self.state.overlay = v; self.update(); });
                 bindControlLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
 
@@ -178,6 +169,21 @@ export default class ConceptOverlayTimeline {
             const raw = this.data?.new?.result;
             if (!raw || raw.length === 0) return;
 
+            if (Object.keys(this.conceptRegistry).length == 0){
+                this.conceptRegistry = generateConceptRegistry(raw, this.conceptRegistry, this.customizeConceptRegistry, this.cannonicalHexes, this.colorsInUse);
+            } 
+
+            // Build items
+            const conceptItems = [
+                { value: "All", label: "All" },
+                ...Object.entries(this.conceptRegistry)
+                    .sort(([, a], [, b]) => a.order - b.order)
+                    .map(([key, d]) => ({ value: key, label: d.label }))
+            ];
+
+            // Render initial lists
+            renderControlLinks(self.controls.conceptList, conceptItems, self.state.concept);           
+
             // ------------------------------------------------------------
             // Wastewater fetch
             // ------------------------------------------------------------
@@ -212,14 +218,14 @@ export default class ConceptOverlayTimeline {
             // If template/SVG not ready yet, bail without drawing (but wastewater fetch can still run above)
             if (!this.svg || !this.controls || !this.state) return;
 
-            const selectedDiagnosis = this.state?.diagnosis || "All";
+            const selectedConcept = this.state?.concept || "All";
             const selectedOverlay = this.state?.overlay || "None";
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year" | "yoy"
 
-            const renderModel = buildRenderModel(raw, this.wastewater, selectedDiagnosis, selectedAggregation, selectedOverlay);
+            const renderModel = buildRenderModel(raw, this.wastewater, this.conceptRegistry, selectedConcept, selectedAggregation, selectedOverlay);
 
-            const currentKeys = [...new Set(renderModel.series.map(item => item.diagnosis))];
-            updateLegend(this.controls, currentKeys, selectedOverlay);
+            const currentKeys = [...new Set(renderModel.series.map(item => item.concept))];
+            updateLegend(this.controls, this.conceptRegistry, currentKeys, selectedOverlay);
 
             this.draw(renderModel, selectedOverlay, selectedAggregation);           
            
@@ -550,9 +556,8 @@ let parseData = function (xmlData, advancedConfig) {
 
         const grain = parts[0].trim().toUpperCase();
         const dateStr = parts[1].trim();
-        const label = parts[2].trim();
-        const diagnosisRaw = parts[3].trim();
-        const diagnosis = DIAGNOSIS_REGISTRY.canonicalize(diagnosisRaw);
+        const monthNameYr = parts[2].trim();
+        const concept = parts[3].trim();
 
         // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
         const date = parseYMDLocal(dateStr);
@@ -575,7 +580,7 @@ let parseData = function (xmlData, advancedConfig) {
 
             if (Array.isArray(advancedConfig.hideEntries)) {
                 if (
-                    advancedConfig.hideEntries.includes(diagnosis) ||
+                    advancedConfig.hideEntries.includes(concept) ||
                     advancedConfig.hideEntries.includes(column)
                 ) {
                     include = false;
@@ -587,10 +592,10 @@ let parseData = function (xmlData, advancedConfig) {
 
         breakdown.result.push({
             grain,
-            diagnosis,
-            diagnosisRaw,
+            concept,
             date,
             dateStr,
+            monthNameYr,
             value,
             display: rawText
         });

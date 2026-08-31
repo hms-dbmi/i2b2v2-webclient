@@ -91,7 +91,32 @@
   "PATIENT_PATHOGEN_TIMELINE_SHRINE_XML": {
     "TABLE": true,
     "DOWNLOAD": true,
-    "PATHOGENTIMELINE": true
+    "CONCEPTOVERLAYTIMELINE": {
+          "cannonicalHexes": 
+            [
+                "#FF0000",
+                "#00FF00",
+                "#0000FF",
+                "#FFFF00",
+                "#00FFFF",
+                "#FF00FF",
+                "#FFA500",
+                "#800080",
+                "#A52A2A",
+                "#501a1a",
+                "#008000",
+                "#008080",
+                "#4B0082",
+                "#EE82EE",
+                "#FFD700",
+                "#FF6347",
+                "#40E0D0",
+                "#DC143C",
+                "#7FFF00",
+                "#0a0a0a"
+            ],
+            "customizeConceptRegistry": {}
+    }
   },
   "PATIENT_PATHOGEN_TIMELINE_XML": {
     "DOWNLOAD": true,

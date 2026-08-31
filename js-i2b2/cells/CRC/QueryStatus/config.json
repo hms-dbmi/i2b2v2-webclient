@@ -74,7 +74,7 @@
       "CSS": "MultiZipcodeMap/MultiZipcodeMap.css",
       "iconClass": "bi bi-globe2"
     },
-    "PATHOGENTIMELINE": {
+    "CONCEPTOVERLAYTIMELINE": {
       "name": "Concept Overlay Timeline",
       "source": "ConceptOverlayTimeline/ConceptOverlayTimeline.js",
       "CSS": "ConceptOverlayTimeline/ConceptOverlayTimeline.css",
