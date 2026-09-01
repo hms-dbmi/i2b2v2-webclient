@@ -235,7 +235,7 @@ export default class ConceptOverlayTimeline {
             const currentKeys = [...new Set(renderModel.series.map(item => item.concept))];
             updateLegend(this.controls, this.conceptRegistry, currentKeys, selectedOverlay);
 
-            this.draw(renderModel, selectedOverlay, selectedAggregation);           
+            this.draw(renderModel, this.conceptRegistry, selectedOverlay, selectedAggregation);           
            
             if (this.isVisible) {
                 this.config.displayEl.parentElement.style.height =
@@ -247,7 +247,8 @@ export default class ConceptOverlayTimeline {
         }
         return true;
     }
-    draw(renderModel, selectedOverlay, selectedAggregation) {
+    
+    draw(renderModel, conceptRegistry, selectedOverlay, selectedAggregation) {
 
             if (!renderModel || renderModel.length === 0) {
                 this.svg.selectAll("*").remove();
@@ -400,18 +401,18 @@ export default class ConceptOverlayTimeline {
             // CALCULATE MAX YEARS PER DATA SET, IF APPLICABLE
             // -----------------------------
 
-            const hasDxYears = renderModel?.series?.some(item => Object.hasOwn(item, "year"));
+            const hasCptYears = renderModel?.series?.some(item => Object.hasOwn(item, "year"));
             const hasWWYears = renderModel?.wwSeries?.some(item => Object.hasOwn(item, "year"));
-            const maxDxYear = hasDxYears ? Math.max(...renderModel.series.map(o => o.year)) : null;
+            const maxCptYear = hasCptYears ? Math.max(...renderModel.series.map(o => o.year)) : null;
             const maxWWYear = hasWWYears ? Math.max(...renderModel.wwSeries.map(o => o.year)) : null;
 
             // -----------------------------
-            // DRAW DIAGNOSIS LINES + POINTS
+            // DRAW CONCEPT LINES + POINTS
             // -----------------------------
 
             for (const seriesItem of renderModel.series){
 
-                const isMaxYear = seriesItem.year === maxDxYear;
+                const isMaxYear = seriesItem.year === maxCptYear;
                 const strokeWidth = isMaxYear ? 4 : 2; 
 
                 // group
@@ -420,33 +421,33 @@ export default class ConceptOverlayTimeline {
                 // point label
 
                 const pointLabel = selectedAggregation === "yoy" 
-                    ? d => `${seriesItem.diagnosis}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
-                    : d => `${seriesItem.diagnosis} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
+                    ? d => `${seriesItem.concept}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
+                    : d => `${seriesItem.concept} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
 
                 // Line
-                const dxPath = group.append("path")
+                const cptPath = group.append("path")
                     .datum(seriesItem.points)
                     .attr("fill", "none")
-                    .attr("stroke",  seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
+                    .attr("stroke",  seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
                     .attr("stroke-width", strokeWidth)
                     .attr("d", patientLine);
 
                 if (selectedAggregation === "yoy") {
-                    dxPath.append("title")
-                    .text(`${seriesItem.diagnosis} \n${seriesItem.year}`);
+                    cptPath.append("title")
+                    .text(`${seriesItem.concept} \n${seriesItem.year}`);
                 }
 
                 // Points
-                group.selectAll(`circle.${cssSafeKey(seriesItem.diagnosis)}`)
+                group.selectAll(`circle.${cssSafeKey(seriesItem.concept)}`)
                     .data(seriesItem.points)
                     .enter()
                     .append("circle")
-                    .attr("class", `point ${cssSafeKey(seriesItem.diagnosis)}`)
+                    .attr("class", `point ${cssSafeKey(seriesItem.concept)}`)
                     .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
                     .attr("cy", point => yLeft(point.value))
                     .attr("r", 4)
-                    .attr("fill", seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
-                    .attr("stroke", seriesItem.stroke || DIAGNOSIS_REGISTRY.diagnosis[seriesItem.diagnosis]?.color || "#999")
+                    .attr("fill", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
+                    .attr("stroke", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
                     .append("title")
                     .text(pointLabel);
             }
@@ -616,14 +617,14 @@ let parseData = function (xmlData, advancedConfig) {
 // Helpers
 // ======================================================================
 
-function buildRenderModel(records, wastewater, selectedDiagnosis, selectedAggregation, selectedOverlay) {
+function buildRenderModel(records, wastewater, conceptRegistry, selectedConcept, selectedAggregation, selectedOverlay) {
 
     let renderModel;
 
     if (selectedAggregation === "yoy"){
         renderModel = { 
             "aggregateType": selectedAggregation,
-            "series" : buildYOYDxSeries(records, selectedDiagnosis, selectedAggregation), 
+            "series" : buildYOYConceptSeries(records, conceptRegistry, selectedConcept), 
             "xDomain": generateXDomain(records, selectedAggregation),
             "months": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
             "yLeftLabel": "Number of Patients", 
@@ -633,7 +634,7 @@ function buildRenderModel(records, wastewater, selectedDiagnosis, selectedAggreg
     } else {
         renderModel = { 
             "aggregateType": selectedAggregation,
-            "series" : buildMonthYearDxSeries(records, selectedDiagnosis, selectedAggregation), 
+            "series" : buildMonthYearConceptSeries(records, selectedConcept, selectedAggregation), 
             "xDomain": generateXDomain(records, selectedAggregation), 
             "yLeftLabel": "Number of Patients", 
             "wwSeries": buildMonthYearWWSeries(wastewater, records, selectedOverlay, selectedAggregation), 
@@ -665,14 +666,14 @@ function generateXDomain(records, selectedAggregation) {
     return xdomain;
 }
 
-function buildMonthYearDxSeries(rawData, selectedDiagnosis, selectedAggregation) {
+function buildMonthYearConceptSeries(rawData, selectedConcept, selectedAggregation) {
 
     const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
 
     // get the raw data by aggregation grain
     const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === aggregationGrain);
 
-    let filteredRows = filterBreakdown(yearRows, selectedDiagnosis);
+    let filteredRows = filterBreakdown(yearRows, selectedConcept);
     const bucketedPatients = collectPatientsByAggregation(filteredRows, selectedAggregation);
 
     // If (for some reason) nothing survived bucketing, bail cleanly
@@ -680,31 +681,31 @@ function buildMonthYearDxSeries(rawData, selectedDiagnosis, selectedAggregation)
         return;
     }
    
-    const groupDxMonthYear = {}
+    const groupCptMonthYear = {}
     for (const row of bucketedPatients) {
-        let diagnosis = row.diagnosis;
+        let concept = row.concept;
         let date = row.date;
         let value = row.value;
         
-        if (groupDxMonthYear[diagnosis] === undefined){
-            groupDxMonthYear[diagnosis] = {
+        if (groupCptMonthYear[concept] === undefined){
+            groupCptMonthYear[concept] = {
                 points: [],
             };
         }
                 
         let point = {date, value};
    
-        groupDxMonthYear[diagnosis].points.push(point);
+        groupCptMonthYear[concept].points.push(point);
     }  
 
     //sort the dates just in case in the points array
-    Object.values(groupDxMonthYear).forEach((pointsArr) => {
+    Object.values(groupCptMonthYear).forEach((pointsArr) => {
         pointsArr.points.sort((a, b) => a.date - b.date);
         });
 
 
-    const series = Object.entries(groupDxMonthYear).map(([diagnosis, data]) => ({
-        diagnosis,
+    const series = Object.entries(groupCptMonthYear).map(([concept, data]) => ({
+        concept,
         points: data.points
     }));
     
@@ -712,30 +713,30 @@ function buildMonthYearDxSeries(rawData, selectedDiagnosis, selectedAggregation)
  
 }
 
-function buildYOYDxSeries(rawData, selectedDiagnosis){
-    //take the raw data and if needed, filter it by diagnosis to do the row pivot
+function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcept){
+    //take the raw data and if needed, filter it by concept to do the row pivot
     const yoyRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "M");
 
-    let yoyFilteredRows = filterBreakdown(yoyRows, selectedDiagnosis);
+    let yoyFilteredRows = filterBreakdown(yoyRows, selectedConcept);
 
     const yoyPivotRows = pivotToYOYRows(yoyFilteredRows); 
     
-    //Take the pivoted rows and push them into an object organized by diagnosis
-    const byDiagnosisYear = {};
+    //Take the pivoted rows and push them into an object organized by concept
+    const byConceptYear = {};
 
     for(const row of yoyPivotRows){
 
-        let diagnosis = row.diagnosis;
+        let concept = row.concept;
         let year = row.year;
         let monthIndex = row.monthIndex;
         let value = row.value;   
 
-        if (byDiagnosisYear[diagnosis] === undefined){
-            byDiagnosisYear[diagnosis] = {};
+        if (byConceptYear[concept] === undefined){
+            byConceptYear[concept] = {};
         }
         
-        if (byDiagnosisYear[diagnosis][year] === undefined){
-            byDiagnosisYear[diagnosis][year] = {
+        if (byConceptYear[concept][year] === undefined){
+            byConceptYear[concept][year] = {
                 points: [],
                 stroke: null
             };
@@ -743,12 +744,12 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
         
         let point = {monthIndex, value};
    
-        byDiagnosisYear[diagnosis][year].points.push(point);                
+        byConceptYear[concept][year].points.push(point);                
         
     }
     //sort the data 
     
-    Object.values(byDiagnosisYear).forEach((yearMap) => {
+    Object.values(byConceptYear).forEach((yearMap) => {
         Object.values(yearMap).forEach((pointsArr) => {
             pointsArr.points.sort((a, b) => a.monthIndex - b.monthIndex);
         });
@@ -756,10 +757,10 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
 
     const lookup ={}
 
-    Object.keys(byDiagnosisYear).forEach((dx) => {
-        const years = Object.keys(byDiagnosisYear[dx]).map(Number);
+    Object.keys(byConceptYear).forEach((cpt) => {
+        const years = Object.keys(byConceptYear[cpt]).map(Number);
 
-        lookup[dx] = {
+        lookup[cpt] = {
             min: Math.min(...years),
             max: Math.max(...years)
         }
@@ -767,12 +768,12 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
     
     const T_MIN = 0.3;
    
-    Object.keys(byDiagnosisYear).forEach((dx) => {
-        const years = Object.keys(byDiagnosisYear[dx]).map(Number);
+    Object.keys(byConceptYear).forEach((cpt) => {
+        const years = Object.keys(byConceptYear[cpt]).map(Number);
         let computedStroke = null;
 
         years.forEach((year)=>{
-            const range = lookup[dx];
+            const range = lookup[cpt];
             if (!range) return;
 
             const { min, max } = range;
@@ -781,12 +782,12 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
 
             const t = T_MIN + u * (1 - T_MIN);
 
-            const baseColor = DIAGNOSIS_REGISTRY.diagnosis?.[dx]?.color;
+            const baseColor = conceptRegistry?.[cpt]?.color;
             if (!baseColor) return;
 
             computedStroke = blendWithWhite(baseColor, t);
 
-            byDiagnosisYear[dx][year].stroke = computedStroke;
+            byConceptYear[cpt][year].stroke = computedStroke;
 
         });
        
@@ -794,19 +795,19 @@ function buildYOYDxSeries(rawData, selectedDiagnosis){
 
   
   //create the series
-    const series = Object.entries(byDiagnosisYear).flatMap(([diagnosis, years]) => 
+    const series = Object.entries(byConceptYear).flatMap(([concept, years]) => 
     Object.entries(years).map(([yearKey, monthlyDataObj]) => ({
-        diagnosis,
+        concept,
         year: Number(yearKey),
         points: monthlyDataObj.points,
         stroke: monthlyDataObj.stroke
         }))
     );
                                  
-    // Order series by diagnosis registry order, then by ascending year
+    // Order series by concept registry order, then by ascending year
     series.sort((a, b) => { 
-        const orderA = DIAGNOSIS_REGISTRY.diagnosis?.[a.diagnosis]?.order ?? 9999;
-        const orderB = DIAGNOSIS_REGISTRY.diagnosis?.[b.diagnosis]?.order ?? 9999;
+        const orderA = conceptRegistry?.[a.concept]?.order ?? 9999;
+        const orderB = conceptRegistry?.[b.concept]?.order ?? 9999;
         return (orderA - orderB) || (a.year - b.year);
 
     })
@@ -908,15 +909,15 @@ function buildYOYWWSeries(wastewater, selectedOverlay) {
         
 }
 
-function filterBreakdown(rows, diagnosisFilter) {
+function filterBreakdown(rows, conceptFilter) {
     if (!rows) return [];
     return rows.filter(row => {
-        const diagnosisOk =
-            !diagnosisFilter ||
-            diagnosisFilter === "All" ||
-            diagnosisFilter === "ALL" ||
-            row.diagnosis === diagnosisFilter;
-        return diagnosisOk;
+        const conceptisOk =
+            !conceptFilter ||
+            conceptFilter === "All" ||
+            conceptFilter === "ALL" ||
+            row.concept === conceptFilter;
+        return conceptisOk;
     });
 }
 
@@ -952,19 +953,19 @@ function bindControlLinkClicks(ulEl, onPick) {
     });
 }
 
-function updateLegend(controls, currentKeys, selectedOverlay){
+function updateLegend(controls, conceptRegistry, currentKeys, selectedOverlay){
 
      // Clear legend
     if (controls?.legend) controls.legend.innerHTML = "";
 
     currentKeys.forEach((key) => {
-        const diagnosisConfig = DIAGNOSIS_REGISTRY.diagnosis[key];
+        const conceptInst = conceptRegistry[key];
 
-        if (!diagnosisConfig) return;
+        if (!conceptInst) return;
         $(controls.legend).append(
             `<span class="legend-row">
-                <span class="legend-swatch" style="background:${diagnosisConfig.color}"></span>
-                <span>${diagnosisConfig.label}</span>
+                <span class="legend-swatch" style="background:${conceptInst.color}"></span>
+                <span>${conceptInst.label}</span>
             </span>`
         );
     });
@@ -1061,8 +1062,8 @@ function bucketDate(dt, aggregation) {
 }
 
 /**
- * Collect patient records to month/year buckets per diagnosis.
- * Sums values per (diagnosis, bucket).
+ * Collect patient records to month/year buckets per concept.
+ * Sums values per (concept, bucket).
  */
 function collectPatientsByAggregation(records, aggregation) {
     const rolled = d3.rollup(
@@ -1072,12 +1073,11 @@ function collectPatientsByAggregation(records, aggregation) {
             return {
                 value: sum,
                 display: String(sum),
-                diagnosisRaw: rows[0]?.diagnosisRaw,
-                diagnosis: rows[0]?.diagnosis,
+                concept: rows[0]?.concept,
                 date: bucketDate(rows[0]?.date, aggregation)
             };
         },
-        r => r.diagnosis,
+        r => r.concept,
         r => {
             const b = bucketDate(r.date, aggregation);
             return b ? +b : null;
@@ -1085,7 +1085,7 @@ function collectPatientsByAggregation(records, aggregation) {
     );
 
     const out = [];
-    for (const [diagnosis, dateMap] of rolled.entries()) {
+    for (const [concept, dateMap] of rolled.entries()) {
         for (const [dateKey, agg] of dateMap.entries()) {
             if (dateKey === null) continue;
 
@@ -1093,8 +1093,7 @@ function collectPatientsByAggregation(records, aggregation) {
             if (isNaN(date.getTime())) continue;
 
             out.push({
-                diagnosis,
-                diagnosisRaw: agg.diagnosisRaw,
+                concept,
                 date,
                 value: agg.value,
                 display: agg.display
@@ -1173,13 +1172,13 @@ function pivotToYOYRows(aggregatedRecords){
 
         let year = date.getFullYear();
         let monthIndex = date.getMonth();
-        let diagnosis = row.diagnosis;
+        let concept = row.concept;
         let value = row.value;
 
         out.push({
             year,
             monthIndex,
-            diagnosis,
+            concept,
             value
         });
     }
