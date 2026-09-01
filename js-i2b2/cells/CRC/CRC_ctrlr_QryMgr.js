@@ -7,7 +7,9 @@
  * ----------------------------------------------------------------------------------------
  */
 
-i2b2.CRC.ctrlr.QueryMgr = {};
+i2b2.CRC.ctrlr.QueryMgr = {
+    queryRevision: 0
+};
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.tick = function() {
     // this function is the main status update routine that occurs during running of a query
@@ -168,13 +170,21 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
     let queryInstanceId = i2b2.CRC.model.runner.idQueryInstance;
     //TODO: set a specific value for query instance id in order to catch the error later
     //until the error with sending an undefined query instance id is addressed
-    if(!queryInstanceId){
+    if (!queryInstanceId) {
         queryInstanceId = "QUERY_INSTANCE_ID_UNKNOWN";
     }
     i2b2.CRC.QueryStatus.start(queryInstanceId, $(".CRC_QS_view")[0]);//
 
+    // HACK: handle poor backend design
+    i2b2.CRC.ctrlr.QueryMgr.queryRevision += 1;
+    let closure_queryRevision = i2b2.CRC.ctrlr.QueryMgr.queryRevision;
+    let captured_Callback = (result) => {
+        if (closure_queryRevision !== i2b2.CRC.ctrlr.QueryMgr.queryRevision) return;
+        i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback.call(i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.scope, result);
+    };
+
     // run query and get back the query master ID
-    i2b2.CRC.ajax.runQueryInstance_fromQueryDefinition("CRC:QueryManager", params, i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster);
+    i2b2.CRC.ajax.runQueryInstance_fromQueryDefinition("CRC:QueryManager", params, captured_Callback);
 
     // refresh the query history window since we are running a new query
     setTimeout(i2b2.CRC.view.history.doRefreshAll, 500);
@@ -183,6 +193,8 @@ i2b2.CRC.ctrlr.QueryMgr.startQuery = function(queryName, queryResultTypes, query
 
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
+    i2b2.CRC.ctrlr.QueryMgr.queryRevision += 1;
+
     if (i2b2.CRC.model.runner.intervalTimer !== undefined) {
         clearInterval(i2b2.CRC.model.runner.intervalTimer);
         delete i2b2.CRC.model.runner.intervalTimer;
@@ -200,9 +212,12 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
     delete i2b2.CRC.model.runner.progress;
 
 
+    let closure_queryRevision = i2b2.CRC.ctrlr.QueryMgr.queryRevision;
     let cb = new i2b2_scopedCallback();
     cb.scope = this;
     cb.callback = function(results) {
+        if (i2b2.CRC.ctrlr.QueryMgr.queryRevision !== closure_queryRevision) return;
+
         // TODO: Error checking!!!
         let qi_id = results.refXML.getElementsByTagName('query_instance_id')[0].textContent;
         try {
@@ -230,6 +245,9 @@ i2b2.CRC.ctrlr.QueryMgr.loadQuery = function(idQueryMaster, queryName) {
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
     if (i2b2.CRC.model.runner.isLoading) return;
+
+    i2b2.CRC.ctrlr.QueryMgr.queryRevision += 1;
+
     // Stops a running query
     i2b2.CRC.model.runner.isRunning = false;
     i2b2.CRC.model.runner.isLoading = false;
@@ -249,6 +267,8 @@ i2b2.CRC.ctrlr.QueryMgr.stopQuery = function() {
 
 // ================================================================================================== //
 i2b2.CRC.ctrlr.QueryMgr.clearQuery = function() {
+    i2b2.CRC.ctrlr.QueryMgr.queryRevision += 1;
+
     // reset Query History view to default listing
     i2b2.CRC.view.search.reset();
     $("#i2b2TreeviewQueryHistoryFinder").hide();
