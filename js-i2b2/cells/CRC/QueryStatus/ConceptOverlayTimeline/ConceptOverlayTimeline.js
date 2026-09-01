@@ -617,6 +617,49 @@ let parseData = function (xmlData, advancedConfig) {
 // Helpers
 // ======================================================================
 
+
+function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry) {
+    const candidateCptNameKeys = Object.keys(customizeConceptRegistry);
+    const registeredCptNameKeys = Object.keys(conceptRegistry);
+    const evaluatedCptNameKeys = candidateCptNameKeys.filter(name =>
+        registeredCptNameKeys.includes(name)
+    );
+
+    if (evaluatedCptNameKeys.length == 0){
+        console.log("no concept name keys matching breakdown data found, cancelling customization; conceptRegistry will be generated from breakdown data.");
+        return;
+    } else if (evaluatedCptNameKeys.length < candidateCptNameKeys.length)  {
+        console.log(`${candidateCptNameKeys.length} concepts were listed for customization, but only ${evaluatedCptNameKeys.length} custom registry concept names were matched.`);
+    }
+
+    for (const cptNameKey of evaluatedCptNameKeys){
+        const currentCustomConcept = customizeConceptRegistry[cptNameKey];
+        const currentRegisteredConcept = conceptRegistry[cptNameKey];
+        const candidateCptPropKeys = Object.keys(currentCustomConcept);
+        const registeredCptPropKeys = Object.keys(currentRegisteredConcept);
+        const evaluatedCptPropKeys = candidateCptPropKeys.filter(key =>
+            registeredCptPropKeys.includes(key)
+        );
+        if (evaluatedCptPropKeys.length == 0){
+            console.log("no concept property keys matching breakdown data found, cancelling customization of this concept; concept will be generated from breakdown data.")
+            continue;
+        } else{
+            for (const evaluatedKey of evaluatedCptPropKeys){
+                if (!currentCustomConcept[evaluatedKey]){
+                    console.log("custom concept property is empty, skipping; breakdown data derived value will be used.");
+                    continue;
+                } else {
+                    currentRegisteredConcept[evaluatedKey] = currentCustomConcept[evaluatedKey];
+                }
+            }
+        }
+    }
+    
+    return conceptRegistry;
+
+    
+}
+
 function buildRenderModel(records, wastewater, conceptRegistry, selectedConcept, selectedAggregation, selectedOverlay) {
 
     let renderModel;
