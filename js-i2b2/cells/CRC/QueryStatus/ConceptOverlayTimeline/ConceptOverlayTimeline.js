@@ -617,6 +617,45 @@ let parseData = function (xmlData, advancedConfig) {
 // Helpers
 // ======================================================================
 
+function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry, cannonicalHexes, colorsInUse) {
+    if (!data || data.length === 0){
+        console.log("no breakdown data found; cancelling concept registry generation");
+        return;
+    }
+    if (!cannonicalHexes || cannonicalHexes.length === 0){
+        console.log("cannonical hexes list is empty or undefined; cancelling generation");
+        return;
+    }
+    const seenCpts = [
+        ... new Set(Object.values(data).map(item => item.concept))
+    ];
+
+    const cptNames = [...seenCpts].sort((a, b) => a.localeCompare(b, undefined, {
+        sensitivity: "base"
+        }));
+
+    cptNames.forEach((cptName, index) => {
+        conceptRegistry[cptName] = {
+            key : cptName,
+            label : cptName,
+            order : index + 1
+        };
+    });
+
+    if (!customizeConceptRegistry.length === 0){
+        conceptRegistry = customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry);
+    }
+
+    for(const conceptName in conceptRegistry){
+        if (!conceptName.color || conceptName.color.length < 7 && !conceptName.color.startsWith("#")){
+            conceptName.color = selectBaseHex(cannonicalHexes, colorsInUse);
+        }
+    }
+
+    return conceptRegistry;
+
+
+}
 
 function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry) {
     const candidateCptNameKeys = Object.keys(customizeConceptRegistry);
@@ -625,7 +664,7 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
         registeredCptNameKeys.includes(name)
     );
 
-    if (evaluatedCptNameKeys.length == 0){
+    if (evaluatedCptNameKeys.length === 0){
         console.log("no concept name keys matching breakdown data found, cancelling customization; conceptRegistry will be generated from breakdown data.");
         return;
     } else if (evaluatedCptNameKeys.length < candidateCptNameKeys.length)  {
@@ -640,7 +679,7 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
         const evaluatedCptPropKeys = candidateCptPropKeys.filter(key =>
             registeredCptPropKeys.includes(key)
         );
-        if (evaluatedCptPropKeys.length == 0){
+        if (evaluatedCptPropKeys.length === 0){
             console.log("no concept property keys matching breakdown data found, cancelling customization of this concept; concept will be generated from breakdown data.")
             continue;
         } else{
