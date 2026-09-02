@@ -618,7 +618,7 @@ let parseData = function (xmlData, advancedConfig) {
 // ======================================================================
 
 function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry, cannonicalHexes, colorsInUse) {
-    if (!data || data.length === 0){
+    if (!data || Object.keys(data).length === 0){
         console.log("no breakdown data found; cancelling concept registry generation");
         return;
     }
@@ -642,15 +642,17 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
         };
     });
 
-    if (!customizeConceptRegistry.length === 0){
+    if (Object.keys(customizeConceptRegistry).length > 0){
         conceptRegistry = customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry);
     }
 
-    for(const conceptName in conceptRegistry){
-        if (!conceptName.color || conceptName.color.length < 7 && !conceptName.color.startsWith("#")){
-            conceptName.color = selectBaseHex(cannonicalHexes, colorsInUse);
+    Object.entries(conceptRegistry).forEach(([conceptName, concept]) => {
+        const cptColor = concept.color;
+
+        if (!cptColor ||cptColor.length < 7 ||!cptColor.startsWith("#")) {
+           concept.color = selectBaseHex(cannonicalHexes, colorsInUse);
         }
-    }
+    });
 
     return conceptRegistry;
 
