@@ -484,7 +484,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     };
                     // add AJAX options
                     let searchOptions = {};
-                    searchOptions.ont_max_records = "max='10'";
+                    searchOptions.ont_max_records = "max='20'";
                     searchOptions.ont_synonym_records = false;
                     searchOptions.ont_hidden_records = false;
                     searchOptions.ont_reduce_results = true;
