@@ -33,20 +33,22 @@ export default class ConceptOverlayTimeline {
 
             this.data = { old: {}, new: {} };
             
-            this.wastewater = null;
             this.isVisible = false;
 
-            this.conceptRegistry = {};
-            this.colorsInUse = [];
+            this.conceptRegistry = {};  
             this.customizeConceptRegistry = this.config.advancedConfig.customizeConceptRegistry;
+
+            this.breakdownDateRange = {};
+
+            this.overlayRegistry = {};
+            this.overlayConfigs = this.config.advancedConfig.overlayConfigs;
+            this.allOverlays = this.overlayConfigs.overlays;
+            this.fetchedOverlays = {};
+            this.overlayEndpoints = {};
+
+            this.colorsInUse = [];
             this.cannonicalHexes = this.config.advancedConfig.cannonicalHexes;
 
-
-
-            // Wastewater fetch gating + computed range
-            this.wwRequestRange = null;
-            this._wwFetched = false;
-        
             this.width = this.config.displayEl.parentElement.clientWidth;
             this.height = 400 - margin.top - margin.bottom;
 
@@ -1322,6 +1324,22 @@ async function fetchWastewaterFromFile() {
     }
 }
 
+
+// pre-pipleline environment detection
+// this will be deprecated when we move to injecting configs in the pipeline
+
+function detectEnv() {
+    const host = (window.location?.hostname || "").toLowerCase();
+
+    if (host.includes("dev")) return "dev";
+    if (host.includes("demo")) return "demo";
+    if (host.includes("test")) return "test";
+    if (host.includes("stage")) return "stage";
+    if (host.includes("local")) return "local";
+
+    console.log(`detectEnv: no known env keyword found in host "${host}"; defaulting to "prod"`);
+    return "prod";
+}
 
 // API Service URLS
 // const WASTEWATER_URLS = {
