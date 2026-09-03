@@ -651,6 +651,7 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
 
         if (!cptColor ||cptColor.length < 7 ||!cptColor.startsWith("#")) {
            concept.color = selectBaseHex(cannonicalHexes, colorsInUse);
+           colorsInUse.push(concept.color);
         }
     });
 
@@ -1067,6 +1068,21 @@ function updateLegend(controls, conceptRegistry, currentKeys, selectedOverlay){
         }
     }
 
+}
+
+function selectBaseHex(cannonicalHexes, colorsInUse){
+    let selectedHex = "";
+    const unusedColors = cannonicalHexes.filter(color => !colorsInUse.includes(color));
+
+    if (unusedColors.length === 0){
+        console.log("all cannonical hexes all in use; duplicate colors will be assigned");
+        selectedHex = cannonicalHexes[Math.floor(Math.random() * cannonicalHexes.length)];
+    } else {
+        selectedHex = unusedColors[Math.floor(Math.random() * unusedColors.length)];
+    }
+
+    return selectedHex;
+    
 }
 
 function cssSafeKey(str) {
