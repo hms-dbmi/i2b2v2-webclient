@@ -1325,20 +1325,65 @@ async function fetchWastewaterFromFile() {
 }
 
 
+function resolveSourceUrl(overlayInst) {
+    if (overlayInst.sourceType === "url") {
+        return detectEnv();
+    }
+
+    if (overlayInst.sourceType === "local") {
+        if (overlayInst.envUrls.local) {
+            return "local";
+        }
+        console.log(`resolveSourceUrl: sourceType is "local" but envUrls.local is empty for this overlay; cannot resolve.`);
+        return null;
+    }
+
+    console.log(`resolveSourceUrl: unrecognized sourceType "${overlayInst.sourceType}"`);
+    return null;
+}
+
 // pre-pipleline environment detection
 // this will be deprecated when we move to injecting configs in the pipeline
 
-function detectEnv() {
+function detectEnv(overlayInst) {
+    if (overlayInst.sourceType === "local") {
+        if (overlayInst.envUrls.local) {
+            return "local";
+        }
+        console.log(`detectEnv: sourceType is "local" but envUrls.local is empty; cannot resolve.`);
+        return null;
+    }
+
     const host = (window.location?.hostname || "").toLowerCase();
 
-    if (host.includes("dev")) return "dev";
+    if (host.includes("dev") || host.includes("local")) return "dev";
     if (host.includes("demo")) return "demo";
     if (host.includes("test")) return "test";
     if (host.includes("stage")) return "stage";
-    if (host.includes("local")) return "local";
 
     console.log(`detectEnv: no known env keyword found in host "${host}"; defaulting to "prod"`);
     return "prod";
+}
+
+// pre-pipleline endpoint URL resolution
+// this will be deprecated when we move to injecting configs in the pipeline
+
+function resolveEndpointUrl(allOverlays, overlayEndpoints) {
+    const overlayNicknames = Object.keys(overlayEndpoints);
+
+    for (const overlayNickname of overlayNicknames) {
+        const currentOverlay = allOverlays[overlayNickname];
+        const detectedEndpointKey = detectEnv(currentOverlay);
+        const resolvedUrl = currentOverlay.envUrls[detectedEndpointKey];
+
+        if (resolvedUrl) {
+            overlayEndpoints[overlayNickname].endpointUrl = resolvedUrl;
+        } else {
+            console.log(`could not update endpoint url for ${overlayNickname} to fetch data`);
+        }
+    }
+
+    return overlayEndpoints;
 }
 
 // API Service URLS
