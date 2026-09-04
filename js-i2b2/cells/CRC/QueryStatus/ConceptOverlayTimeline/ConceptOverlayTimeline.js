@@ -704,6 +704,159 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
     
 }
 
+function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalOverlayHexes, colorsInUse) {
+    // bail if allOverlays is empty or undefined
+    if (!allOverlays || Object.keys(allOverlays).length === 0) {
+        console.log("overlay configs are empty or undefined; cancelling generation");
+        return overlayRegistry;
+    }
+
+    // bail if cannonicalOverlayHexes is empty or undefined
+    if (!cannonicalOverlayHexes || cannonicalOverlayHexes.length === 0) {
+        console.log("cannonical hexes list is empty or undefined; cancelling generation");
+        return overlayRegistry;
+    }
+
+    for (const overlayNickname in allOverlays) {
+        const overlayInst = allOverlays[overlayNickname];
+
+        if (!overlayInst || Object.keys(overlayInst).length === 0) {
+            continue;
+        }
+
+        // required fields at the overlayInst level
+        if (!overlayInst.visualizationData || !overlayInst.overlayCategory || !overlayInst.yRightLabel) {
+            console.log(`required overlay instance field(s) empty, skipping ${overlayNickname}`);
+            continue;
+        }
+
+        overlayRegistry[overlayNickname] = {
+            visualizationData: {},
+            overlayCategory: overlayInst.overlayCategory,
+            yRightLabel: overlayInst.yRightLabel
+        };
+
+        // required fields at the overlaySource level
+        for (const sourceNickname in overlayInst.visualizationData) {
+            const overlaySource = overlayInst.visualizationData[sourceNickname];
+
+            if (!overlaySource || Object.keys(overlaySource).length === 0) {
+                continue;
+            }
+
+            if (!overlaySource.column) {
+                console.log(`required overlay source field(s) column empty, skipping ${sourceNickname}`);
+                continue;
+            }
+
+            overlayRegistry[overlayNickname].visualizationData[sourceNickname] = {
+                column: overlaySource.column
+            };
+            const currentSource = overlayRegistry[overlayNickname].visualizationData[sourceNickname];
+
+            // smooth out label
+            currentSource.label = overlaySource.label ? overlaySource.label : overlaySource.column;
+
+            // smooth out color
+            if (overlaySource.color && overlaySource.color.length === 7 && overlaySource.color.startsWith("#")) {
+                currentSource.color = overlaySource.color;
+                colorsInUse.push(overlaySource.color);
+            } else {
+                currentSource.color = selectBaseHex(cannonicalOverlayHexes, colorsInUse);
+            }
+
+            // take order if present
+            if (overlaySource.order !== undefined && typeof overlaySource.order === "number") {
+                currentSource.order = overlaySource.order;
+            }
+        }
+
+        // smooth out order for any sources missing it (separate pass)
+        const sourceEntries = overlayRegistry[overlayNickname].visualizationData;
+        const sourceNicknames = Object.keys(sourceEntries);
+        const anyMissingOrder = sourceNicknames.some(
+            (key) => typeof sourceEntries[key].order !== "number"
+        );
+
+        if (anyMissingOrder) {
+            [...sourceNicknames].sort().forEach((key, index) => {
+                sourceEntries[key].order = index + 1;
+            });
+        }
+
+        // smooth out combined-option booleans
+        const validCombinedBooleans =
+            typeof overlayInst.addCombinedOption === "boolean" &&
+            typeof overlayInst.combinedOptionOnly === "boolean";
+
+        if (!validCombinedBooleans) {
+            overlayRegistry[overlayNickname].addCombinedOption = false;
+            overlayRegistry[overlayNickname].combinedOptionOnly = false;
+            overlayRegistry[overlayNickname].combinedOptionData = "";
+        } else {
+            overlayRegistry[overlayNickname].addCombinedOption = overlayInst.addCombinedOption;
+            overlayRegistry[overlayNickname].combinedOptionOnly = overlayInst.combinedOptionOnly;
+
+            if (overlayInst.addCombinedOption === false) {
+                overlayRegistry[overlayNickname].combinedOptionData = "";
+            } else {
+                const combinedData = overlayInst.combinedOptionData;
+
+                if (combinedData && Object.keys(combinedData).length > 0) {
+                    if (!combinedData.label || !combinedData.combinedColumns) {
+                        console.log("combinedColumnsOption field(s) missing, combinedOptionData will be removed");
+                    } else {
+                        overlayRegistry[overlayNickname].combinedOptionData = {
+                            label: combinedData.label
+                        };
+
+                        const overlaySourceColumns = Object.values(sourceEntries).map((s) => s.column);
+                        const allColumnsMatch = combinedData.combinedColumns.every((col) =>
+                            overlaySourceColumns.includes(col)
+                        );
+
+                        if (overlaySourceColumns.length === 0 || !allColumnsMatch) {
+                            console.log("combinedColumns array items do not match the overlay source nicknames, combinedOptionData will be removed");
+                        } else {
+                            const combinedEntry = overlayRegistry[overlayNickname].combinedOptionData;
+                            combinedEntry.combinedColumns = combinedData.combinedColumns;
+                            combinedEntry.order = 999;
+
+                            if (combinedData.color && combinedData.color.length === 7 && combinedData.color.startsWith("#")) {
+                                combinedEntry.color = combinedData.color;
+                                colorsInUse.push(combinedData.color);
+                            } else {
+                                combinedEntry.color = selectBaseHex(cannonicalOverlayHexes, colorsInUse);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // cleanup: catch any combinedOptionData left incomplete
+        const combinedOptionData = overlayRegistry[overlayNickname].combinedOptionData;
+        if (combinedOptionData && (!combinedOptionData.label || !combinedOptionData.combinedColumns)) {
+            overlayRegistry[overlayNickname].combinedOptionData = "";
+            console.log("missing fields detected in combinedOptionData, clearing out any data present for this property");
+        }
+    }
+
+    // final cleanup: drop any overlay whose visualizationData ended up empty
+    for (const overlayNickname of Object.keys(overlayRegistry)) {
+        if (Object.keys(overlayRegistry[overlayNickname].visualizationData).length === 0) {
+            delete overlayRegistry[overlayNickname];
+        }
+    }
+
+    // final whole-registry guard
+    if (Object.keys(overlayRegistry).length === 0) {
+        console.log("required fields needed to generate any overlays not present; cancelling generation");
+    }
+
+    return overlayRegistry;
+}
+
 function buildRenderModel(records, wastewater, conceptRegistry, selectedConcept, selectedAggregation, selectedOverlay) {
 
     let renderModel;
@@ -1380,6 +1533,64 @@ function resolveEndpointUrl(allOverlays, overlayEndpoints) {
             overlayEndpoints[overlayNickname].endpointUrl = resolvedUrl;
         } else {
             console.log(`could not update endpoint url for ${overlayNickname} to fetch data`);
+        }
+    }
+
+    return overlayEndpoints;
+}
+
+// pre-pipeline endpoint daterange eval against breakdown dates
+// this will be deprecated when we move to injecting configs in the pipeline
+
+function evaluateEndpointDateRange(dateRange, breakdownDateRange) {
+    const overlayStart = new Date(dateRange[0]);
+    const overlayEnd = new Date(dateRange[1]);
+    const breakdownStart = new Date(breakdownDateRange.startStr);
+    const breakdownEnd = new Date(breakdownDateRange.endStr);
+
+    if (overlayStart < breakdownStart || overlayStart > breakdownEnd) {
+        return false;
+    }
+
+    if (overlayEnd < breakdownStart || overlayEnd > breakdownEnd) {
+        return false;
+    }
+
+    if (overlayStart > overlayEnd) {
+        return false;
+    }
+
+    return true;
+}
+
+function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays, breakdownDateRange) {
+    const overlayNicknames = Object.keys(overlayRegistry);
+
+    for (const overlayNickname of overlayNicknames) {
+        const currentOverlay = allOverlays[overlayNickname];
+
+        overlayEndpoints[overlayNickname] = {
+            auth: currentOverlay.auth,
+            endpoint: currentOverlay.endpointUrl,
+            sourceType: currentOverlay.sourceType
+        };
+
+        const dateRange = currentOverlay.dateRange;
+        const isValidFormat = Array.isArray(dateRange) &&
+            dateRange.length === 2 &&
+            !isNaN(new Date(dateRange[0])) &&
+            !isNaN(new Date(dateRange[1]));
+
+        if (!dateRange || dateRange.length === 0 || !isValidFormat) {
+            overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];
+            console.log(`${overlayNickname}: invalid or empty config date range, using breakdown dates`);
+        } else {
+            if (evaluateEndpointDateRange(dateRange, breakdownDateRange)) {
+                overlayEndpoints[overlayNickname].dateRange = dateRange;
+            } else {
+                overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];
+                console.log(`${overlayNickname}: config date range isn't compatible with breakdown, using breakdown dates`);
+            }
         }
     }
 
