@@ -85,19 +85,7 @@ export default class ConceptOverlayTimeline {
                     concept: "All",
                     overlay: "None",
                     aggregation: "month"
-                };                
-
-           
-                const overlayItems = [
-                    { value: "None", label: "None" },
-                    ...Object.entries(WASTEWATER_REGISTRY.wastewater_sources)
-                        .sort(([, a], [, b]) => a.order - b.order)
-                        .map(([key, w]) => ({ value: key, label: w.label }))
-                ];
-
-                // Render initial lists
-                
-                renderControlLinks(self.controls.overlayList, overlayItems, self.state.overlay);
+                };             
 
                 // Aggregation list is in HTML; ensure we have a selected item + sync state
                 if (self.controls.aggregationList) {
@@ -114,7 +102,7 @@ export default class ConceptOverlayTimeline {
 
                 // Bind clicks
                 bindControlLinkClicks(self.controls.conceptList, (v) => { self.state.concept = v; self.update(); });
-                bindControlLinkClicks(self.controls.overlayList, (v) => { self.state.overlay = v; self.update(); });
+                bindControlLinkClicks(self.controls.overlayList, (v) => { self.state.overlays = v; self.update(); });
                 bindControlLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
 
                 // Create SVG
@@ -149,31 +137,31 @@ export default class ConceptOverlayTimeline {
     
 
     update(inputData) {
-    try {
-        if (typeof inputData === "undefined") {
-            // No new payload; only stay visible if we already have some rows
-            const rawExists = this.data?.new?.result;
-            if (!rawExists || rawExists.length === 0) return false;
+        try {
+            if (typeof inputData === "undefined") {
+                // No new payload; only stay visible if we already have some rows
+                const rawExists = this.data?.new?.result;
+                if (!rawExists || rawExists.length === 0) return false;
             } else {
                 this.data.old = this.data.new;
 
-                // Always attempt to parse breakdown data first, regardless of status.
-                // Some responses carry usable data even when status is "ERROR"
-                let resultXML = i2b2.h.XPath(inputData, "//xml_value");
-            if (resultXML.length > 0) {
-                resultXML = resultXML[0].firstChild.nodeValue;
-                this.data.new = parseData(resultXML, this.config.advancedConfig);
-            }
+                    // Always attempt to parse breakdown data first, regardless of status.
+                    // Some responses carry usable data even when status is "ERROR"
+                    let resultXML = i2b2.h.XPath(inputData, "//xml_value");
+                if (resultXML.length > 0) {
+                    resultXML = resultXML[0].firstChild.nodeValue;
+                    this.data.new = parseData(resultXML, this.config.advancedConfig);
+                }
 
-            // Only bail on status if we truly ended up with nothing to show
-            const hasUsableData = this.data?.new?.result && this.data.new.result.length > 0;
-            if (!hasUsableData) {
-                const status = i2b2.h.XPath(inputData, "//query_result_instance/query_status_type/name");
-                if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) {
-                    return false;
+                // Only bail on status if we truly ended up with nothing to show
+                const hasUsableData = this.data?.new?.result && this.data.new.result.length > 0;
+                if (!hasUsableData) {
+                    const status = i2b2.h.XPath(inputData, "//query_result_instance/query_status_type/name");
+                    if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) {
+                        return false;
+                    }
                 }
             }
-        }
 
             // Common path: use whatever is in this.data.new to render
             const raw = this.data?.new?.result;
@@ -183,6 +171,20 @@ export default class ConceptOverlayTimeline {
                 this.conceptRegistry = generateConceptRegistry(raw, this.conceptRegistry, this.customizeConceptRegistry, this.cannonicalHexes, this.colorsInUse);
             } 
 
+            if (Object.keys(this.breakdownDateRange).length === 0) {
+                this.breakdownDateRange = deriveOverlayDateRangeFromBreakdown(raw);
+            }
+
+            if (Object.keys(this.overlayRegistry).length === 0) {
+                this.overlayRegistry = generateOverlayRegistry(this.allOverlays, this.overlayRegistry, this.cannonicalHexes, this.colorsInUse);
+            }
+
+            if (Object.keys(this.overlayEndpoints).length === 0) {
+                this.overlayEndpoints = collectOverlayEndpoints(this.overlayEndpoints, this.overlayRegistry, this.allOverlays, this.breakdownDateRange);
+            }
+
+            resolveEndpointUrl(this.allOverlays, this.overlayEndpoints);
+
             // Build items
             const conceptItems = [
                 { value: "All", label: "All" },
@@ -191,37 +193,54 @@ export default class ConceptOverlayTimeline {
                     .map(([key, d]) => ({ value: key, label: d.label }))
             ];
 
+            const overlayItems = [{ value: "None", label: "None" }];
+
+            for (const overlayNickname in this.overlayRegistry) {
+                const overlayEntry = this.overlayRegistry[overlayNickname];
+
+                if (overlayEntry.combinedOptionOnly && overlayEntry.combinedOptionData) {
+                    overlayItems.push({
+                        value: `${overlayNickname}-combined`,
+                        label: overlayEntry.combinedOptionData.label
+                    });
+                } else {
+                    const sourceItems = Object.entries(overlayEntry.visualizationData)
+                        .sort(([, a], [, b]) => a.order - b.order)
+                        .map(([sourceKey, source]) => ({ value: sourceKey, label: source.label }));
+
+                    overlayItems.push(...sourceItems);
+
+                    if (overlayEntry.addCombinedOption && overlayEntry.combinedOptionData) {
+                        overlayItems.push({
+                            value: `${overlayNickname}-combined`,
+                            label: overlayEntry.combinedOptionData.label
+                        });
+                    }
+                }
+            }
+
             // Render initial lists
             renderControlLinks(self.controls.conceptList, conceptItems, self.state.concept);           
-
+            renderControlLinks(self.controls.overlayList, overlayItems, self.state.overlays);            
+                
             // ------------------------------------------------------------
-            // Wastewater fetch
+            // Overlay fetches
             // ------------------------------------------------------------
-            if (this._wwFetched === false) {
-                this.wwRequestRange = deriveWastewaterDateRangeFromBreakdown(this.data.new);
+            for (const overlayNickname in this.overlayEndpoints) {
+                if (this.fetchedOverlays[overlayNickname] === undefined) {
+                    const endpointInfo = this.overlayEndpoints[overlayNickname];
 
-                if (this.wwRequestRange && this.wwRequestRange.ok) {
-                    this._wwFetched = true;
-                    // for use with Wastewater API, if applicable
-                    //fetchWastewater(this.wwRequestRange.startStr, this.wwRequestRange.endStr).then(data => {
-                    fetchWastewaterFromFile().then(data => {
+                    fetchOverlayDataFromEndpoint(endpointInfo).then(data => {
                         if (Array.isArray(data)) {
-                            this.wastewater = data;
-                        } else if (data?.data && Array.isArray(data.data)) {
-                            this.wastewater = data.data;
-                        } else if (data?.result && Array.isArray(data.result)) {
-                            this.wastewater = data.result;
+                            this.fetchedOverlays[overlayNickname] = data;
                         } else {
-                            console.warn("Unrecognized wastewater payload shape", data);
-                            this.wastewater = [];
+                            if (data !== null) {
+                                console.warn(`Unrecognized overlay payload shape for ${overlayNickname}`, data);
+                            }
+                            this.fetchedOverlays[overlayNickname] = [];
                         }
-                        this.update(); // redraw once wastewater arrives
+                        this.update(); // redraw once this overlay's data arrives
                     });
-
-                } else {
-                    console.warn("[WASTEWATER] skipping fetch:", this.wwRequestRange ? this.wwRequestRange.reason : "no range");
-                    this._wwFetched = true;
-                    this.wastewater = [];
                 }
             }
 
@@ -229,16 +248,16 @@ export default class ConceptOverlayTimeline {
             if (!this.svg || !this.controls || !this.state) return;
 
             const selectedConcept = this.state?.concept || "All";
-            const selectedOverlay = this.state?.overlay || "None";
+            const selectedOverlays = this.state?.overlays || "None";
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year" | "yoy"
 
-            const renderModel = buildRenderModel(raw, this.wastewater, this.conceptRegistry, selectedConcept, selectedAggregation, selectedOverlay);
+            const renderModel = buildRenderModel(raw, this.fetchedOverlays, this.overlayRegistry, this.overlayConfigs, this.conceptRegistry, selectedConcept, selectedAggregation, selectedOverlays);
 
             const currentKeys = [...new Set(renderModel.series.map(item => item.concept))];
-            updateLegend(this.controls, this.conceptRegistry, currentKeys, selectedOverlay);
+            updateLegend(this.controls, this.conceptRegistry, currentKeys, selectedOverlays);
 
-            this.draw(renderModel, this.conceptRegistry, selectedOverlay, selectedAggregation);           
-           
+            this.draw(renderModel, this.conceptRegistry, selectedOverlays, selectedAggregation);           
+            
             if (this.isVisible) {
                 this.config.displayEl.parentElement.style.height =
                     this.config.displayEl.scrollHeight + "px";
@@ -247,7 +266,7 @@ export default class ConceptOverlayTimeline {
             console.error("Error in QueryStatus:ConceptOverlayTimeline.update()", e);
             return false;
         }
-        return true;
+            return true;
     }
     
     draw(renderModel, conceptRegistry, selectedOverlay, selectedAggregation) {
@@ -859,7 +878,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, 
     return overlayRegistry;
 }
 
-function buildRenderModel(records, wastewater, conceptRegistry, selectedConcept, selectedAggregation, selectedOverlay) {
+function buildRenderModel(records, overlayData, overlayRegistry, overlayConfigs, conceptRegistry, selectedConcept, selectedAggregation, selectedOverlays) {
 
     let renderModel;
 
@@ -870,8 +889,8 @@ function buildRenderModel(records, wastewater, conceptRegistry, selectedConcept,
             "xDomain": generateXDomain(records, selectedAggregation),
             "months": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
             "yLeftLabel": "Number of Patients", 
-            "wwSeries": buildYOYWWSeries(wastewater, selectedOverlay, selectedAggregation), 
-            "yRightLabel" : "Wastewater Level" 
+            "overlaySeries": buildYOYOverlaySeries(overlayData, overlayRegistry, selectedOverlays, selectedAggregation),
+            "multiOverlaysYRightLabel": overlayConfigs.multiOverlaysYRightLabel
         }      
     } else {
         renderModel = { 
@@ -879,13 +898,12 @@ function buildRenderModel(records, wastewater, conceptRegistry, selectedConcept,
             "series" : buildMonthYearConceptSeries(records, selectedConcept, selectedAggregation), 
             "xDomain": generateXDomain(records, selectedAggregation), 
             "yLeftLabel": "Number of Patients", 
-            "wwSeries": buildMonthYearWWSeries(wastewater, records, selectedOverlay, selectedAggregation), 
-            "yRightLabel" : "Wastewater Level" 
+            "overlaySeries": buildMonthYearOverlaySeries(overlayData, overlayRegistry, records, selectedOverlays, selectedAggregation),
+            "multiOverlaysYRightLabel": overlayConfigs.multiOverlaysYRightLabel
         }        
     } 
 
     return renderModel;
-
 
 }
 
@@ -1057,6 +1075,13 @@ function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcept){
     return series;
 
 
+}
+
+function getSourceValue(row, source) {
+    if (source.combinedColumns) {
+        return source.combinedColumns.reduce((sum, col) => sum + (Number(row[col]) || 0), 0);
+    }
+    return Number(row[source.column]) || 0; 
 }
 
 function buildMonthYearWWSeries(wastewater, records, selectedOverlay, selectedAggregation) {
@@ -1444,57 +1469,80 @@ function pivotToYOYRows(aggregatedRecords){
 
 
 // ------------------------------------------------------------
-// Wastewater service plumbing
+// Overlay fetch plumbing
 // ------------------------------------------------------------
 
-// DEMO WASTEWATER DATA FROM LOCAL FILE
-async function fetchWastewaterFromFile() {
+async function fetchOverlayDataFromEndpoint(endpointInfo) {
+    if (endpointInfo.sourceType === "local") {
+        try {
+            const response = await fetch(endpointInfo.endpoint);
+            if (!response.ok) {
+                console.error("Failed to load local overlay file:", response.status);
+                return null;
+            }
+            const raw = await response.json();
+            return raw.map(row => {
+                const cleanRow = {};
+                Object.keys(row).forEach(key => {
+                    const cleanKey = key.replace(/\n/g, " ").replace(/\//g, " ").trim();
+                    cleanRow[cleanKey] = row[key];
+                });
+                return cleanRow;
+            });
+        } catch (err) {
+            console.error("Error loading local overlay file:", err);
+            return null;
+        }
+    }
+
+    if (endpointInfo.urlType === "external") {
+        console.warn(`External overlay fetching not yet implemented, skipping ${endpointInfo.endpoint}`);
+        return null;
+    }
+
+    // urlType === "i2b2-proxy"
+    const [startDate, endDate] = endpointInfo.dateRange;
+    const msg = `
+    <ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
+        <message_header>
+        <proxy>
+            <redirect_url>${endpointInfo.endpoint}</redirect_url>
+        </proxy>
+        </message_header>
+        <message_body>
+        {&quot;Start Date&quot;:&quot;${startDate}&quot;, &quot;End Date&quot;:&quot;${endDate}&quot;}
+        </message_body>
+    </ns6:request>
+    `;
+
     try {
-        const response = await fetch("js-i2b2/cells/CRC/QueryStatus/ConceptOverlayTimeline/demo_wastewater.json");
+        if (i2b2?.hive?.proxy?.handler) {
+            const response = await i2b2.hive.proxy.handler({ url: "/~proxy", msg, method: "POST" });
+            const bodyNode = i2b2.h.XPath(response.refXML, "//message_body/text()")[0];
+            return bodyNode ? JSON.parse(bodyNode.nodeValue) : null;
+        }
+
+        const response = await fetch("/~proxy", {
+            method: "POST",
+            headers: { "Content-Type": "text/xml" },
+            body: msg,
+            credentials: "include"
+        });
 
         if (!response.ok) {
-            console.error("Failed to load local wastewater file:", response.status);
+            console.error("Overlay /~proxy call failed:", response.status, "endpoint:", endpointInfo.endpoint);
             return null;
         }
 
-        const raw = await response.json();
-
-        // Normalize keys (remove newlines, trim)
-        const normalized = raw.map(row => {
-            const cleanRow = {};
-
-            Object.keys(row).forEach(key => {
-                const cleanKey = key.replace(/\n/g, " ").trim();
-                cleanRow[cleanKey] = row[key];
-            });
-
-            return cleanRow;
-        });
-
-        return normalized;
+        const text = await response.text();
+        const xml = new DOMParser().parseFromString(text, "text/xml");
+        const bodyNode = xml.querySelector("message_body");
+        return bodyNode ? JSON.parse(bodyNode.textContent) : null;
 
     } catch (err) {
-        console.error("Error loading local wastewater file:", err);
+        console.error("Failed to fetch overlay data", err, "endpoint:", endpointInfo.endpoint);
         return null;
     }
-}
-
-
-function resolveSourceUrl(overlayInst) {
-    if (overlayInst.sourceType === "url") {
-        return detectEnv();
-    }
-
-    if (overlayInst.sourceType === "local") {
-        if (overlayInst.envUrls.local) {
-            return "local";
-        }
-        console.log(`resolveSourceUrl: sourceType is "local" but envUrls.local is empty for this overlay; cannot resolve.`);
-        return null;
-    }
-
-    console.log(`resolveSourceUrl: unrecognized sourceType "${overlayInst.sourceType}"`);
-    return null;
 }
 
 // pre-pipleline environment detection
@@ -1574,7 +1622,8 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
         overlayEndpoints[overlayNickname] = {
             auth: currentOverlay.auth,
             endpoint: currentOverlay.endpointUrl,
-            sourceType: currentOverlay.sourceType
+            sourceType: currentOverlay.sourceType,
+            urlType: currentOverlay.urlType
         };
 
         const dateRange = currentOverlay.dateRange;
@@ -1690,19 +1739,19 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
 // }
 
 // ------------------------------------------------------------
-// Derive wastewater request date range from patient breakdown
+// Derive overlay request date range from patient breakdown
 // ------------------------------------------------------------
-function deriveWastewaterDateRangeFromBreakdown(breakdown) {
-    if (!breakdown || !Array.isArray(breakdown.result) || breakdown.result.length === 0) {
-        return { ok: false, startStr: null, endStr: null, reason: "missing/empty breakdown.result" };
+function deriveOverlayDateRangeFromBreakdown(records) {
+    if (!Array.isArray(records) || records.length === 0) {
+        return {};
     }
 
-    var minT = null, maxT = null;
+    let minT = null, maxT = null;
 
-    for (var i = 0; i < breakdown.result.length; i++) {
-        var dt = breakdown.result[i] && breakdown.result[i].date;
+    for (let i = 0; i < records.length; i++) {
+        const dt = records[i] && records[i].date;
         if (!(dt instanceof Date)) continue;
-        var t = dt.getTime();
+        const t = dt.getTime();
         if (isNaN(t)) continue;
 
         if (minT === null || t < minT) minT = t;
@@ -1710,13 +1759,15 @@ function deriveWastewaterDateRangeFromBreakdown(breakdown) {
     }
 
     if (minT === null || maxT === null || maxT < minT) {
-        return { ok: false, startStr: null, endStr: null, reason: "could not derive valid min/max dates" };
+        return {};
     }
 
     function toMDY(t) {
-        var d = new Date(t);
-        return (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+        const d = new Date(t);
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${month}/${day}/${d.getFullYear()}`;
     }
 
-    return { ok: true, startStr: toMDY(minT), endStr: toMDY(maxT), reason: null };
+    return { startStr: toMDY(minT), endStr: toMDY(maxT) };
 }
