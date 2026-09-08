@@ -126,7 +126,8 @@
                   "local": ""
                 },
                 "endpointUrl": "",
-                "sourceType": "url", 
+                "sourceType": "url",
+                "urlType" : "i2b2-proxy",
                 "dateRange": "",
                 "auth": {
                         "type": "none" 
