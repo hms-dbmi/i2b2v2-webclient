@@ -704,15 +704,15 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
     
 }
 
-function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalOverlayHexes, colorsInUse) {
+function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, colorsInUse) {
     // bail if allOverlays is empty or undefined
     if (!allOverlays || Object.keys(allOverlays).length === 0) {
         console.log("overlay configs are empty or undefined; cancelling generation");
         return overlayRegistry;
     }
 
-    // bail if cannonicalOverlayHexes is empty or undefined
-    if (!cannonicalOverlayHexes || cannonicalOverlayHexes.length === 0) {
+    // bail if cannonicalHexes is empty or undefined
+    if (!cannonicalHexes || cannonicalHexes.length === 0) {
         console.log("cannonical hexes list is empty or undefined; cancelling generation");
         return overlayRegistry;
     }
@@ -762,7 +762,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalOverlay
                 currentSource.color = overlaySource.color;
                 colorsInUse.push(overlaySource.color);
             } else {
-                currentSource.color = selectBaseHex(cannonicalOverlayHexes, colorsInUse);
+                currentSource.color = selectBaseHex(cannonicalHexes, colorsInUse);
             }
 
             // take order if present
@@ -826,10 +826,12 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalOverlay
                                 combinedEntry.color = combinedData.color;
                                 colorsInUse.push(combinedData.color);
                             } else {
-                                combinedEntry.color = selectBaseHex(cannonicalOverlayHexes, colorsInUse);
+                                combinedEntry.color = selectBaseHex(cannonicalHexes, colorsInUse);
                             }
                         }
                     }
+                } else {
+                    overlayRegistry[overlayNickname].combinedOptionData = "";
                 }
             }
         }
