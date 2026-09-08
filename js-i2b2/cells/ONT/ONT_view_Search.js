@@ -432,8 +432,6 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                 listItem.data("name", name);
                                 listItem.data("category", table_name);
 
-
-
                                 listItem.on("click", function(e){
                                     let parent =$(e.target).parents("li").first();
                                     let name = parent.data("name");
@@ -451,7 +449,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                 });
 
                                 if(matchLabel === "Concepts"){
-                                    conceptMatch.push(listItem);
+                                   // conceptMatch.push(listItem);
                                 }else{
                                     patientMatch.push(listItem);
                                 }
@@ -462,7 +460,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                     suggestList.append(p);
                                 });
                             }
-                            if(conceptMatch.length > 0) {
+                            /*if(conceptMatch.length > 0) {
                                 if(patientMatch.length > 0) {
                                     suggestList.append('<li><hr class="dropdown-divider"></li>');
                                 }
@@ -470,7 +468,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                 conceptMatch.map(p => {
                                     suggestList.append(p);
                                 });
-                            }
+                            }*/
 
                             if(c.length > 0){
                                 let dropdownElement = document.getElementById('searchTerm');
