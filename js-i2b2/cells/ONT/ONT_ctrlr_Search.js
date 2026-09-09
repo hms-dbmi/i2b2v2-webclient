@@ -44,7 +44,7 @@ i2b2.ONT.ctrlr.Search = {
         }
     },
 // ================================================================================================== //
-    doNameSearch: function(inSearchData) {
+    doNameSearch: function(inSearchData, compatibilityRetry) {
         // inSearchData is expected to have the following attributes:
         //   SearchStr:  what is being searched for
         //   Category: what category is being searched.
@@ -60,9 +60,12 @@ i2b2.ONT.ctrlr.Search = {
         // VERIFY that the above information has been passed
         if (!inSearchData) return false;
 
-        // Use ONT server-side support for searching all ontologies via category="@";
-        // set this false to restore the client-side per-category fan-out.
-        const useServerAllCategoriesSearch = true;
+        let compatibilityMode = i2b2.ONT.ctrlr.Search.ancestorSearchUnsupported === true;
+        let useAncestorSearch = i2b2.ONT.view.nav.params.useAncestorSearch !== false && !compatibilityMode;
+
+        // Older ONT servers support neither ancestor results nor the server-side
+        // all-categories shortcut, so compatibility mode restores the old fan-out.
+        const useServerAllCategoriesSearch = !compatibilityMode;
 
         // special client processing to search all categories
         let searchCats = [];
@@ -85,7 +88,8 @@ i2b2.ONT.ctrlr.Search = {
 
         let scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = this;
-        let useAncestorSearch = i2b2.ONT.view.nav.params.useAncestorSearch !== false;
+        let returnedConceptCount = 0;
+        let responseHasSearchResultField = false;
         // define our callback function
         scopedCallback.callback = function(results) {
             searchCatsCount++;
@@ -102,8 +106,12 @@ i2b2.ONT.ctrlr.Search = {
             }
             if (!hasError) {
                 let c = results.refXML.getElementsByTagName('concept');
+                returnedConceptCount += c.length;
                 for (let i=0; i<1*c.length; i++) {
                     if (useAncestorSearch) {
+                        if (c[i].getElementsByTagName('search_result').length > 0) {
+                            responseHasSearchResultField = true;
+                        }
                         let isSearchResult = String(i2b2.h.getXNodeVal(c[i], 'search_result')).toLowerCase() === "true";
                         if (isSearchResult) i2b2.ONT.model.searchResultCount++;
                         i2b2.ONT.ctrlr.Search.addResultNode(c[i], isSearchResult);
@@ -118,6 +126,20 @@ i2b2.ONT.ctrlr.Search = {
 
             // search is finished
             if (searchCatsCount === searchCats.length) {
+                // A pre-ancestor ONT server can successfully return concepts but
+                // cannot identify which are matches. Retry once using the legacy
+                // request and rendering path rather than showing a false empty result.
+                if (useAncestorSearch && returnedConceptCount > 0 && !responseHasSearchResultField && !compatibilityRetry) {
+                    i2b2.ONT.ctrlr.Search.ancestorSearchUnsupported = true;
+                    i2b2.ONT.view.nav.params.useAncestorSearch = false;
+                    $('#ONTNAVuseAncestorSearch').prop('checked', false);
+                    i2b2.ONT.model.searchResults = {};
+                    $("#i2b2OntSearchStatus")[0].innerHTML = "Searching in compatibility mode...";
+                    alert("This ontology server does not support ancestor-aware searching. The search will be rerun in compatibility mode.");
+                    i2b2.ONT.ctrlr.Search.doNameSearch(inSearchData, true);
+                    return;
+                }
+
                 // How long did it take?
                 let outtime = new Date().getTime()-mytime;
                 console.log("ONT:Search took "+outtime+"ms");
