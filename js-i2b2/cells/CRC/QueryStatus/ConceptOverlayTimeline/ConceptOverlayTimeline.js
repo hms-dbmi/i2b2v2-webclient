@@ -200,19 +200,22 @@ export default class ConceptOverlayTimeline {
 
                 if (overlayEntry.combinedOptionOnly && overlayEntry.combinedOptionData) {
                     overlayItems.push({
-                        value: `${overlayNickname}-combined`,
+                        value: `${overlayNickname}::combined`,
                         label: overlayEntry.combinedOptionData.label
                     });
                 } else {
                     const sourceItems = Object.entries(overlayEntry.visualizationData)
                         .sort(([, a], [, b]) => a.order - b.order)
-                        .map(([sourceKey, source]) => ({ value: sourceKey, label: source.label }));
+                        .map(([sourceKey, source]) => ({
+                            value: `${overlayNickname}::${sourceKey}`,
+                            label: source.label
+                        }));
 
                     overlayItems.push(...sourceItems);
 
                     if (overlayEntry.addCombinedOption && overlayEntry.combinedOptionData) {
                         overlayItems.push({
-                            value: `${overlayNickname}-combined`,
+                            value: `${overlayNickname}::combined`,
                             label: overlayEntry.combinedOptionData.label
                         });
                     }
@@ -254,9 +257,9 @@ export default class ConceptOverlayTimeline {
             const renderModel = buildRenderModel(raw, this.fetchedOverlays, this.overlayRegistry, this.overlayConfigs, this.conceptRegistry, selectedConcept, selectedAggregation, selectedOverlays);
 
             const currentKeys = [...new Set(renderModel.series.map(item => item.concept))];
-            updateLegend(this.controls, this.conceptRegistry, currentKeys, selectedOverlays);
+            updateLegend(this.controls, this.conceptRegistry, currentKeys, this.overlayRegistry, selectedOverlays);
 
-            this.draw(renderModel, this.conceptRegistry, selectedOverlays, selectedAggregation);           
+            this.draw(renderModel, this.conceptRegistry, this.overlayRegistry, selectedOverlays, selectedAggregation);           
             
             if (this.isVisible) {
                 this.config.displayEl.parentElement.style.height =
@@ -269,9 +272,9 @@ export default class ConceptOverlayTimeline {
             return true;
     }
     
-    draw(renderModel, conceptRegistry, selectedOverlay, selectedAggregation) {
+    draw(renderModel, conceptRegistry, overlayRegistry, selectedOverlays, selectedAggregation) {
 
-            if (!renderModel || renderModel.length === 0) {
+            if (!renderModel || Object.keys(renderModel).length === 0) {
                 this.svg.selectAll("*").remove();
                 return;
             }
@@ -285,7 +288,7 @@ export default class ConceptOverlayTimeline {
             // LEFT Y SCALE (patients)
             // -----------------------------
 
-            const maxY = Math.max(0, ...renderModel.series.flatMap(item => 
+            const maxY = Math.max(1, ...renderModel.series.flatMap(item => 
                 item.points.map(point => point.value)
                 ));
             const yLeft = d3.scaleLinear()
@@ -300,16 +303,16 @@ export default class ConceptOverlayTimeline {
 
             let yRight = null;
 
-            if (selectedOverlay !== "None" && renderModel.wwSeries && renderModel.wwSeries.length > 0) {
-                const maxWW = Math.max(0, ...renderModel.wwSeries.flatMap(item => 
-                item.points.map(point => point.value)
+            if (selectedOverlays.length > 0 && renderModel.overlaySeries && renderModel.overlaySeries.length > 0) {
+                const maxOverlay = Math.max(0, ...renderModel.overlaySeries.flatMap(item =>
+                    item.points.map(point => point.value)
                 ));
                 yRight = d3.scaleLinear()
-                    .domain([0, maxWW])
-                    .nice()            
+                    .domain([0, maxOverlay])
+                    .nice()
                     .range([height, 0]);
-            } else{
-                console.log("wwSeries is empty, or selectedOverlay is None.")  
+            } else {
+                console.log("overlaySeries is empty, or no overlays are selected.");
             }
 
 
@@ -387,22 +390,19 @@ export default class ConceptOverlayTimeline {
             });
 
 
-            // Right Y axis (wastewater)
+            // Right Y axis (overlay)
             if (yRight) {
                 const yAxisRight = this.svg.append("g")
                     .classed("y-axis right", true)
                     .attr("transform", `translate(${width},0)`)
                     .call(d3.axisRight(yRight).tickFormat(d3.format(",")))
 
-                const yLabelRightText =  renderModel.yRightLabel;
-
                 yAxisRight.append("text")
                     .attr("class", "y-label")
                     .attr("text-anchor", "middle")
                     .attr("letter-spacing", "1.16")
                     .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
-                    .text(renderModel.yRightLabel);
-
+                    .text(renderModel.multiOverlaysYRightLabel);
             }
 
             // -----------------------------
@@ -414,7 +414,7 @@ export default class ConceptOverlayTimeline {
                 .y(point => yLeft(point.value));   
 
 
-            const wastewaterLine = yRight ? d3.line()
+            const overlayLine = yRight ? d3.line()
                 .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
                 .y(point => yRight(point.value)) : null;
 
@@ -423,9 +423,17 @@ export default class ConceptOverlayTimeline {
             // -----------------------------
 
             const hasCptYears = renderModel?.series?.some(item => Object.hasOwn(item, "year"));
-            const hasWWYears = renderModel?.wwSeries?.some(item => Object.hasOwn(item, "year"));
             const maxCptYear = hasCptYears ? Math.max(...renderModel.series.map(o => o.year)) : null;
-            const maxWWYear = hasWWYears ? Math.max(...renderModel.wwSeries.map(o => o.year)) : null;
+
+            const maxOverlayYearByKey = {};
+            if (renderModel?.overlaySeries?.some(item => Object.hasOwn(item, "year"))) {
+                for (const item of renderModel.overlaySeries) {
+                    if (!Object.hasOwn(item, "year")) continue;
+                    if (maxOverlayYearByKey[item.key] === undefined || item.year > maxOverlayYearByKey[item.key]) {
+                        maxOverlayYearByKey[item.key] = item.year;
+                    }
+                }
+            }
 
             // -----------------------------
             // DRAW CONCEPT LINES + POINTS
@@ -477,50 +485,46 @@ export default class ConceptOverlayTimeline {
             // DRAW WASTEWATER OVERLAY
             // -----------------------------
 
-            if (wastewaterLine && renderModel.wwSeries.length) {
-                
-                const wwConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
-                
-                for(const seriesItem of renderModel.wwSeries){
-                    const isMaxYear = seriesItem.year === maxWWYear;
-                    const strokeWidth = isMaxYear ? 4 : 2;               
-                    
-                    // group
+            if (overlayLine && renderModel.overlaySeries.length) {
+
+                for (const seriesItem of renderModel.overlaySeries) {
+                    const source = resolveOverlaySelection(seriesItem.key, overlayRegistry);
+                    if (!source) continue;
+
+                    const isMaxYear = seriesItem.year === maxOverlayYearByKey[seriesItem.key];
+                    const strokeWidth = isMaxYear ? 4 : 2;
+
                     const group = this.svg.append("g");
 
-                    // point label
-                    const pointLabel = selectedAggregation === "yoy" 
-                        ? d => `Wastewater\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} ]`
-                        : d => `Wastewater\n${tickFormat(d.date)}\n[ ${d.value} ]`;                
-                
+                    const pointLabel = selectedAggregation === "yoy"
+                        ? d => `${seriesItem.label}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} ]`
+                        : d => `${seriesItem.label}\n${tickFormat(d.date)}\n[ ${d.value} ]`;
 
-                    // Line
-                    const wwPath= group.append("path")
+                    const overlayPath = group.append("path")
                         .datum(seriesItem.points)
                         .attr("fill", "none")
-                        .attr("stroke", seriesItem.stroke || wwConfig.color)
+                        .attr("stroke", seriesItem.stroke || source.color)
                         .attr("stroke-width", strokeWidth)
-                        .attr("stroke-dasharray", "4 3") 
-                        .attr("d", wastewaterLine);
-                    
-                    if (selectedAggregation === "yoy") {
-                        wwPath.append("title")
-                        .text(`Wastewater \n ${seriesItem.year}`);
-                    } 
+                        .attr("stroke-dasharray", "4 3")
+                        .attr("d", overlayLine);
 
-                    // Points
-                    group.selectAll(".ww-point")
+                    if (selectedAggregation === "yoy") {
+                        overlayPath.append("title")
+                            .text(`${seriesItem.label} \n ${seriesItem.year}`);
+                    }
+
+                    group.selectAll(`circle.${cssSafeKey(seriesItem.key)}`)
                         .data(seriesItem.points)
                         .enter()
                         .append("circle")
-                        .attr("class", "ww-point")
+                        .attr("class", `overlay-point ${cssSafeKey(seriesItem.key)}`)
                         .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
                         .attr("cy", point => yRight(point.value))
                         .attr("r", 3)
-                        .attr("fill", seriesItem.stroke || wwConfig.color)
-                        .attr("stroke", seriesItem.stroke || wwConfig.color)
+                        .attr("fill", seriesItem.stroke || source.color)
+                        .attr("stroke", seriesItem.stroke || source.color)
                         .append("title")
-                        .text(pointLabel);  
+                        .text(pointLabel);
                 }
             }
     }
@@ -1084,96 +1088,117 @@ function getSourceValue(row, source) {
     return Number(row[source.column]) || 0; 
 }
 
-function buildMonthYearWWSeries(wastewater, records, selectedOverlay, selectedAggregation) {
+function resolveOverlaySelection(compoundKey, overlayRegistry) {
+    const [overlayNickname, sourceKey] = compoundKey.split("::");
+    const overlayEntry = overlayRegistry[overlayNickname];
 
-    const bucketedWW = collectWastewaterByAggregation(wastewater, selectedOverlay, selectedAggregation) ?? [];
-    const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);      
+    if (!overlayEntry) {
+        return null;
+    }
 
-    const domain = d3.extent(bucketedPatients, d => d.date);
-    const filteredWW = (domain?.[0] && domain?.[1])
-    ? bucketedWW.filter(d => d.date >= domain[0] && d.date <= domain[1])
-    : bucketedWW;
+    if (sourceKey === "combined") {
+        return overlayEntry.combinedOptionData || null;
+    }
 
-
-    let monthYearWWSeries = [];
-
-    monthYearWWSeries.push({
-        points: filteredWW
-    });
-
-    return monthYearWWSeries;
+    return overlayEntry.visualizationData?.[sourceKey] || null;
 }
 
-function buildYOYWWSeries(wastewater, selectedOverlay) {
-    const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
-    const wwByYear = {};
+function buildMonthYearOverlaySeries(overlayData, overlayRegistry, records, selectedOverlays, selectedAggregation) {
+    const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);
+    const domain = d3.extent(bucketedPatients, d => d.date);
 
-    if (waterConfig === undefined) {
-        console.log("water config is not defined");
-    } else {                       
+    const allSeries = [];
 
-            for (const row of wastewater) {
-                const d = new Date(row["Sample Date"]);
-                if (!(d instanceof Date) || isNaN(d.getTime())) {
-                    continue;
-                }
+    for (const compoundKey of selectedOverlays) {
+        const [overlayNickname] = compoundKey.split("::");
+        const source = resolveOverlaySelection(compoundKey, overlayRegistry);
+        const rows = overlayData[overlayNickname];
 
-                const year = d.getFullYear();
-                const monthIndex = d.getMonth();
-
-                const value = waterConfig.accessor(row);
-
-                // Skip missing/invalid values (prefer this over value === 0)
-                if (value === null || value === undefined || Number.isNaN(value)) {
-                    continue;
-                }
-
-                // Bucket by year -> month -> [values...]
-                if (wwByYear[year] === undefined) {
-                    wwByYear[year] = {};
-                }
-                if (wwByYear[year][monthIndex] === undefined) {
-                    wwByYear[year][monthIndex] = [];
-                }
-                wwByYear[year][monthIndex].push(value);
-            }
-
-            
-            // Create the series: one aggregated point per (year, month)
-            const wwSeries = Object.entries(wwByYear).map(([yearKey, monthBuckets]) => {
-                const pointsArray = Object.entries(monthBuckets).map(([monthKey, values]) => {
-                    const sum = values.reduce((acc, v) => acc + v, 0);
-                    const avg = values.length ? (sum / values.length) : 0;
-                    return { monthIndex: Number(monthKey), value: avg };
-                });
-
-                pointsArray.sort((a, b) => a.monthIndex - b.monthIndex);
-
-                return {
-                    year: Number(yearKey),
-                    points: pointsArray
-                };
-            });
-            const T_MIN = 0.3;
-            const yearsList = wwSeries.map(item => item.year);
-            const min = Math.min(...yearsList);
-            const max = Math.max(...yearsList); 
-
-            wwSeries.forEach((item) => {
-                const year = item.year;
-
-                const u = (min === max) ? 1 : (year - min) / (max - min);
-
-                const t = T_MIN + u * (1 - T_MIN);
-
-                const baseColor = waterConfig.color;
-                if (!baseColor) return;
-
-                item.stroke = blendWithWhite(baseColor, t);
-            });
-           return wwSeries;
+        if (!source || !Array.isArray(rows)) {
+            console.log(`could not resolve selection or data for ${compoundKey}`);
+            continue;
         }
-        
+
+        const bucketedOverlay = collectOverlayDataByAggregation(rows, source, selectedAggregation);
+
+        const filteredOverlay = (domain?.[0] && domain?.[1])
+            ? bucketedOverlay.filter(d => d.date >= domain[0] && d.date <= domain[1])
+            : bucketedOverlay;
+
+        allSeries.push({
+            key: compoundKey,
+            label: source.label,
+            points: filteredOverlay
+        });
+    }
+
+    return allSeries;
+}
+
+function buildYOYOverlaySeries(overlayData, overlayRegistry, selectedOverlays, selectedAggregation) {
+    const allSeries = [];
+
+    for (const compoundKey of selectedOverlays) {
+        const [overlayNickname] = compoundKey.split("::");
+        const source = resolveOverlaySelection(compoundKey, overlayRegistry);
+        const rows = overlayData[overlayNickname];
+
+        if (!source || !Array.isArray(rows)) {
+            console.log(`could not resolve selection or data for ${compoundKey}`);
+            continue;
+        }
+
+        const byYear = {};
+
+        for (const row of rows) {
+            const d = new Date(row["Sample Date"]);
+            if (!(d instanceof Date) || isNaN(d.getTime())) continue;
+
+            const year = d.getFullYear();
+            const monthIndex = d.getMonth();
+            const value = getSourceValue(row, source);
+
+            if (value === null || value === undefined || Number.isNaN(value)) continue;
+
+            if (byYear[year] === undefined) byYear[year] = {};
+            if (byYear[year][monthIndex] === undefined) byYear[year][monthIndex] = [];
+            byYear[year][monthIndex].push(value);
+        }
+
+        const yearKeys = Object.keys(byYear);
+        if (yearKeys.length === 0) {
+            console.log(`no valid data for ${compoundKey}, skipping`);
+            continue;
+        }
+
+        const T_MIN = 0.3;
+        const yearsList = yearKeys.map(Number);
+        const min = Math.min(...yearsList);
+        const max = Math.max(...yearsList);
+
+        for (const yearKey of yearKeys) {
+            const monthBuckets = byYear[yearKey];
+            const pointsArray = Object.entries(monthBuckets).map(([monthKey, values]) => {
+                const avg = values.length ? values.reduce((a, v) => a + v, 0) / values.length : 0;
+                return { monthIndex: Number(monthKey), value: avg };
+            });
+            pointsArray.sort((a, b) => a.monthIndex - b.monthIndex);
+
+            const year = Number(yearKey);
+            const u = (min === max) ? 1 : (year - min) / (max - min);
+            const t = T_MIN + u * (1 - T_MIN);
+
+            allSeries.push({
+                key: compoundKey,
+                label: source.label,
+                year,
+                points: pointsArray,
+                stroke: source.color ? blendWithWhite(source.color, t) : undefined
+            });
+        }
+    }
+
+    return allSeries;
 }
 
 function filterBreakdown(rows, conceptFilter) {
@@ -1220,7 +1245,7 @@ function bindControlLinkClicks(ulEl, onPick) {
     });
 }
 
-function updateLegend(controls, conceptRegistry, currentKeys, selectedOverlay){
+function updateLegend(controls, conceptRegistry, currentKeys, overlayRegistry, selectedOverlays){
 
      // Clear legend
     if (controls?.legend) controls.legend.innerHTML = "";
@@ -1237,14 +1262,15 @@ function updateLegend(controls, conceptRegistry, currentKeys, selectedOverlay){
         );
     });
 
-    const hasWastewater = (selectedOverlay !== "None");
-    if (hasWastewater) {
-        const waterConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
-        if (waterConfig) {
+    for (const compoundKey of selectedOverlays) {
+        if (compoundKey === "None") continue;
+
+        const source = resolveOverlaySelection(compoundKey, overlayRegistry);
+        if (source) {
             $(controls.legend).append(
                 `<span class="legend-row">
-                    <span class="legend-swatch" style="background:${waterConfig.color}"></span>
-                    <span>${waterConfig.label}</span>
+                    <span class="legend-swatch" style="background:${source.color}"></span>
+                    <span>${source.label}</span>
                 </span>`
             );
         }
@@ -1386,58 +1412,42 @@ function collectPatientsByAggregation(records, aggregation) {
     return out;
 }
 
-function collectWastewaterByAggregation(wastewater, selectedOverlay, selectedAggregation){
-    let wwPoints = [];
-    let wwConfig = null;
-
-    if (selectedOverlay !== "None" && wastewater && wastewater.length > 0) {
-        const overlayConfig = WASTEWATER_REGISTRY.wastewater_sources[selectedOverlay];
-        wwConfig = overlayConfig;
-
-        if (!overlayConfig || typeof overlayConfig.accessor !== "function") {
-            console.warn("Unknown wastewater overlay:", selectedOverlay);
-            wwPoints = [];
-            yRight = null;
-        } else {
-            const wwRollup = d3.rollup(
-                wastewater,
-                rows => {
-                    const values = rows
-                        .map(row => overlayConfig.accessor(row))
-                        .filter(v => v !== null && v !== undefined && !isNaN(v));
-                    return values.length ? d3.mean(values) : null;
-                },
-                d => {
-                    // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
-                    const dt = parseYMDLocal(d["Sample Date"]);
-                    if (!dt) return null;
-
-                    if (selectedAggregation === "year") {
-                        return `${dt.getFullYear()}`;
-                    }
-                    // month (0-based month key, used consistently below)
-                    return `${dt.getFullYear()}-${dt.getMonth()}`;
-                }
-            );
-
-            wwPoints = Array.from(wwRollup.entries())
-                .filter(([k, v]) => k !== null && v !== null)
-                .map(([key, value]) => {
-                    if (selectedAggregation === "year") {
-                        const year = Number(key);
-                        const date = new Date(year, 0, 1);
-                        return { date, value };
-                    }
-                    const [year, month] = key.split("-").map(Number);
-                    const date = new Date(year, month, 1);
-                    return { date, value };
-                })
-                .filter(p => p.date instanceof Date && !isNaN(p.date.getTime()));
-
-            return wwPoints;
-        }
+function collectOverlayDataByAggregation(rows, source, selectedAggregation) {
+    if (!Array.isArray(rows) || rows.length === 0) {
+        return [];
     }
 
+    const rollup = d3.rollup(
+        rows,
+        rowsGroup => {
+            const values = rowsGroup
+                .map(row => getSourceValue(row, source))
+                .filter(v => v !== null && v !== undefined && !Number.isNaN(v));
+            return values.length ? d3.mean(values) : null;
+        },
+        d => {
+            // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
+            const dt = parseYMDLocal(d["Sample Date"]);
+            if (!dt) return null;
+
+            if (selectedAggregation === "year") {
+                return `${dt.getFullYear()}`;
+            }
+            return `${dt.getFullYear()}-${dt.getMonth()}`;
+        }
+    );
+
+    return Array.from(rollup.entries())
+        .filter(([k, v]) => k !== null && v !== null)
+        .map(([key, value]) => {
+            if (selectedAggregation === "year") {
+                const year = Number(key);
+                return { date: new Date(year, 0, 1), value };
+            }
+            const [year, month] = key.split("-").map(Number);
+            return { date: new Date(year, month, 1), value };
+        })
+        .filter(p => p.date instanceof Date && !isNaN(p.date.getTime()));
 }
 
 function pivotToYOYRows(aggregatedRecords){
@@ -1647,96 +1657,6 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
 
     return overlayEndpoints;
 }
-
-// API Service URLS
-// const WASTEWATER_URLS = {
-//     dev: "your-service-endpoint",
-//     prod: "your-service-endpoint"
-// };
-
-// Detect current Env
-// function detectEnv() {
-//     const override = (window.PATHOGEN_TIMELINE_ENV || "").toLowerCase();
-//     if (override === "dev" || override === "prod") return override;
-
-//     const host = (window.location?.hostname || "").toLowerCase();
-
-//     // Local dev should use dev backend by default
-//     if (host === "localhost" || host === "127.0.0.1" || host.endsWith(".local")) return "dev";
-
-//     if (host.includes("dev") || host.includes("catalyst")) return "dev";
-
-//     return "prod";
-// }
-
-// Get Wastewater API URL
-// function getWastewaterServiceUrl() {
-//     const env = detectEnv();
-//     return WASTEWATER_URLS[env] || WASTEWATER_URLS.prod;
-// }
-
-// Fetch Wastewater from API
-// async function fetchWastewater(startDate, endDate) {
-//     const redirectUrl = getWastewaterServiceUrl();
-//     const env = detectEnv();
-//     console.info(
-//         `[WASTEWATER] ${env.toUpperCase()} detected; calling ${env.toUpperCase()} wastewater service`
-//     );
-
-//     const msg = `
-//     <ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
-//         <message_header>
-//         <proxy>
-//             <redirect_url>${redirectUrl}</redirect_url>
-//         </proxy>
-//         </message_header>
-//         <message_body>
-//         {&quot;Start Date&quot;:&quot;${startDate}&quot;, &quot;End Date&quot;:&quot;${endDate}&quot;}
-//         </message_body>
-//     </ns6:request>
-//     `;
-
-//     try {
-//         // Preferred proxy helper
-//         if (i2b2?.hive?.proxy?.handler) {
-//             const response = await i2b2.hive.proxy.handler({
-//                 url: "/~proxy",
-//                 msg: msg,
-//                 method: "POST"
-//             });
-
-//             const bodyNode = i2b2.h.XPath(
-//                 response.refXML,
-//                 "//message_body/text()"
-//             )[0];
-
-//             return bodyNode ? JSON.parse(bodyNode.nodeValue) : null;
-//         }
-
-//         // Fallback direct POST to /~proxy
-//         const response = await fetch("/~proxy", {
-//             method: "POST",
-//             headers: { "Content-Type": "text/xml" },
-//             body: msg,
-//             credentials: "include"
-//         });
-
-//         if (!response.ok) {
-//             console.error("Wastewater /~proxy call failed:", response.status, "env:", detectEnv(), "redirect:", redirectUrl);
-//             return null;
-//         }
-
-//         const text = await response.text();
-//         const xml = new DOMParser().parseFromString(text, "text/xml");
-//         const bodyNode = xml.querySelector("message_body");
-
-//         return bodyNode ? JSON.parse(bodyNode.textContent) : null;
-
-//     } catch (err) {
-//         console.error("Failed to fetch wastewater data", err, "env:", detectEnv(), "redirect:", redirectUrl);
-//         return null;
-//     }
-// }
 
 // ------------------------------------------------------------
 // Derive overlay request date range from patient breakdown
