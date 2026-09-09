@@ -90,6 +90,19 @@ i2b2.ONT.ctrlr.Search = {
         scopedCallback.scope = this;
         let returnedConceptCount = 0;
         let responseHasSearchResultField = false;
+        let compatibilityError = false;
+        let retryInCompatibilityMode = function() {
+            if (compatibilityRetry) return false;
+
+            i2b2.ONT.ctrlr.Search.ancestorSearchUnsupported = true;
+            i2b2.ONT.view.nav.params.useAncestorSearch = false;
+            $('#ONTNAVuseAncestorSearch').prop('checked', false);
+            i2b2.ONT.model.searchResults = {};
+            $("#i2b2OntSearchStatus")[0].innerHTML = "Searching in compatibility mode...";
+            alert("This ontology server does not support ancestor-aware searching. The search will be rerun in compatibility mode.");
+            i2b2.ONT.ctrlr.Search.doNameSearch(inSearchData, true);
+            return true;
+        };
         // define our callback function
         scopedCallback.callback = function(results) {
             searchCatsCount++;
@@ -102,6 +115,9 @@ i2b2.ONT.ctrlr.Search = {
                     i2b2.ONT.model.searchResultsExceeded = true;
                 } else {
                     hasError = true;
+                    compatibilityError = useServerAllCategoriesSearch &&
+                        inSearchData.Category === "ALL CATEGORIES" &&
+                        String(status).trim().toLowerCase() === "database error";
                 }
             }
             if (!hasError) {
@@ -120,24 +136,19 @@ i2b2.ONT.ctrlr.Search = {
                         i2b2.ONT.ctrlr.Search.addResultNode(c[i], true);
                     }
                 }
-            } else {
+            } else if (!compatibilityError) {
                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }
 
             // search is finished
             if (searchCatsCount === searchCats.length) {
+                if (compatibilityError && retryInCompatibilityMode()) return;
+
                 // A pre-ancestor ONT server can successfully return concepts but
                 // cannot identify which are matches. Retry once using the legacy
                 // request and rendering path rather than showing a false empty result.
                 if (useAncestorSearch && returnedConceptCount > 0 && !responseHasSearchResultField && !compatibilityRetry) {
-                    i2b2.ONT.ctrlr.Search.ancestorSearchUnsupported = true;
-                    i2b2.ONT.view.nav.params.useAncestorSearch = false;
-                    $('#ONTNAVuseAncestorSearch').prop('checked', false);
-                    i2b2.ONT.model.searchResults = {};
-                    $("#i2b2OntSearchStatus")[0].innerHTML = "Searching in compatibility mode...";
-                    alert("This ontology server does not support ancestor-aware searching. The search will be rerun in compatibility mode.");
-                    i2b2.ONT.ctrlr.Search.doNameSearch(inSearchData, true);
-                    return;
+                    if (retryInCompatibilityMode()) return;
                 }
 
                 // How long did it take?
