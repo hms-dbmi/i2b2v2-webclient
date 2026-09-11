@@ -250,11 +250,11 @@ export default class ConceptOverlayTimeline {
             // If template/SVG not ready yet, bail without drawing (but wastewater fetch can still run above)
             if (!this.svg || !this.controls || !this.state) return;
 
-            const selectedConcept = this.state?.concept || "All";
-            const selectedOverlays = this.state?.overlays || "None";
+            const selectedConcepts = this.state?.concept || [];
+            const selectedOverlays = this.state?.overlays || [];
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year" | "yoy"
 
-            const renderModel = buildRenderModel(raw, this.fetchedOverlays, this.overlayRegistry, this.overlayConfigs, this.conceptRegistry, selectedConcept, selectedAggregation, selectedOverlays);
+            const renderModel = buildRenderModel(raw, this.fetchedOverlays, this.overlayRegistry, this.overlayConfigs, this.conceptRegistry, selectedConcepts, selectedAggregation, selectedOverlays);
 
             const currentKeys = [...new Set(renderModel.series.map(item => item.concept))];
             updateLegend(this.controls, this.conceptRegistry, currentKeys, this.overlayRegistry, selectedOverlays);
@@ -882,14 +882,14 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, 
     return overlayRegistry;
 }
 
-function buildRenderModel(records, overlayData, overlayRegistry, overlayConfigs, conceptRegistry, selectedConcept, selectedAggregation, selectedOverlays) {
+function buildRenderModel(records, overlayData, overlayRegistry, overlayConfigs, conceptRegistry, selectedConcepts, selectedAggregation, selectedOverlays) {
 
     let renderModel;
 
     if (selectedAggregation === "yoy"){
         renderModel = { 
             "aggregateType": selectedAggregation,
-            "series" : buildYOYConceptSeries(records, conceptRegistry, selectedConcept), 
+            "series" : buildYOYConceptSeries(records, conceptRegistry, selectedConcepts), 
             "xDomain": generateXDomain(records, selectedAggregation),
             "months": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
             "yLeftLabel": "Number of Patients", 
@@ -899,7 +899,7 @@ function buildRenderModel(records, overlayData, overlayRegistry, overlayConfigs,
     } else {
         renderModel = { 
             "aggregateType": selectedAggregation,
-            "series" : buildMonthYearConceptSeries(records, selectedConcept, selectedAggregation), 
+            "series" : buildMonthYearConceptSeries(records, selectedConcepts, selectedAggregation), 
             "xDomain": generateXDomain(records, selectedAggregation), 
             "yLeftLabel": "Number of Patients", 
             "overlaySeries": buildMonthYearOverlaySeries(overlayData, overlayRegistry, records, selectedOverlays, selectedAggregation),
@@ -930,14 +930,14 @@ function generateXDomain(records, selectedAggregation) {
     return xdomain;
 }
 
-function buildMonthYearConceptSeries(rawData, selectedConcept, selectedAggregation) {
+function buildMonthYearConceptSeries(rawData, selectedConcepts, selectedAggregation) {
 
     const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
 
     // get the raw data by aggregation grain
     const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === aggregationGrain);
 
-    let filteredRows = filterBreakdown(yearRows, selectedConcept);
+    let filteredRows = filterBreakdown(yearRows, selectedConcepts);
     const bucketedPatients = collectPatientsByAggregation(filteredRows, selectedAggregation);
 
     // If (for some reason) nothing survived bucketing, bail cleanly
@@ -977,11 +977,11 @@ function buildMonthYearConceptSeries(rawData, selectedConcept, selectedAggregati
  
 }
 
-function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcept){
+function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcepts){
     //take the raw data and if needed, filter it by concept to do the row pivot
     const yoyRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "M");
 
-    let yoyFilteredRows = filterBreakdown(yoyRows, selectedConcept);
+    let yoyFilteredRows = filterBreakdown(yoyRows, selectedConcepts);
 
     const yoyPivotRows = pivotToYOYRows(yoyFilteredRows); 
     
@@ -1201,16 +1201,11 @@ function buildYOYOverlaySeries(overlayData, overlayRegistry, selectedOverlays, s
     return allSeries;
 }
 
-function filterBreakdown(rows, conceptFilter) {
+function filterBreakdown(rows, selectedConcepts) {
     if (!rows) return [];
-    return rows.filter(row => {
-        const conceptisOk =
-            !conceptFilter ||
-            conceptFilter === "All" ||
-            conceptFilter === "ALL" ||
-            row.concept === conceptFilter;
-        return conceptisOk;
-    });
+    if (!selectedConcepts || selectedConcepts.length === 0) return rows;
+
+    return rows.filter(row => selectedConcepts.includes(row.concept));
 }
 
 function renderControlLinks(ulEl, items, selectedValue) {
