@@ -1,10 +1,14 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
-    DELETE_PROJECT_PARAM_ACTION,
-    deleteProjectParamFailed,
-    deleteProjectParamSucceeded, getAllProjectParams,
+    DELETE_PROJECT_PARAM,
 } from "actions";
+
+import {
+    deleteProjectParamFailed,
+    deleteProjectParamSucceeded,
+    getAllProjectParams,
+} from "../reducers/editProjectInfoSlice";
 
 const deleteParamRequest = (param) => {
 
@@ -41,5 +45,5 @@ export function* doDeleteProjectParam(action) {
 }
 
 export function* deleteProjectParamSaga() {
-    yield takeLatest(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM, doDeleteProjectParam);
+    yield takeLatest(DELETE_PROJECT_PARAM, doDeleteProjectParam);
 }

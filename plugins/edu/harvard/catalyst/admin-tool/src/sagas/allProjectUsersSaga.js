@@ -1,10 +1,12 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
-    GET_ALL_PROJECT_USERS_ACTION,
+    GET_ALL_PROJECT_USERS,
+} from "actions";
+import {
     getAllProjectUsersFailed,
     getAllProjectUsersSucceeded,
-} from "actions";
+} from "../reducers/editProjectInfoSlice";
 
 import {ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE} from "models";
 
@@ -88,14 +90,16 @@ const parseUserRolesXml = (xml) => {
 export function* doGetAllProjectUsers(action) {
     const { project } = action.payload;
 
-    console.log("getting all users for project " + project.name + "...");
+    console.log("getting all users for project " + project + "...");
 
     try {
         const response = yield call(getAllProjectUsersRequest, project.internalId);
 
         if(response) {
             let userRolesList = parseUserRolesXml(response);
-            yield put(getAllProjectUsersSucceeded({project: project, users: userRolesList}));
+
+            console.log("after getting all users ", userRolesList);
+            yield put(getAllProjectUsersSucceeded({project, users: userRolesList}));
         }else{
             yield put(getAllProjectUsersFailed(response));
         }
@@ -106,5 +110,5 @@ export function* doGetAllProjectUsers(action) {
 }
 
 export function* allProjectUsersSaga() {
-    yield takeLatest(GET_ALL_PROJECT_USERS_ACTION.GET_ALL_PROJECT_USERS, doGetAllProjectUsers);
+    yield takeLatest(GET_ALL_PROJECT_USERS, doGetAllProjectUsers);
 }

@@ -1,23 +1,15 @@
-import { useDispatch, useSelector} from "react-redux";
+import { useDispatch} from "react-redux";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Backdrop from '@mui/material/Backdrop';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import CircularProgress from '@mui/material/CircularProgress';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
 import IconButton from "@mui/material/IconButton";
 import ReplayIcon from '@mui/icons-material/Replay';
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { InputAdornment} from "@mui/material";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Typography from "@mui/material/Typography";
-import {saveProject, saveProjectStatusConfirmed} from "actions";
+import {saveProject, saveProjectStatusConfirmed} from "../../reducers/editProjectInfoSlice";
 import { Project } from "models";
 import "./ProjectInfo.scss";
 

@@ -1,11 +1,15 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
+    SAVE_PROJECT_PARAM,
+} from "actions";
+
+import {
     getAllProjectParams,
-    SAVE_PROJECT_PARAM_ACTION,
     saveProjectParamFailed,
     saveProjectParamSucceeded,
-} from "actions";
+} from "../reducers/editProjectInfoSlice";
+
 import {encodeHTML} from "../utilities";
 
 const saveParamRequest = (project, param) => {
@@ -56,5 +60,5 @@ export function* doSaveProjectParam(action) {
 }
 
 export function* saveProjectParamSaga() {
-    yield takeLatest(SAVE_PROJECT_PARAM_ACTION.SAVE_PROJECT_PARAM, doSaveProjectParam);
+    yield takeLatest(SAVE_PROJECT_PARAM, doSaveProjectParam);
 }

@@ -57,141 +57,68 @@ export const deleteProjectSucceeded = createAction(DELETE_PROJECT_ACTION.DELETE_
 export const deleteProjectFailed = createNamedArgsAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_FAILED, "projectName");
 export const deleteProjectStatusConfirmed = createAction(DELETE_PROJECT_ACTION.DELETE_PROJECT_STATUS_CONFIRMED);
 //================================================================================================== //
-export const SAVE_PROJECT_ACTION = {
-    SAVE_PROJECT: "SAVE_PROJECT",
-    SAVE_PROJECT_SUCCEEDED:  "SAVE_PROJECT_SUCCEEDED",
-    SAVE_PROJECT_FAILED: "SAVE_PROJECT_FAILED",
-    SAVE_PROJECT_STATUS_CONFIRMED: "SAVE_PROJECT_STATUS_CONFIRMED"
-};
-export const saveProject =  createAction(SAVE_PROJECT_ACTION.SAVE_PROJECT);
-export const saveProjectSucceeded = createAction(SAVE_PROJECT_ACTION.SAVE_PROJECT_SUCCEEDED);
-export const saveProjectFailed = createAction(SAVE_PROJECT_ACTION.SAVE_PROJECT_FAILED);
-export const saveProjectStatusConfirmed = createAction(SAVE_PROJECT_ACTION.SAVE_PROJECT_STATUS_CONFIRMED);
-//================================================================================================== //
-export const GET_ALL_PROJECT_PARAMS_ACTION = {
-    GET_ALL_PROJECT_PARAMS: "GET_ALL_PROJECT_PARAMS",
-    GET_ALL_PROJECT_PARAMS_SUCCEEDED:  "GET_ALL_PROJECT_PARAMS_SUCCEEDED",
-    GET_ALL_PROJECT_PARAMS_FAILED: "GET_ALL_PROJECT_PARAMS_FAILED",
-    GET_ALL_PROJECT_PARAMS_STATUS_CONFIRMED: "GET_ALL_PROJECT_PARAMS_STATUS_CONFIRMED"
-};
-export const getAllProjectParams =  createAction(GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS);
-export const getAllProjectParamsSucceeded = createAction(GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS_SUCCEEDED);
-export const getAllProjectParamsFailed = createNamedArgsAction(GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS_FAILED);
-export const getAllProjectParamsStatusConfirmed = createAction(GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS_STATUS_CONFIRMED);
-//================================================================================================== //
-export const SAVE_PROJECT_PARAM_ACTION = {
-    SAVE_PROJECT_PARAM: "SAVE_PROJECT_PARAM",
-    SAVE_PROJECT_PARAM_SUCCEEDED:  "SAVE_PROJECT_PARAM_SUCCEEDED",
-    SAVE_PROJECT_PARAM_FAILED: "SAVE_PROJECT_PARAM_FAILED",
-    SAVE_PROJECT_PARAM_STATUS_CONFIRMED: "SAVE_PROJECT_PARAM_STATUS_CONFIRMED"
-};
-export const saveProjectParam =  createAction(SAVE_PROJECT_PARAM_ACTION.SAVE_PROJECT_PARAM);
-export const saveProjectParamSucceeded = createAction(SAVE_PROJECT_PARAM_ACTION.SAVE_PROJECT_PARAM_SUCCEEDED);
-export const saveProjectParamFailed = createAction(SAVE_PROJECT_PARAM_ACTION.SAVE_PROJECT_PARAM_FAILED);
-export const saveProjectParamStatusConfirmed = createAction(SAVE_PROJECT_PARAM_ACTION.SAVE_PROJECT_PARAM_STATUS_CONFIRMED);
-//================================================================================================== //
-export const DELETE_PROJECT_PARAM_ACTION = {
-    DELETE_PROJECT_PARAM: "DELETE_PROJECT_PARAM",
-    DELETE_PROJECT_PARAM_SUCCEEDED:  "DELETE_PROJECT_PARAM_SUCCEEDED",
-    DELETE_PROJECT_PARAM_FAILED: "DELETE_PROJECT_PARAM_FAILED",
-    DELETE_PROJECT_PARAM_STATUS_CONFIRMED: "DELETE_PROJECT_PARAM_STATUS_CONFIRMED"
-};
-export const deleteProjectParam = createAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM);
-export const deleteProjectParamSucceeded = createAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_SUCCEEDED);
-export const deleteProjectParamFailed = createAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_FAILED);
-export const deleteProjectParamStatusConfirmed = createAction(DELETE_PROJECT_PARAM_ACTION.DELETE_PROJECT_PARAM_STATUS_CONFIRMED);
-//================================================================================================== //
-export const GET_ALL_PROJECT_DATASOURCES_ACTION = {
-    GET_ALL_PROJECT_DATASOURCES: "GET_ALL_PROJECT_DATASOURCES",
-    GET_ALL_PROJECT_DATASOURCES_SUCCEEDED: "GET_ALL_PROJECT_DATASOURCES_SUCCEEDED",
-    GET_ALL_PROJECT_DATASOURCES_FAILED: "GET_ALL_PROJECT_DATASOURCES_FAILED",
-};
-export const getAllProjectDataSources = createNamedArgsAction(GET_ALL_PROJECT_DATASOURCES_ACTION.GET_ALL_PROJECT_DATASOURCES, "project");
-export const getAllProjectDataSourcesSucceeded = createAction(GET_ALL_PROJECT_DATASOURCES_ACTION.GET_ALL_PROJECT_DATASOURCES_SUCCEEDED);
-export const getAllProjectDataSourcesFailed = createAction(GET_ALL_PROJECT_DATASOURCES_ACTION.GET_ALL_PROJECT_DATASOURCES_FAILED);
-//================================================================================================== //
-export const GET_ALL_PROJECT_USERS_ACTION = {
-    GET_ALL_PROJECT_USERS: "GET_ALL_PROJECT_USERS",
-    GET_ALL_PROJECT_USERS_SUCCEEDED: "GET_ALL_PROJECT_USERS_SUCCEEDED",
-    GET_ALL_PROJECT_USERS_FAILED: "GET_ALL_PROJECT_USERS_FAILED",
-};
-export const getAllProjectUsers = createNamedArgsAction(GET_ALL_PROJECT_USERS_ACTION.GET_ALL_PROJECT_USERS, "project");
-export const getAllProjectUsersSucceeded = createAction(GET_ALL_PROJECT_USERS_ACTION.GET_ALL_PROJECT_USERS_SUCCEEDED);
-export const getAllProjectUsersFailed = createAction(GET_ALL_PROJECT_USERS_ACTION.GET_ALL_PROJECT_USERS_FAILED);
-//================================================================================================== //
-export const SAVE_PROJECT_DATASOURCES_ACTION = {
-    SAVE_PROJECT_DATASOURCES: "SAVE_PROJECT_DATASOURCES",
-    SAVE_PROJECT_DATASOURCES_SUCCEEDED: "SAVE_PROJECT_DATASOURCES_SUCCEEDED",
-    SAVE_PROJECT_DATASOURCES_FAILED: "SAVE_PROJECT_DATASOURCES_FAILED",
-    SAVE_PROJECT_DATASOURCES_STATUS_CONFIRMED: "SAVE_PROJECT_DATASOURCES_STATUS_CONFIRMED"
-};
-export const saveProjectDataSources = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES);
-export const saveProjectDataSourcesSucceeded = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_SUCCEEDED);
-export const saveProjectDataSourcesFailed = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_FAILED);
-export const saveProjectDataSourcesStatusConfirmed = createAction(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES_STATUS_CONFIRMED);
-
-
-
-export const UPDATE_ALL_PROJECT_DATASOURCES_URL_ACTION = {
-    UPDATE_ALL_PROJECT_DATASOURCES_URL: "UPDATE_ALL_PROJECT_DATASOURCES_URL",
-};
-export const updateAllProjectDataSourcesUrl = createAction(UPDATE_ALL_PROJECT_DATASOURCES_URL_ACTION.UPDATE_ALL_PROJECT_DATASOURCES_URL);
-
-
-//================================================================================================== //
-export const SAVE_PROJECT_USER_ACTION = {
-    SAVE_PROJECT_USER: "SAVE_PROJECT_USER",
-    SAVE_PROJECT_USER_SUCCEEDED:  "SAVE_PROJECT_USER_SUCCEEDED",
-    SAVE_PROJECT_USER_FAILED: "SAVE_PROJECT_USER_FAILED",
-    SAVE_PROJECT_USER_STATUS_CONFIRMED: "SAVE_PROJECT_USER_STATUS_CONFIRMED"
-};
-export const saveProjectUser =  createAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER);
-export const saveProjectUserSucceeded = createAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_SUCCEEDED);
-export const saveProjectUserFailed = createAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_FAILED);
-export const saveProjectUserStatusConfirmed = createAction(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER_STATUS_CONFIRMED);
-//================================================================================================== //
-export const DELETE_PROJECT_USER_ACTION = {
-    DELETE_PROJECT_USER: "DELETE_PROJECT_USER",
-    DELETE_PROJECT_USER_SUCCEEDED:  "DELETE_PROJECT_USER_SUCCEEDED",
-    DELETE_PROJECT_USER_FAILED: "DELETE_PROJECT_USER_FAILED",
-    DELETE_PROJECT_USER_STATUS_CONFIRMED: "DELETE_PROJECT_USER_STATUS_CONFIRMED"
-};
-export const deleteProjectUser =  createAction(DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER);
-export const deleteProjectUserSucceeded = createAction(DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER_SUCCEEDED);
-export const deleteProjectUserFailed = createAction(DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER_FAILED);
-export const deleteProjectUserStatusConfirmed = createAction(DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER_STATUS_CONFIRMED);
-
-//================================================================================================== //
-export const SAVE_PROJECT_USER_PARAM_ACTION = {
-    SAVE_PROJECT_USER_PARAM: "SAVE_PROJECT_USER_PARAM",
-    SAVE_PROJECT_USER_PARAM_SUCCEEDED:  "SAVE_PROJECT_USER_PARAM_SUCCEEDED",
-    SAVE_PROJECT_USER_PARAM_FAILED: "SAVE_PROJECT_USER_PARAM_FAILED",
-    SAVE_PROJECT_USER_PARAM_STATUS_CONFIRMED: "SAVE_PROJECT_USER_PARAM_STATUS_CONFIRMED"
-};
-export const saveProjectUserParam =  createAction(SAVE_PROJECT_USER_PARAM_ACTION.SAVE_PROJECT_USER_PARAM);
-export const saveProjectUserParamSucceeded = createAction(SAVE_PROJECT_USER_PARAM_ACTION.SAVE_PROJECT_USER_PARAM_SUCCEEDED);
-export const saveProjectUserParamFailed = createAction(SAVE_PROJECT_USER_PARAM_ACTION.SAVE_PROJECT_USER_PARAM_FAILED);
-export const saveProjectUserParamStatusConfirmed = createAction(SAVE_PROJECT_USER_PARAM_ACTION.SAVE_PROJECT_USER_PARAM_STATUS_CONFIRMED);
-//================================================================================================== //
-export const DELETE_PROJECT_USER_PARAM_ACTION = {
-    DELETE_PROJECT_USER_PARAM: "DELETE_PROJECT_USER_PARAM",
-    DELETE_PROJECT_USER_PARAM_SUCCEEDED:  "DELETE_PROJECT_USER_PARAM_SUCCEEDED",
-    DELETE_PROJECT_USER_PARAM_FAILED: "DELETE_PROJECT_USER_PARAM_FAILED",
-    DELETE_PROJECT_USER_PARAM_STATUS_CONFIRMED: "DELETE_PROJECT_USER_PARAM_STATUS_CONFIRMED"
-};
-export const deleteProjectUserParam =  createAction(DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM);
-export const deleteProjectUserParamSucceeded = createAction(DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM_SUCCEEDED);
-export const deleteProjectUserParamFailed = createAction(DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM_FAILED);
-export const deleteProjectUserParamStatusConfirmed = createAction(DELETE_PROJECT_USER_PARAM_ACTION.DELETE_PROJECT_USER_PARAM_STATUS_CONFIRMED);
-//================================================================================================== //
-export const CLEAR_SELECTED_PROJECT_ACTION = {
-    CLEAR_SELECTED_PROJECT: "CLEAR_SELECTED_PROJECT",
-};
-export const clearSelectedProject =  createAction(CLEAR_SELECTED_PROJECT_ACTION.CLEAR_SELECTED_PROJECT);
-
-//================================================================================================== //
 //Please use pattern below for new actions and slices
 //Please update any existing action to use the new pattern when possible
+//================================================================================================== //
+
+export const EDIT_PROJECT = "editProjectInfo"
+export const GET_ALL_PROJECT_PARAMS = `${EDIT_PROJECT}/getAllProjectParams`;
+export const GET_ALL_PROJECT_PARAMS_SUCCEEDED = `${EDIT_PROJECT}/getAllProjectParamsSucceeded`;
+export const GET_ALL_PROJECT_PARAMS_FAILED = `${EDIT_PROJECT}/getAllProjectParamsFailed`;
+export const GET_ALL_PROJECT_PARAMS_STATUS_CONFIRMED = `${EDIT_PROJECT}/getAllProjectParamsStatusConfirmed`;
+
+export const GET_ALL_PROJECT_DATASOURCES=  `${EDIT_PROJECT}/getAllProjectDataSources`;
+export const GET_ALL_PROJECT_DATASOURCES_SUCCEEDED= `${EDIT_PROJECT}/getAllProjectDataSourcesSucceeded`;
+export const GET_ALL_PROJECT_DATASOURCES_FAILED= `${EDIT_PROJECT}/getAllProjectDataSourcesFailed`;
+
+export const  UPDATE_ALL_PROJECT_DATASOURCES_URL = `${EDIT_PROJECT}/updateAllProjectDataSourcesUrl`;
+
+export const GET_ALL_PROJECT_USERS = `${EDIT_PROJECT}/getAllProjectUsers`;
+export const GET_ALL_PROJECT_USERS_SUCCEEDED = `${EDIT_PROJECT}/getAllProjectUsersSucceeded`;
+export const GET_ALL_PROJECT_USERS_FAILED = `${EDIT_PROJECT}/getAllProjectUsersFailed`;
+
+export const SAVE_PROJECT= `${EDIT_PROJECT}/saveProject`;
+export const SAVE_PROJECT_SUCCEEDED= `${EDIT_PROJECT}/saveProjectSucceeded`;
+export const SAVE_PROJECT_FAILED= `${EDIT_PROJECT}/saveProjectFailed`;
+export const SAVE_PROJECT_STATUS_CONFIRMED= `${EDIT_PROJECT}/saveProjectStatusConfirmed`;
+
+export const SAVE_PROJECT_DATASOURCES= `${EDIT_PROJECT}/saveProjectDataSources`;
+export const SAVE_PROJECT_DATASOURCES_SUCCEEDED= `${EDIT_PROJECT}/saveProjectDataSourcesSucceeded`;
+export const SAVE_PROJECT_DATASOURCES_FAILED= `${EDIT_PROJECT}/saveProjectDataSourcesFailed`;
+export const SAVE_PROJECT_DATASOURCES_STATUS_CONFIRMED= `${EDIT_PROJECT}/saveProjectDataSourcesStatusConfirmed`;
+
+export const SAVE_PROJECT_USER= `${EDIT_PROJECT}/saveProjectUser`;
+export const SAVE_PROJECT_USER_SUCCEEDED=  `${EDIT_PROJECT}/saveProjectUserSucceeded`;
+export const SAVE_PROJECT_USER_FAILED= `${EDIT_PROJECT}/saveProjectUserFailed`;
+export const SAVE_PROJECT_USER_STATUS_CONFIRMED= `${EDIT_PROJECT}/saveProjectUserStatusConfirmed`;
+
+export const DELETE_PROJECT_USER= `${EDIT_PROJECT}/deleteProjectUser`;
+export const DELETE_PROJECT_USER_SUCCEEDED=  `${EDIT_PROJECT}/deleteProjectUserSucceeded`;
+export const DELETE_PROJECT_USER_FAILED= `${EDIT_PROJECT}/deleteProjectUserFailed`;
+export const DELETE_PROJECT_USER_STATUS_CONFIRMED= `${EDIT_PROJECT}/deleteProjectUserStatusConfirmed`;
+
+export const SAVE_PROJECT_PARAM=`${EDIT_PROJECT}/saveProjectParam`;
+export const SAVE_PROJECT_PARAM_SUCCEEDED= `${EDIT_PROJECT}/saveProjectParamSucceeded`;
+export const SAVE_PROJECT_PARAM_FAILED= `${EDIT_PROJECT}/saveProjectParamFailed`;
+export const SAVE_PROJECT_PARAM_STATUS_CONFIRMED= `${EDIT_PROJECT}/saveProjectParamStatusConfirmed`;
+
+export const SAVE_PROJECT_USER_PARAM= `${EDIT_PROJECT}/saveProjectUserParam`;
+export const SAVE_PROJECT_USER_PARAM_SUCCEEDED=  `${EDIT_PROJECT}/saveProjectUserParamSucceeded`;
+export const SAVE_PROJECT_USER_PARAM_FAILED= `${EDIT_PROJECT}/saveProjectUserParamFailed`;
+export const SAVE_PROJECT_USER_PARAM_STATUS_CONFIRMED= `${EDIT_PROJECT}/saveProjectUserParamStatusConfirmed`;
+
+export const DELETE_PROJECT_PARAM= `${EDIT_PROJECT}/deleteProjectParam`;
+export const DELETE_PROJECT_PARAM_SUCCEEDED= `${EDIT_PROJECT}/deleteProjectParamSucceeded`;
+export const DELETE_PROJECT_PARAM_FAILED= `${EDIT_PROJECT}/deleteProjectParamFailed`;
+export const DELETE_PROJECT_PARAM_STATUS_CONFIRMED= `${EDIT_PROJECT}/deleteProjectParamStatusConfirmed`;
+
+export const DELETE_PROJECT_USER_PARAM= `${EDIT_PROJECT}/deleteProjectUserParam `;
+export const DELETE_PROJECT_USER_PARAM_SUCCEEDED=  `${EDIT_PROJECT}/deleteProjectUserParamSucceeded`;
+export const DELETE_PROJECT_USER_PARAM_FAILED= `${EDIT_PROJECT}/deleteProjectUserParamFailed`;
+export const DELETE_PROJECT_USER_PARAM_STATUS_CONFIRMED= `${EDIT_PROJECT}/deleteProjectUserParamStatusConfirmed`;
+
+export const CLEAR_SELECTED_PROJECT= `${EDIT_PROJECT}/clearSelectedProject`;
+
 //================================================================================================== //
 
 export const AUTHENTICATION_CONFIG_INFO = "authConfigInfo";
@@ -242,7 +169,6 @@ export const DELETE_USER_PARAM_SUCCEEDED = `${EDIT_USER}/deleteUserParamSucceede
 export const DELETE_USER_PARAM_FAILED = `${EDIT_USER}/deleteUserParamFailed`;
 export const DELETE_USER_PARAM_STATUS_CONFIRMED = `${EDIT_USER}/deleteUserParamStatusConfirmed`;
 
-
 export const GET_ALL_PROJECT_USER_PARAMS = `${EDIT_USER}/getAllProjectUserParams`;
 export const GET_ALL_PROJECT_USER_PARAMS_SUCCEEDED = `${EDIT_USER}/getAllProjectUserParamsSucceeded`;
 export const GET_ALL_PROJECT_USER_PARAMS_FAILED = `${EDIT_USER}/getAllProjectUserParamsFailed`;
@@ -251,3 +177,4 @@ export const GET_ALL_PROJECT_USER_PARAMS_STATUS_CONFIRMED = `${EDIT_USER}/getAll
 export const CLEAR_SELECTED_USER = `${EDIT_USER}/clearSelectedUser`;
 
 //================================================================================================== //
+

@@ -4,7 +4,7 @@ import "./EditProjectDataSources.scss";
 import {
     saveProjectDataSources,
     saveProjectDataSourcesStatusConfirmed,
-} from "../../actions";
+} from "../../reducers/editProjectInfoSlice";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";

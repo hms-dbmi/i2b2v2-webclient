@@ -1,10 +1,14 @@
 import { all, call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
-    SAVE_PROJECT_DATASOURCES_ACTION,
+    SAVE_PROJECT_DATASOURCES,
+} from "actions";
+
+import {
     saveProjectDataSourcesFailed,
     saveProjectDataSourcesSucceeded,
-} from "actions";
+} from "../reducers/editProjectInfoSlice";
+
 import {CELL_ID} from "../models";
 
 const saveProjectDataSourceRequest = (cellId, dataSource) => {
@@ -54,5 +58,5 @@ export function* doSaveProjectDataSources(action) {
 }
 
 export function* saveProjectDataSourcesSaga() {
-    yield takeLatest(SAVE_PROJECT_DATASOURCES_ACTION.SAVE_PROJECT_DATASOURCES, doSaveProjectDataSources);
+    yield takeLatest(SAVE_PROJECT_DATASOURCES, doSaveProjectDataSources);
 }

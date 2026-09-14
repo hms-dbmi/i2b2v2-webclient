@@ -14,13 +14,16 @@ import Paper from "@mui/material/Paper";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import Button from "@mui/material/Button";
 import {
-    getAllProjectParams,
-    getAllProjectUsers,
-    clearSelectedProject,
-    getAllProjectDataSources,
     deleteProject,
     deleteProjectStatusConfirmed
 } from "actions";
+import {
+    clearSelectedProject,
+    getAllProjectDataSources,
+    getAllProjectParams,
+    getAllProjectUsers
+} from "../../reducers/editProjectInfoSlice";
+
 import {Confirmation} from "../index";
 
 
