@@ -49,6 +49,8 @@ export default class ConceptOverlayTimeline {
             this.colorsInUse = [];
             this.cannonicalHexes = this.config.advancedConfig.cannonicalHexes;
 
+            this.conceptListLabel = this.config.advancedConfig.conceptsLabel;
+
             this.width = this.config.displayEl.parentElement.clientWidth;
             this.height = 400 - margin.top - margin.bottom;
 
@@ -80,12 +82,20 @@ export default class ConceptOverlayTimeline {
                     legend: $(".cot-legend-items", self.config.displayEl)[0],
                 };
 
+                // Apply custom concept label, if configured
+                if (self.conceptListLabel) {
+                    const conceptLabelEl = self.config.displayEl.querySelector(".cot-concept-label");
+                    if (conceptLabelEl) {
+                        conceptLabelEl.textContent = self.conceptListLabel;
+                    }
+                }
+
                 // Internal state (update() reads from here)
                 self.state = {
-                    concept: "All",
-                    overlay: "None",
+                    concepts: [],
+                    overlays: [],
                     aggregation: "month"
-                };             
+                };            
 
                 // Aggregation list is in HTML; ensure we have a selected item + sync state
                 if (self.controls.aggregationList) {
@@ -101,7 +111,7 @@ export default class ConceptOverlayTimeline {
                 }
 
                 // Bind clicks
-                bindControlLinkClicks(self.controls.conceptList, (v) => { self.state.concept = v; self.update(); });
+                bindControlLinkClicks(self.controls.conceptList, (v) => { self.state.concepts = v; self.update(); });
                 bindControlLinkClicks(self.controls.overlayList, (v) => { self.state.overlays = v; self.update(); });
                 bindControlLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
 
@@ -194,9 +204,15 @@ export default class ConceptOverlayTimeline {
             ];
 
             const overlayItems = [{ value: "None", label: "None" }];
+            const overlayNicknames = Object.keys(this.overlayRegistry);
+            const showHeadings = overlayNicknames.length > 1;
 
-            for (const overlayNickname in this.overlayRegistry) {
+            for (const overlayNickname of overlayNicknames) {
                 const overlayEntry = this.overlayRegistry[overlayNickname];
+
+                if (showHeadings) {
+                    overlayItems.push({ value: null, label: overlayEntry.overlayLabel, isHeading: true });
+                }
 
                 if (overlayEntry.combinedOptionOnly && overlayEntry.combinedOptionData) {
                     overlayItems.push({
@@ -250,7 +266,7 @@ export default class ConceptOverlayTimeline {
             // If template/SVG not ready yet, bail without drawing (but wastewater fetch can still run above)
             if (!this.svg || !this.controls || !this.state) return;
 
-            const selectedConcepts = this.state?.concept || [];
+            const selectedConcepts = this.state?.concepts || [];
             const selectedOverlays = this.state?.overlays || [];
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year" | "yoy"
 
@@ -748,14 +764,14 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, 
         }
 
         // required fields at the overlayInst level
-        if (!overlayInst.visualizationData || !overlayInst.overlayCategory || !overlayInst.yRightLabel) {
+        if (!overlayInst.visualizationData || !overlayInst.overlayLabel || !overlayInst.yRightLabel) {
             console.log(`required overlay instance field(s) empty, skipping ${overlayNickname}`);
             continue;
         }
 
         overlayRegistry[overlayNickname] = {
             visualizationData: {},
-            overlayCategory: overlayInst.overlayCategory,
+            overlayLabel: overlayInst.overlayLabel,
             yRightLabel: overlayInst.yRightLabel
         };
 
@@ -1316,6 +1332,32 @@ function blendWithWhite(hexColor, t){
 
     const finalHex = "#" + rHex + gHex + bHex;
     return finalHex;
+}
+
+function renderOverlayDropdown(overlayItems, container, onSelectionChange) {
+    container.innerHTML = "";
+
+    overlayItems.forEach(item => {
+        if (item.isHeading) {
+            const heading = document.createElement("div");
+            heading.className = "cot-dropdown-heading";
+            heading.textContent = item.label;
+            container.appendChild(heading);
+            return;
+        }
+
+        const row = document.createElement("label");
+        row.className = "cot-dropdown-row";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = item.value;
+        checkbox.addEventListener("change", onSelectionChange);
+
+        row.appendChild(checkbox);
+        row.appendChild(document.createTextNode(item.label));
+        container.appendChild(row);
+    });
 }
 
 /**

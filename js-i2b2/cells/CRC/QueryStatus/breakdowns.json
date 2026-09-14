@@ -115,6 +115,7 @@
           "#7FFF00",
           "#0a0a0a"
       ],
+      "conceptsLabel" : "Diagnosis",
       "customizeConceptRegistry": {},
       "overlayConfigs": {
         "overlays":{
@@ -140,7 +141,7 @@
                 "combinedOptionOnly":true,
                 "combinedOptionData":  { "label": "Wastewater Local COVID-19", "combinedColumns":["Northern 7 day avg", "Southern 7 day avg"], "color": "#333333", "order": 999 },                
                 "yRightLabel": "Wastewater Level",
-                "overlayCategory": "Wastewater"   
+                "overlayLabel": "MWRA Wastewater"   
             }  
         },
         "multiOverlaysYRightLabel": "Public Health Metrics"
