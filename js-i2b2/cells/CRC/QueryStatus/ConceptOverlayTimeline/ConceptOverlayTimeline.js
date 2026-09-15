@@ -1,28 +1,3 @@
-const DIAGNOSIS_REGISTRY = {
-    diagnosis: {
-        "COVID-19": { key: "COVID-19", label: "COVID-19", color: "#1f77b4", order: 1, aliases: ["COVID-19", "COVID19", "SARS-COV-2"] },
-        "Influenza": { key: "Influenza", label: "Influenza", color: "#ff7f0e", order: 2, aliases: ["INFLUENZA"] },
-        "RSV": { key: "RSV", label: "RSV", color: "#2ca02c", order: 3, aliases: ["RSV"] }
-    },
-    canonicalize(raw) {
-        const key = raw.trim().toUpperCase();
-        for (const diagnosis of Object.values(this.diagnosis)) {
-            if (diagnosis.aliases.includes(key)) {
-                return diagnosis.key;
-            }
-        }
-        return raw.trim();
-    }
-};
-
-const WASTEWATER_REGISTRY = {
-    wastewater_sources: {
-        "local-combined": { label: "Wastewater Local COVID-19", color: "#333333", order: 3, accessor: (row) => (Number(row["Northern 7 day avg"]) || 0) + (Number(row["Southern 7 day avg"]) || 0) }
-    }
-};
-
-
-
 const margin = { top: 20, right: 80, bottom: 70, left: 60 };
 
 export default class ConceptOverlayTimeline {
@@ -50,6 +25,11 @@ export default class ConceptOverlayTimeline {
             this.cannonicalHexes = this.config.advancedConfig.cannonicalHexes;
 
             this.conceptListLabel = this.config.advancedConfig.conceptsLabel;
+            this.conceptControlFlipped = false;
+            this.overlayControlFlipped = false;
+
+            this._lastConceptsSignature = null;
+            this._lastOverlaysSignature = null;
 
             this.width = this.config.displayEl.parentElement.clientWidth;
             this.height = 400 - margin.top - margin.bottom;
@@ -77,7 +57,9 @@ export default class ConceptOverlayTimeline {
                 // Cache controls (SCOPED) - LINK STYLE CONTROLS
                 self.controls = {
                     conceptList: $(".cot-concept-links", self.config.displayEl)[0],
+                    conceptDropdown: $(".cot-concept-dropdown", self.config.displayEl)[0],
                     overlayList: $(".cot-overlay-links", self.config.displayEl)[0],
+                    overlayDropdown: $(".cot-overlay-dropdown", self.config.displayEl)[0],
                     aggregationList: $(".cot-aggregation-links", self.config.displayEl)[0],
                     legend: $(".cot-legend-items", self.config.displayEl)[0],
                 };
@@ -95,7 +77,7 @@ export default class ConceptOverlayTimeline {
                     concepts: [],
                     overlays: [],
                     aggregation: "month"
-                };            
+                };
 
                 // Aggregation list is in HTML; ensure we have a selected item + sync state
                 if (self.controls.aggregationList) {
@@ -111,9 +93,40 @@ export default class ConceptOverlayTimeline {
                 }
 
                 // Bind clicks
-                bindControlLinkClicks(self.controls.conceptList, (v) => { self.state.concepts = v; self.update(); });
-                bindControlLinkClicks(self.controls.overlayList, (v) => { self.state.overlays = v; self.update(); });
+                bindControlLinkClicks(
+                    self.controls.conceptList,
+                    (value, isSelected) => {
+                        self.state.concepts = isSelected
+                            ? [...self.state.concepts, value]
+                            : self.state.concepts.filter(v => v !== value);
+                        self.update();
+                    },
+                    "All",
+                    () => { self.state.concepts = []; self.update(); }
+                );
+
+                bindControlLinkClicks(
+                    self.controls.overlayList,
+                    (value, isSelected) => {
+                        self.state.overlays = isSelected
+                            ? [...self.state.overlays, value]
+                            : self.state.overlays.filter(v => v !== value);
+                        self.update();
+                    },
+                    "None",
+                    () => { self.state.overlays = []; self.update(); }
+                );
                 bindControlLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
+
+                let hasRenderedOnce = false;
+
+                const resizeObserver = new ResizeObserver(() => {
+                    if (!hasRenderedOnce) return;
+                    self.update();
+                });
+
+                resizeObserver.observe(self.controls.conceptList.closest(".cot-concept-row"));
+                resizeObserver.observe(self.controls.overlayList.closest(".cot-overlay-row"));
 
                 // Create SVG
                 self.svgRoot = d3
@@ -130,6 +143,7 @@ export default class ConceptOverlayTimeline {
                 self.config.displayEl.style.display = "block";
 
                 self.update();
+                hasRenderedOnce = true;
             }).call(this);
 
         } catch (e) {
@@ -238,9 +252,53 @@ export default class ConceptOverlayTimeline {
                 }
             }
 
+            // Dropdown views
+            const conceptDropdownItems = conceptItems.filter(item => item.value !== "All");
+            const overlayDropdownItems = overlayItems.filter(item => item.value !== "None" && !item.isHeading || item.isHeading);
+
+            renderConceptDropdown(conceptDropdownItems, self.controls.conceptDropdown, (e) => {
+                const value = e.target.value;
+                self.state.concepts = e.target.checked
+                    ? [...self.state.concepts, value]
+                    : self.state.concepts.filter(v => v !== value);
+                self.update();
+            });
+
+            renderOverlayDropdown(overlayDropdownItems, self.controls.overlayDropdown, (e) => {
+                const value = e.target.value;
+                self.state.overlays = e.target.checked
+                    ? [...self.state.overlays, value]
+                    : self.state.overlays.filter(v => v !== value);
+                self.update();
+            });
+
             // Render initial lists
-            renderControlLinks(self.controls.conceptList, conceptItems, self.state.concept);           
-            renderControlLinks(self.controls.overlayList, overlayItems, self.state.overlays);            
+            renderControlLinks(self.controls.conceptList, conceptItems, self.state.concepts, "All");
+            renderControlLinks(self.controls.overlayList, overlayItems, self.state.overlays, "None"); 
+            
+            const conceptsSignature = JSON.stringify(Object.keys(this.conceptRegistry));
+            const overlaysSignature = JSON.stringify(Object.keys(this.overlayRegistry));
+            const labelsChanged = conceptsSignature !== this._lastConceptsSignature || overlaysSignature !== this._lastOverlaysSignature;
+            this._lastConceptsSignature = conceptsSignature;
+            this._lastOverlaysSignature = overlaysSignature;
+
+            if (labelsChanged) {
+                const conceptLabels = conceptItems.map(item => item.label);
+                self.conceptControlFlipped = updateControlFlipState(
+                    conceptLabels,
+                    self.controls.conceptList.closest(".cot-concept-row"),
+                    self.controls.conceptList,
+                    self.controls.conceptDropdown
+                );
+
+                const overlayLabels = overlayItems.filter(item => !item.isHeading).map(item => item.label);
+                self.overlayControlFlipped = updateControlFlipState(
+                    overlayLabels,
+                    self.controls.overlayList.closest(".cot-overlay-row"),
+                    self.controls.overlayList,
+                    self.controls.overlayDropdown
+                );
+            }
                 
             // ------------------------------------------------------------
             // Overlay fetches
@@ -1224,21 +1282,7 @@ function filterBreakdown(rows, selectedConcepts) {
     return rows.filter(row => selectedConcepts.includes(row.concept));
 }
 
-function renderControlLinks(ulEl, items, selectedValue) {
-    if (!ulEl) return;
-    ulEl.innerHTML = "";
-    items.forEach(({ value, label }) => {
-        const li = document.createElement("li");
-        const sp = document.createElement("span");
-        sp.className = "cot-link" + (value === selectedValue ? " selected" : "");
-        sp.setAttribute("data-value", value);
-        sp.textContent = label;
-        li.appendChild(sp);
-        ulEl.appendChild(li);
-    });
-}
-
-function bindControlLinkClicks(ulEl, onPick) {
+function bindControlLinkClicks(ulEl, onToggle, resetValue, onReset) {
     if (!ulEl) return;
     ulEl.addEventListener("click", (e) => {
         const target = e.target;
@@ -1248,12 +1292,48 @@ function bindControlLinkClicks(ulEl, onPick) {
         const value = target.getAttribute("data-value");
         if (!value) return;
 
-        // Toggle selected within this UL
-        ulEl.querySelectorAll(".cot-link.selected").forEach(n => n.classList.remove("selected"));
-        target.classList.add("selected");
+        if (value === resetValue) {
+            onReset();
+            return;
+        }
 
-        onPick(value);
+        target.classList.toggle("selected");
+        onToggle(value, target.classList.contains("selected"));
     });
+}
+
+function renderControlLinks(ulEl, items, selectedValues, resetValue) {
+    if (!ulEl) return;
+    ulEl.innerHTML = "";
+    items.forEach(({ value, label }) => {
+        const li = document.createElement("li");
+        const sp = document.createElement("span");
+
+        if (value === resetValue) {
+            sp.className = "cot-link cot-reset-link";
+        } else {
+            sp.className = "cot-link" + (selectedValues.includes(value) ? " selected" : "");
+        }
+
+        sp.setAttribute("data-value", value);
+        sp.textContent = label;
+        li.appendChild(sp);
+        ulEl.appendChild(li);
+    });
+}
+
+function updateControlFlipState(labels, rowEl, linksEl, dropdownEl) {
+    const rowWidth = rowEl.clientWidth;
+    const labelEl = rowEl.querySelector(".cot-links-label");
+    const labelWidth = labelEl ? labelEl.getBoundingClientRect().width : 0;
+    const availableWidth = rowWidth - labelWidth;
+
+    const shouldFlip = shouldFlipToDropdown(labels, linksEl, availableWidth);
+
+    linksEl.style.display = shouldFlip ? "none" : "inline-block";
+    dropdownEl.style.display = shouldFlip ? "block" : "none";
+
+    return shouldFlip;
 }
 
 function updateLegend(controls, conceptRegistry, currentKeys, overlayRegistry, selectedOverlays){
@@ -1332,6 +1412,60 @@ function blendWithWhite(hexColor, t){
 
     const finalHex = "#" + rHex + gHex + bHex;
     return finalHex;
+}
+
+function measureLabelWidth(label, container) {
+    const referenceElement = container.querySelector(".cot-link");
+    if (!referenceElement) return 0;
+
+    const clone = referenceElement.cloneNode(false);
+    clone.style.position = "absolute";
+    clone.style.visibility = "hidden";
+    clone.style.whiteSpace = "nowrap";
+    clone.textContent = label;
+
+    document.body.appendChild(clone);
+    const width = clone.getBoundingClientRect().width;
+    document.body.removeChild(clone);
+
+    return width;
+}
+
+function getSeparatorWidth() {
+    const fontSizePx = parseFloat(getComputedStyle(document.body).fontSize);
+    return fontSizePx;
+}
+
+function shouldFlipToDropdown(labels, container, availableWidth) {
+    if (!labels || labels.length === 0) return false;
+
+    const separatorWidth = getSeparatorWidth();
+
+    const totalWidth = labels.reduce((sum, label, index) => {
+        const labelWidth = measureLabelWidth(label, container);
+        const gap = index > 0 ? separatorWidth : 0;
+        return sum + labelWidth + gap;
+    }, 0);
+
+    return totalWidth > availableWidth;
+}
+
+function renderConceptDropdown(conceptItems, container, onSelectionChange) {
+    container.innerHTML = "";
+
+    conceptItems.forEach(item => {
+        const row = document.createElement("label");
+        row.className = "cot-dropdown-row";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = item.value;
+        checkbox.addEventListener("change", onSelectionChange);
+
+        row.appendChild(checkbox);
+        row.appendChild(document.createTextNode(item.label));
+        container.appendChild(row);
+    });
 }
 
 function renderOverlayDropdown(overlayItems, container, onSelectionChange) {
