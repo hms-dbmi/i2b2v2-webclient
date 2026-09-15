@@ -40,14 +40,10 @@ export default class ShrineSites {
                         t.on("click", (e, d) => {
                             const sortIndex = self.columns.indexOf(d);
                             if (sortIndex !== -1) {
-                                // deal with styling
-                                for (let node of self.config.displayEl.querySelectorAll('i.sort-by')) {
-                                    node.classList.remove("sort-by");
-                                }
-                                e.target.classList.add("sort-by");
-
                                 // update sort configuration
                                 self.columnSort = self.columnSort.map((d, i) => i === sortIndex ? -1 : 0);
+                                // deal with styling
+                                self._applySortIndicator(sortIndex, -1);
                                 self.update();
                             }
                         });
@@ -59,14 +55,10 @@ export default class ShrineSites {
                         t.on("click", (e, d) => {
                             const sortIndex = self.columns.indexOf(d);
                             if (sortIndex !== -1) {
-                                // deal with styling
-                                for (let node of self.config.displayEl.querySelectorAll('i.sort-by')) {
-                                    node.classList.remove("sort-by");
-                                }
-                                e.target.classList.add("sort-by");
-
                                 // update sort configuration
                                 self.columnSort = self.columnSort.map((d,i) => i === sortIndex ? 1 : 0);
+                                // deal with styling
+                                self._applySortIndicator(sortIndex, 1);
                                 self.update();
                             }
                         });
@@ -79,10 +71,32 @@ export default class ShrineSites {
                 if (idx > 1) cname = "details";
                 el[idx].classList.add(cname);
             });
+
+            // automatically apply a default sort (by Site, ascending) so the table
+            // is consistently ordered as soon as the module is instantiated
+            const defaultSortIndex = 0; // "Site"
+            const defaultSortOrder = 1; // ascending
+            this.columnSort[defaultSortIndex] = defaultSortOrder;
+            this._applySortIndicator(defaultSortIndex, defaultSortOrder);
+
             this.config.displayEl.style.display = "none";
         } catch(e) {
             console.error("Error in QueryStatus:ShrineSites.constructor()");
         }
+    }
+
+    // updates the header icon styling to reflect the currently active sort
+    // column/direction (sortOrder: -1 = descending, 1 = ascending)
+    _applySortIndicator(sortIndex, sortOrder) {
+        for (let node of this.config.displayEl.querySelectorAll('i.sort-by')) {
+            node.classList.remove("sort-by");
+        }
+        if (sortIndex === -1 || !sortOrder) return;
+        const th = this.config.displayEl.querySelectorAll('thead th')[sortIndex];
+        if (!th) return;
+        const suffix = sortOrder === -1 ? "-up" : "-down";
+        const icon = Array.from(th.querySelectorAll('i.bi')).find((i) => i.classList.value.endsWith(suffix));
+        if (icon) icon.classList.add("sort-by");
     }
 
     update(inputData) {
