@@ -37,6 +37,8 @@ export default class ConceptOverlayTimeline {
             this.config.displayEl.style.display = "none";
             const self = this;
 
+            console.log("[DEBUG constructor()]: all vars initialized.");
+
             // parse is done in update(); we're no longer doing it here.
 
             (async function () {
@@ -63,7 +65,7 @@ export default class ConceptOverlayTimeline {
                     aggregationList: $(".cot-aggregation-links", self.config.displayEl)[0],
                     legend: $(".cot-legend-items", self.config.displayEl)[0],
                 };
-
+                console.log("[DEBUG constructor()]: all controls initialized.");
                 // Apply custom concept label, if configured
                 if (self.conceptListLabel) {
                     const conceptLabelEl = self.config.displayEl.querySelector(".cot-concept-label");
@@ -78,6 +80,7 @@ export default class ConceptOverlayTimeline {
                     overlays: [],
                     aggregation: "month"
                 };
+                console.log("[DEBUG constructor()]: state fpr controls initialized.");
 
                 // Aggregation list is in HTML; ensure we have a selected item + sync state
                 if (self.controls.aggregationList) {
@@ -117,6 +120,8 @@ export default class ConceptOverlayTimeline {
                     () => { self.state.overlays = []; self.update(); }
                 );
                 bindControlLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
+               
+                console.log("[DEBUG constructor()]: controlLinks bound.");
 
                 let hasRenderedOnce = false;
 
@@ -127,6 +132,8 @@ export default class ConceptOverlayTimeline {
 
                 resizeObserver.observe(self.controls.conceptList.closest(".cot-concept-row"));
                 resizeObserver.observe(self.controls.overlayList.closest(".cot-overlay-row"));
+
+                console.log("[DEBUG constructor()]: resizeObserver instantiated."); 
 
                 // Create SVG
                 self.svgRoot = d3
@@ -190,11 +197,13 @@ export default class ConceptOverlayTimeline {
             // Common path: use whatever is in this.data.new to render
             const raw = this.data?.new?.result;
             if (!raw || raw.length === 0) return;
+            
+            console.log("[DEBUG update()]: data parsed and saved as raw.");
 
             if (Object.keys(this.conceptRegistry).length == 0){
                 this.conceptRegistry = generateConceptRegistry(raw, this.conceptRegistry, this.customizeConceptRegistry, this.cannonicalHexes, this.colorsInUse);
             } 
-
+            
             if (Object.keys(this.breakdownDateRange).length === 0) {
                 this.breakdownDateRange = deriveOverlayDateRangeFromBreakdown(raw);
             }
@@ -207,7 +216,11 @@ export default class ConceptOverlayTimeline {
                 this.overlayEndpoints = collectOverlayEndpoints(this.overlayEndpoints, this.overlayRegistry, this.allOverlays, this.breakdownDateRange);
             }
 
+            console.log("[DEBUG update()]: registries, endpoint object created.");
+
             resolveEndpointUrl(this.allOverlays, this.overlayEndpoints);
+
+            console.log("[DEBUG update()]: endpoint url resolved.");
 
             // Build items
             const conceptItems = [
@@ -216,6 +229,8 @@ export default class ConceptOverlayTimeline {
                     .sort(([, a], [, b]) => a.order - b.order)
                     .map(([key, d]) => ({ value: key, label: d.label }))
             ];
+
+            console.log("[DEBUG update()]: conceptItems built.");
 
             const overlayItems = [{ value: "None", label: "None" }];
             const overlayNicknames = Object.keys(this.overlayRegistry);
@@ -252,9 +267,13 @@ export default class ConceptOverlayTimeline {
                 }
             }
 
+            console.log("[DEBUG update()]: overlayItems built.");
+
             // Dropdown views
             const conceptDropdownItems = conceptItems.filter(item => item.value !== "All");
             const overlayDropdownItems = overlayItems.filter(item => item.value !== "None" && !item.isHeading || item.isHeading);
+
+            console.log("[DEBUG update()]: DropdowntItems built for concepts and overlays.");
 
             renderConceptDropdown(conceptDropdownItems, self.controls.conceptDropdown, (e) => {
                 const value = e.target.value;
@@ -272,9 +291,13 @@ export default class ConceptOverlayTimeline {
                 self.update();
             });
 
+            console.log("[DEBUG update()]: dropdowns rendered for concepts and overlays.");
+
             // Render initial lists
             renderControlLinks(self.controls.conceptList, conceptItems, self.state.concepts, "All");
-            renderControlLinks(self.controls.overlayList, overlayItems, self.state.overlays, "None"); 
+            renderControlLinks(self.controls.overlayList, overlayItems, self.state.overlays, "None");
+            
+            console.log("[DEBUG update()]: control links rendered for concepts and overlays.");
             
             const conceptsSignature = JSON.stringify(Object.keys(this.conceptRegistry));
             const overlaysSignature = JSON.stringify(Object.keys(this.overlayRegistry));
@@ -282,7 +305,10 @@ export default class ConceptOverlayTimeline {
             this._lastConceptsSignature = conceptsSignature;
             this._lastOverlaysSignature = overlaysSignature;
 
+            console.log("[DEBUG update()]: concepts and overlays signatures initialized.");
+
             if (labelsChanged) {
+                console.log("[DEBUG update()]: labels changed.");
                 const conceptLabels = conceptItems.map(item => item.label);
                 self.conceptControlFlipped = updateControlFlipState(
                     conceptLabels,
@@ -299,14 +325,15 @@ export default class ConceptOverlayTimeline {
                     self.controls.overlayDropdown
                 );
             }
-                
+            
+            console.log("[DEBUG update()]: positioned just before overlay fetches.");
             // ------------------------------------------------------------
             // Overlay fetches
             // ------------------------------------------------------------
             for (const overlayNickname in this.overlayEndpoints) {
                 if (this.fetchedOverlays[overlayNickname] === undefined) {
                     const endpointInfo = this.overlayEndpoints[overlayNickname];
-
+                    console.log("[DEBUG update()]: inside overlay fetch loop, just before calling fetchOverlayData...function.");
                     fetchOverlayDataFromEndpoint(endpointInfo).then(data => {
                         if (Array.isArray(data)) {
                             this.fetchedOverlays[overlayNickname] = data;
@@ -328,10 +355,14 @@ export default class ConceptOverlayTimeline {
             const selectedOverlays = this.state?.overlays || [];
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year" | "yoy"
 
+            console.log("[DEBUG update()]: positioned just before building renderModel.");
+
             const renderModel = buildRenderModel(raw, this.fetchedOverlays, this.overlayRegistry, this.overlayConfigs, this.conceptRegistry, selectedConcepts, selectedAggregation, selectedOverlays);
 
             const currentKeys = [...new Set(renderModel.series.map(item => item.concept))];
             updateLegend(this.controls, this.conceptRegistry, currentKeys, this.overlayRegistry, selectedOverlays);
+
+            console.log("[DEBUG update()]: positioned just before calling draw().");
 
             this.draw(renderModel, this.conceptRegistry, this.overlayRegistry, selectedOverlays, selectedAggregation);           
             
@@ -370,7 +401,7 @@ export default class ConceptOverlayTimeline {
                 .nice()            
                 .range([height, 0]);
 
-
+            console.log("[DEBUG draw()]: left y scale created.");
             // -----------------------------
             // RIGHT Y SCALE (wastewater)
             // -----------------------------
@@ -388,7 +419,7 @@ export default class ConceptOverlayTimeline {
             } else {
                 console.log("overlaySeries is empty, or no overlays are selected.");
             }
-
+            console.log("[DEBUG draw()]: right y scale created.");
 
             // -----------------------------
             // X SCALE (respect patient breakdown only)
@@ -430,7 +461,7 @@ export default class ConceptOverlayTimeline {
                 .attr("transform", "rotate(-45)")
                 .style("text-anchor", "end");
 
-
+            console.log("[DEBUG draw()]: x axis created.");
 
             // Left Y axis
 
@@ -463,6 +494,7 @@ export default class ConceptOverlayTimeline {
                     .attr("y", y);
             });
 
+            console.log("[DEBUG draw()]: left y axis created.");
 
             // Right Y axis (overlay)
             if (yRight) {
@@ -478,6 +510,8 @@ export default class ConceptOverlayTimeline {
                     .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
                     .text(renderModel.multiOverlaysYRightLabel);
             }
+
+            console.log("[DEBUG draw()]: right y axis created.");
 
             // -----------------------------
             // LINE GENERATORS
@@ -512,7 +546,7 @@ export default class ConceptOverlayTimeline {
             // -----------------------------
             // DRAW CONCEPT LINES + POINTS
             // -----------------------------
-
+            console.log("[DEBUG draw()]: positioned right before beginning concept line and point drawing.");
             for (const seriesItem of renderModel.series){
 
                 const isMaxYear = seriesItem.year === maxCptYear;
@@ -558,6 +592,8 @@ export default class ConceptOverlayTimeline {
             // -----------------------------
             // DRAW WASTEWATER OVERLAY
             // -----------------------------
+
+            console.log("[DEBUG draw()]: positioned right before beginning overlay line and point drawing.");
 
             if (overlayLine && renderModel.overlaySeries.length) {
 
@@ -647,6 +683,9 @@ export default class ConceptOverlayTimeline {
 // ======================================================================
 
 let parseData = function (xmlData, advancedConfig) {
+
+    console.log("[DEBUG parseData()]: preparing to parse.");
+
     let breakdown = {};
     breakdown.result = [];
 
@@ -709,6 +748,8 @@ let parseData = function (xmlData, advancedConfig) {
         });
     }
 
+    console.log("[DEBUG parseData()]: parse complete, returning breakdown.");
+
     return breakdown;
 };
 
@@ -754,6 +795,8 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
         }
     });
 
+    console.log("[DEBUG generateConceptRegistry()]: registry created.");
+
     return conceptRegistry;
 
 
@@ -795,6 +838,8 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
             }
         }
     }
+
+    console.log("[DEBUG customizeConceptRegistryFromConfig()]: registry customized.");
     
     return conceptRegistry;
 
@@ -953,6 +998,8 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, 
         console.log("required fields needed to generate any overlays not present; cancelling generation");
     }
 
+    console.log("[DEBUG generateOverlayRegistry()]: registry created.");
+
     return overlayRegistry;
 }
 
@@ -981,6 +1028,8 @@ function buildRenderModel(records, overlayData, overlayRegistry, overlayConfigs,
         }        
     } 
 
+    console.log("[DEBUG buildRenderModel()]: renderModel built.");
+
     return renderModel;
 
 }
@@ -1001,6 +1050,9 @@ function generateXDomain(records, selectedAggregation) {
         //unify: we're changing the tick format stuff later
         xdomain = [0, 11];
     }
+
+    console.log("[DEBUG generateXDomain()]: xdomain created.");
+
     return xdomain;
 }
 
@@ -1046,6 +1098,8 @@ function buildMonthYearConceptSeries(rawData, selectedConcepts, selectedAggregat
         concept,
         points: data.points
     }));
+
+    console.log("[DEBUG buildMonthYearConceptSeries()]: month year concept series created.");
     
     return series;   
  
@@ -1149,6 +1203,8 @@ function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcepts){
         return (orderA - orderB) || (a.year - b.year);
 
     })
+
+    console.log("[DEBUG buildYOYConceptSeries()]: yoy concept series created.");
     
     return series;
 
@@ -1159,6 +1215,7 @@ function getSourceValue(row, source) {
     if (source.combinedColumns) {
         return source.combinedColumns.reduce((sum, col) => sum + (Number(row[col]) || 0), 0);
     }
+    console.log("[DEBUG getSourceValue()]: value returned.");
     return Number(row[source.column]) || 0; 
 }
 
@@ -1174,6 +1231,7 @@ function resolveOverlaySelection(compoundKey, overlayRegistry) {
         return overlayEntry.combinedOptionData || null;
     }
 
+    console.log("[DEBUG resolveOverlaySelection()]: source key or null returned.");
     return overlayEntry.visualizationData?.[sourceKey] || null;
 }
 
@@ -1205,6 +1263,8 @@ function buildMonthYearOverlaySeries(overlayData, overlayRegistry, records, sele
             points: filteredOverlay
         });
     }
+
+    console.log("[DEBUG buildMonthYearOverlaySeries()]: month year overlay series created.");
 
     return allSeries;
 }
@@ -1271,6 +1331,7 @@ function buildYOYOverlaySeries(overlayData, overlayRegistry, selectedOverlays, s
             });
         }
     }
+    console.log("[DEBUG buildYOYOverlaySeries()]: yoy overlay series created.");
 
     return allSeries;
 }
@@ -1278,6 +1339,8 @@ function buildYOYOverlaySeries(overlayData, overlayRegistry, selectedOverlays, s
 function filterBreakdown(rows, selectedConcepts) {
     if (!rows) return [];
     if (!selectedConcepts || selectedConcepts.length === 0) return rows;
+
+    console.log("[DEBUG filterBreakdown()]: breakdown filtered.");
 
     return rows.filter(row => selectedConcepts.includes(row.concept));
 }
@@ -1299,6 +1362,7 @@ function bindControlLinkClicks(ulEl, onToggle, resetValue, onReset) {
 
         target.classList.toggle("selected");
         onToggle(value, target.classList.contains("selected"));
+        console.log("[DEBUG bindControlLinkClicks()]: control links bound.");
     });
 }
 
@@ -1319,6 +1383,7 @@ function renderControlLinks(ulEl, items, selectedValues, resetValue) {
         sp.textContent = label;
         li.appendChild(sp);
         ulEl.appendChild(li);
+        console.log("[DEBUG renderControlLinks()]: control links rendered.");
     });
 }
 
@@ -1333,6 +1398,7 @@ function updateControlFlipState(labels, rowEl, linksEl, dropdownEl) {
     linksEl.style.display = shouldFlip ? "none" : "inline-block";
     dropdownEl.style.display = shouldFlip ? "block" : "none";
 
+    console.log("[DEBUG updateControlFlipState()]: shouldFlip returned.");
     return shouldFlip;
 }
 
@@ -1366,7 +1432,7 @@ function updateLegend(controls, conceptRegistry, currentKeys, overlayRegistry, s
             );
         }
     }
-
+    console.log("[DEBUG updateLegend()]: legend updated.");
 }
 
 function selectBaseHex(cannonicalHexes, colorsInUse){
@@ -1379,12 +1445,14 @@ function selectBaseHex(cannonicalHexes, colorsInUse){
     } else {
         selectedHex = unusedColors[Math.floor(Math.random() * unusedColors.length)];
     }
+    console.log("[DEBUG selectBaseHex()]: hex selected.");
 
     return selectedHex;
     
 }
 
 function cssSafeKey(str) {
+    console.log("[DEBUG cssSafeKey()]: cssSafeKey returned.");
     return String(str)
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
@@ -1411,6 +1479,7 @@ function blendWithWhite(hexColor, t){
     const bHex= bI.toString(16).padStart(2, "0")
 
     const finalHex = "#" + rHex + gHex + bHex;
+    console.log("[DEBUG blendWithWhite()]: blended hex returned.");
     return finalHex;
 }
 
@@ -1427,12 +1496,13 @@ function measureLabelWidth(label, container) {
     document.body.appendChild(clone);
     const width = clone.getBoundingClientRect().width;
     document.body.removeChild(clone);
-
+    console.log("[DEBUG measureLabelWidth()]: label width returned.");
     return width;
 }
 
 function getSeparatorWidth() {
     const fontSizePx = parseFloat(getComputedStyle(document.body).fontSize);
+    console.log("[DEBUG getSeparatorWidth()]: separator width returned.");
     return fontSizePx;
 }
 
@@ -1446,7 +1516,7 @@ function shouldFlipToDropdown(labels, container, availableWidth) {
         const gap = index > 0 ? separatorWidth : 0;
         return sum + labelWidth + gap;
     }, 0);
-
+    console.log("[DEBUG shouldFlipToDropdown()]: width returned.");
     return totalWidth > availableWidth;
 }
 
@@ -1465,6 +1535,7 @@ function renderConceptDropdown(conceptItems, container, onSelectionChange) {
         row.appendChild(checkbox);
         row.appendChild(document.createTextNode(item.label));
         container.appendChild(row);
+        console.log("[DEBUG renderConceptDropdown()]: concept dropdown rendered.");
     });
 }
 
@@ -1491,6 +1562,7 @@ function renderOverlayDropdown(overlayItems, container, onSelectionChange) {
         row.appendChild(checkbox);
         row.appendChild(document.createTextNode(item.label));
         container.appendChild(row);
+        console.log("[DEBUG renderOverlayDropdown()]: concept dropdown rendered.");
     });
 }
 
@@ -1525,7 +1597,7 @@ function parseYMDLocal(s) {
         const dt = new Date(year, month, day);
         return isNaN(dt.getTime()) ? null : dt;
     }
-
+    console.log("[DEBUG parseYMDLocal()]: date returned.");
     return null;
 }
 
@@ -1537,6 +1609,7 @@ function bucketDate(dt, aggregation) {
     if (aggregation === "year") {
         return new Date(dt.getFullYear(), 0, 1);
     }
+    console.log("[DEBUG bucketDate()]: date returned.");
     return new Date(dt.getFullYear(), dt.getMonth(), 1);
 }
 
@@ -1579,7 +1652,7 @@ function collectPatientsByAggregation(records, aggregation) {
             });
         }
     }
-
+    console.log("[DEBUG collectPatientsByAggregation()]: patient bucket by aggregation returned.");
     return out;
 }
 
@@ -1607,7 +1680,7 @@ function collectOverlayDataByAggregation(rows, source, selectedAggregation) {
             return `${dt.getFullYear()}-${dt.getMonth()}`;
         }
     );
-
+    console.log("[DEBUG collectOverlayDataByAggregation()]: overlay data by aggregation returned.");
     return Array.from(rollup.entries())
         .filter(([k, v]) => k !== null && v !== null)
         .map(([key, value]) => {
@@ -1645,6 +1718,7 @@ function pivotToYOYRows(aggregatedRecords){
             value
         });
     }
+    console.log("[DEBUG pivotToYOYRows()]: pivoted yoy rows returned.");
     return out;
 }
 
@@ -1718,6 +1792,7 @@ async function fetchOverlayDataFromEndpoint(endpointInfo) {
         const text = await response.text();
         const xml = new DOMParser().parseFromString(text, "text/xml");
         const bodyNode = xml.querySelector("message_body");
+        console.log("[DEBUG fetchOverlayDataFromEndpoint()]: overlayData fetched from endpoint.");
         return bodyNode ? JSON.parse(bodyNode.textContent) : null;
 
     } catch (err) {
@@ -1746,6 +1821,7 @@ function detectEnv(overlayInst) {
     if (host.includes("stage")) return "stage";
 
     console.log(`detectEnv: no known env keyword found in host "${host}"; defaulting to "prod"`);
+    console.log("[DEBUG detectEnv()]: env key returned.");
     return "prod";
 }
 
@@ -1766,7 +1842,7 @@ function resolveEndpointUrl(allOverlays, overlayEndpoints) {
             console.log(`could not update endpoint url for ${overlayNickname} to fetch data`);
         }
     }
-
+    console.log("[DEBUG resolveEndpointUrl()]: mutated overlayEndpoints with resolved url returned.");
     return overlayEndpoints;
 }
 
@@ -1790,7 +1866,7 @@ function evaluateEndpointDateRange(dateRange, breakdownDateRange) {
     if (overlayStart > overlayEnd) {
         return false;
     }
-
+    console.log("[DEBUG evaluateEndpointDateRange()]: endpoint date range boolean returned.");
     return true;
 }
 
@@ -1825,7 +1901,7 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
             }
         }
     }
-
+    console.log("[DEBUG collectOverlayEndpoints()]: overlay endpoints collection returned.");
     return overlayEndpoints;
 }
 
@@ -1859,6 +1935,6 @@ function deriveOverlayDateRangeFromBreakdown(records) {
         const day = String(d.getDate()).padStart(2, "0");
         return `${month}/${day}/${d.getFullYear()}`;
     }
-
+    console.log("[DEBUG deriveOverlayDateRangeFromBreakdown()]: breakdown date range returned for overlay.");
     return { startStr: toMDY(minT), endStr: toMDY(maxT) };
 }
