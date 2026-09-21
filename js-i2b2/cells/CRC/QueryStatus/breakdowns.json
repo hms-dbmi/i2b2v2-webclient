@@ -90,6 +90,9 @@
   },
   "PATIENT_PATHOGEN_TIMELINE_SHRINE_XML": {
     "TABLE": true,
+    "DOWNLOAD": true
+  },
+  "PATIENT_PATHOGEN_TIMELINE_XML": {
     "DOWNLOAD": true,
     "CONCEPTOVERLAYTIMELINE": {
     "cannonicalHexes": 
@@ -147,10 +150,6 @@
         "multiOverlaysYRightLabel": "Public Health Metrics"
       }  
     }
-  },
-  "PATIENT_PATHOGEN_TIMELINE_XML": {
-    "DOWNLOAD": true,
-    "CONCEPTOVERLAYTIMELINE": true
   },
   "PATIENT_NIH_ENROLLMENT_XML": {
     "NIHENROLLTABLE": true,
