@@ -65,6 +65,7 @@ export default class ConceptOverlayTimeline {
                     aggregationList: $(".cot-aggregation-links", self.config.displayEl)[0],
                     legend: $(".cot-legend-items", self.config.displayEl)[0],
                 };
+                console.log(self.controls)
                 console.log("[DEBUG constructor()]: all controls initialized.");
                 // Apply custom concept label, if configured
                 if (self.conceptListLabel) {
@@ -169,6 +170,11 @@ export default class ConceptOverlayTimeline {
 
     update(inputData) {
         try {
+            console.log("[DEBUG update()]: controls exists?", !!this.controls, "displayEl:", this.config?.displayEl);
+            if (!this.controls) {
+                console.log("[DEBUG update()]: controls undefined, bailing");
+                return false;
+            }
             if (typeof inputData === "undefined") {
                 // No new payload; only stay visible if we already have some rows
                 const rawExists = this.data?.new?.result;
@@ -275,27 +281,29 @@ export default class ConceptOverlayTimeline {
 
             console.log("[DEBUG update()]: DropdowntItems built for concepts and overlays.");
 
-            renderConceptDropdown(conceptDropdownItems, self.controls.conceptDropdown, (e) => {
+            console.log("[DEBUG update()]: right before renderConceptDropdown, controls.conceptDropdown =", this.controls.conceptDropdown);
+
+            renderConceptDropdown(conceptDropdownItems, this.controls.conceptDropdown, (e) => {
                 const value = e.target.value;
-                self.state.concepts = e.target.checked
-                    ? [...self.state.concepts, value]
-                    : self.state.concepts.filter(v => v !== value);
-                self.update();
+                this.state.concepts = e.target.checked
+                    ? [...this.state.concepts, value]
+                    : this.state.concepts.filter(v => v !== value);
+                this.update();
             });
 
-            renderOverlayDropdown(overlayDropdownItems, self.controls.overlayDropdown, (e) => {
+            renderOverlayDropdown(overlayDropdownItems, this.controls.overlayDropdown, (e) => {
                 const value = e.target.value;
-                self.state.overlays = e.target.checked
-                    ? [...self.state.overlays, value]
-                    : self.state.overlays.filter(v => v !== value);
-                self.update();
+                this.state.overlays = e.target.checked
+                    ? [...this.state.overlays, value]
+                    : this.state.overlays.filter(v => v !== value);
+                this.update();
             });
 
             console.log("[DEBUG update()]: dropdowns rendered for concepts and overlays.");
 
             // Render initial lists
-            renderControlLinks(self.controls.conceptList, conceptItems, self.state.concepts, "All");
-            renderControlLinks(self.controls.overlayList, overlayItems, self.state.overlays, "None");
+            renderControlLinks(this.controls.conceptList, conceptItems, this.state.concepts, "All");
+            renderControlLinks(this.controls.overlayList, overlayItems, this.state.overlays, "None");
             
             console.log("[DEBUG update()]: control links rendered for concepts and overlays.");
             
@@ -310,19 +318,19 @@ export default class ConceptOverlayTimeline {
             if (labelsChanged) {
                 console.log("[DEBUG update()]: labels changed.");
                 const conceptLabels = conceptItems.map(item => item.label);
-                self.conceptControlFlipped = updateControlFlipState(
+                this.conceptControlFlipped = updateControlFlipState(
                     conceptLabels,
-                    self.controls.conceptList.closest(".cot-concept-row"),
-                    self.controls.conceptList,
-                    self.controls.conceptDropdown
+                    this.controls.conceptList.closest(".cot-concept-row"),
+                    this.controls.conceptList,
+                    this.controls.conceptDropdown
                 );
 
                 const overlayLabels = overlayItems.filter(item => !item.isHeading).map(item => item.label);
-                self.overlayControlFlipped = updateControlFlipState(
+                this.overlayControlFlipped = updateControlFlipState(
                     overlayLabels,
-                    self.controls.overlayList.closest(".cot-overlay-row"),
-                    self.controls.overlayList,
-                    self.controls.overlayDropdown
+                    this.controls.overlayList.closest(".cot-overlay-row"),
+                    this.controls.overlayList,
+                    this.controls.overlayDropdown
                 );
             }
             
