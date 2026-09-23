@@ -9,7 +9,14 @@ import StepLabel from '@mui/material/StepLabel';
 import StepButton from '@mui/material/StepButton';
 import Typography from '@mui/material/Typography';
 import "./EditProjectDetails.scss";
-import {EditProjectDataSources, EditProjectParameters, EditProjectUserAssociations, ProjectInfo, StatusUpdate} from "components";
+import {
+    EditProjectDataSources,
+    EditProjectParameters,
+    EditProjectSearchAutosuggest,
+    EditProjectUserAssociations,
+    ProjectInfo,
+    StatusUpdate
+} from "components";
 import Paper from "@mui/material/Paper";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import Button from "@mui/material/Button";
@@ -32,7 +39,7 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
     const [updatedParams, setUpdatedParams] = useState(selectedProject.params);
     const deletedProject = useSelector((state) => state.deletedProject);
     const [activeStep, setActiveStep] = useState(0);
-    const steps = ['Project Details', 'Parameters', 'Data Sources', "User Associations"];
+    const steps = ['Project Details', 'Parameters', 'Data Sources', "User Associations", "Search/AutoSuggest"];
     const [doSave, setDoSave] = useState(false);
     const [saveCompleted, setSaveCompleted] = useState(null);
     const [paginationModel, setPaginationModel] = useState({ pageSize: 10, page: 0});
@@ -208,8 +215,15 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                 selectedProject={selectedProject} doSave={doSave} setSaveCompleted={setSaveCompleted}
             />}
 
-            { activeStep===3 && !selectedProject.isFetchingUserRoles
+            { activeStep===3 && !selectedProject.isFetchingUsers
                 && <EditProjectUserAssociations
+                    selectedProject={selectedProject}
+                    doSave={doSave}
+                    setSaveCompleted={setSaveCompleted}
+                />
+            }
+
+            { activeStep===4 && <EditProjectSearchAutosuggest
                     selectedProject={selectedProject}
                     doSave={doSave}
                     setSaveCompleted={setSaveCompleted}
@@ -226,7 +240,7 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                     </div>}
 
                     <div className="EditProjectActionPrimary">
-                        {((activeStep < 3 && isExistingProject) || (activeStep == 1)) &&  <Button  variant="outlined" onClick={handleNext}>
+                        {((activeStep < 4 && isExistingProject) || (activeStep === 1)) &&  <Button  variant="outlined" onClick={handleNext}>
                             Continue
                         </Button>}
                     </div>

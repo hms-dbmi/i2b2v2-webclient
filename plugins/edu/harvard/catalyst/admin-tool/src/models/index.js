@@ -17,9 +17,11 @@
  export { AuthenticationConfig, AUTH_CONFIG_PARAM_NAME } from "./AuthenticationConfig";
  export { AuthenticationConfigs } from "./AuthenticationConfigs";
  export {AuthenticationConfigDomainOptions} from "./AuthenticationConfigDomainOptions";
- export {AuthenticationConfigLDAPOptions} from "./AuthenticationConfigLDAPOptions";
- export {UserStatus} from "./UserStatus";
- export {UserProjectRole} from "./UserProjectRole";
- export {UserProjectRoles} from "./UserProjectRoles";
+ export {AuthenticationConfigLDAPOptions } from "./AuthenticationConfigLDAPOptions";
+ export {UserStatus } from "./UserStatus";
+ export {UserProjectRole } from "./UserProjectRole";
+ export {UserProjectRoles } from "./UserProjectRoles";
  export { StatusInfo } from "./StatusInfo";
+ export { ProjectSearchAutosuggest, SEARCH_AUTOSUGGEST_STATUS } from "./ProjectSearchAutosuggest";
+
 

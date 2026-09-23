@@ -1,0 +1,55 @@
+.EventLogView {
+
+  .EventLogViewTableBody {
+    height: 4em;
+  }
+
+  th.MuiTableCell-root, td.MuiTableCell-root {
+    border-right: 1px solid rgba(224, 224, 224, 1) !important;
+  }
+
+  td.MuiTableCell-root {
+    font-size: 0.83em;
+  }
+
+  .MuiTableRow-root.MuiTableRow-head, .MuiTableCell-stickyHeader {
+    background-color: #e7edf3 !important;
+  }
+
+  .descriptionColumnNoExpand {
+    padding: 0.6em 0.7em 0.6em 1.3em ;
+  }
+
+  .descriptionColumn {
+    padding: 0;
+  }
+
+  .descriptionColumnLabel {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 199px;
+  }
+
+  .noborder {
+    border-top: none !important;
+    border-bottom: none !important;
+    background-color: #f8f9fa;
+  }
+
+  .mainNoBorder {
+    border-bottom: none !important;
+    border-top: 1px solid rgba(224, 224, 224, 1) !important;
+  }
+
+  .tableListingOverlay{
+    padding: 0.6em;
+  }
+  .listingStatusMsg {
+    color: green;
+  }
+  .listingStatusErrorMsg {
+    color: red;
+  }
+
+}
