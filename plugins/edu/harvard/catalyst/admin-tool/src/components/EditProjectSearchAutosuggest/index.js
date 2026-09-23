@@ -46,6 +46,7 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
                                 select
                                 defaultValue={commonDataModel}
                                 onChanged={handleCommonDataModelChange}
+                                disabled={!includePatientCounts}
                                 variant="standard"
                             >
                                 <MenuItem key={"i2b2"} value={"i2b2"}>
