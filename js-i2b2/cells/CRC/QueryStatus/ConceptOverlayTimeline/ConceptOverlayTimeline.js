@@ -115,12 +115,13 @@ export default class ConceptOverlayTimeline {
                         self.state.overlays = isSelected
                             ? [...self.state.overlays, value]
                             : self.state.overlays.filter(v => v !== value);
+                            console.log("[DEBUG overlay click]:", value, isSelected, self.state.overlays);
                         self.update();
                     },
                     "None",
                     () => { self.state.overlays = []; self.update(); }
                 );
-                bindControlLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
+                bindSingleSelectLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
                
                 console.log("[DEBUG constructor()]: controlLinks bound.");
 
@@ -317,21 +318,21 @@ export default class ConceptOverlayTimeline {
 
             if (labelsChanged) {
                 console.log("[DEBUG update()]: labels changed.");
-                const conceptLabels = conceptItems.map(item => item.label);
-                this.conceptControlFlipped = updateControlFlipState(
-                    conceptLabels,
-                    this.controls.conceptList.closest(".cot-concept-row"),
-                    this.controls.conceptList,
-                    this.controls.conceptDropdown
-                );
+                requestAnimationFrame(() => {
+                    self.conceptControlFlipped = updateControlFlipState(
+                        conceptLabels,
+                        self.controls.conceptList.closest(".cot-concept-row"),
+                        self.controls.conceptList,
+                        self.controls.conceptDropdown
+                    );
 
-                const overlayLabels = overlayItems.filter(item => !item.isHeading).map(item => item.label);
-                this.overlayControlFlipped = updateControlFlipState(
-                    overlayLabels,
-                    this.controls.overlayList.closest(".cot-overlay-row"),
-                    this.controls.overlayList,
-                    this.controls.overlayDropdown
-                );
+                    self.overlayControlFlipped = updateControlFlipState(
+                        overlayLabels,
+                        self.controls.overlayList.closest(".cot-overlay-row"),
+                        self.controls.overlayList,
+                        self.controls.overlayDropdown
+                    );
+                });
             }
             
             console.log("[DEBUG update()]: positioned just before overlay fetches.");
@@ -504,6 +505,18 @@ export default class ConceptOverlayTimeline {
 
             console.log("[DEBUG draw()]: left y axis created.");
 
+            const selectedOverlayNicknames = new Set(
+                selectedOverlays.map(compoundKey => compoundKey.split("::")[0])
+            );
+
+            let yRightLabelText;
+            if (selectedOverlayNicknames.size === 1) {
+                const [onlyNickname] = selectedOverlayNicknames;
+                yRightLabelText = overlayRegistry[onlyNickname]?.yRightLabel || renderModel.multiOverlaysYRightLabel;
+            } else {
+                yRightLabelText = renderModel.multiOverlaysYRightLabel;
+            }
+
             // Right Y axis (overlay)
             if (yRight) {
                 const yAxisRight = this.svg.append("g")
@@ -516,7 +529,7 @@ export default class ConceptOverlayTimeline {
                     .attr("text-anchor", "middle")
                     .attr("letter-spacing", "1.16")
                     .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
-                    .text(renderModel.multiOverlaysYRightLabel);
+                    .text(yRightLabelText);
             }
 
             console.log("[DEBUG draw()]: right y axis created.");
@@ -557,7 +570,7 @@ export default class ConceptOverlayTimeline {
             console.log("[DEBUG draw()]: positioned right before beginning concept line and point drawing.");
             for (const seriesItem of renderModel.series){
 
-                const isMaxYear = seriesItem.year === maxCptYear;
+                const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxCptYear;
                 const strokeWidth = isMaxYear ? 4 : 2; 
 
                 // group
@@ -609,7 +622,7 @@ export default class ConceptOverlayTimeline {
                     const source = resolveOverlaySelection(seriesItem.key, overlayRegistry);
                     if (!source) continue;
 
-                    const isMaxYear = seriesItem.year === maxOverlayYearByKey[seriesItem.key];
+                    const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxOverlayYearByKey[seriesItem.key];
                     const strokeWidth = isMaxYear ? 4 : 2;
 
                     const group = this.svg.append("g");
@@ -1356,6 +1369,7 @@ function filterBreakdown(rows, selectedConcepts) {
 function bindControlLinkClicks(ulEl, onToggle, resetValue, onReset) {
     if (!ulEl) return;
     ulEl.addEventListener("click", (e) => {
+        console.log("[DEBUG CLICK TEST]: fired, target =", e.target.className);
         const target = e.target;
         if (!(target instanceof HTMLElement)) return;
         if (!target.classList.contains("cot-link")) return;
@@ -1374,24 +1388,58 @@ function bindControlLinkClicks(ulEl, onToggle, resetValue, onReset) {
     });
 }
 
+function bindSingleSelectLinkClicks(ulEl, onSelect) {
+    if (!ulEl) return;
+    ulEl.addEventListener("click", (e) => {
+        const target = e.target;
+        if (!(target instanceof HTMLElement)) return;
+        if (!target.classList.contains("cot-link")) return;
+
+        const value = target.getAttribute("data-value");
+        if (!value) return;
+
+        ulEl.querySelectorAll(".cot-link.selected").forEach(n => n.classList.remove("selected"));
+        target.classList.add("selected");
+
+        onSelect(value);
+    });
+}
+
 function renderControlLinks(ulEl, items, selectedValues, resetValue) {
     if (!ulEl) return;
     ulEl.innerHTML = "";
-    items.forEach(({ value, label }) => {
+
+    const selectableItems = items.filter(item => item.value !== resetValue && !item.isHeading);
+    const totalSelectableItems = selectableItems.length;
+    const resetIsActive = resetValue === "All"
+        ? selectedValues.length === 0 || selectedValues.length === totalSelectableItems
+        : selectedValues.length === 0;
+
+    items.forEach(({ value, label, isHeading }) => {
         const li = document.createElement("li");
+
+        if (isHeading) {
+            const headingSpan = document.createElement("span");
+            headingSpan.className = "cot-link-heading";
+            headingSpan.textContent = label;
+            li.appendChild(headingSpan);
+            ulEl.appendChild(li);
+            return;
+        }
+
         const sp = document.createElement("span");
 
         if (value === resetValue) {
-            sp.className = "cot-link cot-reset-link";
+            sp.className = "cot-link cot-reset-link" + (resetIsActive ? " selected" : "");
         } else {
-            sp.className = "cot-link" + (selectedValues.includes(value) ? " selected" : "");
+            const isIndividuallySelected = !resetIsActive && selectedValues.includes(value);
+            sp.className = "cot-link" + (isIndividuallySelected ? " selected" : "");
         }
 
         sp.setAttribute("data-value", value);
         sp.textContent = label;
         li.appendChild(sp);
         ulEl.appendChild(li);
-        console.log("[DEBUG renderControlLinks()]: control links rendered.");
     });
 }
 
@@ -1402,6 +1450,15 @@ function updateControlFlipState(labels, rowEl, linksEl, dropdownEl) {
     const availableWidth = rowWidth - labelWidth;
 
     const shouldFlip = shouldFlipToDropdown(labels, linksEl, availableWidth);
+
+    console.log("[DEBUG updateControlFlipState()]:", {
+    labels,
+    rowWidth,
+    labelWidth,
+    availableWidth,
+    shouldFlip,
+    displayElStyle: rowEl.closest(".component-instance-viz")?.style.display
+});
 
     linksEl.style.display = shouldFlip ? "none" : "inline-block";
     dropdownEl.style.display = shouldFlip ? "block" : "none";
@@ -1738,6 +1795,7 @@ function pivotToYOYRows(aggregatedRecords){
 async function fetchOverlayDataFromEndpoint(endpointInfo) {
     if (endpointInfo.sourceType === "local") {
         try {
+            console.log("[DEBUG fetchOverlayDataFromEndpoint()]: fetching local file from:", endpointInfo.endpoint);
             const response = await fetch(endpointInfo.endpoint);
             if (!response.ok) {
                 console.error("Failed to load local overlay file:", response.status);
@@ -1845,7 +1903,7 @@ function resolveEndpointUrl(allOverlays, overlayEndpoints) {
         const resolvedUrl = currentOverlay.envUrls[detectedEndpointKey];
 
         if (resolvedUrl) {
-            overlayEndpoints[overlayNickname].endpointUrl = resolvedUrl;
+            overlayEndpoints[overlayNickname].endpoint = resolvedUrl;
         } else {
             console.log(`could not update endpoint url for ${overlayNickname} to fetch data`);
         }

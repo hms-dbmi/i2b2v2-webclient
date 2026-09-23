@@ -118,7 +118,7 @@
           "#7FFF00",
           "#0a0a0a"
       ],
-      "conceptsLabel" : "Diagnosis",
+      "conceptsLabel" : "Diagnosis:",
       "customizeConceptRegistry": {},
       "overlayConfigs": {
         "overlays":{
@@ -127,10 +127,10 @@
                   "dev": "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
                   "prod": "http://prod-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
                   "demo": "http://demo-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
-                  "local": ""
+                  "local": "js-i2b2/cells/CRC/QueryStatus/ConceptOverlayTimeline/demo_wastewater.json"
                 },
                 "endpointUrl": "",
-                "sourceType": "url",
+                "sourceType": "local",
                 "urlType" : "i2b2-proxy",
                 "dateRange": "",
                 "auth": {
