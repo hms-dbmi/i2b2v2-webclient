@@ -2,11 +2,12 @@ import { call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import md5 from 'md5';
 import {
-    SAVE_PROJECT_ACTION,
+    SAVE_PROJECT,
+} from "actions";
+import {
     saveProjectFailed,
     saveProjectSucceeded,
-} from "actions";
-
+} from "../reducers/editProjectInfoSlice";
 
 //a function that returns a promise
 const saveProjectRequest = (project) => {
@@ -47,5 +48,5 @@ export function* doSaveProject(action) {
 }
 
 export function* saveProjectSaga() {
-    yield takeLatest(SAVE_PROJECT_ACTION.SAVE_PROJECT, doSaveProject);
+    yield takeLatest(SAVE_PROJECT, doSaveProject);
 }

@@ -19,8 +19,9 @@ import {
     saveProjectUser,
     saveProjectUserStatusConfirmed,
     deleteProjectUser,
-    deleteProjectUserStatusConfirmed, deleteUser
-} from "../../actions";
+    deleteProjectUserStatusConfirmed,
+} from "../../reducers/editProjectInfoSlice";
+
 import {EditProjectUser} from "../EditProjectUser";
 import "./EditProjectUserAssociations.scss";
 import {Confirmation} from "../index";

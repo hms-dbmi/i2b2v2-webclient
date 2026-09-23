@@ -1,11 +1,14 @@
 import {call, takeLatest, put, all} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
-    getAllProjectUsers,
-    DELETE_PROJECT_USER_ACTION,
+    DELETE_PROJECT_USER,
+} from "actions";
+import {
     deleteProjectUserFailed,
     deleteProjectUserSucceeded,
-} from "actions";
+    getAllProjectUsers
+} from "../reducers/editProjectInfoSlice";
+
 import {ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE} from "../models";
 
 const deleteProjectUserRoleRequest = (projectId, username, role) => {
@@ -52,5 +55,5 @@ export function* doDeleteProjectUser(action) {
 }
 
 export function* deleteProjectUserSaga() {
-    yield takeLatest(DELETE_PROJECT_USER_ACTION.DELETE_PROJECT_USER, doDeleteProjectUser);
+    yield takeLatest(DELETE_PROJECT_USER, doDeleteProjectUser);
 }

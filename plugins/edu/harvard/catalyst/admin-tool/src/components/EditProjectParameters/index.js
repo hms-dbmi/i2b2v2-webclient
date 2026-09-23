@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     saveProjectParam, saveProjectParamStatusConfirmed,
     getAllProjectParamsStatusConfirmed,
-} from "../../actions";
+} from "../../reducers/editProjectInfoSlice";
 import {EditParameters} from "../EditParameters";
 import "./EditProjectParameters.scss";
 import {DataType, ParamStatus} from "models";

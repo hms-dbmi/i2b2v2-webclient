@@ -1,11 +1,16 @@
 import {call, takeLatest, put, all} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
+    SAVE_PROJECT_USER,
+} from "actions";
+
+import {
     getAllProjectUsers,
-    SAVE_PROJECT_USER_ACTION,
     saveProjectUserFailed,
     saveProjectUserSucceeded,
-} from "actions";
+} from "../reducers/editProjectInfoSlice";
+
+
 import {ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE} from "../models";
 
 const saveProjectUserRoleRequest = (projectId, username, role) => {
@@ -90,5 +95,5 @@ export function* doSaveProjectUser(action) {
 }
 
 export function* saveProjectUserSaga() {
-    yield takeLatest(SAVE_PROJECT_USER_ACTION.SAVE_PROJECT_USER, doSaveProjectUser);
+    yield takeLatest(SAVE_PROJECT_USER, doSaveProjectUser);
 }

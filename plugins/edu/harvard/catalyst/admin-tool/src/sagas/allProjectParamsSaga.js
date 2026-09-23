@@ -1,9 +1,12 @@
 import { call, takeLatest, put} from "redux-saga/effects";
 import {
-    GET_ALL_PROJECT_PARAMS_ACTION,
+    GET_ALL_PROJECT_PARAMS,
+} from "actions";
+
+import {
     getAllProjectParamsFailed,
     getAllProjectParamsSucceeded,
-} from "actions";
+} from "../reducers/editProjectInfoSlice";
 
 import {DataType, ParamStatus} from "models";
 import {decodeHTML} from "../utilities";
@@ -76,5 +79,5 @@ export function* doGetAllProjectParameters(action) {
 }
 
 export function* allProjectParamsSaga() {
-    yield takeLatest(GET_ALL_PROJECT_PARAMS_ACTION.GET_ALL_PROJECT_PARAMS, doGetAllProjectParameters);
+    yield takeLatest(GET_ALL_PROJECT_PARAMS, doGetAllProjectParameters);
 }

@@ -12,7 +12,7 @@ import IconButton from "@mui/material/IconButton";
 import ReplayIcon from '@mui/icons-material/Replay';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import {saveProjectUser, saveProjectUserStatusConfirmed} from "actions";
+import {saveProjectUser, saveProjectUserStatusConfirmed} from "../../reducers/editProjectInfoSlice";
 import { SelectedUser, ADMIN_ROLES, DATA_ROLES, EDITOR_ROLE } from "models";
 
 import "./ProjectUserInfo.scss";

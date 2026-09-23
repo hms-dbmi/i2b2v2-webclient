@@ -1,11 +1,14 @@
 import { all, call, takeLatest, put} from "redux-saga/effects";
 import XMLParser from 'react-xml-parser';
 import {
-    GET_ALL_PROJECT_DATASOURCES_ACTION,
+    GET_ALL_PROJECT_DATASOURCES,
+} from "actions";
+
+import {
     getAllProjectDataSourcesFailed,
     getAllProjectDataSourcesSucceeded,
     updateAllProjectDataSourcesUrl
-} from "actions";
+} from "../reducers/editProjectInfoSlice";
 import {CELL_ID} from "../models";
 
 //a function that returns a promise
@@ -245,5 +248,5 @@ export function* doGetAllProjectDataSources(action) {
 }
 
 export function* allProjectDataSourcesSaga() {
-    yield takeLatest(GET_ALL_PROJECT_DATASOURCES_ACTION.GET_ALL_PROJECT_DATASOURCES, doGetAllProjectDataSources);
+    yield takeLatest(GET_ALL_PROJECT_DATASOURCES, doGetAllProjectDataSources);
 }
