@@ -60,14 +60,22 @@
   gap: 0; /* do NOT use gap for vertical rhythm */
 }
 
-/* Make ALL rows share the same structure */
-.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-control-row,
-.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-legend-block {
+/* Make control rows share this structure */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-control-row {
   display: flex;
   align-items: baseline;      /* key: makes label + content sit on same baseline */
   flex-wrap: wrap;
 
   margin: 0;                  /* reset */
+}
+
+/* Legend block: label stays fixed beside the items; items wrap internally, not the whole row */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-legend-block {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+
+  margin: 0;
 }
 
 /* Use ONE vertical spacing mechanism: margin between rows */
