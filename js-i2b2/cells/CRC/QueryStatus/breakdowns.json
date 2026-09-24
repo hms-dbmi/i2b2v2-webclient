@@ -93,6 +93,7 @@
     "DOWNLOAD": true
   },
   "PATIENT_PATHOGEN_TIMELINE_XML": {
+    "TABLE": true,
     "DOWNLOAD": true,
     "CONCEPTOVERLAYTIMELINE": {
     "cannonicalHexes": 
@@ -119,7 +120,11 @@
           "#0a0a0a"
       ],
       "conceptsLabel" : "Diagnosis:",
-      "customizeConceptRegistry": {},
+      "customizeConceptRegistry": {
+            "COVID-19": {"color": "#1f77b4" },
+            "Influenza": { "color": "#ff7f0e"},
+            "RSV": {"color": "#2ca02c"}
+        },
       "overlayConfigs": {
         "overlays":{
             "mwraWastewater": {
