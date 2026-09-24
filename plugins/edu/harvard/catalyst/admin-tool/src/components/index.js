@@ -15,6 +15,7 @@ export { EditProjectParameters } from "./EditProjectParameters";
 export { EditProjectDetails } from "./EditProjectDetails";
 export { ProjectInfo } from "./ProjectInfo";
 export { EditProjectDataSources } from "./EditProjectDataSources";
+export { EditProjectSearchAutosuggest } from "./EditProjectSearchAutosuggest";
 export { EditProjectUserAssociations } from "./EditProjectUserAssociations";
 export { EditProjectUser } from "./EditProjectUser";
 export { ProjectUserInfo } from "./ProjectUserInfo";
