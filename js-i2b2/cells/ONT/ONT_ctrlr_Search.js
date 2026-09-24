@@ -44,7 +44,7 @@ i2b2.ONT.ctrlr.Search = {
         }
     },
 // ================================================================================================== //
-    doNameSearch: function(inSearchData) {
+    doNameSearch: function(inSearchData, compatibilityRetry) {
         // inSearchData is expected to have the following attributes:
         //   SearchStr:  what is being searched for
         //   Category: what category is being searched.
@@ -60,9 +60,18 @@ i2b2.ONT.ctrlr.Search = {
         // VERIFY that the above information has been passed
         if (!inSearchData) return false;
 
+        let compatibilityMode = i2b2.ONT.ctrlr.Search.ancestorSearchUnsupported === true;
+        let useAncestorSearch = i2b2.ONT.view.nav.params.useAncestorSearch !== false && !compatibilityMode;
+
+        // Older ONT servers support neither ancestor results nor the server-side
+        // all-categories shortcut, so compatibility mode restores the old fan-out.
+        const useServerAllCategoriesSearch = !compatibilityMode;
+
         // special client processing to search all categories
         let searchCats = [];
-        if (inSearchData.Category === "ALL CATEGORIES") {
+        if (inSearchData.Category === "ALL CATEGORIES" && useServerAllCategoriesSearch) {
+            searchCats.push("@");
+        } else if (inSearchData.Category === "ALL CATEGORIES") {
             let d = i2b2.ONT.model.Categories;
             let l = d.length;
             // build list of all categories to search
@@ -79,6 +88,21 @@ i2b2.ONT.ctrlr.Search = {
 
         let scopedCallback = new i2b2_scopedCallback();
         scopedCallback.scope = this;
+        let returnedConceptCount = 0;
+        let responseHasSearchResultField = false;
+        let compatibilityError = false;
+        let retryInCompatibilityMode = function() {
+            if (compatibilityRetry) return false;
+
+            i2b2.ONT.ctrlr.Search.ancestorSearchUnsupported = true;
+            i2b2.ONT.view.nav.params.useAncestorSearch = false;
+            $('#ONTNAVuseAncestorSearch').prop('checked', false);
+            i2b2.ONT.model.searchResults = {};
+            $("#i2b2OntSearchStatus")[0].innerHTML = "Searching in compatibility mode...";
+            alert("This ontology server does not support ancestor-aware searching. The search will be rerun in compatibility mode.");
+            i2b2.ONT.ctrlr.Search.doNameSearch(inSearchData, true);
+            return true;
+        };
         // define our callback function
         scopedCallback.callback = function(results) {
             searchCatsCount++;
@@ -91,20 +115,42 @@ i2b2.ONT.ctrlr.Search = {
                     i2b2.ONT.model.searchResultsExceeded = true;
                 } else {
                     hasError = true;
+                    compatibilityError = useServerAllCategoriesSearch &&
+                        inSearchData.Category === "ALL CATEGORIES" &&
+                        String(status).trim().toLowerCase() === "database error";
                 }
             }
             if (!hasError) {
                 let c = results.refXML.getElementsByTagName('concept');
+                returnedConceptCount += c.length;
                 for (let i=0; i<1*c.length; i++) {
-                    i2b2.ONT.model.searchResultCount++;
-                    i2b2.ONT.ctrlr.Search.addResultNode(c[i], true);
+                    if (useAncestorSearch) {
+                        if (c[i].getElementsByTagName('search_result').length > 0) {
+                            responseHasSearchResultField = true;
+                        }
+                        let isSearchResult = String(i2b2.h.getXNodeVal(c[i], 'search_result')).toLowerCase() === "true";
+                        if (isSearchResult) i2b2.ONT.model.searchResultCount++;
+                        i2b2.ONT.ctrlr.Search.addResultNode(c[i], isSearchResult);
+                    } else {
+                        i2b2.ONT.model.searchResultCount++;
+                        i2b2.ONT.ctrlr.Search.addResultNode(c[i], true);
+                    }
                 }
-            } else {
+            } else if (!compatibilityError) {
                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }
 
             // search is finished
             if (searchCatsCount === searchCats.length) {
+                if (compatibilityError && retryInCompatibilityMode()) return;
+
+                // A pre-ancestor ONT server can successfully return concepts but
+                // cannot identify which are matches. Retry once using the legacy
+                // request and rendering path rather than showing a false empty result.
+                if (useAncestorSearch && returnedConceptCount > 0 && !responseHasSearchResultField && !compatibilityRetry) {
+                    if (retryInCompatibilityMode()) return;
+                }
+
                 // How long did it take?
                 let outtime = new Date().getTime()-mytime;
                 console.log("ONT:Search took "+outtime+"ms");
@@ -119,10 +165,11 @@ i2b2.ONT.ctrlr.Search = {
                         $('i.srTooltip').attr('data-bs-original-title', "Not all results are displayed! A maximum of " + i2b2.ONT.view.nav.params.max + " records per category were returned.");
                     }
                     status[0].innerHTML = disp;
-                    if(i2b2.ONT.view.nav.params.fullSearch) {
+                    if (useAncestorSearch) {
+                        i2b2.ONT.ctrlr.Search.renderResultNodes();
+                    } else if(i2b2.ONT.view.nav.params.fullSearch) {
                         i2b2.ONT.ctrlr.Search.backfillResultNodes();
-                    }
-                    else{
+                    } else {
                         i2b2.ONT.ctrlr.Search.backfillResultNodes_fast();
                     }
                 }
@@ -137,6 +184,9 @@ i2b2.ONT.ctrlr.Search = {
         searchOptions.ont_hidden_records = i2b2.ONT.view.nav.params.hiddens;
         searchOptions.ont_reduce_results = false;
         searchOptions.ont_hierarchy = false;
+        searchOptions.ont_keyname = "true";
+        searchOptions.ont_ancestors = useAncestorSearch ? "true" : "false";
+        searchOptions.ont_reduced_results = useAncestorSearch ? "" : 'reducedResults="true"';
         searchOptions.ont_search_strategy = inSearchData.Strategy;
         searchOptions.ont_search_string = inSearchData.SearchStr;
 
@@ -144,6 +194,7 @@ i2b2.ONT.ctrlr.Search = {
         let searchCatsCount = 0;
         for (let i=0; i<searchCats.length; i++) {
             searchOptions.ont_category = searchCats[i];
+            searchOptions.ont_self = useAncestorSearch && searchCats[i] !== "@" ? "<self>\\\\" + i2b2.h.Escape(searchCats[i]) + "\\</self>\n" : "";
             i2b2.ONT.ajax.GetNameInfo("ONT:FindBy", searchOptions, scopedCallback);
         }
     },
@@ -269,6 +320,50 @@ i2b2.ONT.ctrlr.Search = {
     },
 
 // ================================================================================================== //
+    renderResultNodes: function() {
+        let treeStruct = [];
+        let func_crawl_builder = (node, parent) => {
+            let ret = [];
+            let bypass = ((node._$$_ === undefined && node._$R$_ === undefined) || (node._$$_ !== undefined && parent === null)) && !((Object.keys(node).length === 2 || parent === null) && node._$$_ !== undefined && node._$R$_ !== undefined);
+            if (bypass) {
+                // passes back only a collection of child nodes (which should be built)
+                // this bubbles up navigatable nodes through non-navigatable nodes
+                for (let subpath in node) {
+                    if (!["_$$_", "_$R$_"].includes(subpath)) {
+                        ret = ret.concat(func_crawl_builder(node[subpath], parent));
+                    }
+                }
+            } else {
+                // passes back current node fully built with its "nodes" attribute populated
+                ret = node._$$_ !== undefined ? node._$$_ : node._$R$_;
+                if (node._$R$_ && node._$$_ === undefined) {
+                    ret = node._$R$_;
+                }
+                ret.state = {
+                    loaded: true,
+                    expanded: true
+                };
+                let children = [];
+                for (let subpath in node) {
+                    if (!["_$$_", "_$R$_"].includes(subpath)) {
+                        children = children.concat(func_crawl_builder(node[subpath], node));
+                    }
+                }
+                ret.nodes = children
+            }
+            return ret;
+        };
+
+        for (let subpath in i2b2.ONT.model.searchResults) {
+            let subtree = func_crawl_builder(i2b2.ONT.model.searchResults[subpath], null);
+            treeStruct = treeStruct.concat(subtree);
+        }
+
+        // display the tree
+        i2b2.ONT.view.search.displayResults(treeStruct);
+    },
+
+// ================================================================================================== //
     backfillResultNodes: function() {
         let model = i2b2.ONT.model.searchResults;
         let nodesToLoad = [];
@@ -323,9 +418,8 @@ i2b2.ONT.ctrlr.Search = {
                     } else {
                         // passes back current node fully built with its "nodes" attribute populated
                         ret = node._$$_ !== undefined ? node._$$_ : node._$R$_;
-                        if (node._$R$_) {
+                        if (node._$R$_ && node._$$_ === undefined) {
                             ret = node._$R$_;
-                            if (node._$$_) ret.icon = node._$$_.icon; 
                         }
                         ret.state = {
                             loaded: true,
@@ -429,9 +523,8 @@ i2b2.ONT.ctrlr.Search = {
             } else {
                 // passes back current node fully built with its "nodes" attribute populated
                 ret = node._$$_ !== undefined ? node._$$_ : node._$R$_;
-                if (node._$R$_) {
+                if (node._$R$_ && node._$$_ === undefined) {
                     ret = node._$R$_;
-                    if (node._$$_) ret.icon = node._$$_.icon;
                 }
                 ret.state = {
                     loaded: true,
