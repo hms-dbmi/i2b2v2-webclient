@@ -207,6 +207,8 @@ export default class ConceptOverlayTimeline {
             if (!raw || raw.length === 0) return;
             
             console.log("[DEBUG update()]: data parsed and saved as raw.");
+            console.log("[DEBUG update()]: checking this.customizeConceptRegistry state.");
+            console.log(this.customizeConceptRegistry);
 
             if (Object.keys(this.conceptRegistry).length == 0){
                 this.conceptRegistry = generateConceptRegistry(raw, this.conceptRegistry, this.customizeConceptRegistry, this.cannonicalHexes, this.colorsInUse);
@@ -474,12 +476,14 @@ export default class ConceptOverlayTimeline {
             console.log("[DEBUG draw()]: x axis created.");
 
             // Left Y axis
+            const tickFormatLeft = maxY <= 1 ? d3.format("d") : d3.format(".2~s");
 
             const yAxisLeft = this.svg.append("g")
                 .classed("y-axis left", true)
                 .call(
                     d3.axisLeft(yLeft)
-                        .tickFormat(d3.format(".2~s")));
+                        .ticks(Math.min(maxY, 10))
+                        .tickFormat(tickFormatLeft));
 
             const yLabelText =  renderModel.yLeftLabel;
 
@@ -800,6 +804,7 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
         conceptRegistry[cptName] = {
             key : cptName,
             label : cptName,
+            color: null,
             order : index + 1
         };
     });
