@@ -96,31 +96,32 @@ export default class ConceptOverlayTimeline {
                     }
                 }
 
-                // Bind clicks
                 bindControlLinkClicks(
                     self.controls.conceptList,
-                    (value, isSelected) => {
-                        self.state.concepts = isSelected
-                            ? [...self.state.concepts, value]
-                            : self.state.concepts.filter(v => v !== value);
+                    (value) => {
+                        const next = self.state.concepts.includes(value)
+                            ? self.state.concepts.filter(v => v !== value)
+                            : [...self.state.concepts, value];
+
+                        if (next.length === 0) return;
+
+                        self.state.concepts = next;
                         self.update();
-                    },
-                    "All",
-                    () => { self.state.concepts = []; self.update(); }
+                    }
                 );
 
                 bindControlLinkClicks(
                     self.controls.overlayList,
-                    (value, isSelected) => {
-                        self.state.overlays = isSelected
-                            ? [...self.state.overlays, value]
-                            : self.state.overlays.filter(v => v !== value);
-                            console.log("[DEBUG overlay click]:", value, isSelected, self.state.overlays);
+                    (value) => {
+                        self.state.overlays = self.state.overlays.includes(value)
+                            ? self.state.overlays.filter(v => v !== value)
+                            : [...self.state.overlays, value];
                         self.update();
                     },
                     "None",
                     () => { self.state.overlays = []; self.update(); }
                 );
+
                 bindSingleSelectLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
                
                 console.log("[DEBUG constructor()]: controlLinks bound.");
@@ -230,12 +231,9 @@ export default class ConceptOverlayTimeline {
             console.log("[DEBUG update()]: endpoint url resolved.");
 
             // Build items
-            const conceptItems = [
-                { value: "All", label: "All" },
-                ...Object.entries(this.conceptRegistry)
-                    .sort(([, a], [, b]) => a.order - b.order)
-                    .map(([key, d]) => ({ value: key, label: d.label }))
-            ];
+            const conceptItems = Object.entries(this.conceptRegistry)
+                .sort(([, a], [, b]) => a.order - b.order)
+                .map(([key, d]) => ({ value: key, label: d.label }));
 
             console.log("[DEBUG update()]: conceptItems built.");
 
@@ -277,7 +275,7 @@ export default class ConceptOverlayTimeline {
             console.log("[DEBUG update()]: overlayItems built.");
 
             // Dropdown views
-            const conceptDropdownItems = conceptItems.filter(item => item.value !== "All");
+            const conceptDropdownItems = conceptItems;
             const overlayDropdownItems = overlayItems.filter(item => item.value !== "None" && !item.isHeading || item.isHeading);
 
             console.log("[DEBUG update()]: DropdowntItems built for concepts and overlays.");
@@ -303,8 +301,8 @@ export default class ConceptOverlayTimeline {
             console.log("[DEBUG update()]: dropdowns rendered for concepts and overlays.");
 
             // Render initial lists
-            renderControlLinks(this.controls.conceptList, conceptItems, this.state.concepts, "All");
-            renderControlLinks(this.controls.overlayList, overlayItems, this.state.overlays, "None");
+            renderConceptLinks(this.controls.conceptList, conceptItems, this.state.concepts);
+            renderOverlayLinks(this.controls.overlayList, overlayItems, this.state.overlays, "None");
             
             console.log("[DEBUG update()]: control links rendered for concepts and overlays.");
             
@@ -316,25 +314,28 @@ export default class ConceptOverlayTimeline {
 
             console.log("[DEBUG update()]: concepts and overlays signatures initialized.");
 
+            const conceptLabels = conceptItems.map(item => item.label);
+            const overlayLabels = overlayItems.filter(item => !item.isHeading).map(item => item.label);
+
             if (labelsChanged) {
                 console.log("[DEBUG update()]: labels changed.");
                 requestAnimationFrame(() => {
-                    self.conceptControlFlipped = updateControlFlipState(
+                    this.conceptControlFlipped = updateControlFlipState(
                         conceptLabels,
-                        self.controls.conceptList.closest(".cot-concept-row"),
-                        self.controls.conceptList,
-                        self.controls.conceptDropdown
+                        this.controls.conceptList.closest(".cot-concept-row"),
+                        this.controls.conceptList,
+                        this.controls.conceptDropdown
                     );
 
-                    self.overlayControlFlipped = updateControlFlipState(
+                    this.overlayControlFlipped = updateControlFlipState(
                         overlayLabels,
-                        self.controls.overlayList.closest(".cot-overlay-row"),
-                        self.controls.overlayList,
-                        self.controls.overlayDropdown
+                        this.controls.overlayList.closest(".cot-overlay-row"),
+                        this.controls.overlayList,
+                        this.controls.overlayDropdown
                     );
                 });
             }
-            
+                        
             console.log("[DEBUG update()]: positioned just before overlay fetches.");
             // ------------------------------------------------------------
             // Overlay fetches
@@ -1369,7 +1370,6 @@ function filterBreakdown(rows, selectedConcepts) {
 function bindControlLinkClicks(ulEl, onToggle, resetValue, onReset) {
     if (!ulEl) return;
     ulEl.addEventListener("click", (e) => {
-        console.log("[DEBUG CLICK TEST]: fired, target =", e.target.className);
         const target = e.target;
         if (!(target instanceof HTMLElement)) return;
         if (!target.classList.contains("cot-link")) return;
@@ -1377,14 +1377,12 @@ function bindControlLinkClicks(ulEl, onToggle, resetValue, onReset) {
         const value = target.getAttribute("data-value");
         if (!value) return;
 
-        if (value === resetValue) {
+        if (resetValue && value === resetValue) {
             onReset();
             return;
         }
 
-        target.classList.toggle("selected");
-        onToggle(value, target.classList.contains("selected"));
-        console.log("[DEBUG bindControlLinkClicks()]: control links bound.");
+        onToggle(value);
     });
 }
 
@@ -1405,15 +1403,30 @@ function bindSingleSelectLinkClicks(ulEl, onSelect) {
     });
 }
 
-function renderControlLinks(ulEl, items, selectedValues, resetValue) {
+function renderConceptLinks(ulEl, items, selectedValues) {
+    if (!ulEl) return;
+    ulEl.innerHTML = "";
+
+    items.forEach(({ value, label }) => {
+        const li = document.createElement("li");
+        const sp = document.createElement("span");
+
+        const isSelected = selectedValues.length === 0 || selectedValues.includes(value);
+        sp.className = "cot-link" + (isSelected ? " selected" : "");
+        sp.setAttribute("data-value", value);
+        sp.textContent = label;
+        li.appendChild(sp);
+        ulEl.appendChild(li);
+    });
+}
+
+function renderOverlayLinks(ulEl, items, selectedValues, resetValue) {
     if (!ulEl) return;
     ulEl.innerHTML = "";
 
     const selectableItems = items.filter(item => item.value !== resetValue && !item.isHeading);
     const totalSelectableItems = selectableItems.length;
-    const resetIsActive = resetValue === "All"
-        ? selectedValues.length === 0 || selectedValues.length === totalSelectableItems
-        : selectedValues.length === 0;
+    const resetIsActive = selectedValues.length === 0;
 
     items.forEach(({ value, label, isHeading }) => {
         const li = document.createElement("li");
@@ -1458,7 +1471,7 @@ function updateControlFlipState(labels, rowEl, linksEl, dropdownEl) {
     availableWidth,
     shouldFlip,
     displayElStyle: rowEl.closest(".component-instance-viz")?.style.display
-});
+    });
 
     linksEl.style.display = shouldFlip ? "none" : "inline-block";
     dropdownEl.style.display = shouldFlip ? "block" : "none";
