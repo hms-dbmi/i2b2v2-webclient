@@ -198,7 +198,7 @@ export default class ConceptOverlayTimeline {
             if (Object.keys(this.conceptRegistry).length == 0){
                 this.conceptRegistry = generateConceptRegistry(raw, this.conceptRegistry, this.customizeConceptRegistry, this.cannonicalHexes, this.colorsInUse);
             } 
-            
+
             if (Object.keys(this.breakdownDateRange).length === 0) {
                 this.breakdownDateRange = deriveOverlayDateRangeFromBreakdown(raw);
             }
@@ -764,6 +764,7 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
         if (!cptColor ||cptColor.length < 7 ||!cptColor.startsWith("#")) {
            concept.color = selectBaseHex(cannonicalHexes, colorsInUse);
            colorsInUse.push(concept.color);
+           console.log(`${conceptName} color property is not a 6 digit hex, selecting random hex from cannonical list.`)
         }
     });
 
@@ -787,6 +788,7 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
     }
 
     for (const cptNameKey of evaluatedCptNameKeys){
+
         const currentCustomConcept = customizeConceptRegistry[cptNameKey];
         const currentRegisteredConcept = conceptRegistry[cptNameKey];
         const candidateCptPropKeys = Object.keys(currentCustomConcept);
@@ -794,12 +796,22 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
         const evaluatedCptPropKeys = candidateCptPropKeys.filter(key =>
             registeredCptPropKeys.includes(key)
         );
+
+
         if (evaluatedCptPropKeys.length === 0){
             console.log("no concept property keys matching breakdown data found, cancelling customization of this concept; concept will be generated from breakdown data.")
             continue;
         } else{
             for (const evaluatedKey of evaluatedCptPropKeys){
-                if (!currentCustomConcept[evaluatedKey]){
+                if (evaluatedKey === "key"){
+                    console.log("key property cannot be customized, skipping; breakdown data derived value will be used.");
+                    continue;
+                }
+                else if (evaluatedKey === "order" && !Number.isInteger(currentCustomConcept.order)){
+                    console.log("order property must be an integer, skipping; breakdown data derived value will be used.");
+                    continue;
+                }
+                else if (currentCustomConcept[evaluatedKey] === undefined || currentCustomConcept[evaluatedKey] === ""){
                     console.log("custom concept property is empty, skipping; breakdown data derived value will be used.");
                     continue;
                 } else {
@@ -1391,14 +1403,14 @@ function updateControlFlipState(labels, rowEl, linksEl, dropdownEl) {
 
     const shouldFlip = shouldFlipToDropdown(labels, linksEl, availableWidth);
 
-    console.log("[DEBUG updateControlFlipState()]:", {
-    labels,
-    rowWidth,
-    labelWidth,
-    availableWidth,
-    shouldFlip,
-    displayElStyle: rowEl.closest(".component-instance-viz")?.style.display
-    });
+    // console.log("[DEBUG updateControlFlipState()]:", {
+    // labels,
+    // rowWidth,
+    // labelWidth,
+    // availableWidth,
+    // shouldFlip,
+    // displayElStyle: rowEl.closest(".component-instance-viz")?.style.display
+    // });
 
     linksEl.style.display = shouldFlip ? "none" : "inline-block";
     dropdownEl.style.display = shouldFlip ? "block" : "none";
@@ -1514,7 +1526,7 @@ function shouldFlipToDropdown(labels, container, availableWidth) {
         const gap = index > 0 ? separatorWidth : 0;
         return sum + labelWidth + gap;
     }, 0);
-    console.log("[DEBUG shouldFlipToDropdown()]: width returned.");
+    //console.log("[DEBUG shouldFlipToDropdown()]: width returned.");
     return totalWidth > availableWidth;
 }
 
@@ -1533,7 +1545,7 @@ function renderConceptDropdown(conceptItems, container, onSelectionChange) {
         row.appendChild(checkbox);
         row.appendChild(document.createTextNode(item.label));
         container.appendChild(row);
-        console.log("[DEBUG renderConceptDropdown()]: concept dropdown rendered.");
+       // console.log("[DEBUG renderConceptDropdown()]: concept dropdown rendered.");
     });
 }
 
@@ -1560,7 +1572,7 @@ function renderOverlayDropdown(overlayItems, container, onSelectionChange) {
         row.appendChild(checkbox);
         row.appendChild(document.createTextNode(item.label));
         container.appendChild(row);
-        console.log("[DEBUG renderOverlayDropdown()]: concept dropdown rendered.");
+        //console.log("[DEBUG renderOverlayDropdown()]: concept dropdown rendered.");
     });
 }
 
