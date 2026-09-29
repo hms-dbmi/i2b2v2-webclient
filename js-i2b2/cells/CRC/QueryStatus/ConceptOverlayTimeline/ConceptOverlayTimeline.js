@@ -758,6 +758,18 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
         conceptRegistry = customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry);
     }
 
+    const conceptKeys = Object.keys(conceptRegistry);
+    const anyMissingOrder = conceptKeys.some(
+        (key) => typeof conceptRegistry[key].order !== "number"
+    );
+
+    if (anyMissingOrder) {
+        [...conceptKeys].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" })).forEach((key, index) => {
+            conceptRegistry[key].order = index + 1;
+            console.log("Missing or invalid entry for order in one or more concepts, using alphabetical sort.")
+        });
+    }
+
     Object.entries(conceptRegistry).forEach(([conceptName, concept]) => {
         const cptColor = concept.color;
 
@@ -769,7 +781,6 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
     });
 
     return conceptRegistry;
-
 
 }
 
@@ -805,10 +816,6 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
             for (const evaluatedKey of evaluatedCptPropKeys){
                 if (evaluatedKey === "key"){
                     console.log("key property cannot be customized, skipping; breakdown data derived value will be used.");
-                    continue;
-                }
-                else if (evaluatedKey === "order" && !Number.isInteger(currentCustomConcept.order)){
-                    console.log("order property must be an integer, skipping; breakdown data derived value will be used.");
                     continue;
                 }
                 else if (currentCustomConcept[evaluatedKey] === undefined || currentCustomConcept[evaluatedKey] === ""){
@@ -902,6 +909,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, 
         if (anyMissingOrder) {
             [...sourceNicknames].sort().forEach((key, index) => {
                 sourceEntries[key].order = index + 1;
+                console.log("Missing or invalid entry for order in one or more source nicknames, using alphabetical sort.")
             });
         }
 
