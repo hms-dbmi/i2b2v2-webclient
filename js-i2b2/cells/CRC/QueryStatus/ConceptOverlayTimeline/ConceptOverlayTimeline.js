@@ -1,0 +1,1961 @@
+const margin = { top: 20, right: 80, bottom: 70, left: 60 };
+
+export default class ConceptOverlayTimeline {
+    constructor(componentConfig, qrsRecordInfo, qrsData) {
+        try {
+            this.config = componentConfig;
+            this.record = qrsRecordInfo;
+
+            this.data = { old: {}, new: {} };
+            
+            this.isVisible = false;
+
+            this.conceptRegistry = {};  
+            this.customizeConceptRegistry = this.config.advancedConfig.customizeConceptRegistry;
+
+            this.breakdownDateRange = {};
+
+            this.overlayRegistry = {};
+            this.overlayConfigs = this.config.advancedConfig.overlayConfigs;
+            this.allOverlays = this.overlayConfigs.overlays;
+            this.fetchedOverlays = {};
+            this.overlayEndpoints = {};
+
+            this.colorsInUse = [];
+            this.cannonicalHexes = this.config.advancedConfig.cannonicalHexes;
+
+            this.conceptListLabel = this.config.advancedConfig.conceptsLabel;
+            this.conceptControlFlipped = false;
+            this.overlayControlFlipped = false;
+
+            this._lastConceptsSignature = null;
+            this._lastOverlaysSignature = null;
+
+            this.width = this.config.displayEl.parentElement.clientWidth;
+            this.height = 400 - margin.top - margin.bottom;
+
+            this.config.displayEl.style.display = "none";
+            const self = this;
+
+            // parse is done in update(); we're no longer doing it here.
+
+            (async function () {
+                let response = await fetch(
+                    i2b2.CRC.QueryStatus.baseURL + "ConceptOverlayTimeline/ConceptOverlayTimeline.html"
+                );
+
+                if (!response.ok) {
+                    console.error("Failed to load ConceptOverlayTimeline.html");
+                    return;
+                }
+
+                const templateText = await response.text();
+                self.config.template = Handlebars.compile(templateText);
+
+                $(self.config.template({})).appendTo(self.config.displayEl);
+
+                // Cache controls (SCOPED) - LINK STYLE CONTROLS
+                self.controls = {
+                    conceptList: $(".cot-concept-links", self.config.displayEl)[0],
+                    conceptDropdown: $(".cot-concept-dropdown", self.config.displayEl)[0],
+                    overlayList: $(".cot-overlay-links", self.config.displayEl)[0],
+                    overlayDropdown: $(".cot-overlay-dropdown", self.config.displayEl)[0],
+                    aggregationList: $(".cot-aggregation-links", self.config.displayEl)[0],
+                    legend: $(".cot-legend-items", self.config.displayEl)[0],
+                };
+
+                // Apply custom concept label, if configured
+                if (self.conceptListLabel) {
+                    const conceptLabelEl = self.config.displayEl.querySelector(".cot-concept-label");
+                    if (conceptLabelEl) {
+                        conceptLabelEl.textContent = self.conceptListLabel;
+                    }
+                }
+
+                // Internal state (update() reads from here)
+                self.state = {
+                    concepts: [],
+                    overlays: [],
+                    aggregation: "month"
+                };
+
+                // Aggregation list is in HTML; ensure we have a selected item + sync state
+                if (self.controls.aggregationList) {
+                    const selectedAggregationNode = self.controls.aggregationList.querySelector(".cot-link.selected");
+                    if (selectedAggregationNode) {
+                        self.state.aggregation = selectedAggregationNode.getAttribute("data-value") || "month";
+                    } else {
+                        // If HTML forgot to set selected, default to month
+                        const first = self.controls.aggregationList.querySelector(".cot-link[data-value='month']");
+                        if (first) first.classList.add("selected");
+                        self.state.aggregation = "month";
+                    }
+                }
+
+                bindControlLinkClicks(
+                    self.controls.conceptList,
+                    (value) => {
+                        const next = self.state.concepts.includes(value)
+                            ? self.state.concepts.filter(v => v !== value)
+                            : [...self.state.concepts, value];
+
+                        if (next.length === 0) return;
+
+                        self.state.concepts = next;
+                        self.update();
+                    }
+                );
+
+                bindControlLinkClicks(
+                    self.controls.overlayList,
+                    (value) => {
+                        self.state.overlays = self.state.overlays.includes(value)
+                            ? self.state.overlays.filter(v => v !== value)
+                            : [...self.state.overlays, value];
+                        self.update();
+                    },
+                    "None",
+                    () => { self.state.overlays = []; self.update(); }
+                );
+
+                bindSingleSelectLinkClicks(self.controls.aggregationList, (v) => { self.state.aggregation = v; self.update(); });
+
+                let hasRenderedOnce = false;
+
+                const resizeObserver = new ResizeObserver(() => {
+                    if (!hasRenderedOnce) return;
+                    self.update();
+                });
+
+                resizeObserver.observe(self.controls.conceptList.closest(".cot-concept-row"));
+                resizeObserver.observe(self.controls.overlayList.closest(".cot-overlay-row"));
+
+                // Create SVG
+                self.svgRoot = d3
+                    .select($(".cot-timeline-svg-container", self.config.displayEl)[0])
+                    .append("svg")
+                    .attr("width", "100%")
+                    .attr("height", self.height + margin.top + margin.bottom);
+
+                self.svg = self.svgRoot
+                    .append("g")
+                    .classed("svg-body", true)
+                    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+                self.config.displayEl.style.display = "block";
+
+                self.update();
+                hasRenderedOnce = true;
+            }).call(this);
+
+        } catch (e) {
+            console.error("Error in QueryStatus:ConceptOverlayTimeline.constructor()", e);
+        }
+    }
+
+    destroy() {
+        delete this.config.displayEl;
+        delete this.config;
+        delete this.record;
+        delete this.data;
+    }   
+
+    update(inputData) {
+        try {
+            if (!this.controls) {
+                return false;
+            }
+            if (typeof inputData === "undefined") {
+                // No new payload; only stay visible if we already have some rows
+                const rawExists = this.data?.new?.result;
+                if (!rawExists || rawExists.length === 0) return false;
+            } else {
+                this.data.old = this.data.new;
+
+                    // Always attempt to parse breakdown data first, regardless of status.
+                    // Some responses carry usable data even when status is "ERROR"
+                    let resultXML = i2b2.h.XPath(inputData, "//xml_value");
+                if (resultXML.length > 0) {
+                    resultXML = resultXML[0].firstChild.nodeValue;
+                    this.data.new = parseData(resultXML, this.config.advancedConfig);
+                }
+
+                // Only bail on status if we truly ended up with nothing to show
+                const hasUsableData = this.data?.new?.result && this.data.new.result.length > 0;
+                if (!hasUsableData) {
+                    const status = i2b2.h.XPath(inputData, "//query_result_instance/query_status_type/name");
+                    if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) {
+                        return false;
+                    }
+                }
+            }
+
+            // Common path: use whatever is in this.data.new to render
+            const raw = this.data?.new?.result;
+            if (!raw || raw.length === 0) return;
+            
+
+            if (Object.keys(this.conceptRegistry).length == 0){
+                this.conceptRegistry = generateConceptRegistry(raw, this.conceptRegistry, this.customizeConceptRegistry, this.cannonicalHexes, this.colorsInUse);
+            } 
+
+            if (Object.keys(this.breakdownDateRange).length === 0) {
+                this.breakdownDateRange = deriveOverlayDateRangeFromBreakdown(raw);
+            }
+
+            if (Object.keys(this.overlayRegistry).length === 0) {
+                this.overlayRegistry = generateOverlayRegistry(this.allOverlays, this.overlayRegistry, this.cannonicalHexes, this.colorsInUse);
+            }
+
+            if (Object.keys(this.overlayEndpoints).length === 0) {
+                this.overlayEndpoints = collectOverlayEndpoints(this.overlayEndpoints, this.overlayRegistry, this.allOverlays, this.breakdownDateRange);
+            }
+
+            resolveEndpointUrl(this.allOverlays, this.overlayEndpoints);
+
+            // Build items
+            const conceptItems = Object.entries(this.conceptRegistry)
+                .sort(([, a], [, b]) => a.order - b.order)
+                .map(([key, d]) => ({ value: key, label: d.label }));
+
+            const overlayItems = [{ value: "None", label: "None" }];
+            const overlayNicknames = Object.keys(this.overlayRegistry);
+            const showHeadings = overlayNicknames.length > 1;
+
+            for (const overlayNickname of overlayNicknames) {
+                const overlayEntry = this.overlayRegistry[overlayNickname];
+
+                if (showHeadings) {
+                    overlayItems.push({ value: null, label: overlayEntry.overlayLabel, isHeading: true });
+                }
+
+                if (overlayEntry.combinedOptionOnly && overlayEntry.combinedOptionData) {
+                    overlayItems.push({
+                        value: `${overlayNickname}::combined`,
+                        label: overlayEntry.combinedOptionData.label
+                    });
+                } else {
+                    const sourceItems = Object.entries(overlayEntry.visualizationData)
+                        .sort(([, a], [, b]) => a.order - b.order)
+                        .map(([sourceKey, source]) => ({
+                            value: `${overlayNickname}::${sourceKey}`,
+                            label: source.label
+                        }));
+
+                    overlayItems.push(...sourceItems);
+
+                    if (overlayEntry.addCombinedOption && overlayEntry.combinedOptionData) {
+                        overlayItems.push({
+                            value: `${overlayNickname}::combined`,
+                            label: overlayEntry.combinedOptionData.label
+                        });
+                    }
+                }
+            }
+
+
+            // Dropdown views
+            const conceptDropdownItems = conceptItems;
+            const overlayDropdownItems = overlayItems.filter(item => item.value !== "None" && !item.isHeading || item.isHeading);
+
+            renderConceptDropdown(conceptDropdownItems, this.controls.conceptDropdown, (e) => {
+                const value = e.target.value;
+                this.state.concepts = e.target.checked
+                    ? [...this.state.concepts, value]
+                    : this.state.concepts.filter(v => v !== value);
+                this.update();
+            });
+
+            renderOverlayDropdown(overlayDropdownItems, this.controls.overlayDropdown, (e) => {
+                const value = e.target.value;
+                this.state.overlays = e.target.checked
+                    ? [...this.state.overlays, value]
+                    : this.state.overlays.filter(v => v !== value);
+                this.update();
+            });
+
+            // Render initial lists
+            renderConceptLinks(this.controls.conceptList, conceptItems, this.state.concepts);
+            renderOverlayLinks(this.controls.overlayList, overlayItems, this.state.overlays, "None");            
+           
+            const conceptsSignature = JSON.stringify(Object.keys(this.conceptRegistry));
+            const overlaysSignature = JSON.stringify(Object.keys(this.overlayRegistry));
+            const labelsChanged = conceptsSignature !== this._lastConceptsSignature || overlaysSignature !== this._lastOverlaysSignature;
+            this._lastConceptsSignature = conceptsSignature;
+            this._lastOverlaysSignature = overlaysSignature;
+
+            const conceptLabels = conceptItems.map(item => item.label);
+            const overlayLabels = overlayItems.filter(item => !item.isHeading).map(item => item.label);
+
+            if (labelsChanged) {
+                requestAnimationFrame(() => {
+                    this.conceptControlFlipped = updateControlFlipState(
+                        conceptLabels,
+                        this.controls.conceptList.closest(".cot-concept-row"),
+                        this.controls.conceptList,
+                        this.controls.conceptDropdown
+                    );
+
+                    this.overlayControlFlipped = updateControlFlipState(
+                        overlayLabels,
+                        this.controls.overlayList.closest(".cot-overlay-row"),
+                        this.controls.overlayList,
+                        this.controls.overlayDropdown
+                    );
+                });
+            }
+                        
+            // ------------------------------------------------------------
+            // Overlay fetches
+            // ------------------------------------------------------------
+            for (const overlayNickname in this.overlayEndpoints) {
+                if (this.fetchedOverlays[overlayNickname] === undefined) {
+                    const endpointInfo = this.overlayEndpoints[overlayNickname];
+                    fetchOverlayDataFromEndpoint(endpointInfo).then(data => {
+                        if (Array.isArray(data)) {
+                            this.fetchedOverlays[overlayNickname] = data;
+                        } else {
+                            if (data !== null) {
+                                console.warn(`Unrecognized overlay payload shape for ${overlayNickname}`, data);
+                            }
+                            this.fetchedOverlays[overlayNickname] = [];
+                        }
+                        this.update(); // redraw once this overlay's data arrives
+                    });
+                }
+            }
+
+            // If template/SVG not ready yet, bail without drawing (but wastewater fetch can still run above)
+            if (!this.svg || !this.controls || !this.state) return;
+
+            const selectedConcepts = this.state?.concepts || [];
+            const selectedOverlays = this.state?.overlays || [];
+            const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year" | "yoy"
+
+            const renderModel = buildRenderModel(raw, this.fetchedOverlays, this.overlayRegistry, this.overlayConfigs, this.conceptRegistry, selectedConcepts, selectedAggregation, selectedOverlays);
+
+            const currentKeys = [...new Set(renderModel.series.map(item => item.concept))];
+            updateLegend(this.controls, this.conceptRegistry, currentKeys, this.overlayRegistry, selectedOverlays);
+
+            this.draw(renderModel, this.conceptRegistry, this.overlayRegistry, selectedOverlays, selectedAggregation);           
+            
+            if (this.isVisible) {
+                this.config.displayEl.parentElement.style.height =
+                    this.config.displayEl.scrollHeight + "px";
+            }
+        } catch (e) {
+            console.error("Error in QueryStatus:ConceptOverlayTimeline.update()", e);
+            return false;
+        }
+            return true;
+    }
+    
+    draw(renderModel, conceptRegistry, overlayRegistry, selectedOverlays, selectedAggregation) {
+
+            if (!renderModel || Object.keys(renderModel).length === 0) {
+                this.svg.selectAll("*").remove();
+                return;
+            }
+
+            const width = this.width - margin.left - margin.right;
+            const height = this.height;
+
+            this.svg.selectAll("*").remove();
+
+            // -----------------------------
+            // LEFT Y SCALE (patients)
+            // -----------------------------
+
+            const maxY = Math.max(1, ...renderModel.series.flatMap(item => 
+                item.points.map(point => point.value)
+                ));
+            const yLeft = d3.scaleLinear()
+                .domain([0, maxY])
+                .nice()            
+                .range([height, 0]);
+
+            // -----------------------------
+            // RIGHT Y SCALE (wastewater)
+            // -----------------------------
+
+            let yRight = null;
+
+            if (selectedOverlays.length > 0 && renderModel.overlaySeries && renderModel.overlaySeries.length > 0) {
+                const maxOverlay = Math.max(0, ...renderModel.overlaySeries.flatMap(item =>
+                    item.points.map(point => point.value)
+                ));
+                yRight = d3.scaleLinear()
+                    .domain([0, maxOverlay])
+                    .nice()
+                    .range([height, 0]);
+            } else {
+                console.log("overlaySeries is empty, or no overlays are selected.");
+            }
+            // -----------------------------
+            // X SCALE (respect patient breakdown only)
+            // -----------------------------
+
+            const xScale = (selectedAggregation === "yoy" ? d3.scaleLinear() : d3.scaleTime())
+                .domain(renderModel.xDomain)
+                .range([0, width]);
+        
+            // -----------------------------
+            // AXES
+            // -----------------------------
+
+            // X axis
+
+            let tickFormat;
+
+            if (selectedAggregation === "yoy") {
+                tickFormat = i => renderModel.months[i];
+            } else if (selectedAggregation === "year"){
+                tickFormat = d3.timeFormat("%Y");
+            } else {
+                tickFormat = d3.timeFormat("%Y-%m")
+            }
+
+            const axis = d3.axisBottom(xScale)
+                .ticks(selectedAggregation === "yoy" ? 11 : 10)
+                .tickFormat(tickFormat)
+
+            if (selectedAggregation === "yoy") {
+                axis.tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+            }
+
+            this.svg.append("g")
+                .classed("x-axis", true)
+                .attr("transform", `translate(0,${height})`)
+                .call(axis)
+                .selectAll("text")
+                .attr("transform", "rotate(-45)")
+                .style("text-anchor", "end");
+
+            // Left Y axis
+            const tickFormatLeft = maxY <= 1 ? d3.format("d") : d3.format(".2~s");
+
+            const yAxisLeft = this.svg.append("g")
+                .classed("y-axis left", true)
+                .call(
+                    d3.axisLeft(yLeft)
+                        .ticks(Math.min(maxY, 10))
+                        .tickFormat(tickFormatLeft));
+
+            const yLabelText =  renderModel.yLeftLabel;
+
+            const yLabelLeft = yAxisLeft.append("text")
+                .attr("class", "y-label")
+                .attr("fill", "currentColor")
+                .attr("letter-spacing", "1.16")
+                .attr("text-anchor", "middle")
+                .text(yLabelText)
+                .attr("transform", "rotate(-90)");
+
+            // After render, center it using SVG bbox
+            yLabelLeft.each(function () {
+                let w = 0;
+                try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
+
+                const x = -(height / 2);        
+                const y = -margin.left + 28;      
+
+                d3.select(this)
+                    .attr("x", x)
+                    .attr("y", y);
+            });
+
+            const selectedOverlayNicknames = new Set(
+                selectedOverlays.map(compoundKey => compoundKey.split("::")[0])
+            );
+
+            let yRightLabelText;
+            if (selectedOverlayNicknames.size === 1) {
+                const [onlyNickname] = selectedOverlayNicknames;
+                yRightLabelText = overlayRegistry[onlyNickname]?.yRightLabel || renderModel.multiOverlaysYRightLabel;
+            } else {
+                yRightLabelText = renderModel.multiOverlaysYRightLabel;
+            }
+
+            // Right Y axis (overlay)
+            if (yRight) {
+                const yAxisRight = this.svg.append("g")
+                    .classed("y-axis right", true)
+                    .attr("transform", `translate(${width},0)`)
+                    .call(d3.axisRight(yRight).tickFormat(d3.format(",")))
+
+                yAxisRight.append("text")
+                    .attr("class", "y-label")
+                    .attr("text-anchor", "middle")
+                    .attr("letter-spacing", "1.16")
+                    .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
+                    .text(yRightLabelText);
+            }
+
+            // -----------------------------
+            // LINE GENERATORS
+            // -----------------------------
+
+            const patientLine = d3.line()
+                .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                .y(point => yLeft(point.value));   
+
+
+            const overlayLine = yRight ? d3.line()
+                .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                .y(point => yRight(point.value)) : null;
+
+            // -----------------------------
+            // CALCULATE MAX YEARS PER DATA SET, IF APPLICABLE
+            // -----------------------------
+
+            const hasCptYears = renderModel?.series?.some(item => Object.hasOwn(item, "year"));
+            const maxCptYear = hasCptYears ? Math.max(...renderModel.series.map(o => o.year)) : null;
+
+            const maxOverlayYearByKey = {};
+            if (renderModel?.overlaySeries?.some(item => Object.hasOwn(item, "year"))) {
+                for (const item of renderModel.overlaySeries) {
+                    if (!Object.hasOwn(item, "year")) continue;
+                    if (maxOverlayYearByKey[item.key] === undefined || item.year > maxOverlayYearByKey[item.key]) {
+                        maxOverlayYearByKey[item.key] = item.year;
+                    }
+                }
+            }
+
+            // -----------------------------
+            // DRAW CONCEPT LINES + POINTS
+            // -----------------------------
+            for (const seriesItem of renderModel.series){
+
+                const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxCptYear;
+                const strokeWidth = isMaxYear ? 4 : 2; 
+
+                // group
+                const group = this.svg.append("g");
+
+                // point label
+
+                const pointLabel = selectedAggregation === "yoy" 
+                    ? d => `${seriesItem.concept}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
+                    : d => `${seriesItem.concept} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
+
+                // Line
+                const cptPath = group.append("path")
+                    .datum(seriesItem.points)
+                    .attr("fill", "none")
+                    .attr("stroke",  seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
+                    .attr("stroke-width", strokeWidth)
+                    .attr("d", patientLine);
+
+                if (selectedAggregation === "yoy") {
+                    cptPath.append("title")
+                    .text(`${seriesItem.concept} \n${seriesItem.year}`);
+                }
+
+                // Points
+                group.selectAll(`circle.${cssSafeKey(seriesItem.concept)}`)
+                    .data(seriesItem.points)
+                    .enter()
+                    .append("circle")
+                    .attr("class", `point ${cssSafeKey(seriesItem.concept)}`)
+                    .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                    .attr("cy", point => yLeft(point.value))
+                    .attr("r", 4)
+                    .attr("fill", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
+                    .attr("stroke", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
+                    .append("title")
+                    .text(pointLabel);
+            }
+
+            // -----------------------------
+            // DRAW WASTEWATER OVERLAY
+            // -----------------------------
+
+            if (overlayLine && renderModel.overlaySeries.length) {
+
+                for (const seriesItem of renderModel.overlaySeries) {
+                    const source = resolveOverlaySelection(seriesItem.key, overlayRegistry);
+                    if (!source) continue;
+
+                    const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxOverlayYearByKey[seriesItem.key];
+                    const strokeWidth = isMaxYear ? 4 : 2;
+
+                    const group = this.svg.append("g");
+
+                    const pointLabel = selectedAggregation === "yoy"
+                        ? d => `${seriesItem.label}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} ]`
+                        : d => `${seriesItem.label}\n${tickFormat(d.date)}\n[ ${d.value} ]`;
+
+                    const overlayPath = group.append("path")
+                        .datum(seriesItem.points)
+                        .attr("fill", "none")
+                        .attr("stroke", seriesItem.stroke || source.color)
+                        .attr("stroke-width", strokeWidth)
+                        .attr("stroke-dasharray", "4 3")
+                        .attr("d", overlayLine);
+
+                    if (selectedAggregation === "yoy") {
+                        overlayPath.append("title")
+                            .text(`${seriesItem.label} \n ${seriesItem.year}`);
+                    }
+
+                    group.selectAll(`circle.${cssSafeKey(seriesItem.key)}`)
+                        .data(seriesItem.points)
+                        .enter()
+                        .append("circle")
+                        .attr("class", `overlay-point ${cssSafeKey(seriesItem.key)}`)
+                        .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                        .attr("cy", point => yRight(point.value))
+                        .attr("r", 3)
+                        .attr("fill", seriesItem.stroke || source.color)
+                        .attr("stroke", seriesItem.stroke || source.color)
+                        .append("title")
+                        .text(pointLabel);
+                }
+            }
+    }
+
+    redraw(width) {
+        try {
+            this.width = width;
+            this.update();
+        } catch (e) {
+            console.error("Error in QueryStatus:ConceptOverlayTimeline.redraw()", e);
+        }
+    }
+
+    show() {
+        try {
+            this.isVisible = true;
+            this.config.displayEl.style.display = "block";
+            if (this.config.dropdownEl) this.config.dropdownEl.style.display = "block";
+            if (this.config.parentTitleEl) {
+                this.config.parentTitleEl.innerHTML = this.record.title;
+            }
+
+            this.config.displayEl.parentElement.style.height =
+                this.config.displayEl.scrollHeight + "px";
+
+            return true;
+        } catch (e) {
+            console.error("Error in QueryStatus:ConceptOverlayTimeline.show()", e);
+        }
+    }
+
+    hide() {
+        try {
+            this.config.displayEl.style.display = "none";
+            if (this.config.dropdownEl) this.config.dropdownEl.style.display = "none";
+            this.isVisible = false;
+            return true;
+        } catch (e) {
+            console.error("Error in QueryStatus:ConceptOverlayTimeline.hide()", e);
+        }
+    }
+}
+
+// ======================================================================
+// parseData — parse ConceptOverlayTimeline breakdown into structured rows
+// ======================================================================
+
+let parseData = function (xmlData, advancedConfig) {
+
+    let breakdown = {};
+    breakdown.result = [];
+
+    let params = i2b2.h.XPath(xmlData, 'descendant::data[@column]/text()/..');
+    if (params.length === 0) return breakdown;
+
+    for (let p of params) {
+        const column = p.getAttribute("column");
+        if (!column) continue;
+
+        // Expected format:
+        // Grain ^ YYYY-MM-DD ^ YYYY Mon ^ Diagnosis
+        const parts = column.split("^");
+        if (parts.length < 4) continue;
+
+        const grain = parts[0].trim().toUpperCase();
+        const dateStr = parts[1].trim();
+        const monthNameYr = parts[2].trim();
+        const concept = parts[3].trim();
+
+        // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
+        const date = parseYMDLocal(dateStr);
+        if (!date) continue;
+
+        const rawText = p.textContent.trim();
+
+        let value = NaN;
+        const numberMatch = rawText.match(/\d+/);
+        if (numberMatch) {
+            value = parseInt(numberMatch[0], 10);
+        }
+        if (isNaN(value)) value = 0;
+
+        let include = true;
+        if (advancedConfig) {
+            if (advancedConfig.hideZeros === true && value === 0) {
+                include = false;
+            }
+
+            if (Array.isArray(advancedConfig.hideEntries)) {
+                if (
+                    advancedConfig.hideEntries.includes(concept) ||
+                    advancedConfig.hideEntries.includes(column)
+                ) {
+                    include = false;
+                }
+            }
+        }
+
+        if (!include) continue;
+
+        breakdown.result.push({
+            grain,
+            concept,
+            date,
+            dateStr,
+            monthNameYr,
+            value,
+            display: rawText
+        });
+    }
+
+    return breakdown;
+};
+
+// ======================================================================
+// Helpers
+// ======================================================================
+
+function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry, cannonicalHexes, colorsInUse) {
+    if (!data || Object.keys(data).length === 0){
+        console.log("no breakdown data found; cancelling concept registry generation");
+        return;
+    }
+    if (!cannonicalHexes || cannonicalHexes.length === 0){
+        console.log("cannonical hexes list is empty or undefined; cancelling generation");
+        return;
+    }
+    const seenCpts = [
+        ... new Set(Object.values(data).map(item => item.concept))
+    ];
+
+    const cptNames = [...seenCpts].sort((a, b) => a.localeCompare(b, undefined, {
+        sensitivity: "base"
+        }));
+
+    cptNames.forEach((cptName, index) => {
+        conceptRegistry[cptName] = {
+            key : cptName,
+            label : cptName,
+            color: null,
+            order : index + 1
+        };
+    });
+
+    if (Object.keys(customizeConceptRegistry).length > 0){
+        conceptRegistry = customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry);
+    }
+
+    const conceptKeys = Object.keys(conceptRegistry);
+    const anyMissingOrder = conceptKeys.some(
+        (key) => typeof conceptRegistry[key].order !== "number"
+    );
+
+    if (anyMissingOrder) {
+        [...conceptKeys].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" })).forEach((key, index) => {
+            conceptRegistry[key].order = index + 1;
+            console.log("Missing or invalid entry for order in one or more concepts, using alphabetical sort.")
+        });
+    }
+
+    Object.entries(conceptRegistry).forEach(([conceptName, concept]) => {
+        const cptColor = concept.color;
+
+        if (!cptColor ||cptColor.length < 7 ||!cptColor.startsWith("#")) {
+           concept.color = selectBaseHex(cannonicalHexes, colorsInUse);
+           colorsInUse.push(concept.color);
+           console.log(`${conceptName} color property is not a 6 digit hex, selecting random hex from cannonical list.`)
+        }
+    });
+
+    return conceptRegistry;
+
+}
+
+function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry) {
+    const candidateCptNameKeys = Object.keys(customizeConceptRegistry);
+    const registeredCptNameKeys = Object.keys(conceptRegistry);
+    const evaluatedCptNameKeys = candidateCptNameKeys.filter(name =>
+        registeredCptNameKeys.includes(name)
+    );
+
+    if (evaluatedCptNameKeys.length === 0){
+        console.log("no concept name keys matching breakdown data found, cancelling customization; conceptRegistry will be generated from breakdown data.");
+        return;
+    } else if (evaluatedCptNameKeys.length < candidateCptNameKeys.length)  {
+        console.log(`${candidateCptNameKeys.length} concepts were listed for customization, but only ${evaluatedCptNameKeys.length} custom registry concept names were matched.`);
+    }
+
+    for (const cptNameKey of evaluatedCptNameKeys){
+
+        const currentCustomConcept = customizeConceptRegistry[cptNameKey];
+        const currentRegisteredConcept = conceptRegistry[cptNameKey];
+        const candidateCptPropKeys = Object.keys(currentCustomConcept);
+        const registeredCptPropKeys = Object.keys(currentRegisteredConcept);
+        const evaluatedCptPropKeys = candidateCptPropKeys.filter(key =>
+            registeredCptPropKeys.includes(key)
+        );
+
+
+        if (evaluatedCptPropKeys.length === 0){
+            console.log("no concept property keys matching breakdown data found, cancelling customization of this concept; concept will be generated from breakdown data.")
+            continue;
+        } else{
+            for (const evaluatedKey of evaluatedCptPropKeys){
+                if (evaluatedKey === "key"){
+                    console.log("key property cannot be customized, skipping; breakdown data derived value will be used.");
+                    continue;
+                }
+                else if (currentCustomConcept[evaluatedKey] === undefined || currentCustomConcept[evaluatedKey] === ""){
+                    console.log("custom concept property is empty, skipping; breakdown data derived value will be used.");
+                    continue;
+                } else {
+                    currentRegisteredConcept[evaluatedKey] = currentCustomConcept[evaluatedKey];
+                }
+            }
+        }
+    }
+   
+    return conceptRegistry;
+    
+}
+
+function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, colorsInUse) {
+    // bail if allOverlays is empty or undefined
+    if (!allOverlays || Object.keys(allOverlays).length === 0) {
+        console.log("overlay configs are empty or undefined; cancelling generation");
+        return overlayRegistry;
+    }
+
+    // bail if cannonicalHexes is empty or undefined
+    if (!cannonicalHexes || cannonicalHexes.length === 0) {
+        console.log("cannonical hexes list is empty or undefined; cancelling generation");
+        return overlayRegistry;
+    }
+
+    for (const overlayNickname in allOverlays) {
+        const overlayInst = allOverlays[overlayNickname];
+
+        if (!overlayInst || Object.keys(overlayInst).length === 0) {
+            continue;
+        }
+
+        // required fields at the overlayInst level
+        if (!overlayInst.visualizationData || !overlayInst.overlayLabel || !overlayInst.yRightLabel) {
+            console.log(`required overlay instance field(s) empty, skipping ${overlayNickname}`);
+            continue;
+        }
+
+        overlayRegistry[overlayNickname] = {
+            visualizationData: {},
+            overlayLabel: overlayInst.overlayLabel,
+            yRightLabel: overlayInst.yRightLabel
+        };
+
+        // required fields at the overlaySource level
+        for (const sourceNickname in overlayInst.visualizationData) {
+            const overlaySource = overlayInst.visualizationData[sourceNickname];
+
+            if (!overlaySource || Object.keys(overlaySource).length === 0) {
+                continue;
+            }
+
+            if (!overlaySource.column) {
+                console.log(`required overlay source field(s) column empty, skipping ${sourceNickname}`);
+                continue;
+            }
+
+            overlayRegistry[overlayNickname].visualizationData[sourceNickname] = {
+                column: overlaySource.column
+            };
+            const currentSource = overlayRegistry[overlayNickname].visualizationData[sourceNickname];
+
+            // smooth out label
+            currentSource.label = overlaySource.label ? overlaySource.label : overlaySource.column;
+
+            // smooth out color
+            if (overlaySource.color && overlaySource.color.length === 7 && overlaySource.color.startsWith("#")) {
+                currentSource.color = overlaySource.color;
+                colorsInUse.push(overlaySource.color);
+            } else {
+                currentSource.color = selectBaseHex(cannonicalHexes, colorsInUse);
+            }
+
+            // take order if present
+            if (overlaySource.order !== undefined && typeof overlaySource.order === "number") {
+                currentSource.order = overlaySource.order;
+            }
+        }
+
+        // smooth out order for any sources missing it (separate pass)
+        const sourceEntries = overlayRegistry[overlayNickname].visualizationData;
+        const sourceNicknames = Object.keys(sourceEntries);
+        const anyMissingOrder = sourceNicknames.some(
+            (key) => typeof sourceEntries[key].order !== "number"
+        );
+
+        if (anyMissingOrder) {
+            [...sourceNicknames].sort().forEach((key, index) => {
+                sourceEntries[key].order = index + 1;
+                console.log("Missing or invalid entry for order in one or more source nicknames, using alphabetical sort.")
+            });
+        }
+
+        // smooth out combined-option booleans
+        const validCombinedBooleans =
+            typeof overlayInst.addCombinedOption === "boolean" &&
+            typeof overlayInst.combinedOptionOnly === "boolean";
+
+        if (!validCombinedBooleans) {
+            overlayRegistry[overlayNickname].addCombinedOption = false;
+            overlayRegistry[overlayNickname].combinedOptionOnly = false;
+            overlayRegistry[overlayNickname].combinedOptionData = "";
+        } else {
+            overlayRegistry[overlayNickname].addCombinedOption = overlayInst.addCombinedOption;
+            overlayRegistry[overlayNickname].combinedOptionOnly = overlayInst.combinedOptionOnly;
+
+            if (overlayInst.addCombinedOption === false) {
+                overlayRegistry[overlayNickname].combinedOptionData = "";
+            } else {
+                const combinedData = overlayInst.combinedOptionData;
+
+                if (combinedData && Object.keys(combinedData).length > 0) {
+                    if (!combinedData.label || !combinedData.combinedColumns) {
+                        console.log("combinedColumnsOption field(s) missing, combinedOptionData will be removed");
+                    } else {
+                        overlayRegistry[overlayNickname].combinedOptionData = {
+                            label: combinedData.label
+                        };
+
+                        const overlaySourceColumns = Object.values(sourceEntries).map((s) => s.column);
+                        const allColumnsMatch = combinedData.combinedColumns.every((col) =>
+                            overlaySourceColumns.includes(col)
+                        );
+
+                        if (overlaySourceColumns.length === 0 || !allColumnsMatch) {
+                            console.log("combinedColumns array items do not match the overlay source nicknames, combinedOptionData will be removed");
+                        } else {
+                            const combinedEntry = overlayRegistry[overlayNickname].combinedOptionData;
+                            combinedEntry.combinedColumns = combinedData.combinedColumns;
+                            combinedEntry.order = 999;
+
+                            if (combinedData.color && combinedData.color.length === 7 && combinedData.color.startsWith("#")) {
+                                combinedEntry.color = combinedData.color;
+                                colorsInUse.push(combinedData.color);
+                            } else {
+                                combinedEntry.color = selectBaseHex(cannonicalHexes, colorsInUse);
+                            }
+                        }
+                    }
+                } else {
+                    overlayRegistry[overlayNickname].combinedOptionData = "";
+                }
+            }
+        }
+
+        // cleanup: catch any combinedOptionData left incomplete
+        const combinedOptionData = overlayRegistry[overlayNickname].combinedOptionData;
+        if (combinedOptionData && (!combinedOptionData.label || !combinedOptionData.combinedColumns)) {
+            overlayRegistry[overlayNickname].combinedOptionData = "";
+            console.log("missing fields detected in combinedOptionData, clearing out any data present for this property");
+        }
+    }
+
+    // final cleanup: drop any overlay whose visualizationData ended up empty
+    for (const overlayNickname of Object.keys(overlayRegistry)) {
+        if (Object.keys(overlayRegistry[overlayNickname].visualizationData).length === 0) {
+            delete overlayRegistry[overlayNickname];
+        }
+    }
+
+    // final whole-registry guard
+    if (Object.keys(overlayRegistry).length === 0) {
+        console.log("required fields needed to generate any overlays not present; cancelling generation");
+    }
+
+    return overlayRegistry;
+}
+
+function buildRenderModel(records, overlayData, overlayRegistry, overlayConfigs, conceptRegistry, selectedConcepts, selectedAggregation, selectedOverlays) {
+
+    let renderModel;
+
+    if (selectedAggregation === "yoy"){
+        renderModel = { 
+            "aggregateType": selectedAggregation,
+            "series" : buildYOYConceptSeries(records, conceptRegistry, selectedConcepts), 
+            "xDomain": generateXDomain(records, selectedAggregation),
+            "months": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+            "yLeftLabel": "Number of Patients", 
+            "overlaySeries": buildYOYOverlaySeries(overlayData, overlayRegistry, selectedOverlays, selectedAggregation),
+            "multiOverlaysYRightLabel": overlayConfigs.multiOverlaysYRightLabel
+        }      
+    } else {
+        renderModel = { 
+            "aggregateType": selectedAggregation,
+            "series" : buildMonthYearConceptSeries(records, selectedConcepts, selectedAggregation), 
+            "xDomain": generateXDomain(records, selectedAggregation), 
+            "yLeftLabel": "Number of Patients", 
+            "overlaySeries": buildMonthYearOverlaySeries(overlayData, overlayRegistry, records, selectedOverlays, selectedAggregation),
+            "multiOverlaysYRightLabel": overlayConfigs.multiOverlaysYRightLabel
+        }        
+    } 
+
+    return renderModel;
+
+}
+
+function generateXDomain(records, selectedAggregation) {
+    let xdomain = null; 
+    if (selectedAggregation === "month" || selectedAggregation === "year"){
+        const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);        
+
+        xdomain = d3.extent(bucketedPatients, d => d.date);
+
+        // Guard: if extent is bad, bail
+        if (!xdomain[0] || !xdomain[1]) {
+            console.log("xdomain extent issue; bailing on generating xdomain.")
+            return [];
+        }
+    } else {
+        //unify: we're changing the tick format stuff later
+        xdomain = [0, 11];
+    }
+
+    return xdomain;
+}
+
+function buildMonthYearConceptSeries(rawData, selectedConcepts, selectedAggregation) {
+
+    const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
+
+    // get the raw data by aggregation grain
+    const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === aggregationGrain);
+
+    let filteredRows = filterBreakdown(yearRows, selectedConcepts);
+    const bucketedPatients = collectPatientsByAggregation(filteredRows, selectedAggregation);
+
+    // If (for some reason) nothing survived bucketing, bail cleanly
+    if (!bucketedPatients || bucketedPatients.length === 0) {
+        return;
+    }
+   
+    const groupCptMonthYear = {}
+    for (const row of bucketedPatients) {
+        let concept = row.concept;
+        let date = row.date;
+        let value = row.value;
+        
+        if (groupCptMonthYear[concept] === undefined){
+            groupCptMonthYear[concept] = {
+                points: [],
+            };
+        }
+                
+        let point = {date, value};
+   
+        groupCptMonthYear[concept].points.push(point);
+    }  
+
+    //sort the dates just in case in the points array
+    Object.values(groupCptMonthYear).forEach((pointsArr) => {
+        pointsArr.points.sort((a, b) => a.date - b.date);
+        });
+
+
+    const series = Object.entries(groupCptMonthYear).map(([concept, data]) => ({
+        concept,
+        points: data.points
+    }));
+   
+    return series;   
+ 
+}
+
+function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcepts){
+    //take the raw data and if needed, filter it by concept to do the row pivot
+    const yoyRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "M");
+
+    let yoyFilteredRows = filterBreakdown(yoyRows, selectedConcepts);
+
+    const yoyPivotRows = pivotToYOYRows(yoyFilteredRows); 
+    
+    //Take the pivoted rows and push them into an object organized by concept
+    const byConceptYear = {};
+
+    for(const row of yoyPivotRows){
+
+        let concept = row.concept;
+        let year = row.year;
+        let monthIndex = row.monthIndex;
+        let value = row.value;   
+
+        if (byConceptYear[concept] === undefined){
+            byConceptYear[concept] = {};
+        }
+        
+        if (byConceptYear[concept][year] === undefined){
+            byConceptYear[concept][year] = {
+                points: [],
+                stroke: null
+            };
+        }
+        
+        let point = {monthIndex, value};
+   
+        byConceptYear[concept][year].points.push(point);                
+        
+    }
+    //sort the data 
+    
+    Object.values(byConceptYear).forEach((yearMap) => {
+        Object.values(yearMap).forEach((pointsArr) => {
+            pointsArr.points.sort((a, b) => a.monthIndex - b.monthIndex);
+        });
+    }); 
+
+    const lookup ={}
+
+    Object.keys(byConceptYear).forEach((cpt) => {
+        const years = Object.keys(byConceptYear[cpt]).map(Number);
+
+        lookup[cpt] = {
+            min: Math.min(...years),
+            max: Math.max(...years)
+        }
+    });
+    
+    const T_MIN = 0.3;
+   
+    Object.keys(byConceptYear).forEach((cpt) => {
+        const years = Object.keys(byConceptYear[cpt]).map(Number);
+        let computedStroke = null;
+
+        years.forEach((year)=>{
+            const range = lookup[cpt];
+            if (!range) return;
+
+            const { min, max } = range;
+
+            const u = (min === max) ? 1 : (year - min) / (max - min);
+
+            const t = T_MIN + u * (1 - T_MIN);
+
+            const baseColor = conceptRegistry?.[cpt]?.color;
+            if (!baseColor) return;
+
+            computedStroke = blendWithWhite(baseColor, t);
+
+            byConceptYear[cpt][year].stroke = computedStroke;
+
+        });
+       
+    });
+
+  
+  //create the series
+    const series = Object.entries(byConceptYear).flatMap(([concept, years]) => 
+    Object.entries(years).map(([yearKey, monthlyDataObj]) => ({
+        concept,
+        year: Number(yearKey),
+        points: monthlyDataObj.points,
+        stroke: monthlyDataObj.stroke
+        }))
+    );
+                                 
+    // Order series by concept registry order, then by ascending year
+    series.sort((a, b) => { 
+        const orderA = conceptRegistry?.[a.concept]?.order ?? 9999;
+        const orderB = conceptRegistry?.[b.concept]?.order ?? 9999;
+        return (orderA - orderB) || (a.year - b.year);
+
+    })
+    
+    return series;
+
+}
+
+function getSourceValue(row, source) {
+    if (source.combinedColumns) {
+        return source.combinedColumns.reduce((sum, col) => sum + (Number(row[col]) || 0), 0);
+    }
+    return Number(row[source.column]) || 0; 
+}
+
+function resolveOverlaySelection(compoundKey, overlayRegistry) {
+    const [overlayNickname, sourceKey] = compoundKey.split("::");
+    const overlayEntry = overlayRegistry[overlayNickname];
+
+    if (!overlayEntry) {
+        return null;
+    }
+
+    if (sourceKey === "combined") {
+        return overlayEntry.combinedOptionData || null;
+    }
+
+    return overlayEntry.visualizationData?.[sourceKey] || null;
+}
+
+function buildMonthYearOverlaySeries(overlayData, overlayRegistry, records, selectedOverlays, selectedAggregation) {
+    const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);
+    const domain = d3.extent(bucketedPatients, d => d.date);
+
+    const allSeries = [];
+
+    for (const compoundKey of selectedOverlays) {
+        const [overlayNickname] = compoundKey.split("::");
+        const source = resolveOverlaySelection(compoundKey, overlayRegistry);
+        const rows = overlayData[overlayNickname];
+
+        if (!source || !Array.isArray(rows)) {
+            console.log(`could not resolve selection or data for ${compoundKey}`);
+            continue;
+        }
+
+        const bucketedOverlay = collectOverlayDataByAggregation(rows, source, selectedAggregation);
+
+        const filteredOverlay = (domain?.[0] && domain?.[1])
+            ? bucketedOverlay.filter(d => d.date >= domain[0] && d.date <= domain[1])
+            : bucketedOverlay;
+
+        allSeries.push({
+            key: compoundKey,
+            label: source.label,
+            points: filteredOverlay
+        });
+    }
+
+    return allSeries;
+}
+
+function buildYOYOverlaySeries(overlayData, overlayRegistry, selectedOverlays, selectedAggregation) {
+    const allSeries = [];
+
+    for (const compoundKey of selectedOverlays) {
+        const [overlayNickname] = compoundKey.split("::");
+        const source = resolveOverlaySelection(compoundKey, overlayRegistry);
+        const rows = overlayData[overlayNickname];
+
+        if (!source || !Array.isArray(rows)) {
+            console.log(`could not resolve selection or data for ${compoundKey}`);
+            continue;
+        }
+
+        const byYear = {};
+
+        for (const row of rows) {
+            const d = new Date(row["Sample Date"]);
+            if (!(d instanceof Date) || isNaN(d.getTime())) continue;
+
+            const year = d.getFullYear();
+            const monthIndex = d.getMonth();
+            const value = getSourceValue(row, source);
+
+            if (value === null || value === undefined || Number.isNaN(value)) continue;
+
+            if (byYear[year] === undefined) byYear[year] = {};
+            if (byYear[year][monthIndex] === undefined) byYear[year][monthIndex] = [];
+            byYear[year][monthIndex].push(value);
+        }
+
+        const yearKeys = Object.keys(byYear);
+        if (yearKeys.length === 0) {
+            console.log(`no valid data for ${compoundKey}, skipping`);
+            continue;
+        }
+
+        const T_MIN = 0.3;
+        const yearsList = yearKeys.map(Number);
+        const min = Math.min(...yearsList);
+        const max = Math.max(...yearsList);
+
+        for (const yearKey of yearKeys) {
+            const monthBuckets = byYear[yearKey];
+            const pointsArray = Object.entries(monthBuckets).map(([monthKey, values]) => {
+                const avg = values.length ? values.reduce((a, v) => a + v, 0) / values.length : 0;
+                return { monthIndex: Number(monthKey), value: avg };
+            });
+            pointsArray.sort((a, b) => a.monthIndex - b.monthIndex);
+
+            const year = Number(yearKey);
+            const u = (min === max) ? 1 : (year - min) / (max - min);
+            const t = T_MIN + u * (1 - T_MIN);
+
+            allSeries.push({
+                key: compoundKey,
+                label: source.label,
+                year,
+                points: pointsArray,
+                stroke: source.color ? blendWithWhite(source.color, t) : undefined
+            });
+        }
+    }
+
+    return allSeries;
+}
+
+function filterBreakdown(rows, selectedConcepts) {
+    if (!rows) return [];
+    if (!selectedConcepts || selectedConcepts.length === 0) return rows;
+
+    return rows.filter(row => selectedConcepts.includes(row.concept));
+}
+
+function bindControlLinkClicks(ulEl, onToggle, resetValue, onReset) {
+    if (!ulEl) return;
+    ulEl.addEventListener("click", (e) => {
+        const target = e.target;
+        if (!(target instanceof HTMLElement)) return;
+        if (!target.classList.contains("cot-link")) return;
+
+        const value = target.getAttribute("data-value");
+        if (!value) return;
+
+        if (resetValue && value === resetValue) {
+            onReset();
+            return;
+        }
+
+        onToggle(value);
+    });
+}
+
+function bindSingleSelectLinkClicks(ulEl, onSelect) {
+    if (!ulEl) return;
+    ulEl.addEventListener("click", (e) => {
+        const target = e.target;
+        if (!(target instanceof HTMLElement)) return;
+        if (!target.classList.contains("cot-link")) return;
+
+        const value = target.getAttribute("data-value");
+        if (!value) return;
+
+        ulEl.querySelectorAll(".cot-link.selected").forEach(n => n.classList.remove("selected"));
+        target.classList.add("selected");
+
+        onSelect(value);
+    });
+}
+
+function renderConceptLinks(ulEl, items, selectedValues) {
+    if (!ulEl) return;
+    ulEl.innerHTML = "";
+
+    items.forEach(({ value, label }) => {
+        const li = document.createElement("li");
+        const sp = document.createElement("span");
+
+        const isSelected = selectedValues.length === 0 || selectedValues.includes(value);
+        sp.className = "cot-link" + (isSelected ? " selected" : "");
+        sp.setAttribute("data-value", value);
+        sp.textContent = label;
+        li.appendChild(sp);
+        ulEl.appendChild(li);
+    });
+}
+
+function renderOverlayLinks(ulEl, items, selectedValues, resetValue) {
+    if (!ulEl) return;
+    ulEl.innerHTML = "";
+
+    const selectableItems = items.filter(item => item.value !== resetValue && !item.isHeading);
+    const totalSelectableItems = selectableItems.length;
+    const resetIsActive = selectedValues.length === 0;
+
+    items.forEach(({ value, label, isHeading }) => {
+        const li = document.createElement("li");
+
+        if (isHeading) {
+            const headingSpan = document.createElement("span");
+            headingSpan.className = "cot-link-heading";
+            headingSpan.textContent = label;
+            li.appendChild(headingSpan);
+            ulEl.appendChild(li);
+            return;
+        }
+
+        const sp = document.createElement("span");
+
+        if (value === resetValue) {
+            sp.className = "cot-link cot-reset-link" + (resetIsActive ? " selected" : "");
+        } else {
+            const isIndividuallySelected = !resetIsActive && selectedValues.includes(value);
+            sp.className = "cot-link" + (isIndividuallySelected ? " selected" : "");
+        }
+
+        sp.setAttribute("data-value", value);
+        sp.textContent = label;
+        li.appendChild(sp);
+        ulEl.appendChild(li);
+    });
+}
+
+function updateControlFlipState(labels, rowEl, linksEl, dropdownEl) {
+    const rowWidth = rowEl.clientWidth;
+    const labelEl = rowEl.querySelector(".cot-links-label");
+    const labelWidth = labelEl ? labelEl.getBoundingClientRect().width : 0;
+    const availableWidth = rowWidth - labelWidth;
+
+    const shouldFlip = shouldFlipToDropdown(labels, linksEl, availableWidth);
+
+    // console.log("[DEBUG updateControlFlipState()]:", {
+    // labels,
+    // rowWidth,
+    // labelWidth,
+    // availableWidth,
+    // shouldFlip,
+    // displayElStyle: rowEl.closest(".component-instance-viz")?.style.display
+    // });
+
+    linksEl.style.display = shouldFlip ? "none" : "inline-block";
+    dropdownEl.style.display = shouldFlip ? "block" : "none";
+
+    return shouldFlip;
+}
+
+function updateLegend(controls, conceptRegistry, currentKeys, overlayRegistry, selectedOverlays){
+
+     // Clear legend
+    if (controls?.legend) controls.legend.innerHTML = "";
+
+    currentKeys.forEach((key) => {
+        const conceptInst = conceptRegistry[key];
+
+        if (!conceptInst) return;
+        $(controls.legend).append(
+            `<span class="legend-row">
+                <span class="legend-swatch" style="background:${conceptInst.color}"></span>
+                <span>${conceptInst.label}</span>
+            </span>`
+        );
+    });
+
+    for (const compoundKey of selectedOverlays) {
+        if (compoundKey === "None") continue;
+
+        const source = resolveOverlaySelection(compoundKey, overlayRegistry);
+        if (source) {
+            $(controls.legend).append(
+                `<span class="legend-row">
+                    <span class="legend-swatch" style="background:${source.color}"></span>
+                    <span>${source.label}</span>
+                </span>`
+            );
+        }
+    }
+}
+
+function selectBaseHex(cannonicalHexes, colorsInUse){
+    let selectedHex = "";
+    const unusedColors = cannonicalHexes.filter(color => !colorsInUse.includes(color));
+
+    if (unusedColors.length === 0){
+        console.log("all cannonical hexes all in use; duplicate colors will be assigned");
+        selectedHex = cannonicalHexes[Math.floor(Math.random() * cannonicalHexes.length)];
+    } else {
+        selectedHex = unusedColors[Math.floor(Math.random() * unusedColors.length)];
+    }
+
+    return selectedHex;
+    
+}
+
+function cssSafeKey(str) {
+    return String(str)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+function blendWithWhite(hexColor, t){
+    const hexCleaned = hexColor.startsWith('#') ? hexColor.slice(1) : hexColor;   
+
+    const r = parseInt(hexCleaned.slice(0, 2), 16); 
+    const g = parseInt(hexCleaned.slice(2, 4), 16);
+    const b = parseInt(hexCleaned.slice(4, 6), 16);    
+
+    const r2 = 255 - (255 - r) * t;
+    const g2 = 255 - (255 - g) * t; 
+    const b2 = 255 - (255 - b) * t;
+
+    const rI = Math.round(r2);
+    const gI = Math.round(g2);
+    const bI = Math.round(b2);
+
+    const rHex= rI.toString(16).padStart(2, "0")
+    const gHex= gI.toString(16).padStart(2, "0")
+    const bHex= bI.toString(16).padStart(2, "0")
+
+    const finalHex = "#" + rHex + gHex + bHex;
+    return finalHex;
+}
+
+function measureLabelWidth(label, container) {
+    const referenceElement = container.querySelector(".cot-link");
+    if (!referenceElement) return 0;
+
+    const clone = referenceElement.cloneNode(false);
+    clone.style.position = "absolute";
+    clone.style.visibility = "hidden";
+    clone.style.whiteSpace = "nowrap";
+    clone.textContent = label;
+
+    document.body.appendChild(clone);
+    const width = clone.getBoundingClientRect().width;
+    document.body.removeChild(clone);
+    return width;
+}
+
+function getSeparatorWidth() {
+    const fontSizePx = parseFloat(getComputedStyle(document.body).fontSize);
+    return fontSizePx;
+}
+
+function shouldFlipToDropdown(labels, container, availableWidth) {
+    if (!labels || labels.length === 0) return false;
+
+    const separatorWidth = getSeparatorWidth();
+
+    const totalWidth = labels.reduce((sum, label, index) => {
+        const labelWidth = measureLabelWidth(label, container);
+        const gap = index > 0 ? separatorWidth : 0;
+        return sum + labelWidth + gap;
+    }, 0);
+    //console.log("[DEBUG shouldFlipToDropdown()]: width returned.");
+    return totalWidth > availableWidth;
+}
+
+function renderConceptDropdown(conceptItems, container, onSelectionChange) {
+    container.innerHTML = "";
+
+    conceptItems.forEach(item => {
+        const row = document.createElement("label");
+        row.className = "cot-dropdown-row";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = item.value;
+        checkbox.addEventListener("change", onSelectionChange);
+
+        row.appendChild(checkbox);
+        row.appendChild(document.createTextNode(item.label));
+        container.appendChild(row);
+       // console.log("[DEBUG renderConceptDropdown()]: concept dropdown rendered.");
+    });
+}
+
+function renderOverlayDropdown(overlayItems, container, onSelectionChange) {
+    container.innerHTML = "";
+
+    overlayItems.forEach(item => {
+        if (item.isHeading) {
+            const heading = document.createElement("div");
+            heading.className = "cot-dropdown-heading";
+            heading.textContent = item.label;
+            container.appendChild(heading);
+            return;
+        }
+
+        const row = document.createElement("label");
+        row.className = "cot-dropdown-row";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = item.value;
+        checkbox.addEventListener("change", onSelectionChange);
+
+        row.appendChild(checkbox);
+        row.appendChild(document.createTextNode(item.label));
+        container.appendChild(row);
+        //console.log("[DEBUG renderOverlayDropdown()]: concept dropdown rendered.");
+    });
+}
+
+/**
+ * Parse a date string into a LOCAL Date.
+ * Supports:
+ *  - "YYYY-MM-DD"
+ *  - "YYYY-MM-DDTHH:mm:ss..." (time portion ignored)
+ *  - "M/D/YYYY" or "MM/DD/YYYY"
+ */
+function parseYMDLocal(s) {
+    if (!s || typeof s !== "string") return null;
+
+    const raw = s.trim();
+
+    // Handle ISO-ish with time: "YYYY-MM-DDTHH:..."
+    const isoPrefix = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (isoPrefix) {
+        const year = Number(isoPrefix[1]);
+        const month = Number(isoPrefix[2]) - 1;
+        const day = Number(isoPrefix[3]);
+        const dt = new Date(year, month, day);
+        return isNaN(dt.getTime()) ? null : dt;
+    }
+
+    // Handle US format: "M/D/YYYY" or "MM/DD/YYYY"
+    const us = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (us) {
+        const month = Number(us[1]) - 1;
+        const day = Number(us[2]);
+        const year = Number(us[3]);
+        const dt = new Date(year, month, day);
+        return isNaN(dt.getTime()) ? null : dt;
+    }
+    return null;
+}
+
+/**
+ * Returns a Date snapped to the start of the bucket (month or year).
+ */
+function bucketDate(dt, aggregation) {
+    if (!(dt instanceof Date) || isNaN(dt.getTime())) return null;
+    if (aggregation === "year") {
+        return new Date(dt.getFullYear(), 0, 1);
+    }
+    return new Date(dt.getFullYear(), dt.getMonth(), 1);
+}
+
+/**
+ * Collect patient records to month/year buckets per concept.
+ * Sums values per (concept, bucket).
+ */
+function collectPatientsByAggregation(records, aggregation) {
+    const rolled = d3.rollup(
+        records,
+        rows => {
+            const sum = d3.sum(rows, r => Number(r.value) || 0);
+            return {
+                value: sum,
+                display: String(sum),
+                concept: rows[0]?.concept,
+                date: bucketDate(rows[0]?.date, aggregation)
+            };
+        },
+        r => r.concept,
+        r => {
+            const b = bucketDate(r.date, aggregation);
+            return b ? +b : null;
+        }
+    );
+
+    const out = [];
+    for (const [concept, dateMap] of rolled.entries()) {
+        for (const [dateKey, agg] of dateMap.entries()) {
+            if (dateKey === null) continue;
+
+            const date = new Date(Number(dateKey));
+            if (isNaN(date.getTime())) continue;
+
+            out.push({
+                concept,
+                date,
+                value: agg.value,
+                display: agg.display
+            });
+        }
+    }
+    return out;
+}
+
+function collectOverlayDataByAggregation(rows, source, selectedAggregation) {
+    if (!Array.isArray(rows) || rows.length === 0) {
+        return [];
+    }
+
+    const rollup = d3.rollup(
+        rows,
+        rowsGroup => {
+            const values = rowsGroup
+                .map(row => getSourceValue(row, source))
+                .filter(v => v !== null && v !== undefined && !Number.isNaN(v));
+            return values.length ? d3.mean(values) : null;
+        },
+        d => {
+            // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
+            const dt = parseYMDLocal(d["Sample Date"]);
+            if (!dt) return null;
+
+            if (selectedAggregation === "year") {
+                return `${dt.getFullYear()}`;
+            }
+            return `${dt.getFullYear()}-${dt.getMonth()}`;
+        }
+    );
+
+    return Array.from(rollup.entries())
+        .filter(([k, v]) => k !== null && v !== null)
+        .map(([key, value]) => {
+            if (selectedAggregation === "year") {
+                const year = Number(key);
+                return { date: new Date(year, 0, 1), value };
+            }
+            const [year, month] = key.split("-").map(Number);
+            return { date: new Date(year, month, 1), value };
+        })
+        .filter(p => p.date instanceof Date && !isNaN(p.date.getTime()));
+}
+
+function pivotToYOYRows(aggregatedRecords){
+    if (!aggregatedRecords || !Array.isArray(aggregatedRecords) || aggregatedRecords.length === 0) {
+        return [];
+    } 
+
+    const out = [];
+
+    for (const row of aggregatedRecords) {
+        let date = row.date;
+
+        if (!(date instanceof Date) || isNaN(date.getTime())) continue;
+
+        let year = date.getFullYear();
+        let monthIndex = date.getMonth();
+        let concept = row.concept;
+        let value = row.value;
+
+        out.push({
+            year,
+            monthIndex,
+            concept,
+            value
+        });
+    }
+    return out;
+}
+
+
+// ------------------------------------------------------------
+// Overlay fetch plumbing
+// ------------------------------------------------------------
+
+async function fetchOverlayDataFromEndpoint(endpointInfo) {
+    if (endpointInfo.sourceType === "local") {
+        try {
+            const response = await fetch(endpointInfo.endpoint);
+            if (!response.ok) {
+                console.error("Failed to load local overlay file:", response.status);
+                return null;
+            }
+            const raw = await response.json();
+            return raw.map(row => {
+                const cleanRow = {};
+                Object.keys(row).forEach(key => {
+                    const cleanKey = key.replace(/\n/g, " ").replace(/\//g, " ").trim();
+                    cleanRow[cleanKey] = row[key];
+                });
+                return cleanRow;
+            });
+        } catch (err) {
+            console.error("Error loading local overlay file:", err);
+            return null;
+        }
+    }
+
+    if (endpointInfo.urlType === "external") {
+        console.warn(`External overlay fetching not yet implemented, skipping ${endpointInfo.endpoint}`);
+        return null;
+    }
+
+    // urlType === "i2b2-proxy"
+    const [startDate, endDate] = endpointInfo.dateRange;
+    const msg = `
+    <ns6:request xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
+        <message_header>
+        <proxy>
+            <redirect_url>${endpointInfo.endpoint}</redirect_url>
+        </proxy>
+        </message_header>
+        <message_body>
+        {&quot;Start Date&quot;:&quot;${startDate}&quot;, &quot;End Date&quot;:&quot;${endDate}&quot;}
+        </message_body>
+    </ns6:request>
+    `;
+
+    try {
+        if (i2b2?.hive?.proxy?.handler) {
+            const response = await i2b2.hive.proxy.handler({ url: "/~proxy", msg, method: "POST" });
+            const bodyNode = i2b2.h.XPath(response.refXML, "//message_body/text()")[0];
+            return bodyNode ? JSON.parse(bodyNode.nodeValue) : null;
+        }
+
+        const response = await fetch("/~proxy", {
+            method: "POST",
+            headers: { "Content-Type": "text/xml" },
+            body: msg,
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            console.error("Overlay /~proxy call failed:", response.status, "endpoint:", endpointInfo.endpoint);
+            return null;
+        }
+
+        const text = await response.text();
+        const xml = new DOMParser().parseFromString(text, "text/xml");
+        const bodyNode = xml.querySelector("message_body");
+        return bodyNode ? JSON.parse(bodyNode.textContent) : null;
+
+    } catch (err) {
+        console.error("Failed to fetch overlay data", err, "endpoint:", endpointInfo.endpoint);
+        return null;
+    }
+}
+
+// pre-pipleline environment detection
+// this will be deprecated when we move to injecting configs in the pipeline
+
+function detectEnv(overlayInst) {
+    if (overlayInst.sourceType === "local") {
+        if (overlayInst.envUrls.local) {
+            return "local";
+        }
+        console.log(`detectEnv: sourceType is "local" but envUrls.local is empty; cannot resolve.`);
+        return null;
+    }
+
+    const host = (window.location?.hostname || "").toLowerCase();
+
+    if (host.includes("dev") || host.includes("local")) return "dev";
+    if (host.includes("demo")) return "demo";
+    if (host.includes("test")) return "test";
+    if (host.includes("stage")) return "stage";
+
+    console.log(`detectEnv: no known env keyword found in host "${host}"; defaulting to "prod"`);
+    return "prod";
+}
+
+// pre-pipleline endpoint URL resolution
+// this will be deprecated when we move to injecting configs in the pipeline
+
+function resolveEndpointUrl(allOverlays, overlayEndpoints) {
+    const overlayNicknames = Object.keys(overlayEndpoints);
+
+    for (const overlayNickname of overlayNicknames) {
+        const currentOverlay = allOverlays[overlayNickname];
+        const detectedEndpointKey = detectEnv(currentOverlay);
+        const resolvedUrl = currentOverlay.envUrls[detectedEndpointKey];
+
+        if (resolvedUrl) {
+            overlayEndpoints[overlayNickname].endpoint = resolvedUrl;
+        } else {
+            console.log(`could not update endpoint url for ${overlayNickname} to fetch data`);
+        }
+    }
+
+    return overlayEndpoints;
+}
+
+// pre-pipeline endpoint daterange eval against breakdown dates
+// this will be deprecated when we move to injecting configs in the pipeline
+
+function evaluateEndpointDateRange(dateRange, breakdownDateRange) {
+    const overlayStart = new Date(dateRange[0]);
+    const overlayEnd = new Date(dateRange[1]);
+    const breakdownStart = new Date(breakdownDateRange.startStr);
+    const breakdownEnd = new Date(breakdownDateRange.endStr);
+
+ if (overlayStart < breakdownStart || overlayStart > breakdownEnd) {
+    console.log("[DEBUG evaluateEndpointDateRange()]: overlayStart out of breakdown bounds", {
+        overlayStart, breakdownStart, breakdownEnd
+    });
+    return false;
+}
+
+if (overlayEnd < breakdownStart || overlayEnd > breakdownEnd) {
+    console.log("[DEBUG evaluateEndpointDateRange()]: overlayEnd out of breakdown bounds", {
+        overlayEnd, breakdownStart, breakdownEnd
+    });
+    return false;
+}
+
+if (overlayStart > overlayEnd) {
+    console.log("[DEBUG evaluateEndpointDateRange()]: overlayStart is after overlayEnd", {
+        overlayStart, overlayEnd
+    });
+    return false;
+}
+
+    return true;
+}
+
+function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays, breakdownDateRange) {
+    const overlayNicknames = Object.keys(overlayRegistry);
+
+    for (const overlayNickname of overlayNicknames) {
+        const currentOverlay = allOverlays[overlayNickname];
+
+        overlayEndpoints[overlayNickname] = {
+            auth: currentOverlay.auth,
+            endpoint: currentOverlay.endpointUrl,
+            sourceType: currentOverlay.sourceType,
+            urlType: currentOverlay.urlType
+        };
+
+        const dateRange = currentOverlay.dateRange;
+        const isValidFormat = Array.isArray(dateRange) &&
+            dateRange.length === 2 &&
+            !isNaN(new Date(dateRange[0])) &&
+            !isNaN(new Date(dateRange[1]));
+
+        if (!dateRange || dateRange.length === 0 || !isValidFormat) {
+            overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];
+            console.log(`${overlayNickname}: invalid or empty config date range, using breakdown dates`);
+        } else {
+            if (evaluateEndpointDateRange(dateRange, breakdownDateRange)) {
+                overlayEndpoints[overlayNickname].dateRange = dateRange;
+            } else {
+                overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];
+                console.log(`${overlayNickname}: config date range isn't compatible with breakdown, using breakdown dates`);
+            }
+        }
+    }
+
+    return overlayEndpoints;
+}
+
+// ------------------------------------------------------------
+// Derive overlay request date range from patient breakdown
+// ------------------------------------------------------------
+function deriveOverlayDateRangeFromBreakdown(records) {
+    if (!Array.isArray(records) || records.length === 0) {
+        return {};
+    }
+
+    let minT = null, maxT = null;
+
+    for (let i = 0; i < records.length; i++) {
+        const dt = records[i] && records[i].date;
+        if (!(dt instanceof Date)) continue;
+        const t = dt.getTime();
+        if (isNaN(t)) continue;
+
+        if (minT === null || t < minT) minT = t;
+        if (maxT === null || t > maxT) maxT = t;
+    }
+
+    if (minT === null || maxT === null || maxT < minT) {
+        return {};
+    }
+
+    function toMDY(t) {
+        const d = new Date(t);
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${month}/${day}/${d.getFullYear()}`;
+    }
+
+    return { startStr: toMDY(minT), endStr: toMDY(maxT) };
+}

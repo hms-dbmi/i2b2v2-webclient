@@ -84,15 +84,15 @@
       "class": "linechart",
       "displayForUnregistered": false
     },
-    "PATHOGENTIMELINE": {
-    "name": "Pathogen Timeline",
-    "source": "PathogenTimeline/PathogenTimeline.js",
-    "CSS": "PathogenTimeline/PathogenTimeline.css",
-    "iconClass": "bi-graph-up-arrow",
-    "displayOrder": 3,
-    "class": "pathogen-timeline",
-    "displayForUnregistered": false
-    }, 
+      "CONCEPTOVERLAYTIMELINE": {
+      "name": "Concept Overlay Timeline",
+      "source": "ConceptOverlayTimeline/ConceptOverlayTimeline.js",
+      "CSS": "ConceptOverlayTimeline/ConceptOverlayTimeline.css",
+      "iconClass": "bi-graph-up-arrow",
+      "displayOrder": 3,
+      "class": "concept-overlay-timeline",
+      "displayForUnregistered": false
+    },
     "NIHENROLLTABLE": {
       "name": "Enrollment Form",
       "source": "NihEnrollTable/Table.js",
