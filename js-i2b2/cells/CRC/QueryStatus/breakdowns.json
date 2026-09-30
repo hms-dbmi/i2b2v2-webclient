@@ -125,6 +125,7 @@
             "Influenza": { "key": "Influenza", "label": "Influenza", "color": "#ff7f0e", "order": ""},
             "RSV": { "key": "RSV", "label": "RSV", "color": "#2ca02c", "order": ""}
         },
+      "multiOverlaysYRightLabel": "Public Health Metrics",
       "overlayConfigs": {
         "overlays":{
             "mwraWastewater": {
@@ -138,6 +139,7 @@
                 "sourceType": "local",
                 "urlType" : "i2b2-proxy",
                 "dateRange": "",
+                "dateColumn": "Sample Date",
                 "auth": {
                         "type": "none" 
                     },
@@ -151,8 +153,7 @@
                 "yRightLabel": "Wastewater Level",
                 "overlayLabel": "MWRA Wastewater"   
             }  
-        },
-        "multiOverlaysYRightLabel": "Public Health Metrics"
+        }        
       }  
     }
   },
