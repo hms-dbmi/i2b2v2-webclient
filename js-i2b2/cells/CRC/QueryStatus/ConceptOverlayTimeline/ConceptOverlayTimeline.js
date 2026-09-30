@@ -25,6 +25,7 @@ export default class ConceptOverlayTimeline {
             this.cannonicalHexes = this.config.advancedConfig.cannonicalHexes;
 
             this.conceptListLabel = this.config.advancedConfig.conceptsLabel;
+            this.multiOverlaysYRightLabel = this.config.advancedConfig.multiOverlaysYRightLabel;
             this.conceptControlFlipped = false;
             this.overlayControlFlipped = false;
 
@@ -332,7 +333,7 @@ export default class ConceptOverlayTimeline {
             const selectedOverlays = this.state?.overlays || [];
             const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year" | "yoy"
 
-            const renderModel = buildRenderModel(raw, this.fetchedOverlays, this.overlayRegistry, this.overlayConfigs, this.conceptRegistry, selectedConcepts, selectedAggregation, selectedOverlays);
+            const renderModel = buildRenderModel(raw, this.fetchedOverlays, this.overlayRegistry, this.overlayEndpoints, this.multiOverlaysYRightLabel, this.conceptRegistry, selectedConcepts, selectedAggregation, selectedOverlays);
 
             const currentKeys = [...new Set(renderModel.series.map(item => item.concept))];
             updateLegend(this.controls, this.conceptRegistry, currentKeys, this.overlayRegistry, selectedOverlays);
@@ -988,7 +989,8 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, 
     return overlayRegistry;
 }
 
-function buildRenderModel(records, overlayData, overlayRegistry, overlayConfigs, conceptRegistry, selectedConcepts, selectedAggregation, selectedOverlays) {
+
+function buildRenderModel(records, overlayData, overlayRegistry, overlayEndpoints, multiOverlaysYRightLabel, conceptRegistry, selectedConcepts, selectedAggregation, selectedOverlays) {
 
     let renderModel;
 
@@ -999,8 +1001,8 @@ function buildRenderModel(records, overlayData, overlayRegistry, overlayConfigs,
             "xDomain": generateXDomain(records, selectedAggregation),
             "months": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
             "yLeftLabel": "Number of Patients", 
-            "overlaySeries": buildYOYOverlaySeries(overlayData, overlayRegistry, selectedOverlays, selectedAggregation),
-            "multiOverlaysYRightLabel": overlayConfigs.multiOverlaysYRightLabel
+            "overlaySeries": buildYOYOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, selectedOverlays, selectedAggregation),
+            "multiOverlaysYRightLabel": multiOverlaysYRightLabel
         }      
     } else {
         renderModel = { 
@@ -1008,8 +1010,8 @@ function buildRenderModel(records, overlayData, overlayRegistry, overlayConfigs,
             "series" : buildMonthYearConceptSeries(records, selectedConcepts, selectedAggregation), 
             "xDomain": generateXDomain(records, selectedAggregation), 
             "yLeftLabel": "Number of Patients", 
-            "overlaySeries": buildMonthYearOverlaySeries(overlayData, overlayRegistry, records, selectedOverlays, selectedAggregation),
-            "multiOverlaysYRightLabel": overlayConfigs.multiOverlaysYRightLabel
+            "overlaySeries": buildMonthYearOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, records, selectedOverlays, selectedAggregation),
+            "multiOverlaysYRightLabel": multiOverlaysYRightLabel
         }        
     } 
 
@@ -1209,7 +1211,7 @@ function resolveOverlaySelection(compoundKey, overlayRegistry) {
     return overlayEntry.visualizationData?.[sourceKey] || null;
 }
 
-function buildMonthYearOverlaySeries(overlayData, overlayRegistry, records, selectedOverlays, selectedAggregation) {
+function buildMonthYearOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, records, selectedOverlays, selectedAggregation) {
     const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);
     const domain = d3.extent(bucketedPatients, d => d.date);
 
@@ -1219,13 +1221,14 @@ function buildMonthYearOverlaySeries(overlayData, overlayRegistry, records, sele
         const [overlayNickname] = compoundKey.split("::");
         const source = resolveOverlaySelection(compoundKey, overlayRegistry);
         const rows = overlayData[overlayNickname];
+        const dateColumn = overlayEndpoints[overlayNickname]?.dateColumn;
 
         if (!source || !Array.isArray(rows)) {
             console.log(`could not resolve selection or data for ${compoundKey}`);
             continue;
         }
 
-        const bucketedOverlay = collectOverlayDataByAggregation(rows, source, selectedAggregation);
+        const bucketedOverlay = collectOverlayDataByAggregation(rows, source, selectedAggregation, dateColumn);
 
         const filteredOverlay = (domain?.[0] && domain?.[1])
             ? bucketedOverlay.filter(d => d.date >= domain[0] && d.date <= domain[1])
@@ -1241,13 +1244,14 @@ function buildMonthYearOverlaySeries(overlayData, overlayRegistry, records, sele
     return allSeries;
 }
 
-function buildYOYOverlaySeries(overlayData, overlayRegistry, selectedOverlays, selectedAggregation) {
+function buildYOYOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, selectedOverlays, selectedAggregation) {
     const allSeries = [];
 
     for (const compoundKey of selectedOverlays) {
         const [overlayNickname] = compoundKey.split("::");
         const source = resolveOverlaySelection(compoundKey, overlayRegistry);
         const rows = overlayData[overlayNickname];
+        const dateColumn = overlayEndpoints[overlayNickname]?.dateColumn;
 
         if (!source || !Array.isArray(rows)) {
             console.log(`could not resolve selection or data for ${compoundKey}`);
@@ -1257,7 +1261,7 @@ function buildYOYOverlaySeries(overlayData, overlayRegistry, selectedOverlays, s
         const byYear = {};
 
         for (const row of rows) {
-            const d = new Date(row["Sample Date"]);
+            const d = new Date(row[dateColumn]);
             if (!(d instanceof Date) || isNaN(d.getTime())) continue;
 
             const year = d.getFullYear();
@@ -1671,7 +1675,7 @@ function collectPatientsByAggregation(records, aggregation) {
     return out;
 }
 
-function collectOverlayDataByAggregation(rows, source, selectedAggregation) {
+function collectOverlayDataByAggregation(rows, source, selectedAggregation, dateColumn) {
     if (!Array.isArray(rows) || rows.length === 0) {
         return [];
     }
@@ -1686,7 +1690,7 @@ function collectOverlayDataByAggregation(rows, source, selectedAggregation) {
         },
         d => {
             // IMPORTANT: parse as LOCAL Y-M-D to avoid 2019/2020 boundary bugs
-            const dt = parseYMDLocal(d["Sample Date"]);
+            const dt = parseYMDLocal(d[dateColumn]);
             if (!dt) return null;
 
             if (selectedAggregation === "year") {
@@ -1750,14 +1754,25 @@ async function fetchOverlayDataFromEndpoint(endpointInfo) {
                 return null;
             }
             const raw = await response.json();
-            return raw.map(row => {
-                const cleanRow = {};
-                Object.keys(row).forEach(key => {
-                    const cleanKey = key.replace(/\n/g, " ").replace(/\//g, " ").trim();
-                    cleanRow[cleanKey] = row[key];
+
+            const [startStr, endStr] = endpointInfo.dateRange;
+            const rangeStart = new Date(startStr);
+            const rangeEnd = new Date(endStr);
+
+            return raw
+                .map(row => {
+                    const cleanRow = {};
+                    Object.keys(row).forEach(key => {
+                        const cleanKey = key.replace(/\n/g, " ").replace(/\//g, " ").trim();
+                        cleanRow[cleanKey] = row[key];
+                    });
+                    return cleanRow;
+                })
+                .filter(row => {
+                    const rowDate = new Date(row[endpointInfo.dateColumn]);
+                    if (!(rowDate instanceof Date) || isNaN(rowDate.getTime())) return false;
+                    return rowDate >= rangeStart && rowDate <= rangeEnd;
                 });
-                return cleanRow;
-            });
         } catch (err) {
             console.error("Error loading local overlay file:", err);
             return null;
@@ -1867,26 +1882,26 @@ function evaluateEndpointDateRange(dateRange, breakdownDateRange) {
     const breakdownStart = new Date(breakdownDateRange.startStr);
     const breakdownEnd = new Date(breakdownDateRange.endStr);
 
- if (overlayStart < breakdownStart || overlayStart > breakdownEnd) {
-    console.log("[DEBUG evaluateEndpointDateRange()]: overlayStart out of breakdown bounds", {
-        overlayStart, breakdownStart, breakdownEnd
-    });
-    return false;
-}
+    if (overlayStart < breakdownStart || overlayStart > breakdownEnd) {
+        console.log("[DEBUG evaluateEndpointDateRange()]: overlayStart out of breakdown bounds", {
+            overlayStart, breakdownStart, breakdownEnd
+        });
+        return false;
+    }
 
-if (overlayEnd < breakdownStart || overlayEnd > breakdownEnd) {
-    console.log("[DEBUG evaluateEndpointDateRange()]: overlayEnd out of breakdown bounds", {
-        overlayEnd, breakdownStart, breakdownEnd
-    });
-    return false;
-}
+    if (overlayEnd < breakdownStart || overlayEnd > breakdownEnd) {
+        console.log("[DEBUG evaluateEndpointDateRange()]: overlayEnd out of breakdown bounds", {
+            overlayEnd, breakdownStart, breakdownEnd
+        });
+        return false;
+    }
 
-if (overlayStart > overlayEnd) {
-    console.log("[DEBUG evaluateEndpointDateRange()]: overlayStart is after overlayEnd", {
-        overlayStart, overlayEnd
-    });
-    return false;
-}
+    if (overlayStart > overlayEnd) {
+        console.log("[DEBUG evaluateEndpointDateRange()]: overlayStart is after overlayEnd", {
+            overlayStart, overlayEnd
+        });
+        return false;
+    }
 
     return true;
 }
@@ -1897,11 +1912,27 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
     for (const overlayNickname of overlayNicknames) {
         const currentOverlay = allOverlays[overlayNickname];
 
+        if (!currentOverlay.endpointUrl) {
+            console.log(`${overlayNickname}: endpointUrl is missing or empty, skipping this overlay`);
+            continue;
+        }
+
+        if (!currentOverlay.sourceType || (currentOverlay.sourceType !== "url" && currentOverlay.sourceType !== "local")) {
+            console.log(`${overlayNickname}: sourceType is missing or invalid (must be "url" or "local"), skipping this overlay`);
+            continue;
+        }
+
+        if (!currentOverlay.dateColumn) {
+            console.log(`${overlayNickname}: dateColumn is missing or empty, skipping this overlay`);
+            continue;
+        }
+
         overlayEndpoints[overlayNickname] = {
             auth: currentOverlay.auth,
             endpoint: currentOverlay.endpointUrl,
             sourceType: currentOverlay.sourceType,
-            urlType: currentOverlay.urlType
+            urlType: currentOverlay.urlType,
+            dateColumn: currentOverlay.dateColumn
         };
 
         const dateRange = currentOverlay.dateRange;
