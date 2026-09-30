@@ -1912,7 +1912,22 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
     for (const overlayNickname of overlayNicknames) {
         const currentOverlay = allOverlays[overlayNickname];
 
-      overlayEndpoints[overlayNickname] = {
+        if (!currentOverlay.endpointUrl) {
+            console.log(`${overlayNickname}: endpointUrl is missing or empty, skipping this overlay`);
+            continue;
+        }
+
+        if (!currentOverlay.sourceType || (currentOverlay.sourceType !== "url" && currentOverlay.sourceType !== "local")) {
+            console.log(`${overlayNickname}: sourceType is missing or invalid (must be "url" or "local"), skipping this overlay`);
+            continue;
+        }
+
+        if (!currentOverlay.dateColumn) {
+            console.log(`${overlayNickname}: dateColumn is missing or empty, skipping this overlay`);
+            continue;
+        }
+
+        overlayEndpoints[overlayNickname] = {
             auth: currentOverlay.auth,
             endpoint: currentOverlay.endpointUrl,
             sourceType: currentOverlay.sourceType,
