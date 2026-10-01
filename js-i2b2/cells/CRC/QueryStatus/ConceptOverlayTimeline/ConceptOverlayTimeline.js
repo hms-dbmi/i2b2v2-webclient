@@ -16,10 +16,12 @@ export default class ConceptOverlayTimeline {
             this.breakdownDateRange = {};
 
             this.overlayRegistry = {};
+            this.overlayRegistryAttempted = false;
             this.overlayConfigs = this.config.advancedConfig.overlayConfigs;
             this.allOverlays = this.overlayConfigs.overlays;
             this.fetchedOverlays = {};
             this.overlayEndpoints = {};
+            this.overlayEndpointsAttempted = false;
 
             this.colorsInUse = [];
             this.cannonicalHexes = this.config.advancedConfig.cannonicalHexes;
@@ -204,12 +206,14 @@ export default class ConceptOverlayTimeline {
                 this.breakdownDateRange = deriveOverlayDateRangeFromBreakdown(raw);
             }
 
-            if (Object.keys(this.overlayRegistry).length === 0) {
+            if (!this.overlayRegistryAttempted) {
                 this.overlayRegistry = generateOverlayRegistry(this.allOverlays, this.overlayRegistry, this.cannonicalHexes, this.colorsInUse);
+                this.overlayRegistryAttempted = true;
             }
 
-            if (Object.keys(this.overlayEndpoints).length === 0) {
+            if (!this.overlayEndpointsAttempted) {
                 this.overlayEndpoints = collectOverlayEndpoints(this.overlayEndpoints, this.overlayRegistry, this.allOverlays, this.breakdownDateRange);
+                this.overlayEndpointsAttempted = true;
             }
 
             resolveEndpointUrl(this.allOverlays, this.overlayEndpoints);
