@@ -1223,6 +1223,8 @@ function buildMonthYearOverlaySeries(overlayData, overlayRegistry, overlayEndpoi
         const rows = overlayData[overlayNickname];
         const dateColumn = overlayEndpoints[overlayNickname]?.dateColumn;
 
+        console.log(`date column is ${dateColumn}`);
+
         if (!source || !Array.isArray(rows)) {
             console.log(`could not resolve selection or data for ${compoundKey}`);
             continue;

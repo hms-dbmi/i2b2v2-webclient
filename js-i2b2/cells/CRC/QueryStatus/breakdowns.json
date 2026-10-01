@@ -125,7 +125,7 @@
                     "local": "js-i2b2/cells/CRC/QueryStatus/ConceptOverlayTimeline/demo_wastewater.json"
                   },
                   "endpointUrl": "",
-                  "sourceType": "local",
+                  "sourceType": "url",
                   "urlType" : "i2b2-proxy",
                   "dateRange": "",
                   "dateColumn": "Sample Date",
