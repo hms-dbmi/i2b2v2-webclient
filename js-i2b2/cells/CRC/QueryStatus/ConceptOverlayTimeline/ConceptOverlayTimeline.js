@@ -1912,8 +1912,8 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
     for (const overlayNickname of overlayNicknames) {
         const currentOverlay = allOverlays[overlayNickname];
 
-        if (!currentOverlay.endpointUrl) {
-            console.log(`${overlayNickname}: endpointUrl is missing or empty, skipping this overlay`);
+        if (!currentOverlay.envUrls || Object.keys(currentOverlay.envUrls).length === 0) {
+            console.log(`${overlayNickname}: envUrls is missing or empty, skipping this overlay`);
             continue;
         }
 
