@@ -15,6 +15,13 @@
       "alwaysShow": true,
       "noFrameTemplate": true
     },
+    "SHRINESITES": {
+      "name": "Table Summary",
+      "source": "ShrineSites/ShrineSites.js",
+      "CSS": "ShrineSites/ShrineSites.css",
+      "iconClass": "bi bi-table",
+      "alwaysShow": true
+    },
     "BARS": {
       "name": "Bar Chart",
       "source": "BarGraph/BarGraph.js",
@@ -68,11 +75,26 @@
       "displayForUnregistered": true,
       "notInReport": true
     },
+    "SHRINESITESDOWNLOAD": {
+      "name": "CSV Download",
+      "source": "ShrineSitesDownload/Download.js",
+      "iconClass": "bi bi-filetype-csv",
+      "displayOrder": 500,
+      "notInReport": true
+    },
     "MULTIZIPCODEMAP": {
       "name": "Map View",
       "source": "MultiZipcodeMap/MultiZipcodeMap.js",
       "CSS": "MultiZipcodeMap/MultiZipcodeMap.css",
       "iconClass": "bi bi-globe2"
+    },
+    "PATIENTCOUNTMAP": {
+      "name": "Map Viewer",
+      "source": "PatientCountMap/PatientCountMap.js",
+      "CSS": "PatientCountMap/PatientCountMap.css",
+      "iconClass": "bi bi-globe2",
+      "displayOrder": 150,
+      "notInReport": true
     },
     "PATHOGENTIMELINE": {
       "name": "Pathogen Timeline",
