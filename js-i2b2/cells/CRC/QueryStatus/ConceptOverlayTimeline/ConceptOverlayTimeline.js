@@ -1223,8 +1223,6 @@ function buildMonthYearOverlaySeries(overlayData, overlayRegistry, overlayEndpoi
         const rows = overlayData[overlayNickname];
         const dateColumn = overlayEndpoints[overlayNickname]?.dateColumn;
 
-        console.log(`date column is ${dateColumn}`);
-
         if (!source || !Array.isArray(rows)) {
             console.log(`could not resolve selection or data for ${compoundKey}`);
             continue;
@@ -1914,8 +1912,8 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
     for (const overlayNickname of overlayNicknames) {
         const currentOverlay = allOverlays[overlayNickname];
 
-        if (!currentOverlay.endpointUrl) {
-            console.log(`${overlayNickname}: endpointUrl is missing or empty, skipping this overlay`);
+        if (!currentOverlay.envUrls || Object.keys(currentOverlay.envUrls).length === 0) {
+            console.log(`${overlayNickname}: envUrls is missing or empty, skipping this overlay`);
             continue;
         }
 
