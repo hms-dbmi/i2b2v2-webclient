@@ -12,11 +12,13 @@
   "/_REQUEST$/": { "DATAREQUESTSUPER": false },
   "PATIENT_GENDER_COUNT_XML": {
     "BARS": true,
+    "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
   "PATIENT_SEX_COUNT_SHRINE_XML": {
     "BARS": true,
+    "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
@@ -27,6 +29,7 @@
   },
   "PATIENT_VITALSTATUS_COUNT_SHRINE_XML": {
     "BARS": true,
+    "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
@@ -37,6 +40,7 @@
   },
   "PATIENT_RACE_COUNT_SHRINE_XML": {
     "BARS": true,
+    "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
@@ -52,6 +56,8 @@
     "BARS": {
       "maxLabelLength": 15
     },
+    "LINECHART": true,
+    "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
@@ -133,6 +139,7 @@
       "map": {
         "tiles": "http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png",
         "labelTiles": "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+        "attribution": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>, &copy; <a href=\"https://carto.com/attributions\">CARTO</a>",
         "maxZoom": 18,
         "aggKeyName": "aggKey",
         "colors": [
@@ -162,5 +169,11 @@
         }
       }
     }
+  },
+  "PATIENT_NIH_ENROLLMENT_SHRINE_XML": {
+    "TABLE": true,
+    "NIHENROLLTABLE": true,
+    "NIHENROLLCSV": true,
+    "DOWNLOAD": true
   }
 }
