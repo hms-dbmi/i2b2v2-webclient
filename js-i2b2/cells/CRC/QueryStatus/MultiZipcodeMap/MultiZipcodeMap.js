@@ -29,6 +29,7 @@ export default class MultiZipcodeMap {
             if (this.config.advancedConfig?.map.tiles) mapSettings.mapLayer.urlTemplate = this.config.advancedConfig.map.tiles;
             if (this.config.advancedConfig?.map.labelTiles) mapSettings.mapLayer.urlLabelsTemplate = this.config.advancedConfig.map.labelTiles;
             if (this.config.advancedConfig?.map.maxZoom) mapSettings.mapLayer.maxZoom = this.config.advancedConfig.map.maxZoom;
+            if (this.config.advancedConfig?.map.attribution) mapSettings.mapLayer.attribution = this.config.advancedConfig.map.attribution;
 
             // generate the valid zipcode list if it does not already exist
             if (typeof i2b2.CRC.QueryStatus.model.MultiGeoJSON.validZips === 'undefined') i2b2.CRC.QueryStatus.model.MultiGeoJSON.validZips = i2b2.CRC.QueryStatus.model.MultiGeoJSON.data.features.map((feature) => feature.properties[this.aggKeyName])

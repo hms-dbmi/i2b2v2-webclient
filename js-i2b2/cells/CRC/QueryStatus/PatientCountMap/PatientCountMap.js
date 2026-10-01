@@ -1,4 +1,4 @@
-const mapSettings = {
+let mapSettings = {
     "mapLayer": {
         "urlTemplate": 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
         "attribution": '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -16,6 +16,12 @@ export default class PatientCountMap {
             this.isVisible = false;
             this.config.displayEl.style.display = "none";
             const self = this;
+
+            // handle override settings in breakdowns.json for map tile info
+            if (this.config.advancedConfig?.map.tiles) mapSettings.mapLayer.urlTemplate = this.config.advancedConfig.map.tiles;
+            if (this.config.advancedConfig?.map.maxZoom) mapSettings.mapLayer.maxZoom = this.config.advancedConfig.map.maxZoom;
+            if (this.config.advancedConfig?.map.attribution) mapSettings.mapLayer.attribution = this.config.advancedConfig.map.attribution;
+            if (this.config.advancedConfig?.map.subdomains) mapSettings.mapLayer.subdomains = this.config.advancedConfig.map.subdomains;
 
             /* code here */
 
@@ -73,6 +79,7 @@ export default class PatientCountMap {
                     // add Map image layer
                     let options = {maxZoom: mapSettings.mapLayer.maxZoom}
                     if (typeof mapSettings.mapLayer.attribution !== 'undefined') options.attribution = mapSettings.mapLayer.attribution;
+                    if (typeof mapSettings.mapLayer.subdomains !== 'undefined') options.subdomains = mapSettings.mapLayer.subdomains;
                     L.tileLayer(mapSettings.mapLayer.urlTemplate, options).addTo(this.map);
 
                     if (this.isVisible === true) {
