@@ -1,6 +1,7 @@
 .i2b2OntInfo {
     background: #fff;
-    border: solid 1px rgba(99, 117, 140, 0.28);
+    border: solid 1px #666666;
+    border-top: none;
     overflow: auto;
     border-radius: 0 0 3px 3px;
     display: flex;
