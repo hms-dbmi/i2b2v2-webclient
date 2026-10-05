@@ -12,8 +12,12 @@
 i2b2.UI = {};
 /* Start Configuration. Note: be careful to keep trailing commas after each parameter */
 i2b2.UI.cfg = {
-    loginDefaultUsername : "MasscprUser", /* [Default: "demo"] Default text inside the username input */
-    loginDefaultPassword : "MasscprDemo", /* [Default: "demouser"] Default text inside the password input */
+    loginDefaultUsername : "demo", /* [Default: "demo"] Default text inside the username input */
+    loginDefaultPassword : "demouser", /* [Default: "demouser"] Default text inside the password input */
+    loginDefaultMessage : "ARGOS is a research tool that allows users to query and analyze patient data on OMOP.",
+        /* [Default: "i2b2, or Informatics for Integrating Biology and the Bedside, is a research tool that allows
+        users to query and analyze patient data."] Default text inside message box on the login page */
+
     obfuscatedDisplayNumber: 3, /* [Default: 3] Display number after plus/minus for obfuscated results.
                                   Control the real obfuscation value from server in CRC properties. */
     useFloorThreshold: false, /* [Default: false] If true, any result below floorThresholdNumber shows as 'Less Than {floorThresholdNumber}' */

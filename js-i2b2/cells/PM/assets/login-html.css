@@ -22,16 +22,10 @@
     text-align: center;
     margin: 14px 0 0 0;
     position: relative;
-    padding: 2rem 0;
-}
-
-#PM-login-modal .description {
-    padding: 0 3rem 2rem 3rem;
-    text-align: justify;
 }
 
 #PM-login-modal img.logo {
-    width: 80%;
+    width: 70%;
 }
 
 #PM-login-modal .container {
@@ -41,27 +35,8 @@
 #PM-login-modal .form-group label {
     margin-bottom: 8px;
 }
-
-#PM-login-modal .classic {
-    padding: 15px 16px 16px 0px;
-}
-
-#PM-login-modal .header,
-#PM-login-modal .footer {
-    background-color:#f1f1f1
-}
-
-#PM-login-modal .header {
-    border-bottom: 1px solid #CCCCCC;
-    font-weight: bold;
-    font-size: 15px;
-}
-#PM-login-modal .footer {
-    border-top: 1px solid #CCCCCC;
-}
-
-#PM-login-modal .login-host {
-    _display: none;
+#PM-login-modal .form-group input {
+    margin-bottom: 14px;
 }
 
 /* The Modal (background) */
@@ -85,7 +60,7 @@
     margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
     border: 1px solid #888;
     width: 25%; /* Could be more or less, depending on screen size */
-    min-width: 300px;
+    min-width: 600px;
     overflow: hidden;
 }
 
@@ -181,6 +156,15 @@
     top: 35%;
 }
 
+#PM-login-modal .login-message {
+    padding: 5%;
+    border: 2px solid #f1f1f1;
+    border-radius: 10px;
+    margin: 3%;
+    height: 125px;
+    max-height: 155px;
+    overflow: auto;
+}
 
 #PM-login-modal .showLoginPwd, #PM-login-modal .hideLoginPwd {
     margin-left: 0.2em;
@@ -189,10 +173,6 @@
 
 #PM-login-modal .input-group input {
     margin-bottom: 0px;
-}
-
-#PM-login-modal .form-group {
-    margin-bottom: 14px;
 }
 
 /* Login password box (for disabling of password warning) */

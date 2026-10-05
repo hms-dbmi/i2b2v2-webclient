@@ -2,65 +2,67 @@
 <html>
 <body>
 <div id="PM-login-modal" class="modal">
-    <form class="modal-content" method="post" style="min-width: 630px">
-        <div class="container modal-header">
-            <div>MassCPR Federated Data Network Login</div>
-        </div>
+    <form class="modal-content" method="post">
+        <div class="container modal-header"><div>ARGOS Login</div></div>
         <div class="imgcontainer">
-            <img src="assets/images/logo-masscpr.png" alt="MassCPR logo" class="logo">
+            <img src="assets/images/h243-ohdsi-logo-with-text.png" alt="i2b2 transmart logo" class="logo">
         </div>
 
-        <div class="description">
-            The MassCPR Federated Data Network combines the aggregate results of analyses that are
-            performed locally within each participating institution using electronic health record (EHR)
-            data. By leveraging the collective informatics capabilities of the consortium, this network
-            enables data discovery and sharing while maintaining institutional autonomy and patient
-            privacy. Access to the network is limited to faculty with a primary appointment at or above the
-            Instructor level at Beth Israel Lahey Health (BILH), Dana-Farber Cancer Institute (DFCI) or Mass
-            General Brigham (MGB). The network may only be used for research and public health use
-            cases related to infectious diseases.
-            <a style="right: -.3rem; font-size: .8rem; position: relative; top: .1rem;" href="https://masscpr.hms.harvard.edu/our-data-network/" target="_blank" rel="noopener">Learn more</a>
-        </div>
+        <div>
+            <div style="float:left;width:50%">
+                <div class="container">
+                    <div class="form-group">
+                        <label for="logindomain"><b>ARGOS Host</b></label>
+                        <select class="form-select" id="logindomain">
+                            <option value="0">Loading...</option>
+                        </select>
+                    </div>
 
-        <div class="container">
-            <div class="form-group login-host" style="display:none">
-                <label for="logindomain"><b>Host</b></label>
-                <select class="form-select" id="logindomain">
-                    <option value="0">Loading...</option>
-                </select>
+
+                    <div class="form-group login-user">
+                        <label for="loginusr"><b>Username</b></label>
+                        <input type="text" placeholder="Enter Username" name="loginusr" id="loginusr" required class="form-control">
+                    </div>
+
+                    <div class="form-group login-password">
+                        <label for="loginpass"><b>Password</b></label>
+                        <div class="input-group mb-3">
+                            <input type="password" placeholder="Enter Password" name="loginpass" id="loginpass" required class="form-control">
+                            <span class="input-group-text">
+                                <a href="#"><i class="hideLoginPwd bi bi-eye-fill"></i></a>
+                                <a href="#"><i class="showLoginPwd bi bi-eye-slash-fill"></i></a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group login-user">
-                <label for="loginusr"><b>Username</b></label>
-                <input type="text" placeholder="Enter Username" name="loginusr" id="loginusr" required class="form-control">
+            <div style="float:left;width:50%">
+                <div class="container">
+                    <label for="loginmessage"><b>Message</b></label>
+                    <div id="loginmessage" class="login-message"></div>
+                    <div style="display: flex;justify-content:center;align-items:center">
+                        <button type="submit" style="width:60%" class="btn btn-primary btn-sm login-button">Login to ARGOS</button>
+                    </div>
+                </div>
             </div>
-            <div class="form-group login-password">
-                <label for="loginpass"><b>Password</b></label>
-                <div class="input-group">
-                <input type="password" placeholder="Enter Password" name="loginpass" id="loginpass" required class="form-control">
-                <span class="input-group-text">
-                	<a href="#"><i class="hideLoginPwd bi bi-eye-fill"></i></a>
-                    <a href="#"><i class="showLoginPwd bi bi-eye-slash-fill"></i></a>
-                </span>
-            </div>
-		</div>
-
-            <button type="submit" class="btn btn-secondary btn-sm login-button">Login</button>
 
             <div class="sso-group">
-                <a class="btn sso-button btn-sm" data-service="commonjava" style="display: none" tabindex="0">
-                    <img src="assets/images/sso/commonjava.png" />
-                    <div>Sign in with HarvardKey</div>
+                <a class="btn sso-button btn-sm" data-service="okta" style="display: none" tabindex="0">
+                    <img src="assets/images/sso/okta.png" />
+                    <div>Sign in with Okta</div>
+                </a>
+                <a class="btn sso-button btn-sm" data-service="shibboleth" style="display: none" tabindex="0">
+                    <img src="assets/images/sso/shibboleth.png" />
+                    <div>Sign in with Shibboleth</div>
                 </a>
             </div>
-        </div>
 
-        <div class="container footer">
-            <div>
-                P<a href="javascript:$('.login-host').attr('style','')" style="text-decoration:none; cursor:text; color:#000;">o</a>wered by Harvard Catalyst SHRINE
-                <div style="float:right"><a href="https://key.harvard.edu/" target="_blank" rel="noopener">Help with HarvardKey</a></div>
-            </div>
         </div>
+        <!--<div class="container  modal-footer">
+            <div>Forgot <a href="#">password?</a></div>
+            <div class="classic">For classic i2b2 webclient click <a href="#">here</a></div>
+        </div>-->
     </form>
 </div>
 </body>
