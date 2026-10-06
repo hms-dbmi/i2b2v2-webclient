@@ -9,6 +9,7 @@ body {
 	line-height:16px;
 	overflow:hidden;
 	height: 100vh;
+	background-color: #EEEEEE;
 }
 
 body, td, p {
@@ -93,6 +94,7 @@ a:focus-visible {
 #topBarTable .logo {
 	display: flex;
 	align-items: center;
+	text-align: left;
 }
 
 #topBarTable td {
@@ -429,7 +431,6 @@ DIV.tabText {}
 
 #goldenLayoutColId2 .lm_header {
 	background-color: var(--tabs-right-background);
-	border: 1px solid var(--tabs-right-border);
 	/*background-color: #ccc2b6;*/
 }
 
@@ -636,4 +637,26 @@ iframe.pluginCell {
 
 body.pendingRequest *{
 	cursor: progress !important;
+}
+
+
+.logo-text {
+	padding-left:5px;
+	padding-right:10px;
+	margin-right:15px;
+	border-right:2px solid #fff;
+	letter-spacing: 0.15em;
+	font-weight:normal;
+	font-size:28px;
+	font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+	display: flex;
+}
+
+.logo-text-details {
+	font-size: 12px;
+	font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-content: flex-start;
 }

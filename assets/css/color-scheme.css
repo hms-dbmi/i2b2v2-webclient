@@ -2,20 +2,20 @@
     --text-light: #EEAAAA;
     --text-dark: #887766;
 
-    --text-secondary-light: #2782a3;
-    --text-secondary-dark: #2782a3;
+    --text-secondary-light: #20425A;
+    --text-secondary-dark: #20425A;
 
-    --head-foot-background: #2782a3;
+    --head-foot-background: #20425A;
     --head-foot-text: #FFFFFF;
     --head-foot-icons: #FFFFFF;
     --head-foot-icons-hover: #000000;
 
-    --tabs-left-background: #ed9b40;
-    --tabs-left-border: rgba(99, 117, 140, 0.28);
-    --tabs-right-background: #ccc2b6;
+    --tabs-left-background: #CCCCCC;
+    --tabs-left-border: #666666;
+    --tabs-right-background: #CCCCCC;
     --tabs-right-border: rgba(99, 117, 140, 0.28);
 
-    --component-border:  rgba(99, 117, 140, 0.28);
+    --component-border:  #666666;
     --component-background: #FFFFFF;
 
     --tabs-text: #000000;
