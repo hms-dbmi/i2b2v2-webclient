@@ -10,7 +10,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    border: solid 1px rgba(99, 117, 140, 0.28);
+    border: solid 1px #666666;
     border-top: none;
     overflow: auto;
     padding: 0.4em;

@@ -43,6 +43,7 @@
     border: solid 1px #666666;
     border-bottom: none;
     border-radius: 0 0 0 0;
+    border-top: none;
 }
 
 .CRC_QT_view .CRC_QT_runbar {
