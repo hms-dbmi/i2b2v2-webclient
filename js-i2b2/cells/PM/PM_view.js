@@ -55,6 +55,53 @@ i2b2.PM.doLoginDialog = function() {
             $("#PM-login-modal input[name='loginpass']").val(i2b2.UI.cfg.loginDefaultPassword);
         } catch(e) {}
 
+        try {
+            $("#PM-login-modal #loginmessage").text(i2b2.UI.cfg.loginDefaultMessage);
+        } catch(e) {}
+
+        $("#PM-login-modal .showLoginPwd").click(function(){
+            const showPasswordLink = $("#PM-login-modal .showLoginPwd");
+            const hidePasswordLink = $("#PM-login-modal .hideLoginPwd");
+            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+
+            if (showPasswordLink.is(':visible')) {
+                $("#loginpass").prop('type', 'text');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
+                }
+            } else {
+                $("#loginpass").prop('type', 'password');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").addClass("ignorePasswordMgrs");
+                }
+            }
+
+            showPasswordLink.toggle();
+            hidePasswordLink.toggle();
+        });
+
+        $("#PM-login-modal .hideLoginPwd").click(function(){
+            const showPasswordLink = $("#PM-login-modal .showLoginPwd");
+            const hidePasswordLink = $("#PM-login-modal .hideLoginPwd");
+            let selectedDomain = i2b2.PM.model.Domains[$('#logindomain').val()];
+
+
+            if (showPasswordLink.is(':visible')) {
+                $("#loginpass").prop('type', 'text');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").removeClass("ignorePasswordMgrs");
+                }
+            } else {
+                $("#loginpass").prop('type', 'password');
+                if (selectedDomain.ignorePasswordMgrs === true) {
+                    $("#PM-login-modal input[name='loginpass']").addClass("ignorePasswordMgrs");
+                }
+            }
+
+            showPasswordLink.toggle();
+            hidePasswordLink.toggle();
+        }).hide();
+
         // clear any domains
         $('#logindomain option').remove();
         // load the domains into dropdown
