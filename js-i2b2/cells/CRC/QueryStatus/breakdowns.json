@@ -5,21 +5,13 @@
   "PATIENT_COUNT_XML": {
     "COUNT": true
   },
-  "PATIENT_COUNT_SHRINE_XML": {
-    "COUNT": true
-  },
-  "PATIENT_SITE_COUNT_SHRINE_XML": {
-    "SHRINESITES": true,
-    "SHRINESITESDOWNLOAD": true,
-    "PATIENTCOUNTMAP": true
-  },
   "PATIENT_GENDER_COUNT_XML": {
     "BARS": true,
     "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
-  "PATIENT_SEX_COUNT_SHRINE_XML": {
+  "PATIENT_SEX_COUNT_XML": {
     "BARS": true,
     "PIECHART": true,
     "TABLE": true,
@@ -27,32 +19,17 @@
   },
   "PATIENT_VITALSTATUS_COUNT_XML": {
     "BARS": true,
-    "TABLE": true,
-    "DOWNLOAD": true
-  },
-  "PATIENT_VITALSTATUS_COUNT_SHRINE_XML": {
-    "BARS": true,
     "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
   "PATIENT_RACE_COUNT_XML": {
     "BARS": true,
-    "TABLE": true,
-    "DOWNLOAD": true
-  },
-  "PATIENT_RACE_COUNT_SHRINE_XML": {
-    "BARS": true,
     "PIECHART": true,
     "TABLE": true,
     "DOWNLOAD": true
   },
   "PATIENT_AGE_COUNT_XML": {
-    "BARS": true,
-    "TABLE": true,
-    "DOWNLOAD": true
-  },
-  "PATIENT_AGE_COUNT_SHRINE_XML": {
     "BARS": true,
     "LINECHART": true,
     "PIECHART": true,
@@ -71,7 +48,7 @@
     },
     "DOWNLOAD": true
   },
-  "PATIENT_DIAG3_COUNT_SHRINE_XML": {
+  "PATIENT_DIAG3_COUNT_XML": {
     "TABLEBARCHART": true,
     "TABLE":true,
     "DOWNLOAD": true
@@ -81,12 +58,12 @@
     "TABLE": true,
     "DOWNLOAD": true
   },
-   "PATIENT_PATHOGEN_TIMELINE_SHRINE_XML": {
+  "PATIENT_PATHOGEN_TIMELINE_XML": {
     "TABLE": true,
     "DOWNLOAD": true,
     "PATHOGENTIMELINE": true
   },
-  "PATIENT_ZIP_COUNT_SHRINE_XML": {
+  "PATIENT_ZIP_COUNT_XML": {
     "TABLE": true,
     "MULTIZIPCODEMAP": {
       "clickBox": {
@@ -139,7 +116,7 @@
             "opacity": 1,
             "color": "#000",
             "fillOpacity": 0.25
-           },
+          },
           "hover": {
             "weight": 3,
             "_dashArray": "4,6",
@@ -150,11 +127,10 @@
       }
     }
   },
-  "PATIENT_NIH_ENROLLMENT_SHRINE_XML": {
+  "PATIENT_NIH_ENROLLMENT_XML": {
     "TABLE": true,
     "NIHENROLLTABLE": true,
     "NIHENROLLCSV": true,
     "DOWNLOAD": true
   }
-
 }
