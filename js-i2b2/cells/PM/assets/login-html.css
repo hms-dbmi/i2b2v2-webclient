@@ -188,3 +188,8 @@
     font-size: 9px;
     letter-spacing: 0.15em;
 }
+
+#PM-login-modal .modal-header {
+    font-weight: bold;
+    font-size: 1.1em;
+}
