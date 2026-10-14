@@ -43,6 +43,8 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
         if(includePatientCounts){
             dataInput.commonDataModel = commonDataModel;
         }
+
+        console.log("dataInput ", dataInput);
         dispatch(createSearchAutosuggest(dataInput));
     }
 
@@ -51,6 +53,7 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
     }
 
     const handleCommonDataModelChange = (event)=> {
+        console.log("common data mode change ", event.target.value);
         setCommonDataModel(event.target.value);
     }
 
@@ -89,7 +92,7 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
                             <TextField
                                 select
                                 defaultValue={commonDataModel}
-                                onChanged={handleCommonDataModelChange}
+                                onChange={handleCommonDataModelChange}
                                 disabled={!includePatientCounts}
                                 variant="standard"
                             >
