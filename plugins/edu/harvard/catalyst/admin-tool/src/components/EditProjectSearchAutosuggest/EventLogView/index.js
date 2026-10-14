@@ -10,19 +10,19 @@ export const EventLogView = ({eventLogs, hasError}) => {
 
     const columns = [
         {
-            field: 'eventLog',
+            field: 'eventLogType',
             headerName: 'Event Log',
             flex: 1
         },
         {
-            field: 'description',
+            field: 'msg',
             headerName: 'Description',
-            flex: 1
+            flex: 2
         },
         {
-            field: 'date',
+            field: 'createDateTime',
             headerName: 'Date',
-            flex: 1
+            flex: 2
         },
     ];
 

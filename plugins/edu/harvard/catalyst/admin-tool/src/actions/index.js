@@ -119,6 +119,9 @@ export const DELETE_PROJECT_USER_PARAM_STATUS_CONFIRMED= `${EDIT_PROJECT}/delete
 
 export const CLEAR_SELECTED_PROJECT= `${EDIT_PROJECT}/clearSelectedProject`;
 
+export const GET_SEARCH_AUTOSUGGEST_DETAILS = `${EDIT_PROJECT}/getSearchAutosuggestDetails`;
+export const CREATE_SEARCH_AUTOSUGGEST = `${EDIT_PROJECT}/createSearchAutosuggest`;
+
 //================================================================================================== //
 
 export const AUTHENTICATION_CONFIG_INFO = "authConfigInfo";

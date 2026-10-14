@@ -5,6 +5,8 @@ import {ProjectDataSource} from "./ProjectDataSource";
 import {ProjectUser} from "./ProjectUser";
 import {ParamStatusInfo} from "./ParamStatusInfo";
 import {UserStatusInfo} from "./UserStatusInfo";
+import { ProjectSearchAutosuggest } from "./ProjectSearchAutosuggest";
+import {StatusInfo} from "./StatusInfo";
 
 export const SelectedProject = ({
     project = Project(),
@@ -16,32 +18,38 @@ export const SelectedProject = ({
     },
     users = [],
     customRoles = [],
+    searchAutosuggestDetails = ProjectSearchAutosuggest(),
     isFetchingParams= false,
     isFetchingDataSources= false,
     isFetchingUsers= false,
+    isFetchingAutosuggestDetails= false,
     saveStatus= null,
     deleteStatus= null,
     allParamStatus=null,
     saveDSStatus = null,
     saveUserStatus=null,
     paramStatus = ParamStatusInfo(),
-    userStatus = UserStatusInfo()
+    userStatus = UserStatusInfo(),
+    searchAutosuggestStatus = StatusInfo()
 } = {}) => ({
     project,
     params,
     dataSources,
     users,
     customRoles,
+    searchAutosuggestDetails,
     isFetchingParams,
     isFetchingDataSources,
     isFetchingUsers,
+    isFetchingAutosuggestDetails,
     saveStatus,
     deleteStatus,
     allParamStatus,
     saveDSStatus,
     saveUserStatus,
     paramStatus,
-    userStatus
+    userStatus,
+    searchAutosuggestStatus
 });
 
 SelectedProject.propTypes = {
@@ -50,6 +58,7 @@ SelectedProject.propTypes = {
     dataSources: PropTypes.objectOf(ProjectDataSource).isRequired,
     users: PropTypes.arrayOf(ProjectUser).isRequired,
     customRoles: PropTypes.arrayOf(PropTypes.string),
+    searchAutoSuggestDetails: PropTypes.shape(ProjectSearchAutosuggest).isRequired,
     isFetchingParams: PropTypes.bool.isRequired,
     isFetchingDataSources: PropTypes.bool.isRequired,
     saveStatus: PropTypes.string,
@@ -58,5 +67,6 @@ SelectedProject.propTypes = {
     saveDSStatus: PropTypes.string,
     saveUserStatus: PropTypes.string,
     paramStatus: PropTypes.shape(ParamStatusInfo),
-    userStatus: PropTypes.shape(UserStatusInfo)
+    userStatus: PropTypes.shape(UserStatusInfo),
+    searchAutosuggestStatus: PropTypes.shape(StatusInfo)
 };
