@@ -292,7 +292,7 @@ export const editProjectInfoSlice = createSlice({
                 DateTime.fromISO(autosuggestDetails.endDateTime).toJSDate(): null;
 
             if(autosuggestDetails.calculateTotalNum){
-                searchAutoSuggestDetails.calculateTotalNum = SEARCH_AUTOSUGGEST_TOTALNUM_OPTION[autosuggestDetails.calculateTotalNum];
+                searchAutoSuggestDetails.calculateTotalNum = SEARCH_AUTOSUGGEST_TOTALNUM_OPTION[autosuggestDetails.calculateTotalNum.toUpperCase()];
             }
 
             searchAutoSuggestDetails.eventLogs =  autosuggestDetails.eventLogs.map((eventLog, index) => {
