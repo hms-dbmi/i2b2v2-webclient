@@ -54,9 +54,7 @@ export default class ConceptOverlayTimeline {
                 // Cache controls (SCOPED) - LINK STYLE CONTROLS
                 self.controls = {
                     conceptList: $(".cot-concept-links", self.config.displayEl)[0],
-                    conceptDropdown: $(".cot-concept-dropdown", self.config.displayEl)[0],
                     overlayList: $(".cot-overlay-links", self.config.displayEl)[0],
-                    overlayDropdown: $(".cot-overlay-dropdown", self.config.displayEl)[0],
                     aggregationList: $(".cot-aggregation-links", self.config.displayEl)[0],
                     legend: $(".cot-legend-items", self.config.displayEl)[0],
                 };
@@ -947,7 +945,6 @@ function buildMonthYearConceptSeries(rawData, selectedConcept, selectedAggregati
 
     // get the raw data by aggregation grain
     const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === aggregationGrain);
-    console.log("[DEBUG buildMonthYearConceptSeries()]: selectedConcept =", selectedConcept);
     let filteredRows = filterBreakdown(yearRows, selectedConcept);
     const bucketedPatients = collectPatientsByAggregation(filteredRows, selectedAggregation);
 
