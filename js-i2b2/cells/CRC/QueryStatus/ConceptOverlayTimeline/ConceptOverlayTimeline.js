@@ -301,7 +301,7 @@ export default class ConceptOverlayTimeline {
     let yRight = null;
 
     if (selectedOverlay && renderModel.overlaySeries && renderModel.overlaySeries.length > 0) {
-        const maxOverlay = Math.max(0, ...renderModel.overlaySeries.flatMap(item =>
+        const maxOverlay = Math.max(1, ...renderModel.overlaySeries.flatMap(item =>
             item.points.map(point => point.value)
         ));
         yRight = d3.scaleLinear()
