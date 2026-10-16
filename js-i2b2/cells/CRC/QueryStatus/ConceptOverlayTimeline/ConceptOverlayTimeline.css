@@ -78,6 +78,33 @@
   margin: 0;
 }
 
+/* Concept/overlay rows: label stays fixed, link list wraps internally beneath it */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-concept-row,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-overlay-row {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+
+  margin: 0;
+}
+
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-concept-row ul.cot-links,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-overlay-row ul.cot-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  margin: 0 0.5rem;
+  gap: 0.35rem 0.9rem;
+  padding: 0;
+}
+
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-concept-row ul.cot-links li,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-overlay-row ul.cot-links li {
+  display: inline-flex;
+  align-items: center;
+}
+
 /* Use ONE vertical spacing mechanism: margin between rows */
 .component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-control-row + .cot-control-row,
 .component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-control-row + .cot-legend-block {
