@@ -370,7 +370,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                     if ($("#submitTermSearch").attr('disabled') === undefined) i2b2.ONT.ctrlr.Search.clickSearch();
                 }
             }).on('input', function(e) {
-                const suggestList = $("#suggestion-list").empty();
+                const suggestList = $("#suggestion-list");
                 suggestList.addClass('d-none');
 
                 if(e.target.value.length >= 4){
@@ -454,7 +454,10 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                     patientMatch.push(listItem);
                                 }
                             }
+
+                            suggestList.empty();
                             if(patientMatch.length > 0) {
+                                console.log("adding suggest list");
                                 suggestList.append('<li><h6 class="dropdown-header fw-bold text-uppercase">Patients</h6></li>');
                                 patientMatch.map(p => {
                                     suggestList.append(p);
