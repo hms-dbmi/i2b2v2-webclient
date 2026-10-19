@@ -22,6 +22,7 @@
  export {UserProjectRole } from "./UserProjectRole";
  export {UserProjectRoles } from "./UserProjectRoles";
  export { StatusInfo } from "./StatusInfo";
- export { ProjectSearchAutosuggest, SEARCH_AUTOSUGGEST_STATUS } from "./ProjectSearchAutosuggest";
+ export { ProjectSearchAutosuggest, SEARCH_AUTOSUGGEST_STATUS, SEARCH_AUTOSUGGEST_TOTALNUM_OPTION } from "./ProjectSearchAutosuggest";
+ export { EventLog } from "./EventLog";
 
 

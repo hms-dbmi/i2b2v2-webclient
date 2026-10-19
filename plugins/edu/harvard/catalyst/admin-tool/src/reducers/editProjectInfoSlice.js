@@ -4,11 +4,18 @@ import {
 } from "../actions";
 import { defaultState } from "../defaultState";
 import {
-    Param, ParamStatusInfo,
+    EventLog,
+    Param,
+    ParamStatusInfo,
     ProjectDataSource,
-    ProjectUser, SelectedProject,
+    ProjectSearchAutosuggest,
+    ProjectUser,
+    SEARCH_AUTOSUGGEST_STATUS,
+    SEARCH_AUTOSUGGEST_TOTALNUM_OPTION,
+    SelectedProject, StatusInfo,
     UserStatusInfo
 } from "../models";
+import {DateTime} from "luxon";
 
 export const editProjectInfoSlice = createSlice({
     name: EDIT_PROJECT,
@@ -265,10 +272,68 @@ export const editProjectInfoSlice = createSlice({
         deleteProjectUserParamStatusConfirmed:  state => {
             state.paramStatus= ParamStatusInfo();
         },
-
         clearSelectedProject: state => {
             return SelectedProject();
-        }
+        },
+        getSearchAutosuggestDetails:  state => {
+            state.searchAutosuggestStatus = ParamStatusInfo();
+            state.searchAutosuggestDetails = ProjectSearchAutosuggest();
+            state.isFetchingAutosuggestDetails = true;
+        },
+        getSearchAutosuggestDetailsSucceeded:  (state, {payload: {project, autosuggestDetails}}) => {
+            let searchAutoSuggestDetails = ProjectSearchAutosuggest();
+            searchAutoSuggestDetails.status = SEARCH_AUTOSUGGEST_STATUS[autosuggestDetails.status];
+            searchAutoSuggestDetails.progressMsg = autosuggestDetails.progressMsg;
+            searchAutoSuggestDetails.autosuggestIndexLocation = autosuggestDetails.autosuggestIndexLocation;
+            searchAutoSuggestDetails.oldAutosuggestIndexLocation = autosuggestDetails.oldAutosuggestIndexLocation;
+
+            searchAutoSuggestDetails.startDateTime =  autosuggestDetails.startDateTime ?
+                DateTime.fromISO(autosuggestDetails.startDateTime).toJSDate(): null;
+
+            searchAutoSuggestDetails.endDateTime =  autosuggestDetails.endDateTime ?
+                DateTime.fromISO(autosuggestDetails.endDateTime).toJSDate(): null;
+
+            if(autosuggestDetails.calculateTotalNum){
+                searchAutoSuggestDetails.calculateTotalNum = SEARCH_AUTOSUGGEST_TOTALNUM_OPTION[autosuggestDetails.calculateTotalNum];
+            }
+
+            console.log(" searchAutoSuggestDetails.calculateTotalNum: " , searchAutoSuggestDetails.calculateTotalNum);
+            searchAutoSuggestDetails.eventLogs =  autosuggestDetails.eventLogs.map((eventLog, index) => {
+                return EventLog({
+                    id: index,
+                    msg: eventLog.msg,
+                    createDateTime: DateTime.fromISO(eventLog.createDateTime).toJSDate()
+                });
+            });
+
+            state.searchAutosuggestDetails = searchAutoSuggestDetails;
+            state.project = project;
+            state.isFetchingAutosuggestDetails = false;
+            state.searchAutosuggestStatus = StatusInfo({
+                status: "SUCCESS"
+            });
+        },
+        getSearchAutosuggestDetailsFailed:  (state, {payload: {errorMessage}}) => {
+            state.searchAutosuggestStatus = StatusInfo({
+                status: "FAIL",
+                errorMessage: errorMessage
+            });
+            state.isFetchingAutosuggestDetails = false;
+        },
+        createSearchAutosuggest:  state => {
+            state.searchAutosuggestStatus= ParamStatusInfo();
+        },
+        createSearchAutosuggestSucceeded:  (state) => {
+            state.searchAutosuggestStatus = StatusInfo({
+                status: "STARTED",
+            });
+        },
+        createSearchAutosuggestFailed:  (state, {payload: {errorMessage}}) => {
+            state.searchAutosuggestStatus = StatusInfo({
+                status: "FAIL",
+                errorMessage: errorMessage
+            });
+        },
     }
 })
 
@@ -316,7 +381,13 @@ export const {
     deleteProjectUserParamSucceeded,
     deleteProjectUserParamFailed,
     deleteProjectUserParamStatusConfirmed,
-    clearSelectedProject
+    clearSelectedProject,
+    getSearchAutosuggestDetails,
+    getSearchAutosuggestDetailsSucceeded,
+    getSearchAutosuggestDetailsFailed,
+    createSearchAutosuggest,
+    createSearchAutosuggestSucceeded,
+    createSearchAutosuggestFailed
 } = editProjectInfoSlice.actions
 
 

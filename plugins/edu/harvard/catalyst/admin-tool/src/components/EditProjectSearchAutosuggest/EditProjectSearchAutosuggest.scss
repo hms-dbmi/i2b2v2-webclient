@@ -11,6 +11,7 @@
 
   .autosuggestAction{
     margin-top: 1.1em;
+    margin-bottom: 1em;
   }
 
   .EventLogView {
@@ -19,5 +20,46 @@
 
   .EditProjectSearchAutosuggestContent{
     margin-top: 0.6em;
+  }
+
+  .IndexStatusView {
+    background-color: #fafcff;
+  }
+
+  .nonErrorProgress {
+    color: green;
+    font-weight: bold;
+  }
+
+  .error {
+    color: red;
+  }
+
+  .progressLabelMain {
+    display: flex;
+    row-gap: 10px;
+    .progressMsg {
+        flex-grow: 1;
+    }
+
+    .runOptionsInfo {
+      float: right;
+      flex-grow: 1;
+    }
+  }
+
+  .progressBarMain {
+    margin-top: 0.9em;
+    margin-bottom: 1em;
+    clear: both;
+
+    .progressBar {
+      height: 10px;
+      border-radius: 5px;
+    }
+
+    .progressStatus {
+      font-weight: bold;
+    }
   }
 }

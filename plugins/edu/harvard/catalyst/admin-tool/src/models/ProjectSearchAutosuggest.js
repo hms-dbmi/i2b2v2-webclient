@@ -1,33 +1,34 @@
 
 export const ProjectSearchAutosuggest = ({
     startDateTime= null,
+    endDateTime=null,
     status = SEARCH_AUTOSUGGEST_STATUS.UNAVAILABLE,
-    progress = "",
+    progressMsg = "",
+    calculateTotalNum= SEARCH_AUTOSUGGEST_TOTALNUM_OPTION.NONE,
     autosuggestIndexLocation = null,
     oldAutosuggestIndexLocation = null,
-    errorLog = ErrorLog(),
+    eventLogs = [],
 } = {}) => ({
     startDateTime,
+    endDateTime,
     status,
-    progress,
+    progressMsg,
+    calculateTotalNum,
     autosuggestIndexLocation,
     oldAutosuggestIndexLocation,
-    errorLog,
-});
-
-const ErrorLog= ({
-    msg = null,
-    dateTime = null,
-
-} = {}) => ({
-    msg,
-    dateTime,
+    eventLogs,
 });
 
 export const SEARCH_AUTOSUGGEST_STATUS = {
     UNAVAILABLE: "UNAVAILABLE",
-    RUNNING: "RUNNING",
+    RUNNING_TOTALNUM: "RUNNING",
+    RUNNING_AUTOSUGGEST: "RUNNING",
     FINISHED: "FINISHED",
     ERROR: "ERROR"
 }
 
+export const SEARCH_AUTOSUGGEST_TOTALNUM_OPTION = {
+    OMOP: "OMOP",
+    I2B2: "I2B2",
+    NONE: "NONE",
+}
