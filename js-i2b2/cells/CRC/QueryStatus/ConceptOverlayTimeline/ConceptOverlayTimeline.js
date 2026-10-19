@@ -24,7 +24,7 @@ export default class ConceptOverlayTimeline {
             this.overlayEndpointsAttempted = false;
 
             this.colorsInUse = [];
-            this.cannonicalHexes = this.config.advancedConfig.cannonicalHexes;
+            this.canonicalHexes = this.config.advancedConfig.canonicalHexes;
 
             this.conceptListLabel = this.config.advancedConfig.conceptsLabel;
 
@@ -164,7 +164,7 @@ export default class ConceptOverlayTimeline {
             
 
             if (Object.keys(this.conceptRegistry).length == 0){
-                this.conceptRegistry = generateConceptRegistry(raw, this.conceptRegistry, this.customizeConceptRegistry, this.cannonicalHexes, this.colorsInUse);
+                this.conceptRegistry = generateConceptRegistry(raw, this.conceptRegistry, this.customizeConceptRegistry, this.canonicalHexes, this.colorsInUse);
             } 
 
             if (Object.keys(this.breakdownDateRange).length === 0) {
@@ -172,7 +172,7 @@ export default class ConceptOverlayTimeline {
             }
 
             if (!this.overlayRegistryAttempted) {
-                this.overlayRegistry = generateOverlayRegistry(this.allOverlays, this.overlayRegistry, this.cannonicalHexes, this.colorsInUse);
+                this.overlayRegistry = generateOverlayRegistry(this.allOverlays, this.overlayRegistry, this.canonicalHexes, this.colorsInUse);
                 this.overlayRegistryAttempted = true;
             }
 
@@ -632,13 +632,13 @@ let parseData = function (xmlData, advancedConfig) {
 // Helpers
 // ======================================================================
 
-function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry, cannonicalHexes, colorsInUse) {
+function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry, canonicalHexes, colorsInUse) {
     if (!data || Object.keys(data).length === 0){
         console.log("no breakdown data found; cancelling concept registry generation");
         return conceptRegistry;
     }
-    if (!cannonicalHexes || cannonicalHexes.length === 0){
-        console.log("[ConceptOverlayTimeline] cannonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
+    if (!canonicalHexes || canonicalHexes.length === 0){
+        console.log("[ConceptOverlayTimeline] canonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
         return conceptRegistry;
     }
     const seenCpts = [
@@ -678,9 +678,9 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
         const cptColor = concept.color;
 
         if (!cptColor ||cptColor.length < 7 ||!cptColor.startsWith("#")) {
-           concept.color = selectBaseHex(cannonicalHexes, colorsInUse);
+           concept.color = selectBaseHex(canonicalHexes, colorsInUse);
            colorsInUse.push(concept.color);
-           console.log(`${conceptName} color property is not a 6 digit hex, selecting random hex from cannonical list.`)
+           console.log(`${conceptName} color property is not a 6 digit hex, selecting random hex from canonical list.`)
         }
     });
 
@@ -736,16 +736,16 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
     
 }
 
-function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, colorsInUse) {
+function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, colorsInUse) {
     // bail if allOverlays is empty or undefined
     if (!allOverlays || Object.keys(allOverlays).length === 0) {
         console.log("overlay configs are empty or undefined; cancelling generation");
         return overlayRegistry;
     }
 
-    // bail if cannonicalHexes is empty or undefined
-    if (!cannonicalHexes || cannonicalHexes.length === 0) {
-        console.log("[ConceptOverlayTimeline] cannonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
+    // bail if canonicalHexes is empty or undefined
+    if (!canonicalHexes || canonicalHexes.length === 0) {
+        console.log("[ConceptOverlayTimeline] canonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
         return overlayRegistry;
     }
 
@@ -793,7 +793,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, 
                 currentSource.color = overlaySource.color;
                 colorsInUse.push(overlaySource.color);
             } else {
-                currentSource.color = selectBaseHex(cannonicalHexes, colorsInUse);
+                currentSource.color = selectBaseHex(canonicalHexes, colorsInUse);
             }
 
             // take order if present
@@ -858,7 +858,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, 
                                 combinedEntry.color = combinedData.color;
                                 colorsInUse.push(combinedData.color);
                             } else {
-                                combinedEntry.color = selectBaseHex(cannonicalHexes, colorsInUse);
+                                combinedEntry.color = selectBaseHex(canonicalHexes, colorsInUse);
                             }
                         }
                     }
@@ -1286,13 +1286,13 @@ function updateLegend(controls, conceptRegistry, currentKeys, overlayRegistry, s
     }
 }
 
-function selectBaseHex(cannonicalHexes, colorsInUse){
+function selectBaseHex(canonicalHexes, colorsInUse){
     let selectedHex = "";
-    const unusedColors = cannonicalHexes.filter(color => !colorsInUse.includes(color));
+    const unusedColors = canonicalHexes.filter(color => !colorsInUse.includes(color));
 
     if (unusedColors.length === 0){
-        console.log("all cannonical hexes all in use; duplicate colors will be assigned");
-        selectedHex = cannonicalHexes[Math.floor(Math.random() * cannonicalHexes.length)];
+        console.log("all canonical hexes all in use; duplicate colors will be assigned");
+        selectedHex = canonicalHexes[Math.floor(Math.random() * canonicalHexes.length)];
     } else {
         selectedHex = unusedColors[Math.floor(Math.random() * unusedColors.length)];
     }
