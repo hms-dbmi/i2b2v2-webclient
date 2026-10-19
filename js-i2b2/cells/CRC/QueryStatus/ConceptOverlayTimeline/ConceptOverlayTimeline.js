@@ -635,11 +635,11 @@ let parseData = function (xmlData, advancedConfig) {
 function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry, cannonicalHexes, colorsInUse) {
     if (!data || Object.keys(data).length === 0){
         console.log("no breakdown data found; cancelling concept registry generation");
-        return;
+        return conceptRegistry;
     }
     if (!cannonicalHexes || cannonicalHexes.length === 0){
-        console.log("cannonical hexes list is empty or undefined; cancelling generation");
-        return;
+        console.log("[ConceptOverlayTimeline] cannonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
+        return conceptRegistry;
     }
     const seenCpts = [
         ... new Set(Object.values(data).map(item => item.concept))
@@ -745,7 +745,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, cannonicalHexes, 
 
     // bail if cannonicalHexes is empty or undefined
     if (!cannonicalHexes || cannonicalHexes.length === 0) {
-        console.log("cannonical hexes list is empty or undefined; cancelling generation");
+        console.log("[ConceptOverlayTimeline] cannonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
         return overlayRegistry;
     }
 
