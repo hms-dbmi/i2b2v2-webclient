@@ -697,7 +697,7 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
 
     if (evaluatedCptNameKeys.length === 0){
         console.log("no concept name keys matching breakdown data found, cancelling customization; conceptRegistry will be generated from breakdown data.");
-        return;
+        return conceptRegistry;
     } else if (evaluatedCptNameKeys.length < candidateCptNameKeys.length)  {
         console.log(`${candidateCptNameKeys.length} concepts were listed for customization, but only ${evaluatedCptNameKeys.length} custom registry concept names were matched.`);
     }
