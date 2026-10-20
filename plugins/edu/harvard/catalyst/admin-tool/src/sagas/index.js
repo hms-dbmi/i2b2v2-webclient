@@ -27,3 +27,5 @@ export { getAllAuthConfigsSaga } from "./getAllAuthConfigsSaga";
 export { getUserProjectRolesSaga } from "./getUserProjectRolesSaga";
 export { terminateUserSessionSaga } from "./terminateUserSessionSaga";
 export { unlockOutUserSaga } from "./unlockOutUserSaga";
+export { getSearchAutosuggestDetailsSaga } from "./getSearchAutosuggestDetailsSaga";
+export { createSearchAutosuggestSaga } from "./createSearchAutosuggestSaga";
