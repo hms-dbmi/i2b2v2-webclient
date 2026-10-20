@@ -294,7 +294,7 @@ export const editProjectInfoSlice = createSlice({
                 DateTime.fromISO(autosuggestDetails.endDateTime).toJSDate(): null;
 
             if(autosuggestDetails.calculateTotalNum){
-                searchAutoSuggestDetails.calculateTotalNum = SEARCH_AUTOSUGGEST_TOTALNUM_OPTION[autosuggestDetails.calculateTotalNum];
+                searchAutoSuggestDetails.calculateTotalNum = SEARCH_AUTOSUGGEST_TOTALNUM_OPTION[autosuggestDetails.calculateTotalNum.toUpperCase()];
             }
 
             console.log(" searchAutoSuggestDetails.calculateTotalNum: " , searchAutoSuggestDetails.calculateTotalNum);
