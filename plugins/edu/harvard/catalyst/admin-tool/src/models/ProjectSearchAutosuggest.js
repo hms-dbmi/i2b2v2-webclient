@@ -20,7 +20,7 @@ export const ProjectSearchAutosuggest = ({
 });
 
 export const SEARCH_AUTOSUGGEST_STATUS = {
-    UNAVAILABLE: "UNAVAILABLE",
+    UNAVAILABLE: "",
     RUNNING_TOTALNUM: "RUNNING",
     RUNNING_AUTOSUGGEST: "RUNNING",
     FINISHED: "FINISHED",
