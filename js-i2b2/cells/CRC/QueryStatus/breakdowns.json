@@ -85,7 +85,7 @@
     "TABLE": true,
     "DOWNLOAD": true,
     "CONCEPTOVERLAYTIMELINE": {
-      "cannonicalHexes": 
+      "canonicalHexes": 
         [
             "#FF0000",
             "#00FF00",
@@ -114,7 +114,6 @@
               "Influenza": { "key": "Influenza", "label": "Influenza", "color": "#ff7f0e", "order": ""},
               "RSV": { "key": "RSV", "label": "RSV", "color": "#2ca02c", "order": ""}
           },
-        "multiOverlaysYRightLabel": "Public Health Metrics",
         "overlayConfigs": {
           "overlays":{
               "mwraWastewater": {
@@ -139,8 +138,7 @@
                   "addCombinedOption":true,
                   "combinedOptionOnly":true,
                   "combinedOptionData":  { "label": "Wastewater Local COVID-19", "combinedColumns":["Northern 7 day avg", "Southern 7 day avg"], "color": "#333333", "order": 999 },                
-                  "yRightLabel": "Wastewater Level",
-                  "overlayLabel": "MWRA Wastewater"   
+                  "yRightLabel": "Wastewater Level"  
               }  
           }        
         }  
