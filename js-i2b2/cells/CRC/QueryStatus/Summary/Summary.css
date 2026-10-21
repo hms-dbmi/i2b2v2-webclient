@@ -53,6 +53,12 @@
     float: left;
     margin-right: 1em;
 }
+#infoQueryStatusText .statusButtons .pause-polling {
+    display: block;
+}
+#infoQueryStatusText .statusButtons.done .pause-polling {
+    display: none;
+}
 
 
 #infoQueryStatusText .status-bar .status-error {

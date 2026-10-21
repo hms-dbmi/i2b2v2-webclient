@@ -29,6 +29,13 @@
                     {{/if}}
                     ">
                 {{#if showQueryButton}}<button type="button" class="btn btn-primary btn-sm view-query" onmousedown="i2b2.layout.selectTab('i2b2.CRC.view.QT');">View Query</button>{{/if}}
+                {{#if showPausePollingButton}}
+                    {{#if isPollingPaused}}
+                        <button type="button" class="btn btn-primary btn-sm pause-polling" onmousedown="i2b2.CRC.QueryStatus.togglePolling();">Resume Polling</button>
+                    {{else}}
+                        <button type="button" class="btn btn-primary btn-sm pause-polling" onmousedown="i2b2.CRC.QueryStatus.togglePolling();">Pause Polling</button>
+                    {{/if}}
+                {{/if}}
                 <button type="button" class="btn btn-primary btn-sm report" onmousedown="i2b2.CRC.QueryReport.show();">View Report</button>
             </div>
 
