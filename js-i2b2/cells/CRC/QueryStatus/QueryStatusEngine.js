@@ -80,6 +80,25 @@ i2b2.CRC.QueryStatus.stopPolling = function() {
     i2b2.CRC.QueryStatus.haltPolling = true;
 };
 
+i2b2.CRC.QueryStatus.restart = function() {
+    // resume the polling process for the current query instance
+    i2b2.CRC.QueryStatus.haltPolling = false;
+    const scopedCallbackQRS = new i2b2_scopedCallback(i2b2.CRC.QueryStatus._handleQueryResultSet);
+    i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryStatus", {qi_key_value: i2b2.CRC.QueryStatus.currentQueryInstanceId}, scopedCallbackQRS);
+};
+
+i2b2.CRC.QueryStatus.togglePolling = function() {
+    // toggle between paused and polling states, used by the Summary module's Pause/Resume Polling button
+    if (i2b2.CRC.QueryStatus.haltPolling) {
+        i2b2.CRC.QueryStatus.restart();
+    } else {
+        i2b2.CRC.QueryStatus.stopPolling();
+    }
+    // refresh the Summary visualization so the button label reflects the new state
+    const summaryViz = i2b2.CRC.QueryStatus.model.visualizations?.["INTERNAL_SUMMARY"]?.componentInstances?.[0]?.visualization;
+    if (summaryViz) summaryViz.update();
+};
+
 i2b2.CRC.QueryStatus.clear = function() {
     // remove resize observer
     if (i2b2.CRC.QueryStatus.resizeObserver) i2b2.CRC.QueryStatus.resizeObserver.disconnect();
@@ -126,6 +145,7 @@ i2b2.CRC.QueryStatus.start = function(queryInstanceId, mainEl) {
     // restart process only when new query instance id is given
     if (i2b2.CRC.QueryStatus.currentQueryInstanceId !== queryInstanceId) {
 
+        i2b2.CRC.QueryStatus.currentQueryInstanceId = queryInstanceId;
         i2b2.CRC.QueryStatus.haltPolling = false;
 
         i2b2.CRC.QueryStatus.model.QRS = {};

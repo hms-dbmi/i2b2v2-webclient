@@ -43,7 +43,12 @@ export default class Summary {
             if (typeof this.template !== 'undefined') {
                 // update the display
                 $(this.config.displayEl).empty();
-                const renderData = {...this.record, showQueryButton: this.config.definition.showQueryButton};
+                const renderData = {
+                    ...this.record,
+                    showQueryButton: this.config.definition.showQueryButton,
+                    showPausePollingButton: i2b2.CRC.QueryStatus.realtimePolling,
+                    isPollingPaused: i2b2.CRC.QueryStatus.haltPolling
+                };
                 $(this.template(renderData)).appendTo(this.config.displayEl);
             }
             return true;
