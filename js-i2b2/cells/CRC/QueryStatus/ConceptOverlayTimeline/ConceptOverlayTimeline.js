@@ -272,250 +272,250 @@ export default class ConceptOverlayTimeline {
     
     draw(renderModel, conceptRegistry, overlayRegistry, selectedOverlay, selectedAggregation) {
 
-    if (!renderModel || Object.keys(renderModel).length === 0) {
+        if (!renderModel || Object.keys(renderModel).length === 0) {
+            this.svg.selectAll("*").remove();
+            return;
+        }
+
+        const width = this.width - margin.left - margin.right;
+        const height = this.height;
+
         this.svg.selectAll("*").remove();
-        return;
-    }
 
-    const width = this.width - margin.left - margin.right;
-    const height = this.height;
+        // -----------------------------
+        // LEFT Y SCALE (patients)
+        // -----------------------------
 
-    this.svg.selectAll("*").remove();
-
-    // -----------------------------
-    // LEFT Y SCALE (patients)
-    // -----------------------------
-
-    const maxY = Math.max(1, ...renderModel.series.flatMap(item => 
-        item.points.map(point => point.value)
-        ));
-    const yLeft = d3.scaleLinear()
-        .domain([0, maxY])
-        .nice()            
-        .range([height, 0]);
-
-    // -----------------------------
-    // RIGHT Y SCALE (wastewater)
-    // -----------------------------
-
-    let yRight = null;
-
-    if (selectedOverlay && renderModel.overlaySeries && renderModel.overlaySeries.length > 0) {
-        const maxOverlay = Math.max(1, ...renderModel.overlaySeries.flatMap(item =>
+        const maxY = Math.max(1, ...renderModel.series.flatMap(item => 
             item.points.map(point => point.value)
-        ));
-        yRight = d3.scaleLinear()
-            .domain([0, maxOverlay])
-            .nice()
+            ));
+        const yLeft = d3.scaleLinear()
+            .domain([0, maxY])
+            .nice()            
             .range([height, 0]);
-    } else {
-        console.log("overlaySeries is empty, or no overlay is selected.");
-    }
-    // -----------------------------
-    // X SCALE (respect patient breakdown only)
-    // -----------------------------
 
-    const xScale = (selectedAggregation === "yoy" ? d3.scaleLinear() : d3.scaleTime())
-        .domain(renderModel.xDomain)
-        .range([0, width]);
+        // -----------------------------
+        // RIGHT Y SCALE (wastewater)
+        // -----------------------------
 
-    // -----------------------------
-    // AXES
-    // -----------------------------
+        let yRight = null;
 
-    // X axis
+        if (selectedOverlay && renderModel.overlaySeries && renderModel.overlaySeries.length > 0) {
+            const maxOverlay = Math.max(1, ...renderModel.overlaySeries.flatMap(item =>
+                item.points.map(point => point.value)
+            ));
+            yRight = d3.scaleLinear()
+                .domain([0, maxOverlay])
+                .nice()
+                .range([height, 0]);
+        } else {
+            console.log("overlaySeries is empty, or no overlay is selected.");
+        }
+        // -----------------------------
+        // X SCALE (respect patient breakdown only)
+        // -----------------------------
 
-    let tickFormat;
+        const xScale = (selectedAggregation === "yoy" ? d3.scaleLinear() : d3.scaleTime())
+            .domain(renderModel.xDomain)
+            .range([0, width]);
 
-    if (selectedAggregation === "yoy") {
-        tickFormat = i => renderModel.months[i];
-    } else if (selectedAggregation === "year"){
-        tickFormat = d3.timeFormat("%Y");
-    } else {
-        tickFormat = d3.timeFormat("%Y-%m")
-    }
+        // -----------------------------
+        // AXES
+        // -----------------------------
 
-    const axis = d3.axisBottom(xScale)
-        .ticks(selectedAggregation === "yoy" ? 11 : 10)
-        .tickFormat(tickFormat)
+        // X axis
 
-    if (selectedAggregation === "yoy") {
-        axis.tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
-    }
-
-    this.svg.append("g")
-        .classed("x-axis", true)
-        .attr("transform", `translate(0,${height})`)
-        .call(axis)
-        .selectAll("text")
-        .attr("transform", "rotate(-45)")
-        .style("text-anchor", "end");
-
-    // Left Y axis
-    const tickFormatLeft = maxY <= 1 ? d3.format("d") : d3.format(".2~s");
-
-    const yAxisLeft = this.svg.append("g")
-        .classed("y-axis left", true)
-        .call(
-            d3.axisLeft(yLeft)
-                .ticks(Math.min(maxY, 10))
-                .tickFormat(tickFormatLeft));
-
-    const yLabelText =  renderModel.yLeftLabel;
-
-    const yLabelLeft = yAxisLeft.append("text")
-        .attr("class", "y-label")
-        .attr("fill", "currentColor")
-        .attr("letter-spacing", "1.16")
-        .attr("text-anchor", "middle")
-        .text(yLabelText)
-        .attr("transform", "rotate(-90)");
-
-    // After render, center it using SVG bbox
-    yLabelLeft.each(function () {
-        let w = 0;
-        try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
-
-        const x = -(height / 2);        
-        const y = -margin.left + 28;      
-
-        d3.select(this)
-            .attr("x", x)
-            .attr("y", y);
-    });
-
-    const [overlayNickname] = selectedOverlay ? selectedOverlay.split("::") : [];
-    const yRightLabelText = overlayNickname ? overlayRegistry[overlayNickname]?.yRightLabel : "";
-
-    // Right Y axis (overlay)
-    if (yRight) {
-        const yAxisRight = this.svg.append("g")
-            .classed("y-axis right", true)
-            .attr("transform", `translate(${width},0)`)
-            .call(d3.axisRight(yRight).tickFormat(d3.format(",")))
-
-        yAxisRight.append("text")
-            .attr("class", "y-label")
-            .attr("text-anchor", "middle")
-            .attr("letter-spacing", "1.16")
-            .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
-            .text(yRightLabelText);
-    }
-
-    // -----------------------------
-    // LINE GENERATORS
-    // -----------------------------
-
-    const patientLine = d3.line()
-        .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
-        .y(point => yLeft(point.value));   
-
-
-    const overlayLine = yRight ? d3.line()
-        .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
-        .y(point => yRight(point.value)) : null;
-
-    // -----------------------------
-    // CALCULATE MAX YEARS PER DATA SET, IF APPLICABLE
-    // -----------------------------
-
-    const hasCptYears = renderModel?.series?.some(item => Object.hasOwn(item, "year"));
-    const maxCptYear = hasCptYears ? Math.max(...renderModel.series.map(o => o.year)) : null;
-
-    const hasOverlayYears = renderModel?.overlaySeries?.some(item => Object.hasOwn(item, "year"));
-    const maxOverlayYear = hasOverlayYears ? Math.max(...renderModel.overlaySeries.map(o => o.year)) : null;
-
-    // -----------------------------
-    // DRAW CONCEPT LINES + POINTS
-    // -----------------------------
-    for (const seriesItem of renderModel.series){
-
-        const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxCptYear;
-        const strokeWidth = isMaxYear ? 4 : 2; 
-
-        // group
-        const group = this.svg.append("g");
-
-        // point label
-
-        const pointLabel = selectedAggregation === "yoy" 
-            ? d => `${seriesItem.concept}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
-            : d => `${seriesItem.concept} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
-
-        // Line
-        const cptPath = group.append("path")
-            .datum(seriesItem.points)
-            .attr("fill", "none")
-            .attr("stroke",  seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
-            .attr("stroke-width", strokeWidth)
-            .attr("d", patientLine);
+        let tickFormat;
 
         if (selectedAggregation === "yoy") {
-            cptPath.append("title")
-            .text(`${seriesItem.concept} \n${seriesItem.year}`);
+            tickFormat = i => renderModel.months[i];
+        } else if (selectedAggregation === "year"){
+            tickFormat = d3.timeFormat("%Y");
+        } else {
+            tickFormat = d3.timeFormat("%Y-%m")
         }
 
-        // Points
-        group.selectAll(`circle.${cssSafeKey(seriesItem.concept)}`)
-            .data(seriesItem.points)
-            .enter()
-            .append("circle")
-            .attr("class", `point ${cssSafeKey(seriesItem.concept)}`)
-            .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
-            .attr("cy", point => yLeft(point.value))
-            .attr("r", 4)
-            .attr("fill", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
-            .attr("stroke", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
-            .append("title")
-            .text(pointLabel);
+        const axis = d3.axisBottom(xScale)
+            .ticks(selectedAggregation === "yoy" ? 11 : 10)
+            .tickFormat(tickFormat)
+
+        if (selectedAggregation === "yoy") {
+            axis.tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+        }
+
+        this.svg.append("g")
+            .classed("x-axis", true)
+            .attr("transform", `translate(0,${height})`)
+            .call(axis)
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+
+        // Left Y axis
+        const tickFormatLeft = maxY <= 1 ? d3.format("d") : d3.format(".2~s");
+
+        const yAxisLeft = this.svg.append("g")
+            .classed("y-axis left", true)
+            .call(
+                d3.axisLeft(yLeft)
+                    .ticks(Math.min(maxY, 10))
+                    .tickFormat(tickFormatLeft));
+
+        const yLabelText =  renderModel.yLeftLabel;
+
+        const yLabelLeft = yAxisLeft.append("text")
+            .attr("class", "y-label")
+            .attr("fill", "currentColor")
+            .attr("letter-spacing", "1.16")
+            .attr("text-anchor", "middle")
+            .text(yLabelText)
+            .attr("transform", "rotate(-90)");
+
+        // After render, center it using SVG bbox
+        yLabelLeft.each(function () {
+            let w = 0;
+            try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
+
+            const x = -(height / 2);        
+            const y = -margin.left + 28;      
+
+            d3.select(this)
+                .attr("x", x)
+                .attr("y", y);
+        });
+
+        const [overlayNickname] = selectedOverlay ? selectedOverlay.split("::") : [];
+        const yRightLabelText = overlayNickname ? overlayRegistry[overlayNickname]?.yRightLabel : "";
+
+        // Right Y axis (overlay)
+        if (yRight) {
+            const yAxisRight = this.svg.append("g")
+                .classed("y-axis right", true)
+                .attr("transform", `translate(${width},0)`)
+                .call(d3.axisRight(yRight).tickFormat(d3.format(",")))
+
+            yAxisRight.append("text")
+                .attr("class", "y-label")
+                .attr("text-anchor", "middle")
+                .attr("letter-spacing", "1.16")
+                .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
+                .text(yRightLabelText);
         }
 
         // -----------------------------
-        // DRAW WASTEWATER OVERLAY
+        // LINE GENERATORS
         // -----------------------------
 
-        if (overlayLine && renderModel.overlaySeries.length) {
+        const patientLine = d3.line()
+            .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+            .y(point => yLeft(point.value));   
 
-            for (const seriesItem of renderModel.overlaySeries) {
-                const source = resolveOverlaySelection(seriesItem.key, overlayRegistry);
-                if (!source) continue;
 
-                const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxOverlayYear;
-                const strokeWidth = isMaxYear ? 4 : 2;
+        const overlayLine = yRight ? d3.line()
+            .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+            .y(point => yRight(point.value)) : null;
 
-                const group = this.svg.append("g");
+        // -----------------------------
+        // CALCULATE MAX YEARS PER DATA SET, IF APPLICABLE
+        // -----------------------------
 
-                const pointLabel = selectedAggregation === "yoy"
-                    ? d => `${seriesItem.label}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} ]`
-                    : d => `${seriesItem.label}\n${tickFormat(d.date)}\n[ ${d.value} ]`;
+        const hasCptYears = renderModel?.series?.some(item => Object.hasOwn(item, "year"));
+        const maxCptYear = hasCptYears ? Math.max(...renderModel.series.map(o => o.year)) : null;
 
-                const overlayPath = group.append("path")
-                    .datum(seriesItem.points)
-                    .attr("fill", "none")
-                    .attr("stroke", seriesItem.stroke || source.color)
-                    .attr("stroke-width", strokeWidth)
-                    .attr("stroke-dasharray", "4 3")
-                    .attr("d", overlayLine);
+        const hasOverlayYears = renderModel?.overlaySeries?.some(item => Object.hasOwn(item, "year"));
+        const maxOverlayYear = hasOverlayYears ? Math.max(...renderModel.overlaySeries.map(o => o.year)) : null;
 
-                if (selectedAggregation === "yoy") {
-                    overlayPath.append("title")
-                        .text(`${seriesItem.label} \n ${seriesItem.year}`);
-                }
+        // -----------------------------
+        // DRAW CONCEPT LINES + POINTS
+        // -----------------------------
+        for (const seriesItem of renderModel.series){
 
-                group.selectAll(`circle.${cssSafeKey(seriesItem.key)}`)
-                    .data(seriesItem.points)
-                    .enter()
-                    .append("circle")
-                    .attr("class", `overlay-point ${cssSafeKey(seriesItem.key)}`)
-                    .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
-                    .attr("cy", point => yRight(point.value))
-                    .attr("r", 3)
-                    .attr("fill", seriesItem.stroke || source.color)
-                    .attr("stroke", seriesItem.stroke || source.color)
-                    .append("title")
-                    .text(pointLabel);
+            const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxCptYear;
+            const strokeWidth = isMaxYear ? 4 : 2; 
+
+            // group
+            const group = this.svg.append("g");
+
+            // point label
+
+            const pointLabel = selectedAggregation === "yoy" 
+                ? d => `${seriesItem.concept}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
+                : d => `${seriesItem.concept} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
+
+            // Line
+            const cptPath = group.append("path")
+                .datum(seriesItem.points)
+                .attr("fill", "none")
+                .attr("stroke",  seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
+                .attr("stroke-width", strokeWidth)
+                .attr("d", patientLine);
+
+            if (selectedAggregation === "yoy") {
+                cptPath.append("title")
+                .text(`${seriesItem.concept} \n${seriesItem.year}`);
             }
-        }   
+
+            // Points
+            group.selectAll(`circle.${cssSafeKey(seriesItem.concept)}`)
+                .data(seriesItem.points)
+                .enter()
+                .append("circle")
+                .attr("class", `point ${cssSafeKey(seriesItem.concept)}`)
+                .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                .attr("cy", point => yLeft(point.value))
+                .attr("r", 4)
+                .attr("fill", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
+                .attr("stroke", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
+                .append("title")
+                .text(pointLabel);
+            }
+
+            // -----------------------------
+            // DRAW WASTEWATER OVERLAY
+            // -----------------------------
+
+            if (overlayLine && renderModel.overlaySeries.length) {
+
+                for (const seriesItem of renderModel.overlaySeries) {
+                    const source = resolveOverlaySelection(seriesItem.key, overlayRegistry);
+                    if (!source) continue;
+
+                    const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxOverlayYear;
+                    const strokeWidth = isMaxYear ? 4 : 2;
+
+                    const group = this.svg.append("g");
+
+                    const pointLabel = selectedAggregation === "yoy"
+                        ? d => `${seriesItem.label}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} ]`
+                        : d => `${seriesItem.label}\n${tickFormat(d.date)}\n[ ${d.value} ]`;
+
+                    const overlayPath = group.append("path")
+                        .datum(seriesItem.points)
+                        .attr("fill", "none")
+                        .attr("stroke", seriesItem.stroke || source.color)
+                        .attr("stroke-width", strokeWidth)
+                        .attr("stroke-dasharray", "4 3")
+                        .attr("d", overlayLine);
+
+                    if (selectedAggregation === "yoy") {
+                        overlayPath.append("title")
+                            .text(`${seriesItem.label} \n ${seriesItem.year}`);
+                    }
+
+                    group.selectAll(`circle.${cssSafeKey(seriesItem.key)}`)
+                        .data(seriesItem.points)
+                        .enter()
+                        .append("circle")
+                        .attr("class", `overlay-point ${cssSafeKey(seriesItem.key)}`)
+                        .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                        .attr("cy", point => yRight(point.value))
+                        .attr("r", 3)
+                        .attr("fill", seriesItem.stroke || source.color)
+                        .attr("stroke", seriesItem.stroke || source.color)
+                        .append("title")
+                        .text(pointLabel);
+                }
+            }   
     }
 
     redraw(width) {
@@ -756,6 +756,11 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
             continue;
         }
 
+        if (overlayNickname.includes("::")) {
+            console.log(`[ConceptOverlayTimeline] overlay nickname "${overlayNickname}" contains "::", which is reserved as a separator; skipping this overlay`);
+        continue;
+        }
+
         // required fields at the overlayInst level
         if (!overlayInst.visualizationData || !overlayInst.yRightLabel) {
             console.log(`required overlay instance field(s) empty, skipping ${overlayNickname}`);
@@ -772,6 +777,11 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
             const overlaySource = overlayInst.visualizationData[sourceNickname];
 
             if (!overlaySource || Object.keys(overlaySource).length === 0) {
+                continue;
+            }
+
+            if (sourceNickname.includes("::")) {
+                console.log(`[ConceptOverlayTimeline] overlay source "${sourceNickname}" contains "::", which is reserved as a separator; skipping this source`);
                 continue;
             }
 
@@ -1615,9 +1625,6 @@ function resolveEndpointUrl(allOverlays, overlayEndpoints) {
 
     return overlayEndpoints;
 }
-
-// pre-pipeline endpoint daterange eval against breakdown dates
-// this will be deprecated when we move to injecting configs in the pipeline
 
 function evaluateEndpointDateRange(dateRange, breakdownDateRange) {
     const overlayStart = new Date(dateRange[0]);
