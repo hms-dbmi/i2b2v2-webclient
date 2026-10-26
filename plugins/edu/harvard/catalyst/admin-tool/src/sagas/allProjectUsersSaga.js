@@ -98,7 +98,6 @@ export function* doGetAllProjectUsers(action) {
         if(response) {
             let userRolesList = parseUserRolesXml(response);
 
-            console.log("after getting all users ", userRolesList);
             yield put(getAllProjectUsersSucceeded({project, users: userRolesList}));
         }else{
             yield put(getAllProjectUsersFailed(response));
