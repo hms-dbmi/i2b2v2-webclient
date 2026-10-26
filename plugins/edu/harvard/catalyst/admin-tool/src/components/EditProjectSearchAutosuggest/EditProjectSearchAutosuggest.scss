@@ -24,6 +24,8 @@
 
   .IndexStatusView {
     background-color: #fafcff;
+    min-height: 14em;
+    overflow-wrap: break-word;
   }
 
   .nonErrorProgress {

@@ -43,7 +43,7 @@ const parseParamsXml = (allParamsXml) => {
             case 'AUTOSUGGEST_DIRECTORY_INDEX':
                 searchAutoSuggestDetails.autosuggestIndexLocation = paramValue;
                 break;
-            case 'AUTOSUGGEST_OLD_DIRECTORY_INDEX':
+            case 'AUTOSUGGEST_PREVIOUS_DIRECTORY_INDEX':
                 searchAutoSuggestDetails.oldAutosuggestIndexLocation = paramValue;
                 break;
             case 'AUTOSUGGEST_STARTED_INDEX':
