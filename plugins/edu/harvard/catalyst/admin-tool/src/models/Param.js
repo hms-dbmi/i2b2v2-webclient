@@ -41,6 +41,7 @@ export const DataType = {
 export const ParamStatus = {
     A : "A", //"ACTIVE"
     H: "H", //"HIDDEN"
-    D: "D" //"DELETED"
+    D: "D", //"DELETED"
+    S: "S" //"SYSTEM"
 };
 
