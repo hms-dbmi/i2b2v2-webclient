@@ -27,7 +27,6 @@ export function* doCreateSearchAutosuggest(action) {
 
     console.log("creating search autosuggest for project " + project.name + "...");
 
-    console.log("commonDataModel ", commonDataModel);
     try {
         const response = yield call(createSearchAutoSuggestRequest, project.internalId, commonDataModel);
 

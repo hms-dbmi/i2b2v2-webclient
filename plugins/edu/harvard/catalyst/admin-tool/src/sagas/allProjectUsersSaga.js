@@ -90,7 +90,7 @@ const parseUserRolesXml = (xml) => {
 export function* doGetAllProjectUsers(action) {
     const { project } = action.payload;
 
-    console.log("getting all users for project " + project + "...");
+    console.log("getting all users for project " + project.name + "...");
 
     try {
         const response = yield call(getAllProjectUsersRequest, project.internalId);
