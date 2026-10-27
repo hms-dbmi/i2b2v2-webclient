@@ -277,13 +277,13 @@ export const editProjectInfoSlice = createSlice({
         },
         getSearchAutosuggestDetails:  state => {
             state.searchAutosuggestStatus = ParamStatusInfo();
-            state.searchAutosuggestDetails = ProjectSearchAutosuggest();
             state.isFetchingAutosuggestDetails = true;
         },
         getSearchAutosuggestDetailsSucceeded:  (state, {payload: {project, autosuggestDetails}}) => {
             let searchAutoSuggestDetails = ProjectSearchAutosuggest();
             searchAutoSuggestDetails.status = SEARCH_AUTOSUGGEST_STATUS[autosuggestDetails.status];
-            searchAutoSuggestDetails.progressMsg = autosuggestDetails.progressMsg;
+
+            searchAutoSuggestDetails.progressMsg = autosuggestDetails.progressMsg ? autosuggestDetails.progressMsg : '';
             searchAutoSuggestDetails.autosuggestIndexLocation = autosuggestDetails.autosuggestIndexLocation;
             searchAutoSuggestDetails.oldAutosuggestIndexLocation = autosuggestDetails.oldAutosuggestIndexLocation;
 
@@ -297,7 +297,6 @@ export const editProjectInfoSlice = createSlice({
                 searchAutoSuggestDetails.calculateTotalNum = SEARCH_AUTOSUGGEST_TOTALNUM_OPTION[autosuggestDetails.calculateTotalNum.toUpperCase()];
             }
 
-            console.log(" searchAutoSuggestDetails.calculateTotalNum: " , searchAutoSuggestDetails.calculateTotalNum);
             searchAutoSuggestDetails.eventLogs =  autosuggestDetails.eventLogs.map((eventLog, index) => {
                 return EventLog({
                     id: index,
