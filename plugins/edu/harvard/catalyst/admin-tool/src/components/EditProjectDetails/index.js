@@ -241,7 +241,7 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
 
                     <div className="EditProjectActionPrimary">
                         {((activeStep < 4 && isExistingProject) || (activeStep === 1 || activeStep === 3)) &&  <Button  variant="outlined" onClick={handleNext}>
-                            Continue  {activeStep}
+                            Continue
                         </Button>}
                     </div>
 
