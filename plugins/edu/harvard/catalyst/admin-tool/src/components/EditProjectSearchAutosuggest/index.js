@@ -194,7 +194,7 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
                                 <Box className={"progressLabelMain"}>
                                     <Box className={"progressMsg"}>
                                         <Typography variant="body2">
-                                            <span className={searchAutosuggestDetails.status === SEARCH_AUTOSUGGEST_STATUS.ERROR ? "progressStatus error" : "progressStatus nonErrorProgress"}>
+                                            <span className={searchAutosuggestDetails.status === SEARCH_AUTOSUGGEST_STATUS.ERROR ? "progressStatus error" : searchAutosuggestDetails.status === SEARCH_AUTOSUGGEST_STATUS.SCHEDULED ? "progressStatus scheduledProgress" :"progressStatus nonErrorProgress"}>
                                                 {getStatusDisplay(searchAutosuggestDetails.status) + (searchAutosuggestDetails.progressMsg ? ": " : "")}
                                             </span>
                                             {truncateProgressMsg &&
