@@ -120,21 +120,17 @@ i2b2.CRC.view.QT.showRun = function() {
         // ==> i2b2.CRC.model.selectedResultTypes
         let checkContainer = $("#crcModal .ResultTypes");
         for (let code in i2b2.CRC.model.resultTypes) {
-            let descriptions = i2b2.CRC.model.resultTypes[code];
-            descriptions.forEach(description => {
-                let checked = '';
-                if (i2b2.CRC.model.selectedResultTypes.includes(description)) checked = ' checked="checked" ';
+            let description = i2b2.CRC.model.resultTypes[code].name;
+            let checked = '';
+            if (i2b2.CRC.model.selectedResultTypes.includes(description)) checked = ' checked="checked" ';
 
-                let disabled='';
-                if(code === 'PATIENT_COUNT_XML'){
-                    disabled = 'disabled';
-                }
-                $('<div id="crcDlgResultOutput' + code + '">' +
-                    '<input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked +  ' '+ disabled +'> '
-                    + description + '</div>').click(function(){
-                        updateSelectedResultTypes(description);
-                }).appendTo(checkContainer);
-            });
+            let disabled='';
+            if (code === 'PATIENT_COUNT_XML') disabled = 'disabled';
+            $('<div id="crcDlgResultOutput' + code + '">' +
+                '<input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked +  ' '+ disabled +'> '
+                + description + '</div>').click(function(){
+                    updateSelectedResultTypes(description);
+            }).appendTo(checkContainer);
         }
 
         if(Object.keys(i2b2.CRC.model.requestTypes).length === 0 && Object.keys(i2b2.CRC.model.userRequestTypes).length === 0
@@ -164,25 +160,21 @@ i2b2.CRC.view.QT.showRun = function() {
 
         let requestContainer = $("#crcModal .RequestTypes");
         for (let code in i2b2.CRC.model.requestTypes) {
-            let descriptions = i2b2.CRC.model.requestTypes[code];
-            descriptions.forEach(description => {
-                let checked = '';
-                const dataRequestSelection = $('<input type="checkbox" class="chkQueryType chkRequestQueryType" name="queryType" value="' + code + '"' + checked + '>');
-                dataRequestSelection.click(selectPatientSetForDataRequest);
+            let description = i2b2.CRC.model.requestTypes[code].name;
+            let checked = '';
+            const dataRequestSelection = $('<input type="checkbox" class="chkQueryType chkRequestQueryType" name="queryType" value="' + code + '"' + checked + '>');
+            dataRequestSelection.click(selectPatientSetForDataRequest);
 
-                $('<div id="crcDlgResultOutput' + code + '">' + description + '</div>').prepend(dataRequestSelection).appendTo(requestContainer);
-            });
+            $('<div id="crcDlgResultOutput' + code + '">' + description + '</div>').prepend(dataRequestSelection).appendTo(requestContainer);
         }
 
         const projectRequestTypesDescriptions = {};
         for (let code in i2b2.CRC.model.projectRequestTypes) {
-            const descriptions = i2b2.CRC.model.projectRequestTypes[code];
-            descriptions.forEach(description => {
-                if(projectRequestTypesDescriptions[descriptions] === undefined){
-                    projectRequestTypesDescriptions[descriptions] = [];
-                }
-                projectRequestTypesDescriptions[description].push(code);
-            });
+            const description = i2b2.CRC.model.projectRequestTypes[code].name;
+            if (projectRequestTypesDescriptions[description] === undefined) {
+                projectRequestTypesDescriptions[description] = [];
+            }
+            projectRequestTypesDescriptions[description].push(code);
         }
 
         const sortAlphaNum = (a, b) => a.toUpperCase().localeCompare(b.toUpperCase(), undefined, { numeric: true })
@@ -201,13 +193,11 @@ i2b2.CRC.view.QT.showRun = function() {
 
         const userRequestTypesDescriptions = {};
         for (let code in i2b2.CRC.model.userRequestTypes) {
-            const descriptions = i2b2.CRC.model.userRequestTypes[code];
-            descriptions.forEach(description => {
-                if(userRequestTypesDescriptions[descriptions] === undefined){
-                    userRequestTypesDescriptions[descriptions] = [];
-                }
-                userRequestTypesDescriptions[description].push(code);
-            });
+            const description = i2b2.CRC.model.userRequestTypes[code].name;
+            if (userRequestTypesDescriptions[description] === undefined) {
+                userRequestTypesDescriptions[description] = [];
+            }
+            userRequestTypesDescriptions[description].push(code);
         }
         const userRequestTypesDescKeys = Object.keys(userRequestTypesDescriptions ).sort(sortAlphaNum);
         userRequestTypesDescKeys.forEach( description =>  {
@@ -224,11 +214,9 @@ i2b2.CRC.view.QT.showRun = function() {
         let dataExportContainer = $("#crcModal .DataExportTypes");
         for (let code in i2b2.CRC.model.dataExportTypes) {
             document.getElementById("DataExportDiv").style.display = "";
-            let descriptions = i2b2.CRC.model.dataExportTypes[code];
-            descriptions.forEach(description => {
-                let checked = '';
-                $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(dataExportContainer);
-            });
+            let description = i2b2.CRC.model.dataExportTypes[code].name;
+            let checked = '';
+            $('<div id="crcDlgResultOutput' + code + '"><input type="checkbox" class="chkQueryType" name="queryType" value="' + code + '"' + checked + '> ' + description + '</div>').appendTo(dataExportContainer);
         }
 
         // populate/delete the query run methods
@@ -327,76 +315,86 @@ i2b2.CRC.view.QT.showRun = function() {
     });
 };
 // ================================================================================================== //
-i2b2.CRC.view.QT.loadResultTypesAndShowRun = function() {
-
-    // ==== Update the Query Result Types via ajax call ====
-    var scopedCallback = new i2b2_scopedCallback();
-    scopedCallback.callback = function(results) {
-        //var cl_onCompleteCB = onCompleteCallback;
-        // THIS function is used to process the AJAX results of the getChild call
-        //		results data object contains the following attributes:
-        //			refXML: xmlDomObject <--- for data processing
-        //			msgRequest: xml (string)
-        //			msgResponse: xml (string)
-        //			error: boolean
-        //			errorStatus: string [only with error=true]
-        //			errorMsg: string [only with error=true]
-        i2b2.CRC.model.resultTypes = {};
-        i2b2.CRC.model.requestTypes = {};
-        i2b2.CRC.model.userRequestTypes = {};
-        i2b2.CRC.model.projectRequestTypes = {};
-        i2b2.CRC.model.dataExportTypes = {};
-
-        if (results.error){
-            console.log("ERROR: Unable to retrieve result types from server", results.msgResponse);
-        } else {
-            // extract records from XML msg
-            let ps = results.refXML.getElementsByTagName('query_result_type');
-            if(!i2b2.CRC.model.selectedResultTypes || i2b2.CRC.model.selectedResultTypes.length === 0) {
-                i2b2.CRC.model.selectedResultTypes = [];
+i2b2.CRC.view.QT.loadResultTypes = function() {
+    // Updates the Query Result Types via ajax call.
+    // The returned promise always resolves once the call completes (also when the server returned an error,
+    // in which case the result type model variables are left empty).
+    return new Promise((resolve, reject) => {
+        // The XML parser has already unescaped the entities (e.g. &#xd;) of the <visual_type> node's text,
+        // so what is left is a plain JSON string that only has to be converted into its in-memory form.
+        const parseVisualType = (code, jsonText) => {
+            if (!jsonText || jsonText.trim() === "") return {};
+            try {
+                return JSON.parse(jsonText);
+            } catch (e) {
+                console.error("Unable to parse the visual_type JSON of result type " + code, jsonText, e);
+                return {};
             }
-            for (let i1=0; i1<ps.length; i1++) {
-                let name = i2b2.h.getXNodeVal(ps[i1],'name');
-                let visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
-                if (visual_attribute_type === "LA") {
-                    if(i2b2.CRC.model.resultTypes[name] === undefined){
-                        i2b2.CRC.model.resultTypes[name] = [];
-                    }
+        };
+        const scopedCallback = new i2b2_scopedCallback();
+        scopedCallback.callback = function(results) {
+            // results data object contains the following attributes:
+            //			refXML: xmlDomObject <--- for data processing
+            //			msgRequest: xml (string)
+            //			msgResponse: xml (string)
+            //			error: boolean
+            //			errorStatus: string [only with error=true]
+            //			errorMsg: string [only with error=true]
+            i2b2.CRC.model.resultTypes = {};
+            i2b2.CRC.model.requestTypes = {};
+            i2b2.CRC.model.userRequestTypes = {};
+            i2b2.CRC.model.projectRequestTypes = {};
+            i2b2.CRC.model.dataExportTypes = {};
 
-                    let description = i2b2.h.getXNodeVal(ps[i1],'description');
-                    i2b2.CRC.model.resultTypes[name].push(description);
-                    if (name === "PATIENT_COUNT_XML") {
-                        const selectedPatientCount = i2b2.CRC.model.selectedResultTypes.filter(n => n === description);
-                        if(selectedPatientCount.length === 0) {
-                            i2b2.CRC.model.selectedResultTypes.push(description);
+            if (results.error){
+                console.log("ERROR: Unable to retrieve result types from server", results.msgResponse);
+                reject();
+            } else {
+                // extract records from XML msg
+                let ps = results.refXML.getElementsByTagName('query_result_type');
+                if(!i2b2.CRC.model.selectedResultTypes || i2b2.CRC.model.selectedResultTypes.length === 0) {
+                    i2b2.CRC.model.selectedResultTypes = [];
+                }
+                for (let i1=0; i1<ps.length; i1++) {
+                    let name = i2b2.h.getXNodeVal(ps[i1],'name');
+                    let visual_attribute_type = i2b2.h.getXNodeVal(ps[i1],'visual_attribute_type');
+                    if (visual_attribute_type === "LA") {
+                        let description = i2b2.h.getXNodeVal(ps[i1],'description');
+                        i2b2.CRC.model.resultTypes[name] = {
+                            name: description,
+                            visualizationMappings: parseVisualType(name, i2b2.h.getXNodeVal(ps[i1],'visual_type'))
+                        };
+                        if (name === "PATIENT_COUNT_XML") {
+                            const selectedPatientCount = i2b2.CRC.model.selectedResultTypes.filter(n => n === description);
+                            if (selectedPatientCount.length === 0) {
+                                i2b2.CRC.model.selectedResultTypes.push(description);
+                            }
                         }
+                    } else if (["LR", "LU", "LP", "LX"].includes(visual_attribute_type)) {
+                        const targets = {
+                            LR: i2b2.CRC.model.requestTypes,
+                            LU: i2b2.CRC.model.userRequestTypes,
+                            LP: i2b2.CRC.model.projectRequestTypes,
+                            LX: i2b2.CRC.model.dataExportTypes
+                        };
+                        targets[visual_attribute_type][name] = {
+                            name: i2b2.h.getXNodeVal(ps[i1],'description'),
+                            visualizationMappings: parseVisualType(name, i2b2.h.getXNodeVal(ps[i1],'visual_type'))
+                        };
                     }
-                } else if (visual_attribute_type === "LR") {
-                    if(i2b2.CRC.model.requestTypes[name] === undefined){
-                        i2b2.CRC.model.requestTypes[name] = [];
-                    }
-                    i2b2.CRC.model.requestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
-                } else if (visual_attribute_type === "LU") {
-                    if(i2b2.CRC.model.userRequestTypes[name] === undefined){
-                        i2b2.CRC.model.userRequestTypes[name] = [];
-                    }
-                    i2b2.CRC.model.userRequestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
-                }else if (visual_attribute_type === "LP") {
-                    if(i2b2.CRC.model.projectRequestTypes[name] === undefined){
-                        i2b2.CRC.model.projectRequestTypes[name] = [];
-                    }
-                    i2b2.CRC.model.projectRequestTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
-                }else if (visual_attribute_type === "LX") {
-                    if(i2b2.CRC.model.dataExportTypes[name] === undefined){
-                        i2b2.CRC.model.dataExportTypes[name] = [];
-                    }
-                    i2b2.CRC.model.dataExportTypes[name].push(i2b2.h.getXNodeVal(ps[i1],'description'));
                 }
             }
-        }
-        i2b2.CRC.view.QT.showRun();
-    }
-    i2b2.CRC.ajax.getQRY_getResultType("CRC:QueryTool", null, scopedCallback);
+            resolve();
+        };
+        i2b2.CRC.ajax.getQRY_getResultType("CRC:QueryTool", null, scopedCallback);
+    });
+}
+
+// ================================================================================================== //
+i2b2.CRC.view.QT.loadResultTypesAndShowRun = function() {
+    i2b2.CRC.view.QT.loadResultTypes()
+        .then(() => i2b2.CRC.view.QT.showRun())
+        .catch(() => i2b2.CRC.view.QT.showRun());
 }
 
 // ================================================================================================== //
