@@ -371,7 +371,8 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryMaster.callback = function(results) {
         i2b2.CRC.model.runner.progress = stats;
 
         // see if all processing is done
-        if (Object.keys(stats).length === 1 && (stats["FINISHED"] || stats["ERROR"])) {
+        let statusNames = Object.keys(stats);
+        if (statusNames.length > 0 && statusNames.every(name => name === "FINISHED" || name === "ERROR")) {
             i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
         } else {
             i2b2.CRC.model.runner.lastPoll = new Date();
@@ -478,7 +479,8 @@ i2b2.CRC.ctrlr.QueryMgr._callbackGetQueryStatus.callback = function(results) {
     i2b2.CRC.model.runner.progress = stats;
 
     // see if all processing is done
-    if (Object.keys(stats).length === 1 && (stats["FINISHED"] || stats["ERROR"])) {
+    let statusNames = Object.keys(stats);
+    if (statusNames.length > 0 && statusNames.every(name => name === "FINISHED" || name === "ERROR")) {
         i2b2.CRC.ctrlr.QueryMgr._eventFinishedAll();
     } else {
         i2b2.CRC.model.runner.isPolling = false;
