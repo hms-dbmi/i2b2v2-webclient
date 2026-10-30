@@ -1,5 +1,20 @@
 const margin = { top: 20, right: 80, bottom: 70, left: 60 };
 
+const AGGREGATIONS = Object.freeze({
+  month: "month",
+  year: "year",
+  yoy: "yoy",
+});
+
+const GRAIN = Object.freeze({
+    year: "Y",
+    month: "M",
+});
+
+const YLEFTLABEL = "Number of Patients";
+
+const MONTHLIST = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
 export default class ConceptOverlayTimeline {
     constructor(componentConfig, qrsRecordInfo, qrsData) {
         try {
@@ -71,19 +86,19 @@ export default class ConceptOverlayTimeline {
                 self.state = {
                     concept: null,
                     overlay: null,
-                    aggregation: "month"
+                    aggregation: AGGREGATIONS.month
                 };
 
                 // Aggregation list is in HTML; ensure we have a selected item + sync state
                 if (self.controls.aggregationList) {
                     const selectedAggregationNode = self.controls.aggregationList.querySelector(".cot-link.selected");
                     if (selectedAggregationNode) {
-                        self.state.aggregation = selectedAggregationNode.getAttribute("data-value") || "month";
+                        self.state.aggregation = selectedAggregationNode.getAttribute("data-value") || AGGREGATIONS.month;
                     } else {
                         // If HTML forgot to set selected, default to month
                         const first = self.controls.aggregationList.querySelector(".cot-link[data-value='month']");
                         if (first) first.classList.add("selected");
-                        self.state.aggregation = "month";
+                        self.state.aggregation = AGGREGATIONS.month;
                     }
                 }
 
@@ -250,7 +265,7 @@ export default class ConceptOverlayTimeline {
 
             const selectedConcept = this.state?.concept || null;
             const selectedOverlay = this.state?.overlay || null;
-            const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year" | "yoy"
+            const selectedAggregation = this.state?.aggregation || AGGREGATIONS.month;
 
             const renderModel = buildRenderModel(raw, this.fetchedOverlays, this.overlayRegistry, this.overlayEndpoints, this.conceptRegistry, selectedConcept, selectedAggregation, selectedOverlay);
 
@@ -315,7 +330,7 @@ export default class ConceptOverlayTimeline {
         // X SCALE (respect patient breakdown only)
         // -----------------------------
 
-        const xScale = (selectedAggregation === "yoy" ? d3.scaleLinear() : d3.scaleTime())
+        const xScale = (selectedAggregation === AGGREGATIONS.yoy ? d3.scaleLinear() : d3.scaleTime())
             .domain(renderModel.xDomain)
             .range([0, width]);
 
@@ -327,19 +342,19 @@ export default class ConceptOverlayTimeline {
 
         let tickFormat;
 
-        if (selectedAggregation === "yoy") {
+        if (selectedAggregation === AGGREGATIONS.yoy) {
             tickFormat = i => renderModel.months[i];
-        } else if (selectedAggregation === "year"){
+        } else if (selectedAggregation === AGGREGATIONS.year){
             tickFormat = d3.timeFormat("%Y");
         } else {
             tickFormat = d3.timeFormat("%Y-%m")
         }
 
         const axis = d3.axisBottom(xScale)
-            .ticks(selectedAggregation === "yoy" ? 11 : 10)
+            .ticks(selectedAggregation === AGGREGATIONS.yoy ? 11 : 10)
             .tickFormat(tickFormat)
 
-        if (selectedAggregation === "yoy") {
+        if (selectedAggregation === AGGREGATIONS.yoy) {
             axis.tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
         }
 
@@ -407,12 +422,12 @@ export default class ConceptOverlayTimeline {
         // -----------------------------
 
         const patientLine = d3.line()
-            .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+            .x(point => selectedAggregation === AGGREGATIONS.yoy ? xScale(point.monthIndex) : xScale(point.date))
             .y(point => yLeft(point.value));   
 
 
         const overlayLine = yRight ? d3.line()
-            .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+            .x(point => selectedAggregation === AGGREGATIONS.yoy ? xScale(point.monthIndex) : xScale(point.date))
             .y(point => yRight(point.value)) : null;
 
         // -----------------------------
@@ -438,7 +453,7 @@ export default class ConceptOverlayTimeline {
 
             // point label
 
-            const pointLabel = selectedAggregation === "yoy" 
+            const pointLabel = selectedAggregation === AGGREGATIONS.yoy 
                 ? d => `${seriesItem.concept}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
                 : d => `${seriesItem.concept} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
 
@@ -450,7 +465,7 @@ export default class ConceptOverlayTimeline {
                 .attr("stroke-width", strokeWidth)
                 .attr("d", patientLine);
 
-            if (selectedAggregation === "yoy") {
+            if (selectedAggregation === AGGREGATIONS.yoy) {
                 cptPath.append("title")
                 .text(`${seriesItem.concept} \n${seriesItem.year}`);
             }
@@ -461,7 +476,7 @@ export default class ConceptOverlayTimeline {
                 .enter()
                 .append("circle")
                 .attr("class", `point ${cssSafeKey(seriesItem.concept)}`)
-                .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                .attr("cx", point => selectedAggregation === AGGREGATIONS.yoy ? xScale(point.monthIndex) : xScale(point.date))
                 .attr("cy", point => yLeft(point.value))
                 .attr("r", 4)
                 .attr("fill", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
@@ -485,7 +500,7 @@ export default class ConceptOverlayTimeline {
 
                     const group = this.svg.append("g");
 
-                    const pointLabel = selectedAggregation === "yoy"
+                    const pointLabel = selectedAggregation === AGGREGATIONS.yoy
                         ? d => `${seriesItem.label}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} ]`
                         : d => `${seriesItem.label}\n${tickFormat(d.date)}\n[ ${d.value} ]`;
 
@@ -497,7 +512,7 @@ export default class ConceptOverlayTimeline {
                         .attr("stroke-dasharray", "4 3")
                         .attr("d", overlayLine);
 
-                    if (selectedAggregation === "yoy") {
+                    if (selectedAggregation === AGGREGATIONS.yoy) {
                         overlayPath.append("title")
                             .text(`${seriesItem.label} \n ${seriesItem.year}`);
                     }
@@ -507,7 +522,7 @@ export default class ConceptOverlayTimeline {
                         .enter()
                         .append("circle")
                         .attr("class", `overlay-point ${cssSafeKey(seriesItem.key)}`)
-                        .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
+                        .attr("cx", point => selectedAggregation === AGGREGATIONS.yoy ? xScale(point.monthIndex) : xScale(point.date))
                         .attr("cy", point => yRight(point.value))
                         .attr("r", 3)
                         .attr("fill", seriesItem.stroke || source.color)
@@ -906,13 +921,13 @@ function buildRenderModel(records, overlayData, overlayRegistry, overlayEndpoint
 
     let renderModel;
 
-    if (selectedAggregation === "yoy"){
+    if (selectedAggregation === AGGREGATIONS.yoy){
         renderModel = { 
             "aggregateType": selectedAggregation,
             "series" : buildYOYConceptSeries(records, conceptRegistry, selectedConcept), 
             "xDomain": generateXDomain(records, selectedAggregation),
-            "months": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-            "yLeftLabel": "Number of Patients", 
+            "months": MONTHLIST,
+            "yLeftLabel": YLEFTLABEL, 
             "overlaySeries": buildYOYOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, selectedOverlay, selectedAggregation)
         }      
     } else {
@@ -920,7 +935,7 @@ function buildRenderModel(records, overlayData, overlayRegistry, overlayEndpoint
             "aggregateType": selectedAggregation,
             "series" : buildMonthYearConceptSeries(records, selectedConcept, selectedAggregation), 
             "xDomain": generateXDomain(records, selectedAggregation), 
-            "yLeftLabel": "Number of Patients", 
+            "yLeftLabel": YLEFTLABEL, 
             "overlaySeries": buildMonthYearOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, records, selectedOverlay, selectedAggregation)
         }        
     } 
@@ -931,7 +946,7 @@ function buildRenderModel(records, overlayData, overlayRegistry, overlayEndpoint
 
 function generateXDomain(records, selectedAggregation) {
     let xdomain = null; 
-    if (selectedAggregation === "month" || selectedAggregation === "year"){
+    if (selectedAggregation === AGGREGATIONS.month || selectedAggregation === AGGREGATIONS.year){
         const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);        
 
         xdomain = d3.extent(bucketedPatients, d => d.date);
@@ -951,7 +966,7 @@ function generateXDomain(records, selectedAggregation) {
 
 function buildMonthYearConceptSeries(rawData, selectedConcept, selectedAggregation) {
 
-    const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
+    const aggregationGrain = (selectedAggregation === AGGREGATIONS.year) ? GRAIN.year : GRAIN.month;
 
     // get the raw data by aggregation grain
     const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === aggregationGrain);
@@ -997,7 +1012,7 @@ function buildMonthYearConceptSeries(rawData, selectedConcept, selectedAggregati
 
 function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcept){
     //take the raw data and if needed, filter it by concept to do the row pivot
-    const yoyRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "M");
+    const yoyRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === GRAIN.month);
 
     let yoyFilteredRows = filterBreakdown(yoyRows, selectedConcept);
 
@@ -1380,7 +1395,7 @@ function parseYMDLocal(s) {
  */
 function bucketDate(dt, aggregation) {
     if (!(dt instanceof Date) || isNaN(dt.getTime())) return null;
-    if (aggregation === "year") {
+    if (aggregation === AGGREGATIONS.year) {
         return new Date(dt.getFullYear(), 0, 1);
     }
     return new Date(dt.getFullYear(), dt.getMonth(), 1);
@@ -1446,7 +1461,7 @@ function collectOverlayDataByAggregation(rows, source, selectedAggregation, date
             const dt = parseYMDLocal(d[dateColumn]);
             if (!dt) return null;
 
-            if (selectedAggregation === "year") {
+            if (selectedAggregation === AGGREGATIONS.year) {
                 return `${dt.getFullYear()}`;
             }
             return `${dt.getFullYear()}-${dt.getMonth()}`;
@@ -1456,7 +1471,7 @@ function collectOverlayDataByAggregation(rows, source, selectedAggregation, date
     return Array.from(rollup.entries())
         .filter(([k, v]) => k !== null && v !== null)
         .map(([key, value]) => {
-            if (selectedAggregation === "year") {
+            if (selectedAggregation === AGGREGATIONS.year) {
                 const year = Number(key);
                 return { date: new Date(year, 0, 1), value };
             }
