@@ -366,17 +366,28 @@ export const EditParameters = ({
             editable: true,
             filterable: false,
             type: 'singleSelect',
-            valueOptions: [{
-                label: 'Active',
-                value: ParamStatus.A
-            }, {
-                label: 'Hidden',
-                value: ParamStatus.H
-            },
-            {
-                label: 'Deleted',
-                value: ParamStatus.D
-            }],
+            valueOptions: (params) => {
+                if (params.row?.status === ParamStatus.S) {
+                    return [{
+                        label: 'System',
+                        value: ParamStatus.S
+                    }]
+                } else {
+                    return [
+                    {
+                        label: 'Active',
+                        value: ParamStatus.A
+                    },
+                    {
+                        label: 'Hidden',
+                        value: ParamStatus.H
+                    },
+                    {
+                        label: 'Deleted',
+                        value: ParamStatus.D
+                    }]
+                }
+            }
         },
         {
             field: 'actions',
@@ -390,7 +401,10 @@ export const EditParameters = ({
                 const predefParam = predefinedParams && predefinedParams.find(p => p.label === row.name);
 
                 let infoAction = null;
-                if(predefParam?.description){
+                if(row.status === ParamStatus.S){
+                    return [];
+                }
+                else if(predefParam?.description){
                     infoAction = <GridActionsCellItem
                         icon={<InfoIcon />}
                         label="Info"
@@ -676,7 +690,7 @@ export const EditParameters = ({
                     <FormControlLabel
                         onChange={handleToggleDeletedParams}
                         control={<Switch defaultChecked />
-                    } checked={showDeletedParams} label={"Show inactive parameters"}/>
+                    } checked={showDeletedParams} label={"Show all parameters"}/>
 
                     <Tooltip title={"Referenced table is " + paramTableName} className={"P1aramTableInfoTooltip"}>
                         <IconButton>

@@ -235,7 +235,7 @@ export const EditProjectDetails = ({project, setIsEditingProject, isEditUsers}) 
                     <div  className="EditProjectActionSecondary">
                         <Button onClick={cancelEdit} variant="outlined"> Exit </Button>
                     </div>
-                    {isExistingProject && <div className="EditProjectActionSecondary">
+                    {activeStep === 0 && isExistingProject && <div className="EditProjectActionSecondary">
                          <Button className={"DeleteProject"} variant="outlined" onClick={confirmDeleteProject}>Delete Project</Button>
                     </div>}
 
