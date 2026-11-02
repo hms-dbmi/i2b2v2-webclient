@@ -7,6 +7,8 @@ Concept Overlay Timeline takes a breakdown of specific concepts and draws a line
 The module is designed to display the `PATIENT_PATHOGEN_TIMELINE_XML` breakdown type and relies on [d3.js](https://d3js.org/) for line chart rendering.
 
 
+![Concept Overlay Timeline example showing COVID-19, Influenza, and RSV concept lines with a wastewater overlay](ConceptOverlayTimeline-example.png)
+
 ## Module Files
 
 | File | Purpose |
