@@ -15,6 +15,17 @@ const YLEFTLABEL = "Number of Patients";
 
 const MONTHLIST = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
+const URLTYPES = Object.freeze({
+    i2b2Proxy: "i2b2-proxy",
+    external: "external",
+});
+
+const SOURCETYPES = Object.freeze({
+    local: "local",
+    url: "url",
+});
+
+
 export default class ConceptOverlayTimeline {
     constructor(componentConfig, qrsRecordInfo, qrsData) {
         try {
@@ -1514,7 +1525,7 @@ function pivotToYOYRows(aggregatedRecords){
 // ------------------------------------------------------------
 
 async function fetchOverlayDataFromEndpoint(endpointInfo) {
-    if (endpointInfo.sourceType === "local") {
+    if (endpointInfo.sourceType === SOURCETYPES.local) {
         try {
             const response = await fetch(endpointInfo.endpoint);
             if (!response.ok) {
@@ -1547,7 +1558,7 @@ async function fetchOverlayDataFromEndpoint(endpointInfo) {
         }
     }
 
-    if (endpointInfo.urlType === "external") {
+    if (endpointInfo.urlType === URLTYPES.external) {
         console.warn(`External overlay fetching not yet implemented, skipping ${endpointInfo.endpoint}`);
         return null;
     }
@@ -1601,11 +1612,11 @@ async function fetchOverlayDataFromEndpoint(endpointInfo) {
 // this will be deprecated when we move to injecting configs in the pipeline
 
 function detectEnv(overlayInst) {
-    if (overlayInst.sourceType === "local") {
+    if (overlayInst.sourceType === SOURCETYPES.local) {
         if (overlayInst.envUrls.local) {
             return "local";
         }
-        console.log(`detectEnv: sourceType is "local" but envUrls.local is empty; cannot resolve.`);
+        console.log(`detectEnv: sourceType is ${SOURCETYPES.local} but envUrls.local is empty; cannot resolve.`);
         return null;
     }
 
@@ -1682,13 +1693,13 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
             continue;
         }
 
-        if (!currentOverlay.sourceType || (currentOverlay.sourceType !== "url" && currentOverlay.sourceType !== "local")) {
+        if (!currentOverlay.sourceType || (currentOverlay.sourceType !== SOURCETYPES.url && currentOverlay.sourceType !== SOURCETYPES.local)) {
             console.log(`${overlayNickname}: sourceType is missing or invalid (must be "url" or "local"), skipping this overlay`);
             continue;
         }
 
-        if (currentOverlay.sourceType === "url" &&
-            (!currentOverlay.urlType || (currentOverlay.urlType !== "external" && currentOverlay.urlType !== "i2b2-proxy"))) {
+        if (currentOverlay.sourceType === SOURCETYPES.url &&
+            (!currentOverlay.urlType || (currentOverlay.urlType !== URLTYPES.external && currentOverlay.urlType !== URLTYPES.i2b2Proxy))) {
             console.log(`${overlayNickname}: urlType is missing or invalid (must be "external" or "i2b2-proxy"), skipping this overlay`);
             continue;
         }
