@@ -229,6 +229,10 @@ export default class ConceptOverlayTimeline {
             const overlayNicknames = Object.keys(this.overlayRegistry);
 
             for (const overlayNickname of overlayNicknames) {
+                if (!this.overlayEndpoints[overlayNickname]) {
+                    continue;
+                }
+
                 const overlayEntry = this.overlayRegistry[overlayNickname];
 
                 if (overlayEntry.combinedOptionOnly && overlayEntry.combinedOptionData) {
@@ -470,9 +474,11 @@ export default class ConceptOverlayTimeline {
 
             // point label
 
+            const conceptLabelText = conceptRegistry[seriesItem.concept]?.label || seriesItem.concept; 
+
             const pointLabel = selectedAggregation === AGGREGATIONS.yoy 
-                ? d => `${seriesItem.concept}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
-                : d => `${seriesItem.concept} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
+                ? d => `${conceptLabelText}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
+                : d => `${conceptLabelText} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
 
             // Line
             const cptPath = group.append("path")
@@ -484,7 +490,7 @@ export default class ConceptOverlayTimeline {
 
             if (selectedAggregation === AGGREGATIONS.yoy) {
                 cptPath.append("title")
-                .text(`${seriesItem.concept} \n${seriesItem.year}`);
+                .text(`${conceptLabelText} \n${seriesItem.year}`);
             }
 
             // Points
@@ -1676,7 +1682,9 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
     for (const overlayNickname of overlayNicknames) {
         const currentOverlay = allOverlays[overlayNickname];
 
-        if (!currentOverlay.envUrls || Object.keys(currentOverlay.envUrls).length === 0) {
+        const hasUsableUrl = currentOverlay.envUrls && Object.values(currentOverlay.envUrls).some(url => url);
+
+        if (!hasUsableUrl) {
             continue;
         }
 
@@ -1717,8 +1725,6 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
             }
         }
     }
-
-    // ToDo: guard for no valid endpoints
 
     return overlayEndpoints;
 }
