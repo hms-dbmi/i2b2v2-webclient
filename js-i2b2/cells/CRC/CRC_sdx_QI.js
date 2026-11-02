@@ -162,22 +162,16 @@ i2b2.sdx.TypeControllers.QI.getChildRecords = function(sdxParentNode, onComplete
                 o.title = i2b2.h.getXNodeVal(ps[i1], 'name');
             }
             if (i2b2.h.getXNodeVal(ps[i1], 'query_result_type/name') === "PATIENT_COUNT_XML") { //nw096
-                if (i2b2.PM.model.isObfuscated) {
-                    if (parseInt(i2b2.h.getXNodeVal(ps[i1], 'query_result_instance/set_size')) < 4) {
-                        o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>&lt;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString() + "</span>";
-                    } else {
-                        o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>" + i2b2.h.getXNodeVal(ps[i1], 'query_result_instance/set_size') + "&plusmn;" + i2b2.UI.cfg.obfuscatedDisplayNumber.toString() + "</span>";
-                    }
-                } else {
-                    o.title += " is <span style='background: #C9F3C9;font-weight:bold;padding: 2px;color: #0C5D0C;'>" + i2b2.h.getXNodeVal(ps[i1], 'query_result_instance/set_size') + "</span>";
-                }
-            }
-
-            if (i2b2.h.XPath(ps[i1], 'query_status_type/name/text()')[0].nodeValue !== "COMPLETED") {
-                o.title += " - " + i2b2.h.XPath(ps[i1], 'query_status_type/name/text()')[0].nodeValue;
+                let setSize = i2b2.h.getXNodeVal(ps[i1], 'query_result_instance/set_size');
+                setSize = i2b2.CRC.Obfuscate.obfuscatedValue(setSize);
+                setSize.replaceAll("≤", "&lt;");
+                setSize.replaceAll("±", "&plusmn;");
+                o.title += " is <span class='setSize'>" + setSize + "</span>";
             }
 
             o.result_type = i2b2.h.XPath(ps[i1], 'query_result_type/name/text()')[0].nodeValue;
+            if (o.result_type !== "COMPLETED") o.title += " - " + o.result_type;
+
             let sdxDataNode;
             switch (o.result_type) {
                 case "PATIENT_ENCOUNTER_SET":
@@ -215,7 +209,6 @@ i2b2.sdx.TypeControllers.QI.getChildRecords = function(sdxParentNode, onComplete
                     sdxDataNode = i2b2.sdx.Master.EncapsulateData('PRS', o);
                     break;
                 default:
-
                     o.PRC_id = i2b2.h.getXNodeVal(ps[i1], 'result_instance_id');
                     o.titleCRC = o.title;
                     //o.title = pn.parent.sdxInfo.sdxDisplayName + ' [PATIENT_COUNT_XML_'+o.PRC_id+']';

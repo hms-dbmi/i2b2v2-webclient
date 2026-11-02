@@ -184,8 +184,10 @@ let parseData = function(xmlData) {
     for (let i2 = 0; i2 < params.length; i2++) {
         let entryRecord = {}
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text();
-        entryRecord.value = parseInt(params[i2].firstChild.nodeValue);
-        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(params[i2].firstChild.nodeValue);
+        entryRecord.value = params[i2].firstChild.nodeValue;
+        entryRecord.floorThreshold = params[i2].getAttribute("floorThresholdNumber");
+        entryRecord.obfuscateNumber = params[i2].getAttribute("obfuscatedDisplayNumber");
+        entryRecord.display = i2b2.CRC.Obfuscate.obfuscatedValue(entryRecord.value, entryRecord.floorThreshold, entryRecord.obfuscateNumber);
 
         if(entryRecord.display.indexOf("±") !== -1){
             breakdown.isObfuscated = true;
@@ -222,7 +224,8 @@ let parseData = function(xmlData) {
                 for (let siteresult of siteResults) {
                     siteData.results.push({
                         name: $('<div>').html(siteresult.getAttribute('column')).text(),
-                        value: parseInt(siteresult.textContent)
+                        value: parseInt(siteresult.textContent),
+                        display: i2b2.CRC.Obfuscate.obfuscatedValue(siteresult.textContent, null, siteData.obfuscatedDisplayNumber)
                     });
                 }
             }

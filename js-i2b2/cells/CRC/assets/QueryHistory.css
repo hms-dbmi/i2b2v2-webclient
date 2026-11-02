@@ -105,6 +105,9 @@
      min-width: 6.5rem;
      margin-top: -0.1em;
 }
+#i2b2QueryHistoryBar .searchTermMain input {
+    box-shadow: none !important;
+}
 
 #i2b2QueryHistoryBar #querySearchTermText {
     flex-grow: 1;
@@ -299,16 +302,6 @@
     border-radius: 0.25rem;
     border: 1px transparent;
 }
-
-/*#i2b2QueryHistoryBar .dateListing button {*/
-/*    box-shadow: none !important;*/
-/*}*/
-
-/*#i2b2QueryHistoryBar .dateListing button:focus-visible {*/
-/*    background-color: var(--bs-btn-hover-bg);*/
-/*    color: var(--bs-btn-hover-color);*/
-/*    border-color: var(--bs-btn-hover-border-color);*/
-/*}*/
 
 
 #queryHistoryOptions {

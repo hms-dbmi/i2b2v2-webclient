@@ -39,6 +39,13 @@ span.sdxStyleCRC-QDEF::before {
 span.sdxStyleCRC-QI::before {
 	background-image: url(sdx_CRC_QI.svg);
 }
+span.sdxStyleCRC-QI .setSize {
+	background: #C9F3C9;
+	font-weight:bold;
+	padding: 2px;
+	color: #0C5D0C;
+}
+
 
 span.sdxStyleCRC-QM::before {
 	background-image: url(sdx_CRC_QM.svg);

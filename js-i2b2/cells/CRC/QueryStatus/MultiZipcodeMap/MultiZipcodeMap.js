@@ -975,7 +975,7 @@ const func_processData = (xmlData) => {
                 };
             }
             const zipCount = parseInt(params[i].firstChild.nodeValue);
-            const displayCount = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(zipCount, floorThreshold, obfuscatedNum);
+            const displayCount = i2b2.CRC.Obfuscate.obfuscatedValue(zipCount, floorThreshold, obfuscatedNum);
             let target = ret[extractedData.$aggKey];
             if (typeof extractedData.$normalizer !== 'undefined') {
                 ret[extractedData.$aggKey].normalizers[extractedData.$normalizer] = {};

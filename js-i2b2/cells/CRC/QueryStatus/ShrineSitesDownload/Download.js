@@ -143,7 +143,7 @@ let parseData = function(xmlData) {
         let entryRecord = {}
         entryRecord.name = $('<div>').html(params[i2].getAttribute("column")).text();
         entryRecord.value = params[i2].firstChild.nodeValue;
-        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, entryRecord.floorThreshold, entryRecord.obfuscateNumber);
+        entryRecord.display = i2b2.CRC.Obfuscate.obfuscatedValue(entryRecord.value, entryRecord.floorThreshold, entryRecord.obfuscateNumber);
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
             entryRecord.value = i2b2.h.Unescape(entryRecord.value);
@@ -174,7 +174,7 @@ let parseData = function(xmlData) {
                     siteData.results.push({
                         name: $('<div>').html(siteresult.getAttribute('column')).text(),
                         value: parseInt(siteresult.textContent),
-                        display: i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(siteresult.textContent, siteData.floorThresholdNumberX, siteData.obfuscatedDisplayNumber)
+                        display: i2b2.CRC.Obfuscate.obfuscatedValue(siteresult.textContent, siteData.floorThresholdNumberX, siteData.obfuscatedDisplayNumber)
                     });
                 }
             }

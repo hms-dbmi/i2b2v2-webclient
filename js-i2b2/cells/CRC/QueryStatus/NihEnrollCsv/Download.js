@@ -100,7 +100,7 @@ export default class NihEnrollCsv {
                         const ethnicityKey = treeStruct[2][ethnicityIdx];
                         colIdx = parseInt(ethnicityIdx * 3) + parseInt(sexIdx);
                         // cell value
-                        renderArray[idx][colIdx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(dataTree[race][sexKey][ethnicityKey].value, 0, 0)
+                        renderArray[idx][colIdx] = i2b2.CRC.Obfuscate.obfuscatedValue(dataTree[race][sexKey][ethnicityKey].value, 0, 0)
                         // fix issues with MS Excel's use of Microsoft-codepages
                         renderArray[idx][colIdx] = renderArray[idx][colIdx].replaceAll('±', ' +/- ');
                         // increment row value
@@ -109,8 +109,8 @@ export default class NihEnrollCsv {
                         totalEthnicSex[colIdx] += parseInt(dataTree[race][sexKey][ethnicityKey].value);
                     }
                 }
-                obfuscateValues[idx] = i2b2.CRC.QueryStatus.obfuscateValue().replaceAll('±', ' +/- ');
-                renderArray[idx][9] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count, 0, 0);
+                obfuscateValues[idx] = i2b2.CRC.Obfuscate.obfuscationSuffix().replaceAll('±', ' +/- ');
+                renderArray[idx][9] = i2b2.CRC.Obfuscate.obfuscatedValue(count, 0, 0);
                 // fix issues with MS Excel's use of Microsoft-codepages
                 renderArray[idx][9] = renderArray[idx][9].replaceAll('±', ' +/- ');
             }
@@ -120,12 +120,12 @@ export default class NihEnrollCsv {
 
             // place the updated totals on last row
             for (let idx = 0; idx < 10; idx++) {
-                totalEthnicSex[idx] = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(totalEthnicSex[idx], 0, 0);
+                totalEthnicSex[idx] = i2b2.CRC.Obfuscate.obfuscatedValue(totalEthnicSex[idx], 0, 0);
                 // fix issues with MS Excel's use of Microsoft-codepages
                 totalEthnicSex[idx] = totalEthnicSex[idx].replaceAll('±', ' +/- ');
             }
             renderArray[7] = totalEthnicSex;
-            obfuscateValues[7] = i2b2.CRC.QueryStatus.obfuscateValue().replaceAll('±', ' +/- ');;
+            obfuscateValues[7] = i2b2.CRC.Obfuscate.obfuscationSuffix().replaceAll('±', ' +/- ');;
             // ==================================================================
             // render the template using the data
             if (typeof this.renderTemplate === 'undefined') return false;
@@ -194,7 +194,7 @@ let parseData = function(xmlData) {
         entryRecord.value = params[i2].firstChild.nodeValue;
         entryRecord.floorThreshold = params[i2].getAttribute("floorThresholdNumber");
         entryRecord.obfuscateNumber = params[i2].getAttribute("obfuscatedDisplayNumber");
-        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, entryRecord.floorThreshold, entryRecord.obfuscateNumber);
+        entryRecord.display = i2b2.CRC.Obfuscate.obfuscatedValue(entryRecord.value, entryRecord.floorThreshold, entryRecord.obfuscateNumber);
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
             entryRecord.value = i2b2.h.Unescape(entryRecord.value);

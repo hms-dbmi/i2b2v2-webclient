@@ -21,59 +21,16 @@ i2b2.CRC.QueryStatus = {
     ]
 };
 
+// DEPRECATED: thin wrappers kept for backward compatibility (the obfuscation logic lives in CRC/Obfuscation.js)
 i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber = function(number, floorValue, obfuscateValue) {
-    // this function is used by all the breakdown modules to generate the display numbers
-    number = parseInt(number);
-    if (['string','number'].includes(typeof floorValue)) floorValue = parseInt(floorValue)
-    if (['string','number'].includes(typeof obfuscateValue)) obfuscateValue = parseInt(obfuscateValue)
-
-    let retValue = false;
-    if (typeof floorValue === "undefined" || !floorValue) {
-        // pull the floor value info from the UI config
-        let floorThreshold = i2b2.UI?.cfg?.floorThresholdNumber;
-        if (typeof floorThreshold === 'undefined') floorThreshold = 0;
-        if (i2b2.UI?.cfg?.useFloorThreshold && (number <= floorThreshold)) {
-            // deal with the floor threshold value
-            let prefix = i2b2.UI?.cfg?.floorThresholdText;
-            if (typeof prefix === 'undefined') prefix = "≤";
-            return prefix + parseInt(floorThreshold).toLocaleString();
-        }
-    } else {
-        // process if the floor threshold value is reached
-        if (number <= floorValue) {
-            // deal with the floor threshold value
-            let prefix = i2b2.UI?.cfg?.floorThresholdText;
-            if (typeof prefix === 'undefined') prefix = "≤";
-            return prefix + parseInt(floorValue).toLocaleString();
-        }
-    }
-    // apply obfuscation value
-    if (typeof obfuscateValue === "undefined" || (!obfuscateValue && obfuscateValue !== 0)) {
-        // deal with the obfuscate number
-        if (i2b2.PM.model.isObfuscated && i2b2.UI?.cfg?.obfuscatedDisplayNumber) {
-            return parseInt(number).toLocaleString() + "±" + parseInt(i2b2.UI.cfg.obfuscatedDisplayNumber).toLocaleString();
-        } else {
-            return parseInt(number).toLocaleString();
-        }
-    } else if (typeof obfuscateValue === "number" && obfuscateValue > 0) {
-        return parseInt(number).toLocaleString() + "±" + parseInt(obfuscateValue).toLocaleString();
-    }
-    return parseInt(number).toLocaleString();
+    console.error("i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber() is deprecated and will be removed in the future. Calling code should be updated to use i2b2.CRC.Obfuscate.obfuscatedValue()");
+    return i2b2.CRC.Obfuscate.obfuscatedValue(number, floorValue, obfuscateValue);
 };
 
+// DEPRECATED: thin wrapper kept for backward compatibility
 i2b2.CRC.QueryStatus.obfuscateValue = function(obfuscateValue) {
-    // apply obfuscation value
-    if (typeof obfuscateValue === "undefined" || (!obfuscateValue && obfuscateValue !== 0)) {
-        // deal with the obfuscate number
-        if (i2b2.PM.model.isObfuscated && i2b2.UI?.cfg?.obfuscatedDisplayNumber) {
-            return  "±" + parseInt(i2b2.UI.cfg.obfuscatedDisplayNumber).toLocaleString();
-        } else {
-            return "";
-        }
-    } else if (typeof obfuscateValue === "number" && obfuscateValue > 0) {
-        return "±" + parseInt(obfuscateValue).toLocaleString();
-    }
-    return "";
+    console.error("i2b2.CRC.QueryStatus.obfuscateValue() is deprecated and will be removed in the future. Calling code should be updated to use i2b2.CRC.Obfuscate.obfuscationSuffix()");
+    return i2b2.CRC.Obfuscate.obfuscationSuffix(obfuscateValue);
 };
 
 i2b2.CRC.QueryStatus.stopPolling = function() {

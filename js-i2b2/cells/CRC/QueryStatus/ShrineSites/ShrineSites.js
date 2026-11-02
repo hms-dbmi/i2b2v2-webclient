@@ -152,7 +152,7 @@ export default class ShrineSites {
                     if (String(row.status).toUpperCase() === "COMPLETED") {
                         // return the site's count
                         ret.push({
-                            text: i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(row.count, row.floorThresholdNumber, row.obfuscatedDisplayNumber) + " Patients",
+                            text: i2b2.CRC.Obfuscate.obfuscatedValue(row.count, row.floorThresholdNumber, row.obfuscatedDisplayNumber) + " Patients",
                             class: "status-complete"
                         });
                     } else {
