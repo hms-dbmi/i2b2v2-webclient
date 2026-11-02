@@ -1295,6 +1295,12 @@ function renderSingleSelectLinks(ulEl, items, selectedValue, resetValue) {
 
 function updateLegend(controls, conceptRegistry, currentKeys, overlayRegistry, selectedOverlay){
 
+    const orderByKey = Object.fromEntries(
+        Object.entries(conceptRegistry).map(([key, concept]) => [key, concept.order])
+    );
+
+    currentKeys.sort((a, b) => orderByKey[a] - orderByKey[b]);
+
      // Clear legend
     if (controls?.legend) controls.legend.innerHTML = "";
 
