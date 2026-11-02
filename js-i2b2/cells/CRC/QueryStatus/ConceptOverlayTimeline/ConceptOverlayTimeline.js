@@ -42,7 +42,7 @@ export default class ConceptOverlayTimeline {
             this.config = componentConfig;
             this.record = qrsRecordInfo;
 
-            this.data = { old: {}, new: {} };
+            this.data = {};
             
             this.isVisible = false;
 
@@ -171,21 +171,19 @@ export default class ConceptOverlayTimeline {
             }
             if (typeof inputData === "undefined") {
                 // No new payload; only stay visible if we already have some rows
-                const rawExists = this.data?.new?.result;
+                const rawExists = this.data?.result;
                 if (!rawExists || rawExists.length === 0) return false;
             } else {
-                this.data.old = this.data.new;
-
                     // Always attempt to parse breakdown data first, regardless of status.
                     // Some responses carry usable data even when status is "ERROR"
-                    let resultXML = i2b2.h.XPath(inputData, "//xml_value");
+                let resultXML = i2b2.h.XPath(inputData, "//xml_value");
                 if (resultXML.length > 0) {
                     resultXML = resultXML[0].firstChild.nodeValue;
-                    this.data.new = parseData(resultXML, this.config.advancedConfig);
+                    this.data = parseData(resultXML, this.config.advancedConfig);
                 }
 
                 // Only bail on status if we truly ended up with nothing to show
-                const hasUsableData = this.data?.new?.result && this.data.new.result.length > 0;
+                const hasUsableData = this.data?.result && this.data.result.length > 0;
                 if (!hasUsableData) {
                     const status = i2b2.h.XPath(inputData, "//query_result_instance/query_status_type/name");
                     if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) {
@@ -194,8 +192,8 @@ export default class ConceptOverlayTimeline {
                 }
             }
 
-            // Common path: use whatever is in this.data.new to render
-            const raw = this.data?.new?.result;
+            // Common path: use whatever is in this.data to render
+            const raw = this.data?.result;
             if (!raw || raw.length === 0) return;
             
 
@@ -282,7 +280,7 @@ export default class ConceptOverlayTimeline {
             }
 
             // If template/SVG not ready yet, bail without drawing (but wastewater fetch can still run above)
-            if (!this.svg || !this.controls || !this.state) return;
+            if (!this.svg) return;
 
             const selectedConcept = this.state?.concept || null;
             const selectedOverlay = this.state?.overlay || null;
