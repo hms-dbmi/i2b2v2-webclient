@@ -15,6 +15,12 @@ const YLEFTLABEL = "Number of Patients";
 
 const MONTHLIST = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
+const COMBINED_OPTION_ORDER = 999;
+
+const FALLBACK_HEX = "#999";
+
+const YOY_MIN_BLEND = 0.3;
+
 const URLTYPES = Object.freeze({
     i2b2Proxy: "i2b2-proxy",
     external: "external",
@@ -472,7 +478,7 @@ export default class ConceptOverlayTimeline {
             const cptPath = group.append("path")
                 .datum(seriesItem.points)
                 .attr("fill", "none")
-                .attr("stroke",  seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
+                .attr("stroke",  seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || FALLBACK_HEX)
                 .attr("stroke-width", strokeWidth)
                 .attr("d", patientLine);
 
@@ -490,8 +496,8 @@ export default class ConceptOverlayTimeline {
                 .attr("cx", point => selectedAggregation === AGGREGATIONS.yoy ? xScale(point.monthIndex) : xScale(point.date))
                 .attr("cy", point => yLeft(point.value))
                 .attr("r", 4)
-                .attr("fill", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
-                .attr("stroke", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
+                .attr("fill", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || FALLBACK_HEX)
+                .attr("stroke", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || FALLBACK_HEX)
                 .append("title")
                 .text(pointLabel);
             }
@@ -703,7 +709,7 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
     Object.entries(conceptRegistry).forEach(([conceptName, concept]) => {
         const cptColor = concept.color;
 
-        if (!cptColor ||cptColor.length < 7 ||!cptColor.startsWith("#")) {
+        if (!isValidHex(cptColor)) {
            concept.color = selectBaseHex(canonicalHexes, colorsInUse);
            colorsInUse.push(concept.color);
            console.log(`${conceptName} color property is not a 6 digit hex, selecting random hex from canonical list.`)
@@ -825,7 +831,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
             currentSource.label = overlaySource.label ? overlaySource.label : overlaySource.column;
 
             // smooth out color
-            if (overlaySource.color && overlaySource.color.length === 7 && overlaySource.color.startsWith("#")) {
+            if (isValidHex(overlaySource.color)) {
                 currentSource.color = overlaySource.color;
                 colorsInUse.push(overlaySource.color);
             } else {
@@ -888,9 +894,9 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
                         } else {
                             const combinedEntry = overlayRegistry[overlayNickname].combinedOptionData;
                             combinedEntry.combinedColumns = combinedData.combinedColumns;
-                            combinedEntry.order = 999;
+                            combinedEntry.order = COMBINED_OPTION_ORDER;
 
-                            if (combinedData.color && combinedData.color.length === 7 && combinedData.color.startsWith("#")) {
+                            if (isValidHex(combinedData.color)) {
                                 combinedEntry.color = combinedData.color;
                                 colorsInUse.push(combinedData.color);
                             } else {
@@ -1074,7 +1080,6 @@ function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcept){
         }
     });
     
-    const T_MIN = 0.3;
    
     Object.keys(byConceptYear).forEach((cpt) => {
         const years = Object.keys(byConceptYear[cpt]).map(Number);
@@ -1088,7 +1093,7 @@ function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcept){
 
             const u = (min === max) ? 1 : (year - min) / (max - min);
 
-            const t = T_MIN + u * (1 - T_MIN);
+            const t = YOY_MIN_BLEND + u * (1 - YOY_MIN_BLEND);
 
             const baseColor = conceptRegistry?.[cpt]?.color;
             if (!baseColor) return;
@@ -1211,7 +1216,6 @@ function buildYOYOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, s
             if (yearKeys.length === 0) {
                 console.log(`no valid data for ${selectedOverlay}, skipping`);
             } else {
-                const T_MIN = 0.3;
                 const yearsList = yearKeys.map(Number);
                 const min = Math.min(...yearsList);
                 const max = Math.max(...yearsList);
@@ -1226,7 +1230,7 @@ function buildYOYOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, s
 
                     const year = Number(yearKey);
                     const u = (min === max) ? 1 : (year - min) / (max - min);
-                    const t = T_MIN + u * (1 - T_MIN);
+                    const t = YOY_MIN_BLEND + u * (1 - YOY_MIN_BLEND);
 
                     allSeries.push({
                         key: selectedOverlay,
@@ -1320,6 +1324,10 @@ function updateLegend(controls, conceptRegistry, currentKeys, overlayRegistry, s
             );
         }
     }
+}
+
+function isValidHex(color) {
+    return Boolean(color) && color.length === 7 && color.startsWith("#");
 }
 
 function selectBaseHex(canonicalHexes, colorsInUse){
