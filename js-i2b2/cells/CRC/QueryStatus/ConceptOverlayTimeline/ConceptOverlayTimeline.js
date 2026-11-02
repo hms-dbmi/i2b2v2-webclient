@@ -21,6 +21,10 @@ const FALLBACK_HEX = "#999";
 
 const YOY_MIN_BLEND = 0.3;
 
+const KEY_SEPARATOR = "::";
+
+const COMBINED_KEY = "combined";
+
 const URLTYPES = Object.freeze({
     i2b2Proxy: "i2b2-proxy",
     external: "external",
@@ -231,14 +235,14 @@ export default class ConceptOverlayTimeline {
 
                 if (overlayEntry.combinedOptionOnly && overlayEntry.combinedOptionData) {
                     overlayItems.push({
-                        value: `${overlayNickname}::combined`,
+                        value: `${overlayNickname}${KEY_SEPARATOR}${COMBINED_KEY}`,
                         label: overlayEntry.combinedOptionData.label
                     });
                 } else {
                     const sourceItems = Object.entries(overlayEntry.visualizationData)
                         .sort(([, a], [, b]) => a.order - b.order)
                         .map(([sourceKey, source]) => ({
-                            value: `${overlayNickname}::${sourceKey}`,
+                            value: `${overlayNickname}${KEY_SEPARATOR}${sourceKey}`,
                             label: source.label
                         }));
 
@@ -246,7 +250,7 @@ export default class ConceptOverlayTimeline {
 
                     if (overlayEntry.addCombinedOption && overlayEntry.combinedOptionData) {
                         overlayItems.push({
-                            value: `${overlayNickname}::combined`,
+                            value: `${overlayNickname}${KEY_SEPARATOR}${COMBINED_KEY}`,
                             label: overlayEntry.combinedOptionData.label
                         });
                     }
@@ -340,8 +344,6 @@ export default class ConceptOverlayTimeline {
                 .domain([0, maxOverlay])
                 .nice()
                 .range([height, 0]);
-        } else {
-            console.log("overlaySeries is empty, or no overlay is selected.");
         }
         // -----------------------------
         // X SCALE (respect patient breakdown only)
@@ -416,7 +418,7 @@ export default class ConceptOverlayTimeline {
                 .attr("y", y);
         });
 
-        const [overlayNickname] = selectedOverlay ? selectedOverlay.split("::") : [];
+        const [overlayNickname] = selectedOverlay ? selectedOverlay.split(KEY_SEPARATOR) : [];
         const yRightLabelText = overlayNickname ? overlayRegistry[overlayNickname]?.yRightLabel : "";
 
         // Right Y axis (overlay)
@@ -666,11 +668,11 @@ let parseData = function (xmlData, advancedConfig) {
 
 function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry, canonicalHexes, colorsInUse) {
     if (!data || Object.keys(data).length === 0){
-        console.log("no breakdown data found; cancelling concept registry generation");
+        console.warn("[ConceptOverlayTimeline] no breakdown data found; cancelling concept registry generation");
         return conceptRegistry;
     }
     if (!canonicalHexes || canonicalHexes.length === 0){
-        console.log("[ConceptOverlayTimeline] canonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
+        console.warn("[ConceptOverlayTimeline] canonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
         return conceptRegistry;
     }
     const seenCpts = [
@@ -702,7 +704,6 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
     if (anyMissingOrder) {
         [...conceptKeys].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" })).forEach((key, index) => {
             conceptRegistry[key].order = index + 1;
-            console.log("Missing or invalid entry for order in one or more concepts, using alphabetical sort.")
         });
     }
 
@@ -712,7 +713,6 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
         if (!isValidHex(cptColor)) {
            concept.color = selectBaseHex(canonicalHexes, colorsInUse);
            colorsInUse.push(concept.color);
-           console.log(`${conceptName} color property is not a 6 digit hex, selecting random hex from canonical list.`)
         }
     });
 
@@ -728,11 +728,9 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
     );
 
     if (evaluatedCptNameKeys.length === 0){
-        console.log("no concept name keys matching breakdown data found, cancelling customization; conceptRegistry will be generated from breakdown data.");
+        console.warn("[ConceptOverlayTimeline] No concept name keys matching breakdown data found, cancelling customization; conceptRegistry will be generated from breakdown data.");
         return conceptRegistry;
-    } else if (evaluatedCptNameKeys.length < candidateCptNameKeys.length)  {
-        console.log(`${candidateCptNameKeys.length} concepts were listed for customization, but only ${evaluatedCptNameKeys.length} custom registry concept names were matched.`);
-    }
+    } 
 
     for (const cptNameKey of evaluatedCptNameKeys){
 
@@ -746,16 +744,14 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
 
 
         if (evaluatedCptPropKeys.length === 0){
-            console.log("no concept property keys matching breakdown data found, cancelling customization of this concept; concept will be generated from breakdown data.")
+            console.warn("[ConceptOverlayTimeline] No concept property keys matching breakdown data found, cancelling customization of this concept; concept will be generated from breakdown data.")
             continue;
         } else{
             for (const evaluatedKey of evaluatedCptPropKeys){
                 if (evaluatedKey === "key"){
-                    console.log("key property cannot be customized, skipping; breakdown data derived value will be used.");
                     continue;
                 }
                 else if (currentCustomConcept[evaluatedKey] === undefined || currentCustomConcept[evaluatedKey] === ""){
-                    console.log("custom concept property is empty, skipping; breakdown data derived value will be used.");
                     continue;
                 } else {
                     currentRegisteredConcept[evaluatedKey] = currentCustomConcept[evaluatedKey];
@@ -771,13 +767,13 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
 function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, colorsInUse) {
     // bail if allOverlays is empty or undefined
     if (!allOverlays || Object.keys(allOverlays).length === 0) {
-        console.log("overlay configs are empty or undefined; cancelling generation");
+        console.warn("[ConceptOverlayTimeline] overlay configs are empty or undefined; cancelling generation");
         return overlayRegistry;
     }
 
     // bail if canonicalHexes is empty or undefined
     if (!canonicalHexes || canonicalHexes.length === 0) {
-        console.log("[ConceptOverlayTimeline] canonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
+        console.warn("[ConceptOverlayTimeline] canonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
         return overlayRegistry;
     }
 
@@ -788,14 +784,13 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
             continue;
         }
 
-        if (overlayNickname.includes("::")) {
-            console.log(`[ConceptOverlayTimeline] overlay nickname "${overlayNickname}" contains "::", which is reserved as a separator; skipping this overlay`);
-        continue;
+        if (overlayNickname.includes(KEY_SEPARATOR)) {
+            continue;
         }
 
         // required fields at the overlayInst level
         if (!overlayInst.visualizationData || !overlayInst.yRightLabel) {
-            console.log(`required overlay instance field(s) empty, skipping ${overlayNickname}`);
+            console.warn(`[ConceptOverlayTimeline] required overlay instance field(s) empty, skipping ${overlayNickname}`);
             continue;
         }
 
@@ -812,13 +807,12 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
                 continue;
             }
 
-            if (sourceNickname.includes("::")) {
-                console.log(`[ConceptOverlayTimeline] overlay source "${sourceNickname}" contains "::", which is reserved as a separator; skipping this source`);
+            if (sourceNickname.includes(KEY_SEPARATOR)) {
                 continue;
             }
 
             if (!overlaySource.column) {
-                console.log(`required overlay source field(s) column empty, skipping ${sourceNickname}`);
+                console.warn(`[ConceptOverlayTimeline] required overlay source field(s) column empty, skipping ${sourceNickname}`);
                 continue;
             }
 
@@ -854,7 +848,6 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
         if (anyMissingOrder) {
             [...sourceNicknames].sort().forEach((key, index) => {
                 sourceEntries[key].order = index + 1;
-                console.log("Missing or invalid entry for order in one or more source nicknames, using alphabetical sort.")
             });
         }
 
@@ -878,7 +871,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
 
                 if (combinedData && Object.keys(combinedData).length > 0) {
                     if (!combinedData.label || !combinedData.combinedColumns) {
-                        console.log("combinedColumnsOption field(s) missing, combinedOptionData will be removed");
+                        console.warn("[ConceptOverlayTimeline] combinedColumnsOption field(s) missing, combinedOptionData will be removed");
                     } else {
                         overlayRegistry[overlayNickname].combinedOptionData = {
                             label: combinedData.label
@@ -890,7 +883,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
                         );
 
                         if (overlaySourceColumns.length === 0 || !allColumnsMatch) {
-                            console.log("combinedColumns array items do not match the overlay source nicknames, combinedOptionData will be removed");
+                            console.warn("[ConceptOverlayTimeline] combinedColumns array items do not match the overlay source nicknames, combinedOptionData will be removed");
                         } else {
                             const combinedEntry = overlayRegistry[overlayNickname].combinedOptionData;
                             combinedEntry.combinedColumns = combinedData.combinedColumns;
@@ -914,7 +907,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
         const combinedOptionData = overlayRegistry[overlayNickname].combinedOptionData;
         if (combinedOptionData && (!combinedOptionData.label || !combinedOptionData.combinedColumns)) {
             overlayRegistry[overlayNickname].combinedOptionData = "";
-            console.log("missing fields detected in combinedOptionData, clearing out any data present for this property");
+            console.warn("[ConceptOverlayTimeline] missing fields detected in combinedOptionData, clearing out any data present for this property");
         }
     }
 
@@ -927,7 +920,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
 
     // final whole-registry guard
     if (Object.keys(overlayRegistry).length === 0) {
-        console.log("required fields needed to generate any overlays not present; cancelling generation");
+        console.warn("[ConceptOverlayTimeline] required fields needed to generate any overlays not present; cancelling generation");
     }
 
     return overlayRegistry;
@@ -970,7 +963,7 @@ function generateXDomain(records, selectedAggregation) {
 
         // Guard: if extent is bad, bail
         if (!xdomain[0] || !xdomain[1]) {
-            console.log("xdomain extent issue; bailing on generating xdomain.")
+            console.warn("[ConceptOverlayTimeline] xdomain extent issue; bailing on generating xdomain.")
             return [];
         }
     } else {
@@ -1137,14 +1130,14 @@ function getSourceValue(row, source) {
 }
 
 function resolveOverlaySelection(compoundKey, overlayRegistry) {
-    const [overlayNickname, sourceKey] = compoundKey.split("::");
+    const [overlayNickname, sourceKey] = compoundKey.split(KEY_SEPARATOR);
     const overlayEntry = overlayRegistry[overlayNickname];
 
     if (!overlayEntry) {
         return null;
     }
 
-    if (sourceKey === "combined") {
+    if (sourceKey === COMBINED_KEY) {
         return overlayEntry.combinedOptionData || null;
     }
 
@@ -1158,13 +1151,13 @@ function buildMonthYearOverlaySeries(overlayData, overlayRegistry, overlayEndpoi
     const allSeries = [];
 
     if (selectedOverlay) {
-        const [overlayNickname] = selectedOverlay.split("::");
+        const [overlayNickname] = selectedOverlay.split(KEY_SEPARATOR);
         const source = resolveOverlaySelection(selectedOverlay, overlayRegistry);
         const rows = overlayData[overlayNickname];
         const dateColumn = overlayEndpoints[overlayNickname]?.dateColumn;
 
         if (!source || !Array.isArray(rows)) {
-            console.log(`could not resolve selection or data for ${selectedOverlay}`);
+            console.warn(`[ConceptOverlayTimeline] could not resolve selection or data for ${selectedOverlay}`);
         } else {
             const bucketedOverlay = collectOverlayDataByAggregation(rows, source, selectedAggregation, dateColumn);
 
@@ -1187,13 +1180,13 @@ function buildYOYOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, s
     const allSeries = [];
 
     if (selectedOverlay) {
-        const [overlayNickname] = selectedOverlay.split("::");
+        const [overlayNickname] = selectedOverlay.split(KEY_SEPARATOR);
         const source = resolveOverlaySelection(selectedOverlay, overlayRegistry);
         const rows = overlayData[overlayNickname];
         const dateColumn = overlayEndpoints[overlayNickname]?.dateColumn;
 
         if (!source || !Array.isArray(rows)) {
-            console.log(`could not resolve selection or data for ${selectedOverlay}`);
+            console.warn(`[ConceptOverlayTimeline] could not resolve selection or data for ${selectedOverlay}`);
         } else {
             const byYear = {};
 
@@ -1214,7 +1207,7 @@ function buildYOYOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, s
 
             const yearKeys = Object.keys(byYear);
             if (yearKeys.length === 0) {
-                console.log(`no valid data for ${selectedOverlay}, skipping`);
+                console.warn(`[ConceptOverlayTimeline] no valid data for ${selectedOverlay}, skipping`);
             } else {
                 const yearsList = yearKeys.map(Number);
                 const min = Math.min(...yearsList);
@@ -1335,7 +1328,6 @@ function selectBaseHex(canonicalHexes, colorsInUse){
     const unusedColors = canonicalHexes.filter(color => !colorsInUse.includes(color));
 
     if (unusedColors.length === 0){
-        console.log("all canonical hexes all in use; duplicate colors will be assigned");
         selectedHex = canonicalHexes[Math.floor(Math.random() * canonicalHexes.length)];
     } else {
         selectedHex = unusedColors[Math.floor(Math.random() * unusedColors.length)];
@@ -1567,7 +1559,7 @@ async function fetchOverlayDataFromEndpoint(endpointInfo) {
     }
 
     if (endpointInfo.urlType === URLTYPES.external) {
-        console.warn(`External overlay fetching not yet implemented, skipping ${endpointInfo.endpoint}`);
+        console.warn(`[ConceptOverlayTimeline] External overlay fetching not yet implemented, skipping ${endpointInfo.endpoint}`);
         return null;
     }
 
@@ -1624,7 +1616,6 @@ function detectEnv(overlayInst) {
         if (overlayInst.envUrls.local) {
             return "local";
         }
-        console.log(`detectEnv: sourceType is ${SOURCETYPES.local} but envUrls.local is empty; cannot resolve.`);
         return null;
     }
 
@@ -1635,7 +1626,7 @@ function detectEnv(overlayInst) {
     if (host.includes("test")) return "test";
     if (host.includes("stage")) return "stage";
 
-    console.log(`detectEnv: no known env keyword found in host "${host}"; defaulting to "prod"`);
+    console.warn(`[ConceptOverlayTimeline] no known env keyword found in host "${host}"; defaulting to "prod"`);
     return "prod";
 }
 
@@ -1653,7 +1644,7 @@ function resolveEndpointUrl(allOverlays, overlayEndpoints) {
         if (resolvedUrl) {
             overlayEndpoints[overlayNickname].endpoint = resolvedUrl;
         } else {
-            console.log(`could not update endpoint url for ${overlayNickname} to fetch data`);
+            console.warn(`[ConceptOverlayTimeline] could not update endpoint url for ${overlayNickname} to fetch data`);
         }
     }
 
@@ -1667,23 +1658,14 @@ function evaluateEndpointDateRange(dateRange, breakdownDateRange) {
     const breakdownEnd = new Date(breakdownDateRange.endStr);
 
     if (overlayStart < breakdownStart || overlayStart > breakdownEnd) {
-        console.log("[DEBUG evaluateEndpointDateRange()]: overlayStart out of breakdown bounds", {
-            overlayStart, breakdownStart, breakdownEnd
-        });
         return false;
     }
 
     if (overlayEnd < breakdownStart || overlayEnd > breakdownEnd) {
-        console.log("[DEBUG evaluateEndpointDateRange()]: overlayEnd out of breakdown bounds", {
-            overlayEnd, breakdownStart, breakdownEnd
-        });
         return false;
     }
 
     if (overlayStart > overlayEnd) {
-        console.log("[DEBUG evaluateEndpointDateRange()]: overlayStart is after overlayEnd", {
-            overlayStart, overlayEnd
-        });
         return false;
     }
 
@@ -1697,23 +1679,19 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
         const currentOverlay = allOverlays[overlayNickname];
 
         if (!currentOverlay.envUrls || Object.keys(currentOverlay.envUrls).length === 0) {
-            console.log(`${overlayNickname}: envUrls is missing or empty, skipping this overlay`);
             continue;
         }
 
         if (!currentOverlay.sourceType || (currentOverlay.sourceType !== SOURCETYPES.url && currentOverlay.sourceType !== SOURCETYPES.local)) {
-            console.log(`${overlayNickname}: sourceType is missing or invalid (must be "url" or "local"), skipping this overlay`);
             continue;
         }
 
         if (currentOverlay.sourceType === SOURCETYPES.url &&
-            (!currentOverlay.urlType || (currentOverlay.urlType !== URLTYPES.external && currentOverlay.urlType !== URLTYPES.i2b2Proxy))) {
-            console.log(`${overlayNickname}: urlType is missing or invalid (must be "external" or "i2b2-proxy"), skipping this overlay`);
+            (!currentOverlay.urlType || (currentOverlay.urlType !== URLTYPES.external && currentOverlay.urlType !== URLTYPES.i2b2Proxy))) {            
             continue;
         }
 
-        if (!currentOverlay.dateColumn) {
-            console.log(`${overlayNickname}: dateColumn is missing or empty, skipping this overlay`);
+        if (!currentOverlay.dateColumn) {            
             continue;
         }
 
@@ -1732,17 +1710,17 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
             !isNaN(new Date(dateRange[1]));
 
         if (!dateRange || dateRange.length === 0 || !isValidFormat) {
-            overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];
-            console.log(`${overlayNickname}: invalid or empty config date range, using breakdown dates`);
+            overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];            
         } else {
             if (evaluateEndpointDateRange(dateRange, breakdownDateRange)) {
                 overlayEndpoints[overlayNickname].dateRange = dateRange;
             } else {
-                overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];
-                console.log(`${overlayNickname}: config date range isn't compatible with breakdown, using breakdown dates`);
+                overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];                
             }
         }
     }
+
+    // ToDo: guard for no valid endpoints
 
     return overlayEndpoints;
 }
