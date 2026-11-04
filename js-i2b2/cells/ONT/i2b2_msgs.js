@@ -811,7 +811,7 @@ i2b2.ONT.cfg.msgs.CreateSearchMetadata = '<?xml version="1.0" encoding="UTF-8" s
     '		<result_waittime_ms>{{{result_wait_time}}}000</result_waittime_ms>\n'+
     '	</request_header>\n'+
     '	<message_body>\n'+
-    '   <ns4:update_concept_totalnum {{{cdm}}} {{{operation_type}}} project_id="{{{project_id}}}">\n'+
+    '   <ns4:update_concept_totalnum {{{cdm}}} {{{operation_type}}} {{{ontology}}} project_id="{{{project_id}}}">\n'+
     '   </ns4:update_concept_totalnum>'+
     '	</message_body>\n'+
     '</ns3:request>';

@@ -19,17 +19,22 @@ import {
 import {createSearchAutosuggest, getSearchAutosuggestDetails} from "../../reducers/editProjectInfoSlice";
 import "./EditProjectSearchAutosuggest.scss";
 import {EventLogView} from "./EventLogView";
-import {SEARCH_AUTOSUGGEST_STATUS} from "../../models";
+import {
+    SEARCH_AUTOSUGGEST_ONT_TYPE_OPTION,
+    SEARCH_AUTOSUGGEST_STATUS,
+    SEARCH_AUTOSUGGEST_TOTALNUM_OPTION
+} from "../../models";
 
 export const EditProjectSearchAutosuggest = ({selectedProject}) => {
     const searchAutosuggestDetails = selectedProject.searchAutosuggestDetails;
 
     const [includePatientCounts, setIncludePatientCounts] = useState(false);
     const [commonDataModel, setCommonDataModel] = useState("i2b2");
+    const [ontologyType, setOntologyType] = useState(SEARCH_AUTOSUGGEST_ONT_TYPE_OPTION.ACT);
     const [showExpandedProgressMsg, setShowExpandedProgressMsg] = useState(false);
     const [truncateProgressMsg, setTruncateProgressMsg] = useState(false);
     const [isRunning, setIsRunning] = useState(
-        searchAutosuggestDetails.status ===SEARCH_AUTOSUGGEST_STATUS.RUNNING_TOTALNUM
+        searchAutosuggestDetails.status === SEARCH_AUTOSUGGEST_STATUS.RUNNING_TOTALNUM
         || searchAutosuggestDetails.status === SEARCH_AUTOSUGGEST_STATUS.RUNNING_AUTOSUGGEST);
     const MAX_PROGRESS_MSG_LENGTH = 100;
 
@@ -43,12 +48,17 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
         NONE: "Search index only",
     }
 
+    const SEARCH_AUTOSUGGEST_ONTOLOGY_TYPE_MAPPING = {};
+    SEARCH_AUTOSUGGEST_ONTOLOGY_TYPE_MAPPING[SEARCH_AUTOSUGGEST_ONT_TYPE_OPTION.ACT] = "with ACT ontology";
+    SEARCH_AUTOSUGGEST_ONTOLOGY_TYPE_MAPPING[SEARCH_AUTOSUGGEST_ONT_TYPE_OPTION.OTHER]= "with other ontology";
+
     const handleCreateSearchAutosuggest = () => {
         const dataInput = {
             project: selectedProject.project
         };
         if(includePatientCounts){
             dataInput.commonDataModel = commonDataModel;
+            dataInput.ontologyType = ontologyType;
         }
         dispatch(createSearchAutosuggest(dataInput));
         setIsRunning(true);
@@ -61,6 +71,10 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
 
     const handleCommonDataModelChange = (event)=> {
         setCommonDataModel(event.target.value);
+    }
+
+    const handleOntologyTypeChange = (event)=> {
+        setOntologyType(event.target.value);
     }
 
     const toggleShowExpandedProgressMsg = () => {
@@ -87,8 +101,8 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
             const progNum = parseInt(progNumStr);
             const progNumTotal = parseInt(progNumTotalStr);
 
-            if(progNum >= 0 && progNumTotal > 0){
-                currectProgressPercent = Math.round((progNum / progNumTotal) * 100);
+            if(progNum >= 1 && progNumTotal > 0){
+                currectProgressPercent = Math.round(((progNum-1) / progNumTotal) * 100);
             }
 
             if(currectProgressPercent === 100 && (status === SEARCH_AUTOSUGGEST_STATUS.RUNNING_TOTALNUM
@@ -171,7 +185,24 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
                                     {"OMOP"}
                                 </MenuItem>
                             </TextField>
-                            <span>{" common data model"}</span>
+                            <span>{" common data model with "} </span>
+
+                            <TextField
+                                select
+                                defaultValue={ontologyType}
+                                onChanged={handleOntologyTypeChange}
+                                disabled={!includePatientCounts || isRunning}
+                                variant="standard"
+                            >
+                                <MenuItem key={"act"} value={"act"}>
+                                    {"ACT"}
+                                </MenuItem>
+                                <MenuItem key={"other"} value={"other"}>
+                                    {"other"}
+                                </MenuItem>
+                            </TextField>
+
+                            <span>{" ontology"} </span>
                         </Box>
                         {includePatientCounts && <Box>
                             <Alert severity="warning">This option is resource intensive and may take considerable time
@@ -183,7 +214,9 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
                     <Button className={"autosuggestAction"}
                             variant="contained" startIcon={<AddIcon/>}
                             onClick={handleCreateSearchAutosuggest}
-                            disabled={searchAutosuggestDetails.status !== SEARCH_AUTOSUGGEST_STATUS.ERROR && searchAutosuggestDetails.status !== SEARCH_AUTOSUGGEST_STATUS.FINISHED}
+                            disabled={searchAutosuggestDetails.status !== SEARCH_AUTOSUGGEST_STATUS.ERROR
+                                && searchAutosuggestDetails.status !== SEARCH_AUTOSUGGEST_STATUS.FINISHED
+                                && searchAutosuggestDetails.status !== SEARCH_AUTOSUGGEST_STATUS.SCHEDULED}
                     >
                         Generate search index
                     </Button>
@@ -199,7 +232,7 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
                                             </span>
                                             {truncateProgressMsg &&
                                                 <span>
-                                                    {showExpandedProgressMsg ? <span>{searchAutosuggestDetails.progressMsg} <Link onClick={toggleShowExpandedProgressMsg}>show less</Link></span> : <span>{searchAutosuggestDetails.progressMsg.substring(0,MAX_PROGRESS_MSG_LENGTH) + "..."}<Link onClick={toggleShowExpandedProgressMsg}>show more</Link></span>}
+                                                    {showExpandedProgressMsg ? <span>{searchAutosuggestDetails.progressMsg} <Link sx={{ cursor: 'pointer' }} onClick={toggleShowExpandedProgressMsg}>show less</Link></span> : <span>{searchAutosuggestDetails.progressMsg.substring(0,MAX_PROGRESS_MSG_LENGTH) + "..."}<Link sx={{ cursor: 'pointer' }} onClick={toggleShowExpandedProgressMsg}>show more</Link></span>}
                                                 </span>
                                             }
                                             {!truncateProgressMsg && <span>{searchAutosuggestDetails.progressMsg}</span> }
@@ -208,6 +241,7 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
                                     </Box>
                                     <Box className={"runOptionsInfo"}>
                                         {SEARCH_AUTOSUGGEST_TOTALNUM_MAPPING[searchAutosuggestDetails.calculateTotalNum]}
+                                        {searchAutosuggestDetails.calculateTotalNum !==  SEARCH_AUTOSUGGEST_TOTALNUM_OPTION.NONE && " " + SEARCH_AUTOSUGGEST_ONTOLOGY_TYPE_MAPPING[searchAutosuggestDetails.ontologyType]}
                                     </Box>
                                 </Box>
                                 <Box className={"progressBarMain"}>

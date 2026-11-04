@@ -9,7 +9,7 @@ import {
     ParamStatusInfo,
     ProjectDataSource,
     ProjectSearchAutosuggest,
-    ProjectUser,
+    ProjectUser, SEARCH_AUTOSUGGEST_ONT_TYPE_OPTION,
     SEARCH_AUTOSUGGEST_STATUS,
     SEARCH_AUTOSUGGEST_TOTALNUM_OPTION,
     SelectedProject, StatusInfo,
@@ -295,6 +295,10 @@ export const editProjectInfoSlice = createSlice({
 
             if(autosuggestDetails.calculateTotalNum){
                 searchAutoSuggestDetails.calculateTotalNum = SEARCH_AUTOSUGGEST_TOTALNUM_OPTION[autosuggestDetails.calculateTotalNum.toUpperCase()];
+            }
+
+            if(autosuggestDetails.ontologyType){
+                searchAutoSuggestDetails.ontologyType = SEARCH_AUTOSUGGEST_ONT_TYPE_OPTION[autosuggestDetails.ontologyType.toUpperCase()];
             }
 
             searchAutoSuggestDetails.eventLogs =  autosuggestDetails.eventLogs.map((eventLog, index) => {
