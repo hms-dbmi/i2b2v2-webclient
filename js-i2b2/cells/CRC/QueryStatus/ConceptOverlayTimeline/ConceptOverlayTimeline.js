@@ -1,12 +1,48 @@
 const margin = { top: 20, right: 80, bottom: 70, left: 60 };
 
+const AGGREGATIONS = Object.freeze({
+  month: "month",
+  year: "year",
+  yoy: "yoy",
+});
+
+const GRAIN = Object.freeze({
+    year: "Y",
+    month: "M",
+});
+
+const YLEFTLABEL = "Number of Patients";
+
+const MONTHLIST = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+const COMBINED_OPTION_ORDER = 999;
+
+const FALLBACK_HEX = "#999";
+
+const YOY_MIN_BLEND = 0.3;
+
+const KEY_SEPARATOR = "::";
+
+const COMBINED_KEY = "combined";
+
+const URLTYPES = Object.freeze({
+    i2b2Proxy: "i2b2-proxy",
+    external: "external",
+});
+
+const SOURCETYPES = Object.freeze({
+    local: "local",
+    url: "url",
+});
+
+
 export default class ConceptOverlayTimeline {
     constructor(componentConfig, qrsRecordInfo, qrsData) {
         try {
             this.config = componentConfig;
             this.record = qrsRecordInfo;
 
-            this.data = { old: {}, new: {} };
+            this.data = {};
             
             this.isVisible = false;
 
@@ -71,19 +107,19 @@ export default class ConceptOverlayTimeline {
                 self.state = {
                     concept: null,
                     overlay: null,
-                    aggregation: "month"
+                    aggregation: AGGREGATIONS.month
                 };
 
                 // Aggregation list is in HTML; ensure we have a selected item + sync state
                 if (self.controls.aggregationList) {
                     const selectedAggregationNode = self.controls.aggregationList.querySelector(".cot-link.selected");
                     if (selectedAggregationNode) {
-                        self.state.aggregation = selectedAggregationNode.getAttribute("data-value") || "month";
+                        self.state.aggregation = selectedAggregationNode.getAttribute("data-value") || AGGREGATIONS.month;
                     } else {
                         // If HTML forgot to set selected, default to month
                         const first = self.controls.aggregationList.querySelector(".cot-link[data-value='month']");
                         if (first) first.classList.add("selected");
-                        self.state.aggregation = "month";
+                        self.state.aggregation = AGGREGATIONS.month;
                     }
                 }
 
@@ -135,21 +171,19 @@ export default class ConceptOverlayTimeline {
             }
             if (typeof inputData === "undefined") {
                 // No new payload; only stay visible if we already have some rows
-                const rawExists = this.data?.new?.result;
+                const rawExists = this.data?.result;
                 if (!rawExists || rawExists.length === 0) return false;
             } else {
-                this.data.old = this.data.new;
-
                     // Always attempt to parse breakdown data first, regardless of status.
                     // Some responses carry usable data even when status is "ERROR"
-                    let resultXML = i2b2.h.XPath(inputData, "//xml_value");
+                let resultXML = i2b2.h.XPath(inputData, "//xml_value");
                 if (resultXML.length > 0) {
                     resultXML = resultXML[0].firstChild.nodeValue;
-                    this.data.new = parseData(resultXML, this.config.advancedConfig);
+                    this.data = parseData(resultXML, this.config.advancedConfig);
                 }
 
                 // Only bail on status if we truly ended up with nothing to show
-                const hasUsableData = this.data?.new?.result && this.data.new.result.length > 0;
+                const hasUsableData = this.data?.result && this.data.result.length > 0;
                 if (!hasUsableData) {
                     const status = i2b2.h.XPath(inputData, "//query_result_instance/query_status_type/name");
                     if (status.length > 0 && i2b2.CRC.QueryStatus.hideVisualizationsOn.includes(status[0].firstChild.nodeValue)) {
@@ -158,8 +192,8 @@ export default class ConceptOverlayTimeline {
                 }
             }
 
-            // Common path: use whatever is in this.data.new to render
-            const raw = this.data?.new?.result;
+            // Common path: use whatever is in this.data to render
+            const raw = this.data?.result;
             if (!raw || raw.length === 0) return;
             
 
@@ -195,18 +229,22 @@ export default class ConceptOverlayTimeline {
             const overlayNicknames = Object.keys(this.overlayRegistry);
 
             for (const overlayNickname of overlayNicknames) {
+                if (!this.overlayEndpoints[overlayNickname]) {
+                    continue;
+                }
+
                 const overlayEntry = this.overlayRegistry[overlayNickname];
 
                 if (overlayEntry.combinedOptionOnly && overlayEntry.combinedOptionData) {
                     overlayItems.push({
-                        value: `${overlayNickname}::combined`,
+                        value: `${overlayNickname}${KEY_SEPARATOR}${COMBINED_KEY}`,
                         label: overlayEntry.combinedOptionData.label
                     });
                 } else {
                     const sourceItems = Object.entries(overlayEntry.visualizationData)
                         .sort(([, a], [, b]) => a.order - b.order)
                         .map(([sourceKey, source]) => ({
-                            value: `${overlayNickname}::${sourceKey}`,
+                            value: `${overlayNickname}${KEY_SEPARATOR}${sourceKey}`,
                             label: source.label
                         }));
 
@@ -214,7 +252,7 @@ export default class ConceptOverlayTimeline {
 
                     if (overlayEntry.addCombinedOption && overlayEntry.combinedOptionData) {
                         overlayItems.push({
-                            value: `${overlayNickname}::combined`,
+                            value: `${overlayNickname}${KEY_SEPARATOR}${COMBINED_KEY}`,
                             label: overlayEntry.combinedOptionData.label
                         });
                     }
@@ -223,8 +261,8 @@ export default class ConceptOverlayTimeline {
 
             // Render initial lists
             renderSingleSelectLinks(this.controls.conceptList, conceptItems, this.state.concept, "All");
-            renderSingleSelectLinks(this.controls.overlayList, overlayItems, this.state.overlay, "None");         
-                        
+            renderSingleSelectLinks(this.controls.overlayList, overlayItems, this.state.overlay, "None");   
+                                   
             // ------------------------------------------------------------
             // Overlay fetches
             // ------------------------------------------------------------
@@ -246,11 +284,11 @@ export default class ConceptOverlayTimeline {
             }
 
             // If template/SVG not ready yet, bail without drawing (but wastewater fetch can still run above)
-            if (!this.svg || !this.controls || !this.state) return;
+            if (!this.svg) return;
 
             const selectedConcept = this.state?.concept || null;
             const selectedOverlay = this.state?.overlay || null;
-            const selectedAggregation = this.state?.aggregation || "month"; // "month" | "year" | "yoy"
+            const selectedAggregation = this.state?.aggregation || AGGREGATIONS.month;
 
             const renderModel = buildRenderModel(raw, this.fetchedOverlays, this.overlayRegistry, this.overlayEndpoints, this.conceptRegistry, selectedConcept, selectedAggregation, selectedOverlay);
 
@@ -272,250 +310,250 @@ export default class ConceptOverlayTimeline {
     
     draw(renderModel, conceptRegistry, overlayRegistry, selectedOverlay, selectedAggregation) {
 
-    if (!renderModel || Object.keys(renderModel).length === 0) {
+        if (!renderModel || Object.keys(renderModel).length === 0) {
+            this.svg.selectAll("*").remove();
+            return;
+        }
+
+        const width = this.width - margin.left - margin.right;
+        const height = this.height;
+
         this.svg.selectAll("*").remove();
-        return;
-    }
 
-    const width = this.width - margin.left - margin.right;
-    const height = this.height;
+        // -----------------------------
+        // LEFT Y SCALE (patients)
+        // -----------------------------
 
-    this.svg.selectAll("*").remove();
-
-    // -----------------------------
-    // LEFT Y SCALE (patients)
-    // -----------------------------
-
-    const maxY = Math.max(1, ...renderModel.series.flatMap(item => 
-        item.points.map(point => point.value)
-        ));
-    const yLeft = d3.scaleLinear()
-        .domain([0, maxY])
-        .nice()            
-        .range([height, 0]);
-
-    // -----------------------------
-    // RIGHT Y SCALE (wastewater)
-    // -----------------------------
-
-    let yRight = null;
-
-    if (selectedOverlay && renderModel.overlaySeries && renderModel.overlaySeries.length > 0) {
-        const maxOverlay = Math.max(1, ...renderModel.overlaySeries.flatMap(item =>
+        const maxY = Math.max(1, ...renderModel.series.flatMap(item => 
             item.points.map(point => point.value)
-        ));
-        yRight = d3.scaleLinear()
-            .domain([0, maxOverlay])
-            .nice()
+            ));
+        const yLeft = d3.scaleLinear()
+            .domain([0, maxY])
+            .nice()            
             .range([height, 0]);
-    } else {
-        console.log("overlaySeries is empty, or no overlay is selected.");
-    }
-    // -----------------------------
-    // X SCALE (respect patient breakdown only)
-    // -----------------------------
 
-    const xScale = (selectedAggregation === "yoy" ? d3.scaleLinear() : d3.scaleTime())
-        .domain(renderModel.xDomain)
-        .range([0, width]);
+        // -----------------------------
+        // RIGHT Y SCALE (wastewater)
+        // -----------------------------
 
-    // -----------------------------
-    // AXES
-    // -----------------------------
+        let yRight = null;
 
-    // X axis
+        if (selectedOverlay && renderModel.overlaySeries && renderModel.overlaySeries.length > 0) {
+            const maxOverlay = Math.max(1, ...renderModel.overlaySeries.flatMap(item =>
+                item.points.map(point => point.value)
+            ));
+            yRight = d3.scaleLinear()
+                .domain([0, maxOverlay])
+                .nice()
+                .range([height, 0]);
+        }
+        // -----------------------------
+        // X SCALE (respect patient breakdown only)
+        // -----------------------------
 
-    let tickFormat;
+        const xScale = (selectedAggregation === AGGREGATIONS.yoy ? d3.scaleLinear() : d3.scaleTime())
+            .domain(renderModel.xDomain)
+            .range([0, width]);
 
-    if (selectedAggregation === "yoy") {
-        tickFormat = i => renderModel.months[i];
-    } else if (selectedAggregation === "year"){
-        tickFormat = d3.timeFormat("%Y");
-    } else {
-        tickFormat = d3.timeFormat("%Y-%m")
-    }
+        // -----------------------------
+        // AXES
+        // -----------------------------
 
-    const axis = d3.axisBottom(xScale)
-        .ticks(selectedAggregation === "yoy" ? 11 : 10)
-        .tickFormat(tickFormat)
+        // X axis
 
-    if (selectedAggregation === "yoy") {
-        axis.tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
-    }
+        let tickFormat;
 
-    this.svg.append("g")
-        .classed("x-axis", true)
-        .attr("transform", `translate(0,${height})`)
-        .call(axis)
-        .selectAll("text")
-        .attr("transform", "rotate(-45)")
-        .style("text-anchor", "end");
+        if (selectedAggregation === AGGREGATIONS.yoy) {
+            tickFormat = i => renderModel.months[i];
+        } else if (selectedAggregation === AGGREGATIONS.year){
+            tickFormat = d3.timeFormat("%Y");
+        } else {
+            tickFormat = d3.timeFormat("%Y-%m")
+        }
 
-    // Left Y axis
-    const tickFormatLeft = maxY <= 1 ? d3.format("d") : d3.format(".2~s");
+        const axis = d3.axisBottom(xScale)
+            .ticks(selectedAggregation === AGGREGATIONS.yoy ? 11 : 10)
+            .tickFormat(tickFormat)
 
-    const yAxisLeft = this.svg.append("g")
-        .classed("y-axis left", true)
-        .call(
-            d3.axisLeft(yLeft)
-                .ticks(Math.min(maxY, 10))
-                .tickFormat(tickFormatLeft));
+        if (selectedAggregation === AGGREGATIONS.yoy) {
+            axis.tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+        }
 
-    const yLabelText =  renderModel.yLeftLabel;
+        this.svg.append("g")
+            .classed("x-axis", true)
+            .attr("transform", `translate(0,${height})`)
+            .call(axis)
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
 
-    const yLabelLeft = yAxisLeft.append("text")
-        .attr("class", "y-label")
-        .attr("fill", "currentColor")
-        .attr("letter-spacing", "1.16")
-        .attr("text-anchor", "middle")
-        .text(yLabelText)
-        .attr("transform", "rotate(-90)");
+        // Left Y axis
+        const tickFormatLeft = maxY <= 1 ? d3.format("d") : d3.format(".2~s");
 
-    // After render, center it using SVG bbox
-    yLabelLeft.each(function () {
-        let w = 0;
-        try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
+        const yAxisLeft = this.svg.append("g")
+            .classed("y-axis left", true)
+            .call(
+                d3.axisLeft(yLeft)
+                    .ticks(Math.min(maxY, 10))
+                    .tickFormat(tickFormatLeft));
 
-        const x = -(height / 2);        
-        const y = -margin.left + 28;      
+        const yLabelText =  renderModel.yLeftLabel;
 
-        d3.select(this)
-            .attr("x", x)
-            .attr("y", y);
-    });
-
-    const [overlayNickname] = selectedOverlay ? selectedOverlay.split("::") : [];
-    const yRightLabelText = overlayNickname ? overlayRegistry[overlayNickname]?.yRightLabel : "";
-
-    // Right Y axis (overlay)
-    if (yRight) {
-        const yAxisRight = this.svg.append("g")
-            .classed("y-axis right", true)
-            .attr("transform", `translate(${width},0)`)
-            .call(d3.axisRight(yRight).tickFormat(d3.format(",")))
-
-        yAxisRight.append("text")
+        const yLabelLeft = yAxisLeft.append("text")
             .attr("class", "y-label")
-            .attr("text-anchor", "middle")
+            .attr("fill", "currentColor")
             .attr("letter-spacing", "1.16")
-            .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
-            .text(yRightLabelText);
-    }
+            .attr("text-anchor", "middle")
+            .text(yLabelText)
+            .attr("transform", "rotate(-90)");
 
-    // -----------------------------
-    // LINE GENERATORS
-    // -----------------------------
+        // After render, center it using SVG bbox
+        yLabelLeft.each(function () {
+            let w = 0;
+            try { w = this.getBBox().width || 0; } catch (e) { w = 0; }
 
-    const patientLine = d3.line()
-        .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
-        .y(point => yLeft(point.value));   
+            const x = -(height / 2);        
+            const y = -margin.left + 28;      
 
+            d3.select(this)
+                .attr("x", x)
+                .attr("y", y);
+        });
 
-    const overlayLine = yRight ? d3.line()
-        .x(point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
-        .y(point => yRight(point.value)) : null;
+        const [overlayNickname] = selectedOverlay ? selectedOverlay.split(KEY_SEPARATOR) : [];
+        const yRightLabelText = overlayNickname ? overlayRegistry[overlayNickname]?.yRightLabel : "";
 
-    // -----------------------------
-    // CALCULATE MAX YEARS PER DATA SET, IF APPLICABLE
-    // -----------------------------
+        // Right Y axis (overlay)
+        if (yRight) {
+            const yAxisRight = this.svg.append("g")
+                .classed("y-axis right", true)
+                .attr("transform", `translate(${width},0)`)
+                .call(d3.axisRight(yRight).tickFormat(d3.format(",")))
 
-    const hasCptYears = renderModel?.series?.some(item => Object.hasOwn(item, "year"));
-    const maxCptYear = hasCptYears ? Math.max(...renderModel.series.map(o => o.year)) : null;
-
-    const hasOverlayYears = renderModel?.overlaySeries?.some(item => Object.hasOwn(item, "year"));
-    const maxOverlayYear = hasOverlayYears ? Math.max(...renderModel.overlaySeries.map(o => o.year)) : null;
-
-    // -----------------------------
-    // DRAW CONCEPT LINES + POINTS
-    // -----------------------------
-    for (const seriesItem of renderModel.series){
-
-        const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxCptYear;
-        const strokeWidth = isMaxYear ? 4 : 2; 
-
-        // group
-        const group = this.svg.append("g");
-
-        // point label
-
-        const pointLabel = selectedAggregation === "yoy" 
-            ? d => `${seriesItem.concept}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
-            : d => `${seriesItem.concept} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
-
-        // Line
-        const cptPath = group.append("path")
-            .datum(seriesItem.points)
-            .attr("fill", "none")
-            .attr("stroke",  seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
-            .attr("stroke-width", strokeWidth)
-            .attr("d", patientLine);
-
-        if (selectedAggregation === "yoy") {
-            cptPath.append("title")
-            .text(`${seriesItem.concept} \n${seriesItem.year}`);
-        }
-
-        // Points
-        group.selectAll(`circle.${cssSafeKey(seriesItem.concept)}`)
-            .data(seriesItem.points)
-            .enter()
-            .append("circle")
-            .attr("class", `point ${cssSafeKey(seriesItem.concept)}`)
-            .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
-            .attr("cy", point => yLeft(point.value))
-            .attr("r", 4)
-            .attr("fill", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
-            .attr("stroke", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || "#999")
-            .append("title")
-            .text(pointLabel);
+            yAxisRight.append("text")
+                .attr("class", "y-label")
+                .attr("text-anchor", "middle")
+                .attr("letter-spacing", "1.16")
+                .attr("transform", `translate(40, ${height / 2}) rotate(90)`)
+                .text(yRightLabelText);
         }
 
         // -----------------------------
-        // DRAW WASTEWATER OVERLAY
+        // LINE GENERATORS
         // -----------------------------
 
-        if (overlayLine && renderModel.overlaySeries.length) {
+        const patientLine = d3.line()
+            .x(point => selectedAggregation === AGGREGATIONS.yoy ? xScale(point.monthIndex) : xScale(point.date))
+            .y(point => yLeft(point.value));   
 
-            for (const seriesItem of renderModel.overlaySeries) {
-                const source = resolveOverlaySelection(seriesItem.key, overlayRegistry);
-                if (!source) continue;
 
-                const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxOverlayYear;
-                const strokeWidth = isMaxYear ? 4 : 2;
+        const overlayLine = yRight ? d3.line()
+            .x(point => selectedAggregation === AGGREGATIONS.yoy ? xScale(point.monthIndex) : xScale(point.date))
+            .y(point => yRight(point.value)) : null;
 
-                const group = this.svg.append("g");
+        // -----------------------------
+        // CALCULATE MAX YEARS PER DATA SET, IF APPLICABLE
+        // -----------------------------
 
-                const pointLabel = selectedAggregation === "yoy"
-                    ? d => `${seriesItem.label}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} ]`
-                    : d => `${seriesItem.label}\n${tickFormat(d.date)}\n[ ${d.value} ]`;
+        const hasCptYears = renderModel?.series?.some(item => Object.hasOwn(item, "year"));
+        const maxCptYear = hasCptYears ? Math.max(...renderModel.series.map(o => o.year)) : null;
 
-                const overlayPath = group.append("path")
-                    .datum(seriesItem.points)
-                    .attr("fill", "none")
-                    .attr("stroke", seriesItem.stroke || source.color)
-                    .attr("stroke-width", strokeWidth)
-                    .attr("stroke-dasharray", "4 3")
-                    .attr("d", overlayLine);
+        const hasOverlayYears = renderModel?.overlaySeries?.some(item => Object.hasOwn(item, "year"));
+        const maxOverlayYear = hasOverlayYears ? Math.max(...renderModel.overlaySeries.map(o => o.year)) : null;
 
-                if (selectedAggregation === "yoy") {
-                    overlayPath.append("title")
-                        .text(`${seriesItem.label} \n ${seriesItem.year}`);
-                }
+        // -----------------------------
+        // DRAW CONCEPT LINES + POINTS
+        // -----------------------------
+        for (const seriesItem of renderModel.series){
 
-                group.selectAll(`circle.${cssSafeKey(seriesItem.key)}`)
-                    .data(seriesItem.points)
-                    .enter()
-                    .append("circle")
-                    .attr("class", `overlay-point ${cssSafeKey(seriesItem.key)}`)
-                    .attr("cx", point => selectedAggregation === "yoy" ? xScale(point.monthIndex) : xScale(point.date))
-                    .attr("cy", point => yRight(point.value))
-                    .attr("r", 3)
-                    .attr("fill", seriesItem.stroke || source.color)
-                    .attr("stroke", seriesItem.stroke || source.color)
-                    .append("title")
-                    .text(pointLabel);
+            const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxCptYear;
+            const strokeWidth = isMaxYear ? 4 : 2; 
+
+            // group
+            const group = this.svg.append("g");
+
+            // point label
+
+            const conceptLabelText = conceptRegistry[seriesItem.concept]?.label || seriesItem.concept; 
+
+            const pointLabel = selectedAggregation === AGGREGATIONS.yoy 
+                ? d => `${conceptLabelText}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} patients ]`
+                : d => `${conceptLabelText} — ${tickFormat(d.date)}\n[ ${d.value} patients ]`;  
+
+            // Line
+            const cptPath = group.append("path")
+                .datum(seriesItem.points)
+                .attr("fill", "none")
+                .attr("stroke",  seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || FALLBACK_HEX)
+                .attr("stroke-width", strokeWidth)
+                .attr("d", patientLine);
+
+            if (selectedAggregation === AGGREGATIONS.yoy) {
+                cptPath.append("title")
+                .text(`${conceptLabelText} \n${seriesItem.year}`);
             }
-        }   
+
+            // Points
+            group.selectAll(`circle.${cssSafeKey(seriesItem.concept)}`)
+                .data(seriesItem.points)
+                .enter()
+                .append("circle")
+                .attr("class", `point ${cssSafeKey(seriesItem.concept)}`)
+                .attr("cx", point => selectedAggregation === AGGREGATIONS.yoy ? xScale(point.monthIndex) : xScale(point.date))
+                .attr("cy", point => yLeft(point.value))
+                .attr("r", 4)
+                .attr("fill", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || FALLBACK_HEX)
+                .attr("stroke", seriesItem.stroke || conceptRegistry[seriesItem.concept]?.color || FALLBACK_HEX)
+                .append("title")
+                .text(pointLabel);
+            }
+
+            // -----------------------------
+            // DRAW WASTEWATER OVERLAY
+            // -----------------------------
+
+            if (overlayLine && renderModel.overlaySeries.length) {
+
+                for (const seriesItem of renderModel.overlaySeries) {
+                    const source = resolveOverlaySelection(seriesItem.key, overlayRegistry);
+                    if (!source) continue;
+
+                    const isMaxYear = seriesItem.year !== undefined && seriesItem.year === maxOverlayYear;
+                    const strokeWidth = isMaxYear ? 4 : 2;
+
+                    const group = this.svg.append("g");
+
+                    const pointLabel = selectedAggregation === AGGREGATIONS.yoy
+                        ? d => `${seriesItem.label}\n${renderModel.months[d.monthIndex]}, ${seriesItem.year}\n[ ${d.value} ]`
+                        : d => `${seriesItem.label}\n${tickFormat(d.date)}\n[ ${d.value} ]`;
+
+                    const overlayPath = group.append("path")
+                        .datum(seriesItem.points)
+                        .attr("fill", "none")
+                        .attr("stroke", seriesItem.stroke || source.color)
+                        .attr("stroke-width", strokeWidth)
+                        .attr("stroke-dasharray", "4 3")
+                        .attr("d", overlayLine);
+
+                    if (selectedAggregation === AGGREGATIONS.yoy) {
+                        overlayPath.append("title")
+                            .text(`${seriesItem.label} \n ${seriesItem.year}`);
+                    }
+
+                    group.selectAll(`circle.${cssSafeKey(seriesItem.key)}`)
+                        .data(seriesItem.points)
+                        .enter()
+                        .append("circle")
+                        .attr("class", `overlay-point ${cssSafeKey(seriesItem.key)}`)
+                        .attr("cx", point => selectedAggregation === AGGREGATIONS.yoy ? xScale(point.monthIndex) : xScale(point.date))
+                        .attr("cy", point => yRight(point.value))
+                        .attr("r", 3)
+                        .attr("fill", seriesItem.stroke || source.color)
+                        .attr("stroke", seriesItem.stroke || source.color)
+                        .append("title")
+                        .text(pointLabel);
+                }
+            }   
     }
 
     redraw(width) {
@@ -634,11 +672,11 @@ let parseData = function (xmlData, advancedConfig) {
 
 function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry, canonicalHexes, colorsInUse) {
     if (!data || Object.keys(data).length === 0){
-        console.log("no breakdown data found; cancelling concept registry generation");
+        console.warn("[ConceptOverlayTimeline] no breakdown data found; cancelling concept registry generation");
         return conceptRegistry;
     }
     if (!canonicalHexes || canonicalHexes.length === 0){
-        console.log("[ConceptOverlayTimeline] canonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
+        console.warn("[ConceptOverlayTimeline] canonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
         return conceptRegistry;
     }
     const seenCpts = [
@@ -670,17 +708,15 @@ function generateConceptRegistry(data, conceptRegistry, customizeConceptRegistry
     if (anyMissingOrder) {
         [...conceptKeys].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" })).forEach((key, index) => {
             conceptRegistry[key].order = index + 1;
-            console.log("Missing or invalid entry for order in one or more concepts, using alphabetical sort.")
         });
     }
 
     Object.entries(conceptRegistry).forEach(([conceptName, concept]) => {
         const cptColor = concept.color;
 
-        if (!cptColor ||cptColor.length < 7 ||!cptColor.startsWith("#")) {
+        if (!isValidHex(cptColor)) {
            concept.color = selectBaseHex(canonicalHexes, colorsInUse);
            colorsInUse.push(concept.color);
-           console.log(`${conceptName} color property is not a 6 digit hex, selecting random hex from canonical list.`)
         }
     });
 
@@ -696,11 +732,9 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
     );
 
     if (evaluatedCptNameKeys.length === 0){
-        console.log("no concept name keys matching breakdown data found, cancelling customization; conceptRegistry will be generated from breakdown data.");
+        console.warn("[ConceptOverlayTimeline] No concept name keys matching breakdown data found, cancelling customization; conceptRegistry will be generated from breakdown data.");
         return conceptRegistry;
-    } else if (evaluatedCptNameKeys.length < candidateCptNameKeys.length)  {
-        console.log(`${candidateCptNameKeys.length} concepts were listed for customization, but only ${evaluatedCptNameKeys.length} custom registry concept names were matched.`);
-    }
+    } 
 
     for (const cptNameKey of evaluatedCptNameKeys){
 
@@ -714,16 +748,14 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
 
 
         if (evaluatedCptPropKeys.length === 0){
-            console.log("no concept property keys matching breakdown data found, cancelling customization of this concept; concept will be generated from breakdown data.")
+            console.warn("[ConceptOverlayTimeline] No concept property keys matching breakdown data found, cancelling customization of this concept; concept will be generated from breakdown data.")
             continue;
         } else{
             for (const evaluatedKey of evaluatedCptPropKeys){
                 if (evaluatedKey === "key"){
-                    console.log("key property cannot be customized, skipping; breakdown data derived value will be used.");
                     continue;
                 }
                 else if (currentCustomConcept[evaluatedKey] === undefined || currentCustomConcept[evaluatedKey] === ""){
-                    console.log("custom concept property is empty, skipping; breakdown data derived value will be used.");
                     continue;
                 } else {
                     currentRegisteredConcept[evaluatedKey] = currentCustomConcept[evaluatedKey];
@@ -739,13 +771,13 @@ function customizeConceptRegFromConfig(conceptRegistry, customizeConceptRegistry
 function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, colorsInUse) {
     // bail if allOverlays is empty or undefined
     if (!allOverlays || Object.keys(allOverlays).length === 0) {
-        console.log("overlay configs are empty or undefined; cancelling generation");
+        console.warn("[ConceptOverlayTimeline] overlay configs are empty or undefined; cancelling generation");
         return overlayRegistry;
     }
 
     // bail if canonicalHexes is empty or undefined
     if (!canonicalHexes || canonicalHexes.length === 0) {
-        console.log("[ConceptOverlayTimeline] canonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
+        console.warn("[ConceptOverlayTimeline] canonical hexes list is empty or undefined; cancelling generation. Please add a list of 6 digit hexes.");
         return overlayRegistry;
     }
 
@@ -756,9 +788,13 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
             continue;
         }
 
+        if (overlayNickname.includes(KEY_SEPARATOR)) {
+            continue;
+        }
+
         // required fields at the overlayInst level
         if (!overlayInst.visualizationData || !overlayInst.yRightLabel) {
-            console.log(`required overlay instance field(s) empty, skipping ${overlayNickname}`);
+            console.warn(`[ConceptOverlayTimeline] required overlay instance field(s) empty, skipping ${overlayNickname}`);
             continue;
         }
 
@@ -775,8 +811,12 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
                 continue;
             }
 
+            if (sourceNickname.includes(KEY_SEPARATOR)) {
+                continue;
+            }
+
             if (!overlaySource.column) {
-                console.log(`required overlay source field(s) column empty, skipping ${sourceNickname}`);
+                console.warn(`[ConceptOverlayTimeline] required overlay source field(s) column empty, skipping ${sourceNickname}`);
                 continue;
             }
 
@@ -789,7 +829,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
             currentSource.label = overlaySource.label ? overlaySource.label : overlaySource.column;
 
             // smooth out color
-            if (overlaySource.color && overlaySource.color.length === 7 && overlaySource.color.startsWith("#")) {
+            if (isValidHex(overlaySource.color)) {
                 currentSource.color = overlaySource.color;
                 colorsInUse.push(overlaySource.color);
             } else {
@@ -812,7 +852,6 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
         if (anyMissingOrder) {
             [...sourceNicknames].sort().forEach((key, index) => {
                 sourceEntries[key].order = index + 1;
-                console.log("Missing or invalid entry for order in one or more source nicknames, using alphabetical sort.")
             });
         }
 
@@ -836,7 +875,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
 
                 if (combinedData && Object.keys(combinedData).length > 0) {
                     if (!combinedData.label || !combinedData.combinedColumns) {
-                        console.log("combinedColumnsOption field(s) missing, combinedOptionData will be removed");
+                        console.warn("[ConceptOverlayTimeline] combinedColumnsOption field(s) missing, combinedOptionData will be removed");
                     } else {
                         overlayRegistry[overlayNickname].combinedOptionData = {
                             label: combinedData.label
@@ -848,13 +887,13 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
                         );
 
                         if (overlaySourceColumns.length === 0 || !allColumnsMatch) {
-                            console.log("combinedColumns array items do not match the overlay source nicknames, combinedOptionData will be removed");
+                            console.warn("[ConceptOverlayTimeline] combinedColumns array items do not match the overlay source nicknames, combinedOptionData will be removed");
                         } else {
                             const combinedEntry = overlayRegistry[overlayNickname].combinedOptionData;
                             combinedEntry.combinedColumns = combinedData.combinedColumns;
-                            combinedEntry.order = 999;
+                            combinedEntry.order = COMBINED_OPTION_ORDER;
 
-                            if (combinedData.color && combinedData.color.length === 7 && combinedData.color.startsWith("#")) {
+                            if (isValidHex(combinedData.color)) {
                                 combinedEntry.color = combinedData.color;
                                 colorsInUse.push(combinedData.color);
                             } else {
@@ -872,7 +911,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
         const combinedOptionData = overlayRegistry[overlayNickname].combinedOptionData;
         if (combinedOptionData && (!combinedOptionData.label || !combinedOptionData.combinedColumns)) {
             overlayRegistry[overlayNickname].combinedOptionData = "";
-            console.log("missing fields detected in combinedOptionData, clearing out any data present for this property");
+            console.warn("[ConceptOverlayTimeline] missing fields detected in combinedOptionData, clearing out any data present for this property");
         }
     }
 
@@ -885,7 +924,7 @@ function generateOverlayRegistry(allOverlays, overlayRegistry, canonicalHexes, c
 
     // final whole-registry guard
     if (Object.keys(overlayRegistry).length === 0) {
-        console.log("required fields needed to generate any overlays not present; cancelling generation");
+        console.warn("[ConceptOverlayTimeline] required fields needed to generate any overlays not present; cancelling generation");
     }
 
     return overlayRegistry;
@@ -896,13 +935,13 @@ function buildRenderModel(records, overlayData, overlayRegistry, overlayEndpoint
 
     let renderModel;
 
-    if (selectedAggregation === "yoy"){
+    if (selectedAggregation === AGGREGATIONS.yoy){
         renderModel = { 
             "aggregateType": selectedAggregation,
             "series" : buildYOYConceptSeries(records, conceptRegistry, selectedConcept), 
             "xDomain": generateXDomain(records, selectedAggregation),
-            "months": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-            "yLeftLabel": "Number of Patients", 
+            "months": MONTHLIST,
+            "yLeftLabel": YLEFTLABEL, 
             "overlaySeries": buildYOYOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, selectedOverlay, selectedAggregation)
         }      
     } else {
@@ -910,7 +949,7 @@ function buildRenderModel(records, overlayData, overlayRegistry, overlayEndpoint
             "aggregateType": selectedAggregation,
             "series" : buildMonthYearConceptSeries(records, selectedConcept, selectedAggregation), 
             "xDomain": generateXDomain(records, selectedAggregation), 
-            "yLeftLabel": "Number of Patients", 
+            "yLeftLabel": YLEFTLABEL, 
             "overlaySeries": buildMonthYearOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, records, selectedOverlay, selectedAggregation)
         }        
     } 
@@ -921,14 +960,14 @@ function buildRenderModel(records, overlayData, overlayRegistry, overlayEndpoint
 
 function generateXDomain(records, selectedAggregation) {
     let xdomain = null; 
-    if (selectedAggregation === "month" || selectedAggregation === "year"){
+    if (selectedAggregation === AGGREGATIONS.month || selectedAggregation === AGGREGATIONS.year){
         const bucketedPatients = collectPatientsByAggregation(records, selectedAggregation);        
 
         xdomain = d3.extent(bucketedPatients, d => d.date);
 
         // Guard: if extent is bad, bail
         if (!xdomain[0] || !xdomain[1]) {
-            console.log("xdomain extent issue; bailing on generating xdomain.")
+            console.warn("[ConceptOverlayTimeline] xdomain extent issue; bailing on generating xdomain.")
             return [];
         }
     } else {
@@ -941,7 +980,7 @@ function generateXDomain(records, selectedAggregation) {
 
 function buildMonthYearConceptSeries(rawData, selectedConcept, selectedAggregation) {
 
-    const aggregationGrain = (selectedAggregation === "year") ? "Y" : "M";
+    const aggregationGrain = (selectedAggregation === AGGREGATIONS.year) ? GRAIN.year : GRAIN.month;
 
     // get the raw data by aggregation grain
     const yearRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === aggregationGrain);
@@ -987,7 +1026,7 @@ function buildMonthYearConceptSeries(rawData, selectedConcept, selectedAggregati
 
 function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcept){
     //take the raw data and if needed, filter it by concept to do the row pivot
-    const yoyRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === "M");
+    const yoyRows = rawData.filter(r => (r.grain || "").trim().toUpperCase() === GRAIN.month);
 
     let yoyFilteredRows = filterBreakdown(yoyRows, selectedConcept);
 
@@ -1038,7 +1077,6 @@ function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcept){
         }
     });
     
-    const T_MIN = 0.3;
    
     Object.keys(byConceptYear).forEach((cpt) => {
         const years = Object.keys(byConceptYear[cpt]).map(Number);
@@ -1052,7 +1090,7 @@ function buildYOYConceptSeries(rawData, conceptRegistry, selectedConcept){
 
             const u = (min === max) ? 1 : (year - min) / (max - min);
 
-            const t = T_MIN + u * (1 - T_MIN);
+            const t = YOY_MIN_BLEND + u * (1 - YOY_MIN_BLEND);
 
             const baseColor = conceptRegistry?.[cpt]?.color;
             if (!baseColor) return;
@@ -1096,14 +1134,14 @@ function getSourceValue(row, source) {
 }
 
 function resolveOverlaySelection(compoundKey, overlayRegistry) {
-    const [overlayNickname, sourceKey] = compoundKey.split("::");
+    const [overlayNickname, sourceKey] = compoundKey.split(KEY_SEPARATOR);
     const overlayEntry = overlayRegistry[overlayNickname];
 
     if (!overlayEntry) {
         return null;
     }
 
-    if (sourceKey === "combined") {
+    if (sourceKey === COMBINED_KEY) {
         return overlayEntry.combinedOptionData || null;
     }
 
@@ -1117,13 +1155,13 @@ function buildMonthYearOverlaySeries(overlayData, overlayRegistry, overlayEndpoi
     const allSeries = [];
 
     if (selectedOverlay) {
-        const [overlayNickname] = selectedOverlay.split("::");
+        const [overlayNickname] = selectedOverlay.split(KEY_SEPARATOR);
         const source = resolveOverlaySelection(selectedOverlay, overlayRegistry);
         const rows = overlayData[overlayNickname];
         const dateColumn = overlayEndpoints[overlayNickname]?.dateColumn;
 
         if (!source || !Array.isArray(rows)) {
-            console.log(`could not resolve selection or data for ${selectedOverlay}`);
+            console.warn(`[ConceptOverlayTimeline] could not resolve selection or data for ${selectedOverlay}`);
         } else {
             const bucketedOverlay = collectOverlayDataByAggregation(rows, source, selectedAggregation, dateColumn);
 
@@ -1146,13 +1184,13 @@ function buildYOYOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, s
     const allSeries = [];
 
     if (selectedOverlay) {
-        const [overlayNickname] = selectedOverlay.split("::");
+        const [overlayNickname] = selectedOverlay.split(KEY_SEPARATOR);
         const source = resolveOverlaySelection(selectedOverlay, overlayRegistry);
         const rows = overlayData[overlayNickname];
         const dateColumn = overlayEndpoints[overlayNickname]?.dateColumn;
 
         if (!source || !Array.isArray(rows)) {
-            console.log(`could not resolve selection or data for ${selectedOverlay}`);
+            console.warn(`[ConceptOverlayTimeline] could not resolve selection or data for ${selectedOverlay}`);
         } else {
             const byYear = {};
 
@@ -1173,9 +1211,8 @@ function buildYOYOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, s
 
             const yearKeys = Object.keys(byYear);
             if (yearKeys.length === 0) {
-                console.log(`no valid data for ${selectedOverlay}, skipping`);
+                console.warn(`[ConceptOverlayTimeline] no valid data for ${selectedOverlay}, skipping`);
             } else {
-                const T_MIN = 0.3;
                 const yearsList = yearKeys.map(Number);
                 const min = Math.min(...yearsList);
                 const max = Math.max(...yearsList);
@@ -1190,7 +1227,7 @@ function buildYOYOverlaySeries(overlayData, overlayRegistry, overlayEndpoints, s
 
                     const year = Number(yearKey);
                     const u = (min === max) ? 1 : (year - min) / (max - min);
-                    const t = T_MIN + u * (1 - T_MIN);
+                    const t = YOY_MIN_BLEND + u * (1 - YOY_MIN_BLEND);
 
                     allSeries.push({
                         key: selectedOverlay,
@@ -1258,6 +1295,12 @@ function renderSingleSelectLinks(ulEl, items, selectedValue, resetValue) {
 
 function updateLegend(controls, conceptRegistry, currentKeys, overlayRegistry, selectedOverlay){
 
+    const orderByKey = Object.fromEntries(
+        Object.entries(conceptRegistry).map(([key, concept]) => [key, concept.order])
+    );
+
+    currentKeys.sort((a, b) => orderByKey[a] - orderByKey[b]);
+
      // Clear legend
     if (controls?.legend) controls.legend.innerHTML = "";
 
@@ -1286,12 +1329,15 @@ function updateLegend(controls, conceptRegistry, currentKeys, overlayRegistry, s
     }
 }
 
+function isValidHex(color) {
+    return Boolean(color) && color.length === 7 && color.startsWith("#");
+}
+
 function selectBaseHex(canonicalHexes, colorsInUse){
     let selectedHex = "";
     const unusedColors = canonicalHexes.filter(color => !colorsInUse.includes(color));
 
     if (unusedColors.length === 0){
-        console.log("all canonical hexes all in use; duplicate colors will be assigned");
         selectedHex = canonicalHexes[Math.floor(Math.random() * canonicalHexes.length)];
     } else {
         selectedHex = unusedColors[Math.floor(Math.random() * unusedColors.length)];
@@ -1370,7 +1416,7 @@ function parseYMDLocal(s) {
  */
 function bucketDate(dt, aggregation) {
     if (!(dt instanceof Date) || isNaN(dt.getTime())) return null;
-    if (aggregation === "year") {
+    if (aggregation === AGGREGATIONS.year) {
         return new Date(dt.getFullYear(), 0, 1);
     }
     return new Date(dt.getFullYear(), dt.getMonth(), 1);
@@ -1436,7 +1482,7 @@ function collectOverlayDataByAggregation(rows, source, selectedAggregation, date
             const dt = parseYMDLocal(d[dateColumn]);
             if (!dt) return null;
 
-            if (selectedAggregation === "year") {
+            if (selectedAggregation === AGGREGATIONS.year) {
                 return `${dt.getFullYear()}`;
             }
             return `${dt.getFullYear()}-${dt.getMonth()}`;
@@ -1446,7 +1492,7 @@ function collectOverlayDataByAggregation(rows, source, selectedAggregation, date
     return Array.from(rollup.entries())
         .filter(([k, v]) => k !== null && v !== null)
         .map(([key, value]) => {
-            if (selectedAggregation === "year") {
+            if (selectedAggregation === AGGREGATIONS.year) {
                 const year = Number(key);
                 return { date: new Date(year, 0, 1), value };
             }
@@ -1489,7 +1535,7 @@ function pivotToYOYRows(aggregatedRecords){
 // ------------------------------------------------------------
 
 async function fetchOverlayDataFromEndpoint(endpointInfo) {
-    if (endpointInfo.sourceType === "local") {
+    if (endpointInfo.sourceType === SOURCETYPES.local) {
         try {
             const response = await fetch(endpointInfo.endpoint);
             if (!response.ok) {
@@ -1522,8 +1568,8 @@ async function fetchOverlayDataFromEndpoint(endpointInfo) {
         }
     }
 
-    if (endpointInfo.urlType === "external") {
-        console.warn(`External overlay fetching not yet implemented, skipping ${endpointInfo.endpoint}`);
+    if (endpointInfo.urlType === URLTYPES.external) {
+        console.warn(`[ConceptOverlayTimeline] External overlay fetching not yet implemented, skipping ${endpointInfo.endpoint}`);
         return null;
     }
 
@@ -1576,11 +1622,10 @@ async function fetchOverlayDataFromEndpoint(endpointInfo) {
 // this will be deprecated when we move to injecting configs in the pipeline
 
 function detectEnv(overlayInst) {
-    if (overlayInst.sourceType === "local") {
+    if (overlayInst.sourceType === SOURCETYPES.local) {
         if (overlayInst.envUrls.local) {
             return "local";
         }
-        console.log(`detectEnv: sourceType is "local" but envUrls.local is empty; cannot resolve.`);
         return null;
     }
 
@@ -1591,7 +1636,7 @@ function detectEnv(overlayInst) {
     if (host.includes("test")) return "test";
     if (host.includes("stage")) return "stage";
 
-    console.log(`detectEnv: no known env keyword found in host "${host}"; defaulting to "prod"`);
+    console.warn(`[ConceptOverlayTimeline] no known env keyword found in host "${host}"; defaulting to "prod"`);
     return "prod";
 }
 
@@ -1609,15 +1654,12 @@ function resolveEndpointUrl(allOverlays, overlayEndpoints) {
         if (resolvedUrl) {
             overlayEndpoints[overlayNickname].endpoint = resolvedUrl;
         } else {
-            console.log(`could not update endpoint url for ${overlayNickname} to fetch data`);
+            console.warn(`[ConceptOverlayTimeline] could not update endpoint url for ${overlayNickname} to fetch data`);
         }
     }
 
     return overlayEndpoints;
 }
-
-// pre-pipeline endpoint daterange eval against breakdown dates
-// this will be deprecated when we move to injecting configs in the pipeline
 
 function evaluateEndpointDateRange(dateRange, breakdownDateRange) {
     const overlayStart = new Date(dateRange[0]);
@@ -1626,23 +1668,14 @@ function evaluateEndpointDateRange(dateRange, breakdownDateRange) {
     const breakdownEnd = new Date(breakdownDateRange.endStr);
 
     if (overlayStart < breakdownStart || overlayStart > breakdownEnd) {
-        console.log("[DEBUG evaluateEndpointDateRange()]: overlayStart out of breakdown bounds", {
-            overlayStart, breakdownStart, breakdownEnd
-        });
         return false;
     }
 
     if (overlayEnd < breakdownStart || overlayEnd > breakdownEnd) {
-        console.log("[DEBUG evaluateEndpointDateRange()]: overlayEnd out of breakdown bounds", {
-            overlayEnd, breakdownStart, breakdownEnd
-        });
         return false;
     }
 
     if (overlayStart > overlayEnd) {
-        console.log("[DEBUG evaluateEndpointDateRange()]: overlayStart is after overlayEnd", {
-            overlayStart, overlayEnd
-        });
         return false;
     }
 
@@ -1655,24 +1688,22 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
     for (const overlayNickname of overlayNicknames) {
         const currentOverlay = allOverlays[overlayNickname];
 
-        if (!currentOverlay.envUrls || Object.keys(currentOverlay.envUrls).length === 0) {
-            console.log(`${overlayNickname}: envUrls is missing or empty, skipping this overlay`);
+        const hasUsableUrl = currentOverlay.envUrls && Object.values(currentOverlay.envUrls).some(url => url);
+
+        if (!hasUsableUrl) {
             continue;
         }
 
-        if (!currentOverlay.sourceType || (currentOverlay.sourceType !== "url" && currentOverlay.sourceType !== "local")) {
-            console.log(`${overlayNickname}: sourceType is missing or invalid (must be "url" or "local"), skipping this overlay`);
+        if (!currentOverlay.sourceType || (currentOverlay.sourceType !== SOURCETYPES.url && currentOverlay.sourceType !== SOURCETYPES.local)) {
             continue;
         }
 
-        if (currentOverlay.sourceType === "url" &&
-            (!currentOverlay.urlType || (currentOverlay.urlType !== "external" && currentOverlay.urlType !== "i2b2-proxy"))) {
-            console.log(`${overlayNickname}: urlType is missing or invalid (must be "external" or "i2b2-proxy"), skipping this overlay`);
+        if (currentOverlay.sourceType === SOURCETYPES.url &&
+            (!currentOverlay.urlType || (currentOverlay.urlType !== URLTYPES.external && currentOverlay.urlType !== URLTYPES.i2b2Proxy))) {            
             continue;
         }
 
-        if (!currentOverlay.dateColumn) {
-            console.log(`${overlayNickname}: dateColumn is missing or empty, skipping this overlay`);
+        if (!currentOverlay.dateColumn) {            
             continue;
         }
 
@@ -1691,14 +1722,12 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
             !isNaN(new Date(dateRange[1]));
 
         if (!dateRange || dateRange.length === 0 || !isValidFormat) {
-            overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];
-            console.log(`${overlayNickname}: invalid or empty config date range, using breakdown dates`);
+            overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];            
         } else {
             if (evaluateEndpointDateRange(dateRange, breakdownDateRange)) {
                 overlayEndpoints[overlayNickname].dateRange = dateRange;
             } else {
-                overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];
-                console.log(`${overlayNickname}: config date range isn't compatible with breakdown, using breakdown dates`);
+                overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];                
             }
         }
     }
