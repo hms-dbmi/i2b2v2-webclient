@@ -198,6 +198,13 @@
     width: 15em;
 }
 
+.DateRangeBody .dateRange input,
+.DateRangeBody .dateRange button {
+    box-shadow: none !important;
+}
+
+
+
 .QueryGroup .DateRangeBody {
     max-height: 10em;
 }

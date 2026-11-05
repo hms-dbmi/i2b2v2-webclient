@@ -281,7 +281,7 @@ let parseData = function(xmlData) {
         // apply obfuscation
         const floorThreshold = params[i2].getAttribute("floorThresholdNumber");
         const obfuscateNumber = params[i2].getAttribute("obfuscatedDisplayNumber");
-        entryRecord.display = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(entryRecord.value, floorThreshold, obfuscateNumber);
+        entryRecord.display = i2b2.CRC.Obfuscate.obfuscatedValue(entryRecord.value, floorThreshold, obfuscateNumber);
         // Override the display value if specified by server setting the "display" attribute
         if (typeof params[i2].attributes.display !== 'undefined') {
             entryRecord.value = $('<div>').html(params[i2].textContent).text();
@@ -312,7 +312,7 @@ let parseData = function(xmlData) {
                     siteData.results.push({
                         name: $('<div>').html(siteresult.getAttribute('column')).text(),
                         value: parseInt(siteresult.textContent),
-                        display: i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(siteresult.textContent, siteData.floorThresholdNumber, siteData.obfuscatedDisplayNumber)
+                        display: i2b2.CRC.Obfuscate.obfuscatedValue(siteresult.textContent, siteData.floorThresholdNumber, siteData.obfuscatedDisplayNumber)
                     });
                 }
             }

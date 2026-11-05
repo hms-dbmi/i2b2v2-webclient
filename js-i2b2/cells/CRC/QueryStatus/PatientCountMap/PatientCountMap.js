@@ -153,7 +153,7 @@ export default class PatientCountMap {
                                 radius: scalePatientCount
                             }).addTo(this.map);
 
-                            let toolTip = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(siteResult.count, siteResult.floorThresholdNumber, siteResult.obfuscatedDisplayNumber) + " Patients at " + siteResult.site;
+                            let toolTip = i2b2.CRC.Obfuscate.obfuscatedValue(siteResult.count, siteResult.floorThresholdNumber, siteResult.obfuscatedDisplayNumber) + " Patients at " + siteResult.site;
                             circle.bindPopup(toolTip);
                         }
                     });

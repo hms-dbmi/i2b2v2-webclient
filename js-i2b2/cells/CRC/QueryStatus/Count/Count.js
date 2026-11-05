@@ -98,20 +98,20 @@ export default class Count {
                 }
                 let obfuscateDisplay = i2b2.h.XPath(xmlSHRINE, "//SHRINE/@obfuscatedDisplayNumber");
                 if (obfuscateDisplay.length > 0) {
-                    obfuscateDisplay = parseInt(obfuscateDisplay[0].nodeValue).toLocaleString();
+                    obfuscateDisplay = parseInt(obfuscateDisplay[0].nodeValue);
                 } else {
                     obfuscateDisplay = 0;
                 }
 
                 // count
-                countEl.innerHTML = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count, obfuscateFloor, obfuscateDisplay);
+                countEl.innerHTML = i2b2.CRC.Obfuscate.obfuscatedValue(parseInt(count), obfuscateFloor, obfuscateDisplay);
 
                 // sites reporting
                 let sitesContainer = refContainer.querySelector('.count-sites');
                 sitesContainer.innerHTML = status + ": " + sitesDone + " out of " + sitesTotal + " sites reporting";
                 sitesContainer.style.display = "block";
             } else {
-                countEl.innerHTML = i2b2.CRC.QueryStatus.obfuscateFloorDisplayNumber(count);
+                countEl.innerHTML = i2b2.CRC.Obfuscate.obfuscatedValue(parseInt(count));
             }
             // show everything
              refContainer.style.display = 'block';
