@@ -55,6 +55,9 @@ const parseParamsXml = (allParamsXml) => {
             case 'AUTOSUGGEST_CALCULATE_TOTALNUM':
                 searchAutoSuggestDetails.calculateTotalNum = paramValue;
                 break;
+            case 'AUTOSUGGEST_ONTOLOGY_TOTALNUM':
+                searchAutoSuggestDetails.ontologyType = paramValue;
+                break;
             case 'AUTOSUGGEST_ERROR':
                 searchAutoSuggestDetails.eventLogs.push({
                     createDateTime: createDateTime,

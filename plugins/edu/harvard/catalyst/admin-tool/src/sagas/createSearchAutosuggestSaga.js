@@ -7,28 +7,30 @@ import {CREATE_SEARCH_AUTOSUGGEST} from "../actions";
 import {parseXml} from "../utilities/parseXml";
 
 //a function that returns a promise
-const createSearchAutoSuggestRequest = (project_id, commonDataModel) => {
+const createSearchAutoSuggestRequest = (project_id, commonDataModel, ontologyType) => {
     let data = {
         project_id,
         cdm: "",
-        operation_type: ""
+        operation_type: "",
+        ontology: ""
     };
 
     if(commonDataModel){
         data.operation_type= 'operation_type="synchronize_all"';
         data.cdm = 'cdm="' + commonDataModel + '"';
+        data.ontology = 'ontology="' + ontologyType + '"';
     }
 
     return i2b2.ajax.ONT.CreateSearchMetadata(data).then((xmlString) =>parseXml(xmlString));
 };
 
 export function* doCreateSearchAutosuggest(action) {
-    const { project, commonDataModel } = action.payload;
+    const { project, commonDataModel, ontologyType } = action.payload;
 
     console.log("creating search autosuggest for project " + project.name + "...");
 
     try {
-        const response = yield call(createSearchAutoSuggestRequest, project.internalId, commonDataModel);
+        const response = yield call(createSearchAutoSuggestRequest, project.internalId, commonDataModel, ontologyType);
 
         if(!response.error) {
             yield put(createSearchAutosuggestSucceeded());
