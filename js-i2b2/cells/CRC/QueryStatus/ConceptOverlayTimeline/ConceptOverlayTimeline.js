@@ -197,7 +197,7 @@ export default class ConceptOverlayTimeline {
             if (!raw || raw.length === 0) return;
             
 
-            if (Object.keys(this.conceptRegistry).length == 0){
+            if (Object.keys(this.conceptRegistry).length === 0){
                 this.conceptRegistry = generateConceptRegistry(raw, this.conceptRegistry, this.customizeConceptRegistry, this.canonicalHexes, this.colorsInUse);
             } 
 
@@ -1354,16 +1354,16 @@ function cssSafeKey(str) {
         .replace(/^-+|-+$/g, "");
 }
 
-function blendWithWhite(hexColor, t){
+function blendWithWhite(hexColor, blendRatio){
     const hexCleaned = hexColor.startsWith('#') ? hexColor.slice(1) : hexColor;   
 
     const r = parseInt(hexCleaned.slice(0, 2), 16); 
     const g = parseInt(hexCleaned.slice(2, 4), 16);
     const b = parseInt(hexCleaned.slice(4, 6), 16);    
 
-    const r2 = 255 - (255 - r) * t;
-    const g2 = 255 - (255 - g) * t; 
-    const b2 = 255 - (255 - b) * t;
+    const r2 = 255 - (255 - r) * blendRatio;
+    const g2 = 255 - (255 - g) * blendRatio; 
+    const b2 = 255 - (255 - b) * blendRatio;
 
     const rI = Math.round(r2);
     const gI = Math.round(g2);
@@ -1721,15 +1721,12 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
             !isNaN(new Date(dateRange[0])) &&
             !isNaN(new Date(dateRange[1]));
 
-        if (!dateRange || dateRange.length === 0 || !isValidFormat) {
-            overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];            
-        } else {
-            if (evaluateEndpointDateRange(dateRange, breakdownDateRange)) {
-                overlayEndpoints[overlayNickname].dateRange = dateRange;
-            } else {
-                overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];                
-            }
-        }
+        const isUsableRange = isValidFormat && evaluateEndpointDateRange(dateRange, breakdownDateRange);
+
+        overlayEndpoints[overlayNickname].dateRange = isUsableRange
+            ? dateRange
+            : [breakdownDateRange.startStr, breakdownDateRange.endStr];
+       
     }
 
     return overlayEndpoints;
