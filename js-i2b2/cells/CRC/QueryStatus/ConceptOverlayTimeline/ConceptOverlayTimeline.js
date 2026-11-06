@@ -1384,10 +1384,10 @@ function blendWithWhite(hexColor, blendRatio){
  *  - "YYYY-MM-DDTHH:mm:ss..." (time portion ignored)
  *  - "M/D/YYYY" or "MM/DD/YYYY"
  */
-function parseYMDLocal(s) {
-    if (!s || typeof s !== "string") return null;
+function parseYMDLocal(dateStr) {
+    if (!dateStr || typeof dateStr !== "string") return null;
 
-    const raw = s.trim();
+    const raw = dateStr.trim();
 
     // Handle ISO-ish with time: "YYYY-MM-DDTHH:..."
     const isoPrefix = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
