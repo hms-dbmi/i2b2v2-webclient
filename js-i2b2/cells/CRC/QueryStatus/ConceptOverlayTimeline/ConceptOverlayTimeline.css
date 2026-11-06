@@ -1,9 +1,9 @@
 /* ============================================================
-   Pathogen Timeline CSS
+  Concept Overlay Timeline CSS
    ============================================================ */
 
 /* Match BarGraph's y-label styling */
-.component-instance-viz.viztype-PATHOGENTIMELINE svg text.y-label {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE svg text.y-label {
   fill: var(--text-primary-dark, #000);
   font-size: 10px;
 }
@@ -11,33 +11,33 @@
 /* -----------------------------------------------------------
    Hover bold for X-axis labels (match BarGraph behavior)
    ----------------------------------------------------------- */
-.component-instance-viz.viztype-PATHOGENTIMELINE svg .x-axis g.tick text:hover {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE svg .x-axis g.tick text:hover {
   font-weight: bold;
   cursor: default;
 }
 
 /* General text styling inside the chart */
-.component-instance-viz.viztype-PATHOGENTIMELINE svg text {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE svg text {
   font-family: sans-serif;
   fill: var(--text-primary-dark, #000);
 }
 
-.component-instance-viz.viztype-PATHOGENTIMELINE,
-.component-instance-viz.viztype-PATHOGENTIMELINE * {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE * {
   overflow: visible !important;
 }
 
 /* Pull controls container to the right edge (override px-5) */
-.component-instance-viz.viztype-PATHOGENTIMELINE .container.px-5.pt-3 {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .container.px-5.pt-3 {
   padding-right: 0 !important;
 }
 
 /* SVG must explicitly allow overflow — Chrome collapses it otherwise */
-.component-instance-viz.viztype-PATHOGENTIMELINE svg {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE svg {
   overflow: visible !important;
 }
 
-.component-instance-viz.viztype-PATHOGENTIMELINE svg text.y-label {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE svg text.y-label {
   display: inline !important;
 }
 
@@ -54,15 +54,14 @@
    CONTROLS + LEGEND: unified row model (equal vertical spacing)
    ----------------------------------------------------------- */
 
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-timeline-controls {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-timeline-controls {
   display: flex;
   flex-direction: column;
   gap: 0; /* do NOT use gap for vertical rhythm */
 }
 
-/* Make ALL rows share the same structure */
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-control-row,
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-block {
+/* Make control rows share this structure */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-control-row {
   display: flex;
   align-items: baseline;      /* key: makes label + content sit on same baseline */
   flex-wrap: wrap;
@@ -70,14 +69,50 @@
   margin: 0;                  /* reset */
 }
 
+/* Legend block: label stays fixed beside the items; items wrap internally, not the whole row */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-legend-block {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+
+  margin: 0;
+}
+
+/* Concept/overlay rows: label stays fixed, link list wraps internally beneath it */
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-concept-row,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-overlay-row {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+
+  margin: 0;
+}
+
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-concept-row ul.cot-links,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-overlay-row ul.cot-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  margin: 0 0.5rem;
+  gap: 0.35rem 0.9rem;
+  padding: 0;
+}
+
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-concept-row ul.cot-links li,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-overlay-row ul.cot-links li {
+  display: inline-flex;
+  align-items: center;
+}
+
 /* Use ONE vertical spacing mechanism: margin between rows */
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-control-row + .path-control-row,
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-control-row + .path-legend-block {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-control-row + .cot-control-row,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-control-row + .cot-legend-block {
   margin-top: 0.5rem;        /* <- ONLY knob. try 0.28rem if you want tighter */
 }
 
 /* Labels: make legend label behave like other labels */
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-links-label {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-links-label {
   font-weight: bold;
   margin-left: 1rem;
   display: inline-block;      /* prevent block-y weirdness */
@@ -85,34 +120,34 @@
 }
 
 /* If legend label is a DIV in output, force it to behave inline */
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-block .path-links-label {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-legend-block .cot-links-label {
   display: inline-block;
 }
 
 /* Horizontal list: remove vertical margins entirely */
-.component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE ul.cot-links {
   display: inline-block;
   padding: 0;
   margin: 0 0.5rem;           /* horizontal indent only */
 }
 
-.component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links li {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE ul.cot-links li {
   display: inline;
 }
 
 /* Clickable link-like spans */
-.component-instance-viz.viztype-PATHOGENTIMELINE span.path-link {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE span.cot-link {
   white-space: nowrap;
   cursor: pointer;
 }
 
-.component-instance-viz.viztype-PATHOGENTIMELINE span.path-link:hover,
-.component-instance-viz.viztype-PATHOGENTIMELINE span.path-link.selected {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE span.cot-link:hover,
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE span.cot-link.selected {
   border-bottom: 1px solid;
 }
 
 /* ZIPCODEMAP separator image */
-.component-instance-viz.viztype-PATHOGENTIMELINE ul.path-links li:not(:last-child)::after {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE ul.cot-links li:not(:last-child)::after {
   content: " ";
   letter-spacing: 1em;
   background: center center no-repeat
@@ -120,7 +155,7 @@
 }
 
 /* Legend items container: treat like the UL (no vertical margin, same indent) */
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-items {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-legend-items {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -130,14 +165,14 @@
 }
 
 /* Legend row item */
-.component-instance-viz.viztype-PATHOGENTIMELINE .path-legend-items .legend-row {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .cot-legend-items .legend-row {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
 }
 
 /* Swatch */
-.component-instance-viz.viztype-PATHOGENTIMELINE .legend-swatch {
+.component-instance-viz.viztype-CONCEPTOVERLAYTIMELINE .legend-swatch {
   width: 1rem;
   height: 1rem;
   border-radius: 2px;
