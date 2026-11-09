@@ -178,8 +178,8 @@ i2b2.CRC.view.QT.showRun = function() {
         for (let code in i2b2.CRC.model.projectRequestTypes) {
             const descriptions = i2b2.CRC.model.projectRequestTypes[code];
             descriptions.forEach(description => {
-                if(projectRequestTypesDescriptions[description] === undefined){
-                    projectRequestTypesDescriptions[description] = [];
+                if(projectRequestTypesDescriptions[descriptions] === undefined){
+                    projectRequestTypesDescriptions[descriptions] = [];
                 }
                 projectRequestTypesDescriptions[description].push(code);
             });
@@ -203,8 +203,8 @@ i2b2.CRC.view.QT.showRun = function() {
         for (let code in i2b2.CRC.model.userRequestTypes) {
             const descriptions = i2b2.CRC.model.userRequestTypes[code];
             descriptions.forEach(description => {
-                if(userRequestTypesDescriptions[description] === undefined){
-                    userRequestTypesDescriptions[description] = [];
+                if(userRequestTypesDescriptions[descriptions] === undefined){
+                    userRequestTypesDescriptions[descriptions] = [];
                 }
                 userRequestTypesDescriptions[description].push(code);
             });
