@@ -366,6 +366,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
 
             $('#searchTermText').on('keypress',function(e) {
                 if(e.which === 13) {
+                    $("#suggestion-list").addClass('d-none');
                     // enter key was pressed while in the search term entry box
                     if ($("#submitTermSearch").attr('disabled') === undefined) i2b2.ONT.ctrlr.Search.clickSearch();
                 }

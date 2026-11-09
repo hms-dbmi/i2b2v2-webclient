@@ -170,12 +170,12 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
                 <Box className={"CreateSearchAutosuggest"}>
                     <Box className={"autosuggestFormInput"}>
                         <Box>
-                            <FormControlLabel control={<Checkbox checked={includePatientCounts} onChange={handleIncludePatientCountChange}/>} label="Calculate patient counts with" />
+                            <FormControlLabel control={<Checkbox  disabled={isRunning} checked={includePatientCounts} onChange={handleIncludePatientCountChange}/>} label="Calculate patient counts with" />
                             <TextField
                                 select
                                 defaultValue={commonDataModel}
-                                onChanged={handleCommonDataModelChange}
-                                disabled={!includePatientCounts}
+                                onChange={handleCommonDataModelChange}
+                                disabled={!includePatientCounts || isRunning}
                                 variant="standard"
                             >
                                 <MenuItem key={"i2b2"} value={"i2b2"}>
@@ -190,7 +190,7 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
                             <TextField
                                 select
                                 defaultValue={ontologyType}
-                                onChanged={handleOntologyTypeChange}
+                                onChange={handleOntologyTypeChange}
                                 disabled={!includePatientCounts || isRunning}
                                 variant="standard"
                             >
@@ -214,9 +214,8 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
                     <Button className={"autosuggestAction"}
                             variant="contained" startIcon={<AddIcon/>}
                             onClick={handleCreateSearchAutosuggest}
-                            disabled={searchAutosuggestDetails.status !== SEARCH_AUTOSUGGEST_STATUS.ERROR
-                                && searchAutosuggestDetails.status !== SEARCH_AUTOSUGGEST_STATUS.FINISHED
-                                && searchAutosuggestDetails.status !== SEARCH_AUTOSUGGEST_STATUS.SCHEDULED}
+                            disabled={searchAutosuggestDetails.status === SEARCH_AUTOSUGGEST_STATUS.RUNNING_AUTOSUGGEST
+                                && searchAutosuggestDetails.status === SEARCH_AUTOSUGGEST_STATUS.RUNNING_TOTALNUM}
                     >
                         Generate search index
                     </Button>
