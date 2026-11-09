@@ -281,7 +281,10 @@ export const editProjectInfoSlice = createSlice({
         },
         getSearchAutosuggestDetailsSucceeded:  (state, {payload: {project, autosuggestDetails}}) => {
             let searchAutoSuggestDetails = ProjectSearchAutosuggest();
-            searchAutoSuggestDetails.status = SEARCH_AUTOSUGGEST_STATUS[autosuggestDetails.status];
+
+            if(autosuggestDetails.status) {
+                searchAutoSuggestDetails.status = SEARCH_AUTOSUGGEST_STATUS[autosuggestDetails.status];
+            }
 
             searchAutoSuggestDetails.progressMsg = autosuggestDetails.progressMsg ? autosuggestDetails.progressMsg : '';
             searchAutoSuggestDetails.autosuggestIndexLocation = autosuggestDetails.autosuggestIndexLocation;
