@@ -63,15 +63,9 @@ i2b2.ONT.ctrlr.Search = {
         let compatibilityMode = i2b2.ONT.ctrlr.Search.ancestorSearchUnsupported === true;
         let useAncestorSearch = i2b2.ONT.view.nav.params.useAncestorSearch !== false && !compatibilityMode;
 
-        // Older ONT servers support neither ancestor results nor the server-side
-        // all-categories shortcut, so compatibility mode restores the old fan-out.
-        const useServerAllCategoriesSearch = !compatibilityMode;
-
         // special client processing to search all categories
         let searchCats = [];
-        if (inSearchData.Category === "ALL CATEGORIES" && useServerAllCategoriesSearch) {
-            searchCats.push("@");
-        } else if (inSearchData.Category === "ALL CATEGORIES") {
+        if (inSearchData.Category === "ALL CATEGORIES") {
             let d = i2b2.ONT.model.Categories;
             let l = d.length;
             // build list of all categories to search
@@ -90,7 +84,6 @@ i2b2.ONT.ctrlr.Search = {
         scopedCallback.scope = this;
         let returnedConceptCount = 0;
         let responseHasSearchResultField = false;
-        let compatibilityError = false;
         let retryInCompatibilityMode = function() {
             if (compatibilityRetry) return false;
 
@@ -115,9 +108,6 @@ i2b2.ONT.ctrlr.Search = {
                     i2b2.ONT.model.searchResultsExceeded = true;
                 } else {
                     hasError = true;
-                    compatibilityError = useServerAllCategoriesSearch &&
-                        inSearchData.Category === "ALL CATEGORIES" &&
-                        String(status).trim().toLowerCase() === "database error";
                 }
             }
             if (!hasError) {
@@ -136,14 +126,12 @@ i2b2.ONT.ctrlr.Search = {
                         i2b2.ONT.ctrlr.Search.addResultNode(c[i], true);
                     }
                 }
-            } else if (!compatibilityError) {
+            } else {
                 alert("An error has occurred in the Cell's AJAX library.\n Press F12 for more information");
             }
 
             // search is finished
             if (searchCatsCount === searchCats.length) {
-                if (compatibilityError && retryInCompatibilityMode()) return;
-
                 // A pre-ancestor ONT server can successfully return concepts but
                 // cannot identify which are matches. Retry once using the legacy
                 // request and rendering path rather than showing a false empty result.
@@ -190,11 +178,10 @@ i2b2.ONT.ctrlr.Search = {
         searchOptions.ont_search_strategy = inSearchData.Strategy;
         searchOptions.ont_search_string = inSearchData.SearchStr;
 
-        let totalCount = 0;
         let searchCatsCount = 0;
         for (let i=0; i<searchCats.length; i++) {
             searchOptions.ont_category = searchCats[i];
-            searchOptions.ont_self = useAncestorSearch && searchCats[i] !== "@" ? "<self>\\\\" + i2b2.h.Escape(searchCats[i]) + "\\</self>\n" : "";
+            searchOptions.ont_self = useAncestorSearch ? "<self>\\\\" + i2b2.h.Escape(searchCats[i]) + "\\</self>\n" : "";
             i2b2.ONT.ajax.GetNameInfo("ONT:FindBy", searchOptions, scopedCallback);
         }
     },
