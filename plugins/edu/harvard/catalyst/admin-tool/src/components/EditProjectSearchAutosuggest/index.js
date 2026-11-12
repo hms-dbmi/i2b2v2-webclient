@@ -135,7 +135,7 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
             }
         }, 5000); // Polls every 5 seconds
 
-        // 3. CRITICAL: Clean up the interval on unmount to prevent memory leaks
+        //CRITICAL: Clean up the interval on unmount to prevent memory leaks
         return () => clearInterval(updatePollInterval.current);
     }
 
