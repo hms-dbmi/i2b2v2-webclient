@@ -100,55 +100,54 @@ i2b2.CRC.QueryStatus.clear = function() {
 
 i2b2.CRC.QueryStatus.start = function(queryInstanceId, mainEl) {
     // restart process only when new query instance id is given
-    if (i2b2.CRC.QueryStatus.currentQueryInstanceId !== queryInstanceId) {
+    if (i2b2.CRC.QueryStatus.currentQueryInstanceId === queryInstanceId && i2b2.CRC.model.runner.isRunning) return;
 
-        i2b2.CRC.QueryStatus.currentQueryInstanceId = queryInstanceId;
-        i2b2.CRC.QueryStatus.haltPolling = false;
+    i2b2.CRC.QueryStatus.currentQueryInstanceId = queryInstanceId;
+    i2b2.CRC.QueryStatus.haltPolling = false;
 
-        i2b2.CRC.QueryStatus.model.QRS = {};
-        if (typeof i2b2.CRC.QueryStatus.model.visualizations === 'undefined') i2b2.CRC.QueryStatus.model.visualizations = {};
+    i2b2.CRC.QueryStatus.model.QRS = {};
+    if (typeof i2b2.CRC.QueryStatus.model.visualizations === 'undefined') i2b2.CRC.QueryStatus.model.visualizations = {};
 
-        if (mainEl) {
-            i2b2.CRC.QueryStatus.displayEl = mainEl;
-            i2b2.CRC.QueryStatus.clear();
-        }
+    if (mainEl) {
+        i2b2.CRC.QueryStatus.displayEl = mainEl;
+        i2b2.CRC.QueryStatus.clear();
+    }
 
-        // setup resize observer engine
-        if (!i2b2.CRC.QueryStatus.resizeObserver) {
-            const resizeObvs = new ResizeObserver((entries) => {
-                // This is the visualization component resize handler calling routine
-                for (const entry of entries) {
-                    const width = entry.contentRect.width;
-                    if (width > 0) {
-                        // only do a resize for visible components
-                        Object.values(i2b2.CRC.QueryStatus.model.visualizations).forEach((viz) => {
-                            viz.componentInstances.forEach((vizComponent) => {
-                                if (vizComponent.displayEl === entry.target) vizComponent.visualization.redraw(width);
-                            });
+    // setup resize observer engine
+    if (!i2b2.CRC.QueryStatus.resizeObserver) {
+        const resizeObvs = new ResizeObserver((entries) => {
+            // This is the visualization component resize handler calling routine
+            for (const entry of entries) {
+                const width = entry.contentRect.width;
+                if (width > 0) {
+                    // only do a resize for visible components
+                    Object.values(i2b2.CRC.QueryStatus.model.visualizations).forEach((viz) => {
+                        viz.componentInstances.forEach((vizComponent) => {
+                            if (vizComponent.displayEl === entry.target) vizComponent.visualization.redraw(width);
                         });
-                        // do super modules too
-                        if (i2b2.CRC.QueryStatus.model.superModules && i2b2.CRC.QueryStatus.model.superModules.length) {
-                            i2b2.CRC.QueryStatus.model.superModules.forEach((vizComponent) => {
-                                if (vizComponent.displayEl === entry.target) vizComponent.visualization.redraw(width);
-                            });
-                        }
+                    });
+                    // do super modules too
+                    if (i2b2.CRC.QueryStatus.model.superModules && i2b2.CRC.QueryStatus.model.superModules.length) {
+                        i2b2.CRC.QueryStatus.model.superModules.forEach((vizComponent) => {
+                            if (vizComponent.displayEl === entry.target) vizComponent.visualization.redraw(width);
+                        });
                     }
                 }
-            });
-            i2b2.CRC.QueryStatus.resizeObserver = resizeObvs;
-        }
-
-        // generate and update internal records for Query Summary viz module
-        i2b2.CRC.QueryStatus.updateFromQueryMgr();
-
-        // instantiate visualization the Query Summary module
-        i2b2.CRC.QueryStatus.createVisualizationsFromList(i2b2.CRC.QueryStatus.model.QRS);
-
-        // make call to get list of QRS from passed Query Instance
-        const scopedCallbackQRS = new i2b2_scopedCallback(i2b2.CRC.QueryStatus._handleQueryResultSet);
-        i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryStatus", {qi_key_value: queryInstanceId}, scopedCallbackQRS);
+            }
+        });
+        i2b2.CRC.QueryStatus.resizeObserver = resizeObvs;
     }
-}
+
+    // generate and update internal records for Query Summary viz module
+    i2b2.CRC.QueryStatus.updateFromQueryMgr();
+
+    // instantiate visualization the Query Summary module
+    i2b2.CRC.QueryStatus.createVisualizationsFromList(i2b2.CRC.QueryStatus.model.QRS);
+
+    // make call to get list of QRS from passed Query Instance
+    const scopedCallbackQRS = new i2b2_scopedCallback(i2b2.CRC.QueryStatus._handleQueryResultSet);
+    i2b2.CRC.ajax.getQueryResultInstanceList_fromQueryInstanceId("CRC:QueryStatus", {qi_key_value: queryInstanceId}, scopedCallbackQRS);
+};
 
 i2b2.CRC.QueryStatus.componentDropdownClickHandler = (e) => {
     const selectEl = e.currentTarget;
