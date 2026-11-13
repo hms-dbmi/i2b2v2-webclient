@@ -39,7 +39,8 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
     const MAX_PROGRESS_MSG_LENGTH = 100;
 
     const dispatch = useDispatch();
-    const isPollingRef = useRef(true);
+    const updatePollInterval = useRef();
+    const isRunningRef = useRef(isRunning);
 
 
     const SEARCH_AUTOSUGGEST_TOTALNUM_MAPPING = {
@@ -62,7 +63,6 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
         }
         dispatch(createSearchAutosuggest(dataInput));
         setIsRunning(true);
-        startPollingForDetails(true);
     }
 
     const handleIncludePatientCountChange = (event)=> {
@@ -111,7 +111,6 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
             }
         }
 
-        console.log( "currentProgressPercent status: ", status);
         return currectProgressPercent;
     }
 
@@ -119,32 +118,29 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
         if(!(searchAutosuggestDetails.status === SEARCH_AUTOSUGGEST_STATUS.RUNNING_TOTALNUM
                 || searchAutosuggestDetails.status === SEARCH_AUTOSUGGEST_STATUS.RUNNING_AUTOSUGGEST)){
            setIsRunning(false);
-
         }
-    }, [selectedProject.status]);
+    }, [searchAutosuggestDetails.status]);
 
-    const startPollingForDetails = (isAutosuggestRunning) => {
-        isPollingRef.current = true;
-
-        const pollData = () => {
-            if (!isPollingRef.current) return;
-
-            dispatch(getSearchAutosuggestDetails({project: selectedProject.project}));
-
-            if (isPollingRef.current && isAutosuggestRunning) {
-                setTimeout(pollData, 5000); // Poll every 5 seconds
-            }
-        };
-
-        pollData();
-    }
     useEffect(() => {
+        isRunningRef.current = isRunning;
+    }, [isRunning]);
 
-        startPollingForDetails(isRunning);
 
-        return () => {
-            isPollingRef.current = false;
-        };
+    const startAutosuggestPolling = () => {
+        dispatch(getSearchAutosuggestDetails({project: selectedProject.project}));
+
+        updatePollInterval.current = setInterval(() => {
+            if(isRunningRef.current) {
+                dispatch(getSearchAutosuggestDetails({project: selectedProject.project}));
+            }
+        }, 5000); // Polls every 5 seconds
+
+        //CRITICAL: Clean up the interval on unmount to prevent memory leaks
+        return () => clearInterval(updatePollInterval.current);
+    }
+
+    useEffect(() => {
+        return startAutosuggestPolling();
     }, [dispatch]);
 
     useEffect(() => {
@@ -214,8 +210,7 @@ export const EditProjectSearchAutosuggest = ({selectedProject}) => {
                     <Button className={"autosuggestAction"}
                             variant="contained" startIcon={<AddIcon/>}
                             onClick={handleCreateSearchAutosuggest}
-                            disabled={searchAutosuggestDetails.status === SEARCH_AUTOSUGGEST_STATUS.RUNNING_AUTOSUGGEST
-                                && searchAutosuggestDetails.status === SEARCH_AUTOSUGGEST_STATUS.RUNNING_TOTALNUM}
+                            disabled={isRunning}
                     >
                         Generate search index
                     </Button>
