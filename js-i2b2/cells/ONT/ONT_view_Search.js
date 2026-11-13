@@ -395,7 +395,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                             const patientMatch = [];
                             for (let i=0; i<1*c.length; i++) {
                                 const name = i2b2.h.getXNodeVal(c[i], 'name');
-                                const level = i2b2.h.getXNodeVal(c[i], 'level');
+                                const totalnum = i2b2.h.getXNodeVal(c[i], 'totalnum');
                                 const table_name = i2b2.h.getXNodeVal(c[i], 'tablename');
                                 const basecode = i2b2.h.getXNodeVal(c[i], 'basecode');
                                 const visAttr = i2b2.h.getXNodeVal(c[i], 'visualattributes') || "";
@@ -428,7 +428,7 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                     categoryDisplayName = table_name;
                                 }
 
-                                const label = highlightedName + (categoryDisplayName ? " - " +  categoryDisplayName : "") + "<span class='autosuggestCountHighlight'> (" +  level + ( " " + matchLabel)  + ")</span>";
+                                const label = highlightedName + (categoryDisplayName ? " - " +  categoryDisplayName : "") + "<span class='autosuggestCountHighlight'> (" +  totalnum + ( " " + matchLabel)  + ")</span>";
                                 const listItem = $('<li><span class="'+ visAttrClass + '"><a class="dropdown-item" href="#">' + label + '</span></li>');
                                 listItem.data("name", name);
                                 listItem.data("category", table_name);
