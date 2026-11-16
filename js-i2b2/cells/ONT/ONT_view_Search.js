@@ -473,7 +473,8 @@ i2b2.ONT.view.search.initSearchOptions = function(){
                                 });
                             }*/
 
-                            if(c.length > 0){
+                            const isSearching = $("#i2b2OntSearchStatus").is(':visible');
+                            if(c.length > 0 && !isSearching){
                                 let dropdownElement = document.getElementById('searchTerm');
                                 let bsDropdown = new bootstrap.Dropdown(dropdownElement);
                                 bsDropdown.show();
