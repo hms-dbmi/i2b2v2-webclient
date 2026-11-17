@@ -215,8 +215,6 @@ export default class ConceptOverlayTimeline {
                 this.overlayEndpointsAttempted = true;
             }
 
-            resolveEndpointUrl(this.allOverlays, this.overlayEndpoints);
-
             // Build items
             const conceptItems = [
                 { value: "All", label: "All" },
@@ -1618,49 +1616,6 @@ async function fetchOverlayDataFromEndpoint(endpointInfo) {
     }
 }
 
-// pre-pipleline environment detection
-// this will be deprecated when we move to injecting configs in the pipeline
-
-function detectEnv(overlayInst) {
-    if (overlayInst.sourceType === SOURCETYPES.local) {
-        if (overlayInst.envUrls.local) {
-            return "local";
-        }
-        return null;
-    }
-
-    const host = (window.location?.hostname || "").toLowerCase();
-
-    if (host.includes("dev") || host.includes("local")) return "dev";
-    if (host.includes("demo")) return "demo";
-    if (host.includes("test")) return "test";
-    if (host.includes("stage")) return "stage";
-
-    console.warn(`[ConceptOverlayTimeline] no known env keyword found in host "${host}"; defaulting to "prod"`);
-    return "prod";
-}
-
-// pre-pipleline endpoint URL resolution
-// this will be deprecated when we move to injecting configs in the pipeline
-
-function resolveEndpointUrl(allOverlays, overlayEndpoints) {
-    const overlayNicknames = Object.keys(overlayEndpoints);
-
-    for (const overlayNickname of overlayNicknames) {
-        const currentOverlay = allOverlays[overlayNickname];
-        const detectedEndpointKey = detectEnv(currentOverlay);
-        const resolvedUrl = currentOverlay.envUrls[detectedEndpointKey];
-
-        if (resolvedUrl) {
-            overlayEndpoints[overlayNickname].endpoint = resolvedUrl;
-        } else {
-            console.warn(`[ConceptOverlayTimeline] could not update endpoint url for ${overlayNickname} to fetch data`);
-        }
-    }
-
-    return overlayEndpoints;
-}
-
 function evaluateEndpointDateRange(dateRange, breakdownDateRange) {
     const overlayStart = new Date(dateRange[0]);
     const overlayEnd = new Date(dateRange[1]);
@@ -1688,9 +1643,7 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
     for (const overlayNickname of overlayNicknames) {
         const currentOverlay = allOverlays[overlayNickname];
 
-        const hasUsableUrl = currentOverlay.envUrls && Object.values(currentOverlay.envUrls).some(url => url);
-
-        if (!hasUsableUrl) {
+        if (!currentOverlay.endpointUrl) {
             continue;
         }
 
