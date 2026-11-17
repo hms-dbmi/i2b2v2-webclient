@@ -1007,8 +1007,6 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
         response = await fetch(i2b2.CRC.QueryStatus.baseURL + "breakdowns.json");
         if (!response.ok) throw new Error(`Failed to retrieve QueryStatus breakdowns.json file: ${response.status}`);
         i2b2.CRC.QueryStatus.breakdownLocalConfig = await response.json();
-        // TODO: Remove this
-        i2b2.CRC.QueryStatus.breakdownConfig = i2b2.CRC.QueryStatus.breakdownLocalConfig;
 
         // save component keys into component objects
         for (const compCode of Object.keys(i2b2.CRC.QueryStatus.displayComponents)) i2b2.CRC.QueryStatus.displayComponents[compCode].componentCode = compCode;
