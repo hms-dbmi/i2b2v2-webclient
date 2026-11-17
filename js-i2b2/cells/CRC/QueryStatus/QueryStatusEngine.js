@@ -246,6 +246,26 @@ i2b2.CRC.QueryStatus.componentDropdownClickHandler = (e) => {
 }
 
 
+i2b2.CRC.QueryStatus.updateBreakdownConfig = function(breakdownConfig) {
+    if (typeof breakdownConfig === "undefined") breakdownConfig = {};
+    i2b2.CRC.QueryStatus.breakdownServerConfig = breakdownConfig;
+
+    // copy the server mappings to our working breakdown config
+    i2b2.CRC.QueryStatus.breakdownConfig = i2b2.CRC.QueryStatus.breakdownServerConfig;
+
+    // copy/override the server mappings with the local JSON breakdown config
+    const breakdownLocalConfig = i2b2.CRC.QueryStatus.breakdownLocalConfig;
+    for (const qrsCode in breakdownLocalConfig) {
+        if (i2b2.CRC.QueryStatus.breakdownConfig?.[qrsCode] === undefined ) {
+            i2b2.CRC.QueryStatus.breakdownConfig[qrsCode] = {};
+        }
+        for (const vizCode in breakdownLocalConfig[qrsCode]) {
+            i2b2.CRC.QueryStatus.breakdownConfig[qrsCode][vizCode] = breakdownLocalConfig[qrsCode][vizCode];
+        }
+    }
+}
+
+
 
 i2b2.CRC.QueryStatus.updateFromQueryMgr = function() {
     // pull information from the Query Manager into the Query Status's internal record
@@ -1030,7 +1050,9 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
         // load breakdowns.json
         response = await fetch(i2b2.CRC.QueryStatus.baseURL + "breakdowns.json");
         if (!response.ok) throw new Error(`Failed to retrieve QueryStatus breakdowns.json file: ${response.status}`);
-        i2b2.CRC.QueryStatus.breakdownConfig = await response.json();
+        i2b2.CRC.QueryStatus.breakdownLocalConfig = await response.json();
+        // TODO: Remove this
+        i2b2.CRC.QueryStatus.breakdownConfig = i2b2.CRC.QueryStatus.breakdownLocalConfig;
 
         // save component keys into component objects
         for (const compCode of Object.keys(i2b2.CRC.QueryStatus.displayComponents)) i2b2.CRC.QueryStatus.displayComponents[compCode].componentCode = compCode;
@@ -1070,11 +1092,23 @@ i2b2.CRC.QueryStatus._handleQueryResultInstance = function(results) {
             componentStyleDefEl.innerHTML = CSSAccumulator + "\n";
             document.head.append(componentStyleDefEl);
         }
-
     } catch (error) {
         console.error("Failed to initialize QueryStatus engine: ", error);
     }
 })();
+
+
+// This is done after the user has logged in
+// ================================================================================================== //
+i2b2.events.afterLogin.add(() => {
+    i2b2.CRC.view.QT.loadResultTypes()
+        .then((queryStatusConfig) => {
+            console.log("Loaded breakdown configs from the server");
+            i2b2.CRC.QueryStatus.updateBreakdownConfig(queryStatusConfig);
+        })
+        .catch(() => console.error("Failed initial load of the breakdowns config from the server"));
+});
+
 
 
 

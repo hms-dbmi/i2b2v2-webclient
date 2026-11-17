@@ -384,7 +384,25 @@ i2b2.CRC.view.QT.loadResultTypes = function() {
                     }
                 }
             }
-            resolve();
+
+            // combine the viz mappings to send to the QueryStatus subsystem
+            let vizQrsConfigMapping = {};
+            let groupList = {
+                ...i2b2.CRC.model.requestTypes,
+                ...i2b2.CRC.model.userRequestTypes,
+                ...i2b2.CRC.model.projectRequestTypes,
+                ...i2b2.CRC.model.dataExportTypes
+            };
+            for (const vizCode in groupList) {
+                if (vizQrsConfigMapping?.[vizCode] === undefined) vizQrsConfigMapping[vizCode] = {};
+                vizQrsConfigMapping[vizCode] = {...vizQrsConfigMapping[vizCode], ...groupList[vizCode].visualizationMappings};
+            }
+            // delete null mappings
+            for (const vizCode in vizQrsConfigMapping) {
+                if (Object.keys(vizQrsConfigMapping[vizCode]).length === 0) delete vizQrsConfigMapping[vizCode];
+            }
+
+            resolve(vizQrsConfigMapping);
         };
         i2b2.CRC.ajax.getQRY_getResultType("CRC:QueryTool", null, scopedCallback);
     });
@@ -393,8 +411,10 @@ i2b2.CRC.view.QT.loadResultTypes = function() {
 // ================================================================================================== //
 i2b2.CRC.view.QT.loadResultTypesAndShowRun = function() {
     i2b2.CRC.view.QT.loadResultTypes()
-        .then(() => i2b2.CRC.view.QT.showRun())
-        .catch(() => i2b2.CRC.view.QT.showRun());
+        .then((queryStatusConfig) => {
+            i2b2.CRC.QueryStatus.updateBreakdownConfig(queryStatusConfig);
+            i2b2.CRC.view.QT.showRun();
+        }).catch(() => i2b2.CRC.view.QT.showRun());
 }
 
 // ================================================================================================== //
