@@ -62,6 +62,11 @@ export const EventLogView = ({eventLogs, hasError}) => {
             onSortModelChange={(model) => {
                 apiRef.current.setPage(0);
             }}
+            initialState={{
+                sorting: {
+                    sortModel: [{field:'createDateTime',sort:'desc'}]
+                },
+            }}
             pageSizeOptions={[10, 25, 50]}
             sx={{
                 [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]: {
