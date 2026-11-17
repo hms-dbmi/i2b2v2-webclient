@@ -323,8 +323,12 @@ i2b2.ONT.ctrlr.Search = {
             } else {
                 // passes back current node fully built with its "nodes" attribute populated
                 ret = node._$$_ !== undefined ? node._$$_ : node._$R$_;
-                if (node._$R$_ && node._$$_ === undefined) {
-                    ret = node._$R$_;
+                if (node._$$_ && node._$R$_) {
+                    // Use the category label, icon, and drag restriction with the ontology concept data.
+                    ret = { ...ret, text: node._$R$_.text, title: node._$R$_.title };
+                    if (node._$R$_.icon.split(/\s+/).includes("tvRoot")) {
+                        ret.icon = ret.icon.replace(/\btv(?:Branch|Leaf|Root)\b/, "tvRoot noDrag");
+                    }
                 }
                 ret.state = {
                     loaded: true,
