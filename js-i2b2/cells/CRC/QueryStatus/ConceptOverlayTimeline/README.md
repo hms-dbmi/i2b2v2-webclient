@@ -85,7 +85,7 @@ Lets you override how specific concepts from the breakdown appear — their disp
 
 **Important: `order` is all-or-nothing across every concept, not per-concept.** If you want a specific concept to appear in a specific position, you must supply a valid `order` for **every** concept in the registry. If even one concept is missing a valid integer `order`, the entire set's order values are discarded and all concepts are re-alphabetized instead — partial ordering is not supported.
 
-**Failure behavior:** a typo in a concept name, or customizing a concept that doesn't exist in your current breakdown, doesn't cause an error — it's silently skipped, and a message is logged to the browser console explaining why.
+**Failure behavior:** a typo in a concept name, or customizing a concept that doesn't exist in your current breakdown, doesn't cause an error — it's silently skipped.
 
 ### `overlayConfigs`
 The top-level container for everything overlay-related.
@@ -105,45 +105,22 @@ An object where each key is an overlay's internal nickname (used throughout the 
 }
 ```
 
-### `overlayConfigs.overlays.<overlayNickname>.envUrls`
-
-A map of environment names to the real, resolvable URL for that environment. Used to pick the correct endpoint automatically based on where the app is currently running, without hardcoding a single URL in config.
-
-**Shape:**
-
-```json
-"envUrls": {
-    "dev": "<url for dev environment>",
-    "prod": "<url for prod environment>",
-    "demo": "<url for demo environment>",
-    "local": "<path to a local JSON file, used when sourceType is \"local\">"
-}
-```
-
-**How it's used:**
-
-- At runtime, the app detects which environment it's currently running in (based on the page's hostname, or — for `sourceType: "local"` — simply by checking that `envUrls.local` is set) and looks up the matching key here.
-- The keys aren't fixed to exactly these four — any key name is valid as long as it matches what the app's environment detection resolves to. `dev`, `prod`, `demo`, and `local` are the ones currently recognized.
-- `local` is the one entry that isn't a real environment — it's used specifically when `sourceType` is `"local"`, and should point to a path to a JSON file rather than a service URL.
-
-**Required:** At least one entry must be present, and the specific entry matching whatever environment the app detects must have a real, non-empty value — otherwise the overlay is skipped entirely, with a message logged to the console.
-
 ### `overlayConfigs.overlays.<overlayNickname>.endpointUrl`
 
-A lookup key, not a literal URL — despite the name. At runtime, the app resolves this to the matching entry in `envUrls` based on the detected environment, and overwrites this field in memory with the real, resolved URL.
+The real, resolved URL this overlay fetches its data from. For `sourceType: "local"`, this is a path to a local JSON file instead of a service URL.
 
 **Shape:**
 
 ```json
-"endpointUrl": ""
+"endpointUrl": "<a real, resolvable URL, or a path to a local JSON file for sourceType: \"local\">"
 ```
 
 **How it's used:**
 
-- Leave this as an empty string in config. It gets filled in automatically once the app detects which environment it's running in and resolves the matching key from `envUrls`.
-- The name is a known inconsistency — it's kept as `endpointUrl` for historical reasons, even though it holds a lookup key rather than a URL, until config is injected directly by a deployment pipeline (at which point this field is expected to go away or change meaning).
+- The deployment pipeline injects the correct, final value for the current environment — this config is no longer responsible for picking between dev/prod/demo/etc. itself. Whatever value is here is used exactly as given, with no further resolution step.
+- For `sourceType: "local"`, this should point to a path to a JSON file rather than a service URL.
 
-**Failure behavior:** if the app can't resolve a matching entry in `envUrls` for the detected environment, this stays unresolved and a message is logged to the console — the overlay's data will fail to load.
+**Required:** yes. A missing or empty value causes the overlay to be skipped entirely.
 
 ### `overlayConfigs.overlays.<overlayNickname>.sourceType`
 
@@ -158,9 +135,9 @@ Tells the app whether this overlay's data comes from a network request or a stat
 **Valid values:**
 
 - `"url"` — fetch data from a live service (currently implemented via the i2b2 proxy; see `urlType`).
-- `"local"` — fetch data from a static JSON file, using the path configured in `envUrls.local`.
+- `"local"` — fetch data from a static JSON file, using the path given in `endpointUrl`.
 
-**Required:** A missing, empty, or any other value causes the overlay to be skipped entirely, with a message logged to the console.
+**Required:** A missing, empty, or any other value causes the overlay to be skipped entirely.
 
 ### `overlayConfigs.overlays.<overlayNickname>.urlType`
 
@@ -177,7 +154,7 @@ Tells the app how to actually make the request when `sourceType` is `"url"`. Onl
 - `"i2b2-proxy"` — the data comes from an i2b2 service, reached through i2b2's internal proxy mechanism. This is the only fully implemented, working option today.
 - `"external"` — reserved for a future direct external API integration. Currently a placeholder only; selecting this will cause the overlay's data fetch to be skipped with a console warning, since the actual fetch logic hasn't been built yet.
 
-**Required:** When `sourceType` is `"url"`. A missing or invalid value causes the overlay to be skipped entirely, with a message logged to the console. Not required, and ignored, when `sourceType` is `"local"`.
+**Required:** When `sourceType` is `"url"`. A missing or invalid value causes the overlay to be skipped entirely. Not required, and ignored, when `sourceType` is `"local"`.
 
 ### `overlayConfigs.overlays.<overlayNickname>.dateRange`
 
@@ -192,7 +169,7 @@ An optional, explicit start and end date to request data for, instead of letting
 **How it's used:**
 
 - If left empty (`""`), or omitted, the app automatically uses the same date range as the patient breakdown data — this is the typical, recommended setup.
-- If provided, both dates must fall within the breakdown's own date range, and the start date must come before the end date. If either check fails, the configured range is ignored and the app falls back to the breakdown's range instead, with a message logged to the console explaining why.
+- If provided, both dates must fall within the breakdown's own date range, and the start date must come before the end date. If either check fails, the configured range is ignored and the app falls back to the breakdown's range instead.
 - Applies to both `url`- and `local`-sourced overlays — a local JSON file's rows are filtered down to this range (or the breakdown's range, if this is left empty) using whatever column is configured in `dateColumn`.
 
 ### `overlayConfigs.overlays.<overlayNickname>.dateColumn`
@@ -210,7 +187,7 @@ The exact name of the column in this overlay's data that holds each row's date.
 - Must match the column name exactly as it appears in the actual fetched data (for a local file, this is the real JSON key after whitespace/slash cleanup is applied; for a URL source, it's the key as returned by the service).
 - Used everywhere the visualization needs to read a row's date — aggregating data by month/year, and (for local files) filtering rows down to the configured or breakdown-derived date range.
 
-**Required:** A missing or empty value causes the overlay to be skipped entirely, with a message logged to the console.
+**Required:** A missing or empty value causes the overlay to be skipped entirely.
 
 ### `overlayConfigs.overlays.<overlayNickname>.auth`
 
@@ -314,8 +291,8 @@ Defines the combined option itself — its label, which columns get summed toget
 
 **Field details:**
 
-- `label` — the display name shown to the user for this combined option. **Required.** If missing or empty, the entire combined option is dropped, with a message logged to the console.
-- `combinedColumns` — an array of column names to sum together to produce this option's value. **Required**, and every column listed must already exist as a `column` value somewhere in this overlay's `visualizationData` — you can only combine columns that are already declared as real individual sources. If this check fails (empty array, or any column not found among the declared sources), the entire combined option is dropped, with a message logged to the console.
+- `label` — the display name shown to the user for this combined option. **Required.** If missing or empty, the entire combined option is dropped.
+- `combinedColumns` — an array of column names to sum together to produce this option's value. **Required**, and every column listed must already exist as a `column` value somewhere in this overlay's `visualizationData` — you can only combine columns that are already declared as real individual sources. If this check fails (empty array, or any column not found among the declared sources), the entire combined option is dropped.
 - `color` — a 7-character hex code. Optional; if omitted or invalid, a color is automatically assigned from the shared `canonicalHexes` pool.
 - `order` — always set internally to `999` and not currently configurable. **Note:** this value isn't actually used to control display order relative to other overlays — it's a fixed placeholder. Display order between different overlays' options is currently just config/iteration order.
 
@@ -336,4 +313,4 @@ The label shown on the chart's right-hand y-axis when this overlay is selected.
 - Displayed as-is on the right axis whenever this overlay is the one currently selected.
 - Make sure this label accurately describes what the values actually represent — for example, if the underlying data is aggregated (averaged per month/year rather than a raw count), say so explicitly (e.g. "Average Overdoses" rather than "Reported Overdoses") to avoid misleading anyone reading the chart.
 
-**Required:** A missing or empty value causes the overlay to be dropped entirely, with a message logged to the console.`
+**Required:** A missing or empty value causes the overlay to be dropped entirely.
