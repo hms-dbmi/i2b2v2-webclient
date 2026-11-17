@@ -116,14 +116,8 @@
           },
         "overlayConfigs": {
           "overlays":{
-              "mwraWastewater": {
-                "envUrls": {
-                    "dev": "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
-                    "prod": "http://prod-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
-                    "demo": "http://demo-i2b2.network.masscpr.hms.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
-                    "local": "js-i2b2/cells/CRC/QueryStatus/ConceptOverlayTimeline/demo_wastewater.json"
-                  },
-                  "endpointUrl": "",
+              "mwraWastewater": {              
+                  "endpointUrl": "http://shrine-masscpr-dev-hub-i2b2.catalyst.harvard.edu:9090/i2b2/services/ExternalDataService/getWasteWaterData",
                   "sourceType": "url",
                   "urlType" : "i2b2-proxy",
                   "dateRange": "",

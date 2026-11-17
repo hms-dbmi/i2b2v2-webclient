@@ -197,7 +197,7 @@ export default class ConceptOverlayTimeline {
             if (!raw || raw.length === 0) return;
             
 
-            if (Object.keys(this.conceptRegistry).length == 0){
+            if (Object.keys(this.conceptRegistry).length === 0){
                 this.conceptRegistry = generateConceptRegistry(raw, this.conceptRegistry, this.customizeConceptRegistry, this.canonicalHexes, this.colorsInUse);
             } 
 
@@ -214,8 +214,6 @@ export default class ConceptOverlayTimeline {
                 this.overlayEndpoints = collectOverlayEndpoints(this.overlayEndpoints, this.overlayRegistry, this.allOverlays, this.breakdownDateRange);
                 this.overlayEndpointsAttempted = true;
             }
-
-            resolveEndpointUrl(this.allOverlays, this.overlayEndpoints);
 
             // Build items
             const conceptItems = [
@@ -261,8 +259,8 @@ export default class ConceptOverlayTimeline {
 
             // Render initial lists
             renderSingleSelectLinks(this.controls.conceptList, conceptItems, this.state.concept, "All");
-            renderSingleSelectLinks(this.controls.overlayList, overlayItems, this.state.overlay, "None");   
-                                   
+            renderSingleSelectLinks(this.controls.overlayList, overlayItems, this.state.overlay, "None");         
+                        
             // ------------------------------------------------------------
             // Overlay fetches
             // ------------------------------------------------------------
@@ -1354,16 +1352,16 @@ function cssSafeKey(str) {
         .replace(/^-+|-+$/g, "");
 }
 
-function blendWithWhite(hexColor, t){
+function blendWithWhite(hexColor, blendRatio){
     const hexCleaned = hexColor.startsWith('#') ? hexColor.slice(1) : hexColor;   
 
     const r = parseInt(hexCleaned.slice(0, 2), 16); 
     const g = parseInt(hexCleaned.slice(2, 4), 16);
     const b = parseInt(hexCleaned.slice(4, 6), 16);    
 
-    const r2 = 255 - (255 - r) * t;
-    const g2 = 255 - (255 - g) * t; 
-    const b2 = 255 - (255 - b) * t;
+    const r2 = 255 - (255 - r) * blendRatio;
+    const g2 = 255 - (255 - g) * blendRatio; 
+    const b2 = 255 - (255 - b) * blendRatio;
 
     const rI = Math.round(r2);
     const gI = Math.round(g2);
@@ -1384,10 +1382,10 @@ function blendWithWhite(hexColor, t){
  *  - "YYYY-MM-DDTHH:mm:ss..." (time portion ignored)
  *  - "M/D/YYYY" or "MM/DD/YYYY"
  */
-function parseYMDLocal(s) {
-    if (!s || typeof s !== "string") return null;
+function parseYMDLocal(dateStr) {
+    if (!dateStr || typeof dateStr !== "string") return null;
 
-    const raw = s.trim();
+    const raw = dateStr.trim();
 
     // Handle ISO-ish with time: "YYYY-MM-DDTHH:..."
     const isoPrefix = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -1618,49 +1616,6 @@ async function fetchOverlayDataFromEndpoint(endpointInfo) {
     }
 }
 
-// pre-pipleline environment detection
-// this will be deprecated when we move to injecting configs in the pipeline
-
-function detectEnv(overlayInst) {
-    if (overlayInst.sourceType === SOURCETYPES.local) {
-        if (overlayInst.envUrls.local) {
-            return "local";
-        }
-        return null;
-    }
-
-    const host = (window.location?.hostname || "").toLowerCase();
-
-    if (host.includes("dev") || host.includes("local")) return "dev";
-    if (host.includes("demo")) return "demo";
-    if (host.includes("test")) return "test";
-    if (host.includes("stage")) return "stage";
-
-    console.warn(`[ConceptOverlayTimeline] no known env keyword found in host "${host}"; defaulting to "prod"`);
-    return "prod";
-}
-
-// pre-pipleline endpoint URL resolution
-// this will be deprecated when we move to injecting configs in the pipeline
-
-function resolveEndpointUrl(allOverlays, overlayEndpoints) {
-    const overlayNicknames = Object.keys(overlayEndpoints);
-
-    for (const overlayNickname of overlayNicknames) {
-        const currentOverlay = allOverlays[overlayNickname];
-        const detectedEndpointKey = detectEnv(currentOverlay);
-        const resolvedUrl = currentOverlay.envUrls[detectedEndpointKey];
-
-        if (resolvedUrl) {
-            overlayEndpoints[overlayNickname].endpoint = resolvedUrl;
-        } else {
-            console.warn(`[ConceptOverlayTimeline] could not update endpoint url for ${overlayNickname} to fetch data`);
-        }
-    }
-
-    return overlayEndpoints;
-}
-
 function evaluateEndpointDateRange(dateRange, breakdownDateRange) {
     const overlayStart = new Date(dateRange[0]);
     const overlayEnd = new Date(dateRange[1]);
@@ -1688,9 +1643,7 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
     for (const overlayNickname of overlayNicknames) {
         const currentOverlay = allOverlays[overlayNickname];
 
-        const hasUsableUrl = currentOverlay.envUrls && Object.values(currentOverlay.envUrls).some(url => url);
-
-        if (!hasUsableUrl) {
+        if (!currentOverlay.endpointUrl) {
             continue;
         }
 
@@ -1721,15 +1674,12 @@ function collectOverlayEndpoints(overlayEndpoints, overlayRegistry, allOverlays,
             !isNaN(new Date(dateRange[0])) &&
             !isNaN(new Date(dateRange[1]));
 
-        if (!dateRange || dateRange.length === 0 || !isValidFormat) {
-            overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];            
-        } else {
-            if (evaluateEndpointDateRange(dateRange, breakdownDateRange)) {
-                overlayEndpoints[overlayNickname].dateRange = dateRange;
-            } else {
-                overlayEndpoints[overlayNickname].dateRange = [breakdownDateRange.startStr, breakdownDateRange.endStr];                
-            }
-        }
+        const isUsableRange = isValidFormat && evaluateEndpointDateRange(dateRange, breakdownDateRange);
+
+        overlayEndpoints[overlayNickname].dateRange = isUsableRange
+            ? dateRange
+            : [breakdownDateRange.startStr, breakdownDateRange.endStr];
+       
     }
 
     return overlayEndpoints;
