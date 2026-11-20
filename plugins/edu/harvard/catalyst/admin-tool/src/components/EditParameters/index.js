@@ -550,7 +550,9 @@ export const EditParameters = ({
             return name === params.row.name
         }).length === 0));
 
-        return  notExistingParam && notPredefinedParam;
+        const notSystemParam = params.row.status !== ParamStatus.S;
+
+        return  notExistingParam && notPredefinedParam && notSystemParam;
     }
     const displayParamsTable = () => {
         return (
