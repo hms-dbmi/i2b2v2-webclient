@@ -169,9 +169,10 @@ i2b2.sdx.TypeControllers.QI.getChildRecords = function(sdxParentNode, onComplete
                 o.title += " is <span class='setSize'>" + setSize + "</span>";
             }
 
-            o.result_type = i2b2.h.XPath(ps[i1], 'query_result_type/name/text()')[0].nodeValue;
-            if (o.result_type !== "COMPLETED") o.title += " - " + o.result_type;
+            const queryStatusType = i2b2.h.XPath(ps[i1], 'query_status_type/name/text()')[0].nodeValue;
+            if (queryStatusType !== "COMPLETED") o.title += " - " + queryStatusType;
 
+            o.result_type = i2b2.h.XPath(ps[i1], 'query_result_type/name/text()')[0].nodeValue;
             let sdxDataNode;
             switch (o.result_type) {
                 case "PATIENT_ENCOUNTER_SET":
