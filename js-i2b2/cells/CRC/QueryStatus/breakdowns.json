@@ -133,14 +133,8 @@
           },
         "overlayConfigs": {
           "overlays":{
-              "mwraWastewater": {
-                "envUrls": {
-                    "dev": "",
-                    "prod": "",
-                    "demo": "",
-                    "local": "js-i2b2/cells/CRC/QueryStatus/ConceptOverlayTimeline/demo_wastewater.json"
-                  },
-                  "endpointUrl": "",
+              "mwraWastewater": {                
+                  "endpointUrl": "js-i2b2/cells/CRC/QueryStatus/ConceptOverlayTimeline/demo_wastewater.json",
                   "sourceType": "local",
                   "urlType" : "i2b2-proxy",
                   "dateRange": "",
